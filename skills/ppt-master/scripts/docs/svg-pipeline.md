@@ -8,8 +8,8 @@ The supported delivery contract has one PPTX path: `svg_output/` → the project
 
 ## `svg_authoring_view.py`
 
-Create a lightweight inspection/authoring projection of one PPTX-imported SVG
-or a directory of imported SVGs:
+Create a lightweight editable authoring IR bundle from one PPTX-imported SVG or
+a directory of imported SVGs:
 
 ```bash
 uvx ppt-master svg-authoring-view <svg-file-or-directory> -o <output-dir>
@@ -17,7 +17,9 @@ uvx ppt-master svg-authoring-view <svg-file-or-directory> -o <output-dir>
 
 The operation is non-destructive and refuses existing output files unless
 `--force` is explicit. It never writes back to the source SVG. The JSON report
-on stdout records original/projected byte counts and removals by category.
+on stdout records original/projected byte counts and removals by category. The
+output directory contains the editable SVGs and one atomic
+`authoring_manifest.json` sidecar.
 
 The projected copy:
 
@@ -27,14 +29,16 @@ The projected copy:
 - removes source-object identity/style/hash attributes that are only useful to
   an exact import round trip;
 - keeps visible paths, text, images, stable ids, Master/Layout root markers,
-  and selected native-shape intent useful for inspection; and
+  selected native-shape intent, and a document-local `data-pptx-source-ref` on
+  each imported logical object;
 - rewrites relative local asset references for the projection's new location.
 
-The complete imported SVG remains the evidence source for mirror restoration.
-The exporter does not read the import workspace or the projection. The
-projection is deliberately not a template generator, not a replacement for
-the explicit Master/Layout restoration workflow, and not a supported release
-input to `svg_to_pptx.py`.
+The manifest stores relative source/authoring filenames, source and initial
+authoring hashes, and source element paths. It deliberately does not copy the
+opaque payload. The authoring bundle is the editable source for template
+creation; the complete imported SVG remains immutable native-payload backing.
+Final `templates/*.svg` files are materialized and validated from that pair.
+The IR directory itself is not a supported direct input to `svg_to_pptx.py`.
 
 This projection is separate from canonical preset authoring. New project SVGs
 and project-owned templates use the compact authored form: one atomic
@@ -47,6 +51,120 @@ evidence required for import and round-trip decisions. The normative boundary
 is owned by [`shared-standards.md`](../../references/shared-standards.md), with
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
+
+## `extract_svg_assets.py`
+
+Factor large vector subtrees out of lightweight authoring IR documents and
+replace them with compact `<use data-icon>` references:
+
+```bash
+uvx ppt-master extract-svg-assets <layered_svg_dir> \
+  --icons-dir <icons_dir> --icon-namespace imported \
+  --inplace --id-prefix layered
+uvx ppt-master extract-svg-assets <flat_svg_dir> \
+  --icons-dir <icons_dir> --icon-namespace imported \
+  --reuse-inventory <layered_inventory.json> \
+  --inplace --id-prefix flat
+```
+
+The first pass records a source fingerprint before namespacing each extracted
+asset's internal ids. The second pass reuses a fingerprint-matched asset and
+writes no duplicate SVG file. Unmatched flat-only subtrees still extract
+normally. Use `--clean-stale` on both import-workspace passes to remove stale
+generated files for their respective prefixes. In create-template workspaces,
+`imported` is the fixed namespace: assets live once under `icons/imported/`, and
+the working SVGs reference them as `data-icon="imported/<name>"`. Inventory
+entries retain source refs from each extracted subtree, allowing expansion to
+restore the authoring-manifest mapping. A rerun on an
+already rewritten namespaced projection inventories those references and does
+not progressively extract their remaining parent or sibling geometry.
+
+## `mirror_template_materialize.py`
+
+Compile one Type A PPTX import workspace into a deterministic structured mirror
+template after the layered authoring IR has been reviewed and edited:
+
+```bash
+uvx ppt-master mirror-template-materialize \
+  <import_workspace> <empty_template_workspace>
+```
+
+The command treats `<import_workspace>/authoring-svg/` as the sole editable
+source. It validates the layered authoring manifest, immutable lossless SVG
+hashes, source PPTX hash, complete Master/Layout/Slide graph, inheritance
+visibility facts, source-ref closure, and extracted-vector inventory before it
+writes anything. It refuses a non-empty destination and stages the whole result
+before atomic publication, so a failed preflight cannot leave a partial
+template.
+
+Materialization preserves source page order and emits one definition-only
+`layout_<layout_key>.svg` for every source Layout unused by all source Slides.
+It mechanically expands fixed Master/Layout group wrappers into direct atoms,
+rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
+current SVG fallback for edited refs, restores explicit text hard breaks, and
+removes every IR-only source ref. Source `p:sldLayout@showMasterSp` and
+`p:sld@showMasterSp` facts become canonical root
+`data-pptx-show-master-shapes` and
+`data-pptx-show-inherited-shapes` booleans. An imported text placeholder keeps
+its authoritative native frame on the `<text data-pptx-frame>` carrier so the
+Slide-local frame can differ from the reusable Layout bounds without collapsing
+to glyph bounds.
+
+The output routes reusable vectors once to `icons/imported/`, bitmaps to
+`images/`, and other referenced files to `templates/assets/`. The JSON report
+is written to stdout only. The command intentionally does not create
+`templates/design_spec.md`; Template_Designer writes that personality and page
+roster after materialization. This compiler is for Type A mirror restoration,
+not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
+or export.
+
+## `extract_svg_pictures.py`
+
+Normalize one deliberately selected complex SVG object into one PowerPoint
+picture. The command accepts exact `<g id>` values only, writes each group as a
+tight standalone SVG asset, embeds its local image/CSS dependencies, and
+replaces the source group at the same parent index with one `<image>`. Native
+export therefore emits one `p:pic` backed by SVG media.
+
+```bash
+uvx ppt-master extract-svg-pictures \
+  "<workspace>/authoring-svg/<layered_svg_file>.svg" \
+  --select "<group_id>" \
+  --resource-root "<workspace>" \
+  --images-dir "<workspace>/picture-assets" \
+  --inplace
+```
+
+Imported PowerPoint groups normally provide `data-pptx-frame`, which is used
+as the picture bounds. For a large standalone SVG without frame metadata, the
+tool measures the selected group with Playwright; use repeated
+`--bounds ID=x,y,width,height` values when browser measurement is unavailable
+or when effect overflow needs an explicit frame. `--padding` expands the
+chosen bounds. The generated `*_picture_asset_inventory.json` records the
+bounds source, asset hash, copied definition ids, and embedded local resources.
+Nested selections are accepted only through metadata-only `<g>` ancestors.
+When an ancestor carries a transform, style, clip, opacity, or other visual
+attribute, select that outer group instead; this prevents applying the ancestor
+effect once inside the SVG asset and again to the replacement `<image>`.
+Scripts, `foreignObject`, SVG animation, remote resources, and external SVG
+fragment references fail closed; local image/CSS resources must stay inside
+the declared `--resource-root` and are embedded into the asset.
+
+This operation belongs only to an explicit `create-template` normalization
+decision in `standard` or `fidelity` mode. It does not choose groups, detect
+repetition, infer a Master/Layout, or run during ordinary import, free
+generation, mirror restoration, finalize, or export. Placeholder, native
+single-shape, table/chart, icon-placeholder, and authored-preset groups are
+rejected because they already own a different semantic route.
+
+Do not confuse this tool with `extract_svg_assets.py`:
+
+- `extract_svg_assets.py` is a model-readability optimization. It replaces
+  heuristic vector runs with `<use data-icon>`, then re-inlines them before
+  export so the PPTX still contains native shapes.
+- `extract_svg_pictures.py` is an explicit representation change. It replaces
+  only named groups with `<image>`, so each result intentionally remains one
+  editable PowerPoint picture rather than individually editable paths.
 
 ## Recommended Pipeline
 

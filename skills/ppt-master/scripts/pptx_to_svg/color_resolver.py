@@ -1,8 +1,8 @@
 """DrawingML color resolution.
 
 Resolves any of the 6 OOXML color types (srgbClr, schemeClr, sysClr, prstClr,
-hslClr, scrgbClr) plus modifiers (tint/shade/lumMod/lumOff/satMod/satOff/
-hueMod/hueOff/alpha) into an (#RRGGBB, alpha) pair.
+hslClr, scrgbClr) plus the registered luminance, saturation, hue, alpha,
+grayscale, complement, and inverse modifiers into an (#RRGGBB, alpha) pair.
 
 Theme palette is resolved from the slide master's a:clrMap and theme1.xml's
 a:clrScheme.
@@ -11,9 +11,11 @@ a:clrScheme.
 from __future__ import annotations
 
 import colorsys
+import re
+from collections.abc import Callable
 from xml.etree import ElementTree as ET
 
-from .emu_units import NS, percent_to_ratio
+from .emu_units import NS
 from .ooxml_loader import PartRef
 
 
@@ -21,7 +23,7 @@ from .ooxml_loader import PartRef
 # Preset color names (DrawingML <a:prstClr val="...">)
 # ---------------------------------------------------------------------------
 
-# Source: ECMA-376 ST_PresetColorVal (subset — full list has ~140 entries).
+# Source: complete ECMA-376 ST_PresetColorVal enumeration (190 values).
 PRST_COLORS = {
     "aliceBlue": "F0F8FF", "antiqueWhite": "FAEBD7", "aqua": "00FFFF",
     "aquamarine": "7FFFD4", "azure": "F0FFFF", "beige": "F5F5DC",
@@ -100,6 +102,115 @@ SCHEME_ALIASES = {
     "bg1": "lt1", "bg2": "lt2",
     "tx1": "dk1", "tx2": "dk2",
 }
+_THEME_SCHEME_SLOTS = (
+    "dk1",
+    "lt1",
+    "dk2",
+    "lt2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+)
+_COLOR_MAP_SOURCES = (
+    "bg1",
+    "tx1",
+    "bg2",
+    "tx2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+)
+COLOR_TAGS = (
+    "srgbClr",
+    "schemeClr",
+    "sysClr",
+    "prstClr",
+    "hslClr",
+    "scrgbClr",
+)
+_COLOR_QNAMES = frozenset({
+    f"{{{NS['a']}}}{name}"
+    for name in COLOR_TAGS
+})
+_THEME_COLOR_TAGS = _COLOR_QNAMES - {f"{{{NS['a']}}}schemeClr"}
+_SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
+_OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
+_OOXML_INT_MIN = -(2**31)
+_OOXML_INT_MAX = 2**31 - 1
+_COLOR_MODIFIER_PERCENT_RANGES = {
+    "alpha": (0, 100000),
+    "alphaMod": (0, _OOXML_INT_MAX),
+    "alphaOff": (-100000, 100000),
+    "hueMod": (0, _OOXML_INT_MAX),
+    "lumMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "lumOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "satMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "satOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "shade": (0, 100000),
+    "tint": (0, 100000),
+}
+_COLOR_MODIFIER_FLAG_NAMES = frozenset({"comp", "gray", "inv"})
+_SCHEME_COLOR_VALUES = {
+    "bg1",
+    "tx1",
+    "bg2",
+    "tx2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+    "phClr",
+    "dk1",
+    "lt1",
+    "dk2",
+    "lt2",
+}
+_SYSTEM_COLOR_VALUES = {
+    "scrollBar",
+    "background",
+    "activeCaption",
+    "inactiveCaption",
+    "menu",
+    "window",
+    "windowFrame",
+    "menuText",
+    "windowText",
+    "captionText",
+    "activeBorder",
+    "inactiveBorder",
+    "appWorkspace",
+    "highlight",
+    "highlightText",
+    "btnFace",
+    "btnShadow",
+    "grayText",
+    "btnText",
+    "inactiveCaptionText",
+    "btnHighlight",
+    "3dDkShadow",
+    "3dLight",
+    "infoText",
+    "infoBk",
+    "hotLight",
+    "gradientActiveCaption",
+    "gradientInactiveCaption",
+    "menuHighlight",
+    "menuBar",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -113,38 +224,167 @@ class ColorPalette:
     names (lt1/dk1) — this is rarely overridden but must be honored.
     """
 
-    def __init__(self, master: PartRef | None, theme: PartRef | None) -> None:
+    def __init__(
+        self,
+        master: PartRef | None,
+        theme: PartRef | None,
+        *,
+        strict: bool = True,
+        diagnostic_sink: Callable[[str, str, str], None] | None = None,
+    ) -> None:
         self.scheme: dict[str, str] = {}
         self.clr_map: dict[str, str] = {}
+        self.strict = strict
+        self.diagnostic_sink = diagnostic_sink
         if theme is not None:
-            self._load_scheme(theme.xml)
+            try:
+                self._load_scheme(theme)
+            except ValueError as exc:
+                if strict:
+                    raise
+                self.scheme.clear()
+                self._diagnose(
+                    "theme-color-scheme-normalized",
+                    str(exc),
+                    "read recognized theme color slots",
+                )
+                self._load_scheme_compatible(theme)
         if master is not None:
-            self._load_clr_map(master.xml)
+            try:
+                self._load_clr_map(master)
+            except ValueError as exc:
+                if strict:
+                    raise
+                self.clr_map.clear()
+                self._diagnose(
+                    "theme-color-map-normalized",
+                    str(exc),
+                    "read recognized color-map entries",
+                )
+                self._load_clr_map_compatible(master)
 
-    def _load_scheme(self, theme_root: ET.Element) -> None:
-        clr_scheme = theme_root.find(".//a:clrScheme", NS)
+    def _diagnose(self, code: str, message: str, fallback: str) -> None:
+        if self.diagnostic_sink is not None:
+            self.diagnostic_sink(code, message, fallback)
+
+    def _load_scheme_compatible(self, theme: PartRef) -> None:
+        """Read recognizable theme slots without requiring canonical wrapper XML."""
+        clr_scheme = theme.xml.find(".//a:clrScheme", NS)
         if clr_scheme is None:
             return
-        for child in list(clr_scheme):
-            if not isinstance(child.tag, str):
+        for slot in clr_scheme:
+            if not isinstance(slot.tag, str):
                 continue
-            name = child.tag.split("}", 1)[-1]
-            srgb = child.find("a:srgbClr", NS)
-            sys_clr = child.find("a:sysClr", NS)
-            if srgb is not None and srgb.attrib.get("val"):
-                self.scheme[name] = srgb.attrib["val"].upper()
-            elif sys_clr is not None:
-                last = sys_clr.attrib.get("lastClr")
-                if last:
-                    self.scheme[name] = last.upper()
+            name = slot.tag.rsplit("}", 1)[-1]
+            color = next(
+                (
+                    child
+                    for child in slot
+                    if isinstance(child.tag, str)
+                    and child.tag.rsplit("}", 1)[-1] in COLOR_TAGS
+                ),
+                None,
+            )
+            hex_, _alpha = resolve_color(color, None, strict=False)
+            if hex_ is not None:
+                self.scheme[name] = hex_[1:]
 
-    def _load_clr_map(self, master_root: ET.Element) -> None:
-        clr_map = master_root.find("p:clrMap", NS)
+    def _load_clr_map_compatible(self, master: PartRef) -> None:
+        """Read valid known clrMap entries and ignore unrelated extensions."""
+        clr_map = master.xml.find("p:clrMap", NS)
         if clr_map is None:
             return
-        # Each attribute on clrMap is a remap: bg1="lt1" tx1="dk1" ...
-        for attr, val in clr_map.attrib.items():
-            self.clr_map[attr] = val
+        for source in _COLOR_MAP_SOURCES:
+            target = clr_map.attrib.get(source)
+            if target in _THEME_SCHEME_SLOTS:
+                self.clr_map[source] = target
+
+    def _load_scheme(self, theme: PartRef) -> None:
+        theme_root = theme.xml
+        if theme_root.tag != f"{{{NS['a']}}}theme":
+            raise ValueError(f"{theme.path}: expected a:theme root")
+
+        theme_elements = theme_root.findall("a:themeElements", NS)
+        if len(theme_elements) != 1:
+            raise ValueError(
+                f"{theme.path}: expected exactly one direct a:themeElements"
+            )
+        clr_schemes = theme_elements[0].findall("a:clrScheme", NS)
+        if len(clr_schemes) != 1:
+            raise ValueError(
+                f"{theme.path}: expected exactly one direct a:clrScheme"
+            )
+        clr_scheme = clr_schemes[0]
+        children = list(clr_scheme)
+        expected_tags = [
+            f"{{{NS['a']}}}{name}" for name in _THEME_SCHEME_SLOTS
+        ]
+        if (
+            set(clr_scheme.attrib) != {"name"}
+            or (clr_scheme.text or "").strip()
+            or [child.tag for child in children] != expected_tags
+            or any((child.tail or "").strip() for child in children)
+        ):
+            raise ValueError(
+                f"{theme.path}: invalid DrawingML color scheme structure"
+            )
+
+        for name, slot in zip(_THEME_SCHEME_SLOTS, children):
+            color_children = list(slot)
+            if (
+                slot.attrib
+                or (slot.text or "").strip()
+                or len(color_children) != 1
+                or color_children[0].tag not in _THEME_COLOR_TAGS
+                or (color_children[0].tail or "").strip()
+            ):
+                raise ValueError(
+                    f"{theme.path}: invalid DrawingML theme color slot {name!r}"
+                )
+            try:
+                hex_, alpha = resolve_color(color_children[0], None)
+            except ValueError as exc:
+                raise ValueError(
+                    f"{theme.path}: invalid DrawingML theme color slot "
+                    f"{name!r}: {exc}"
+                ) from exc
+            if hex_ is None:
+                raise ValueError(
+                    f"{theme.path}: unresolved DrawingML theme color slot {name!r}"
+                )
+            if alpha != 1.0:
+                raise ValueError(
+                    f"{theme.path}: non-opaque DrawingML theme color slot {name!r}"
+                )
+            self.scheme[name] = hex_[1:]
+
+    def _load_clr_map(self, master: PartRef) -> None:
+        master_root = master.xml
+        if master_root.tag != f"{{{NS['p']}}}sldMaster":
+            raise ValueError(f"{master.path}: expected p:sldMaster root")
+        clr_maps = master_root.findall("p:clrMap", NS)
+        if len(clr_maps) != 1:
+            raise ValueError(
+                f"{master.path}: expected exactly one direct p:clrMap"
+            )
+        clr_map = clr_maps[0]
+        children = list(clr_map)
+        if (
+            set(clr_map.attrib) != set(_COLOR_MAP_SOURCES)
+            or children
+            or (clr_map.text or "").strip()
+        ):
+            raise ValueError(
+                f"{master.path}: invalid DrawingML color map structure"
+            )
+        for source in _COLOR_MAP_SOURCES:
+            target = clr_map.attrib[source]
+            if target not in _THEME_SCHEME_SLOTS:
+                raise ValueError(
+                    f"{master.path}: invalid DrawingML color map target "
+                    f"{source}={target!r}"
+                )
+            self.clr_map[source] = target
 
     def resolve_scheme(self, name: str) -> str | None:
         """scheme name (e.g. 'accent1', 'bg1') -> 'RRGGBB'. None on miss."""
@@ -159,20 +399,63 @@ class ColorPalette:
 # Color resolution
 # ---------------------------------------------------------------------------
 
-# All concrete color element names under the a: namespace.
-COLOR_TAGS = ("srgbClr", "schemeClr", "sysClr", "prstClr",
-              "hslClr", "scrgbClr")
+def validate_no_fill(elem: ET.Element) -> None:
+    """Require the empty DrawingML a:noFill leaf contract."""
+    if elem.attrib or list(elem) or (elem.text or "").strip():
+        raise ValueError("Invalid DrawingML noFill structure")
+
+
+def resolve_solid_fill_color(
+    elem: ET.Element,
+    palette: ColorPalette | None,
+    *,
+    placeholder_hex: str | None = None,
+) -> tuple[str, float]:
+    """Resolve one explicit color from a closed DrawingML solid fill."""
+    children = list(elem)
+    if not elem.attrib and not children and not (elem.text or "").strip():
+        raise ValueError(
+            "DrawingML solid fill requires one explicit color"
+        )
+    if (
+        elem.attrib
+        or len(children) != 1
+        or children[0].tag not in _COLOR_QNAMES
+        or (elem.text or "").strip()
+        or (children[0].tail or "").strip()
+    ):
+        raise ValueError("Invalid DrawingML solid fill structure")
+    hex_, alpha = resolve_color(
+        children[0],
+        palette,
+        placeholder_hex=placeholder_hex,
+    )
+    if hex_ is None:
+        raise ValueError("DrawingML solid fill color cannot be resolved")
+    return hex_, alpha
 
 
 def find_color_elem(parent: ET.Element | None) -> ET.Element | None:
-    """Return the first child color element (any of the 6 OOXML color tags)."""
+    """Return the sole direct registered color, rejecting ambiguous aliases."""
     if parent is None:
         return None
-    for tag in COLOR_TAGS:
-        elem = parent.find(f"a:{tag}", NS)
-        if elem is not None:
-            return elem
-    return None
+    colors: list[ET.Element] = []
+    for child in list(parent):
+        if not isinstance(child.tag, str):
+            continue
+        name = child.tag.rsplit("}", 1)[-1]
+        if name not in COLOR_TAGS:
+            continue
+        if child.tag not in _COLOR_QNAMES:
+            raise ValueError(
+                f"Invalid DrawingML color child namespace: {child.tag!r}"
+            )
+        colors.append(child)
+    if len(colors) > 1:
+        raise ValueError(
+            "DrawingML color container has multiple direct color children"
+        )
+    return colors[0] if colors else None
 
 
 def resolve_color(
@@ -180,6 +463,7 @@ def resolve_color(
     palette: ColorPalette | None,
     *,
     placeholder_hex: str | None = None,
+    strict: bool | None = None,
 ) -> tuple[str | None, float]:
     """Resolve a color element to (#RRGGBB, alpha).
 
@@ -195,38 +479,65 @@ def resolve_color(
     if color_elem is None:
         return None, 1.0
 
+    effective_strict = palette.strict if strict is None and palette is not None else strict
+    if effective_strict is None:
+        effective_strict = True
+    try:
+        return _resolve_color_closed(
+            color_elem,
+            palette,
+            placeholder_hex=placeholder_hex,
+        )
+    except ValueError as exc:
+        if effective_strict:
+            raise
+        if palette is not None:
+            palette._diagnose(
+                "color-structure-normalized",
+                str(exc),
+                "retain recognized color attributes and modifiers",
+            )
+        compatible = _compatible_color_element(color_elem)
+        if compatible is None:
+            return None, 1.0
+        try:
+            return _resolve_color_closed(
+                compatible,
+                palette,
+                placeholder_hex=placeholder_hex,
+            )
+        except (KeyError, TypeError, ValueError):
+            return None, 1.0
+
+
+def _resolve_color_closed(
+    color_elem: ET.Element,
+    palette: ColorPalette | None,
+    *,
+    placeholder_hex: str | None = None,
+) -> tuple[str | None, float]:
+    """Resolve the registered closed DrawingML color grammar."""
+
     tag = color_elem.tag.split("}", 1)[-1]
     base_hex: str | None = None
     alpha: float = 1.0
 
     if tag == "srgbClr":
-        val = color_elem.attrib.get("val", "")
-        base_hex = _normalize_hex(val)
+        base_hex = _srgb_hex_value(color_elem)
     elif tag == "schemeClr":
-        name = color_elem.attrib.get("val", "")
+        name = _scheme_color_name(color_elem)
         if name == "phClr":
             base_hex = _normalize_hex(placeholder_hex) if placeholder_hex else None
         elif palette is not None:
             base_hex = palette.resolve_scheme(name)
     elif tag == "sysClr":
-        last = color_elem.attrib.get("lastClr") or color_elem.attrib.get("val")
-        base_hex = _normalize_hex(last) if last else None
+        base_hex = _system_color_fallback(color_elem)
     elif tag == "prstClr":
-        name = color_elem.attrib.get("val", "")
-        base_hex = PRST_COLORS.get(name)
+        base_hex = _preset_color_hex(color_elem)
     elif tag == "hslClr":
-        # DrawingML hue is in 1/60000 deg ([0, 21_600_000) maps to [0°, 360°));
-        # _hsl_to_hex expects a fraction in [0, 1), so divide by 60000 * 360.
-        h = float(color_elem.attrib.get("hue", "0")) / 21_600_000.0
-        s = float(color_elem.attrib.get("sat", "0")) / 100000.0
-        lum = float(color_elem.attrib.get("lum", "0")) / 100000.0
-        base_hex = _hsl_to_hex(h, s, lum)
+        base_hex = _hsl_color_hex(color_elem)
     elif tag == "scrgbClr":
-        # 0..100000 per channel
-        r = float(color_elem.attrib.get("r", "0")) / 100000.0
-        g = float(color_elem.attrib.get("g", "0")) / 100000.0
-        b = float(color_elem.attrib.get("b", "0")) / 100000.0
-        base_hex = _rgb01_to_hex(r, g, b)
+        base_hex = _scrgb_color_hex(color_elem)
 
     if base_hex is None:
         return None, 1.0
@@ -236,10 +547,240 @@ def resolve_color(
     return f"#{base_hex}", alpha
 
 
+def _compatible_color_element(color_elem: ET.Element) -> ET.Element | None:
+    """Return a canonical clone containing only recognized color semantics."""
+    if not isinstance(color_elem.tag, str):
+        return None
+    tag = color_elem.tag.rsplit("}", 1)[-1]
+    base_attributes = {
+        "srgbClr": ("val",),
+        "schemeClr": ("val",),
+        "sysClr": ("val", "lastClr"),
+        "prstClr": ("val",),
+        "hslClr": ("hue", "sat", "lum"),
+        "scrgbClr": ("r", "g", "b"),
+    }.get(tag)
+    if base_attributes is None or color_elem.tag != f"{{{NS['a']}}}{tag}":
+        return None
+
+    clone = ET.Element(color_elem.tag)
+    for attr in base_attributes:
+        value = color_elem.attrib.get(attr)
+        if value is not None:
+            clone.set(attr, value)
+
+    for child in color_elem:
+        if not isinstance(child.tag, str):
+            continue
+        name = child.tag.rsplit("}", 1)[-1]
+        if child.tag != f"{{{NS['a']}}}{name}":
+            continue
+        if name in _COLOR_MODIFIER_FLAG_NAMES:
+            clone.append(ET.Element(child.tag))
+            continue
+        if name not in _COLOR_MODIFIER_PERCENT_RANGES and name != "hueOff":
+            continue
+        value = child.attrib.get("val")
+        if value is None:
+            continue
+        modifier = ET.Element(child.tag)
+        modifier.set("val", value)
+        clone.append(modifier)
+    return clone
+
+
+def _srgb_hex_value(color_elem: ET.Element) -> str:
+    """Parse the closed six-digit DrawingML sRGB base token."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}srgbClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML sRGB color structure")
+    raw = color_elem.attrib["val"]
+    if _SRGB_HEX_RE.fullmatch(raw) is None:
+        raise ValueError(f"Invalid DrawingML sRGB color value: {raw!r}")
+    return raw.upper()
+
+
+def _scheme_color_name(color_elem: ET.Element) -> str:
+    """Parse one closed DrawingML scheme-color reference."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}schemeClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML scheme color structure")
+    name = color_elem.attrib["val"]
+    if name not in _SCHEME_COLOR_VALUES:
+        raise ValueError(f"Invalid DrawingML scheme color value: {name!r}")
+    return name
+
+
+def _system_color_fallback(color_elem: ET.Element) -> str:
+    """Parse a registered system color with a portable six-digit fallback."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}sysClr"
+        or set(color_elem.attrib) - {"val", "lastClr"}
+        or "val" not in color_elem.attrib
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML system color structure")
+    name = color_elem.attrib["val"]
+    if name not in _SYSTEM_COLOR_VALUES:
+        raise ValueError(f"Invalid DrawingML system color value: {name!r}")
+    fallback = color_elem.get("lastClr")
+    if fallback is None:
+        raise ValueError(
+            "DrawingML system color requires a lastClr fallback"
+        )
+    if _SRGB_HEX_RE.fullmatch(fallback) is None:
+        raise ValueError(
+            f"Invalid DrawingML system color fallback: {fallback!r}"
+        )
+    return fallback.upper()
+
+
+def _preset_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one exact value from the complete DrawingML preset enum."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}prstClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML preset color structure")
+    name = color_elem.attrib["val"]
+    hex_ = PRST_COLORS.get(name)
+    if hex_ is None:
+        raise ValueError(f"Invalid DrawingML preset color value: {name!r}")
+    return hex_
+
+
+def _hsl_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one closed DrawingML HSL base color."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}hslClr"
+        or set(color_elem.attrib) != {"hue", "sat", "lum"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML HSL color structure")
+    hue = _bounded_integer_attribute(
+        color_elem,
+        "hue",
+        minimum=0,
+        maximum=21_599_999,
+        label="HSL color",
+    )
+    saturation = _bounded_integer_attribute(
+        color_elem,
+        "sat",
+        minimum=0,
+        maximum=100000,
+        label="HSL color",
+    )
+    luminance = _bounded_integer_attribute(
+        color_elem,
+        "lum",
+        minimum=0,
+        maximum=100000,
+        label="HSL color",
+    )
+    return _hsl_to_hex(
+        hue / 21_600_000.0,
+        saturation / 100000.0,
+        luminance / 100000.0,
+    )
+
+
+def _scrgb_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one closed linear-light DrawingML scRGB base color."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}scrgbClr"
+        or set(color_elem.attrib) != {"r", "g", "b"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML scRGB color structure")
+    channels = [
+        _bounded_integer_attribute(
+            color_elem,
+            attr,
+            minimum=0,
+            maximum=100000,
+            label="scRGB color",
+        )
+        / 100000.0
+        for attr in ("r", "g", "b")
+    ]
+    return _linear_rgb01_to_hex(*channels)
+
+
+def _bounded_integer_attribute(
+    elem: ET.Element,
+    attr: str,
+    *,
+    minimum: int,
+    maximum: int,
+    label: str,
+) -> int:
+    """Parse one required bounded DrawingML integer attribute."""
+    raw = elem.attrib[attr]
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(f"Invalid DrawingML {label} {attr}: {raw!r}")
+    value = int(token)
+    if not minimum <= value <= maximum:
+        raise ValueError(f"Invalid DrawingML {label} {attr}: {raw!r}")
+    return value
+
+
+def _parse_color_modifier(child: ET.Element) -> tuple[str, int | None]:
+    """Parse one modifier from the closed DrawingML color subset."""
+    tag = child.tag.split("}", 1)[-1]
+    if child.tag != f"{{{NS['a']}}}{tag}":
+        raise ValueError(f"invalid-color-modifier-namespace:{tag}")
+    if tag in _COLOR_MODIFIER_FLAG_NAMES:
+        if child.attrib or list(child) or (child.text or "").strip():
+            raise ValueError(f"invalid-color-modifier-structure:{tag}")
+        return tag, None
+
+    bounds = _COLOR_MODIFIER_PERCENT_RANGES.get(tag)
+    if tag == "hueOff":
+        bounds = (_OOXML_INT_MIN, _OOXML_INT_MAX)
+    elif bounds is None:
+        raise ValueError(f"unsupported-color-modifier:{tag}")
+    if (
+        set(child.attrib) != {"val"}
+        or list(child)
+        or (child.text or "").strip()
+    ):
+        raise ValueError(f"invalid-color-modifier-structure:{tag}")
+    try:
+        value = _bounded_integer_attribute(
+            child,
+            "val",
+            minimum=bounds[0],
+            maximum=bounds[1],
+            label=f"{tag} color modifier",
+        )
+    except ValueError:
+        raise ValueError(f"invalid-{tag}-val:{child.attrib['val']!r}") from None
+    return tag, value
+
+
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
-    """Apply tint / shade / lumMod / lumOff / satMod / hueMod / alpha modifiers
-    in document order. DrawingML stacks these on the color in order.
-    """
+    """Apply the registered DrawingML color modifiers in document order."""
     r, g, b = _hex_to_rgb01(hex_color)
     # Convert to HSL for luminance/saturation ops; convert back when emitting.
     h, lum, sat = colorsys.rgb_to_hls(r, g, b)
@@ -248,40 +789,35 @@ def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float
     for child in list(color_elem):
         if not isinstance(child.tag, str):
             continue
-        tag = child.tag.split("}", 1)[-1]
-        val_ratio = percent_to_ratio(child.attrib.get("val"), default=0.0)
+        tag, value = _parse_color_modifier(child)
 
         if tag == "tint":
             # Tint blends toward white. r' = r + (1-r)*(1-val) is the common
             # interpretation; OOXML actually defines tint on luminance.
             # Use luminance-based tint per ECMA-376.
-            lum = lum * val_ratio + (1.0 - val_ratio)
+            ratio = value / 100000.0
+            lum = lum * ratio + (1.0 - ratio)
         elif tag == "shade":
             # Shade blends toward black on luminance.
-            lum = lum * val_ratio
+            lum = lum * (value / 100000.0)
         elif tag == "lumMod":
-            lum = lum * val_ratio
+            lum = lum * (value / 100000.0)
         elif tag == "lumOff":
-            lum = lum + val_ratio
+            lum = lum + (value / 100000.0)
         elif tag == "satMod":
-            sat = sat * val_ratio
+            sat = sat * (value / 100000.0)
         elif tag == "satOff":
-            sat = sat + val_ratio
+            sat = sat + (value / 100000.0)
         elif tag == "hueMod":
-            h = (h * val_ratio) % 1.0
+            h = (h * (value / 100000.0)) % 1.0
         elif tag == "hueOff":
-            # hueOff is in 1/60000 deg
-            try:
-                deg = float(child.attrib.get("val", "0")) / 60000.0
-            except ValueError:
-                deg = 0.0
-            h = (h + deg / 360.0) % 1.0
+            h = (h + value / 21_600_000.0) % 1.0
         elif tag == "alpha":
-            alpha = max(0.0, min(1.0, val_ratio))
+            alpha = value / 100000.0
         elif tag == "alphaMod":
-            alpha *= val_ratio
+            alpha = max(0.0, min(1.0, alpha * (value / 100000.0)))
         elif tag == "alphaOff":
-            alpha = max(0.0, min(1.0, alpha + val_ratio))
+            alpha = max(0.0, min(1.0, alpha + (value / 100000.0)))
         elif tag == "gray":
             # Convert to grayscale based on luminance.
             sat = 0.0
@@ -337,6 +873,17 @@ def _rgb01_to_hex(r: float, g: float, b: float) -> str:
     g = max(0.0, min(1.0, g))
     b = max(0.0, min(1.0, b))
     return f"{int(round(r * 255)):02X}{int(round(g * 255)):02X}{int(round(b * 255)):02X}"
+
+
+def _linear_rgb01_to_hex(r: float, g: float, b: float) -> str:
+    """Encode linear-light RGB channels as an SVG sRGB hex color."""
+    encoded = (
+        12.92 * channel
+        if channel <= 0.0031308
+        else 1.055 * channel ** (1.0 / 2.4) - 0.055
+        for channel in (r, g, b)
+    )
+    return _rgb01_to_hex(*encoded)
 
 
 def _hsl_to_hex(h: float, s: float, l: float) -> str:

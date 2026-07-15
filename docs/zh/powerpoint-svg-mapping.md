@@ -6,7 +6,7 @@
 
 本指南从 PowerPoint 使用者的视角回答一个问题：**对于某项 PowerPoint 功能，项目中由什么表达承载，导出或回导时能保留什么？** 因此，PowerPoint 语义是唯一主索引，SVG 元素只作为某项 PowerPoint 能力的具体实现出现。
 
-这是一份公开的能力映射表，不是第二份语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范权威仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；如果本指南与该规范不一致，以规范为准。本指南未列出的功能不会因此被默认为受支持。
+这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；生成语法出现差异时，以该合同为准。PPTX 导入的恢复模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
 
 主路线编译的是**项目规范化 SVG**，而不是通用浏览器 SVG：
 
@@ -50,13 +50,15 @@ PowerPoint 意图
 
 ## 2. Master、Layout、背景与占位符功能
 
+**路线边界**：主 SVG 流程中的自由生成与 brand-only 项目从规划到导出始终使用 `pptx_structure.mode: flat`；`flat` 不是等待导出器自动升级的临时状态。即使多个页面出现相同 Logo、页脚或排版，导出器也不得据此切换到 `structured`，不得自动提升到 Master/Layout，也不得推断占位符或去重。若输出需要可复用的原生 Master、Layout 或占位符，Step 3 必须消费一个已校验的 deck/layout 模板工作区；没有该工作区时，先走 [`create-template`](../../skills/ppt-master/workflows/create-template.md)，再返回主流程。flat 导出创建的最小 Master 和 Blank Layout 只是 PPTX 格式必需的包结构，不是从页面总结出的设计母版。直接使用原始 PPTX 模板填充新内容仍走 [`template-fill-pptx`](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 自由设计演示文稿结构 | `pptx_structure.mode: flat`；页面内容保持 Slide-local | 一个干净的项目 Master 和一个 Blank Layout，已表达对象留在 Slide | flat 路线包拓扑为 `Native-stable` | 禁止编写 Master/Layout/layer/placeholder metadata |
 | 基于模板的演示文稿结构 | `pptx_structure.mode: structured` 加显式 Master/Layout/页面分配 | 声明的 `p:sldMaster`、`p:sldLayout`、注册与 Slide 父子关系 | 在显式结构合同内为 `Native-stable` | 导出器绝不猜测 Master、Layout 或占位符拓扑 |
 | 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | 源结构由模板/导入工作流恢复 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
 | 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | 可恢复源 Layout；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
-| 回导的继承图形可见性 | PPTX 的 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp`；分层分析在可见 SVG 之外记录规范化的源布尔值 | 不新增生成侧创作 marker；源保留工作流保留包字段 | 对回导视觉与分析事实为 `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 背景、Slide-local 对象、占位符继承、独立 part SVG 与父子关系保持不变；flat 回导只省略被抑制的继承图形 |
+| 回导的继承图形可见性 | 分层分析记录规范化源布尔值；物化后的 structured mirror 在根写入精确小写的 `data-pptx-show-inherited-shapes` 与 `data-pptx-show-master-shapes` | 恢复 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp` | `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 省略即 true；使用同一 Layout key 的页面必须使用相同 Layout 值。背景、Slide-local 对象、占位符继承、part 与父子关系保持不变 |
 | strict 模板 Layout | 选中的原型合同 | 保留现有已声明 Layout 拓扑 | 页面遵循原型时为 `Native-stable` | 不得改变固定 Layout atom 和 slot 结构 |
 | adaptive 模板 Layout | 选定 Master 加显式的当前或新声明 Layout | 可在可复用结构变化时创建新 Layout 身份 | 更新 lock 与页面映射后为 `Native-stable` | 绝不默默改变已复用 Layout key |
 | structured 模式以外的 Slide 背景填充 | 第一个合格的全幅 `<rect>`，可直接位于根下或位于简单单子组中，使用已登记纯色、线性/径向渐变或预设图案填充 | Slide 的原生 `p:bg` | 保真度遵循下文对应 paint 行 | transform、filter、clip、圆角、可见 stroke 或未映射 fill 会阻止提升 |
@@ -66,6 +68,7 @@ PowerPoint 意图
 | 标题占位符 | 含一个文本 carrier 的结构化 slot 组 | Layout 和 Slide 的 `title` 类型 `p:ph` | `Native-stable` | carrier 数量、边界、类型与有效 index 必须与 Layout 合同一致 |
 | 副标题占位符 | 含一个文本 carrier 的结构化 slot 组 | `subTitle` 类型 `p:ph` | `Native-stable` | 与标题相同的 slot 规则 |
 | 正文占位符 | 含一个文本 carrier 的结构化 slot 组 | `body` 类型 `p:ph` | `Native-stable` | 多行 carrier 仍必须是一个文本框 |
+| mirror 回导文本占位符的 Slide frame | slot 的 `<text>` carrier 保留正数源 `data-pptx-frame="x y width height"`，并与 slot 的可复用 bounds 分开 | Slide carrier 保持该精确 `a:xfrm`；文字仍可编辑，源硬换行保留为显式段落 | 在受支持回导文本范围内为 `Native-stable` | `data-pptx-placeholder-bounds` 仍只定义 Layout 默认 frame，二者可以不同；standard/fidelity 创作不得为复制 bounds 而添加此 frame |
 | 日期、页脚与页码占位符 | 结构化文本 slot | `dt`、`ftr` 与 `sldNum` 类型 `p:ph`，带匹配的 Layout 页眉/页脚标志 | `Native-stable` | 占位符 index 必须唯一且合法 |
 | 图片占位符 | 含一个图片或受支持 crop carrier 的结构化 slot | `pic` 类型 `p:ph` | 在图片合同内为 `Native-stable` | slot 必须恰好含一个兼容的直接 carrier |
 | 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生 Chart/Table 导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-charts-and-tables` |
@@ -87,7 +90,7 @@ PowerPoint 意图
 | 对称圆角矩形 | 圆角半径相等且受支持的 `<rect>` | `a:prstGeom prst="roundRect"` 加 adjustment | `Native-stable` | 不对称圆角按 freeform 行处理 |
 | 圆或椭圆 | `<circle>` 或 `<ellipse>` | `a:prstGeom prst="ellipse"` | `Native-stable` | 需要时，bounds 和 radius 必须有限且为正 |
 | 直线 | `<line>` | 可编辑 line/freeform shape | `Native-normalized` | 拒绝浏览器专属 line 效果 |
-| 带箭头的线 | 带已登记起点/终点 marker 的 `<line>` 或受支持 path | 原生 DrawingML 线首/线尾 | `Native-normalized`；marker 大小为近似 | marker 定义必须遵循条件 marker 合同 |
+| 带箭头的线 | 带已登记 triangle、stealth、arrow、diamond 或 oval 起点/终点 marker 的 `<line>` 或受支持 path | 原生 DrawingML 线首/线尾 | `Native-normalized`；marker 大小为近似 | marker 定义必须遵循条件 marker 合同 |
 | 原生连接符 | 带 connector metadata 和直接可见 path 的项目创作 compact preset 组 | `p:cxnSp` | 导入 connector 保留源拓扑往返所需的 expanded 证据 | 已登记 preset/connector schema 内为 `Native-stable` |
 | 任意多边形 | `<path>` | 带 `a:custGeom` 的 `p:sp` | 导入自定义几何重建为 path | `Native-normalized`；SVG arc 转为三次曲线段 |
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
@@ -97,7 +100,7 @@ PowerPoint 意图
 | 动作按钮形状 | compact authored `actionButton*` preset 组 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
 | 组 | `<g>` | `p:grpSp`，或对特殊 carrier 执行文档化的 flatten/collapse | 分组内容可重建为 `<g>` | 结构 atom 与 placeholder 合同优先于普通分组 |
 | 复用本地 symbol | 已登记的同文档 `<use>` 合同或项目 icon placeholder | 在生成 Slide 中展开为可编辑 shape | 回导不承诺恢复原 symbol 图 | 拒绝外部 use、不受支持的 symbol 能力和结构 metadata 复用 |
-| 图标 | 由项目图标管线解析的 `<use data-icon="library/name">` | 展开后的可编辑矢量原语/组 | 重建几何，不恢复原图标库引用 | 图标标识区分大小写，必须存在于已同步图标库 |
+| 图标 / 导入向量 | 由项目图标管线解析的 `<use data-icon="library/name">`；create-template 导入统一使用 `imported/<name>` | 展开后的可编辑矢量原语/组 | 重建几何，不恢复原图标库引用 | 标识区分大小写；导入素材仅在工作区根目录 `icons/imported/<name>.svg` 保留一份 |
 | SmartArt / DiagramML | 无主 SVG 对象映射 | 主重设计路线可以用普通 shape 重建语义 | 原生/模板路线中为 `Direct preservation`，否则为 preview 或显式 fallback | 不得将装饰性组标记为原生 SmartArt |
 
 项目创作 preset 有意采用 compact 表达，而 PPTX 导入继续保留无损往返裁决所需的 expanded 证据。精确机器合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)，preset 选择与创作行为见 [`native-shape-authoring.md`](../../skills/ppt-master/references/native-shape-authoring.md)。
@@ -129,6 +132,7 @@ PowerPoint 意图
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 图片 | 具有显式正尺寸且只含一个项目资产或图片 data URI 源的 `<image>` | `p:pic`、media part 与 relationship | 重建为 `<image>` | 源必须可解析、采用已登记格式，并包含与 MIME/扩展名相符的可解码字节；非法 frame 或媒体会在封装前失败 |
+| 显式复杂 SVG 图片 | `create-template` 归一化期间，由 `extract_svg_pictures.py` 从一个精确 `<g id>` 生成紧边界、自包含 `.svg`，再以直接 `<image>` 引用 | 一个以 SVG media 为源的 `p:pic` | 回导为一个 `<image>`；内部 path 不会提升成独立 PowerPoint 形状 | 仅允许 `standard` / `fidelity` 显式选择；导入、重复检测、Master/Layout、finalize 与 export 均不得自动把组转换成这种表达 |
 | 图片拉伸填满框 | `preserveAspectRatio="none"` | 原生拉伸 picture frame | `Native-stable` | `none` 必须单独出现；它会有意改变源宽高比 |
 | 图片裁剪填充 | 一个已登记对齐值加显式 `slice` | 原生 `a:srcRect` 裁剪 | 源尺寸可读时为 `Native-stable` | 对齐值区分大小写；未知模式与额外 token 为 error |
 | 图片适应框 | 省略时使用默认值，或一个已登记对齐值加显式 `meet` | 原生 fitted picture frame | `Native-normalized` | 仅写对齐值是兼容输入，Checker 会给出规范化建议 |
@@ -149,13 +153,16 @@ PowerPoint 意图
 | 图案填充 | 带注解的项目 pattern 定义 | 原生 `a:pattFill` | `Native-normalized` | 仅支持已登记 PowerPoint 预设 pattern |
 | 无轮廓 | `stroke="none"` 或已登记线缺省 | `a:ln` 内的 `a:noFill` | `Native-stable` | 不得用零线宽模糊 CSS 模拟缺省 |
 | 实线轮廓 | 已登记 `stroke` 与宽度 | 原生 `a:ln` | `Native-stable` | 宽度与 paint 必须使用规范单位/语法 |
+| 复合轮廓线 | 无已登记的单一 SVG stroke 表达 | 显式几何替代或烘焙资产 | 复合线身份为 `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝非 `sng` 的 `cmpd` |
+| 内侧对齐轮廓 | 无已登记的普通 SVG stroke 表达 | 显式内缩几何或烘焙资产 | 精确轮廓对齐为 `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝非 `ctr` 的 `algn` |
+| 图案、图片或组派生轮廓 paint | 无已登记的线条 paint SVG 映射 | 显式几何替代或烘焙资产 | `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝该输入，不虚构纯色线 |
 | transform 下的轮廓缩放 | 精确的 `vector-effect="none"` 或 `vector-effect="non-scaling-stroke"` | 选择被解析为原生线宽 | `Native-normalized` | 拒绝其他取值；生成拼法必须精确且为小写 |
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
-| 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | `Native-stable` | 仅接受文档化取值 |
-| 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 见条件 marker 合同 |
+| 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | 固定 join 合同内为 `Native-stable` | 回导仅接受一个 join；miter 必须精确使用 `lim="800000"` |
+| 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 仅 triangle、stealth、arrow、diamond、oval 遵循条件 marker 合同 |
 | 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一 shape/connector 来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
 | 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一 shape/connector 来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
-| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]` | `p:txBody` 内原始原生 run 效果 | 仅在原始 payload 仍可用时为 `Native-stable`；会丢失非空 run `effectLst` / `effectDag` 的编辑将被阻断 | 不是公开创作语法；独立竖排输出路径、含关系引用的文本内容及表格单元格文本尚不在该保护范围内 |
+| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；继承自 Layout/Master 的列表样式以及竖排、含关系引用、表格单元格降级路径使用仅限导入的阻塞效果状态 | `p:txBody` 内原始的 slide-local 原生 run 效果 | 仅在原始 slide-local payload 仍可用时为 `Native-stable`；继承效果、编辑或降级路径若会丢失非空 run `effectLst` / `effectDag` 则被阻断 | 不是公开创作语法；表格单元格 run 效果还会禁用原生 Table 替换 payload |
 | 整个对象透明度 | 原子元素 `opacity` | alpha 分发至受支持原生通道 | `Native-normalized` | 除非整个原子对象需要淡出，否则优先通道专属 alpha |
 | 组透明度 | 兼容 `<g opacity>` | 后代归一化近似 | `Approximate`，并产生 warning | 生成 SVG 应优先后代 alpha |
 | 内阴影、柔化边缘、倒影、模糊、湍流、混合模式或任意 mask | 无已登记原生映射 | 显式几何替代或栅格资产 | `Bake-required`；PPTX 回导保留基础对象，并对不支持的 shape/connector 效果、图片/组效果 DAG 及非空图片/组效果列表产生阻塞诊断 | 已处理的对象效果不能被改成其他类型或静默省略；文字 run 安全边界见上方未变更 `txBody` 行 |
@@ -167,7 +174,7 @@ PowerPoint 意图
 | 视觉绘制表格 | 普通 SVG shape、line 与 text | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 它不是原生表格，也没有 PowerPoint 表格编辑模型 |
 | PowerPoint 原生表格 | 一个带 `<metadata type="application/json">` 和可见 fallback 的 `<g data-pptx-replace-with="table">` | 启用原生 Chart/Table 替换时产生含 `a:tbl` 的 `p:graphicFrame` | 导入受支持表格重建 fallback 加替换 metadata | metadata 必须形成已登记矩形 schema；需要 `--native-charts-and-tables` |
 | 合并表格单元格 | 规范原生表格 merge metadata | 原生水平/垂直合并语义 | 封闭 schema 内为 `Native-stable` | 拒绝重叠、歧义或非矩形合并 |
-| 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段 |
+| 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段；导入的非空 run 效果会阻断，而不是归一化成无效果单元格 |
 | 不受支持的原生表格功能 | SVG fallback 或直接源保留 | 保留可见 fallback，或在直接路线保留源 OOXML | 显式 fallback / `Direct preservation` | 不得临时扩展 JSON |
 
 PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fallback，并转换为仍可独立编辑的 DrawingML shape，以保持视觉稳定；原生导出改为提供对象的数据源以及图表/表格专属编辑模型，并可能归一化外观。
@@ -227,6 +234,7 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 | 自定义几何 | `<path>` |
 | 文本体 | `<text>` 与 `<tspan>` run/段落 |
 | 图片 | `<image>`，或已登记嵌套 crop 表达 |
+| 同时带栅格兼容预览的 SVG 图片 | 优先使用 `asvg:svgBlip` relationship 重建 `<image>`；仅当 SVG relationship 或 media part 不可用时才使用普通 `a:blip` relationship |
 | 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
@@ -234,17 +242,32 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 
 这是语义重建，不是语法往返。Master/Layout 恢复属于模板结构工作流；普通视觉导入不会从 Slide 外观推断可复用拓扑。
 
+### 导入运行模式与恢复边界
+
+`pptx_to_svg.py` 默认采用容错导入，因为输入来自用户或第三方 PPTX。`--strict` 用于 parser 开发、合同核验和复现第一个源文件违规点。生成 SVG 的严格校验与导出边界保持不变。
+
+| 源文件情况 | 默认容错导入 | `--strict` | 诊断结果 |
+|---|---|---|---|
+| 可识别颜色语义带无关源 metadata | 规范化已识别颜色与 modifier | 拒绝非规范结构 | warning；可用时包含 part、Slide 与 shape 上下文 |
+| 不支持的填充、轮廓、效果、图片填充、文字体或样式属性 | 保留对象，只省略不支持的属性或功能 | 在第一个违规点停止 | warning 说明省略内容与 fallback |
+| 无法按属性恢复的不支持对象 | 只把该对象替换为可见诊断占位；没有可用 frame 时才省略 | 在第一个违规点停止 | warning 标识源对象 |
+| 不支持的 Slide 或 part 背景 | 省略该背景，继续当前页面/part | 在第一个违规点停止 | warning 标识所属 part |
+| 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级恢复 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
+
+每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同恢复都可复核。
+
 ## 12. 校验职责
 
-三层有意承担不同职责：
+四层有意承担不同职责：
 
 | 层 | 职责 |
 |---|---|
 | 提示词、模板与示例 | 对每项 PowerPoint 功能只生成规范表达 |
 | `svg_quality_checker.py` | 拒绝非法/不支持映射；对已登记兼容拼法或保真风险给出 warning 但允许继续 |
 | `svg_to_pptx.py` 与最终包读回 | 归一化兼容输入、编译 DrawingML，并拒绝任何会产生歧义、结构不一致或非法结果的输出 |
+| `pptx_to_svg.py` | 默认容错模式在最窄安全边界保留可用 deck 并报告源内容降级；`--strict` 模式在第一个不支持或格式错误的源结构处停止 |
 
-warning 不是猜测许可。它只适用于拥有唯一结果的受支持映射，但其拼法或保真度值得注意的情况。缺失映射、非法单位、格式错误 metadata、破损的结构合同，以及可能触发 PowerPoint 修复的 DrawingML 都是 error。
+生成 SVG 的 warning 不是猜测许可。它只适用于拥有唯一结果的受支持映射，但其拼法或保真度值得注意的情况。缺失映射、非法单位、格式错误 metadata、破损的结构合同，以及可能触发 PowerPoint 修复的生成 DrawingML 仍是 error。导入诊断描述对源内容的显式丢失或规范化，绝不授权导入器虚构不支持的语义。
 
 ## 13. 新增或修改映射
 

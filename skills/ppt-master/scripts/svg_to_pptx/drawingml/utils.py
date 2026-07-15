@@ -12,9 +12,11 @@ import re
 import unicodedata
 from collections import Counter
 from collections.abc import Iterator
+from decimal import Decimal, ROUND_HALF_UP
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import (
+    OOXML_COORDINATE_MAX,
     resolve_preset_preview_hash,
     svg_preset_preview_fingerprint,
     validate_ooxml_xfrm,
@@ -212,6 +214,33 @@ PROJECT_FILTER_EFFECT_PRIMITIVES = frozenset({
     'feGaussianBlur',
 })
 PROJECT_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
+_PROJECT_MARKER_NUMBER_TOKEN = (
+    r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
+)
+_PROJECT_MARKER_POINT_TOKEN = (
+    rf'{_PROJECT_MARKER_NUMBER_TOKEN}'
+    rf'(?:\s*,\s*|\s+){_PROJECT_MARKER_NUMBER_TOKEN}'
+)
+_PROJECT_MARKER_TRIANGLE_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{2}}\s*Z\s*$',
+    re.IGNORECASE,
+)
+_PROJECT_MARKER_DIAMOND_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{3}}\s*Z\s*$',
+    re.IGNORECASE,
+)
+_PROJECT_MARKER_ARROW_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{2}}\s*$',
+    re.IGNORECASE,
+)
+_PROJECT_MARKER_COMMAND_POINT_RE = re.compile(
+    rf'[ML]\s*({_PROJECT_MARKER_NUMBER_TOKEN})'
+    rf'(?:\s*,\s*|\s+)({_PROJECT_MARKER_NUMBER_TOKEN})',
+    re.IGNORECASE,
+)
 PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS = frozenset({
     'defs',
     'desc',
@@ -1043,6 +1072,21 @@ def _contains_thick_circle(elem: ET.Element, thick_circle_ids: set[int]) -> bool
     )
 
 
+def _is_unit_axis_reflection(
+    operations: tuple[tuple[str, tuple[float, ...]], ...],
+) -> bool:
+    """Return whether a transform is translation plus an unscaled axis flip."""
+    matrix = _transform_operations_matrix(operations)
+    a, b, c, d, _e, _f = matrix
+    return (
+        abs(b) <= 1e-9
+        and abs(c) <= 1e-9
+        and math.isclose(abs(a), 1.0, abs_tol=1e-9)
+        and math.isclose(abs(d), 1.0, abs_tol=1e-9)
+        and (a < 0 or d < 0)
+    )
+
+
 def _transform_semantic_error(
     elem: ET.Element,
     operations: tuple[tuple[str, tuple[float, ...]], ...],
@@ -1086,6 +1130,12 @@ def _transform_semantic_error(
                 f'{label} contains a thick-circle arc shorthand; ancestor '
                 'transforms must be translate-only'
             )
+        if _is_unit_axis_reflection(operations):
+            # Imported PowerPoint groups encode flipH/flipV as a translate /
+            # unit-scale / translate list. The converter distributes that
+            # signed unit scale to child geometry and text positions without
+            # scaling font metrics, so this exact no-shear case is lossless.
+            return None
         if supports_full_project_transform(elem):
             if 'matrix' in names and _contains_rounded_rect(elem):
                 return (
@@ -1504,6 +1554,22 @@ def parse_opacity(
     return parse_project_opacity(raw, allow_percentage=allow_percentage)
 
 
+def quantize_ooxml_unit_ratio(value: float) -> int:
+    """Quantize one normalized ratio to DrawingML 1/100000 units."""
+    if not math.isfinite(value):
+        raise ValueError(f'OOXML unit ratio must be finite; got {value!r}')
+    normalized = max(0.0, min(1.0, value))
+    scaled = Decimal(str(normalized)) * Decimal(100000)
+    return int(scaled.to_integral_value(rounding=ROUND_HALF_UP))
+
+
+def quantize_ooxml_alpha(opacity: float) -> int:
+    """Quantize one normalized alpha to DrawingML 1/100000 units."""
+    if not math.isfinite(opacity):
+        raise ValueError(f'Opacity must be finite; got {opacity!r}')
+    return quantize_ooxml_unit_ratio(opacity)
+
+
 def _functional_color_parts(body: str) -> tuple[list[str], str | None]:
     """Split legacy comma or modern space/slash functional color syntax."""
     before, separator, after = body.partition('/')
@@ -1732,6 +1798,310 @@ def project_definition_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def _project_marker_polygon_points(
+    raw: str,
+) -> list[tuple[float, float]] | None:
+    """Parse finite marker polygon points from the closed project grammar."""
+    tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
+    if not tokens or len(tokens) % 2:
+        return None
+    try:
+        values = [float(token) for token in tokens]
+    except ValueError:
+        return None
+    if not all(math.isfinite(value) for value in values):
+        return None
+    return list(zip(values[::2], values[1::2]))
+
+
+def _project_marker_path_points(raw: str) -> list[tuple[float, float]]:
+    """Return the explicit M/L points from an already-validated marker path."""
+    points = [
+        (float(x), float(y))
+        for x, y in _PROJECT_MARKER_COMMAND_POINT_RE.findall(raw)
+    ]
+    return [
+        point
+        for point in points
+        if all(math.isfinite(coordinate) for coordinate in point)
+    ]
+
+
+def _project_marker_cross(
+    first: tuple[float, float],
+    second: tuple[float, float],
+    third: tuple[float, float],
+) -> float:
+    """Return the signed turn for three marker vertices."""
+    return (
+        (second[0] - first[0]) * (third[1] - second[1])
+        - (second[1] - first[1]) * (third[0] - second[0])
+    )
+
+
+def _project_marker_segments_cross(
+    first_start: tuple[float, float],
+    first_end: tuple[float, float],
+    second_start: tuple[float, float],
+    second_end: tuple[float, float],
+) -> bool:
+    """Return whether two non-adjacent marker edges strictly intersect."""
+    first_a = _project_marker_cross(first_start, first_end, second_start)
+    first_b = _project_marker_cross(first_start, first_end, second_end)
+    second_a = _project_marker_cross(second_start, second_end, first_start)
+    second_b = _project_marker_cross(second_start, second_end, first_end)
+    return first_a * first_b < 0 and second_a * second_b < 0
+
+
+def _project_marker_quadrilateral_type(
+    points: list[tuple[float, float]],
+) -> str | None:
+    """Classify one simple four-point marker as diamond or stealth."""
+    if len(points) != 4:
+        return None
+    if (
+        _project_marker_segments_cross(points[0], points[1], points[2], points[3])
+        or _project_marker_segments_cross(
+            points[1], points[2], points[3], points[0]
+        )
+    ):
+        return None
+    turns = [
+        _project_marker_cross(
+            points[index],
+            points[(index + 1) % 4],
+            points[(index + 2) % 4],
+        )
+        for index in range(4)
+    ]
+    if any(abs(turn) <= 1e-12 for turn in turns):
+        return None
+    signs = {turn > 0 for turn in turns}
+    return 'diamond' if len(signs) == 1 else 'stealth'
+
+
+def classify_project_marker_shape(marker_elem: ET.Element) -> str | None:
+    """Classify one marker into a DrawingML line-end shape, if representable."""
+    visual_children = [
+        child
+        for child in list(marker_elem)
+        if _svg_element_tag(child)
+        not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+    ]
+    if len(visual_children) != 1:
+        return None
+    shape = visual_children[0]
+    tag = (_svg_element_tag(shape) or '').lower()
+    if tag in {'circle', 'ellipse'}:
+        return 'oval'
+    if tag == 'path':
+        path_data = shape.get('d', '')
+        if _PROJECT_MARKER_TRIANGLE_PATH_RE.fullmatch(path_data):
+            return 'triangle'
+        if _PROJECT_MARKER_ARROW_PATH_RE.fullmatch(path_data):
+            return 'arrow'
+        if _PROJECT_MARKER_DIAMOND_PATH_RE.fullmatch(path_data):
+            points = _project_marker_path_points(path_data)
+            return _project_marker_quadrilateral_type(points)
+        return None
+    if tag == 'polygon':
+        points = _project_marker_polygon_points(shape.get('points', ''))
+        if points is None:
+            return None
+        if len(points) == 3:
+            return 'triangle'
+        return _project_marker_quadrilateral_type(points)
+    return None
+
+
+def _project_effective_presentation_value(
+    elem: ET.Element,
+    name: str,
+    parent_by_id: dict[int, ET.Element],
+) -> str | None:
+    """Resolve one inherited presentation value for project validation."""
+    current: ET.Element | None = elem
+    while current is not None:
+        style_values = parse_inline_style(current.get('style'))
+        if name in style_values:
+            return style_values[name]
+        direct = current.get(name)
+        if direct is not None:
+            return direct
+        current = parent_by_id.get(id(current))
+    return None
+
+
+def project_marker_errors(root: ET.Element) -> list[str]:
+    """Validate SVG line-end markers against the native arrow contract."""
+    definitions, _duplicates = project_definition_index(root)
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    errors: set[str] = set()
+    checked_markers: set[str] = set()
+
+    for elem in root.iter():
+        for attribute_name in ('marker-start', 'marker-end'):
+            raw_reference = elem.get(attribute_name)
+            if (
+                raw_reference is None
+                or raw_reference.strip().lower() == 'none'
+            ):
+                continue
+
+            label = _transform_element_label(elem)
+            tag = (_svg_element_tag(elem) or '').lower()
+            if tag not in {'line', 'path'}:
+                errors.add(
+                    f'{label} {attribute_name} is allowed only on <line> '
+                    'or <path>'
+                )
+
+            match = re.fullmatch(r'url\(#([^)]+)\)', raw_reference.strip())
+            if match is None:
+                errors.add(
+                    f'{label} {attribute_name} must be an exact local '
+                    f'url(#id) reference; got {raw_reference!r}'
+                )
+                continue
+
+            marker_id = match.group(1)
+            marker = definitions.get(marker_id)
+            if marker is None or _svg_element_tag(marker) != 'marker':
+                errors.add(
+                    f'{label} {attribute_name}=url(#{marker_id}) has no '
+                    f'matching direct <defs><marker id="{marker_id}"> '
+                    'definition'
+                )
+                continue
+
+            visual_children = [
+                child
+                for child in list(marker)
+                if _svg_element_tag(child)
+                not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+            ]
+            shape = visual_children[0] if len(visual_children) == 1 else None
+            marker_shape_type = (
+                classify_project_marker_shape(marker)
+                if shape is not None
+                else None
+            )
+            if marker_id not in checked_markers:
+                checked_markers.add(marker_id)
+                marker_label = f'<marker id="{marker_id}">'
+                if marker.get('orient') not in {
+                    'auto',
+                    'auto-start-reverse',
+                }:
+                    errors.add(
+                        f'{marker_label} requires orient="auto" or '
+                        'orient="auto-start-reverse"'
+                    )
+                marker_units = marker.get('markerUnits', 'strokeWidth')
+                if marker_units not in {'strokeWidth', 'userSpaceOnUse'}:
+                    errors.add(
+                        f'{marker_label} has unsupported '
+                        f'markerUnits={marker_units!r}'
+                    )
+                for size_attribute in ('markerWidth', 'markerHeight'):
+                    raw_size = marker.get(size_attribute)
+                    if raw_size is None:
+                        continue
+                    try:
+                        size = float(raw_size)
+                    except ValueError:
+                        size = math.nan
+                    if not math.isfinite(size) or size <= 0:
+                        errors.add(
+                            f'{marker_label} {size_attribute} must be a '
+                            f'positive finite number; got {raw_size!r}'
+                        )
+
+                if shape is None:
+                    errors.add(
+                        f'{marker_label} must contain exactly one direct '
+                        'triangle, stealth, arrow, diamond, or oval shape'
+                    )
+                else:
+                    shape_tag = (_svg_element_tag(shape) or '').lower()
+                    if shape.get('transform'):
+                        errors.add(
+                            f'{marker_label} child <{shape_tag}> cannot use '
+                            'transform'
+                        )
+                    if marker_shape_type is None and shape_tag == 'path':
+                        errors.add(
+                            f'{marker_label} path must be a closed 3-vertex '
+                            'triangle, a simple closed 4-vertex '
+                            'diamond/stealth, or an open 3-vertex arrow, '
+                            'with one explicit M/L command per vertex'
+                        )
+                    elif (
+                        marker_shape_type is None
+                        and shape_tag == 'polygon'
+                    ):
+                        errors.add(
+                            f'{marker_label} polygon must contain exactly '
+                            '3 finite vertices or 4 finite vertices forming '
+                            'a simple diamond/stealth quadrilateral'
+                        )
+                    elif (
+                        marker_shape_type is None
+                        and shape_tag not in {'circle', 'ellipse'}
+                    ):
+                        errors.add(
+                            f'{marker_label} child <{shape_tag}> has no native '
+                            'line-end mapping'
+                        )
+
+            if shape is None:
+                continue
+            stroke_value = _project_effective_presentation_value(
+                elem,
+                'stroke',
+                parent_by_id,
+            )
+            marker_fill = _project_effective_presentation_value(
+                shape,
+                'fill',
+                parent_by_id,
+            ) or '#000000'
+            if marker_shape_type == 'arrow':
+                if marker_fill.strip().lower() != 'none':
+                    errors.add(
+                        f'{label} {attribute_name}=url(#{marker_id}) open '
+                        'arrow marker requires fill="none"'
+                    )
+                marker_channel = 'stroke'
+                marker_paint = _project_effective_presentation_value(
+                    shape,
+                    marker_channel,
+                    parent_by_id,
+                ) or 'none'
+            else:
+                marker_channel = 'fill'
+                marker_paint = marker_fill
+            stroke_color, _stroke_alpha = parse_svg_color(stroke_value or '')
+            marker_color, _marker_alpha = parse_svg_color(marker_paint)
+            if stroke_color is None or marker_color is None:
+                errors.add(
+                    f'{label} {attribute_name} marker {marker_channel} and '
+                    'line stroke must both be supported solid colors'
+                )
+            elif stroke_color != marker_color:
+                errors.add(
+                    f'{label} {attribute_name}=url(#{marker_id}) marker '
+                    f'{marker_channel} {marker_paint!r} does not match '
+                    f'effective line stroke {stroke_value!r}'
+                )
+
+    return sorted(errors)
+
+
 def project_paint_reference_errors(root: ET.Element) -> list[str]:
     """Validate local paint-server references and their native contexts."""
     definitions, _duplicates = project_definition_index(root)
@@ -1922,6 +2292,168 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def parse_project_filter_params(
+    filter_elem: ET.Element,
+) -> dict[str, float | str | bool]:
+    """Extract the shared native shadow/glow parameters from one filter."""
+    primitive_units = filter_elem.get('primitiveUnits')
+    if primitive_units not in (None, 'userSpaceOnUse'):
+        raise ValueError(
+            'filter primitiveUnits must be userSpaceOnUse when explicit; '
+            f'got {primitive_units!r}'
+        )
+    std_dev: float | None = None
+    dx = 0.0
+    dy = 0.0
+    paint_opacity: float | None = None
+    transfer_opacity: float | None = None
+    color_alpha = 1.0
+    color = '000000'
+    has_offset = False
+
+    def required_number(primitive: ET.Element, attribute_name: str) -> float:
+        primitive_tag = _svg_element_tag(primitive) or str(primitive.tag)
+        raw_value = primitive.get(attribute_name)
+        if raw_value is None:
+            raise ValueError(
+                f'<{primitive_tag}> requires explicit {attribute_name}'
+            )
+        try:
+            value = float(raw_value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f'<{primitive_tag}> {attribute_name} must be a finite number; '
+                f'got {raw_value!r}'
+            ) from exc
+        if not math.isfinite(value):
+            raise ValueError(
+                f'<{primitive_tag}> {attribute_name} must be a finite number; '
+                f'got {raw_value!r}'
+            )
+        return value
+
+    for child in filter_elem.iter():
+        tag = _svg_element_tag(child)
+        style_values = parse_inline_style(child.get('style'))
+
+        def effect_attr(name: str, default: str | None = None) -> str | None:
+            return style_values.get(name) or child.get(name, default)
+
+        def required_effect_attr(name: str) -> str:
+            raw_value = effect_attr(name)
+            if raw_value is None:
+                raise ValueError(f'<{tag}> requires explicit {name}')
+            return raw_value
+
+        if tag == 'feDropShadow':
+            std_dev = required_number(child, 'stdDeviation')
+            dx = required_number(child, 'dx')
+            dy = required_number(child, 'dy')
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
+            paint_opacity = parse_opacity(
+                required_effect_attr('flood-opacity'),
+                allow_percentage=True,
+            )
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
+        elif tag == 'feGaussianBlur':
+            if child.get('edgeMode') is not None:
+                raise ValueError(
+                    '<feGaussianBlur> edgeMode is unsupported by the native '
+                    'effect mapping'
+                )
+            std_dev = required_number(child, 'stdDeviation')
+        elif tag == 'feOffset':
+            dx = _f(child.get('dx'), 0.0)
+            dy = _f(child.get('dy'), 0.0)
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
+        elif tag == 'feFlood':
+            paint_opacity = parse_opacity(
+                required_effect_attr('flood-opacity'),
+                allow_percentage=True,
+            )
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
+        elif tag == 'feFuncA' and child.get('type') == 'linear':
+            if child.get('intercept') is not None:
+                raise ValueError(
+                    '<feFuncA> intercept is unsupported; project alpha '
+                    'transfer maps slope multiplication only'
+                )
+            slope = required_number(child, 'slope')
+            transfer_opacity = (
+                slope
+                if transfer_opacity is None
+                else transfer_opacity * slope
+            )
+
+    if paint_opacity is None:
+        opacity = transfer_opacity if transfer_opacity is not None else 0.3
+    elif transfer_opacity is None:
+        opacity = paint_opacity
+    else:
+        opacity = paint_opacity * transfer_opacity
+    opacity = max(0.0, min(1.0, opacity * color_alpha))
+
+    if std_dev is None:
+        raise ValueError('filter requires feDropShadow or feGaussianBlur')
+
+    return {
+        'std_dev': std_dev,
+        'dx': dx,
+        'dy': dy,
+        'opacity': opacity,
+        'color': color,
+        'has_offset': has_offset,
+    }
+
+
+def project_filter_drawingml_coordinates(
+    params: dict[str, float | str | bool],
+    effect_kind: str | None = None,
+) -> dict[str, int]:
+    """Map filter geometry into validated DrawingML effect coordinates."""
+    kind = effect_kind or ('shadow' if params['has_offset'] else 'glow')
+    std_dev = float(params['std_dev'])
+    dx = float(params['dx'])
+    dy = float(params['dy'])
+    if kind == 'shadow':
+        coordinates_px = {
+            'blurRad': std_dev * 2.0,
+            'dist': math.hypot(dx, dy),
+        }
+    elif kind == 'glow':
+        coordinates_px = {'rad': std_dev}
+    else:
+        raise ValueError(f'unsupported native filter kind {kind!r}')
+
+    coordinates: dict[str, int] = {}
+    for attribute_name, value_px in coordinates_px.items():
+        scaled = value_px * EMU_PER_PX
+        if not math.isfinite(scaled):
+            raise ValueError(
+                f'DrawingML {attribute_name} must be finite after EMU mapping'
+            )
+        mapped = round(scaled)
+        if not 0 <= mapped <= OOXML_COORDINATE_MAX:
+            raise ValueError(
+                f'DrawingML {attribute_name} must map within '
+                f'0..{OOXML_COORDINATE_MAX}; got {mapped}'
+            )
+        coordinates[attribute_name] = mapped
+    return coordinates
+
+
 def project_filter_errors(root: ET.Element) -> list[str]:
     """Validate filters against the native shadow/glow approximation."""
     definitions, _duplicates = project_definition_index(root)
@@ -1974,6 +2506,14 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
     for filter_id, filter_elem in filters_by_id.items():
         label = f'filter #{filter_id}'
+        parameters_are_valid = True
+        primitive_units = filter_elem.get('primitiveUnits')
+        if primitive_units not in (None, 'userSpaceOnUse'):
+            parameters_are_valid = False
+            errors.add(
+                f'{label} primitiveUnits must be userSpaceOnUse when '
+                f'explicit; got {primitive_units!r}'
+            )
         primitives = [
             _svg_element_tag(descendant) or str(descendant.tag)
             for descendant in filter_elem.iter()
@@ -2006,18 +2546,59 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
         for primitive in filter_elem.iter():
             primitive_tag = _svg_element_tag(primitive)
-            numeric_attrs: tuple[tuple[str, bool], ...] = ()
+            if primitive_tag in {'feDropShadow', 'feFlood'}:
+                style_values = parse_inline_style(primitive.get('style'))
+                if (
+                    primitive.get('flood-opacity') is None
+                    and 'flood-opacity' not in style_values
+                ):
+                    parameters_are_valid = False
+                    errors.add(
+                        f'{label} <{primitive_tag}> requires explicit '
+                        'flood-opacity'
+                    )
+            if (
+                primitive_tag == 'feFuncA'
+                and primitive.get('intercept') is not None
+            ):
+                parameters_are_valid = False
+                errors.add(
+                    f'{label} <feFuncA> intercept is unsupported; project '
+                    'alpha transfer maps slope multiplication only'
+                )
+            if (
+                primitive_tag == 'feGaussianBlur'
+                and primitive.get('edgeMode') is not None
+            ):
+                parameters_are_valid = False
+                errors.add(
+                    f'{label} <feGaussianBlur> edgeMode is unsupported by '
+                    'the native effect mapping'
+                )
+            numeric_attrs: tuple[tuple[str, bool, bool], ...] = ()
             if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
-                numeric_attrs = (('stdDeviation', True),)
+                numeric_attrs = (('stdDeviation', True, True),)
             elif primitive_tag == 'feOffset':
-                numeric_attrs = (('dx', False), ('dy', False))
+                numeric_attrs = (
+                    ('dx', False, False),
+                    ('dy', False, False),
+                )
             elif primitive_tag == 'feFuncA':
-                numeric_attrs = (('slope', True),)
+                numeric_attrs = (('slope', True, True),)
             if primitive_tag == 'feDropShadow':
-                numeric_attrs += (('dx', False), ('dy', False))
-            for attribute_name, non_negative in numeric_attrs:
+                numeric_attrs += (
+                    ('dx', False, True),
+                    ('dy', False, True),
+                )
+            for attribute_name, non_negative, required in numeric_attrs:
                 raw_value = primitive.get(attribute_name)
                 if raw_value is None:
+                    if required:
+                        parameters_are_valid = False
+                        errors.add(
+                            f'{label} <{primitive_tag}> requires explicit '
+                            f'{attribute_name}'
+                        )
                     continue
                 try:
                     value = float(raw_value)
@@ -2032,6 +2613,8 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         and value > 1
                     )
                 ):
+                    if attribute_name in {'stdDeviation', 'dx', 'dy'}:
+                        parameters_are_valid = False
                     qualifier = (
                         ' from 0 to 1'
                         if primitive_tag == 'feFuncA'
@@ -2041,6 +2624,12 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         f'{label} <{primitive_tag}> {attribute_name} must be a '
                         f'finite number{qualifier}; got {raw_value!r}'
                     )
+        if len(effect_primitives) == 1 and parameters_are_valid:
+            try:
+                params = parse_project_filter_params(filter_elem)
+                project_filter_drawingml_coordinates(params)
+            except (TypeError, ValueError) as exc:
+                errors.add(f'{label} {exc}')
     return sorted(errors)
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="china_telecom_brand_master" data-pptx-master-name="China Telecom Brand"
   data-pptx-layout="closing" data-pptx-layout-name="Closing">
@@ -8,13 +8,13 @@
   <rect id="brand-master-top-rule" x="0" y="0" width="1280" height="8" fill="#C00000"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <image id="brand-master-footer-ribbon" x="0" y="554" width="1280" height="166"
-    xlink:href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice"
+    href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <text id="brand-master-footer-label" x="72" y="650" fill="#FFFFFF"
     font-family="Arial, Microsoft YaHei, sans-serif" font-size="14"
     data-pptx-layer="master" data-pptx-editable="false">CHINA TELECOM</text>
 
-  <image id="closing-logo" x="72" y="34" width="214" height="58" xlink:href="../images/logo.png"
+  <image id="closing-logo" x="72" y="34" width="214" height="58" href="../images/logo.png"
     preserveAspectRatio="xMinYMid meet" data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect id="closing-title-rule" x="96" y="352" width="192" height="6" rx="3" fill="#C00000"
     data-pptx-layer="layout" data-pptx-editable="false"/>
@@ -24,10 +24,10 @@
   <rect id="closing-brand-accent" x="874" y="204" width="88" height="4" rx="2" fill="#C00000"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <image id="closing-slogan" x="888" y="242" width="268" height="92"
-    xlink:href="../images/slogan_red.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/slogan_red.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <image id="closing-skyline" x="872" y="344" width="304" height="84"
-    xlink:href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="closing-title-slot" data-pptx-placeholder="title"
     data-pptx-placeholder-bounds="96 226 620 72">

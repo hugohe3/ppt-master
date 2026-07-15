@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="catarc_light_master" data-pptx-master-name="CATARC Light"
   data-pptx-layout="content" data-pptx-layout-name="Title and Content">
@@ -10,7 +10,7 @@
   <rect id="light-master-number-block" x="60" y="30" width="50" height="50" fill="#004098"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <image id="light-master-logo" x="1107" y="30" width="113" height="50"
-    xlink:href="../images/右上角 logo.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/右上角 logo.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <line id="light-master-header-rule" x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0"
     stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>

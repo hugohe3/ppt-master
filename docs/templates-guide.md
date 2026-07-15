@@ -152,7 +152,7 @@ The workflow does not silently infer values — before generation it lists these
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or icon filename collisions in `images/`, `icons/`, and `templates/icons/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
@@ -172,7 +172,21 @@ This is the most easily confused decision when deriving a template.
 
 **About sprite sheets**: PPTX-exported assets are often a single large image referenced from multiple slides, each cropping a different region via nested `<svg viewBox=...>` wrappers. In `fidelity` and `mirror` modes this nesting must be preserved — you cannot flatten it to a bare `<image>`, or the crop is lost and the page misaligns. The workflow validates this automatically.
 
-**About native PowerPoint shapes**: the lossless import SVG stays in the temporary analysis workspace, while the model works from a lightweight projection that omits opaque payload and duplicate hidden carriers. The projection is never an export source. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed Master/Layout layers remain direct atoms, and unsupported or edited objects keep the current SVG fallback.
+**About native PowerPoint shapes**: the lossless import SVG stays immutable in the temporary analysis workspace as native-payload backing. Template creation uses the lightweight editable `authoring-svg/` IR and its source-ref/hash manifest. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror materializes final template SVGs from the IR, reusing converter-supported payload only for unchanged Slide-local/slot refs; fixed Master/Layout layers remain direct atoms, unsupported or edited objects keep the current SVG fallback, and final templates contain no IR-only refs.
+
+For a PPTX-backed Type A mirror, that final step is one deterministic command:
+
+```bash
+uvx ppt-master mirror-template-materialize \
+  "<import_workspace>" "<empty_template_workspace>"
+```
+
+It validates the IR manifest, immutable source hashes, complete native graph,
+visibility facts, and imported-vector closure before atomically publishing the
+source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
+requires or uses the opt-in `svg-flat/` verification tree as the template source
+and never generates `design_spec.md`;
+the designer writes that brief against the published roster.
 
 **Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
 
@@ -207,12 +221,12 @@ Library and project scopes use the same core structure; substitute either `skill
 │   ├── 03_chapter.svg
 │   ├── 04_content.svg
 │   ├── 04a_content_two_col.svg # fidelity variant
-│   ├── 05_ending.svg
-│   └── icons/                  # package/validation copy when used
+│   └── 05_ending.svg
 ├── images/                         # optional
 │   └── *.png / *.jpg           # SVG references use ../images/<name>
 ├── icons/                          # optional
-│   └── *.svg                   # runtime copy of extracted vectors
+│   └── imported/
+│       └── *.svg               # one canonical copy of imported vectors
 └── exports/                        # optional; on-demand review output
     └── <id>_template_preview.pptx
 ```
@@ -220,6 +234,11 @@ Library and project scopes use the same core structure; substitute either `skill
 `standard` and `fidelity` SVGs use a unified authoring-placeholder vocabulary (`{{TITLE}}`, `{{CHAPTER_TITLE}}`, `{{PAGE_TITLE}}`, `{{CONTENT_AREA}}`, ...). Each native slot is a top-level `<g>` with semantic type and positive bounds; a normal slot contains exactly one carrier. Fixed Master/Layout visuals are direct root atoms and never layer `<g>` elements. A Layout may intentionally expose zero slots.
 
 A `mirror` workspace uses the same tree but places its source-ordered `001_cover.svg`, `002_toc.svg`, … files under `templates/`. It may keep literal example text instead of `{{...}}` markers, while imported native slots still carry semantic metadata.
+
+Imported vector placeholders use `data-icon="imported/<name>"`. Validation,
+preview export, and final export all resolve the same workspace-root asset at
+`icons/imported/<name>.svg`; a second `templates/icons/` copy is neither needed
+nor allowed.
 
 ### Library registration vs project placement
 

@@ -22,6 +22,8 @@ from urllib.parse import unquote, urlsplit
 
 
 SVG_WORK_DIR_NAMES = frozenset({'svg_output', 'svg_final', 'svg-flat', 'svg_flat'})
+TEMPLATE_SOURCE_DIR_NAME = 'templates'
+TEMPLATE_SPEC_FILENAME = 'design_spec.md'
 
 
 def project_root_for_svg_path(svg_path: Path) -> Path:
@@ -29,6 +31,11 @@ def project_root_for_svg_path(svg_path: Path) -> Path:
     path = Path(svg_path)
     base = path if path.is_dir() else path.parent
     if base.name in SVG_WORK_DIR_NAMES:
+        return base.parent
+    if (
+        base.name == TEMPLATE_SOURCE_DIR_NAME
+        and (base / TEMPLATE_SPEC_FILENAME).is_file()
+    ):
         return base.parent
     return base
 

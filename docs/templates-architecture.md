@@ -55,21 +55,25 @@ Both roots have the same core shape:
 <template_workspace>/
 ├── templates/
 │   ├── design_spec.md
-│   ├── *.svg
-│   └── icons/                  # package/validation copy when used
+│   └── *.svg
 ├── images/                     # optional; SVG href uses ../images/<name>
-├── icons/                      # optional; runtime vector assets
-└── exports/                    # optional; created only for on-demand review
+├── icons/
+│   └── imported/               # optional; canonical imported vector assets
+└── exports/                    # optional; requested review or required multi-Master evidence
     └── <id>_template_preview.pptx
 ```
 
-Empty optional directories are omitted; do not add placeholder files. An on-demand preview PPTX is derived review evidence, not a source template asset. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
+Empty optional directories are omitted; do not add placeholder files. A preview PPTX is derived review evidence, not a source template asset. It is generated on request and is mandatory for a multi-Master package gate. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
 
-PPTX import uses a two-level metadata model. The temporary lossless SVG keeps native-shape metadata, hidden carriers, and preview evidence; `svg_authoring_view.py` creates a lightweight model-facing projection without opaque payload or duplicate hidden carriers. The projection is never an export source. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed structural layers remain direct atoms, and unsupported or edited objects keep their SVG fallback. Export compiles only the declared SVG structure and never infers ownership.
+Imported vectors use `data-icon="imported/<name>"` and have one canonical file
+at `icons/imported/<name>.svg`. Workspace-aware validation and export resolve
+that root path directly; `templates/icons/` is not part of the package shape.
+
+PPTX import uses a two-level metadata model. The temporary lossless SVG keeps native-shape metadata, hidden carriers, and preview evidence as immutable payload backing; `svg_authoring_view.py` creates the editable authoring IR bundle, whose lightweight SVGs carry document-local source refs and whose manifest stores only paths and initial hashes. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror materializes templates from the IR and reuses converter-supported payload only for unchanged Slide-local/slot refs; fixed structural layers remain direct atoms, unsupported or edited objects keep their SVG fallback, and final templates contain no IR-only refs. Export compiles only the declared SVG structure and never infers ownership.
 
 Both scopes retain `kind: layout` or `kind: deck` in portable frontmatter. `output_scope` and `target_project` stay in the workflow brief and are not persisted into `design_spec.md`.
 
-Before any final write, resolve the selected workspace root, require an empty `templates/` root, and check all planned image and icon destination filenames for conflicts. Check a preview-PPTX destination only when review export was requested. Project scope additionally requires an initialized target project. Fail before writing anything; never merge or overwrite.
+Before any final write, resolve the selected workspace root, require an empty `templates/` root, and check all planned image and icon destination filenames for conflicts. Check a preview-PPTX destination when review was requested or the confirmed roster contains multiple Masters. Project scope additionally requires an initialized target project. Fail before writing anything; never merge or overwrite.
 
 ### Segment partition
 
@@ -78,7 +82,7 @@ To make multi-path fusion override cleanly, every field belongs to a named segme
 | Segment | Sections it contains | Override owner |
 |---|---|---|
 | **Identity** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
-| **Structure** | Canvas Specification / Page Structure / Page Types / SVG Roster | layout |
+| **Structure** | Portable canvas/page-type metadata, structure-owned Signature rules, SVG Page Roster, and the SVG Master/Layout/slot contract | layout |
 | **Middle** | Template Overview (use cases / design intent / page rhythm narrative) | deck only; brand / layout don't write this |
 
 ### Why Deck is its own kind
@@ -127,25 +131,35 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
+category: general | scenario | government | special
 native_structure_mode: structured
 summary: <one-line use cases>
+keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ppt43 | a4 | ...>
+canvas_width: <pixels>
+canvas_height: <pixels>
+canvas_viewbox: "0 0 <width> <height>"
+source_canvas_width: <pixels>     # when a PPTX/SVG source canvas is known
+source_canvas_height: <pixels>
+source_viewbox: "0 0 <width> <height>"
+replication_mode: standard | fidelity | mirror
 page_count: <N>
 page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 ```
 
-**Body sections** (full structure segment + Template Overview)
+**Body sections** (personality-only structure segment)
 
 | § | Title | Required fields |
 |---|---|---|
-| I | Template Overview | Use Cases / Design Intent / Page Rhythm suggestions |
-| II | Canvas Specification | Format / Dimensions / viewBox / Margins / Content Area |
-| III | Page Structure | General Layout Grid / Decorative DNA / Navigation rules |
-| IV | Page Types | Per-page role (cover / toc / chapter / content / ending …) + variant descriptions |
-| V | SVG Page Roster | File list + purpose, each file mapped to a III/IV role |
+| IV | Signature Design Elements | Layout-specific grid, zones, image behavior, density rhythm, neutral framing, and slot conventions |
+| V | Page Roster | Every SVG file, Layout key, picker name, intended content, and slot behavior |
 
-**Forbidden**: brand logo, brand voice & tone, official-truth color (`provenance: fact`) — those belong to brand. Layouts have no fallback color or typography by definition: identity segments are not written here; color and typography are decided live in Strategist's confirmation stage.
+`Placeholder Overrides` is conditional and appears only when the layout changes
+the canonical authoring vocabulary. The frontmatter `summary` carries concise
+selection context. Layouts omit the deck-only Template Overview.
+
+**Forbidden**: Color Scheme, Typography, brand logo, brand voice & tone, Icon Style, or official-truth color (`provenance: fact`). Neutral SVG paint is allowed only as review scaffolding; it is not an identity segment. Color and typography are decided in the Strategist confirmation stage or supplied by another template kind.
 
 ### Deck schema
 
@@ -155,30 +169,41 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
+category: brand | general | scenario | government | special
 native_structure_mode: structured
 summary: <one-line use cases>
+keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ...>
+canvas_width: <pixels>
+canvas_height: <pixels>
+canvas_viewbox: "0 0 <width> <height>"
+source_canvas_width: <pixels>     # when a PPTX/SVG source canvas is known
+source_canvas_height: <pixels>
+source_viewbox: "0 0 <width> <height>"
+replication_mode: standard | fidelity | mirror
 page_count: <N>
 primary_color: "<HEX>"
 ---
 ```
 
-**Body sections** (full identity + full structure + middle)
+**Body sections** (personality-only complete reference)
 
 | § | Title | Segment |
 |---|---|---|
 | I | Template Overview | Middle |
-| II | Canvas Specification | Structure |
-| III | Color Scheme (with provenance) | Identity |
-| IV | Typography | Identity |
-| V | Logo | Identity |
-| VI | Voice & Tone | Identity |
-| VII | Icon Style | Identity |
-| VIII | Page Structure | Structure |
-| IX | Page Types | Structure |
-| X | SVG Page Roster | Structure |
+| II | Color Scheme | Identity |
+| III | Typography | Identity; omit only when the shared default stack is used |
+| IV | Signature Design Elements | Template-specific identity motifs and reusable structural grammar |
+| V | Page Roster | Structure |
+| VI | Assets | Identity/supporting assets; omit when none |
+| VII | Placeholder Overrides | Structure vocabulary; omit when none |
 
-> Deck is the union of all identity + structure fields, with no optional sections. This keeps fusion's segment-level replacement granularity uniform.
+Portable canvas fields, `page_count`, and the explicit SVG roster carry the
+rest of the structure contract. General spacing, font-ratio, SVG, and
+placeholder rules remain centralized and are not copied into each deck spec.
+Deck still owns the complete identity + structure reference; omitted
+conditional sections mean “shared default or no asset”, not “another kind owns
+this segment”.
 
 ---
 
@@ -322,7 +347,7 @@ When a deck path is supplied, the user already has a complete solution; the Stra
 | Workflow | Produces |
 |---|---|
 | `workflows/create-brand.md` | identity-only brand workspace using the common routes; empty optional directories are omitted |
-| `workflows/create-template.md` | complete layout or deck workspace. `standard` / `fidelity` author new semantic SVGs; mirror restores the source contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (`projects/<name>/`, no registration). Both use the same optional-directory routing; preview PPTX is on demand. The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
+| `workflows/create-template.md` | complete layout or deck workspace. `standard` / `fidelity` author new semantic SVGs; mirror restores the source contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (`projects/<name>/`, no registration). Both use the same optional-directory routing; preview PPTX is on demand for one Master and mandatory for multiple Masters. The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
 
 In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may migrate between scopes without reshaping; add or remove only the library index registration.
 

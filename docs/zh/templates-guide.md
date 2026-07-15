@@ -152,7 +152,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 确认后，工作流会回显一份完整简报并写入标记 `[TEMPLATE_BRIEF_CONFIRMED]`，从这一刻起后续步骤才会启动。**这是一个硬门——简报没确认，不会开始生成**。
 
-无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/`、`icons/` 与 `templates/icons/` 中计划写入的位图和图标文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
+无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/` 与 `icons/imported/` 中计划写入的位图和导入向量文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
 
 > 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是结构契约。先确认归属和几何，可避免半成品或资产落错目录。
 
@@ -172,7 +172,19 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 **关于精灵图**：PPTX 导出的素材常常是**一张大图 + 多页通过 viewBox 裁剪不同区域**。`fidelity` 和 `mirror` 模式下必须保留这层嵌套 `<svg viewBox=...>` 包装，不能扁平化为单张 `<image>`——否则裁剪信息丢失，画面会错位。工作流会自动校验这一点。
 
-**关于 PowerPoint 原生形状**：完整导入 SVG 保留在临时分析工作区，模型读取的是移除 opaque payload 和重复 carrier 的轻量 projection；projection 永远不是导出源。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已支持的 metadata；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback。
+**关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
+
+对于 PPTX 来源的 Type A mirror，最终物化统一使用一个确定性命令：
+
+```bash
+uvx ppt-master mirror-template-materialize \
+  "<import_workspace>" "<empty_template_workspace>"
+```
+
+它会先校验 IR manifest、不可变来源 hash、完整原生图谱、可见性事实和
+导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
+`icons/imported/`、`images/` 素材。它不要求、也不会把按需生成的
+`svg-flat/` 校验视图当成模板来源，并且不会生成 `design_spec.md`；设计角色必须针对物化后的 roster 编写该简报。
 
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
@@ -207,12 +219,12 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 │   ├── 03_chapter.svg
 │   ├── 04_content.svg
 │   ├── 04a_content_two_col.svg # fidelity 变体
-│   ├── 05_ending.svg
-│   └── icons/                  # 使用时的 package / 校验副本
+│   └── 05_ending.svg
 ├── images/                         # 可选
 │   └── *.png / *.jpg           # SVG 统一引用 ../images/<name>
 ├── icons/                          # 可选
-│   └── *.svg                   # 提取向量素材的运行期副本
+│   └── imported/
+│       └── *.svg               # 导入向量素材的唯一规范副本
 └── exports/                        # 可选；按需生成审阅文件
     └── <id>_template_preview.pptx
 ```
@@ -220,6 +232,8 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 `standard` 和 `fidelity` 模式下的页面 SVG 使用统一的占位符约定（`{{TITLE}}`、`{{CHAPTER_TITLE}}`、`{{PAGE_TITLE}}`、`{{CONTENT_AREA}}` 等）。每个原生槽位都是带语义类型与正数 bounds 的顶层 `<g>`，普通槽位恰好包含一个 carrier；固定 Master/Layout 视觉是根级直接原子元素，绝不使用层级 `<g>`。Layout 可以有意保持零槽位。
 
 `mirror` 工作区使用同一棵目录树，只是把按源页排序的 `001_cover.svg`、`002_toc.svg` 等文件放进 `templates/`。它可以保留原示例文字而不写 `{{...}}`，但导入识别出的原生内容槽仍带语义 metadata。
+
+导入向量占位符统一写成 `data-icon="imported/<name>"`。校验、预览导出与最终导出都解析工作区根目录下同一份 `icons/imported/<name>.svg`；不需要、也不允许再创建 `templates/icons/` 副本。
 
 ### 全局注册与项目放置
 
