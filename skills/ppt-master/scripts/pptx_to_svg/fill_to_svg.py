@@ -19,6 +19,7 @@ from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
+    ANGLE_UNIT,
     NS,
     PERCENT_UNIT,
     fmt_num,
@@ -28,6 +29,7 @@ from .emu_units import (
 
 
 _OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
+_OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
 
 
 @dataclass
@@ -161,10 +163,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
 
     if lin is not None:
         # ang is 1/60000 deg. 0° = horizontal left-to-right.
-        try:
-            angle_deg = float(lin.attrib.get("ang", "0")) / 60000.0
-        except ValueError:
-            angle_deg = 0.0
+        angle_deg = _linear_gradient_angle(lin)
         x1, y1, x2, y2 = _angle_to_unit_endpoints(angle_deg)
         defs_xml = (
             f'<linearGradient id="{grad_id}" '
@@ -212,6 +211,23 @@ def _gradient_stop_position(gs: ET.Element) -> float:
             f"0..{PERCENT_UNIT}"
         )
     return position / PERCENT_UNIT
+
+
+def _linear_gradient_angle(lin: ET.Element) -> float:
+    """Parse one optional DrawingML positive fixed angle in degrees."""
+    raw = lin.get("ang")
+    if raw is None:
+        return 0.0
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(f"Invalid DrawingML linear gradient angle: {raw!r}")
+    angle = int(token)
+    if not 0 <= angle < _OOXML_FULL_CIRCLE:
+        raise ValueError(
+            f"DrawingML linear gradient angle={angle} is outside "
+            f"0..{_OOXML_FULL_CIRCLE - 1}"
+        )
+    return angle / ANGLE_UNIT
 
 
 def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:

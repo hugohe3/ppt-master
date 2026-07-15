@@ -748,6 +748,10 @@ An explicit non-line imported `a:gradFill` requires exactly one `a:gsLst` with
 at least one `a:gs`, and every stop must provide a resolvable color. Missing or
 duplicate lists, empty lists, and unresolvable stops stop import instead of
 becoming an inherited fill or a partial gradient.
+An imported non-line `a:lin@ang` may be omitted for the schema-defined zero
+default. When present, it must be an integer from `0` through `21599999`
+(1/60000 degree); malformed or out-of-range values stop import instead of
+silently becoming a horizontal gradient.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
