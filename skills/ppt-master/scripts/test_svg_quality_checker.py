@@ -2968,6 +2968,47 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_linear('0', scaled)
 
+    def test_native_gradient_direction_must_be_unambiguous(self):
+        direction_cases = (
+            '<a:lin ang="0"/><a:lin ang="0"/>',
+            '<a:path path="circle"/><a:path path="circle"/>',
+            '<a:lin ang="0"/><a:path path="circle"/>',
+        )
+        for directions in direction_cases:
+            with self.subTest(directions=directions):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    {directions}
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'at most one lin/path direction',
+                ):
+                    resolve_fill(sp_pr, None)
+
+        default_direction = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+        fill = resolve_fill(default_direction, None)
+        gradient = ET.fromstring(fill.defs[0])
+        self.assertEqual(gradient.tag, 'linearGradient')
+        self.assertEqual(
+            tuple(gradient.get(name) for name in ('x1', 'y1', 'x2', 'y2')),
+            ('0', '0', '1', '0'),
+        )
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
