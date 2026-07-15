@@ -765,6 +765,11 @@ For the registered path-gradient approximation, omitted `a:path@path` uses the
 schema default `rect`; explicit `circle`, `rect`, and `shape` are normalized to
 the centered radial SVG form. Unknown or malformed enum values stop import
 instead of being mislabeled as a supported radial gradient.
+The local SVG gradient rotates with its containing geometry. Imported
+`a:gradFill@rotWithShape` may therefore be omitted for the documented Office
+base default or be the exact XML booleans `1` / `true`. Explicit `0` / `false`
+and malformed booleans stop import instead of detaching the gradient direction
+from the shape during rotation.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
