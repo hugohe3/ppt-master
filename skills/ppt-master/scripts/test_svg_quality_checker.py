@@ -2838,6 +2838,42 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_fill(sp_pr, None)
 
+    def test_native_gradient_requires_resolvable_stops(self):
+        invalid_gradients = (
+            (
+                '',
+                'requires exactly one gsLst',
+            ),
+            (
+                '<a:gsLst/><a:gsLst/>',
+                'requires exactly one gsLst',
+            ),
+            (
+                '<a:gsLst/>',
+                'requires at least one color stop',
+            ),
+            (
+                '<a:gsLst><a:gs pos="0"/></a:gsLst>',
+                'gradient stop color cannot be resolved',
+            ),
+            (
+                '<a:gsLst>'
+                '<a:gs pos="0"><a:srgbClr val="112233"/></a:gs>'
+                '<a:gs pos="100000"><a:schemeClr val="accent1"/></a:gs>'
+                '</a:gsLst>',
+                'gradient stop color cannot be resolved',
+            ),
+        )
+        for gradient_markup, expected in invalid_gradients:
+            with self.subTest(gradient_markup=gradient_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>{gradient_markup}</a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(sp_pr, None)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
