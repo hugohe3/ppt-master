@@ -14,7 +14,12 @@ from xml.etree import ElementTree as ET
 
 from pptx_shapes.formula import validate_ooxml_line_width
 
-from .color_resolver import ColorPalette, find_color_elem, resolve_color
+from .color_resolver import (
+    ColorPalette,
+    find_color_elem,
+    resolve_color,
+    validate_no_fill,
+)
 from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
 
 
@@ -126,6 +131,7 @@ def resolve_stroke(
     if paint_name not in {None, "noFill", "solidFill", "gradFill"}:
         raise ValueError(f"Unsupported DrawingML line paint: {paint_name}")
     if paint_name == "noFill":
+        validate_no_fill(paint)
         attrs["stroke"] = "none"
     elif paint_name == "solidFill":
         color_elem = find_color_elem(paint)

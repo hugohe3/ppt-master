@@ -164,6 +164,12 @@ COLOR_TAGS = ("srgbClr", "schemeClr", "sysClr", "prstClr",
               "hslClr", "scrgbClr")
 
 
+def validate_no_fill(elem: ET.Element) -> None:
+    """Require the empty DrawingML a:noFill leaf contract."""
+    if elem.attrib or list(elem) or (elem.text or "").strip():
+        raise ValueError("Invalid DrawingML noFill structure")
+
+
 def find_color_elem(parent: ET.Element | None) -> ET.Element | None:
     """Return the first child color element (any of the 6 OOXML color tags)."""
     if parent is None:
