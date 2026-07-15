@@ -379,6 +379,120 @@ Concrete slide SVGs resolve `<a:fld type="slidenum">` using the presentation's
 `firstSlideNum` display numbering. Standalone master/layout SVGs keep the
 literal field fallback because one shared part can serve multiple slides.
 
+### Maintenance smoke checks
+
+Run these checks from the repository root after changing `pptx_to_svg/` or its
+CLI. They use a shipped deck and generated adversarial input; do not replace
+them with a committed `test_*.py` suite.
+
+#### Healthy generated deck
+
+```bash
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+  "examples/ppt169_kubernetes_blueprint_2026/exports/kubernetes_blueprint_2026.pptx" \
+  --inheritance-mode flat \
+  -o "/tmp/ppt-master-smoke-kubernetes"
+python3 -c "import json; from pathlib import Path; report = json.loads(Path('/tmp/ppt-master-smoke-kubernetes/conversion-report.json').read_text()); assert report['summary'] == {'slides': 10, 'warnings': 0}, report['summary']; print('OK: 10 slides, 0 warnings')"
+```
+
+Expected: both commands exit `0`; the assertion prints
+`OK: 10 slides, 0 warnings`.
+
+#### Tolerant/strict color-structure probe
+
+Generate a two-shape PPTX, then add one foreign attribute to the first shape's
+valid `a:srgbClr` node:
+
+```bash
+python3 -c '
+from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
+
+from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.util import Inches
+
+base = Path("/tmp/ppt-master-color-smoke-base.pptx")
+target = Path("/tmp/ppt-master-color-smoke.pptx")
+presentation = Presentation()
+slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+for left, color in ((1, (0x44, 0x72, 0xC4)), (4, (0xED, 0x7D, 0x31))):
+    shape = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(left),
+        Inches(1),
+        Inches(2),
+        Inches(1),
+    )
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = RGBColor(*color)
+presentation.save(base)
+
+with ZipFile(base) as source, ZipFile(target, "w", ZIP_DEFLATED) as destination:
+    patched = False
+    for member in source.infolist():
+        payload = source.read(member)
+        if member.filename == "ppt/slides/slide1.xml":
+            old = b"<a:srgbClr val=\"4472C4\"/>"
+            new = b"<a:srgbClr val=\"4472C4\" legacy=\"1\"/>"
+            if old not in payload:
+                raise RuntimeError("probe color node was not generated")
+            payload = payload.replace(old, new, 1)
+            patched = True
+        destination.writestr(member, payload)
+if not patched:
+    raise RuntimeError("slide XML was not patched")
+print(target)
+'
+```
+
+Run tolerant import and verify both the recovery report and the visible SVG:
+
+```bash
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+  "/tmp/ppt-master-color-smoke.pptx" \
+  --inheritance-mode flat \
+  -o "/tmp/ppt-master-smoke-color-tolerant"
+python3 -c '
+import json
+from pathlib import Path
+
+output = Path("/tmp/ppt-master-smoke-color-tolerant")
+report = json.loads((output / "conversion-report.json").read_text())
+diagnostics = report["diagnostics"]
+svg = (output / "svg" / "slide_01.svg").read_text()
+assert report["summary"] == {"slides": 1, "warnings": 1}, report["summary"]
+assert len(diagnostics) == 1, diagnostics
+assert diagnostics[0]["code"] == "color-structure-normalized", diagnostics[0]
+assert diagnostics[0]["fallback"] == "retain recognized color attributes and modifiers", diagnostics[0]
+assert diagnostics[0]["slide_index"] == 1, diagnostics[0]
+assert diagnostics[0]["shape_name"] == "Rectangle 1", diagnostics[0]
+assert "#4472C4" in svg and "#ED7D31" in svg
+print("OK: tolerant import recovered #4472C4 and preserved #ED7D31")
+'
+```
+
+Expected: both commands exit `0`; the importer reports one
+`color-structure-normalized` warning and the assertion prints
+`OK: tolerant import recovered #4472C4 and preserved #ED7D31`.
+
+Run the same probe in strict mode:
+
+```bash
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+  "/tmp/ppt-master-color-smoke.pptx" \
+  --inheritance-mode flat \
+  --strict \
+  -o "/tmp/ppt-master-smoke-color-strict"
+```
+
+Expected: exit `1`, no traceback, and one error line:
+
+```text
+Error: PPTX-to-SVG conversion failed: Invalid DrawingML sRGB color structure
+```
+
 ## `source_to_md/web_to_md.py`
 
 Convert web pages to Markdown and download images locally.
