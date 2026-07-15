@@ -44,6 +44,7 @@ from pptx_to_svg.effect_to_svg import (
     convert_effects,
     unsupported_target_effect_metadata,
 )
+from pptx_to_svg.fill_to_svg import resolve_fill
 from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
 from pptx_to_svg.ln_to_svg import _build_arrow_marker, resolve_stroke
@@ -64,7 +65,11 @@ from svg_to_pptx.drawingml.converter import (
     convert_svg_to_slide_shapes,
 )
 from svg_to_pptx.drawingml.context import ConvertContext
-from svg_to_pptx.drawingml.styles import build_stroke_xml, get_stroke_opacity
+from svg_to_pptx.drawingml.styles import (
+    build_gradient_fill,
+    build_stroke_xml,
+    get_stroke_opacity,
+)
 from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
 from svg_to_pptx.pptx_package.dimensions import (
     CANVAS_FORMATS as PACKAGE_CANVAS_FORMATS,
@@ -77,6 +82,7 @@ from svg_to_pptx.drawingml.utils import (
     parse_inline_style,
     project_filter_errors,
     quantize_ooxml_alpha,
+    quantize_ooxml_unit_ratio,
     split_project_text_clusters,
 )
 from svg_to_pptx.native_objects import (
@@ -2777,6 +2783,35 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     f'<a:alpha val="{alpha_value}"/>',
                     stroke_xml,
                 )
+
+    def test_native_gradient_stop_position_round_trips(self):
+        for position in (1, 7, 13, 33333, 99999):
+            with self.subTest(position=position):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="{position}"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:lin ang="0"/>
+  </a:gradFill>
+</p:spPr>''')
+                fill = resolve_fill(sp_pr, None)
+                gradient = ET.fromstring(fill.defs[0])
+                offset = next(iter(gradient)).get('offset')
+                self.assertEqual(
+                    quantize_ooxml_unit_ratio(float(offset)),
+                    position,
+                )
+                gradient_xml = build_gradient_fill(gradient)
+                self.assertIn(f'<a:gs pos="{position}">', gradient_xml)
+
+        percentage = ET.fromstring('''
+<linearGradient xmlns="http://www.w3.org/2000/svg">
+  <stop offset="1%" stop-color="#112233"/>
+</linearGradient>''')
+        self.assertIn('<a:gs pos="1000">', build_gradient_fill(percentage))
 
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):

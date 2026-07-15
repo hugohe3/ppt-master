@@ -1533,13 +1533,20 @@ def parse_opacity(
     return parse_project_opacity(raw, allow_percentage=allow_percentage)
 
 
+def quantize_ooxml_unit_ratio(value: float) -> int:
+    """Quantize one normalized ratio to DrawingML 1/100000 units."""
+    if not math.isfinite(value):
+        raise ValueError(f'OOXML unit ratio must be finite; got {value!r}')
+    normalized = max(0.0, min(1.0, value))
+    scaled = Decimal(str(normalized)) * Decimal(100000)
+    return int(scaled.to_integral_value(rounding=ROUND_HALF_UP))
+
+
 def quantize_ooxml_alpha(opacity: float) -> int:
     """Quantize one normalized alpha to DrawingML 1/100000 units."""
     if not math.isfinite(opacity):
         raise ValueError(f'Opacity must be finite; got {opacity!r}')
-    normalized = max(0.0, min(1.0, opacity))
-    scaled = Decimal(str(normalized)) * Decimal(100000)
-    return int(scaled.to_integral_value(rounding=ROUND_HALF_UP))
+    return quantize_ooxml_unit_ratio(opacity)
 
 
 def _functional_color_parts(body: str) -> tuple[list[str], str | None]:

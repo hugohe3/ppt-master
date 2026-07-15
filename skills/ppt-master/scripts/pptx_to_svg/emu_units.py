@@ -238,9 +238,14 @@ def _fmt(val: float, ndigits: int = 2) -> str:
 fmt_num = _fmt
 
 
+def format_ooxml_unit_ratio(value: float) -> str:
+    """Format a normalized ratio without losing 1/100000 OOXML precision."""
+    return _fmt(value, 5)
+
+
 def format_ooxml_alpha(alpha: float) -> str:
-    """Format a normalized alpha without losing 1/100000 OOXML precision."""
-    return _fmt(alpha, 5)
+    """Format one normalized OOXML alpha ratio."""
+    return format_ooxml_unit_ratio(alpha)
 
 
 def format_canvas_px_from_emu(emu: int) -> str:

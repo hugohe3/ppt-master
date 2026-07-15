@@ -16,8 +16,9 @@ from .utils import (
     classify_project_marker_shape,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
     parse_project_filter_params, project_filter_drawingml_coordinates,
+    parse_project_gradient_ratio,
     parse_project_stroke_dasharray, parse_project_stroke_enum,
-    quantize_ooxml_alpha,
+    quantize_ooxml_alpha, quantize_ooxml_unit_ratio,
 )
 
 
@@ -53,14 +54,11 @@ def build_gradient_fill(
         if child_tag != 'stop':
             continue
 
-        offset_str = child.get('offset', '0').strip().rstrip('%')
-        try:
-            offset = float(offset_str)
-            if offset > 1.0:
-                offset = offset / 100.0
-        except ValueError:
-            offset = 0.0
-        pos = int(offset * 100000)
+        offset_str = child.get('offset')
+        if offset_str is None:
+            raise ValueError('Gradient stop requires an explicit offset')
+        offset = parse_project_gradient_ratio(offset_str)
+        pos = quantize_ooxml_unit_ratio(offset)
 
         # Parse color from style attribute or direct attributes
         style = child.get('style', '')
