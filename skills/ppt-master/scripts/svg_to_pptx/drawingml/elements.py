@@ -2815,7 +2815,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         text_height = font_size * 1.5
     padding = _textbox_padding(font_size)
 
-    # Adjust position based on text-anchor
+    # Adjust position based on text-anchor. This first box follows the visible
+    # glyph baseline and remains useful for reconstructing imported text-body
+    # insets when data-pptx-frame supplies the owning PowerPoint shape frame.
     if text_anchor == 'middle':
         box_x = x - text_width / 2 - padding
     elif text_anchor == 'end':
@@ -2826,6 +2828,36 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     box_y = y - font_size * 0.85
     box_w = text_width + padding * 2
     box_h = text_height + padding
+
+    visual_box_x = box_x
+    visual_box_y = box_y
+    exact_text_frame = None
+    exact_text_insets: tuple[float, float, float] | None = None
+    if elem.get('data-pptx-frame') is not None:
+        _preset, _guides, exact_text_frame = _parse_preset_geometry_metadata(elem)
+        if exact_text_frame is None:
+            raise ValueError('data-pptx-frame did not resolve to a text frame')
+        raw_frame_x, raw_frame_y, raw_frame_w, raw_frame_h = exact_text_frame
+        frame_x_1 = ctx_x(raw_frame_x, ctx)
+        frame_x_2 = ctx_x(raw_frame_x + raw_frame_w, ctx)
+        frame_y_1 = ctx_y(raw_frame_y, ctx)
+        frame_y_2 = ctx_y(raw_frame_y + raw_frame_h, ctx)
+        box_x = min(frame_x_1, frame_x_2)
+        box_y = min(frame_y_1, frame_y_2)
+        box_w = abs(frame_x_2 - frame_x_1)
+        box_h = abs(frame_y_2 - frame_y_1)
+        top_inset = visual_box_y - box_y
+        if text_anchor == 'start':
+            left_inset = x - box_x
+            right_inset = 0.0
+        elif text_anchor == 'end':
+            left_inset = 0.0
+            right_inset = box_x + box_w - x
+        else:
+            center_delta = x - (box_x + box_w / 2)
+            left_inset = max(0.0, center_delta * 2)
+            right_inset = max(0.0, -center_delta * 2)
+        exact_text_insets = (left_inset, top_inset, right_inset)
 
     text_transform = elem.get('transform', '')
     text_operations = (
@@ -2941,7 +2973,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
-    ext_cx = drawingml_text_frame_width_emu(text_width, font_size)
+    ext_cx = (
+        px_to_emu(box_w)
+        if exact_text_frame is not None
+        else drawingml_text_frame_width_emu(text_width, font_size)
+    )
     ext_cy = px_to_emu(box_h)
     if ext_cx < 1 or ext_cy < 1:
         raise ValueError(
@@ -2951,13 +2987,28 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
     validate_text_run_advances(runs)
 
+    # Imported text carriers with data-pptx-frame retain the source shape frame
+    # instead of shrinking to glyph bounds. Reconstruct insets from the SVG
+    # anchor/baseline so the visible text stays at its imported position while
+    # remaining ordinary editable DrawingML text.
+    if exact_text_frame is not None:
+        if exact_text_insets is None:
+            raise ValueError('data-pptx-frame text insets were not resolved')
+        left_inset, top_inset, right_inset = exact_text_insets
+        body_pr_xml = (
+            '<a:bodyPr wrap="square" '
+            f'lIns="{px_to_emu(left_inset)}" '
+            f'tIns="{px_to_emu(top_inset)}" '
+            f'rIns="{px_to_emu(right_inset)}" bIns="0" '
+            'anchor="t" anchorCtr="0">\n<a:noAutofit/>\n</a:bodyPr>'
+        )
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
     # long joined-up <a:p> on one line, blowing past the canvas. The cx we
     # write below is the longest source SVG line without single-line renderer
     # headroom; PowerPoint wraps long paragraphs inside this design width.
     # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
-    if paragraph_runs is not None:
+    elif paragraph_runs is not None:
         body_pr_xml = (
             '<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" '
             'anchor="t" anchorCtr="0"/>'

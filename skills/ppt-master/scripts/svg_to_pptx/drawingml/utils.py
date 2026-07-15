@@ -1072,6 +1072,21 @@ def _contains_thick_circle(elem: ET.Element, thick_circle_ids: set[int]) -> bool
     )
 
 
+def _is_unit_axis_reflection(
+    operations: tuple[tuple[str, tuple[float, ...]], ...],
+) -> bool:
+    """Return whether a transform is translation plus an unscaled axis flip."""
+    matrix = _transform_operations_matrix(operations)
+    a, b, c, d, _e, _f = matrix
+    return (
+        abs(b) <= 1e-9
+        and abs(c) <= 1e-9
+        and math.isclose(abs(a), 1.0, abs_tol=1e-9)
+        and math.isclose(abs(d), 1.0, abs_tol=1e-9)
+        and (a < 0 or d < 0)
+    )
+
+
 def _transform_semantic_error(
     elem: ET.Element,
     operations: tuple[tuple[str, tuple[float, ...]], ...],
@@ -1115,6 +1130,12 @@ def _transform_semantic_error(
                 f'{label} contains a thick-circle arc shorthand; ancestor '
                 'transforms must be translate-only'
             )
+        if _is_unit_axis_reflection(operations):
+            # Imported PowerPoint groups encode flipH/flipV as a translate /
+            # unit-scale / translate list. The converter distributes that
+            # signed unit scale to child geometry and text positions without
+            # scaling font metrics, so this exact no-shear case is lossless.
+            return None
         if supports_full_project_transform(elem):
             if 'matrix' in names and _contains_rounded_rect(elem):
                 return (

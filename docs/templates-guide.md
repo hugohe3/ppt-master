@@ -174,6 +174,19 @@ This is the most easily confused decision when deriving a template.
 
 **About native PowerPoint shapes**: the lossless import SVG stays immutable in the temporary analysis workspace as native-payload backing. Template creation uses the lightweight editable `authoring-svg/` IR and its source-ref/hash manifest. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror materializes final template SVGs from the IR, reusing converter-supported payload only for unchanged Slide-local/slot refs; fixed Master/Layout layers remain direct atoms, unsupported or edited objects keep the current SVG fallback, and final templates contain no IR-only refs.
 
+For a PPTX-backed Type A mirror, that final step is one deterministic command:
+
+```bash
+python3 skills/ppt-master/scripts/mirror_template_materialize.py \
+  "<import_workspace>" "<empty_template_workspace>"
+```
+
+It validates the IR manifest, immutable source hashes, complete native graph,
+visibility facts, and imported-vector closure before atomically publishing the
+source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
+uses `svg-flat/` as the template source and never generates `design_spec.md`;
+the designer writes that brief against the published roster.
+
 **Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
 
 **How mirror is consumed**: the Strategist picks one mirror page per project page, and the Executor copies that complete SVG and edits visible text in place while preserving decoration, sprite crops, geometry, and the normalized structured declarations. Mirror preserves supported appearance, not the source PPTX group-editing hierarchy.

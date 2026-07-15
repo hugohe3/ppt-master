@@ -1757,8 +1757,12 @@ Every new SVG project declares one deterministic route. Free-design and brand-on
 
 **Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and may allocate a new Layout key/name only when fixed Layout atoms or slot topology/bounds change; update the lock during authoring. Mirror-created prototypes preserve restored source identity, literal paint, typography, effects, atomic geometry, and referenced assets. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology.
 
-Imported inherited-shape visibility is an analysis fact, not generated SVG
-authoring syntax; see
+Imported inherited-shape visibility remains an immutable analysis fact until a
+structured mirror is materialized. The final mirror root carries that fact with
+the two optional canonical booleans below so export can restore the source
+package fields without inferring visibility from which shapes happen to be
+present. Authored `standard` / `fidelity` templates normally omit both and use
+the default `true`. See
 [`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §2 and
 [`conversion.md`](../scripts/docs/conversion.md#pptx_to_svgpy).
 
@@ -1795,6 +1799,8 @@ prototype size remain unchanged.
 | `data-pptx-master-name="Default Master"` | root `<svg>` | Sets the Master picker/display name |
 | `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
 | `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
+| `data-pptx-show-master-shapes="false"` | root `<svg>` | Accepts exact lowercase `true` or `false` and restores the assigned Layout's `p:sldLayout@showMasterSp`; every SVG using the same Layout key must repeat the same value; omission means `true` |
+| `data-pptx-show-inherited-shapes="false"` | root `<svg>` | Accepts exact lowercase `true` or `false` and restores this Slide's `p:sld@showMasterSp`; `false` hides inherited Layout and Master shapes without removing backgrounds, placeholders, parts, or parent relationships; omission means `true` |
 | `data-pptx-layer="master"` | direct semantic atom | Moves one repeated static object/background into the named Slide Master; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
 | `data-pptx-layer="layout"` | direct semantic atom | Moves one repeated static object/background into the selected Layout; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
@@ -1805,7 +1811,7 @@ prototype size remain unchanged.
 | `data-pptx-placeholder-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
-**Hard rule — explicit only**: On a structured deck/layout template route, every SVG requires the four root Master/Layout identity attributes. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat free-design/brand-only pages omit the entire interface.
+**Hard rule — explicit only**: On a structured deck/layout template route, every SVG requires the four root Master/Layout identity attributes. Optional inherited-shape visibility uses only exact lowercase `true` / `false`; other spellings fail, and omission means `true`. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat free-design/brand-only pages omit the entire interface, including the visibility attributes.
 
 **Layer order**: Author the SVG in PowerPoint paint order: Master background,
 Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms,
@@ -1841,6 +1847,14 @@ native text frame. Use the default paragraph merge; `--no-merge` cannot supply
 several line shapes as one
 PowerPoint placeholder prototype/binding. Leave strict-line text Slide-local
 when separate frames are the required result.
+
+For a materialized mirror, an imported text carrier may additionally keep the
+source shape's positive `data-pptx-frame="x y width height"`. That frame owns
+the Slide carrier `a:xfrm`; the converter reconstructs text-body insets from the
+visible SVG anchor/baseline instead of shrinking the shape to glyph bounds.
+`data-pptx-placeholder-bounds` remains the reusable Layout default and may
+legitimately differ. Do not add `data-pptx-frame` to an authored
+`standard` / `fidelity` carrier merely to duplicate its Layout bounds.
 
 **Blank text carrier**: Leave a marked text carrier empty or whitespace-only
 when the placeholder must remain visually blank. Export materializes one

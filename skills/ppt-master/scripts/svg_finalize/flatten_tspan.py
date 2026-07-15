@@ -397,6 +397,13 @@ def _classify_paragraph_block(
             and not _starts_with_list_marker(line_groups[idx])
             and abs(line_font_sizes[idx] - line_font_sizes[idx - 1]) <= 1e-6
         )
+        explicit_soft_break = line_groups[idx][0].get(
+            PARAGRAPH_SOFT_BREAK_ATTR
+        )
+        if explicit_soft_break == "0":
+            is_soft = False
+        elif explicit_soft_break == "1":
+            is_soft = True
         extras.append(0.0 if is_soft else extra)
         soft_breaks.append(is_soft)
 

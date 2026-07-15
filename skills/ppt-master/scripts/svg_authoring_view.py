@@ -107,7 +107,7 @@ def _stable_tag_name(tag: object) -> str:
     raise ValueError(f"Unsupported XML node type in source object: {tag!r}")
 
 
-def _subtree_sha256(
+def semantic_subtree_sha256(
     element: ET.Element,
     *,
     ignored_attributes: frozenset[str] = frozenset(),
@@ -212,7 +212,7 @@ def _index_initial_authoring_references(
         if reference is None:
             raise ValueError(f"Unknown authoring source reference: {source_ref}")
         seen.add(source_ref)
-        reference.initial_authoring_subtree_sha256 = _subtree_sha256(
+        reference.initial_authoring_subtree_sha256 = semantic_subtree_sha256(
             element,
             ignored_attributes=frozenset({SOURCE_REF_ATTRIBUTE}),
         )
