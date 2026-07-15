@@ -756,6 +756,10 @@ Each imported `a:gs` has exactly the required `pos` attribute and exactly one
 direct registered DrawingML color child, with no interleaved text. Extra or
 namespaced attributes, missing/multiple/foreign color children, and text payload
 stop import instead of being reduced to the first recognizable color.
+The direct children of an imported non-line `a:gradFill` follow the closed
+DrawingML sequence `a:gsLst`, optional `a:lin` or `a:path`, then optional
+`a:tileRect`, with no text payload. Unknown children, foreign-namespace aliases,
+and out-of-order registered children stop import instead of being ignored.
 An imported non-line `a:lin@ang` may be omitted for the schema-defined zero
 default. When present, it must be an integer from `0` through `21599999`
 (1/60000 degree); malformed or out-of-range values stop import instead of
