@@ -14,10 +14,15 @@ threshold is a readability convenience — it changes which blobs are factored
 out, not whether the export stays editable.
 
 Usage:
-    python3 scripts/extract_svg_assets.py <svg_dir> [--icons-dir <icons_dir>] [--min-drawables N] [--min-bytes N] [--min-decoration-bytes N] [--inplace] [--clean-stale]
+    python3 scripts/extract_svg_assets.py <svg_dir> [options]
 
 Examples:
-    python3 scripts/extract_svg_assets.py import_ws/svg --icons-dir import_ws/icons --inplace --id-prefix layered --clean-stale
+    python3 scripts/extract_svg_assets.py import_ws/svg \
+        --icons-dir import_ws/icons --inplace --id-prefix layered --clean-stale
+    python3 scripts/extract_svg_assets.py import_ws/svg-flat \
+        --icons-dir import_ws/icons \
+        --reuse-inventory import_ws/svg_vector_asset_inventory.json \
+        --inplace --id-prefix flat --clean-stale
     python3 scripts/extract_svg_assets.py project/svg_output --inplace --min-drawables 40
 
 Dependencies:
@@ -30,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import re
 import sys
@@ -128,7 +134,7 @@ def _dependency_elements(root: ET.Element, asset_group: ET.Element) -> list[ET.E
     by_id = _id_index(root)
     dependencies: list[ET.Element] = []
     seen: set[str] = set()
-    queue = list(_referenced_ids(asset_group))
+    queue = sorted(_referenced_ids(asset_group))
 
     while queue:
         ref_id = queue.pop(0)
@@ -262,6 +268,24 @@ def _asset_svg(
     return ET.tostring(svg, encoding="utf-8", xml_declaration=True)
 
 
+def _source_sha256(
+    group: ET.Element,
+    dependencies: list[ET.Element],
+    view_box: str | None,
+    width: str | None,
+    height: str | None,
+) -> str:
+    """Fingerprint an extracted subtree before asset-id namespacing."""
+    payload = _asset_svg(
+        copy.deepcopy(group),
+        [copy.deepcopy(dependency) for dependency in dependencies],
+        view_box,
+        width,
+        height,
+    )
+    return hashlib.sha256(payload).hexdigest()
+
+
 def _asset_group(nodes: list[ET.Element]) -> ET.Element:
     group = ET.Element(f"{{{SVG_NS}}}g")
     for node in nodes:
@@ -373,6 +397,57 @@ def _existing_placeholder_entries(
     return entries
 
 
+def _load_reusable_assets(inventory_path: Path, icons_dir: Path) -> dict[str, dict]:
+    """Load fingerprinted assets from an earlier extraction inventory."""
+    try:
+        payload = json.loads(inventory_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ValueError(f"reuse inventory not found: {inventory_path}") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid reuse inventory JSON: {inventory_path}: {exc}") from exc
+
+    entries = payload.get("assets")
+    if not isinstance(entries, list):
+        raise ValueError(f"reuse inventory has no assets list: {inventory_path}")
+
+    reusable: dict[str, dict] = {}
+    fingerprinted = 0
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        source_sha256 = entry.get("source_sha256")
+        asset_sha256 = entry.get("asset_sha256")
+        asset = entry.get("asset")
+        icon = entry.get("icon")
+        if not all(
+            isinstance(value, str) and value
+            for value in (source_sha256, asset_sha256, asset, icon)
+        ):
+            continue
+        fingerprinted += 1
+        asset_path = icons_dir / asset
+        if not asset_path.is_file():
+            raise ValueError(
+                f"reusable asset is missing from the target icons directory: {asset_path}"
+            )
+        actual_asset_sha256 = hashlib.sha256(asset_path.read_bytes()).hexdigest()
+        if actual_asset_sha256 != asset_sha256:
+            raise ValueError(
+                f"reusable asset hash does not match its inventory: {asset_path}"
+            )
+        current = reusable.get(source_sha256)
+        if current is None or asset < str(current["asset"]):
+            reusable[source_sha256] = entry
+
+    extracted_count = payload.get("extracted_count", 0)
+    if isinstance(extracted_count, int) and extracted_count > fingerprinted:
+        raise ValueError(
+            "reuse inventory predates source fingerprints; rerun the source extraction "
+            f"with the current tool: {inventory_path}"
+        )
+    return reusable
+
+
 def _rewritten_path(svg_path: Path, rewritten_dir: Path | None, inplace: bool) -> Path:
     if inplace:
         return svg_path
@@ -390,6 +465,7 @@ def extract_file(
     inplace: bool,
     id_prefix: str = "",
     rewritten_dir: Path | None = None,
+    reusable_assets: dict[str, dict] | None = None,
 ) -> list[dict]:
     """Extract qualifying groups from one SVG. Returns inventory entries."""
     ET.register_namespace("", SVG_NS)
@@ -450,6 +526,33 @@ def extract_file(
             for elem in dependency.iter()
             if (elem_id := elem.get("id"))
         })
+        source_sha256 = _source_sha256(group, dependencies, view_box, width, height)
+        reusable = (reusable_assets or {}).get(source_sha256)
+        if reusable is not None:
+            reused_icon = str(reusable["icon"])
+            reused_asset = str(reusable["asset"])
+            placeholder = ET.Element(f"{{{SVG_NS}}}use")
+            placeholder.set("data-icon", reused_icon)
+            for node in nodes:
+                if node in parent:
+                    parent.remove(node)
+            parent.insert(pos, placeholder)
+            entries.append({
+                "svg": svg_path.name,
+                "id": reused_icon,
+                "icon": reused_icon,
+                "asset": reused_asset,
+                "source": "reused-inventory",
+                "source_sha256": source_sha256,
+                "asset_sha256": reusable["asset_sha256"],
+                "reused_from_svg": reusable.get("svg"),
+                "drawable_count": _drawable_count(group),
+                "byte_count": _xml_size(group),
+                "dependencies": dependency_source_ids,
+                "elements": _tag_histogram(group),
+            })
+            continue
+
         id_mapping = _collect_id_mapping(asset_id, group, dependencies)
         _rewrite_references(group, id_mapping)
         for dependency in dependencies:
@@ -471,6 +574,9 @@ def extract_file(
             "id": asset_id,
             "icon": asset_id,
             "asset": f"{asset_id}.svg",
+            "source": "extracted",
+            "source_sha256": source_sha256,
+            "asset_sha256": hashlib.sha256(asset_bytes).hexdigest(),
             "drawable_count": _drawable_count(group),
             "byte_count": _xml_size(group),
             "dependencies": [id_mapping.get(elem_id, elem_id) for elem_id in dependency_source_ids],
@@ -500,9 +606,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Inventory JSON path (default: <svg_dir>/../<svg_dir-name>_vector_asset_inventory.json)",
     )
     parser.add_argument(
+        "--reuse-inventory",
+        help=(
+            "Reuse fingerprint-matched assets from an earlier extraction inventory; "
+            "only unmatched vector subtrees create new assets"
+        ),
+    )
+    parser.add_argument(
         "--id-prefix",
         default="",
-        help="Optional prefix for generated asset IDs, useful when processing layered and flat SVG dirs into one icons dir",
+        help=(
+            "Optional prefix for generated asset IDs, useful when processing "
+            "layered and flat SVG dirs into one icons dir"
+        ),
     )
     parser.add_argument(
         "--min-drawables", type=int, default=DEFAULT_MIN_DRAWABLES,
@@ -543,8 +659,20 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     icons_dir = Path(args.icons_dir) if args.icons_dir else svg_dir.parent / "icons"
     icons_dir.mkdir(parents=True, exist_ok=True)
+    reusable_assets: dict[str, dict] = {}
+    reuse_inventory_path = Path(args.reuse_inventory) if args.reuse_inventory else None
+    if reuse_inventory_path is not None:
+        try:
+            reusable_assets = _load_reusable_assets(reuse_inventory_path, icons_dir)
+        except ValueError as exc:
+            print(f"[ERROR] {exc}", file=sys.stderr)
+            return 1
     rewritten_dir = Path(args.rewritten_dir) if args.rewritten_dir else None
-    inventory_path = Path(args.inventory) if args.inventory else svg_dir.parent / f"{svg_dir.name}_vector_asset_inventory.json"
+    inventory_path = (
+        Path(args.inventory)
+        if args.inventory
+        else svg_dir.parent / f"{svg_dir.name}_vector_asset_inventory.json"
+    )
     svg_paths = sorted(svg_dir.glob("*.svg"))
 
     inventory: list[dict] = []
@@ -560,12 +688,14 @@ def main(argv: Optional[list[str]] = None) -> int:
                     args.inplace,
                     args.id_prefix,
                     rewritten_dir,
+                    reusable_assets,
                 )
             )
         except ET.ParseError as exc:
             print(f"[WARN] skip unparseable {svg_path.name}: {exc}", file=sys.stderr)
 
-    extracted_count = len(inventory)
+    extracted_count = sum(entry.get("source") == "extracted" for entry in inventory)
+    reused_count = sum(entry.get("source") == "reused-inventory" for entry in inventory)
     known_assets = {str(entry["asset"]) for entry in inventory}
     inventory.extend(_existing_placeholder_entries(svg_paths, icons_dir, known_assets))
 
@@ -584,18 +714,28 @@ def main(argv: Optional[list[str]] = None) -> int:
         "schema": "vector_asset_inventory.v1",
         "svg_dir": str(svg_dir),
         "icons_dir": str(icons_dir),
-        "rewritten_dir": None if args.inplace else str(_rewritten_path(svg_dir / "_sample.svg", rewritten_dir, False).parent),
+        "rewritten_dir": (
+            None
+            if args.inplace
+            else str(_rewritten_path(svg_dir / "_sample.svg", rewritten_dir, False).parent)
+        ),
+        "reuse_inventory": str(reuse_inventory_path) if reuse_inventory_path is not None else None,
         "min_drawables": args.min_drawables,
         "min_bytes": args.min_bytes,
         "min_decoration_bytes": args.min_decoration_bytes,
         "extracted_count": extracted_count,
+        "reused_count": reused_count,
         "asset_count": len(inventory),
         "stale_removed": stale_removed,
         "assets": inventory,
     }
     inventory_path.parent.mkdir(parents=True, exist_ok=True)
     inventory_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"[OK] extracted {extracted_count} new asset(s), inventoried {len(inventory)} asset(s) -> {icons_dir}", file=sys.stderr)
+    print(
+        f"[OK] extracted {extracted_count} new asset(s), reused {reused_count} asset(s), "
+        f"inventoried {len(inventory)} asset reference(s) -> {icons_dir}",
+        file=sys.stderr,
+    )
     if stale_removed:
         print(f"[OK] removed {len(stale_removed)} stale generated asset(s)", file=sys.stderr)
     return 0

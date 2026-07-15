@@ -48,6 +48,25 @@ is owned by [`shared-standards.md`](../../references/shared-standards.md), with
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
 
+## `extract_svg_assets.py`
+
+Factor large vector subtrees out of lightweight authoring projections and
+replace them with compact `<use data-icon>` references:
+
+```bash
+python3 scripts/extract_svg_assets.py <layered_svg_dir> \
+  --icons-dir <icons_dir> --inplace --id-prefix layered
+python3 scripts/extract_svg_assets.py <flat_svg_dir> \
+  --icons-dir <icons_dir> --reuse-inventory <layered_inventory.json> \
+  --inplace --id-prefix flat
+```
+
+The first pass records a source fingerprint before namespacing each extracted
+asset's internal ids. The second pass reuses a fingerprint-matched asset and
+writes no duplicate SVG file. Unmatched flat-only subtrees still extract
+normally. Use `--clean-stale` on both import-workspace passes to remove stale
+generated files for their respective prefixes.
+
 ## `extract_svg_pictures.py`
 
 Normalize one deliberately selected complex SVG object into one PowerPoint
