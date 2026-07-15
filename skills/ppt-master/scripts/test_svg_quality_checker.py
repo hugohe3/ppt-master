@@ -2875,10 +2875,15 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     resolve_fill(sp_pr, None)
 
     def test_native_linear_gradient_angle_must_be_valid(self):
-        valid_angles = ((None, 0.0), ('0', 0.0), ('21599999', 360.0))
-        for angle, expected_degrees in valid_angles:
-            with self.subTest(angle=angle):
+        valid_angles = (
+            (None, None, 0.0),
+            ('0', None, 0.0),
+            ('21599999', '1', 360.0),
+        )
+        for angle, scaled, expected_degrees in valid_angles:
+            with self.subTest(angle=angle, scaled=scaled):
                 angle_attr = '' if angle is None else f' ang="{angle}"'
+                scaled_attr = '' if scaled is None else f' scaled="{scaled}"'
                 sp_pr = ET.fromstring(f'''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
         xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
@@ -2886,7 +2891,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
     </a:gsLst>
-    <a:lin{angle_attr}/>
+    <a:lin{angle_attr}{scaled_attr}/>
   </a:gradFill>
 </p:spPr>''')
                 fill = resolve_fill(sp_pr, None)
@@ -2924,6 +2929,44 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </p:spPr>''')
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_fill(sp_pr, None)
+
+    def test_native_linear_gradient_scaling_must_be_representable(self):
+        def resolve_linear(angle: str, scaled: str | None):
+            scaled_attr = '' if scaled is None else f' scaled="{scaled}"'
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:lin ang="{angle}"{scaled_attr}/>
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        for scaled in (None, '0', 'false'):
+            with self.subTest(cardinal_scaled=scaled):
+                self.assertTrue(resolve_linear('5400000', scaled).defs)
+        for scaled in ('1', 'true'):
+            with self.subTest(diagonal_scaled=scaled):
+                self.assertTrue(resolve_linear('2700000', scaled).defs)
+
+        for scaled in (None, '0', 'false'):
+            with self.subTest(unscaled_diagonal=scaled):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Unscaled non-cardinal DrawingML linear gradients',
+                ):
+                    resolve_linear('2700000', scaled)
+
+        for scaled in ('', '2', 'TRUE', 'on', 'yes'):
+            with self.subTest(invalid_scaled=scaled):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML linear gradient scaled value',
+                ):
+                    resolve_linear('0', scaled)
 
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
