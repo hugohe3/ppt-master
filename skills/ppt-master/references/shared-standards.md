@@ -761,6 +761,10 @@ An imported non-line `a:gradFill` contains at most one direct `a:lin` or
 `a:path` direction. Omitting both uses the schema-defined horizontal linear
 default; duplicate or mixed direction elements stop import instead of being
 selected by implementation priority.
+For the registered path-gradient approximation, omitted `a:path@path` uses the
+schema default `rect`; explicit `circle`, `rect`, and `shape` are normalized to
+the centered radial SVG form. Unknown or malformed enum values stop import
+instead of being mislabeled as a supported radial gradient.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

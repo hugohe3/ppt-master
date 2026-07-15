@@ -3009,6 +3009,37 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ('0', '0', '1', '0'),
         )
 
+    def test_native_path_gradient_type_must_be_registered(self):
+        def resolve_path(path_type: str | None):
+            path_attr = '' if path_type is None else f' path="{path_type}"'
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:path{path_attr}/>
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        for path_type in (None, 'circle', 'rect', 'shape'):
+            with self.subTest(valid_path_type=path_type):
+                fill = resolve_path(path_type)
+                self.assertEqual(
+                    ET.fromstring(fill.defs[0]).tag,
+                    'radialGradient',
+                )
+
+        for path_type in ('', 'Circle', 'ellipse', 'futurePath'):
+            with self.subTest(invalid_path_type=path_type):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Unsupported DrawingML path gradient type',
+                ):
+                    resolve_path(path_type)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
