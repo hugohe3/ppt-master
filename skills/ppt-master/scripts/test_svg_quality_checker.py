@@ -2784,6 +2784,45 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     stroke_xml,
                 )
 
+    def test_native_fill_choice_must_be_unambiguous(self):
+        competing_fills = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:noFill/>
+  <a:solidFill><a:srgbClr val="112233"/></a:solidFill>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            'must contain at most one fill',
+        ):
+            resolve_fill(competing_fills, None)
+
+        for group_fill in (
+            '<a:grpFill '
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/>',
+            '<p:spPr '
+            'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            '<a:grpFill/></p:spPr>',
+        ):
+            with self.subTest(group_fill=group_fill):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Unsupported DrawingML fill: grpFill',
+                ):
+                    resolve_fill(ET.fromstring(group_fill), None)
+
+        foreign_fill = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:future="urn:future">
+  <future:solidFill/>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            'Invalid DrawingML fill element namespace: solidFill',
+        ):
+            resolve_fill(foreign_fill, None)
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):
