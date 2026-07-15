@@ -140,6 +140,13 @@ Each bundle contains editable SVGs plus `authoring_manifest.json`. The projectio
 
 `authoring-svg/` is the canonical editable IR for template creation. The lossless trees are read only by materialization when an unchanged referenced object needs supported native payload or fallback evidence. Do not edit or copy the lossless SVGs directly. The IR is not a finished template directory and must be materialized into validated `<template_workspace>/templates/*.svg` before preview or export.
 
+For a Type A `mirror`, final materialization is owned by
+`mirror_template_materialize.py`; never assemble the structured output by
+copying lossless SVGs or `svg-flat/` pages into `templates/`. The command runs
+only after the confirmed IR edits and vector-readability pass described below.
+`standard` / `fidelity` remain newly authored Template_Designer output and do
+not use this compiler.
+
 **Vector illustration readability pass**:
 
 Factor large decorative vector groups out of the lightweight IR documents so the model-facing SVGs stay readable while export remains native shapes. Never run this in place on the lossless import SVGs:
@@ -200,7 +207,7 @@ does not turn those vectors into a picture.
 | Mode | Required read set |
 |---|---|
 | `standard` / `fidelity` | `manifest.json`, exported assets, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered IR document (`authoring-svg/master_*.svg` / `layout_*.svg` / `slide_NN.svg`). The layered IR is the complete read surface: it covers Layouts unused by any sample slide (invisible in `svg-flat/` yet still template vocabulary), and per-page composition follows from `inheritance.json`. Cleaned flat pages are optional composition spot checks, not a required second pass over the same shapes. Source topology remains non-binding; the two modes differ in output design (`fidelity` designs a broader roster covering the useful visual range), not in read coverage. |
-| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, every cleaned layered Master/Layout/Slide IR document, and every cleaned flat slide IR document. Edit and select objects only through the IR; materialization may resolve unchanged refs against the matching lossless backing without placing opaque payload in model context. |
+| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered Master/Layout/Slide IR document. The layered `authoring-svg/` tree is the sole editable and materialization input. Cleaned `authoring-svg-flat/` slides are optional visual composition checks only; never edit or feed them into template materialization. Materialization may resolve unchanged refs against the matching lossless backing without placing opaque payload in model context. |
 
 Use `summary.md` only for orientation. Use screenshots or the original PPTX only for visual cross-checking. Do not bulk-read opaque lossless payload into model context.
 
@@ -418,8 +425,8 @@ If the input source is type A, pass the following internal package to the role:
 - `summary.md` (orientation only)
 - exported `assets/`
 - `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/imported/*.svg`
-- editable IR documents and manifests from `authoring-svg/` and `authoring-svg-flat/`
-- for `mirror` only, matching immutable `svg/` / `svg-flat/` payload backing plus `svg/inheritance.json`
+- editable layered IR documents and manifest from `authoring-svg/`; optional `authoring-svg-flat/` is a visual cross-check only and never a template materialization input
+- for `mirror` only, matching immutable `svg/` payload backing plus `svg/inheritance.json`; immutable `svg-flat/` remains an optional visual cross-check
 - optional screenshots, if available
 
 For type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted vectors; open individual `icons/imported/*.svg` files only when needed.
@@ -432,6 +439,24 @@ The role interprets the package according to replication mode:
 |---|---|---|
 | `standard` / `fidelity` | Newly authored SVGs based on the confirmed brief and visual references | Design an intentional new Master/Layout/slot system. Source topology is neither preserved nor distilled into the output. |
 | `mirror` | Editable `authoring-svg/` IR plus native-structure facts and lossless payload backing | Restore source pages, Master/Layout identities and parentage, placeholder identity/bounds, ownership, and supported native-object metadata one-to-one. Materialization resolves unchanged source refs; it does not copy the lossless tree as the editable source. |
+
+For Type A `mirror`, materialize the reviewed layered IR into an empty template
+workspace with the deterministic compiler:
+
+```bash
+python3 skills/ppt-master/scripts/mirror_template_materialize.py \
+  "<import_workspace>" "<template_workspace>"
+```
+
+The destination `templates/` directory must be absent or empty. Before
+publication, the command verifies the layered manifest and source-ref closure,
+lossless SVG and source-PPTX hashes, complete native/inheritance graph, and
+extracted-vector inventory. It then stages and publishes the entire roster in
+one operation. It emits source-ordered page SVGs, unused-Layout definition
+SVGs, `icons/imported/`, and referenced `images/` / `templates/assets/`; it does
+not create `design_spec.md`. Template_Designer writes that file from the
+confirmed brief and the materialized roster before Step 5. A rerun targets a
+new empty workspace rather than overwriting a partially reviewed template.
 
 **Hard rule — mode-specific authorship**: `standard` and `fidelity` author new
 project-canonical SVG documents. When one registered PowerPoint preset exactly
@@ -482,7 +507,7 @@ Downstream, both template-adherence choices use `pptx_structure.mode: structured
 
 **Mirror-mode restoration contract** (type A or B): when `Replication mode: mirror`, the Template_Designer role:
 
-1. **Restores one output SVG per source page** in `<template_workspace>/templates/`. Edit and normalize the matching `authoring-svg/` IR document, then materialize it with the authoring manifest, native structure facts, and immutable payload backing. Preserve source Master/Layout keys and picker names, Layout parentage, slide assignment, placeholder type/index/bounds, ownership, paint order, and supported native metadata. Mechanical namespace, root-declaration, asset-path, and fixed-layer group normalization is allowed only when source ownership and appearance remain unchanged.
+1. **Restores one output SVG per source page** in `<template_workspace>/templates/`. Edit and normalize the matching `authoring-svg/` IR document, then materialize it with the authoring manifest, native structure facts, and immutable payload backing. Type A must use `mirror_template_materialize.py`; do not hand-copy or independently rebuild its graph. Preserve source Master/Layout keys and picker names, Layout parentage, slide assignment, placeholder type/index/bounds, inherited-shape visibility, ownership, paint order, and supported native metadata. Mechanical namespace, root-declaration, asset-path, and fixed-layer group normalization is allowed only when source ownership and appearance remain unchanged.
    - Type A authoring source: `<import_workspace>/authoring-svg/` plus its `authoring_manifest.json`; `<import_workspace>/svg/`, `<import_workspace>/svg-flat/`, `svg/inheritance.json`, and `native_structure.json` provide payload and structural backing
    - Type B authoring source: `<svg_analysis_workspace>/authoring-svg/` plus its manifest; the complete explicit source SVG contract is immutable backing
    - For every source Layout unused by all source slides, additionally materialize one definition-only SVG named `layout_<layout_key>.svg` from its layered authoring IR document and payload backing. It carries the exact root identity, fixed atoms, and placeholder contract but is not a generated page assignment. Use source placeholder prompts/carriers; do not invent business content. This definition SVG lets downstream export register the Layout and any otherwise-unused parent Master without retaining an internal carrier slide.
@@ -517,7 +542,7 @@ becomes the prototype Slide placeholder, while
 | Generic text entry | General `body` and text-carried `object` slots begin at the upper-left, use left paragraph alignment, and wrap inside the full frame. Title/subtitle alignment follows the authored composition. |
 | Centered exceptions | Center alignment is reserved for semantically short focal content such as KPI values, short process nodes, hero statements, and compact takeaways. Record a template-wide exception in `design_spec.md §IV` when it is part of the layout grammar. |
 | Review Slide binding | `template_preview_pptx.py` sizes each authored Slide carrier to the same complete frame as its registered Layout placeholder. A review deck whose Slide carrier is only the prompt text's tight box fails Step 6. |
-| Mirror boundary | `mirror` preserves source Slide carrier geometry exactly; do not normalize it to the Layout frame when the source intentionally overrides that frame. |
+| Mirror boundary | `mirror` preserves source Slide carrier geometry exactly; the materializer places the authoritative source `data-pptx-frame` on its text carrier and keeps `data-pptx-placeholder-bounds` as the reusable Layout default. Do not normalize one to the other when the source intentionally overrides that frame. |
 
 ---
 
@@ -566,9 +591,10 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Every additional authored Master represents a distinct reusable design family, not one Layout or an equivalent duplicate; every declared Master owns at least one emitted Layout and every declared Layout has at least one emitted prototype
 - [ ] Mirror output preserves source slide order, Master/Layout identity and parentage, placeholder facts, and ownership; fixed-layer group expansion is mechanical and pixel-equivalent, and the Source Restoration Map lists every source slide
+- [ ] Mirror roots preserve source inherited-shape visibility with canonical lowercase `data-pptx-show-master-shapes` and `data-pptx-show-inherited-shapes`; same-key Layouts agree on the former, while each Slide retains its own latter value
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the restoration map explains them
-- [ ] All template-creation edits used the authoring IR; mirror materialization validated its manifest, reused only converter-supported payload for hash-matching Slide-local/slot refs, stripped IR-only source-ref metadata, and kept fixed Master/Layout visuals as direct atoms
+- [ ] All template-creation edits used the authoring IR; Type A mirror used `mirror_template_materialize.py`, validated its manifest/hash/graph/source-ref closure before atomic publication, reused only converter-supported payload for hash-matching Slide-local/slot refs, stripped IR-only source-ref metadata, and kept fixed Master/Layout visuals as direct atoms
 - [ ] If any SVG references an extracted vector, it uses `data-icon="imported/<name>"` and the sole SVG asset exists at `<template_workspace>/icons/imported/<name>.svg`; `templates/icons/` does not exist and no separate illustration embedding script was added
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
 - [ ] For `mirror` mode: source-page SVG count equals source page count, while additional files are exactly the required `layout_<layout_key>.svg` definitions for unused source Layouts; source-page filenames follow the `<NNN>_<page_type>.svg` convention; **no new `{{...}}` authoring placeholders were inserted into restored source-page SVGs**; §V Page Roster lists every emitted file and marks definition-only prototypes explicitly

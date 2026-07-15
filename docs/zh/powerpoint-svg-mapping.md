@@ -58,7 +58,7 @@ PowerPoint 意图
 | 基于模板的演示文稿结构 | `pptx_structure.mode: structured` 加显式 Master/Layout/页面分配 | 声明的 `p:sldMaster`、`p:sldLayout`、注册与 Slide 父子关系 | 在显式结构合同内为 `Native-stable` | 导出器绝不猜测 Master、Layout 或占位符拓扑 |
 | 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | 源结构由模板/导入工作流恢复 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
 | 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | 可恢复源 Layout；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
-| 回导的继承图形可见性 | PPTX 的 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp`；分层分析在可见 SVG 之外记录规范化的源布尔值 | 不新增生成侧创作 marker；源保留工作流保留包字段 | 对回导视觉与分析事实为 `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 背景、Slide-local 对象、占位符继承、独立 part SVG 与父子关系保持不变；flat 回导只省略被抑制的继承图形 |
+| 回导的继承图形可见性 | 分层分析记录规范化源布尔值；物化后的 structured mirror 在根写入精确小写的 `data-pptx-show-inherited-shapes` 与 `data-pptx-show-master-shapes` | 恢复 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp` | `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 省略即 true；使用同一 Layout key 的页面必须使用相同 Layout 值。背景、Slide-local 对象、占位符继承、part 与父子关系保持不变 |
 | strict 模板 Layout | 选中的原型合同 | 保留现有已声明 Layout 拓扑 | 页面遵循原型时为 `Native-stable` | 不得改变固定 Layout atom 和 slot 结构 |
 | adaptive 模板 Layout | 选定 Master 加显式的当前或新声明 Layout | 可在可复用结构变化时创建新 Layout 身份 | 更新 lock 与页面映射后为 `Native-stable` | 绝不默默改变已复用 Layout key |
 | structured 模式以外的 Slide 背景填充 | 第一个合格的全幅 `<rect>`，可直接位于根下或位于简单单子组中，使用已登记纯色、线性/径向渐变或预设图案填充 | Slide 的原生 `p:bg` | 保真度遵循下文对应 paint 行 | transform、filter、clip、圆角、可见 stroke 或未映射 fill 会阻止提升 |
@@ -68,6 +68,7 @@ PowerPoint 意图
 | 标题占位符 | 含一个文本 carrier 的结构化 slot 组 | Layout 和 Slide 的 `title` 类型 `p:ph` | `Native-stable` | carrier 数量、边界、类型与有效 index 必须与 Layout 合同一致 |
 | 副标题占位符 | 含一个文本 carrier 的结构化 slot 组 | `subTitle` 类型 `p:ph` | `Native-stable` | 与标题相同的 slot 规则 |
 | 正文占位符 | 含一个文本 carrier 的结构化 slot 组 | `body` 类型 `p:ph` | `Native-stable` | 多行 carrier 仍必须是一个文本框 |
+| mirror 回导文本占位符的 Slide frame | slot 的 `<text>` carrier 保留正数源 `data-pptx-frame="x y width height"`，并与 slot 的可复用 bounds 分开 | Slide carrier 保持该精确 `a:xfrm`；文字仍可编辑，源硬换行保留为显式段落 | 在受支持回导文本范围内为 `Native-stable` | `data-pptx-placeholder-bounds` 仍只定义 Layout 默认 frame，二者可以不同；standard/fidelity 创作不得为复制 bounds 而添加此 frame |
 | 日期、页脚与页码占位符 | 结构化文本 slot | `dt`、`ftr` 与 `sldNum` 类型 `p:ph`，带匹配的 Layout 页眉/页脚标志 | `Native-stable` | 占位符 index 必须唯一且合法 |
 | 图片占位符 | 含一个图片或受支持 crop carrier 的结构化 slot | `pic` 类型 `p:ph` | 在图片合同内为 `Native-stable` | slot 必须恰好含一个兼容的直接 carrier |
 | 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生 Chart/Table 导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-charts-and-tables` |

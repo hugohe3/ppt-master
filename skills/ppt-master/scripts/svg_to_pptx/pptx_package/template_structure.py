@@ -51,6 +51,8 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-layout-name",
     "data-pptx-master",
     "data-pptx-master-name",
+    "data-pptx-show-inherited-shapes",
+    "data-pptx-show-master-shapes",
     "data-pptx-placeholder",
     "data-pptx-placeholder-binding",
     "data-pptx-placeholder-bounds",
@@ -300,6 +302,8 @@ class TemplateSlideSpec:
     master_name: str
     layout_key: str
     layout_name: str
+    layout_show_master_shapes: bool
+    slide_show_inherited_shapes: bool
     elements: tuple[TemplateElementSpec, ...]
 
     @property
@@ -1194,6 +1198,23 @@ def _structure_attrs(elem: ET.Element) -> list[str]:
     return sorted(attr for attr in _STRUCTURE_ATTRS if elem.get(attr) is not None)
 
 
+def _parse_root_boolean(
+    root: ET.Element,
+    attribute: str,
+    *,
+    svg_path: Path,
+) -> bool:
+    """Parse one optional root boolean with a backward-compatible true default."""
+    raw = root.get(attribute)
+    if raw is None:
+        return True
+    if raw not in {"true", "false"}:
+        raise TemplateStructureError(
+            f"{svg_path.name}: root {attribute} must be exactly 'true' or 'false'"
+        )
+    return raw == "true"
+
+
 def parse_template_slide(
     svg_path: Path,
     slide_num: int,
@@ -1274,6 +1295,16 @@ def parse_template_slide(
         )
     if not layout_name:
         layout_name = re.sub(r"[-_.]+", " ", layout_key).strip().title() or layout_key
+    layout_show_master_shapes = _parse_root_boolean(
+        root,
+        "data-pptx-show-master-shapes",
+        svg_path=svg_path,
+    )
+    slide_show_inherited_shapes = _parse_root_boolean(
+        root,
+        "data-pptx-show-inherited-shapes",
+        svg_path=svg_path,
+    )
     if structured and root.get("data-pptx-layout-kind") is not None:
         raise TemplateStructureError(
             f"{svg_path.name}: data-pptx-layout-kind is obsolete; the root "
@@ -1288,6 +1319,8 @@ def parse_template_slide(
                 "data-pptx-layout-name",
                 "data-pptx-master",
                 "data-pptx-master-name",
+                "data-pptx-show-inherited-shapes",
+                "data-pptx-show-master-shapes",
             }
             and root.get(attr) is not None
         )
@@ -1338,10 +1371,12 @@ def parse_template_slide(
             or elem.get("data-pptx-layout-name") is not None
             or elem.get("data-pptx-master") is not None
             or elem.get("data-pptx-master-name") is not None
+            or elem.get("data-pptx-show-inherited-shapes") is not None
+            or elem.get("data-pptx-show-master-shapes") is not None
         ):
             raise TemplateStructureError(
-                f"{svg_path.name}: Master/Layout identity attributes belong on "
-                "the root <svg> only"
+                f"{svg_path.name}: Master/Layout identity and visibility "
+                "attributes belong on the root <svg> only"
             )
         if layer and layer not in _LAYERS:
             raise TemplateStructureError(
@@ -1609,6 +1644,8 @@ def parse_template_slide(
         master_name=master_name,
         layout_key=layout_key,
         layout_name=layout_name,
+        layout_show_master_shapes=layout_show_master_shapes,
+        slide_show_inherited_shapes=slide_show_inherited_shapes,
         elements=tuple(elements),
     )
     return spec
@@ -1659,6 +1696,16 @@ def _validate_template_slide_contracts(
                     f"{spec.svg_path.name}: globally unique layout {layout_key!r} "
                     f"belongs to Master {spec.master_key!r}, expected "
                     f"{prototype.master_key!r}"
+                )
+            if (
+                spec.layout_show_master_shapes
+                != prototype.layout_show_master_shapes
+            ):
+                raise TemplateStructureError(
+                    f"{spec.svg_path.name}: layout {layout_key!r} uses "
+                    "data-pptx-show-master-shapes="
+                    f"{str(spec.layout_show_master_shapes).lower()}, expected "
+                    f"{str(prototype.layout_show_master_shapes).lower()}"
                 )
             if spec.layout_contract != prototype.layout_contract:
                 raise TemplateStructureError(
@@ -2601,7 +2648,9 @@ def template_prototype_errors(
             == _prototype_placeholder_contract(prototype)
         )
         layout_contract_same = (
-            tuple(item.contract_signature() for item in spec.layout_elements)
+            spec.layout_show_master_shapes
+            == prototype.layout_show_master_shapes
+            and tuple(item.contract_signature() for item in spec.layout_elements)
             == tuple(
                 item.contract_signature() for item in prototype.layout_elements
             )
@@ -2676,6 +2725,15 @@ def template_prototype_errors(
                     f"{prototype.layout_name!r} to {spec.layout_name!r}; assign a "
                     "new key and name to the evolved Layout contract"
                 )
+        if (
+            spec.slide_show_inherited_shapes
+            != prototype.slide_show_inherited_shapes
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: inherited-shape visibility differs from "
+                f"prototype {reference.svg_path.name}; keep root "
+                "data-pptx-show-inherited-shapes unchanged"
+            )
         if not placeholder_contract_same:
             if adherence == "strict":
                 errors.append(

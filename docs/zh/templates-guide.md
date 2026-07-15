@@ -174,6 +174,18 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 **关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
 
+对于 PPTX 来源的 Type A mirror，最终物化统一使用一个确定性命令：
+
+```bash
+python3 skills/ppt-master/scripts/mirror_template_materialize.py \
+  "<import_workspace>" "<empty_template_workspace>"
+```
+
+它会先校验 IR manifest、不可变来源 hash、完整原生图谱、可见性事实和
+导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
+`icons/imported/`、`images/` 素材。它不会把 `svg-flat/` 当成模板来源，
+也不会生成 `design_spec.md`；设计角色必须针对物化后的 roster 编写该简报。
+
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
 **`mirror` 模板怎么消费**：Strategist 为每个项目页选择一张 mirror 参考，Executor 复制完整 SVG 并原位修改可见文字，同时保留装饰、精灵图裁剪、几何坐标和全部 `data-pptx-*` 结构声明。

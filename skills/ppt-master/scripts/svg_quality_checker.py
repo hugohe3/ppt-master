@@ -446,8 +446,13 @@ _PPTX_ROOT_STRUCTURE_ATTRS = (
     'data-pptx-layout',
     'data-pptx-layout-name',
 )
+_PPTX_ROOT_VISIBILITY_ATTRS = (
+    'data-pptx-show-master-shapes',
+    'data-pptx-show-inherited-shapes',
+)
 _PPTX_STRUCTURE_ATTRS = frozenset({
     *_PPTX_ROOT_STRUCTURE_ATTRS,
+    *_PPTX_ROOT_VISIBILITY_ATTRS,
     'data-pptx-layer',
     'data-pptx-layout-kind',
     'data-pptx-placeholder',
@@ -635,6 +640,12 @@ def _local_pptx_structure_errors(
                 f"{svg_path.name}: structured SVG root is missing "
                 + ', '.join(missing)
             )
+    for attr in _PPTX_ROOT_VISIBILITY_ATTRS:
+        raw = root.get(attr)
+        if raw is not None and raw not in {'true', 'false'}:
+            errors.append(
+                f"{svg_path.name}: root {attr} must be exactly 'true' or 'false'"
+            )
 
     parent_by_id = {
         id(child): parent
@@ -648,7 +659,10 @@ def _local_pptx_structure_errors(
 
         if elem is not root:
             nested_root_attrs = [
-                attr for attr in _PPTX_ROOT_STRUCTURE_ATTRS
+                attr for attr in (
+                    *_PPTX_ROOT_STRUCTURE_ATTRS,
+                    *_PPTX_ROOT_VISIBILITY_ATTRS,
+                )
                 if elem.get(attr) is not None
             ]
             if nested_root_attrs:

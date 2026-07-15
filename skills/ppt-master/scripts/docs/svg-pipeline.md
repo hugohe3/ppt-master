@@ -80,6 +80,45 @@ restore the authoring-manifest mapping. A rerun on an
 already rewritten namespaced projection inventories those references and does
 not progressively extract their remaining parent or sibling geometry.
 
+## `mirror_template_materialize.py`
+
+Compile one Type A PPTX import workspace into a deterministic structured mirror
+template after the layered authoring IR has been reviewed and edited:
+
+```bash
+python3 scripts/mirror_template_materialize.py \
+  <import_workspace> <empty_template_workspace>
+```
+
+The command treats `<import_workspace>/authoring-svg/` as the sole editable
+source. It validates the layered authoring manifest, immutable lossless SVG
+hashes, source PPTX hash, complete Master/Layout/Slide graph, inheritance
+visibility facts, source-ref closure, and extracted-vector inventory before it
+writes anything. It refuses a non-empty destination and stages the whole result
+before atomic publication, so a failed preflight cannot leave a partial
+template.
+
+Materialization preserves source page order and emits one definition-only
+`layout_<layout_key>.svg` for every source Layout unused by all source Slides.
+It mechanically expands fixed Master/Layout group wrappers into direct atoms,
+rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
+current SVG fallback for edited refs, restores explicit text hard breaks, and
+removes every IR-only source ref. Source `p:sldLayout@showMasterSp` and
+`p:sld@showMasterSp` facts become canonical root
+`data-pptx-show-master-shapes` and
+`data-pptx-show-inherited-shapes` booleans. An imported text placeholder keeps
+its authoritative native frame on the `<text data-pptx-frame>` carrier so the
+Slide-local frame can differ from the reusable Layout bounds without collapsing
+to glyph bounds.
+
+The output routes reusable vectors once to `icons/imported/`, bitmaps to
+`images/`, and other referenced files to `templates/assets/`. The JSON report
+is written to stdout only. The command intentionally does not create
+`templates/design_spec.md`; Template_Designer writes that personality and page
+roster after materialization. This compiler is for Type A mirror restoration,
+not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
+or export.
+
 ## `extract_svg_pictures.py`
 
 Normalize one deliberately selected complex SVG object into one PowerPoint

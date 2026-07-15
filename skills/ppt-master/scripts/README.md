@@ -45,7 +45,7 @@ python3 scripts/update_repo.py
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
+| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -82,6 +82,7 @@ python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
+python3 scripts/mirror_template_materialize.py <import_workspace> <empty_template_workspace>
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
 ```
@@ -98,6 +99,19 @@ source/authoring hashes and object paths without duplicating opaque payload.
 The full imported SVG remains unchanged as native-payload backing. Template
 creation edits the IR and materializes validated `templates/*.svg`; the IR
 directory itself is not a final template or direct release export source.
+
+`mirror_template_materialize.py` is the deterministic Type A mirror compiler.
+It consumes only the layered `authoring-svg/` IR as editable input, validates
+its manifest against immutable `svg/`, `native_structure.json`,
+`svg/inheritance.json`, `source_template.pptx`, and any extracted-vector
+inventory, then publishes a complete structured template roster atomically.
+Unchanged supported Slide-local/slot refs may recover native payload; edited
+refs keep their current SVG fallback. Fixed Master/Layout wrappers are expanded
+mechanically into direct atoms, source visibility flags become canonical root
+metadata, and imported vectors are copied once to `icons/imported/`. Bitmap
+assets go to `images/`; other referenced source assets go to
+`templates/assets/`. The destination must be empty, and the command does not
+write `templates/design_spec.md`; Template_Designer owns that authored brief.
 
 `template_preview_pptx.py` reads a template workspace, exports every `templates/*.svg` prototype as one structured review slide, and verifies the resulting Master/Layout package. This is an on-demand review action: its default output is `exports/<template_id>_template_preview.pptx`, and that directory need not exist before the command runs. It refuses an existing output unless an intentional re-export passes `--force`. `--visual-only` is an explicit migration aid for legacy SVG rosters: it creates a slide-local visual review deck without validating or claiming a reusable Master/Layout contract. This diagnostic path does not require a project `spec_lock.md`; it may retain generic theme/text defaults inside its clean one-Master/one-Layout shell. New structured templates use the default mode when a review deck is requested.
 
@@ -153,6 +167,7 @@ Create-template/source normalization (optional; never part of automatic export):
 python3 scripts/extract_svg_assets.py <layered_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --inplace --id-prefix layered
 python3 scripts/extract_svg_assets.py <flat_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
 python3 scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<picture_assets_dir>" --inplace  # optional create-template normalization: one selected group -> one SVG picture
+python3 scripts/mirror_template_materialize.py <import_workspace> <empty_template_workspace>  # Type A mirror only
 ```
 
 `extract_svg_assets.py` fingerprints each extracted subtree before generated-ID

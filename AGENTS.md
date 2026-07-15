@@ -73,6 +73,8 @@ python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --d
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 # Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
 python3 skills/ppt-master/scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
+# Type A create-template mirror: validated authoring IR -> deterministic structured template workspace
+python3 skills/ppt-master/scripts/mirror_template_materialize.py "<import_workspace>" "<empty_template_workspace>"
 # create-template review deck (workspace root may be global or project-scoped)
 python3 skills/ppt-master/scripts/template_preview_pptx.py <template_workspace>
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
