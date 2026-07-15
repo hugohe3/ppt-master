@@ -22,9 +22,11 @@ Strategy:
   a raster compatibility preview on a:blip; retain the raster as fallback.
 - Default (no srcRect, plain stretch) -> a single <image> filling the box,
   preserveAspectRatio="none".
-- With srcRect -> wrap the <image> in a nested <svg viewBox> in the unit
-  rectangle [0,1] x [0,1], so cropping is expressed as the visible viewBox
-  region. preserveAspectRatio="none" both inside and outside.
+- With srcRect, or with a single oversized tile that covers the frame -> wrap
+  the <image> in a nested <svg viewBox> in the unit rectangle [0,1] x [0,1],
+  so cropping is expressed as the visible viewBox region.
+- Repeating tile fills still use the legacy plain-image fallback; a repeated
+  pattern cannot be represented by the project's native picture-crop subset.
 - Image bytes are written through the result; the slide assembler decides
   the href format (external file vs base64).
 """
@@ -48,7 +50,7 @@ except ImportError:  # pragma: no cover - optional visual enhancement dependency
     Image = None
     ImageEnhance = None
 
-from .emu_units import NS, Xfrm, fmt_num, format_ooxml_alpha
+from .emu_units import NS, Xfrm, emu_to_px, fmt_num, format_ooxml_alpha
 from .ooxml_loader import OoxmlPackage, PartRef, blip_embed_relationship_ids
 
 
@@ -121,6 +123,7 @@ def convert_blip_fill(
 
     filename = (asset_name_map or {}).get(target, pkg.media_filename(target))
     filename, img_bytes = _normalize_office_media(filename, img_bytes)
+    tile_source_bytes = img_bytes
     filename, img_bytes = _apply_blip_image_effects(filename, img_bytes, blip)
     href = _build_href(filename, img_bytes, media_subdir, embed_inline)
     opacity_attr = _blip_opacity_attr(blip)
@@ -129,11 +132,18 @@ def convert_blip_fill(
     src_rect = blip_fill_elem.find("a:srcRect", NS)
     crop = _parse_src_rect(src_rect)
 
-    # stretch / tile: default stretch+fillRect means "fill, ignore aspect ratio".
-    has_stretch = blip_fill_elem.find("a:stretch") is not None
-    if not has_stretch:
-        # tile mode is rare; for v1 fall back to plain image.
-        pass
+    # A tile larger than its frame is visually a crop, not a stretch. Preserve
+    # that common PowerPoint background construction through the same nested
+    # SVG transport used for srcRect. True repeated patterns retain the legacy
+    # plain-image fallback because native export has no registered tile subset.
+    tile = blip_fill_elem.find("a:tile", NS)
+    if crop is None and tile is not None:
+        crop = _single_cover_tile_crop(
+            tile,
+            blip_fill_elem,
+            xfrm,
+            tile_source_bytes,
+        )
 
     if crop is None:
         # Plain unclipped image
@@ -276,6 +286,132 @@ def _parse_src_rect(elem: ET.Element | None) -> tuple[float, float, float, float
     if vb_w <= 0 or vb_h <= 0:
         return None
     return vb_x, vb_y, vb_w, vb_h
+
+
+def _single_cover_tile_crop(
+    tile: ET.Element,
+    blip_fill: ET.Element,
+    xfrm: Xfrm,
+    img_bytes: bytes,
+) -> tuple[float, float, float, float] | None:
+    """Map one oversized DrawingML tile to a unit-image crop window.
+
+    The closed SVG/PPTX crop transport cannot express a repeating pattern. It
+    can, however, reproduce a tile when the aligned first tile alone covers the
+    complete frame. This is how PowerPoint commonly stores full-page bitmap
+    backgrounds without distorting their aspect ratio.
+    """
+    if Image is None or xfrm.w <= 0 or xfrm.h <= 0:
+        return None
+    if tile.attrib.get("flip", "none") != "none":
+        return None
+
+    natural_size = _image_size_at_96_dpi(img_bytes, blip_fill)
+    if natural_size is None:
+        return None
+    natural_w, natural_h = natural_size
+    scale_x = _pct_attr_default(tile, "sx", 1.0)
+    scale_y = _pct_attr_default(tile, "sy", 1.0)
+    tile_w = natural_w * scale_x
+    tile_h = natural_h * scale_y
+    if tile_w <= 0 or tile_h <= 0:
+        return None
+
+    align_x, align_y = _tile_alignment(tile.attrib.get("algn", "tl"))
+    tile_x = (
+        xfrm.x
+        + (xfrm.w - tile_w) * align_x
+        + emu_to_px(tile.attrib.get("tx"))
+    )
+    tile_y = (
+        xfrm.y
+        + (xfrm.h - tile_h) * align_y
+        + emu_to_px(tile.attrib.get("ty"))
+    )
+
+    tolerance = 1e-4
+    if (
+        tile_x > xfrm.x + tolerance
+        or tile_y > xfrm.y + tolerance
+        or tile_x + tile_w < xfrm.x + xfrm.w - tolerance
+        or tile_y + tile_h < xfrm.y + xfrm.h - tolerance
+    ):
+        return None
+
+    crop = (
+        (xfrm.x - tile_x) / tile_w,
+        (xfrm.y - tile_y) / tile_h,
+        xfrm.w / tile_w,
+        xfrm.h / tile_h,
+    )
+    if all(
+        abs(actual - expected) <= 1e-7
+        for actual, expected in zip(crop, (0.0, 0.0, 1.0, 1.0))
+    ):
+        return None
+    return crop
+
+
+def _image_size_at_96_dpi(
+    img_bytes: bytes,
+    blip_fill: ET.Element,
+) -> tuple[float, float] | None:
+    """Return the bitmap's physical size in the SVG canvas' 96-DPI pixels."""
+    try:
+        with Image.open(io.BytesIO(img_bytes)) as image:
+            pixel_w, pixel_h = image.size
+            embedded_dpi = image.info.get("dpi")
+    except (OSError, ValueError):
+        return None
+
+    configured_dpi = _positive_float(blip_fill.attrib.get("dpi"))
+    if configured_dpi is not None:
+        dpi_x = dpi_y = configured_dpi
+    else:
+        dpi_x, dpi_y = _dpi_pair(embedded_dpi)
+    return pixel_w * 96.0 / dpi_x, pixel_h * 96.0 / dpi_y
+
+
+def _dpi_pair(value: object) -> tuple[float, float]:
+    if isinstance(value, (tuple, list)) and len(value) >= 2:
+        dpi_x = _positive_float(value[0]) or 96.0
+        dpi_y = _positive_float(value[1]) or 96.0
+        return dpi_x, dpi_y
+    dpi = _positive_float(value) or 96.0
+    return dpi, dpi
+
+
+def _positive_float(value: object) -> float | None:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return None
+    return parsed if parsed > 0 else None
+
+
+def _pct_attr_default(elem: ET.Element, name: str, default: float) -> float:
+    value = elem.attrib.get(name)
+    if value is None:
+        return default
+    try:
+        return float(value) / 100000.0
+    except ValueError:
+        return default
+
+
+def _tile_alignment(value: str) -> tuple[float, float]:
+    alignments = {
+        "tl": (0.0, 0.0),
+        "t": (0.5, 0.0),
+        "tr": (1.0, 0.0),
+        "l": (0.0, 0.5),
+        "ctr": (0.5, 0.5),
+        "r": (1.0, 0.5),
+        "bl": (0.0, 1.0),
+        "b": (0.5, 1.0),
+        "br": (1.0, 1.0),
+    }
+    return alignments.get(value, alignments["tl"])
 
 
 def _apply_blip_image_effects(
