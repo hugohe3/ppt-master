@@ -1402,6 +1402,170 @@ def _copy_text_carrier(source: ET.Element | None) -> ET.Element | None:
     return carrier
 
 
+def _visible_placeholder_decoration(element: ET.Element) -> bool:
+    """Return whether one non-text placeholder subtree paints any pixels."""
+    if _hidden(element):
+        return False
+    tag = _local_name(element.tag)
+    if tag in _NON_VISUAL_TAGS or tag == "text":
+        return False
+    if tag in {"g", "svg", "a"}:
+        return any(_visible_placeholder_decoration(child) for child in element)
+    if tag in {"image", "foreignObject", "use"}:
+        return _visible_leaf(element)
+    if tag in {"line", "polyline"}:
+        stroke = _paint_value(element, "stroke")
+        return stroke not in {None, "none", "transparent"}
+    if tag in {"rect", "path", "polygon", "circle", "ellipse"}:
+        fill = _paint_value(element, "fill")
+        stroke = _paint_value(element, "stroke")
+        filter_value = _paint_value(element, "filter")
+        return (
+            fill not in {"none", "transparent"}
+            or stroke not in {None, "none", "transparent"}
+            or filter_value not in {None, "none"}
+        )
+    return False
+
+
+def _placeholder_decorations(source: ET.Element | None) -> list[ET.Element]:
+    """Copy direct visual children that decorate one text placeholder."""
+    if source is None:
+        return []
+    decorations = [
+        copy.deepcopy(child)
+        for child in source
+        if _visible_placeholder_decoration(child)
+    ]
+    for decoration in decorations:
+        _merge_group_inheritance(source, decoration)
+    _copy_placeholder_native_attributes(source, decorations)
+    return decorations
+
+
+def _copy_placeholder_native_attributes(
+    source: ET.Element,
+    geometries: list[ET.Element],
+) -> None:
+    """Carry one logical placeholder geometry's native identity to its leaf."""
+    if len(geometries) == 1:
+        decoration = geometries[0]
+        native_attributes = {
+            "data-pptx-frame",
+            "data-pptx-geometry-kind",
+            "data-pptx-geometry-reason",
+            "data-pptx-geometry-sha256",
+            "data-pptx-geometry-status",
+            "data-pptx-object",
+            "data-pptx-prst",
+        }
+        for name, value in source.attrib.items():
+            if name in native_attributes or name.startswith("data-pptx-av-"):
+                if decoration.get(name) is None:
+                    decoration.set(name, value)
+
+
+def _placeholder_geometry(source: ET.Element | None) -> list[ET.Element]:
+    """Copy direct source geometry even when it has no visible local paint."""
+    if source is None:
+        return []
+    geometry_tags = {
+        "circle",
+        "ellipse",
+        "line",
+        "path",
+        "polygon",
+        "polyline",
+        "rect",
+    }
+    geometries = [
+        copy.deepcopy(child)
+        for child in source
+        if _local_name(child.tag) in geometry_tags and not _hidden(child)
+    ]
+    for geometry in geometries:
+        _merge_group_inheritance(source, geometry)
+    _copy_placeholder_native_attributes(source, geometries)
+    return geometries
+
+
+def _apply_placeholder_paint(source: ET.Element, target: ET.Element) -> None:
+    """Apply inherited paint without replacing Slide-owned geometry."""
+    paint_attributes = {
+        "color",
+        "fill",
+        "fill-opacity",
+        "fill-rule",
+        "filter",
+        "mix-blend-mode",
+        "opacity",
+        "paint-order",
+        "shape-rendering",
+        "stroke",
+        "stroke-dasharray",
+        "stroke-dashoffset",
+        "stroke-linecap",
+        "stroke-linejoin",
+        "stroke-miterlimit",
+        "stroke-opacity",
+        "stroke-width",
+        "vector-effect",
+    }
+    source_style = _parse_style(source.get("style"))
+    target_style = _parse_style(target.get("style"))
+    for name in paint_attributes:
+        value = source.get(name)
+        if value is None:
+            value = source_style.get(name)
+        if value is None:
+            continue
+        target.set(name, value)
+        target_style.pop(name, None)
+    if target_style:
+        target.set("style", _style_text(target_style))
+    else:
+        target.attrib.pop("style", None)
+
+
+def _resolved_placeholder_decorations(
+    source: ET.Element | None,
+    layout_guide: ET.Element | None,
+    master_guide: ET.Element | None,
+) -> list[ET.Element]:
+    """Resolve text-placeholder decoration through Slide/Layout/Master."""
+    local = _placeholder_decorations(source)
+    if local:
+        return local
+
+    inherited: list[ET.Element] = []
+    for candidate in (layout_guide, master_guide):
+        inherited = _placeholder_decorations(candidate)
+        if inherited:
+            break
+    if (
+        source is None
+        or source.get("data-pptx-placeholder-local-geometry") != "true"
+        or len(inherited) != 1
+    ):
+        return inherited
+
+    source_geometry = _placeholder_geometry(source)
+    inherited_tag = _local_name(inherited[0].tag)
+    if not source_geometry or inherited_tag not in {
+        "circle",
+        "ellipse",
+        "line",
+        "path",
+        "polygon",
+        "polyline",
+        "rect",
+    }:
+        return inherited
+    for geometry in source_geometry:
+        _apply_placeholder_paint(inherited[0], geometry)
+    return source_geometry
+
+
 def _normalize_mergeable_tspans(text: ET.Element) -> None:
     """Mark the first line of a positional text block for paragraph merging."""
     tspans = [child for child in text if _local_name(child.tag) == "tspan"]
@@ -1495,13 +1659,13 @@ def _slot_wrapper(
         carrier = _copy_text_carrier(source)
         if carrier is None:
             carrier = _blank_text_carrier(plan, layout_guide, master_guide)
-        if source is not None:
-            for child in source:
-                if _local_name(child.tag) == "text" or not _visible_leaf(child):
-                    continue
-                extra = copy.deepcopy(child)
-                extra.attrib.pop("data-pptx-placeholder-carrier", None)
-                extras.append(extra)
+        extras = _resolved_placeholder_decorations(
+            source,
+            layout_guide,
+            master_guide,
+        )
+        for extra in extras:
+            extra.attrib.pop("data-pptx-placeholder-carrier", None)
         wrapper.append(carrier)
         return wrapper, extras
 

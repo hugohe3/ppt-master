@@ -23,6 +23,7 @@ animation anchor.
 from __future__ import annotations
 
 import base64
+import copy
 import hashlib
 import json
 from dataclasses import dataclass, field
@@ -351,8 +352,8 @@ def assemble_part_solo(
     if bg_xml:
         body_parts.append(bg_xml)
 
-    # Walk shapes. Placeholders are visualized as lightweight layout guides in
-    # layered master/layout SVGs so template slots remain machine-visible.
+    # Walk shapes. Layered master/layout SVGs retain each placeholder's source
+    # appearance so mirror materialization can recover its editable decoration.
     for node in walk_sp_tree(part.xml):
         if _is_placeholder_node(node):
             chunk = _convert_placeholder_guide(node, ctx, top_level=True)
@@ -471,9 +472,13 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                 ctx.media.update(blip_result.media)
 
     # Text body (a:txBody)
-    tx_body = node.xml.find("p:txBody", NS)
+    source_tx_body = node.xml.find("p:txBody", NS)
+    tx_body = _effective_placeholder_tx_body(
+        source_tx_body,
+        node.inherited_body_properties,
+    )
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
-    local_has_run_effects = txbody_has_run_effects(tx_body)
+    local_has_run_effects = txbody_has_run_effects(source_tx_body)
     inherited_has_run_effects = txbody_has_run_effects(
         *node.inherited_lst_styles
     )
@@ -556,10 +561,10 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         inner_parts.append(blip_image)
     if geom_xml:
         inner_parts.append(geom_xml)
-    if tx_body is not None and geom is not None:
+    if source_tx_body is not None and geom is not None:
         inner_parts.append(
             _txbody_metadata(
-                tx_body,
+                source_tx_body,
                 text_result.svg,
             )
         )
@@ -573,6 +578,51 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         top_level=top_level,
         extra_attrs=_geometry_group_attrs(geom),
     )
+
+
+def _effective_placeholder_tx_body(
+    tx_body: ET.Element | None,
+    inherited_body_properties: tuple[ET.Element, ...],
+) -> ET.Element | None:
+    """Merge inherited placeholder bodyPr settings into one visible text body."""
+    if tx_body is None or not inherited_body_properties:
+        return tx_body
+    effective = copy.deepcopy(tx_body)
+    body_pr = effective.find("a:bodyPr", NS)
+    if body_pr is None:
+        body_pr = ET.Element(f"{{{NS['a']}}}bodyPr")
+        effective.insert(0, body_pr)
+
+    child_groups = (
+        {"prstTxWarp"},
+        {"noAutofit", "normAutofit", "spAutoFit"},
+        {"scene3d"},
+        {"sp3d"},
+    )
+    for inherited in inherited_body_properties:
+        for name, value in inherited.attrib.items():
+            body_pr.attrib.setdefault(name, value)
+        local_names = {
+            child.tag.rsplit("}", 1)[-1]
+            for child in body_pr
+            if isinstance(child.tag, str)
+        }
+        for group in child_groups:
+            if local_names & group:
+                continue
+            inherited_child = next(
+                (
+                    child
+                    for child in inherited
+                    if isinstance(child.tag, str)
+                    and child.tag.rsplit("}", 1)[-1] in group
+                ),
+                None,
+            )
+            if inherited_child is not None:
+                body_pr.append(copy.deepcopy(inherited_child))
+                local_names.add(inherited_child.tag.rsplit("}", 1)[-1])
+    return effective
 
 
 def _txbody_metadata(
@@ -1374,24 +1424,8 @@ def _is_placeholder_node(node: ShapeNode) -> bool:
 
 def _convert_placeholder_guide(node: ShapeNode, ctx: AssemblyContext,
                                *, top_level: bool) -> str:
-    """Emit a lightweight visible guide for template placeholder slots."""
-    ph = node.placeholder
-    label_parts = ["ph"]
-    if ph is not None:
-        if ph.type:
-            label_parts.append(ph.type)
-        if ph.idx:
-            label_parts.append(f"idx={ph.idx}")
-    label = " ".join(label_parts)
-    guide = (
-        f'<rect x="{fmt_num(node.xfrm.x)}" y="{fmt_num(node.xfrm.y)}" '
-        f'width="{fmt_num(node.xfrm.w)}" height="{fmt_num(node.xfrm.h)}" '
-        f'fill="#F8FAFC" fill-opacity="0.18" stroke="#94A3B8" '
-        f'stroke-dasharray="6 4" stroke-width="1"/>'
-        f'<text x="{fmt_num(node.xfrm.x + 8)}" y="{fmt_num(node.xfrm.y + 18)}" '
-        f'font-size="12" fill="#64748B">{_xml_escape(label)}</text>'
-    )
-    return _wrap_shape_group(guide, node, ctx, top_level=top_level)
+    """Emit the source-authored appearance of one template placeholder."""
+    return _convert_node(node, ctx, top_level=top_level)
 
 
 # ---------------------------------------------------------------------------
@@ -1430,6 +1464,13 @@ def _wrap_shape_group(
         attrs.append(f'data-name="{_xml_escape(node.name)}"')
     if node.placeholder is not None and node.placeholder.type:
         attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
+    if node.placeholder is not None and node.kind == SHAPE:
+        sp_pr = node.xml.find("p:spPr", NS)
+        if sp_pr is not None and any(
+            sp_pr.find(path, NS) is not None
+            for path in ("a:xfrm", "a:prstGeom", "a:custGeom")
+        ):
+            attrs.append('data-pptx-placeholder-local-geometry="true"')
     if extra_attrs:
         attrs.extend(extra_attrs)
         if any(
