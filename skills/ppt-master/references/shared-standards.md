@@ -731,6 +731,14 @@ style/master inheritance and ultimately default it to `schemeColor(bg1)`, the
 local SVG mapping does not guess that external context: empty, malformed,
 ambiguous, or unresolvable solid fills stop import instead of being treated as
 an omitted fill or reduced to the first recognizable color.
+Other imported color-choice containers, including style references,
+background references, pattern foreground/background wrappers, gradient stops,
+and table text styles, use the same direct-child selector. An omitted color is
+retained only where the owning container permits omission; otherwise the
+surrounding structure contract requires one. Multiple registered colors,
+including duplicate color types, and foreign-namespace elements that reuse a
+registered color local name stop import. Selection never depends on color-type
+priority or silently discards a competing child.
 Imported `a:srgbClr` uses exactly one `val` attribute containing six ASCII
 hexadecimal digits. SVG/CSS conveniences such as three-digit shorthand, a
 leading `#`, alpha-bearing eight-digit tokens, extra attributes, and

@@ -129,10 +129,19 @@ _COLOR_MAP_SOURCES = (
     "hlink",
     "folHlink",
 )
-_THEME_COLOR_TAGS = frozenset({
+COLOR_TAGS = (
+    "srgbClr",
+    "schemeClr",
+    "sysClr",
+    "prstClr",
+    "hslClr",
+    "scrgbClr",
+)
+_COLOR_QNAMES = frozenset({
     f"{{{NS['a']}}}{name}"
-    for name in ("srgbClr", "sysClr", "prstClr", "hslClr", "scrgbClr")
+    for name in COLOR_TAGS
 })
+_THEME_COLOR_TAGS = _COLOR_QNAMES - {f"{{{NS['a']}}}schemeClr"}
 _SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
 _OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
 _OOXML_INT_MIN = -(2**31)
@@ -322,11 +331,6 @@ class ColorPalette:
 # Color resolution
 # ---------------------------------------------------------------------------
 
-# All concrete color element names under the a: namespace.
-COLOR_TAGS = ("srgbClr", "schemeClr", "sysClr", "prstClr",
-              "hslClr", "scrgbClr")
-
-
 def validate_no_fill(elem: ET.Element) -> None:
     """Require the empty DrawingML a:noFill leaf contract."""
     if elem.attrib or list(elem) or (elem.text or "").strip():
@@ -341,7 +345,6 @@ def resolve_solid_fill_color(
 ) -> tuple[str, float]:
     """Resolve one explicit color from a closed DrawingML solid fill."""
     children = list(elem)
-    color_tags = {f"{{{NS['a']}}}{name}" for name in COLOR_TAGS}
     if not elem.attrib and not children and not (elem.text or "").strip():
         raise ValueError(
             "DrawingML solid fill requires one explicit color"
@@ -349,7 +352,7 @@ def resolve_solid_fill_color(
     if (
         elem.attrib
         or len(children) != 1
-        or children[0].tag not in color_tags
+        or children[0].tag not in _COLOR_QNAMES
         or (elem.text or "").strip()
         or (children[0].tail or "").strip()
     ):
@@ -365,14 +368,26 @@ def resolve_solid_fill_color(
 
 
 def find_color_elem(parent: ET.Element | None) -> ET.Element | None:
-    """Return the first child color element (any of the 6 OOXML color tags)."""
+    """Return the sole direct registered color, rejecting ambiguous aliases."""
     if parent is None:
         return None
-    for tag in COLOR_TAGS:
-        elem = parent.find(f"a:{tag}", NS)
-        if elem is not None:
-            return elem
-    return None
+    colors: list[ET.Element] = []
+    for child in list(parent):
+        if not isinstance(child.tag, str):
+            continue
+        name = child.tag.rsplit("}", 1)[-1]
+        if name not in COLOR_TAGS:
+            continue
+        if child.tag not in _COLOR_QNAMES:
+            raise ValueError(
+                f"Invalid DrawingML color child namespace: {child.tag!r}"
+            )
+        colors.append(child)
+    if len(colors) > 1:
+        raise ValueError(
+            "DrawingML color container has multiple direct color children"
+        )
+    return colors[0] if colors else None
 
 
 def resolve_color(
