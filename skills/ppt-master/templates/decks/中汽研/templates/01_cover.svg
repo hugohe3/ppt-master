@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="catarc_dark_master" data-pptx-master-name="CATARC Dark"
   data-pptx-layout="cover" data-pptx-layout-name="Cover">
@@ -11,7 +11,7 @@
     data-pptx-layer="master" data-pptx-editable="false"/>
 
   <image id="cover-logo" x="344" y="92" width="592" height="238"
-    xlink:href="../images/大型 logo.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/大型 logo.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <line id="cover-separator" x1="440" y1="542" x2="840" y2="542" stroke="#FFFFFF"
     stroke-width="1" stroke-opacity="0.4" data-pptx-layer="layout" data-pptx-editable="false"/>
