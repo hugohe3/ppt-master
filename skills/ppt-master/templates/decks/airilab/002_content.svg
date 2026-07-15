@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1280" height="720" viewBox="0 0 1280 720"><defs><filter id="fx1" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="2.83" dy="2.83" stdDeviation="16" flood-color="#000000" flood-opacity="0.4"/></filter></defs><rect x="0" y="0" width="1280" height="720" fill="#015B57"/>
+<g id="shape-4" data-name="Picture 3">
+<image href="assets/image1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+</g>
+<g id="shape-26" data-name="文本框 257">
+<rect x="137.08" y="395.9" width="986.94" height="203.57" fill="none" filter="url(#fx1)"/>
+<text x="630.55" y="427.9" text-anchor="middle" xml:space="preserve" font-family="Inter, sans-serif" font-size="32" fill="#EFEFEF" font-weight="bold" font-style="italic"><tspan fill="#EFEFEF" font-size="32" font-weight="bold" font-style="italic">ARCHITECTURAL AI POWERING </tspan><tspan x="630.55" dy="38.4" fill="#EFEFEF" font-size="32" font-weight="bold" font-style="italic">PROFESSIONAL DESIGN WORKFLOWS</tspan><tspan x="630.55" dy="38.4"></tspan><tspan x="630.55" dy="38.4" fill="#EFEFEF" font-size="32" font-style="italic">Designed by Architects, for Architects</tspan></text>
+
+</g>
+<g id="shape-9" data-name="文本框 10">
+<rect x="14.67" y="667.22" width="606.81" height="32.31" fill="none"/>
+<text x="24.27" y="687.88" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="18.67" fill="#EFEFEF" font-style="italic"><tspan fill="#EFEFEF" font-size="18.67" font-style="italic">AIRI lab. Introduction</tspan></text>
+</g>
+<g id="shape-2" data-name="Group 1">
+<g id="shape-22" data-name="Picture 21">
+<image href="assets/image5.png" x="398.27" y="88.03" width="249.58" height="247.58" preserveAspectRatio="none"/>
+</g>
+<g id="shape-23" data-name="图片 14">
+<image href="assets/image4.png" x="492.9" y="197.13" width="301.86" height="70.18" preserveAspectRatio="none"/>
+</g>
+</g></svg>

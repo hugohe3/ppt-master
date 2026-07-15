@@ -1,9 +1,10 @@
 ---
 name: ppt-master
 description: >
-  AI-driven multi-format SVG content generation system. Converts source documents
-  (PDF/DOCX/URL/Markdown) into high-quality SVG pages and exports to PPTX through
-  multi-role collaboration. Use when user asks to "create PPT", "make presentation",
+  AI-driven multi-source presentation system with a local intake/style/outline wizard,
+  reference-image analysis packs, editable SVG pages, and native PPTX export. Converts
+  PDF/DOCX/PPTX/Excel/images/URL/Markdown/text through multi-role collaboration. Use
+  when user asks to "create PPT", "make presentation",
   "生成PPT", "做PPT", "制作演示文稿", or mentions "ppt-master".
 ---
 
@@ -64,6 +65,7 @@ description: >
 | Artifact ownership | [`references/artifact-ownership.md`](references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
 | Failure recovery | [`workflows/failure-recovery.md`](workflows/failure-recovery.md) | Owns stop/continue decisions for common failures |
 | Confirm UI details | [`scripts/docs/confirm_ui.md`](scripts/docs/confirm_ui.md) | Owns schema, launcher behavior, port strategy, and chat fallback details |
+| AIRI v2 intake-to-outline route | [`workflows/airi-workflow-wizard.md`](workflows/airi-workflow-wizard.md) | Owns multi-source intake, analysis packs, editable page cards, and the formal-generation gate |
 
 ## Main Pipeline Scripts
 
@@ -84,6 +86,9 @@ description: >
 | `${SKILL_DIR}/scripts/native_enhance_pptx.py` | Existing PPTX enhancement project init / validation / direct OOXML patch export |
 | `${SKILL_DIR}/scripts/native_narration_pptx.py` | Backward-compatible entrypoint for existing PPTX notes / narration enhancement |
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
+| `${SKILL_DIR}/scripts/intake_manifest.py` | Build `source_manifest.json` plus the AI synthesis scaffold |
+| `${SKILL_DIR}/scripts/analysis_pack.py` | Validate Excel prompt packs and build reference-image manifests |
+| `${SKILL_DIR}/scripts/outline_gate.py` | Validate, confirm, and check the editable page-outline gate |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
@@ -97,12 +102,23 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Brand presets | `${SKILL_DIR}/templates/brands/brands_index.json` | Query available brand identity presets (color / typography / logo / voice) |
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
+| Analysis prompt packs | `${SKILL_DIR}/templates/analysis-packs/analysis_packs_index.json` | User-selected Excel prompt packs compiled to reference-image jobs |
 
 ## Standalone Workflows
 
 **Route authority**: Use [`workflows/routing.md`](workflows/routing.md) before entering the main pipeline or any standalone workflow.
 
 **Registry**: Use [`workflows/index.md`](workflows/index.md) for the complete workflow list, triggers, preconditions, exclusions, outputs, and blocking points.
+
+### AIRI v2 Visual Route
+
+For new projects that need uploads, numbered style/template selection, reference-image analysis packs, or page-by-page editing, run [`airi-workflow-wizard`](workflows/airi-workflow-wizard.md). Launch with:
+
+```bash
+python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wizard --daemon
+```
+
+The legacy chat and three-stage Confirm UI paths remain valid. The v2 route adds a second hard confirmation: when `outline_draft.json` exists, `outline_confirmed.json` must match its current hash before Executor starts.
 
 ### PPTX Route Boundary
 
@@ -459,6 +475,16 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
+#### AIRI v2 Analysis + Outline Gate
+
+When `<project_path>/workflow_selection.json` exists, apply this gate before writing final `design_spec.md` / `spec_lock.md`:
+
+1. If `analysis_pack_id` is non-empty, compile the selected Excel pack and generate every enabled item. Do not auto-select a pack.
+2. Write `outline_draft.json` only after selected pack items are `Generated`; map each page's final copy to existing/generated image files.
+3. Present editable page cards through the wizard. Allow add/delete/reorder, copy edits, image replacement, prompt edits, and single-image regeneration.
+4. ⛔ **BLOCKING**: wait for explicit final outline confirmation. Any draft edit invalidates the prior confirmation.
+5. Run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>`. Only then copy the confirmed order/content/image mapping into `design_spec.md` Section IX and `spec_lock.md`.
+
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative
 - `<project_path>/spec_lock.md` — machine-readable execution contract (skeleton: `templates/spec_lock_reference.md`); Executor re-reads before every page
@@ -543,6 +569,8 @@ Workflow:
 ---
 
 ### Step 6: Executor Phase
+
+When `outline_draft.json` exists, run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>` before starting live preview. Failure is a hard stop. Legacy projects without an outline draft remain compatible.
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
 

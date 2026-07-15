@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "packs": [
+    {
+      "id": "architecture-placeholder",
+      "name_zh": "建筑分析图（占位包）",
+      "name_en": "Architecture analysis placeholder",
+      "path": "architecture-placeholder",
+      "source": "pack.xlsx",
+      "compiled": "pack.json",
+      "description_zh": "包含少量占位提示词；后续可直接扩充 Excel 并重新编译。",
+      "description_en": "Small placeholder pack; extend the Excel workbook and recompile later."
+    }
+  ]
+}

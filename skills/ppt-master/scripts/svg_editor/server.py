@@ -60,6 +60,7 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from outline_gate import check_outline_confirmation  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
@@ -986,6 +987,19 @@ def main(argv: Optional[list[str]] = None) -> int:
     project_path = Path(args.project_dir).resolve()
     if args.shutdown:
         return _shutdown_existing(project_path)
+
+    if args.live:
+        outline_ready, outline_message = check_outline_confirmation(
+            project_path,
+            optional=True,
+        )
+        if not outline_ready:
+            logger.error(
+                'outline confirmation gate failed: %s. '
+                'Open the workflow wizard or run outline_gate.py confirm first.',
+                outline_message,
+            )
+            return 1
 
     svg_output = project_path / 'svg_output'
     if not svg_output.exists():

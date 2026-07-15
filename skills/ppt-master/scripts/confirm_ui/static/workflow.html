@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPT Master AIRI 工作流</title>
+  <link rel="stylesheet" href="/static/workflow.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">PPT MASTER AIRI · V2</div>
+      <h1>图文协同生成向导</h1>
+    </div>
+    <div id="project-name" class="project-pill"></div>
+  </header>
+
+  <nav class="steps" aria-label="工作流步骤">
+    <a href="#intake">1 输入</a>
+    <a href="#style">2 风格</a>
+    <a href="#analysis">3 分析图</a>
+    <a href="#outline">4 逐页大纲</a>
+    <a href="#confirm">5 确认生成</a>
+  </nav>
+
+  <main>
+    <section id="intake" class="panel">
+      <div class="section-heading">
+        <div><span class="step-no">01</span><h2>多类型输入</h2></div>
+        <p>上传资料会复用 PPT Master 现有转换与 intake 流程。</p>
+      </div>
+      <form id="intake-form">
+        <label class="dropzone">PDF、Word、PPTX、Excel/CSV、图片、Markdown/TXT
+          <input name="files" type="file" multiple>
+        </label>
+        <div class="grid two">
+          <label>已有 PPT（作为风格参考，不锁原页数）<input name="template_ppt" type="file" accept=".pptx,.pptm,.potx,.potm"></label>
+          <label>URL（每行一个）<textarea name="urls" rows="4"></textarea></label>
+          <label>文案<textarea name="text" rows="5"></textarea></label>
+          <label>现有大纲<textarea name="outline_text" rows="5"></textarea></label>
+          <label>设计说明<textarea name="design_brief" rows="5"></textarea></label>
+          <label>设计任务书<textarea name="design_task" rows="5"></textarea></label>
+        </div>
+        <button type="submit" class="primary">导入并建立资料清单</button>
+      </form>
+      <div id="intake-summary" class="status-card"></div>
+    </section>
+
+    <section id="style" class="panel">
+      <div class="section-heading">
+        <div><span class="step-no">02</span><h2>图面风格与模板</h2></div>
+        <p>先确定风格，再生成分析图和逐页图文大纲。</p>
+      </div>
+      <div class="grid two">
+        <label>视觉风格<select id="visual-style"></select></label>
+        <label>客制化描述<textarea id="custom-style" rows="3" placeholder="补充配色、材料感、排版、氛围等要求"></textarea></label>
+      </div>
+      <h3>可用模板</h3>
+      <div id="template-grid" class="template-grid"></div>
+      <div class="button-row">
+        <a class="link-button" href="/confirm" target="_blank">打开方向 / 配色 / 字体 / 图像策略确认页</a>
+      </div>
+    </section>
+
+    <section id="analysis" class="panel">
+      <div class="section-heading">
+        <div><span class="step-no">03</span><h2>分析图提示词包</h2></div>
+        <p>提示词包必须由用户手动选择；选中包内所有启用条目会在大纲确认前生成。</p>
+      </div>
+      <div class="grid two">
+        <label>分析图包<select id="analysis-pack"><option value="">不使用分析图包</option></select></label>
+        <label>生图档位<input id="provider-profile" value="gptimage2.0-1K-low" readonly></label>
+      </div>
+      <div>
+        <h3>参考效果图</h3>
+        <div id="reference-images" class="image-picker"></div>
+      </div>
+      <div class="button-row">
+        <button id="save-selection" class="secondary">保存风格与生图选择</button>
+        <button id="dry-run-pack" class="secondary">离线验证请求</button>
+        <button id="generate-pack" class="primary">生成整套分析图</button>
+      </div>
+      <pre id="generation-log" class="log"></pre>
+    </section>
+
+    <section id="outline" class="panel">
+      <div class="section-heading">
+        <div><span class="step-no">04</span><h2>逐页图文大纲</h2></div>
+        <p>拖动页面排序；编辑后先保存，任何修改都会使旧确认失效。</p>
+      </div>
+      <div class="button-row">
+        <button id="reload-outline" class="secondary">重新载入</button>
+        <button id="add-page" class="secondary">增加页面</button>
+        <button id="save-outline" class="primary">保存大纲</button>
+      </div>
+      <div id="outline-status" class="status-card"></div>
+      <div id="outline-cards" class="outline-cards"></div>
+    </section>
+
+    <section id="confirm" class="panel final-panel">
+      <div class="section-heading">
+        <div><span class="step-no">05</span><h2>确认并解锁正式生成</h2></div>
+        <p>未确认或确认后又修改大纲时，Executor 与实时预览会被硬门阻止。</p>
+      </div>
+      <button id="confirm-outline" class="confirm-button">确认大纲并进入正式生成</button>
+      <div id="confirm-status" class="status-card"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/static/workflow.js"></script>
+</body>
+</html>

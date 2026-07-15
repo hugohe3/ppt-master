@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "pack_id": "architecture-placeholder",
+  "name": "architecture-placeholder",
+  "source_workbook": "pack.xlsx",
+  "compiled_at": "2026-07-14T20:16:53",
+  "item_count": 3,
+  "enabled_count": 3,
+  "items": [
+    {
+      "item_id": "massing-analysis",
+      "category": "形体分析",
+      "name": "建筑体量生成逻辑",
+      "prompt_template": "Use all supplied reference renderings as the same project. Create a clean architectural massing-analysis diagram that explains the major volumes, additions, subtractions, and hierarchy. Preserve the building identity from the references. No labels or invented measurements.",
+      "output_filename": "analysis_massing.png",
+      "aspect_ratio": "16:9",
+      "image_size": "1K",
+      "enabled": true,
+      "reference_role": "project-render",
+      "notes": "Placeholder prompt; replace with the final architecture pack wording."
+    },
+    {
+      "item_id": "circulation-analysis",
+      "category": "流线分析",
+      "name": "概念流线示意",
+      "prompt_template": "Use all supplied reference renderings as the same project. Create an architectural circulation-analysis illustration with restrained diagrammatic paths and clear entry, approach, and movement hierarchy inferred from the visible design. Preserve the project form. No text labels or measurements.",
+      "output_filename": "analysis_circulation.png",
+      "aspect_ratio": "16:9",
+      "image_size": "1K",
+      "enabled": true,
+      "reference_role": "project-render",
+      "notes": "Placeholder prompt; runs even when only one rendering is supplied."
+    },
+    {
+      "item_id": "environment-analysis",
+      "category": "环境分析",
+      "name": "日照与环境关系示意",
+      "prompt_template": "Use all supplied reference renderings as the same project. Create a polished architectural environmental-analysis diagram showing conceptual sun, wind, landscape, and context relationships around the visible building. Keep the building recognizable and the diagram visually presentation-ready. No text labels.",
+      "output_filename": "analysis_environment.png",
+      "aspect_ratio": "16:9",
+      "image_size": "1K",
+      "enabled": true,
+      "reference_role": "project-render",
+      "notes": "Placeholder prompt; replace when the complete Excel library is ready."
+    }
+  ]
+}

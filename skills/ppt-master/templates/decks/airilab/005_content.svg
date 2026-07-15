@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1280" height="720" viewBox="0 0 1280 720"><rect x="0" y="0" width="1280" height="720" fill="#000000"/>
+<g id="shape-3" data-name="Picture 2">
+<image href="assets/image1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+</g>
+<g id="shape-13" data-name="Picture 12">
+<image href="assets/image3.png" x="14.67" y="14.35" width="87.92" height="87.21" preserveAspectRatio="none"/>
+</g>
+<g id="shape-24" data-name="图片 14">
+<image href="assets/image4.png" x="48" y="52.78" width="106.33" height="24.72" preserveAspectRatio="none"/>
+</g>
+<g id="shape-6" data-name="文本框 1">
+<rect x="461.05" y="191.63" width="829.02" height="390.98" fill="none"/>
+<text x="470.65" y="228.17" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="37.33" fill="#EFEFEF" font-weight="bold"><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">The market has evolved</tspan></text>
+
+<text x="470.65" y="301.77" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="37.33" fill="#EFEFEF"><tspan fill="#EFEFEF" font-size="37.33">- Design Cycle</tspan><tspan fill="#EFEFEF" font-size="37.33"> </tspan><tspan fill="#EFEFEF" font-size="37.33">…..………. </tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">Short</tspan></text>
+<text x="470.65" y="346.57" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="37.33" fill="#EFEFEF" font-weight="bold"><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">- Doc requirements ……...... </tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">Heavy</tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold"> </tspan><tspan x="470.65" dy="44.8" fill="#EFEFEF" font-size="37.33" font-weight="bold">- Project progress …………....….. </tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">Slow</tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold"> </tspan></text>
+<text x="470.65" y="436.17" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="37.33" fill="#EFEFEF"><tspan fill="#EFEFEF" font-size="37.33">- Competition ……….…….……….…… </tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">Intense</tspan></text>
+<text x="470.65" y="480.97" text-anchor="start" xml:space="preserve" font-family="Inter, sans-serif" font-size="37.33" fill="#EFEFEF"><tspan fill="#EFEFEF" font-size="37.33">- Repeated work ……………….…...……. </tspan><tspan fill="#EFEFEF" font-size="37.33" font-weight="bold">A lot</tspan></text>
+
+</g>
+<g id="shape-7" data-name="Picture 6">
+<image href="assets/image12.png" x="120.96" y="280.03" width="283.48" height="283.48" preserveAspectRatio="none"/>
+</g></svg>

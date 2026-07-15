@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1280" height="720" viewBox="0 0 1280 720"><rect x="0" y="0" width="1280" height="720" fill="#000000"/>
+<g id="shape-4" data-name="Picture 3">
+<image href="assets/image1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+</g>
+<g id="shape-13" data-name="Picture 12">
+<image href="assets/image3.png" x="14.67" y="14.35" width="87.92" height="87.21" preserveAspectRatio="none"/>
+</g>
+<g id="shape-24" data-name="图片 14">
+<image href="assets/image4.png" x="48" y="52.78" width="106.33" height="24.72" preserveAspectRatio="none"/>
+</g>
+<g id="shape-6" data-name="图片 26">
+<image href="assets/image29.jpeg" x="861.36" y="98.95" width="408.79" height="621.05" preserveAspectRatio="none"/>
+</g>
+<g id="shape-7" data-name="图片 16">
+<image href="assets/image30.jpeg" x="6.01" y="98.95" width="416.65" height="621.05" preserveAspectRatio="none"/>
+</g>
+<g id="shape-8" data-name="图片 18">
+<image href="assets/image31.jpeg" x="432.5" y="98.95" width="419.01" height="279.51" preserveAspectRatio="none"/>
+</g>
+<g id="shape-9" data-name="文本框 11">
+<rect x="464" y="409.48" width="357.32" height="286.87" fill="none"/>
+<text x="473.6" y="427.88" text-anchor="start" xml:space="preserve" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#EFEFEF" font-weight="bold"><tspan fill="#EFEFEF" font-size="16" font-weight="bold">提示词：</tspan></text>
+
+<text x="473.6" y="475.88" text-anchor="start" xml:space="preserve" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#EFEFEF" font-weight="bold"><tspan fill="#EFEFEF" font-size="16" font-weight="bold">保持图</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">1</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">画面的所有内容和透视视角不变，学习</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">参考图</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">2</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">中的图像风格与建筑设计，提取其中的</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">设计语言，建筑元素，材料使用。并且将其迁移</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">到图</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">1</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">的建筑体块模型中，用于重新设计图一中</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">的建筑体块模型。不改变图</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">1</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">的基本轮廓，建筑</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">体量和建筑体块关系。最终生成以写实画风来呈</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">现。细致刻画材质，建筑细节，植物，配景。光</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">影氛围遵循图二，如电影般富有叙事感氛围，整</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">体达到摄影级的可视化效果。扶梯上分别加上</tspan><tspan x="473.6" dy="19.2" fill="#EFEFEF" font-size="16" font-weight="bold">#FUNANSG</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">和 </tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">I♥ART</tspan><tspan fill="#EFEFEF" font-size="16" font-weight="bold">的霓虹灯装饰</tspan></text>
+</g></svg>

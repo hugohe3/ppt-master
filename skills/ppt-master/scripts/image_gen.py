@@ -63,6 +63,7 @@ IMAGE_ENV_PREFIXES = (
     "IMAGE_",
     "GEMINI_",
     "OPENAI_",
+    "ASIAI_",
     "MINIMAX_",
     "STABILITY_",
     "BFL_",
@@ -96,6 +97,15 @@ ALL_ASPECT_RATIOS = [
 ALL_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 BACKEND_REGISTRY = {
+    "asiai-edit": {
+        "module": "backend_asiai_edit",
+        "tier": "core",
+        "label": "GPT Image 2 reference edit (asiai)",
+        "default_model": "gpt-image-2",
+        "key_hint": "ASIAI_GPT_IMAGE_API_KEY",
+        "aliases": ["gptimage2-edit", "gpt-image-2-edit"],
+        "capabilities": ["reference-image-edit"],
+    },
     "gemini": {
         "module": "backend_gemini",
         "tier": "core",
@@ -204,6 +214,15 @@ BACKEND_REGISTRY = {
         "label": "OpenRouter",
         "default_model": "google/gemini-3.1-flash-image-preview",
         "key_hint": "OPENROUTER_API_KEY",
+    },
+}
+
+PROVIDER_PROFILES = {
+    "gptimage2.0-1K-low": {
+        "backend": "asiai-edit",
+        "model": "gpt-image-2",
+        "image_size": "1K",
+        "quality": "low",
     },
 }
 
@@ -406,7 +425,8 @@ def load_manifest(path: str) -> dict:
 
     Each item requires: `filename`, `prompt`, `aspect_ratio`, `status`.
     Optional: `image_size`, `model`, `alt_text`, `purpose`, `type`,
-    `last_error`.
+    `reference_images`, `provider_profile`, `analysis_pack_id`,
+    `analysis_item_id`, `last_error`.
     """
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -447,8 +467,92 @@ def load_manifest(path: str) -> dict:
         if fname in seen_filenames:
             raise ValueError(f"{prefix} duplicate filename '{fname}'")
         seen_filenames.add(fname)
+        references = item.get("reference_images", [])
+        if not isinstance(references, list) or not all(
+            isinstance(value, str) and value.strip() for value in references
+        ):
+            raise ValueError(f"{prefix} reference_images must be an array of paths")
+        profile = item.get("provider_profile") or data.get("provider_profile")
+        if profile and profile not in PROVIDER_PROFILES:
+            raise ValueError(f"{prefix} unknown provider_profile '{profile}'")
 
     return data
+
+
+def _manifest_profile(manifest: dict) -> tuple[str | None, dict]:
+    """Return the single provider profile used by a manifest."""
+    names = {
+        item.get("provider_profile") or manifest.get("provider_profile")
+        for item in manifest["items"]
+        if item.get("provider_profile") or manifest.get("provider_profile")
+    }
+    if len(names) > 1:
+        raise ValueError(
+            "One image_gen.py run may use only one provider_profile. "
+            "Split the manifest by profile."
+        )
+    name = next(iter(names), None)
+    return name, PROVIDER_PROFILES.get(name, {})
+
+
+def _reference_paths(item: dict, manifest_path: str) -> list[str]:
+    """Resolve manifest-relative reference images to absolute files."""
+    base = Path(manifest_path).resolve().parent
+    resolved = []
+    for value in item.get("reference_images", []):
+        path = Path(value)
+        if not path.is_absolute():
+            path = base / path
+        path = path.resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"Reference image not found: {path}")
+        resolved.append(str(path))
+    return resolved
+
+
+def _validate_manifest_capabilities(manifest: dict, manifest_path: str, backend_name: str) -> None:
+    """Reject reference-image jobs on text-only backends before any API call."""
+    capabilities = set(BACKEND_REGISTRY[backend_name].get("capabilities", ["text-to-image"]))
+    for item in manifest["items"]:
+        references = _reference_paths(item, manifest_path)
+        if references and "reference-image-edit" not in capabilities:
+            raise ValueError(
+                f"Backend '{backend_name}' cannot process reference_images for "
+                f"{item['filename']}. Select profile gptimage2.0-1K-low or a future "
+                "reference-image backend."
+            )
+
+
+def render_dry_run(manifest: dict, manifest_path: str, backend_module, backend_name: str) -> Path:
+    """Write secret-free request previews without loading credentials or calling APIs."""
+    _, profile = _manifest_profile(manifest)
+    _validate_manifest_capabilities(manifest, manifest_path, backend_name)
+    requests_preview = []
+    for item in manifest["items"]:
+        references = _reference_paths(item, manifest_path)
+        if hasattr(backend_module, "build_redacted_request"):
+            request_preview = backend_module.build_redacted_request(
+                prompt=item["prompt"],
+                aspect_ratio=item["aspect_ratio"],
+                image_size=item.get("image_size", profile.get("image_size", "1K")),
+                reference_images=references,
+                model=item.get("model", profile.get("model")),
+                quality=profile.get("quality"),
+            )
+        else:
+            request_preview = {
+                "backend": backend_name,
+                "prompt": item["prompt"],
+                "aspect_ratio": item["aspect_ratio"],
+                "image_size": item.get("image_size", "1K"),
+            }
+        requests_preview.append({"filename": item["filename"], "request": request_preview})
+    destination = Path(manifest_path).with_name("image_prompts.request.redacted.json")
+    destination.write_text(
+        json.dumps({"schema_version": 1, "items": requests_preview}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return destination
 
 
 def save_manifest(path: str, data: dict) -> None:
@@ -496,6 +600,12 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     from image_backends.backend_common import is_rate_limit_error
 
     items = manifest["items"]
+    backend_name = next(
+        name for name, info in BACKEND_REGISTRY.items()
+        if info["module"] == backend_module.__name__.rsplit(".", 1)[-1]
+    )
+    _validate_manifest_capabilities(manifest, manifest_path, backend_name)
+    _, profile = _manifest_profile(manifest)
     pending_idx = [
         i for i, it in enumerate(items) if it["status"] in RETRYABLE_STATUSES
     ]
@@ -523,14 +633,20 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     def _one(idx: int):
         item = items[idx]
         try:
-            saved_path = backend_module.generate(
+            kwargs = dict(
                 prompt=item["prompt"],
                 aspect_ratio=item["aspect_ratio"],
-                image_size=item.get("image_size", image_size),
+                image_size=item.get("image_size", profile.get("image_size", image_size)),
                 output_dir=output_dir,
                 filename=Path(item["filename"]).stem,
-                model=item.get("model", model),
+                model=item.get("model", profile.get("model", model)),
             )
+            references = _reference_paths(item, manifest_path)
+            if references:
+                kwargs["reference_images"] = references
+            if profile.get("quality"):
+                kwargs["quality"] = profile["quality"]
+            saved_path = backend_module.generate(**kwargs)
             return idx, saved_path, None
         except Exception as exc:  # noqa: BLE001 — backend raises arbitrary types
             return idx, None, exc
@@ -649,11 +765,16 @@ def render_manifest_md(manifest: dict) -> str:
             ("Type", "type"),
             ("Aspect ratio", "aspect_ratio"),
             ("Image size", "image_size"),
+            ("Provider profile", "provider_profile"),
+            ("Analysis pack", "analysis_pack_id"),
+            ("Analysis item", "analysis_item_id"),
             ("Status", "status"),
         ):
             value = item.get(key)
             if value:
                 lines.append(f"| {label} | {value} |")
+        if item.get("reference_images"):
+            lines.append(f"| Reference images | {', '.join(item['reference_images'])} |")
         if item.get("last_error"):
             lines.append(f"| Last error | {item['last_error']} |")
         lines.append("")
@@ -743,6 +864,10 @@ def main() -> None:
             "next to the manifest, then exit. No backend / network needed."
         ),
     )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Validate manifest capabilities and write redacted request previews without an API call.",
+    )
 
     args = parser.parse_args()
 
@@ -777,9 +902,6 @@ def main() -> None:
     if args.backend:
         os.environ["IMAGE_BACKEND"] = args.backend
 
-    backend, backend_name = _resolve_backend()
-    print(f"Using backend: {backend_name}\n")
-
     if args.manifest:
         if not os.path.isfile(args.manifest):
             print(f"Error: manifest file not found: {args.manifest}")
@@ -789,6 +911,27 @@ def main() -> None:
         except ValueError as e:
             print(f"Error: {e}")
             sys.exit(1)
+
+        try:
+            _, profile = _manifest_profile(manifest)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        if not args.backend and not os.environ.get("IMAGE_BACKEND") and profile.get("backend"):
+            os.environ["IMAGE_BACKEND"] = profile["backend"]
+
+    backend, backend_name = _resolve_backend()
+    print(f"Using backend: {backend_name}\n")
+
+    if args.manifest:
+        if args.dry_run:
+            try:
+                output = render_dry_run(manifest, args.manifest, backend, backend_name)
+            except (OSError, ValueError, FileNotFoundError) as e:
+                print(f"Error: {e}")
+                sys.exit(1)
+            print(f"Dry-run request preview: {output}")
+            return
 
         concurrency = _resolve_concurrency(args.concurrency)
         try:

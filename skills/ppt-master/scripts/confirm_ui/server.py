@@ -52,6 +52,16 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from analysis_pack import build_image_manifest, compile_workbook  # noqa: E402
+from intake_manifest import build_source_manifest  # noqa: E402
+from outline_gate import (  # noqa: E402
+    CONFIRMED_NAME as OUTLINE_CONFIRMED_NAME,
+    DRAFT_NAME as OUTLINE_DRAFT_NAME,
+    check_outline_confirmation,
+    confirm_outline,
+    validate_outline,
+)
+from project_manager import ProjectManager  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
@@ -78,6 +88,8 @@ RESULT_NAME = 'result.json'
 _CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
 _ICON_LIBRARY_DIR = Path(__file__).resolve().parents[2] / 'templates' / 'icons'
 _AI_IMAGE_COMPARISON_DIR = Path(__file__).resolve().parents[2] / 'references' / 'ai-image-comparison'
+_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / 'templates'
+_ANALYSIS_PACKS_DIR = _TEMPLATES_DIR / 'analysis-packs'
 _ICON_PREVIEW_SAMPLES = {
     'chunk-filled': ('home', 'chart-line', 'users', 'target'),
     'tabler-filled': ('home', 'chart-dots', 'user', 'bulb'),
@@ -97,6 +109,62 @@ DEFAULT_PORT = 5050
 # slow user can still confirm after the wait returns; the caller re-checks
 # result.json before falling back to chat.
 WAIT_TIMEOUT_DEFAULT = 590
+
+
+def _read_json(path: Path, default=None):
+    """Read a JSON file or return a caller-provided default."""
+    if not path.is_file():
+        return default
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def _write_json(path: Path, payload: dict) -> None:
+    """Write UTF-8 JSON with a final newline."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8',
+    )
+
+
+def _safe_upload_name(name: str, fallback: str = 'upload') -> str:
+    """Return a Windows-safe basename while preserving readable Unicode."""
+    basename = Path(name or fallback).name
+    cleaned = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', '_', basename).strip(' .')
+    return cleaned[:180] or fallback
+
+
+def _pack_record(pack_id: str) -> tuple[Path, Path]:
+    """Resolve a registered analysis pack without allowing path traversal."""
+    if not re.fullmatch(r'[a-z0-9-]+', pack_id or ''):
+        raise ValueError('invalid analysis pack id')
+    directory = (_ANALYSIS_PACKS_DIR / pack_id).resolve()
+    if _ANALYSIS_PACKS_DIR.resolve() not in directory.parents:
+        raise ValueError('analysis pack path escaped the library')
+    workbook = directory / 'pack.xlsx'
+    compiled = directory / 'pack.json'
+    if not workbook.is_file():
+        raise ValueError(f'analysis pack workbook not found: {workbook}')
+    if not compiled.is_file() or workbook.stat().st_mtime > compiled.stat().st_mtime:
+        compile_workbook(workbook, compiled, pack_id=pack_id)
+    return workbook, compiled
+
+
+def _image_manifest_ready(project_path: Path) -> tuple[bool, dict | None]:
+    """Return whether a selected pack has generated every enabled image."""
+    manifest = _read_json(project_path / 'images' / 'image_prompts.json')
+    selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
+    if not selection.get('analysis_pack_id'):
+        return True, manifest
+    if not isinstance(manifest, dict):
+        return False, None
+    items = manifest.get('items') or []
+    ready = bool(items) and all(
+        item.get('status') == 'Generated'
+        and (project_path / 'images' / Path(str(item.get('filename') or '')).name).is_file()
+        for item in items
+    )
+    return ready, manifest
 
 
 def _wait_for_result(
@@ -395,6 +463,7 @@ def create_app(
     project_dir: str,
     idle_timeout: int = 900,
     lock_file: Optional[Path] = None,
+    wizard_mode: bool = False,
 ) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
@@ -405,6 +474,7 @@ def create_app(
     app.config['CONFIRM_DIR'] = confirm_dir
     app.config['LOCK_FILE'] = lock_file
     app.config['LAST_REQUEST_TIME'] = time.time()
+    app.config['WIZARD_MODE'] = wizard_mode
 
     @app.before_request
     def _update_activity():
@@ -443,7 +513,317 @@ def create_app(
 
     @app.route('/')
     def index():
+        page = 'workflow.html' if app.config['WIZARD_MODE'] else 'index.html'
+        return send_from_directory(app.static_folder, page)
+
+    @app.route('/workflow')
+    def workflow_index():
+        return send_from_directory(app.static_folder, 'workflow.html')
+
+    @app.route('/confirm')
+    def legacy_confirm_index():
         return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/workflow-images/<path:filename>')
+    def workflow_image(filename: str):
+        return send_from_directory(project_path / 'images', filename)
+
+    @app.route('/api/workflow/state')
+    def workflow_state():
+        """Serve the persisted v2 wizard state and discovery catalogs."""
+        try:
+            pack_index = _read_json(_ANALYSIS_PACKS_DIR / 'analysis_packs_index.json', {}) or {}
+            deck_index = _read_json(_TEMPLATES_DIR / 'decks' / 'decks_index.json', {}) or {}
+            analysis_ready, image_manifest = _image_manifest_ready(project_path)
+            images = []
+            image_dir = project_path / 'images'
+            if image_dir.is_dir():
+                for path in sorted(image_dir.iterdir()):
+                    if path.is_file() and path.suffix.lower() in {
+                        '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tif', '.tiff'
+                    }:
+                        images.append({
+                            'name': path.name,
+                            'path': f'images/{path.name}',
+                            'url': f'/workflow-images/{path.name}',
+                        })
+            outline_ready, outline_message = check_outline_confirmation(
+                project_path,
+                optional=True,
+            )
+            payload = {
+                'schema_version': 2,
+                'project': project_path.name,
+                'source_manifest': _read_json(project_path / 'source_manifest.json'),
+                'source_synthesis': _read_json(project_path / 'source_synthesis.json'),
+                'selection': _read_json(project_path / 'workflow_selection.json', {}) or {},
+                'analysis_packs': pack_index.get('packs', []),
+                'templates': [
+                    {
+                        'id': deck_id,
+                        'number': index,
+                        'path': f'templates/decks/{deck_id}',
+                        **info,
+                    }
+                    for index, (deck_id, info) in enumerate(deck_index.items(), start=1)
+                ],
+                'images': images,
+                'image_manifest': image_manifest,
+                'analysis_ready': analysis_ready,
+                'outline_draft': _read_json(project_path / OUTLINE_DRAFT_NAME),
+                'outline_confirmed': _read_json(project_path / OUTLINE_CONFIRMED_NAME),
+                'outline_ready': outline_ready,
+                'outline_message': outline_message,
+            }
+            response = jsonify(payload)
+            response.headers['Cache-Control'] = 'no-store'
+            return response
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return jsonify({'error': str(exc)}), 500
+
+    @app.route('/api/workflow/intake', methods=['POST'])
+    def workflow_intake():
+        """Archive uploaded files/text through the existing project intake path."""
+        upload_dir = project_path / 'workflow_uploads'
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        staged: list[str] = []
+
+        def _save_upload(file_storage, prefix: str = '') -> None:
+            if file_storage is None or not file_storage.filename:
+                return
+            filename = _safe_upload_name(prefix + file_storage.filename)
+            destination = upload_dir / filename
+            if destination.exists():
+                destination = upload_dir / f'{destination.stem}_{int(time.time())}{destination.suffix}'
+            file_storage.save(destination)
+            staged.append(str(destination))
+
+        for file_storage in request.files.getlist('files'):
+            _save_upload(file_storage)
+        _save_upload(request.files.get('template_ppt'), 'style_template_')
+
+        pasted_fields = {
+            'text': 'pasted_text.md',
+            'outline_text': 'pasted_existing_outline.md',
+            'design_brief': 'pasted_design_brief.md',
+            'design_task': 'pasted_design_task.md',
+        }
+        for field, filename in pasted_fields.items():
+            value = (request.form.get(field) or '').strip()
+            if not value:
+                continue
+            destination = upload_dir / filename
+            destination.write_text(value + '\n', encoding='utf-8')
+            staged.append(str(destination))
+
+        urls = [line.strip() for line in (request.form.get('urls') or '').splitlines() if line.strip()]
+        source_items = staged + urls
+        if not source_items:
+            return jsonify({'error': 'upload at least one file, text block, or URL'}), 400
+        try:
+            summary = ProjectManager().import_sources(
+                str(project_path),
+                source_items,
+                move=True,
+            )
+            manifest_path, synthesis_path = build_source_manifest(project_path)
+            style_decks = sorted((project_path / 'sources').glob('style_template_*.ppt*'))
+            if style_decks:
+                _write_json(
+                    project_path / 'template_request.json',
+                    {
+                        'schema_version': 1,
+                        'status': 'pending-ai',
+                        'source_pptx': style_decks[-1].relative_to(project_path).as_posix(),
+                        'usage': 'style-reference-restructure',
+                        'replication_mode': 'standard',
+                        'preserve_page_count': False,
+                        'output_dir': 'templates/custom-upload',
+                        'workflow': 'workflows/create-template.md',
+                    },
+                )
+        except (OSError, ValueError, RuntimeError) as exc:
+            return jsonify({'error': str(exc)}), 400
+        return jsonify({
+            'status': 'ok',
+            'import': summary,
+            'source_manifest': str(manifest_path),
+            'source_synthesis': str(synthesis_path),
+        })
+
+    @app.route('/api/workflow/selection', methods=['POST'])
+    def workflow_selection():
+        """Persist style, template, pack, reference, and provider choices."""
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({'error': 'invalid payload'}), 400
+        selection = {
+            'schema_version': 2,
+            'status': 'selected',
+            'updated_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'visual_style': str(payload.get('visual_style') or ''),
+            'template_id': str(payload.get('template_id') or ''),
+            'custom_style_description': str(payload.get('custom_style_description') or ''),
+            'analysis_pack_id': str(payload.get('analysis_pack_id') or ''),
+            'reference_images': [
+                str(value) for value in payload.get('reference_images', []) if str(value).strip()
+            ],
+            'provider_profile': str(payload.get('provider_profile') or 'gptimage2.0-1K-low'),
+        }
+        if selection['analysis_pack_id']:
+            try:
+                _pack_record(selection['analysis_pack_id'])
+            except (OSError, ValueError) as exc:
+                return jsonify({'error': str(exc)}), 400
+        _write_json(project_path / 'workflow_selection.json', selection)
+        return jsonify({'status': 'ok', 'selection': selection})
+
+    @app.route('/api/workflow/generate-pack', methods=['POST'])
+    def workflow_generate_pack():
+        """Build and execute every enabled item in the manually selected pack."""
+        payload = request.get_json(silent=True) or {}
+        selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
+        pack_id = str(payload.get('analysis_pack_id') or selection.get('analysis_pack_id') or '')
+        references = payload.get('reference_images') or selection.get('reference_images') or []
+        profile = str(payload.get('provider_profile') or selection.get('provider_profile') or 'gptimage2.0-1K-low')
+        dry_run = bool(payload.get('dry_run'))
+        if not pack_id:
+            return jsonify({'error': 'select an analysis pack first'}), 400
+        try:
+            _, compiled = _pack_record(pack_id)
+            manifest = build_image_manifest(
+                compiled,
+                project_path,
+                list(references),
+                provider_profile=profile,
+                prompt_context=str(payload.get('prompt_context') or ''),
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return jsonify({'error': str(exc)}), 400
+        command = [
+            sys.executable,
+            str(_SCRIPTS_DIR / 'image_gen.py'),
+            '--manifest',
+            str(manifest),
+        ]
+        if dry_run:
+            command.append('--dry-run')
+        completed = subprocess.run(
+            command,
+            cwd=str(_SCRIPTS_DIR.parent.parent.parent),
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=3600,
+            check=False,
+        )
+        if completed.returncode != 0:
+            return jsonify({
+                'error': 'analysis pack generation failed',
+                'returncode': completed.returncode,
+                'stdout': completed.stdout[-4000:],
+                'stderr': completed.stderr[-4000:],
+            }), 500
+        return jsonify({
+            'status': 'ok',
+            'dry_run': dry_run,
+            'manifest': str(manifest),
+            'stdout': completed.stdout[-4000:],
+        })
+
+    @app.route('/api/workflow/outline', methods=['GET', 'POST'])
+    def workflow_outline():
+        """Read or replace the editable page-card outline."""
+        draft_path = project_path / OUTLINE_DRAFT_NAME
+        if request.method == 'GET':
+            draft = _read_json(draft_path)
+            if draft is None:
+                return jsonify({'error': 'outline draft not found'}), 404
+            return jsonify(draft)
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({'error': 'invalid payload'}), 400
+        errors = validate_outline(payload)
+        if errors:
+            return jsonify({'error': '; '.join(errors)}), 400
+        draft = dict(payload)
+        draft['schema_version'] = 2
+        draft['status'] = 'draft'
+        draft['updated_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+        _write_json(draft_path, draft)
+        (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
+        return jsonify({'status': 'ok', 'outline': draft})
+
+    @app.route('/api/workflow/outline/confirm', methods=['POST'])
+    def workflow_outline_confirm():
+        """Confirm the current outline only after selected analysis images exist."""
+        analysis_ready, _ = _image_manifest_ready(project_path)
+        if not analysis_ready:
+            return jsonify({'error': 'selected analysis pack is not fully generated'}), 409
+        try:
+            confirmed = confirm_outline(project_path)
+        except (OSError, ValueError) as exc:
+            return jsonify({'error': str(exc)}), 400
+        return jsonify({'status': 'confirmed', 'path': str(confirmed)})
+
+    @app.route('/api/workflow/upload-image', methods=['POST'])
+    def workflow_upload_image():
+        """Add a replacement image to the project's runtime image pool."""
+        file_storage = request.files.get('image')
+        if file_storage is None or not file_storage.filename:
+            return jsonify({'error': 'image file is required'}), 400
+        image_dir = project_path / 'images'
+        image_dir.mkdir(parents=True, exist_ok=True)
+        filename = _safe_upload_name(file_storage.filename, 'replacement.png')
+        destination = image_dir / filename
+        if destination.exists():
+            destination = image_dir / f'{destination.stem}_{int(time.time())}{destination.suffix}'
+        file_storage.save(destination)
+        build_source_manifest(project_path)
+        return jsonify({
+            'status': 'ok',
+            'name': destination.name,
+            'path': f'images/{destination.name}',
+            'url': f'/workflow-images/{destination.name}',
+        })
+
+    @app.route('/api/workflow/regenerate-image', methods=['POST'])
+    def workflow_regenerate_image():
+        """Re-run one edited manifest item while keeping completed siblings idempotent."""
+        payload = request.get_json(silent=True) or {}
+        filename = Path(str(payload.get('filename') or '')).name
+        manifest_path = project_path / 'images' / 'image_prompts.json'
+        manifest = _read_json(manifest_path)
+        if not filename or not isinstance(manifest, dict):
+            return jsonify({'error': 'valid filename and image manifest are required'}), 400
+        item = next((row for row in manifest.get('items', []) if row.get('filename') == filename), None)
+        if item is None:
+            return jsonify({'error': f'image item not found: {filename}'}), 404
+        if payload.get('prompt') is not None:
+            item['prompt'] = str(payload['prompt'])
+        if payload.get('reference_images') is not None:
+            item['reference_images'] = [str(value) for value in payload['reference_images']]
+        item['status'] = 'Pending'
+        item.pop('last_error', None)
+        _write_json(manifest_path, manifest)
+        completed = subprocess.run(
+            [sys.executable, str(_SCRIPTS_DIR / 'image_gen.py'), '--manifest', str(manifest_path)],
+            cwd=str(_SCRIPTS_DIR.parent.parent.parent),
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=1800,
+            check=False,
+        )
+        if completed.returncode != 0:
+            return jsonify({
+                'error': 'image regeneration failed',
+                'stdout': completed.stdout[-3000:],
+                'stderr': completed.stderr[-3000:],
+            }), 500
+        return jsonify({'status': 'ok', 'filename': filename, 'stdout': completed.stdout[-3000:]})
 
     @app.route('/api/catalogs')
     def get_catalogs():
@@ -549,6 +929,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument(
+        '--wizard', action='store_true',
+        help='Open the v2 intake/style/analysis-pack/outline workflow instead of the legacy confirmation page.',
+    )
+    parser.add_argument(
         '--daemon', action='store_true',
         help='Start the server in the background; combine with --wait to block until confirmation',
     )
@@ -619,7 +1003,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         )
 
     rec_file = project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME
-    if not rec_file.exists():
+    if not args.wizard and not rec_file.exists():
         logger.error(
             '%s not found — Strategist must write recommendations.json before launch',
             rec_file,
@@ -658,6 +1042,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         ]
         if args.no_browser:
             cmd.append('--no-browser')
+        if args.wizard:
+            cmd.append('--wizard')
         creationflags = 0
         popen_kwargs = {}
         if os.name == 'nt':
@@ -707,6 +1093,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         str(project_path),
         idle_timeout=args.timeout,
         lock_file=lock_file,
+        wizard_mode=args.wizard,
     )
 
     url = f'http://localhost:{args.port}'

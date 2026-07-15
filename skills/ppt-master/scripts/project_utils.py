@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Tuple
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from outline_gate import check_outline_confirmation
 
 configure_utf8_stdio()
 
@@ -269,6 +270,10 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
         warnings.append(msg)
+
+    outline_ready, outline_message = check_outline_confirmation(project_path, optional=True)
+    if not outline_ready:
+        errors.append(f"Outline confirmation gate failed: {outline_message}")
 
     # Check svg_output directory
     svg_output = project_path / 'svg_output'

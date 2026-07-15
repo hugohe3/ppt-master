@@ -453,6 +453,10 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].alt_text` | no | Accessibility | Short caption |
 | `items[].slice_grid` | no | §4.3 sheet geometry | Illustration sheet only; exact `RxC` grid to pass to `slice_images.py --grid` |
 | `items[].slice_names` | no | §4.3 sheet geometry | Illustration sheet only; semantic filenames to pass to `slice_images.py --names` |
+| `items[].reference_images` | no | Wizard / analysis pack | Reference-image paths. Their presence requires a backend with `reference-image-edit` capability. |
+| `items[].provider_profile` | no | Wizard / analysis pack | Named backend/model/size/quality mapping. Initial profile: `gptimage2.0-1K-low`. |
+| `items[].analysis_pack_id` | no | Analysis pack compiler | Source pack provenance. |
+| `items[].analysis_item_id` | no | Analysis pack compiler | Stable source Excel row id. |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
 
 > **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
@@ -497,6 +501,8 @@ python3 scripts/image_gen.py \
   --manifest project/images/image_prompts.json \
   --output project/images
 ```
+
+Reference-image manifests may select the built-in profile `gptimage2.0-1K-low`. It maps to the `asiai-edit` backend and sends multipart `image[]` fields to `/v1/images/edits`. Use `--dry-run` to write a redacted request preview without credentials or network access. Text-only backends reject `reference_images` before any request is sent.
 
 The CLI iterates `items[]` with adaptive concurrency, writes `status` back per item, and is **idempotent**: re-running only re-processes entries whose status is `Pending` or `Failed`.
 

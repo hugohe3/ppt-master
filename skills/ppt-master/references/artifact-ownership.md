@@ -17,6 +17,11 @@ Global artifact ownership rules for PPT Master projects.
 | `analysis/<stem>.identity.json` | Native deck identity facts | Canvas, theme palette/fonts, observed usage | Read selectively when detailed identity facts are needed |
 | `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches | Direct PPTX workflows use as native fill/structure contract |
 | `analysis/image_analysis.csv` | Regenerated image fact view | Measured facts about the current `images/` folder | Re-run `analyze_images.py` before reading image facts after changes |
+| `source_manifest.json` | Deterministic intake inventory | File roles, hashes, duplicates, and available assets | Rebuild with `intake_manifest.py` after intake changes |
+| `source_synthesis.json` | Strategist synthesis | Relationships, conflicts, and shared facts across inputs | Strategist replaces `pending-ai` fields before style selection |
+| `workflow_selection.json` | Wizard choices | Style, template, analysis pack, references, and provider profile | User edits through the v2 wizard; downstream honors verbatim |
+| `outline_draft.json` | Editable page plan | Page copy plus page-to-image mapping | User may edit; every edit invalidates prior confirmation |
+| `outline_confirmed.json` | Formal-generation gate | Hash-bound confirmation of the current draft | Executor may start only when `outline_gate.py check` passes |
 | `design_spec.md` | Human design narrative | Explains design intent, outline, rationale, and resource plan | Strategist writes; humans and later roles read for intent |
 | `spec_lock.md` | Execution contract | Literal colors, typography, icons, images, page rhythm, templates, and charts | Executor re-reads before every page; values must be used verbatim |
 | `images/` | Runtime image pool | User, extracted, AI, web, formula, slice, EMF/WMF assets | Step 5 writes here; `analysis/image_analysis.csv` derives from current contents |
@@ -47,6 +52,7 @@ Global artifact ownership rules for PPT Master projects.
 | Post-processed SVG | `svg_final/` is disposable and must be rebuildable from `svg_output/`. |
 | Export source | Native PPTX export reads `svg_output/` by default. SVG snapshot export reads `svg_final/` only when requested. |
 | Confirmation | Final `confirm_ui/result.json` or chat confirmation overrides recommendations. |
+| Outline gate | When `outline_draft.json` exists, `outline_confirmed.json` must match its current hash before Executor starts. |
 
 **Forbidden - mixed ownership**: Do not copy chart values from Markdown into `analysis/` by hand, do not edit `svg_final/` as the source of a fix, and do not treat `design_spec.md` prose as a replacement for `spec_lock.md`.
 

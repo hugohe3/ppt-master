@@ -837,6 +837,15 @@ class ProjectManager:
             elif suffix == ".txt":
                 markdown_path = self._normalize_text_source(archived_path, sources_dir)
                 summary["markdown"].append(str(markdown_path))
+            elif suffix in IMAGE_ASSET_SUFFIXES:
+                image_dir = project_dir / "images"
+                image_dir.mkdir(parents=True, exist_ok=True)
+                runtime_image = self._ensure_unique_path(image_dir / archived_path.name)
+                shutil.copy2(archived_path, runtime_image)
+                summary["assets"].append(str(runtime_image))
+                summary["notes"].append(
+                    f"{item}: archived in sources/ and copied to images/ as a runtime reference asset"
+                )
             else:
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
 
