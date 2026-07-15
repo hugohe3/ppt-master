@@ -763,6 +763,15 @@ attributes. The registered mapping accepts integer DrawingML units only:
 or out-of-range channels, extra attributes, namespace aliases, and interleaved
 text stop import instead of receiving zero defaults or being clamped into a
 different color.
+Imported `a:scrgbClr` has exactly the required `r`, `g`, and `b` attributes,
+each using an integer `0..100000` DrawingML channel. Because scRGB channels are
+linear-light values while SVG hexadecimal paint is sRGB-encoded, import applies
+the sRGB transfer function before quantization; for example, linear
+`50000/50000/50000` normalizes to `#BCBCBC`, not `#808080`. Missing, malformed,
+percentage-literal, or out-of-range channels, extra attributes, namespace
+aliases, and interleaved text stop import instead of receiving zero defaults or
+being clamped into another color. This route is `Native-normalized` because the
+SVG retains the displayed sRGB color rather than the source color-space model.
 
 ---
 

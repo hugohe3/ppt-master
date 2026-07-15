@@ -305,11 +305,7 @@ def resolve_color(
     elif tag == "hslClr":
         base_hex = _hsl_color_hex(color_elem)
     elif tag == "scrgbClr":
-        # 0..100000 per channel
-        r = float(color_elem.attrib.get("r", "0")) / 100000.0
-        g = float(color_elem.attrib.get("g", "0")) / 100000.0
-        b = float(color_elem.attrib.get("b", "0")) / 100000.0
-        base_hex = _rgb01_to_hex(r, g, b)
+        base_hex = _scrgb_color_hex(color_elem)
 
     if base_hex is None:
         return None, 1.0
@@ -432,6 +428,30 @@ def _hsl_color_hex(color_elem: ET.Element) -> str:
     )
 
 
+def _scrgb_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one closed linear-light DrawingML scRGB base color."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}scrgbClr"
+        or set(color_elem.attrib) != {"r", "g", "b"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML scRGB color structure")
+    channels = [
+        _bounded_integer_attribute(
+            color_elem,
+            attr,
+            minimum=0,
+            maximum=100000,
+            label="scRGB color",
+        )
+        / 100000.0
+        for attr in ("r", "g", "b")
+    ]
+    return _linear_rgb01_to_hex(*channels)
+
+
 def _bounded_integer_attribute(
     elem: ET.Element,
     attr: str,
@@ -552,6 +572,17 @@ def _rgb01_to_hex(r: float, g: float, b: float) -> str:
     g = max(0.0, min(1.0, g))
     b = max(0.0, min(1.0, b))
     return f"{int(round(r * 255)):02X}{int(round(g * 255)):02X}{int(round(b * 255)):02X}"
+
+
+def _linear_rgb01_to_hex(r: float, g: float, b: float) -> str:
+    """Encode linear-light RGB channels as an SVG sRGB hex color."""
+    encoded = (
+        12.92 * channel
+        if channel <= 0.0031308
+        else 1.055 * channel ** (1.0 / 2.4) - 0.055
+        for channel in (r, g, b)
+    )
+    return _rgb01_to_hex(*encoded)
 
 
 def _hsl_to_hex(h: float, s: float, l: float) -> str:
