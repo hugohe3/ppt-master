@@ -192,6 +192,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         )
     elif rad is not None:
         _validate_path_gradient_type(rad)
+        _validate_path_gradient_focus(rad)
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
         # only has circle/ellipse, and path="circle" maps to fillToRect=center.
         defs_xml = (
@@ -297,23 +298,48 @@ def _validate_gradient_tile_rect(gradient: ET.Element) -> None:
         )
     if not tile_rects:
         return
-    tile_rect = tile_rects[0]
-    if (
-        set(tile_rect.attrib) - {"l", "t", "r", "b"}
-        or list(tile_rect)
-        or (tile_rect.text or "").strip()
-    ):
-        raise ValueError("Invalid DrawingML gradient tileRect structure")
-    for edge, raw in tile_rect.attrib.items():
-        value = _parse_ooxml_percentage(
-            raw,
-            label=f"gradient tileRect {edge}",
-        )
+    values = _relative_rect_values(
+        tile_rects[0],
+        label="gradient tileRect",
+    )
+    for value in values.values():
         if value != 0:
             raise ValueError(
                 "Non-zero DrawingML gradient tileRect is not representable "
                 "by the project SVG gradient mapping"
             )
+
+
+def _validate_path_gradient_focus(path: ET.Element) -> None:
+    """Validate the focus rectangle normalized by the radial approximation."""
+    focus_rects = path.findall("a:fillToRect", NS)
+    if len(focus_rects) > 1:
+        raise ValueError(
+            "DrawingML path gradient must contain at most one fillToRect"
+        )
+    if focus_rects:
+        _relative_rect_values(
+            focus_rects[0],
+            label="path gradient fillToRect",
+        )
+
+
+def _relative_rect_values(
+    rect: ET.Element,
+    *,
+    label: str,
+) -> dict[str, Decimal]:
+    """Validate one DrawingML relative-rectangle leaf and parse its edges."""
+    if (
+        set(rect.attrib) - {"l", "t", "r", "b"}
+        or list(rect)
+        or (rect.text or "").strip()
+    ):
+        raise ValueError(f"Invalid DrawingML {label} structure")
+    return {
+        edge: _parse_ooxml_percentage(raw, label=f"{label} {edge}")
+        for edge, raw in rect.attrib.items()
+    }
 
 
 def _parse_ooxml_percentage(raw: str, *, label: str) -> Decimal:
