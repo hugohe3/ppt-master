@@ -737,6 +737,10 @@ Linear export preserves stops/alpha/direction but reduces coordinates to an
 angle. Radial export becomes a centered circular gradient and does not preserve
 `cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
 retain only the first stop. Stop alpha and element opacity multiply.
+PPTX import writes stop offsets with five decimal places, and export parses the
+shared unitless/percentage grammar before half-up quantization to 1/100000.
+Thus small positions and values such as `1%` round-trip without truncation or
+percentage reinterpretation.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

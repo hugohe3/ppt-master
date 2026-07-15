@@ -17,7 +17,13 @@ from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
-from .emu_units import NS, fmt_num, format_ooxml_alpha, percent_to_ratio
+from .emu_units import (
+    NS,
+    fmt_num,
+    format_ooxml_alpha,
+    format_ooxml_unit_ratio,
+    percent_to_ratio,
+)
 
 
 @dataclass
@@ -129,7 +135,8 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             else ""
         )
         stops_xml.append(
-            f'<stop offset="{fmt_num(pos_pct, 4)}" stop-color="{hex_}"{opacity_attr}/>'
+            f'<stop offset="{format_ooxml_unit_ratio(pos_pct)}" '
+            f'stop-color="{hex_}"{opacity_attr}/>'
         )
     if not stops_xml:
         return FillResult.inherit()
