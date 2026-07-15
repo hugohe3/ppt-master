@@ -721,6 +721,9 @@ foreign-namespace aliases stop import instead of being selected by
 implementation priority. Explicit `a:grpFill` also stops import until group
 fill inheritance has a registered SVG mapping; an omitted fill continues to
 use the owning container's inheritance/default contract.
+Every imported `a:noFill`, including line paint, is an attribute-free empty
+leaf. Attributes, child elements, or text payload stop import instead of being
+discarded while the paint is normalized to `none`.
 
 ---
 

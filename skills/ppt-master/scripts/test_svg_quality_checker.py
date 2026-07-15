@@ -2823,6 +2823,34 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_fill(foreign_fill, None)
 
+    def test_native_no_fill_must_be_an_empty_leaf(self):
+        invalid_no_fills = (
+            '<a:noFill future="x"/>',
+            '<a:noFill><a:future/></a:noFill>',
+            '<a:noFill>payload</a:noFill>',
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for no_fill in invalid_no_fills:
+            with self.subTest(route='fill', no_fill=no_fill):
+                fill = ET.fromstring(f'<a:fill {namespace}>{no_fill}</a:fill>')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML noFill structure',
+                ):
+                    resolve_fill(fill, None)
+
+            with self.subTest(route='line', no_fill=no_fill):
+                sp_pr = ET.fromstring(
+                    f'<a:spPr {namespace}><a:ln>{no_fill}</a:ln></a:spPr>'
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML noFill structure',
+                ):
+                    resolve_stroke(sp_pr, None)
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):

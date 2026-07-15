@@ -23,6 +23,7 @@ from .color_resolver import (
     ColorPalette,
     find_color_elem,
     resolve_color,
+    validate_no_fill,
 )
 from .emu_units import (
     ANGLE_UNIT,
@@ -152,7 +153,8 @@ def _drawingml_fill_name(elem: ET.Element) -> str | None:
 # Per-fill handlers
 # ---------------------------------------------------------------------------
 
-def _resolve_no_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
+def _resolve_no_fill(elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
+    validate_no_fill(elem)
     return FillResult.none_fill()
 
 
