@@ -741,6 +741,9 @@ PPTX import writes stop offsets with five decimal places, and export parses the
 shared unitless/percentage grammar before half-up quantization to 1/100000.
 Thus small positions and values such as `1%` round-trip without truncation or
 percentage reinterpretation.
+Each imported `a:gs` requires an integer `pos` from `0` through `100000`.
+Missing, malformed, or out-of-range source positions stop import instead of
+being silently relocated to the start of the gradient.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

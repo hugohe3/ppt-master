@@ -13,17 +13,21 @@ slide assembler can collect gradient defs without conflicting IDs.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
     NS,
+    PERCENT_UNIT,
     fmt_num,
     format_ooxml_alpha,
     format_ooxml_unit_ratio,
-    percent_to_ratio,
 )
+
+
+_OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
 
 
 @dataclass
@@ -124,7 +128,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         return FillResult.inherit()
     stops_xml = []
     for gs in gs_lst.findall("a:gs", NS):
-        pos_pct = percent_to_ratio(gs.attrib.get("pos"), default=0.0)
+        pos_pct = _gradient_stop_position(gs)
         color_elem = find_color_elem(gs)
         hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
         if hex_ is None:
@@ -179,6 +183,25 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         attrs={"fill": f"url(#{grad_id})"},
         defs=[defs_xml],
     )
+
+
+def _gradient_stop_position(gs: ET.Element) -> float:
+    """Parse one required DrawingML fixed-percentage stop position."""
+    raw = gs.get("pos")
+    if raw is None:
+        raise ValueError("DrawingML gradient stop requires a pos attribute")
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(
+            f"Invalid DrawingML gradient stop position: {raw!r}"
+        )
+    position = int(token)
+    if not 0 <= position <= PERCENT_UNIT:
+        raise ValueError(
+            f"DrawingML gradient stop position={position} is outside "
+            f"0..{PERCENT_UNIT}"
+        )
+    return position / PERCENT_UNIT
 
 
 def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
