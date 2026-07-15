@@ -3068,6 +3068,49 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </a:sysClr>''')
         self.assertEqual(resolve_color(valid, None), ('#A1B2C3', 0.5))
 
+    def test_native_preset_color_requires_registered_value(self):
+        invalid_colors = (
+            ('<a:prstClr/>', 'preset color structure'),
+            (
+                '<a:prstClr val="red" future="x"/>',
+                'preset color structure',
+            ),
+            ('<a:prstClr val="Red"/>', 'preset color value'),
+            ('<a:prstClr val="futureColor"/>', 'preset color value'),
+            ('<a:prstClr val=" red "/>', 'preset color value'),
+            (
+                '<a:prstClr val="red">payload</a:prstClr>',
+                'preset color structure',
+            ),
+            (
+                '<a:prstClr val="red"><a:alpha val="50000"/>payload'
+                '</a:prstClr>',
+                'preset color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:prstClr xmlns:future="urn:future" val="red"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'preset color structure'):
+            resolve_color(foreign_color, None)
+
+        valid = ET.fromstring(f'''
+<a:prstClr {namespace} val="dkBlue">
+  <a:alpha val="50000"/>
+</a:prstClr>''')
+        self.assertEqual(resolve_color(valid, None), ('#00008B', 0.5))
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):

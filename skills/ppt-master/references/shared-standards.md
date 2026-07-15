@@ -751,6 +751,11 @@ machine's dynamic system palette. Missing/unknown system identities, malformed
 fallbacks, extra attributes, namespace aliases, and interleaved text stop
 import; a valid `lastClr` is normalized into static SVG paint, so this route is
 `Native-normalized` rather than system-color-preserving.
+Imported `a:prstClr` has exactly one `val` attribute selected from the complete
+190-value DrawingML preset-color enum, all of which have a registered static
+RGB mapping. Missing/unknown/case-altered values, extra attributes, namespace
+aliases, and interleaved text stop import instead of falling back to black or
+an adjacent CSS color name.
 
 ---
 
