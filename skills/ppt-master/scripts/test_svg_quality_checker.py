@@ -2785,7 +2785,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 )
 
     def test_native_gradient_stop_position_round_trips(self):
-        for position in (1, 7, 13, 33333, 99999):
+        for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):
                 sp_pr = ET.fromstring(f'''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
@@ -2812,6 +2812,31 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <stop offset="1%" stop-color="#112233"/>
 </linearGradient>''')
         self.assertIn('<a:gs pos="1000">', build_gradient_fill(percentage))
+
+    def test_native_gradient_stop_position_must_be_valid(self):
+        invalid_positions = (
+            (None, 'requires a pos attribute'),
+            ('', 'Invalid DrawingML gradient stop position'),
+            ('1.5', 'Invalid DrawingML gradient stop position'),
+            ('1e2', 'Invalid DrawingML gradient stop position'),
+            ('NaN', 'Invalid DrawingML gradient stop position'),
+            ('-1', 'position=-1 is outside 0..100000'),
+            ('100001', 'position=100001 is outside 0..100000'),
+        )
+        for position, expected in invalid_positions:
+            with self.subTest(position=position):
+                pos_attr = '' if position is None else f' pos="{position}"'
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs{pos_attr}><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(sp_pr, None)
 
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
