@@ -744,6 +744,9 @@ round-trip without truncation or percentage reinterpretation. In that non-line
 import mapping, each `a:gs` requires an integer `pos` from `0` through `100000`.
 Missing, malformed, or out-of-range source positions stop import instead of
 being silently relocated to the start of the gradient.
+Source positions must be nondecreasing in document order; equal positions stay
+valid for hard transitions. Descending positions stop import instead of being
+silently clamped by SVG rendering.
 An explicit non-line imported `a:gradFill` requires exactly one attribute-free
 `a:gsLst` with at least two direct `a:gs` children and no other payload. Every
 stop must provide a resolvable color. Missing or duplicate lists, undersized or

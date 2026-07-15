@@ -2840,6 +2840,40 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_fill(sp_pr, None)
 
+    def test_native_gradient_stop_positions_must_be_nondecreasing(self):
+        equal_positions = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="50000"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="50000"><a:srgbClr val="445566"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+        fill = resolve_fill(equal_positions, None)
+        gradient = ET.fromstring(fill.defs[0])
+        self.assertEqual(
+            [stop.get('offset') for stop in gradient],
+            ['0.5', '0.5'],
+        )
+
+        descending_positions = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="50000"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="40000"><a:srgbClr val="445566"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            'gradient stop positions must be nondecreasing',
+        ):
+            resolve_fill(descending_positions, None)
+
     def test_native_gradient_requires_resolvable_stops(self):
         invalid_gradients = (
             (
