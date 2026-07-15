@@ -8,16 +8,19 @@ The supported delivery contract has one PPTX path: `svg_output/` → the project
 
 ## `svg_authoring_view.py`
 
-Create a lightweight inspection/authoring projection of one PPTX-imported SVG
-or a directory of imported SVGs:
+Create a lightweight editable authoring IR bundle from one PPTX-imported SVG or
+a directory of imported SVGs:
 
 ```bash
-python3 scripts/svg_authoring_view.py <svg-file-or-directory> -o <output-dir>
+python3 scripts/svg_authoring_view.py <svg-file-or-directory> -o <output-dir> \
+  --projection-kind layered
 ```
 
 The operation is non-destructive and refuses existing output files unless
 `--force` is explicit. It never writes back to the source SVG. The JSON report
-on stdout records original/projected byte counts and removals by category.
+on stdout records original/projected byte counts and removals by category. The
+output directory contains the editable SVGs and one atomic
+`authoring_manifest.json` sidecar.
 
 The projected copy:
 
@@ -27,14 +30,16 @@ The projected copy:
 - removes source-object identity/style/hash attributes that are only useful to
   an exact import round trip;
 - keeps visible paths, text, images, stable ids, Master/Layout root markers,
-  and selected native-shape intent useful for inspection; and
+  selected native-shape intent, and a document-local `data-pptx-source-ref` on
+  each imported logical object;
 - rewrites relative local asset references for the projection's new location.
 
-The complete imported SVG remains the evidence source for mirror restoration.
-The exporter does not read the import workspace or the projection. The
-projection is deliberately not a template generator, not a replacement for
-the explicit Master/Layout restoration workflow, and not a supported release
-input to `svg_to_pptx.py`.
+The manifest stores relative source/authoring filenames, source and initial
+authoring hashes, and source element paths. It deliberately does not copy the
+opaque payload. The authoring bundle is the editable source for template
+creation; the complete imported SVG remains immutable native-payload backing.
+Final `templates/*.svg` files are materialized and validated from that pair.
+The IR directory itself is not a supported direct input to `svg_to_pptx.py`.
 
 This projection is separate from canonical preset authoring. New project SVGs
 and project-owned templates use the compact authored form: one atomic
@@ -50,7 +55,7 @@ authoring guidance in
 
 ## `extract_svg_assets.py`
 
-Factor large vector subtrees out of lightweight authoring projections and
+Factor large vector subtrees out of lightweight authoring IR documents and
 replace them with compact `<use data-icon>` references:
 
 ```bash
@@ -69,7 +74,9 @@ writes no duplicate SVG file. Unmatched flat-only subtrees still extract
 normally. Use `--clean-stale` on both import-workspace passes to remove stale
 generated files for their respective prefixes. In create-template workspaces,
 `imported` is the fixed namespace: assets live once under `icons/imported/`, and
-the working SVGs reference them as `data-icon="imported/<name>"`. A rerun on an
+the working SVGs reference them as `data-icon="imported/<name>"`. Inventory
+entries retain source refs from each extracted subtree, allowing expansion to
+restore the authoring-manifest mapping. A rerun on an
 already rewritten namespaced projection inventories those references and does
 not progressively extract their remaining parent or sibling geometry.
 

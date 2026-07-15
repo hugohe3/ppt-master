@@ -17,12 +17,12 @@ Usage:
     python3 scripts/extract_svg_assets.py <svg_dir> [options]
 
 Examples:
-    python3 scripts/extract_svg_assets.py import_ws/svg \
+    python3 scripts/extract_svg_assets.py import_ws/authoring-svg \
         --icons-dir import_ws/icons --icon-namespace imported \
         --inplace --id-prefix layered --clean-stale
-    python3 scripts/extract_svg_assets.py import_ws/svg-flat \
+    python3 scripts/extract_svg_assets.py import_ws/authoring-svg-flat \
         --icons-dir import_ws/icons --icon-namespace imported \
-        --reuse-inventory import_ws/svg_vector_asset_inventory.json \
+        --reuse-inventory import_ws/authoring-svg_vector_asset_inventory.json \
         --inplace --id-prefix flat --clean-stale
     python3 scripts/extract_svg_assets.py project/svg_output --inplace --min-drawables 40
 
@@ -54,6 +54,7 @@ SEMANTIC_CONTENT = {"text", "tspan", "foreignObject"}
 DEFAULT_MIN_DRAWABLES = 20
 DEFAULT_MIN_BYTES = 3000
 DEFAULT_MIN_DECORATION_BYTES = 3000
+SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
 ICON_NAMESPACE_RE = re.compile(r"^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$")
 URL_REF_RE = re.compile(r"url\(\s*(['\"]?)#([^)'\"]\S*?)\1\s*\)")
 
@@ -67,7 +68,12 @@ def _drawable_count(elem: ET.Element) -> int:
 
 
 def _xml_size(elem: ET.Element) -> int:
-    return len(ET.tostring(elem, encoding="utf-8"))
+    if not any(item.get(SOURCE_REF_ATTRIBUTE) for item in elem.iter()):
+        return len(ET.tostring(elem, encoding="utf-8"))
+    measured = copy.deepcopy(elem)
+    for item in measured.iter():
+        item.attrib.pop(SOURCE_REF_ATTRIBUTE, None)
+    return len(ET.tostring(measured, encoding="utf-8"))
 
 
 def _large_enough(elem: ET.Element, min_drawables: int, min_bytes: int) -> bool:
@@ -109,6 +115,14 @@ def _tag_histogram(elem: ET.Element) -> dict[str, int]:
         if name in DRAWABLE:
             hist[name] = hist.get(name, 0) + 1
     return hist
+
+
+def _source_references(elem: ET.Element) -> list[str]:
+    return sorted({
+        source_ref
+        for item in elem.iter()
+        if (source_ref := item.get(SOURCE_REF_ATTRIBUTE))
+    })
 
 
 def _is_descendant(container: ET.Element, candidate: ET.Element) -> bool:
@@ -437,6 +451,7 @@ def _existing_placeholder_entries(
                 entry["drawable_count"] = _drawable_count(root)
                 entry["byte_count"] = _xml_size(root)
                 entry["elements"] = _tag_histogram(root)
+                entry["source_refs"] = _source_references(root)
                 entry["dependencies"] = sorted(
                     elem_id
                     for elem in root.iter()
@@ -592,6 +607,7 @@ def extract_file(
             if (elem_id := elem.get("id"))
         })
         source_sha256 = _source_sha256(group, dependencies, view_box, width, height)
+        source_refs = _source_references(group)
         reusable = (reusable_assets or {}).get(source_sha256)
         if reusable is not None:
             reused_icon = str(reusable["icon"])
@@ -613,6 +629,7 @@ def extract_file(
                 "reused_from_svg": reusable.get("svg"),
                 "drawable_count": _drawable_count(group),
                 "byte_count": _xml_size(group),
+                "source_refs": source_refs,
                 "dependencies": dependency_source_ids,
                 "elements": _tag_histogram(group),
             })
@@ -644,6 +661,7 @@ def extract_file(
             "asset_sha256": hashlib.sha256(asset_bytes).hexdigest(),
             "drawable_count": _drawable_count(group),
             "byte_count": _xml_size(group),
+            "source_refs": source_refs,
             "dependencies": [id_mapping.get(elem_id, elem_id) for elem_id in dependency_source_ids],
             "elements": _tag_histogram(group),
         })
