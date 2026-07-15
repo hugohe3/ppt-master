@@ -2851,6 +2851,56 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_stroke(sp_pr, None)
 
+    def test_native_solid_fill_requires_one_resolvable_color(self):
+        invalid_solid_fills = (
+            ('<a:solidFill/>', 'requires one explicit color'),
+            (
+                '<a:solidFill future="x">'
+                '<a:srgbClr val="112233"/></a:solidFill>',
+                'Invalid DrawingML solid fill structure',
+            ),
+            (
+                '<a:solidFill><a:srgbClr val="112233"/>'
+                '<a:prstClr val="red"/></a:solidFill>',
+                'Invalid DrawingML solid fill structure',
+            ),
+            (
+                '<a:solidFill><a:future/></a:solidFill>',
+                'Invalid DrawingML solid fill structure',
+            ),
+            (
+                '<a:solidFill>payload<a:srgbClr val="112233"/>'
+                '</a:solidFill>',
+                'Invalid DrawingML solid fill structure',
+            ),
+            (
+                '<a:solidFill><a:srgbClr val="112233"/>payload'
+                '</a:solidFill>',
+                'Invalid DrawingML solid fill structure',
+            ),
+            (
+                '<a:solidFill><a:schemeClr val="accent1"/></a:solidFill>',
+                'solid fill color cannot be resolved',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for solid_fill, expected in invalid_solid_fills:
+            with self.subTest(route='fill', solid_fill=solid_fill):
+                fill = ET.fromstring(
+                    f'<a:fill {namespace}>{solid_fill}</a:fill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+            with self.subTest(route='line', solid_fill=solid_fill):
+                sp_pr = ET.fromstring(
+                    f'<a:spPr {namespace}><a:ln>{solid_fill}</a:ln></a:spPr>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):
@@ -3534,7 +3584,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ),
             (
                 '<a:solidFill/>',
-                'DrawingML solid line color cannot be resolved',
+                'DrawingML solid fill requires one explicit color',
             ),
             (
                 '<a:gradFill/>',

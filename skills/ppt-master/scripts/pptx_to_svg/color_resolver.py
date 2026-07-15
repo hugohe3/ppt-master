@@ -170,6 +170,37 @@ def validate_no_fill(elem: ET.Element) -> None:
         raise ValueError("Invalid DrawingML noFill structure")
 
 
+def resolve_solid_fill_color(
+    elem: ET.Element,
+    palette: ColorPalette | None,
+    *,
+    placeholder_hex: str | None = None,
+) -> tuple[str, float]:
+    """Resolve one explicit color from a closed DrawingML solid fill."""
+    children = list(elem)
+    color_tags = {f"{{{NS['a']}}}{name}" for name in COLOR_TAGS}
+    if not elem.attrib and not children and not (elem.text or "").strip():
+        raise ValueError(
+            "DrawingML solid fill requires one explicit color"
+        )
+    if (
+        elem.attrib
+        or len(children) != 1
+        or children[0].tag not in color_tags
+        or (elem.text or "").strip()
+        or (children[0].tail or "").strip()
+    ):
+        raise ValueError("Invalid DrawingML solid fill structure")
+    hex_, alpha = resolve_color(
+        children[0],
+        palette,
+        placeholder_hex=placeholder_hex,
+    )
+    if hex_ is None:
+        raise ValueError("DrawingML solid fill color cannot be resolved")
+    return hex_, alpha
+
+
 def find_color_elem(parent: ET.Element | None) -> ET.Element | None:
     """Return the first child color element (any of the 6 OOXML color tags)."""
     if parent is None:
