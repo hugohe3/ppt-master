@@ -77,12 +77,12 @@ Branch by the type of reference source the user supplied. This step produces ana
 
 | Type | What the user supplied | Tool / read path | Replication modes available |
 |------|-------------------------|------------------|------------------------------|
-| **A** `.pptx` reference | A `.pptx` file path | `pptx_template_import.py` → `manifest.json` + `native_structure.json` + `source_template.pptx` + layered/flat SVGs + `assets/` | `standard` / `fidelity` / `mirror` |
+| **A** `.pptx` reference | A `.pptx` file path | `pptx_template_import.py` → `manifest.json` + `native_structure.json` + `source_template.pptx` + layered SVGs + `assets/`; flat verification SVGs are opt-in | `standard` / `fidelity` / `mirror` |
 | **B** Existing SVG assets | `projects/<x>/svg_output/`, a current template workspace root, a legacy flat template root, or a loose `.svg` folder | Normalize the source directory, create an editable authoring IR bundle with `svg_authoring_view.py`, then use its page SVGs; also read companion `design_spec.md` / `spec_lock.md` when present | `standard` / `fidelity`; `mirror` only when the source already carries a complete explicit Master/Layout/placeholder/native-object contract |
 | **C** Image / visual references | Screenshot folder, single image, PDF pages | `ls` + `Read` each file (multimodal visual recognition) | `standard` only |
 | **D** No reference source | Verbal description only ("McKinsey style", "tech blue", "dark minimal") | — | `standard` only |
 
-`fidelity` and `mirror` are not available for type C / D — visual references and verbal-only briefs cannot drive page-by-page replication. Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, complete-page lossless `svg-flat/`, and inheritance facts are the restoration authority. In `standard` / `fidelity`, those files supply factual canvas/asset/visual references only and do not define output topology.
+`fidelity` and `mirror` are not available for type C / D — visual references and verbal-only briefs cannot drive page-by-page replication. Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, and inheritance facts are the restoration authority. Optional `svg-flat/` files are complete-page verification views, never restoration input. In `standard` / `fidelity`, the imported facts and visuals do not define output topology.
 
 **Type B source normalization**: when the supplied root contains `templates/design_spec.md`, use `<input>/templates/` as the SVG/spec source and resolve its workspace assets from sibling `<input>/images/` and `<input>/icons/`. Otherwise, use the supplied directory itself as the legacy-flat/loose SVG source. Directory flatness is not a semantic-structure signal.
 
@@ -108,16 +108,17 @@ This produces, in one workspace:
 - `manifest.json` — single source of truth: slide size, theme colors, fonts, per-master theme summaries, asset inventory, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata (including source-owned inherited-shape visibility), page-type candidates
 - `native_structure.json` — analysis contract: stable master/layout keys, layout picker names, placeholder type/index/geometry, inherited-shape visibility, source hash, and source-graph quality facts
 - `source_template.pptx` — byte-preserved analysis copy for visual/package cross-checking; it is not copied into the final template package
-- `summary.md` — short human-readable digest derived from manifest.json (for quick scanning only)
 - `assets/` — extracted reusable image assets; `manifest.json` owns the asset-name mapping and SVG `href` values reuse that mapping
+- `conversion-report.json` — source-recovery and fidelity diagnostics; retain it for audit because these warnings are not duplicated in the structural manifests
 - `svg/` — **primary view** (layered template view):
   - `svg/master_*.svg` — every slide master in the deck rendered once, including masters that no sample slide currently uses (template packages routinely ship more masters than the visible samples reference)
   - `svg/layout_*.svg` — every slide layout in the deck rendered once (its own contribution; master shapes do **not** repeat here)
   - `svg/slide_NN.svg` — each slide's own shapes and slide-local background; master / layout shapes and backgrounds are **not** inlined here
   - `svg/inheritance.json` — which Layout/Master each Slide consumes plus source-owned `showInheritedShapes` / `showMasterShapes` booleans; Layout shapes follow the Slide's `showInheritedShapes`, while Master shapes require that value and the referenced Layout's `showMasterShapes`; backgrounds remain independent
-- `svg-flat/` — **companion view** (one self-contained SVG per slide):
+- `svg-flat/` — **optional verification view** (only with `--inheritance-mode both`; one self-contained SVG per slide):
   - `svg-flat/slide_NN.svg` — effective Master/Layout contributions permitted by the source visibility flags plus Slide-local content, painted into one SVG so opening any slide on its own shows the full page like PowerPoint would. Background inheritance remains independent. Use this for previews / screenshot pipelines / "what does the slide actually look like" sanity checks.
-- The default `--inheritance-mode both` emits both views. Pass `layered` to skip `svg-flat/`, or `flat` for round-trip use cases (legacy: `svg/` becomes self-contained slides without the master/layout/inheritance files).
+- The default `--inheritance-mode layered` emits only the canonical layered view. Pass `both` when a separate complete-page verification tree is worth the storage cost, or `flat` for round-trip use cases (legacy: `svg/` becomes self-contained slides without the master/layout/inheritance files).
+- The importer does not generate a duplicate narrative summary or persistent SVG-size CSV. Read compact facts from `manifest.json`; run ad hoc size measurements outside the canonical workspace when needed.
 
 Import fidelity rules:
 
@@ -129,10 +130,15 @@ It is a reconstruction aid, not a final direct template conversion.
 
 **Lossless payload backing + editable authoring IR**:
 
-Keep `<import_workspace>/svg/` and `<import_workspace>/svg-flat/` unchanged as lossless native-payload backing. Before the Template_Designer reads or edits any imported page SVG, create non-destructive authoring IR bundles:
+Keep `<import_workspace>/svg/` unchanged as lossless native-payload backing. If the optional `<import_workspace>/svg-flat/` verification tree was requested, keep it unchanged too. Before the Template_Designer reads or edits any imported page SVG, create the canonical non-destructive authoring IR bundle:
 
 ```bash
 python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg" -o "<import_workspace>/authoring-svg" --projection-kind layered
+```
+
+Only when the import explicitly used `--inheritance-mode both`, create the optional complete-page verification IR:
+
+```bash
 python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg-flat" -o "<import_workspace>/authoring-svg-flat" --projection-kind flat
 ```
 
@@ -155,11 +161,12 @@ Factor large decorative vector groups out of the lightweight IR documents so the
 # layered view — primary read surface and canonical extracted-vector inventory
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --icon-namespace imported --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
 
-# flat view — reuse matching layered assets; only genuinely flat-only vectors create new assets
+# optional flat verification view — run only when authoring-svg-flat/ exists;
+# reuse matching layered assets so only genuinely flat-only vectors create files
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --icon-namespace imported --reuse-inventory "<import_workspace>/authoring-svg_vector_asset_inventory.json" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
-The authoring SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..."/>` placeholders. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. The inventory is written beside the processed IR directory and records every preserved `data-pptx-source-ref`; re-inlining an asset therefore restores the referenced object mapping before materialization. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
+The authoring SVGs in `<import_workspace>/authoring-svg/` and, when requested, `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..."/>` placeholders. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. The inventory is written beside the processed IR directory and records every preserved `data-pptx-source-ref`; re-inlining an asset therefore restores the referenced object mapping before materialization. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
 
 The layered pass owns the canonical extracted-vector pool. Each new asset records a source fingerprint before generated ID namespacing. The flat pass MUST consume the layered inventory through `--reuse-inventory`: an exact fingerprint match writes only a `<use>` reference to the existing layered asset, while an unmatched flat-only subtree may create one new asset under the `flat` prefix. Do not independently extract the two views into parallel asset sets. With `--clean-stale`, a rerun also removes obsolete generated `flat_*` duplicates while retaining every reused layered reference.
 
@@ -196,7 +203,8 @@ Master/Layout ownership. Do not apply it to placeholders, individual imported
 native shapes, native table/chart fallbacks, icon placeholders, or compact
 authored presets. `mirror` must keep the source native group/picture identity
 and therefore must not use this normalization. The original lossless `svg/`
-and `svg-flat/` trees remain unchanged and authoritative.
+tree remains unchanged and authoritative. Any optional `svg-flat/` tree remains
+unchanged but is verification-only.
 
 `extract_svg_assets.py` remains a different operation: it factors vectors out
 for model readability and re-inlines them as native shapes before export. It
@@ -209,13 +217,13 @@ does not turn those vectors into a picture.
 | `standard` / `fidelity` | `manifest.json`, exported assets, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered IR document (`authoring-svg/master_*.svg` / `layout_*.svg` / `slide_NN.svg`). The layered IR is the complete read surface: it covers Layouts unused by any sample slide (invisible in `svg-flat/` yet still template vocabulary), and per-page composition follows from `inheritance.json`. Cleaned flat pages are optional composition spot checks, not a required second pass over the same shapes. Source topology remains non-binding; the two modes differ in output design (`fidelity` designs a broader roster covering the useful visual range), not in read coverage. |
 | `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered Master/Layout/Slide IR document. The layered `authoring-svg/` tree is the sole editable and materialization input. Cleaned `authoring-svg-flat/` slides are optional visual composition checks only; never edit or feed them into template materialization. Materialization may resolve unchanged refs against the matching lossless backing without placing opaque payload in model context. |
 
-Use `summary.md` only for orientation. Use screenshots or the original PPTX only for visual cross-checking. Do not bulk-read opaque lossless payload into model context.
+Use the compact facts in `manifest.json` for orientation. Use screenshots or the original PPTX only for visual cross-checking. Do not bulk-read opaque lossless payload into model context.
 
 Interpretation rule (carries forward into Steps 2 and 4):
 
 - `manifest.json` is the source of truth for facts about the source deck: slide size, theme colors, fonts, background inheritance, reusable asset inventory, declared source layout/master structure, and slide reuse relationships. It dictates mirror restoration facts but not `standard` / `fidelity` output topology.
 - `native_structure.json` is the source of truth for source PowerPoint identity: stable layout keys, picker names, parent masters, placeholder types/indices, and the source-package hash. Mirror preserves those facts one-to-one. `standard` / `fidelity` do not mine them into the new structure.
-- `summary.md` is a quick scan; never treat it as the canonical fact source — go back to `manifest.json` if anything is unclear
+- `manifest.json`, `native_structure.json`, and `svg/inheritance.json` intentionally overlap only at contract boundaries so materialization can cross-check source identity, graph ownership, and visibility; do not collapse them into a cache or substitute one for another
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
 - exported `icons/imported/*.svg` files are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific imported SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
 - cleaned layered authoring SVGs are the mirror editing and verification surface; they expose source ownership without requiring the model to read opaque payload. Do not use them to promote, demote, merge, or split source structure.
@@ -254,7 +262,7 @@ Distinguish observed facts from template rules: "`slide_07` uses a left photo cr
 
 Do not treat authoring IR documents as final template assets. `standard` / `fidelity` author new SVGs from the confirmed brief and IR references. Mirror edits the IR and materializes it with lossless native-payload backing.
 
-> **Mirror-mode restoration path** — use `native_structure.json`, `svg/inheritance.json`, and the authoring manifest as structural/provenance authority. The cleaned layered IR is the editable source; lossless layered/flat SVGs are immutable payload backing. Preserve roster, appearance, ownership, placeholders, converter-supported native metadata, and available SVG fallbacks; do not synthesize a different graph.
+> **Mirror-mode restoration path** — use `native_structure.json`, `svg/inheritance.json`, and the authoring manifest as structural/provenance authority. The cleaned layered IR is the editable source and lossless layered SVGs are immutable payload backing; optional flat SVGs are verification-only. Preserve roster, appearance, ownership, placeholders, converter-supported native metadata, and available SVG fallbacks; do not synthesize a different graph.
 
 ### 1B. Existing SVG assets
 
@@ -333,7 +341,7 @@ Items to surface:
 | Output scope | Yes | `[decision]` — `library` (default, globally reusable and indexed) or `project` (same portable workspace routing under one initialized project) |
 | Target project | Yes for `project`; N/A for `library` | `[decision]` — explicit path to the initialized target workspace; validate it during the Step 4 preflight |
 | New template ID | Yes | `[decision]` — user chooses ASCII slug; if Chinese brand name, it must be filesystem-safe. In library scope it also becomes the matching index key |
-| Template display name | Yes | `[decision]` (often the source deck title — `[suggested]` from `summary.md` for type A) |
+| Template display name | Yes | `[decision]` (often the source deck title — `[suggested]` from `manifest.json.source.name` for type A) |
 | Category | Yes | `[decision]` — one of `brand` / `general` / `scenario` / `government` / `special` |
 | Applicable scenarios | Yes | `[suggested]` from analysis; user confirms |
 | Tone summary | Yes | `[suggested]` from analysis (e.g. `Modern, restrained, data-driven`) |
@@ -422,7 +430,7 @@ If the input source is type A, pass the following internal package to the role:
 - finalized brief from Step 3
 - `manifest.json`
 - `native_structure.json` and `source_template.pptx`
-- `summary.md` (orientation only)
+- `conversion-report.json` when source-recovery diagnostics exist
 - exported `assets/`
 - `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/imported/*.svg`
 - editable layered IR documents and manifest from `authoring-svg/`; optional `authoring-svg-flat/` is a visual cross-check only and never a template materialization input
@@ -508,7 +516,7 @@ Downstream, both template-adherence choices use `pptx_structure.mode: structured
 **Mirror-mode restoration contract** (type A or B): when `Replication mode: mirror`, the Template_Designer role:
 
 1. **Restores one output SVG per source page** in `<template_workspace>/templates/`. Edit and normalize the matching `authoring-svg/` IR document, then materialize it with the authoring manifest, native structure facts, and immutable payload backing. Type A must use `mirror_template_materialize.py`; do not hand-copy or independently rebuild its graph. Preserve source Master/Layout keys and picker names, Layout parentage, slide assignment, placeholder type/index/bounds, inherited-shape visibility, ownership, paint order, and supported native metadata. Mechanical namespace, root-declaration, asset-path, and fixed-layer group normalization is allowed only when source ownership and appearance remain unchanged.
-   - Type A authoring source: `<import_workspace>/authoring-svg/` plus its `authoring_manifest.json`; `<import_workspace>/svg/`, `<import_workspace>/svg-flat/`, `svg/inheritance.json`, and `native_structure.json` provide payload and structural backing
+   - Type A authoring source: `<import_workspace>/authoring-svg/` plus its `authoring_manifest.json`; `<import_workspace>/svg/`, `svg/inheritance.json`, and `native_structure.json` provide payload and structural backing. Optional `<import_workspace>/svg-flat/` is verification-only.
    - Type B authoring source: `<svg_analysis_workspace>/authoring-svg/` plus its manifest; the complete explicit source SVG contract is immutable backing
    - For every source Layout unused by all source slides, additionally materialize one definition-only SVG named `layout_<layout_key>.svg` from its layered authoring IR document and payload backing. It carries the exact root identity, fixed atoms, and placeholder contract but is not a generated page assignment. Use source placeholder prompts/carriers; do not invent business content. This definition SVG lets downstream export register the Layout and any otherwise-unused parent Master without retaining an internal carrier slide.
 2. **Renames each file** using the source-order-first convention `<NNN>_<page_type>.svg`, where `<NNN>` is the source-order index zero-padded to 3 digits and `<page_type>` is typically `cover` / `toc` / `chapter` / `content` / `ending` (fall back to `content` when the type cannot be confidently classified). Examples: `001_cover.svg`, `002_toc.svg`, `003_content.svg`, ..., `050_ending.svg`.

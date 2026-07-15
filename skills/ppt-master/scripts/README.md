@@ -87,6 +87,11 @@ python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
 ```
 
+Template import defaults to the canonical layered `svg/` tree. Use
+`--inheritance-mode both` only when a separate self-contained `svg-flat/`
+verification tree is required. No derived narrative digest is generated
+because `manifest.json` already owns those facts.
+
 `svg_authoring_view.py` creates a lightweight, non-destructive editable IR
 bundle from PPTX-imported SVGs. It removes embedded `txbody` payloads,
 duplicate hidden geometry carriers, and import-identity attributes from the

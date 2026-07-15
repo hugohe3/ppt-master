@@ -183,8 +183,8 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 它会先校验 IR manifest、不可变来源 hash、完整原生图谱、可见性事实和
 导入向量闭包，再原子发布按源顺序排列的 SVG roster 及
-`icons/imported/`、`images/` 素材。它不会把 `svg-flat/` 当成模板来源，
-也不会生成 `design_spec.md`；设计角色必须针对物化后的 roster 编写该简报。
+`icons/imported/`、`images/` 素材。它不要求、也不会把按需生成的
+`svg-flat/` 校验视图当成模板来源，并且不会生成 `design_spec.md`；设计角色必须针对物化后的 roster 编写该简报。
 
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 

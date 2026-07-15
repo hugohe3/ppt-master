@@ -11,7 +11,6 @@ It does NOT try to convert arbitrary PPTX shapes into SVG templates.
 
 Output contract (single source of truth):
     <workspace>/manifest.json   — all factual metadata (theme, assets, slides, layouts, masters)
-    <workspace>/summary.md      — short human-readable digest derived from manifest.json
     <workspace>/assets/         — extracted reusable image assets
 
 This module is a pure library. The CLI entry point lives in
@@ -74,7 +73,7 @@ class SlideRecord:
     placeholders: list[dict[str, Any]]
     page_type: str
     svg_file: str
-    flat_svg_file: str
+    flat_svg_file: str | None
 
 
 def summarize_part_record(
@@ -500,68 +499,12 @@ def _effective_inherited_image_assets(
     return assets
 
 
-def write_summary(output_path: Path, manifest: dict[str, Any]) -> None:
-    """Render a short human digest derived from manifest.json.
-
-    This intentionally stays terse: every fact already lives in manifest.json.
-    The digest exists only so a reviewer can scan the workspace at a glance
-    without parsing JSON.
-    """
-    source_name = manifest["source"]["name"]
-    slide_size = manifest["slideSize"]
-    theme = manifest["theme"]
-    slides = manifest["slides"]
-    layouts = manifest.get("layouts", [])
-    masters = manifest.get("masters", [])
-    common_assets = manifest["assets"]["commonAssets"]
-    page_type_map = manifest.get("pageTypeCandidates", {})
-
-    lines: list[str] = [
-        f"# Template Import Summary — {source_name}",
-        "",
-        "All facts are stored in `manifest.json`; this digest is for quick scanning only.",
-        "",
-        "## Canvas",
-        f"- Size: {slide_size['width_px']} × {slide_size['height_px']} px",
-        f"- Theme colors: {', '.join(sorted(theme['colors'].keys())) or 'none detected'}",
-        f"- Theme fonts: {', '.join(f'{k}={v}' for k, v in theme['fonts'].items()) or 'none detected'}",
-        "",
-        "## Inventory",
-        f"- Slides: {len(slides)}",
-        f"- Layouts (unique): {len(layouts)}",
-        f"- Masters (unique): {len(masters)}",
-        f"- Reusable assets (used by ≥2 parts): {len(common_assets)}",
-        "",
-        "## Page-Type Candidates",
-    ]
-    if page_type_map:
-        for ptype, indexes in page_type_map.items():
-            lines.append(f"- {ptype}: slides {', '.join(str(i) for i in indexes)}")
-    else:
-        lines.append("- (none classified)")
-
-    lines.extend(["", "## Layout Reuse"])
-    if layouts:
-        for layout in layouts:
-            users = layout.get("usedBySlides", [])
-            users_str = ", ".join(str(i) for i in users) if users else "n/a"
-            lines.append(f"- {layout['name']} → slides {users_str}")
-    else:
-        lines.append("- (none)")
-
-    lines.extend(["", "## Master Reuse"])
-    if masters:
-        for master in masters:
-            users = master.get("usedBySlides", [])
-            users_str = ", ".join(str(i) for i in users) if users else "n/a"
-            lines.append(f"- {master['name']} → slides {users_str}")
-    else:
-        lines.append("- (none)")
-
-    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
+def build_manifest(
+    pptx_path: Path,
+    output_dir: Path,
+    *,
+    include_flat_svg: bool = False,
+) -> dict[str, Any]:
     with zipfile.ZipFile(pptx_path, "r") as zf:
         presentation_root = load_xml_from_zip(zf, "ppt/presentation.xml")
         if presentation_root is None:
@@ -755,7 +698,9 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     placeholders=placeholders,
                     page_type=page_type,
                     svg_file=slide_svg_filename(index),
-                    flat_svg_file=slide_svg_filename(index),
+                    flat_svg_file=(
+                        slide_svg_filename(index) if include_flat_svg else None
+                    ),
                 )
             )
 
@@ -875,5 +820,4 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             ],
         }
 
-        write_summary(output_dir / "summary.md", manifest)
         return manifest

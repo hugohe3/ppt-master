@@ -184,7 +184,8 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 It validates the IR manifest, immutable source hashes, complete native graph,
 visibility facts, and imported-vector closure before atomically publishing the
 source-ordered SVG roster and its `icons/imported/` / `images/` assets. It never
-uses `svg-flat/` as the template source and never generates `design_spec.md`;
+requires or uses the opt-in `svg-flat/` verification tree as the template source
+and never generates `design_spec.md`;
 the designer writes that brief against the published roster.
 
 **Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
