@@ -3159,6 +3159,55 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_tile_rect(tile_rect)
 
+    def test_native_path_gradient_focus_rect_must_be_valid(self):
+        def resolve_focus_rect(focus_rect: str):
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:path path="circle">{focus_rect}</a:path>
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        valid_rects = (
+            '',
+            '<a:fillToRect/>',
+            '<a:fillToRect l="50000" t="50%" r="-25000" b="125%"/>',
+        )
+        for focus_rect in valid_rects:
+            with self.subTest(valid_focus_rect=focus_rect):
+                fill = resolve_focus_rect(focus_rect)
+                self.assertEqual(
+                    ET.fromstring(fill.defs[0]).tag,
+                    'radialGradient',
+                )
+
+        for raw in ('', 'NaN', '1e2', '0px', '2147483648'):
+            with self.subTest(invalid_focus_value=raw):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML path gradient fillToRect l',
+                ):
+                    resolve_focus_rect(f'<a:fillToRect l="{raw}"/>')
+
+        invalid_structures = (
+            '<a:fillToRect/><a:fillToRect/>',
+            '<a:fillToRect future="0"/>',
+            '<a:fillToRect><a:ext/></a:fillToRect>',
+            '<a:fillToRect>payload</a:fillToRect>',
+        )
+        for focus_rect in invalid_structures:
+            with self.subTest(invalid_focus_rect=focus_rect):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'fillToRect',
+                ):
+                    resolve_focus_rect(focus_rect)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):

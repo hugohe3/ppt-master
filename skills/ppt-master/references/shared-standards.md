@@ -778,6 +778,11 @@ An imported `a:tileRect` may be absent or occur once as an empty/full-area
 relative rectangle. Explicit `l/t/r/b` values use strict DrawingML percentage
 syntax and must resolve to zero. Duplicate or malformed rectangles and non-zero
 tile offsets stop import because project SVG has no gradient tiling model.
+Within an imported `a:path`, zero or one leaf `a:fillToRect` is accepted. Its
+optional `l/t/r/b` edges must use the same strict DrawingML percentage syntax;
+the registered `Approximate` mapping validates but normalizes the focus rectangle
+to the centered radial SVG form. Duplicate or malformed focus rectangles stop
+import instead of being silently discarded.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
