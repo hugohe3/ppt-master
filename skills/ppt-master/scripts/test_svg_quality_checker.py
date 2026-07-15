@@ -2863,7 +2863,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 '<a:gs pos="0"/>'
                 '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
                 '</a:gsLst>',
-                'gradient stop color cannot be resolved',
+                'Invalid DrawingML gradient stop structure',
             ),
             (
                 '<a:gsLst future="x">'
@@ -2903,6 +2903,35 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>{gradient_markup}</a:gradFill>
 </p:spPr>''')
                 with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(sp_pr, None)
+
+    def test_native_gradient_stop_structure_must_be_closed(self):
+        invalid_stops = (
+            '<a:gs pos="0" future="x"><a:srgbClr val="112233"/></a:gs>',
+            '<a:gs xmlns:future="urn:future" pos="0" future:mode="x">'
+            '<a:srgbClr val="112233"/></a:gs>',
+            '<a:gs pos="0"><a:srgbClr val="112233"/>'
+            '<a:prstClr val="red"/></a:gs>',
+            '<a:gs pos="0"><a:future/></a:gs>',
+            '<a:gs pos="0">payload<a:srgbClr val="112233"/></a:gs>',
+            '<a:gs pos="0"><a:srgbClr val="112233"/>payload</a:gs>',
+        )
+        for invalid_stop in invalid_stops:
+            with self.subTest(invalid_stop=invalid_stop):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      {invalid_stop}
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML gradient stop structure',
+                ):
                     resolve_fill(sp_pr, None)
 
     def test_native_linear_gradient_angle_must_be_valid(self):
