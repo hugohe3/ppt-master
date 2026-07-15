@@ -756,6 +756,13 @@ Imported `a:prstClr` has exactly one `val` attribute selected from the complete
 RGB mapping. Missing/unknown/case-altered values, extra attributes, namespace
 aliases, and interleaved text stop import instead of falling back to black or
 an adjacent CSS color name.
+Imported `a:hslClr` has exactly the required `hue`, `sat`, and `lum`
+attributes. The registered mapping accepts integer DrawingML units only:
+`hue` is `0..21599999` in 1/60000 degree, while `sat` and `lum` are
+`0..100000` in thousandths of a percent. Missing, malformed, percentage-literal,
+or out-of-range channels, extra attributes, namespace aliases, and interleaved
+text stop import instead of receiving zero defaults or being clamped into a
+different color.
 
 ---
 
