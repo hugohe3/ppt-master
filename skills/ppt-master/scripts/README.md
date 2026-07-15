@@ -149,8 +149,8 @@ for selection and authoring guidance.
 Create-template/source normalization (optional; never part of automatic export):
 
 ```bash
-python3 scripts/extract_svg_assets.py <layered_svg_dir> --icons-dir <icons_dir> --inplace --id-prefix layered
-python3 scripts/extract_svg_assets.py <flat_svg_dir> --icons-dir <icons_dir> --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
+python3 scripts/extract_svg_assets.py <layered_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --inplace --id-prefix layered
+python3 scripts/extract_svg_assets.py <flat_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
 python3 scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<picture_assets_dir>" --inplace  # optional create-template normalization: one selected group -> one SVG picture
 ```
 
@@ -158,7 +158,10 @@ python3 scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --res
 namespacing. Process the layered authoring view first, then pass its inventory to
 the flat view with `--reuse-inventory`; matching flat subtrees reference the
 existing layered asset instead of creating a duplicate file. Only unmatched
-flat-only vectors create new assets.
+flat-only vectors create new assets. Create-template stores these assets once in
+`<workspace>/icons/imported/` and writes `data-icon="imported/<name>"` references.
+Rerunning a namespaced pass against an already rewritten projection inventories
+the existing references without progressively wrapping more parent geometry.
 
 Post-processing and export:
 

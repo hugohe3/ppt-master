@@ -152,7 +152,7 @@ The workflow does not silently infer values — before generation it lists these
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or icon filename collisions in `images/`, `icons/`, and `templates/icons/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
@@ -207,12 +207,12 @@ Library and project scopes use the same core structure; substitute either `skill
 │   ├── 03_chapter.svg
 │   ├── 04_content.svg
 │   ├── 04a_content_two_col.svg # fidelity variant
-│   ├── 05_ending.svg
-│   └── icons/                  # package/validation copy when used
+│   └── 05_ending.svg
 ├── images/                         # optional
 │   └── *.png / *.jpg           # SVG references use ../images/<name>
 ├── icons/                          # optional
-│   └── *.svg                   # runtime copy of extracted vectors
+│   └── imported/
+│       └── *.svg               # one canonical copy of imported vectors
 └── exports/                        # optional; on-demand review output
     └── <id>_template_preview.pptx
 ```
@@ -220,6 +220,11 @@ Library and project scopes use the same core structure; substitute either `skill
 `standard` and `fidelity` SVGs use a unified authoring-placeholder vocabulary (`{{TITLE}}`, `{{CHAPTER_TITLE}}`, `{{PAGE_TITLE}}`, `{{CONTENT_AREA}}`, ...). Each native slot is a top-level `<g>` with semantic type and positive bounds; a normal slot contains exactly one carrier. Fixed Master/Layout visuals are direct root atoms and never layer `<g>` elements. A Layout may intentionally expose zero slots.
 
 A `mirror` workspace uses the same tree but places its source-ordered `001_cover.svg`, `002_toc.svg`, … files under `templates/`. It may keep literal example text instead of `{{...}}` markers, while imported native slots still carry semantic metadata.
+
+Imported vector placeholders use `data-icon="imported/<name>"`. Validation,
+preview export, and final export all resolve the same workspace-root asset at
+`icons/imported/<name>.svg`; a second `templates/icons/` copy is neither needed
+nor allowed.
 
 ### Library registration vs project placement
 

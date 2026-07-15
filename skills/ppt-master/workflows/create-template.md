@@ -42,9 +42,10 @@ Both scopes write this contract:
 
 ```text
 <template_workspace>/
-├── templates/   # design_spec.md, template SVGs, templates/icons/ when used
+├── templates/   # design_spec.md and template SVGs
 ├── images/      # optional; every bitmap; SVG href is ../images/<name>
-├── icons/       # optional; runtime copy of extracted vector assets
+├── icons/
+│   └── imported/ # optional; one canonical copy of imported vector assets
 └── exports/     # conditional; required package evidence for multi-Master templates
 ```
 
@@ -54,7 +55,7 @@ For `project`, `target_project` is required and must be an existing project init
 
 1. Resolve `<template_workspace>` from the confirmed scope and confirm its required `templates/` destination plus any needed `images/` / `icons/` destinations.
 2. Confirm `<template_workspace>/templates/` is empty.
-3. Resolve every final bitmap and extracted-icon filename, then confirm none would overwrite an existing file in `images/`, `icons/`, or `templates/icons/`. Check the review-PPTX destination when preview export was requested or a multi-Master template was confirmed.
+3. Resolve every final bitmap and extracted-vector filename, then confirm none would overwrite an existing file in `images/` or `icons/imported/`. Check the review-PPTX destination when preview export was requested or a multi-Master template was confirmed.
 
 Any failed check aborts before writing `design_spec.md`, SVGs, images, icons, or the review PPTX. Do not merge into a non-empty template source and do not overwrite a name conflict. Temporary Step 1 analysis workspaces remain allowed because they are not final outputs.
 
@@ -143,13 +144,13 @@ Factor large decorative vector groups out of the lightweight projections so the 
 
 ```bash
 # layered view — primary read surface and canonical extracted-vector inventory
-python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
+python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --icon-namespace imported --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
 
 # flat view — reuse matching layered assets; only genuinely flat-only vectors create new assets
-python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --reuse-inventory "<import_workspace>/authoring-svg_vector_asset_inventory.json" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
+python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --icon-namespace imported --reuse-inventory "<import_workspace>/authoring-svg_vector_asset_inventory.json" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
-The projected SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="..."/>` placeholders. Extracted assets live directly under `<import_workspace>/icons/`; `icons/` must contain only icon/vector assets, not rewritten page SVGs or inventories. The inventory is written beside the processed projection directory. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon directory, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
+The projected SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..."/>` placeholders. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. The inventory is written beside the processed projection directory. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
 
 The layered pass owns the canonical extracted-vector pool. Each new asset records a source fingerprint before generated ID namespacing. The flat pass MUST consume the layered inventory through `--reuse-inventory`: an exact fingerprint match writes only a `<use>` reference to the existing layered asset, while an unmatched flat-only subtree may create one new asset under the `flat` prefix. Do not independently extract the two views into parallel asset sets. With `--clean-stale`, a rerun also removes obsolete generated `flat_*` duplicates while retaining every reused layered reference.
 
@@ -207,7 +208,7 @@ Interpretation rule (carries forward into Steps 2 and 4):
 - `native_structure.json` is the source of truth for source PowerPoint identity: stable layout keys, picker names, parent masters, placeholder types/indices, and the source-package hash. Mirror preserves those facts one-to-one. `standard` / `fidelity` do not mine them into the new structure.
 - `summary.md` is a quick scan; never treat it as the canonical fact source — go back to `manifest.json` if anything is unclear
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
-- exported `icons/*.svg` are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific icon SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
+- exported `icons/imported/*.svg` files are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific imported SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
 - cleaned layered projections are mirror verification views; they expose source ownership without requiring the model to read opaque payload. Do not use them to promote, demote, merge, or split source structure.
 - cleaned complete-page projections are optional composition spot checks for authored modes and verification views for mirror. They are never the lossless restoration source.
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
@@ -252,7 +253,7 @@ First resolve the Type B source directory using the rule above. Create a non-des
 
 ```bash
 python3 skills/ppt-master/scripts/svg_authoring_view.py "<normalized_svg_source>" -o "<svg_analysis_workspace>/authoring-svg"
-python3 skills/ppt-master/scripts/extract_svg_assets.py "<svg_analysis_workspace>/authoring-svg" --icons-dir "<svg_analysis_workspace>/icons" --inplace --id-prefix source --min-decoration-bytes 3000 --clean-stale
+python3 skills/ppt-master/scripts/extract_svg_assets.py "<svg_analysis_workspace>/authoring-svg" --icons-dir "<svg_analysis_workspace>/icons" --icon-namespace imported --inplace --id-prefix source --min-decoration-bytes 3000 --clean-stale
 ```
 
 If the source contains one deliberately selected complex subtree that should
@@ -270,7 +271,7 @@ Then `ls` the analysis workspace and `Read` every cleaned `authoring-svg/*.svg` 
 - placeholder usage (existing `{{...}}` strings, if any)
 - structural decoration (recurring `<rect>` bars, `<path>` motifs, embedded `<image>` references)
 
-Read the generated `*_vector_asset_inventory.json` before opening individual `<svg_analysis_workspace>/icons/*.svg`; do not bulk-read extracted icons unless a specific asset affects a design decision or is selected for mirror preservation.
+Read the generated `*_vector_asset_inventory.json` before opening individual `<svg_analysis_workspace>/icons/imported/*.svg`; do not bulk-read extracted vectors unless a specific asset affects a design decision or is selected for mirror preservation.
 
 If a `design_spec.md` or `spec_lock.md` accompanies the SVGs, read it too. In mirror it is part of the source contract and must agree with the SVG identities; in `standard` / `fidelity` it is visual/contextual reference only. Record the equivalent of a `manifest.json`'s factual fields in analysis notes so Step 2 can label them `[fact]`.
 
@@ -414,12 +415,12 @@ If the input source is type A, pass the following internal package to the role:
 - `native_structure.json` and `source_template.pptx`
 - `summary.md` (orientation only)
 - exported `assets/`
-- `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/*.svg`
+- `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/imported/*.svg`
 - lightweight references from `authoring-svg/` and `authoring-svg-flat/`
 - for `mirror` only, matching lossless `svg/`, `svg-flat/`, and `svg/inheritance.json` restoration sources
 - optional screenshots, if available
 
-For type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted icons; open individual `icons/*.svg` only when needed.
+For type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted vectors; open individual `icons/imported/*.svg` files only when needed.
 For type C, pass the image file list and the visual analysis notes.
 For type D, pass only the finalized brief.
 
@@ -491,7 +492,7 @@ Downstream, both template-adherence choices use `pptx_structure.mode: structured
    - Type A: assets come from `<import_workspace>/assets/`
    - Type B: resolve relative paths in source `<image href="...">` against the source SVG location and copy each unique asset; if the source already follows PPT Master conventions (assets co-located with SVGs in the same directory), copy the whole asset set and then rewrite paths
    - Both scopes: write bitmaps to `<template_workspace>/images/`, point SVG references at `../images/<name>`, and keep non-bitmap template-source assets under `<template_workspace>/templates/`.
-4. **Copies `icons/` when present** and preserves every adopted `<use data-icon="..."/>` reference. Both scopes write the package/validation copy to `<template_workspace>/templates/icons/` and an identical runtime copy to `<template_workspace>/icons/`. Do not inline these assets manually in the template working SVGs; the shared icon embedding path owns re-inlining before export.
+4. **Copies imported vector assets once** to `<template_workspace>/icons/imported/` and rewrites their placeholders to `<use data-icon="imported/<name>"/>`. Never place a second copy under `templates/icons/`. Other explicitly adopted icon-library references keep their existing library namespace. Do not inline these assets manually in the template working SVGs; template validation, preview, and final export all resolve icons from the workspace-root `icons/` directory.
 5. Writes `design_spec.md` per [template-designer.md](../references/template-designer.md) §1. The §V Page Roster remains the content-fit index; explicit SVG metadata is the native Master/Layout contract. Mirror is only the template-creation replication mode; downstream generation still treats the finished package as a selectable / reusable roster, not as a forced 1:1 slide sequence.
 
 Mirror mode does not simplify the visual target or synthesize layer ownership. The sprite-sheet preservation rule applies because crop wrappers carry visible geometry; preserve those wrappers and their source scope faithfully.
@@ -502,7 +503,7 @@ Mirror mode does not simplify the visual target or synthesize layer ownership. T
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
    - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root Master/Layout key/name, direct atomic Master/Layout elements, and direct slot `<g>` elements with explicit design-zone bounds plus exactly one compatible carrier. A validated compact canonical authored-preset `<g>` counts as one semantic atom or one `object` carrier; ordinary groups do not. Composite regions use only the explicit `object` + `proxy` downgrade. Minimal structural `data-pptx-role` hints are added only when specialized metadata cannot express required behavior. Both strict and adaptive downstream set `mode: structured` and require complete `page_layouts`, `page_pptx_layouts`, `pptx_masters`, and `pptx_layouts` from planning onward.
-4. Template assets (optional) — both scopes apply the same `templates/` / `images/` / dual-icon routing defined above
+4. Template assets (optional) — both scopes apply the same `templates/` / `images/` / root `icons/imported/` routing defined above
 
 **Hard rule — placeholder examples are executable defaults**: In authored
 `standard` / `fidelity` templates, a carrier is not a floating review label. It
@@ -567,7 +568,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the restoration map explains them
 - [ ] Lightweight projections were used only for inspection. Mirror materialized from lossless sources, reused only converter-supported metadata on unchanged Slide-local/slot objects, and kept fixed Master/Layout visuals as direct atoms
-- [ ] If any SVG references an extracted vector `data-icon`, the corresponding SVG asset exists under `<template_workspace>/templates/icons/` and the identical runtime copy exists under `<template_workspace>/icons/`; do not add a separate illustration embedding script
+- [ ] If any SVG references an extracted vector, it uses `data-icon="imported/<name>"` and the sole SVG asset exists at `<template_workspace>/icons/imported/<name>.svg`; `templates/icons/` does not exist and no separate illustration embedding script was added
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
 - [ ] For `mirror` mode: source-page SVG count equals source page count, while additional files are exactly the required `layout_<layout_key>.svg` definitions for unused source Layouts; source-page filenames follow the `<NNN>_<page_type>.svg` convention; **no new `{{...}}` authoring placeholders were inserted into restored source-page SVGs**; §V Page Roster lists every emitted file and marks definition-only prototypes explicitly
 
@@ -704,7 +705,7 @@ Produce one scope-aware, evidence-driven completion card for either location:
 **Workspace Path**: `<template_workspace>/`
 **Template Source**: `<template_workspace>/templates/`
 **Bitmap Path**: `<template_workspace>/images/`  ← omit when absent
-**Runtime Icon Path**: `<template_workspace>/icons/`  ← omit when absent
+**Imported Vector Path**: `<template_workspace>/icons/imported/`  ← omit when absent
 **Review PPTX**: `<template_workspace>/exports/<template_id>_template_preview.pptx`  ← omit only when a one-Master template was not requested for review
 **Primary Color**: <hex>  ← deck only; omit for layout
 **Index Registration**: Done | Not registered (project workspace)

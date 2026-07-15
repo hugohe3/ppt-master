@@ -294,9 +294,10 @@ All current Brand/Layout/Deck packages use one workspace routing contract. Brand
 
 ```text
 <template_workspace>/
-├── templates/   # design_spec.md, SVG prototypes, templates/icons/ when used
+├── templates/   # design_spec.md and SVG prototypes
 ├── images/      # optional; bitmap assets referenced as ../images/<name>
-├── icons/       # optional; runtime copy of extracted vector assets
+├── icons/
+│   └── imported/ # optional; canonical imported vector assets
 └── exports/     # optional, on-demand review files; Git-ignored in the library
 ```
 

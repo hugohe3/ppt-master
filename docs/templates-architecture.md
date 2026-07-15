@@ -55,15 +55,19 @@ Both roots have the same core shape:
 <template_workspace>/
 ├── templates/
 │   ├── design_spec.md
-│   ├── *.svg
-│   └── icons/                  # package/validation copy when used
+│   └── *.svg
 ├── images/                     # optional; SVG href uses ../images/<name>
-├── icons/                      # optional; runtime vector assets
+├── icons/
+│   └── imported/               # optional; canonical imported vector assets
 └── exports/                    # optional; created only for on-demand review
     └── <id>_template_preview.pptx
 ```
 
 Empty optional directories are omitted; do not add placeholder files. An on-demand preview PPTX is derived review evidence, not a source template asset. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
+
+Imported vectors use `data-icon="imported/<name>"` and have one canonical file
+at `icons/imported/<name>.svg`. Workspace-aware validation and export resolve
+that root path directly; `templates/icons/` is not part of the package shape.
 
 PPTX import uses a two-level metadata model. The temporary lossless SVG keeps native-shape metadata, hidden carriers, and preview evidence; `svg_authoring_view.py` creates a lightweight model-facing projection without opaque payload or duplicate hidden carriers. The projection is never an export source. Authored modes use project-canonical SVG and compact authored-preset groups only for exact registered preset matches. Mirror may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed structural layers remain direct atoms, and unsupported or edited objects keep their SVG fallback. Export compiles only the declared SVG structure and never infers ownership.
 

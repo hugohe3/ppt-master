@@ -69,6 +69,7 @@ New deck creation uses the same portable workspace routing in both output scopes
 │   └── 05_ending.svg
 ├── images/                         # Optional; omit when unused
 ├── icons/                          # Optional; omit when unused
+│   └── imported/                   # Canonical imported vectors
 └── exports/                        # Optional, on-demand review output; Git-ignored
     └── <deck_id>_template_preview.pptx
 ```
@@ -78,7 +79,7 @@ New deck creation uses the same portable workspace routing in both output scopes
 | Library | `skills/ppt-master/templates/decks/<deck_id>/` | Register in `decks_index.json` |
 | Project | `projects/<project_name>/` | Do not register globally |
 
-Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`. Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
+Bitmaps belong in `images/`; imported vectors have one canonical copy in `icons/imported/` and use `data-icon="imported/<name>"`; template sources belong in `templates/`, which never contains an icon duplicate. Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
 
 `standard` and `fidelity` author new SVG documents and a new Master/Layout/slot contract. `mirror` restores the source roster, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`; this normalization must preserve ownership, paint order, and appearance.
 

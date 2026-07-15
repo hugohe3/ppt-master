@@ -17,7 +17,7 @@ Generate reusable page templates inside the complete workspace selected by `crea
 
 **Hard rule — scope is execution metadata**: Use `output_scope` and `target_project` to route files, but do not write either field into portable `design_spec.md` frontmatter. Do not create a new PPTX structure mode; deck/layout output declares `native_structure_mode: structured`.
 
-**Workspace precondition**: The workflow has already resolved the selected root, confirmed an empty `<template_workspace>/templates/`, and checked collision-free destination filenames in `images/`, `icons/`, and `templates/icons/`. Check `exports/` only when an on-demand review PPTX was requested. Optional directories may be absent until their first real file is written. Project scope additionally requires an initialized target project. Do not begin final writes before that all-at-once preflight passes.
+**Workspace precondition**: The workflow has already resolved the selected root, confirmed an empty `<template_workspace>/templates/`, and checked collision-free destination filenames in `images/` and `icons/imported/`. Check `exports/` only when an on-demand review PPTX was requested. Optional directories may be absent until their first real file is written. Project scope additionally requires an initialized target project. Do not begin final writes before that all-at-once preflight passes.
 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
@@ -437,12 +437,12 @@ Standard mode (default):
 │   ├── 02_toc.svg              # Optional; without it: 02_chapter, 03_content, 04_ending
 │   ├── 03_chapter.svg
 │   ├── 04_content.svg
-│   ├── 05_ending.svg
-│   └── icons/                  # Package/validation copy, when used
+│   └── 05_ending.svg
 ├── images/                         # Optional; omit when unused
 │   └── *.png / *.jpg           # SVG href is ../images/<name>
 ├── icons/                          # Optional; omit when unused
-│   └── *.svg                   # Runtime copy, when used
+│   └── imported/
+│       └── *.svg               # Canonical imported vectors, when used
 └── exports/                        # Optional; created only for on-demand review
     └── <template_id>_template_preview.pptx
 ```
@@ -481,7 +481,7 @@ Mirror mode emits one SVG per source slide, named by source order:
 
 Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text and the source native structure are restored; the lightweight projection is not copied into the output.
 
-**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; duplicate each extracted icon into `templates/icons/` and runtime `icons/`. Write a review deck to `exports/` only when explicitly requested. Create optional directories only when they contain real files; never add placeholders for empty directories. Do not branch asset placement by output scope.
+**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` only when explicitly requested. Create optional directories only when they contain real files; never add placeholders for empty directories. Do not branch asset placement by output scope.
 
 ### Template Preview
 
@@ -539,6 +539,6 @@ templates/
 - [x] Every SVG is a complete preview with explicit root Master/Layout identity and `native_structure_mode: structured`; authored modes use canonical fixed layers/slots, while mirror preserves source ownership and mechanically expands fixed-layer groups into direct atoms
 - [x] Authored `standard` / `fidelity` Layout keys are non-duplicative; mirror keeps distinct source Layout identities even when their current visible contracts are equivalent
 - [x] Model context used lightweight projections; lossless expanded imports remained authoritative for mirror restoration, while `standard` / `fidelity` used helper-generated compact canonical preset groups and `design_spec.md` paint
-- [x] Both scopes route bitmaps to `images/` and copy extracted icons to both `templates/icons/` and runtime `icons/`
+- [x] Both scopes route bitmaps to `images/` and keep one canonical copy of every imported vector under `icons/imported/`
 - [ ] **Next step**: Validate assets, optionally export a review PPTX, then register only library scope
 ```

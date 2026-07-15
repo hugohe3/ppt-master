@@ -26,6 +26,12 @@ A name the library does not have is reported and the command exits non-zero — 
 
 **Custom icons**: drop your own `.svg` into `<project>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any library icon.
 
+**Imported vectors**: `create-template` reserves the project-local `imported/`
+namespace. Each extracted vector lives once at
+`<workspace>/icons/imported/<name>.svg` and is referenced as
+`data-icon="imported/<name>"`; do not duplicate it under `templates/` or use
+`imported/` as a hand-curated style library.
+
 ## Usage
 
 Use placeholder syntax **during SVG generation**:

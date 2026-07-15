@@ -21,7 +21,7 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 - **Human browsing**: [layouts/README.md](./layouts/README.md)
 - **Slim lookup (discovery only)**: [layouts/layouts_index.json](./layouts/layouts_index.json) — used to answer "what templates exist?". Step 3 triggers on an explicit directory path supplied by the user, not on names from this index.
 
-Every brand/layout/deck package uses one workspace routing contract. Whether created under this library or under `projects/`, source files live in `templates/`, bitmaps in `images/`, runtime icons in `icons/`, and on-demand review files in `exports/`. Empty optional directories are omitted, so a normal checked-in workspace has no `exports/`. Library `exports/` directories are Git-ignored, and Step 3 never copies them. Existing flat packages remain readable; flat placement alone does not imply legacy Master/Layout metadata.
+Every brand/layout/deck package uses one workspace routing contract. Whether created under this library or under `projects/`, source files live in `templates/`, bitmaps in `images/`, imported vectors live once in `icons/imported/`, and on-demand review files live in `exports/`. Other icon-library namespaces remain under `icons/` only when explicitly adopted. Empty optional directories are omitted, so a normal checked-in workspace has no `exports/`. Library `exports/` directories are Git-ignored, and Step 3 never copies them. Existing flat packages remain readable; flat placement alone does not imply legacy Master/Layout metadata.
 
 ## Brand Identity Presets
 

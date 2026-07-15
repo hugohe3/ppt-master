@@ -55,9 +55,11 @@ replace them with compact `<use data-icon>` references:
 
 ```bash
 python3 scripts/extract_svg_assets.py <layered_svg_dir> \
-  --icons-dir <icons_dir> --inplace --id-prefix layered
+  --icons-dir <icons_dir> --icon-namespace imported \
+  --inplace --id-prefix layered
 python3 scripts/extract_svg_assets.py <flat_svg_dir> \
-  --icons-dir <icons_dir> --reuse-inventory <layered_inventory.json> \
+  --icons-dir <icons_dir> --icon-namespace imported \
+  --reuse-inventory <layered_inventory.json> \
   --inplace --id-prefix flat
 ```
 
@@ -65,7 +67,11 @@ The first pass records a source fingerprint before namespacing each extracted
 asset's internal ids. The second pass reuses a fingerprint-matched asset and
 writes no duplicate SVG file. Unmatched flat-only subtrees still extract
 normally. Use `--clean-stale` on both import-workspace passes to remove stale
-generated files for their respective prefixes.
+generated files for their respective prefixes. In create-template workspaces,
+`imported` is the fixed namespace: assets live once under `icons/imported/`, and
+the working SVGs reference them as `data-icon="imported/<name>"`. A rerun on an
+already rewritten namespaced projection inventories those references and does
+not progressively extract their remaining parent or sibling geometry.
 
 ## `extract_svg_pictures.py`
 
