@@ -99,7 +99,7 @@ Internal identifiers and PowerPoint display names are separate concerns: Master 
 | Action button shape | Compact authored `actionButton*` preset group | Visual preset geometry only | Shape geometry can round-trip | No click action, navigation target, or hyperlink is created |
 | Group | `<g>` | `p:grpSp`, or a documented flatten/collapse for a special carrier | Grouped content can reconstruct as `<g>` | Structural atoms and placeholder contracts override ordinary grouping |
 | Reused local symbol | Registered same-document `<use>` contract or project icon placeholder | Expanded editable shapes in the generated slide | Original symbol graph is not promised on import | External use, unsupported symbol features, and structural metadata reuse are rejected |
-| Icon | `<use data-icon="library/name">` resolved by the project icon pipeline | Editable vector primitives/group after expansion | Reconstructed geometry, not the original library reference | Icon identifiers are case-sensitive and must exist in the synchronized library |
+| Icon / imported vector | `<use data-icon="library/name">` resolved by the project icon pipeline; create-template imports use `imported/<name>` | Editable vector primitives/group after expansion | Reconstructed geometry, not the original library reference | Identifiers are case-sensitive; imported assets exist once at workspace-root `icons/imported/<name>.svg` |
 | SmartArt / DiagramML | No main SVG object mapping | Main redesign route may rebuild the meaning with ordinary shapes | `Direct preservation` in native/template routes; otherwise a preview or explicit fallback | Do not label a decorative group as native SmartArt |
 
 Project-authored presets deliberately use a compact representation, while PPTX
