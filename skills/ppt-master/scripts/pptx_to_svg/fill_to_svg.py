@@ -190,19 +190,28 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         raise ValueError(
             "DrawingML gradient fill requires exactly one gsLst"
         )
-    gradient_stops = _gradient_stop_list(gs_lists[0])
-    stop_positions = [
-        _gradient_stop_position(gs) for gs in gradient_stops
+    gradient_stops = [
+        (gs, _gradient_stop_position(gs))
+        for gs in _gradient_stop_list(gs_lists[0])
     ]
     if any(
         current < previous
-        for previous, current in zip(stop_positions, stop_positions[1:])
-    ):
-        raise ValueError(
-            "DrawingML gradient stop positions must be nondecreasing"
+        for (_, previous), (_, current) in zip(
+            gradient_stops,
+            gradient_stops[1:],
         )
+    ):
+        message = "DrawingML gradient stop positions must be nondecreasing"
+        if palette is None or palette.strict:
+            raise ValueError(message)
+        palette._diagnose(
+            "gradient-stop-order-normalized",
+            message,
+            "sort gradient stops by position while preserving equal positions",
+        )
+        gradient_stops.sort(key=lambda item: item[1])
     stops_xml = []
-    for gs, pos_pct in zip(gradient_stops, stop_positions):
+    for gs, pos_pct in gradient_stops:
         color_elem = _gradient_stop_color(gs)
         hex_, alpha = resolve_color(
             color_elem,
