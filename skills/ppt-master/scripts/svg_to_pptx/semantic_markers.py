@@ -111,7 +111,7 @@ def is_static_page_frame(
 ) -> bool:
     """Return whether explicit markers identify a static page-frame object."""
     return (
-        _normalized_marker(placeholder) == "slide-number"
+        _normalized_marker(placeholder) is not None
         or is_chrome_role(role)
     )
 
