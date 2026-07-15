@@ -41,6 +41,17 @@ _OOXML_PERCENT_LITERAL_RE = re.compile(
 _OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
 _OOXML_PERCENTAGE_MIN = Decimal(-(2**31)) / Decimal(PERCENT_UNIT)
 _OOXML_PERCENTAGE_MAX = Decimal(2**31 - 1) / Decimal(PERCENT_UNIT)
+_DRAWINGML_FILL_NAMES = (
+    "noFill",
+    "solidFill",
+    "gradFill",
+    "blipFill",
+    "pattFill",
+    "grpFill",
+)
+_DRAWINGML_FILL_TAGS = {
+    f"{{{NS['a']}}}{name}": name for name in _DRAWINGML_FILL_NAMES
+}
 
 
 @dataclass
@@ -85,26 +96,56 @@ def resolve_fill(
     if sp_pr is None:
         return FillResult.inherit()
 
-    # Direct child fill (in priority order: explicit -> derived).
-    handlers = (
-        ("noFill", _resolve_no_fill),
-        ("solidFill", _resolve_solid_fill),
-        ("gradFill", _resolve_grad_fill),
-        ("blipFill", _resolve_blip_fill),
-        ("pattFill", _resolve_patt_fill),
+    handlers = {
+        "noFill": _resolve_no_fill,
+        "solidFill": _resolve_solid_fill,
+        "gradFill": _resolve_grad_fill,
+        "blipFill": _resolve_blip_fill,
+        "pattFill": _resolve_patt_fill,
+    }
+
+    fill_name = _drawingml_fill_name(sp_pr)
+    fill_elem = sp_pr if fill_name is not None else None
+    if fill_elem is None:
+        fill_children = []
+        for child in sp_pr:
+            child_name = _drawingml_fill_name(child)
+            if child_name is not None:
+                fill_children.append((child, child_name))
+        if len(fill_children) > 1:
+            raise ValueError(
+                "DrawingML container must contain at most one fill"
+            )
+        if not fill_children:
+            return FillResult.inherit()
+        fill_elem, fill_name = fill_children[0]
+
+    if fill_name == "grpFill":
+        raise ValueError("Unsupported DrawingML fill: grpFill")
+    return handlers[fill_name](
+        fill_elem,
+        palette,
+        id_prefix,
+        id_seq,
+        placeholder_hex,
     )
 
-    local_name = sp_pr.tag.split("}", 1)[-1] if isinstance(sp_pr.tag, str) else ""
-    for tag, handler in handlers:
-        if local_name == tag:
-            return handler(sp_pr, palette, id_prefix, id_seq, placeholder_hex)
 
-    for tag, handler in handlers:
-        elem = sp_pr.find(f"a:{tag}", NS)
-        if elem is not None:
-            return handler(elem, palette, id_prefix, id_seq, placeholder_hex)
-
-    return FillResult.inherit()
+def _drawingml_fill_name(elem: ET.Element) -> str | None:
+    """Return one exact DrawingML fill tag name or reject a namespace alias."""
+    name = _DRAWINGML_FILL_TAGS.get(elem.tag)
+    if name is not None:
+        return name
+    local_name = (
+        elem.tag.rsplit("}", 1)[-1]
+        if isinstance(elem.tag, str)
+        else ""
+    )
+    if local_name in _DRAWINGML_FILL_NAMES:
+        raise ValueError(
+            f"Invalid DrawingML fill element namespace: {local_name}"
+        )
+    return None
 
 
 # ---------------------------------------------------------------------------

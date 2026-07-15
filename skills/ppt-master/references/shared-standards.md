@@ -714,6 +714,14 @@ preflight; neither substitutes an opaque default for unknown intent.
 plus alpha when a painted transparent layer must remain represented. Prefer
 descendant alpha over group opacity when isolated compositing matters (§2.2).
 
+On PPTX-to-SVG import, a non-line DrawingML fill-bearing container has at most
+one direct fill choice among `a:noFill`, `a:solidFill`, `a:gradFill`,
+`a:blipFill`, `a:pattFill`, and `a:grpFill`. Competing choices and
+foreign-namespace aliases stop import instead of being selected by
+implementation priority. Explicit `a:grpFill` also stops import until group
+fill inheritance has a registered SVG mapping; an omitted fill continues to
+use the owning container's inheritance/default contract.
+
 ---
 
 ### 6.3 Gradients and Paint Effects
