@@ -772,6 +772,26 @@ percentage-literal, or out-of-range channels, extra attributes, namespace
 aliases, and interleaved text stop import instead of receiving zero defaults or
 being clamped into another color. This route is `Native-normalized` because the
 SVG retains the displayed sRGB color rather than the source color-space model.
+Imported base colors apply only the following DrawingML modifier subset, in
+document order:
+
+| Modifier | Registered integer contract |
+|---|---|
+| `tint`, `shade`, `alpha` | `0..100000` fixed percentage |
+| `alphaMod`, `hueMod` | `0..2147483647` positive percentage |
+| `alphaOff` | `-100000..100000` fixed offset |
+| `lumMod`, `lumOff`, `satMod`, `satOff` | signed 32-bit percentage |
+| `hueOff` | signed 32-bit angle in 1/60000 degree |
+| `comp`, `gray`, `inv` | empty flag element |
+
+Value modifiers are exact DrawingML-namespace leaves with only a required
+integer `val`; flag modifiers are empty leaves with no attributes. Missing,
+malformed, percentage-literal, or out-of-range values, extra attributes, nested
+payload, foreign-namespace aliases, and unsupported transforms such as
+`gamma`, `invGamma`, or direct RGB-channel transforms stop import. They are
+never ignored or treated as zero. Luminance, saturation, hue, and alpha results
+retain the existing registered normalization and saturation behavior after each
+modifier.
 
 ---
 

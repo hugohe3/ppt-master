@@ -3251,6 +3251,86 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </a:scrgbClr>''')
         self.assertEqual(resolve_color(valid, None), ('#BCBCBC', 0.5))
 
+    def test_native_color_modifiers_use_closed_structure_and_ranges(self):
+        invalid_modifiers = (
+            ('<a:tint/>', 'invalid-color-modifier-structure:tint'),
+            ('<a:alpha val="bad"/>', 'invalid-alpha-val'),
+            ('<a:alpha val="100001"/>', 'invalid-alpha-val'),
+            ('<a:alphaMod val="-1"/>', 'invalid-alphaMod-val'),
+            ('<a:alphaOff val="-100001"/>', 'invalid-alphaOff-val'),
+            ('<a:tint val="50%"/>', 'invalid-tint-val'),
+            ('<a:lumMod val="2147483648"/>', 'invalid-lumMod-val'),
+            ('<a:hueOff val="-2147483649"/>', 'invalid-hueOff-val'),
+            (
+                '<a:shade val="50000" future="x"/>',
+                'invalid-color-modifier-structure:shade',
+            ),
+            (
+                '<a:satMod val="50000"><a:future/></a:satMod>',
+                'invalid-color-modifier-structure:satMod',
+            ),
+            (
+                '<a:comp val="50000"/>',
+                'invalid-color-modifier-structure:comp',
+            ),
+            (
+                '<a:gray>payload</a:gray>',
+                'invalid-color-modifier-structure:gray',
+            ),
+            (
+                '<future:tint xmlns:future="urn:future" val="50000"/>',
+                'invalid-color-modifier-namespace:tint',
+            ),
+            ('<a:gamma/>', 'unsupported-color-modifier:gamma'),
+            ('<a:red val="50000"/>', 'unsupported-color-modifier:red'),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for modifier, expected in invalid_modifiers:
+            with self.subTest(modifier=modifier):
+                color = ET.fromstring(
+                    f'<a:srgbClr {namespace} val="336699">'
+                    f'{modifier}</a:srgbClr>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_color(color, None)
+
+        valid_modifiers = (
+            '<a:tint val="50000"/>',
+            '<a:shade val="50000"/>',
+            '<a:lumMod val="175000"/>',
+            '<a:lumOff val="-25000"/>',
+            '<a:satMod val="175000"/>',
+            '<a:satOff val="-25000"/>',
+            '<a:hueMod val="200000"/>',
+            '<a:hueOff val="-5400000"/>',
+            '<a:alpha val="50000"/>',
+            '<a:alphaMod val="200000"/>',
+            '<a:alphaOff val="-50000"/>',
+            '<a:gray/>',
+            '<a:comp/>',
+            '<a:inv/>',
+        )
+        for modifier in valid_modifiers:
+            with self.subTest(valid_modifier=modifier):
+                color = ET.fromstring(
+                    f'<a:srgbClr {namespace} val="336699">'
+                    f'{modifier}</a:srgbClr>'
+                )
+                resolved, alpha = resolve_color(color, None)
+                self.assertRegex(resolved, r'^#[0-9A-F]{6}$')
+                self.assertGreaterEqual(alpha, 0.0)
+                self.assertLessEqual(alpha, 1.0)
+
+        ordered_alpha = ET.fromstring(f'''
+<a:srgbClr {namespace} val="336699">
+  <a:alpha val="50000"/>
+  <a:alphaMod val="200000"/>
+  <a:alphaOff val="-25000"/>
+</a:srgbClr>''')
+        self.assertEqual(resolve_color(ordered_alpha, None)[1], 0.75)
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):

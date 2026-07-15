@@ -21,26 +21,9 @@ from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
 
 _OOXML_INTEGER_RE = re.compile(r"[+-]?\d+")
 _OOXML_HEX_COLOR_RE = re.compile(r"[0-9A-Fa-f]{6}")
-_OOXML_INT_MIN = -(2**31)
-_OOXML_INT_MAX = 2**31 - 1
 _DRAWINGML_NAMESPACE = NS["a"]
 _DRAWINGML_TAG_PREFIX = f"{{{_DRAWINGML_NAMESPACE}}}"
 _EFFECT_CONTAINER_NAMES = frozenset({"effectLst", "effectDag"})
-# Modulation/offset transforms use DrawingML percentage types, not all fixed
-# percentages; values above 100% such as satMod=175000 are valid.
-_COLOR_MODIFIER_PERCENT_RANGES = {
-    "alpha": (0, 100000),
-    "alphaMod": (0, _OOXML_INT_MAX),
-    "alphaOff": (-100000, 100000),
-    "hueMod": (0, _OOXML_INT_MAX),
-    "lumMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "lumOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "satMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "satOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "shade": (0, 100000),
-    "tint": (0, 100000),
-}
-_COLOR_MODIFIER_FLAG_NAMES = frozenset({"comp", "gray", "inv"})
 
 
 @dataclass(frozen=True)
@@ -232,28 +215,6 @@ def _validate_color(
             _required_integer(color, attr, 0, 100000)
     elif not (color.get("val") or "").strip():
         raise ValueError(f"invalid-color:{color_name}")
-
-    for modifier in color:
-        if not isinstance(modifier.tag, str):
-            continue
-        modifier_name = _local_name(modifier)
-        if not modifier.tag.startswith(_DRAWINGML_TAG_PREFIX):
-            raise ValueError(
-                f"invalid-color-modifier-namespace:{modifier_name}"
-            )
-        bounds = _COLOR_MODIFIER_PERCENT_RANGES.get(modifier_name)
-        if bounds is not None:
-            _required_integer(modifier, "val", *bounds)
-        elif modifier_name == "hueOff":
-            _required_integer(
-                modifier,
-                "val",
-                _OOXML_INT_MIN,
-                _OOXML_INT_MAX,
-            )
-        elif modifier_name not in _COLOR_MODIFIER_FLAG_NAMES:
-            raise ValueError(f"unsupported-color-modifier:{modifier_name}")
-
 
 def _required_integer(
     elem: ET.Element,

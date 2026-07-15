@@ -1,8 +1,8 @@
 """DrawingML color resolution.
 
 Resolves any of the 6 OOXML color types (srgbClr, schemeClr, sysClr, prstClr,
-hslClr, scrgbClr) plus modifiers (tint/shade/lumMod/lumOff/satMod/satOff/
-hueMod/hueOff/alpha) into an (#RRGGBB, alpha) pair.
+hslClr, scrgbClr) plus the registered luminance, saturation, hue, alpha,
+grayscale, complement, and inverse modifiers into an (#RRGGBB, alpha) pair.
 
 Theme palette is resolved from the slide master's a:clrMap and theme1.xml's
 a:clrScheme.
@@ -14,7 +14,7 @@ import colorsys
 import re
 from xml.etree import ElementTree as ET
 
-from .emu_units import NS, percent_to_ratio
+from .emu_units import NS
 from .ooxml_loader import PartRef
 
 
@@ -103,6 +103,21 @@ SCHEME_ALIASES = {
 }
 _SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
 _OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
+_OOXML_INT_MIN = -(2**31)
+_OOXML_INT_MAX = 2**31 - 1
+_COLOR_MODIFIER_PERCENT_RANGES = {
+    "alpha": (0, 100000),
+    "alphaMod": (0, _OOXML_INT_MAX),
+    "alphaOff": (-100000, 100000),
+    "hueMod": (0, _OOXML_INT_MAX),
+    "lumMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "lumOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "satMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "satOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
+    "shade": (0, 100000),
+    "tint": (0, 100000),
+}
+_COLOR_MODIFIER_FLAG_NAMES = frozenset({"comp", "gray", "inv"})
 _SCHEME_COLOR_VALUES = {
     "bg1",
     "tx1",
@@ -471,10 +486,42 @@ def _bounded_integer_attribute(
     return value
 
 
+def _parse_color_modifier(child: ET.Element) -> tuple[str, int | None]:
+    """Parse one modifier from the closed DrawingML color subset."""
+    tag = child.tag.split("}", 1)[-1]
+    if child.tag != f"{{{NS['a']}}}{tag}":
+        raise ValueError(f"invalid-color-modifier-namespace:{tag}")
+    if tag in _COLOR_MODIFIER_FLAG_NAMES:
+        if child.attrib or list(child) or (child.text or "").strip():
+            raise ValueError(f"invalid-color-modifier-structure:{tag}")
+        return tag, None
+
+    bounds = _COLOR_MODIFIER_PERCENT_RANGES.get(tag)
+    if tag == "hueOff":
+        bounds = (_OOXML_INT_MIN, _OOXML_INT_MAX)
+    elif bounds is None:
+        raise ValueError(f"unsupported-color-modifier:{tag}")
+    if (
+        set(child.attrib) != {"val"}
+        or list(child)
+        or (child.text or "").strip()
+    ):
+        raise ValueError(f"invalid-color-modifier-structure:{tag}")
+    try:
+        value = _bounded_integer_attribute(
+            child,
+            "val",
+            minimum=bounds[0],
+            maximum=bounds[1],
+            label=f"{tag} color modifier",
+        )
+    except ValueError:
+        raise ValueError(f"invalid-{tag}-val:{child.attrib['val']!r}") from None
+    return tag, value
+
+
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
-    """Apply tint / shade / lumMod / lumOff / satMod / hueMod / alpha modifiers
-    in document order. DrawingML stacks these on the color in order.
-    """
+    """Apply the registered DrawingML color modifiers in document order."""
     r, g, b = _hex_to_rgb01(hex_color)
     # Convert to HSL for luminance/saturation ops; convert back when emitting.
     h, lum, sat = colorsys.rgb_to_hls(r, g, b)
@@ -483,40 +530,35 @@ def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float
     for child in list(color_elem):
         if not isinstance(child.tag, str):
             continue
-        tag = child.tag.split("}", 1)[-1]
-        val_ratio = percent_to_ratio(child.attrib.get("val"), default=0.0)
+        tag, value = _parse_color_modifier(child)
 
         if tag == "tint":
             # Tint blends toward white. r' = r + (1-r)*(1-val) is the common
             # interpretation; OOXML actually defines tint on luminance.
             # Use luminance-based tint per ECMA-376.
-            lum = lum * val_ratio + (1.0 - val_ratio)
+            ratio = value / 100000.0
+            lum = lum * ratio + (1.0 - ratio)
         elif tag == "shade":
             # Shade blends toward black on luminance.
-            lum = lum * val_ratio
+            lum = lum * (value / 100000.0)
         elif tag == "lumMod":
-            lum = lum * val_ratio
+            lum = lum * (value / 100000.0)
         elif tag == "lumOff":
-            lum = lum + val_ratio
+            lum = lum + (value / 100000.0)
         elif tag == "satMod":
-            sat = sat * val_ratio
+            sat = sat * (value / 100000.0)
         elif tag == "satOff":
-            sat = sat + val_ratio
+            sat = sat + (value / 100000.0)
         elif tag == "hueMod":
-            h = (h * val_ratio) % 1.0
+            h = (h * (value / 100000.0)) % 1.0
         elif tag == "hueOff":
-            # hueOff is in 1/60000 deg
-            try:
-                deg = float(child.attrib.get("val", "0")) / 60000.0
-            except ValueError:
-                deg = 0.0
-            h = (h + deg / 360.0) % 1.0
+            h = (h + value / 21_600_000.0) % 1.0
         elif tag == "alpha":
-            alpha = max(0.0, min(1.0, val_ratio))
+            alpha = value / 100000.0
         elif tag == "alphaMod":
-            alpha = max(0.0, min(1.0, alpha * val_ratio))
+            alpha = max(0.0, min(1.0, alpha * (value / 100000.0)))
         elif tag == "alphaOff":
-            alpha = max(0.0, min(1.0, alpha + val_ratio))
+            alpha = max(0.0, min(1.0, alpha + (value / 100000.0)))
         elif tag == "gray":
             # Convert to grayscale based on luminance.
             sat = 0.0
