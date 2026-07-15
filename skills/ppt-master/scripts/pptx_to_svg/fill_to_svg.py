@@ -182,6 +182,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             + "</linearGradient>"
         )
     elif rad is not None:
+        _validate_path_gradient_type(rad)
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
         # only has circle/ellipse, and path="circle" maps to fillToRect=center.
         defs_xml = (
@@ -262,6 +263,15 @@ def _validate_linear_gradient_scaling(
         raise ValueError(
             "Unscaled non-cardinal DrawingML linear gradients are not "
             "representable by the normalized SVG mapping"
+        )
+
+
+def _validate_path_gradient_type(path: ET.Element) -> None:
+    """Require one registered DrawingML path-shade enum value."""
+    path_type = path.get("path", "rect")
+    if path_type not in {"circle", "rect", "shape"}:
+        raise ValueError(
+            f"Unsupported DrawingML path gradient type: {path_type!r}"
         )
 
 
