@@ -2874,6 +2874,57 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_fill(sp_pr, None)
 
+    def test_native_linear_gradient_angle_must_be_valid(self):
+        valid_angles = ((None, 0.0), ('0', 0.0), ('21599999', 360.0))
+        for angle, expected_degrees in valid_angles:
+            with self.subTest(angle=angle):
+                angle_attr = '' if angle is None else f' ang="{angle}"'
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:lin{angle_attr}/>
+  </a:gradFill>
+</p:spPr>''')
+                fill = resolve_fill(sp_pr, None)
+                gradient = ET.fromstring(fill.defs[0])
+                x1 = float(gradient.get('x1'))
+                y1 = float(gradient.get('y1'))
+                x2 = float(gradient.get('x2'))
+                y2 = float(gradient.get('y2'))
+                actual_degrees = math.degrees(math.atan2(y2 - y1, x2 - x1))
+                self.assertAlmostEqual(
+                    actual_degrees % 360,
+                    expected_degrees % 360,
+                    places=4,
+                )
+
+        invalid_angles = (
+            ('', 'Invalid DrawingML linear gradient angle'),
+            ('1.5', 'Invalid DrawingML linear gradient angle'),
+            ('1e2', 'Invalid DrawingML linear gradient angle'),
+            ('NaN', 'Invalid DrawingML linear gradient angle'),
+            ('-1', 'angle=-1 is outside 0..21599999'),
+            ('21600000', 'angle=21600000 is outside 0..21599999'),
+        )
+        for angle, expected in invalid_angles:
+            with self.subTest(angle=angle):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    <a:lin ang="{angle}"/>
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(sp_pr, None)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
