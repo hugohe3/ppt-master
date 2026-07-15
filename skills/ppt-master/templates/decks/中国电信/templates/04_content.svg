@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="china_telecom_content_master" data-pptx-master-name="China Telecom Content"
   data-pptx-layout="content" data-pptx-layout-name="Title and Content">
@@ -12,7 +12,7 @@
   <rect id="content-master-gray-lane" x="206" y="39" width="1074" height="50" rx="22" fill="#D9D9D9"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <image id="content-master-header-brand" x="1000" y="38" width="208" height="48"
-    xlink:href="../images/header_brand.png" preserveAspectRatio="xMaxYMid meet"
+    href="../images/header_brand.png" preserveAspectRatio="xMaxYMid meet"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <line id="content-master-footer-rule" x1="72" y1="650" x2="1208" y2="650" stroke="#D1D5DB"
     stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>

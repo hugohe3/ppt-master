@@ -17,7 +17,7 @@ Generate reusable page templates inside the complete workspace selected by `crea
 
 **Hard rule — scope is execution metadata**: Use `output_scope` and `target_project` to route files, but do not write either field into portable `design_spec.md` frontmatter. Do not create a new PPTX structure mode; deck/layout output declares `native_structure_mode: structured`.
 
-**Workspace precondition**: The workflow has already resolved the selected root, confirmed an empty `<template_workspace>/templates/`, and checked collision-free destination filenames in `images/` and `icons/imported/`. Check `exports/` only when an on-demand review PPTX was requested. Optional directories may be absent until their first real file is written. Project scope additionally requires an initialized target project. Do not begin final writes before that all-at-once preflight passes.
+**Workspace precondition**: The workflow has already resolved the selected root, confirmed an empty `<template_workspace>/templates/`, and checked collision-free destination filenames in `images/` and `icons/imported/`. Check `exports/` when review was requested or the confirmed roster contains multiple Masters. Optional directories may be absent until their first real file is written. Project scope additionally requires an initialized target project. Do not begin final writes before that all-at-once preflight passes.
 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
@@ -161,7 +161,7 @@ When the brief sets `Replication mode: mirror`, restore the imported template ra
 
 ### 1. Must Generate design_spec.md
 
-**Scope rule — personality only.** A template `design_spec.md` describes **what makes this template recognizable**: brand colors, signature decorative motifs, page-by-page visual character, bundled assets. It does **not** restate generic constraints — those live in the canonical references and are already loaded by every downstream role:
+**Scope rule — personality only.** A deck `design_spec.md` describes the identity and structure that make the complete template recognizable. A layout spec describes only its distinctive reusable structure. Neither restates generic constraints — those live in the canonical references and are already loaded by every downstream role:
 
 - General SVG required / forbidden / conditional interfaces → [`shared-standards.md`](shared-standards.md)
 - Generic layout pattern library, spacing bands, font-size ratio bands → [`templates/design_spec_reference.md`](../templates/design_spec_reference.md) (read by Strategist when authoring the **project** design_spec)
@@ -170,15 +170,19 @@ When the brief sets `Replication mode: mirror`, restore the imported template ra
 
 Re-declaring any of these in a template `design_spec.md` is noise — Strategist already has them in context, and duplication forces every relaxation to sweep N templates instead of one source. **If a rule is generic, omit it. If this template breaks a generic rule, write only the deviation.**
 
-**Required skeleton:**
+**Required skeleton by kind:**
 
 The frontmatter is portable across library and project scope. Do not add
 `output_scope` or `target_project`; those belong only to the workflow execution
-brief.
+brief. Use `deck_id` or `layout_id`; do not invent a generic `template_id`
+field that the registrar cannot bind to its library kind.
+
+**Deck**:
 
 ```markdown
 ---
-template_id: <id>
+deck_id: <id>
+kind: deck
 category: brand | general | scenario | government | special
 summary: <one-line tone & use case>
 keywords: [tag1, tag2, tag3]
@@ -194,8 +198,9 @@ source_viewbox: "0 0 1280 720"
 replication_mode: standard | fidelity | mirror
 # Required for every deck/layout template. Source packages remain analysis-only.
 native_structure_mode: structured
+page_count: <N>
 # Optional — only when this template overrides canonical placeholder vocabulary.
-# Omit only when the page truly exposes no replaceable content slots.
+# Omit the map when canonical vocabulary is sufficient; use [] for an intentional zero-marker page.
 # placeholders:
 #   01_cover: ["{{TITLE}}", "{{SUBTITLE}}", "{{BRAND_LOGO}}"]
 #   03_content: ["{{KEY_MESSAGE}}", "{{CONTENT_AREA}}"]
@@ -232,6 +237,52 @@ Logos, cover backgrounds, brand textures bundled with the template package — f
 ## VII. Placeholder Overrides (omit when none)
 Reference the `placeholders:` frontmatter declaration and explain the rationale (e.g. "consulting decks lead with `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`").
 ```
+
+**Layout**:
+
+```markdown
+---
+layout_id: <id>
+kind: layout
+category: general | scenario | government | special
+summary: <one-line structural use case>
+keywords: [tag1, tag2, tag3]
+canvas_format: ppt169
+canvas_width: 1280
+canvas_height: 720
+canvas_viewbox: "0 0 1280 720"
+# Required when a PPTX/SVG source canvas is known.
+source_canvas_width: 1280
+source_canvas_height: 720
+source_viewbox: "0 0 1280 720"
+replication_mode: standard | fidelity | mirror
+native_structure_mode: structured
+page_count: <N>
+page_types: [cover, toc, chapter, content, ending]
+# Optional vocabulary override.
+# placeholders:
+#   01_cover: ["{{TITLE}}", "{{SUBTITLE}}"]
+---
+
+# [Layout Name] — Design Specification
+
+## IV. Signature Design Elements
+- Structure-specific grid, zones, page chrome, image behavior, density rhythm, and slot conventions
+- Neutral preview paint may expose hierarchy, but it is not a color or typography identity
+
+## V. Page Roster
+One row per emitted SVG with Layout key, picker name, intended content, and slot behavior. Roster entries must match the actual files on disk.
+
+For `mirror`, append the same `### Source Restoration Map` required above.
+
+## VII. Placeholder Overrides (omit when none)
+Reference the `placeholders:` frontmatter declaration and explain the structural vocabulary deviation.
+```
+
+**Layout boundary**: Omit Template Overview, Color Scheme, Typography, Logo,
+Voice & Tone, and Icon Style. The frontmatter `summary` carries concise
+selection context; the deck-only Template Overview remains the middle segment
+used during fusion.
 
 Sections to **omit** from template `design_spec.md` (sourced elsewhere — listing them here is noise):
 
@@ -444,8 +495,8 @@ Standard mode (default):
 ├── icons/                          # Optional; omit when unused
 │   └── imported/
 │       └── *.svg               # Canonical imported vectors, when used
-└── exports/                        # Optional; created only for on-demand review
-    └── <template_id>_template_preview.pptx
+└── exports/                        # Optional; requested review or required multi-Master evidence
+    └── <deck_id|layout_id>_template_preview.pptx
 ```
 
 Fidelity mode changes only the roster under `templates/`, e.g.:
@@ -482,13 +533,13 @@ Mirror mode emits one SVG per source slide, named by source order:
 
 Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text and the source native structure are restored by materializing the authoring IR; IR-only refs and its manifest are not copied into the template output.
 
-**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` only when explicitly requested. Create optional directories only when they contain real files; never add placeholders for empty directories. Do not branch asset placement by output scope.
+**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` when explicitly requested and always for a multi-Master package gate. Create optional directories only when they contain real files; never add placeholders for empty directories. Do not branch asset placement by output scope.
 
 ### Template Preview
 
-When the user requests a PowerPoint review file, run `template_preview_pptx.py <template_workspace>` after SVG validation. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
+When the user requests a PowerPoint review file or the validated roster declares multiple Masters, run `template_preview_pptx.py <template_workspace>` after SVG validation. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
 
-When a review deck was generated, include its path in the completion summary. Otherwise omit `exports/` from the workspace inventory.
+When a review deck was generated, include its path in the completion summary. Omit `exports/` only for an unrequested one-Master package.
 
 If the template is based on PPTX import output, briefly note:
 - which extracted assets were reused directly
@@ -541,5 +592,5 @@ templates/
 - [x] Authored `standard` / `fidelity` Layout keys are non-duplicative; mirror keeps distinct source Layout identities even when their current visible contracts are equivalent
 - [x] Template creation used the authoring IR; lossless expanded imports remained immutable payload backing for mirror materialization, while `standard` / `fidelity` used helper-generated compact canonical preset groups and `design_spec.md` paint
 - [x] Both scopes route bitmaps to `images/` and keep one canonical copy of every imported vector under `icons/imported/`
-- [ ] **Next step**: Validate assets, optionally export a review PPTX, then register only library scope
+- [ ] **Next step**: Validate assets, export review evidence when requested or required for multiple Masters, then register only library scope
 ```

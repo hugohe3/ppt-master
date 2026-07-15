@@ -367,7 +367,7 @@ For type A, also include in this message:
 
 The user replies with corrections, additions, or "all good".
 
-> **Persist the portable brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the confirmed portable fields (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, `source_viewbox`, `replication_mode`, `native_structure_mode`, etc.). Do not persist the execution-only `output_scope` or `target_project` fields. In library scope, `register_template.py` reads this frontmatter in Step 7 so the brief flows directly into the index without the AI re-deriving it from prose.
+> **Persist the portable brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the kind-specific ID key (`deck_id` or `layout_id`) plus the confirmed portable fields (`kind`, `category`, `summary`, `keywords`, `primary_color` for deck, `page_types` for layout, `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, `source_viewbox`, `replication_mode`, `native_structure_mode`, etc.). Do not persist a generic `template_id` field: it is the workflow's cross-kind name, not a registrar schema key. Do not persist the execution-only `output_scope` or `target_project` fields. In library scope, `register_template.py` reads this frontmatter in Step 7 so the brief flows directly into the index without the AI re-deriving it from prose.
 
 ---
 
@@ -533,7 +533,7 @@ Mirror mode does not simplify the visual target or synthesize layer ownership. T
 
 **Expected outputs from this step** (full spec → [template-designer.md](../references/template-designer.md)):
 
-1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare portable brief frontmatter; `register_template.py` consumes it only in library scope. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
+1. `design_spec.md` — **personality only**. A deck writes Template Overview, Color Scheme, Signature Design Elements, and Page Roster; Typography / Assets / Placeholder Overrides are conditional. A layout writes only structure-owned Signature Design Elements and Page Roster; its frontmatter `summary` carries concise selection context, and it omits the deck-only Template Overview plus every identity section. The Page Roster must match the actual SVG files on disk. Declare portable brief frontmatter; `register_template.py` consumes it only in library scope. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
    - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root Master/Layout key/name, direct atomic Master/Layout elements, and direct slot `<g>` elements with explicit design-zone bounds plus exactly one compatible carrier. A validated compact canonical authored-preset `<g>` counts as one semantic atom or one `object` carrier; ordinary groups do not. Composite regions use only the explicit `object` + `proxy` downgrade. Minimal structural `data-pptx-role` hints are added only when specialized metadata cannot express required behavior. Both strict and adaptive downstream set `mode: structured` and require complete `page_layouts`, `page_pptx_layouts`, `pptx_masters`, and `pptx_layouts` from planning onward.
@@ -584,7 +584,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 
 **Checklist**:
 
-- [ ] `design_spec.md` follows the personality-only skeleton (Overview / Color / Signature / Page Roster); generic constraints (SVG rules, pattern libraries, ratio bands, canonical placeholder table) are NOT restated. The source-derived basic norms are present as template-specific layout / image / density / asset rules, not generic advice. §V Page Roster lists every emitted page
+- [ ] `design_spec.md` follows the kind-specific personality-only skeleton: deck = Overview / Color / Signature / Page Roster plus conditional sections; layout = structure-owned Signature / Page Roster with no Overview or identity sections. Generic constraints (SVG rules, pattern libraries, ratio bands, canonical placeholder table) are NOT restated. The source-derived basic norms are present as template-specific layout / image / density / asset rules, not generic advice. §V Page Roster lists every emitted page
 - [ ] Every page declared in `design_spec.md §V Page Roster` exists as an SVG file in the template directory (and vice versa — no orphan files)
 - [ ] Variant filenames follow the letter-suffix convention (e.g. `03a_content_two_col.svg`); variants typically reuse the parent type's placeholder set unless the spec frontmatter declares otherwise
 - [ ] If TOC exists, placeholder pattern uses the canonical indexed form
@@ -684,7 +684,9 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > ---
 > deck_id: my_deck
 > kind: deck
+> category: brand
 > summary: ...
+> keywords: [brand, reporting, structured]
 > canvas_format: ppt169
 > canvas_width: 1280
 > canvas_height: 720
@@ -692,6 +694,7 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > source_canvas_width: 1280
 > source_canvas_height: 720
 > source_viewbox: "0 0 1280 720"
+> replication_mode: standard
 > # All current deck/layout templates rebuild the current structured SVG contract.
 > # Downstream strict/adaptive use is confirmed by Strategist and is not stored here.
 > native_structure_mode: structured
@@ -703,7 +706,9 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > ---
 > layout_id: my_layout
 > kind: layout
+> category: general
 > summary: ...
+> keywords: [general, layout, structured]
 > canvas_format: ppt169
 > canvas_width: 1280
 > canvas_height: 720
@@ -711,6 +716,8 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > source_canvas_width: 1280
 > source_canvas_height: 720
 > source_viewbox: "0 0 1280 720"
+> replication_mode: standard
+> native_structure_mode: structured
 > page_count: 5
 > page_types: [cover, toc, chapter, content, ending]
 > ---

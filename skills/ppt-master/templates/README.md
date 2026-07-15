@@ -1,37 +1,64 @@
 # Template Resources
 
-## Design Specification & Outline Reference
+## Reusable template kinds
 
-`design_spec_reference.md` is an all-in-one reference template for defining:
-1.  **Visual Specifications**: Canvas dimensions, color scheme, typography, layout principles
-2.  **Content Outline**: Slide-by-slide page structure planning
-3.  **Technical Constraints**: Hard requirements for SVG generation and PPT compatibility
+Brand, Layout, and Deck are independent template kinds, not stages of one
+inheritance hierarchy.
 
-[View Design Spec Reference](./design_spec_reference.md)
+| Kind | Owns | Does not own | Discovery index |
+|---|---|---|---|
+| [`brands/`](./brands/) | Identity: color, typography, logo, voice, icon style | Page structure or SVG roster | [`brands_index.json`](./brands/brands_index.json) |
+| [`layouts/`](./layouts/) | Structure: canvas, Master/Layout graph, page types, slots, SVG roster | Brand identity | [`layouts_index.json`](./layouts/layouts_index.json) |
+| [`decks/`](./decks/) | Complete identity + structure reference | — | [`decks_index.json`](./decks/decks_index.json) |
 
-## Page Layout Templates
+A brand is not “a layout minus its pages”: it owns a different segment. Use a
+brand for identity with free page composition, a layout for fixed reusable
+structure with downstream identity, and a deck for a coherent complete system.
 
-The `layouts/` directory contains pre-built page layout templates organized by design style:
+The indexes are discovery aids only. Step 3 activates a template only from an
+explicit workspace-root path supplied by the user.
 
-- **General**: Versatile modern style, clean and flexible
-- **Consultant**: Consulting style, professional and structured
-- **Consultant Top**: Top-tier consulting style (MBB-level)
-- **Academic Defense**: Academic defense style, research-oriented
+## Orthogonal contracts
 
-- **Human browsing**: [layouts/README.md](./layouts/README.md)
-- **Slim lookup (discovery only)**: [layouts/layouts_index.json](./layouts/layouts_index.json) — used to answer "what templates exist?". Step 3 triggers on an explicit directory path supplied by the user, not on names from this index.
+| Axis | Values | Meaning |
+|---|---|---|
+| Template kind | `brand` / `layout` / `deck` | Which design segments the package owns |
+| Creation mode | `standard` / `fidelity` / `mirror` | Newly author a compact or broad roster, or restore a source graph |
+| Downstream adherence | `strict` / `adaptive` | Preserve the selected Layout contract, or allow explicit new Layout identities |
+| PPTX structure | `flat` / `structured` | Free-design/brand-only content stays Slide-local; layout/deck routes compile declared Masters and Layouts |
 
-Every brand/layout/deck package uses one workspace routing contract. Whether created under this library or under `projects/`, source files live in `templates/`, bitmaps in `images/`, imported vectors live once in `icons/imported/`, and on-demand review files live in `exports/`. Other icon-library namespaces remain under `icons/` only when explicitly adopted. Empty optional directories are omitted, so a normal checked-in workspace has no `exports/`. Library `exports/` directories are Git-ignored, and Step 3 never copies them. Existing flat packages remain readable; flat placement alone does not imply legacy Master/Layout metadata.
+These axes must not be used as synonyms. In particular, a mirror-created deck
+is still an ordinary reusable `deck` package after creation; it does not force
+future presentations to keep the source page count or order.
 
-## Brand Identity Presets
+## Workspace contract
 
-The `brands/` directory holds brand-only templates: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Brands follow the **same explicit-path trigger and workspace routing as layout templates** — at SKILL.md Step 3 the user supplies the workspace root; bare brand names never trigger. `templates/`, `images/`, and `icons/` map to their matching project peers. When supplied together, Step 3 fuses them into one `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3 for the precedence table.
+Every package uses the same portable root under either this library or an
+initialized project:
 
-A brand is structurally a layout template minus its page roster. Use a brand when the user wants identity locking with free page layout; use a layout template when fixed page structures are also required.
+```text
+<template_workspace>/
+├── templates/                # design_spec.md and any SVG prototypes
+├── images/                   # optional bitmaps
+├── icons/
+│   └── imported/             # optional imported vectors, one canonical copy
+└── exports/                  # optional review evidence; never a template input
+```
 
-- **Human browsing**: [brands/README.md](./brands/README.md)
-- **Discovery index (no trigger)**: [brands/brands_index.json](./brands/brands_index.json) — answers "what brands exist?"; Step 3 still requires an explicit directory path from the user
-- **Creation workflow**: [`../workflows/create-brand.md`](../workflows/create-brand.md)
+Empty optional directories are omitted. Template SVGs reference bitmaps through
+`../images/<name>` and imported vectors through `data-icon="imported/<name>"`.
+Step 3 consumes `templates/`, `images/`, and `icons/` and ignores `exports/`.
+Compatible legacy-flat packages remain readable; directory shape alone does not
+indicate legacy Master/Layout semantics.
+
+## Design specification references
+
+[`design_spec_reference.md`](./design_spec_reference.md) is the project-level
+Strategist reference for the generated presentation's full specification and
+content outline. Reusable template `design_spec.md` files are deliberately
+smaller: they contain portable metadata and only the personality or structure
+that distinguishes that package. General SVG/PPT rules remain centralized in
+[`shared-standards.md`](../references/shared-standards.md).
 
 ## Visualization Templates
 
@@ -66,4 +93,4 @@ The `icons/` directory contains 11,600+ vector icons across five libraries:
 | `simple-icons` | brand logos (company / product marks) | 3400+ |
 
 - **Usage & style rules**: [icons/README.md](./icons/README.md)
-- **Search icons**: `ls skills/ppt-master/templates/icons/<library>/ | grep <keyword>`
+- **Search icons**: `rg --files skills/ppt-master/templates/icons/<library>/ | rg <keyword>`

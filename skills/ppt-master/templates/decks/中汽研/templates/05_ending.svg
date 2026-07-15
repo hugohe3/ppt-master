@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="catarc_dark_master" data-pptx-master-name="CATARC Dark"
   data-pptx-layout="closing" data-pptx-layout-name="Closing">
@@ -35,7 +35,7 @@
     stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.05"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <image id="closing-logo" x="344" y="108" width="592" height="238"
-    xlink:href="../images/大型 logo.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/大型 logo.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <line id="closing-separator" x1="540" y1="548" x2="740" y2="548" stroke="#FFFFFF"
     stroke-width="1" stroke-opacity="0.35" data-pptx-layer="layout" data-pptx-editable="false"/>
