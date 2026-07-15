@@ -3006,6 +3006,68 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ('#445566', 1.0),
         )
 
+    def test_native_system_color_requires_registered_fallback(self):
+        invalid_colors = (
+            ('<a:sysClr lastClr="112233"/>', 'system color structure'),
+            (
+                '<a:sysClr val="futureColor" lastClr="112233"/>',
+                'system color value',
+            ),
+            (
+                '<a:sysClr val="WindowText" lastClr="112233"/>',
+                'system color value',
+            ),
+            (
+                '<a:sysClr val="windowText"/>',
+                'requires a lastClr fallback',
+            ),
+            (
+                '<a:sysClr val="windowText" lastClr="ABC"/>',
+                'system color fallback',
+            ),
+            (
+                '<a:sysClr val="windowText" lastClr="#112233"/>',
+                'system color fallback',
+            ),
+            (
+                '<a:sysClr val="windowText" lastClr="112233" future="x"/>',
+                'system color structure',
+            ),
+            (
+                '<a:sysClr val="windowText" lastClr="112233">payload'
+                '</a:sysClr>',
+                'system color structure',
+            ),
+            (
+                '<a:sysClr val="windowText" lastClr="112233">'
+                '<a:alpha val="50000"/>payload</a:sysClr>',
+                'system color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:sysClr xmlns:future="urn:future" '
+            'val="windowText" lastClr="112233"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'system color structure'):
+            resolve_color(foreign_color, None)
+
+        valid = ET.fromstring(f'''
+<a:sysClr {namespace} val="windowText" lastClr="a1b2c3">
+  <a:alpha val="50000"/>
+</a:sysClr>''')
+        self.assertEqual(resolve_color(valid, None), ('#A1B2C3', 0.5))
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):

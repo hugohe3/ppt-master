@@ -121,6 +121,38 @@ _SCHEME_COLOR_VALUES = {
     "dk2",
     "lt2",
 }
+_SYSTEM_COLOR_VALUES = {
+    "scrollBar",
+    "background",
+    "activeCaption",
+    "inactiveCaption",
+    "menu",
+    "window",
+    "windowFrame",
+    "menuText",
+    "windowText",
+    "captionText",
+    "activeBorder",
+    "inactiveBorder",
+    "appWorkspace",
+    "highlight",
+    "highlightText",
+    "btnFace",
+    "btnShadow",
+    "grayText",
+    "btnText",
+    "inactiveCaptionText",
+    "btnHighlight",
+    "3dDkShadow",
+    "3dLight",
+    "infoText",
+    "infoBk",
+    "hotLight",
+    "gradientActiveCaption",
+    "gradientInactiveCaption",
+    "menuHighlight",
+    "menuBar",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -266,8 +298,7 @@ def resolve_color(
         elif palette is not None:
             base_hex = palette.resolve_scheme(name)
     elif tag == "sysClr":
-        last = color_elem.attrib.get("lastClr") or color_elem.attrib.get("val")
-        base_hex = _normalize_hex(last) if last else None
+        base_hex = _system_color_fallback(color_elem)
     elif tag == "prstClr":
         name = color_elem.attrib.get("val", "")
         base_hex = PRST_COLORS.get(name)
@@ -323,6 +354,32 @@ def _scheme_color_name(color_elem: ET.Element) -> str:
     if name not in _SCHEME_COLOR_VALUES:
         raise ValueError(f"Invalid DrawingML scheme color value: {name!r}")
     return name
+
+
+def _system_color_fallback(color_elem: ET.Element) -> str:
+    """Parse a registered system color with a portable six-digit fallback."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}sysClr"
+        or set(color_elem.attrib) - {"val", "lastClr"}
+        or "val" not in color_elem.attrib
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML system color structure")
+    name = color_elem.attrib["val"]
+    if name not in _SYSTEM_COLOR_VALUES:
+        raise ValueError(f"Invalid DrawingML system color value: {name!r}")
+    fallback = color_elem.get("lastClr")
+    if fallback is None:
+        raise ValueError(
+            "DrawingML system color requires a lastClr fallback"
+        )
+    if _SRGB_HEX_RE.fullmatch(fallback) is None:
+        raise ValueError(
+            f"Invalid DrawingML system color fallback: {fallback!r}"
+        )
+    return fallback.upper()
 
 
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:

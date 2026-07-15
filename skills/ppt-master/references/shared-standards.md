@@ -744,6 +744,13 @@ references, extra attributes, namespace aliases, and interleaved text stop
 import. A registered reference that cannot be resolved from the active theme
 or `phClr` placeholder context remains a resolution failure, not an unknown
 enum fallback.
+Imported `a:sysClr` requires a registered DrawingML system-color `val` and a
+six-digit `lastClr` fallback. The latter is optional in OOXML but mandatory for
+this portable mapping because the converter cannot reproduce the source
+machine's dynamic system palette. Missing/unknown system identities, malformed
+fallbacks, extra attributes, namespace aliases, and interleaved text stop
+import; a valid `lastClr` is normalized into static SVG paint, so this route is
+`Native-normalized` rather than system-color-preserving.
 
 ---
 
