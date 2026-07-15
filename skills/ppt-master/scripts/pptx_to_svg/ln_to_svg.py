@@ -18,6 +18,7 @@ from .color_resolver import (
     ColorPalette,
     find_color_elem,
     resolve_color,
+    resolve_solid_fill_color,
     validate_no_fill,
 )
 from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
@@ -134,10 +135,7 @@ def resolve_stroke(
         validate_no_fill(paint)
         attrs["stroke"] = "none"
     elif paint_name == "solidFill":
-        color_elem = find_color_elem(paint)
-        hex_, alpha = resolve_color(color_elem, palette)
-        if hex_ is None:
-            raise ValueError("DrawingML solid line color cannot be resolved")
+        hex_, alpha = resolve_solid_fill_color(paint, palette)
         attrs["stroke"] = hex_
         if alpha < 1.0:
             attrs["stroke-opacity"] = format_ooxml_alpha(alpha)

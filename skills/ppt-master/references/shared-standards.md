@@ -724,6 +724,13 @@ use the owning container's inheritance/default contract.
 Every imported `a:noFill`, including line paint, is an attribute-free empty
 leaf. Attributes, child elements, or text payload stop import instead of being
 discarded while the paint is normalized to `none`.
+The general fill and line-paint import routes require an attribute-free
+`a:solidFill` to contain exactly one direct registered DrawingML color child
+with no interleaved text. Although Office can merge an omitted solid color from
+style/master inheritance and ultimately default it to `schemeColor(bg1)`, the
+local SVG mapping does not guess that external context: empty, malformed,
+ambiguous, or unresolvable solid fills stop import instead of being treated as
+an omitted fill or reduced to the first recognizable color.
 
 ---
 

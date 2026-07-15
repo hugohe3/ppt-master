@@ -23,6 +23,7 @@ from .color_resolver import (
     ColorPalette,
     find_color_elem,
     resolve_color,
+    resolve_solid_fill_color,
     validate_no_fill,
 )
 from .emu_units import (
@@ -160,10 +161,11 @@ def _resolve_no_fill(elem, _palette, _prefix, _seq, _placeholder_hex) -> FillRes
 
 def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
                         _prefix: str, _seq, placeholder_hex: str | None) -> FillResult:
-    color_elem = find_color_elem(elem)
-    hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
-    if hex_ is None:
-        return FillResult.inherit()
+    hex_, alpha = resolve_solid_fill_color(
+        elem,
+        palette,
+        placeholder_hex=placeholder_hex,
+    )
     attrs: dict[str, str] = {"fill": hex_}
     if alpha < 1.0:
         attrs["fill-opacity"] = format_ooxml_alpha(alpha)
