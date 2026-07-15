@@ -48,6 +48,54 @@ is owned by [`shared-standards.md`](../../references/shared-standards.md), with
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
 
+## `extract_svg_pictures.py`
+
+Normalize one deliberately selected complex SVG object into one PowerPoint
+picture. The command accepts exact `<g id>` values only, writes each group as a
+tight standalone SVG asset, embeds its local image/CSS dependencies, and
+replaces the source group at the same parent index with one `<image>`. Native
+export therefore emits one `p:pic` backed by SVG media.
+
+```bash
+python3 scripts/extract_svg_pictures.py \
+  "<workspace>/authoring-svg/<layered_svg_file>.svg" \
+  --select "<group_id>" \
+  --resource-root "<workspace>" \
+  --images-dir "<workspace>/picture-assets" \
+  --inplace
+```
+
+Imported PowerPoint groups normally provide `data-pptx-frame`, which is used
+as the picture bounds. For a large standalone SVG without frame metadata, the
+tool measures the selected group with Playwright; use repeated
+`--bounds ID=x,y,width,height` values when browser measurement is unavailable
+or when effect overflow needs an explicit frame. `--padding` expands the
+chosen bounds. The generated `*_picture_asset_inventory.json` records the
+bounds source, asset hash, copied definition ids, and embedded local resources.
+Nested selections are accepted only through metadata-only `<g>` ancestors.
+When an ancestor carries a transform, style, clip, opacity, or other visual
+attribute, select that outer group instead; this prevents applying the ancestor
+effect once inside the SVG asset and again to the replacement `<image>`.
+Scripts, `foreignObject`, SVG animation, remote resources, and external SVG
+fragment references fail closed; local image/CSS resources must stay inside
+the declared `--resource-root` and are embedded into the asset.
+
+This operation belongs only to an explicit `create-template` normalization
+decision in `standard` or `fidelity` mode. It does not choose groups, detect
+repetition, infer a Master/Layout, or run during ordinary import, free
+generation, mirror restoration, finalize, or export. Placeholder, native
+single-shape, table/chart, icon-placeholder, and authored-preset groups are
+rejected because they already own a different semantic route.
+
+Do not confuse this tool with `extract_svg_assets.py`:
+
+- `extract_svg_assets.py` is a model-readability optimization. It replaces
+  heuristic vector runs with `<use data-icon>`, then re-inlines them before
+  export so the PPTX still contains native shapes.
+- `extract_svg_pictures.py` is an explicit representation change. It replaces
+  only named groups with `<image>`, so each result intentionally remains one
+  editable PowerPoint picture rather than individually editable paths.
+
 ## Recommended Pipeline
 
 Run these steps in order:

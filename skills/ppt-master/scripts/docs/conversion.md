@@ -247,6 +247,14 @@ python3 scripts/pptx_to_svg.py deck.pptx --strict
 | `layered` | Only the layered `svg/` view and inheritance metadata |
 | `flat` | One self-contained slide SVG per page under `svg/` |
 
+For Office pictures that carry both a raster compatibility preview on
+`a:blip` and an editable SVG relationship in `asvg:svgBlip`, import resolves
+the SVG relationship first. The raster relationship is used only when the SVG
+relationship or media part cannot be read. The template manifest uses the same
+relationship preference for asset identity; its existing missing-media gate
+remains strict rather than silently treating the raster preview as the
+template's canonical asset.
+
 Import is tolerant by default because the source deck is user-owned or comes
 from third-party authoring tools. Recovery happens at the narrowest safe
 boundary: first omit only an unsupported property or feature; if that is not
