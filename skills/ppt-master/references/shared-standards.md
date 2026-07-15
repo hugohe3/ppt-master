@@ -737,13 +737,17 @@ Linear export preserves stops/alpha/direction but reduces coordinates to an
 angle. Radial export becomes a centered circular gradient and does not preserve
 `cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
 retain only the first stop. Stop alpha and element opacity multiply.
-PPTX import writes stop offsets with five decimal places, and export parses the
-shared unitless/percentage grammar before half-up quantization to 1/100000.
-Thus small positions and values such as `1%` round-trip without truncation or
-percentage reinterpretation.
-Each imported `a:gs` requires an integer `pos` from `0` through `100000`.
+Non-line PPTX gradient-fill import writes stop offsets with five decimal places,
+and export parses the shared unitless/percentage grammar before half-up
+quantization to 1/100000. Thus small positions and values such as `1%`
+round-trip without truncation or percentage reinterpretation. In that non-line
+import mapping, each `a:gs` requires an integer `pos` from `0` through `100000`.
 Missing, malformed, or out-of-range source positions stop import instead of
 being silently relocated to the start of the gradient.
+An explicit non-line imported `a:gradFill` requires exactly one `a:gsLst` with
+at least one `a:gs`, and every stop must provide a resolvable color. Missing or
+duplicate lists, empty lists, and unresolvable stops stop import instead of
+becoming an inherited fill or a partial gradient.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

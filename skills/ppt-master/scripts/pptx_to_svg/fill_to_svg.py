@@ -123,16 +123,29 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     grad_id = f"{prefix}grad{seq[0]}"
 
     # Stops
-    gs_lst = elem.find("a:gsLst", NS)
-    if gs_lst is None:
-        return FillResult.inherit()
+    gs_lists = elem.findall("a:gsLst", NS)
+    if len(gs_lists) != 1:
+        raise ValueError(
+            "DrawingML gradient fill requires exactly one gsLst"
+        )
+    gradient_stops = gs_lists[0].findall("a:gs", NS)
+    if not gradient_stops:
+        raise ValueError(
+            "DrawingML gradient fill requires at least one color stop"
+        )
     stops_xml = []
-    for gs in gs_lst.findall("a:gs", NS):
+    for gs in gradient_stops:
         pos_pct = _gradient_stop_position(gs)
         color_elem = find_color_elem(gs)
-        hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
+        hex_, alpha = resolve_color(
+            color_elem,
+            palette,
+            placeholder_hex=placeholder_hex,
+        )
         if hex_ is None:
-            continue
+            raise ValueError(
+                "DrawingML gradient stop color cannot be resolved"
+            )
         opacity_attr = (
             f' stop-opacity="{format_ooxml_alpha(alpha)}"'
             if alpha < 1.0
@@ -142,9 +155,6 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             f'<stop offset="{format_ooxml_unit_ratio(pos_pct)}" '
             f'stop-color="{hex_}"{opacity_attr}/>'
         )
-    if not stops_xml:
-        return FillResult.inherit()
-
     # Linear vs radial vs path
     lin = elem.find("a:lin", NS)
     rad = elem.find("a:path", NS)
