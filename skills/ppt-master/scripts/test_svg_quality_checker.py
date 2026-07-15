@@ -3111,6 +3111,80 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </a:prstClr>''')
         self.assertEqual(resolve_color(valid, None), ('#00008B', 0.5))
 
+    def test_native_hsl_color_requires_bounded_integer_channels(self):
+        invalid_colors = (
+            (
+                '<a:hslClr sat="100000" lum="50000"/>',
+                'HSL color structure',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100000" lum="50000" '
+                'future="x"/>',
+                'HSL color structure',
+            ),
+            (
+                '<a:hslClr hue="-1" sat="100000" lum="50000"/>',
+                'HSL color hue',
+            ),
+            (
+                '<a:hslClr hue="21600000" sat="100000" lum="50000"/>',
+                'HSL color hue',
+            ),
+            (
+                '<a:hslClr hue="0.0" sat="100000" lum="50000"/>',
+                'HSL color hue',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100%" lum="50000"/>',
+                'HSL color sat',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100001" lum="50000"/>',
+                'HSL color sat',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100000" lum="-1"/>',
+                'HSL color lum',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100000" lum="1e2"/>',
+                'HSL color lum',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100000" lum="50000">payload'
+                '</a:hslClr>',
+                'HSL color structure',
+            ),
+            (
+                '<a:hslClr hue="0" sat="100000" lum="50000">'
+                '<a:alpha val="50000"/>payload</a:hslClr>',
+                'HSL color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:hslClr xmlns:future="urn:future" '
+            'hue="0" sat="100000" lum="50000"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'HSL color structure'):
+            resolve_color(foreign_color, None)
+
+        valid = ET.fromstring(f'''
+<a:hslClr {namespace} hue="0" sat="100000" lum="50000">
+  <a:alpha val="50000"/>
+</a:hslClr>''')
+        self.assertEqual(resolve_color(valid, None), ('#FF0000', 0.5))
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):

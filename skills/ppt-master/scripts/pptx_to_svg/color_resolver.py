@@ -102,6 +102,7 @@ SCHEME_ALIASES = {
     "tx1": "dk1", "tx2": "dk2",
 }
 _SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
+_OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
 _SCHEME_COLOR_VALUES = {
     "bg1",
     "tx1",
@@ -302,12 +303,7 @@ def resolve_color(
     elif tag == "prstClr":
         base_hex = _preset_color_hex(color_elem)
     elif tag == "hslClr":
-        # DrawingML hue is in 1/60000 deg ([0, 21_600_000) maps to [0°, 360°));
-        # _hsl_to_hex expects a fraction in [0, 1), so divide by 60000 * 360.
-        h = float(color_elem.attrib.get("hue", "0")) / 21_600_000.0
-        s = float(color_elem.attrib.get("sat", "0")) / 100000.0
-        lum = float(color_elem.attrib.get("lum", "0")) / 100000.0
-        base_hex = _hsl_to_hex(h, s, lum)
+        base_hex = _hsl_color_hex(color_elem)
     elif tag == "scrgbClr":
         # 0..100000 per channel
         r = float(color_elem.attrib.get("r", "0")) / 100000.0
@@ -396,6 +392,63 @@ def _preset_color_hex(color_elem: ET.Element) -> str:
     if hex_ is None:
         raise ValueError(f"Invalid DrawingML preset color value: {name!r}")
     return hex_
+
+
+def _hsl_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one closed DrawingML HSL base color."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}hslClr"
+        or set(color_elem.attrib) != {"hue", "sat", "lum"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML HSL color structure")
+    hue = _bounded_integer_attribute(
+        color_elem,
+        "hue",
+        minimum=0,
+        maximum=21_599_999,
+        label="HSL color",
+    )
+    saturation = _bounded_integer_attribute(
+        color_elem,
+        "sat",
+        minimum=0,
+        maximum=100000,
+        label="HSL color",
+    )
+    luminance = _bounded_integer_attribute(
+        color_elem,
+        "lum",
+        minimum=0,
+        maximum=100000,
+        label="HSL color",
+    )
+    return _hsl_to_hex(
+        hue / 21_600_000.0,
+        saturation / 100000.0,
+        luminance / 100000.0,
+    )
+
+
+def _bounded_integer_attribute(
+    elem: ET.Element,
+    attr: str,
+    *,
+    minimum: int,
+    maximum: int,
+    label: str,
+) -> int:
+    """Parse one required bounded DrawingML integer attribute."""
+    raw = elem.attrib[attr]
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(f"Invalid DrawingML {label} {attr}: {raw!r}")
+    value = int(token)
+    if not minimum <= value <= maximum:
+        raise ValueError(f"Invalid DrawingML {label} {attr}: {raw!r}")
+    return value
 
 
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
