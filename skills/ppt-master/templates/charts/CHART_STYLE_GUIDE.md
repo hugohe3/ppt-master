@@ -417,7 +417,74 @@ expanded 无损表达属于独立合同，不得复制为新模板创作格式�
 ### 验证命令
 ```bash
 # 全 catalog：索引、Checker、默认 Shape 路线、原生 Chart/Table 路线
-python3 "skills/ppt-master/scripts/test_svg_quality_checker.py" -k chart_catalog
+python3 -c '
+import contextlib
+import io
+import json
+import sys
+from pathlib import Path
+from xml.etree import ElementTree as ET
+
+scripts = Path("skills/ppt-master/scripts").resolve()
+sys.path.insert(0, str(scripts))
+
+from svg_quality_checker import SVGQualityChecker
+from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes
+from svg_to_pptx.native_objects import native_replacement_kind
+
+catalog = Path("skills/ppt-master/templates/charts")
+index = json.loads((catalog / "charts_index.json").read_text(encoding="utf-8"))
+paths = sorted(catalog.glob("*.svg"))
+indexed = set(index["charts"])
+actual = {path.stem for path in paths}
+assert index["meta"]["total"] == len(indexed), "meta.total does not match index"
+assert actual == indexed, f"catalog/index mismatch: {sorted(actual ^ indexed)}"
+
+native_markers = 0
+for path in paths:
+    checked = SVGQualityChecker().check_file(str(path))
+    errors = checked["errors"]
+    assert errors == [], f"{path.name}: {errors}"
+
+    default_result = convert_svg_to_slide_shapes(path)
+    default_xml = default_result[0]
+    assert "<c:chart " not in default_xml
+    assert "<cx:chart " not in default_xml
+    assert "<a:tbl>" not in default_xml
+
+    root = ET.parse(path).getroot()
+    kinds = {
+        kind
+        for element in root.iter()
+        if (kind := native_replacement_kind(element))
+    }
+    with contextlib.redirect_stderr(io.StringIO()):
+        native_result = convert_svg_to_slide_shapes(path, native_objects=True)
+    native_xml = native_result[0]
+
+    if not kinds:
+        assert native_result == default_result, path.name
+        continue
+
+    assert len(kinds) == 1, f"{path.name}: {sorted(kinds)}"
+    assert native_result != default_result, path.name
+    native_markers += 1
+    if kinds == {"chart"}:
+        assert "<c:chart " in native_xml or "<cx:chart " in native_xml
+        assert "<a:tbl>" not in native_xml
+    elif kinds == {"table"}:
+        assert "<a:tbl>" in native_xml
+        assert "<c:chart " not in native_xml
+        assert "<cx:chart " not in native_xml
+    else:
+        raise AssertionError(f"{path.name}: unsupported {sorted(kinds)}")
+
+print(
+    f"OK: {len(paths)} chart templates; "
+    f"{native_markers} native Chart/Table markers"
+)
+'
+# 预期：OK: 76 chart templates; 25 native Chart/Table markers
 
 # 单文件诊断
 f="your_chart.svg"
