@@ -135,6 +135,10 @@ def convert_txbody(
     bins = _read_emu_attr(body_pr, "bIns", DEFAULT_INSETS_EMU["b"])
     anchor = body_pr.attrib.get("anchor", "t") if body_pr is not None else "t"
     wrap_mode = body_pr.attrib.get("wrap", "square") if body_pr is not None else "square"
+    respect_edge_spacing = (
+        body_pr is not None
+        and body_pr.attrib.get("spcFirstLastPara") in {"1", "true"}
+    )
 
     inner_x = xfrm.x + lins
     inner_y = xfrm.y + tins
@@ -152,7 +156,19 @@ def convert_txbody(
         _paragraph_height_from_lines(p, lines)
         for p, lines in zip(paragraphs, para_lines)
     ]
-    total_h = sum(para_heights)
+    space_before = [paragraph.space_before_px for paragraph in paragraphs]
+    space_after = [paragraph.space_after_px for paragraph in paragraphs]
+    if not respect_edge_spacing:
+        space_before[0] = 0.0
+        space_after[-1] = 0.0
+    total_h = sum(
+        before + height + after
+        for before, height, after in zip(
+            space_before,
+            para_heights,
+            space_after,
+        )
+    )
     if anchor == "ctr":
         cursor_y = inner_y + max(0.0, (inner_h - total_h) / 2.0)
     elif anchor == "b":
@@ -162,14 +178,20 @@ def convert_txbody(
 
     bottom_y = inner_y + inner_h
     text_blocks: list[str] = []
-    for para, lines, height in zip(paragraphs, para_lines, para_heights):
-        cursor_y += para.space_before_px
+    for para, lines, height, before, after in zip(
+        paragraphs,
+        para_lines,
+        para_heights,
+        space_before,
+        space_after,
+    ):
+        cursor_y += before
         visible_lines = _clip_lines_to_bottom(para, lines, cursor_y, bottom_y)
         if visible_lines:
             text_blocks.append(
                 _emit_paragraph(para, visible_lines, inner_x, inner_w, cursor_y)
             )
-        cursor_y += height + para.space_after_px
+        cursor_y += height + after
         if cursor_y >= bottom_y:
             break
 
