@@ -757,6 +757,10 @@ at every angle. The schema default (`scaled` omitted) and explicit `"0"` /
 `"false"` are accepted only at cardinal angles, where aspect-ratio scaling
 cannot change the direction. Other unscaled angles and malformed boolean values
 stop import instead of producing a direction that varies with shape geometry.
+An imported non-line `a:gradFill` contains at most one direct `a:lin` or
+`a:path` direction. Omitting both uses the schema-defined horizontal linear
+default; duplicate or mixed direction elements stop import instead of being
+selected by implementation priority.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

@@ -158,8 +158,15 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             f'stop-color="{hex_}"{opacity_attr}/>'
         )
     # Linear vs radial vs path
-    lin = elem.find("a:lin", NS)
-    rad = elem.find("a:path", NS)
+    linear_directions = elem.findall("a:lin", NS)
+    path_directions = elem.findall("a:path", NS)
+    if len(linear_directions) + len(path_directions) > 1:
+        raise ValueError(
+            "DrawingML gradient fill must contain at most one lin/path "
+            "direction"
+        )
+    lin = linear_directions[0] if linear_directions else None
+    rad = path_directions[0] if path_directions else None
 
     if lin is not None:
         # ang is 1/60000 deg. 0° = horizontal left-to-right.
