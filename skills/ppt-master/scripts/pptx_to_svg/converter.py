@@ -15,11 +15,13 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
 from .color_resolver import ColorPalette
 from .emu_units import NS
+from .import_diagnostics import ImportDiagnostic, append_diagnostic
 from .ooxml_loader import (
     OoxmlPackage,
     PartRef,
@@ -44,8 +46,18 @@ def _extract_theme_info(
             if not isinstance(child.tag, str):
                 continue
             name = child.tag.split("}", 1)[-1]
-            color_elem = find_color_elem(child)
-            hex_, _ = resolve_color(color_elem, palette)
+            try:
+                color_elem = find_color_elem(child)
+                hex_, _ = resolve_color(color_elem, palette)
+            except ValueError as exc:
+                if palette.strict:
+                    raise
+                palette._diagnose(
+                    "theme-summary-color-omitted",
+                    str(exc),
+                    "omit only this malformed theme-summary color",
+                )
+                continue
             if hex_:
                 colors[name] = hex_
 
@@ -90,6 +102,8 @@ class ConvertOptions:
         - "flat": inline the inherited shapes visible under the source
           ``showMasterSp`` flags. Used by svg_to_pptx round-trip and any caller
           that wants self-contained slides (preview pages, screenshot pipelines).
+    strict: stop on the first unsupported or malformed source construct.
+        Default False keeps usable content and records structured diagnostics.
     """
 
     media_subdir: str = "assets"
@@ -97,6 +111,7 @@ class ConvertOptions:
     keep_hidden: bool = False
     inheritance_mode: str = "both"
     asset_name_map: dict[str, str] = field(default_factory=dict)
+    strict: bool = False
 
 
 @dataclass
@@ -143,6 +158,53 @@ class ConvertResult:
     masters: list[PartArtifact] = field(default_factory=list)
     flat_slides: list[SlideArtifact] = field(default_factory=list)
     master_themes: dict[str, dict[str, object]] = field(default_factory=dict)
+    diagnostics: list[ImportDiagnostic] = field(default_factory=list)
+    source_file: str = ""
+    strict: bool = False
+
+
+def _palette_diagnostic_sink(
+    result: ConvertResult,
+    *,
+    part_path: str,
+    slide_index: int | None = None,
+) -> Callable[[str, str, str], None]:
+    """Build a package-level diagnostic sink for palette initialization."""
+    def _record(code: str, message: str, fallback: str) -> None:
+        append_diagnostic(
+            result.diagnostics,
+            ImportDiagnostic(
+                code=code,
+                message=message,
+                fallback=fallback,
+                part_path=part_path,
+                slide_index=slide_index,
+            ),
+        )
+
+    return _record
+
+
+def _make_palette(
+    master: PartRef | None,
+    theme: PartRef | None,
+    options: ConvertOptions,
+    result: ConvertResult,
+    *,
+    part_path: str,
+    slide_index: int | None = None,
+) -> ColorPalette:
+    """Create one strict or tolerant palette with structured diagnostics."""
+    return ColorPalette(
+        master,
+        theme,
+        strict=options.strict,
+        diagnostic_sink=_palette_diagnostic_sink(
+            result,
+            part_path=part_path,
+            slide_index=slide_index,
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -173,7 +235,10 @@ def convert_pptx_to_svg(
         )
     emit_layered = options.inheritance_mode in {"layered", "both"}
     emit_flat = options.inheritance_mode in {"flat", "both"}
-    result = ConvertResult()
+    result = ConvertResult(
+        source_file=pptx_path.name,
+        strict=options.strict,
+    )
 
     with OoxmlPackage(pptx_path) as pkg:
         result.canvas_px = pkg.slide_size_px
@@ -183,13 +248,25 @@ def convert_pptx_to_svg(
         first_slide = pkg.get_slide(1)
         default_master = first_slide.master if first_slide else None
         default_theme = pkg.resolve_theme(default_master)
-        palette = ColorPalette(default_master, default_theme)
+        palette = _make_palette(
+            default_master,
+            default_theme,
+            options,
+            result,
+            part_path=default_theme.path if default_theme is not None else "",
+        )
         if default_theme is not None:
             result.theme_colors, result.theme_fonts = _extract_theme_info(default_theme, palette)
 
         for master in pkg.iter_all_masters():
             theme = pkg.resolve_theme(master) or default_theme
-            pal = ColorPalette(master, theme)
+            pal = _make_palette(
+                master,
+                theme,
+                options,
+                result,
+                part_path=master.path,
+            )
             colors, fonts = _extract_theme_info(theme, pal) if theme is not None else ({}, {})
             result.master_themes[master.path] = {
                 "themePath": theme.path if theme is not None else None,
@@ -203,20 +280,44 @@ def convert_pptx_to_svg(
         primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
             slide_theme = pkg.resolve_theme(slide.master) or default_theme
-            slide_palette = ColorPalette(slide.master, slide_theme)
+            slide_palette = _make_palette(
+                slide.master,
+                slide_theme,
+                options,
+                result,
+                part_path=slide.part.path,
+                slide_index=slide.index,
+            )
             _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
             artifact = _convert_slide(
-                pkg, slide, slide_palette, options, slide_fonts,
+                pkg,
+                slide,
+                slide_palette,
+                options,
+                result.diagnostics,
+                slide_fonts,
                 inheritance_mode=primary_mode,
             )
             result.slides.append(artifact)
         if emit_layered and emit_flat:
             for slide in pkg.iter_slides():
                 slide_theme = pkg.resolve_theme(slide.master) or default_theme
-                slide_palette = ColorPalette(slide.master, slide_theme)
+                slide_palette = _make_palette(
+                    slide.master,
+                    slide_theme,
+                    options,
+                    result,
+                    part_path=slide.part.path,
+                    slide_index=slide.index,
+                )
                 _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
                 artifact = _convert_slide(
-                    pkg, slide, slide_palette, options, slide_fonts,
+                    pkg,
+                    slide,
+                    slide_palette,
+                    options,
+                    result.diagnostics,
+                    slide_fonts,
                     inheritance_mode="flat",
                 )
                 result.flat_slides.append(artifact)
@@ -236,6 +337,7 @@ def _convert_slide(
     slide: SlideRef,
     palette: ColorPalette,
     options: ConvertOptions,
+    diagnostics: list[ImportDiagnostic],
     theme_fonts: dict[str, str] | None = None,
     *,
     inheritance_mode: str | None = None,
@@ -260,6 +362,8 @@ def _convert_slide(
         keep_hidden=options.keep_hidden,
         inheritance_mode=mode,
         asset_name_map=options.asset_name_map,
+        strict=options.strict,
+        diagnostics=diagnostics,
     )
     return SlideArtifact(
         index=slide.index,
@@ -301,18 +405,30 @@ def _convert_inheritance_parts(
 
     for seq, part in enumerate(seen_masters.values(), start=1):
         theme = pkg.resolve_theme(part) or default_theme
-        palette = ColorPalette(part, theme)
+        palette = _make_palette(
+            part,
+            theme,
+            options,
+            result,
+            part_path=part.path,
+        )
         _colors, fonts = _extract_theme_info(theme, palette) if theme is not None else ({}, result.theme_fonts)
         result.masters.append(_render_part(
-            pkg, part, palette, options, fonts,
+            pkg, part, palette, options, result.diagnostics, fonts,
             role="master", seq=seq, theme_part=theme,
         ))
     for seq, (layout, parent_master) in enumerate(layouts_with_parent, start=1):
         theme = pkg.resolve_theme(parent_master) or default_theme
-        palette = ColorPalette(parent_master, theme)
+        palette = _make_palette(
+            parent_master,
+            theme,
+            options,
+            result,
+            part_path=layout.path,
+        )
         _colors, fonts = _extract_theme_info(theme, palette) if theme is not None else ({}, result.theme_fonts)
         result.layouts.append(_render_part(
-            pkg, layout, palette, options, fonts,
+            pkg, layout, palette, options, result.diagnostics, fonts,
             role="layout", seq=seq, parent_master=parent_master,
             theme_part=theme,
         ))
@@ -323,6 +439,7 @@ def _render_part(
     part: PartRef,
     palette: ColorPalette,
     options: ConvertOptions,
+    diagnostics: list[ImportDiagnostic],
     theme_fonts: dict[str, str],
     *,
     role: str,
@@ -340,6 +457,8 @@ def _render_part(
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
         asset_name_map=options.asset_name_map,
+        strict=options.strict,
+        diagnostics=diagnostics,
     )
     stem = PurePosixPath(part.path).stem  # e.g. "slideLayout3"
     safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", stem).strip("_") or role
@@ -413,6 +532,26 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
             target = flat_dir / f"slide_{art.index:02d}.svg"
             target.write_text(art.svg, encoding="utf-8")
             _write_media(art.media_files)
+
+    _write_conversion_report(output_dir, result)
+
+
+def _write_conversion_report(output_dir: Path, result: ConvertResult) -> None:
+    """Write the user-visible tolerant-import report."""
+    report = {
+        "schemaVersion": 1,
+        "source": result.source_file,
+        "mode": "strict" if result.strict else "tolerant",
+        "summary": {
+            "slides": len(result.slides),
+            "warnings": len(result.diagnostics),
+        },
+        "diagnostics": [item.to_dict() for item in result.diagnostics],
+    }
+    (output_dir / "conversion-report.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:

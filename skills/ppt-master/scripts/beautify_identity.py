@@ -184,7 +184,7 @@ def extract_identity(pptx_path: Path) -> dict:
         first = pkg.get_slide(1)
         master = first.master if first else None
         theme = pkg.resolve_theme(master)
-        palette_resolver = ColorPalette(master, theme)
+        palette_resolver = ColorPalette(master, theme, strict=False)
 
         # Presentation-level scheme names; ColorPalette applies clrMap + aliases.
         scheme = {

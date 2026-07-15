@@ -23,6 +23,8 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from xml.etree import ElementTree as ET
+from zipfile import BadZipFile
 
 from console_encoding import configure_utf8_stdio
 from template_import.manifest import build_manifest
@@ -157,7 +159,11 @@ def main() -> int:
         inheritance_mode=args.inheritance_mode,
         asset_name_map=manifest.get("assets", {}).get("assetMap", {}) if manifest else {},
     )
-    result = convert_pptx_to_svg(pptx_path, output_dir, options)
+    try:
+        result = convert_pptx_to_svg(pptx_path, output_dir, options)
+    except (BadZipFile, ET.ParseError, OSError, RuntimeError, ValueError) as exc:
+        print(f"Error: failed to convert PPTX template source: {exc}")
+        return 1
     total_bytes = sum(len(art.svg.encode("utf-8")) for art in result.slides)
 
     print(f"Inheritance mode: {args.inheritance_mode}")
@@ -168,6 +174,11 @@ def main() -> int:
         print("Inheritance graph: svg/inheritance.json")
     if result.flat_slides:
         print(f"Flat companion slides: {len(result.flat_slides)} (svg-flat/)")
+    if result.diagnostics:
+        print(
+            f"Source recovery warnings: {len(result.diagnostics)} "
+            "(conversion-report.json)"
+        )
     print(f"SVG bytes (primary): {total_bytes}")
     print(f"Output directory: {output_dir}")
     if native_structure is not None:
