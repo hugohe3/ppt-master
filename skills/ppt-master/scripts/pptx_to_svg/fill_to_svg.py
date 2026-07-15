@@ -193,6 +193,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             + "</linearGradient>"
         )
     elif rad is not None:
+        _validate_path_gradient_structure(rad)
         _validate_path_gradient_type(rad)
         _validate_path_gradient_focus(rad)
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
@@ -401,6 +402,25 @@ def _validate_path_gradient_type(path: ET.Element) -> None:
     if path_type not in {"circle", "rect", "shape"}:
         raise ValueError(
             f"Unsupported DrawingML path gradient type: {path_type!r}"
+        )
+
+
+def _validate_path_gradient_structure(path: ET.Element) -> None:
+    """Require only the registered path attribute and focus rectangle."""
+    unsupported = sorted(set(path.attrib) - {"path"})
+    children = list(path)
+    fill_to_rect_tag = f"{{{NS['a']}}}fillToRect"
+    has_invalid_payload = (
+        (path.text or "").strip()
+        or any(
+            child.tag != fill_to_rect_tag or (child.tail or "").strip()
+            for child in children
+        )
+    )
+    if unsupported or has_invalid_payload:
+        details = ", ".join(unsupported) if unsupported else "payload"
+        raise ValueError(
+            f"Invalid DrawingML path gradient structure: {details}"
         )
 
 
