@@ -7,20 +7,10 @@
     Design Principles:
       - Each step = top parallelogram + front face + side face (3 shades from one Tailwind hue, see CHART_STYLE_GUIDE §1.2)
       - Step palette walks the spectrum Sky -> Blue -> Indigo -> Violet -> Purple -> Rose
-      - Visual weight: thicker top-edge highlight (2.5px), heavier shadow, larger numbers (font 34 weight 900),
+      - Visual weight: thicker top-edge highlight (2.5px), darker side facets, larger numbers (font 34 weight 900),
         each description anchored by a tinted background card so it does not float
       - Ground line beneath bottom stair anchors the staircase to the page
     -->
-    <defs>
-        <filter id="stairShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-            <feOffset dx="2" dy="5" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.18" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-    </defs>
-
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
     <!-- ==================== Header ==================== -->
@@ -31,7 +21,7 @@
     <line x1="60" y1="600" x2="1220" y2="600" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,6"/>
 
     <!-- ==================== Stair 1 (Sky) ==================== -->
-    <g id="stair-01" transform="translate(80, 480)" filter="url(#stairShadow)">
+    <g id="stair-01" transform="translate(80, 480)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#38BDF8"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#0EA5E9"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#0284C7"/>
@@ -45,7 +35,7 @@
     </g>
 
     <!-- ==================== Stair 2 (Blue) ==================== -->
-    <g id="stair-02" transform="translate(230, 410)" filter="url(#stairShadow)">
+    <g id="stair-02" transform="translate(230, 410)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#60A5FA"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#3B82F6"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#2563EB"/>
@@ -59,7 +49,7 @@
     </g>
 
     <!-- ==================== Stair 3 (Indigo) ==================== -->
-    <g id="stair-03" transform="translate(380, 340)" filter="url(#stairShadow)">
+    <g id="stair-03" transform="translate(380, 340)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#818CF8"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#6366F1"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#4F46E5"/>
@@ -73,7 +63,7 @@
     </g>
 
     <!-- ==================== Stair 4 (Violet) ==================== -->
-    <g id="stair-04" transform="translate(530, 270)" filter="url(#stairShadow)">
+    <g id="stair-04" transform="translate(530, 270)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#A78BFA"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#8B5CF6"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#7C3AED"/>
@@ -87,7 +77,7 @@
     </g>
 
     <!-- ==================== Stair 5 (Purple) ==================== -->
-    <g id="stair-05" transform="translate(680, 200)" filter="url(#stairShadow)">
+    <g id="stair-05" transform="translate(680, 200)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#C084FC"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#A855F7"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#9333EA"/>
@@ -101,7 +91,7 @@
     </g>
 
     <!-- ==================== Stair 6 (Rose, peak) ==================== -->
-    <g id="stair-06" transform="translate(830, 130)" filter="url(#stairShadow)">
+    <g id="stair-06" transform="translate(830, 130)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#FB7185"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#F43F5E"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#E11D48"/>

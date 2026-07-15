@@ -10,6 +10,28 @@
 
 **工具的上限是你的上限。** PPT Master 放大的是你已有的能力——你有设计感和内容判断力，它帮你快速落地；你不知道一个好的演示文稿应该长什么样，它也没法替你知道。输出的质量，归根结底是你自身品味与判断力的映射。
 
+### SVG 是项目的规范中间语言
+
+PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使用的是**项目规范化 SVG 中间语言**：它借用 SVG 的 XML 语法和二维图形模型，但允许的元素、属性、单位、metadata、结构合同与 DrawingML 映射都由项目规范封闭定义。这里的方向是 **SVG 适应 PPT Master，而不是 PPT Master 追随整个 SVG 标准扩张**。
+
+这套中间语言区分三种输入状态：
+
+| 状态 | 定义 | 处理方式 |
+|---|---|---|
+| 规范创作输入 | 提示词、模板和示例应生成的唯一推荐表达 | 按注册映射校验和编译，不因表达别名产生 warning |
+| 兼容输入 | 已明确登记、可确定且安全归一化的历史或人工写法 | Checker 给出非阻塞 warning；转换器确定性归一化后编译，不把别名反向扩散到提示词 |
+| 非法或不支持输入 | 缺少映射、存在歧义、破坏结构合同，或可能生成非法 DrawingML / PPTX 的表达 | Checker 或转换器报 error 并停止发布 |
+
+例如，项目字号统一采用 SVG px 语义，规范写法是有限的无单位数值（如 `font-size="24"`）；其他单位只有被兼容合同明确登记且能够确定性换算时才可能作为兼容输入，不能成为生成提示词的新写法。兼容读取是一条受控迁移边界，不是放宽创作语言的理由。
+
+三层职责必须分开，不能用其中一层替代另一层：
+
+| 层级 | 单一职责 | 不承担的职责 |
+|---|---|---|
+| 提示词、模板与示例 | 精确表达项目规范写法，从源头减少偏差和 warning | 不作为正确性或安全边界 |
+| `svg_quality_checker.py` | 在作者状态上执行项目合同；error 阻塞，非阻塞 warning 放行 | 不静默改写页面，也不猜测设计意图 |
+| `svg_to_pptx.py` | 对所有调用路径防御校验；归一化已登记兼容形式；阻止已知非法 package 发布 | 不承诺转换任意 SVG，不用默认值掩盖未知或歧义输入 |
+
 ---
 
 ## 系统架构
@@ -33,15 +55,15 @@
     ↓
 [Executor] 执行师
     ├── 生成开始前启动 live preview，并在生成期间保持可用
-    ├── 视觉构建：按页顺序连续生成 SVG 页面 → svg_output/
-    ├── [Quality Check] svg_quality_checker.py（强制通过，0 错误）
+    ├── 视觉构建：按页顺序连续生成项目规范化 SVG 页面 → svg_output/
+    ├── [Quality Check] svg_quality_checker.py（强制通过，0 错误；warning 非阻塞）
     └── 讲稿生成：完整讲稿 → notes/total.md
     ↓
 [图表校准（条件触发）] → verify-charts 工作流（含数据图表的 deck 必须在此步骤校准坐标）
     ↓
 [视觉自检（可选，opt-in）] → visual-review 工作流（仅在用户明确请求时触发）
     ↓
-[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
+[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py（防御校验后编译）
     ↓
 输出：
     svg_final/
@@ -49,7 +71,7 @@
 
     exports/
     ├── presentation_<timestamp>.pptx                ← 原生形状版（DrawingML）— 唯一 PPTX 生成路线的标准文件
-    ├── presentation_<timestamp>_native_charts.pptx  ← 同一路线的原生图表/表格对象变体（加 --native-objects 时生成）
+    ├── presentation_<timestamp>_native_charts_tables.pptx  ← 同一路线的 PowerPoint 原生 Chart/Table 替换变体（加 --native-charts-and-tables 时生成）
     └── presentation_<timestamp>_narrated.pptx       ← 同一路线的旁白变体（加 --recorded-narration audio 时生成）
 
     # 默认流程（未指定 -o）始终写入
@@ -57,15 +79,16 @@
     └── svg_output/                            ← Executor 原始 SVG 备份（重跑 finalize_svg → svg_to_pptx 即可重建 pptx）
 ```
 
-### SVG 是页面设计语言
+### SVG 是受约束的页面设计语言
 
-凡是通过 SVG 创作或重新设计页面的工作流，`svg_output/` 都是完整的页面设计权威。最终幻灯片中应出现的文字、图片、形状、图示、图表 / 表格 fallback、背景和模板派生布局元素，都必须已经存在于对应页面 SVG 中，或被它明确引用。模板、`design_spec.md` 和 `spec_lock.md` 负责指导 SVG 创作；导出器不能把它们当成第二层画面来源，在导出阶段补入 SVG 缺失的页面内容。
+凡是通过 SVG 创作或重新设计页面的工作流，`svg_output/` 都是完整的页面设计权威，但这里的 SVG 专指通过项目合同校验的项目规范化 SVG，而不是任意浏览器可渲染的 SVG。最终幻灯片中应出现的文字、图片、形状、图示、图表 / 表格 fallback、背景和模板派生布局元素，都必须已经存在于对应页面 SVG 中，或被它明确引用。模板、`design_spec.md` 和 `spec_lock.md` 负责指导 SVG 创作；导出器不能把它们当成第二层画面来源，在导出阶段补入 SVG 缺失的页面内容。
 
 最小语义标记不会削弱这条闭包。自由设计与 brand-only 页面使用 `pptx_structure.mode: flat`：所有已表达对象保持 Slide 本地，不创作任何 Master/Layout 身份、分层或 placeholder metadata。导出器根据当前配色/字体 lock 生成一个属于本项目的干净 Master 和一个 Blank Layout，删除 title/body 等内置内容占位符与未使用的内置 Layout，仅保留标准日期、页脚和页码能力钩子，但不提升任何 Slide 内容。结构化 deck/layout 模板路线上，每张新页面从第一版 SVG 起就声明 Master/Layout 身份。固定 Master/Layout 视觉是根节点直接原子元素；可复用内容槽位是顶层 group，带显式设计区域 bounds 和一个兼容 carrier；复合 `object` 区域走显式 proxy 降级，Layout 也允许零槽。`data-pptx-role` 只补充专用 metadata 尚未表达的少量页面框架、package 或动画行为。结构合同缺失或使用旧形态的 legacy structured/template 项目必须先运行 `restore-pptx-structure`；flat 项目是有意不带 mapping，不算 legacy。导出器不做 Master/Layout 结构或 placeholder 推断。
 
 | 领域 | 权威来源 |
 |---|---|
 | SVG 创作路线中的可见页面内容与布局 | `svg_output/` 中的最终页面 SVG |
+| 项目规范化 SVG 的语法、兼容形式与映射边界 | [`references/shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) |
 | Master/Layout/Slide 打包与原生对象映射 | SVG 到 PPTX 的翻译；可以重组 SVG 已表达的内容，但不能创造新的可见内容 |
 | 动画、转场、讲稿和旁白 | 各自的 sidecar / 资源与 PPTX package 后处理 |
 | 直接原生 PPTX 编辑 | 所选原生工作流自己的 PPTX / OOXML 契约 |
@@ -176,11 +199,13 @@ SVG 胜出，因为它与 DrawingML 拥有相同的世界观：两者都是绝�
 | `linearGradient` / `radialGradient` | `<a:gradFill>` |
 | `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
 
-这张表只展示概念对应关系，不是创作允许清单，也不承诺语义无损。受限或近似的映射统一由 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 定义。
+这张表只展示概念对应关系，不是对整个 SVG 标准的承诺，也不承诺所有映射语义无损。每项受支持能力都必须在 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 中拥有明确的映射记录，说明项目规范写法、允许的兼容输入、目标 DrawingML 表达、保真度和拒绝条件；涉及 PPTX 回导的能力还要说明来源 PPTX / OOXML 语义。映射状态可以是精确、确定性归一化、显式 fallback、sidecar 或 unsupported；讲稿、动画、relationships 等 package 语义不必强行塞进 SVG，但必须明确由哪条路线承载。
 
-这条边界明确采用**推荐窄写入、兼容宽读取**。新生成的 `svg_output/` 与可复用模板默认使用一种颜色写法：不透明的六位大写 `#RRGGBB`，透明度放在对应的 `fill-opacity`、`stroke-opacity`、`stop-opacity`、`flood-opacity` 或原子元素 `opacity` 中。转换器在导入或直接读取边界仍兼容命名色、CSS 函数色、短 HEX、带 alpha 的 HEX 及其他已记录的历史形式。Checker 可以提示推荐写法，但受支持的替代写法仍然有效，也不会阻断导出。
+如需从 PowerPoint 功能出发逐项查看这些关系，请参阅 [PowerPoint 功能 ↔ 项目 SVG 映射指南](./powerpoint-svg-mapping.md)。该文档是解释性能力表，规范权威仍属于 `shared-standards.md`。
 
-转换不是格式错配，而是在两种结构相近的方言之间做翻译。
+主生成路线采用**规范窄写入、受控兼容读取**。新生成的 `svg_output/` 与可复用模板只使用项目规范写法，例如不透明的六位大写 `#RRGGBB`，透明度放在对应的 `fill-opacity`、`stroke-opacity`、`stop-opacity`、`flood-opacity` 或原子元素 `opacity` 中。历史或人工输入只有在兼容合同明确登记、转换结果唯一且输出合法时才可继续导出；Checker 对这类写法给出非阻塞 warning，转换器在编译边界统一归一化。任何需要猜测、没有映射或可能产生损坏 PPTX 的表达都必须报 error。
+
+因此，转换不是在任意 SVG 和 DrawingML 之间做格式猜测，而是在项目规范化 SVG 与 DrawingML 之间执行有注册表、有保真度说明、可测试的编译。
 
 SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可靠地生成它，人能在任意浏览器里直接预览和调试，脚本能按明确的兼容合同转换它**——在生成任何 DrawingML 之前，设计稿就已经完全透明可见。
 
@@ -379,18 +404,20 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 ---
 
-## SVG 兼容性边界
+## 项目规范化 SVG 与兼容性边界
 
-PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实现的词汇内，普通 SVG 默认允许。只有导出拒绝项与需要受限映射的能力才集中枚举在 [`references/shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；它是接受形式与限制的唯一权威，本架构文档有意不再复述。
+PowerPoint 的 DrawingML 是 SVG 表达力的严格子集，因此主编译路径不把“浏览器可以渲染”视为“项目可以导出”。只有在 [`references/shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 中登记了项目规范表达或显式兼容形式，并且拥有确定 DrawingML 映射的词汇，才属于可接受输入。该文件是语法、结构、单位、metadata、兼容别名、保真度和拒绝条件的唯一权威；本架构文档只定义分层原则，不复制具体规则。
 
 **为什么本地复用是编译期复用，不是 PowerPoint 保留对象。** 接受的创作形式由权威合同定义、共享校验器执行。校验通过后，流水线会递归实体化引用子树并重写克隆局部 ID 后再导出；PPTX 回导因此只返回展开后的原语，不重建创作期复用图。
 
 值得在架构层标记的理由：
 
-- **为什么是例外清单，不是允许清单。** SVG 是个宽规范；穷举所有允许能力会随着转换器演进而持续增加维护成本。集中维护例外，才能让已实现的普通构造默认可用。
+- **为什么需要封闭映射，而不是默认接受普通 SVG。** 项目规范化 SVG 是编译器中间语言，不是浏览器兼容层。新增元素、属性或取值必须同时补齐导入语义、导出映射、校验规则和回归验证；未登记能力默认不进入主编译路径。
+- **为什么兼容输入不等于创作许可。** 已登记的历史别名可以由转换器确定性归一化，并由 Checker 给出非阻塞 warning；提示词、模板和示例仍只生成项目规范写法。兼容面只能服务迁移和人工输入，不能反向扩大生成语法。
+- **为什么 warning 可以放过。** warning 只表示合法输出前提下的推荐写法、确定性归一化、已知保真度下降或视觉质量风险。它不改变页面语义，不要求 Executor 回改，也不阻断发布；如果某项必须修正才能交付，它就应被定义为 error。
 - **为什么是经验性，不是从规范推导。** 兼容性边界从真实的 PPT 导出失败长出来，不是读 OOXML 规范推导出来的。有些理论上能表达的效果跨 PowerPoint 版本仍不可靠，因此合同反映的是实际能交付的子集。
 - **XML 良构性仍是前置条件。** SVG 一旦不是合法 XML，尚未进入 DrawingML 兼容性阶段就会失败。接受的创作形式集中在权威合同中，避免架构与提示文档分别维护后发生漂移。
-- **兼容性校验在后处理之前执行。** `svg_quality_checker.py` 在 `svg_output/` 上执行；后处理会重写 SVG，可能掩盖源级别违规。阻断性 error 由 Executor 重新写，warning 不触发回改；系统有意不提供 auto-fix 模式（见 § 质量门）。
+- **兼容性校验在后处理之前执行。** `svg_quality_checker.py` 在 `svg_output/` 上执行；后处理会重写 SVG，可能掩盖源级别违规。阻断性 error 由 Executor 重新写，warning 不触发回改；转换器按设计哲学中定义的职责再次校验关键发布条件。
 
 ---
 
@@ -400,7 +427,16 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 
 **为什么放在后处理之前，而不是之后。** 后处理会重写 SVG（图标嵌入、图片内联），会掩盖源级别违规。直接读 `svg_output/` 抓的是 Executor 的实际输出，先于任何可能掩盖 bug 的清理动作。
 
-**严重性模型：error 阻塞、warning 不阻塞，且有意没有 auto-fix。** error 要求 Executor 在上下文里重新写出错的页面——兼容性违规不一定能机械 patch，因为替代方案必须重新承载同样的设计意图。Warning 不要求返回修改或逐条确认：推荐性 warning 说明生成默认写法，保真度 / 质量 warning 只提供可选复核信息。Auto-fix 会静默覆盖有效的用户意图，也可能交付一个更差的页面。
+**严重性模型：error 阻塞、warning 不阻塞，且有意没有 auto-fix。** 严重性不按“是否符合推荐写法”划分，而按“能否确定、合法地映射”划分：
+
+| 严重性 | 判定条件 | 流水线行为 |
+|---|---|---|
+| `error` | 结构合同被破坏；输入无映射或有歧义；必要 metadata 缺失；数值非法；转换后可能违反 DrawingML / PPTX 约束；或可能导致 PowerPoint 修复文件 | Executor 必须重写并重新校验；转换器也必须拒绝发布 |
+| `warning` | 已有唯一、安全、合法的转换结果，但输入不是项目规范写法，或存在已知的确定性归一化、保真度下降、视觉质量风险 | 记录诊断后允许发布；不要求逐条确认或强制回改 |
+
+质量门沿用设计哲学中定义的三层职责。这里有意不提供 auto-fix：机械修补可能静默覆盖有效的设计意图，也可能交付一个更差的页面。
+
+如果同一种 warning 持续出现在新生成页面中，应优先修正提示词、模板示例或规范说明，使默认输出回到项目规范写法；这属于生成质量问题，不需要把本来安全的兼容输入升级成阻塞错误。反过来，如果实践证明某个 warning 可能产生非法文件或不确定语义，就必须把合同和 Checker 同步升级为 error。
 
 **为什么图表坐标验证挂在同一道 gate。** 图表页面有几何正确性需求（柱高、饼图扇角、坐标轴刻度位置），这些不是结构问题，SVG 合法性规则也抓不到。最自然的捕捉位置就是已经要求 AI 回看自己输出的那道 gate——把「看一眼你刚生成的东西然后修」的认知上下文打包到一个阶段，比把结构和几何审查分到两轮 review 更高效。
 
@@ -419,7 +455,7 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 | `svg_output/` | 唯一源、手工编辑入口、`update_spec.py`、`svg_quality_checker.py` | 流水线中唯一**手写**而非派生的目录 |
 | `svg_final/` | IDE 内即时预览（VSCode/Cursor 直接打开 `.svg`）、浏览器单页预览、手动作为 SVG 图片插入 | `.pptx` 在 IDE 里打不开；`svg_output/` 因图标 / 图片是外部引用，IDE 中渲染不完整。PowerPoint 手工“转换为形状”不在支持范围 |
 | `exports/<name>_<ts>.pptx`（native） | 主交付物——PowerPoint 中以 DrawingML 形状形态可编辑 | 唯一一份用户可在 PowerPoint 中原生改尺寸 / 改色 / 改样式的产物 |
-| `exports/<name>_<ts>_native_charts.pptx`（需 `--native-objects` 显式开启） | 让带 `data-pptx-native` 标记的图表/表格以真·PowerPoint 原生对象交付,而非压平形状 | 带数据、可在 PowerPoint 中直接编辑的图表/表格对象;命名与普通压平形状导出区分开 |
+| `exports/<name>_<ts>_native_charts_tables.pptx`（需 `--native-charts-and-tables` 显式开启） | 让带 `data-pptx-replace-with` 标记的 SVG 派生形状图表/表格替换为 PowerPoint 原生 Chart/Table 对象 | 带数据源和图表/表格专属控制的对象；默认 DrawingML shape 本身仍可独立编辑 |
 | `exports/<name>_<ts>_narrated.pptx`（经 `--recorded-narration audio` 生成） | 自动放映与 PowerPoint 视频导出用的旁白版 deck | 逐页嵌入音频并写入自动推进时间;命名与无声导出区分开 |
 | `backup/<ts>/svg_output/`（默认流程下始终生成） | 不重跑 LLM 的前提下从冻结 SVG 源重建 pptx、长期存档 | 项目下游被改动后，Executor 原始 SVG 唯一的留存副本 |
 
@@ -464,9 +500,11 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 
 ## Native PPTX 转换器内部
 
+`svg_to_pptx.py` 执行设计哲学中定义的最终防线；本节只解释这条受约束编译路线的内部结构。
+
 **为什么是逐元素派发而不是整体翻译。** SVG 的层级模型干净地映射到 DrawingML 的 group / shape / picture 类型——不需要一个全局优化器去重新规划幻灯片。每种形状都有自己窄的翻译器，简单到能单独调试和单元测试。一张幻灯片的最终质量等于这些独立局部转换之和；这个性质在整体翻译下脆弱，在元素派发下稳健。
 
-**为什么导入型与生成型 metadata 分层。** 导入 PPTX 时，完整 SVG 可以携带高级形状所需的 metadata、隐藏 carrier 和预览指纹，但这类载荷不适合直接进入模型上下文。authoring projection 会非破坏性地移除大体积载荷，只保留可见几何和紧凑意图，而且永远不是导出源。`standard` / `fidelity` 使用 compact canonical metadata。Mirror 从无损来源物化，可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留当前 SVG fallback。
+**为什么导入型与生成型 metadata 分层。** 导入 PPTX 时，完整 SVG 可以携带高级形状所需的 metadata、隐藏 carrier 和预览指纹，但这类载荷不适合直接进入模型上下文。authoring projection 会非破坏性地移除大体积载荷，只保留可见几何和紧凑意图，而且永远不是导出源。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从无损来源物化，可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留当前 SVG fallback。
 
 **为什么只有一条 PPTX 编译路线。** Native 导出把作者 SVG 中受支持的元素逐个翻译成 DrawingML 形状。常规 deck 路线读取 `svg_output/`；用户需要时，create-template 对通过校验的模板原型调用同一 structured 编译器，生成 `exports/<id>_template_preview.pptx` 作为审阅证据。项目不会把整页 SVG 媒体或另一套位图渲染打包成第二类 PPTX。`svg_final/` 仍由常规 deck 的强制后处理生成，但只承担自包含视觉预览和 SVG 图片插入，不为 PowerPoint 手工“转换为形状”提供兼容兜底。
 
@@ -490,11 +528,11 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 
 **为什么模板 SVG 保持完整却仍能编译成原生结构。** 模板 SVG 会重复携带继承的 Master/Layout 视觉和示例 Slide 内容，因此可独立打开。生成时由 `page_layouts` 选择该原型，输出 SVG 仍保持视觉闭包。导出器移除重复继承原子、生成真实 Master/Layout part，并把槽位 carrier 与 Slide-local 内容留在 Slide。
 
-**为什么原生对象重建使用 marker，而不是自动替换对象。** 独立的 `pptx_to_svg.py` 导入器只为已验证的表格 / 图表子集输出可见 SVG fallback 与 `data-pptx-native` 元数据。表格导入覆盖精确的物理行列 topology、slave 为空的规范矩形 merge、安全的 solid/no-fill 逐边 border、纯文本多段落，以及封闭的 run 级富文本段落。富文本段落包含非空 `runs`；每个 run 必须有 `text`，并且只能使用 `bold`、`italic`、`underline`、`strike`、`color`、`font_size`、单一 `font_family`、`lang` 和 `alt_lang`。来源中未建模但只影响表现的 run XML 会归一化到该 schema；带 relationship 的文本、扩展节点、换行、字段、tab、项目符号、破损文本 topology、非规范 merge、不安全 border 与非纯色填充仍保持 fallback-only。表格样式 `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}` 的规范化 fallback 会解析 `wholeTbl`、`firstRow`、横向带状行、主题颜色 / 字体和直接格式覆盖；这不代表完整 built-in/custom style registry。
+**为什么 PowerPoint 原生 Chart/Table 重建使用显式替换 marker，而不是自动替换对象。** 独立的 `pptx_to_svg.py` 导入器只为已验证的表格 / 图表子集输出可见 SVG fallback、`data-pptx-replace-with` 与 `<metadata type="application/json">`。父组 marker 决定 payload schema；普通 shape 与 connector 不使用该合同。表格导入覆盖精确的物理行列 topology、slave 为空的规范矩形 merge、安全的 solid/no-fill 逐边 border、纯文本多段落，以及封闭的 run 级富文本段落。富文本段落包含非空 `runs`；每个 run 必须有 `text`，并且只能使用 `bold`、`italic`、`underline`、`strike`、`color`、`font_size`、单一 `font_family`、`lang` 和 `alt_lang`。来源中未建模但只影响表现的 run XML 会归一化到该 schema；带 relationship 的文本、扩展节点、换行、字段、tab、项目符号、破损文本 topology、非规范 merge、不安全 border 与非纯色填充仍保持 fallback-only。表格样式 `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}` 的规范化 fallback 会解析 `wholeTbl`、`firstRow`、横向带状行、主题颜色 / 字体和直接格式覆盖；这不代表完整 built-in/custom style registry。
 
-受支持的柱 / 条 / 折线 / 面积、饼 / 圆环、散点 / 气泡图在没有 baked preview 时会生成确定性、可读的 SVG fallback，并标记 `visual=normalized`。导入器还覆盖已验证的柱 / 折线 / 面积组合图、规范四系列 OHLC stock、数值日期轴面积图、采用封闭 `axes.x` / `axes.y` 合同的散点 / 气泡图、radar、安全的 `of_pie` `serLines`、坐标轴 / 标题 / 图例归一化，以及有界的柱 / 条图 gap/overlap 场景。`gapWidth` 只接受 `0..500` 内的单个整数，`overlap` 只接受 `-100..100` 内的单个整数；这两个表现字段在 native 输出中有意归一化，非法、重复或越界输入 fail closed。组合图可保留主 / 次 plot 各自的 category cache 与 workbook range。XY 导入根据各系列一致的有效 line/marker/smooth 状态推导 `scatter_style`。封闭的 category/value 与 XY 轴合同为 native read-back 保留 kind、position、visibility、label position、number format、min/max/major unit、reverse 和 major gridlines；规范化 XY fallback 只消费两个 `major_gridlines` 开关。
+受支持的柱 / 条 / 折线 / 面积、饼 / 圆环、散点 / 气泡图在没有 baked preview 时会生成确定性、可读的 SVG fallback，并标记 `data-pptx-fallback-kind="normalized"`。导入器还覆盖已验证的柱 / 折线 / 面积组合图、规范四系列 OHLC stock、数值日期轴面积图、采用封闭 `axes.x` / `axes.y` 合同的散点 / 气泡图、radar、安全的 `of_pie` `serLines`、坐标轴 / 标题 / 图例归一化，以及有界的柱 / 条图 gap/overlap 场景。`gapWidth` 只接受 `0..500` 内的单个整数，`overlap` 只接受 `-100..100` 内的单个整数；这两个表现字段在 native 输出中有意归一化，非法、重复或越界输入 fail closed。组合图可保留主 / 次 plot 各自的 category cache 与 workbook range。XY 导入根据各系列一致的有效 line/marker/smooth 状态推导 `scatter_style`。封闭的 category/value 与 XY 轴合同为 native read-back 保留 kind、position、visibility、label position、number format、min/max/major unit、reverse 和 major gridlines；规范化 XY fallback 只消费两个 `major_gridlines` 开关。
 
-ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunburst`、`histogram`、`pareto`、`box_whisker`、`waterfall` 与 `funnel`。其受支持的层级 / 分类 / 数值 / 系列 / 小计数据 topology 可经 native 输出再导入回读。数值 cache 必须非空且有限，count/index 必须是规范非负整数，并满足精确连续的 point topology。来源 ChartEx 的样式、坐标轴、标签与 binning 可能归一化；这不代表任意 ChartEx 导入或表现层保真。C4/C5 不扩展 normalized renderer，因此 renderer 外的有效 active 类型在没有源 preview 时仍使用 `visual=placeholder` / `route=reconstruction-only`。完整 `AxisSpec`、任意 ChartEx 家族、任意富文本 OOXML、旋转 / 翻转 / 3D 图表、未验证的 combo/stock/date-axis 变体及其他未建模语义仍不在 active 导入子集内。native replacement 仍可能归一化 payload 外的表现细节，并保留 editable-first warning。默认导出把 fallback 子元素作为普通 DrawingML shape；只有 `--native-objects` 才启用可编辑表格 / 图表。每个 active 导入 marker 都带有 `data-pptx-fallback-sha256`：可见 fallback、可达 SVG definition/reference 或 marker transform 变更后，native replacement 会 fail，而不是丢弃 SVG 编辑；无 hash 的旧 marker 仍兼容并给出 warning。该 importer/exporter 组合只用于重建，不替代 `template-fill-pptx` 或 `native-enhance-pptx` 的保留型路线。
+ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunburst`、`histogram`、`pareto`、`box_whisker`、`waterfall` 与 `funnel`。其受支持的层级 / 分类 / 数值 / 系列 / 小计数据 topology 可经 native 输出再导入回读。数值 cache 必须非空且有限，count/index 必须是规范非负整数，并满足精确连续的 point topology。来源 ChartEx 的样式、坐标轴、标签与 binning 可能归一化；这不代表任意 ChartEx 导入或表现层保真。C4/C5 不扩展 normalized renderer，因此 renderer 外的有效 active 类型在没有源 preview 时仍使用 `data-pptx-fallback-kind="placeholder"`。完整 `AxisSpec`、任意 ChartEx 家族、任意富文本 OOXML、旋转 / 翻转 / 3D 图表、未验证的 combo/stock/date-axis 变体及其他未建模语义仍不在 active 导入子集内。native replacement 仍可能归一化 payload 外的表现细节，并保留数据模型优先 warning。默认导出把 fallback 子元素作为可编辑 DrawingML shape；只有 `--native-charts-and-tables` 才启用带数据源和对象专属编辑模型的 PowerPoint 原生 Chart/Table。每个 active 导入 marker 都带有 `data-pptx-import-source="pptx"` 与 `data-pptx-fallback-sha256`：可见 fallback、可达 SVG definition/reference 或 marker transform 变更后，native replacement 会 fail，而不是丢弃 SVG 编辑；仍保留导入来源标记但没有 hash 的旧导入 marker 兼容并给出 warning。生成型创作会同时省略导入来源和静态 baseline，且不产生 warning。该 importer/exporter 组合只用于重建，不替代 `template-fill-pptx` 或 `native-enhance-pptx` 的保留型路线。
 
 ---
 

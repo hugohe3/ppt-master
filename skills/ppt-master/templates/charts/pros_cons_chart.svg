@@ -38,7 +38,7 @@
     <text x="640" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#64748B" text-anchor="middle">VS</text>
     <!-- ==================== PROS Cards (Left) ==================== -->
     <!-- PROS 1 -->
-    <g transform="translate(60, 200)">
+    <g id="pro-quality-card" transform="translate(60, 200)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Accent Pill -->
         <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
@@ -51,7 +51,7 @@
         <text x="85" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">User satisfaction is 15% above industry average.</text>
     </g>
     <!-- PROS 2 -->
-    <g transform="translate(60, 335)">
+    <g id="pro-brand-card" transform="translate(60, 335)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
         <circle cx="48" cy="55" r="20" fill="#D1FAE5"/>
@@ -61,7 +61,7 @@
         <text x="85" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Brand awareness consistently ranks TOP3 in segment.</text>
     </g>
     <!-- PROS 3 -->
-    <g transform="translate(60, 470)">
+    <g id="pro-ecosystem-card" transform="translate(60, 470)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
         <circle cx="48" cy="55" r="20" fill="#D1FAE5"/>
@@ -72,7 +72,7 @@
     </g>
     <!-- ==================== CONS Cards (Right) ==================== -->
     <!-- CONS 1 -->
-    <g transform="translate(660, 200)">
+    <g id="con-iteration-cycle-card" transform="translate(660, 200)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Mirrored Accent Pill -->
         <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
@@ -85,7 +85,7 @@
         <text x="475" y="90" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Competitors average only 6-8 weeks per cycle.</text>
     </g>
     <!-- CONS 2 -->
-    <g transform="translate(660, 335)">
+    <g id="con-tier-3-market-card" transform="translate(660, 335)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
         <circle cx="512" cy="55" r="20" fill="#FFE4E6"/>
@@ -95,7 +95,7 @@
         <text x="475" y="90" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Insufficient regional distributor network coverage.</text>
     </g>
     <!-- CONS 3 -->
-    <g transform="translate(660, 470)">
+    <g id="con-service-response-card" transform="translate(660, 470)">
         <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
         <circle cx="512" cy="55" r="20" fill="#FFE4E6"/>

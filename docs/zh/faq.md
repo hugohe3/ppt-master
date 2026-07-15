@@ -134,7 +134,7 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 默认情况下，图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——形状级别完全可编辑（移动、改色、改文字、调样式）。默认不用 Excel 驱动的图表对象是有意为之：PowerPoint 默认图表样式陈旧、视觉受限于固定模板。SVG 图表则提供出版物级的视觉质量，可以在 PowerPoint 中直接精修，且在 PowerPoint / Keynote / LibreOffice / WPS 间像素一致。
 
-如果你的工作流明确需要 Excel 驱动的数据编辑，导出时加 `--native-objects`：受支持的数据图表和纯文本表格会以**带数据、可直接编辑的 PowerPoint 原生图表 / 表格对象**形式导出（保存为 `exports/<name>_<timestamp>_native_charts.pptx`，并保留这份 deck 自己的配色，而不是套用 PowerPoint 默认主题）。代价是跨软件渲染——原生对象在 PowerPoint / Keynote / LibreOffice / WPS 间可能略有差异，所以 SVG 形状仍是默认路径。
+如果你的工作流明确需要 Excel 驱动的数据编辑或 PowerPoint 的图表/表格专属控制，导出时加 `--native-charts-and-tables`：受支持的数据图表和纯文本表格会以**带数据源的 PowerPoint 原生 Chart / Table 对象**形式导出（保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`，并保留这份 deck 自己的配色，而不是套用 PowerPoint 默认主题）。默认 SVG fallback 同样会转换成可编辑 DrawingML shape，但不具备图表数据工作簿或图表/表格对象模型。原生对象在 PowerPoint / Keynote / LibreOffice / WPS 间可能略有差异，因此形状路线仍是视觉稳定性的默认选择。
 
 ## Q: 页面切换和元素动画可以调吗？
 
@@ -246,7 +246,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持的视觉对象，不做语义归纳。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
 
-完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，但模型只读取轻量 inspection projection；projection 永远不是导出源。`standard` / `fidelity` 使用紧凑 canonical metadata。Mirror 从无损来源物化，只在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；不支持或已修改的对象保留当前 SVG fallback。
+完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，但模型只读取轻量 inspection projection；projection 永远不是导出源。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从无损来源物化，只在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；不支持或已修改的对象保留当前 SVG fallback。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 

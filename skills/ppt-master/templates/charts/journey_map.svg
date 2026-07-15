@@ -19,7 +19,7 @@
     <text x="60" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Customer Journey Map</text>
     <text x="60" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">USER EXPERIENCE &amp; PAIN POINT ANALYSIS: ENTERPRISE ONBOARDING</text>
     <!-- ==================== Journey Grid ==================== -->
-    <g transform="translate(60, 140)">
+    <g id="journey-grid" transform="translate(60, 140)">
         <!-- Header Row (Stages) -->
         <rect x="180" y="0" width="240" height="40" rx="6" fill="#EFF6FF"/>
         <text x="300" y="25" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="800" fill="#1E40AF" letter-spacing="1" text-anchor="middle">1. DISCOVERY</text>

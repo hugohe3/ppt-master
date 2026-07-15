@@ -35,9 +35,14 @@ if __package__ in {None, ''}:
     sys.modules.setdefault('svg_to_pptx', package)
     __package__ = 'svg_to_pptx'
 
-from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
+from .dimensions import CANVAS_FORMATS, get_project_info
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
+from ..native_objects import (
+    native_fallback_kind,
+    native_replacement_kind,
+    native_replacement_status,
+)
 from ..native_objects.marker_status import native_marker_release_block_reason
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
 from ..drawingml.theme_fonts import (
@@ -96,6 +101,20 @@ def _declared_pptx_structure_mode(project_path: Path) -> str | None:
     return mode_match.group(1).strip().lower() if mode_match else None
 
 
+def _declared_canvas_viewbox(project_path: Path) -> str | None:
+    """Return the project-lock root canvas without inferring from its name."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        from update_spec import parse_lock
+
+        lock = parse_lock(lock_path)
+    except (OSError, ValueError):
+        return None
+    canvas = lock.get('canvas', {})
+    value = canvas.get('viewBox')
+    return value.strip() if isinstance(value, str) and value.strip() else None
+
+
 def _print_structure_migration_error(mode: str | None) -> None:
     """Explain how a legacy or absent SVG structure contract is restored."""
     label = repr(mode) if mode else 'missing (legacy implicit baseline)'
@@ -114,7 +133,7 @@ def _print_structure_migration_error(mode: str | None) -> None:
 
 
 def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]]:
-    """Return fallback-only native object statuses from SVG inputs."""
+    """Return fallback-only chart/table replacement statuses from SVG inputs."""
     fallbacks: list[tuple[str, str, str]] = []
     for svg_path in svg_files:
         try:
@@ -122,7 +141,7 @@ def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]
         except (OSError, ET.ParseError):
             continue
         for elem in root.iter():
-            status = elem.get('data-pptx-native-status')
+            status = native_replacement_status(elem)
             if not status or elem.tag.rsplit('}', 1)[-1] == 'metadata':
                 continue
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
@@ -164,12 +183,12 @@ def _reconstruction_only_graphics(
         for elem in root.iter():
             if elem.tag.rsplit('}', 1)[-1] == 'metadata':
                 continue
-            if elem.get('data-pptx-route-status') != 'reconstruction-only':
+            if native_fallback_kind(elem) != 'placeholder':
                 continue
             if native_marker_release_block_reason(elem) is not None:
                 continue
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
-            active_native = bool((elem.get('data-pptx-native') or '').strip())
+            active_native = bool(native_replacement_kind(elem))
             diagnostics.append((svg_path.name, marker_id, active_native))
     return diagnostics
 
@@ -288,7 +307,7 @@ Recorded narration:
                              'Pass output/final/<name> only for diagnostics.')
     parser.add_argument('-f', '--format', type=str,
                         choices=list(CANVAS_FORMATS.keys()), default=None,
-                        help='Specify canvas format')
+                        help='Require SVG canvases to match this registered format')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
 
     merge_group = parser.add_mutually_exclusive_group()
@@ -303,14 +322,25 @@ Recorded narration:
                         help='Write a JSON diagnostics report next to the native PPTX '
                              '(<output>.trace.json). Records per-slide SVG element '
                              'conversion decisions for debugging.')
-    parser.add_argument('--native-objects', action='store_true', default=False,
-                        help='Opt in to converting explicit data-pptx-native table/chart '
-                             'markers into editable PowerPoint objects. This editable-first '
-                             'replacement may normalize styling or omit unmodeled marker-local '
-                             'visuals. Default off: marked groups export through their SVG '
-                             'fallback children. When set, '
-                             'the default-flow export is named <project>_<ts>_native_charts.pptx '
-                             'to tell it apart from a plain shape export.')
+    parser.add_argument(
+        '--native-charts-and-tables',
+        dest='native_objects',
+        action='store_true',
+        default=False,
+        help=(
+            'Replace explicit data-pptx-replace-with chart/table groups with '
+            'PowerPoint native Chart/Table objects. This data-object route may '
+            'normalize styling or omit fallback-only visuals. Default off: groups '
+            'export as editable SVG-derived DrawingML shapes. The default-flow '
+            'output uses <project>_<ts>_native_charts_tables.pptx.'
+        ),
+    )
+    parser.add_argument(
+        '--native-objects',
+        dest='native_objects',
+        action='store_true',
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument(
         '--pptx-structure',
         choices=[
@@ -407,7 +437,15 @@ Recorded narration:
     parser.add_argument('--narration-padding', type=non_negative_float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
 
-    args = parser.parse_args(argv)
+    raw_argv = list(argv) if argv is not None else sys.argv[1:]
+    legacy_native_objects = '--native-objects' in raw_argv
+    args = parser.parse_args(raw_argv)
+    if legacy_native_objects:
+        print(
+            'Warning: --native-objects is deprecated; use '
+            '--native-charts-and-tables.',
+            file=sys.stderr,
+        )
 
     project_path = Path(args.project_path)
     if not project_path.exists():
@@ -486,14 +524,17 @@ Recorded narration:
     try:
         project_info = get_project_info(str(project_path))
         project_name = project_info.get('name', project_path.name)
-        detected_format = project_info.get('format')
     except Exception:
         project_name = project_path.name
-        detected_format = None
 
     canvas_format = args.format
-    if canvas_format is None and detected_format and detected_format != 'unknown':
-        canvas_format = detected_format
+    expected_viewbox = _declared_canvas_viewbox(project_path)
+    if expected_viewbox is None:
+        print(
+            "Error: spec_lock.md must contain canvas.viewBox for release export",
+            file=sys.stderr,
+        )
+        return 1
 
     # Native DrawingML is the only PPTX product. ``-s`` remains an explicit
     # diagnostic source override; standard export always reads svg_output/.
@@ -547,7 +588,7 @@ Recorded narration:
     if release_blocked:
         print(
             "Error: invalid PPTX graphic status metadata cannot enter an export. "
-            "Correct the reported visual/route/native status attributes first.",
+            "Correct the reported replacement/fallback/import-source attributes first.",
             file=sys.stderr,
         )
         for filename, marker_id, status in release_blocked[:20]:
@@ -563,12 +604,16 @@ Recorded narration:
     if reconstruction_only:
         print(
             "Warning: reconstruction-only PPTX chart placeholder(s) have no baked "
-            "preview. Default export keeps the placeholder; --native-objects "
-            "reconstructs entries that carry a valid active native marker.",
+            "preview. Default export keeps the placeholder; "
+            "--native-charts-and-tables "
+            "reconstructs entries that carry a valid active replacement marker.",
             file=sys.stderr,
         )
         for filename, marker_id, active_native in reconstruction_only[:20]:
-            route = "active native reconstruction" if active_native else "placeholder fallback"
+            route = (
+                "active native Chart/Table replacement"
+                if active_native else "placeholder fallback"
+            )
             print(f"  {filename}: {marker_id} ({route})", file=sys.stderr)
         if len(reconstruction_only) > 20:
             print(
@@ -578,17 +623,18 @@ Recorded narration:
 
     if args.native_objects:
         print(
-            "Warning: --native-objects is an editable-first replacement route. "
-            "Native charts/tables may normalize styling or omit SVG details that "
-            "are not represented by marker metadata; use the default export when "
-            "exact fallback artwork is required.",
+            "Warning: --native-charts-and-tables replaces shape-based SVG fallbacks "
+            "with PowerPoint Chart/Table objects. The native objects may normalize "
+            "styling or omit SVG details that are not represented by marker metadata; "
+            "use the default shape-based export when exact fallback artwork is required.",
             file=sys.stderr,
         )
         fallbacks = _native_object_fallbacks(native_files)
         if fallbacks:
             print(
-                "Warning: --native-objects found fallback-only PPTX objects; "
-                "they will export through their SVG preview instead of editable objects.",
+                "Warning: --native-charts-and-tables found fallback-only PPTX objects; "
+                "they will export through their SVG-derived DrawingML shapes instead "
+                "of native Chart/Table objects.",
                 file=sys.stderr,
             )
             for filename, marker_id, status in fallbacks[:20]:
@@ -604,13 +650,13 @@ Recorded narration:
     else:
         exports_dir = project_path / "exports"
         exports_dir.mkdir(parents=True, exist_ok=True)
-        # --native-objects yields a materially different file (real editable
-        # PowerPoint chart/table objects instead of flattened shapes), so mark
-        # it in the default-flow name to tell it apart from a plain shape export.
+        # --native-charts-and-tables yields a materially different file (PowerPoint
+        # Chart/Table objects instead of SVG-derived DrawingML shapes), so mark it
+        # in the default-flow name to distinguish the two editable object models.
         # Narration flags likewise mark _narrated (audio embedded per slide +
         # auto-advance timings). Flag-driven (not content-sniffed) so the name
         # is predictable; an explicit -o keeps the caller's exact name untouched.
-        native_tag = "_native_charts" if args.native_objects else ""
+        native_tag = "_native_charts_tables" if args.native_objects else ""
         narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
         native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}.pptx"
         # Preserve the authored svg_output/ beside every default-flow export.
@@ -619,28 +665,6 @@ Recorded narration:
     native_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
-
-    # Honor the actual SVG pixels over a stale project-recorded format. The
-    # canvas_format read from project init can disagree with what the Executor
-    # actually drew — e.g. a mirror template imported at 2560×1440 while the
-    # project was initialized as ppt169 (1280×720). When the first SVG's real
-    # viewBox doesn't match the recorded format's dimensions, drop the format
-    # so the builder sizes the slide by pixels (custom_pixels path). Standard
-    # decks match exactly, so this only changes behavior on the conflict case.
-    # An explicit --format always wins and is never second-guessed.
-    if args.format is None and canvas_format:
-        fmt_info = CANVAS_FORMATS.get(canvas_format)
-        actual_dims = get_viewbox_dimensions(ref_files[0])
-        if fmt_info and actual_dims:
-            fmt_dims = (fmt_info.get('width'), fmt_info.get('height'))
-            if fmt_dims != actual_dims:
-                if verbose:
-                    print(
-                        f"  Recorded format '{canvas_format}' "
-                        f"({fmt_dims[0]}×{fmt_dims[1]}) differs from SVG viewBox "
-                        f"({actual_dims[0]}×{actual_dims[1]}); exporting by SVG pixels"
-                    )
-                canvas_format = None
 
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
@@ -885,6 +909,7 @@ Recorded narration:
 
     shared_kwargs = dict(
         canvas_format=canvas_format,
+        expected_viewbox=expected_viewbox,
         doc_metadata=doc_metadata,
         structure_name=structure_name,
         verbose=verbose,

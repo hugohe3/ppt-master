@@ -40,10 +40,10 @@
             <text x="22" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#4338CA">
                 <tspan>100%</tspan>
             </text>
-            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#312E81" letter-spacing="1.5">
+            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#312E81" letter-spacing="1.5">
                 <tspan>ALLOCATED</tspan>
             </text>
-            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#6366F1">
+            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#6366F1">
                 <tspan>4 tiers · core → edge</tspan>
             </text>
         </g>
@@ -76,7 +76,7 @@
         <circle cx="440" cy="410" r="140" fill="#C7D2FE" stroke="#818CF8" stroke-width="2"/>
         <!-- Layer 1: Core (deepest, focal — only element with shadow) -->
         <circle cx="440" cy="410" r="68" fill="url(#coreGrad)" filter="url(#coreShadow)"/>
-        <text x="440" y="403" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#C7D2FE" text-anchor="middle" letter-spacing="2">
+        <text x="440" y="403" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#C7D2FE" text-anchor="middle" letter-spacing="2">
             <tspan>TIER 01</tspan>
         </text>
         <text x="440" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">
@@ -117,7 +117,7 @@
             <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>01</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#4338CA" letter-spacing="2">
+            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" letter-spacing="2">
                 <tspan>HIGHEST PRIORITY · CORE</tspan>
             </text>
             <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
@@ -126,14 +126,14 @@
             <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
                 <tspan>UX features driving retention &amp; conversion</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>BI-WEEKLY ITERATION</tspan>
             </text>
             <!-- Resource % hero -->
             <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#4338CA" text-anchor="end">
                 <tspan>60%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <!-- Mini bar -->
@@ -149,7 +149,7 @@
             <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>02</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#6366F1" letter-spacing="2">
+            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#6366F1" letter-spacing="2">
                 <tspan>HIGH PRIORITY · CORE SUPPORT</tspan>
             </text>
             <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
@@ -158,13 +158,13 @@
             <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
                 <tspan>Security, performance, infrastructure</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>MONTHLY ITERATION</tspan>
             </text>
             <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#6366F1" text-anchor="end">
                 <tspan>25%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#E0E7FF"/>
@@ -179,7 +179,7 @@
             <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>03</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#6366F1" letter-spacing="2">
+            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#6366F1" letter-spacing="2">
                 <tspan>MEDIUM PRIORITY · GROWTH ENGINE</tspan>
             </text>
             <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
@@ -188,13 +188,13 @@
             <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
                 <tspan>Channel ops, paywall, conversion funnels</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>QUARTERLY PLANNING</tspan>
             </text>
             <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#818CF8" text-anchor="end">
                 <tspan>10%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#E0E7FF"/>
@@ -209,7 +209,7 @@
             <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#A5B4FC" text-anchor="middle">
                 <tspan>04</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#A5B4FC" letter-spacing="2">
+            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#A5B4FC" letter-spacing="2">
                 <tspan>EXPLORATORY · ECOSYSTEM</tspan>
             </text>
             <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#334155">
@@ -218,13 +218,13 @@
             <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#94A3B8">
                 <tspan>ISV integrations, API marketplace</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#CBD5E1" letter-spacing="1">
+            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#CBD5E1" letter-spacing="1">
                 <tspan>SEMI-ANNUAL REVIEW</tspan>
             </text>
             <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#A5B4FC" text-anchor="end">
                 <tspan>5%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#F1F5F9"/>

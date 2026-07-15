@@ -1141,7 +1141,7 @@ def _native_table_payload(
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
 ) -> dict[str, Any]:
-    """Build the SVG data-pptx-native payload for an unmerged table."""
+    """Build the SVG native Table replacement payload for an unmerged table."""
     tbl_pr = tbl.find("a:tblPr", NS)
     payload: dict[str, Any] = {
         "x": _round_payload_number(xfrm.x),

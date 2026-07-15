@@ -63,9 +63,10 @@ New deck creation uses the same portable workspace routing in both output scopes
 ├── templates/
 │   ├── design_spec.md
 │   ├── 01_cover.svg
-│   ├── 02_chapter.svg
-│   ├── 03_content.svg
-│   └── 04_ending.svg
+│   ├── 02_toc.svg              # optional; without it: 02_chapter, 03_content, 04_ending
+│   ├── 03_chapter.svg
+│   ├── 04_content.svg
+│   └── 05_ending.svg
 ├── images/                         # Optional; omit when unused
 ├── icons/                          # Optional; omit when unused
 └── exports/                        # Optional, on-demand review output; Git-ignored

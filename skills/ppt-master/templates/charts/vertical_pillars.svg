@@ -19,7 +19,7 @@
     <text x="80" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">PEST Macro-Environment Analysis</text>
     <text x="80" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">EXTERNAL STRATEGIC FACTORS IMPACTING MARKET ENTRY</text>
     <!-- ==================== PEST Columns ==================== -->
-    <g transform="translate(80, 150)">
+    <g id="pest-pillars" transform="translate(80, 150)">
         <!-- 1. Political (P) -->
         <g transform="translate(0, 0)">
             <!-- Background Card -->

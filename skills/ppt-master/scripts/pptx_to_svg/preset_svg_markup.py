@@ -2,8 +2,8 @@
 """
 PPT Master - Preset Shape SVG Markup
 
-Serialize evaluated DrawingML preset layers into one native carrier and one
-browser-visible SVG preview.
+Serialize evaluated DrawingML preset layers for lossless transport or compact
+project authoring.
 
 Usage:
     Import serialize_preset_layers from pptx_to_svg.preset_svg_markup.
@@ -28,7 +28,7 @@ from .preset_registry_to_svg import SvgPresetPath
 
 @dataclass(frozen=True)
 class PresetSvgMarkup:
-    """Canonical hidden-carrier and visible-preview markup for one preset."""
+    """Lossless hidden-carrier and visible-preview markup for one preset."""
 
     carrier: str
     preview: str
@@ -92,6 +92,38 @@ def serialize_preset_layers(
         preview=preview,
         preview_hash=preview_hash,
     )
+
+
+def serialize_compact_preset_layers(
+    layers: Sequence[SvgPresetPath],
+    style_attrs: Mapping[str, str],
+) -> str:
+    """Serialize visible preset layers without transport-only duplication.
+
+    Base paint lives once on the logical authored group and is inherited by
+    each path.  A path writes only the fill/stroke override required by its
+    DrawingML layer.  The authored-preset validator regenerates this exact
+    markup from the registry, so no serialized fingerprint is needed.
+    """
+    base_fill = style_attrs.get("fill", "none")
+    base_stroke = style_attrs.get("stroke", "none")
+    detail_layers: list[str] = []
+    for layer in layers:
+        attrs: dict[str, str] = {}
+        if layer.fill == "none":
+            if base_fill != "none":
+                attrs["fill"] = "none"
+        elif layer.fill != "norm":
+            derived_fill = {"fill": base_fill}
+            apply_preset_path_fill(derived_fill, layer.fill)
+            if derived_fill.get("fill") != base_fill:
+                attrs["fill"] = derived_fill["fill"]
+        if not layer.stroke and base_stroke != "none":
+            attrs["stroke"] = "none"
+        detail_layers.append(
+            f'<path d="{_xml_escape(layer.d)}"{attrs_to_xml(attrs)}/>'
+        )
+    return "\n".join(detail_layers)
 
 
 def apply_preset_path_fill(attrs: dict[str, str], mode: str) -> None:

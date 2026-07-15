@@ -4,13 +4,13 @@
 >
 > Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. For design narrative (rationale, audience, style), see `design_spec.md`.
 >
-> After SVG generation begins, this is the canonical source for color / font / icon / image values. Modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync.
+> After SVG generation begins, this is the canonical source for color / font / icon / image values. Supported color/font modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync. Canvas changes are intentionally not bulk-rewritten by that tool.
 
 ## canvas
 - viewBox: 0 0 1280 720
 - format: PPT 16:9
 
-> Strategist: fill viewBox and format for the chosen canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story).
+> Strategist: fill viewBox and format for the chosen canvas. New authoring uses the canonical `0 0 W H` spelling with positive integer pixels. Every generated page and internal Layout prototype must match this numeric canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story). Changing the canvas after authoring starts requires re-authoring and re-validating affected SVGs; `update_spec.py` does not propagate canvas changes.
 
 ## mode
 - mode: pyramid
@@ -86,7 +86,7 @@
 - brand_library: simple-icons
 - inventory: target, bolt, shield, users, chart-bar, lightbulb
 
-> `library` MUST be exactly one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` — mixing is forbidden. `brand_library: simple-icons` is optional; include only when the deck uses real company / product brand marks, otherwise omit. `inventory` lists approved icon names (no library prefix); Executor may only use icons from this list.
+> `library` MUST be exactly one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` — mixing is forbidden. `brand_library: simple-icons` is optional; include only when the deck uses real company / product brand marks, otherwise omit. `inventory` lists approved icon names (no library prefix); Executor may only use icons from this list. Names are case-sensitive filenames: bundled-library inventory values are the exact verified lowercase basenames (`award`, never `Award`); custom icon names preserve the custom file's exact case.
 >
 > **`stroke_width` (stroke-style libraries only)** — required when `library` is stroke-based (currently `tabler-outline`); allowed values `1.5` / `2` / `3`. Executor MUST apply this value to every `<use data-icon="...">` placeholder via `stroke-width`, deck-wide. Omit for non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone`) — ignored there. For heavier weight switch library; do not exceed `3` (at 24×24 strokes merge and the icon stops reading as line art).
 >

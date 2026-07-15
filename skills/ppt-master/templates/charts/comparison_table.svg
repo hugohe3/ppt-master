@@ -30,22 +30,22 @@
     <text x="460" y="132" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="18" font-weight="700" fill="#FFFFFF">Plan A</text>
     <text x="460" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#FFFFFF" fill-opacity="0.8">Self-built On-premise</text>
+          font-size="12" fill="#FFFFFF" fill-opacity="0.8">Self-built On-premise</text>
     <!-- Plan B Column Header (Recommended) -->
     <rect x="620" y="100" width="280" height="62" rx="8" fill="#10B981" filter="url(#cardShadow)"/>
     <rect x="750" y="92" width="56" height="20" rx="10" fill="#F59E0B"/>
     <text x="778" y="105" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="10" font-weight="700" fill="#FFFFFF">Recommended</text>
+          font-size="12" font-weight="700" fill="#FFFFFF">Recommended</text>
     <text x="760" y="131" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="18" font-weight="700" fill="#FFFFFF">Plan B</text>
     <text x="760" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#FFFFFF" fill-opacity="0.8">Hybrid Cloud Arch</text>
+          font-size="12" fill="#FFFFFF" fill-opacity="0.8">Hybrid Cloud Arch</text>
     <!-- Plan C Column Header -->
     <rect x="920" y="105" width="280" height="55" rx="8" fill="#3B82F6" filter="url(#cardShadow)"/>
     <text x="1060" y="132" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="18" font-weight="700" fill="#FFFFFF">Plan C</text>
     <text x="1060" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#FFFFFF" fill-opacity="0.8">Pure SaaS Subscription</text>
+          font-size="12" fill="#FFFFFF" fill-opacity="0.8">Pure SaaS Subscription</text>
         </g>
     <!-- Data Rows -->
     <g id="row-1">
@@ -57,17 +57,17 @@
     <text x="460" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="22" font-weight="700" fill="#0F172A">$500K</text>
     <text x="460" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#F43F5E">High</text>
+          font-size="12" fill="#F43F5E">High</text>
     <rect x="620" y="175" width="280" height="75" rx="6" fill="#10B981" fill-opacity="0.05" stroke="#10B981" stroke-width="1.5"/>
     <text x="760" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="22" font-weight="700" fill="#0F172A">$180K</text>
     <text x="760" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#10B981">Optimal</text>
+          font-size="12" fill="#10B981">Optimal</text>
     <rect x="920" y="175" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     <text x="1060" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="22" font-weight="700" fill="#0F172A">$80K/yr</text>
     <text x="1060" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" fill="#F59E0B">Medium</text>
+          font-size="12" fill="#F59E0B">Medium</text>
         </g>
     <g id="row-2">
     <!-- Row 2: Data Security -->

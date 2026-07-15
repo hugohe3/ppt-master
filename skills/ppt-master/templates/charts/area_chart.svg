@@ -48,8 +48,8 @@
               font-size="15" fill="#475569">Mobile Visits</text>
     </g>
     <!-- Chart Area -->
-    <g id="area_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="area_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "area_chart",
               "x": 105,

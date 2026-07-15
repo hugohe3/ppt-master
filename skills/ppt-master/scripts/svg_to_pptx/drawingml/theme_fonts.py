@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from .utils import FONT_PX_TO_HUNDREDTHS_PT, font_px_to_hpt, parse_font_family
+from .utils import font_px_to_hpt, parse_font_family
 
 
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
 _CJK_THEME_SCRIPTS = frozenset({"Hans", "Hant", "Jpan", "Hang"})
-_TEXT_FONT_SIZE_MIN = 100
-_TEXT_FONT_SIZE_MAX = 400_000
 
 
 class ThemeFontError(RuntimeError):
@@ -121,17 +118,13 @@ def _font_size_hpt(raw: str, field: str) -> int:
         raise ThemeFontError(
             f"spec_lock.md typography {field} must be a numeric px value: {raw!r}"
         ) from exc
-    scaled = px * FONT_PX_TO_HUNDREDTHS_PT
-    if not math.isfinite(scaled):
-        raise ThemeFontError(
-            f"spec_lock.md typography {field} must be finite: {raw!r}"
-        )
-    size = font_px_to_hpt(px)
-    if not _TEXT_FONT_SIZE_MIN <= size <= _TEXT_FONT_SIZE_MAX:
+    try:
+        size = font_px_to_hpt(px)
+    except ValueError as exc:
         raise ThemeFontError(
             f"spec_lock.md typography {field} is outside the PowerPoint "
             f"font-size range: {raw!r}"
-        )
+        ) from exc
     return size
 
 

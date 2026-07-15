@@ -26,8 +26,8 @@
           font-size="34" font-weight="800" fill="#0F172A"><tspan>Order Value Distribution</tspan></text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>SAMPLE ORDERS · USD THOUSANDS</tspan></text>
-    <g id="histogram_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="histogram_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "histogram_chart",
               "x": 80,

@@ -119,6 +119,53 @@ class SlideRef:
     master: PartRef | None
 
 
+def parse_ooxml_boolean(
+    raw: str | None,
+    *,
+    default: bool,
+    context: str,
+) -> bool:
+    """Parse one XML Schema boolean without silently accepting bad OOXML."""
+    if raw is None:
+        return default
+    token = raw.strip()
+    if token in {"1", "true"}:
+        return True
+    if token in {"0", "false"}:
+        return False
+    raise RuntimeError(f"{context}: invalid boolean value {raw!r}")
+
+
+def part_show_master_sp(part: PartRef) -> bool:
+    """Return one slide/layout part's raw ``showMasterSp`` semantic value."""
+    return parse_ooxml_boolean(
+        part.xml.attrib.get("showMasterSp"),
+        default=True,
+        context=f"{part.path} showMasterSp",
+    )
+
+
+def inherited_shape_visibility(slide: SlideRef) -> tuple[bool, bool]:
+    """Return effective ``(layout_shapes, master_shapes)`` visibility.
+
+    A slide-level false value suppresses both inherited shape trees. A
+    layout-level false value suppresses only its parent Master's shape tree.
+    Background inheritance is separate and intentionally not represented by
+    these booleans.
+    """
+    show_layout_shapes = part_show_master_sp(slide.part)
+    layout_shows_master_shapes = (
+        part_show_master_sp(slide.layout)
+        if slide.layout is not None else True
+    )
+    show_master_shapes = (
+        show_layout_shapes
+        and slide.master is not None
+        and layout_shows_master_shapes
+    )
+    return show_layout_shapes, show_master_shapes
+
+
 # ---------------------------------------------------------------------------
 # OoxmlPackage
 # ---------------------------------------------------------------------------

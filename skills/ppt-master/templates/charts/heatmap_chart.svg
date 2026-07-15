@@ -173,7 +173,7 @@
         <text x="20" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" fill="#475569">• Lowest traffic in early hours</text>
         <text x="20" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#64748B">Action: Scale servers on weekends</text>
+              font-size="12" font-weight="600" fill="#64748B">Action: Scale servers on weekends</text>
     </g>
     <!-- Data Source -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 

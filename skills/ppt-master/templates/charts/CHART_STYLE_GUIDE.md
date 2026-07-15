@@ -77,16 +77,20 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 2.2 字号层级
 
-| 层级 | 字号 | font-weight | 用途 |
-|------|------|-------------|------|
-| H1 | `34px` | `bold` (700) | 图表主标题 |
-| H2 | `22px` | `600` | 区域标题（如"详细数据"） |
-| Body L | `18-20px` | `600` | 关键数值、百分比 |
-| Body M | `15-16px` | `600` | 数据标签、分类名 |
-| Body S | `14px` | 正常 | 副标题、图例、来源 |
-| Caption | `12-13px` | 正常 | 坐标轴刻度、注释 |
+| 层级 | 字号（SVG px 语义） | font-weight | 用途 |
+|------|---------------------|-------------|------|
+| H1 | `30–36` | `700–800` | 图表主标题，按信息密度选择 |
+| H2 | `20–24` | `600–700` | 区域标题（如"详细数据"） |
+| Body L | `18–20` | `600–700` | 关键数值、百分比 |
+| Body M | `15–16` | `600` | 数据标签、分类名 |
+| Body S | `13–14` | 正常或 `600` | 副标题、图例、来源 |
+| Caption | `12–13` | 正常 | 坐标轴刻度、注释 |
 
-> **最小字号下限：12px**。所有文本不得小于 12px。
+表中数值采用 SVG px 语义，但规范创作属性必须使用无单位写法：写
+`font-size="34"`，不得写 `font-size="34px"`。显式 `px` 仅是项目转换器的
+兼容输入，会触发 Checker 归一化建议，不得反向扩散到模板创作。
+
+> **最小字号下限：12**。所有文本不得小于 `font-size="12"`。
 
 ### 2.3 同一图表标签的内联格式
 
@@ -239,7 +243,10 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 页头 | 标题 + 副标题 + 装饰 |
 | 装饰集群 | 相关装饰形状（环、球、点） |
 
-**命名约定**：使用描述性 `id`（如 `card-1`、`step-discover`、`header`、`footer`）。
+**命名约定**：每个顶层语义组必须使用页面内唯一、描述性的 `id`（如
+`card-1`、`step-discover`、`header`、`footer`）。仅用于局部绘制、样式继承
+或几何组织的内部 `<g>` 可以保持匿名；不要把 frame、icon、badge 等实现
+碎片暴露为独立的顶层动画锚点。
 
 ### 5.2 viewBox
 
@@ -268,6 +275,28 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同统一见
 [`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
 必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
+
+### 6.1 Shape-first 对象模型
+
+`templates/charts/` 的图示默认由独立、可编辑的 PowerPoint Shape 组成，
+不依赖节点吸附、自动布线或 Connector attachment：
+
+| 图示对象 | 模板表达 | 最终 PPTX / 页面创作规则 |
+|---|---|---|
+| 基础节点与容器 | `<rect>`、`<circle>`、`<ellipse>` | 导出为原生可编辑 Shape |
+| 细关系线或方向箭头 | `<line>`；折线路径优先拆成少量线段，仅末段带已登记 marker | 导出为静态可编辑线形状，不创建 `p:cxnSp` |
+| 实心块箭头、chevron、标准流程节点 | 当纯色 preset 精确匹配时，保存 `preset_shape_svg.py` 生成的完整 compact 原子 `<g>` | group 只写一次 metadata / 基础 paint，直接可见 path 是 registry 层且只带必要的分层 paint 覆盖；改动 preset、frame、adjustment 或 paint 时必须整体重新生成 |
+| 自定义轮廓、品牌图形、数据几何 | `<path>`、`<polygon>` | 导出为可编辑 `p:sp/a:custGeom`，无需伪装成 preset |
+| 数据图表 | SVG Shape fallback；符合合同的模板可带 chart replacement marker | 默认仍为 Shape 图表；仅显式 opt-in 时替换为 native Chart |
+
+**硬规则**：图表模板不得包含 `data-pptx-object="connector"` 或 Connector
+端点 attachment metadata。authored preset 只能粘贴 helper 输出的完整 compact
+原子 `<g>`：不得手写或局部修改 metadata / path，也不得加入 hidden carrier、
+preview wrapper 或 fingerprint。修改时整体重生成。PPTX 导入与 `mirror` 的
+expanded 无损表达属于独立合同，不得复制为新模板创作格式。概念流程图、
+架构图、关系图也不得添加
+`data-pptx-replace-with="chart"`。来源 PPTX 已有 Connector 的导入/回导保真
+属于独立合同，不通过模板示例扩张到新页面创作。
 
 ---
 
@@ -357,12 +386,16 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 排版
 - [ ] 无 `font-size < 12` 的文本
+- [ ] `font-size` 使用有限无单位数值；不把 `px` / `pt` 等兼容输入写进模板
 - [ ] 需要保持为单一 PPT 文本框的多格式标签使用 inline `<tspan>`；只有这类 inline run 不携带 `x` / `y` / `dy`
-- [ ] 标题 34px、副标题 18px、来源 14px
+- [ ] 标题、副标题、正文、标签与来源按 §2.2 的角色范围形成稳定层级
 
 ### 结构
-- [ ] 主要元素有语义化 `<g id="...">`
+- [ ] 每个顶层语义组都有页面内唯一的描述性 `<g id="...">`；内部实现组可匿名
 - [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
+- [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
+- [ ] authored preset 是 helper 输出的完整 compact 原子 `<g>`；无 carrier / preview wrapper / fingerprint，且 metadata / path 未手改
+- [ ] 只有受支持的数据图表/文本表格使用 replacement marker；概念图示不冒充 native Chart
 
 ### 阴影
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
@@ -383,11 +416,18 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 验证命令
 ```bash
-# 一键校验
+# 全 catalog：索引、Checker、默认 Shape 路线、原生 Chart/Table 路线
+python3 "skills/ppt-master/scripts/test_svg_quality_checker.py" -k chart_catalog
+
+# 单文件诊断
 f="your_chart.svg"
-xmllint --noout "skills/ppt-master/templates/charts/$f" && echo "XML OK" || echo "XML FAIL"
-echo "Old colors:" && grep -c '#2C3E50\|#7F8C8D\|#95A5A6\|#5D6D7E\|#000000' "skills/ppt-master/templates/charts/$f"
-echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/charts/$f"
+uvx ppt-master svg-quality-check "skills/ppt-master/templates/charts/$f"
+
+# 图表库专用视觉审计（有输出即需人工处理）
+rg -n '#2C3E50|#7F8C8D|#95A5A6|#5D6D7E|#000000' \
+  "skills/ppt-master/templates/charts/$f"
+rg --pcre2 -n 'font-size="(?:[0-9](?:\.[0-9]+)?|1[01](?:\.[0-9]+)?)"' \
+  "skills/ppt-master/templates/charts/$f"
 ```
 
 ---
@@ -473,7 +513,7 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 
 **判定**："4 个并列方面" → 2×2；"3 个并列方面" → 1×3；"6 个能力点" → 2×3；"4 个关键指标" → 1×4。`page_rhythm` 标 `breathing` 的页面 **不要** 用卡片网格（见 executor-base.md §2.1）。
 
-### 11.5 倾斜虚线连接箭头 (Diagonal Dashed Connector)
+### 11.5 倾斜虚线关系箭头 (Diagonal Dashed Relationship Arrow)
 
 **用途**：表达"跨象限/跨层级"的关系——优先级迁移、影响传导、虚线汇报、对角趋势。水平/垂直箭头表达的是"流程进度"，倾斜虚线箭头表达的是"关系或方向引导"，两者语义不一样。
 

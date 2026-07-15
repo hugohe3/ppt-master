@@ -50,9 +50,9 @@ page_count: 5
 | --- | --- | --- | --- | --- | --- |
 | (01_cover.svg) | China Telecom Brand | cover | Cover | 左侧标题簇、右侧品牌卡片、底部飘带 | 标题、副标题、单位、日期 |
 | (02_toc.svg) | China Telecom Content | agenda | Agenda | 左侧品牌说明卡、右侧四行编号目录 | 页面标题、四个目录项、页码 |
-| (02_chapter.svg) | China Telecom Brand | section | Section Header | 左侧章节信息、右侧品牌卡片、底部飘带 | 章节号、章节标题、章节副标题 |
-| (03_content.svg) | China Telecom Content | content | Title and Content | 红灰页眉与大面积浅灰开放内容区 | 栏目标、页面标题、内容对象、来源、页码 |
-| (04_ending.svg) | China Telecom Brand | closing | Closing | 左侧结束语、右侧品牌卡片、底部飘带 | 结束标题、副标题、联系信息、页码 |
+| (03_chapter.svg) | China Telecom Brand | section | Section Header | 左侧章节信息、右侧品牌卡片、底部飘带 | 章节号、章节标题、章节副标题 |
+| (04_content.svg) | China Telecom Content | content | Title and Content | 红灰页眉与大面积浅灰开放内容区 | 栏目标、页面标题、内容对象、来源、页码 |
+| (05_ending.svg) | China Telecom Brand | closing | Closing | 左侧结束语、右侧品牌卡片、底部飘带 | 结束标题、副标题、联系信息、页码 |
 
 ## VI. Assets
 

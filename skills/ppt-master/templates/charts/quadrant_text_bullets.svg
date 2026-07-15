@@ -42,20 +42,20 @@
     <g id="axisFrame">
         <!-- Top: HELPFUL ↔ HARMFUL -->
         <rect x="80" y="115" width="540" height="22" rx="11" fill="#ECFDF5"/>
-        <text x="350" y="131" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#059669" text-anchor="middle" letter-spacing="2">
+        <text x="350" y="131" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#059669" text-anchor="middle" letter-spacing="2">
             <tspan>HELPFUL TO OBJECTIVE</tspan>
         </text>
         <rect x="660" y="115" width="540" height="22" rx="11" fill="#FFF1F2"/>
-        <text x="930" y="131" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#E11D48" text-anchor="middle" letter-spacing="2">
+        <text x="930" y="131" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle" letter-spacing="2">
             <tspan>HARMFUL TO OBJECTIVE</tspan>
         </text>
         <!-- Left: INTERNAL ↔ EXTERNAL -->
         <rect x="38" y="148" width="22" height="252" rx="11" fill="#F8FAFC"/>
-        <text x="49" y="274" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 274)">
+        <text x="49" y="274" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 274)">
             <tspan>INTERNAL ORIGIN</tspan>
         </text>
         <rect x="38" y="412" width="22" height="252" rx="11" fill="#F8FAFC"/>
-        <text x="49" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 538)">
+        <text x="49" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 538)">
             <tspan>EXTERNAL ORIGIN</tspan>
         </text>
     </g>
@@ -75,7 +75,7 @@
         </text>
         <!-- Action pill -->
         <rect x="430" y="16" width="96" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
-        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
             <tspan>LEVERAGE</tspan>
         </text>
         <!-- Items -->
@@ -120,7 +120,7 @@
             <tspan>Weaknesses</tspan>
         </text>
         <rect x="430" y="16" width="96" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
-        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
             <tspan>ADDRESS</tspan>
         </text>
         <g id="w-items">
@@ -164,7 +164,7 @@
             <tspan>Opportunities</tspan>
         </text>
         <rect x="438" y="16" width="88" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
-        <text x="482" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        <text x="482" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
             <tspan>PURSUE</tspan>
         </text>
         <g id="o-items">
@@ -208,7 +208,7 @@
             <tspan>Threats</tspan>
         </text>
         <rect x="430" y="16" width="96" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
-        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        <text x="478" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
             <tspan>MITIGATE</tspan>
         </text>
         <g id="t-items">

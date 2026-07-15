@@ -6,23 +6,6 @@
     Supports: 3 columns (2-4 recommended)
     -->
 
-    <defs>
-                <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="highlightShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
-            <feOffset dx="0" dy="8" result="offsetblur"/>
-            <feFlood flood-color="#7C3AED" flood-opacity="0.15" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-    </defs>
-
     <rect width="1280" height="720" fill="#F1F5F9"/>
 
     <!-- Title -->
@@ -33,7 +16,7 @@
 
     <!-- Basic Plan (Left) -->
     <g id="plan-basic">
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="80" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
         <!-- Top-rounded Header (圆顶角分区头) -->
         <path d="M 96 110 h 308 a 16 16 0 0 1 16 16 v 104 h -340 v -104 a 16 16 0 0 1 16 -16 Z" fill="#3B82F6" fill-opacity="0.06"/>
@@ -65,7 +48,7 @@
 
     <!-- Pro Plan (Middle, Recommended Highlight) -->
     <g id="plan-pro">
-    <g filter="url(#highlightShadow)">
+    <g>
         <rect x="470" y="95" width="340" height="590" rx="16" fill="#FFFFFF"/>
         <!-- Top-rounded Header (圆顶角分区头) -->
         <path d="M 486 95 h 308 a 16 16 0 0 1 16 16 v 114 h -340 v -114 a 16 16 0 0 1 16 -16 Z" fill="#8B5CF6"/>
@@ -99,7 +82,7 @@
 
     <!-- Enterprise Plan (Right) -->
     <g id="plan-enterprise">
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="860" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
         <!-- Top-rounded Header (圆顶角分区头) -->
         <path d="M 876 110 h 308 a 16 16 0 0 1 16 16 v 104 h -340 v -104 a 16 16 0 0 1 16 -16 Z" fill="#0F172A" fill-opacity="0.04"/>

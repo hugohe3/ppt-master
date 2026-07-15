@@ -8,6 +8,7 @@ import hashlib
 import io
 import math
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote_to_bytes
@@ -22,23 +23,43 @@ from pptx_shapes import (
     load_shape_type_values,
     validate_ooxml_xfrm,
 )
+from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
 from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
 from resource_paths import resolve_external_image_reference
 
 from .context import ConvertContext, ShapeResult
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
+from .text_properties import (
+    drawingml_letter_spacing,
+    normalize_project_text_segments,
+    parse_project_font_style,
+    parse_project_font_weight,
+    parse_project_letter_spacing,
+    parse_project_text_anchor,
+    parse_project_text_decoration,
+    resolve_project_xml_space,
+)
 from .utils import (
-    SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
+    SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT,
+    PROJECT_IMAGE_ASPECT_RATIO_ANCHORS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     combine_opacity, parse_hex_color, parse_svg_color,
     resolve_url_id, get_effective_filter_id,
-    parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
-    detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
-    matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
+    parse_inline_style, parse_font_family, is_cjk_char,
+    detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
+    resolve_text_run_fonts, split_project_text_clusters,
+    is_thick_circle_shorthand, parse_project_geometry_length,
+    is_canonical_project_geometry_length,
+    parse_project_image_aspect_ratio,
+    parse_project_opacity,
+    parse_project_stroke_dasharray,
+    project_definition_index,
+    matrix_multiply, parse_transform_matrix, parse_transform_operations,
+    transform_point, _xml_escape,
 )
 from .styles import (
     build_solid_fill, build_gradient_fill,
@@ -46,7 +67,7 @@ from .styles import (
     get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .paths import (
-    PathCommand, parse_svg_path, svg_path_to_absolute,
+    PathCommand, parse_svg_path, parse_svg_points, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )
 
@@ -66,31 +87,351 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     raise FileNotFoundError(f'External image not found: {href}')
 
 
+_PROJECT_IMAGE_FORMATS = {
+    'bmp': 'bmp',
+    'emf': 'emf',
+    'gif': 'gif',
+    'jpeg': 'jpg',
+    'jpg': 'jpg',
+    'png': 'png',
+    'svg': 'svg',
+    'svg+xml': 'svg',
+    'tif': 'tif',
+    'tiff': 'tiff',
+    'webp': 'webp',
+    'wmf': 'wmf',
+    'x-emf': 'emf',
+    'x-wmf': 'wmf',
+}
+_PIL_IMAGE_FORMATS = {
+    'bmp': 'BMP',
+    'gif': 'GIF',
+    'jpg': 'JPEG',
+    'png': 'PNG',
+    'tif': 'TIFF',
+    'tiff': 'TIFF',
+    'webp': 'WEBP',
+}
+
+
+def _normalize_project_image_format(raw: str) -> str | None:
+    return _PROJECT_IMAGE_FORMATS.get(raw.strip().lower().lstrip('.'))
+
+
+def _little_uint(data: bytes, offset: int, size: int) -> int:
+    return int.from_bytes(data[offset:offset + size], 'little', signed=False)
+
+
+def _valid_emf_payload(data: bytes) -> bool:
+    """Validate the EMF header and complete bounded record stream."""
+    if len(data) < 88:
+        return False
+    header_size = _little_uint(data, 4, 4)
+    total_size = _little_uint(data, 48, 4)
+    record_count = _little_uint(data, 52, 4)
+    header_palette_entries = _little_uint(data, 68, 4)
+    if (
+        _little_uint(data, 0, 4) != 1
+        or data[40:44] != b' EMF'
+        or header_size < 88
+        or header_size > total_size
+        or total_size != len(data)
+        or record_count < 1
+    ):
+        return False
+
+    offset = 0
+    count = 0
+    last_type = 0
+    last_size = 0
+    while offset < total_size:
+        if offset + 8 > total_size:
+            return False
+        record_type = _little_uint(data, offset, 4)
+        record_size = _little_uint(data, offset + 4, 4)
+        if record_size < 8 or record_size % 4 or offset + record_size > total_size:
+            return False
+        record_end = offset + record_size
+        if count == 0 and (record_type != 1 or record_size != header_size):
+            return False
+        if count > 0 and record_type == 1:
+            return False
+        if record_type == 14:
+            if (
+                record_size < 20
+                or record_end != total_size
+                or _little_uint(data, record_end - 4, 4) != record_size
+            ):
+                return False
+            palette_entries = _little_uint(data, offset + 8, 4)
+            palette_offset = _little_uint(data, offset + 12, 4)
+            if (
+                palette_entries != header_palette_entries
+                or palette_entries and (
+                    palette_offset < 16
+                    or palette_offset + palette_entries * 4 > record_size - 4
+                )
+            ):
+                return False
+        offset = record_end
+        count += 1
+        last_type = record_type
+        last_size = record_size
+    return (
+        offset == total_size
+        # MS-EMF counts all records. LibreOffice-generated EMF files in the
+        # wild count records after the header, so retain that interoperable
+        # spelling while keeping the complete stream bounded.
+        and count in {record_count, record_count + 1}
+        and last_type == 14
+        and last_size >= 20
+    )
+
+
+def _valid_wmf_payload(data: bytes) -> bool:
+    """Validate a standard or placeable WMF header and record stream."""
+    meta_offset = 0
+    if data.startswith(b'\xd7\xcd\xc6\x9a'):
+        if len(data) < 40:
+            return False
+        checksum = 0
+        for offset in range(0, 20, 2):
+            checksum ^= _little_uint(data, offset, 2)
+        if checksum != _little_uint(data, 20, 2):
+            return False
+        meta_offset = 22
+    if len(data) < meta_offset + 24:
+        return False
+    meta_type = _little_uint(data, meta_offset, 2)
+    header_words = _little_uint(data, meta_offset + 2, 2)
+    version = _little_uint(data, meta_offset + 4, 2)
+    total_words = _little_uint(data, meta_offset + 6, 4)
+    max_record_words = _little_uint(data, meta_offset + 12, 4)
+    if (
+        meta_type not in {1, 2}
+        or header_words != 9
+        or version not in {0x0100, 0x0300}
+        or total_words < 12
+        or max_record_words < 3
+    ):
+        return False
+    total_end = meta_offset + total_words * 2
+    if total_end != len(data):
+        return False
+
+    offset = meta_offset + header_words * 2
+    last_function = -1
+    last_record_words = 0
+    observed_max_record_words = 0
+    while offset < total_end:
+        if offset + 6 > total_end:
+            return False
+        record_words = _little_uint(data, offset, 4)
+        function = _little_uint(data, offset + 4, 2)
+        if (
+            record_words < 3
+            or record_words > max_record_words
+            or offset + record_words * 2 > total_end
+        ):
+            return False
+        record_end = offset + record_words * 2
+        if function == 0 and (record_words != 3 or record_end != total_end):
+            return False
+        offset = record_end
+        last_function = function
+        last_record_words = record_words
+        observed_max_record_words = max(
+            observed_max_record_words,
+            record_words,
+        )
+    return (
+        offset == total_end
+        and last_function == 0
+        and last_record_words == 3
+        and observed_max_record_words == max_record_words
+    )
+
+
+def _valid_project_image_payload(img_format: str, img_data: bytes) -> bool:
+    """Return whether bytes are a supported image of the declared format."""
+    if not img_data:
+        return False
+    if img_format == 'svg':
+        try:
+            root = ET.fromstring(img_data)
+        except ET.ParseError:
+            return False
+        return root.tag == f'{{{SVG_NS}}}svg'
+    if img_format == 'emf':
+        return _valid_emf_payload(img_data)
+    if img_format == 'wmf':
+        return _valid_wmf_payload(img_data)
+
+    expected = _PIL_IMAGE_FORMATS.get(img_format)
+    if expected is None:
+        return False
+    try:
+        from PIL import Image, UnidentifiedImageError  # type: ignore
+    except ImportError:
+        return False
+    try:
+        with Image.open(io.BytesIO(img_data)) as image:
+            actual = (image.format or '').upper()
+            image.verify()
+    except (UnidentifiedImageError, OSError, ValueError, SyntaxError):
+        return False
+    return actual == expected
+
+
 def _decode_data_image_uri(href: str) -> tuple[str, bytes] | None:
-    """Decode SVG image data URIs, including URL-encoded non-base64 payloads."""
+    """Decode and validate one closed-project image data URI."""
     if not href.startswith('data:') or ',' not in href:
         return None
 
     header, payload = href.split(',', 1)
-    match = re.match(r'data:image/([^;,]+)', header, flags=re.IGNORECASE)
+    match = re.fullmatch(
+        r'data:image/([A-Za-z0-9.+-]+)(?:;[^;,]*)*?(?:;base64)?',
+        header,
+        flags=re.IGNORECASE,
+    )
     if not match:
         return None
 
-    img_format = match.group(1).lower()
-    if img_format == 'svg+xml':
-        img_format = 'svg'
-    elif img_format == 'jpeg':
-        img_format = 'jpg'
+    img_format = _normalize_project_image_format(match.group(1))
+    if img_format is None:
+        return None
 
     is_base64 = any(
         part.strip().lower() == 'base64'
         for part in header.split(';')[1:]
     )
-    if is_base64:
-        img_data = base64.b64decode(payload)
-    else:
-        img_data = unquote_to_bytes(payload)
+    try:
+        if is_base64:
+            img_data = base64.b64decode(payload, validate=True)
+        else:
+            img_data = unquote_to_bytes(payload)
+    except (ValueError, binascii.Error):
+        return None
+    if not _valid_project_image_payload(img_format, img_data):
+        return None
     return img_format, img_data
+
+
+@dataclass(frozen=True)
+class ProjectImageSource:
+    """Validated bytes and package extension for one SVG image reference."""
+
+    img_format: str
+    img_data: bytes
+
+
+def _project_image_href(elem: ET.Element) -> str:
+    href_keys = tuple(
+        key for key in ('href', f'{{{XLINK_NS}}}href')
+        if key in elem.attrib
+    )
+    if len(href_keys) != 1:
+        raise ValueError('requires exactly one href or xlink:href')
+    href = elem.get(href_keys[0])
+    if href is None or not href.strip():
+        raise ValueError('href cannot be empty')
+    return href
+
+
+def load_project_image_source(
+    elem: ET.Element,
+    svg_dir: Path | None,
+) -> ProjectImageSource:
+    """Load one exact SVG image source or raise a contract error."""
+    if elem.tag != f'{{{SVG_NS}}}image':
+        raise ValueError('expected an SVG-namespace <image> element')
+    href = _project_image_href(elem)
+    if href.startswith('data:'):
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
+            raise ValueError(
+                'data URI must contain a supported, non-empty image with '
+                'valid encoding and bytes'
+            )
+        img_format, img_data = decoded
+        return ProjectImageSource(img_format, img_data)
+
+    if svg_dir is None:
+        raise ValueError('external image requires an SVG directory context')
+    try:
+        img_path = _resolve_external_image(svg_dir, href)
+    except FileNotFoundError as exc:
+        raise ValueError(str(exc)) from exc
+    img_format = _normalize_project_image_format(img_path.suffix)
+    if img_format is None:
+        raise ValueError(
+            f'external image has unsupported file extension {img_path.suffix!r}'
+        )
+    try:
+        img_data = img_path.read_bytes()
+    except OSError as exc:
+        raise ValueError(f'cannot read external image {href!r}: {exc}') from exc
+    if not _valid_project_image_payload(img_format, img_data):
+        raise ValueError(
+            f'external image {href!r} is empty, corrupt, or does not match '
+            f'its {img_path.suffix} extension'
+        )
+    return ProjectImageSource(img_format, img_data)
+
+
+def project_image_errors(
+    root: ET.Element,
+    svg_dir: Path | None,
+    *,
+    allow_template_placeholders: bool = False,
+) -> list[str]:
+    """Return source and frame errors for exact SVG image elements."""
+    errors: list[str] = []
+    for elem in root.iter():
+        if elem.tag.rsplit('}', 1)[-1] != 'image':
+            continue
+        label = _element_contract_label(elem)
+        if elem.tag != f'{{{SVG_NS}}}image':
+            errors.append(
+                f'{label} must use the SVG namespace '
+                f'{SVG_NS!r}'
+            )
+            continue
+        style_values = parse_inline_style(elem.get('style'))
+        for attribute in ('width', 'height'):
+            raw = style_values.get(attribute)
+            if raw is None:
+                raw = elem.get(attribute)
+            if raw is None:
+                errors.append(
+                    f'{label} requires explicit positive {attribute}'
+                )
+                continue
+            try:
+                value = parse_project_geometry_length(raw, attribute)
+            except ValueError:
+                # The shared geometry-length contract owns syntax diagnostics.
+                continue
+            if value <= 0:
+                errors.append(
+                    f'{label} {attribute} must be positive; got {raw!r}'
+                )
+        try:
+            raw_href = _project_image_href(elem)
+        except ValueError as exc:
+            errors.append(f'{label} invalid image source: {exc}')
+            continue
+        if (
+            allow_template_placeholders
+            and '{{' in raw_href
+            and '}}' in raw_href
+        ):
+            continue
+        try:
+            load_project_image_source(elem, svg_dir)
+        except ValueError as exc:
+            errors.append(f'{label} invalid image source: {exc}')
+    return sorted(errors)
 
 
 def _wrap_shape(
@@ -1020,27 +1361,11 @@ def _build_arc_ring_path(
 def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
     """Detect if a circle uses stroke-dasharray to simulate an arc segment."""
     dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
-    if not dasharray or dasharray == 'none':
-        return False
     stroke = _get_attr(elem, 'stroke', ctx)
-    if not stroke or stroke == 'none':
-        return False
-
+    fill = _get_attr(elem, 'fill', ctx)
     sw = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 0)
     r = svg_length_size(elem.get('r'), ctx, 0)
-    if sw <= 0 or r <= 0:
-        return False
-
-    # Standard dash presets are not donut segments
-    if dasharray.strip() in DASH_PRESETS:
-        return False
-
-    # Thin strokes relative to radius are decorative dashed rings, not donut arcs.
-    # Real donut arcs need sw/r >= 0.15 (e.g. sw=40 on r=100 → 0.40).
-    if sw / r < 0.15:
-        return False
-
-    return True
+    return is_thick_circle_shorthand(dasharray, stroke, fill, sw, r)
 
 
 def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
@@ -1056,16 +1381,33 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # --- Donut-chart arc segment detection ---
     if preset_geom is None and _is_donut_circle(elem, ctx):
         dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
-        dash_vals = re.split(r'[\s,]+', dasharray.strip())
-        dash_len = float(dash_vals[0]) if dash_vals else 0
-        dash_offset = svg_length_size(elem.get('stroke-dashoffset'), ctx, 0)
+        parsed_dasharray = parse_project_stroke_dasharray(
+            dasharray,
+            allow_zero_gap=True,
+        )
+        if parsed_dasharray is None:
+            raise ValueError('Thick-circle arc requires one dash/gap pair')
+        _preset, dash_values = parsed_dasharray
+        dash_len = dash_values[0]
+        raw_dash_offset = elem.get('stroke-dashoffset')
+        dash_offset = (
+            parse_project_geometry_length(
+                raw_dash_offset,
+                'stroke-dashoffset',
+            )
+            if raw_dash_offset is not None else 0.0
+        )
         stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1)
 
         rotate_deg = 0.0
         transform = elem.get('transform', '')
-        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
-        if r_match:
-            rotate_deg = float(r_match.group(1))
+        if transform:
+            operations = parse_transform_operations(transform)
+            if len(operations) != 1 or operations[0][0] != 'rotate':
+                raise ValueError(
+                    'Thick-circle arc transform must be one rotate operation'
+                )
+            rotate_deg = operations[0][1][0]
 
         geom, min_x, min_y, w_emu, h_emu = _build_arc_ring_path(
             ctx_x(cx_, ctx) / ctx.scale_x,
@@ -1442,22 +1784,10 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 # polygon / polyline
 # ---------------------------------------------------------------------------
 
-def _parse_points(points_str: str) -> list[tuple[float, float]]:
-    """Parse SVG points attribute into a list of (x, y) tuples."""
-    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?', points_str)
-    if len(nums) < 4:
-        return []
-    return [(float(nums[i]), float(nums[i + 1])) for i in range(0, len(nums) - 1, 2)]
-
-
 def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <polygon> to DrawingML custom geometry shape."""
     preset_geom = _build_preset_geom_from_meta(elem)
-    points = _parse_points(elem.get('points', ''))
-    if not points:
-        if preset_geom is not None:
-            raise ValueError('Preset-bearing <polygon> requires valid points')
-        return None
+    points = parse_svg_points(elem.get('points', ''), min_points=3)
 
     commands = [PathCommand('M', [points[0][0], points[0][1]])]
     for px_, py_ in points[1:]:
@@ -1526,11 +1856,7 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <polyline> to DrawingML custom geometry shape."""
     preset_geom = _build_preset_geom_from_meta(elem)
-    points = _parse_points(elem.get('points', ''))
-    if not points:
-        if preset_geom is not None:
-            raise ValueError('Preset-bearing <polyline> requires valid points')
-        return None
+    points = parse_svg_points(elem.get('points', ''), min_points=2)
 
     commands = [PathCommand('M', [points[0][0], points[0][1]])]
     for px_, py_ in points[1:]:
@@ -1648,62 +1974,28 @@ _TEXT_BULLET_RE = re.compile(
 )
 
 
-def _normalize_text(text: str, *, preserve_space: bool = False) -> str:
-    """Collapse runs of whitespace into a single space; do NOT strip the ends.
-
-    Stripping at this layer would silently delete the inline boundary
-    spaces in nested-tspan structures like
-    ``<tspan>foo <tspan>bar</tspan> baz</tspan>``: the parent's text
-    ("foo ") and the child's tail (" baz") would each lose the only space
-    that separated them from the inner run, producing "foobarbaz".
-
-    The paragraph's overall leading / trailing whitespace is removed once
-    in ``_build_text_runs`` after all inline runs have been concatenated.
-    """
-    if not text:
-        return ''
-    if preserve_space:
-        return text
-    return re.sub(r'\s+', ' ', text)
-
-
-def _preserves_space(elem: ET.Element) -> bool:
-    xml_space = elem.get('{http://www.w3.org/XML/1998/namespace}space') or elem.get('xml:space')
-    return xml_space == 'preserve'
-
-
-def _parse_letter_spacing_px(
-    value: str | None,
-    *,
-    font_size: float,
-    scale_x: float = 1.0,
-) -> float:
-    """Parse an SVG letter-spacing value into scaled pixels."""
-    if not value:
-        return 0.0
-    raw = value.strip().lower()
-    if raw in {'normal', 'inherit', 'initial', 'unset'}:
-        return 0.0
-
-    match = re.fullmatch(r'([-+]?(?:\d*\.\d+|\d+\.?))(px|pt|em)?', raw)
-    if not match:
-        return 0.0
-
-    amount = float(match.group(1))
-    unit = match.group(2) or 'px'
-    if unit == 'em':
-        return amount * font_size
-    if unit == 'pt':
-        return amount * 4.0 / 3.0 * scale_x
-    return amount * scale_x
+def _normalize_text_run_whitespace(
+    runs: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Apply the shared whitespace contract without losing run ownership."""
+    normalized: list[dict[str, Any]] = []
+    segments = [
+        (str(run.get('_xml_space', 'default')), str(run.get('text', '')))
+        for run in runs
+    ]
+    for index, text in normalize_project_text_segments(segments):
+        run = {**runs[index], 'text': text}
+        run.pop('_xml_space', None)
+        normalized.append(run)
+    return normalized
 
 
 def _letter_spacing_to_drawingml_spc(letter_spacing_px: float) -> str:
     """Convert SVG px letter spacing into DrawingML rPr@spc."""
-    if abs(letter_spacing_px) < 1e-9:
+    spacing = drawingml_letter_spacing(letter_spacing_px)
+    if spacing == 0:
         return ''
-    spc_val = round(letter_spacing_px * FONT_PX_TO_HUNDREDTHS_PT)
-    return f' spc="{spc_val}"'
+    return f' spc="{spacing}"'
 
 
 def _is_serif_run(run: dict[str, Any]) -> bool:
@@ -1720,15 +2012,44 @@ def _is_serif_run(run: dict[str, Any]) -> bool:
 
 
 def _estimate_run_text_width(run: dict[str, Any]) -> float:
-    """Estimate one text run's rendered width, including tracking."""
+    """Estimate one run using the metrics actually emitted to DrawingML."""
     text = str(run.get('text', ''))
-    base_width = estimate_text_width(
+    font_size_px = (
+        font_px_to_hpt(float(run.get('font_size', 16)))
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    cluster_widths = estimate_text_cluster_widths(
         text,
-        float(run.get('font_size', 16)),
+        font_size_px,
         str(run.get('font_weight', '400')),
     )
-    letter_spacing_px = float(run.get('letter_spacing', 0.0) or 0.0)
-    return base_width + letter_spacing_px * max(len(text) - 1, 0)
+    letter_spacing_px = (
+        drawingml_letter_spacing(
+            float(run.get('letter_spacing', 0.0) or 0.0)
+        )
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    return sum(cluster_widths) + letter_spacing_px * max(
+        len(cluster_widths) - 1,
+        0,
+    )
+
+
+def validate_text_run_advances(runs: list[dict[str, Any]]) -> None:
+    """Reject negative tracking that reverses or collapses one output run."""
+    for run in runs:
+        text = str(run.get('text', ''))
+        letter_spacing = float(run.get('letter_spacing', 0.0) or 0.0)
+        if len(split_project_text_clusters(text)) < 2 or letter_spacing >= 0:
+            continue
+        advance = _estimate_run_text_width(run)
+        if advance > 0:
+            continue
+        snippet = re.sub(r'\s+', ' ', text)
+        raise ValueError(
+            'negative letter-spacing produces a non-positive DrawingML '
+            f'text-run advance for {snippet!r} (advance={advance:g}px)'
+        )
 
 
 def _uppercase_fraction(runs: list[dict[str, Any]]) -> float:
@@ -1774,6 +2095,29 @@ def _estimate_text_runs_width(
     else:
         base, ceiling = _TEXT_WIDTH_HEADROOM_BASE, _TEXT_WIDTH_HEADROOM_CAPS
     return width * (base + (ceiling - base) * caps)
+
+
+def estimate_single_line_text_frame_width(
+    runs: list[dict[str, Any]],
+) -> float:
+    """Estimate the content width used by one generated DrawingML textbox."""
+    content_runs, bullet = _extract_text_bullet(runs)
+    width = _estimate_text_runs_width(content_runs)
+    if bullet:
+        font_size = (
+            float(content_runs[0].get('font_size', 16))
+            if content_runs else 16.0
+        )
+        width += _bullet_margin_px(bullet, font_size)
+    return width
+
+
+def validate_single_line_text_run_advances(
+    runs: list[dict[str, Any]],
+) -> None:
+    """Validate the runs that remain after single-line bullet promotion."""
+    content_runs, _bullet = _extract_text_bullet(runs)
+    validate_text_run_advances(content_runs)
 
 
 def _first_nonspace_run(runs: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -1912,8 +2256,13 @@ def _paragraph_pr_xml(
     return f'<a:pPr {attrs}>{body_xml}{_build_bullet_xml(bullet, ctx)}</a:pPr>'
 
 
-def _estimate_bullet_line_width(runs: list[dict[str, Any]]) -> float:
+def _estimate_bullet_line_width(
+    runs: list[dict[str, Any]],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext,
+) -> float:
     line_runs, bullet = _extract_text_bullet(runs)
+    line_runs = _coalesce_text_runs(line_runs, default_fonts, ctx)
     width = _estimate_text_runs_width(line_runs, include_headroom=False)
     if bullet:
         fs_px = float(line_runs[0].get('font_size', 16)) if line_runs else 16.0
@@ -1929,19 +2278,25 @@ def _textbox_padding(font_size: float) -> float:
     )
 
 
+def drawingml_text_frame_width_emu(
+    text_width: float,
+    font_size: float,
+) -> int:
+    """Return the exact horizontal extent used by a generated text frame."""
+    return px_to_emu(text_width + _textbox_padding(font_size) * 2)
+
+
 def _text_opacity_ratio(value: str | None) -> float:
     """Parse a text opacity component and clamp it to the SVG ``0..1`` range."""
     if value is None:
         return 1.0
-    try:
-        return max(0.0, min(1.0, float(value)))
-    except ValueError:
-        return 1.0
+    return parse_project_opacity(value)
 
 
 def _override_run_attrs(
     parent_attrs: dict[str, Any],
     tspan: ET.Element,
+    ctx: ConvertContext,
 ) -> dict[str, Any]:
     """Layer a tspan's styling attributes over the inherited run attrs."""
     run_attrs = dict(parent_attrs)
@@ -1972,7 +2327,9 @@ def _override_run_attrs(
     )
 
     if tspan_attr('font-weight'):
-        run_attrs['font_weight'] = tspan_attr('font-weight')
+        run_attrs['font_weight'] = parse_project_font_weight(
+            tspan_attr('font-weight')
+        ).canonical
     if tspan_attr('fill'):
         child_fill = tspan_attr('fill')
         run_attrs['fill_raw'] = child_fill
@@ -1987,7 +2344,10 @@ def _override_run_attrs(
             run_attrs.get('stroke_width', 1.0),
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan_attr('font-size'):
+    resolved_font_size = ctx.text_font_sizes.get(id(tspan))
+    if resolved_font_size is not None:
+        run_attrs['font_size'] = resolved_font_size * ctx.scale_y
+    elif tspan_attr('font-size'):
         run_attrs['font_size'] = parse_svg_length(
             tspan_attr('font-size'),
             run_attrs['font_size'],
@@ -1996,44 +2356,58 @@ def _override_run_attrs(
     if tspan_attr('font-family'):
         run_attrs['font_family'] = tspan_attr('font-family')
     if tspan_attr('font-style'):
-        run_attrs['font_style'] = tspan_attr('font-style')
+        run_attrs['font_style'] = parse_project_font_style(
+            tspan_attr('font-style')
+        ).canonical
     if tspan_attr('text-decoration'):
-        run_attrs['text_decoration'] = tspan_attr('text-decoration')
-    if tspan_attr('letter-spacing'):
-        run_attrs['letter_spacing'] = _parse_letter_spacing_px(
+        run_attrs['text_decoration'] = parse_project_text_decoration(
+            tspan_attr('text-decoration')
+        ).canonical
+    resolved_letter_spacing = ctx.text_letter_spacings.get(id(tspan))
+    if resolved_letter_spacing is not None:
+        run_attrs['letter_spacing'] = resolved_letter_spacing * ctx.scale_x
+    elif tspan_attr('letter-spacing'):
+        run_attrs['letter_spacing'] = parse_project_letter_spacing(
             tspan_attr('letter-spacing'),
             font_size=float(run_attrs.get('font_size', 16)),
             scale_x=float(run_attrs.get('_scale_x', 1.0)),
-        )
+        ).value
     return run_attrs
 
 
 def _collect_tspan_runs(
     tspan: ET.Element,
     inherited_attrs: dict[str, Any],
-    preserve_space: bool = False,
+    ctx: ConvertContext,
+    inherited_xml_space: str = 'default',
 ) -> list[dict[str, Any]]:
     """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
 
     Order: tspan.text → (each nested child tspan's runs → that child's tail under THIS tspan's attrs).
     """
     runs: list[dict[str, Any]] = []
-    own_attrs = _override_run_attrs(inherited_attrs, tspan)
-    child_preserve_space = preserve_space or _preserves_space(tspan)
+    own_attrs = _override_run_attrs(inherited_attrs, tspan, ctx)
+    own_xml_space = resolve_project_xml_space(tspan, inherited_xml_space)
 
     if tspan.text:
-        t = _normalize_text(tspan.text, preserve_space=child_preserve_space)
-        if t:
-            runs.append({**own_attrs, 'text': t})
+        runs.append({
+            **own_attrs,
+            'text': tspan.text,
+            '_xml_space': own_xml_space,
+        })
 
     for child in tspan:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, own_attrs, child_preserve_space))
+            runs.extend(
+                _collect_tspan_runs(child, own_attrs, ctx, own_xml_space)
+            )
             if child.tail:
-                t = _normalize_text(child.tail, preserve_space=child_preserve_space)
-                if t:
-                    runs.append({**own_attrs, 'text': t})
+                runs.append({
+                    **own_attrs,
+                    'text': child.tail,
+                    '_xml_space': own_xml_space,
+                })
 
     return runs
 
@@ -2041,6 +2415,7 @@ def _collect_tspan_runs(
 def _build_text_runs(
     elem: ET.Element,
     parent_attrs: dict[str, Any],
+    ctx: ConvertContext,
 ) -> list[dict[str, Any]]:
     """Build a list of text runs from a <text> element, handling <tspan> children.
 
@@ -2049,30 +2424,29 @@ def _build_text_runs(
     recursively so inline format changes inside a tspan still produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
-    preserve_space = _preserves_space(elem)
+    xml_space = resolve_project_xml_space(elem)
 
     if elem.text:
-        t = _normalize_text(elem.text, preserve_space=preserve_space)
-        if t:
-            runs.append({**parent_attrs, 'text': t})
+        runs.append({
+            **parent_attrs,
+            'text': elem.text,
+            '_xml_space': xml_space,
+        })
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, parent_attrs, preserve_space))
+            runs.extend(
+                _collect_tspan_runs(child, parent_attrs, ctx, xml_space)
+            )
             if child.tail:
-                t = _normalize_text(child.tail, preserve_space=preserve_space)
-                if t:
-                    runs.append({**parent_attrs, 'text': t})
+                runs.append({
+                    **parent_attrs,
+                    'text': child.tail,
+                    '_xml_space': xml_space,
+                })
 
-    # Strip the paragraph's overall leading / trailing whitespace once unless
-    # xml:space="preserve" asks us to keep source indentation.
-    if runs and not preserve_space:
-        runs[0]['text'] = runs[0]['text'].lstrip(' ')
-        runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
-        runs = [r for r in runs if r['text']]
-
-    return runs
+    return _normalize_text_run_whitespace(runs)
 
 
 def _build_text_fill_xml(
@@ -2137,14 +2511,14 @@ def _build_text_outline_xml(
     )
 
 
-def _build_run_xml(
+def _build_run_properties_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
     ctx: ConvertContext | None = None,
     effect_xml: str = '',
 ) -> str:
-    """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
-    text = run['text']
+    """Build the final ``a:rPr`` used to compare and emit one text run."""
+    text = str(run['text'])
     fill = run.get('fill', '000000')
     fill_raw = run.get('fill_raw', '')
     fw = run.get('font_weight', '400')
@@ -2161,10 +2535,13 @@ def _build_run_xml(
     # / integer snapping — whatever the px works out to is the size, e.g.
     # 18px -> 13.5pt, 24px -> 18.0pt, 42px -> 31.5pt.
     sz = font_px_to_hpt(fs_px)
-    b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
+    b_attr = ' b="1"' if parse_project_font_weight(fw).value else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
-    u_attr = ' u="sng"' if 'underline' in text_dec else ''
-    strike_attr = ' strike="sngStrike"' if 'line-through' in text_dec else ''
+    underline, strike = parse_project_text_decoration(
+        text_dec or 'none'
+    ).value
+    u_attr = ' u="sng"' if underline else ''
+    strike_attr = ' strike="sngStrike"' if strike else ''
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
 
     fonts = parse_font_family(ff) if ff else default_fonts
@@ -2177,17 +2554,66 @@ def _build_run_xml(
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
 
-    space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
-
-    return f'''<a:r>
-<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
+    return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
 {outline_xml}
 {fill_xml}
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
 <a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
-</a:rPr>
+</a:rPr>'''
+
+
+def _coalesce_text_runs(
+    runs: list[dict[str, Any]],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext | None,
+) -> list[dict[str, Any]]:
+    """Join adjacent runs that PowerPoint sees as one formatting run."""
+    merged: list[dict[str, Any]] = []
+    previous_properties: str | None = None
+    for run in runs:
+        text = str(run.get('text', ''))
+        if not text:
+            continue
+        properties = _build_run_properties_xml(run, default_fonts, ctx)
+        if merged and properties == previous_properties:
+            candidate = {
+                **merged[-1],
+                'text': str(merged[-1].get('text', '')) + text,
+            }
+            candidate_properties = _build_run_properties_xml(
+                candidate,
+                default_fonts,
+                ctx,
+            )
+            if candidate_properties == previous_properties:
+                merged[-1] = candidate
+                previous_properties = candidate_properties
+                continue
+        merged.append({**run, 'text': text})
+        previous_properties = properties
+    return merged
+
+
+def _build_run_xml(
+    run: dict[str, Any],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext | None = None,
+    effect_xml: str = '',
+) -> str:
+    """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
+    text = str(run['text'])
+    properties_xml = _build_run_properties_xml(
+        run,
+        default_fonts,
+        ctx,
+        effect_xml,
+    )
+    space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
+
+    return f'''<a:r>
+{properties_xml}
 <a:t{space_attr}>{_xml_escape(text)}</a:t>
 </a:r>'''
 
@@ -2196,13 +2622,23 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
     x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
     y = ctx_y(svg_length_y(elem.get('y'), ctx), ctx)
+    resolved_font_size = ctx.text_font_sizes.get(id(elem))
     font_size = (
-        parse_svg_length(_get_attr(elem, 'font-size', ctx), 16, font_size=16)
-        * ctx.scale_y
+        resolved_font_size * ctx.scale_y
+        if resolved_font_size is not None
+        else parse_svg_length(
+            _get_attr(elem, 'font-size', ctx),
+            16,
+            font_size=16,
+        ) * ctx.scale_y
     )
-    font_weight = _get_attr(elem, 'font-weight', ctx) or '400'
+    font_weight = parse_project_font_weight(
+        _get_attr(elem, 'font-weight', ctx) or '400'
+    ).canonical
     font_family_str = _get_attr(elem, 'font-family', ctx) or ''
-    text_anchor = _get_attr(elem, 'text-anchor', ctx) or 'start'
+    text_anchor = parse_project_text_anchor(
+        _get_attr(elem, 'text-anchor', ctx) or 'start'
+    ).canonical
     fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
@@ -2213,13 +2649,24 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
     stroke_opacity_value = _text_opacity_ratio(_get_attr(elem, 'stroke-opacity', ctx))
-    font_style = _get_attr(elem, 'font-style', ctx) or ''
-    text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
-    letter_spacing_px = _parse_letter_spacing_px(
-        _get_attr(elem, 'letter-spacing', ctx),
-        font_size=font_size,
-        scale_x=ctx.scale_x or 1.0,
-    )
+    font_style = parse_project_font_style(
+        _get_attr(elem, 'font-style', ctx) or 'normal'
+    ).canonical
+    text_decoration = parse_project_text_decoration(
+        _get_attr(elem, 'text-decoration', ctx) or 'none'
+    ).canonical
+    raw_letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
+    resolved_letter_spacing = ctx.text_letter_spacings.get(id(elem))
+    if resolved_letter_spacing is not None:
+        letter_spacing_px = resolved_letter_spacing * ctx.scale_x
+    elif raw_letter_spacing is not None:
+        letter_spacing_px = parse_project_letter_spacing(
+            raw_letter_spacing,
+            font_size=font_size,
+            scale_x=ctx.scale_x or 1.0,
+        ).value
+    else:
+        letter_spacing_px = 0.0
 
     fonts = parse_font_family(font_family_str)
 
@@ -2261,19 +2708,23 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # has room to wrap text to the SVG's original line widths.
     visual_line_widths: list[float] = []
     if line_height_px is not None and line_height_px > 0:
-        preserve_space = _preserves_space(elem)
+        xml_space = resolve_project_xml_space(elem)
         paragraph_runs = []
         for child in elem:
             if child.tag != f'{{{SVG_NS}}}tspan':
                 continue
-            line_runs = _collect_tspan_runs(child, parent_attrs, preserve_space)
-            if line_runs and not preserve_space:
-                line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
-                line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
-                line_runs = [r for r in line_runs if r['text']]
+            line_runs = _collect_tspan_runs(
+                child,
+                parent_attrs,
+                ctx,
+                xml_space,
+            )
+            line_runs = _normalize_text_run_whitespace(line_runs)
             if not line_runs:
                 continue
-            visual_line_widths.append(_estimate_bullet_line_width(line_runs))
+            visual_line_widths.append(
+                _estimate_bullet_line_width(line_runs, fonts, ctx)
+            )
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
                 # Append to the previous paragraph. A Latin line-wrap needs a
@@ -2290,7 +2741,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 if prev and not prev_text.endswith(' ') \
                         and not next_text.startswith(' ') \
                         and not boundary_is_cjk:
-                    prev[-1] = {**prev[-1], 'text': prev_text + ' '}
+                    prev.append({
+                        **prev[-1],
+                        'text': ' ',
+                        'letter_spacing': 0.0,
+                    })
                 prev.extend(line_runs)
             else:
                 paragraph_runs.append(line_runs)
@@ -2304,15 +2759,18 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             stripped_paragraphs: list[list[dict[str, Any]]] = []
             for line_runs in paragraph_runs:
                 stripped_runs, bullet = _extract_text_bullet(line_runs)
-                stripped_paragraphs.append(stripped_runs)
+                stripped_paragraphs.append(
+                    _coalesce_text_runs(stripped_runs, fonts, ctx)
+                )
                 paragraph_bullets.append(bullet)
             paragraph_runs = stripped_paragraphs
 
     if paragraph_runs is not None:
         runs = [r for line in paragraph_runs for r in line]
     else:
-        runs = _build_text_runs(elem, parent_attrs)
+        runs = _build_text_runs(elem, parent_attrs, ctx)
         runs, single_bullet = _extract_text_bullet(runs)
+        runs = _coalesce_text_runs(runs, fonts, ctx)
 
     full_text = ''.join(r['text'] for r in runs) if runs else ''
     if not full_text.strip():
@@ -2367,16 +2825,26 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     box_h = text_height + padding
 
     text_transform = elem.get('transform', '')
-    if text_transform and 'rotate' not in text_transform and not ctx.use_transform_matrix:
-        try:
-            a, b, c, d, e, f = parse_transform_matrix(text_transform)
-        except Exception:
-            a, b, c, d, e, f = 1.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    text_operations = (
+        parse_transform_operations(text_transform)
+        if text_transform else ()
+    )
+    translate_only = bool(text_operations) and all(
+        name == 'translate' for name, _args in text_operations
+    )
+    rotate_only = (
+        len(text_operations) == 1
+        and text_operations[0][0] == 'rotate'
+    )
+    if text_operations and not (translate_only or rotate_only):
+        raise ValueError(
+            'Text transform must be a translate-only list or one rotate operation'
+        )
+    if translate_only and not ctx.use_transform_matrix:
+        a, b, c, d, e, f = parse_transform_matrix(text_transform)
         # A pure-translate transform on a text element (hand-authored, or written
         # by a live-preview move) was otherwise ignored here, drifting the text.
-        # Absorb the translation into the frame position; a scaling transform
-        # would also need to scale font size / line metrics, so leave
-        # non-translate transforms alone.
+        # Absorb the translation into the frame position.
         if (
             abs(a - 1.0) < 1e-9 and abs(b) < 1e-9
             and abs(c) < 1e-9 and abs(d - 1.0) < 1e-9
@@ -2394,26 +2862,22 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # box so its center lands where SVG would place the rotated visual center —
     # otherwise rotated y-axis labels etc. drift to the wrong location.
     text_rot = 0
-    if text_transform:
-        rot_match = re.search(
-            r'rotate\(\s*([-\d.]+)(?:[\s,]+([-\d.]+)[\s,]+([-\d.]+))?',
-            text_transform,
-        )
-        if rot_match:
-            angle_deg = float(rot_match.group(1))
-            text_rot = int(angle_deg * ANGLE_UNIT)
-            if rot_match.group(2) is not None:
-                pivot_x = ctx_x(float(rot_match.group(2)), ctx)
-                pivot_y = ctx_y(float(rot_match.group(3)), ctx)
-                cx_box = box_x + box_w / 2
-                cy_box = box_y + box_h / 2
-                rad = math.radians(angle_deg)
-                dx = cx_box - pivot_x
-                dy = cy_box - pivot_y
-                new_cx = pivot_x + dx * math.cos(rad) - dy * math.sin(rad)
-                new_cy = pivot_y + dx * math.sin(rad) + dy * math.cos(rad)
-                box_x = new_cx - box_w / 2
-                box_y = new_cy - box_h / 2
+    if rotate_only:
+        rotate_args = text_operations[0][1]
+        angle_deg = rotate_args[0]
+        text_rot = int(angle_deg * ANGLE_UNIT)
+        if len(rotate_args) == 3:
+            pivot_x = ctx_x(rotate_args[1], ctx)
+            pivot_y = ctx_y(rotate_args[2], ctx)
+            cx_box = box_x + box_w / 2
+            cy_box = box_y + box_h / 2
+            rad = math.radians(angle_deg)
+            dx = cx_box - pivot_x
+            dy = cy_box - pivot_y
+            new_cx = pivot_x + dx * math.cos(rad) - dy * math.sin(rad)
+            new_cy = pivot_y + dx * math.sin(rad) + dy * math.cos(rad)
+            box_x = new_cx - box_w / 2
+            box_y = new_cy - box_h / 2
 
     # Alignment
     algn_map = {'start': 'l', 'middle': 'ctr', 'end': 'r'}
@@ -2474,8 +2938,15 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
-    ext_cx = px_to_emu(box_w)
+    ext_cx = drawingml_text_frame_width_emu(text_width, font_size)
     ext_cy = px_to_emu(box_h)
+    if ext_cx < 1 or ext_cy < 1:
+        raise ValueError(
+            'negative letter-spacing produces a non-positive DrawingML '
+            f'text-frame extent (cx={ext_cx}, cy={ext_cy})'
+        )
+    validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
+    validate_text_run_advances(runs)
 
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
@@ -2578,6 +3049,244 @@ def _clip_commands_to_geom(
 </a:custGeom>'''
 
 
+_CLIP_SHAPE_TAGS = frozenset({'circle', 'ellipse', 'rect', 'path', 'polygon'})
+_CLIP_NON_VISUAL_ELEMENTS = frozenset({
+    f'{{{SVG_NS}}}{tag}' for tag in ('desc', 'metadata', 'style', 'title')
+})
+
+
+def _element_contract_label(elem: ET.Element) -> str:
+    tag = elem.tag.rsplit('}', 1)[-1]
+    elem_id = (elem.get('id') or '').strip()
+    return f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
+
+
+def _unsupported_clip_rule_properties(elem: ET.Element) -> tuple[str, ...]:
+    style_values = parse_inline_style(elem.get('style'))
+    return tuple(
+        name for name in ('clip-rule', 'fill-rule')
+        if elem.get(name) is not None or name in style_values
+    )
+
+
+def _effective_clip_geometry_length(
+    elem: ET.Element,
+    attribute: str,
+    *,
+    default: float | None = None,
+) -> float:
+    style_values = parse_inline_style(elem.get('style'))
+    raw = style_values.get(attribute)
+    if raw is None:
+        raw = elem.get(attribute)
+    if raw is None:
+        if default is None:
+            raise ValueError(f'requires {attribute}')
+        return default
+    return parse_project_geometry_length(raw, attribute)
+
+
+def _clip_preset_geometry_error(
+    target: ET.Element,
+    shape: ET.Element,
+    clip_units: str,
+) -> str | None:
+    """Reject primitive clips that cannot map to a full-frame preset."""
+    shape_tag = shape.tag.rsplit('}', 1)[-1].lower()
+    if shape_tag not in {'circle', 'ellipse', 'rect'}:
+        return None
+    target_label = _element_contract_label(target)
+    try:
+        target_x = _effective_clip_geometry_length(target, 'x', default=0.0)
+        target_y = _effective_clip_geometry_length(target, 'y', default=0.0)
+        target_w = _effective_clip_geometry_length(target, 'width')
+        target_h = _effective_clip_geometry_length(target, 'height')
+    except ValueError as exc:
+        return f'cannot validate {shape_tag} against {target_label}: {exc}'
+    if target_w <= 0 or target_h <= 0:
+        return (
+            f'cannot validate {shape_tag} against {target_label}: target '
+            'width and height must be positive'
+        )
+
+    object_bbox = clip_units == 'objectBoundingBox'
+    expected_x = 0.0 if object_bbox else target_x
+    expected_y = 0.0 if object_bbox else target_y
+    expected_w = 1.0 if object_bbox else target_w
+    expected_h = 1.0 if object_bbox else target_h
+
+    def close(actual: float, expected: float) -> bool:
+        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-6)
+
+    try:
+        if shape_tag == 'circle':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            radius = _effective_clip_geometry_length(shape, 'r', default=0.0)
+            fits = (
+                close(expected_w, expected_h)
+                and close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(radius, expected_w / 2.0)
+            )
+        elif shape_tag == 'ellipse':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            rx = _effective_clip_geometry_length(shape, 'rx', default=0.0)
+            ry = _effective_clip_geometry_length(shape, 'ry', default=0.0)
+            fits = (
+                close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(rx, expected_w / 2.0)
+                and close(ry, expected_h / 2.0)
+            )
+        else:
+            rect_x = _effective_clip_geometry_length(shape, 'x', default=0.0)
+            rect_y = _effective_clip_geometry_length(shape, 'y', default=0.0)
+            rect_w = _effective_clip_geometry_length(shape, 'width', default=0.0)
+            rect_h = _effective_clip_geometry_length(shape, 'height', default=0.0)
+            fits = (
+                close(rect_x, expected_x)
+                and close(rect_y, expected_y)
+                and close(rect_w, expected_w)
+                and close(rect_h, expected_h)
+            )
+            if fits:
+                rx_raw = (
+                    parse_inline_style(shape.get('style')).get('rx')
+                    or shape.get('rx')
+                )
+                ry_raw = (
+                    parse_inline_style(shape.get('style')).get('ry')
+                    or shape.get('ry')
+                )
+                rx = (
+                    parse_project_geometry_length(rx_raw, 'rx')
+                    if rx_raw is not None else None
+                )
+                ry = (
+                    parse_project_geometry_length(ry_raw, 'ry')
+                    if ry_raw is not None else None
+                )
+                if rx is None and ry is not None:
+                    rx = ry
+                elif ry is None and rx is not None:
+                    ry = rx
+                rx = rx or 0.0
+                ry = ry or 0.0
+                if rx > 0 or ry > 0:
+                    if object_bbox:
+                        fits = close(rx * target_w, ry * target_h)
+                    else:
+                        fits = close(rx, ry)
+    except ValueError as exc:
+        return f'{shape_tag} geometry for {target_label} is invalid: {exc}'
+
+    if fits:
+        return None
+    return (
+        f'{shape_tag} geometry must cover the complete frame of {target_label} '
+        'for native preset mapping; use path or polygon for partial, offset, '
+        'or non-uniform clips'
+    )
+
+
+def project_clip_path_errors(root: ET.Element) -> list[str]:
+    """Return clip-path errors that would otherwise degrade picture geometry."""
+    definitions, duplicates = project_definition_index(root)
+    errors: set[str] = set()
+    for elem in root.iter():
+        raw_ref = elem.get('clip-path')
+        if raw_ref is None or raw_ref.strip().lower() == 'none':
+            continue
+        label = _element_contract_label(elem)
+        is_svg_image = elem.tag == f'{{{SVG_NS}}}image'
+        is_imported_crop = (
+            elem.tag == f'{{{SVG_NS}}}svg'
+            and elem.get('data-pptx-crop') == '1'
+        )
+        if not is_svg_image and not is_imported_crop:
+            errors.add(
+                f'{label} clip-path is allowed only on <image> or an imported '
+                'data-pptx-crop="1" wrapper'
+            )
+        match = re.fullmatch(r'url\(#([^)]+)\)', raw_ref.strip())
+        if match is None:
+            errors.add(
+                f'{label} clip-path must be an exact local url(#id) '
+                f'reference; got {raw_ref!r}'
+            )
+            continue
+        clip_id = match.group(1)
+        if clip_id in duplicates:
+            errors.add(
+                f'{label} clip-path=url(#{clip_id}) is ambiguous because the '
+                'definition id is duplicated'
+            )
+            continue
+        clip = definitions.get(clip_id)
+        if clip is None or clip.tag != f'{{{SVG_NS}}}clipPath':
+            errors.add(
+                f'{label} clip-path=url(#{clip_id}) has no matching direct '
+                f'<defs><clipPath id="{clip_id}"> definition'
+            )
+            continue
+        clip_label = f'<clipPath id="{clip_id}">'
+        clip_units = clip.get('clipPathUnits', 'userSpaceOnUse')
+        if clip_units not in {'userSpaceOnUse', 'objectBoundingBox'}:
+            errors.add(
+                f'{clip_label} has unsupported clipPathUnits={clip_units!r}'
+            )
+        if clip.get('transform'):
+            errors.add(f'{clip_label} cannot use transform')
+        clip_rules = _unsupported_clip_rule_properties(clip)
+        if clip_rules:
+            errors.add(
+                f'{clip_label} cannot use {", ".join(clip_rules)}; native '
+                'picture geometry has no equivalent winding-rule control'
+            )
+        visual_children = [
+            child for child in list(clip)
+            if child.tag not in _CLIP_NON_VISUAL_ELEMENTS
+        ]
+        if len(visual_children) != 1:
+            errors.add(
+                f'{clip_label} must contain exactly one direct supported shape'
+            )
+            continue
+        shape = visual_children[0]
+        shape_tag = shape.tag.rsplit('}', 1)[-1].lower()
+        if (
+            shape_tag not in _CLIP_SHAPE_TAGS
+            or shape.tag != f'{{{SVG_NS}}}{shape_tag}'
+        ):
+            errors.add(
+                f'{clip_label} child <{shape_tag}> is unsupported; use '
+                'circle, ellipse, rect, path, or polygon'
+            )
+            continue
+        if shape.get('transform'):
+            errors.add(f'{clip_label} child <{shape_tag}> cannot use transform')
+            continue
+        shape_rules = _unsupported_clip_rule_properties(shape)
+        if shape_rules:
+            errors.add(
+                f'{clip_label} child <{shape_tag}> cannot use '
+                f'{", ".join(shape_rules)}; native picture geometry has no '
+                'equivalent winding-rule control'
+            )
+            continue
+        if clip_units in {'userSpaceOnUse', 'objectBoundingBox'}:
+            geometry_error = _clip_preset_geometry_error(
+                elem,
+                shape,
+                clip_units,
+            )
+            if geometry_error is not None:
+                errors.add(f'{clip_label} {geometry_error}')
+    return sorted(errors)
+
+
 def _resolve_clip_geometry(
     elem: ET.Element,
     ctx: ConvertContext,
@@ -2635,8 +3344,10 @@ def _resolve_clip_geometry(
 
     # --- Rect with rx/ry → preset roundRect ---
     if shape_tag == 'rect':
-        rx = _f(shape.get('rx'))
-        ry = _f(shape.get('ry'), rx)
+        rx_attr = shape.get('rx')
+        ry_attr = shape.get('ry')
+        rx = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+        ry = svg_length_y(ry_attr, ctx) if ry_attr is not None else rx
         if rx <= 0 and ry <= 0:
             return DEFAULT  # plain rect clip is a no-op
         r = max(rx, ry)
@@ -2668,9 +3379,7 @@ def _resolve_clip_geometry(
 
     # --- Polygon → custGeom ---
     if shape_tag == 'polygon':
-        pts = _parse_points(shape.get('points', ''))
-        if not pts:
-            return DEFAULT
+        pts = parse_svg_points(shape.get('points', ''), min_points=3)
         commands = [PathCommand('M', [pts[0][0], pts[0][1]])]
         for px_, py_ in pts[1:]:
             commands.append(PathCommand('L', [px_, py_]))
@@ -2762,16 +3471,14 @@ def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
     try:
         with Image.open(io.BytesIO(data)) as img:
             return img.size
-    except (UnidentifiedImageError, OSError, ValueError):
+    except (
+        UnidentifiedImageError,
+        OSError,
+        SyntaxError,
+        ValueError,
+        ZeroDivisionError,
+    ):
         return (None, None)
-
-
-def _parse_preserve_aspect_ratio(par: str | None) -> tuple[str, str]:
-    """Parse SVG preserveAspectRatio into ``(align, mode)``."""
-    parts = (par or 'xMidYMid meet').strip().split()
-    align = parts[0] if parts else 'xMidYMid'
-    mode = parts[1] if len(parts) > 1 else 'meet'
-    return align, mode
 
 
 def _image_has_alpha(img: Any) -> bool:
@@ -2924,7 +3631,9 @@ def _optimize_image_for_pptx(
     if getattr(img, 'is_animated', False):
         return img_data, img_format
 
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
     target_w, target_h = _fit_full_image_target(
         img.size[0],
         img.size[1],
@@ -2982,8 +3691,7 @@ def _compute_slice_src_rect(
     crop_w_total = max(0.0, img_w - visible_w)
     crop_h_total = max(0.0, img_h - visible_h)
 
-    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
-    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+    x_anchor, y_anchor = PROJECT_IMAGE_ASPECT_RATIO_ANCHORS[align]
 
     crop_l = crop_w_total * x_anchor
     crop_r = crop_w_total - crop_l
@@ -3013,7 +3721,9 @@ def _resolve_image_src_rect(
     shrinks the picture frame to match image aspect ratio); none mode keeps
     the legacy stretch behaviour intentionally.
     """
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
 
     if align == 'none' or mode != 'slice':
         return ''  # meet handled by frame fit; none → stretch is correct per SVG spec
@@ -3051,7 +3761,9 @@ def _resolve_image_meet_fit(
       - intrinsic image dimensions cannot be read
       - frame already matches image ratio (no-op)
     """
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
 
     if align == 'none' or mode == 'slice':
         return None
@@ -3069,8 +3781,7 @@ def _resolve_image_meet_fit(
     if abs(fit_w - box_w) < 0.5 and abs(fit_h - box_h) < 0.5:
         return None  # already matches — no adjustment
 
-    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
-    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+    x_anchor, y_anchor = PROJECT_IMAGE_ASPECT_RATIO_ANCHORS[align]
 
     dx = (box_w - fit_w) * x_anchor
     dy = (box_h - fit_h) * y_anchor
@@ -3097,9 +3808,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     to DrawingML picture geometry (prstGeom or custGeom) so the image is
     natively clipped in PowerPoint.
     """
-    href = elem.get('href') or elem.get(f'{{{XLINK_NS}}}href')
-    if not href:
-        return None
+    source = load_project_image_source(elem, ctx.svg_dir)
 
     # Raw coordinates (pre-context-transform) for clip path calculations
     raw_x = svg_length_x(elem.get('x'), ctx)
@@ -3119,22 +3828,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         h = ctx_h(raw_h, ctx)
 
     if w <= 0 or h <= 0:
-        return None
+        raise ValueError('image width and height must be positive')
 
-    # Extract image data
-    if href.startswith('data:'):
-        decoded = _decode_data_image_uri(href)
-        if decoded is None:
-            return None
-        img_format, img_data = decoded
-    else:
-        if ctx.svg_dir is None:
-            return None
-        img_path = _resolve_external_image(ctx.svg_dir, href)
-        img_format = img_path.suffix.lstrip('.').lower()
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = img_path.read_bytes()
+    img_format = source.img_format
+    img_data = source.img_data
 
     img_data, img_format = _optimize_image_for_pptx(
         elem, ctx, img_data, img_format, w, h,
@@ -3311,7 +4008,279 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 # Without this converter, every cropped picture in a template-import SVG is
 # silently dropped on re-export.
 
-def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
+@dataclass(frozen=True)
+class NestedSvgCropSpec:
+    """Validated transport fields for one imported cropped picture."""
+
+    image: ET.Element
+    x: float
+    y: float
+    width: float
+    height: float
+    src_l: int
+    src_t: int
+    src_r: int
+    src_b: int
+
+
+_NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
+    'clip-path',
+    'data-pptx-crop',
+    EFFECT_REASON_ATTR,
+    EFFECT_STATUS_ATTR,
+    'data-pptx-frame',
+    'data-pptx-layer',
+    'data-pptx-object',
+    'data-pptx-placeholder-carrier',
+    'data-pptx-shape-id',
+    'data-pptx-shape-name',
+    'data-pptx-shape-scope',
+    'id',
+    'preserveAspectRatio',
+    'transform',
+    'viewBox',
+    'x',
+    'y',
+    'width',
+    'height',
+})
+_NESTED_CROP_IMAGE_ATTRIBUTES = frozenset({
+    'href',
+    f'{{{XLINK_NS}}}href',
+    'opacity',
+    'preserveAspectRatio',
+    'x',
+    'y',
+    'width',
+    'height',
+})
+_DRAWINGML_PERCENTAGE_MIN = -(2 ** 31)
+_DRAWINGML_PERCENTAGE_MAX = 2 ** 31 - 1
+
+
+def _unsupported_nested_crop_attributes(
+    elem: ET.Element,
+    allowed: frozenset[str],
+) -> list[str]:
+    unsupported = []
+    for name in elem.attrib:
+        if name in allowed:
+            continue
+        unsupported.append(name.rsplit('}', 1)[-1])
+    return sorted(unsupported)
+
+
+def parse_project_nested_svg_crop(elem: ET.Element) -> NestedSvgCropSpec:
+    """Parse the closed nested-SVG transport written by ``pptx_to_svg``."""
+    if elem.tag != f'{{{SVG_NS}}}svg':
+        raise ValueError('expected an SVG-namespace nested <svg> crop wrapper')
+
+    unsupported = _unsupported_nested_crop_attributes(
+        elem,
+        _NESTED_CROP_OUTER_ATTRIBUTES,
+    )
+    if unsupported:
+        raise ValueError(
+            'nested crop <svg> has unsupported attribute(s): '
+            + ', '.join(unsupported)
+        )
+    crop_marker = elem.get('data-pptx-crop')
+    clip_path = elem.get('clip-path')
+    if crop_marker is not None and crop_marker != '1':
+        raise ValueError('nested crop data-pptx-crop must be exactly "1"')
+    if clip_path is None:
+        if crop_marker is not None:
+            raise ValueError(
+                'nested crop data-pptx-crop="1" requires clip-path'
+            )
+    elif clip_path.strip().lower() == 'none':
+        raise ValueError('nested crop clip-path cannot be "none"')
+    elif crop_marker != '1':
+        raise ValueError(
+            'nested crop clip-path requires data-pptx-crop="1"'
+        )
+    if elem.text and elem.text.strip():
+        raise ValueError(
+            'nested crop <svg> cannot contain non-whitespace character data'
+        )
+
+    children = list(elem)
+    if (
+        len(children) != 1
+        or children[0].tag != f'{{{SVG_NS}}}image'
+    ):
+        raise ValueError(
+            'nested <svg> is reserved for imported picture crops; expected '
+            'exactly one direct SVG-namespace <image> child'
+        )
+    image_elem = children[0]
+    if image_elem.tail and image_elem.tail.strip():
+        raise ValueError(
+            'nested crop <svg> cannot contain non-whitespace character data'
+        )
+    if list(image_elem) or (image_elem.text and image_elem.text.strip()):
+        raise ValueError('nested crop <image> must be an empty element')
+
+    unsupported = _unsupported_nested_crop_attributes(
+        image_elem,
+        _NESTED_CROP_IMAGE_ATTRIBUTES,
+    )
+    if unsupported:
+        raise ValueError(
+            'nested crop <image> has unsupported attribute(s): '
+            + ', '.join(unsupported)
+        )
+
+    try:
+        _project_image_href(image_elem)
+    except ValueError as exc:
+        raise ValueError(f'nested crop <image> {exc}') from exc
+
+    required_outer = (
+        'x',
+        'y',
+        'width',
+        'height',
+        'viewBox',
+        'preserveAspectRatio',
+    )
+    missing = [name for name in required_outer if elem.get(name) is None]
+    if missing:
+        raise ValueError(
+            'nested crop <svg> requires explicit x, y, width, height, '
+            'viewBox, and preserveAspectRatio="none"; missing '
+            + ', '.join(missing)
+        )
+    if elem.get('preserveAspectRatio') != 'none':
+        raise ValueError(
+            'nested crop <svg> preserveAspectRatio must be exactly "none"'
+        )
+
+    frame_values: dict[str, float] = {}
+    for name in ('x', 'y', 'width', 'height'):
+        raw = elem.get(name)
+        assert raw is not None
+        try:
+            frame_values[name] = parse_project_geometry_length(raw, name)
+        except ValueError as exc:
+            raise ValueError(
+                f'nested crop <svg> {name}={raw!r}: {exc}'
+            ) from exc
+    if frame_values['width'] <= 0 or frame_values['height'] <= 0:
+        raise ValueError('nested crop <svg> width and height must be positive')
+
+    view_box = elem.get('viewBox') or ''
+    view_box_tokens = view_box.strip().split()
+    if (
+        len(view_box_tokens) != 4
+        or any(
+            not is_canonical_project_geometry_length(token)
+            for token in view_box_tokens
+        )
+    ):
+        raise ValueError(
+            'nested crop viewBox must contain four finite unitless ordinary '
+            'decimals separated by whitespace'
+        )
+    vb_x, vb_y, vb_w, vb_h = (
+        parse_project_geometry_length(token, 'x')
+        for token in view_box_tokens
+    )
+    if vb_w <= 0 or vb_h <= 0:
+        raise ValueError('nested crop viewBox width and height must be positive')
+    src_l = round(vb_x * 100000)
+    src_t = round(vb_y * 100000)
+    src_r = round((1.0 - vb_x - vb_w) * 100000)
+    src_b = round((1.0 - vb_y - vb_h) * 100000)
+    src_values = (src_l, src_t, src_r, src_b)
+    if (
+        any(
+            value < _DRAWINGML_PERCENTAGE_MIN
+            or value > _DRAWINGML_PERCENTAGE_MAX
+            for value in src_values
+        )
+        or src_l + src_r >= 100000
+        or src_t + src_b >= 100000
+    ):
+        raise ValueError(
+            'nested crop viewBox cannot be represented as a DrawingML '
+            'srcRect with a positive visible region within the signed '
+            'percentage range'
+        )
+    if not any(src_values):
+        raise ValueError(
+            'nested crop viewBox="0 0 1 1" is redundant; use a plain <image>'
+        )
+
+    required_image_values = {
+        'x': '0',
+        'y': '0',
+        'width': '1',
+        'height': '1',
+        'preserveAspectRatio': 'none',
+    }
+    invalid_image_values = [
+        f'{name}={image_elem.get(name)!r}'
+        for name, expected in required_image_values.items()
+        if image_elem.get(name) != expected
+    ]
+    if invalid_image_values:
+        raise ValueError(
+            'nested crop <image> must use x="0", y="0", width="1", '
+            'height="1", and preserveAspectRatio="none"; got '
+            + ', '.join(invalid_image_values)
+        )
+
+    return NestedSvgCropSpec(
+        image=image_elem,
+        x=frame_values['x'],
+        y=frame_values['y'],
+        width=frame_values['width'],
+        height=frame_values['height'],
+        src_l=src_l,
+        src_t=src_t,
+        src_r=src_r,
+        src_b=src_b,
+    )
+
+
+def project_nested_svg_crop_errors(root: ET.Element) -> list[str]:
+    """Return contract errors for every nested SVG transport wrapper."""
+    errors: list[str] = []
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    for elem in root.iter():
+        if elem is root or elem.tag.rsplit('}', 1)[-1] != 'svg':
+            continue
+        elem_id = (elem.get('id') or '').strip()
+        label = f'<svg id="{elem_id}">' if elem_id else '<svg>'
+        ancestor = parent_by_id.get(id(elem))
+        invalid_ancestor: ET.Element | None = None
+        while ancestor is not None and ancestor is not root:
+            if (
+                ancestor.tag != f'{{{SVG_NS}}}g'
+                or ancestor.get('data-pptx-part') is not None
+            ):
+                invalid_ancestor = ancestor
+                break
+            ancestor = parent_by_id.get(id(ancestor))
+        if invalid_ancestor is not None:
+            errors.append(
+                f'{label} invalid imported crop wrapper: visual ancestor chain '
+                'may contain only ordinary <g> elements'
+            )
+            continue
+        try:
+            parse_project_nested_svg_crop(elem)
+        except ValueError as exc:
+            errors.append(f'{label} invalid imported crop wrapper: {exc}')
+    return sorted(errors)
+
+
+def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
     """Convert a nested <svg> sprite-crop wrapper to a DrawingML picture.
 
     Pattern produced by pptx_to_svg::
@@ -3323,22 +4292,14 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     The viewBox crops the unit-rectangle inner image; that crop is mapped to a
     DrawingML <a:srcRect> so PowerPoint can re-crop / "Reset Picture".
     """
-    image_elem = elem.find(f'{{{SVG_NS}}}image')
-    if image_elem is None:
-        image_elem = elem.find('image')
-    if image_elem is None:
-        return None
+    crop = parse_project_nested_svg_crop(elem)
+    image_elem = crop.image
+    source = load_project_image_source(image_elem, ctx.svg_dir)
 
-    href = image_elem.get('href') or image_elem.get(f'{{{XLINK_NS}}}href')
-    if not href:
-        return None
-
-    svg_x = svg_length_x(elem.get('x'), ctx)
-    svg_y = svg_length_y(elem.get('y'), ctx)
-    svg_w = svg_length_x(elem.get('width'), ctx)
-    svg_h = svg_length_y(elem.get('height'), ctx)
-    if svg_w <= 0 or svg_h <= 0:
-        return None
+    svg_x = crop.x
+    svg_y = crop.y
+    svg_w = crop.width
+    svg_h = crop.height
 
     if ctx.use_transform_matrix:
         x = svg_x
@@ -3351,32 +4312,13 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         w = ctx_w(svg_w, ctx)
         h = ctx_h(svg_h, ctx)
 
-    src_rect_xml = ''
-    view_box = elem.get('viewBox', '')
-    if view_box:
-        parts = view_box.strip().split()
-        if len(parts) == 4:
-            vb_x, vb_y, vb_w, vb_h = (float(p) for p in parts)
-            l = max(0, min(int(round(vb_x * 100000)), 100000))
-            t = max(0, min(int(round(vb_y * 100000)), 100000))
-            r = max(0, min(int(round((1.0 - vb_x - vb_w) * 100000)), 100000))
-            b = max(0, min(int(round((1.0 - vb_y - vb_h) * 100000)), 100000))
-            if l or t or r or b:
-                src_rect_xml = f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
+    src_rect_xml = (
+        f'<a:srcRect l="{crop.src_l}" t="{crop.src_t}" '
+        f'r="{crop.src_r}" b="{crop.src_b}"/>'
+    )
 
-    if href.startswith('data:'):
-        decoded = _decode_data_image_uri(href)
-        if decoded is None:
-            return None
-        img_format, img_data = decoded
-    else:
-        if ctx.svg_dir is None:
-            return None
-        img_path = _resolve_external_image(ctx.svg_dir, href)
-        img_format = img_path.suffix.lstrip('.').lower()
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = img_path.read_bytes()
+    img_format = source.img_format
+    img_data = source.img_data
 
     img_data, img_format = _optimize_image_for_pptx(
         image_elem, ctx, img_data, img_format, w, h,
