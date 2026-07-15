@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import colorsys
 import re
+from collections.abc import Callable
 from xml.etree import ElementTree as ET
 
 from .emu_units import NS
@@ -223,13 +224,80 @@ class ColorPalette:
     names (lt1/dk1) — this is rarely overridden but must be honored.
     """
 
-    def __init__(self, master: PartRef | None, theme: PartRef | None) -> None:
+    def __init__(
+        self,
+        master: PartRef | None,
+        theme: PartRef | None,
+        *,
+        strict: bool = True,
+        diagnostic_sink: Callable[[str, str, str], None] | None = None,
+    ) -> None:
         self.scheme: dict[str, str] = {}
         self.clr_map: dict[str, str] = {}
+        self.strict = strict
+        self.diagnostic_sink = diagnostic_sink
         if theme is not None:
-            self._load_scheme(theme)
+            try:
+                self._load_scheme(theme)
+            except ValueError as exc:
+                if strict:
+                    raise
+                self.scheme.clear()
+                self._diagnose(
+                    "theme-color-scheme-normalized",
+                    str(exc),
+                    "read recognized theme color slots",
+                )
+                self._load_scheme_compatible(theme)
         if master is not None:
-            self._load_clr_map(master)
+            try:
+                self._load_clr_map(master)
+            except ValueError as exc:
+                if strict:
+                    raise
+                self.clr_map.clear()
+                self._diagnose(
+                    "theme-color-map-normalized",
+                    str(exc),
+                    "read recognized color-map entries",
+                )
+                self._load_clr_map_compatible(master)
+
+    def _diagnose(self, code: str, message: str, fallback: str) -> None:
+        if self.diagnostic_sink is not None:
+            self.diagnostic_sink(code, message, fallback)
+
+    def _load_scheme_compatible(self, theme: PartRef) -> None:
+        """Read recognizable theme slots without requiring canonical wrapper XML."""
+        clr_scheme = theme.xml.find(".//a:clrScheme", NS)
+        if clr_scheme is None:
+            return
+        for slot in clr_scheme:
+            if not isinstance(slot.tag, str):
+                continue
+            name = slot.tag.rsplit("}", 1)[-1]
+            color = next(
+                (
+                    child
+                    for child in slot
+                    if isinstance(child.tag, str)
+                    and child.tag.rsplit("}", 1)[-1] in COLOR_TAGS
+                ),
+                None,
+            )
+            hex_, _alpha = resolve_color(color, None, strict=False)
+            if hex_ is not None:
+                self.scheme[name] = hex_[1:]
+
+    def _load_clr_map_compatible(self, master: PartRef) -> None:
+        """Read valid known clrMap entries and ignore unrelated extensions."""
+        clr_map = master.xml.find("p:clrMap", NS)
+        if clr_map is None:
+            return
+        for source in _COLOR_MAP_SOURCES:
+            target = clr_map.attrib.get(source)
+            if target in _THEME_SCHEME_SLOTS:
+                self.clr_map[source] = target
 
     def _load_scheme(self, theme: PartRef) -> None:
         theme_root = theme.xml
@@ -395,6 +463,7 @@ def resolve_color(
     palette: ColorPalette | None,
     *,
     placeholder_hex: str | None = None,
+    strict: bool | None = None,
 ) -> tuple[str | None, float]:
     """Resolve a color element to (#RRGGBB, alpha).
 
@@ -409,6 +478,45 @@ def resolve_color(
     """
     if color_elem is None:
         return None, 1.0
+
+    effective_strict = palette.strict if strict is None and palette is not None else strict
+    if effective_strict is None:
+        effective_strict = True
+    try:
+        return _resolve_color_closed(
+            color_elem,
+            palette,
+            placeholder_hex=placeholder_hex,
+        )
+    except ValueError as exc:
+        if effective_strict:
+            raise
+        if palette is not None:
+            palette._diagnose(
+                "color-structure-normalized",
+                str(exc),
+                "retain recognized color attributes and modifiers",
+            )
+        compatible = _compatible_color_element(color_elem)
+        if compatible is None:
+            return None, 1.0
+        try:
+            return _resolve_color_closed(
+                compatible,
+                palette,
+                placeholder_hex=placeholder_hex,
+            )
+        except (KeyError, TypeError, ValueError):
+            return None, 1.0
+
+
+def _resolve_color_closed(
+    color_elem: ET.Element,
+    palette: ColorPalette | None,
+    *,
+    placeholder_hex: str | None = None,
+) -> tuple[str | None, float]:
+    """Resolve the registered closed DrawingML color grammar."""
 
     tag = color_elem.tag.split("}", 1)[-1]
     base_hex: str | None = None
@@ -437,6 +545,48 @@ def resolve_color(
     # Apply modifiers (children of the color element).
     base_hex, alpha = _apply_modifiers(base_hex, color_elem)
     return f"#{base_hex}", alpha
+
+
+def _compatible_color_element(color_elem: ET.Element) -> ET.Element | None:
+    """Return a canonical clone containing only recognized color semantics."""
+    if not isinstance(color_elem.tag, str):
+        return None
+    tag = color_elem.tag.rsplit("}", 1)[-1]
+    base_attributes = {
+        "srgbClr": ("val",),
+        "schemeClr": ("val",),
+        "sysClr": ("val", "lastClr"),
+        "prstClr": ("val",),
+        "hslClr": ("hue", "sat", "lum"),
+        "scrgbClr": ("r", "g", "b"),
+    }.get(tag)
+    if base_attributes is None or color_elem.tag != f"{{{NS['a']}}}{tag}":
+        return None
+
+    clone = ET.Element(color_elem.tag)
+    for attr in base_attributes:
+        value = color_elem.attrib.get(attr)
+        if value is not None:
+            clone.set(attr, value)
+
+    for child in color_elem:
+        if not isinstance(child.tag, str):
+            continue
+        name = child.tag.rsplit("}", 1)[-1]
+        if child.tag != f"{{{NS['a']}}}{name}":
+            continue
+        if name in _COLOR_MODIFIER_FLAG_NAMES:
+            clone.append(ET.Element(child.tag))
+            continue
+        if name not in _COLOR_MODIFIER_PERCENT_RANGES and name != "hueOff":
+            continue
+        value = child.attrib.get("val")
+        if value is None:
+            continue
+        modifier = ET.Element(child.tag)
+        modifier.set("val", value)
+        clone.append(modifier)
+    return clone
 
 
 def _srgb_hex_value(color_elem: ET.Element) -> str:
