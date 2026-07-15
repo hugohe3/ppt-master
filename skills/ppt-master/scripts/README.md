@@ -81,22 +81,23 @@ Template source import:
 python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
-python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir>
+python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
 ```
 
-`svg_authoring_view.py` creates a lightweight, non-destructive inspection copy
-of PPTX-imported SVGs. It removes embedded `txbody` payloads,
+`svg_authoring_view.py` creates a lightweight, non-destructive editable IR
+bundle from PPTX-imported SVGs. It removes embedded `txbody` payloads,
 duplicate hidden geometry carriers, and import-identity attributes from the
 copy while retaining visible fallback geometry, text, images, stable element
-ids, root Master/Layout markers, and selected native-shape intent for
-inspection.
+ids, root Master/Layout markers, selected native-shape intent, and
+document-local `data-pptx-source-ref` values.
 Relative local image references are rewritten so the projected copy still
-renders from its new location. The full imported SVG remains unchanged and is
-the evidence source for mirror restoration; the projection is inspection-only.
-The exporter never reads the import workspace or the projection. A projected
-view is not a final template or release export source.
+renders from its new location. The bundle's `authoring_manifest.json` records
+source/authoring hashes and object paths without duplicating opaque payload.
+The full imported SVG remains unchanged as native-payload backing. Template
+creation edits the IR and materializes validated `templates/*.svg`; the IR
+directory itself is not a final template or direct release export source.
 
 `template_preview_pptx.py` reads a template workspace, exports every `templates/*.svg` prototype as one structured review slide, and verifies the resulting Master/Layout package. This is an on-demand review action: its default output is `exports/<template_id>_template_preview.pptx`, and that directory need not exist before the command runs. It refuses an existing output unless an intentional re-export passes `--force`. `--visual-only` is an explicit migration aid for legacy SVG rosters: it creates a slide-local visual review deck without validating or claiming a reusable Master/Layout contract. This diagnostic path does not require a project `spec_lock.md`; it may retain generic theme/text defaults inside its clean one-Master/one-Layout shell. New structured templates use the default mode when a review deck is requested.
 
@@ -160,6 +161,8 @@ the flat view with `--reuse-inventory`; matching flat subtrees reference the
 existing layered asset instead of creating a duplicate file. Only unmatched
 flat-only vectors create new assets. Create-template stores these assets once in
 `<workspace>/icons/imported/` and writes `data-icon="imported/<name>"` references.
+Inventories retain any `data-pptx-source-ref` values carried by the extracted
+subtree, so re-inlining preserves authoring-manifest object identity.
 Rerunning a namespaced pass against an already rewritten projection inventories
 the existing references without progressively wrapping more parent geometry.
 

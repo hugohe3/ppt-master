@@ -90,7 +90,7 @@ description: >
 | `${SKILL_DIR}/scripts/latex_render.py` | LaTeX formula rendering (manifest-driven PNG assets) |
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
 | `${SKILL_DIR}/scripts/slice_images.py` | Slice one AI illustration sheet into individual spot-illustration elements |
-| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight non-destructive inspection projection of PPTX-imported SVGs; never a release source |
+| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight editable authoring IR bundle and compact provenance manifest from PPTX-imported SVGs |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/preset_shape_svg.py` | Print one compact registry-backed native PowerPoint preset `<g>` to stdout for page or template insertion |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
@@ -140,12 +140,16 @@ Master/Layout topology is neither preserved nor distilled. `mirror` is a
 restoration path: preserve the source slide roster/order, visual appearance,
 Master/Layout parentage and identities, placeholder type/index/bounds, native
 object ownership, and supported native-shape metadata. The lossless import is
-the restoration authority; the lightweight authoring projection exists only to
-keep model context small. Mechanical normalization may express the source facts
-in the current explicit SVG contract and expand fixed-layer group wrappers into
-direct atoms, but it MUST NOT merge, split, promote, demote, rename, or
-re-parent source structure. Export compiles the selected contract and never
-infers a different one. Mirror emits one complete page prototype per source
+the native-payload backing store; the `authoring-svg/` bundle and its
+`authoring_manifest.json` are the only editable template-creation IR. Stable
+document-local source references let mirror materialization reuse unchanged
+native payload without putting it in model context. Mechanical normalization
+may express the source facts in the current explicit SVG contract and expand
+fixed-layer group wrappers into direct atoms, but it MUST NOT merge, split,
+promote, demote, rename, or re-parent source structure. The IR is materialized
+into validated `templates/*.svg` before export; it is not itself a release SVG
+directory. Export compiles the selected contract and never infers a different
+one. Mirror emits one complete page prototype per source
 Slide plus one definition-only `layout_<layout_key>.svg` prototype for every
 source Layout unused by those Slides. The independent Master/Layout roster then
 registers the complete supported source graph without publishing synthetic

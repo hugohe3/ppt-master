@@ -69,7 +69,7 @@ native_structure_mode: structured
 
 导入向量统一使用 `data-icon="imported/<name>"`，唯一规范文件位于 `icons/imported/<name>.svg`。具备工作区感知的校验与导出会直接解析这个根目录路径；`templates/icons/` 不属于模板包结构。
 
-原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据；轻量 authoring projection 移除大体积载荷与重复 carrier，只供模型检查，永远不是导出源。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback。导出只编译声明的结构，不推断归属。
+原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
 
 两种范围都在可移植 frontmatter 中保留 `kind: layout` 或 `kind: deck`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 

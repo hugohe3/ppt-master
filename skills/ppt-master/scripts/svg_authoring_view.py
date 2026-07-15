@@ -2,23 +2,27 @@
 """
 PPT Master - SVG Authoring View
 
-Create a lightweight, non-destructive view of PPTX-imported SVG files for
-human or model inspection. The source SVG remains the round-trip authority;
-the output copy keeps visible SVG content and compact shape intent while
-hiding bulky import-only payloads and duplicate hidden geometry carriers.
+Create a lightweight, non-destructive editable IR from PPTX-imported SVG
+files. The source SVG remains the native-payload authority; the authoring copy
+keeps visible SVG content, compact shape intent, and stable source references
+while hiding bulky import-only payloads and duplicate hidden geometry carriers.
 
 Usage:
-    python3 scripts/svg_authoring_view.py <svg-file-or-directory> -o <output-dir>
+    python3 scripts/svg_authoring_view.py <svg-file-or-directory> \
+        -o <output-dir> --projection-kind <kind>
 
 Examples:
-    python3 scripts/svg_authoring_view.py analysis/source_svg_import/svg-flat -o analysis/authoring-svg
-    python3 scripts/svg_authoring_view.py imported/slide_06.svg -o /tmp/slide-authoring-view
+    python3 scripts/svg_authoring_view.py analysis/source_svg_import/svg \
+        -o analysis/authoring-svg --projection-kind layered
+    python3 scripts/svg_authoring_view.py imported/slide_06.svg \
+        -o /tmp/slide-authoring-view --projection-kind generic
 
 Dependencies:
     None (standard library only).
 
-This tool produces an inspection/authoring projection, not a final template or
-release export source. Keep the complete imported SVG for native restoration.
+The output directory is an authoring bundle: editable SVGs plus one
+`authoring_manifest.json` provenance sidecar. It is the template-creation input,
+not a release SVG directory; final templates are materialized from this IR.
 Directory runs prepare and stage the complete batch before publishing it, so a
 failed page leaves the existing destination set unchanged.
 """
@@ -26,6 +30,7 @@ failed page leaves the existing destination set unchanged.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -44,6 +49,9 @@ configure_utf8_stdio()
 
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
+AUTHORING_MANIFEST_NAME = "authoring_manifest.json"
+AUTHORING_SCHEMA = "ppt-master.svg-authoring-ir.v1"
+SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -62,11 +70,159 @@ IMPORT_SOURCE_ATTRIBUTES = {
 # Compact native-shape intent is intentionally not in the removal set:
 # data-pptx-object, data-pptx-prst, and data-pptx-frame remain useful while
 # reviewing the visible fallback. Structural markers also pass through
-# unchanged; this projection never defines restoration policy.
+# unchanged; the IR records identity but never decides payload-restoration
+# policy.
 
 
 def _local_name(name: object) -> str:
     return name.rsplit("}", 1)[-1] if isinstance(name, str) else ""
+
+
+@dataclass
+class SourceReference:
+    source_ref: str
+    source_path: tuple[int, ...]
+    initial_authoring_subtree_sha256: str | None = None
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "source_path": list(self.source_path),
+            "initial_authoring_subtree_sha256": self.initial_authoring_subtree_sha256,
+        }
+
+
+def _semantic_text(value: str | None) -> str | None:
+    if value is None or not value.strip():
+        return None
+    return value
+
+
+def _stable_tag_name(tag: object) -> str:
+    if isinstance(tag, str):
+        return tag
+    if tag is ET.Comment:
+        return "#comment"
+    if tag is ET.ProcessingInstruction:
+        return "#processing-instruction"
+    raise ValueError(f"Unsupported XML node type in source object: {tag!r}")
+
+
+def _subtree_sha256(
+    element: ET.Element,
+    *,
+    ignored_attributes: frozenset[str] = frozenset(),
+) -> str:
+    """Hash parsed SVG semantics without attribute order or indentation noise."""
+    digest = hashlib.sha256()
+
+    def visit(item: ET.Element) -> None:
+        digest.update(_stable_tag_name(item.tag).encode("utf-8"))
+        for name, value in sorted(item.attrib.items()):
+            if name in ignored_attributes:
+                continue
+            digest.update(b"\0a")
+            digest.update(name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(value.encode("utf-8"))
+        text = _semantic_text(item.text)
+        if text is not None:
+            digest.update(b"\0t")
+            digest.update(text.encode("utf-8"))
+        for child in item:
+            digest.update(b"\0c")
+            visit(child)
+            tail = _semantic_text(child.tail)
+            if tail is not None:
+                digest.update(b"\0l")
+                digest.update(tail.encode("utf-8"))
+        digest.update(b"\0e")
+
+    visit(element)
+    return digest.hexdigest()
+
+
+def _iter_element_paths(
+    root: ET.Element,
+) -> list[tuple[tuple[int, ...], ET.Element]]:
+    indexed: list[tuple[tuple[int, ...], ET.Element]] = []
+
+    def walk(element: ET.Element, path: tuple[int, ...]) -> None:
+        indexed.append((path, element))
+        for index, child in enumerate(element):
+            walk(child, (*path, index))
+
+    walk(root, ())
+    return indexed
+
+
+def _source_reference(element: ET.Element) -> str | None:
+    if not element.get("id") or not element.get("data-pptx-object"):
+        return None
+    scope = element.get("data-pptx-shape-scope")
+    shape_id = element.get("data-pptx-shape-id")
+    if not scope or not shape_id:
+        return None
+    return f"{scope}:{shape_id}"
+
+
+def _stamp_source_references(root: ET.Element) -> list[SourceReference]:
+    existing = [
+        element
+        for _, element in _iter_element_paths(root)
+        if element.get(SOURCE_REF_ATTRIBUTE) is not None
+    ]
+    if existing:
+        raise ValueError(
+            f"Input already contains reserved {SOURCE_REF_ATTRIBUTE}; "
+            "project from the lossless import SVG instead"
+        )
+
+    references: list[SourceReference] = []
+    seen: set[str] = set()
+    for path, element in _iter_element_paths(root):
+        source_ref = _source_reference(element)
+        if source_ref is None:
+            continue
+        if source_ref in seen:
+            raise ValueError(f"Duplicate source object identity: {source_ref}")
+        seen.add(source_ref)
+        references.append(
+            SourceReference(
+                source_ref=source_ref,
+                source_path=path,
+            )
+        )
+        element.set(SOURCE_REF_ATTRIBUTE, source_ref)
+    return references
+
+
+def _index_initial_authoring_references(
+    root: ET.Element,
+    references: list[SourceReference],
+) -> None:
+    by_ref = {reference.source_ref: reference for reference in references}
+    seen: set[str] = set()
+    for element in root.iter():
+        source_ref = element.get(SOURCE_REF_ATTRIBUTE)
+        if source_ref is None:
+            continue
+        if source_ref in seen:
+            raise ValueError(f"Duplicate authoring source reference: {source_ref}")
+        reference = by_ref.get(source_ref)
+        if reference is None:
+            raise ValueError(f"Unknown authoring source reference: {source_ref}")
+        seen.add(source_ref)
+        reference.initial_authoring_subtree_sha256 = _subtree_sha256(
+            element,
+            ignored_attributes=frozenset({SOURCE_REF_ATTRIBUTE}),
+        )
+
+    missing = sorted(set(by_ref) - seen)
+    if missing:
+        raise ValueError(
+            "Authoring projection dropped source-referenced object(s): "
+            + ", ".join(missing[:5])
+        )
 
 
 @dataclass
@@ -104,6 +260,9 @@ class ProjectionReport:
     original_bytes: int
     projected_bytes: int
     stats: ProjectionStats
+    source_sha256: str
+    initial_authoring_sha256: str
+    source_references: list[SourceReference]
 
     def as_dict(self) -> dict[str, object]:
         saved = self.original_bytes - self.projected_bytes
@@ -115,6 +274,9 @@ class ProjectionReport:
             "projected_bytes": self.projected_bytes,
             "bytes_saved": saved,
             "reduction_percent": round(reduction, 2),
+            "source_sha256": self.source_sha256,
+            "initial_authoring_sha256": self.initial_authoring_sha256,
+            "source_ref_count": len(self.source_references),
             "removed": self.stats.as_dict(),
         }
 
@@ -251,10 +413,12 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
     if _local_name(root.tag) != "svg":
         raise ValueError(f"Root element is not <svg>: {source}")
 
+    source_references = _stamp_source_references(root)
     stats = ProjectionStats()
     _project_subtree(root, stats)
     _strip_import_attributes(root, stats)
     _rewrite_asset_references(root, source.parent, output.parent, stats)
+    _index_initial_authoring_references(root, source_references)
 
     projected = ET.tostring(root, encoding="utf-8", xml_declaration=False)
     if not projected.endswith(b"\n"):
@@ -266,31 +430,55 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
         original_bytes=len(original),
         projected_bytes=len(projected),
         stats=stats,
+        source_sha256=hashlib.sha256(original).hexdigest(),
+        initial_authoring_sha256=hashlib.sha256(projected).hexdigest(),
+        source_references=source_references,
     )
     return report, projected
 
 
-def project_svg(source: Path, output: Path) -> ProjectionReport:
-    """Write one lightweight authoring projection without changing the source."""
-    report, projected = _render_projection(source, output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    temporary: Path | None = None
+def _portable_path(path: Path, base: Path) -> str:
     try:
-        with tempfile.NamedTemporaryFile(
-            mode="wb",
-            prefix=f".{output.name}.",
-            suffix=".tmp",
-            dir=output.parent,
-            delete=False,
-        ) as stream:
-            temporary = Path(stream.name)
-            stream.write(projected)
-        temporary.replace(output)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-    return report
+        return os.path.relpath(path, base).replace(os.sep, "/")
+    except ValueError:
+        return path.resolve().as_uri()
+
+
+def _authoring_manifest_bytes(
+    reports: list[ProjectionReport],
+    source_root: Path,
+    output_dir: Path,
+    projection_kind: str,
+) -> bytes:
+    documents = []
+    for report in sorted(reports, key=lambda item: item.output.as_posix()):
+        documents.append({
+            "source": report.source.relative_to(source_root).as_posix(),
+            "authoring": report.output.relative_to(output_dir).as_posix(),
+            "source_sha256": report.source_sha256,
+            "initial_authoring_sha256": report.initial_authoring_sha256,
+            "source_refs": {
+                reference.source_ref: reference.as_dict()
+                for reference in sorted(
+                    report.source_references,
+                    key=lambda item: item.source_ref,
+                )
+            },
+        })
+
+    payload = {
+        "schema": AUTHORING_SCHEMA,
+        "projection_kind": projection_kind,
+        "source_root": _portable_path(source_root, output_dir),
+        "authoring_root": ".",
+        "source_ref_attribute": SOURCE_REF_ATTRIBUTE,
+        "file_count": len(documents),
+        "source_ref_count": sum(len(report.source_references) for report in reports),
+        "documents": documents,
+    }
+    return (
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
 
 
 def _nearest_existing_directory(path: Path) -> Path:
@@ -354,7 +542,7 @@ def _rollback_published_files(
 
 
 def _publish_existing_directory(
-    staged: list[tuple[ProjectionReport, Path]],
+    staged: list[tuple[Path, Path]],
     staging_root: Path,
     *,
     force: bool,
@@ -362,8 +550,7 @@ def _publish_existing_directory(
     backup_root = staging_root / "previous"
     backups: dict[Path, Path | None] = {}
 
-    for index, (report, _) in enumerate(staged):
-        target = report.output
+    for index, (target, _) in enumerate(staged):
         if not os.path.lexists(target):
             backups[target] = None
             continue
@@ -372,7 +559,7 @@ def _publish_existing_directory(
         if target.is_dir() and not target.is_symlink():
             raise IsADirectoryError(f"Output target is a directory: {target}")
 
-        backup = backup_root / f"{index:06d}.svg"
+        backup = backup_root / f"{index:06d}.bak"
         backup.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(target, backup, follow_symlinks=False)
         backups[target] = backup
@@ -380,22 +567,21 @@ def _publish_existing_directory(
     created: list[Path] = []
     published: list[tuple[Path, Path | None]] = []
     try:
-        for report, _ in staged:
-            _ensure_directory(report.output.parent, created)
+        for target, _ in staged:
+            _ensure_directory(target.parent, created)
 
         staging_device = staging_root.stat().st_dev
-        for report, _ in staged:
-            if report.output.parent.stat().st_dev != staging_device:
+        for target, _ in staged:
+            if target.parent.stat().st_dev != staging_device:
                 raise OSError(
-                    f"Cannot atomically publish across filesystems: {report.output}"
+                    f"Cannot atomically publish across filesystems: {target}"
                 )
-            if backups[report.output] is None and os.path.lexists(report.output):
+            if backups[target] is None and os.path.lexists(target):
                 raise FileExistsError(
-                    f"Output appeared while projections were staged: {report.output}"
+                    f"Output appeared while projections were staged: {target}"
                 )
 
-        for report, staged_file in staged:
-            target = report.output
+        for target, staged_file in staged:
             staged_file.replace(target)
             published.append((target, backups[target]))
     except OSError as exc:
@@ -410,11 +596,13 @@ def _publish_existing_directory(
 
 def project_svg_batch(
     mapping: list[tuple[Path, Path]],
+    source_root: Path,
     output_dir: Path,
     *,
     force: bool,
+    projection_kind: str,
 ) -> list[ProjectionReport]:
-    """Project and publish a directory mapping as one recoverable transaction."""
+    """Build and publish one complete authoring bundle transactionally."""
     rendered = [_render_projection(source, output) for source, output in mapping]
     staging_parent = _nearest_existing_directory(output_dir.parent)
 
@@ -424,14 +612,26 @@ def project_svg_batch(
     ) as temporary:
         staging_root = Path(temporary)
         new_root = staging_root / "projected"
-        staged: list[tuple[ProjectionReport, Path]] = []
+        staged: list[tuple[Path, Path]] = []
 
         for report, projected in rendered:
             relative = report.output.relative_to(output_dir)
             staged_file = new_root / relative
             staged_file.parent.mkdir(parents=True, exist_ok=True)
             staged_file.write_bytes(projected)
-            staged.append((report, staged_file))
+            staged.append((report.output, staged_file))
+
+        manifest_path = output_dir / AUTHORING_MANIFEST_NAME
+        staged_manifest = new_root / AUTHORING_MANIFEST_NAME
+        staged_manifest.write_bytes(
+            _authoring_manifest_bytes(
+                [report for report, _ in rendered],
+                source_root,
+                output_dir,
+                projection_kind,
+            )
+        )
+        staged.append((manifest_path, staged_manifest))
 
         if not output_dir.exists():
             created: list[Path] = []
@@ -490,7 +690,7 @@ def _source_mapping(input_path: Path, output_dir: Path) -> list[tuple[Path, Path
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Create lightweight, non-destructive authoring views of PPTX-imported SVG files."
+            "Create lightweight editable IR bundles from PPTX-imported SVG files."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -505,7 +705,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Replace projected files that already exist (never changes source files)",
+        help=(
+            "Replace authoring files/manifest that already exist "
+            "(never changes source files)"
+        ),
+    )
+    parser.add_argument(
+        "--projection-kind",
+        choices=("layered", "flat", "generic"),
+        default="generic",
+        help="Record the IR representation kind in authoring_manifest.json",
     )
     return parser
 
@@ -537,9 +746,13 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
 
     collisions = [target for _, target in mapping if os.path.lexists(target)]
+    manifest_path = output_dir / AUTHORING_MANIFEST_NAME
+    if os.path.lexists(manifest_path):
+        collisions.append(manifest_path)
     if collisions and not args.force:
         print(
-            f"Error: {len(collisions)} output file(s) already exist; use --force to replace projections. "
+            f"Error: {len(collisions)} output file(s) already exist; "
+            "use --force to replace the authoring bundle. "
             f"First collision: {collisions[0]}",
             file=sys.stderr,
         )
@@ -547,15 +760,14 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     reports: list[ProjectionReport] = []
     try:
-        if input_path.is_file():
-            source, output = mapping[0]
-            reports.append(project_svg(source, output))
-        else:
-            reports = project_svg_batch(
-                mapping,
-                output_dir,
-                force=args.force,
-            )
+        source_root = input_path if input_path.is_dir() else input_path.parent
+        reports = project_svg_batch(
+            mapping,
+            source_root,
+            output_dir,
+            force=args.force,
+            projection_kind=args.projection_kind,
+        )
     except (ET.ParseError, OSError, RuntimeError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -573,6 +785,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     result = {
         "input": str(input_path),
         "output_dir": str(output_dir),
+        "manifest": str(output_dir / AUTHORING_MANIFEST_NAME),
+        "projection_kind": args.projection_kind,
         "file_count": len(reports),
         "files": [report.as_dict() for report in reports],
         "totals": {
