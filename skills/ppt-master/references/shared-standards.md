@@ -770,6 +770,9 @@ The local SVG gradient rotates with its containing geometry. Imported
 base default or be the exact XML booleans `1` / `true`. Explicit `0` / `false`
 and malformed booleans stop import instead of detaching the gradient direction
 from the shape during rotation.
+The imported `a:gradFill` attribute set is closed to `flip` and
+`rotWithShape`; unknown, namespaced, or misspelled attributes stop import rather
+than being ignored as if their semantics were already supported.
 Project SVG has no gradient-tile flip mapping. Imported `a:gradFill@flip` may
 therefore be omitted for the documented Office `none` baseline or be exactly
 `none`; `x`, `y`, `xy`, malformed, and unknown values stop import instead of

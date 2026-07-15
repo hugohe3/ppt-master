@@ -3102,6 +3102,23 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_flip(flip)
 
+    def test_native_gradient_rejects_unknown_attributes(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:future="urn:future">
+  <a:gradFill futureMode="x" future:mode="y">
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            'Unsupported DrawingML gradient fill attribute',
+        ):
+            resolve_fill(sp_pr, None)
+
     def test_native_gradient_tile_rect_must_cover_full_area(self):
         def resolve_tile_rect(tile_rect: str):
             sp_pr = ET.fromstring(f'''

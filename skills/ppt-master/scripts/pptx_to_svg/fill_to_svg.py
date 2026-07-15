@@ -125,6 +125,7 @@ def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
 def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                        prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
+    _validate_gradient_attributes(elem)
     _validate_gradient_rotation(elem)
     _validate_gradient_flip(elem)
     _validate_gradient_tile_rect(elem)
@@ -279,6 +280,16 @@ def _validate_gradient_rotation(gradient: ET.Element) -> None:
         raise ValueError(
             "DrawingML gradients that do not rotate with their shape are "
             "not representable by the local SVG mapping"
+        )
+
+
+def _validate_gradient_attributes(gradient: ET.Element) -> None:
+    """Reject attributes outside the registered gradient-fill contract."""
+    unsupported = sorted(set(gradient.attrib) - {"flip", "rotWithShape"})
+    if unsupported:
+        raise ValueError(
+            "Unsupported DrawingML gradient fill attribute(s): "
+            + ", ".join(unsupported)
         )
 
 
