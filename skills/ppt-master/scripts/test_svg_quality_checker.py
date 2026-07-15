@@ -2793,6 +2793,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="{position}"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:lin ang="0"/>
   </a:gradFill>
@@ -2832,6 +2833,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs{pos_attr}><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
   </a:gradFill>
 </p:spPr>''')
@@ -2850,11 +2852,40 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ),
             (
                 '<a:gsLst/>',
-                'requires at least one color stop',
+                'requires at least two color stops',
             ),
             (
                 '<a:gsLst><a:gs pos="0"/></a:gsLst>',
+                'requires at least two color stops',
+            ),
+            (
+                '<a:gsLst>'
+                '<a:gs pos="0"/>'
+                '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
+                '</a:gsLst>',
                 'gradient stop color cannot be resolved',
+            ),
+            (
+                '<a:gsLst future="x">'
+                '<a:gs pos="0"><a:srgbClr val="112233"/></a:gs>'
+                '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
+                '</a:gsLst>',
+                'Invalid DrawingML gradient stop list structure',
+            ),
+            (
+                '<a:gsLst>'
+                '<a:gs pos="0"><a:srgbClr val="112233"/></a:gs>'
+                '<a:future/>'
+                '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
+                '</a:gsLst>',
+                'Invalid DrawingML gradient stop list structure',
+            ),
+            (
+                '<a:gsLst>payload'
+                '<a:gs pos="0"><a:srgbClr val="112233"/></a:gs>'
+                '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
+                '</a:gsLst>',
+                'Invalid DrawingML gradient stop list structure',
             ),
             (
                 '<a:gsLst>'
@@ -2890,6 +2921,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:lin{angle_attr}{scaled_attr}/>
   </a:gradFill>
@@ -2923,6 +2955,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:lin ang="{angle}"/>
   </a:gradFill>
@@ -2939,6 +2972,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:lin ang="{angle}"{scaled_attr}/>
   </a:gradFill>
@@ -2983,6 +3017,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     {linear_direction}
   </a:gradFill>
@@ -3007,6 +3042,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     {directions}
   </a:gradFill>
@@ -3023,6 +3059,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
   </a:gradFill>
 </p:spPr>''')
@@ -3043,6 +3080,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:path{path_attr}/>
   </a:gradFill>
@@ -3082,6 +3120,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     {path_direction}
   </a:gradFill>
@@ -3103,6 +3142,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill{rotation_attr}>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
   </a:gradFill>
 </p:spPr>''')
@@ -3137,6 +3177,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill{flip_attr}>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
   </a:gradFill>
 </p:spPr>''')
@@ -3162,6 +3203,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill futureMode="x" future:mode="y">
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
   </a:gradFill>
 </p:spPr>''')
@@ -3179,6 +3221,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     {tile_rect}
   </a:gradFill>
@@ -3236,6 +3279,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
   <a:gradFill>
     <a:gsLst>
       <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+      <a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>
     </a:gsLst>
     <a:path path="circle">{focus_rect}</a:path>
   </a:gradFill>
@@ -3357,7 +3401,8 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ),
             (
                 '<a:gradFill><a:gsLst><a:gs pos="0">'
-                '<a:srgbClr val="445566"/></a:gs></a:gsLst></a:gradFill>',
+                '<a:srgbClr val="445566"/></a:gs><a:gs pos="100000">'
+                '<a:srgbClr val="778899"/></a:gs></a:gsLst></a:gradFill>',
                 '#445566',
             ),
         )

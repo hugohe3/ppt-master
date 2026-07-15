@@ -140,11 +140,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         raise ValueError(
             "DrawingML gradient fill requires exactly one gsLst"
         )
-    gradient_stops = gs_lists[0].findall("a:gs", NS)
-    if not gradient_stops:
-        raise ValueError(
-            "DrawingML gradient fill requires at least one color stop"
-        )
+    gradient_stops = _gradient_stop_list(gs_lists[0])
     stops_xml = []
     for gs in gradient_stops:
         pos_pct = _gradient_stop_position(gs)
@@ -234,6 +230,26 @@ def _gradient_stop_position(gs: ET.Element) -> float:
             f"0..{PERCENT_UNIT}"
         )
     return position / PERCENT_UNIT
+
+
+def _gradient_stop_list(gs_list: ET.Element) -> list[ET.Element]:
+    """Validate one DrawingML gradient-stop list and return its stops."""
+    stops = list(gs_list)
+    stop_tag = f"{{{NS['a']}}}gs"
+    if (
+        gs_list.attrib
+        or (gs_list.text or "").strip()
+        or any(
+            stop.tag != stop_tag or (stop.tail or "").strip()
+            for stop in stops
+        )
+    ):
+        raise ValueError("Invalid DrawingML gradient stop list structure")
+    if len(stops) < 2:
+        raise ValueError(
+            "DrawingML gradient fill requires at least two color stops"
+        )
+    return stops
 
 
 def _linear_gradient_angle(lin: ET.Element) -> int:
