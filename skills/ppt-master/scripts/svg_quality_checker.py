@@ -340,6 +340,13 @@ except ImportError:
     _validate_local_use_references = None
 
 try:
+    from svg_to_pptx.tspan_flattener import (
+        flatten_positional_tspans as _flatten_positional_tspans,
+    )
+except ImportError:
+    _flatten_positional_tspans = None
+
+try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
         _is_authored_preset_atom as _is_authored_preset_atom,
@@ -3774,6 +3781,7 @@ class SVGQualityChecker:
             svg_path,
             require_structure=require_structure,
         ))
+        self._check_placeholder_carrier_flattening(root, svg_path, result)
         if svg_path.parent.name == 'svg_output':
             self._append_structure_coverage_warnings(root, result)
         if _validate_template_structure_svg is None:
@@ -3784,6 +3792,87 @@ class SVGQualityChecker:
             return
         result['errors'].extend(_validate_template_structure_svg(svg_path))
         result['errors'] = list(dict.fromkeys(result['errors']))
+
+    @staticmethod
+    def _check_placeholder_carrier_flattening(
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Reject slot carriers that export as multiple native children.
+
+        Default export flattens non-mergeable positional ``<tspan>`` lines
+        before converting the surrounding slot group to DrawingML. Reuse that
+        exact transform here so the quality gate fails before the later
+        placeholder-unwrapping step does.
+        """
+        if _flatten_positional_tspans is None:
+            return
+
+        candidate_ids: List[str] = []
+        for slot in root.iter(f'{{{SVG_NS}}}g'):
+            if not (slot.get('data-pptx-placeholder') or '').strip():
+                continue
+            binding = (
+                slot.get('data-pptx-placeholder-binding') or 'carrier'
+            ).strip().lower()
+            if binding != 'carrier':
+                continue
+            visual_children = [
+                child for child in list(slot)
+                if _local_name(child) not in _NON_VISUAL_SVG_TAGS
+            ]
+            carriers = [
+                child for child in visual_children
+                if (child.get('data-pptx-placeholder-carrier') or '')
+                .strip()
+                .lower()
+                == 'true'
+            ]
+            slot_id = (slot.get('id') or '').strip()
+            if not slot_id or len(visual_children) != 1 or len(carriers) != 1:
+                continue
+            if not any(
+                _local_name(descendant) == 'tspan'
+                and any(
+                    descendant.get(name) is not None
+                    for name in ('x', 'y', 'dy')
+                )
+                for descendant in carriers[0].iter()
+            ):
+                continue
+            candidate_ids.append(slot_id)
+
+        if not candidate_ids:
+            return
+
+        flattened_root = copy.deepcopy(root)
+        _flatten_positional_tspans(
+            ET.ElementTree(flattened_root),
+            merge_paragraphs=True,
+        )
+        slots_by_id = {
+            (slot.get('id') or '').strip(): slot
+            for slot in flattened_root.iter(f'{{{SVG_NS}}}g')
+            if (slot.get('id') or '').strip()
+        }
+        for slot_id in candidate_ids:
+            slot = slots_by_id.get(slot_id)
+            if slot is None:
+                continue
+            native_children = [
+                child for child in list(slot)
+                if _local_name(child) not in _NON_VISUAL_SVG_TAGS
+            ]
+            if len(native_children) == 1:
+                continue
+            result['errors'].append(
+                f"{svg_path.name}: placeholder slot {slot_id} becomes "
+                f"{len(native_children)} native children after positional "
+                "<tspan> flattening; a carrier-bound slot must export as one "
+                "text or picture carrier. Use one mergeable dy-stacked text "
+                "frame, or move independently positioned lines outside the slot"
+            )
 
     @staticmethod
     def _append_structure_coverage_warnings(
