@@ -50,6 +50,8 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 
 ## 2. Master, Layout, background, and placeholder features
 
+**Route boundary**: Free-design and brand-only projects in the main SVG pipeline remain on `pptx_structure.mode: flat` from planning through export; `flat` is not a provisional state awaiting an exporter upgrade. Repeated logos, footers, or layouts never cause export to switch to `structured`, promote content into a Master/Layout, infer placeholders, or deduplicate objects. Output that requires reusable native Master, Layout, or placeholder behavior must enter Step 3 with a validated deck/layout template workspace; when none exists, run [`create-template`](../skills/ppt-master/workflows/create-template.md) first and return to the main pipeline with that workspace. The minimal Master and Blank Layout emitted by flat export are PPTX package scaffolding, not a design master derived from the slides. Filling new content into a raw PPTX template remains the [`template-fill-pptx`](../skills/ppt-master/workflows/template-fill-pptx.md) route.
+
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Free-design deck structure | `pptx_structure.mode: flat`; page content remains slide-local | One clean project Master and one Blank Layout, with represented objects on slides | `Native-stable` package topology for the flat route | No authored Master/Layout/layer/placeholder metadata is allowed |
