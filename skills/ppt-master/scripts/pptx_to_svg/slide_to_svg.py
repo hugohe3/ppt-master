@@ -1468,7 +1468,7 @@ def _wrap_shape_group(
         sp_pr = node.xml.find("p:spPr", NS)
         if sp_pr is not None and any(
             sp_pr.find(path, NS) is not None
-            for path in ("a:xfrm", "a:prstGeom", "a:custGeom")
+            for path in ("a:prstGeom", "a:custGeom")
         ):
             attrs.append('data-pptx-placeholder-local-geometry="true"')
     if extra_attrs:

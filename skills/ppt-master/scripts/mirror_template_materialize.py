@@ -1527,6 +1527,46 @@ def _apply_placeholder_paint(source: ET.Element, target: ET.Element) -> None:
         target.attrib.pop("style", None)
 
 
+def _remap_placeholder_decorations(
+    decorations: list[ET.Element],
+    from_frame: tuple[float, float, float, float] | None,
+    to_frame: tuple[float, float, float, float] | None,
+) -> None:
+    """Map inherited decoration geometry onto the effective Slide frame."""
+    if from_frame is None or to_frame is None:
+        return
+    if all(
+        math.isclose(source, target, rel_tol=1e-9, abs_tol=1e-9)
+        for source, target in zip(from_frame, to_frame)
+    ):
+        return
+    from_x, from_y, from_width, from_height = from_frame
+    to_x, to_y, to_width, to_height = to_frame
+    scale_x = to_width / from_width
+    scale_y = to_height / from_height
+    translate_x = to_x - from_x * scale_x
+    translate_y = to_y - from_y * scale_y
+    frame_transform = "matrix({})".format(
+        " ".join(
+            _format_number(value)
+            for value in (
+                scale_x,
+                0.0,
+                0.0,
+                scale_y,
+                translate_x,
+                translate_y,
+            )
+        )
+    )
+    for decoration in decorations:
+        existing = (decoration.get("transform") or "").strip()
+        decoration.set(
+            "transform",
+            " ".join(value for value in (frame_transform, existing) if value),
+        )
+
+
 def _resolved_placeholder_decorations(
     source: ET.Element | None,
     layout_guide: ET.Element | None,
@@ -1534,24 +1574,24 @@ def _resolved_placeholder_decorations(
 ) -> list[ET.Element]:
     """Resolve text-placeholder decoration through Slide/Layout/Master."""
     local = _placeholder_decorations(source)
-    if local:
+    local_geometry = (
+        source is not None
+        and source.get("data-pptx-placeholder-local-geometry") == "true"
+    )
+    if local and local_geometry:
         return local
 
     inherited: list[ET.Element] = []
+    inherited_guide: ET.Element | None = None
     for candidate in (layout_guide, master_guide):
         inherited = _placeholder_decorations(candidate)
         if inherited:
+            inherited_guide = candidate
             break
-    if (
-        source is None
-        or source.get("data-pptx-placeholder-local-geometry") != "true"
-        or len(inherited) != 1
-    ):
-        return inherited
+    if not inherited:
+        return local
 
-    source_geometry = _placeholder_geometry(source)
-    inherited_tag = _local_name(inherited[0].tag)
-    if not source_geometry or inherited_tag not in {
+    geometry_tags = {
         "circle",
         "ellipse",
         "line",
@@ -1559,7 +1599,32 @@ def _resolved_placeholder_decorations(
         "polygon",
         "polyline",
         "rect",
-    }:
+    }
+    if local and not local_geometry:
+        if (
+            len(local) != 1
+            or len(inherited) != 1
+            or _local_name(local[0].tag) not in geometry_tags
+            or _local_name(inherited[0].tag) not in geometry_tags
+        ):
+            return local
+        _apply_placeholder_paint(local[0], inherited[0])
+
+    if (
+        source is None
+        or not local_geometry
+        or len(inherited) != 1
+    ):
+        _remap_placeholder_decorations(
+            inherited,
+            _frame(inherited_guide),
+            _frame(source),
+        )
+        return inherited
+
+    source_geometry = _placeholder_geometry(source)
+    inherited_tag = _local_name(inherited[0].tag)
+    if not source_geometry or inherited_tag not in geometry_tags:
         return inherited
     for geometry in source_geometry:
         _apply_placeholder_paint(inherited[0], geometry)
