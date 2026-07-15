@@ -3102,6 +3102,63 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_flip(flip)
 
+    def test_native_gradient_tile_rect_must_cover_full_area(self):
+        def resolve_tile_rect(tile_rect: str):
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    {tile_rect}
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        valid_rects = (
+            '',
+            '<a:tileRect/>',
+            '<a:tileRect l="0" t="+0" r="-0" b="0.0%"/>',
+        )
+        for tile_rect in valid_rects:
+            with self.subTest(valid_tile_rect=tile_rect):
+                self.assertTrue(resolve_tile_rect(tile_rect).defs)
+
+        for tile_rect in (
+            '<a:tileRect l="1"/>',
+            '<a:tileRect t="-1"/>',
+            '<a:tileRect r="1%"/>',
+        ):
+            with self.subTest(nonzero_tile_rect=tile_rect):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Non-zero DrawingML gradient tileRect',
+                ):
+                    resolve_tile_rect(tile_rect)
+
+        for raw in ('', 'NaN', '1e2', '0px', '2147483648'):
+            with self.subTest(invalid_tile_rect_value=raw):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML gradient tileRect l',
+                ):
+                    resolve_tile_rect(f'<a:tileRect l="{raw}"/>')
+
+        invalid_structures = (
+            '<a:tileRect/><a:tileRect/>',
+            '<a:tileRect future="0"/>',
+            '<a:tileRect><a:ext/></a:tileRect>',
+            '<a:tileRect>payload</a:tileRect>',
+        )
+        for tile_rect in invalid_structures:
+            with self.subTest(invalid_tile_rect=tile_rect):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'tileRect',
+                ):
+                    resolve_tile_rect(tile_rect)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
