@@ -40,7 +40,7 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm, format_ooxml_alpha
-from pptx_to_svg.color_resolver import resolve_color
+from pptx_to_svg.color_resolver import ColorPalette, resolve_color
 from pptx_to_svg.effect_to_svg import (
     convert_effects,
     unsupported_target_effect_metadata,
@@ -2953,6 +2953,58 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         resolved = resolve_fill(valid, None)
         self.assertEqual(resolved.attrs['fill'], '#A1B2C3')
         self.assertEqual(resolved.attrs['fill-opacity'], '0.5')
+
+    def test_native_scheme_color_requires_registered_reference(self):
+        invalid_colors = (
+            ('<a:schemeClr/>', 'scheme color structure'),
+            (
+                '<a:schemeClr val="accent1" future="x"/>',
+                'scheme color structure',
+            ),
+            ('<a:schemeClr val="Accent1"/>', 'scheme color value'),
+            ('<a:schemeClr val="accent7"/>', 'scheme color value'),
+            ('<a:schemeClr val=" accent1 "/>', 'scheme color value'),
+            (
+                '<a:schemeClr val="accent1">payload</a:schemeClr>',
+                'scheme color structure',
+            ),
+            (
+                '<a:schemeClr val="accent1"><a:tint val="50000"/>payload'
+                '</a:schemeClr>',
+                'scheme color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:schemeClr xmlns:future="urn:future" val="accent1"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'scheme color structure'):
+            resolve_color(foreign_color, None)
+
+        palette = ColorPalette(None, None)
+        palette.scheme['accent1'] = '112233'
+        accent = ET.fromstring(
+            f'<a:schemeClr {namespace} val="accent1"/>'
+        )
+        self.assertEqual(resolve_color(accent, palette), ('#112233', 1.0))
+
+        placeholder = ET.fromstring(
+            f'<a:schemeClr {namespace} val="phClr"/>'
+        )
+        self.assertEqual(
+            resolve_color(placeholder, None, placeholder_hex='#445566'),
+            ('#445566', 1.0),
+        )
 
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):

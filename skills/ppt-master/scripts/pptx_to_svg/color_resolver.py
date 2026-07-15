@@ -102,6 +102,25 @@ SCHEME_ALIASES = {
     "tx1": "dk1", "tx2": "dk2",
 }
 _SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
+_SCHEME_COLOR_VALUES = {
+    "bg1",
+    "tx1",
+    "bg2",
+    "tx2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+    "phClr",
+    "dk1",
+    "lt1",
+    "dk2",
+    "lt2",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -241,7 +260,7 @@ def resolve_color(
     if tag == "srgbClr":
         base_hex = _srgb_hex_value(color_elem)
     elif tag == "schemeClr":
-        name = color_elem.attrib.get("val", "")
+        name = _scheme_color_name(color_elem)
         if name == "phClr":
             base_hex = _normalize_hex(placeholder_hex) if placeholder_hex else None
         elif palette is not None:
@@ -288,6 +307,22 @@ def _srgb_hex_value(color_elem: ET.Element) -> str:
     if _SRGB_HEX_RE.fullmatch(raw) is None:
         raise ValueError(f"Invalid DrawingML sRGB color value: {raw!r}")
     return raw.upper()
+
+
+def _scheme_color_name(color_elem: ET.Element) -> str:
+    """Parse one closed DrawingML scheme-color reference."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}schemeClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML scheme color structure")
+    name = color_elem.attrib["val"]
+    if name not in _SCHEME_COLOR_VALUES:
+        raise ValueError(f"Invalid DrawingML scheme color value: {name!r}")
+    return name
 
 
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
