@@ -3065,6 +3065,33 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_path(path_type)
 
+    def test_native_path_gradient_structure_must_be_closed(self):
+        invalid_path_directions = (
+            '<a:path path="circle" future="x"/>',
+            '<a:path xmlns:future="urn:future" path="circle" '
+            'future:mode="x"/>',
+            '<a:path path="circle"><a:ext/></a:path>',
+            '<a:path path="circle">payload</a:path>',
+            '<a:path path="circle"><a:fillToRect/>payload</a:path>',
+        )
+        for path_direction in invalid_path_directions:
+            with self.subTest(path_direction=path_direction):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    {path_direction}
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML path gradient structure',
+                ):
+                    resolve_fill(sp_pr, None)
+
     def test_native_gradient_must_rotate_with_shape(self):
         def resolve_rotation(rotates: str | None):
             rotation_attr = (
