@@ -238,6 +238,7 @@ Reconstruct a PPTX package as editable SVG views by reading OOXML directly.
 python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode both
 python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode layered
 python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
+python3 scripts/pptx_to_svg.py deck.pptx --strict
 ```
 
 | Mode | Output |
@@ -245,6 +246,27 @@ python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
 | `both` (default) | Layered master/layout/slide SVGs under `svg/`, plus self-contained slides under `svg-flat/` |
 | `layered` | Only the layered `svg/` view and inheritance metadata |
 | `flat` | One self-contained slide SVG per page under `svg/` |
+
+Import is tolerant by default because the source deck is user-owned or comes
+from third-party authoring tools. Recovery happens at the narrowest safe
+boundary: first omit only an unsupported property or feature; if that is not
+possible, replace only the affected object with a visible diagnostic
+placeholder; omit a background without discarding its page. Corrupt ZIP/XML or
+missing required package structure remains fatal because no safe local recovery
+exists. Pass `--strict` for parser development or contract verification when
+the first unsupported/malformed source construct should stop conversion.
+
+Every successful run writes `<output>/conversion-report.json`. Its stable
+top-level fields are `schemaVersion`, `source`, `mode`, `summary`, and
+`diagnostics`. Each diagnostic records a reason `code`, source `message`, chosen
+`fallback`, package `part_path`, and—when available—`slide_index`, `shape_id`,
+`shape_name`, and `shape_kind`. The command also prints a bounded warning
+summary instead of a raw Python traceback.
+
+In the detailed native-object notes below, “fails closed” or “error” describes
+the native replacement claim or strict mode. Default tolerant deck import
+retains the usable fallback/object and records the degradation; it does not
+discard unrelated shapes, pages, or the entire deck.
 
 Supported text-grid tables and conservative classic-chart caches carry a
 `data-pptx-replace-with` claim beside their SVG fallback, with the replacement
@@ -273,7 +295,8 @@ rendered SVG table; unsupported charts keep a baked preview when one exists.
 For the currently supported parsed classic families (column/bar/line/area,
 pie/doughnut, scatter, and bubble), a chart without a baked preview receives a
 deterministic readable fallback marked
-`data-pptx-fallback-kind="normalized"`. Unknown style XML still fails closed;
+`data-pptx-fallback-kind="normalized"`. Unknown style XML disables the native
+replacement claim or falls back to a diagnostic object in tolerant mode;
 common solid/no-fill/line/marker forms and scheme colors are normalized for the
 SVG fallback and core payload colors, while native opt-in may still normalize
 unmodeled alpha, line, marker, or no-fill details. Common General, decimal,
@@ -332,7 +355,8 @@ axis fields. The importer also accepts radar, safe `of_pie` `serLines`, the
 closed axis/title/legend normalization cases, and bar/column `gapWidth` /
 `overlap`. `gapWidth` must be one integer in `0..500` and `overlap` one integer
 in `-100..100`; both normalize in native output, while malformed, duplicate, or
-out-of-range values fail closed. These additions do not expand the normalized
+out-of-range values disable the native replacement claim in tolerant mode and
+stop strict import. These additions do not expand the normalized
 renderer.
 Safe stock series style may pass the structural gate, while stock series,
 `hiLowLines`, and up-down bar local styling can still normalize under the

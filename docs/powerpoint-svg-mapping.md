@@ -6,7 +6,7 @@
 
 This guide answers one question from the PowerPoint user's point of view: **for a PowerPoint feature, what project representation owns it, and what survives export or import?** PowerPoint semantics are therefore the primary index. SVG elements appear only as the implementation of a specific PowerPoint capability.
 
-This is a public capability map, not a second syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The normative contract remains [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). When this guide and that contract differ, the contract wins. A feature not listed here is not implicitly supported.
+This is a public capability and import-behavior map, not a second generated-SVG syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The canonical generated-authoring contract remains [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md); when generated syntax differs, that contract wins. PPTX import recovery modes and user-visible degradation belong to §11 here and to the [conversion command reference](../skills/ppt-master/scripts/docs/conversion.md), while the parser implementation remains the exact source of truth. A feature not listed here is not implicitly supported.
 
 The main route compiles **project-canonical SVG**, not general browser SVG:
 
@@ -154,9 +154,9 @@ preset selection and authoring behavior are documented in
 | Pattern fill | Annotated project pattern definition | Native `a:pattFill` | `Native-normalized` | Only registered PowerPoint preset patterns are supported |
 | No outline | `stroke="none"` or the registered absence of a line | `a:noFill` under `a:ln` | `Native-stable` | Do not simulate absence with zero-width ambiguous CSS |
 | Solid outline | Registered `stroke` and width | Native `a:ln` | `Native-stable` | Width and paint must use canonical units/grammar |
-| Compound outline | No registered single-stroke SVG representation | Explicit geometry alternative or baked asset | `Bake-required` for the compound-line identity | PPTX import accepts only omitted/`sng` `cmpd`; other source values stop instead of becoming a single line |
-| Inside-aligned outline | No registered ordinary SVG stroke representation | Explicit inset geometry or baked asset | `Bake-required` for exact outline alignment | PPTX import accepts only omitted/`ctr` `algn`; `in` stops instead of becoming a centered stroke |
-| Pattern, image, or group-derived outline paint | No registered line-paint SVG mapping | Explicit geometry alternative or baked asset | `Bake-required` | PPTX import stops instead of substituting a default solid line color |
+| Compound outline | No registered single-stroke SVG representation | Explicit geometry alternative or baked asset | `Bake-required` for the compound-line identity | Tolerant PPTX import omits the unsupported outline and reports it; strict import rejects non-`sng` `cmpd` |
+| Inside-aligned outline | No registered ordinary SVG stroke representation | Explicit inset geometry or baked asset | `Bake-required` for exact outline alignment | Tolerant PPTX import omits the unsupported outline and reports it; strict import rejects non-`ctr` `algn` |
+| Pattern, image, or group-derived outline paint | No registered line-paint SVG mapping | Explicit geometry alternative or baked asset | `Bake-required` | Tolerant PPTX import omits the unsupported outline and reports it; strict import rejects it instead of inventing a solid color |
 | Outline scaling under transforms | Exact `vector-effect="none"` or `vector-effect="non-scaling-stroke"` | Choice resolved into native line width | `Native-normalized` | Other values are rejected; generated spelling is exact and lowercase |
 | Dashed or dotted outline | Registered dash array | Preset or custom DrawingML dash | `Native-normalized` | Unsupported dash semantics are rejected |
 | Line cap and join | Registered cap/join values | Native line cap/join properties | `Native-stable` within the fixed join contract | Import accepts one join; miter requires exact `lim="800000"` |
@@ -242,17 +242,32 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 
 This is semantic reconstruction, not a syntax round trip. Master/Layout restoration belongs to the template-structure workflows; an ordinary visual import does not infer reusable topology from slide appearance.
 
+### Import operating modes and recovery boundary
+
+`pptx_to_svg.py` defaults to tolerant import because its inputs are user-owned or third-party PPTX files. `--strict` is available for parser development, contract verification, and reproducing the first source violation. Strict generated-SVG validation and export remain unchanged.
+
+| Source condition | Default tolerant import | `--strict` | Diagnostic result |
+|---|---|---|---|
+| Recognized color semantics with unrelated source metadata | Canonicalize the recognized color and modifiers | Reject the noncanonical structure | Warning with part, slide, and shape context where available |
+| Unsupported fill, outline, effect, image fill, text body, or style property | Keep the object and omit only the unsupported property or feature | Stop at the first violation | Warning names the omitted feature and fallback |
+| Unsupported object that cannot be recovered property-by-property | Replace that object with a visible diagnostic placeholder; omit it only when it has no usable frame | Stop at the first violation | Warning identifies the source object |
+| Unsupported slide or part background | Omit that background and continue the page/part | Stop at the first violation | Warning identifies the owning part |
+| Corrupt package/XML or missing required package structure | Stop; no safe page-level recovery exists | Stop | Clean command error; no raw Python traceback |
+
+Every successful run writes `<output>/conversion-report.json`. The report records the mode, slide and warning counts, stable reason code, source message, chosen fallback, package part, and—when available—slide index plus shape id/name/kind. Tolerant import is therefore not silent: it maximizes usable output while making every contract recovery reviewable.
+
 ## 12. Validation ownership
 
-The three layers have deliberately different jobs:
+The four layers have deliberately different jobs:
 
 | Layer | Responsibility |
 |---|---|
 | Prompt, template, and examples | Generate only the canonical representation for each PowerPoint feature |
 | `svg_quality_checker.py` | Reject invalid/unsupported mappings; warn but allow registered compatible spellings or fidelity risks |
 | `svg_to_pptx.py` and package read-back | Normalize compatible input, compile DrawingML, and reject any result that would be ambiguous, structurally inconsistent, or invalid |
+| `pptx_to_svg.py` | In default tolerant mode, preserve the usable deck and report source-owned degradation at the narrowest safe boundary; in `--strict` mode, stop at the first unsupported or malformed source construct |
 
-A warning is not permission to guess. It is reserved for a deterministic supported mapping whose spelling or fidelity deserves attention. Missing mappings, invalid units, malformed metadata, broken structure contracts, and potentially repair-triggering DrawingML are errors.
+A generated-SVG warning is not permission to guess. It is reserved for a deterministic supported mapping whose spelling or fidelity deserves attention. Missing mappings, invalid units, malformed metadata, broken structure contracts, and potentially repair-triggering generated DrawingML remain errors. Import diagnostics describe explicit loss or normalization of source-owned content; they never authorize the importer to invent unsupported semantics.
 
 ## 13. Adding or changing a mapping
 
