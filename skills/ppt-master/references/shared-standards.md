@@ -752,6 +752,9 @@ An imported non-line `a:lin@ang` may be omitted for the schema-defined zero
 default. When present, it must be an integer from `0` through `21599999`
 (1/60000 degree); malformed or out-of-range values stop import instead of
 silently becoming a horizontal gradient.
+The imported `a:lin` is a leaf with only optional `ang` and `scaled`
+attributes. Extra or namespaced attributes, child elements, and text payload
+stop import instead of being discarded.
 The normalized SVG endpoint mapping preserves `a:lin@scaled="1"` / `"true"`
 at every angle. The schema default (`scaled` omitted) and explicit `"0"` /
 `"false"` are accepted only at cardinal angles, where aspect-ratio scaling

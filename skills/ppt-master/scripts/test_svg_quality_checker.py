@@ -2968,6 +2968,31 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_linear('0', scaled)
 
+    def test_native_linear_gradient_structure_must_be_closed(self):
+        invalid_linear_directions = (
+            '<a:lin ang="0" future="x"/>',
+            '<a:lin xmlns:future="urn:future" ang="0" future:mode="x"/>',
+            '<a:lin ang="0"><a:ext/></a:lin>',
+            '<a:lin ang="0">payload</a:lin>',
+        )
+        for linear_direction in invalid_linear_directions:
+            with self.subTest(linear_direction=linear_direction):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+    {linear_direction}
+  </a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML linear gradient structure',
+                ):
+                    resolve_fill(sp_pr, None)
+
     def test_native_gradient_direction_must_be_unambiguous(self):
         direction_cases = (
             '<a:lin ang="0"/><a:lin ang="0"/>',
