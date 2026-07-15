@@ -737,6 +737,13 @@ leading `#`, alpha-bearing eight-digit tokens, extra attributes, and
 interleaved text stop import instead of being normalized into a different
 DrawingML token. Lowercase hexadecimal digits remain equivalent input and
 normalize to uppercase SVG paint.
+Imported `a:schemeClr` likewise has exactly one `val` attribute and accepts only
+the DrawingML scheme enum: `bg1`, `tx1`, `bg2`, `tx2`, `accent1..6`, `hlink`,
+`folHlink`, `phClr`, `dk1`, `lt1`, `dk2`, or `lt2`. Unknown/case-altered
+references, extra attributes, namespace aliases, and interleaved text stop
+import. A registered reference that cannot be resolved from the active theme
+or `phClr` placeholder context remains a resolution failure, not an unknown
+enum fallback.
 
 ---
 
