@@ -6,7 +6,7 @@
 
 本指南从 PowerPoint 使用者的视角回答一个问题：**对于某项 PowerPoint 功能，项目中由什么表达承载，导出或回导时能保留什么？** 因此，PowerPoint 语义是唯一主索引，SVG 元素只作为某项 PowerPoint 能力的具体实现出现。
 
-这是一份公开的能力映射表，不是第二份语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范权威仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；如果本指南与该规范不一致，以规范为准。本指南未列出的功能不会因此被默认为受支持。
+这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；生成语法出现差异时，以该合同为准。PPTX 导入的恢复模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
 
 主路线编译的是**项目规范化 SVG**，而不是通用浏览器 SVG：
 
@@ -149,9 +149,9 @@ PowerPoint 意图
 | 图案填充 | 带注解的项目 pattern 定义 | 原生 `a:pattFill` | `Native-normalized` | 仅支持已登记 PowerPoint 预设 pattern |
 | 无轮廓 | `stroke="none"` 或已登记线缺省 | `a:ln` 内的 `a:noFill` | `Native-stable` | 不得用零线宽模糊 CSS 模拟缺省 |
 | 实线轮廓 | 已登记 `stroke` 与宽度 | 原生 `a:ln` | `Native-stable` | 宽度与 paint 必须使用规范单位/语法 |
-| 复合轮廓线 | 无已登记的单一 SVG stroke 表达 | 显式几何替代或烘焙资产 | 复合线身份为 `Bake-required` | PPTX 回导仅接受省略/`sng` 的 `cmpd`；其他源值会阻断，不得退化为单线 |
-| 内侧对齐轮廓 | 无已登记的普通 SVG stroke 表达 | 显式内缩几何或烘焙资产 | 精确轮廓对齐为 `Bake-required` | PPTX 回导仅接受省略/`ctr` 的 `algn`；`in` 会阻断，不得退化为居中描边 |
-| 图案、图片或组派生轮廓 paint | 无已登记的线条 paint SVG 映射 | 显式几何替代或烘焙资产 | `Bake-required` | PPTX 回导会阻断，不得替换为默认纯色线 |
+| 复合轮廓线 | 无已登记的单一 SVG stroke 表达 | 显式几何替代或烘焙资产 | 复合线身份为 `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝非 `sng` 的 `cmpd` |
+| 内侧对齐轮廓 | 无已登记的普通 SVG stroke 表达 | 显式内缩几何或烘焙资产 | 精确轮廓对齐为 `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝非 `ctr` 的 `algn` |
+| 图案、图片或组派生轮廓 paint | 无已登记的线条 paint SVG 映射 | 显式几何替代或烘焙资产 | `Bake-required` | 容错回导省略不支持的轮廓并报告；严格回导拒绝该输入，不虚构纯色线 |
 | transform 下的轮廓缩放 | 精确的 `vector-effect="none"` 或 `vector-effect="non-scaling-stroke"` | 选择被解析为原生线宽 | `Native-normalized` | 拒绝其他取值；生成拼法必须精确且为小写 |
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
 | 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | 固定 join 合同内为 `Native-stable` | 回导仅接受一个 join；miter 必须精确使用 `lim="800000"` |
@@ -237,17 +237,32 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 
 这是语义重建，不是语法往返。Master/Layout 恢复属于模板结构工作流；普通视觉导入不会从 Slide 外观推断可复用拓扑。
 
+### 导入运行模式与恢复边界
+
+`pptx_to_svg.py` 默认采用容错导入，因为输入来自用户或第三方 PPTX。`--strict` 用于 parser 开发、合同核验和复现第一个源文件违规点。生成 SVG 的严格校验与导出边界保持不变。
+
+| 源文件情况 | 默认容错导入 | `--strict` | 诊断结果 |
+|---|---|---|---|
+| 可识别颜色语义带无关源 metadata | 规范化已识别颜色与 modifier | 拒绝非规范结构 | warning；可用时包含 part、Slide 与 shape 上下文 |
+| 不支持的填充、轮廓、效果、图片填充、文字体或样式属性 | 保留对象，只省略不支持的属性或功能 | 在第一个违规点停止 | warning 说明省略内容与 fallback |
+| 无法按属性恢复的不支持对象 | 只把该对象替换为可见诊断占位；没有可用 frame 时才省略 | 在第一个违规点停止 | warning 标识源对象 |
+| 不支持的 Slide 或 part 背景 | 省略该背景，继续当前页面/part | 在第一个违规点停止 | warning 标识所属 part |
+| 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级恢复 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
+
+每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同恢复都可复核。
+
 ## 12. 校验职责
 
-三层有意承担不同职责：
+四层有意承担不同职责：
 
 | 层 | 职责 |
 |---|---|
 | 提示词、模板与示例 | 对每项 PowerPoint 功能只生成规范表达 |
 | `svg_quality_checker.py` | 拒绝非法/不支持映射；对已登记兼容拼法或保真风险给出 warning 但允许继续 |
 | `svg_to_pptx.py` 与最终包读回 | 归一化兼容输入、编译 DrawingML，并拒绝任何会产生歧义、结构不一致或非法结果的输出 |
+| `pptx_to_svg.py` | 默认容错模式在最窄安全边界保留可用 deck 并报告源内容降级；`--strict` 模式在第一个不支持或格式错误的源结构处停止 |
 
-warning 不是猜测许可。它只适用于拥有唯一结果的受支持映射，但其拼法或保真度值得注意的情况。缺失映射、非法单位、格式错误 metadata、破损的结构合同，以及可能触发 PowerPoint 修复的 DrawingML 都是 error。
+生成 SVG 的 warning 不是猜测许可。它只适用于拥有唯一结果的受支持映射，但其拼法或保真度值得注意的情况。缺失映射、非法单位、格式错误 metadata、破损的结构合同，以及可能触发 PowerPoint 修复的生成 DrawingML 仍是 error。导入诊断描述对源内容的显式丢失或规范化，绝不授权导入器虚构不支持的语义。
 
 ## 13. 新增或修改映射
 
