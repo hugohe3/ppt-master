@@ -7,15 +7,16 @@ Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace
   asset inventory, and per-slide / per-layout / per-master metadata
 - `native_structure.json` + `source_template.pptx` — source-structure facts and
   a byte-identical analysis copy used to rebuild explicit SVG structure
-- `summary.md` — short human-readable digest derived from manifest.json
 - `assets/` — extracted reusable image assets
-- `svg/` — primary view: by default the layered template view (every master
+- `conversion-report.json` — source-recovery and fidelity diagnostics emitted
+  with SVG conversion
+- `svg/` — canonical layered template view (every master
   and layout in the deck rendered once each as `master_*.svg` /
   `layout_*.svg`, slides contain only their own shapes, and an
   `inheritance.json` describes the reuse graph)
-- `svg-flat/` — companion view (default mode "both"): each `slide_NN.svg`
-  is self-contained — master/layout decoration is inlined — so opening any
-  one slide shows the full page like PowerPoint would
+- `svg-flat/` — optional verification view (`--inheritance-mode both`): each
+  `slide_NN.svg` is self-contained, so opening one slide shows the full page
+  like PowerPoint would
 """
 
 from __future__ import annotations
@@ -56,8 +57,8 @@ def parse_args() -> argparse.Namespace:
         "--manifest-only",
         action="store_true",
         help=(
-            "Only extract manifest.json + summary.md + reusable assets + the "
-            "native structure/source pair, without exporting slides to SVG"
+            "Only extract manifest.json + reusable assets + the native "
+            "structure/source pair, without exporting slides to SVG"
         ),
     )
     parser.add_argument(
@@ -68,16 +69,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--inheritance-mode",
         choices=("both", "layered", "flat"),
-        default="both",
+        default="layered",
         help=(
             "How to render master/layout shapes for slide SVGs. "
-            "'both' (default): emit both views — svg/ holds the layered "
+            "'layered' (default): emit the canonical svg/ tree with master, "
+            "layout, and slide-local files plus svg/inheritance.json. "
+            "'both': also emit svg-flat/ with self-contained per-slide "
+            "verification files. In this mode svg/ still holds the layered "
             "renderings (template designers see master/layout/slide as "
-            "separate files plus svg/inheritance.json) and svg-flat/ holds "
-            "self-contained per-slide SVGs (each one renders correctly when "
-            "opened on its own). 'layered': only the svg/ tree, useful when "
-            "you don't need the flat view. 'flat': only self-contained slide "
-            "SVGs in svg/, the round-trip view used by svg_to_pptx."
+            "separate files). 'flat': emit only self-contained slide SVGs "
+            "in svg/, the round-trip view used by svg_to_pptx."
         ),
     )
     return parser.parse_args()
@@ -110,7 +111,13 @@ def main() -> int:
     manifest_path = output_dir / "manifest.json"
     if not args.skip_manifest:
         try:
-            manifest = build_manifest(pptx_path, output_dir)
+            manifest = build_manifest(
+                pptx_path,
+                output_dir,
+                include_flat_svg=(
+                    not args.manifest_only and args.inheritance_mode == "both"
+                ),
+            )
         except (RuntimeError, OSError, ValueError) as exc:
             print(f"Error: failed to extract PPTX metadata: {exc}")
             return 1
@@ -141,7 +148,6 @@ def main() -> int:
                 f"{native_structure['strategy']['recommendedMode']}"
             )
             print("Template output mode: explicit SVG structure")
-            print("Summary: summary.md")
             print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
             print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
             print(f"Slides analyzed: {len(manifest['slides'])}")

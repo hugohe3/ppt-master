@@ -25,13 +25,13 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `manifest.json` — single source of truth for source-deck facts (slide size, theme, per-master themes, assets, asset map, placeholders, layouts, masters, slides, SVG file paths, page-type candidates)
 - `native_structure.json` — stable source master/layout keys, picker names, parent-master relationships, placeholder type/index/geometry, source hash, and source-graph quality facts
 - `source_template.pptx` — byte-preserved analysis copy for visual/package cross-checking; never a final template asset
-- `summary.md` — short orientation digest derived from manifest.json
+- `conversion-report.json` — source-recovery and fidelity diagnostics, when present
 - exported `assets/`
 - `svg/master_*.svg` / `svg/layout_*.svg` — immutable layered native-payload backing; every master / layout in the deck rendered once, including ones no sample slide references
 - `svg/slide_NN.svg` — immutable slide-local native-payload backing; do not bulk-read because opaque native payload is retained
 - `svg/inheritance.json` — which layout / master each slide consumes
-- `svg-flat/slide_NN.svg` — immutable complete-page native-payload/visual backing; do not use it as the editable source
-- `authoring-svg/` / `authoring-svg-flat/` — lightweight non-destructive IR bundles created by `svg_authoring_view.py`; each contains editable SVGs plus `authoring_manifest.json`
+- optional `svg-flat/slide_NN.svg` — immutable complete-page verification backing generated only when explicitly requested; do not use it as the editable source
+- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles created by `svg_authoring_view.py`; each contains editable SVGs plus `authoring_manifest.json`
 - optional screenshots for visual cross-checking
 
 PPTX import interpretation:
@@ -45,9 +45,9 @@ Input priority for PPTX-backed template creation depends on replication mode:
 | Mode | Authoritative inputs | Model-facing inputs |
 |---|---|---|
 | `standard` / `fidelity` | Finalized brief for the newly designed output; `manifest.json` for factual canvas/theme/assets | `authoring-svg/` and optional `authoring-svg-flat/` IR documents plus exported assets as visual references. Source Master/Layout topology is informational only and is not mined into output structure. |
-| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, and the authoring manifests | Layered `authoring-svg/` as the editable restoration IR; `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` / `svg-flat/` only as immutable payload backing. |
+| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, and the authoring manifests | Layered `authoring-svg/` as the editable restoration IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
 
-Use `summary.md` only for orientation. Open screenshots or the original PPTX only for visual cross-checking.
+Use the compact facts in `manifest.json` for orientation. Open screenshots or the original PPTX only for visual cross-checking.
 
 **Native structure output**: Always set `native_structure_mode: structured`.
 
@@ -143,7 +143,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 
 When the brief sets `Replication mode: mirror`, restore the imported template rather than designing a new one:
 
-- Authoring source: layered `authoring-svg/*.svg` plus `authoring-svg/authoring_manifest.json`, `svg/inheritance.json`, and `native_structure.json`. Use `authoring-svg-flat/` for full-page verification. Matching lossless `svg/` / `svg-flat/` files are immutable native-payload backing and are resolved only during materialization.
+- Authoring source: layered `authoring-svg/*.svg` plus `authoring-svg/authoring_manifest.json`, `svg/inheritance.json`, and `native_structure.json`. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
 - Precondition: the import evidence identifies every source Master/Layout, parent relationship, picker name, placeholder contract, and fixed visual layer. Stop only when required facts or supported geometry are missing; unused identities are not a stop condition.
 - Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source slide, plus `layout_<layout_key>.svg` for every source Layout unused by all source slides. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix; definition-only files are not generated pages.
 - Required restoration: preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, supported native-object metadata, geometry, decoration, sprite-sheet wrappers, original example text, chart previews, fonts, effects, and paint order whenever the importer represents them.
