@@ -40,7 +40,11 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm, format_ooxml_alpha
-from pptx_to_svg.color_resolver import ColorPalette, resolve_color
+from pptx_to_svg.color_resolver import (
+    ColorPalette,
+    find_color_elem,
+    resolve_color,
+)
 from pptx_to_svg.effect_to_svg import (
     convert_effects,
     unsupported_target_effect_metadata,
@@ -3005,6 +3009,46 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             resolve_color(placeholder, None, placeholder_hex='#445566'),
             ('#445566', 1.0),
         )
+
+    def test_native_color_selector_rejects_ambiguous_or_aliased_children(self):
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        single = ET.fromstring(
+            f'<a:fontRef {namespace} idx="minor">'
+            '<a:srgbClr val="112233"/></a:fontRef>'
+        )
+        selected = find_color_elem(single)
+        self.assertIsNotNone(selected)
+        self.assertEqual(selected.tag.rsplit('}', 1)[-1], 'srgbClr')
+
+        omitted = ET.fromstring(
+            f'<a:fontRef {namespace} idx="minor"/>'
+        )
+        self.assertIsNone(find_color_elem(omitted))
+
+        ambiguous_colors = (
+            '<a:srgbClr val="112233"/><a:schemeClr val="accent1"/>',
+            '<a:srgbClr val="112233"/><a:srgbClr val="445566"/>',
+        )
+        for children in ambiguous_colors:
+            with self.subTest(children=children):
+                parent = ET.fromstring(
+                    f'<a:fontRef {namespace} idx="minor">'
+                    f'{children}</a:fontRef>'
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'multiple direct color children',
+                ):
+                    find_color_elem(parent)
+
+        aliased = ET.fromstring(
+            f'<a:fontRef {namespace} xmlns:future="urn:future" idx="minor">'
+            '<future:srgbClr val="112233"/></a:fontRef>'
+        )
+        with self.assertRaisesRegex(ValueError, 'color child namespace'):
+            find_color_elem(aliased)
 
     def test_native_theme_palette_uses_closed_scheme_and_map_contracts(self):
         a_ns = 'http://schemas.openxmlformats.org/drawingml/2006/main'
