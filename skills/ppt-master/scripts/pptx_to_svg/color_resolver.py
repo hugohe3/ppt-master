@@ -101,6 +101,38 @@ SCHEME_ALIASES = {
     "bg1": "lt1", "bg2": "lt2",
     "tx1": "dk1", "tx2": "dk2",
 }
+_THEME_SCHEME_SLOTS = (
+    "dk1",
+    "lt1",
+    "dk2",
+    "lt2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+)
+_COLOR_MAP_SOURCES = (
+    "bg1",
+    "tx1",
+    "bg2",
+    "tx2",
+    "accent1",
+    "accent2",
+    "accent3",
+    "accent4",
+    "accent5",
+    "accent6",
+    "hlink",
+    "folHlink",
+)
+_THEME_COLOR_TAGS = frozenset({
+    f"{{{NS['a']}}}{name}"
+    for name in ("srgbClr", "sysClr", "prstClr", "hslClr", "scrgbClr")
+})
 _SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
 _OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
 _OOXML_INT_MIN = -(2**31)
@@ -186,34 +218,96 @@ class ColorPalette:
         self.scheme: dict[str, str] = {}
         self.clr_map: dict[str, str] = {}
         if theme is not None:
-            self._load_scheme(theme.xml)
+            self._load_scheme(theme)
         if master is not None:
-            self._load_clr_map(master.xml)
+            self._load_clr_map(master)
 
-    def _load_scheme(self, theme_root: ET.Element) -> None:
-        clr_scheme = theme_root.find(".//a:clrScheme", NS)
-        if clr_scheme is None:
-            return
-        for child in list(clr_scheme):
-            if not isinstance(child.tag, str):
-                continue
-            name = child.tag.split("}", 1)[-1]
-            srgb = child.find("a:srgbClr", NS)
-            sys_clr = child.find("a:sysClr", NS)
-            if srgb is not None and srgb.attrib.get("val"):
-                self.scheme[name] = srgb.attrib["val"].upper()
-            elif sys_clr is not None:
-                last = sys_clr.attrib.get("lastClr")
-                if last:
-                    self.scheme[name] = last.upper()
+    def _load_scheme(self, theme: PartRef) -> None:
+        theme_root = theme.xml
+        if theme_root.tag != f"{{{NS['a']}}}theme":
+            raise ValueError(f"{theme.path}: expected a:theme root")
 
-    def _load_clr_map(self, master_root: ET.Element) -> None:
-        clr_map = master_root.find("p:clrMap", NS)
-        if clr_map is None:
-            return
-        # Each attribute on clrMap is a remap: bg1="lt1" tx1="dk1" ...
-        for attr, val in clr_map.attrib.items():
-            self.clr_map[attr] = val
+        theme_elements = theme_root.findall("a:themeElements", NS)
+        if len(theme_elements) != 1:
+            raise ValueError(
+                f"{theme.path}: expected exactly one direct a:themeElements"
+            )
+        clr_schemes = theme_elements[0].findall("a:clrScheme", NS)
+        if len(clr_schemes) != 1:
+            raise ValueError(
+                f"{theme.path}: expected exactly one direct a:clrScheme"
+            )
+        clr_scheme = clr_schemes[0]
+        children = list(clr_scheme)
+        expected_tags = [
+            f"{{{NS['a']}}}{name}" for name in _THEME_SCHEME_SLOTS
+        ]
+        if (
+            set(clr_scheme.attrib) != {"name"}
+            or (clr_scheme.text or "").strip()
+            or [child.tag for child in children] != expected_tags
+            or any((child.tail or "").strip() for child in children)
+        ):
+            raise ValueError(
+                f"{theme.path}: invalid DrawingML color scheme structure"
+            )
+
+        for name, slot in zip(_THEME_SCHEME_SLOTS, children):
+            color_children = list(slot)
+            if (
+                slot.attrib
+                or (slot.text or "").strip()
+                or len(color_children) != 1
+                or color_children[0].tag not in _THEME_COLOR_TAGS
+                or (color_children[0].tail or "").strip()
+            ):
+                raise ValueError(
+                    f"{theme.path}: invalid DrawingML theme color slot {name!r}"
+                )
+            try:
+                hex_, alpha = resolve_color(color_children[0], None)
+            except ValueError as exc:
+                raise ValueError(
+                    f"{theme.path}: invalid DrawingML theme color slot "
+                    f"{name!r}: {exc}"
+                ) from exc
+            if hex_ is None:
+                raise ValueError(
+                    f"{theme.path}: unresolved DrawingML theme color slot {name!r}"
+                )
+            if alpha != 1.0:
+                raise ValueError(
+                    f"{theme.path}: non-opaque DrawingML theme color slot {name!r}"
+                )
+            self.scheme[name] = hex_[1:]
+
+    def _load_clr_map(self, master: PartRef) -> None:
+        master_root = master.xml
+        if master_root.tag != f"{{{NS['p']}}}sldMaster":
+            raise ValueError(f"{master.path}: expected p:sldMaster root")
+        clr_maps = master_root.findall("p:clrMap", NS)
+        if len(clr_maps) != 1:
+            raise ValueError(
+                f"{master.path}: expected exactly one direct p:clrMap"
+            )
+        clr_map = clr_maps[0]
+        children = list(clr_map)
+        if (
+            set(clr_map.attrib) != set(_COLOR_MAP_SOURCES)
+            or children
+            or (clr_map.text or "").strip()
+        ):
+            raise ValueError(
+                f"{master.path}: invalid DrawingML color map structure"
+            )
+        for source in _COLOR_MAP_SOURCES:
+            target = clr_map.attrib[source]
+            if target not in _THEME_SCHEME_SLOTS:
+                raise ValueError(
+                    f"{master.path}: invalid DrawingML color map target "
+                    f"{source}={target!r}"
+                )
+            self.clr_map[source] = target
 
     def resolve_scheme(self, name: str) -> str | None:
         """scheme name (e.g. 'accent1', 'bg1') -> 'RRGGBB'. None on miss."""

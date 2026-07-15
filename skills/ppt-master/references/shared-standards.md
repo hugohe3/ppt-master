@@ -772,6 +772,27 @@ percentage-literal, or out-of-range channels, extra attributes, namespace
 aliases, and interleaved text stop import instead of receiving zero defaults or
 being clamped into another color. This route is `Native-normalized` because the
 SVG retains the displayed sRGB color rather than the source color-space model.
+Theme palette import is closed around the DrawingML color-scheme contract. A
+loaded theme part must have an `a:theme` root, exactly one direct
+`a:themeElements`, and exactly one direct `a:clrScheme`. The scheme has only its
+required `name` attribute and the 12 required slots in schema order: `dk1`,
+`lt1`, `dk2`, `lt2`, `accent1..6`, `hlink`, and `folHlink`. Each attribute-free
+slot contains exactly one concrete `a:srgbClr`, `a:sysClr`, `a:prstClr`,
+`a:hslClr`, or `a:scrgbClr` child accepted by the registered base-color and
+modifier contracts above. The resolved slot must be opaque because the current
+palette model stores RGB only. Missing, duplicate, reordered, ambiguous,
+non-opaque, or extension-bearing schemes stop import instead of being reduced
+to the first recognizable color.
+
+A loaded slide master likewise has a `p:sldMaster` root and exactly one direct,
+empty `p:clrMap`. Its exact 12-attribute source set is `bg1`, `tx1`, `bg2`,
+`tx2`, `accent1..6`, `hlink`, and `folHlink`; every value is one of the 12 theme
+slots above. Missing or extra mappings, unknown/case-altered targets, text, and
+extension children stop import rather than falling back to aliases. A
+theme-only palette with no master still uses the registered `bg`/`tx` aliases.
+Theme slot colors normalize to static SVG paint, so this route is
+`Native-normalized` rather than preserving the source color model or mapping
+record.
 Imported base colors apply only the following DrawingML modifier subset, in
 document order:
 

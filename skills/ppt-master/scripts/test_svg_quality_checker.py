@@ -50,7 +50,7 @@ from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
 from pptx_to_svg.ln_to_svg import _build_arrow_marker, resolve_stroke
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
-from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
+from pptx_to_svg.ooxml_loader import PartRef, parse_ooxml_boolean
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
 from svg_to_pptx.animation_config import (
     build_group_listing,
@@ -3005,6 +3005,174 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             resolve_color(placeholder, None, placeholder_hex='#445566'),
             ('#445566', 1.0),
         )
+
+    def test_native_theme_palette_uses_closed_scheme_and_map_contracts(self):
+        a_ns = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        p_ns = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        slots = (
+            ('dk1', '<a:sysClr val="windowText" lastClr="112233"/>'),
+            ('lt1', '<a:srgbClr val="FFFFFF"/>'),
+            ('dk2', '<a:prstClr val="dkBlue"/>'),
+            ('lt2', '<a:hslClr hue="0" sat="0" lum="50000"/>'),
+            (
+                'accent1',
+                '<a:scrgbClr r="50000" g="50000" b="50000"/>',
+            ),
+            ('accent2', '<a:srgbClr val="445566"/>'),
+            ('accent3', '<a:srgbClr val="778899"/>'),
+            ('accent4', '<a:srgbClr val="AABBCC"/>'),
+            ('accent5', '<a:srgbClr val="DDEEFF"/>'),
+            ('accent6', '<a:srgbClr val="123456"/>'),
+            ('hlink', '<a:srgbClr val="0000FF"/>'),
+            ('folHlink', '<a:srgbClr val="800080"/>'),
+        )
+        map_values = {
+            'bg1': 'accent1',
+            'tx1': 'dk1',
+            'bg2': 'lt2',
+            'tx2': 'dk2',
+            'accent1': 'accent1',
+            'accent2': 'accent2',
+            'accent3': 'accent3',
+            'accent4': 'accent4',
+            'accent5': 'accent5',
+            'accent6': 'accent6',
+            'hlink': 'hlink',
+            'folHlink': 'folHlink',
+        }
+
+        def theme_part(
+            slot_values=slots,
+            *,
+            scheme_attrs='name="Audit"',
+            scheme_suffix='',
+            theme_elements_count=1,
+        ):
+            slot_xml = ''.join(
+                f'<a:{name}>{color}</a:{name}>'
+                for name, color in slot_values
+            )
+            scheme = (
+                f'<a:clrScheme {scheme_attrs}>{slot_xml}'
+                f'{scheme_suffix}</a:clrScheme>'
+            )
+            elements = ''.join(
+                f'<a:themeElements>{scheme}</a:themeElements>'
+                for _ in range(theme_elements_count)
+            )
+            return PartRef(
+                'ppt/theme/theme1.xml',
+                ET.fromstring(
+                    f'<a:theme xmlns:a="{a_ns}" name="Audit">'
+                    f'{elements}</a:theme>'
+                ),
+            )
+
+        def master_part(attrs=map_values, *, payload=''):
+            attr_xml = ' '.join(
+                f'{name}="{value}"' for name, value in attrs.items()
+            )
+            return PartRef(
+                'ppt/slideMasters/slideMaster1.xml',
+                ET.fromstring(
+                    f'<p:sldMaster xmlns:p="{p_ns}" xmlns:a="{a_ns}">'
+                    f'<p:clrMap {attr_xml}>{payload}</p:clrMap>'
+                    '</p:sldMaster>'
+                ),
+            )
+
+        palette = ColorPalette(master_part(), theme_part())
+        self.assertEqual(palette.resolve_scheme('bg1'), 'BCBCBC')
+        self.assertEqual(palette.resolve_scheme('dk1'), '112233')
+        self.assertEqual(palette.resolve_scheme('dk2'), '00008B')
+        self.assertEqual(palette.resolve_scheme('lt2'), '808080')
+
+        invalid_themes = (
+            (
+                theme_part(theme_elements_count=0),
+                'exactly one direct a:themeElements',
+            ),
+            (
+                theme_part(theme_elements_count=2),
+                'exactly one direct a:themeElements',
+            ),
+            (
+                theme_part(slots[:-1]),
+                'color scheme structure',
+            ),
+            (
+                theme_part((slots[1], slots[0], *slots[2:])),
+                'color scheme structure',
+            ),
+            (
+                theme_part(
+                    (
+                        slots[0],
+                        (
+                            'lt1',
+                            '<a:srgbClr val="FFFFFF"/>'
+                            '<a:srgbClr val="000000"/>',
+                        ),
+                        *slots[2:],
+                    )
+                ),
+                "theme color slot 'lt1'",
+            ),
+            (
+                theme_part(scheme_attrs='name="Audit" future="x"'),
+                'color scheme structure',
+            ),
+            (
+                theme_part(scheme_suffix='<a:extLst/>'),
+                'color scheme structure',
+            ),
+            (
+                theme_part(
+                    (
+                        *slots[:4],
+                        (
+                            'accent1',
+                            '<a:srgbClr val="112233">'
+                            '<a:alpha val="50000"/></a:srgbClr>',
+                        ),
+                        *slots[5:],
+                    )
+                ),
+                "non-opaque DrawingML theme color slot 'accent1'",
+            ),
+        )
+        for invalid_theme, expected in invalid_themes:
+            with self.subTest(invalid_theme=expected):
+                with self.assertRaisesRegex(ValueError, expected):
+                    ColorPalette(None, invalid_theme)
+
+        invalid_maps = (
+            (
+                {name: value for name, value in map_values.items()
+                 if name != 'bg1'},
+                '',
+                'color map structure',
+            ),
+            (
+                {**map_values, 'future': 'dk1'},
+                '',
+                'color map structure',
+            ),
+            (
+                {**map_values, 'bg1': 'BG1'},
+                '',
+                'color map target',
+            ),
+            (
+                map_values,
+                '<a:extLst/>',
+                'color map structure',
+            ),
+        )
+        for attrs, payload, expected in invalid_maps:
+            with self.subTest(invalid_map=expected, payload=payload):
+                with self.assertRaisesRegex(ValueError, expected):
+                    ColorPalette(master_part(attrs, payload=payload), None)
 
     def test_native_system_color_requires_registered_fallback(self):
         invalid_colors = (
