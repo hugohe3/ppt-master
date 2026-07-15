@@ -180,6 +180,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
 
     if lin is not None:
         # ang is 1/60000 deg. 0° = horizontal left-to-right.
+        _validate_linear_gradient_structure(lin)
         angle = _linear_gradient_angle(lin)
         _validate_linear_gradient_scaling(lin, angle)
         angle_deg = angle / ANGLE_UNIT
@@ -249,6 +250,16 @@ def _linear_gradient_angle(lin: ET.Element) -> int:
             f"0..{_OOXML_FULL_CIRCLE - 1}"
         )
     return angle
+
+
+def _validate_linear_gradient_structure(lin: ET.Element) -> None:
+    """Require one leaf a:lin with only the registered attributes."""
+    unsupported = sorted(set(lin.attrib) - {"ang", "scaled"})
+    if unsupported or list(lin) or (lin.text or "").strip():
+        details = ", ".join(unsupported) if unsupported else "payload"
+        raise ValueError(
+            f"Invalid DrawingML linear gradient structure: {details}"
+        )
 
 
 def _validate_linear_gradient_scaling(
