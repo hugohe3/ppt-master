@@ -43,6 +43,7 @@ from .utils import (
     SVG_NS,
     _extract_inheritable_styles,
     _get_attr,
+    _is_unit_axis_reflection,
     parse_svg_length,
     parse_transform_operations,
     parse_transform_matrix,
@@ -701,11 +702,18 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
     ]
+    unit_axis_reflection = (
+        bool(transform)
+        and _is_unit_axis_reflection(parse_transform_operations(transform))
+    )
     matrix_supported = (
         not native_subtree_active
         and bool(transform)
         and visual_children
-        and supports_full_project_transform(elem)
+        and (
+            supports_full_project_transform(elem)
+            or unit_axis_reflection
+        )
     )
     # A pure ``rotate(angle [cx cy])`` falls through to the fallback path
     # below (children are rect/text/path/etc. that don't consume a full
