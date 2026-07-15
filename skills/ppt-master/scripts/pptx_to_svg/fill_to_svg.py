@@ -18,7 +18,12 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from xml.etree import ElementTree as ET
 
-from .color_resolver import ColorPalette, find_color_elem, resolve_color
+from .color_resolver import (
+    COLOR_TAGS,
+    ColorPalette,
+    find_color_elem,
+    resolve_color,
+)
 from .emu_units import (
     ANGLE_UNIT,
     NS,
@@ -144,7 +149,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     stops_xml = []
     for gs in gradient_stops:
         pos_pct = _gradient_stop_position(gs)
-        color_elem = find_color_elem(gs)
+        color_elem = _gradient_stop_color(gs)
         hex_, alpha = resolve_color(
             color_elem,
             palette,
@@ -250,6 +255,21 @@ def _gradient_stop_list(gs_list: ET.Element) -> list[ET.Element]:
             "DrawingML gradient fill requires at least two color stops"
         )
     return stops
+
+
+def _gradient_stop_color(gs: ET.Element) -> ET.Element:
+    """Return the single registered color child of one gradient stop."""
+    children = list(gs)
+    color_tags = {f"{{{NS['a']}}}{name}" for name in COLOR_TAGS}
+    if (
+        set(gs.attrib) != {"pos"}
+        or len(children) != 1
+        or children[0].tag not in color_tags
+        or (gs.text or "").strip()
+        or (children[0].tail or "").strip()
+    ):
+        raise ValueError("Invalid DrawingML gradient stop structure")
+    return children[0]
 
 
 def _linear_gradient_angle(lin: ET.Element) -> int:

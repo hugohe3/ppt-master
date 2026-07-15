@@ -749,6 +749,10 @@ An explicit non-line imported `a:gradFill` requires exactly one attribute-free
 stop must provide a resolvable color. Missing or duplicate lists, undersized or
 malformed lists, and unresolvable stops stop import instead of becoming an
 inherited fill or a partial gradient.
+Each imported `a:gs` has exactly the required `pos` attribute and exactly one
+direct registered DrawingML color child, with no interleaved text. Extra or
+namespaced attributes, missing/multiple/foreign color children, and text payload
+stop import instead of being reduced to the first recognizable color.
 An imported non-line `a:lin@ang` may be omitted for the schema-defined zero
 default. When present, it must be an integer from `0` through `21599999`
 (1/60000 degree); malformed or out-of-range values stop import instead of
