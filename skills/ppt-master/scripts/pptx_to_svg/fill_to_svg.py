@@ -163,7 +163,9 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
 
     if lin is not None:
         # ang is 1/60000 deg. 0° = horizontal left-to-right.
-        angle_deg = _linear_gradient_angle(lin)
+        angle = _linear_gradient_angle(lin)
+        _validate_linear_gradient_scaling(lin, angle)
+        angle_deg = angle / ANGLE_UNIT
         x1, y1, x2, y2 = _angle_to_unit_endpoints(angle_deg)
         defs_xml = (
             f'<linearGradient id="{grad_id}" '
@@ -213,11 +215,11 @@ def _gradient_stop_position(gs: ET.Element) -> float:
     return position / PERCENT_UNIT
 
 
-def _linear_gradient_angle(lin: ET.Element) -> float:
-    """Parse one optional DrawingML positive fixed angle in degrees."""
+def _linear_gradient_angle(lin: ET.Element) -> int:
+    """Parse one optional DrawingML positive fixed angle."""
     raw = lin.get("ang")
     if raw is None:
-        return 0.0
+        return 0
     token = raw.strip()
     if _OOXML_INTEGER_RE.fullmatch(token) is None:
         raise ValueError(f"Invalid DrawingML linear gradient angle: {raw!r}")
@@ -227,7 +229,33 @@ def _linear_gradient_angle(lin: ET.Element) -> float:
             f"DrawingML linear gradient angle={angle} is outside "
             f"0..{_OOXML_FULL_CIRCLE - 1}"
         )
-    return angle / ANGLE_UNIT
+    return angle
+
+
+def _validate_linear_gradient_scaling(
+    lin: ET.Element,
+    angle: int,
+) -> None:
+    """Require a scaling mode representable by unit-box SVG geometry."""
+    raw = lin.get("scaled")
+    if raw is None:
+        scaled = False
+    else:
+        token = raw.strip()
+        if token in {"1", "true"}:
+            scaled = True
+        elif token in {"0", "false"}:
+            scaled = False
+        else:
+            raise ValueError(
+                f"Invalid DrawingML linear gradient scaled value: {raw!r}"
+            )
+    quarter_turn = 90 * ANGLE_UNIT
+    if not scaled and angle % quarter_turn:
+        raise ValueError(
+            "Unscaled non-cardinal DrawingML linear gradients are not "
+            "representable by the normalized SVG mapping"
+        )
 
 
 def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:

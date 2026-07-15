@@ -752,6 +752,11 @@ An imported non-line `a:lin@ang` may be omitted for the schema-defined zero
 default. When present, it must be an integer from `0` through `21599999`
 (1/60000 degree); malformed or out-of-range values stop import instead of
 silently becoming a horizontal gradient.
+The normalized SVG endpoint mapping preserves `a:lin@scaled="1"` / `"true"`
+at every angle. The schema default (`scaled` omitted) and explicit `"0"` /
+`"false"` are accepted only at cardinal angles, where aspect-ratio scaling
+cannot change the direction. Other unscaled angles and malformed boolean values
+stop import instead of producing a direction that varies with shape geometry.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
