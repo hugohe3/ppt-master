@@ -22,7 +22,7 @@ from .ooxml_loader import PartRef
 # Preset color names (DrawingML <a:prstClr val="...">)
 # ---------------------------------------------------------------------------
 
-# Source: ECMA-376 ST_PresetColorVal (subset — full list has ~140 entries).
+# Source: complete ECMA-376 ST_PresetColorVal enumeration (190 values).
 PRST_COLORS = {
     "aliceBlue": "F0F8FF", "antiqueWhite": "FAEBD7", "aqua": "00FFFF",
     "aquamarine": "7FFFD4", "azure": "F0FFFF", "beige": "F5F5DC",
@@ -300,8 +300,7 @@ def resolve_color(
     elif tag == "sysClr":
         base_hex = _system_color_fallback(color_elem)
     elif tag == "prstClr":
-        name = color_elem.attrib.get("val", "")
-        base_hex = PRST_COLORS.get(name)
+        base_hex = _preset_color_hex(color_elem)
     elif tag == "hslClr":
         # DrawingML hue is in 1/60000 deg ([0, 21_600_000) maps to [0°, 360°));
         # _hsl_to_hex expects a fraction in [0, 1), so divide by 60000 * 360.
@@ -380,6 +379,23 @@ def _system_color_fallback(color_elem: ET.Element) -> str:
             f"Invalid DrawingML system color fallback: {fallback!r}"
         )
     return fallback.upper()
+
+
+def _preset_color_hex(color_elem: ET.Element) -> str:
+    """Resolve one exact value from the complete DrawingML preset enum."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}prstClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML preset color structure")
+    name = color_elem.attrib["val"]
+    hex_ = PRST_COLORS.get(name)
+    if hex_ is None:
+        raise ValueError(f"Invalid DrawingML preset color value: {name!r}")
+    return hex_
 
 
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
