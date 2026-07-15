@@ -120,6 +120,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                        prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
     _validate_gradient_rotation(elem)
+    _validate_gradient_flip(elem)
     if seq is None:
         seq = [0]
     seq[0] += 1
@@ -271,6 +272,13 @@ def _validate_gradient_rotation(gradient: ET.Element) -> None:
             "DrawingML gradients that do not rotate with their shape are "
             "not representable by the local SVG mapping"
         )
+
+
+def _validate_gradient_flip(gradient: ET.Element) -> None:
+    """Reject gradient tile flipping absent from project SVG."""
+    flip = gradient.get("flip", "none")
+    if flip != "none":
+        raise ValueError(f"Unsupported DrawingML gradient flip: {flip!r}")
 
 
 def _parse_ooxml_boolean(

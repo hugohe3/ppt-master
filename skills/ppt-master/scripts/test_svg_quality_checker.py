@@ -3076,6 +3076,32 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_rotation(rotates)
 
+    def test_native_gradient_flip_must_be_none(self):
+        def resolve_flip(flip: str | None):
+            flip_attr = '' if flip is None else f' flip="{flip}"'
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill{flip_attr}>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        for flip in (None, 'none'):
+            with self.subTest(valid_flip=flip):
+                self.assertTrue(resolve_flip(flip).defs)
+
+        for flip in ('', 'x', 'y', 'xy', 'None', 'futureFlip'):
+            with self.subTest(unsupported_flip=flip):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Unsupported DrawingML gradient flip',
+                ):
+                    resolve_flip(flip)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
