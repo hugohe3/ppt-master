@@ -774,6 +774,10 @@ Project SVG has no gradient-tile flip mapping. Imported `a:gradFill@flip` may
 therefore be omitted for the documented Office `none` baseline or be exactly
 `none`; `x`, `y`, `xy`, malformed, and unknown values stop import instead of
 becoming an ordinary unflipped gradient.
+An imported `a:tileRect` may be absent or occur once as an empty/full-area
+relative rectangle. Explicit `l/t/r/b` values use strict DrawingML percentage
+syntax and must resolve to zero. Duplicate or malformed rectangles and non-zero
+tile offsets stop import because project SVG has no gradient tiling model.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 

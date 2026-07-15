@@ -15,6 +15,7 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass, field
+from decimal import Decimal
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
@@ -29,7 +30,12 @@ from .emu_units import (
 
 
 _OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
+_OOXML_PERCENT_LITERAL_RE = re.compile(
+    r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)%"
+)
 _OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
+_OOXML_PERCENTAGE_MIN = Decimal(-(2**31)) / Decimal(PERCENT_UNIT)
+_OOXML_PERCENTAGE_MAX = Decimal(2**31 - 1) / Decimal(PERCENT_UNIT)
 
 
 @dataclass
@@ -121,6 +127,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
     _validate_gradient_rotation(elem)
     _validate_gradient_flip(elem)
+    _validate_gradient_tile_rect(elem)
     if seq is None:
         seq = [0]
     seq[0] += 1
@@ -279,6 +286,48 @@ def _validate_gradient_flip(gradient: ET.Element) -> None:
     flip = gradient.get("flip", "none")
     if flip != "none":
         raise ValueError(f"Unsupported DrawingML gradient flip: {flip!r}")
+
+
+def _validate_gradient_tile_rect(gradient: ET.Element) -> None:
+    """Accept only the full-area gradient tile rectangle."""
+    tile_rects = gradient.findall("a:tileRect", NS)
+    if len(tile_rects) > 1:
+        raise ValueError(
+            "DrawingML gradient fill must contain at most one tileRect"
+        )
+    if not tile_rects:
+        return
+    tile_rect = tile_rects[0]
+    if (
+        set(tile_rect.attrib) - {"l", "t", "r", "b"}
+        or list(tile_rect)
+        or (tile_rect.text or "").strip()
+    ):
+        raise ValueError("Invalid DrawingML gradient tileRect structure")
+    for edge, raw in tile_rect.attrib.items():
+        value = _parse_ooxml_percentage(
+            raw,
+            label=f"gradient tileRect {edge}",
+        )
+        if value != 0:
+            raise ValueError(
+                "Non-zero DrawingML gradient tileRect is not representable "
+                "by the project SVG gradient mapping"
+            )
+
+
+def _parse_ooxml_percentage(raw: str, *, label: str) -> Decimal:
+    """Parse one DrawingML ST_Percentage as an exact normalized ratio."""
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is not None:
+        value = Decimal(token) / Decimal(PERCENT_UNIT)
+    elif _OOXML_PERCENT_LITERAL_RE.fullmatch(token) is not None:
+        value = Decimal(token[:-1]) / Decimal(100)
+    else:
+        raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
+    if not _OOXML_PERCENTAGE_MIN <= value <= _OOXML_PERCENTAGE_MAX:
+        raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
+    return value
 
 
 def _parse_ooxml_boolean(
