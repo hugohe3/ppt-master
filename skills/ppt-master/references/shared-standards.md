@@ -998,7 +998,9 @@ fidelity.
 PPTX import formats normalized paint and text alpha with five decimal places,
 matching DrawingML's 1/100000 target precision. The smallest positive source
 alpha therefore remains non-zero and quantizes back instead of becoming fully
-transparent.
+transparent. Export uses one clamped half-up quantizer for every DrawingML
+`alpha`, `alphaMod`, and `alphaModFix` channel; it never truncates a decimal
+ratio one unit below its intended value.
 
 PPTX import accepts `a:ln@w` only as an integer DrawingML `ST_LineWidth` value
 from `0` through `20116800` EMU. Malformed, negative, or oversized source widths

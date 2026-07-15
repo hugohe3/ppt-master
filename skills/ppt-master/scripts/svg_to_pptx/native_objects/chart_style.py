@@ -9,7 +9,13 @@ from xml.etree import ElementTree as ET
 from .marker_attributes import native_import_source
 
 from ..drawingml.context import ConvertContext
-from ..drawingml.utils import detect_text_lang, parse_font_family, px_to_emu, _xml_escape
+from ..drawingml.utils import (
+    _xml_escape,
+    detect_text_lang,
+    parse_font_family,
+    px_to_emu,
+    quantize_ooxml_alpha,
+)
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,
@@ -365,7 +371,7 @@ def _alpha_xml(value: Any, field_name: str = "fill_opacity") -> str:
         raise RuntimeError(f"Native PPTX chart {field_name} must be finite")
     if alpha < 0 or alpha > 1:
         raise RuntimeError(f"Native PPTX chart {field_name} must be between 0 and 1")
-    return f'<a:alpha val="{int(round(alpha * 100000))}"/>'
+    return f'<a:alpha val="{quantize_ooxml_alpha(alpha)}"/>'
 
 
 def _axis_title_xml(
