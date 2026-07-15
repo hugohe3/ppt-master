@@ -399,18 +399,6 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 
 ---
 
-## Star History
-
-<a href="https://star-history.com/#hugohe3/ppt-master&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
- </picture>
-</a>
-
----
-
 ## 赞助与支持
 
 PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文档更新都需要持续的资源投入，目前由以下赞助方和个人支持者共同分担。

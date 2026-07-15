@@ -389,18 +389,6 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 
 ---
 
-## Star History
-
-<a href="https://star-history.com/#hugohe3/ppt-master&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
- </picture>
-</a>
-
----
-
 ## Sponsors & Support
 
 PPT Master is currently built and maintained primarily by me. Every new template, bug fix, and documentation update takes ongoing resources — currently shared by the sponsors and individual supporters below.
