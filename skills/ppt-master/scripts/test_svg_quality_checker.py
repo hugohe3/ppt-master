@@ -40,6 +40,7 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm, format_ooxml_alpha
+from pptx_to_svg.color_resolver import resolve_color
 from pptx_to_svg.effect_to_svg import (
     convert_effects,
     unsupported_target_effect_metadata,
@@ -2900,6 +2901,58 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 )
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_stroke(sp_pr, None)
+
+    def test_native_srgb_color_requires_six_digit_hex(self):
+        invalid_colors = (
+            ('<a:srgbClr/>', 'sRGB color structure'),
+            ('<a:srgbClr val="ABC"/>', 'sRGB color value'),
+            ('<a:srgbClr val="#112233"/>', 'sRGB color value'),
+            ('<a:srgbClr val="11223344"/>', 'sRGB color value'),
+            ('<a:srgbClr val="GGGGGG"/>', 'sRGB color value'),
+            (
+                '<a:srgbClr val="112233" future="x"/>',
+                'sRGB color structure',
+            ),
+            (
+                '<a:srgbClr val="112233" '
+                'xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" '
+                'a14:legacySpreadsheetColorIndex="1"/>',
+                'sRGB color structure',
+            ),
+            (
+                '<a:srgbClr val="112233">payload</a:srgbClr>',
+                'sRGB color structure',
+            ),
+            (
+                '<a:srgbClr val="112233"><a:alpha val="50000"/>payload'
+                '</a:srgbClr>',
+                'sRGB color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:srgbClr xmlns:future="urn:future" val="112233"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'sRGB color structure'):
+            resolve_color(foreign_color, None)
+
+        valid = ET.fromstring(f'''
+<a:solidFill {namespace}>
+  <a:srgbClr val="a1b2c3"><a:alpha val="50000"/></a:srgbClr>
+</a:solidFill>''')
+        resolved = resolve_fill(valid, None)
+        self.assertEqual(resolved.attrs['fill'], '#A1B2C3')
+        self.assertEqual(resolved.attrs['fill-opacity'], '0.5')
 
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):

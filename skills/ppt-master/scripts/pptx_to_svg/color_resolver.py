@@ -11,6 +11,7 @@ a:clrScheme.
 from __future__ import annotations
 
 import colorsys
+import re
 from xml.etree import ElementTree as ET
 
 from .emu_units import NS, percent_to_ratio
@@ -100,6 +101,7 @@ SCHEME_ALIASES = {
     "bg1": "lt1", "bg2": "lt2",
     "tx1": "dk1", "tx2": "dk2",
 }
+_SRGB_HEX_RE = re.compile(r"[0-9A-Fa-f]{6}")
 
 
 # ---------------------------------------------------------------------------
@@ -237,8 +239,7 @@ def resolve_color(
     alpha: float = 1.0
 
     if tag == "srgbClr":
-        val = color_elem.attrib.get("val", "")
-        base_hex = _normalize_hex(val)
+        base_hex = _srgb_hex_value(color_elem)
     elif tag == "schemeClr":
         name = color_elem.attrib.get("val", "")
         if name == "phClr":
@@ -271,6 +272,22 @@ def resolve_color(
     # Apply modifiers (children of the color element).
     base_hex, alpha = _apply_modifiers(base_hex, color_elem)
     return f"#{base_hex}", alpha
+
+
+def _srgb_hex_value(color_elem: ET.Element) -> str:
+    """Parse the closed six-digit DrawingML sRGB base token."""
+    children = list(color_elem)
+    if (
+        color_elem.tag != f"{{{NS['a']}}}srgbClr"
+        or set(color_elem.attrib) != {"val"}
+        or (color_elem.text or "").strip()
+        or any((child.tail or "").strip() for child in children)
+    ):
+        raise ValueError("Invalid DrawingML sRGB color structure")
+    raw = color_elem.attrib["val"]
+    if _SRGB_HEX_RE.fullmatch(raw) is None:
+        raise ValueError(f"Invalid DrawingML sRGB color value: {raw!r}")
+    return raw.upper()
 
 
 def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float]:
