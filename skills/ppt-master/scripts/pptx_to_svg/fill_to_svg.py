@@ -119,6 +119,7 @@ def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
 def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                        prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
+    _validate_gradient_rotation(elem)
     if seq is None:
         seq = [0]
     seq[0] += 1
@@ -245,25 +246,48 @@ def _validate_linear_gradient_scaling(
     angle: int,
 ) -> None:
     """Require a scaling mode representable by unit-box SVG geometry."""
-    raw = lin.get("scaled")
-    if raw is None:
-        scaled = False
-    else:
-        token = raw.strip()
-        if token in {"1", "true"}:
-            scaled = True
-        elif token in {"0", "false"}:
-            scaled = False
-        else:
-            raise ValueError(
-                f"Invalid DrawingML linear gradient scaled value: {raw!r}"
-            )
+    scaled = _parse_ooxml_boolean(
+        lin.get("scaled"),
+        default=False,
+        label="linear gradient scaled value",
+    )
     quarter_turn = 90 * ANGLE_UNIT
     if not scaled and angle % quarter_turn:
         raise ValueError(
             "Unscaled non-cardinal DrawingML linear gradients are not "
             "representable by the normalized SVG mapping"
         )
+
+
+def _validate_gradient_rotation(gradient: ET.Element) -> None:
+    """Require a gradient that rotates with its containing shape."""
+    rotates_with_shape = _parse_ooxml_boolean(
+        gradient.get("rotWithShape"),
+        default=True,
+        label="gradient rotWithShape value",
+    )
+    if not rotates_with_shape:
+        raise ValueError(
+            "DrawingML gradients that do not rotate with their shape are "
+            "not representable by the local SVG mapping"
+        )
+
+
+def _parse_ooxml_boolean(
+    raw: str | None,
+    *,
+    default: bool,
+    label: str,
+) -> bool:
+    """Parse one W3C XML Schema boolean without permissive aliases."""
+    if raw is None:
+        return default
+    token = raw.strip()
+    if token in {"1", "true"}:
+        return True
+    if token in {"0", "false"}:
+        return False
+    raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
 
 
 def _validate_path_gradient_type(path: ET.Element) -> None:

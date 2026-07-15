@@ -3040,6 +3040,42 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_path(path_type)
 
+    def test_native_gradient_must_rotate_with_shape(self):
+        def resolve_rotation(rotates: str | None):
+            rotation_attr = (
+                '' if rotates is None else f' rotWithShape="{rotates}"'
+            )
+            sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill{rotation_attr}>
+    <a:gsLst>
+      <a:gs pos="0"><a:srgbClr val="112233"/></a:gs>
+    </a:gsLst>
+  </a:gradFill>
+</p:spPr>''')
+            return resolve_fill(sp_pr, None)
+
+        for rotates in (None, '1', 'true'):
+            with self.subTest(valid_rotates=rotates):
+                self.assertTrue(resolve_rotation(rotates).defs)
+
+        for rotates in ('0', 'false'):
+            with self.subTest(unsupported_rotates=rotates):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'do not rotate with their shape',
+                ):
+                    resolve_rotation(rotates)
+
+        for rotates in ('', '2', 'TRUE', 'on', 'yes'):
+            with self.subTest(invalid_rotates=rotates):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML gradient rotWithShape value',
+                ):
+                    resolve_rotation(rotates)
+
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
             with self.subTest(compound=compound):
