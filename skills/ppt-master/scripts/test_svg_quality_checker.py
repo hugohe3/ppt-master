@@ -3185,6 +3185,72 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </a:hslClr>''')
         self.assertEqual(resolve_color(valid, None), ('#FF0000', 0.5))
 
+    def test_native_scrgb_color_requires_bounded_linear_channels(self):
+        invalid_colors = (
+            ('<a:scrgbClr g="50000" b="50000"/>', 'scRGB color structure'),
+            (
+                '<a:scrgbClr r="50000" g="50000" b="50000" future="x"/>',
+                'scRGB color structure',
+            ),
+            (
+                '<a:scrgbClr r="-1" g="50000" b="50000"/>',
+                'scRGB color r',
+            ),
+            (
+                '<a:scrgbClr r="100001" g="50000" b="50000"/>',
+                'scRGB color r',
+            ),
+            (
+                '<a:scrgbClr r="0.5" g="50000" b="50000"/>',
+                'scRGB color r',
+            ),
+            (
+                '<a:scrgbClr r="50000" g="50%" b="50000"/>',
+                'scRGB color g',
+            ),
+            (
+                '<a:scrgbClr r="50000" g="NaN" b="50000"/>',
+                'scRGB color g',
+            ),
+            (
+                '<a:scrgbClr r="50000" g="50000" b="1e2"/>',
+                'scRGB color b',
+            ),
+            (
+                '<a:scrgbClr r="50000" g="50000" b="50000">payload'
+                '</a:scrgbClr>',
+                'scRGB color structure',
+            ),
+            (
+                '<a:scrgbClr r="50000" g="50000" b="50000">'
+                '<a:alpha val="50000"/>payload</a:scrgbClr>',
+                'scRGB color structure',
+            ),
+        )
+        namespace = (
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        )
+        for color, expected in invalid_colors:
+            with self.subTest(color=color):
+                fill = ET.fromstring(
+                    f'<a:solidFill {namespace}>{color}</a:solidFill>'
+                )
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_fill(fill, None)
+
+        foreign_color = ET.fromstring(
+            '<future:scrgbClr xmlns:future="urn:future" '
+            'r="50000" g="50000" b="50000"/>'
+        )
+        with self.assertRaisesRegex(ValueError, 'scRGB color structure'):
+            resolve_color(foreign_color, None)
+
+        valid = ET.fromstring(f'''
+<a:scrgbClr {namespace} r="50000" g="50000" b="50000">
+  <a:alpha val="50000"/>
+</a:scrgbClr>''')
+        self.assertEqual(resolve_color(valid, None), ('#BCBCBC', 0.5))
+
     def test_native_gradient_stop_position_round_trips(self):
         for position in (0, 1, 7, 13, 33333, 99999, 100000):
             with self.subTest(position=position):
