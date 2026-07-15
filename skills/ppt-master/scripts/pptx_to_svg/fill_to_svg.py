@@ -185,6 +185,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             "DrawingML gradient fill must contain at most one lin/path "
             "direction"
         )
+    _validate_gradient_child_structure(elem)
     lin = linear_directions[0] if linear_directions else None
     rad = path_directions[0] if path_directions else None
 
@@ -347,6 +348,32 @@ def _validate_gradient_attributes(gradient: ET.Element) -> None:
         raise ValueError(
             "Unsupported DrawingML gradient fill attribute(s): "
             + ", ".join(unsupported)
+        )
+
+
+def _validate_gradient_child_structure(gradient: ET.Element) -> None:
+    """Require the registered DrawingML gradient-fill child sequence."""
+    namespace = NS["a"]
+    gs_list = f"{{{namespace}}}gsLst"
+    linear = f"{{{namespace}}}lin"
+    path = f"{{{namespace}}}path"
+    tile_rect = f"{{{namespace}}}tileRect"
+    child_tags = tuple(child.tag for child in gradient)
+    allowed_sequences = {
+        (gs_list,),
+        (gs_list, linear),
+        (gs_list, path),
+        (gs_list, tile_rect),
+        (gs_list, linear, tile_rect),
+        (gs_list, path, tile_rect),
+    }
+    if (
+        child_tags not in allowed_sequences
+        or (gradient.text or "").strip()
+        or any((child.tail or "").strip() for child in gradient)
+    ):
+        raise ValueError(
+            "Invalid DrawingML gradient fill child structure"
         )
 
 

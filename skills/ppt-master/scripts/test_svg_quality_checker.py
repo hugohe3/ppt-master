@@ -2968,6 +2968,34 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_fill(sp_pr, None)
 
+    def test_native_gradient_fill_child_structure_must_be_closed(self):
+        stop_list = (
+            '<a:gsLst>'
+            '<a:gs pos="0"><a:srgbClr val="112233"/></a:gs>'
+            '<a:gs pos="100000"><a:srgbClr val="445566"/></a:gs>'
+            '</a:gsLst>'
+        )
+        invalid_children = (
+            f'{stop_list}<a:future/>',
+            f'{stop_list}<future:lin xmlns:future="urn:future"/>',
+            f'<a:lin/>{stop_list}',
+            f'{stop_list}<a:tileRect/><a:lin/>',
+            f'payload{stop_list}',
+            f'{stop_list}payload',
+        )
+        for children in invalid_children:
+            with self.subTest(children=children):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:gradFill>{children}</a:gradFill>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    'Invalid DrawingML gradient fill child structure',
+                ):
+                    resolve_fill(sp_pr, None)
+
     def test_native_linear_gradient_angle_must_be_valid(self):
         valid_angles = (
             (None, None, 0.0),
