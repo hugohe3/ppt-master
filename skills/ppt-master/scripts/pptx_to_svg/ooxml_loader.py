@@ -87,6 +87,28 @@ def _load_xml(zf: zipfile.ZipFile, part_path: str) -> ET.Element | None:
         raise RuntimeError(f"Invalid OOXML part {part_path}: {exc}") from exc
 
 
+def blip_embed_relationship_ids(blip: ET.Element) -> tuple[str, ...]:
+    """Return embedded image relationships in fidelity-preferred order.
+
+    Modern Office stores an editable SVG relationship in ``asvg:svgBlip``
+    while keeping a raster fallback on the owning ``a:blip``. Consumers must
+    try the SVG relationship first and retain the raster relationship only as
+    a compatibility fallback.
+    """
+    embed_attr = f"{{{NS['r']}}}embed"
+    candidates = [
+        node.attrib.get(embed_attr)
+        for node in blip.findall(".//asvg:svgBlip", NS)
+    ]
+    candidates.append(blip.attrib.get(embed_attr))
+
+    ordered: list[str] = []
+    for rel_id in candidates:
+        if rel_id and rel_id not in ordered:
+            ordered.append(rel_id)
+    return tuple(ordered)
+
+
 # ---------------------------------------------------------------------------
 # Data classes for navigable parts
 # ---------------------------------------------------------------------------

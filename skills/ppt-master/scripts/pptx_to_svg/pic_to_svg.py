@@ -5,7 +5,9 @@ Reverse of svg_to_pptx convert_image.
 DrawingML structure:
     <p:pic>
         <p:blipFill>
-            <a:blip r:embed="rIdN"/>
+            <a:blip r:embed="rIdRaster">
+                <a:extLst>...<asvg:svgBlip r:embed="rIdSvg"/>...</a:extLst>
+            </a:blip>
             <a:srcRect l/t/r/b="1/100000"/>      (optional crop)
             <a:stretch><a:fillRect/></a:stretch> (default: fill the shape)
         </p:blipFill>
@@ -16,6 +18,8 @@ DrawingML structure:
     </p:pic>
 
 Strategy:
+- Prefer the editable SVG relationship in asvg:svgBlip when Office also stores
+  a raster compatibility preview on a:blip; retain the raster as fallback.
 - Default (no srcRect, plain stretch) -> a single <image> filling the box,
   preserveAspectRatio="none".
 - With srcRect -> wrap the <image> in a nested <svg viewBox> in the unit
@@ -45,7 +49,7 @@ except ImportError:  # pragma: no cover - optional visual enhancement dependency
     ImageEnhance = None
 
 from .emu_units import NS, Xfrm, fmt_num, format_ooxml_alpha
-from .ooxml_loader import OoxmlPackage, PartRef
+from .ooxml_loader import OoxmlPackage, PartRef, blip_embed_relationship_ids
 
 
 @dataclass
@@ -82,23 +86,38 @@ def convert_blip_fill(
     if blip is None:
         return PictureResult()
 
-    rid = blip.attrib.get(f"{{{NS['r']}}}embed")
+    relationship_ids = blip_embed_relationship_ids(blip)
     linked_rid = blip.attrib.get(f"{{{NS['r']}}}link")
-    if not rid:
+    if not relationship_ids:
         if linked_rid:
             raise MediaResolutionError(
                 "Linked image relationships are not supported; embed the image in PowerPoint first"
             )
         return PictureResult()
 
-    target = slide_part.resolve_rel(rid)
-    if not target:
-        raise MediaResolutionError(f"Image relationship {rid} cannot be resolved in {slide_part.path}")
-
-    # Read the bytes
-    img_bytes = pkg.read_media(target)
-    if img_bytes is None:
-        raise MediaResolutionError(f"Embedded image part is missing: {target}")
+    target: str | None = None
+    img_bytes: bytes | None = None
+    failures: list[str] = []
+    for rel_id in relationship_ids:
+        candidate = slide_part.resolve_rel(rel_id)
+        if not candidate:
+            failures.append(f"{rel_id}: unresolved")
+            continue
+        candidate_bytes = pkg.read_media(candidate)
+        if candidate_bytes is None:
+            failures.append(f"{rel_id}: missing {candidate}")
+            continue
+        if Path(candidate).suffix.lower() == ".svg" and not _is_valid_svg_media(candidate_bytes):
+            failures.append(f"{rel_id}: invalid SVG media {candidate}")
+            continue
+        target = candidate
+        img_bytes = candidate_bytes
+        break
+    if target is None or img_bytes is None:
+        details = "; ".join(failures)
+        raise MediaResolutionError(
+            f"No embedded image relationship can be read in {slide_part.path}: {details}"
+        )
 
     filename = (asset_name_map or {}).get(target, pkg.media_filename(target))
     filename, img_bytes = _normalize_office_media(filename, img_bytes)
@@ -185,6 +204,15 @@ def _blip_opacity_attr(blip: ET.Element) -> str:
     return f' opacity="{format_ooxml_alpha(opacity)}"'
 
 _OFFICE_VECTOR_EXTS = {".emf", ".wmf"}
+
+
+def _is_valid_svg_media(data: bytes) -> bool:
+    """Return whether one media part is a namespaced SVG document."""
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError:
+        return False
+    return root.tag == "{http://www.w3.org/2000/svg}svg"
 
 
 def _normalize_office_media(filename: str, img_bytes: bytes) -> tuple[str, bytes]:

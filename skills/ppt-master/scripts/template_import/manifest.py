@@ -31,7 +31,10 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
+from pptx_to_svg.ooxml_loader import (
+    blip_embed_relationship_ids,
+    parse_ooxml_boolean,
+)
 
 
 NS = {
@@ -357,18 +360,24 @@ def extract_image_targets(root: ET.Element | None, rels: dict[str, dict[str, str
     targets: list[str] = []
     seen: set[str] = set()
     for blip in root.findall(".//a:blip", NS):
-        rel_id = blip.attrib.get(f"{{{NS['r']}}}embed")
-        if not rel_id:
-            continue
-        rel = rels.get(rel_id)
-        if not rel or rel["type"] != IMAGE_REL:
-            continue
-        target = rel["target"]
-        if target in seen:
+        target = _preferred_image_target(blip, rels)
+        if target is None or target in seen:
             continue
         seen.add(target)
         targets.append(target)
     return targets
+
+
+def _preferred_image_target(
+    blip: ET.Element,
+    rels: dict[str, dict[str, str]],
+) -> str | None:
+    """Resolve an Office SVG relationship before its raster fallback."""
+    for rel_id in blip_embed_relationship_ids(blip):
+        rel = rels.get(rel_id)
+        if rel and rel["type"] == IMAGE_REL:
+            return rel["target"]
+    return None
 
 
 def detect_background_asset(root: ET.Element | None, rels: dict[str, dict[str, str]]) -> str | None:
@@ -385,13 +394,7 @@ def detect_background_asset(root: ET.Element | None, rels: dict[str, dict[str, s
     if blip is None:
         return None
 
-    rel_id = blip.attrib.get(f"{{{NS['r']}}}embed")
-    if not rel_id:
-        return None
-    rel = rels.get(rel_id)
-    if not rel or rel["type"] != IMAGE_REL:
-        return None
-    return rel["target"]
+    return _preferred_image_target(blip, rels)
 
 
 def count_slide_shapes(root: ET.Element | None) -> int:
