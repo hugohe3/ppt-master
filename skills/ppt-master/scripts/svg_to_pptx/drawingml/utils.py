@@ -12,6 +12,7 @@ import re
 import unicodedata
 from collections import Counter
 from collections.abc import Iterator
+from decimal import Decimal, ROUND_HALF_UP
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import (
@@ -1530,6 +1531,15 @@ def parse_opacity(
     if raw is None:
         return max(0.0, min(1.0, default))
     return parse_project_opacity(raw, allow_percentage=allow_percentage)
+
+
+def quantize_ooxml_alpha(opacity: float) -> int:
+    """Quantize one normalized alpha to DrawingML 1/100000 units."""
+    if not math.isfinite(opacity):
+        raise ValueError(f'Opacity must be finite; got {opacity!r}')
+    normalized = max(0.0, min(1.0, opacity))
+    scaled = Decimal(str(normalized)) * Decimal(100000)
+    return int(scaled.to_integral_value(rounding=ROUND_HALF_UP))
 
 
 def _functional_color_parts(body: str) -> tuple[list[str], str | None]:

@@ -17,6 +17,7 @@ from .utils import (
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
     parse_project_filter_params, project_filter_drawingml_coordinates,
     parse_project_stroke_dasharray, parse_project_stroke_enum,
+    quantize_ooxml_alpha,
 )
 
 
@@ -29,7 +30,7 @@ def build_solid_fill(
     """Build <a:solidFill> XML."""
     alpha = ''
     if opacity is not None and opacity < 1.0:
-        alpha = f'<a:alpha val="{int(opacity * 100000)}"/>'
+        alpha = f'<a:alpha val="{quantize_ooxml_alpha(opacity)}"/>'
     return (
         '<a:solidFill>'
         f'{color_node_xml(color, theme_color_spec, usage, alpha)}'
@@ -81,7 +82,9 @@ def build_gradient_fill(
         alpha_xml = ''
         effective_opacity = combine_opacity(stop_opacity, opacity)
         if effective_opacity is not None:
-            alpha_xml = f'<a:alpha val="{int(effective_opacity * 100000)}"/>'
+            alpha_xml = (
+                f'<a:alpha val="{quantize_ooxml_alpha(effective_opacity)}"/>'
+            )
 
         stops_xml.append(
             f'<a:gs pos="{pos}">'
@@ -277,11 +280,11 @@ def build_pattern_fill(
     fg_opacity = combine_opacity(opacity, fg_alpha, fg_child_opacity)
     bg_opacity = combine_opacity(opacity, bg_alpha, bg_child_opacity)
     fg_alpha_xml = (
-        f'<a:alpha val="{int(fg_opacity * 100000)}"/>'
+        f'<a:alpha val="{quantize_ooxml_alpha(fg_opacity)}"/>'
         if fg_opacity is not None else ''
     )
     bg_alpha_xml = (
-        f'<a:alpha val="{int(bg_opacity * 100000)}"/>'
+        f'<a:alpha val="{quantize_ooxml_alpha(bg_opacity)}"/>'
         if bg_opacity is not None else ''
     )
 
@@ -527,7 +530,7 @@ def build_stroke_xml(
     opacity = combine_opacity(opacity, color_alpha)
     alpha_xml = ''
     if opacity is not None and opacity < 1.0:
-        alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+        alpha_xml = f'<a:alpha val="{quantize_ooxml_alpha(opacity)}"/>'
 
     color_xml = color_node_xml(color, ctx.theme_color_spec, "stroke", alpha_xml)
     return f'''<a:ln w="{width_emu}"{cap_attr}>
@@ -608,7 +611,9 @@ def build_shadow_xml(
     # composite (different blending path). Scale by 0.75 to match the SVG
     # preview after blur has been corrected to 2.0× σ.
     opacity_multiplier = 1.0 if opacity is None else opacity
-    alpha_val = int(round(p['opacity'] * opacity_multiplier * 75000))
+    alpha_val = quantize_ooxml_alpha(
+        p['opacity'] * opacity_multiplier * 0.75
+    )
     algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
@@ -633,7 +638,7 @@ def build_glow_xml(
     p = parse_project_filter_params(filter_elem)
     rad = project_filter_drawingml_coordinates(p, 'glow')['rad']
     opacity_multiplier = 1.0 if opacity is None else opacity
-    alpha_val = int(round(p['opacity'] * opacity_multiplier * 100000))
+    alpha_val = quantize_ooxml_alpha(p['opacity'] * opacity_multiplier)
 
     return f'''<a:effectLst>
 <a:glow rad="{rad}">

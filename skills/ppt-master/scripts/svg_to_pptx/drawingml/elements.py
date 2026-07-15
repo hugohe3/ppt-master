@@ -57,6 +57,7 @@ from .utils import (
     parse_project_image_aspect_ratio,
     parse_project_opacity,
     parse_project_stroke_dasharray,
+    quantize_ooxml_alpha,
     project_definition_index,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
@@ -2225,7 +2226,7 @@ def _build_bullet_xml(
     if color:
         opacity = combine_opacity(bullet.get('opacity'), color_alpha)
         alpha_xml = (
-            f'<a:alphaMod val="{int(opacity * 100000)}"/>'
+            f'<a:alphaMod val="{quantize_ooxml_alpha(opacity)}"/>'
             if opacity is not None else ''
         )
         theme_spec = ctx.theme_color_spec if ctx is not None else None
@@ -2473,7 +2474,7 @@ def _build_text_fill_xml(
     opacity = combine_opacity(opacity, color_alpha)
     alpha_xml = ''
     if opacity is not None:
-        alpha_xml = f'<a:alphaMod val="{int(opacity * 100000)}"/>'
+        alpha_xml = f'<a:alphaMod val="{quantize_ooxml_alpha(opacity)}"/>'
     theme_spec = ctx.theme_color_spec if ctx is not None else None
     return (
         '<a:solidFill>'
@@ -2499,7 +2500,9 @@ def _build_text_outline_xml(
     stroke_opacity = combine_opacity(run.get('stroke_opacity'), color_alpha)
     alpha_xml = ''
     if stroke_opacity is not None:
-        alpha_xml = f'<a:alphaMod val="{int(stroke_opacity * 100000)}"/>'
+        alpha_xml = (
+            f'<a:alphaMod val="{quantize_ooxml_alpha(stroke_opacity)}"/>'
+        )
 
     theme_spec = ctx.theme_color_spec if ctx is not None else None
     return (
@@ -3793,7 +3796,7 @@ def _build_image_blip_xml(r_id: str, opacity: float | None) -> str:
     """Build an image blip with native DrawingML transparency when requested."""
     if opacity is None:
         return f'<a:blip r:embed="{r_id}"/>'
-    alpha = int(round(opacity * 100000))
+    alpha = quantize_ooxml_alpha(opacity)
     return (
         f'<a:blip r:embed="{r_id}">'
         f'<a:alphaModFix amt="{alpha}"/>'

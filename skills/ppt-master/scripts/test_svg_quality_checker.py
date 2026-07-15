@@ -76,6 +76,7 @@ from svg_to_pptx.drawingml.utils import (
     estimate_text_width,
     parse_inline_style,
     project_filter_errors,
+    quantize_ooxml_alpha,
     split_project_text_clusters,
 )
 from svg_to_pptx.native_objects import (
@@ -2740,29 +2741,42 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     def test_minimum_positive_native_alpha_round_trips(self):
         self.assertEqual(format_ooxml_alpha(0.00001), '0.00001')
         self.assertEqual(format_ooxml_alpha(0.99999), '0.99999')
-        sp_pr = ET.fromstring('''
+        self.assertEqual(quantize_ooxml_alpha(0.000005), 1)
+        self.assertEqual(quantize_ooxml_alpha(0.000015), 2)
+        for alpha_value in (1, 7, 13, 33333, 99999):
+            with self.subTest(alpha_value=alpha_value):
+                opacity = format_ooxml_alpha(alpha_value / 100000)
+                self.assertEqual(
+                    quantize_ooxml_alpha(float(opacity)),
+                    alpha_value,
+                )
+                sp_pr = ET.fromstring(f'''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
         xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
   <a:ln>
     <a:solidFill>
-      <a:srgbClr val="112233"><a:alpha val="1"/></a:srgbClr>
+      <a:srgbClr val="112233"><a:alpha val="{alpha_value}"/></a:srgbClr>
     </a:solidFill>
   </a:ln>
 </p:spPr>''')
-        stroke = resolve_stroke(sp_pr, None)
-        opacity = stroke.attrs['stroke-opacity']
-        self.assertEqual(opacity, '0.00001')
-        line = ET.fromstring(
-            '<line xmlns="http://www.w3.org/2000/svg" '
-            f'stroke="#112233" stroke-opacity="{opacity}"/>'
-        )
-        context = ConvertContext()
-        stroke_xml = build_stroke_xml(
-            line,
-            context,
-            get_stroke_opacity(line, context),
-        )
-        self.assertIn('<a:alpha val="1"/>', stroke_xml)
+                stroke = resolve_stroke(sp_pr, None)
+                imported_opacity = stroke.attrs['stroke-opacity']
+                self.assertEqual(imported_opacity, opacity)
+                line = ET.fromstring(
+                    '<line xmlns="http://www.w3.org/2000/svg" '
+                    f'stroke="#112233" '
+                    f'stroke-opacity="{imported_opacity}"/>'
+                )
+                context = ConvertContext()
+                stroke_xml = build_stroke_xml(
+                    line,
+                    context,
+                    get_stroke_opacity(line, context),
+                )
+                self.assertIn(
+                    f'<a:alpha val="{alpha_value}"/>',
+                    stroke_xml,
+                )
 
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
