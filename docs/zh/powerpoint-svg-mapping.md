@@ -50,6 +50,8 @@ PowerPoint 意图
 
 ## 2. Master、Layout、背景与占位符功能
 
+**路线边界**：主 SVG 流程中的自由生成与 brand-only 项目从规划到导出始终使用 `pptx_structure.mode: flat`；`flat` 不是等待导出器自动升级的临时状态。即使多个页面出现相同 Logo、页脚或排版，导出器也不得据此切换到 `structured`，不得自动提升到 Master/Layout，也不得推断占位符或去重。若输出需要可复用的原生 Master、Layout 或占位符，Step 3 必须消费一个已校验的 deck/layout 模板工作区；没有该工作区时，先走 [`create-template`](../../skills/ppt-master/workflows/create-template.md)，再返回主流程。flat 导出创建的最小 Master 和 Blank Layout 只是 PPTX 格式必需的包结构，不是从页面总结出的设计母版。直接使用原始 PPTX 模板填充新内容仍走 [`template-fill-pptx`](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 自由设计演示文稿结构 | `pptx_structure.mode: flat`；页面内容保持 Slide-local | 一个干净的项目 Master 和一个 Blank Layout，已表达对象留在 Slide | flat 路线包拓扑为 `Native-stable` | 禁止编写 Master/Layout/layer/placeholder metadata |

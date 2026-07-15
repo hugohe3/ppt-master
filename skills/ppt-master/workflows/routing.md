@@ -31,6 +31,8 @@ Route selection authority for PPT Master. Use this file before entering the main
 | `template-fill-pptx` and `native-enhance-pptx` | Native PPTX editing routes. They retain their OOXML contracts and are not forced through SVG. |
 | Animation, transition, speaker-note, and narration workflows | Presentation behavior/content outside the visible page-design layer; keep their dedicated sidecars and package post-processing. |
 
+**Hard rule — no automatic structure upgrade**: Free-design and brand-only generation in the main SVG pipeline remains `pptx_structure.mode: flat` from planning through export. Repeated Slide-local objects never trigger `structured`, Master/Layout promotion, placeholder inference, or deduplication. A main-pipeline generation that requires reusable native Master/Layout/placeholder behavior must consume an explicit validated deck/layout template workspace in Step 3; when none exists, run [`create-template`](./create-template.md) first and return with its workspace root. The minimal Master plus Blank Layout emitted by flat export is PPTX package scaffolding, not an inferred design master. Raw PPTX template plus new content remains the `template-fill-pptx` route in §3.
+
 **Hard rule**: Apply SVG page-design closure only after selecting an SVG-authoring route. Do not reroute a native PPTX operation merely to make every package-level capability pass through SVG.
 
 ---
