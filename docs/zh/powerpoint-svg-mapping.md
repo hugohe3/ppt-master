@@ -131,6 +131,7 @@ PowerPoint 意图
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 图片 | 具有显式正尺寸且只含一个项目资产或图片 data URI 源的 `<image>` | `p:pic`、media part 与 relationship | 重建为 `<image>` | 源必须可解析、采用已登记格式，并包含与 MIME/扩展名相符的可解码字节；非法 frame 或媒体会在封装前失败 |
+| 显式复杂 SVG 图片 | `create-template` 归一化期间，由 `extract_svg_pictures.py` 从一个精确 `<g id>` 生成紧边界、自包含 `.svg`，再以直接 `<image>` 引用 | 一个以 SVG media 为源的 `p:pic` | 回导为一个 `<image>`；内部 path 不会提升成独立 PowerPoint 形状 | 仅允许 `standard` / `fidelity` 显式选择；导入、重复检测、Master/Layout、finalize 与 export 均不得自动把组转换成这种表达 |
 | 图片拉伸填满框 | `preserveAspectRatio="none"` | 原生拉伸 picture frame | `Native-stable` | `none` 必须单独出现；它会有意改变源宽高比 |
 | 图片裁剪填充 | 一个已登记对齐值加显式 `slice` | 原生 `a:srcRect` 裁剪 | 源尺寸可读时为 `Native-stable` | 对齐值区分大小写；未知模式与额外 token 为 error |
 | 图片适应框 | 省略时使用默认值，或一个已登记对齐值加显式 `meet` | 原生 fitted picture frame | `Native-normalized` | 仅写对齐值是兼容输入，Checker 会给出规范化建议 |
@@ -232,6 +233,7 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 | 自定义几何 | `<path>` |
 | 文本体 | `<text>` 与 `<tspan>` run/段落 |
 | 图片 | `<image>`，或已登记嵌套 crop 表达 |
+| 同时带栅格兼容预览的 SVG 图片 | 优先使用 `asvg:svgBlip` relationship 重建 `<image>`；仅当 SVG relationship 或 media part 不可用时才使用普通 `a:blip` relationship |
 | 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |

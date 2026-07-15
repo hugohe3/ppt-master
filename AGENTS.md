@@ -71,6 +71,8 @@ python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --im
 python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+# Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
+python3 skills/ppt-master/scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
 # create-template review deck (workspace root may be global or project-scoped)
 python3 skills/ppt-master/scripts/template_preview_pptx.py <template_workspace>
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation

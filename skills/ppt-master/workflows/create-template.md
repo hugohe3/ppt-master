@@ -151,6 +151,45 @@ python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/auth
 
 The projected SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="..."/>` placeholders. Extracted assets live directly under `<import_workspace>/icons/`; `icons/` must contain only icon/vector assets, not rewritten page SVGs or inventories. The inventory is written beside the processed projection directory. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon directory, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
 
+**Explicit complex-SVG picture normalization (optional; `standard` / `fidelity` only)**:
+
+When one imported native group is deliberately being retained as one complex
+SVG picture rather than rebuilt as editable paths, select its exact id in the
+lightweight projection and normalize it explicitly:
+
+```bash
+python3 skills/ppt-master/scripts/extract_svg_pictures.py \
+  "<import_workspace>/authoring-svg/<layered_svg_file>.svg" \
+  --select "<group_id>" \
+  --resource-root "<import_workspace>" \
+  --images-dir "<import_workspace>/picture-assets" \
+  --inplace
+```
+
+Repeat `--select` for multiple independent sibling groups. The tool uses an
+imported `data-pptx-frame` when present; otherwise it measures the target with
+Playwright, or accepts `--bounds ID=x,y,width,height`. It creates a tight,
+self-contained SVG under `picture-assets/`, embeds reachable local resources,
+and replaces the group at the same z-order with one `<image>`. If the object is
+chosen for a final Master or Layout, copy that asset into the project image
+pool and author the final fixed atom as a direct `<image>` with
+`data-pptx-layer="master|layout"`; export then creates one `p:pic`.
+Nested targets are allowed only below metadata-only grouping wrappers. If an
+ancestor carries a transform, style, clip, opacity, or other visual attribute,
+select that outer group so the effect is not applied twice.
+
+This is a semantic representation decision, not an import heuristic. Never run
+it automatically, never select groups by repetition, and never use it to infer
+Master/Layout ownership. Do not apply it to placeholders, individual imported
+native shapes, native table/chart fallbacks, icon placeholders, or compact
+authored presets. `mirror` must keep the source native group/picture identity
+and therefore must not use this normalization. The original lossless `svg/`
+and `svg-flat/` trees remain unchanged and authoritative.
+
+`extract_svg_assets.py` remains a different operation: it factors vectors out
+for model readability and re-inlines them as native shapes before export. It
+does not turn those vectors into a picture.
+
 **Read order during analysis**:
 
 | Mode | Required read set |
@@ -213,6 +252,13 @@ First resolve the Type B source directory using the rule above. Create a non-des
 python3 skills/ppt-master/scripts/svg_authoring_view.py "<normalized_svg_source>" -o "<svg_analysis_workspace>/authoring-svg"
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<svg_analysis_workspace>/authoring-svg" --icons-dir "<svg_analysis_workspace>/icons" --inplace --id-prefix source --min-decoration-bytes 3000 --clean-stale
 ```
+
+If the source contains one deliberately selected complex subtree that should
+remain a single SVG picture, apply the explicit normalization above only to the
+analysis projection. Set `--resource-root` to the narrowest workspace directory
+that contains both the projection and every local dependency referenced by the
+selected group. This does not authorize automatic group selection or mutation
+of the user's original SVG directory.
 
 Then `ls` the analysis workspace and `Read` every cleaned `authoring-svg/*.svg` to extract:
 

@@ -136,6 +136,7 @@ preset selection and authoring behavior are documented in
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Picture | `<image>` with explicit positive dimensions and exactly one project-asset or image data-URI source | `p:pic`, media part, and relationship | Reconstructed as `<image>` | Source must resolve, use a registered format, and contain decodable bytes matching its MIME/extension; invalid frames or media fail before packaging |
+| Explicit complex-SVG picture | A direct `<image>` referencing a tight, self-contained `.svg` created from one exact `<g id>` by `extract_svg_pictures.py` during `create-template` normalization | One `p:pic` backed by SVG media | Reconstructed as one `<image>`; its internal paths are not promoted to separate PowerPoint shapes | Selection is explicit and limited to `standard` / `fidelity`; no import, repetition, Master/Layout, finalize, or export heuristic may convert a group into this representation automatically |
 | Stretch picture to frame | `preserveAspectRatio="none"` | Stretched native picture frame | `Native-stable` | `none` must stand alone; it intentionally changes the source aspect ratio |
 | Crop picture to fill | One registered alignment plus explicit `slice` | Native `a:srcRect` crop | `Native-stable` when source dimensions are readable | Alignment is case-sensitive; unknown modes and extra tokens are errors |
 | Fit picture inside frame | Omitted default, or one registered alignment plus explicit `meet` | Native fitted picture frame | `Native-normalized` | Alignment-only shorthand is compatible input that receives a normalization recommendation |
@@ -237,6 +238,7 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Custom geometry | `<path>` |
 | Text body | `<text>` and `<tspan>` runs/paragraphs |
 | Picture | `<image>`, or the registered nested crop representation |
+| SVG picture with raster compatibility fallback | `<image>` sourced from the `asvg:svgBlip` relationship; the ordinary `a:blip` relationship is used only when the SVG relationship or media part is unavailable |
 | Connector | Expanded line/path preview plus connector/frame/topology evidence |
 | Group | `<g>` |
 | Supported native table/chart | Visible fallback plus native-object metadata |
