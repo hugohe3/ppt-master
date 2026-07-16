@@ -28,6 +28,11 @@ This workflow treats a `.pptx` as the artifact to preserve. It archives the sour
 - Do not run `finalize_svg.py`
 - Do not run `svg_to_pptx.py`
 
+**Hard rule — public entrypoint**: Route and document all new work through
+`native_enhance_pptx.py`. The legacy `native_narration_pptx.py` command remains
+only as a thin CLI compatibility shim; it is not a separate workflow. The core
+continues to accept the legacy `native_narration_pptx_project.v1` project schema.
+
 **OOXML execution model**:
 
 ```text
