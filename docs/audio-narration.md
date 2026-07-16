@@ -1,5 +1,9 @@
 # Audio Narration & Video Export
 
+[English](./audio-narration.md) | [Chinese](./zh/audio-narration.md)
+
+---
+
 PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs, MiniMax, Qwen TTS, and CosyVoice when you need higher-quality cloud narration or a cloned voice. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
 
 ## What you get
@@ -102,6 +106,8 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
 
+Audio embedded into PPTX must use a PowerPoint-reliable format: `m4a` (AAC), `mp3`, or `wav`. Built-in generation defaults to `mp3`; transcode provider output such as `pcm`, `opus`, or `flac` before embedding.
+
 ## Use a cloned voice
 
 Four cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master narrates the entire deck in your cloned voice as long as you can hand it a `voice_id`. (`edge` does not support cloning.)
@@ -136,7 +142,7 @@ Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` as needed;
 
 - **Authorization** — only clone voices you own or have explicit permission to use. Each provider's terms forbid impersonation.
 - **Language coverage** — the cloned voice inherits the speaker's accent. For multilingual decks (e.g. Chinese with English terms), pick a provider whose model handles your sample's language mix; ElevenLabs `eleven_multilingual_v2` and CosyVoice tend to be the most forgiving.
-- **One-time setup, reusable forever** — the `voice_id` doesn't expire. Clone once, narrate any number of decks.
+- **Provider retention** — reuse the `voice_id` while that voice remains available in your provider account. Retention, deletion, and expiration policies are provider-specific.
 
 ## Dependency
 

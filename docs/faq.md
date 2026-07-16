@@ -30,7 +30,7 @@ Just specify the format when starting a project (e.g., `--format xhs`). The outp
 
 ## Q: What AI tools work with PPT Master?
 
-PPT Master works with any AI coding agent that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
+PPT Master works inside any agent-capable AI tool that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
 
 ## Q: I downloaded an old version. How do I update to the latest?
 
@@ -160,7 +160,7 @@ Other models (Gemini, GLM, MiniMax, etc.) vary in quality. In general, models wi
 
 ## Q: Someone said PPT Master is "just a toy" — is that fair?
 
-No. PPT Master is a **harness**, not a complete agent — `harness + model = agent`, and the output ceiling is set entirely by the model, not the harness. Evaluating PPT Master with a weak or small-context model is like test-driving a sports car in first gear and concluding it's slow.
+No. PPT Master is a presentation workflow, not a model or a complete agent. It supplies presentation-specific reasoning, contracts, project state, deterministic conversion, and quality gates; the selected model still sets the quality ceiling. Evaluating the workflow with a weak or small-context model is like test-driving a sports car in first gear and concluding it is slow.
 
 **The full-power combination:**
 
@@ -175,13 +175,13 @@ One last thing: this is a free, solo-maintained open-source project. If it fits 
 
 ## Q: Text overflows or elements are misaligned — what can I do?
 
-This is almost always a model capability issue, not a bug in PPT Master. SVG layout is essentially manual absolute positioning — the model must calculate coordinates, font metrics, and container sizes correctly.
+The cause depends on where the mismatch appears. If the source SVG already overflows or is misaligned, it is usually an authoring/layout problem: the model must calculate coordinates, font metrics, and container sizes correctly. If the SVG preview is correct but the exported PPTX differs, that may be a converter or renderer bug and should be reported with both artifacts.
 
 **Fixes to try**:
-1. Switch to **Claude** (Opus or Sonnet) if you're using another model
+1. Compare the page in `svg_output/` with the exported PPTX to isolate authoring from conversion
 2. Tell the AI which specific page has the problem and describe the issue — it can regenerate individual pages
-3. Open the SVG source file directly and ask the AI to fix coordinates
-4. Remember: the generated PPTX is a **high-quality starting point**, not a final deliverable — minor adjustments in PowerPoint are expected
+3. If the SVG itself is repeatedly wrong, use a stronger model or ask the AI to fix its coordinates directly
+4. Remember: the generated PPTX is a **high-quality editable draft**, not a sealed final deliverable — minor finishing adjustments in PowerPoint are expected
 
 ## Q: How long does a presentation take to generate?
 
@@ -205,13 +205,13 @@ For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — th
 
 ## Q: I have an existing PPT and want to build on it — which route should I use?
 
-Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to four routes:
+Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to three generation paths plus the option to keep the original unchanged:
 
 | Intent | Route | What stays fixed |
 |---|---|---|
-| Keep content + redo layout | **beautify (re-layout)** | Page count, page order, per-slide wording, chart/table data |
-| Replace content + keep design | **template-fill** | Native source slide design; selected pages may be reused/reordered |
-| Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
+| Keep content + redo layout | **Generate PPTX + beautify profile** | Page count, page order, per-slide wording, chart/table data |
+| Replace content + keep design | **Fill Native PPTX** | Native source slide design; selected pages may be reused/reordered |
+| Keep only content, redo design and pagination | **Generate PPTX** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
 Use the **beautify profile** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify profile](../skills/ppt-master/workflows/profiles/beautify-pptx.md).
@@ -248,7 +248,7 @@ If no source PPTX exists, screenshots of the key page types still work — cover
 
 **Step 2 — Let AI Create the Template**
 
-Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
+Use an agent-capable AI tool (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
 
 - Template name and intended use case (e.g., government reports, premium consulting)
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")

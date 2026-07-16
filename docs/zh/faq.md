@@ -30,7 +30,7 @@
 
 ## Q: PPT Master 支持哪些 AI 工具？
 
-PPT Master 可以在任何能读取文件和执行命令的 AI 编程代理中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
+PPT Master 可以在任何能读取文件和执行命令、支持 Agent 的 AI 工具中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
 
 ## Q: 我下载过旧版本，怎么更新到最新版？
 
@@ -162,7 +162,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 ## Q: 有人说 PPT Master "只是个玩具"——这个评价准确吗？
 
-不准确。PPT Master 是一个 **harness**，不是完整的 agent——`harness + model = agent`，输出上限完全由模型决定，而不是由 harness 本身决定。用弱模型或小上下文窗口来评价 PPT Master，就好比挂着一档开跑车然后说它跑不快。
+不准确。PPT Master 是演示文稿工作流，不是模型，也不是完整 agent。它提供演示文稿专用的推理、合同、项目状态、确定性转换与质量门；最终质量上限仍由所选模型决定。用弱模型或小上下文窗口来评价这套工作流，就好比挂着一档开跑车然后说它跑不快。
 
 **发挥完整实力的组合：**
 
@@ -171,21 +171,19 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 如果你看到的效果差强人意，先对照以下几点检查你的配置，再下结论：用的什么模型？上下文开了多大？有没有接入图片生成 API？同样的工作流，Claude Opus 配 100 万 token 上下文配 `gpt-image-2` 的结果，和小参数开源模型配零配置的结果，是截然不同的体验。
 
-**harness 决定工作流上限，model 决定质量上限。** 如果 agent 能力不达预期，请先升级模型，再来评价 harness。
-
 > **没有 Claude 渠道？** 本项目赞助商 [PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude 及其他主流模型的按量付费接入——无需订阅，无需境外信用卡，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
 
 最后再说一句：这是一个免费、个人维护的开源项目。合用就用，能帮到你我很高兴；不合用，换个工具就好。真诚的反馈与建议始终欢迎——这也是项目一点点变好的方式。
 
 ## Q: 文字超出边框 / 元素错位怎么办？
 
-这几乎都是模型能力问题，不是 PPT Master 的 bug。SVG 排版是纯手动绝对定位——模型必须准确计算坐标、字体度量和容器尺寸。
+原因取决于偏差出现在哪一层。如果源 SVG 本身已经溢出或错位，通常属于创作 / 排版问题：模型需要准确计算坐标、字体度量和容器尺寸。如果 SVG 预览正确、导出的 PPTX 却不同，则可能是转换器或渲染器问题，应连同两份产物一起反馈。
 
 **解决办法**：
-1. 切换到 **Claude**（Opus 或 Sonnet），如果你用的是其他模型
+1. 对比 `svg_output/` 中的页面与导出 PPTX，先区分创作问题和转换问题
 2. 告诉 AI 哪一页有问题、具体是什么问题——它可以单独重新生成某一页
-3. 直接打开 SVG 源文件，让 AI 修正坐标
-4. 记住：生成的 PPTX 是**高质量起点**，不是最终成品——在 PowerPoint 中做少量调整是正常的
+3. 如果 SVG 本身持续出错，换更强的模型，或让 AI 直接修正坐标
+4. 记住：生成的 PPTX 是**高质量、可编辑的草稿**，不是封闭的最终成品——在 PowerPoint 中做少量收尾是正常的
 
 ## Q: 生成一份 PPT 要多久？
 
@@ -209,13 +207,13 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 ## Q: 我手上有一份现成的 PPT，想基于它做东西，该走哪条路？
 
-把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应四条路：
+把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应三种生成路径，以及直接保留原文件这一种无需生成的结果：
 
 | 意图 | 路线 | 固定不变的东西 |
 |---|---|---|
-| 留内容 + 重做版式 | **beautify（美化 / 重排）** | 页数、页序、每页文字、图表/表格数据 |
-| 换内容 + 留设计 | **template-fill（套模板）** | 原生页面设计；可选择、乱序、复用源页 |
-| 只留内容，设计与分页都重来 | **主管线** | 源事实；故事结构和页数都可重构 |
+| 留内容 + 重做版式 | **Generate PPTX + beautify profile** | 页数、页序、每页文字、图表/表格数据 |
+| 换内容 + 留设计 | **Fill Native PPTX** | 原生页面设计；可选择、乱序、复用源页 |
+| 只留内容，设计与分页都重来 | **Generate PPTX** | 源事实；故事结构和页数都可重构 |
 | 留内容 + 留设计 | 不必生成 | 直接用原文件 |
 
 使用 **beautify profile** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，只重排版式、层级和留白，并继承原配色字体。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify profile](../../skills/ppt-master/workflows/profiles/beautify-pptx.md)。
@@ -252,7 +250,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第二步 — 让 AI 创建模板**
 
-使用 AI 编程代理（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将这些参考材料转换成模板。提供的信息越详细，效果越好，例如：
+使用支持 Agent 的 AI 工具（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将这些参考材料转换成模板。提供的信息越详细，效果越好，例如：
 
 - 模板名称和适用场景（如政府汇报、高端咨询、产品宣讲等）
 - 期望的风格基调和配色（如"现代克制、深蓝主色调"）

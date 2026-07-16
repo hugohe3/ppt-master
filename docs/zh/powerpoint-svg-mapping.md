@@ -1,6 +1,8 @@
 # PowerPoint 功能 ↔ 项目 SVG 映射指南
 
-[English](../powerpoint-svg-mapping.md)
+[English](../powerpoint-svg-mapping.md) | [Chinese](./powerpoint-svg-mapping.md)
+
+---
 
 ## 目的与权威边界
 

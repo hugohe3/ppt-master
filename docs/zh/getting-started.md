@@ -1,5 +1,9 @@
 # 快速入门
 
+[English](../getting-started.md) | [Chinese](./getting-started.md)
+
+---
+
 最快做出第一份 deck 的路径、围绕它的各项能力——模板、实时预览、动画、旁白、声音复刻——以及出问题时去哪里查。章节大致按你真实使用时遇到它们的顺序排列。每节都是精简版,需要细节就点 **完整说明 →** 链接。
 
 - [用模板](#用模板)
@@ -20,18 +24,18 @@
 
 | 你想要… | 路径 | 会发生什么 |
 |---|---|---|
-| **就要这份 deck,换成新内容** | 套模板(template fill) | 挑出合适的页面,把文字 / 表格 / 图表数据直接写回原文件。设计、版式、图片、动画都保留;输出就是同一份 deck,原生可编辑。最快;但受限于现有页面。 |
-| **基于这份 deck 的风格生成新 deck** | create-template | 把 `.pptx` 解析成可复用的风格资产包,再走 SVG 管线**重新生成**——结构自由、页数任意。更灵活;完整重建。 |
+| **用这份 deck 的原生页面壳承载新内容** | Fill Native PPTX | 克隆选中的源页面，并在 OOXML 中直接改写文字 / 表格 / 图表数据。来源设计保持原生；输出是受现有页面壳约束的新回填 deck。 |
+| **先建立可复用设计系统，再生成新 deck** | Create Template → Generate PPTX | 从参考材料创建经过验证的 Brand、Layout 或 Deck 工作区，再创作一份新 deck。新故事、结构与页数都可以不同于来源。 |
 
 前者:把 `.pptx` 连同素材(或一个主题)给 AI,说「套模板」——见 [套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。本节其余部分讲 create-template。
 
-**想基于某份现成 PPT 的风格重新生成 deck,必须显式走 create-template 流程——别直接丢个 `.pptx` 指望 AI 自动处理。** AI 默认走自由设计,不会主动切进创建模板的流程;不显式启动它,生成过程就容易错乱。先用 create-template 把那份 `.pptx` 复刻成 PPT Master 模板:
+**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Fill Native PPTX，并不是 Generate PPTX Step 3 可以直接消费的模板。先创建工作区：
 
 ```
-你：用 /create-template 把这个复刻成模板：projects/brand/our_deck.pptx
+你：用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 模板
 ```
 
-这会跑 `pptx_template_import.py`,把文件重建成可复用工作区——版式 SVG + `design_spec.md` + 抽取出的主题色、字体、图片。如果需要 PowerPoint 评审文件，再显式运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。生成时引用的是工作区根目录。
+Create Template 会分析参考材料，确认结果属于 Brand、Layout 还是 Deck，再创作或物化一个经过验证的新工作区。导入器只提供来源证据；最终工作区拥有 `templates/design_spec.md`、所需 SVG 原型与配套素材。如果需要 PowerPoint 评审文件，再显式运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。生成时引用的是工作区根目录。
 
 在 create-template 简报中选择 `library`（沿用原默认）或 `project`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 和按需生成的 `exports/`；空的可选目录直接省略。项目范围要求给出已初始化的目标项目；只有全局库范围会执行注册。
 
@@ -42,7 +46,7 @@
 | **注册进 skill 库** | `skills/ppt-master/templates/<kind>/<id>/` | 可移植工作区并执行全局注册；问“有哪些模板”时会被列出来 |
 | **放在 projects 下** | `projects/<name>/` | 相同的可移植工作区，不执行全局注册 |
 
-两种结果都通过对话里给出**工作区根目录路径**来引用。Step 3 会解析 `templates/design_spec.md`；为兼容旧包，也接受 `design_spec.md` 直接位于所给根目录的平铺形态。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
+两种结果都通过对话里给出**工作区根目录路径**来引用。Step 3 会解析 `templates/design_spec.md`；为兼容目录形态，也接受 `design_spec.md` 直接位于所给根目录、且 SVG 已满足当前合同的平铺工作区。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/presentation_core/

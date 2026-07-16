@@ -1,6 +1,10 @@
 # 模板指南：选用、派生与边界
 
-PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 都能独立完整预览，并用 metadata 显式标出 Master、Layout、Slide 与 placeholder；同时包含 `design_spec.md` 和配套素材。导出器据此把已声明合同确定性编译成 PowerPoint 原生结构。
+[English](../templates-guide.md) | [Chinese](./templates-guide.md)
+
+---
+
+PPT Master 模板是一种可复用工作区，明确分为三类：**Brand** 只拥有身份系统，**Layout** 只拥有可复用页面结构，**Deck** 同时拥有两者及 deck 专属概览信息。Layout 与 Deck 工作区包含声明 Master / Layout / slot 合同的完整 SVG 原型；Brand 工作区则有意不包含 SVG roster。每个工作区的 `design_spec.md` 与配套素材共同声明该 kind 实际提供什么。
 
 本文回答三个问题：
 
@@ -44,66 +48,37 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 - [`templates/brands/README.md`](../../skills/ppt-master/templates/brands/README.md) — 仅身份预设（color / typography / logo / voice / icon style），无 SVG 页面；Anthropic、Google
 - [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) — 仅结构样板（canvas / page structure / page types / SVG roster），无身份；presentation_core
-- [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整 PPT 复刻（身份 + 结构 + 中间段）；中汽研、中国电信
+- [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整身份 + 结构参考（含中间段）；中汽研、中国电信
 
 完整数据模型与三类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
 ### 自由设计 vs 模板
 
-自由设计不是"没有风格"，而是 AI 根据你的内容**为这一份 deck 现场设计**视觉系统；模板则是**沿用一套已经定型的结构和风格**。两条路都不会少做"设计"，区别只在于风格是即兴还是预设。
+自由设计不是“没有结构”或“没有风格”——Strategist 仍会为这份 deck 规划叙事、层级与视觉系统，但生成页面使用 `pptx_structure.mode: flat`，所有可见对象都保留在 Slide 本地。仅使用 Brand 工作区时同样保持 `flat`，只是由 Brand 提供身份约束。Layout 与 Deck 工作区使用 `pptx_structure.mode: structured`，因为它们提供显式可复用的 Master / Layout / slot 合同。
 
-> 经验：内容方向明确、品牌或场景有强约束（咨询报告、政府汇报、答辩）→ 用模板。内容偏散文式、视觉氛围更重要（杂志风、纪录式叙事）→ 自由设计往往效果更好。
+> 经验：需要锁定身份系统时用 Brand，需要复用页面结构时用 Layout，两者都要一起复用时用 Deck；希望版式从内容出发重新生长时走自由设计。
 
 ### 风格不是模板
 
-**风格**是一种描述（"极简风" / "Keynote 风" / "杂志风"）——你在对话里打几个字。**模板**是一份要复制粘贴的资产包（SVG + design_spec + 素材），只在你给出**显式目录路径**时由工作流安装到项目里。
+**风格说明**是解释性语言（“极简风” / “Keynote 风” / “杂志风”），由 Strategist 转化为具体设计选择。**模板**则是真实存在的 Brand / Layout / Deck 工作区，只有在你给出**显式目录路径**时才会被工作流消费。
 
 | | 模板 | 风格 |
 |---|---|---|
 | 怎么触发 | 消息里给出明确的目录路径 | 消息里写自由描述 |
-| 发生什么 | 文件复制到项目；layouts 继承自模板 SVG | 描述流到 Strategist；色彩 / 字体 / 调性在策略师确认阶段里推荐 |
-| 数值锁定 | 是 — 来源于模板的 `design_spec.md` | 否 — Strategist 现场推适合 deck 的具体值 |
-| 适用场景 | 品牌锁定的 deck；强视觉约定的场景 | 心里有感觉但没有具体品牌承诺 |
+| 提供什么 | 由 kind 声明的身份段、结构段或两者 | 由 Strategist 解释为 mode、visual style、色彩、字体、图标与图片方向 |
+| 如何确认 | 模板拥有的值构成起始合同；用户最终确认的选择仍然权威 | 没有预写数值；Strategist 给出具体候选，由用户确认 |
+| 适用场景 | 复用已有身份系统和 / 或页面系统 | 只表达想要的感觉，不采用已存工作区 |
 
 风格描述和模板名仍走**两套机制**：“极简风”是解释性语言，`presentation_core/` 则是真实模板目录，必须提供显式路径。
 
-### 常见风格描述
+### 风格说明如何被解释
 
-三条轴自由组合（"暗色科技 + 极简" 或 "杂志风 + 新中式" 都行）：
+Strategist 会把方向拆成两个彼此独立的选择：
 
-**美学路线**
+- **Mode** 决定 deck 怎么表达：`pyramid`、`narrative`、`instructional`、`showcase`、`briefing`，或经过确认的 `custom`。
+- **Visual style** 决定页面怎么呈现：内置方向包括 `swiss-minimal`、`editorial`、`dark-tech`、`data-journalism`、`ink-wash` 等，也支持 `custom`。
 
-| 风格 | 一句话特征 |
-|---|---|
-| **极简风 / Minimalist** | 高留白、2-3 色、单焦点、几乎零装饰 |
-| **信息密集 / Information-dense** | 麦肯锡派结构化表格、密度高、conclusion-first |
-| **Keynote 风** | 单页 Hero 文字、premium 留白、Apple 感 |
-| **杂志风 / Editorial** | 大图当主体、不对称版式、字体反差强 |
-| **文艺手绘** | 暖色、手绘质感、像 zine |
-
-**行业 / 场景**
-
-| 风格 | 一句话特征 |
-|---|---|
-| **商务咨询风** | 数据驱动、专业克制、蓝/灰主调 |
-| **学术答辩风** | 严谨层级、citation-heavy、清晰朴素 |
-| **政府汇报风** | 红/蓝、庄重对称、标题加粗 |
-| **产品发布风** | 视觉冲击、营销大胆、Hero 单图 |
-| **教学课件风** | 清晰层级、友好亲和、配色明亮 |
-| **路演/BP 风** | 叙事驱动、金句配图、conclusion-bold |
-
-**视觉调性**
-
-| 风格 | 一句话特征 |
-|---|---|
-| **暗色科技风** | 深蓝/黑底、霓虹强调、未来感 |
-| **像素复古** | 8-bit、扫描线、游戏机美学 |
-| **新中式** | 留白、传统纹样克制使用、墨色/朱砂 |
-| **北欧极简** | 浅色、原木自然、字号克制 |
-| **孟菲斯/波普风** | 高饱和大色块、几何图形、80 年代 |
-| **赛博朋克/蒸汽波** | 霓虹紫粉、网格、迷幻 |
-
-你描述风格时，AI **不会基于这些词去挑模板**——它把这些词解释为对应的色彩 / 字体 / 版式建议，放到 策略师确认阶段里 `d` 项的第二层（视觉风格），然后驱动 e/f/g/h（色彩 / 图标 / 字体 / 图片）。你可以确认或调整。要使用内置 `presentation_core` 结构，就发送其工作区路径；要保持结构自由，则只描述风格，让 AI 现场适配内容。
+任意 mode 都可以搭配任意 visual style。“Keynote 风产品发布”这类描述可能同时影响两条轴，例如形成 `showcase` 叙事与高留白视觉系统，但它永远不是模板查找词。生成前，用户会确认最终组合。规范目录位于 [`references/modes/`](../../skills/ppt-master/references/modes/) 与 [`references/visual-styles/`](../../skills/ppt-master/references/visual-styles/)。
 
 ---
 
@@ -252,8 +227,8 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 避免常见误解：
 
-- **可复用模板是一份显式 SVG 契约，不是打包后的源 PPTX**。创作模式新建该合同，mirror 把已验证的来源归属事实映射进该合同；每页都能独立预览，导出只编译已声明的 Master/Layout/Slide 结构
-- **模板不是"风格皮肤"**。它包含结构（页面有几块、信息层级如何分布）+ 风格（配色、字体、装饰），两者不可分割。试图只换"皮肤"不换结构，往往会让信息架构和视觉打架
+- **可复用模板是一份显式工作区，不是打包后的源 PPTX。** Brand 可以只有身份系统；Layout 与 Deck 才增加 structured SVG 合同。创作模式建立这份合同，mirror 则把经过验证的来源归属事实映射进去；导出只编译已声明的结构
+- **模板不是一张不可拆分的“风格皮肤”。** Brand、Layout 与 Deck 有意把身份和结构拆开，使每一段都能按明确所有权单独复用或参与合成
 - **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余
 - **`mirror` 的目标是受支持范围内的视觉与来源拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。

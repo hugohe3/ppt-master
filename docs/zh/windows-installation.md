@@ -1,5 +1,9 @@
 # Windows 安装指南
 
+[English](../windows-installation.md) | [Chinese](./windows-installation.md)
+
+---
+
 本指南将手把手教你在 Windows 上安装 PPT Master。按顺序操作，10 分钟内即可跑通第一份 PPT。
 
 ---
@@ -11,8 +15,6 @@ Python 是唯一的硬性要求。
 1. 前往 **[python.org/downloads](https://www.python.org/downloads/)**，下载最新的 **Python 3.10+** 安装包。
 
 2. **⚠️ 关键步骤：安装时务必勾选 "Add python.exe to PATH"** — 这是 Windows 上最常见的安装失误，不勾的话后面每一步都会出问题。
-
-   ![Python 安装器 — 勾选 Add to PATH](../assets/windows-python-path.png)
 
 3. 安装完成后，打开 **PowerShell**（在开始菜单搜索「PowerShell」）并验证：
 
@@ -73,7 +75,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Step 5 — 跑一个最小示例
 
-打开你的 AI 编辑器（Cursor、VS Code + Copilot 等），打开 `ppt-master` 目录，在聊天面板输入：
+在支持 Agent 的 AI 工具（Claude Code、Codex、Cursor、VS Code agent 等）中打开 `ppt-master` 目录，在聊天面板输入：
 
 ```
 请创建一个 3 页测试 PPT，封面 + 内容页 + 封底，主题"Hello World"

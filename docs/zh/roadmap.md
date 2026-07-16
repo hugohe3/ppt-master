@@ -6,13 +6,13 @@
 
 > PPT Master 是单人维护的开源项目，按**优先级**而非时间表推进。这份 roadmap 用来统一对外预期：已经做了什么、在持续维护演进什么、暂时不打算做什么。优先级会随用户反馈和实际使用信号调整，不承诺时间窗口。
 >
-> 项目当前定位：**AI 从零生成 SVG → DrawingML 原生可编辑 PPTX**。核心主轴是**不断深化对 PowerPoint 原生对象模型的支持**——真原生形状、走模板路线的母版/版式、数据驱动的图表与表格——同时守住跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真。所有方向都围绕这条主轴展开。
+> 项目当前有四条显式产物路线：Generate PPTX 通过受约束的 SVG → DrawingML 创作新页面；Create Template 产出可复用 Brand / Layout / Deck 工作区；Fill Native PPTX 与 Enhance Native PPTX 则通过受控 OOXML 操作保留既有包结构。四条路线共同围绕一个主轴：**不断深化对 PowerPoint 原生对象模型的支持**，同时把每条路线的可编辑性、保真度与保留边界说清楚。
 
 ---
 
 ## 近期能力演进
 
-近两个月的能力面扩张。只列结构性的，单 flag / 增量优化看 commit log。
+这里记录自 2026 年 3 月以来的结构性能力演进；单 flag 与增量优化看 commit log。
 
 ### 2026-03（真原生 PPTX 路线成型）
 
@@ -46,7 +46,7 @@
 
 ### 2026-06（mode/视觉风格双 catalog + PPTX 入口与内容策略扩展）
 
-- **任意 PPTX 复刻设计 → 内容回填路线**（[`workflows/template-fill-pptx.md`](../../skills/ppt-master/workflows/template-fill-pptx.md)） — 用户给一份现成 `.pptx` 加新材料 / 主题、要求「复用这套 deck 的设计 / 把内容填回去」时，Fill Native PPTX 路线直接编辑 PPTX，不进 SVG 生成管线。输出仍是原生可编辑 PPTX（复用原 slide 的形状 / 版式而非截图回填），过程做私有部件隔离、暴露图表数据、容量校验；触发同模板规则——显式要求复用既有 deck 才进，刻意不做改版式 / 加页 / 换图（那是 Generate PPTX 路线的职责）。与下文 Non-goals 的 #53 区分见该节
+- **复用原生 PPTX 设计 → 内容回填路线**（[`workflows/template-fill-pptx.md`](../../skills/ppt-master/workflows/template-fill-pptx.md)） — 用户给一份现成 `.pptx` 加新材料 / 主题、要求「复用这套 deck 的设计 / 把内容填回去」时，Fill Native PPTX 路线直接编辑 PPTX，不进 SVG 生成管线。输出仍是原生可编辑 PPTX（复用原 slide 的形状 / 版式而非截图回填），过程做私有部件隔离、暴露图表数据、容量校验；触发同模板规则——显式要求复用既有 deck 才进，刻意不做改版式 / 加页 / 换图（那是 Generate PPTX 路线的职责）。与下文 Non-goals 的 #53 区分见该节
 - **三个 executor 退役 → mode + visual-style 双 catalog**（[`references/modes/`](../../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../../skills/ppt-master/references/visual-styles/)） — 原三个 `executor-*.md`（general / consultant / consultant-top）把「领域 · 受众 · 说服 · 叙事」捆在一条线；拆成两个正交 catalog（照 `image-renderings` 范式：扁平目录 + `_index` + 按需读 + Strategist 锁一个）。**mode** = 讲解骨架（`pyramid` / `narrative` / `instructional` / `showcase`，consultant + top 因叙事内核相同合并为 pyramid）；**visual-style** = SVG 排版美学（`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`，各 paired 一个 image-rendering，**零 HEX**——颜色真值守在 confirmation e + image-palettes）。Strategist `§d` 双层独立锁定 `mode` + `visual_style` 进 `spec_lock`，Executor 加载两个 locked 文件；任意 mode × 任意 style 自由组合，渲染坐标仍留 `templates/charts/`
 - **提示词约束强度三档解耦**（[`docs/rules/prompt-style.md`](../rules/prompt-style.md) §4） — 规则（`Hard rule` / `Forbidden`）/ 默认（`Default — … may override`）/ 参考（`Reference — not a constraint`）三档显式化 + 「客观失败 vs 品味」判据 + checker 边界，让模型对「该守 vs 可破」一目了然；visual-style catalog 全程用 Reference 强度
 - **visual-style catalog 扩充至 18 个，与 image-renderings 对齐 + 示例库回收** — 先从[示例库](../../examples/)提炼 4 个（`brutalist` / `blueprint` / `memphis` / `zine`），再补齐 [`image-renderings`](../../skills/ppt-master/references/image-renderings/) 里有排版对应物的手绘 / 纹理风格 6 个（`sketch-notes` / `ink-notes` / `chalkboard` / `paper-cut` / `vintage-poster` / `pixel-art`），再回收示例库里仍未覆盖的独立气质：`ink-wash`（新中式水墨留白，源 藏拙 / 李子柒）· `glassmorphism`（深底磨砂玻璃 + 流光，源 glassmorphism_demo，从 soft-rounded 独立）· `photo-editorial`（满版摄影主导、文字点题，源 Pritzker / fashion_weekly）· `data-journalism`（Bloomberg/Economist 新闻信息图，多栏微图表 + 数据侧栏，源 global_ai_capital）。catalog 重组为 5 组（企业产品 / 编辑出版 / 表现印刷 / 手绘笔触 / 特殊）。**关键判据**：一个 rendering 升 visual-style 的前提是它定义「整页版面语言」而非「插入图的样子」——故 corporate-photo「摄影主导版面」该建（photo-editorial），而 nature / warm-scene / fantasy-animation 等纯氛围 rendering 仍只配对、不单建。全程零 HEX、Reference 强度
@@ -111,19 +111,19 @@
 
 ## 明确不做（Non-goals）
 
-下面这些方向被多次提过，已经评估并决定**不做**。列出来不是否定需求价值，而是说明它们与本项目主路线不匹配；如果你刚好需要这些能力，建议看其他工具或 fork 本项目走自己的路。
+下面这些方向被多次提过，已经评估并决定**不做**。列出来不是否定需求价值，而是说明它们与本项目产品方向不匹配；如果你刚好需要这些能力，建议看其他工具或 fork 本项目走自己的路。
 
-### 读取任意 PPTX 模板 → 仅填充文字
+### 对任意 PPTX placeholder 系统做无契约盲填
 
 **对应 Issue**：[#53](https://github.com/hugohe3/ppt-master/issues/53)、[#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 可以通过两种显式方式为经过确认的可复用模板包提供依据：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 把来源包内实际存在的全部受支持事实物化到新工作区，包括未使用的 Layout 定义。两者都不修改来源 PPTX，也不补造缺失的设计意图。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
+Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结构完整的 PPTX 可以通过两种显式方式为经过确认的可复用模板包提供依据：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 把来源包内实际存在的全部受支持事实物化到新工作区，包括未使用的 Layout 定义。两者都不修改来源 PPTX，也不补造缺失的设计意图。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 
 > **已支持边界**：Fill Native PPTX（`template-fill-pptx`）直接回填选中的源页面；Create Template（`create-template`）或者创作新的显式 SVG 契约（`standard` / `fidelity`），或者在不做语义归纳的前提下把受支持来源契约中的已验证事实映射进新工作区（`mirror`）。下游 `strict` / `adaptive` 都把这份已声明契约编译成原生结构。仍不做未经审查、没有契约的任意第三方 placeholder 全自动替换。
 
-### 改用原生 PowerPoint 图表（Excel-native chart）
+### 把原生 PowerPoint 图表设为默认路线
 
 **对应 Issue**：[#99](https://github.com/hugohe3/ppt-master/issues/99)、[#100](https://github.com/hugohe3/ppt-master/issues/100) 类
 
@@ -148,9 +148,9 @@ PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围
 
 如果对速度敏感且能接受质量下降，零配置的浏览器 SaaS 工具更合适。
 
-### CLI / SaaS / 桌面 App 形态
+### 独立 CLI / 托管 SaaS / 桌面 App 形态
 
-产品形态明确为 **chat-driven AI IDE skill**（Claude Code / Cursor / VS Code + Copilot / Codebuddy）。
+产品形态明确为**运行在支持 Agent 的 AI 工具中的对话式工作流 / skill**（Claude Code、Codex、Cursor、VS Code agents 等）。
 
 不会做：独立 CLI（`ppm` 之类）、SaaS Web 服务、Electron 桌面壳。所有「让它脱离 chat 独立运行」的提案都会被拒。chat 是交互核心，不是包装层。
 

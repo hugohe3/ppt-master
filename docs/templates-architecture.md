@@ -1,5 +1,9 @@
 # Template Architecture: Brand / Layout / Deck
 
+[English](./templates-architecture.md) | [Chinese](./zh/templates-architecture.md)
+
+---
+
 > This is the **architecture alignment document**. It defines the three template kinds at the data-model layer, the field sets of each `design_spec.md`, and the multi-path fusion + conflict resolution rules. Audience: contributors and AI workflows; answers "what should / shouldn't a template directory contain; how do they combine when multiple are supplied".
 >
 > For user-facing usage (how to trigger, how to pick), see [`templates-guide.md`](./templates-guide.md); not repeated here.
@@ -18,6 +22,8 @@ Every newly created Layout/Deck SVG is a complete preview with root Master/Layou
 
 The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
+The fused project-level `design_spec.md` must also retain an accurate `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. The Strategist confirmation page uses this field to show `adaptive / strict` only for Deck/Layout bundles that actually own page structure.
+
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
 ---
@@ -32,7 +38,7 @@ native_structure_mode: structured
 ...
 ---
 
-# templates/decks/china_merchants_bank/templates/design_spec.md
+# templates/decks/中国电信/templates/design_spec.md
 ---
 kind: deck
 native_structure_mode: structured
@@ -209,7 +215,7 @@ this segment”.
 
 ## 3. The three index files
 
-Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick (following the "meta + summary" pattern from `charts_index.json`, but preserving structured metadata that helps selection).
+Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick, following the compact "meta + summary" pattern used by [`charts_index.json`](../skills/ppt-master/templates/charts/charts_index.json) while preserving structured metadata that helps selection.
 
 These indexes cover library scope only. A project-root workspace is intentionally absent from all three indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
 
@@ -312,7 +318,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 ```markdown
 > **Fused from:**
-> - deck: `templates/decks/china_merchants_bank/` (base)
+> - deck: `templates/decks/中国电信/` (base)
 > - brand: `templates/brands/anthropic/` (identity override)
 > - layout: `templates/layouts/presentation_core/` (structure override)
 > - conflicts resolved: Color Scheme from anthropic (user picked a)
@@ -324,7 +330,7 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with SKILL.md Step 3
 
-**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a flat root containing `<workspace>/design_spec.md` when the SVGs already satisfy the current contract. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — an explicit workspace-root path is still required ([SKILL.md Step 3](../skills/ppt-master/SKILL.md#step-3-template-option)), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a flat root containing `<workspace>/design_spec.md` when the SVGs already satisfy the current contract. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
