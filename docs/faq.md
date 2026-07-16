@@ -126,7 +126,7 @@ PPT Master itself is free and open source. The only cost is your own AI model us
 
 AI tools across the industry are shifting to usage-based billing — you pay for what you actually consume. PPT Master works with this model naturally: there's no separate PPT subscription, no proprietary credits, no per-seat fee for a presentation platform on top of what you're already paying for AI.
 
-For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/month — regardless of how much you actually use them. PPT Master adds zero cost on top of your existing AI spend.
+And because it runs inside a coding agent, a flat subscription plan lets you make many decks at no extra per-deck cost, while a direct per-token API is simply a different price structure — the choice is yours. Either way, PPT Master adds no cost of its own on top of your AI spend.
 
 ## Q: Are the charts in the generated PPTX editable?
 

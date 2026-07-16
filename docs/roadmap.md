@@ -6,7 +6,7 @@
 
 > PPT Master is a solo-maintained open source project, driven by **priority rather than fixed timelines**. This roadmap is here to align expectations: what's already shipped, what's under ongoing maintenance and evolution, and what's intentionally out of scope. Priorities shift with user feedback and real usage signals — no committed delivery windows.
 >
-> **Where we are**: AI generates SVG from scratch → converts to DrawingML for natively editable PPTX. The core axis is **pixel-fidelity across four renderers** (PowerPoint / Keynote / LibreOffice / WPS) **+ real native shapes**. Every direction below serves that axis.
+> **Where we are**: AI generates SVG from scratch → converts to DrawingML for natively editable PPTX. The core axis is **going ever deeper into PowerPoint's native object model** — real native shapes, masters/layouts via templates, data-backed charts and tables — while holding pixel-fidelity across four renderers (PowerPoint / Keynote / LibreOffice / WPS). Every direction below serves that axis.
 
 ---
 
@@ -146,7 +146,7 @@ In the cost / speed / quality triangle this project picks **quality**. ~20 minut
 Will do: indirect improvements via prompt slimming / cache hit rate.
 Won't do: trading quality for "throw a few pages together" speed.
 
-If speed-sensitive and quality-tolerant, Gamma / similar AI tools are a better fit.
+If speed-sensitive and quality-tolerant, a zero-setup browser SaaS tool is a better fit.
 
 ### CLI / SaaS / desktop app form factors
 

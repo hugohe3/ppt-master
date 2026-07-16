@@ -34,7 +34,7 @@
 
 | 文档 | 说明 |
 |---|---|
-| [为什么选 PPT Master](./why-ppt-master.md) | 与 Gamma、Copilot 等 AI 工具的对比 |
+| [为什么选 PPT Master](./why-ppt-master.md) | 为什么选它、以及它不适合的场景 |
 | [项目定位与能力边界](./project-positioning.md) | 长期定位、产品承诺、能力边界与准入判据 |
 | [路线图](./roadmap.md) | 已交付能力、当前优先级与明确推迟的方向 |
 

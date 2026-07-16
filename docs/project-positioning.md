@@ -14,7 +14,7 @@ not an independent policy; update both in the same change.
 
 ## 1. Positioning
 
-> **PPT Master is an open-source, chat-driven presentation authoring framework for AI agents. It turns a topic, source material, design references, or an existing PowerPoint into high-quality, natively editable, locally owned PowerPoint artifacts through explicit authoring and preservation contracts.**
+> **PPT Master is an open-source, chat-driven presentation authoring framework for AI agents. Through explicit authoring and preservation contracts, it turns a topic, source material, design references, or an existing PowerPoint into high-quality, locally owned PowerPoint artifacts with real native depth — and it keeps converging with PowerPoint's own object model over time.**
 
 PPT Master is not a model, a presentation SaaS, or a replacement for PowerPoint. It is the harness between a general-purpose AI agent and the presentation domain: workflows provide professional judgment and operating discipline, while deterministic tools handle conversion, validation, packaging, and repeatable file operations.
 

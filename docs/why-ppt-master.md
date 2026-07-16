@@ -14,11 +14,7 @@ This page is the user-facing comparison. The project's long-term positioning, pr
 
 **This is the core differentiator.**
 
-For years the honest dividing line was *editable vs. not editable*: most AI tools rendered each slide as a flat image or a browser document, and neither survives as a PowerPoint you can actually touch. That line is now blurring — some tools export editable PPTX from HTML too. **So "editable" is no longer the moat; it's the entry ticket.**
-
-The real question is *how deep the editability goes*. HTML describes document flow; PowerPoint is an absolute-coordinate canvas. A tool that translates HTML → PPTX can give you editable text, but what lands is essentially flat text boxes and basic autoshapes — no slide-master system, no native chart objects, no reusable template abstraction. The moment you want what a PowerPoint power-user actually reaches for, the depth isn't there.
-
-PPT Master's differentiator is **how much of PowerPoint's native object model it authors — and that you reach it from chat**:
+Editable is already table stakes — exporting each slide as an editable `.pptx` is nothing special anymore. The real question is *how deep the editability goes*: PPT Master authors PowerPoint's native object model itself, not a thin editable skin on top — and you reach it from chat:
 
 - **Slide masters & layouts** — real `p:sldMaster` / `p:sldLayout` structure with inheritance (on template / structured routes), not the same chrome pasted onto every page
 - **Native shapes** — preset geometry with working adjustment handles (block arrows, chevrons, callouts, flowchart nodes…), connectors, and freeform paths, not just rectangles
