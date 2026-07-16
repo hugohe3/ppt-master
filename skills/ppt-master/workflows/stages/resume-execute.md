@@ -1,12 +1,12 @@
 ---
-description: Execution-session entry — resume PPT execution in a fresh chat after the planning session (SKILL.md Step 1-5) completed in a previous chat. Reads project state from disk and runs Step 6 + Step 7 with no prior-chat context carry-over.
+description: Main-pipeline control stage for resuming execution in a fresh chat after planning completed.
 ---
 
-# Resume Execute Workflow
+# Resume Execute Stage
 
-> Standalone execution-session entry. Run when the planning session (SKILL.md Step 1–5) completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 in a clean session.
+> Generate-PPTX control stage for a fresh execution session. Run when planning (SKILL.md Step 1–5) completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 without selecting another route.
 
-This workflow is **independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. By isolating SVG generation in its own session, the model gains 20–40K context headroom by not carrying the planning session's Strategist confirmation dialogue, image search/fetch results, or Strategist references.
+This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. By isolating SVG generation in its own session, the model gains 20–40K context headroom by not carrying the planning session's Strategist confirmation dialogue, image search/fetch results, or Strategist references.
 
 ## When to Run
 
@@ -57,12 +57,12 @@ The fresh session pays the cost of re-reading references (~14K tokens) but earns
 
 **Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture. The split-mode handoff is designed to free context budget precisely for this kind of high-quality enrichment.
 
-> Note: this workflow does NOT duplicate Step 6 / Step 7 content. SKILL.md is the authoritative procedure; resume-execute only adds the resumption entry (When to Run + Step 1 sanity check above) and the source-materials guidance above.
+> Note: this stage does NOT duplicate Step 6 / Step 7 content. SKILL.md is the authoritative procedure; resume-execute only adds the resumption entry (When to Run + Step 1 sanity check above) and the source-materials guidance above.
 
 ---
 
 ## Step 3: Hand-back
 
-When Step 7 completes and `exports/<project_name>_<timestamp>.pptx` is produced, the workflow ends. Report the export path to the user.
+When Step 7 completes and `exports/<project_name>_<timestamp>.pptx` is produced, the stage ends. Report the export path to the user.
 
-If the deck contains data charts, the [`verify-charts`](verify-charts.md) workflow runs between Step 6 and Step 7 as documented in SKILL.md — resume mode handles it the same way the continuous mode does.
+If the deck contains data charts, the [`verify-charts`](verify-charts.md) stage runs between Step 6 and Step 7 as documented in SKILL.md — resume mode handles it the same way the continuous mode does.

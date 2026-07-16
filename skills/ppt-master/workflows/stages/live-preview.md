@@ -1,12 +1,12 @@
 ---
-description: Start the browser SVG editor when it is not running, and apply submitted annotations after Step 7 export
+description: Main-pipeline editor stage for starting live preview and applying submitted annotations.
 ---
 
-# Live Preview Workflow
+# Live Preview Stage
 
 > **Purpose**: (1) start/reopen the browser SVG editor when no preview service is currently running, and (2) apply user-submitted annotations after Step 7 export completes.
 >
-> **Not in scope**: Executor's mandatory auto-startup — that lives in [`SKILL.md`](../SKILL.md) Step 6. Do not re-launch a preview that is already running.
+> **Not in scope**: Executor's mandatory auto-startup — that lives in [`SKILL.md`](../../SKILL.md) Step 6. Do not re-launch a preview that is already running.
 
 ## When to Run
 

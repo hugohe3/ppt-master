@@ -3,12 +3,12 @@
 **Deck = a complete reusable template bundle.** It owns both presentation
 identity and reusable page structure. A deck template is not a finished content
 deck, and `kind: deck` does not mean “mirror the source PPT”. Its construction
-mode decides whether the system is newly authored or restored.
+mode decides whether the system is newly authored or materialized from validated source facts.
 
 | Axis | Deck behavior |
 |---|---|
 | Template kind | `deck`: identity + structure + deck-specific overview |
-| Creation mode | `standard` / `fidelity` author a new system; `mirror` restores the source graph |
+| Creation mode | `standard` / `fidelity` author a new system; `mirror` materializes validated source-package facts into a new workspace |
 | Downstream adherence | Strategist selects `strict` or `adaptive` when the package is used |
 | PPTX structure | Always `structured`; `flat` is reserved for free design and brand-only routes |
 
@@ -25,8 +25,9 @@ for the complete data model.
 Selection is opt-in through an explicit workspace-root path such as
 `skills/ppt-master/templates/decks/<deck_id>/`. Supplying a bare ID or reading
 the discovery index does not trigger template use. Current packages resolve
-`templates/design_spec.md`; a compatible legacy-flat root may resolve
-`design_spec.md` directly. See [`SKILL.md`](../../SKILL.md) Step 3.
+`templates/design_spec.md`; a compatible flat-directory current-contract root
+may resolve `design_spec.md` directly. Semantic-legacy packages must be replaced
+through Create Template rather than upgraded in place. See [`SKILL.md`](../../SKILL.md) Step 3.
 
 A deck path alone supplies the complete reference. When combined with a brand
 or layout path, brand replaces the identity segment and layout replaces the
@@ -83,11 +84,11 @@ zero-slot Layouts are valid. `{{...}}` is the authoring vocabulary, while
 `data-pptx-placeholder*` is the native reconstruction contract.
 
 `standard` and `fidelity` author new SVGs and a new Master/Layout/slot system.
-`mirror` preserves source identities, parentage, assignments, placeholder
-facts, and supported visuals without semantic synthesis. Legacy semantic
-contracts must run
-[`restore-pptx-structure`](../../workflows/restore-pptx-structure.md); a flat
-directory shape alone is not a legacy signal.
+`mirror` preserves existing source identities, parentage, assignments,
+placeholder facts, and supported visuals in a new workspace without semantic
+synthesis. Legacy semantic contracts are not upgraded in place; create a new
+workspace through [`create-template`](../../workflows/create-template.md). A
+flat directory shape alone is not a legacy signal.
 
 ---
 
@@ -107,7 +108,7 @@ Library scope writes `skills/ppt-master/templates/decks/<deck_id>/` and updates
 the index. Project scope uses an initialized `projects/<name>/` workspace and
 does not register globally. Empty optional directories are omitted.
 
-1. Run [`workflows/create-template.md`](../../workflows/create-template.md).
+1. Enter [`workflows/create-template.md`](../../workflows/create-template.md), which dispatches integrated identity-and-structure output to [`create-deck.md`](../../workflows/create-template/create-deck.md).
 2. Validate with `svg_quality_checker.py --template-mode`.
 3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
 4. In library scope, register with `register_template.py <id> --kind deck`.

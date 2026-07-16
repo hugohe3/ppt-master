@@ -15,6 +15,12 @@ A brand is not “a layout minus its pages”: it owns a different segment. Use 
 brand for identity with free page composition, a layout for fixed reusable
 structure with downstream identity, and a deck for a coherent complete system.
 
+New workspaces always enter [`Create Template`](../workflows/create-template.md),
+which keeps the fixed route name and dispatches exactly one child workflow:
+[`Create Brand`](../workflows/create-template/create-brand.md),
+[`Create Layout`](../workflows/create-template/create-layout.md), or
+[`Create Deck`](../workflows/create-template/create-deck.md).
+
 The indexes are discovery aids only. Step 3 activates a template only from an
 explicit workspace-root path supplied by the user.
 
@@ -23,7 +29,7 @@ explicit workspace-root path supplied by the user.
 | Axis | Values | Meaning |
 |---|---|---|
 | Template kind | `brand` / `layout` / `deck` | Which design segments the package owns |
-| Creation mode | `standard` / `fidelity` / `mirror` | Newly author a compact or broad roster, or restore a source graph |
+| Creation mode | `standard` / `fidelity` / `mirror` | Create Layout/Create Deck only: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; Create Brand is N/A |
 | Downstream adherence | `strict` / `adaptive` | Preserve the selected Layout contract, or allow explicit new Layout identities |
 | PPTX structure | `flat` / `structured` | Free-design/brand-only content stays Slide-local; layout/deck routes compile declared Masters and Layouts |
 

@@ -1,6 +1,6 @@
 # Visual Review Rubric
 
-> Per-page visual self-check rubric for slide SVGs. Read by the subagents spawned during the `visual-review` workflow. Companion to the [`visual-review` workflow](../workflows/visual-review.md) and the [`visual_review.py`](../scripts/visual_review.py) renderer.
+> Per-page visual self-check rubric for slide SVGs. Read by the subagents spawned during the `visual-review` stage. Companion to the [`visual-review` stage](../workflows/stages/visual-review.md) and the [`visual_review.py`](../scripts/visual_review.py) renderer.
 
 ## §0 Prerequisites
 
@@ -188,7 +188,7 @@ Each subagent writes exactly one file to `<project>/.review/<page>.json`:
 
 ## §6 Dispatch & messaging contract
 
-This rubric is consumed by subagents spawned via the `visual-review` workflow. Mandatory dispatch invariants:
+This rubric is consumed by subagents spawned via the `visual-review` stage. Mandatory dispatch invariants:
 
 ### §6.1 Orchestrator → subagent (batched dispatch)
 

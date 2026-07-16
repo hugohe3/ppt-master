@@ -13,7 +13,7 @@ projects repaint and retype the selected structure from the project lock.
 | Axis | Layout behavior |
 |---|---|
 | Template kind | `layout`: structure only |
-| Creation mode | `standard` / `fidelity` author a new system; `mirror` restores the source graph |
+| Creation mode | `standard` / `fidelity` author a new system; `mirror` materializes validated source-package facts into a new workspace |
 | Downstream adherence | Strategist selects `strict` or `adaptive` when the package is used |
 | PPTX structure | Always `structured`; `flat` is reserved for free design and brand-only routes |
 
@@ -33,9 +33,10 @@ reading the discovery index does not trigger template use. A layout path alone
 locks structure while identity remains a downstream decision. Combined with a
 brand or deck, the layout replaces the complete structure segment.
 
-Current packages resolve `templates/design_spec.md`; compatible legacy-flat
-roots may resolve `design_spec.md` directly. See [`SKILL.md`](../../SKILL.md)
-Step 3.
+Current packages resolve `templates/design_spec.md`; compatible flat-directory
+current-contract roots may resolve `design_spec.md` directly. Semantic-legacy
+packages must be replaced through Create Template rather than upgraded in
+place. See [`SKILL.md`](../../SKILL.md) Step 3.
 
 ---
 
@@ -90,11 +91,11 @@ vocabulary overrides declares a `placeholders:` map in frontmatter. Full rules:
 [`template-designer.md`](../../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template).
 
 `standard` and `fidelity` author new SVGs and a new Master/Layout/slot system.
-`mirror` preserves source identities, parentage, assignments, placeholder
-facts, and supported visuals without semantic synthesis. Legacy semantic
-contracts must run
-[`restore-pptx-structure`](../../workflows/restore-pptx-structure.md); a flat
-directory shape alone is not a legacy signal.
+`mirror` preserves existing source identities, parentage, assignments,
+placeholder facts, and supported visuals in a new workspace without semantic
+synthesis. Legacy semantic contracts are not upgraded in place; create a new
+workspace through [`create-template`](../../workflows/create-template.md). A
+flat directory shape alone is not a legacy signal.
 
 ---
 
@@ -115,7 +116,7 @@ updates the index. Project scope uses an initialized `projects/<name>/`
 workspace and does not register globally. Empty optional directories are
 omitted.
 
-1. Run [`workflows/create-template.md`](../../workflows/create-template.md) and explicitly choose structure-only output.
+1. Enter [`workflows/create-template.md`](../../workflows/create-template.md), which dispatches structure-only output to [`create-layout.md`](../../workflows/create-template/create-layout.md).
 2. Validate with `svg_quality_checker.py --template-mode`.
 3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
 4. In library scope, register with `register_template.py <id> --kind layout`.

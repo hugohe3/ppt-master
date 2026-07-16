@@ -32,7 +32,7 @@ Each row owns one PowerPoint capability. The mapping cardinality is not always o
 | `Direct preservation` | A direct-PPTX workflow may retain the source OOXML; the main SVG compiler does not recreate it. |
 | `Unsupported` | The main generation route has no registered mapping and must not guess. |
 
-“Import” below means semantic reconstruction by the PPTX-to-SVG route, not recovery of the original SVG syntax. It does not promise the original `<defs>` graph, `<use>` structure, path commands, or `<tspan>` layout.
+“Import” below means a semantic projection produced by the PPTX-to-SVG route, not recovery of an original SVG or absent design intent. It does not promise the original `<defs>` graph, `<use>` structure, path commands, or `<tspan>` layout.
 
 ## 1. Presentation, slide, and coordinate model
 
@@ -56,9 +56,9 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 |---|---|---|---|---|
 | Free-design deck structure | `pptx_structure.mode: flat`; page content remains slide-local | One clean project Master and one Blank Layout, with represented objects on slides | `Native-stable` package topology for the flat route | No authored Master/Layout/layer/placeholder metadata is allowed |
 | Template-backed deck structure | `pptx_structure.mode: structured` plus explicit Master/Layout/page assignments | Declared `p:sldMaster`, `p:sldLayout`, registrations, and slide parentage | `Native-stable` within the explicit structure contract | The exporter never guesses a Master, Layout, or placeholder topology |
-| Slide Master | Root Master identity plus atomic `data-pptx-layer="master"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Master part and picker identity | Source structure is restored by template/import workflows | Master atoms must be direct, stable, and identical across their slides; ordinary or expanded authored groups do not qualify |
-| Slide Layout | Root Layout identity plus atomic `data-pptx-layer="layout"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Layout part under one Master | Source Layouts can be restored; adaptive authoring may allocate a new Layout | Reuse a Layout key only when its fixed atoms and slot contract are identical; ordinary or expanded authored groups do not qualify |
-| Imported inherited-shape visibility | Layered analysis records normalized source booleans; a materialized structured mirror writes exact lowercase root `data-pptx-show-inherited-shapes` and `data-pptx-show-master-shapes` | Restored `p:sld@showMasterSp` and `p:sldLayout@showMasterSp` | `Native-stable`: Slide false hides Layout and Master shapes; Layout false hides only Master shapes | Omission means true; every page using one Layout key must agree on the Layout value. Backgrounds, Slide-local objects, placeholder inheritance, parts, and parent relationships remain intact |
+| Slide Master | Root Master identity plus atomic `data-pptx-layer="master"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Master part and picker identity | Create Template mirror may preserve validated source-package facts in a new workspace; authored modes create a new identity | Master atoms must be direct, stable, and identical across their slides; ordinary or expanded authored groups do not qualify |
+| Slide Layout | Root Layout identity plus atomic `data-pptx-layer="layout"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Layout part under one Master | Create Template mirror may preserve a validated source Layout in a new workspace; adaptive authoring may allocate a new Layout | Reuse a Layout key only when its fixed atoms and slot contract are identical; ordinary or expanded authored groups do not qualify |
+| Imported inherited-shape visibility | Layered analysis records normalized source booleans; a materialized structured mirror writes exact lowercase root `data-pptx-show-inherited-shapes` and `data-pptx-show-master-shapes` | Declared source values written to `p:sld@showMasterSp` and `p:sldLayout@showMasterSp` | `Native-stable`: Slide false hides Layout and Master shapes; Layout false hides only Master shapes | Omission means true; every page using one Layout key must agree on the Layout value. Backgrounds, Slide-local objects, placeholder inheritance, parts, and parent relationships remain intact |
 | Strict template Layout | Selected prototype contract | Existing declared Layout topology is preserved | `Native-stable` when the page follows the prototype | Fixed Layout atoms and slot structure may not change |
 | Adaptive template Layout | Selected Master plus an explicit current or newly declared Layout | A new Layout identity may be created when reusable structure changes | `Native-stable` after the lock and page mapping are updated | Never mutate a reused Layout key silently |
 | Slide background fill outside structured mode | First eligible full-canvas `<rect>`, direct or in a simple single-child group, with a registered solid, linear/radial gradient, or preset-pattern fill | Native slide `p:bg` | Fidelity follows the corresponding paint row below | Transform, filter, clip, rounding, visible stroke, or an unmapped fill prevents promotion |
@@ -245,9 +245,9 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Supported native table/chart | Visible fallback plus native-object metadata |
 | Unsupported graphic frame or SmartArt | Explicit preview, placeholder, or unsupported status |
 
-This is semantic reconstruction, not a syntax round trip. Master/Layout restoration belongs to the template-structure workflows; an ordinary visual import does not infer reusable topology from slide appearance.
+This is semantic projection, not a syntax round trip. Preserving validated source-package Master/Layout facts is confined to Create Template mirror and always produces a new workspace; an ordinary visual import does not infer reusable topology from slide appearance.
 
-### Import operating modes and recovery boundary
+### Import operating modes and error-recovery boundary
 
 `pptx_to_svg.py` defaults to tolerant import because its inputs are user-owned or third-party PPTX files. `--strict` is available for parser development, contract verification, and reproducing the first source violation. Strict generated-SVG validation and export remain unchanged.
 

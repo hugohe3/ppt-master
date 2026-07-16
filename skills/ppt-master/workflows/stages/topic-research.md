@@ -1,19 +1,19 @@
 ---
-description: Gather source materials via web search when the user supplies only a topic or requirements without source files. Produces a Markdown document and an image folder that feed SKILL.md Step 2's import-sources.
+description: Main-pipeline intake stage that gathers source material for topic-only requests.
 ---
 
-# Topic Research Workflow
+# Topic Research Stage
 
-> Standalone pre-processing step. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document + image folder, both shaped to feed `project_manager.py import-sources` directly.
+> Generate-PPTX intake stage. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document + image folder, both shaped to feed `project_manager.py import-sources` directly.
 
-This workflow is **independent**: it owns the source-acquisition step when no file exists; subsequent SKILL.md steps proceed normally with the produced materials as input.
+This stage is **context-independent**: it owns source acquisition when no file exists; subsequent SKILL.md steps proceed normally with the produced materials as input.
 
 ## When to Run
 
 | User-supplied input | Action |
 |---|---|
-| Topic name only (e.g. "做一个关于宫崎骏的 PPT") | Run this workflow |
-| Requirement description without facts (e.g. "介绍我们公司新产品") | Run this workflow |
+| Topic name only (e.g. "做一个关于宫崎骏的 PPT") | Run this stage before main Step 1 |
+| Requirement description without facts (e.g. "介绍我们公司新产品") | Run this stage before main Step 1 |
 | ≥1 page of substantive content already in chat | Skip — feed chat content into SKILL.md Step 1 directly |
 | Source file attached (PDF / DOCX / URL / Markdown) | Skip — go to SKILL.md Step 1 source converter |
 

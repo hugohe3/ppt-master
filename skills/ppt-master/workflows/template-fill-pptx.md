@@ -1,19 +1,19 @@
 ---
-description: PPTX template fill workflow — use a native PowerPoint template deck, select fitting pages, and fill new material back without SVG conversion
+description: Fill Native PPTX route — use a native PowerPoint template deck, select fitting pages, and fill new material back without SVG conversion
 ---
 
-# Template Fill (PPTX) Workflow
+# Fill Native PPTX Route
 
-> Run when the user provides a raw `.pptx` template plus new content / a new topic and asks to generate a `.pptx` from that template. Typical requests include "use this PPT template to generate a PPTX", "fill this deck with the new content", "fill this back into the template", "replace the copy in this PowerPoint", or "keep the original PowerPoint pages and swap in this material". This workflow treats the existing `.pptx` as a native slide library and produces a new `.pptx` by selecting, cloning, and patching source slides.
+> Run when the user provides a raw `.pptx` template plus new content / a new topic and asks to generate a `.pptx` from that template. Typical requests include "use this PPT template to generate a PPTX", "fill this deck with the new content", "fill this back into the template", "replace the copy in this PowerPoint", or "keep the original PowerPoint pages and swap in this material". This route treats the existing `.pptx` as a native slide library and produces a new `.pptx` by selecting, cloning, and patching source slides.
 
-This workflow is **independent** from the SVG generation pipeline. It treats the source PPTX as a native template / slide library, keeps the original PowerPoint design intact, and writes a new `.pptx` by cloning selected source slides and replacing text directly in OOXML.
+This route is **independent** from the SVG generation pipeline. It treats the source PPTX as a native template / slide library, keeps the original PowerPoint design intact, and writes a new `.pptx` by cloning selected source slides and replacing text directly in OOXML.
 
-**Boundary against template-based generation**: run this workflow for raw PPTX template + generated PPTX requests. Skip this workflow only when the user explicitly wants a reusable template package, SVG-derived template roster, or SVG-generated deck that can freely select / repeat / skip / adapt template pages. In that case, they must run [`create-template.md`](./create-template.md) first and then provide the generated template directory path to the main pipeline.
+**Boundary against template-based generation**: run this route for raw PPTX template + generated PPTX requests. Skip this route only when the user explicitly wants a reusable template workspace or an SVG-generated deck that can freely select / repeat / skip / adapt template pages. In that case, they must run [`create-template.md`](./create-template.md) first and then provide the generated workspace root to Generate PPTX.
 
 | User wants | Route |
 |---|---|
-| Generate a PPTX from a raw PPTX template | This workflow |
-| Directly edit / fill cloned PPTX slides | This workflow |
+| Generate a PPTX from a raw PPTX template | This route |
+| Directly edit / fill cloned PPTX slides | This route |
 | Create a reusable design asset from the PPTX | `create-template` |
 | Generate a new PPT from a reusable template package | Main pipeline Step 3 with the explicit template directory path |
 | Generate through the SVG pipeline directly from a raw PPTX "template" | Not allowed; create the template package first |
@@ -31,9 +31,9 @@ Recognize requests that combine an existing PowerPoint template with new content
 | Native PPT template fill | "Use this PowerPoint template for this content and fill the slides directly" |
 | Direct wording | "Fill this deck with the new content" |
 
-**Hard rule**: Do not run `pptx_to_svg.py`, `pptx_template_import.py`, `finalize_svg.py`, or `svg_to_pptx.py` for this workflow. SVG conversion is for presentation generation / template creation; this workflow is direct PowerPoint editing.
+**Hard rule**: Do not run `pptx_to_svg.py`, `pptx_template_import.py`, `finalize_svg.py`, or `svg_to_pptx.py` for this route. SVG conversion is for presentation generation / template creation; this route is direct PowerPoint editing.
 
-**Deterministic routing rule**: do not ask a route-choice question for raw PPTX template + generated PPTX requests; route them here. If the user asks for SVG/template-package generation from a raw PPTX, state that `create-template` must run first and stop this workflow until they provide the generated template directory path.
+**Deterministic routing rule**: do not ask a route-choice question for raw PPTX template + generated PPTX requests; route them here. If the user asks for SVG/template-workspace generation from a raw PPTX, state that `create-template` must run first and stop this route until they provide the generated workspace root.
 
 ---
 
@@ -203,7 +203,7 @@ The plan structure:
 | Short text | For labels / chapter names / directory items, fit the slot's visual capacity from geometry and font size; do not rely on old placeholder length alone |
 | Body text | May be moderately freer than the original, but keep paragraph count, visual width, and information density near the slot's geometry capacity |
 | Empty slots | Use `scaffold --include-empty` only when a real placeholder is empty in the source deck |
-| Native tables | Keep the original table row and column count; edit ordinary cells or a merge anchor only. A merge slave is not visible and is rejected by both `check-plan` and `apply`. This workflow never changes table structure. |
+| Native tables | Keep the original table row and column count; edit ordinary cells or a merge anchor only. A merge slave is not visible and is rejected by both `check-plan` and `apply`. This route never changes table structure. |
 | Native charts | Each series `values` list must match the category count. Single-plot classic charts whose every series uses `c:cat/c:val` are editable; analyzer/checker preflight the structure and the runtime writer revalidates the actual chart XML before mutation. |
 | Chart edit boundary | A single classic plot is editable when every series uses `c:cat/c:val`, including stock, 3D, surface, and other classic plot types. Date-axis and multi-level categories are accepted with a warning because replacement categories are flattened to one level. Scatter, bubble, ChartEx/unknown frames, multi-plot/combo charts, missing-series charts, and non-`c:cat/c:val` data models are rejected. Use beautify / main pipeline to redraw unsupported charts, or leave the native chart untouched. |
 | Facts | Every substantive claim must come from the user material |
@@ -288,7 +288,7 @@ The script:
 | Adds timestamp to PPTX filename | Matches the main SVG-to-PPTX export convention |
 | Drops orphaned source parts | Output carries only the selected pages and the layouts / media / charts they still reference (reachability prune) |
 
-**Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this workflow writes directly, and `apply` adds a `fade` transition by default; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. `keep` preserves direct and `mc:AlternateContent` transition effects without converting unknown effects to `fade`; explicit replacement removes the old logical carrier before writing one new carrier. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.
+**Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this route writes directly, and `apply` adds a `fade` transition by default; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. `keep` preserves direct and `mc:AlternateContent` transition effects without converting unknown effects to `fade`; explicit replacement removes the old logical carrier before writing one new carrier. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.
 
 ---
 
@@ -348,4 +348,4 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 | Edit chart formatting / axes / legend layout | Not in v1 |
 | Edit or generate native SmartArt | Not supported; regenerated visual routes use ordinary editable shapes |
 | Automatic visual overflow detection | Not in v1; use text-capacity judgment from the library slots |
-| Material-divergence reshaping (§c content strategy) | Not applicable — this workflow fills text into existing slots, it does not author an outline from a source, so the main pipeline's `content_divergence` free-text field has no role here |
+| Material-divergence reshaping (§c content strategy) | Not applicable — this route fills text into existing slots, it does not author an outline from a source, so the Generate PPTX `content_divergence` free-text field has no role here |

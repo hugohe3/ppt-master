@@ -208,4 +208,4 @@ The shape above is the **final** (Stage 3) result, carrying Stage 1 anchors, Sta
 ## Scope
 
 - Confirmation surface only — Strategist authors every recommendation; the page never generates deck content.
-- No SVG / layout preview here — that is the live preview server's job (`workflows/live-preview.md`, Step 6).
+- No SVG / layout preview here — that is the live preview server's job (`workflows/stages/live-preview.md`, Step 6).

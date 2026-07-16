@@ -4,7 +4,7 @@ PPT Master - Visual Review Renderer
 
 Renders project SVGs to 1280x720 PNGs that match the live-preview browser view
 (inlined <use data-icon>, resolved <image href>, full font fallback including CJK).
-The pure renderer for the visual-review workflow — does not edit SVGs, does not
+The pure renderer for the visual-review stage — does not edit SVGs, does not
 interpret the rubric.
 
 Backend: Playwright (Chromium). The cairosvg backend was evaluated and rejected

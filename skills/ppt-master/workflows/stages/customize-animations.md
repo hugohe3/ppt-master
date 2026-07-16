@@ -1,18 +1,18 @@
 ---
-description: Customize default PPTX animations with per-slide and per-object timing/effect overrides
+description: Optional post-processing stage for per-slide and per-object animation overrides.
 ---
 
-# Customize Animations Workflow
+# Customize Animations Stage
 
-> Standalone post-generation step. Run when the user asks to tune animation order, effects, timing, or object-level reveals — including simply turning per-element entrance animation on (it is off by default; page transitions still apply). This workflow creates `animations.json` overrides when the user wants element animation or finer control.
+> Optional Generate-PPTX post-processing stage. Run when the user asks to tune animation order, effects, timing, or object-level reveals — including simply turning per-element entrance animation on (it is off by default; page transitions still apply). This stage creates `animations.json` overrides when the user wants element animation or finer control.
 
 ## When to Run
 
 | Condition | Action |
 |---|---|
-| User asks for object-level animation, reveal order, timing, or effect changes | Run this workflow |
+| User asks for object-level animation, reveal order, timing, or effect changes | Run this stage |
 | User only wants the default deck (page transitions, no element builds) | Do not run; normal `svg_to_pptx.py` export is enough |
-| User just wants per-element entrance animation back on, deck-wide | No config needed — export with `svg_to_pptx.py -a auto`; run this workflow only for per-slide/per-object control |
+| User just wants per-element entrance animation back on, deck-wide | No config needed — export with `svg_to_pptx.py -a auto`; run this stage only for per-slide/per-object control |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
 | Existing `animations.json` is present | Validate and edit it; do not overwrite unless the user asks |
 
@@ -266,7 +266,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 
 Generated export performs semantic read-back per slide, comparing row order, trigger, target, resolved effect tuple, duration, and offset. It then validates timing-tree placement, `p:cTn` ids, and `p:spTgt` references across the packaged PPTX. Stable `random` choices appear in the conversion trace when export enables `--conversion-trace`. Narration merges audio into the existing timing tree and must preserve these rows.
 
-Direct-PPTX routes are preserve-only for object animation: they compare the source object-animation fingerprint before and after allowed edits, run structural package validation, and do not write, normalize, or claim ownership of effects. See [`pptx-animations.md`](../scripts/docs/pptx-animations.md) for the exact compatibility and OOXML contract.
+Direct-PPTX routes are preserve-only for object animation: they compare the source object-animation fingerprint before and after allowed edits, run structural package validation, and do not write, normalize, or claim ownership of effects. See [`pptx-animations.md`](../../scripts/docs/pptx-animations.md) for the exact compatibility and OOXML contract.
 
 ---
 

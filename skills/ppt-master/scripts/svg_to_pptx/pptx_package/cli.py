@@ -115,8 +115,8 @@ def _declared_canvas_viewbox(project_path: Path) -> str | None:
     return value.strip() if isinstance(value, str) and value.strip() else None
 
 
-def _print_structure_migration_error(mode: str | None) -> None:
-    """Explain how a legacy or absent SVG structure contract is restored."""
+def _print_structure_contract_error(mode: str | None) -> None:
+    """Explain how to replace a legacy or absent SVG structure contract."""
     label = repr(mode) if mode else 'missing (legacy implicit baseline)'
     print(
         "Error: release SVG export requires an explicit spec_lock.md "
@@ -125,9 +125,10 @@ def _print_structure_migration_error(mode: str | None) -> None:
         file=sys.stderr,
     )
     print(
-        "  New free-design and brand-only projects use mode: flat. Restore "
-        "legacy template/structured metadata by following skills/ppt-master/"
-        "workflows/restore-pptx-structure.md before export.",
+        "  New free-design and brand-only projects use mode: flat. Create a "
+        "new template workspace through skills/ppt-master/workflows/"
+        "create-template.md, then generate new structured SVG pages before "
+        "export. Existing PPTX/SVG files are not upgraded in place.",
         file=sys.stderr,
     )
 
@@ -457,15 +458,15 @@ Recorded narration:
     pptx_structure = args.pptx_structure
     declared_structure_mode = _declared_pptx_structure_mode(project_path)
     if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
-        _print_structure_migration_error(pptx_structure)
+        _print_structure_contract_error(pptx_structure)
         return 1
     if pptx_structure is None:
         if declared_structure_mode not in _RELEASE_PPTX_STRUCTURE_MODES:
-            _print_structure_migration_error(declared_structure_mode)
+            _print_structure_contract_error(declared_structure_mode)
             return 1
         pptx_structure = declared_structure_mode
     elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
-        _print_structure_migration_error(declared_structure_mode)
+        _print_structure_contract_error(declared_structure_mode)
         return 1
 
     if (

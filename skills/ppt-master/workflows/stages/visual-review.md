@@ -1,14 +1,14 @@
 ---
-description: Per-page rubric-based visual self-review via parallel subagents. Run after Executor, before post-processing.
+description: Optional quality-gate stage for per-page rubric-based visual review.
 ---
 
-# Visual Review Workflow
+# Visual Review Stage
 
-> Standalone post-generation step. Goal: reduce human iteration by letting AI subagents visually self-check each rendered slide against a fixed rubric and apply atomic position/spacing fixes.
+> Optional Generate-PPTX quality stage. Goal: reduce human iteration by letting AI subagents visually self-check each rendered slide against a fixed rubric and apply atomic position/spacing fixes.
 >
 > Reads `<project>/svg_output/<page>.svg` and a pre-rendered PNG of each slide, then either applies a fix or flags `needs_human`. **Never touches** brand decisions, layout structure, or other files.
 >
-> This workflow is **independent** — invokable in a fresh chat session with only `<project_path>` as input. No upstream conversation context required.
+> This stage is **context-independent** — invokable in a fresh chat session with only `<project_path>` as input. No upstream conversation context required.
 
 ## Positioning
 
@@ -29,7 +29,7 @@ For decks containing data charts, run [`verify-charts`](./verify-charts.md) firs
 
 - The project has no `svg_output/<page>.svg` files yet — finish Executor first
 - `svg_quality_checker.py` has not been run or has failed — fix static violations first
-- User has already applied annotations via `live-preview` workflow and is in a fixed-edit loop — describe changes directly, do not re-trigger rubric
+- User has already applied annotations via the `live-preview` stage and is in a fixed-edit loop — describe changes directly, do not re-trigger rubric
 - The user has not asked for it — do not auto-invoke based on inferred model capability or deck size
 
 ---
@@ -92,7 +92,7 @@ The orchestrator prompt must be self-contained and is the **single** place where
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`
-- Dispatch contract reference: rubric [§6](../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
+- Dispatch contract reference: rubric [§6](../../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
 - Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `animations.json`, `image_prompts.json`, or `images/`
 
 **Host compatibility**: `TeamCreate` and `SendMessage` are Claude-Code-specific multi-agent primitives. On hosts without those primitives (Cursor, VS Code + Copilot, Codebuddy, etc.) the main agent processes batches sequentially — same partitioning, same per-batch prompts, no parallel dispatch. Token savings from shared fixed inputs still apply; wall-clock time grows roughly N/K-fold.
@@ -131,7 +131,7 @@ For each row in the table:
 
 If `brand_review.json` is non-empty, that's a single decision applied across the deck (e.g., bump footer text color from `#6E7681` to `#8B949E` — one change, every page benefits). Do this once, then optionally re-run visual-review for the affected pages only.
 
-After the table is clean, continue to post-processing per [`SKILL.md`](../SKILL.md) Step 7:
+After the table is clean, continue to post-processing per [`SKILL.md`](../../SKILL.md) Step 7:
 
 ```bash
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
@@ -143,12 +143,12 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 
 ## Notes & invariants
 
-- **Single source of truth for rules**: [`references/visual-review.md`](../references/visual-review.md). This workflow file is just the orchestration — never restate or paraphrase rules here.
+- **Single source of truth for rules**: [`references/visual-review.md`](../../references/visual-review.md). This stage file is just the orchestration — never restate or paraphrase rules here.
 - **Concurrency**: `visual_review.py` serializes renders via `<project>/.preview/.render.lock`. Subagents must never call the renderer directly without the lock.
 - **Iteration budget**: default 1 iteration. Bumping to 2 doubles render cost and roughly triples token cost. Only worth it for high-stakes / final-cut decks.
 - **Don't-touch (rubric §3)** is hard-enforced by subagents. If you want the subagent to e.g. change a brand color, that is **out of scope** — make the change manually first, then re-render & re-review.
 - **Backups**: every modified SVG has a `.review/backup/<page>.iter<N>.svg` rollback anchor. Restore by `cp`.
-- **The rubric is not the designer**: it catches collisions, drift, and rhythm errors — it does not improve a fundamentally weak layout. If 80%+ of pages come back `needs_human`, the design spec or the executor's choice of layout patterns is the root cause, not this workflow.
+- **The rubric is not the designer**: it catches collisions, drift, and rhythm errors — it does not improve a fundamentally weak layout. If 80%+ of pages come back `needs_human`, the design spec or the executor's choice of layout patterns is the root cause, not this stage.
 - **Playwright output discipline**: when an agent uses the playwright MCP tool `browser_take_screenshot` directly (outside the `visual_review.py` script), the `filename` parameter is resolved against the CWD (typically the repo root) — passing a bare relative path will create stray directories inside the repository. Always pass an absolute path:
   - One-off probe / ad-hoc inspection → `/tmp/probe-<topic>-<n>.png`
   - Project artifact (replaces what the script would have produced) → `<project_path>/.preview/<page>.png` (absolute)
@@ -160,7 +160,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 
 ## Appendix: Iteration loop (opt-in)
 
-Default behavior is single-iteration review: one scan, fix in place, write the report. The full iteration loop in [`references/visual-review.md`](../references/visual-review.md) §4.1 supports:
+Default behavior is single-iteration review: one scan, fix in place, write the report. The full iteration loop in [`references/visual-review.md`](../../references/visual-review.md) §4.1 supports:
 
 1. Iteration 1: scan + fix
 2. Re-render via `visual_review.py --pages <token>`

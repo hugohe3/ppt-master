@@ -236,7 +236,7 @@ def main() -> int:
     if args.provider == "edge" and not args.voice:
         parser.error(
             "--voice is required for --provider edge. Run --list-voices --locale <locale> to discover voices "
-            "(e.g. --locale zh-CN), or follow skills/ppt-master/workflows/generate-audio.md "
+            "(e.g. --locale zh-CN), or follow skills/ppt-master/workflows/stages/generate-audio.md "
             "for an AI-curated recommendation."
         )
         raise AssertionError("unreachable")

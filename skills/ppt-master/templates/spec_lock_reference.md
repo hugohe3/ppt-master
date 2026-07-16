@@ -141,7 +141,7 @@
 > - mode: structured
 > - template_adherence: strict
 > ```
-> Both values require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
+> Both values require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds cannot be selected or upgraded in place. Create a current workspace through [`create-template`](../workflows/create-template.md), then generate new structured pages from it.
 
 ## pptx_masters
 - master-default: Default Master

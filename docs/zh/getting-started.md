@@ -78,7 +78,7 @@
 
 PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后融入的(建立在 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85) 之上)。
 
-完整说明 → [实时预览工作流](../../skills/ppt-master/workflows/live-preview.md)
+完整说明 → [实时预览阶段](../../skills/ppt-master/workflows/stages/live-preview.md)
 
 ---
 

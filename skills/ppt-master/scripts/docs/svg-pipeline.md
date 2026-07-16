@@ -76,7 +76,7 @@ generated files for their respective prefixes. In create-template workspaces,
 `imported` is the fixed namespace: assets live once under `icons/imported/`, and
 the working SVGs reference them as `data-icon="imported/<name>"`. Inventory
 entries retain source refs from each extracted subtree, allowing expansion to
-restore the authoring-manifest mapping. A rerun on an
+reconnect the authoring-manifest mapping. A rerun on an
 already rewritten namespaced projection inventories those references and does
 not progressively extract their remaining parent or sibling geometry.
 
@@ -102,7 +102,7 @@ Materialization preserves source page order and emits one definition-only
 `layout_<layout_key>.svg` for every source Layout unused by all source Slides.
 It mechanically expands fixed Master/Layout group wrappers into direct atoms,
 rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
-current SVG fallback for edited refs, restores explicit text hard breaks, and
+current SVG fallback for edited refs, preserves explicit text hard breaks, and
 removes every IR-only source ref. Source `p:sldLayout@showMasterSp` and
 `p:sld@showMasterSp` facts become canonical root
 `data-pptx-show-master-shapes` and
@@ -115,7 +115,7 @@ The output routes reusable vectors once to `icons/imported/`, bitmaps to
 `images/`, and other referenced files to `templates/assets/`. The JSON report
 is written to stdout only. The command intentionally does not create
 `templates/design_spec.md`; Template_Designer writes that personality and page
-roster after materialization. This compiler is for Type A mirror restoration,
+roster after materialization. This compiler is for Type A mirror materialization,
 not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
 or export.
 
@@ -154,7 +154,7 @@ the declared `--resource-root` and are embedded into the asset.
 This operation belongs only to an explicit `create-template` normalization
 decision in `standard` or `fidelity` mode. It does not choose groups, detect
 repetition, infer a Master/Layout, or run during ordinary import, free
-generation, mirror restoration, finalize, or export. Placeholder, native
+generation, mirror materialization, finalize, or export. Placeholder, native
 single-shape, table/chart, icon-placeholder, and authored-preset groups are
 rejected because they already own a different semantic route.
 
@@ -236,7 +236,7 @@ Behavior:
 - On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
 - Flat export maps locked typography/colors into a clean project-owned theme/Master, removes stock content placeholders and unused built-in Layouts, retains only the standard date/footer/slide-number capability hooks, and keeps one Blank Layout without promoting Slide content. Structured export additionally creates one reusable Layout per declared key and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
 - Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when fixed Layout atoms or slot topology/bounds change.
-- Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete Master identity are rejected with a pointer to [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md). Explicit flat free-design/brand-only projects intentionally omit Master identity.
+- Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete Master identity are rejected with a pointer to [`create-template`](../../workflows/create-template.md). Create a new workspace and generate new structured SVG pages; do not upgrade the existing project in place. Explicit flat free-design/brand-only projects intentionally omit Master identity.
 - Native output uses content-hash media filenames, so identical images are reused and different images cannot overwrite each other by sharing a basename.
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.
