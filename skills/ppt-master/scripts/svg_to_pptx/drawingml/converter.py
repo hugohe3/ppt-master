@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from native_payloads import NativePayloadError, hydrate_native_payload_refs
 from pptx_shapes import (
     has_relationship_attributes,
     resolve_preset_preview_hash,
@@ -96,6 +97,16 @@ from ..semantic_markers import is_static_page_frame
 
 class SvgNativeConversionError(RuntimeError):
     """Raised when an SVG cannot be faithfully converted to native DrawingML."""
+
+
+def _hydrate_native_payloads(root: ET.Element, svg_path: Path) -> int:
+    """Resolve compressed workspace payload references for native conversion."""
+    try:
+        return hydrate_native_payload_refs(root, svg_path)
+    except NativePayloadError as exc:
+        raise SvgNativeConversionError(
+            f"{svg_path.name}: invalid native payload reference: {exc}"
+        ) from exc
 
 
 def _require_chart_table_marker_attributes(
@@ -1396,6 +1407,7 @@ def convert_svg_to_slide_shapes(
     svg_path = Path(svg_path)
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
+    _hydrate_native_payloads(root, svg_path)
     try:
         parse_project_svg_root(
             root,
@@ -1498,6 +1510,14 @@ def convert_svg_to_slide_shapes(
         if verbose and expanded:
             print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
         if expanded:
+            hydrated = _hydrate_native_payloads(root, svg_path)
+            if hydrated:
+                trace_steps.append({
+                    'action': 'hydrate-native-payloads-from-icons',
+                    'count': hydrated,
+                })
+            _mark_unchanged_txbody_groups(root)
+            _mark_unchanged_preset_previews(root)
             _require_project_freeform_geometry(root, svg_path)
 
     try:

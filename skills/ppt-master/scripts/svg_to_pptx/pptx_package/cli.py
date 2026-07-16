@@ -17,6 +17,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from native_payloads import PAYLOAD_STORE_RELATIVE_PATH  # noqa: E402
 from pptx_animations import (  # noqa: E402
     ANIMATIONS,
     animation_seconds_to_milliseconds,
@@ -978,11 +979,23 @@ Recorded narration:
             svg_output_dst = backup_dir / "svg_output"
             try:
                 shutil.copytree(svg_output_src, svg_output_dst)
-                if verbose:
-                    print(f"  svg_output backup: {svg_output_dst}")
             except Exception as exc:
                 if verbose:
                     print(f"  [warn] svg_output backup skipped: {exc}")
+            else:
+                if verbose:
+                    print(f"  svg_output backup: {svg_output_dst}")
+                payload_store_src = project_path / PAYLOAD_STORE_RELATIVE_PATH
+                if payload_store_src.is_file():
+                    try:
+                        payload_store_dst = backup_dir / PAYLOAD_STORE_RELATIVE_PATH
+                        payload_store_dst.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(payload_store_src, payload_store_dst)
+                        if verbose:
+                            print(f"  native payload backup: {payload_store_dst}")
+                    except Exception as exc:
+                        if verbose:
+                            print(f"  [warn] native payload backup skipped: {exc}")
         elif verbose:
             print(f"  [info] svg_output/ not found, backup skipped")
 

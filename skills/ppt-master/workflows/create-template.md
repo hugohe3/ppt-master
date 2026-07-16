@@ -502,7 +502,12 @@ publication, the command verifies the layered manifest and source-ref closure,
 lossless SVG and source-PPTX hashes, complete native/inheritance graph, and
 extracted-vector inventory. It then stages and publishes the entire roster in
 one operation. It emits source-ordered page SVGs, unused-Layout definition
-SVGs, `icons/imported/`, and referenced `images/` / `templates/assets/`; it does
+SVGs, `icons/imported/`, referenced `images/` / `templates/assets/`, and one
+deduplicated `templates/native_payloads.json.gz` store when supported native
+payload or repeated restoration metadata exists. Template SVGs and imported
+vectors keep content-hash payload references plus short
+`data-pptx-native-ref` attribute-record ids. Structural Master/Layout,
+placeholder, layer, and editable-object fields remain inline. The command does
 not create `design_spec.md`. Template_Designer writes that file from the
 confirmed brief and the materialized roster before Step 5. A rerun targets a
 new empty workspace rather than overwriting a partially reviewed template.
@@ -659,7 +664,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] Mirror roots preserve source inherited-shape visibility with canonical lowercase `data-pptx-show-master-shapes` and `data-pptx-show-inherited-shapes`; same-key Layouts agree on the former, while each Slide retains its own latter value
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the preservation map explains them
-- [ ] All template-creation edits used the authoring IR; Type A mirror used `mirror_template_materialize.py`, validated its manifest/hash/graph/source-ref closure before atomic publication, reused only converter-supported payload for hash-matching Slide-local/slot refs, stripped IR-only source-ref metadata, and kept fixed Master/Layout visuals as direct atoms
+- [ ] All template-creation edits used the authoring IR; Type A mirror used `mirror_template_materialize.py`, validated its manifest/hash/graph/source-ref closure before atomic publication, reused only converter-supported payload for hash-matching Slide-local/slot refs, deduplicated supported opaque payload and repeated native restoration attributes into `templates/native_payloads.json.gz`, stripped IR-only source-ref metadata, and kept fixed Master/Layout visuals as direct atoms
 - [ ] If any SVG references an extracted vector, it uses `data-icon="imported/<name>"` and the sole SVG asset exists at `<template_workspace>/icons/imported/<name>.svg`; `templates/icons/` does not exist and no separate illustration embedding script was added
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
 - [ ] For `mirror` mode: source-page SVG count equals source page count, while additional files are exactly the required `layout_<layout_key>.svg` definitions for unused source Layouts; source-page filenames follow the `<NNN>_<page_type>.svg` convention; **no new `{{...}}` authoring placeholders were inserted into materialized source-page SVGs**; §V Page Roster lists every emitted file and marks definition-only prototypes explicitly
