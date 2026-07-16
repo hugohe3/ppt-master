@@ -32,7 +32,7 @@ Use Create Template Step 1 for source ingestion and replication-mode eligibility
 - Middle: use cases, design intent, presentation rhythm, and other deck-specific overview context.
 - `standard` and `fidelity` author a new complete system; source topology is not output topology. `mirror` preserves only validated package/contract facts in a new workspace and never modifies the source.
 
-Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets are first-class evidence under Create Template Step 1. In a mixed bundle, combine the applicable identity, structure, and middle evidence without erasing provenance. Exact user instructions remain decisions; vague prose remains suggested interpretation until the shared confirmation gate.
+Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets are first-class evidence under Create Template Step 1. In a mixed bundle, combine the applicable identity, structure, and middle evidence without erasing provenance. Exact user-authored instructions remain decisions whether they arrive in chat or a user-written brief file; vague prose remains suggested interpretation until the shared confirmation gate.
 
 Create Deck is the default child when identity and structure are both requested or when the source is a specific organization's branded presentation system. If the user explicitly wants identity-only or brand-neutral structure, return to Create Template dispatch before the shared confirmation marker is emitted.
 
@@ -108,7 +108,7 @@ In addition to Create Template Steps 5–6, verify:
 - Template Overview, Color Scheme, Signature Design Elements, and Page Roster exist; conditional sections match real choices/assets.
 - Every identity color is `#RRGGBB`; the primary table row matches frontmatter, and SVG paint follows the confirmed identity.
 - Every SVG in the roster satisfies the shared Master/Layout/slot contract and the roster is bidirectionally complete.
-- Every referenced image/icon exists under the same workspace and no empty optional directory was created.
+- Every referenced image/icon exists under the same workspace; this workflow created no optional directory solely to leave it empty. Pre-existing initialized-project scaffolding is allowed and remains untouched.
 
 For library scope, Create Template validates and registers with:
 
