@@ -12,6 +12,31 @@ This guide answers three questions:
 2. [How do I turn someone else's PPT — or my own brand — into a template? (the focus)](#2-derive-a-new-template-the-focus)
 3. [What are the limits of templates?](#3-template-boundaries)
 
+## 60-second template path
+
+Choose the route by the artifact you already have and the result you want:
+
+| Starting point and goal | Route | Copy-ready request |
+|---|---|---|
+| A raw `.pptx`; keep its existing slide shells and replace content | **Fill Native PPTX** | `Fill projects/source/template.pptx with projects/source/content.md.` |
+| A reusable Brand/Layout/Deck workspace; generate a fresh deck | **Generate PPTX with an explicit workspace path** | `Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/.` |
+| A PPTX, SVG set, brand guide, website, images, or mixed references; first build a reusable system | **Create Template → Generate PPTX** | `Use /create-template to create a reusable Deck workspace from projects/brand/our_deck.pptx.` |
+
+Do not pass a raw `.pptx` as a Generate PPTX template path. Fill it directly when you want its existing pages, or run Create Template first when you want a reusable system.
+
+Choose the workspace kind by what must be reused:
+
+| Kind | Reuses | Native PowerPoint result |
+|---|---|---|
+| **Brand** | Color, typography, logo, voice, icon style | Identity constraints only. Generated pages remain Slide-local under one clean project Master and Blank Layout. |
+| **Layout** | Page grammar, Master/Layout identities, slots, and layout roster | A structured deck with reusable native Masters, named Layouts, and placeholders; identity is chosen separately. |
+| **Deck** | Brand identity and page structure together | A structured deck with the template's complete identity plus reusable native Masters, named Layouts, and placeholders. |
+
+The two rules that prevent most mistakes:
+
+1. Supply the **workspace root**, not its `templates/` subdirectory and not a bare template name.
+2. Put the explicit workspace path in the initial generation request. The only exception is a Create Template run that immediately hands its validated workspace to Generate PPTX in the same conversation.
+
 ---
 
 ## 1. Use an existing template
@@ -42,15 +67,41 @@ This is intentional — the AI never makes a fuzzy / interpretive judgment about
 
 To browse what's available in the built-in library, ask "what templates are available?" — the AI lists names and paths from the discovery index. Listing alone does not enter the template flow; you still need to send back a path to trigger Step 3.
 
+### Copy-ready examples
+
+Use one workspace:
+
+```text
+Make a deck from projects/q3-report/sources/report.pdf.
+Template workspace: skills/ppt-master/templates/layouts/presentation_core/
+```
+
+Combine identity and structure:
+
+```text
+Make a product-launch deck from projects/launch/sources/brief.md.
+Brand workspace: skills/ppt-master/templates/brands/anthropic/
+Layout workspace: skills/ppt-master/templates/layouts/presentation_core/
+```
+
+Use a project-scoped template created earlier:
+
+```text
+Make a deck from projects/annual-report/sources/report.md.
+Template workspace: projects/acme_template/
+```
+
+The path labels are optional; the paths themselves are mandatory. If two paths have the same kind, the workflow stops at the existing conflict-resolution gate instead of choosing one silently.
+
 ### Template catalog
 
-Templates are organized into three kinds, each in its own directory:
+Templates are organized into three kinds, each with a discovery index:
 
-- [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
-- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
-- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
+- [`brands_index.json`](../skills/ppt-master/templates/brands/brands_index.json) — identity-only workspaces: color / typography / logo / voice / icon style, with no SVG page roster
+- [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json) — structure-only workspaces: canvas / page grammar / page types / SVG roster, with identity selected downstream
+- [`decks_index.json`](../skills/ppt-master/templates/decks/decks_index.json) — complete identity + structure workspaces, including deck-specific overview context
 
-Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
+Ask "what templates are available?" for a readable list with workspace paths. The indexes are the current source of truth; the kind-specific READMEs define their contracts. Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
@@ -187,6 +238,24 @@ When a deck/layout template is selected, the Strategist confirmation stage asks 
 
 - **adaptive** — choose one template SVG per page; keep its Master and assign a new explicit Layout key during authoring when fixed Layout atoms or slot topology/bounds must change
 - **strict** — choose one template SVG per page and keep its Master/Layout/slot contract unchanged
+
+### Verify that Master and Layout were really applied
+
+For a generated deck that used a Layout or Deck workspace, verify the release artifact in Microsoft PowerPoint:
+
+| Check | Expected result |
+|---|---|
+| **View → Slide Master** | The declared Master(s) and named Layouts are present. |
+| **Home → New Slide** | The reusable Layout names appear in the layout picker under the intended Master. |
+| Select a generated slide and inspect **Layout** | The slide is bound to its declared Layout, not a generic inferred layout. |
+| Click a reusable content region | Template slots behave as native placeholders with the declared type and frame. |
+| Add a new slide from one of the emitted Layouts | Master/Layout visuals and placeholder geometry appear without copying a finished content slide. |
+
+Brand-only use is intentionally different: it applies identity while keeping authored content Slide-local, so do not expect a reusable template Layout roster beyond the clean package scaffold.
+
+`exports/<id>_template_preview.pptx` is review evidence created by Create Template when requested or required. It is not the template input; generation always consumes the workspace root.
+
+Microsoft PowerPoint is the acceptance target for Master/Layout behavior. Keynote, WPS, and LibreOffice can open PPTX files but may normalize template structure or load a large mirror roster of unused Layouts more slowly.
 
 ### What a derived template workspace looks like
 
