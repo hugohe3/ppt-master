@@ -46,7 +46,7 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 
 </details>
 
-> **AI generates your deck — it doesn't fill in a template.** PPT Master is a workflow that runs inside AI IDEs (Claude Code, Cursor, VS Code + Copilot, etc.): hand the AI your PDF / DOCX / web pages, and it produces a real PowerPoint on your machine — every element editable in PowerPoint, your data stays local, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
+> **AI generates your deck — it doesn't fill in a template.** PPT Master is a workflow that runs inside AI IDEs (Claude Code, Cursor, VS Code + Copilot, etc.): hand the AI a topic, your PDF / DOCX / web pages, design references, or an existing deck, and it produces a real PowerPoint on your machine — every element editable in PowerPoint, your data stays local, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
@@ -115,11 +115,15 @@ Drop in your source material, and the deck you get back is **more than just edit
 
 In form, it's not a website or an app but a workflow (a "skill") that runs inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy: you tell the AI in the IDE's chat — "make a deck from this PDF" — and it follows the workflow to produce a genuinely editable `.pptx` on your machine. No coding on your side; you do exactly three things — install Python, install an AI IDE, drop in your material.
 
+Generating a new deck from source documents is the main pipeline, but not the only route. PPT Master can also distill reusable brand / layout / deck templates from your references, fill an existing `.pptx` with new content while preserving its design, and add native transitions, animations, and narration to a finished deck — each route with an explicit contract for what gets preserved.
+
 This form buys three promises that other tools struggle to make at the same time:
 
-- **Transparent, predictable cost** — the tool is free and open source; the only cost is your AI model usage. You pay exactly what you consume — no separate PPT subscription added on top
-- **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
-- **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
+- **Transparent, predictable cost** — free and open source; the only cost is your AI model usage, with no PPT subscription on top
+- **Data stays local** — apart from AI model communication, the entire pipeline runs on your machine
+- **No platform lock-in** — any agent-capable AI IDE can drive it; Claude, GPT, Gemini, Kimi, and other models all work
+
+How these promises compare against Gamma, Copilot, and other tools → [Why PPT Master](./docs/why-ppt-master.md); the long-term capability boundaries behind them → [Project Positioning](./docs/project-positioning.md).
 
 > [!IMPORTANT]
 > ### This is a tool, not a wishing well
@@ -354,6 +358,7 @@ PPT Master reads the current process environment first, then the first `.env` fo
 |---|----------|-------------|
 | 📘 | [Getting Started](./docs/getting-started.md) | First deck in 3 steps, plus how to use templates, live preview, animations, narration, voice cloning (**new users start here**) |
 | 🆚 | [Why PPT Master](./docs/why-ppt-master.md) | How it compares to Gamma, Copilot, and other AI tools |
+| 🧭 | [Project Positioning](./docs/project-positioning.md) | Long-term positioning, product promises, and capability boundaries |
 | 🪟 | [Windows Installation](./docs/windows-installation.md) | Step-by-step setup guide for Windows users |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | Core workflow and rules |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
@@ -361,6 +366,8 @@ PPT Master reads the current process environment first, then the first `.env` fo
 | 💼 | [Examples](./examples/README.md) | All example projects |
 | 🏗️ | [Technical Design](./docs/technical-design.md) | Architecture, design philosophy, why SVG |
 | ❓ | [FAQ](./docs/faq.md) | Model selection, cost, layout troubleshooting, custom templates |
+
+<sub>Full documentation index → [`docs/`](./docs/README.md)</sub>
 
 ---
 
