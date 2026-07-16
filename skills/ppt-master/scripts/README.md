@@ -82,6 +82,7 @@ python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
+python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
 python3 scripts/mirror_template_materialize.py <import_workspace> <empty_template_workspace>
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
@@ -99,15 +100,20 @@ copy while retaining visible fallback geometry, text, images, stable element
 ids, root Master/Layout markers, selected native-shape intent, and
 document-local `data-pptx-source-ref` values.
 Relative local image references are rewritten so the projected copy still
-renders from its new location. The bundle's `authoring_manifest.json` records
-source/authoring hashes and object paths without duplicating opaque payload.
-The full imported SVG remains unchanged as native-payload backing. Template
-creation edits the IR and materializes validated `templates/*.svg`; the IR
-directory itself is not a final template or direct release export source.
+renders from its new location. The bundle's `authoring_summary.json` is the
+model-readable current-file index; `authoring_manifest.json` records
+source/authoring hashes and object paths for tools without duplicating opaque
+payload and does not enter model context. In-place vector/picture extraction
+refreshes the summary automatically; use `--refresh-summary` after other direct
+IR edits. The full imported SVG remains unchanged as native-payload backing.
+Template creation edits the IR and materializes validated `templates/*.svg`;
+the IR directory itself is not a final template or direct release export
+source.
 
 `mirror_template_materialize.py` is the deterministic Type A mirror compiler.
-It consumes only the layered `authoring-svg/` IR as editable input, validates
-its manifest against immutable `svg/`, `native_structure.json`,
+It consumes only the layered `authoring-svg/` IR as editable input, loads its
+tool-only manifest internally, and validates it against immutable `svg/`,
+`native_structure.json`,
 `svg/inheritance.json`, `source_template.pptx`, and any extracted-vector
 inventory, then publishes a complete structured template roster atomically.
 Unchanged supported Slide-local/slot refs may recover native payload; edited

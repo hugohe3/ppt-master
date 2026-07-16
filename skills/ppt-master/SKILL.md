@@ -94,7 +94,7 @@ description: >
 | `${SKILL_DIR}/scripts/latex_render.py` | LaTeX formula rendering (manifest-driven PNG assets) |
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
 | `${SKILL_DIR}/scripts/slice_images.py` | Slice one AI illustration sheet into individual spot-illustration elements |
-| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight editable authoring IR bundle and compact provenance manifest from PPTX-imported SVGs |
+| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight editable authoring IR bundle, model-readable summary, and tool-only provenance manifest from PPTX-imported SVGs |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/preset_shape_svg.py` | Print one compact registry-backed native PowerPoint preset `<g>` to stdout for page or template insertion |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
@@ -145,10 +145,12 @@ Master/Layout topology is neither preserved nor distilled. `mirror` is a
 native-preservation path: preserve only the source slide roster/order, visual appearance,
 Master/Layout parentage and identities, placeholder type/index/bounds, native
 object ownership, and supported native-shape metadata. The lossless import is
-the native-payload backing store; the `authoring-svg/` bundle and its
-`authoring_manifest.json` are the only editable template-creation IR. Stable
-document-local source references let mirror materialization reuse unchanged
-native payload without putting it in model context. Mechanical normalization
+the native-payload backing store; editable SVGs under `authoring-svg/` are the
+template-creation IR. Models read `authoring_summary.json` for bundle
+orientation and do not load `authoring_manifest.json`; the mirror compiler
+reads that machine manifest internally. Stable document-local source
+references let mirror materialization reuse unchanged native payload without
+putting it in model context. Mechanical normalization
 may express the source facts in the current explicit SVG contract and expand
 fixed-layer group wrappers into direct atoms, but it MUST NOT merge, split,
 promote, demote, rename, or re-parent source structure. The IR is materialized

@@ -21,8 +21,8 @@ python3 scripts/svg_authoring_view.py <svg-file-or-directory> -o <output-dir> \
 The operation is non-destructive and refuses existing output files unless
 `--force` is explicit. It never writes back to the source SVG. The JSON report
 on stdout records original/projected byte counts and removals by category. The
-output directory contains the editable SVGs and one atomic
-`authoring_manifest.json` sidecar.
+output directory contains the editable SVGs, one model-readable
+`authoring_summary.json`, and one tool-only `authoring_manifest.json`.
 
 The projected copy:
 
@@ -36,12 +36,22 @@ The projected copy:
   each imported logical object;
 - rewrites relative local asset references for the projection's new location.
 
-The manifest stores relative source/authoring filenames, source and initial
-authoring hashes, and source element paths. It deliberately does not copy the
-opaque payload. The authoring bundle is the editable source for template
-creation; the complete imported SVG remains immutable native-payload backing.
-Final `templates/*.svg` files are materialized and validated from that pair.
-The IR directory itself is not a supported direct input to `svg_to_pptx.py`.
+The summary stores the current SVG roster plus compact per-file canvas, size,
+text, image, vector, placeholder, icon, and source-ref counts. Models read the
+summary and editable SVGs; they do not read the machine manifest. The manifest
+stores relative source/authoring filenames, source and initial authoring hashes,
+and source element paths. It deliberately does not copy the opaque payload.
+The authoring bundle is the editable source for template creation; the complete
+imported SVG remains immutable native-payload backing. Final
+`templates/*.svg` files are materialized and validated from that pair. The IR
+directory itself is not a supported direct input to `svg_to_pptx.py`.
+
+Regenerate the summary after direct edits that do not pass through one of the
+in-place normalization tools:
+
+```bash
+python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
+```
 
 This projection is separate from canonical preset authoring. New project SVGs
 and project-owned templates use the compact authored form: one atomic
@@ -80,7 +90,9 @@ the working SVGs reference them as `data-icon="imported/<name>"`. Inventory
 entries retain source refs from each extracted subtree, allowing expansion to
 reconnect the authoring-manifest mapping. A rerun on an
 already rewritten namespaced projection inventories those references and does
-not progressively extract their remaining parent or sibling geometry.
+not progressively extract their remaining parent or sibling geometry. An
+in-place pass over an authoring bundle refreshes `authoring_summary.json`
+automatically.
 
 ## `mirror_template_materialize.py`
 
@@ -93,7 +105,8 @@ python3 scripts/mirror_template_materialize.py \
 ```
 
 The command treats `<import_workspace>/authoring-svg/` as the sole editable
-source. It validates the layered authoring manifest, immutable lossless SVG
+source. It reads the tool-only layered authoring manifest internally and
+validates it against immutable lossless SVG
 hashes, source PPTX hash, complete Master/Layout/Slide graph, inheritance
 visibility facts, source-ref closure, and extracted-vector inventory before it
 writes anything. It refuses a non-empty destination and stages the whole result
@@ -162,6 +175,8 @@ effect once inside the SVG asset and again to the replacement `<image>`.
 Scripts, `foreignObject`, SVG animation, remote resources, and external SVG
 fragment references fail closed; local image/CSS resources must stay inside
 the declared `--resource-root` and are embedded into the asset.
+An in-place rewrite inside an authoring bundle refreshes
+`authoring_summary.json` automatically.
 
 This operation belongs only to an explicit `create-template` normalization
 decision in `standard` or `fidelity` mode. It does not choose groups, detect

@@ -31,7 +31,7 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `svg/slide_NN.svg` — immutable slide-local native-payload backing; do not bulk-read because opaque native payload is retained
 - `svg/inheritance.json` — which layout / master each slide consumes
 - optional `svg-flat/slide_NN.svg` — immutable complete-page verification backing generated only when explicitly requested; do not use it as the editable source
-- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles created by `svg_authoring_view.py`; each contains editable SVGs plus `authoring_manifest.json`
+- `authoring-svg/` and optional `authoring-svg-flat/` — lightweight non-destructive IR bundles created by `svg_authoring_view.py`; each contains editable SVGs, model-readable `authoring_summary.json`, and tool-only `authoring_manifest.json`
 - optional screenshots for visual cross-checking
 
 PPTX import interpretation:
@@ -44,8 +44,8 @@ Input priority for PPTX-backed template creation depends on replication mode:
 
 | Mode | Authoritative inputs | Model-facing inputs |
 |---|---|---|
-| `standard` / `fidelity` | Finalized brief for the newly designed output; `manifest.json` for factual canvas/theme/assets | `authoring-svg/` and optional `authoring-svg-flat/` IR documents plus exported assets as visual references. Source Master/Layout topology is informational only and is not mined into output structure. |
-| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, and the authoring manifests | Layered `authoring-svg/` as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
+| `standard` / `fidelity` | Finalized brief for the newly designed output; `manifest.json` for factual canvas/theme/assets | `authoring-svg/authoring_summary.json`, layered authoring SVGs, optional flat spot checks, and exported assets as visual references. Do not read `authoring_manifest.json`. Source Master/Layout topology is informational only and is not mined into output structure. |
+| `mirror` | `manifest.json`, `native_structure.json`, and `svg/inheritance.json`; the compiler validates the tool-only authoring manifest | `authoring-svg/authoring_summary.json` plus layered authoring SVGs as the editable preservation IR; optional `authoring-svg-flat/` for complete-page verification; matching lossless `svg/` and optional `svg-flat/` only as immutable backing. |
 
 Use the compact facts in `manifest.json` for orientation. Open screenshots or the original PPTX only for visual cross-checking.
 
@@ -145,7 +145,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 
 When the brief sets `Replication mode: mirror`, materialize a new template workspace from validated imported facts rather than designing a new system:
 
-- Authoring source: layered `authoring-svg/*.svg` plus `authoring-svg/authoring_manifest.json`, `svg/inheritance.json`, and `native_structure.json`. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
+- Model-facing authoring source: `authoring-svg/authoring_summary.json`, layered `authoring-svg/*.svg`, `svg/inheritance.json`, and `native_structure.json`. Do not read `authoring-svg/authoring_manifest.json`; materialization validates it internally. When present, use `authoring-svg-flat/` only for full-page verification. Matching lossless `svg/` and optional `svg-flat/` files are immutable backing; materialization resolves only the layered backing.
 - Precondition: the import evidence identifies every source Master/Layout, parent relationship, picker name, placeholder contract, and fixed visual layer. Stop only when required facts or supported geometry are missing; unused identities are not a stop condition.
 - Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source slide, plus `layout_<layout_key>.svg` for every source Layout unused by all source slides. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix; definition-only files are not generated pages.
 - Required preservation: preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, supported native-object metadata, geometry, decoration, sprite-sheet wrappers, original example text, chart previews, fonts, effects, and paint order whenever the importer represents them.
@@ -323,7 +323,7 @@ If PPTX import output exists:
 
 - For `standard`, inspect enough lightweight complete-page IR documents to understand the requested visual direction and reusable assets; do not analyze source topology.
 - For `fidelity`, inspect every lightweight complete-page IR document so the newly designed roster covers the useful source composition range; do not derive output ownership from source Master/Layout recurrence.
-- For `mirror`, verify every authoring Master, Layout, and Slide plus its manifest record against `native_structure.json` and `svg/inheritance.json`, then materialize from the IR with matching lossless payload backing. Before materialization begins, report the verified source slide indexes.
+- For `mirror`, verify every authoring Master, Layout, and Slide listed by `authoring_summary.json` against `native_structure.json` and `svg/inheritance.json`, then materialize from the IR with matching lossless payload backing. The compiler validates each machine-manifest record. Before materialization begins, report the verified source slide indexes.
 
 ### 2.1 PPTX Import Mode Rule
 
@@ -347,7 +347,7 @@ template.
 | Representation | Purpose | Payload rule |
 |---|---|---|
 | Lossless import SVG | Native-payload backing | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity. Keep it immutable and resolve it only through validated source refs. |
-| Authoring IR bundle | Editable template-creation source | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. `authoring_manifest.json` records source paths and initial hashes without duplicating payload. |
+| Authoring IR bundle | Editable template-creation source | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. Models read `authoring_summary.json`; tools read `authoring_manifest.json` for source paths and initial hashes. |
 | `standard` / `fidelity` output | Newly authored contract | Use `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches, with paint from the confirmed brief / `design_spec.md`; use ordinary project SVG for other geometry. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
 | `mirror` output | Materialized preserved contract | Preserve currently supported imported metadata on unchanged Slide-local/slot refs, use the edited SVG fallback otherwise, and normalize fixed structural layers into semantic atoms. Strip IR-only source refs from final templates. |
 
