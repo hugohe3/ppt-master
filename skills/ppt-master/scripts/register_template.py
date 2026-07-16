@@ -33,6 +33,10 @@ Usage::
 
 ``--rebuild-all`` rebuilds every entry from scratch within the chosen kind;
 recommended for repairing index drift across many templates at once.
+
+Project-scoped Brand workspaces are validated, not registered, through
+``svg_quality_checker.py <workspace>/templates --template-mode``. That entry
+reuses :func:`validate_brand_workspace`, so the Brand schema has one authority.
 """
 
 from __future__ import annotations
@@ -83,17 +87,23 @@ KIND_CONFIG = {
 }
 
 _BRAND_REQUIRED_SECTIONS = (
-    "Brand Overview",
-    "Color Scheme",
-    "Typography",
-    "Logo",
-    "Voice & Tone",
-    "Icon Style",
+    ("I", "Brand Overview"),
+    ("II", "Color Scheme"),
+    ("III", "Typography"),
+    ("IV", "Logo"),
+    ("V", "Voice & Tone"),
+    ("VI", "Icon Style"),
 )
 _BRAND_FORBIDDEN_SECTIONS = (
     "Page Roster",
     "Signature Design Elements",
 )
+_BRAND_ALLOWED_FRONTMATTER_FIELDS = frozenset({
+    "brand_id",
+    "kind",
+    "summary",
+    "primary_color",
+})
 _BRAND_PROVENANCE_VALUES = {"fact", "approx", "user"}
 _BRAND_ASSET_REF_RE = re.compile(
     r"`((?:\.\./)+(?:images|icons)/[^`]+)`"
@@ -230,7 +240,7 @@ def _numbered_section(body: str, title: str) -> str | None:
 
 
 def _validate_brand_spec(
-    template_id: str,
+    expected_template_id: str | None,
     template_root: Path,
     template_dir: Path,
     frontmatter: dict,
@@ -240,7 +250,9 @@ def _validate_brand_spec(
     """Reject brand workspaces that cannot be locked as portable identity truth.
 
     Args:
-        template_id: Directory name used as the registry key.
+        expected_template_id: Registry key to match in library scope. Project
+            workspaces pass ``None`` because their root name is the project id,
+            not the portable brand id.
         template_root: Brand workspace root containing assets and templates.
         template_dir: Directory containing ``design_spec.md`` and any page SVGs.
         frontmatter: Parsed design-spec frontmatter.
@@ -250,9 +262,12 @@ def _validate_brand_spec(
     errors: list[str] = []
 
     declared_id = str(frontmatter.get("brand_id") or "").strip()
-    if declared_id != template_id:
+    if not declared_id:
+        errors.append("frontmatter brand_id must be non-empty")
+    elif expected_template_id is not None and declared_id != expected_template_id:
         errors.append(
-            f"frontmatter brand_id must match directory {template_id!r}, "
+            "frontmatter brand_id must match directory "
+            f"{expected_template_id!r}, "
             f"got {declared_id!r}"
         )
 
@@ -263,15 +278,31 @@ def _validate_brand_spec(
             f"got {declared_kind!r}"
         )
 
+    if not str(frontmatter.get("summary") or "").strip():
+        errors.append("frontmatter summary must be non-empty")
+
+    unexpected_fields = sorted(
+        set(frontmatter) - _BRAND_ALLOWED_FRONTMATTER_FIELDS
+    )
+    if unexpected_fields:
+        errors.append(
+            "brand frontmatter contains non-identity field(s): "
+            + ", ".join(unexpected_fields)
+        )
+
     if pages:
         errors.append(
             "brand workspaces must not contain page SVGs under templates/: "
             + ", ".join(f"{page}.svg" for page in pages)
         )
 
-    for title in _BRAND_REQUIRED_SECTIONS:
-        if _numbered_section(body, title) is None:
-            errors.append(f"missing required section: {title}")
+    for numeral, title in _BRAND_REQUIRED_SECTIONS:
+        if re.search(
+            rf"^##\s+{numeral}\.\s+{re.escape(title)}\s*$",
+            body,
+            re.MULTILINE,
+        ) is None:
+            errors.append(f"missing required section: {numeral}. {title}")
 
     for title in _BRAND_FORBIDDEN_SECTIONS:
         if re.search(
@@ -482,7 +513,11 @@ def _validate_svg_template_spec(
 # Per-kind extraction
 # ---------------------------------------------------------------------------
 
-def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
+def _extract_entry(
+    kind: str,
+    template_id: str | None,
+    template_dir: Path,
+) -> dict:
     """Build the index entry + extras for a single template."""
     template_root = template_dir
     template_dir = _template_content_dir(template_root)
@@ -509,6 +544,11 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
 
     pages = _list_pages(template_dir)
     primary_color = fm.get("primary_color") or _extract_primary_color(body) or ""
+    resolved_template_id = (
+        template_id
+        or str(fm.get(KIND_CONFIG[kind]["id_key"]) or "").strip()
+        or template_root.name
+    )
 
     if kind == "brand":
         _validate_brand_spec(
@@ -524,6 +564,8 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
             primary_color=str(primary_color),
         )
     elif kind == "layout":
+        if template_id is None:
+            raise SpecParseError("layout validation requires an expected layout_id")
         _validate_svg_template_spec(
             kind,
             template_id,
@@ -539,6 +581,8 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
             page_types=list(page_types),
         )
     elif kind == "deck":
+        if template_id is None:
+            raise SpecParseError("deck validation requires an expected deck_id")
         _validate_svg_template_spec(
             kind,
             template_id,
@@ -560,12 +604,26 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
         primary_color=str(primary_color),
         page_prefix="templates/" if template_dir != template_root else "",
         preview=(
-            f"exports/{template_id}_template_preview.pptx"
-            if (template_root / "exports" / f"{template_id}_template_preview.pptx").is_file()
+            f"exports/{resolved_template_id}_template_preview.pptx"
+            if (
+                template_root
+                / "exports"
+                / f"{resolved_template_id}_template_preview.pptx"
+            ).is_file()
             else ""
         ),
     )
     return {"entry": entry, "extras": extras}
+
+
+def validate_brand_workspace(template_root: str | Path) -> dict:
+    """Validate a portable Brand workspace without registering it.
+
+    This is the project-scope entry used by ``svg_quality_checker.py
+    --template-mode``. Library registration calls the same extraction path with
+    an expected directory id, so both scopes share one Brand schema authority.
+    """
+    return _extract_entry("brand", None, Path(template_root))
 
 
 # ---------------------------------------------------------------------------
