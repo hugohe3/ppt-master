@@ -12,7 +12,7 @@ read-back validation for every PPTX route.
 | In-slide object animation | scripts/pptx_animations.py |
 | Generated PPTX adapter | svg_to_pptx/pptx_package/builder.py |
 | Template Fill adapter | template_fill_pptx/transitions.py |
-| Native Enhance adapter | native_narration_pptx.py |
+| Native Enhance adapter | native_enhance_pptx_core.py |
 | Public workflow | references/animations.md |
 
 **Hard rule**: adapters resolve route policy, then call the shared core. They

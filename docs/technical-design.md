@@ -491,7 +491,7 @@ Not every PPTX-related request should regenerate slides. PPT Master now has dire
 
 `template_fill_pptx.py` is a thin CLI wrapper over `scripts/template_fill_pptx/`. Its analyzer extracts a slide library with text slots, tables, charts, and geometry; the fill plan selects source slides, confirms replacements, then the applier clones slides and patches XML parts directly. This route deliberately avoids SVG: a user who supplies a PowerPoint template usually wants those native slide masters, placeholders, tables, and charts to remain PowerPoint-native.
 
-`native_enhance_pptx.py` is the stable entry point for finished-deck enhancement. It delegates to the native narration/timing implementation and patches the PPTX package in place from a project copy: notes, page transitions, recorded narration media, slide timings, and related metadata. The contract is preservation: existing content, layout, and formatting are not regenerated.
+`native_enhance_pptx.py` is the stable entry point for finished-deck enhancement. It delegates to `native_enhance_pptx_core.py` and patches the PPTX package in place from a project copy: notes, page transitions, recorded narration media, slide timings, and related metadata. The retired `native_narration_pptx.py` name remains only as a thin CLI compatibility shim. The contract is preservation: existing content, layout, and formatting are not regenerated.
 
 These direct routes share some analysis primitives with the main pipeline, especially PPTX intake, but they do not share the SVG authoring or post-processing stages. That separation is intentional: SVG generation is a design synthesis path; direct OOXML editing is a preservation path.
 

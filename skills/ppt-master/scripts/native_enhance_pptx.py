@@ -18,7 +18,7 @@ Examples:
     python3 scripts/native_enhance_pptx.py apply projects/fire_station_native_enhance_20260626
 
 Dependencies:
-    Same as native_narration_pptx.py.
+    Same as native_enhance_pptx_core.py.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
-from native_narration_pptx import main  # noqa: E402
+from native_enhance_pptx_core import main  # noqa: E402
 
 configure_utf8_stdio()
 
