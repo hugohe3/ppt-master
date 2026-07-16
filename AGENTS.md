@@ -71,6 +71,10 @@ uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <projec
 uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
 uvx ppt-master confirm-ui <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
+# Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
+uvx ppt-master extract-svg-pictures "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
+# Type A create-template mirror: validated authoring IR -> deterministic structured template workspace
+uvx ppt-master mirror-template-materialize "<import_workspace>" "<empty_template_workspace>"
 # create-template review deck (workspace root may be global or project-scoped)
 uvx ppt-master template-preview-pptx <template_workspace>
 uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation

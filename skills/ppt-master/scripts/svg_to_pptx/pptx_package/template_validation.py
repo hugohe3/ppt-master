@@ -963,6 +963,22 @@ def validate_pptx_template_package(
                 slide_root = reader.xml(slide_part)
                 if slide_root is not None:
                     slide_roots[spec.slide_num] = slide_root
+                    raw_show_inherited = (
+                        slide_root.get("showMasterSp", "1").strip().lower()
+                    )
+                    if raw_show_inherited not in {"0", "1", "false", "true"}:
+                        errors.append(
+                            f"{slide_part} showMasterSp is not a valid boolean"
+                        )
+                    elif (
+                        (raw_show_inherited in {"1", "true"})
+                        != spec.slide_show_inherited_shapes
+                    ):
+                        errors.append(
+                            f"{slide_part} showMasterSp={raw_show_inherited}, "
+                            "expected "
+                            f"{str(spec.slide_show_inherited_shapes).lower()}"
+                        )
                 relationship_target = _single_relationship_target(
                     reader,
                     slide_part,
@@ -1034,11 +1050,22 @@ def validate_pptx_template_package(
                     errors.append(f"{layout_part} must have type='cust'")
                 if layout_root.get("preserve") != "1":
                     errors.append(f"{layout_part} must have preserve='1'")
-                if layout_root.get("showMasterSp", "1").lower() not in {
-                    "1",
-                    "true",
-                }:
-                    errors.append(f"{layout_part} must show its Master shape tree")
+                raw_show_master = (
+                    layout_root.get("showMasterSp", "1").strip().lower()
+                )
+                if raw_show_master not in {"0", "1", "false", "true"}:
+                    errors.append(
+                        f"{layout_part} showMasterSp is not a valid boolean"
+                    )
+                elif (
+                    (raw_show_master in {"1", "true"})
+                    != prototype.layout_show_master_shapes
+                ):
+                    errors.append(
+                        f"{layout_part} showMasterSp={raw_show_master}, "
+                        "expected "
+                        f"{str(prototype.layout_show_master_shapes).lower()}"
+                    )
                 c_sld = layout_root.find(f"{{{PML_NS}}}cSld")
                 expected_name = layout_specs[0].layout_name
                 actual_name = c_sld.get("name") if c_sld is not None else None

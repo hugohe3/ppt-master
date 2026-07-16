@@ -16,31 +16,14 @@ from pptx_effects import unsupported_effect_metadata
 from pptx_shapes.formula import OOXML_COORDINATE_MAX
 
 from .color_resolver import COLOR_TAGS, ColorPalette, resolve_color
-from .emu_units import NS, emu_to_px, fmt_num
+from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
 
 
 _OOXML_INTEGER_RE = re.compile(r"[+-]?\d+")
 _OOXML_HEX_COLOR_RE = re.compile(r"[0-9A-Fa-f]{6}")
-_OOXML_INT_MIN = -(2**31)
-_OOXML_INT_MAX = 2**31 - 1
 _DRAWINGML_NAMESPACE = NS["a"]
 _DRAWINGML_TAG_PREFIX = f"{{{_DRAWINGML_NAMESPACE}}}"
 _EFFECT_CONTAINER_NAMES = frozenset({"effectLst", "effectDag"})
-# Modulation/offset transforms use DrawingML percentage types, not all fixed
-# percentages; values above 100% such as satMod=175000 are valid.
-_COLOR_MODIFIER_PERCENT_RANGES = {
-    "alpha": (0, 100000),
-    "alphaMod": (0, _OOXML_INT_MAX),
-    "alphaOff": (-100000, 100000),
-    "hueMod": (0, _OOXML_INT_MAX),
-    "lumMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "lumOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "satMod": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "satOff": (_OOXML_INT_MIN, _OOXML_INT_MAX),
-    "shade": (0, 100000),
-    "tint": (0, 100000),
-}
-_COLOR_MODIFIER_FLAG_NAMES = frozenset({"comp", "gray", "inv"})
 
 
 @dataclass(frozen=True)
@@ -218,6 +201,8 @@ def _validate_color(
         if resolved is None or _OOXML_HEX_COLOR_RE.fullmatch(resolved) is None:
             raise ValueError(f"unresolvable-color:{color_name}")
     elif color_name == "sysClr":
+        if not (color.get("val") or "").strip():
+            raise ValueError(f"invalid-color:{color_name}")
         raw = color.get("lastClr") or ""
         if _OOXML_HEX_COLOR_RE.fullmatch(raw) is None:
             raise ValueError(f"unresolvable-color:{color_name}")
@@ -230,28 +215,6 @@ def _validate_color(
             _required_integer(color, attr, 0, 100000)
     elif not (color.get("val") or "").strip():
         raise ValueError(f"invalid-color:{color_name}")
-
-    for modifier in color:
-        if not isinstance(modifier.tag, str):
-            continue
-        modifier_name = _local_name(modifier)
-        if not modifier.tag.startswith(_DRAWINGML_TAG_PREFIX):
-            raise ValueError(
-                f"invalid-color-modifier-namespace:{modifier_name}"
-            )
-        bounds = _COLOR_MODIFIER_PERCENT_RANGES.get(modifier_name)
-        if bounds is not None:
-            _required_integer(modifier, "val", *bounds)
-        elif modifier_name == "hueOff":
-            _required_integer(
-                modifier,
-                "val",
-                _OOXML_INT_MIN,
-                _OOXML_INT_MAX,
-            )
-        elif modifier_name not in _COLOR_MODIFIER_FLAG_NAMES:
-            raise ValueError(f"unsupported-color-modifier:{modifier_name}")
-
 
 def _required_integer(
     elem: ET.Element,
@@ -345,18 +308,22 @@ def _outer_shadow(
     return (
         f'<feDropShadow dx="{dx_token}" dy="{dy_token}" '
         f'stdDeviation="{fmt_num(std, 8)}" '
-        f'flood-color="{color}" flood-opacity="{fmt_num(alpha, 5)}"/>'
+        f'flood-color="{color}" '
+        f'flood-opacity="{format_ooxml_alpha(alpha)}"/>'
     )
 
 
 def _glow(elem: ET.Element, palette: ColorPalette | None) -> str:
+    if elem.get("rad") is None:
+        raise ValueError("missing-rad")
     rad = _blur_radius(elem, "rad")
     color, alpha = _color_alpha(elem, palette)
     # svg_to_pptx maps stdDeviation directly back to a:glow@rad.
     std = rad
     return (
         f'<feGaussianBlur in="SourceAlpha" stdDeviation="{fmt_num(std, 8)}" result="blurred"/>'
-        f'<feFlood flood-color="{color}" flood-opacity="{fmt_num(alpha, 5)}" result="flood"/>'
+        f'<feFlood flood-color="{color}" '
+        f'flood-opacity="{format_ooxml_alpha(alpha)}" result="flood"/>'
         f'<feComposite in="flood" in2="blurred" operator="in" result="glow"/>'
         f'<feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>'
     )

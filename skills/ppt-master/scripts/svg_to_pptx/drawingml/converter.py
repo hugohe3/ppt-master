@@ -18,7 +18,7 @@ from pptx_shapes import (
     svg_text_fingerprint,
     validate_ooxml_xfrm,
 )
-from pptx_effects import project_effect_status_errors
+from pptx_effects import project_effect_status_errors, txbody_has_run_effects
 from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
@@ -43,6 +43,7 @@ from .utils import (
     SVG_NS,
     _extract_inheritable_styles,
     _get_attr,
+    _is_unit_axis_reflection,
     parse_svg_length,
     parse_transform_operations,
     parse_transform_matrix,
@@ -52,6 +53,7 @@ from .utils import (
     project_geometry_length_errors,
     project_gradient_errors,
     project_image_aspect_ratio_errors,
+    project_marker_errors,
     project_opacity_errors,
     project_paint_errors,
     project_paint_reference_errors,
@@ -307,6 +309,22 @@ def _require_project_paint_references(
     )
 
 
+def _require_project_line_end_markers(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject markers outside the native line-end contract."""
+    errors = project_marker_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project line-end marker(s): '
+        f'{preview}{suffix}'
+    )
+
+
 def _require_project_gradients(
     root: ET.Element,
     svg_path: Path | str,
@@ -455,14 +473,6 @@ def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
 
 _TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
 _PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
-_DML_NAMESPACE = 'http://schemas.openxmlformats.org/drawingml/2006/main'
-_TEXT_PROPERTY_TAGS = frozenset({
-    f'{{{_DML_NAMESPACE}}}defRPr',
-    f'{{{_DML_NAMESPACE}}}endParaRPr',
-    f'{{{_DML_NAMESPACE}}}rPr',
-})
-_EFFECT_LIST_TAG = f'{{{_DML_NAMESPACE}}}effectLst'
-_EFFECT_DAG_TAG = f'{{{_DML_NAMESPACE}}}effectDag'
 
 
 def _mark_unchanged_txbody_groups(root: ET.Element) -> None:
@@ -555,28 +565,14 @@ def _decode_unchanged_txbody(
             'txbody metadata must not contain part-local relationship attributes'
         )
     if not unchanged:
-        if _txbody_has_run_effects(txbody):
+        if txbody_has_run_effects(txbody):
             raise SvgNativeConversionError(
                 'Visible text or typography was edited while the source '
                 'txBody contains run-level effects; export stopped to avoid '
                 'silently discarding those effects'
             )
         return None
-    return decoded, _txbody_has_run_effects(txbody)
-
-
-def _txbody_has_run_effects(txbody: ET.Element) -> bool:
-    """Return whether fallback text rebuilding would discard a run effect."""
-    for properties in txbody.iter():
-        if properties.tag not in _TEXT_PROPERTY_TAGS:
-            continue
-        for child in properties:
-            if child.tag in {_EFFECT_LIST_TAG, _EFFECT_DAG_TAG} and any(
-                isinstance(effect.tag, str)
-                for effect in child
-            ):
-                return True
-    return False
+    return decoded, txbody_has_run_effects(txbody)
 
 
 def _append_shape_text(
@@ -706,11 +702,18 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
     ]
+    unit_axis_reflection = (
+        bool(transform)
+        and _is_unit_axis_reflection(parse_transform_operations(transform))
+    )
     matrix_supported = (
         not native_subtree_active
         and bool(transform)
         and visual_children
-        and supports_full_project_transform(elem)
+        and (
+            supports_full_project_transform(elem)
+            or unit_axis_reflection
+        )
     )
     # A pure ``rotate(angle [cx cy])`` falls through to the fallback path
     # below (children are rect/text/path/etc. that don't consume a full
@@ -1470,6 +1473,7 @@ def convert_svg_to_slide_shapes(
     _require_project_paints(root, svg_path)
     _require_project_definitions(root, svg_path)
     _require_project_paint_references(root, svg_path)
+    _require_project_line_end_markers(root, svg_path)
     _require_project_gradients(root, svg_path)
     _require_project_effect_status(root, svg_path)
     _require_project_filters(root, svg_path)

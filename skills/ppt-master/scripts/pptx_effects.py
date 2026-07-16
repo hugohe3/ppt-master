@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from xml.etree import ElementTree as ET
 
 
@@ -14,6 +15,16 @@ _EFFECT_OBJECT_IDENTITY_ATTRS = (
     "data-pptx-shape-id",
     "data-pptx-shape-scope",
 )
+_DML_NAMESPACE = "http://schemas.openxmlformats.org/drawingml/2006/main"
+_TEXT_PROPERTY_TAGS = frozenset({
+    f"{{{_DML_NAMESPACE}}}defRPr",
+    f"{{{_DML_NAMESPACE}}}endParaRPr",
+    f"{{{_DML_NAMESPACE}}}rPr",
+})
+_RUN_EFFECT_CONTAINER_TAGS = frozenset({
+    f"{{{_DML_NAMESPACE}}}effectLst",
+    f"{{{_DML_NAMESPACE}}}effectDag",
+})
 
 
 def project_effect_status_errors(root: ET.Element) -> list[str]:
@@ -57,15 +68,53 @@ def project_effect_status_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
-def unsupported_effect_metadata(reason: str) -> dict[str, str]:
-    """Build the canonical import-only marker for an unsupported effect."""
-    reason = reason.strip()
-    if not reason:
+def unsupported_effect_metadata(*reasons: str) -> dict[str, str]:
+    """Build one canonical import marker without dropping compound reasons."""
+    normalized: set[str] = set()
+    for reason in reasons:
+        reason = reason.strip()
+        if not reason:
+            raise ValueError("Unsupported PPTX effect reason must not be empty")
+        items: object = reason
+        if reason.startswith("["):
+            try:
+                items = json.loads(reason)
+            except json.JSONDecodeError:
+                pass
+        if not isinstance(items, list):
+            items = [reason]
+        if not all(isinstance(item, str) and item.strip() for item in items):
+            raise ValueError("Unsupported PPTX effect reasons must be strings")
+        normalized.update(item.strip() for item in items)
+    if not normalized:
         raise ValueError("Unsupported PPTX effect reason must not be empty")
+    ordered = sorted(normalized)
+    encoded = (
+        ordered[0]
+        if len(ordered) == 1
+        else json.dumps(ordered, separators=(",", ":"))
+    )
     return {
         EFFECT_STATUS_ATTR: UNSUPPORTED_EFFECT_STATUS,
-        EFFECT_REASON_ATTR: reason,
+        EFFECT_REASON_ATTR: encoded,
     }
+
+
+def txbody_has_run_effects(*text_style_roots: ET.Element | None) -> bool:
+    """Return whether rebuilding any supplied text style would lose an effect."""
+    for root in text_style_roots:
+        if root is None:
+            continue
+        for properties in root.iter():
+            if properties.tag not in _TEXT_PROPERTY_TAGS:
+                continue
+            for child in properties:
+                if child.tag in _RUN_EFFECT_CONTAINER_TAGS and any(
+                    isinstance(effect.tag, str)
+                    for effect in child
+                ):
+                    return True
+    return False
 
 
 def _element_label(elem: ET.Element) -> str:

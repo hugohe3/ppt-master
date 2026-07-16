@@ -13,11 +13,47 @@ slide assembler can collect gradient defs without conflicting IDs.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
+from decimal import Decimal
 from xml.etree import ElementTree as ET
 
-from .color_resolver import ColorPalette, find_color_elem, resolve_color
-from .emu_units import NS, fmt_num, percent_to_ratio
+from .color_resolver import (
+    COLOR_TAGS,
+    ColorPalette,
+    find_color_elem,
+    resolve_color,
+    resolve_solid_fill_color,
+    validate_no_fill,
+)
+from .emu_units import (
+    ANGLE_UNIT,
+    NS,
+    PERCENT_UNIT,
+    fmt_num,
+    format_ooxml_alpha,
+    format_ooxml_unit_ratio,
+)
+
+
+_OOXML_INTEGER_RE = re.compile(r"[+-]?[0-9]+")
+_OOXML_PERCENT_LITERAL_RE = re.compile(
+    r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)%"
+)
+_OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
+_OOXML_PERCENTAGE_MIN = Decimal(-(2**31)) / Decimal(PERCENT_UNIT)
+_OOXML_PERCENTAGE_MAX = Decimal(2**31 - 1) / Decimal(PERCENT_UNIT)
+_DRAWINGML_FILL_NAMES = (
+    "noFill",
+    "solidFill",
+    "gradFill",
+    "blipFill",
+    "pattFill",
+    "grpFill",
+)
+_DRAWINGML_FILL_TAGS = {
+    f"{{{NS['a']}}}{name}": name for name in _DRAWINGML_FILL_NAMES
+}
 
 
 @dataclass
@@ -62,84 +98,157 @@ def resolve_fill(
     if sp_pr is None:
         return FillResult.inherit()
 
-    # Direct child fill (in priority order: explicit -> derived).
-    handlers = (
-        ("noFill", _resolve_no_fill),
-        ("solidFill", _resolve_solid_fill),
-        ("gradFill", _resolve_grad_fill),
-        ("blipFill", _resolve_blip_fill),
-        ("pattFill", _resolve_patt_fill),
+    handlers = {
+        "noFill": _resolve_no_fill,
+        "solidFill": _resolve_solid_fill,
+        "gradFill": _resolve_grad_fill,
+        "blipFill": _resolve_blip_fill,
+        "pattFill": _resolve_patt_fill,
+    }
+
+    fill_name = _drawingml_fill_name(sp_pr)
+    fill_elem = sp_pr if fill_name is not None else None
+    if fill_elem is None:
+        fill_children = []
+        for child in sp_pr:
+            child_name = _drawingml_fill_name(child)
+            if child_name is not None:
+                fill_children.append((child, child_name))
+        if len(fill_children) > 1:
+            raise ValueError(
+                "DrawingML container must contain at most one fill"
+            )
+        if not fill_children:
+            return FillResult.inherit()
+        fill_elem, fill_name = fill_children[0]
+
+    if fill_name == "grpFill":
+        raise ValueError("Unsupported DrawingML fill: grpFill")
+    return handlers[fill_name](
+        fill_elem,
+        palette,
+        id_prefix,
+        id_seq,
+        placeholder_hex,
     )
 
-    local_name = sp_pr.tag.split("}", 1)[-1] if isinstance(sp_pr.tag, str) else ""
-    for tag, handler in handlers:
-        if local_name == tag:
-            return handler(sp_pr, palette, id_prefix, id_seq, placeholder_hex)
 
-    for tag, handler in handlers:
-        elem = sp_pr.find(f"a:{tag}", NS)
-        if elem is not None:
-            return handler(elem, palette, id_prefix, id_seq, placeholder_hex)
-
-    return FillResult.inherit()
+def _drawingml_fill_name(elem: ET.Element) -> str | None:
+    """Return one exact DrawingML fill tag name or reject a namespace alias."""
+    name = _DRAWINGML_FILL_TAGS.get(elem.tag)
+    if name is not None:
+        return name
+    local_name = (
+        elem.tag.rsplit("}", 1)[-1]
+        if isinstance(elem.tag, str)
+        else ""
+    )
+    if local_name in _DRAWINGML_FILL_NAMES:
+        raise ValueError(
+            f"Invalid DrawingML fill element namespace: {local_name}"
+        )
+    return None
 
 
 # ---------------------------------------------------------------------------
 # Per-fill handlers
 # ---------------------------------------------------------------------------
 
-def _resolve_no_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
+def _resolve_no_fill(elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
+    validate_no_fill(elem)
     return FillResult.none_fill()
 
 
 def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
                         _prefix: str, _seq, placeholder_hex: str | None) -> FillResult:
-    color_elem = find_color_elem(elem)
-    hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
-    if hex_ is None:
-        return FillResult.inherit()
+    hex_, alpha = resolve_solid_fill_color(
+        elem,
+        palette,
+        placeholder_hex=placeholder_hex,
+    )
     attrs: dict[str, str] = {"fill": hex_}
     if alpha < 1.0:
-        attrs["fill-opacity"] = fmt_num(alpha, 4)
+        attrs["fill-opacity"] = format_ooxml_alpha(alpha)
     return FillResult(attrs=attrs)
 
 
 def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                        prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
+    _validate_gradient_attributes(elem)
+    _validate_gradient_rotation(elem)
+    _validate_gradient_flip(elem)
+    _validate_gradient_tile_rect(elem)
     if seq is None:
         seq = [0]
     seq[0] += 1
     grad_id = f"{prefix}grad{seq[0]}"
 
     # Stops
-    gs_lst = elem.find("a:gsLst", NS)
-    if gs_lst is None:
-        return FillResult.inherit()
-    stops_xml = []
-    for gs in gs_lst.findall("a:gs", NS):
-        pos_pct = percent_to_ratio(gs.attrib.get("pos"), default=0.0)
-        color_elem = find_color_elem(gs)
-        hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
-        if hex_ is None:
-            continue
-        opacity_attr = f' stop-opacity="{fmt_num(alpha, 4)}"' if alpha < 1.0 else ""
-        stops_xml.append(
-            f'<stop offset="{fmt_num(pos_pct, 4)}" stop-color="{hex_}"{opacity_attr}/>'
+    gs_lists = elem.findall("a:gsLst", NS)
+    if len(gs_lists) != 1:
+        raise ValueError(
+            "DrawingML gradient fill requires exactly one gsLst"
         )
-    if not stops_xml:
-        return FillResult.inherit()
-
+    gradient_stops = [
+        (gs, _gradient_stop_position(gs))
+        for gs in _gradient_stop_list(gs_lists[0])
+    ]
+    if any(
+        current < previous
+        for (_, previous), (_, current) in zip(
+            gradient_stops,
+            gradient_stops[1:],
+        )
+    ):
+        message = "DrawingML gradient stop positions must be nondecreasing"
+        if palette is None or palette.strict:
+            raise ValueError(message)
+        palette._diagnose(
+            "gradient-stop-order-normalized",
+            message,
+            "sort gradient stops by position while preserving equal positions",
+        )
+        gradient_stops.sort(key=lambda item: item[1])
+    stops_xml = []
+    for gs, pos_pct in gradient_stops:
+        color_elem = _gradient_stop_color(gs)
+        hex_, alpha = resolve_color(
+            color_elem,
+            palette,
+            placeholder_hex=placeholder_hex,
+        )
+        if hex_ is None:
+            raise ValueError(
+                "DrawingML gradient stop color cannot be resolved"
+            )
+        opacity_attr = (
+            f' stop-opacity="{format_ooxml_alpha(alpha)}"'
+            if alpha < 1.0
+            else ""
+        )
+        stops_xml.append(
+            f'<stop offset="{format_ooxml_unit_ratio(pos_pct)}" '
+            f'stop-color="{hex_}"{opacity_attr}/>'
+        )
     # Linear vs radial vs path
-    lin = elem.find("a:lin", NS)
-    rad = elem.find("a:path", NS)
+    linear_directions = elem.findall("a:lin", NS)
+    path_directions = elem.findall("a:path", NS)
+    if len(linear_directions) + len(path_directions) > 1:
+        raise ValueError(
+            "DrawingML gradient fill must contain at most one lin/path "
+            "direction"
+        )
+    _validate_gradient_child_structure(elem)
+    lin = linear_directions[0] if linear_directions else None
+    rad = path_directions[0] if path_directions else None
 
     if lin is not None:
         # ang is 1/60000 deg. 0° = horizontal left-to-right.
-        try:
-            angle_deg = float(lin.attrib.get("ang", "0")) / 60000.0
-        except ValueError:
-            angle_deg = 0.0
+        _validate_linear_gradient_structure(lin)
+        angle = _linear_gradient_angle(lin)
+        _validate_linear_gradient_scaling(lin, angle)
+        angle_deg = angle / ANGLE_UNIT
         x1, y1, x2, y2 = _angle_to_unit_endpoints(angle_deg)
         defs_xml = (
             f'<linearGradient id="{grad_id}" '
@@ -149,6 +258,9 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
             + "</linearGradient>"
         )
     elif rad is not None:
+        _validate_path_gradient_structure(rad)
+        _validate_path_gradient_type(rad)
+        _validate_path_gradient_focus(rad)
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
         # only has circle/ellipse, and path="circle" maps to fillToRect=center.
         defs_xml = (
@@ -168,6 +280,274 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         attrs={"fill": f"url(#{grad_id})"},
         defs=[defs_xml],
     )
+
+
+def _gradient_stop_position(gs: ET.Element) -> float:
+    """Parse one required DrawingML fixed-percentage stop position."""
+    raw = gs.get("pos")
+    if raw is None:
+        raise ValueError("DrawingML gradient stop requires a pos attribute")
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(
+            f"Invalid DrawingML gradient stop position: {raw!r}"
+        )
+    position = int(token)
+    if not 0 <= position <= PERCENT_UNIT:
+        raise ValueError(
+            f"DrawingML gradient stop position={position} is outside "
+            f"0..{PERCENT_UNIT}"
+        )
+    return position / PERCENT_UNIT
+
+
+def _gradient_stop_list(gs_list: ET.Element) -> list[ET.Element]:
+    """Validate one DrawingML gradient-stop list and return its stops."""
+    stops = list(gs_list)
+    stop_tag = f"{{{NS['a']}}}gs"
+    if (
+        gs_list.attrib
+        or (gs_list.text or "").strip()
+        or any(
+            stop.tag != stop_tag or (stop.tail or "").strip()
+            for stop in stops
+        )
+    ):
+        raise ValueError("Invalid DrawingML gradient stop list structure")
+    if len(stops) < 2:
+        raise ValueError(
+            "DrawingML gradient fill requires at least two color stops"
+        )
+    return stops
+
+
+def _gradient_stop_color(gs: ET.Element) -> ET.Element:
+    """Return the single registered color child of one gradient stop."""
+    children = list(gs)
+    color_tags = {f"{{{NS['a']}}}{name}" for name in COLOR_TAGS}
+    if (
+        set(gs.attrib) != {"pos"}
+        or len(children) != 1
+        or children[0].tag not in color_tags
+        or (gs.text or "").strip()
+        or (children[0].tail or "").strip()
+    ):
+        raise ValueError("Invalid DrawingML gradient stop structure")
+    return children[0]
+
+
+def _linear_gradient_angle(lin: ET.Element) -> int:
+    """Parse one optional DrawingML positive fixed angle."""
+    raw = lin.get("ang")
+    if raw is None:
+        return 0
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is None:
+        raise ValueError(f"Invalid DrawingML linear gradient angle: {raw!r}")
+    angle = int(token)
+    if not 0 <= angle < _OOXML_FULL_CIRCLE:
+        raise ValueError(
+            f"DrawingML linear gradient angle={angle} is outside "
+            f"0..{_OOXML_FULL_CIRCLE - 1}"
+        )
+    return angle
+
+
+def _validate_linear_gradient_structure(lin: ET.Element) -> None:
+    """Require one leaf a:lin with only the registered attributes."""
+    unsupported = sorted(set(lin.attrib) - {"ang", "scaled"})
+    if unsupported or list(lin) or (lin.text or "").strip():
+        details = ", ".join(unsupported) if unsupported else "payload"
+        raise ValueError(
+            f"Invalid DrawingML linear gradient structure: {details}"
+        )
+
+
+def _validate_linear_gradient_scaling(
+    lin: ET.Element,
+    angle: int,
+) -> None:
+    """Require a scaling mode representable by unit-box SVG geometry."""
+    scaled = _parse_ooxml_boolean(
+        lin.get("scaled"),
+        default=False,
+        label="linear gradient scaled value",
+    )
+    quarter_turn = 90 * ANGLE_UNIT
+    if not scaled and angle % quarter_turn:
+        raise ValueError(
+            "Unscaled non-cardinal DrawingML linear gradients are not "
+            "representable by the normalized SVG mapping"
+        )
+
+
+def _validate_gradient_rotation(gradient: ET.Element) -> None:
+    """Require a gradient that rotates with its containing shape."""
+    rotates_with_shape = _parse_ooxml_boolean(
+        gradient.get("rotWithShape"),
+        default=True,
+        label="gradient rotWithShape value",
+    )
+    if not rotates_with_shape:
+        raise ValueError(
+            "DrawingML gradients that do not rotate with their shape are "
+            "not representable by the local SVG mapping"
+        )
+
+
+def _validate_gradient_attributes(gradient: ET.Element) -> None:
+    """Reject attributes outside the registered gradient-fill contract."""
+    unsupported = sorted(set(gradient.attrib) - {"flip", "rotWithShape"})
+    if unsupported:
+        raise ValueError(
+            "Unsupported DrawingML gradient fill attribute(s): "
+            + ", ".join(unsupported)
+        )
+
+
+def _validate_gradient_child_structure(gradient: ET.Element) -> None:
+    """Require the registered DrawingML gradient-fill child sequence."""
+    namespace = NS["a"]
+    gs_list = f"{{{namespace}}}gsLst"
+    linear = f"{{{namespace}}}lin"
+    path = f"{{{namespace}}}path"
+    tile_rect = f"{{{namespace}}}tileRect"
+    child_tags = tuple(child.tag for child in gradient)
+    allowed_sequences = {
+        (gs_list,),
+        (gs_list, linear),
+        (gs_list, path),
+        (gs_list, tile_rect),
+        (gs_list, linear, tile_rect),
+        (gs_list, path, tile_rect),
+    }
+    if (
+        child_tags not in allowed_sequences
+        or (gradient.text or "").strip()
+        or any((child.tail or "").strip() for child in gradient)
+    ):
+        raise ValueError(
+            "Invalid DrawingML gradient fill child structure"
+        )
+
+
+def _validate_gradient_flip(gradient: ET.Element) -> None:
+    """Reject gradient tile flipping absent from project SVG."""
+    flip = gradient.get("flip", "none")
+    if flip != "none":
+        raise ValueError(f"Unsupported DrawingML gradient flip: {flip!r}")
+
+
+def _validate_gradient_tile_rect(gradient: ET.Element) -> None:
+    """Accept only the full-area gradient tile rectangle."""
+    tile_rects = gradient.findall("a:tileRect", NS)
+    if len(tile_rects) > 1:
+        raise ValueError(
+            "DrawingML gradient fill must contain at most one tileRect"
+        )
+    if not tile_rects:
+        return
+    values = _relative_rect_values(
+        tile_rects[0],
+        label="gradient tileRect",
+    )
+    for value in values.values():
+        if value != 0:
+            raise ValueError(
+                "Non-zero DrawingML gradient tileRect is not representable "
+                "by the project SVG gradient mapping"
+            )
+
+
+def _validate_path_gradient_focus(path: ET.Element) -> None:
+    """Validate the focus rectangle normalized by the radial approximation."""
+    focus_rects = path.findall("a:fillToRect", NS)
+    if len(focus_rects) > 1:
+        raise ValueError(
+            "DrawingML path gradient must contain at most one fillToRect"
+        )
+    if focus_rects:
+        _relative_rect_values(
+            focus_rects[0],
+            label="path gradient fillToRect",
+        )
+
+
+def _relative_rect_values(
+    rect: ET.Element,
+    *,
+    label: str,
+) -> dict[str, Decimal]:
+    """Validate one DrawingML relative-rectangle leaf and parse its edges."""
+    if (
+        set(rect.attrib) - {"l", "t", "r", "b"}
+        or list(rect)
+        or (rect.text or "").strip()
+    ):
+        raise ValueError(f"Invalid DrawingML {label} structure")
+    return {
+        edge: _parse_ooxml_percentage(raw, label=f"{label} {edge}")
+        for edge, raw in rect.attrib.items()
+    }
+
+
+def _parse_ooxml_percentage(raw: str, *, label: str) -> Decimal:
+    """Parse one DrawingML ST_Percentage as an exact normalized ratio."""
+    token = raw.strip()
+    if _OOXML_INTEGER_RE.fullmatch(token) is not None:
+        value = Decimal(token) / Decimal(PERCENT_UNIT)
+    elif _OOXML_PERCENT_LITERAL_RE.fullmatch(token) is not None:
+        value = Decimal(token[:-1]) / Decimal(100)
+    else:
+        raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
+    if not _OOXML_PERCENTAGE_MIN <= value <= _OOXML_PERCENTAGE_MAX:
+        raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
+    return value
+
+
+def _parse_ooxml_boolean(
+    raw: str | None,
+    *,
+    default: bool,
+    label: str,
+) -> bool:
+    """Parse one W3C XML Schema boolean without permissive aliases."""
+    if raw is None:
+        return default
+    token = raw.strip()
+    if token in {"1", "true"}:
+        return True
+    if token in {"0", "false"}:
+        return False
+    raise ValueError(f"Invalid DrawingML {label}: {raw!r}")
+
+
+def _validate_path_gradient_type(path: ET.Element) -> None:
+    """Require one registered DrawingML path-shade enum value."""
+    path_type = path.get("path", "rect")
+    if path_type not in {"circle", "rect", "shape"}:
+        raise ValueError(
+            f"Unsupported DrawingML path gradient type: {path_type!r}"
+        )
+
+
+def _validate_path_gradient_structure(path: ET.Element) -> None:
+    """Require only the registered path attribute and focus rectangle."""
+    unsupported = sorted(set(path.attrib) - {"path"})
+    children = list(path)
+    fill_to_rect_tag = f"{{{NS['a']}}}fillToRect"
+    has_invalid_payload = (
+        (path.text or "").strip()
+        or any(
+            child.tag != fill_to_rect_tag or (child.tail or "").strip()
+            for child in children
+        )
+    )
+    if unsupported or has_invalid_payload:
+        details = ", ".join(unsupported) if unsupported else "payload"
+        raise ValueError(
+            f"Invalid DrawingML path gradient structure: {details}"
+        )
 
 
 def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
@@ -199,7 +579,7 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
         # least carries the right tone. Round-trip will lose the texture.
         attrs: dict[str, str] = {"fill": fg_hex}
         if fg_alpha < 1.0:
-            attrs["fill-opacity"] = fmt_num(fg_alpha, 4)
+            attrs["fill-opacity"] = format_ooxml_alpha(fg_alpha)
         return FillResult(attrs=attrs)
     tile_w, tile_h, fg_svg = geom
 
@@ -210,7 +590,7 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
     bg_rect = ""
     if bg_hex is not None:
         bg_opacity = (
-            f' fill-opacity="{fmt_num(bg_alpha, 4)}"'
+            f' fill-opacity="{format_ooxml_alpha(bg_alpha)}"'
             if bg_alpha < 1.0 else ""
         )
         bg_rect = (
@@ -243,11 +623,11 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
 def _pattern_foreground(prst: str, fg: str,
                         fg_alpha: float) -> tuple[int, int, str] | None:
     stroke_op = (
-        f' stroke-opacity="{fmt_num(fg_alpha, 4)}"'
+        f' stroke-opacity="{format_ooxml_alpha(fg_alpha)}"'
         if fg_alpha < 1.0 else ""
     )
     fill_op = (
-        f' fill-opacity="{fmt_num(fg_alpha, 4)}"'
+        f' fill-opacity="{format_ooxml_alpha(fg_alpha)}"'
         if fg_alpha < 1.0 else ""
     )
 

@@ -2,7 +2,8 @@
 """
 PPT Master - Template Preview PPTX Exporter
 
-Export every SVG prototype in a template workspace as one structured review deck.
+Export public SVG prototypes as a structured review deck while retaining
+definition-only Layout prototypes in the native package.
 
 Usage:
     python3 scripts/template_preview_pptx.py <template_workspace> [-o output.pptx]
@@ -65,6 +66,22 @@ _BODY_PLACEHOLDERS = frozenset({
 })
 _DEFAULT_TITLE_PX = 40.0
 _DEFAULT_BODY_PX = 24.0
+
+
+def _partition_svg_prototypes(
+    svg_files: list[Path],
+    *,
+    visual_only: bool,
+) -> tuple[list[Path], list[Path]]:
+    """Separate public pages from canonical definition-only Layout SVGs."""
+    if visual_only:
+        return svg_files, []
+    public_files: list[Path] = []
+    definition_files: list[Path] = []
+    for path in svg_files:
+        target = definition_files if path.stem.startswith("layout_") else public_files
+        target.append(path)
+    return public_files, definition_files
 
 
 def _resolve_workspace(path: Path) -> tuple[Path, Path]:
@@ -275,9 +292,18 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         workspace, template_dir = _resolve_workspace(Path(args.template_workspace))
-        svg_files = sorted(template_dir.glob("*.svg"))
-        if not svg_files:
+        all_svg_files = sorted(template_dir.glob("*.svg"))
+        if not all_svg_files:
             raise ValueError(f"template directory has no SVG prototypes: {template_dir}")
+        svg_files, layout_definition_files = _partition_svg_prototypes(
+            all_svg_files,
+            visual_only=args.visual_only,
+        )
+        if not svg_files:
+            raise ValueError(
+                "template directory contains Layout definitions but no public "
+                f"SVG prototypes: {template_dir}"
+            )
 
         spec_path = template_dir / "design_spec.md"
         template_id = _template_id(spec_path, workspace)
@@ -304,12 +330,17 @@ def main(argv: list[str] | None = None) -> int:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         text_style: MasterTextStyleSpec | None = None
         if not args.visual_only:
-            text_style, title_px, body_px = _master_text_style(svg_files)
+            text_style, title_px, body_px = _master_text_style(all_svg_files)
 
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")
         print(f"  Template source: {template_dir}")
-        print(f"  SVG prototypes: {len(svg_files)}")
+        print(f"  Public SVG prototypes: {len(svg_files)}")
+        if layout_definition_files:
+            print(
+                "  Definition-only Layout prototypes: "
+                f"{len(layout_definition_files)}"
+            )
         if args.visual_only:
             print("  Review mode: visual-only legacy compatibility")
         elif replication_mode == "mirror":
@@ -334,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
             use_layout_placeholder_frames=use_full_placeholder_frames,
             master_text_style_spec=text_style,
             structure_name=template_id,
+            layout_definition_files=layout_definition_files,
         )
         if not success or not output_path.is_file():
             print("Error: template preview export did not produce a PPTX", file=sys.stderr)

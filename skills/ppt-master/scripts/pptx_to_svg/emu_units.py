@@ -85,7 +85,7 @@ def angle_to_deg(val: float | int | str | None, default: float = 0.0) -> float:
 
 
 def percent_to_ratio(val: float | int | str | None, default: float = 0.0) -> float:
-    """DrawingML positive percent (100000 = 100%) -> ratio in [0, 1]."""
+    """Convert DrawingML percentage units (100000 = 100%) to a ratio."""
     if val is None:
         return default
     try:
@@ -236,6 +236,16 @@ def _fmt(val: float, ndigits: int = 2) -> str:
 
 
 fmt_num = _fmt
+
+
+def format_ooxml_unit_ratio(value: float) -> str:
+    """Format a normalized ratio without losing 1/100000 OOXML precision."""
+    return _fmt(value, 5)
+
+
+def format_ooxml_alpha(alpha: float) -> str:
+    """Format one normalized OOXML alpha ratio."""
+    return format_ooxml_unit_ratio(alpha)
 
 
 def format_canvas_px_from_emu(emu: int) -> str:

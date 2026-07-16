@@ -114,6 +114,7 @@ try:
         project_filter_errors as _project_filter_errors,
         project_gradient_errors as _project_gradient_errors,
         project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
+        project_marker_errors as _project_marker_errors,
         project_opacity_errors as _project_opacity_errors,
         project_paint_errors as _project_paint_errors,
         project_paint_reference_errors as _project_paint_reference_errors,
@@ -164,6 +165,7 @@ except ImportError:
     _project_filter_errors = None
     _project_gradient_errors = None
     _project_image_aspect_ratio_errors = None
+    _project_marker_errors = None
     _project_opacity_errors = None
     _project_paint_errors = None
     _project_paint_reference_errors = None
@@ -338,6 +340,13 @@ except ImportError:
     _validate_local_use_references = None
 
 try:
+    from svg_to_pptx.tspan_flattener import (
+        flatten_positional_tspans as _flatten_positional_tspans,
+    )
+except ImportError:
+    _flatten_positional_tspans = None
+
+try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
         _is_authored_preset_atom as _is_authored_preset_atom,
@@ -437,8 +446,13 @@ _PPTX_ROOT_STRUCTURE_ATTRS = (
     'data-pptx-layout',
     'data-pptx-layout-name',
 )
+_PPTX_ROOT_VISIBILITY_ATTRS = (
+    'data-pptx-show-master-shapes',
+    'data-pptx-show-inherited-shapes',
+)
 _PPTX_STRUCTURE_ATTRS = frozenset({
     *_PPTX_ROOT_STRUCTURE_ATTRS,
+    *_PPTX_ROOT_VISIBILITY_ATTRS,
     'data-pptx-layer',
     'data-pptx-layout-kind',
     'data-pptx-placeholder',
@@ -472,18 +486,6 @@ _BAKE_REQUIRED_VISUAL_PROPERTIES = frozenset({
     'isolation',
     'mix-blend-mode',
 })
-_NUMBER_TOKEN = r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
-_POINT_TOKEN = rf'{_NUMBER_TOKEN}(?:\s*,\s*|\s+){_NUMBER_TOKEN}'
-_MARKER_TRIANGLE_PATH_RE = re.compile(
-    rf'^\s*M\s*{_POINT_TOKEN}(?:\s*L\s*{_POINT_TOKEN}){{2}}\s*Z\s*$',
-    re.IGNORECASE,
-)
-_MARKER_DIAMOND_PATH_RE = re.compile(
-    rf'^\s*M\s*{_POINT_TOKEN}(?:\s*L\s*{_POINT_TOKEN}){{3}}\s*Z\s*$',
-    re.IGNORECASE,
-)
-
-
 def _compact_preset_ancestor_paint(
     root: ET.Element,
 ) -> list[tuple[str, tuple[str, ...]]]:
@@ -638,6 +640,12 @@ def _local_pptx_structure_errors(
                 f"{svg_path.name}: structured SVG root is missing "
                 + ', '.join(missing)
             )
+    for attr in _PPTX_ROOT_VISIBILITY_ATTRS:
+        raw = root.get(attr)
+        if raw is not None and raw not in {'true', 'false'}:
+            errors.append(
+                f"{svg_path.name}: root {attr} must be exactly 'true' or 'false'"
+            )
 
     parent_by_id = {
         id(child): parent
@@ -651,7 +659,10 @@ def _local_pptx_structure_errors(
 
         if elem is not root:
             nested_root_attrs = [
-                attr for attr in _PPTX_ROOT_STRUCTURE_ATTRS
+                attr for attr in (
+                    *_PPTX_ROOT_STRUCTURE_ATTRS,
+                    *_PPTX_ROOT_VISIBILITY_ATTRS,
+                )
                 if elem.get(attr) is not None
             ]
             if nested_root_attrs:
@@ -976,20 +987,6 @@ def _element_label(elem: ET.Element) -> str:
     tag = _local_name(elem)
     elem_id = (elem.get('id') or '').strip()
     return f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
-
-
-def _marker_polygon_vertex_count(raw: str) -> int | None:
-    """Return the number of finite polygon vertices, or ``None``."""
-    tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
-    if not tokens or len(tokens) % 2:
-        return None
-    try:
-        values = [float(token) for token in tokens]
-    except ValueError:
-        return None
-    if not all(math.isfinite(value) for value in values):
-        return None
-    return len(values) // 2
 
 
 def _effective_presentation_value(
@@ -1868,130 +1865,13 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate marker references against the native line-end contract."""
-        definitions, _duplicates = _direct_defs_index(root)
-        parent_by_id = {
-            id(child): parent
-            for parent in root.iter()
-            for child in list(parent)
-        }
-        issues: set[str] = set()
-        checked_markers: set[str] = set()
-
-        for elem in root.iter():
-            for attr in ('marker-start', 'marker-end'):
-                raw_ref = elem.get(attr)
-                if raw_ref is None or raw_ref.strip().lower() == 'none':
-                    continue
-                label = _element_label(elem)
-                tag = _local_name(elem).lower()
-                if tag not in {'line', 'path'}:
-                    issues.add(
-                        f"{label} {attr} is allowed only on <line> or <path>"
-                    )
-                match = re.fullmatch(r'url\(#([^)]+)\)', raw_ref.strip())
-                if match is None:
-                    issues.add(
-                        f"{label} {attr} must be an exact local url(#id) reference; "
-                        f"got {raw_ref!r}"
-                    )
-                    continue
-                marker_id = match.group(1)
-                marker = definitions.get(marker_id)
-                if marker is None or _local_name(marker) != 'marker':
-                    issues.add(
-                        f"{label} {attr}=url(#{marker_id}) has no matching direct "
-                        f"<defs><marker id=\"{marker_id}\"> definition"
-                    )
-                    continue
-
-                visual_children = [
-                    child for child in list(marker)
-                    if _local_name(child) not in _NON_VISUAL_SVG_TAGS
-                ]
-                shape = visual_children[0] if len(visual_children) == 1 else None
-                if marker_id not in checked_markers:
-                    checked_markers.add(marker_id)
-                    marker_label = f'<marker id="{marker_id}">'
-                    if marker.get('orient') != 'auto':
-                        issues.add(f'{marker_label} requires orient="auto"')
-                    marker_units = marker.get('markerUnits', 'strokeWidth')
-                    if marker_units not in {'strokeWidth', 'userSpaceOnUse'}:
-                        issues.add(
-                            f"{marker_label} has unsupported markerUnits={marker_units!r}"
-                        )
-                    for size_attr in ('markerWidth', 'markerHeight'):
-                        raw_size = marker.get(size_attr)
-                        if raw_size is None:
-                            continue
-                        try:
-                            size = float(raw_size)
-                        except ValueError:
-                            size = math.nan
-                        if not math.isfinite(size) or size <= 0:
-                            issues.add(
-                                f"{marker_label} {size_attr} must be a positive "
-                                f"finite number; got {raw_size!r}"
-                            )
-                    if shape is None:
-                        issues.add(
-                            f"{marker_label} must contain exactly one direct "
-                            "triangle/diamond path or polygon, circle, or ellipse"
-                        )
-                    else:
-                        shape_tag = _local_name(shape).lower()
-                        if shape.get('transform'):
-                            issues.add(
-                                f"{marker_label} child <{shape_tag}> cannot use transform"
-                            )
-                        if shape_tag == 'path':
-                            path_data = shape.get('d', '')
-                            if not (
-                                _MARKER_TRIANGLE_PATH_RE.fullmatch(path_data)
-                                or _MARKER_DIAMOND_PATH_RE.fullmatch(path_data)
-                            ):
-                                issues.add(
-                                    f"{marker_label} path must be a closed 3- or "
-                                    "4-vertex path with one explicit M/L command "
-                                    "per vertex"
-                                )
-                        elif shape_tag == 'polygon':
-                            vertex_count = _marker_polygon_vertex_count(
-                                shape.get('points', '')
-                            )
-                            if vertex_count not in {3, 4}:
-                                issues.add(
-                                    f"{marker_label} polygon must contain exactly "
-                                    "3 or 4 finite vertices"
-                                )
-                        elif shape_tag not in {'circle', 'ellipse'}:
-                            issues.add(
-                                f"{marker_label} child <{shape_tag}> has no native "
-                                "line-end mapping"
-                            )
-
-                if shape is None or _parse_export_color is None:
-                    continue
-                stroke_value = _effective_presentation_value(
-                    elem, 'stroke', parent_by_id,
-                )
-                marker_fill = _effective_presentation_value(
-                    shape, 'fill', parent_by_id,
-                ) or '#000000'
-                stroke_color, _stroke_alpha = _parse_export_color(stroke_value or '')
-                fill_color, _fill_alpha = _parse_export_color(marker_fill)
-                if stroke_color is None or fill_color is None:
-                    issues.add(
-                        f"{label} {attr} marker fill and line stroke must both be "
-                        "supported solid colors"
-                    )
-                elif stroke_color != fill_color:
-                    issues.add(
-                        f"{label} {attr}=url(#{marker_id}) marker fill "
-                        f"{marker_fill!r} does not match effective line stroke "
-                        f"{stroke_value!r}"
-                    )
-
-        result['errors'].extend(sorted(issues))
+        if _project_marker_errors is None:
+            result['warnings'].append(
+                'Unable to import the shared marker validator; native export '
+                'will still validate line-end markers.'
+            )
+            return
+        result['errors'].extend(_project_marker_errors(root))
 
     def _check_clip_path_contract(
         self,
@@ -3915,6 +3795,7 @@ class SVGQualityChecker:
             svg_path,
             require_structure=require_structure,
         ))
+        self._check_placeholder_carrier_flattening(root, svg_path, result)
         if svg_path.parent.name == 'svg_output':
             self._append_structure_coverage_warnings(root, result)
         if _validate_template_structure_svg is None:
@@ -3925,6 +3806,87 @@ class SVGQualityChecker:
             return
         result['errors'].extend(_validate_template_structure_svg(svg_path))
         result['errors'] = list(dict.fromkeys(result['errors']))
+
+    @staticmethod
+    def _check_placeholder_carrier_flattening(
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Reject slot carriers that export as multiple native children.
+
+        Default export flattens non-mergeable positional ``<tspan>`` lines
+        before converting the surrounding slot group to DrawingML. Reuse that
+        exact transform here so the quality gate fails before the later
+        placeholder-unwrapping step does.
+        """
+        if _flatten_positional_tspans is None:
+            return
+
+        candidate_ids: List[str] = []
+        for slot in root.iter(f'{{{SVG_NS}}}g'):
+            if not (slot.get('data-pptx-placeholder') or '').strip():
+                continue
+            binding = (
+                slot.get('data-pptx-placeholder-binding') or 'carrier'
+            ).strip().lower()
+            if binding != 'carrier':
+                continue
+            visual_children = [
+                child for child in list(slot)
+                if _local_name(child) not in _NON_VISUAL_SVG_TAGS
+            ]
+            carriers = [
+                child for child in visual_children
+                if (child.get('data-pptx-placeholder-carrier') or '')
+                .strip()
+                .lower()
+                == 'true'
+            ]
+            slot_id = (slot.get('id') or '').strip()
+            if not slot_id or len(visual_children) != 1 or len(carriers) != 1:
+                continue
+            if not any(
+                _local_name(descendant) == 'tspan'
+                and any(
+                    descendant.get(name) is not None
+                    for name in ('x', 'y', 'dy')
+                )
+                for descendant in carriers[0].iter()
+            ):
+                continue
+            candidate_ids.append(slot_id)
+
+        if not candidate_ids:
+            return
+
+        flattened_root = copy.deepcopy(root)
+        _flatten_positional_tspans(
+            ET.ElementTree(flattened_root),
+            merge_paragraphs=True,
+        )
+        slots_by_id = {
+            (slot.get('id') or '').strip(): slot
+            for slot in flattened_root.iter(f'{{{SVG_NS}}}g')
+            if (slot.get('id') or '').strip()
+        }
+        for slot_id in candidate_ids:
+            slot = slots_by_id.get(slot_id)
+            if slot is None:
+                continue
+            native_children = [
+                child for child in list(slot)
+                if _local_name(child) not in _NON_VISUAL_SVG_TAGS
+            ]
+            if len(native_children) == 1:
+                continue
+            result['errors'].append(
+                f"{svg_path.name}: placeholder slot {slot_id} becomes "
+                f"{len(native_children)} native children after positional "
+                "<tspan> flattening; a carrier-bound slot must export as one "
+                "text or picture carrier. Use one mergeable dy-stacked text "
+                "frame, or move independently positioned lines outside the slot"
+            )
 
     @staticmethod
     def _append_structure_coverage_warnings(

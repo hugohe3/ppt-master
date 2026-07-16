@@ -21,7 +21,7 @@ description: >
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
 | Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
 | `svg_final/` | Mandatory derived, self-contained SVG visual preview. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. |
-| SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It may reorganize represented content into Master/Layout/Slide structure but MUST NOT invent new visible page content. |
+| SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It compiles only the selected route's explicit structure contract: `flat` keeps represented content Slide-local, while `structured` may place explicitly scoped content in Master/Layout/Slide parts. It MUST NOT infer structure, upgrade `flat`, or invent new visible page content. |
 | Direct PPTX and presentation-behavior workflows | Remain separate. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
 **MUST — page-design closure**: For an SVG-authoring route, inspect the final page SVG to determine what the exported slide looks like. Do not reinterpret “SVG is the page-design language” as “SVG is the complete PPTX package description language.”
@@ -90,7 +90,7 @@ description: >
 | `${SKILL_DIR}/scripts/latex_render.py` | LaTeX formula rendering (manifest-driven PNG assets) |
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
 | `${SKILL_DIR}/scripts/slice_images.py` | Slice one AI illustration sheet into individual spot-illustration elements |
-| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight non-destructive inspection projection of PPTX-imported SVGs; never a release source |
+| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight editable authoring IR bundle and compact provenance manifest from PPTX-imported SVGs |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/preset_shape_svg.py` | Print one compact registry-backed native PowerPoint preset `<g>` to stdout for page or template insertion |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
@@ -140,12 +140,16 @@ Master/Layout topology is neither preserved nor distilled. `mirror` is a
 restoration path: preserve the source slide roster/order, visual appearance,
 Master/Layout parentage and identities, placeholder type/index/bounds, native
 object ownership, and supported native-shape metadata. The lossless import is
-the restoration authority; the lightweight authoring projection exists only to
-keep model context small. Mechanical normalization may express the source facts
-in the current explicit SVG contract and expand fixed-layer group wrappers into
-direct atoms, but it MUST NOT merge, split, promote, demote, rename, or
-re-parent source structure. Export compiles the selected contract and never
-infers a different one. Mirror emits one complete page prototype per source
+the native-payload backing store; the `authoring-svg/` bundle and its
+`authoring_manifest.json` are the only editable template-creation IR. Stable
+document-local source references let mirror materialization reuse unchanged
+native payload without putting it in model context. Mechanical normalization
+may express the source facts in the current explicit SVG contract and expand
+fixed-layer group wrappers into direct atoms, but it MUST NOT merge, split,
+promote, demote, rename, or re-parent source structure. The IR is materialized
+into validated `templates/*.svg` before export; it is not itself a release SVG
+directory. Export compiles the selected contract and never infers a different
+one. Mirror emits one complete page prototype per source
 Slide plus one definition-only `layout_<layout_key>.svg` prototype for every
 source Layout unused by those Slides. The independent Master/Layout roster then
 registers the complete supported source graph without publishing synthetic
@@ -300,7 +304,7 @@ Normalize every explicit path before any write:
 
 Never infer that a flat directory has legacy Master/Layout semantics solely from packaging.
 
-The same current-workspace routing applies to all three kinds: source/spec in `templates/`, visual assets in `images/`, runtime icons in `icons/`, and on-demand review artifacts in `exports/`. Empty optional roots are omitted rather than retained with placeholder files, so a normal workspace has no `exports/` until a review file is explicitly generated. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
+The same current-workspace routing applies to all three kinds: source/spec in `templates/`, visual assets in `images/`, imported vectors once in `icons/imported/`, other explicitly adopted icon-library namespaces under `icons/`, and on-demand review artifacts in `exports/`. Empty optional roots are omitted rather than retained with placeholder files, so a normal workspace has no `exports/` until a review file is explicitly generated. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
 
 When `create-template` used project output scope, its workspace root is the target project itself and all core directories are already final. Resolve both roots before copying: equality means **in-place consumption**, so skip the installation. An in-place workspace cannot participate in multi-path fusion; use external workspaces for fusion. Never place the local source under a nested `templates/local_master/` directory because the confirmation and quality gates read the project `templates/` root.
 
@@ -848,10 +852,12 @@ uvx ppt-master svg-to-pptx <project_path>
 > run-level rich text. A rich paragraph contains non-empty `runs`; each run
 > requires `text` and may use only
 > `bold` / `italic` / `underline` / `strike` / `color` / `font_size` /
-> `font_family` / `lang` / `alt_lang`. Presentation-only source run XML
-> normalizes, while relationship-bearing text, extensions, line breaks, fields,
-> tabs, bullets, broken text topology, noncanonical merges, and unsafe direct
-> formatting remain fallback-only. Imported classic charts
+> `font_family` / `lang` / `alt_lang`. Presentation-only source run XML without
+> a non-empty `effectLst` / `effectDag` normalizes; a table-cell run effect
+> disables native replacement and adds a blocking effect diagnostic.
+> Relationship-bearing text, extensions, line breaks, fields, tabs, bullets,
+> broken text topology, noncanonical merges, and unsafe direct formatting
+> remain fallback-only. Imported classic charts
 > additionally cover verified column/line/area combos, canonical OHLC stock,
 > area date-axis cases, verified scatter/bubble axes, radar, safe `of_pie`
 > `serLines`, and the closed axis/title/legend plus bar-gap/overlap normalization

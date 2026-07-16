@@ -57,21 +57,23 @@ native_structure_mode: structured
 <template_workspace>/
 ├── templates/
 │   ├── design_spec.md
-│   ├── *.svg
-│   └── icons/                  # 使用时保留 package / 校验副本
+│   └── *.svg
 ├── images/                     # 可选；SVG 统一引用 ../images/<name>
-├── icons/                      # 可选；提取向量素材的运行期副本
-└── exports/                    # 可选；仅在按需生成审阅文件时创建
+├── icons/
+│   └── imported/               # 可选；导入向量素材的唯一规范副本
+└── exports/                    # 可选；用户要求审阅或多 Master 包需要证据时创建
     └── <id>_template_preview.pptx
 ```
 
-空的可选目录直接省略，不添加占位文件。按需生成的预览 PPTX 是派生审阅证据，不是模板源资产。Step 3 读取工作区根目录，只消费 `templates/` 及实际存在的 `images/`、`icons/`，不会复制或使用 `exports/`；全局库下的 `exports/` 统一由 Git 忽略。
+空的可选目录直接省略，不添加占位文件。预览 PPTX 是派生审阅证据，不是模板源资产；单 Master 按需生成，多 Master 必须通过该 package gate。Step 3 读取工作区根目录，只消费 `templates/` 及实际存在的 `images/`、`icons/`，不会复制或使用 `exports/`；全局库下的 `exports/` 统一由 Git 忽略。
 
-原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据；轻量 authoring projection 移除大体积载荷与重复 carrier，只供模型检查，永远不是导出源。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback。导出只编译声明的结构，不推断归属。
+导入向量统一使用 `data-icon="imported/<name>"`，唯一规范文件位于 `icons/imported/<name>.svg`。具备工作区感知的校验与导出会直接解析这个根目录路径；`templates/icons/` 不属于模板包结构。
+
+原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
 
 两种范围都在可移植 frontmatter 中保留 `kind: layout` 或 `kind: deck`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
-任何范围第一次写最终文件前，都必须解析工作区根目录、确认 `templates/` 为空，并检查全部计划写入的图片与图标文件名无冲突；只有明确要求预览导出时才检查预览 PPTX 目标。项目范围还必须确认目标项目已初始化。任一失败都在写入前停止，不合并、不覆盖。
+任何范围第一次写最终文件前，都必须解析工作区根目录、确认 `templates/` 为空，并检查全部计划写入的图片与图标文件名无冲突；用户要求预览或已确认 roster 含多个 Master 时检查预览 PPTX 目标。项目范围还必须确认目标项目已初始化。任一失败都在写入前停止，不合并、不覆盖。
 
 ### 三段的字段切分
 
@@ -80,7 +82,7 @@ native_structure_mode: structured
 | 段 | 包含的章节 | 归属（覆盖优先级）|
 |---|---|---|
 | **身份段** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand 覆盖 |
-| **结构段** | Canvas Specification / Page Structure / Page Types / SVG Roster | layout 覆盖 |
+| **结构段** | 可移植 canvas/page-type 元数据、结构归属的 Signature 规则、SVG Page Roster，以及 SVG Master/Layout/slot 合同 | layout 覆盖 |
 | **中间段** | Template Overview（use cases / design intent / page rhythm 等叙事字段）| deck 独有；brand / layout 不写 |
 
 ### 为什么需要 Deck 这一类
@@ -129,25 +131,34 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
+category: general | scenario | government | special
 native_structure_mode: structured
 summary: <一句话描述用途>
+keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ppt43 | a4 | ...>
+canvas_width: <像素>
+canvas_height: <像素>
+canvas_viewbox: "0 0 <width> <height>"
+source_canvas_width: <像素>       # 已知 PPTX/SVG 来源画布时填写
+source_canvas_height: <像素>
+source_viewbox: "0 0 <width> <height>"
+replication_mode: standard | fidelity | mirror
 page_count: <N>
 page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 ```
 
-**正文章节**（结构段全集 + Template Overview）
+**正文章节**（personality-only 的结构段）
 
 | 节 | 标题 | 必写字段 |
 |---|---|---|
-| I | Template Overview | Use Cases / Design Intent / Page Rhythm 建议 |
-| II | Canvas Specification | Format / Dimensions / viewBox / Margins / Content Area |
-| III | Page Structure | General Layout Grid / Decorative DNA / Navigation 规则 |
-| IV | Page Types | 每种页面的角色（cover / toc / chapter / content / ending …）与变体说明 |
-| V | SVG Page Roster | 文件清单 + 用途，每个文件对应 III/IV 哪一类 |
+| IV | Signature Design Elements | 该 Layout 特有的网格、区域、图片行为、密度节奏、中性框架和 slot 约定 |
+| V | Page Roster | 每个 SVG 文件、Layout key、picker name、适用内容与 slot 行为 |
 
-**不允许出现**：品牌 logo、品牌 voice & tone、官方真值色（`provenance: fact`）——这些是 brand 的职责。Layout 自身没有兜底色/字体（这是定义：layout 不写身份段；色彩与字体在 策略师确认阶段现场决策）。
+只有 Layout 改写规范占位词汇时才增加 `Placeholder Overrides`。frontmatter
+`summary` 承担简短的选型语境；Layout 不写 deck 独有的 Template Overview。
+
+**不允许出现**：Color Scheme、Typography、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。SVG 可以使用便于审阅的中性预览 paint，但它不属于身份段；色彩与字体由 策略师确认阶段或其他模板 kind 决定。
 
 ### Deck schema
 
@@ -157,30 +168,36 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
+category: brand | general | scenario | government | special
 native_structure_mode: structured
 summary: <一句话描述用途>
+keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ...>
+canvas_width: <像素>
+canvas_height: <像素>
+canvas_viewbox: "0 0 <width> <height>"
+source_canvas_width: <像素>       # 已知 PPTX/SVG 来源画布时填写
+source_canvas_height: <像素>
+source_viewbox: "0 0 <width> <height>"
+replication_mode: standard | fidelity | mirror
 page_count: <N>
 primary_color: "<HEX>"
 ---
 ```
 
-**正文章节**（身份段全部 + 结构段全部 + 中间段）
+**正文章节**（personality-only 的完整参考）
 
 | 节 | 标题 | 归属段 |
 |---|---|---|
 | I | Template Overview | 中间段 |
-| II | Canvas Specification | 结构段 |
-| III | Color Scheme（含 provenance）| 身份段 |
-| IV | Typography | 身份段 |
-| V | Logo | 身份段 |
-| VI | Voice & Tone | 身份段 |
-| VII | Icon Style | 身份段 |
-| VIII | Page Structure | 结构段 |
-| IX | Page Types | 结构段 |
-| X | SVG Page Roster | 结构段 |
+| II | Color Scheme | 身份段 |
+| III | Typography | 身份段；只有使用共享默认字体栈时才省略 |
+| IV | Signature Design Elements | 模板特有的身份图形与可复用结构语法 |
+| V | Page Roster | 结构段 |
+| VI | Assets | 身份/支撑资产；无资产时省略 |
+| VII | Placeholder Overrides | 结构词汇；无覆盖时省略 |
 
-> Deck 是身份段 + 结构段全字段的并集，无可选段。这样合成时段级替换粒度统一。
+可移植 canvas 字段、`page_count` 和显式 SVG roster 承载其余结构合同。通用间距、字号比例、SVG 和 placeholder 规则保持集中管理，不复制进每个 deck spec。Deck 仍拥有完整身份 + 结构；省略条件章节只表示“采用共享默认值或没有资产”，不表示该段改由其他 kind 所有。
 
 ---
 
@@ -322,7 +339,7 @@ Deck 路径下用户已经拿到完整方案，策略师确认阶段收窄到"�
 | 工作流 | 产出 |
 |---|---|
 | `workflows/create-brand.md` | 使用统一路由的 identity-only brand 工作区；空的可选目录省略 |
-| `workflows/create-template.md` | 完整 layout 或 deck 工作区。`standard` / `fidelity` 创作新语义 SVG，mirror 恢复来源合同。输出范围默认 `library`（`templates/<kind>/<id>/` + 注册），确认 `project` 时写 `projects/<name>/`（不注册）。两者使用相同的可选目录路由，预览 PPTX 按需生成；内部 kind 分支仍默认 deck，用户明说"只要结构 / 丢掉品牌色"时走 layout |
+| `workflows/create-template.md` | 完整 layout 或 deck 工作区。`standard` / `fidelity` 创作新语义 SVG，mirror 恢复来源合同。输出范围默认 `library`（`templates/<kind>/<id>/` + 注册），确认 `project` 时写 `projects/<name>/`（不注册）。两者使用相同的可选目录路由；单 Master 预览 PPTX 按需生成，多 Master 必须生成并通过 package gate。内部 kind 分支仍默认 deck，用户明说"只要结构 / 丢掉品牌色"时走 layout |
 
 在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。完整工作区可在两种范围之间迁移而不改形，只需增加或移除全局索引注册。
 

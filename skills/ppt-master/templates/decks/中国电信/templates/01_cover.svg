@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg xmlns="http://www.w3.org/2000/svg"
   width="1280" height="720" viewBox="0 0 1280 720"
   data-pptx-master="china_telecom_brand_master" data-pptx-master-name="China Telecom Brand"
   data-pptx-layout="cover" data-pptx-layout-name="Cover">
@@ -8,7 +8,7 @@
   <rect id="brand-master-top-rule" x="0" y="0" width="1280" height="8" fill="#C00000"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <image id="brand-master-footer-ribbon" x="0" y="554" width="1280" height="166"
-    xlink:href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice"
+    href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice"
     data-pptx-layer="master" data-pptx-editable="false"/>
   <text id="brand-master-footer-label" x="72" y="650" fill="#FFFFFF"
     font-family="Arial, Microsoft YaHei, sans-serif" font-size="14"
@@ -16,7 +16,7 @@
 
   <rect id="cover-title-accent" x="72" y="118" width="6" height="316" rx="3" fill="#C00000"
     data-pptx-layer="layout" data-pptx-editable="false"/>
-  <image id="cover-logo" x="72" y="34" width="214" height="58" xlink:href="../images/logo.png"
+  <image id="cover-logo" x="72" y="34" width="214" height="58" href="../images/logo.png"
     preserveAspectRatio="xMinYMid meet" data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect id="cover-brand-card" x="820" y="136" width="388" height="318" rx="28"
     fill="#F8FAFC" stroke="#E5E7EB" stroke-width="2"
@@ -24,10 +24,10 @@
   <rect id="cover-brand-card-accent" x="858" y="188" width="110" height="4" rx="2" fill="#C00000"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <image id="cover-slogan" x="862" y="236" width="292" height="102"
-    xlink:href="../images/slogan_red.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/slogan_red.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <image id="cover-skyline" x="848" y="350" width="324" height="92"
-    xlink:href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
+    href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect id="cover-title-rule" x="108" y="288" width="144" height="6" rx="3" fill="#C00000"
     data-pptx-layer="layout" data-pptx-editable="false"/>
