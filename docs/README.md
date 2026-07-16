@@ -19,6 +19,7 @@ User-facing documentation lives in this directory: English files are the canonic
 | Document | Description |
 |---|---|
 | [Audio Narration](./audio-narration.md) | Speaker notes to per-slide narration: providers, voice cloning, timing, PPTX embedding |
+| [Transitions & Animations](./animations.md) | Default behavior and customization for page transitions and per-element entrance animations |
 | [Templates Guide](./templates-guide.md) | Creating and applying brand / layout / deck templates |
 
 ## Architecture & Internals
