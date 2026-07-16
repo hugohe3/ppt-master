@@ -37,7 +37,7 @@ Registry for the route authorities and supporting runbooks referenced by [`SKILL
 | Editor stage | `live-preview` | [`stages/live-preview.md`](./stages/live-preview.md) | Generate PPTX route for preview, element selection, or applying annotations |
 | Post-processing stage | `customize-animations` | [`stages/customize-animations.md`](./stages/customize-animations.md) | Generate PPTX route on explicit object-animation request |
 | Shared audio stage | `generate-audio` | [`stages/generate-audio.md`](./stages/generate-audio.md) | Generate PPTX post-processing or Enhance Native PPTX narration module |
-| Governance | `failure-recovery` | [`governance/failure-recovery.md`](./governance/failure-recovery.md) | Stop/continue decisions across generation stages |
+| Governance | `failure-recovery` | [`governance/failure-recovery.md`](./governance/failure-recovery.md) | Global stop/continue policy across all four routes; Generate PPTX recovery matrix and resume pointers |
 
 ---
 

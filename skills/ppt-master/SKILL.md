@@ -75,7 +75,7 @@ description: >
 | Route selection | [`workflows/routing.md`](workflows/routing.md) | Owns deterministic selection among the four top-level artifact routes |
 | Workflow registry | [`workflows/index.md`](workflows/index.md) | Separates top-level routes from supporting child workflows, profiles, stages, and governance |
 | Artifact ownership | [`references/artifact-ownership.md`](references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
-| Failure recovery | [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md) | Owns stop/continue decisions for common failures |
+| Failure recovery | [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md) | Owns global stop/continue policy; its concrete matrix and resume pointers cover Generate PPTX |
 | Confirm UI details | [`scripts/docs/confirm_ui.md`](scripts/docs/confirm_ui.md) | Owns schema, launcher behavior, port strategy, and chat fallback details |
 
 ## Main Pipeline Scripts
