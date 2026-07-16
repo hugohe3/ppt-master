@@ -46,7 +46,7 @@
 
 </details>
 
-> **AI 生成 PPT，不是 AI 套模板。** PPT Master 是一套在 AI IDE（Claude Code / Cursor / VS Code + Copilot 等）里运行的工作流：把 PDF / DOCX / 网页等材料交给 AI，它在你本机生成一份真正的 PowerPoint——每个元素都能在 PowerPoint 里点开修改，数据不出本地，不锁定任何平台和模型。工作原理与能力边界 → [产品定位](#产品定位)。
+> **AI 生成 PPT，不是 AI 套模板。** PPT Master 是一套在 AI IDE（Claude Code / Cursor / VS Code + Copilot 等）里运行的工作流：把一个主题、PDF / DOCX / 网页等材料、设计参考，或一份已有的 PPT 交给 AI，它在你本机生成一份真正的 PowerPoint——每个元素都能在 PowerPoint 里点开修改，数据不出本地，不锁定任何平台和模型。工作原理与能力边界 → [产品定位](#产品定位)。
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>在线预览</strong></a> ·
@@ -119,11 +119,15 @@
 
 形态上，它不是网站也不是 App，而是一套在 AI IDE（Claude Code / Cursor / VS Code + Copilot / Codebuddy 等）里运行的工作流（一个 "skill"）：你在 IDE 的对话框里说"用这份 PDF 做一份 PPT"，AI 按这套工作流在你本机生成真正可编辑的 `.pptx`。你不写任何代码，要做的只有三件事——装 Python、装一个 AI IDE、把资料放进来。
 
+从源材料生成新 deck 是主管线，但不是唯一路线：PPT Master 还能从你的参考资料中提炼可复用的品牌 / 版式 / 成品模板，把新内容填进你已有的 `.pptx` 并保留其设计，或为成品 deck 追加原生转场、动画和旁白——每条路线都有明确的保留契约。
+
 这个形态换来三个别的工具很难同时给出的承诺：
 
-- **成本透明可控** — 工具免费开源，唯一成本是你自己的 AI 模型用量，你用多少付多少，不在此之外增加任何订阅费用
-- **数据不出本地** — 你的文件不应该为了做一份 PPT 就被上传到别人的服务器。除与 AI 模型的对话外，全流程在你的电脑上完成
-- **不锁定平台** — 你的工作流不应该被任何一家公司绑架。Claude Code、Cursor、VS Code Copilot 等均可驱动；Claude、GPT、Gemini、Kimi 等模型均可使用
+- **成本透明可控** — 工具免费开源，唯一成本是你自己的 AI 模型用量，不在此之外增加任何订阅费用
+- **数据不出本地** — 除与 AI 模型的对话外，全流程在你的电脑上完成
+- **不锁定平台** — 任何具备 agent 能力的 AI IDE 均可驱动；Claude、GPT、Gemini、Kimi 等模型均可使用
+
+这些承诺与 Gamma、Copilot 等工具的具体对比 → [为什么选 PPT Master](./docs/zh/why-ppt-master.md)；承诺背后的长期能力边界 → [项目定位与能力边界](./docs/zh/project-positioning.md)。
 
 > [!IMPORTANT]
 > ### 这是一个工具，不是一个许愿池
@@ -364,6 +368,7 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 |---|------|------|
 | 📘 | [快速入门](./docs/zh/getting-started.md) | 三步做出第一份 deck，外加模板、实时预览、动画、旁白、声音复刻的用法（**新用户从这里开始**） |
 | 🆚 | [为什么选 PPT Master](./docs/zh/why-ppt-master.md) | 与 Gamma、Copilot 等工具的对比 |
+| 🧭 | [项目定位与能力边界](./docs/zh/project-positioning.md) | 长期定位、产品承诺与能力边界 |
 | 🪟 | [Windows 安装指南](./docs/zh/windows-installation.md) | Windows 用户手把手安装教程 |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | 核心流程与规则 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
@@ -371,6 +376,8 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 | 💼 | [示例](./examples/README.md) | 所有示例项目 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |
 | ❓ | [常见问题](./docs/zh/faq.md) | 模型选择、费用、排版问题排查、自定义模板 |
+
+<sub>完整文档索引 → [`docs/zh/`](./docs/zh/README.md)</sub>
 
 ---
 

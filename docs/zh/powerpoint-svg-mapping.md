@@ -210,7 +210,7 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 | 批注或审阅线程 | 无 SVG 或生成侧映射 | 不编写 | 仅在其他路线明确拥有时为 `Direct preservation` | 不自动将审阅 metadata 转为可见 Slide 内容 |
 | 不属于已映射功能的 relationship | 无通用 SVG 逃生口 | 不生成 | 适用时为 `Direct preservation` | 不支持任意 relationship 注入 |
 
-sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animations.md) 与 [`audio-narration.md`](./audio-narration.md)。
+sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`references/animations.md`](../../skills/ppt-master/references/animations.md)）与 [`audio-narration.md`](./audio-narration.md)。
 
 ## 10. 其他 PowerPoint 原生功能
 
