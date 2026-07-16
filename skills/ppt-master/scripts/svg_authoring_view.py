@@ -44,6 +44,7 @@ from typing import Optional
 from urllib.parse import urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
+from compact_svg_coordinates import compact_svg_tree
 from console_encoding import configure_utf8_stdio
 
 configure_utf8_stdio()
@@ -244,6 +245,7 @@ class ProjectionStats:
     geometry_preview_wrappers: int = 0
     geometry_detail_markers: int = 0
     asset_references_rewritten: int = 0
+    coordinate_attributes_compacted: int = 0
     source_attributes: Counter[str] = field(default_factory=Counter)
 
     def as_dict(self) -> dict[str, object]:
@@ -254,6 +256,7 @@ class ProjectionStats:
             "geometry_detail_markers": self.geometry_detail_markers,
             "source_attributes": dict(sorted(self.source_attributes.items())),
             "asset_references_rewritten": self.asset_references_rewritten,
+            "coordinate_attributes_compacted": self.coordinate_attributes_compacted,
         }
 
     def merge(self, other: "ProjectionStats") -> None:
@@ -262,6 +265,9 @@ class ProjectionStats:
         self.geometry_preview_wrappers += other.geometry_preview_wrappers
         self.geometry_detail_markers += other.geometry_detail_markers
         self.asset_references_rewritten += other.asset_references_rewritten
+        self.coordinate_attributes_compacted += (
+            other.coordinate_attributes_compacted
+        )
         self.source_attributes.update(other.source_attributes)
 
 
@@ -430,6 +436,9 @@ def _render_projection(source: Path, output: Path) -> tuple[ProjectionReport, by
     _project_subtree(root, stats)
     _strip_import_attributes(root, stats)
     _rewrite_asset_references(root, source.parent, output.parent, stats)
+    stats.coordinate_attributes_compacted = compact_svg_tree(
+        root,
+    ).changed_attributes
     _index_initial_authoring_references(root, source_references)
 
     projected = ET.tostring(root, encoding="utf-8", xml_declaration=False)

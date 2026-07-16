@@ -34,7 +34,9 @@ The projected copy:
 - keeps visible paths, text, images, stable ids, Master/Layout root markers,
   selected native-shape intent, and a document-local `data-pptx-source-ref` on
   each imported logical object;
-- rewrites relative local asset references for the projection's new location.
+- rewrites relative local asset references for the projection's new location;
+- compacts imported model-facing frames and safe transform page coordinates to
+  at most two decimals.
 
 The summary stores the current SVG roster plus compact per-file canvas, size,
 text, image, vector, placeholder, icon, and source-ref counts. Models read the
@@ -64,6 +66,31 @@ evidence required for import and round-trip decisions. The normative boundary
 is owned by [`shared-standards.md`](../../references/shared-standards.md), with
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
+
+## `compact_svg_coordinates.py`
+
+Compact safe model-facing page-space coordinates without rewriting unrelated
+SVG formatting:
+
+```bash
+python3 scripts/compact_svg_coordinates.py <svg-file-or-directory>
+python3 scripts/compact_svg_coordinates.py <template-directory> \
+  --inplace --keep-native-frames
+```
+
+The default run is a dry-run JSON report. `--inplace` atomically replaces only
+changed SVG files. The shared create-template final pass uses
+`--keep-native-frames`: it compacts `data-pptx-placeholder-bounds`, translation
+values, rotation centers, and matrix `e/f`, while preserving canonical
+authored-preset or inline native frames. `svg_authoring_view.py` separately
+compacts imported model-facing frames because unchanged mirror refs can recover
+their exact coordinates from immutable lossless backing.
+
+The compactor never rounds path/points geometry, normalized crop or nested
+`viewBox` ratios, gradient offsets, opacity, scale arguments, rotation angles,
+or matrix `a/b/c/d` coefficients. Type A mirror materialization invokes the
+same compactor before native-record externalization; `standard` and `fidelity`
+use the shared final pass before template validation.
 
 ## `extract_svg_assets.py`
 
@@ -118,19 +145,22 @@ Materialization preserves source page order and emits one definition-only
 It mechanically expands fixed Master/Layout group wrappers into direct atoms,
 rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
 current SVG fallback for edited refs, preserves explicit text hard breaks, and
-removes every IR-only source ref. Supported opaque `p:txBody`,
+removes every IR-only source ref. Imported axis-flipped groups retain their
+geometry reflection while descendant SVG text receives a matching
+counter-reflection, preserving PowerPoint's upright glyph appearance in browser
+previews. Supported opaque `p:txBody`,
 relationship-free `p:style`, and `a:custGeom` payloads are deduplicated into
 `templates/native_payloads.json.gz`. Repeated native restoration attributes
 are stored there as short `data-pptx-native-ref` records; page and
 imported-vector SVGs retain only those record ids and content-hash payload
-references. Structural Master/Layout, placeholder, layer, and editable-object
+references. The native record referenced by an imported text placeholder
+carrier owns its authoritative source frame, so the Slide-local frame can
+differ from reusable Layout bounds without restoring long exact coordinates
+inline. Structural Master/Layout, placeholder, layer, and editable-object
 fields remain inline. Source `p:sldLayout@showMasterSp` and
 `p:sld@showMasterSp` facts become canonical root
 `data-pptx-show-master-shapes` and
-`data-pptx-show-inherited-shapes` booleans. An imported text placeholder keeps
-its authoritative native frame on the `<text data-pptx-frame>` carrier so the
-Slide-local frame can differ from the reusable Layout bounds without collapsing
-to glyph bounds.
+`data-pptx-show-inherited-shapes` booleans.
 
 Checker, template-structure validation, and export hydrate both store layers in
 memory; legacy inline payload and v1 payload-only stores remain readable.

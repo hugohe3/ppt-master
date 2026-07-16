@@ -95,6 +95,7 @@ description: >
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
 | `${SKILL_DIR}/scripts/slice_images.py` | Slice one AI illustration sheet into individual spot-illustration elements |
 | `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight editable authoring IR bundle, model-readable summary, and tool-only provenance manifest from PPTX-imported SVGs |
+| `${SKILL_DIR}/scripts/compact_svg_coordinates.py` | Compact safe model-facing page-space metadata and transform coordinates to at most two decimals |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/preset_shape_svg.py` | Print one compact registry-backed native PowerPoint preset `<g>` to stdout for page or template insertion |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |

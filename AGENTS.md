@@ -71,6 +71,8 @@ python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --im
 python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+# Shared create-template coordinate compaction before template validation
+python3 skills/ppt-master/scripts/compact_svg_coordinates.py "<template_workspace>/templates" --inplace --keep-native-frames
 # Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
 python3 skills/ppt-master/scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
 # Type A create-template mirror: validated authoring IR -> deterministic structured template workspace

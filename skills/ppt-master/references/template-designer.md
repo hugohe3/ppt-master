@@ -393,7 +393,7 @@ identity exactly when the importer supports them. Do not replace source
 assign stable indices only when repeated roles need disambiguation inside the
 new Layout.
 
-**Hard rule — explicit design-zone bounds**: Every slot carries `data-pptx-placeholder-bounds="x y width height"`. Mirror uses the source Layout placeholder frame. `standard` / `fidelity` author bounds from the intended safe area, column, panel inset, or media frame. Do not use character count, glyph width, current wrapping, or the tight sample-content box. An authored Layout may intentionally have zero slots.
+**Hard rule — explicit design-zone bounds**: Every slot carries `data-pptx-placeholder-bounds="x y width height"` with at most two decimals per value. Mirror uses the source Layout placeholder frame. `standard` / `fidelity` author bounds from the intended safe area, column, panel inset, or media frame. Do not use character count, glyph width, current wrapping, or the tight sample-content box. An authored Layout may intentionally have zero slots.
 
 ### 3. Placeholder Markers
 

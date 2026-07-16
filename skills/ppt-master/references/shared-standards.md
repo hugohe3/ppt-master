@@ -274,7 +274,7 @@ attributes, and no separate source-payload opt-in marker exists.
 |---|---|---|
 | `data-pptx-object` | Logical `<g>` and native carrier | `shape`, `connector`, `group`, or `picture`; never infer the object kind from path appearance. |
 | `data-pptx-shape-id` + `data-pptx-shape-scope` | Logical `<g>` and carrier | Preserve the source part-scoped identity. Export remaps duplicate Master/Layout/Slide ids into page-unique ids before rebinding connector references. |
-| `data-pptx-frame="x y width height"` | Logical `<g>` and carrier | Own native `a:xfrm` position and size. Values use sufficient precision for exact EMU recovery; path bounds, stroke, markers, shadows, and text glyph bounds never replace this frame. |
+| `data-pptx-frame="x y width height"` | Logical `<g>` and carrier | Own native `a:xfrm` position and size. Lossless import SVGs and tool-side native records use sufficient precision for exact EMU recovery; the model-facing authoring IR may use the compact page-coordinate spelling defined below. Path bounds, stroke, markers, shadows, and text glyph bounds never replace this frame. |
 | `data-pptx-prst` | Preset carrier and logical `<g>` | One of the locked 187 DrawingML `ST_ShapeType` values. |
 | `data-pptx-av-*` | Preset carrier and logical `<g>` | Preserve the complete validated DrawingML adjustment formula, including non-`val` formulas. |
 | `data-pptx-part="geometry"` | One hidden carrier path | The single native export authority for frame, base fill/line/effect, preset/custom geometry, and object identity. |
@@ -309,9 +309,18 @@ one. This array is still diagnostic metadata, not an authoring surface.
 | Representation | Contract |
 |---|---|
 | Lossless import SVG | Keep complete native payload, hidden carriers, and preview evidence in the temporary analysis workspace. It is immutable native-payload backing, not the editable template source. |
-| Authoring IR bundle | Keep editable SVGs plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and a stable document-local `data-pptx-source-ref` on each imported logical object. The summary owns the compact current-file index; the manifest owns source paths and initial hashes and never enters model context. |
+| Authoring IR bundle | Keep editable SVGs plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and a stable document-local `data-pptx-source-ref` on each imported logical object. Compact model-facing imported frames and safe transform page coordinates to at most two decimals before hashing the IR. The summary owns the compact current-file index; the manifest owns source paths and initial hashes and never enters model context. |
 | `standard` / `fidelity` output | Use the compact authored-preset contract (§1.5) for newly authored stock shapes; do not transplant opaque import payload or source topology. |
 | `mirror` output | Materialize from the edited authoring IR. Rehydrate supported imported metadata only when a Slide-local/slot object's source ref and initial authoring hash still match; otherwise keep the current SVG fallback. Expand fixed Master/Layout group wrappers into direct semantic atoms while preserving source ownership, paint order, and visible appearance. |
+
+**Hard rule — model-facing page-coordinate precision**:
+
+| Surface | Precision contract |
+|---|---|
+| Imported `data-pptx-frame` in authoring IR | At most two decimals. An unchanged mirror source ref recovers the exact lossless frame before tool-side native-record externalization. |
+| `data-pptx-placeholder-bounds` in final template SVG | At most two decimals. |
+| `translate(...)`, `rotate(... cx cy)`, and `matrix(... e f)` | Translation values and rotation centers use at most two decimals. Keep the rotation angle and matrix `a b c d` coefficients unchanged. |
+| Protected values | Do not apply this compaction to path/points geometry, normalized crop or nested `viewBox` ratios, gradient offsets, opacity, scale arguments, canonical authored-preset frames, or lossless/tool-side native frames. |
 
 **Hard rule — authoring source refs**: `data-pptx-source-ref` is reserved for
 the create-template authoring IR. Its value is unique within one authoring SVG,
@@ -1142,6 +1151,9 @@ adjacent operations without a separator, units, unknown functions, and
 incomplete input fail quality check and export. Generated numeric tokens use
 ordinary decimals; a supported leading `+`, exponent, or trailing decimal point
 remains compatible input and receives a non-blocking normalization warning.
+Model-facing translation values, rotation centers, and matrix `e/f` use at
+most two decimals under §1.4; angles, scale arguments, and matrix `a/b/c/d`
+retain the precision required by the transform.
 
 Set text size/position directly. A text transform is either a translate-only
 list or one rotate operation; do not scale, matrix-transform, or mix operations
@@ -1155,7 +1167,10 @@ finite, non-zero, and orthogonal; importer/live-editor matrices do not expand
 the hand-authored contract.
 Mirror around vertical pivot `cx` with
 `translate(cx 0) scale(-1 1) translate(-cx 0)`; use the analogous Y sequence
-for a horizontal pivot.
+for a horizontal pivot. During mirror materialization, imported PowerPoint
+groups with an axis flip keep their geometry reflection, while each descendant
+SVG text node receives the matching counter-reflection so browser previews keep
+glyphs upright. The tool-side native record retains the source group flip.
 
 Layer back-to-front: background/image → scrim/shadow → main geometry → labels /
 icons → top annotation. Finalization and native export independently expand
@@ -1816,7 +1831,7 @@ prototype size remain unchanged.
 | `data-pptx-layer="layout"` | direct semantic atom | Moves one repeated static object/background into the selected Layout; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
 | `data-pptx-placeholder="..."` | direct slot `<g id>` | Declares a reusable Layout slot whose visible content remains Slide-local |
-| `data-pptx-placeholder-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units |
+| `data-pptx-placeholder-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units with at most two decimals per value |
 | `data-pptx-placeholder-idx="1"` | slot `<g>` | Retains an imported source Layout placeholder index; optional for reconstructed layouts |
 | `data-pptx-placeholder-carrier="true"` | one compatible direct child of a normal slot | Binds that visible child as the real Slide placeholder carrier |
 | `data-pptx-placeholder-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
