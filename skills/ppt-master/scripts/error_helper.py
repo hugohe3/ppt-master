@@ -22,8 +22,8 @@ class ErrorHelper:
             'message': 'Missing README.md file',
             'solutions': [
                 'Create a README.md file with project description, usage instructions, etc.',
-                'Reference template: examples/google_annual_report_ppt169_20251116/README.md',
-                'Or use command: cp examples/google_annual_report_ppt169_20251116/README.md <your_project>/'
+                'Document the project goal, source material, canvas, generated artifacts, and export path',
+                'Keep project-specific instructions local instead of copying a repository example'
             ],
             'severity': 'error'
         },

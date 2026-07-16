@@ -13,7 +13,7 @@ Architecture note: this module's outputs feed svg_final/ on disk AND its
 sub-modules (svg_finalize.embed_icons, svg_finalize.flatten_tspan, ...)
 are memory-reused by svg_to_pptx during native conversion. Deleting any
 step here may also break native pptx output, not just svg_final/.
-See docs/technical-design.md "Post-Processing Pipeline" before modifying.
+See scripts/docs/svg-pipeline.md before modifying the shared pipeline.
 
 Usage:
     # Execute all processing steps (recommended)

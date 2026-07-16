@@ -1,6 +1,8 @@
 # Project Tools
 
-> Architecture rationale (why `import-sources` defaults are asymmetric for in-repo vs out-of-repo files): see [docs/technical-design.md "Project Structure & Lifecycle"](../../../../docs/technical-design.md#project-structure--lifecycle).
+> **Import boundary**: copy out-of-repository sources by default to protect user
+> files; move in-repository sources by default to avoid leaving accidental
+> commit artifacts. Explicit `--copy` / `--move` flags override the default.
 
 Project tools create, validate, and inspect the standard PPT Master workspace.
 

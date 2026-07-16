@@ -19,9 +19,9 @@ projects repaint and retype the selected structure from the project lock.
 
 The discovery source of truth is [`layouts_index.json`](./layouts_index.json)
 (`layout_id → { summary, canvas_format, page_count, page_types }`). This README
-defines the kind and intentionally does not enumerate installed layouts. See
-[`docs/zh/templates-architecture.md`](../../../../docs/zh/templates-architecture.md)
-for the complete data model.
+defines the kind and intentionally does not enumerate installed layouts. The
+shared kind and workspace model lives in the parent
+[`README.md`](../README.md).
 
 ---
 

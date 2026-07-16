@@ -6,7 +6,9 @@ description: Deterministic selection among PPT Master's four top-level artifact 
 
 Route selection authority for PPT Master. Select exactly one top-level route, then activate only the child workflows, profiles, and stages owned by that route.
 
-**Hard rule**: If this file conflicts with a route summary in `SKILL.md`, `AGENTS.md`, or a user-facing document, this file wins for route selection. After selection, the route authority owns execution.
+**Hard rule**: If this file conflicts with a route summary elsewhere in the
+Skill package or in a repository-level user-facing document, this file wins for
+route selection. After selection, the route authority owns execution.
 
 ---
 

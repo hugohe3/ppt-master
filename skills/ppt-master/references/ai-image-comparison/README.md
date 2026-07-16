@@ -3,7 +3,7 @@
 PPT Master's AI images are governed by three orthogonal dimensions: **rendering (visual style) × palette (color behavior) × type (internal composition)**.
 This directory uses **controlled-variable comparison** — vary one dimension while holding the other two fixed — so you can see exactly what each dimension contributes.
 
-> This is **not** an example project (see `examples/` for those). It is a dimension-selection reference for the Strategist role and end users when picking AI image parameters.
+> This is **not** an example project. It is a dimension-selection reference for the Strategist role and end users when picking AI image parameters.
 
 ## The three comparison sets
 
