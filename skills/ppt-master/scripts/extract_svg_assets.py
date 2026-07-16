@@ -447,6 +447,9 @@ def _existing_placeholder_entries(
     for asset, entry in sorted(by_asset.items()):
         asset_path = icons_dir / asset
         if asset_path.exists():
+            entry["asset_sha256"] = hashlib.sha256(
+                asset_path.read_bytes()
+            ).hexdigest()
             try:
                 root = ET.parse(asset_path).getroot()
             except ET.ParseError:

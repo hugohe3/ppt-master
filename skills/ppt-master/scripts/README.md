@@ -45,7 +45,7 @@ python3 scripts/update_repo.py
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
+| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -83,6 +83,7 @@ python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/svg_authoring_view.py <imported-svg-or-dir> -o <output-dir> --projection-kind layered
 python3 scripts/svg_authoring_view.py <authoring-dir> --refresh-summary
+python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inplace --keep-native-frames
 python3 scripts/mirror_template_materialize.py <import_workspace> <empty_template_workspace>
 python3 scripts/template_preview_pptx.py <template_workspace>
 python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-only
@@ -103,7 +104,9 @@ Relative local image references are rewritten so the projected copy still
 renders from its new location. The bundle's `authoring_summary.json` is the
 model-readable current-file index; `authoring_manifest.json` records
 source/authoring hashes and object paths for tools without duplicating opaque
-payload and does not enter model context. In-place vector/picture extraction
+payload and does not enter model context. Imported model-facing frames and safe
+transform page coordinates use at most two decimals; immutable lossless SVGs
+retain the original precision. In-place vector/picture extraction
 refreshes the summary automatically; use `--refresh-summary` after other direct
 IR edits. The full imported SVG remains unchanged as native-payload backing.
 Template creation edits the IR and materializes validated `templates/*.svg`;
@@ -183,6 +186,7 @@ Create-template/source normalization (optional; never part of automatic export):
 python3 scripts/extract_svg_assets.py <layered_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --inplace --id-prefix layered
 python3 scripts/extract_svg_assets.py <flat_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
 python3 scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<picture_assets_dir>" --inplace  # optional create-template normalization: one selected group -> one SVG picture
+python3 scripts/compact_svg_coordinates.py <template_workspace>/templates --inplace --keep-native-frames
 python3 scripts/mirror_template_materialize.py <import_workspace> <empty_template_workspace>  # Type A mirror only
 ```
 
