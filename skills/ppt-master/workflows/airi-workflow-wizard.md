@@ -1,5 +1,5 @@
 ---
-description: Run the AIRI v2 local wizard for multi-source intake, style selection, analysis-pack generation, and editable page-outline confirmation
+description: Run the AIRI v2 local wizard for multi-source intake, two-level analysis-image selection, and editable page-outline confirmation
 ---
 
 # AIRI Workflow Wizard
@@ -43,17 +43,27 @@ python3 ${SKILL_DIR}/scripts/intake_manifest.py <project_path>
 
 Complete the existing three-stage direction/design/image confirmation at `/confirm`. Persist the wizard choices to `workflow_selection.json`.
 
-**Manual pack selection**: Never auto-enable an analysis pack. When the user selects one, compile its Excel source and generate every enabled row before outline review:
+**Two-level analysis selection**: Compile the one-style-per-sheet Excel source, then require one analysis style plus one or more analysis type ids. Keep the selected type ids when the user switches style.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/analysis_pack.py compile <pack_dir>/pack.xlsx
-python3 ${SKILL_DIR}/scripts/analysis_pack.py build-manifest <pack_dir>/pack.json <project_path> --reference <image>
+python3 ${SKILL_DIR}/scripts/analysis_library.py compile <library_dir>/prompts_master.xlsx
+python3 ${SKILL_DIR}/scripts/analysis_library.py build-manifest \
+  <library_dir> <project_path> \
+  --style <style-id> --item <analysis-type-id> --reference <image>
 python3 ${SKILL_DIR}/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
 ```
 
-Use `--dry-run` on the final command to validate multipart request construction without credentials or network access.
+Use `--dry-run` on the final command to validate the selected provider request without credentials or network access.
 
-**Gate**: When `workflow_selection.json analysis_pack_id` is non-empty, every manifest item must be `Generated` before final outline confirmation.
+Provider profiles:
+
+- `gptimage2.0-1K-mid` — default; GPT Image 2 reference edit, 1K, medium quality.
+- `nanobanana-pro-2K` — Gemini 3 Pro Image / Nano Banana Pro, Google GenAI `generateContent + inline_data`, 2K.
+- `gptimage2.0-1K-low` — legacy compatibility only.
+
+**Gate**: When `workflow_selection.json analysis_item_ids` is non-empty, every selected type must be `Generated` under the current `analysis_style_id` before final outline confirmation.
+
+**Legacy compatibility**: Existing flat `analysis_pack_id` projects continue through `analysis_pack.py`; do not expose that path as the default v2 selector.
 
 ---
 
@@ -73,9 +83,11 @@ Strategist writes `<project>/outline_draft.json` after generated analysis images
       "images": [
         {
           "source": "analysis-pack",
-          "filename": "analysis_massing.png",
-          "analysis_pack_id": "architecture-placeholder",
-          "analysis_item_id": "massing-analysis",
+          "filename": "ARC-010__arch_massing_study__light_fresh_ppt_detailed.png",
+          "analysis_library_id": "diagram-prompt-building-v1",
+          "analysis_style_id": "light_fresh_ppt_detailed",
+          "analysis_domain_id": "architecture",
+          "analysis_item_id": "ARC-010",
           "prompt": "...",
           "reference_images": ["project_render.png"]
         }

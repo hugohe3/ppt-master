@@ -29,7 +29,12 @@ REQUIRED_COLUMNS = (
     "notes",
 )
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
-DEFAULT_PROFILE = "gptimage2.0-1K-low"
+DEFAULT_PROFILE = "gptimage2.0-1K-mid"
+PROFILE_IMAGE_SIZES = {
+    "gptimage2.0-1K-mid": "1K",
+    "gptimage2.0-1K-low": "1K",
+    "nanobanana-pro-2K": "2K",
+}
 
 
 def _require_openpyxl():
@@ -256,22 +261,29 @@ def build_image_manifest(
         prompt = item["prompt_template"]
         if prompt_context.strip():
             prompt = f"{prompt_context.strip()}\n\n{prompt}"
-        items.append(
-            {
-                "filename": item["output_filename"],
-                "purpose": item.get("name") or item["item_id"],
-                "page_role": "local",
-                "text_policy": "none",
-                "aspect_ratio": item["aspect_ratio"],
-                "image_size": item["image_size"],
-                "prompt": prompt,
-                "status": "Pending",
-                "reference_images": resolved_references,
-                "provider_profile": provider_profile,
-                "analysis_pack_id": pack["pack_id"],
-                "analysis_item_id": item["item_id"],
-            }
-        )
+        manifest_item = {
+            "filename": item["output_filename"],
+            "purpose": item.get("name") or item["item_id"],
+            "page_role": "local",
+            "text_policy": "none",
+            "aspect_ratio": item["aspect_ratio"],
+            "image_size": PROFILE_IMAGE_SIZES.get(provider_profile, item["image_size"]),
+            "prompt": prompt,
+            "status": "Pending",
+            "reference_images": resolved_references,
+            "provider_profile": provider_profile,
+            "analysis_pack_id": pack["pack_id"],
+            "analysis_item_id": item["item_id"],
+        }
+        for key in (
+            "analysis_library_id",
+            "analysis_style_id",
+            "analysis_domain_id",
+            "analysis_template_id",
+        ):
+            if item.get(key):
+                manifest_item[key] = item[key]
+        items.append(manifest_item)
     if not items:
         raise ValueError(f"No enabled items in pack: {pack_file}")
 
@@ -283,6 +295,9 @@ def build_image_manifest(
         "analysis_pack_id": pack["pack_id"],
         "items": items,
     }
+    for key in ("analysis_library_id", "analysis_style_id"):
+        if pack.get(key):
+            manifest[key] = pack[key]
     destination = images_dir / "image_prompts.json"
     destination.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",

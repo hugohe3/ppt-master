@@ -1,0 +1,830 @@
+{
+  "schema_version": 1,
+  "library_id": "diagram-prompt-building-v1",
+  "source_workbook": "prompts_master.xlsx",
+  "compiled_at": "2026-07-15T18:53:18",
+  "domain_count": 4,
+  "type_count": 88,
+  "domains": [
+    {
+      "id": "architecture",
+      "name_zh": "建筑",
+      "item_count": 32,
+      "items": [
+        {
+          "id": "ARC-001",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "场地分析 / 基址分析",
+          "category_zh": "场地分析 / 基址分析",
+          "template_id": "arch_site_analysis",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "ARC-002",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "区位分析",
+          "category_zh": "区位分析",
+          "template_id": "arch_location_context",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-003",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "周边建筑高度与天际线分析",
+          "category_zh": "周边建筑高度与天际线分析",
+          "template_id": "arch_neighbor_height_skyline",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-004",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "日照分析",
+          "category_zh": "日照分析",
+          "template_id": "arch_solar_analysis",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "ARC-005",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "风环境 / 通风廊道分析",
+          "category_zh": "风环境 / 通风廊道分析",
+          "template_id": "arch_wind_ventilation",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-006",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "噪声分析",
+          "category_zh": "噪声分析",
+          "template_id": "arch_noise_analysis",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "ARC-007",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "视域 / 景观视线分析",
+          "category_zh": "视域 / 景观视线分析",
+          "template_id": "arch_views_visibility",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "ARC-008",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "微气候 / 热岛示意分析",
+          "category_zh": "微气候 / 热岛示意分析",
+          "template_id": "arch_microclimate",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "ARC-009",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "洪涝 / 排水 / 汇水分析",
+          "category_zh": "洪涝 / 排水 / 汇水分析",
+          "template_id": "arch_hydrology_flood",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-010",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "体块分析",
+          "category_zh": "体块分析",
+          "template_id": "arch_massing_study",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "ARC-011",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "体块演变 / 推敲序列分析",
+          "category_zh": "体块演变 / 推敲序列分析",
+          "template_id": "arch_massing_evolution",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "ARC-012",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "体块与场地 / 环境关系分析",
+          "category_zh": "体块与场地 / 环境关系分析",
+          "template_id": "arch_massing_site_relation",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "ARC-013",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "功能分区分析",
+          "category_zh": "功能分区分析",
+          "template_id": "arch_functional_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "ARC-014",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "流线分析（人行 / 车行等综合）",
+          "category_zh": "流线分析（人行 / 车行等综合）",
+          "template_id": "arch_circulation",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-015",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "消防疏散流线分析",
+          "category_zh": "消防疏散流线分析",
+          "template_id": "arch_circulation_fire_evacuation",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-016",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "后勤 / 服务流线分析",
+          "category_zh": "后勤 / 服务流线分析",
+          "template_id": "arch_circulation_service",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-017",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "公共空间序列 / 空间层级分析",
+          "category_zh": "公共空间序列 / 空间层级分析",
+          "template_id": "arch_public_space_sequence",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-018",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "剖面分析",
+          "category_zh": "剖面分析",
+          "template_id": "arch_section_analysis",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-019",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "剖透视分析",
+          "category_zh": "剖透视分析",
+          "template_id": "arch_section_perspective",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-020",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "轴测爆炸图分析",
+          "category_zh": "轴测爆炸图分析",
+          "template_id": "arch_exploded_axonometric",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "ARC-021",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "结构概念分析",
+          "category_zh": "结构概念分析",
+          "template_id": "arch_structure_concept",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "ARC-022",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "模数与网格分析",
+          "category_zh": "模数与网格分析",
+          "template_id": "arch_module_grid",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "ARC-023",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "构造层次 / 节点逻辑分析",
+          "category_zh": "构造层次 / 节点逻辑分析",
+          "template_id": "arch_construction_layers",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-024",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "立面构成 / 韵律与比例分析",
+          "category_zh": "立面构成 / 韵律与比例分析",
+          "template_id": "arch_facade_composition",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-025",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "材质与虚实分析",
+          "category_zh": "材质与虚实分析",
+          "template_id": "arch_facade_material_void",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "ARC-026",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "街道界面连续性分析",
+          "category_zh": "街道界面连续性分析",
+          "template_id": "arch_street_frontage",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-027",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "自然采光分析",
+          "category_zh": "自然采光分析",
+          "template_id": "arch_daylighting",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "ARC-028",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "遮阳与被动式设计分析",
+          "category_zh": "遮阳与被动式设计分析",
+          "template_id": "arch_solar_shading_passive",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "ARC-029",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "能耗 / 碳排概念对比分析",
+          "category_zh": "能耗 / 碳排概念对比分析",
+          "template_id": "arch_energy_carbon",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "ARC-030",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "类型学 / 先例比较分析",
+          "category_zh": "类型学 / 先例比较分析",
+          "template_id": "arch_typology_precedent",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "ARC-031",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "文脉 / 肌理拼贴分析",
+          "category_zh": "文脉 / 肌理拼贴分析",
+          "template_id": "arch_context_collage",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "ARC-032",
+          "domain_id": "architecture",
+          "domain_name_zh": "建筑",
+          "name_zh": "Mapping 叠图 / 分层信息分析",
+          "category_zh": "Mapping 叠图 / 分层信息分析",
+          "template_id": "arch_mapping_overlay",
+          "graphic_mode": "collage_mapping"
+        }
+      ]
+    },
+    {
+      "id": "interior",
+      "name_zh": "室内",
+      "item_count": 17,
+      "items": [
+        {
+          "id": "INT-001",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "功能分区分析",
+          "category_zh": "功能分区分析",
+          "template_id": "int_functional_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "INT-002",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "面积配比 / 房间清单分析",
+          "category_zh": "面积配比 / 房间清单分析",
+          "template_id": "int_area_program",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "INT-003",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "动线分析（综合）",
+          "category_zh": "动线分析（综合）",
+          "template_id": "int_circulation_general",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-004",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "员工 / 顾客动线分流分析",
+          "category_zh": "员工 / 顾客动线分流分析",
+          "template_id": "int_circulation_staff_customer",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-005",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "后勤 / 后场流线分析",
+          "category_zh": "后勤 / 后场流线分析",
+          "template_id": "int_circulation_service_back_of_house",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-006",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "家具与人体尺度分析",
+          "category_zh": "家具与人体尺度分析",
+          "template_id": "int_furniture_ergonomics",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "INT-007",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "空间序列与节奏分析",
+          "category_zh": "空间序列与节奏分析",
+          "template_id": "int_space_sequence",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-008",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "视线与隐私分析",
+          "category_zh": "视线与隐私分析",
+          "template_id": "int_sightlines_privacy",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "INT-009",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "采光与照明分区分析",
+          "category_zh": "采光与照明分区分析",
+          "template_id": "int_daylighting_lighting_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "INT-010",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "色彩与材质分区示意",
+          "category_zh": "色彩与材质分区示意",
+          "template_id": "int_color_material_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "INT-011",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "声学分区分析",
+          "category_zh": "声学分区分析",
+          "template_id": "int_acoustic_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "INT-012",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "热舒适 / HVAC 区域分析",
+          "category_zh": "热舒适 / HVAC 区域分析",
+          "template_id": "int_comfort_hvac_zoning",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-013",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "疏散与安全出口分析",
+          "category_zh": "疏散与安全出口分析",
+          "template_id": "int_fire_evacuation",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-014",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "无障碍流线分析",
+          "category_zh": "无障碍流线分析",
+          "template_id": "int_accessibility_circulation",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-015",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "储藏与收纳系统分析",
+          "category_zh": "储藏与收纳系统分析",
+          "template_id": "int_storage_logistics",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "INT-016",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "顾客旅程 / 体验触点分析",
+          "category_zh": "顾客旅程 / 体验触点分析",
+          "template_id": "int_customer_journey",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "INT-017",
+          "domain_id": "interior",
+          "domain_name_zh": "室内",
+          "name_zh": "陈列与视觉焦点分析",
+          "category_zh": "陈列与视觉焦点分析",
+          "template_id": "int_display_visual_merchandising",
+          "graphic_mode": "symbol_overlay"
+        }
+      ]
+    },
+    {
+      "id": "landscape",
+      "name_zh": "景观",
+      "item_count": 17,
+      "items": [
+        {
+          "id": "LND-001",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "场地现状分析",
+          "category_zh": "场地现状分析",
+          "template_id": "lnd_site_inventory",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "LND-002",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "地形 / 竖向与高程分析",
+          "category_zh": "地形 / 竖向与高程分析",
+          "template_id": "lnd_topography_contours",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "LND-003",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "汇水线与雨洪管理分析",
+          "category_zh": "汇水线与雨洪管理分析",
+          "template_id": "lnd_hydrology_stormwater",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "LND-004",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "土壤与植被类型分析",
+          "category_zh": "土壤与植被类型分析",
+          "template_id": "lnd_soils_vegetation",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "LND-005",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "微气候（风、日照、遮阴）分析",
+          "category_zh": "微气候（风、日照、遮阴）分析",
+          "template_id": "lnd_microclimate_wind_sun",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "LND-006",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "生态斑块 / 廊道 / 基质分析",
+          "category_zh": "生态斑块 / 廊道 / 基质分析",
+          "template_id": "lnd_ecological_patch_corridor",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "LND-007",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "人流与活动分布分析",
+          "category_zh": "人流与活动分布分析",
+          "template_id": "lnd_people_activity",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "LND-008",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "视线与观景通廊分析",
+          "category_zh": "视线与观景通廊分析",
+          "template_id": "lnd_views_view_corridors",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "LND-009",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "安静区与活动区分区分析",
+          "category_zh": "安静区与活动区分区分析",
+          "template_id": "lnd_quiet_active_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "LND-010",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "种植分区分析",
+          "category_zh": "种植分区分析",
+          "template_id": "lnd_planting_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "LND-011",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "季相分析",
+          "category_zh": "季相分析",
+          "template_id": "lnd_seasonal_phenology",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "LND-012",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "林冠线与垂直结构分析",
+          "category_zh": "林冠线与垂直结构分析",
+          "template_id": "lnd_canopy_vertical_structure",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "LND-013",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "竖向与台地组织分析",
+          "category_zh": "竖向与台地组织分析",
+          "template_id": "lnd_grading_terracing",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "LND-014",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "排水组织分析",
+          "category_zh": "排水组织分析",
+          "template_id": "lnd_drainage_organization",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "LND-015",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "历史图层 / 文脉 mapping",
+          "category_zh": "历史图层 / 文脉 mapping",
+          "template_id": "lnd_historic_layer_mapping",
+          "graphic_mode": "collage_mapping"
+        },
+        {
+          "id": "LND-016",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "材质与铺装分区分析",
+          "category_zh": "材质与铺装分区分析",
+          "template_id": "lnd_paving_material_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "LND-017",
+          "domain_id": "landscape",
+          "domain_name_zh": "景观",
+          "name_zh": "场景序列 / 游线体验分析",
+          "category_zh": "场景序列 / 游线体验分析",
+          "template_id": "lnd_scene_sequence",
+          "graphic_mode": "flow"
+        }
+      ]
+    },
+    {
+      "id": "planning",
+      "name_zh": "规划",
+      "item_count": 22,
+      "items": [
+        {
+          "id": "URB-001",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "土地利用分析",
+          "category_zh": "土地利用分析",
+          "template_id": "urb_land_use",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "URB-002",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "用地平衡分析",
+          "category_zh": "用地平衡分析",
+          "template_id": "urb_land_use_balance",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "URB-003",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "功能混合度分析",
+          "category_zh": "功能混合度分析",
+          "template_id": "urb_function_mixing",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "URB-004",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "开发强度分析（容积率、密度等）",
+          "category_zh": "开发强度分析（容积率、密度等）",
+          "template_id": "urb_development_intensity",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "URB-005",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "建筑高度分区分析",
+          "category_zh": "建筑高度分区分析",
+          "template_id": "urb_height_zoning",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "URB-006",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "天际线 / 群体体量分析",
+          "category_zh": "天际线 / 群体体量分析",
+          "template_id": "urb_skyline_study",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "URB-007",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "城市形态 / 肌理与街区尺度分析",
+          "category_zh": "城市形态 / 肌理与街区尺度分析",
+          "template_id": "urb_urban_form_fabric",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "URB-008",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "公共空间网络分析",
+          "category_zh": "公共空间网络分析",
+          "template_id": "urb_public_space_network",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-009",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "绿地系统与蓝网分析",
+          "category_zh": "绿地系统与蓝网分析",
+          "template_id": "urb_green_blue_network",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-010",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "道路等级与断面分析",
+          "category_zh": "道路等级与断面分析",
+          "template_id": "urb_road_hierarchy",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-011",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "公共交通可达性分析",
+          "category_zh": "公共交通可达性分析",
+          "template_id": "urb_pt_accessibility",
+          "graphic_mode": "gradient_raster"
+        },
+        {
+          "id": "URB-012",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "停车与交通需求管理分析",
+          "category_zh": "停车与交通需求管理分析",
+          "template_id": "urb_parking_tdm",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "URB-013",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "慢行系统与自行车网络分析",
+          "category_zh": "慢行系统与自行车网络分析",
+          "template_id": "urb_slow_traffic_bike",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-014",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "生态安全格局分析",
+          "category_zh": "生态安全格局分析",
+          "template_id": "urb_ecological_security",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-015",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "城市通风廊道分析",
+          "category_zh": "城市通风廊道分析",
+          "template_id": "urb_wind_corridor",
+          "graphic_mode": "network"
+        },
+        {
+          "id": "URB-016",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "视廊与景观保护分析",
+          "category_zh": "视廊与景观保护分析",
+          "template_id": "urb_view_corridor",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "URB-017",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "遗产与历史风貌保护分析",
+          "category_zh": "遗产与历史风貌保护分析",
+          "template_id": "urb_heritage_conservation",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "URB-018",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "人口与职住平衡分析",
+          "category_zh": "人口与职住平衡分析",
+          "template_id": "urb_population_jobs_housing",
+          "graphic_mode": "flow"
+        },
+        {
+          "id": "URB-019",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "公共服务设施覆盖分析",
+          "category_zh": "公共服务设施覆盖分析",
+          "template_id": "urb_facility_service_radius",
+          "graphic_mode": "symbol_overlay"
+        },
+        {
+          "id": "URB-020",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "更新时序 / 分期开发分析",
+          "category_zh": "更新时序 / 分期开发分析",
+          "template_id": "urb_phasing_development",
+          "graphic_mode": "zoning_fill"
+        },
+        {
+          "id": "URB-021",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "街道界面控制分析（高度、贴线率等）",
+          "category_zh": "街道界面控制分析（高度、贴线率等）",
+          "template_id": "urb_street_wall_control",
+          "graphic_mode": "section_linear"
+        },
+        {
+          "id": "URB-022",
+          "domain_id": "planning",
+          "domain_name_zh": "城市规划",
+          "name_zh": "地下空间统筹分析",
+          "category_zh": "地下空间统筹分析",
+          "template_id": "urb_underground_space",
+          "graphic_mode": "symbol_overlay"
+        }
+      ]
+    }
+  ]
+}

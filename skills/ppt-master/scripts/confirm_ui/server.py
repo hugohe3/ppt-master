@@ -52,7 +52,12 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
-from analysis_pack import build_image_manifest, compile_workbook  # noqa: E402
+from analysis_pack import DEFAULT_PROFILE, build_image_manifest, compile_workbook  # noqa: E402
+from analysis_library import (  # noqa: E402
+    build_library_manifest,
+    compile_library,
+    load_library,
+)
 from intake_manifest import build_source_manifest  # noqa: E402
 from outline_gate import (  # noqa: E402
     CONFIRMED_NAME as OUTLINE_CONFIRMED_NAME,
@@ -90,6 +95,9 @@ _ICON_LIBRARY_DIR = Path(__file__).resolve().parents[2] / 'templates' / 'icons'
 _AI_IMAGE_COMPARISON_DIR = Path(__file__).resolve().parents[2] / 'references' / 'ai-image-comparison'
 _TEMPLATES_DIR = Path(__file__).resolve().parents[2] / 'templates'
 _ANALYSIS_PACKS_DIR = _TEMPLATES_DIR / 'analysis-packs'
+_ANALYSIS_LIBRARY_DIR = (
+    _TEMPLATES_DIR / 'analysis-library' / 'diagram-prompt-building'
+)
 _ICON_PREVIEW_SAMPLES = {
     'chunk-filled': ('home', 'chart-line', 'users', 'target'),
     'tabler-filled': ('home', 'chart-dots', 'user', 'bulb'),
@@ -150,10 +158,57 @@ def _pack_record(pack_id: str) -> tuple[Path, Path]:
     return workbook, compiled
 
 
+def _analysis_library_catalog() -> dict:
+    """Compile the two-level analysis library when stale and return its UI catalog."""
+    workbook = _ANALYSIS_LIBRARY_DIR / 'prompts_master.xlsx'
+    outputs = [
+        _ANALYSIS_LIBRARY_DIR / 'styles.json',
+        _ANALYSIS_LIBRARY_DIR / 'analysis_types.json',
+        _ANALYSIS_LIBRARY_DIR / 'prompt_matrix.json',
+    ]
+    if not workbook.is_file():
+        return {}
+    if any(not path.is_file() for path in outputs) or any(
+        workbook.stat().st_mtime > path.stat().st_mtime for path in outputs
+    ):
+        compile_library(workbook, _ANALYSIS_LIBRARY_DIR)
+    library = load_library(_ANALYSIS_LIBRARY_DIR)
+    return {
+        'schema_version': library['schema_version'],
+        'library_id': library['library_id'],
+        'default_style_id': library['default_style_id'],
+        'styles': library['styles'],
+        'domains': library['domains'],
+    }
+
+
 def _image_manifest_ready(project_path: Path) -> tuple[bool, dict | None]:
     """Return whether a selected pack has generated every enabled image."""
     manifest = _read_json(project_path / 'images' / 'image_prompts.json')
     selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
+    selected_item_ids = [
+        str(value) for value in selection.get('analysis_item_ids', []) if str(value).strip()
+    ]
+    if selected_item_ids:
+        if not isinstance(manifest, dict):
+            return False, None
+        if manifest.get('analysis_style_id') != selection.get('analysis_style_id'):
+            return False, manifest
+        manifest_items = {
+            str(item.get('analysis_item_id') or ''): item
+            for item in manifest.get('items') or []
+        }
+        ready = all(
+            item_id in manifest_items
+            and manifest_items[item_id].get('status') == 'Generated'
+            and (
+                project_path
+                / 'images'
+                / Path(str(manifest_items[item_id].get('filename') or '')).name
+            ).is_file()
+            for item_id in selected_item_ids
+        )
+        return ready, manifest
     if not selection.get('analysis_pack_id'):
         return True, manifest
     if not isinstance(manifest, dict):
@@ -533,6 +588,7 @@ def create_app(
         """Serve the persisted v2 wizard state and discovery catalogs."""
         try:
             pack_index = _read_json(_ANALYSIS_PACKS_DIR / 'analysis_packs_index.json', {}) or {}
+            analysis_library = _analysis_library_catalog()
             deck_index = _read_json(_TEMPLATES_DIR / 'decks' / 'decks_index.json', {}) or {}
             analysis_ready, image_manifest = _image_manifest_ready(project_path)
             images = []
@@ -557,6 +613,7 @@ def create_app(
                 'source_manifest': _read_json(project_path / 'source_manifest.json'),
                 'source_synthesis': _read_json(project_path / 'source_synthesis.json'),
                 'selection': _read_json(project_path / 'workflow_selection.json', {}) or {},
+                'analysis_library': analysis_library,
                 'analysis_packs': pack_index.get('packs', []),
                 'templates': [
                     {
@@ -653,30 +710,122 @@ def create_app(
 
     @app.route('/api/workflow/selection', methods=['POST'])
     def workflow_selection():
-        """Persist style, template, pack, reference, and provider choices."""
+        """Persist deck style plus two-level analysis-library choices."""
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):
             return jsonify({'error': 'invalid payload'}), 400
         selection = {
-            'schema_version': 2,
+            'schema_version': 3,
             'status': 'selected',
             'updated_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
             'visual_style': str(payload.get('visual_style') or ''),
             'template_id': str(payload.get('template_id') or ''),
             'custom_style_description': str(payload.get('custom_style_description') or ''),
             'analysis_pack_id': str(payload.get('analysis_pack_id') or ''),
+            'analysis_library_id': str(payload.get('analysis_library_id') or ''),
+            'analysis_style_id': str(payload.get('analysis_style_id') or ''),
+            'analysis_item_ids': list(dict.fromkeys(
+                str(value)
+                for value in (payload.get('analysis_item_ids') or [])
+                if str(value).strip()
+            )),
             'reference_images': [
-                str(value) for value in payload.get('reference_images', []) if str(value).strip()
+                str(value)
+                for value in (payload.get('reference_images') or [])
+                if str(value).strip()
             ],
-            'provider_profile': str(payload.get('provider_profile') or 'gptimage2.0-1K-low'),
+            'provider_profile': str(payload.get('provider_profile') or DEFAULT_PROFILE),
         }
         if selection['analysis_pack_id']:
             try:
                 _pack_record(selection['analysis_pack_id'])
             except (OSError, ValueError) as exc:
                 return jsonify({'error': str(exc)}), 400
+        if selection['analysis_item_ids']:
+            try:
+                library = _analysis_library_catalog()
+                valid_styles = {item['id'] for item in library.get('styles', [])}
+                valid_items = {
+                    item['id']
+                    for domain in library.get('domains', [])
+                    for item in domain.get('items', [])
+                }
+                if selection['analysis_library_id'] != library.get('library_id'):
+                    raise ValueError('invalid analysis library id')
+                if selection['analysis_style_id'] not in valid_styles:
+                    raise ValueError('select a valid analysis style')
+                unknown = [
+                    item_id
+                    for item_id in selection['analysis_item_ids']
+                    if item_id not in valid_items
+                ]
+                if unknown:
+                    raise ValueError(f"unknown analysis type(s): {', '.join(unknown)}")
+            except (OSError, ValueError, json.JSONDecodeError) as exc:
+                return jsonify({'error': str(exc)}), 400
         _write_json(project_path / 'workflow_selection.json', selection)
         return jsonify({'status': 'ok', 'selection': selection})
+
+    @app.route('/api/workflow/generate-analysis', methods=['POST'])
+    def workflow_generate_analysis():
+        """Generate selected analysis types using the selected image style."""
+        payload = request.get_json(silent=True) or {}
+        selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
+        style_id = str(payload.get('analysis_style_id') or selection.get('analysis_style_id') or '')
+        item_ids = payload.get('analysis_item_ids') or selection.get('analysis_item_ids') or []
+        references = payload.get('reference_images') or selection.get('reference_images') or []
+        profile = str(
+            payload.get('provider_profile')
+            or selection.get('provider_profile')
+            or DEFAULT_PROFILE
+        )
+        dry_run = bool(payload.get('dry_run'))
+        if not style_id or not item_ids:
+            return jsonify({'error': 'select an analysis style and at least one type'}), 400
+        try:
+            manifest = build_library_manifest(
+                _ANALYSIS_LIBRARY_DIR,
+                project_path,
+                style_id,
+                [str(value) for value in item_ids],
+                [str(value) for value in references],
+                provider_profile=profile,
+                prompt_context=str(payload.get('prompt_context') or ''),
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return jsonify({'error': str(exc)}), 400
+        command = [
+            sys.executable,
+            str(_SCRIPTS_DIR / 'image_gen.py'),
+            '--manifest',
+            str(manifest),
+        ]
+        if dry_run:
+            command.append('--dry-run')
+        completed = subprocess.run(
+            command,
+            cwd=str(_SCRIPTS_DIR.parent.parent.parent),
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=3600,
+            check=False,
+        )
+        if completed.returncode != 0:
+            return jsonify({
+                'error': 'analysis image generation failed',
+                'returncode': completed.returncode,
+                'stdout': completed.stdout[-4000:],
+                'stderr': completed.stderr[-4000:],
+            }), 500
+        return jsonify({
+            'status': 'ok',
+            'dry_run': dry_run,
+            'manifest': str(manifest),
+            'selected_count': len(item_ids),
+            'stdout': completed.stdout[-4000:],
+        })
 
     @app.route('/api/workflow/generate-pack', methods=['POST'])
     def workflow_generate_pack():
@@ -685,7 +834,7 @@ def create_app(
         selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
         pack_id = str(payload.get('analysis_pack_id') or selection.get('analysis_pack_id') or '')
         references = payload.get('reference_images') or selection.get('reference_images') or []
-        profile = str(payload.get('provider_profile') or selection.get('provider_profile') or 'gptimage2.0-1K-low')
+        profile = str(payload.get('provider_profile') or selection.get('provider_profile') or DEFAULT_PROFILE)
         dry_run = bool(payload.get('dry_run'))
         if not pack_id:
             return jsonify({'error': 'select an analysis pack first'}), 400
@@ -760,7 +909,7 @@ def create_app(
         """Confirm the current outline only after selected analysis images exist."""
         analysis_ready, _ = _image_manifest_ready(project_path)
         if not analysis_ready:
-            return jsonify({'error': 'selected analysis pack is not fully generated'}), 409
+            return jsonify({'error': 'selected analysis images are not fully generated'}), 409
         try:
             confirmed = confirm_outline(project_path)
         except (OSError, ValueError) as exc:

@@ -64,21 +64,32 @@
 
     <section id="analysis" class="panel">
       <div class="section-heading">
-        <div><span class="step-no">03</span><h2>分析图提示词包</h2></div>
-        <p>提示词包必须由用户手动选择；选中包内所有启用条目会在大纲确认前生成。</p>
+        <div><span class="step-no">03</span><h2>分析图风格与类型</h2></div>
+        <p>第一层选择图面风格，第二层按建筑、室内、景观、规划勾选具体分析图。</p>
       </div>
-      <div class="grid two">
-        <label>分析图包<select id="analysis-pack"><option value="">不使用分析图包</option></select></label>
-        <label>生图档位<input id="provider-profile" value="gptimage2.0-1K-low" readonly></label>
+      <h3>第一层 · 分析图风格</h3>
+      <div id="analysis-style-grid" class="analysis-style-grid"></div>
+      <div class="analysis-type-heading">
+        <h3>第二层 · 分析图类型</h3>
+        <div class="selection-count">已选择 <strong id="analysis-selected-count">0</strong> 张</div>
       </div>
+      <div id="analysis-domain-tabs" class="analysis-domain-tabs"></div>
+      <div id="analysis-type-groups" class="analysis-type-groups"></div>
+      <label class="profile-field">生图后端与档位
+        <select id="provider-profile">
+          <option value="gptimage2.0-1K-mid">GPT Image 2 · 1K · medium（默认）</option>
+          <option value="gptimage2.0-1K-low">GPT Image 2 · 1K · low（兼容旧项目）</option>
+          <option value="nanobanana-pro-2K">Nano Banana Pro · 2K</option>
+        </select>
+      </label>
       <div>
         <h3>参考效果图</h3>
         <div id="reference-images" class="image-picker"></div>
       </div>
       <div class="button-row">
         <button id="save-selection" class="secondary">保存风格与生图选择</button>
-        <button id="dry-run-pack" class="secondary">离线验证请求</button>
-        <button id="generate-pack" class="primary">生成整套分析图</button>
+        <button id="dry-run-analysis" class="secondary">离线验证所选图片</button>
+        <button id="generate-analysis" class="primary">生成所选分析图</button>
       </div>
       <pre id="generation-log" class="log"></pre>
     </section>

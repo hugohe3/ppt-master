@@ -4,6 +4,9 @@
   var STATE = null;
   var OUTLINE = { schema_version: 2, pages: [] };
   var SELECTED_TEMPLATE = "";
+  var ANALYSIS_STYLE_ID = "";
+  var ACTIVE_ANALYSIS_DOMAIN = "architecture";
+  var SELECTED_ANALYSIS_IDS = new Set();
 
   function byId(id) { return document.getElementById(id); }
   function toast(message) {
@@ -30,21 +33,23 @@
     return request("/api/workflow/state").then(function (data) {
       STATE = data;
       byId("project-name").textContent = data.project;
+      var selection = data.selection || {};
+      var library = data.analysis_library || {};
+      SELECTED_TEMPLATE = selection.template_id || "";
+      ANALYSIS_STYLE_ID = selection.analysis_style_id || library.default_style_id || "";
+      SELECTED_ANALYSIS_IDS = new Set(selection.analysis_item_ids || []);
       renderIntakeSummary();
       renderTemplates();
-      renderPacks();
+      renderAnalysisLibrary();
       renderImages();
       OUTLINE = data.outline_draft || { schema_version: 2, pages: [] };
       renderOutline();
-      var selection = data.selection || {};
-      SELECTED_TEMPLATE = selection.template_id || "";
       byId("custom-style").value = selection.custom_style_description || "";
-      byId("provider-profile").value = selection.provider_profile || "gptimage2.0-1K-low";
-      if (selection.analysis_pack_id) byId("analysis-pack").value = selection.analysis_pack_id;
+      byId("provider-profile").value = selection.provider_profile || "gptimage2.0-1K-mid";
       renderTemplates();
       byId("outline-status").textContent = data.analysis_ready
         ? (data.outline_draft ? "大纲可编辑；保存后需要重新确认。" : "等待 AI 写入 outline_draft.json，也可手动增加页面。")
-        : "所选分析图包尚未全部生成，暂不能最终确认大纲。";
+        : "所选分析图尚未全部生成，暂不能最终确认大纲。";
       byId("confirm-status").textContent = data.outline_ready && data.outline_confirmed
         ? "当前大纲已确认，正式生成已解锁。"
         : "尚未确认：" + (data.outline_message || "请先完成逐页大纲");
@@ -86,18 +91,83 @@
     });
   }
 
-  function renderPacks() {
-    var select = byId("analysis-pack");
-    var current = select.value;
-    select.innerHTML = '<option value="">不使用分析图包</option>';
-    (STATE.analysis_packs || []).forEach(function (pack) {
-      var option = document.createElement("option");
-      option.value = pack.id;
-      option.textContent = pack.name_zh || pack.id;
-      option.title = pack.description_zh || "";
-      select.appendChild(option);
+  function renderAnalysisLibrary() {
+    var library = STATE.analysis_library || {};
+    var styleGrid = byId("analysis-style-grid");
+    var domainTabs = byId("analysis-domain-tabs");
+    var typeGroups = byId("analysis-type-groups");
+    styleGrid.innerHTML = "";
+    domainTabs.innerHTML = "";
+    typeGroups.innerHTML = "";
+    if (!(library.styles || []).length) {
+      styleGrid.textContent = "分析图库尚未编译。";
+      return;
+    }
+    (library.styles || []).forEach(function (style, index) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "analysis-style-card" + (ANALYSIS_STYLE_ID === style.id ? " selected" : "");
+      var title = document.createElement("b");
+      title.textContent = (index + 1) + " · " + (style.name_zh || style.id);
+      var detail = document.createElement("span");
+      detail.textContent = style.item_count + " 种分析图";
+      card.appendChild(title); card.appendChild(detail);
+      card.onclick = function () { ANALYSIS_STYLE_ID = style.id; renderAnalysisLibrary(); };
+      styleGrid.appendChild(card);
     });
-    select.value = current || ((STATE.selection || {}).analysis_pack_id || "");
+
+    var domains = library.domains || [];
+    if (!domains.some(function (domain) { return domain.id === ACTIVE_ANALYSIS_DOMAIN; })) {
+      ACTIVE_ANALYSIS_DOMAIN = domains.length ? domains[0].id : "";
+    }
+    domains.forEach(function (domain) {
+      var tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "analysis-domain-tab" + (ACTIVE_ANALYSIS_DOMAIN === domain.id ? " active" : "");
+      tab.textContent = domain.name_zh + "（" + domain.item_count + "）";
+      tab.onclick = function () { ACTIVE_ANALYSIS_DOMAIN = domain.id; renderAnalysisLibrary(); };
+      domainTabs.appendChild(tab);
+    });
+
+    var active = domains.find(function (domain) { return domain.id === ACTIVE_ANALYSIS_DOMAIN; });
+    if (active) {
+      var toolbar = document.createElement("div");
+      toolbar.className = "analysis-type-toolbar";
+      var selectAll = document.createElement("button");
+      selectAll.type = "button"; selectAll.className = "secondary"; selectAll.textContent = "本类全选";
+      selectAll.onclick = function () {
+        (active.items || []).forEach(function (item) { SELECTED_ANALYSIS_IDS.add(item.id); });
+        renderAnalysisLibrary();
+      };
+      var clear = document.createElement("button");
+      clear.type = "button"; clear.className = "secondary"; clear.textContent = "清空本类";
+      clear.onclick = function () {
+        (active.items || []).forEach(function (item) { SELECTED_ANALYSIS_IDS.delete(item.id); });
+        renderAnalysisLibrary();
+      };
+      toolbar.appendChild(selectAll); toolbar.appendChild(clear); typeGroups.appendChild(toolbar);
+
+      var grid = document.createElement("div");
+      grid.className = "analysis-type-grid";
+      (active.items || []).forEach(function (item) {
+        var label = document.createElement("label");
+        label.className = "analysis-type-card" + (SELECTED_ANALYSIS_IDS.has(item.id) ? " selected" : "");
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox"; checkbox.checked = SELECTED_ANALYSIS_IDS.has(item.id);
+        checkbox.onchange = function () {
+          if (checkbox.checked) SELECTED_ANALYSIS_IDS.add(item.id);
+          else SELECTED_ANALYSIS_IDS.delete(item.id);
+          renderAnalysisLibrary();
+        };
+        var copy = document.createElement("span");
+        var id = document.createElement("b"); id.textContent = item.id;
+        var name = document.createElement("small"); name.textContent = item.name_zh;
+        copy.appendChild(id); copy.appendChild(name);
+        label.appendChild(checkbox); label.appendChild(copy); grid.appendChild(label);
+      });
+      typeGroups.appendChild(grid);
+    }
+    byId("analysis-selected-count").textContent = SELECTED_ANALYSIS_IDS.size;
   }
 
   function renderImages() {
@@ -132,7 +202,10 @@
       visual_style: byId("visual-style").value,
       template_id: SELECTED_TEMPLATE,
       custom_style_description: byId("custom-style").value,
-      analysis_pack_id: byId("analysis-pack").value,
+      analysis_pack_id: "",
+      analysis_library_id: ((STATE.analysis_library || {}).library_id || ""),
+      analysis_style_id: ANALYSIS_STYLE_ID,
+      analysis_item_ids: Array.from(SELECTED_ANALYSIS_IDS),
       reference_images: selectedReferences(),
       provider_profile: byId("provider-profile").value
     };
@@ -145,17 +218,17 @@
     }).then(function () { toast("选择已保存"); return loadState(); });
   }
 
-  function runPack(dryRun) {
-    var button = dryRun ? byId("dry-run-pack") : byId("generate-pack");
-    setBusy(button, true, dryRun ? "验证中…" : "整套生成中…");
+  function runAnalysis(dryRun) {
+    var button = dryRun ? byId("dry-run-analysis") : byId("generate-analysis");
+    setBusy(button, true, dryRun ? "验证中…" : "所选图片生成中…");
     return saveSelection().then(function () {
-      return request("/api/workflow/generate-pack", {
+      return request("/api/workflow/generate-analysis", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(Object.assign(collectSelection(), { dry_run: dryRun }))
       });
     }).then(function (data) {
       byId("generation-log").textContent = data.stdout || "完成";
-      toast(dryRun ? "离线请求验证通过" : "分析图包生成完成");
+      toast(dryRun ? "离线请求验证通过" : "所选分析图生成完成");
       return loadState();
     }).catch(function (error) {
       byId("generation-log").textContent = error.message;
@@ -198,7 +271,8 @@
     fields.className = "slot-fields";
     fields.appendChild(field("图片文件", image.filename || "", function (value) { image.filename = value; preview.src = imageUrl(value) || preview.src; }));
     fields.appendChild(field("图片来源", image.source || "ai", function (value) { image.source = value; }));
-    fields.appendChild(field("分析包条目", image.analysis_item_id || "", function (value) { image.analysis_item_id = value; }));
+    fields.appendChild(field("分析图风格", image.analysis_style_id || "", function (value) { image.analysis_style_id = value; }));
+    fields.appendChild(field("分析图类型", image.analysis_item_id || "", function (value) { image.analysis_item_id = value; }));
     fields.appendChild(field("提示词", image.prompt || "", function (value) { image.prompt = value; }, true));
     var actions = document.createElement("div");
     actions.className = "slot-actions";
@@ -291,8 +365,8 @@
       .finally(function () { setBusy(button, false); });
   };
   byId("save-selection").onclick = saveSelection;
-  byId("dry-run-pack").onclick = function () { runPack(true); };
-  byId("generate-pack").onclick = function () { runPack(false); };
+  byId("dry-run-analysis").onclick = function () { runAnalysis(true); };
+  byId("generate-analysis").onclick = function () { runAnalysis(false); };
   byId("reload-outline").onclick = loadState;
   byId("add-page").onclick = function () { OUTLINE.pages.push(pageTemplate(OUTLINE.pages.length)); renderOutline(); };
   byId("save-outline").onclick = function () {

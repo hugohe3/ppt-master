@@ -53,6 +53,26 @@ button:disabled { opacity: .5; cursor: wait; }
 .template-card b { display: block; margin-bottom: 7px; }
 .template-card p { color: var(--muted); font-size: 12px; margin: 0; }
 
+.analysis-style-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.analysis-style-card { display: grid; gap: 7px; text-align: left; border: 1px solid var(--line); background: #fbfcfb; color: var(--ink); }
+.analysis-style-card span { color: var(--muted); font-size: 12px; }
+.analysis-style-card.selected { border-color: var(--green); box-shadow: inset 0 0 0 2px var(--green); background: #edf7f4; }
+.analysis-type-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; }
+.analysis-type-heading h3 { margin: 0; }
+.selection-count { color: var(--muted); font-size: 14px; }
+.selection-count strong { color: var(--green); font-size: 22px; }
+.analysis-domain-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.analysis-domain-tab { background: #edf2f0; color: var(--ink); }
+.analysis-domain-tab.active { background: var(--green); color: white; }
+.analysis-type-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
+.analysis-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.analysis-type-card { display: flex; align-items: flex-start; gap: 10px; min-height: 72px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfb; cursor: pointer; }
+.analysis-type-card.selected { border-color: var(--green); background: #edf7f4; }
+.analysis-type-card input { width: auto; margin-top: 3px; accent-color: var(--green); }
+.analysis-type-card span { display: grid; gap: 5px; }
+.analysis-type-card small { color: var(--muted); font-weight: 500; line-height: 1.35; }
+.profile-field { max-width: 380px; margin-top: 20px; }
+
 .image-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 10px; }
 .image-choice { position: relative; border: 1px solid var(--line); border-radius: 13px; padding: 8px; background: #fafcfb; }
 .image-choice img { width: 100%; aspect-ratio: 16/10; object-fit: contain; background: #eef2f0; border-radius: 8px; }

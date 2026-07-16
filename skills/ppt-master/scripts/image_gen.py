@@ -6,6 +6,7 @@ Dispatches to the appropriate backend based on explicit provider configuration.
 
 Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment):
   IMAGE_BACKEND=gemini      -> Gemini backend (google-genai SDK)
+  IMAGE_BACKEND=nanobanana-pro -> Nano Banana Pro (Google GenAI HTTP)
   IMAGE_BACKEND=openai      -> OpenAI-compatible backend (raw HTTP via requests)
   IMAGE_BACKEND=minimax     -> MiniMax image backend
   IMAGE_BACKEND=stability   -> Stability AI backend
@@ -64,6 +65,7 @@ IMAGE_ENV_PREFIXES = (
     "GEMINI_",
     "OPENAI_",
     "ASIAI_",
+    "GOOGLE_",
     "MINIMAX_",
     "STABILITY_",
     "BFL_",
@@ -105,6 +107,15 @@ BACKEND_REGISTRY = {
         "key_hint": "ASIAI_GPT_IMAGE_API_KEY",
         "aliases": ["gptimage2-edit", "gpt-image-2-edit"],
         "capabilities": ["reference-image-edit"],
+    },
+    "nanobanana-pro": {
+        "module": "backend_nanobanana_pro",
+        "tier": "core",
+        "label": "Nano Banana Pro reference generation (Google GenAI)",
+        "default_model": "gemini-3-pro-image-preview",
+        "key_hint": "GOOGLE_GENAI_API_KEY / GEMINI_API_KEY",
+        "aliases": ["nano-banana-pro", "banana-pro", "gemini-3-pro-image"],
+        "capabilities": ["text-to-image", "reference-image-edit"],
     },
     "gemini": {
         "module": "backend_gemini",
@@ -218,11 +229,22 @@ BACKEND_REGISTRY = {
 }
 
 PROVIDER_PROFILES = {
+    "gptimage2.0-1K-mid": {
+        "backend": "asiai-edit",
+        "model": "gpt-image-2",
+        "image_size": "1K",
+        "quality": "medium",
+    },
     "gptimage2.0-1K-low": {
         "backend": "asiai-edit",
         "model": "gpt-image-2",
         "image_size": "1K",
         "quality": "low",
+    },
+    "nanobanana-pro-2K": {
+        "backend": "nanobanana-pro",
+        "model": "gemini-3-pro-image-preview",
+        "image_size": "2K",
     },
 }
 
@@ -426,7 +448,8 @@ def load_manifest(path: str) -> dict:
     Each item requires: `filename`, `prompt`, `aspect_ratio`, `status`.
     Optional: `image_size`, `model`, `alt_text`, `purpose`, `type`,
     `reference_images`, `provider_profile`, `analysis_pack_id`,
-    `analysis_item_id`, `last_error`.
+    `analysis_library_id`, `analysis_style_id`, `analysis_domain_id`,
+    `analysis_item_id`, `analysis_template_id`, `last_error`.
     """
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -518,8 +541,8 @@ def _validate_manifest_capabilities(manifest: dict, manifest_path: str, backend_
         if references and "reference-image-edit" not in capabilities:
             raise ValueError(
                 f"Backend '{backend_name}' cannot process reference_images for "
-                f"{item['filename']}. Select profile gptimage2.0-1K-low or a future "
-                "reference-image backend."
+                f"{item['filename']}. Select gptimage2.0-1K-mid or "
+                "nanobanana-pro-2K."
             )
 
 
@@ -534,7 +557,7 @@ def render_dry_run(manifest: dict, manifest_path: str, backend_module, backend_n
             request_preview = backend_module.build_redacted_request(
                 prompt=item["prompt"],
                 aspect_ratio=item["aspect_ratio"],
-                image_size=item.get("image_size", profile.get("image_size", "1K")),
+                image_size=profile.get("image_size", item.get("image_size", "1K")),
                 reference_images=references,
                 model=item.get("model", profile.get("model")),
                 quality=profile.get("quality"),
@@ -636,7 +659,7 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
             kwargs = dict(
                 prompt=item["prompt"],
                 aspect_ratio=item["aspect_ratio"],
-                image_size=item.get("image_size", profile.get("image_size", image_size)),
+                image_size=profile.get("image_size", item.get("image_size", image_size)),
                 output_dir=output_dir,
                 filename=Path(item["filename"]).stem,
                 model=item.get("model", profile.get("model", model)),
@@ -767,7 +790,10 @@ def render_manifest_md(manifest: dict) -> str:
             ("Image size", "image_size"),
             ("Provider profile", "provider_profile"),
             ("Analysis pack", "analysis_pack_id"),
+            ("Analysis style", "analysis_style_id"),
+            ("Analysis domain", "analysis_domain_id"),
             ("Analysis item", "analysis_item_id"),
+            ("Analysis template", "analysis_template_id"),
             ("Status", "status"),
         ):
             value = item.get(key)
@@ -917,7 +943,7 @@ def main() -> None:
         except ValueError as e:
             print(f"Error: {e}")
             sys.exit(1)
-        if not args.backend and not os.environ.get("IMAGE_BACKEND") and profile.get("backend"):
+        if not args.backend and profile.get("backend"):
             os.environ["IMAGE_BACKEND"] = profile["backend"]
 
     backend, backend_name = _resolve_backend()

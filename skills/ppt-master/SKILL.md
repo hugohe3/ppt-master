@@ -88,6 +88,7 @@ description: >
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
 | `${SKILL_DIR}/scripts/intake_manifest.py` | Build `source_manifest.json` plus the AI synthesis scaffold |
 | `${SKILL_DIR}/scripts/analysis_pack.py` | Validate Excel prompt packs and build reference-image manifests |
+| `${SKILL_DIR}/scripts/analysis_library.py` | Compile one-style-per-sheet workbooks and build selected style × type manifests |
 | `${SKILL_DIR}/scripts/outline_gate.py` | Validate, confirm, and check the editable page-outline gate |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
@@ -103,6 +104,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 | Analysis prompt packs | `${SKILL_DIR}/templates/analysis-packs/analysis_packs_index.json` | User-selected Excel prompt packs compiled to reference-image jobs |
+| Analysis prompt matrix | `${SKILL_DIR}/templates/analysis-library/diagram-prompt-building/` | First choose an image style, then select analysis types grouped by four domains |
 
 ## Standalone Workflows
 
@@ -479,11 +481,13 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 When `<project_path>/workflow_selection.json` exists, apply this gate before writing final `design_spec.md` / `spec_lock.md`:
 
-1. If `analysis_pack_id` is non-empty, compile the selected Excel pack and generate every enabled item. Do not auto-select a pack.
-2. Write `outline_draft.json` only after selected pack items are `Generated`; map each page's final copy to existing/generated image files.
+1. If `analysis_item_ids` is non-empty, compile the analysis library, resolve each selected id under the confirmed `analysis_style_id`, and generate every selected intersection. Keep selected type ids when the style changes. Legacy `analysis_pack_id` projects remain valid.
+2. Write `outline_draft.json` only after selected analysis items are `Generated`; map each page's final copy to existing/generated image files.
 3. Present editable page cards through the wizard. Allow add/delete/reorder, copy edits, image replacement, prompt edits, and single-image regeneration.
 4. ⛔ **BLOCKING**: wait for explicit final outline confirmation. Any draft edit invalidates the prior confirmation.
 5. Run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>`. Only then copy the confirmed order/content/image mapping into `design_spec.md` Section IX and `spec_lock.md`.
+
+Analysis generation defaults to `gptimage2.0-1K-mid` (GPT Image 2, 1K, medium). The wizard may instead select `nanobanana-pro-2K` (Gemini 3 Pro Image / Nano Banana Pro, 2K). Both profiles support reference images and must pass `image_gen.py --dry-run` before a paid run.
 
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative

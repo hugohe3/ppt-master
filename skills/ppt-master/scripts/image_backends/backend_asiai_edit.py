@@ -34,14 +34,24 @@ configure_utf8_stdio()
 
 DEFAULT_ENDPOINT = "https://api.asiai.cloud/v1/images/edits"
 DEFAULT_MODEL = "gpt-image-2"
-DEFAULT_QUALITY = "low"
+DEFAULT_QUALITY = "medium"
+
+
+def _normalized_endpoint(value: str | None = None) -> str:
+    """Force stale generations overrides onto the asiai image-edit contract."""
+    endpoint = (value or os.environ.get("ASIAI_GPT_IMAGE_ENDPOINT") or DEFAULT_ENDPOINT).strip()
+    endpoint = endpoint.rstrip("/")
+    for suffix in ("/v1/images/generations", "/images/generations"):
+        if endpoint.endswith(suffix):
+            return endpoint[: -len(suffix)] + "/v1/images/edits"
+    return endpoint
 
 
 def _size(aspect_ratio: str, image_size: str) -> str:
     normalized = image_size.strip().upper()
     if normalized not in {"1K", "1024", "1024PX"}:
         raise ValueError(
-            "The gptimage2.0-1K-low profile currently supports only 1K. "
+            "The GPT Image 2 profiles currently support only 1K. "
             "Use image_size=1K."
         )
     if aspect_ratio in {"2:3", "3:4", "4:5", "9:16"}:
@@ -63,7 +73,7 @@ def build_redacted_request(
     """Build a secret-free request preview for dry-run validation."""
     return {
         "method": "POST",
-        "endpoint": os.environ.get("ASIAI_GPT_IMAGE_ENDPOINT") or DEFAULT_ENDPOINT,
+        "endpoint": _normalized_endpoint(),
         "content_type": "multipart/form-data",
         "fields": {
             "model": model or os.environ.get("ASIAI_GPT_IMAGE_MODEL") or DEFAULT_MODEL,
@@ -105,7 +115,11 @@ def _write_run_record(
 ) -> None:
     record = {
         "schema_version": 1,
-        "provider_profile": "gptimage2.0-1K-low",
+        "provider_profile": (
+            "gptimage2.0-1K-mid"
+            if request_preview.get("fields", {}).get("quality") == "medium"
+            else "gptimage2.0-1K-low"
+        ),
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "status": status,
         "request": request_preview,
@@ -146,7 +160,7 @@ def generate(
             "in the current environment or .env file."
         ),
     )
-    endpoint = os.environ.get("ASIAI_GPT_IMAGE_ENDPOINT") or DEFAULT_ENDPOINT
+    endpoint = _normalized_endpoint()
     resolved_model = model or os.environ.get("ASIAI_GPT_IMAGE_MODEL") or DEFAULT_MODEL
     resolved_quality = quality or os.environ.get("ASIAI_GPT_IMAGE_QUALITY") or DEFAULT_QUALITY
     output_path = resolve_output_path(prompt, output_dir, filename, ext=".png")

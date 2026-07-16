@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "library_id": "diagram-prompt-building-v1",
+  "source_workbook": "prompts_master.xlsx",
+  "compiled_at": "2026-07-15T18:53:18",
+  "default_style_id": "light_fresh_ppt_detailed",
+  "style_count": 7,
+  "styles": [
+    {
+      "id": "light_fresh_ppt_detailed",
+      "name_zh": "浅色清新分析 PPT（详细版）",
+      "sheet_name": "浅色清新分析 PPT（详细版）",
+      "tags": [
+        "light",
+        "fresh",
+        "ppt",
+        "analysis",
+        "detailed"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "blueprint_report_clean",
+      "name_zh": "蓝图技术报告风",
+      "sheet_name": "蓝图技术报告风",
+      "tags": [
+        "blueprint",
+        "report",
+        "technical",
+        "clean"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "competition_board_minimal",
+      "name_zh": "极简竞赛展板风",
+      "sheet_name": "极简竞赛展板风",
+      "tags": [
+        "competition",
+        "board",
+        "minimal",
+        "white_space"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "consulting_executive_clean",
+      "name_zh": "咨询顾问简报风",
+      "sheet_name": "咨询顾问简报风",
+      "tags": [
+        "consulting",
+        "executive",
+        "briefing",
+        "business"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "dark_tech_presentation",
+      "name_zh": "深色科技汇报风",
+      "sheet_name": "深色科技汇报风",
+      "tags": [
+        "dark",
+        "tech",
+        "screen",
+        "presentation"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "editorial_magazine_soft",
+      "name_zh": "杂志编辑软排版风",
+      "sheet_name": "杂志编辑软排版风",
+      "tags": [
+        "editorial",
+        "magazine",
+        "layout",
+        "soft"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    },
+    {
+      "id": "pastel_campus_schematic",
+      "name_zh": "白模体块叠涂分析图风",
+      "sheet_name": "白模体块叠涂分析图风",
+      "tags": [
+        "white_massing",
+        "parallel_projection",
+        "axonometric",
+        "ps_overlay",
+        "schematic",
+        "fast_diagram",
+        "analysis"
+      ],
+      "item_count": 88,
+      "domain_counts": {
+        "architecture": 32,
+        "interior": 17,
+        "landscape": 17,
+        "planning": 22
+      }
+    }
+  ]
+}
