@@ -34,6 +34,17 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from native_payloads import (
+    PAYLOAD_STORE_RELATIVE_PATH,
+    NativePayloadError,
+    NativePayloadStats,
+    build_native_attribute_records,
+    collect_native_attribute_record_keys,
+    externalize_native_attribute_records,
+    externalize_native_payloads,
+    hydrate_native_payload_refs,
+    serialize_native_payload_store,
+)
 from pptx_shapes import svg_preset_preview_fingerprint
 from svg_authoring_view import (
     AUTHORING_MANIFEST_NAME,
@@ -2483,6 +2494,9 @@ def materialize_mirror_template(
 
     asset_sources: dict[Path, Path] = {}
     files: list[MaterializedFile] = []
+    output_roots: list[tuple[Path, ET.Element]] = []
+    native_payloads: dict[str, bytes] = {}
+    native_payload_stats = NativePayloadStats()
     for relative_path, root in materialized_roots:
         final_path = template_workspace / relative_path
         _rewrite_packaged_assets(
@@ -2494,7 +2508,15 @@ def materialize_mirror_template(
         )
         total_stats.detached_connector_endpoints += _sanitize_connector_references(root)
         _refresh_preset_preview_hashes(root)
-        files.append(MaterializedFile(relative_path, _serialize_svg(root)))
+        try:
+            native_payload_stats.merge(
+                externalize_native_payloads(root, native_payloads)
+            )
+        except NativePayloadError as exc:
+            raise MirrorMaterializationError(
+                f"Cannot externalize native payloads in {relative_path}: {exc}"
+            ) from exc
+        output_roots.append((relative_path, root))
 
     for icon in sorted(referenced_icons):
         record = vector_assets[icon]
@@ -2516,10 +2538,53 @@ def materialize_mirror_template(
             icon_root
         )
         _refresh_preset_preview_hashes(icon_root)
-        files.append(MaterializedFile(relative_path, _serialize_svg(icon_root)))
+        try:
+            native_payload_stats.merge(
+                externalize_native_payloads(icon_root, native_payloads)
+            )
+        except NativePayloadError as exc:
+            raise MirrorMaterializationError(
+                f"Cannot externalize native payloads in {relative_path}: {exc}"
+            ) from exc
+        output_roots.append((relative_path, icon_root))
+
+    native_record_keys: set[str] = set()
+    try:
+        for _relative_path, root in output_roots:
+            native_record_keys.update(
+                collect_native_attribute_record_keys(root)
+            )
+        native_record_ids, native_records = build_native_attribute_records(
+            native_record_keys
+        )
+        for _relative_path, root in output_roots:
+            native_payload_stats.merge(
+                externalize_native_attribute_records(root, native_record_ids)
+            )
+    except NativePayloadError as exc:
+        raise MirrorMaterializationError(
+            f"Cannot externalize native attribute records: {exc}"
+        ) from exc
+
+    for relative_path, root in output_roots:
+        files.append(MaterializedFile(relative_path, _serialize_svg(root)))
 
     for relative_target, source in sorted(asset_sources.items()):
         files.append(MaterializedFile(relative_target, source.read_bytes()))
+    payload_store: bytes | None = None
+    if native_payloads or native_records:
+        try:
+            payload_store = serialize_native_payload_store(
+                native_payloads,
+                native_records,
+            )
+        except NativePayloadError as exc:
+            raise MirrorMaterializationError(
+                f"Cannot serialize native payload store: {exc}"
+            ) from exc
+        files.append(
+            MaterializedFile(PAYLOAD_STORE_RELATIVE_PATH, payload_store)
+        )
     relative_files = [item.relative_path for item in files]
     if len(relative_files) != len(set(relative_files)):
         raise MirrorMaterializationError("Materializer produced duplicate output paths")
@@ -2548,7 +2613,15 @@ def materialize_mirror_template(
             ) from exc
         for relative in relative_files:
             if relative.suffix.lower() == ".svg":
-                _ensure_no_source_refs(staged_root / relative)
+                staged_svg = staged_root / relative
+                try:
+                    hydrate_native_payload_refs(_parse_svg(staged_svg), staged_svg)
+                except NativePayloadError as exc:
+                    raise MirrorMaterializationError(
+                        f"Materialized native payload reference is invalid: "
+                        f"{relative}: {exc}"
+                    ) from exc
+                _ensure_no_source_refs(staged_svg)
         _publish_files(
             template_workspace,
             staged_root,
@@ -2568,6 +2641,18 @@ def materialize_mirror_template(
         "imported_vector_count": len(referenced_icons),
         "packaged_asset_count": len(asset_sources),
         "restoration": total_stats.as_dict(),
+        "native_payloads": {
+            **native_payload_stats.as_dict(),
+            "unique_count": len(native_payloads),
+            "unique_record_count": len(native_records),
+            "unique_raw_bytes": sum(len(payload) for payload in native_payloads.values()),
+            "store_bytes": len(payload_store or b""),
+            "store_path": (
+                PAYLOAD_STORE_RELATIVE_PATH.as_posix()
+                if payload_store is not None
+                else None
+            ),
+        },
         "files": [
             item.relative_path.as_posix()
             for item in sorted(files, key=lambda item: item.relative_path.as_posix())

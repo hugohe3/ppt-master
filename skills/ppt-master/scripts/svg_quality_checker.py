@@ -22,6 +22,7 @@ from collections import Counter, defaultdict
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from native_payloads import NativePayloadError, hydrate_native_payload_refs
 
 configure_utf8_stdio()
 
@@ -1206,6 +1207,16 @@ class SVGQualityChecker:
             # produce misleading errors on a broken document.
             root = self._parse_xml_root(content, result)
             if root is not None:
+                try:
+                    hydrated_payloads = hydrate_native_payload_refs(root, svg_path)
+                except NativePayloadError as exc:
+                    result['errors'].append(
+                        f"Invalid native payload reference: {exc}"
+                    )
+                else:
+                    if hydrated_payloads:
+                        result['info']['native_payload_refs'] = hydrated_payloads
+
                 # 1. Check viewBox
                 self._check_viewbox(
                     root,
@@ -3119,6 +3130,19 @@ class SVGQualityChecker:
                 result['errors'].append(
                     f"Icon not found: {icon_name} (searched {icons_dir}"
                     f"{fallback_msg}){hint}"
+                )
+                continue
+            try:
+                icon_root = ET.parse(icon_path).getroot()
+                hydrated = hydrate_native_payload_refs(icon_root, icon_path)
+            except (OSError, ET.ParseError, NativePayloadError) as exc:
+                result['errors'].append(
+                    f"Icon {icon_name} has invalid native payload metadata: {exc}"
+                )
+                continue
+            if hydrated:
+                result['info']['native_icon_payload_refs'] = (
+                    result['info'].get('native_icon_payload_refs', 0) + hydrated
                 )
 
     def _check_unsupported_visual_elements(

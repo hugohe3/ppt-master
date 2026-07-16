@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from native_payloads import NativePayloadError, hydrate_native_payload_refs
 from pptx_to_svg.preset_authoring import (
     authored_preset_encoding,
     validate_authored_preset_group,
@@ -395,6 +396,13 @@ def template_placeholder_bindings(
 
 def _local_tag(elem: ET.Element) -> str:
     return elem.tag.rsplit("}", 1)[-1] if isinstance(elem.tag, str) else ""
+
+
+def _parse_svg_root(svg_path: Path) -> ET.Element:
+    """Parse one SVG and hydrate compact native metadata in memory."""
+    root = ET.parse(svg_path).getroot()
+    hydrate_native_payload_refs(root, svg_path)
+    return root
 
 
 def _is_authored_preset_atom(elem: ET.Element) -> bool:
@@ -1223,8 +1231,8 @@ def parse_template_slide(
 ) -> TemplateSlideSpec:
     """Parse one SVG's explicit template layout and structure elements."""
     try:
-        root = ET.parse(svg_path).getroot()
-    except (OSError, ET.ParseError) as exc:
+        root = _parse_svg_root(svg_path)
+    except (OSError, ET.ParseError, NativePayloadError) as exc:
         raise TemplateStructureError(
             f"{svg_path.name}: unable to parse SVG structure metadata: {exc}"
         ) from exc
@@ -1737,8 +1745,8 @@ def parse_optional_layout_slides(
     has_structure_metadata = False
     for svg_path in svg_files:
         try:
-            root = ET.parse(svg_path).getroot()
-        except (OSError, ET.ParseError) as exc:
+            root = _parse_svg_root(svg_path)
+        except (OSError, ET.ParseError, NativePayloadError) as exc:
             raise TemplateStructureError(
                 f"{svg_path.name}: unable to inspect SVG Layout metadata: {exc}"
             ) from exc
@@ -1805,8 +1813,8 @@ def flat_structure_metadata_errors(svg_files: list[Path]) -> list[str]:
     errors: list[str] = []
     for svg_path in svg_files:
         try:
-            root = ET.parse(svg_path).getroot()
-        except (OSError, ET.ParseError) as exc:
+            root = _parse_svg_root(svg_path)
+        except (OSError, ET.ParseError, NativePayloadError) as exc:
             errors.append(
                 f"{svg_path.name}: unable to inspect flat-mode metadata: {exc}"
             )
@@ -2356,9 +2364,9 @@ def _structure_subtree_signature(
 ) -> tuple[tuple[str, tuple[object, ...]], ...]:
     """Read structural or literal-visual signatures for direct SVG children."""
     try:
-        root = ET.parse(svg_path).getroot()
+        root = _parse_svg_root(svg_path)
         materialize_inline_geometry_properties(root)
-    except (OSError, ET.ParseError, GeometryStyleError) as exc:
+    except (OSError, ET.ParseError, NativePayloadError, GeometryStyleError) as exc:
         raise TemplateStructureError(
             f"{svg_path.name}: unable to compare template prototype structure: {exc}"
         ) from exc
@@ -2401,8 +2409,8 @@ def _structure_subtree_signature(
 def _mirror_ordinary_slide_ids(spec: TemplateSlideSpec) -> set[str]:
     """Return stable ids that are ordinary Slide content in one mirror page."""
     try:
-        root = ET.parse(spec.svg_path).getroot()
-    except (OSError, ET.ParseError) as exc:
+        root = _parse_svg_root(spec.svg_path)
+    except (OSError, ET.ParseError, NativePayloadError) as exc:
         raise TemplateStructureError(
             f"{spec.svg_path.name}: unable to inspect mirror page ownership: {exc}"
         ) from exc
@@ -2435,9 +2443,9 @@ def _mirror_slide_local_signature(
     evolved Layout identity to the same stable SVG id.
     """
     try:
-        root = ET.parse(spec.svg_path).getroot()
+        root = _parse_svg_root(spec.svg_path)
         materialize_inline_geometry_properties(root)
-    except (OSError, ET.ParseError, GeometryStyleError) as exc:
+    except (OSError, ET.ParseError, NativePayloadError, GeometryStyleError) as exc:
         raise TemplateStructureError(
             f"{spec.svg_path.name}: unable to compare mirror page visuals: {exc}"
         ) from exc
@@ -2902,8 +2910,8 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
     template paint-order violations.
     """
     try:
-        root = ET.parse(svg_path).getroot()
-    except (OSError, ET.ParseError):
+        root = _parse_svg_root(svg_path)
+    except (OSError, ET.ParseError, NativePayloadError):
         return []
     if _local_tag(root) != "svg":
         return []

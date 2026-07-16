@@ -105,7 +105,13 @@ Materialization preserves source page order and emits one definition-only
 It mechanically expands fixed Master/Layout group wrappers into direct atoms,
 rehydrates only unchanged converter-supported Slide-local/slot refs, keeps the
 current SVG fallback for edited refs, preserves explicit text hard breaks, and
-removes every IR-only source ref. Source `p:sldLayout@showMasterSp` and
+removes every IR-only source ref. Supported opaque `p:txBody`,
+relationship-free `p:style`, and `a:custGeom` payloads are deduplicated into
+`templates/native_payloads.json.gz`. Repeated native restoration attributes
+are stored there as short `data-pptx-native-ref` records; page and
+imported-vector SVGs retain only those record ids and content-hash payload
+references. Structural Master/Layout, placeholder, layer, and editable-object
+fields remain inline. Source `p:sldLayout@showMasterSp` and
 `p:sld@showMasterSp` facts become canonical root
 `data-pptx-show-master-shapes` and
 `data-pptx-show-inherited-shapes` booleans. An imported text placeholder keeps
@@ -113,9 +119,13 @@ its authoritative native frame on the `<text data-pptx-frame>` carrier so the
 Slide-local frame can differ from the reusable Layout bounds without collapsing
 to glyph bounds.
 
+Checker, template-structure validation, and export hydrate both store layers in
+memory; legacy inline payload and v1 payload-only stores remain readable.
+
 The output routes reusable vectors once to `icons/imported/`, bitmaps to
 `images/`, and other referenced files to `templates/assets/`. The JSON report
-is written to stdout only. The command intentionally does not create
+reports payload occurrence, native-record, unique-byte, and compressed-store
+counts and is written to stdout only. The command intentionally does not create
 `templates/design_spec.md`; Template_Designer writes that personality and page
 roster after materialization. This compiler is for Type A mirror materialization,
 not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,

@@ -44,7 +44,7 @@ initialized project:
 
 ```text
 <template_workspace>/
-├── templates/                # design_spec.md and any SVG prototypes
+├── templates/                # design_spec.md, SVG prototypes, optional native_payloads.json.gz store
 ├── images/                   # optional bitmaps
 ├── icons/
 │   └── imported/             # optional imported vectors, one canonical copy

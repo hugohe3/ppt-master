@@ -113,8 +113,13 @@ inventory, then publishes a complete structured template roster atomically.
 Unchanged supported Slide-local/slot refs may recover native payload; edited
 refs keep their current SVG fallback. Fixed Master/Layout wrappers are expanded
 mechanically into direct atoms, source visibility flags become canonical root
-metadata, and imported vectors are copied once to `icons/imported/`. Bitmap
-assets go to `images/`; other referenced source assets go to
+metadata, and imported vectors are copied once to `icons/imported/`. Large
+opaque `txBody`, shape-style, and custom-geometry payloads are deduplicated into
+`templates/native_payloads.json.gz`; repeated native restoration attributes
+are stored there as short `data-pptx-native-ref` records. Structural metadata
+stays inline, while checker, template-structure validation, and export hydrate
+both layers in memory. Legacy inline payload and v1 payload-only stores remain
+readable. Bitmap assets go to `images/`; other referenced source assets go to
 `templates/assets/`. The destination must be empty, and the command does not
 write `templates/design_spec.md`; Template_Designer owns that authored brief.
 

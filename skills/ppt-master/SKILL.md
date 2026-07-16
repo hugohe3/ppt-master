@@ -728,6 +728,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
+#   backup/<timestamp>/templates/native_payloads.json.gz
+#                                                     ← copied when compact native metadata refs are used
 # Add --native-charts-and-tables to replace marked fallbacks with PowerPoint-native Chart/Table objects:
 #   exports/<project_name>_<timestamp>_native_charts_tables.pptx  ← native Chart/Table replacements (data-pptx-replace-with markers)
 # Re-export with --recorded-narration audio (generate-audio stage) embeds per-slide narration:
@@ -747,7 +749,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `--image-sizing display --image-scale 2` only for aggressive size reduction.
 > The `svg_output/`
 > snapshot in `backup/<timestamp>/` is always written so the project can be
-> re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
+> re-exported from frozen SVG sources without re-running the LLM. When those
+> SVGs reference compact native template metadata, the matching
+> `templates/native_payloads.json.gz` sidecar is copied into the same backup
+> timestamp. The SVG-rendered
 > preview remains the mandatory `svg_final/` artifact from Step 7.2; it is not
 > packaged as a second PPTX. Use the default source selection for release
 > exports. `-s final` is diagnostic-only
