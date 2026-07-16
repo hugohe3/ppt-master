@@ -41,6 +41,7 @@ from svg_authoring_view import (
     SOURCE_REF_ATTRIBUTE,
     semantic_subtree_sha256,
 )
+from svg_finalize.flatten_tspan import flatten_text_with_tspans
 from svg_to_pptx.pptx_package.template_structure import (
     TemplateStructureError,
     parse_template_slides,
@@ -54,6 +55,11 @@ XML_NS = "http://www.w3.org/XML/1998/namespace"
 NATIVE_STRUCTURE_SCHEMA = "ppt-master.native-structure.v1"
 VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v1"
 IMPORTED_ICON_NAMESPACE = "imported"
+TRANSPARENT_PIXEL_DATA_URI = (
+    "data:image/png;base64,"
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUA"
+    "AXpeqz8AAAAASUVORK5CYII="
+)
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -1093,17 +1099,37 @@ def _flatten_fixed_group(group: ET.Element, *, context: str) -> list[ET.Element]
     return atoms
 
 
+def _flatten_fixed_text_atoms(atoms: Iterable[ET.Element]) -> list[ET.Element]:
+    flattened: list[ET.Element] = []
+    for atom in atoms:
+        if _local_name(atom.tag) != "text":
+            flattened.append(atom)
+            continue
+        scratch = ET.Element(f"{{{SVG_NS}}}svg")
+        scratch.append(atom)
+        tree = ET.ElementTree(scratch)
+        flatten_text_with_tspans(tree, merge_paragraphs=False)
+        flattened.extend(list(scratch))
+    return flattened
+
+
 def _fixed_atoms(
     root: ET.Element,
     *,
     scope: str,
     key: str,
+    placeholder_source_refs: set[str] | None = None,
 ) -> list[ET.Element]:
     atoms: list[ET.Element] = []
     serial = 0
+    placeholder_source_refs = placeholder_source_refs or set()
     for child in root:
         tag = _local_name(child.tag)
-        if tag in _NON_VISUAL_TAGS or child.get("data-ph-type") is not None:
+        if (
+            tag in _NON_VISUAL_TAGS
+            or child.get("data-ph-type") is not None
+            or child.get(SOURCE_REF_ATTRIBUTE) in placeholder_source_refs
+        ):
             continue
         if not _visible_leaf(child):
             continue
@@ -1114,6 +1140,7 @@ def _fixed_atoms(
             )
         else:
             expanded = [copy.deepcopy(child)]
+        expanded = _flatten_fixed_text_atoms(expanded)
         source_ref = child.get(SOURCE_REF_ATTRIBUTE)
         source_token = source_ref.split(":", 1)[-1] if source_ref else str(serial + 1)
         for part, atom in enumerate(expanded, start=1):
@@ -1166,7 +1193,17 @@ def _placeholder_guide_by_semantic(
             continue
         if _semantic_role({"type": placeholder_type}) == semantic_role:
             matches.append(element)
-    return matches[0] if len(matches) == 1 else None
+    if len(matches) == 1:
+        return matches[0]
+    if matches or semantic_role != "object":
+        return None
+
+    body_matches = [
+        element
+        for element in root.iter()
+        if element.get("data-ph-type") == "body"
+    ]
+    return body_matches[0] if len(body_matches) == 1 else None
 
 
 def _placeholder_idx(raw: object) -> int | None:
@@ -1678,6 +1715,22 @@ def _blank_text_carrier(
     return carrier
 
 
+def _blank_image_carrier(plan: SlotPlan) -> ET.Element:
+    x, y, width, height = plan.bounds
+    return ET.Element(
+        f"{{{SVG_NS}}}image",
+        {
+            "x": _format_number(x),
+            "y": _format_number(y),
+            "width": _format_number(width),
+            "height": _format_number(height),
+            "href": TRANSPARENT_PIXEL_DATA_URI,
+            "preserveAspectRatio": "none",
+            "data-pptx-placeholder-carrier": "true",
+        },
+    )
+
+
 def _format_number(value: float) -> str:
     return f"{value:.8f}".rstrip("0").rstrip(".") or "0"
 
@@ -1766,6 +1819,14 @@ def _slot_wrapper(
         for element in (carrier_source.iter() if carrier_source is not None else [])
         if _local_name(element.tag) in expected_tags and _visible_leaf(element)
     ]
+    if (
+        not candidates
+        and source is None
+        and layout_guide is not None
+        and plan.semantic_role in {"picture", "media"}
+    ):
+        wrapper.append(_blank_image_carrier(plan))
+        return wrapper, extras
     if len(candidates) != 1:
         raise MirrorMaterializationError(
             f"Slot {plan.slot_id!r} requires exactly one visible "
@@ -1911,7 +1972,17 @@ def _compose_template(
         root.append(style)
 
     master_atoms = _fixed_atoms(master_root, scope="master", key=str(master["key"]))
-    layout_atoms = _fixed_atoms(layout_root, scope="layout", key=str(layout["key"]))
+    layout_placeholder_refs = {
+        f"layout:{item['shapeId']}"
+        for item in layout.get("placeholders", [])
+        if isinstance(item, dict) and item.get("shapeId") is not None
+    }
+    layout_atoms = _fixed_atoms(
+        layout_root,
+        scope="layout",
+        key=str(layout["key"]),
+        placeholder_source_refs=layout_placeholder_refs,
+    )
     master_backgrounds = [
         atom for atom in master_atoms if _is_full_canvas_rect(atom, width, height)
     ]
