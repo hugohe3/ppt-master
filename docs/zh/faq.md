@@ -10,7 +10,7 @@
 
 ## Q: 只有一个主题或想法、没有任何资料，也能生成吗？
 
-可以。直接告诉 AI 你想做的主题或场景（如"做一个关于宫崎骏的 PPT"、"介绍我们公司新产品"），AI 会自动启动 **topic-research 工作流**——通过网页搜索抓取权威来源（Wikipedia / 官网 / 机构发布），整理成 Markdown 资料文档 + 配图集后再走主流程生成幻灯片。
+可以。直接告诉 AI 你想做的主题或场景（如"做一个关于宫崎骏的 PPT"、"介绍我们公司新产品"），Generate PPTX 路线会自动运行 **topic-research 阶段**——通过网页搜索抓取权威来源（Wikipedia / 官网 / 机构发布），整理成 Markdown 资料文档 + 配图集后再走主流程生成幻灯片。
 
 效果取决于公开网页的覆盖度。如果你已有专业资料（论文、内部文档），直接把文件给 AI 比联网检索更准。
 
@@ -30,7 +30,7 @@
 
 ## Q: PPT Master 支持哪些 AI 工具？
 
-PPT Master 可以在任何能读取文件和执行命令的 AI 编程代理中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
+PPT Master 可以在任何能读取文件和执行命令、支持 Agent 的 AI 工具中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
 
 ## Q: 我下载过旧版本，怎么更新到最新版？
 
@@ -128,7 +128,7 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 目前主流 AI 工具都已转向按量计费——用多少付多少。PPT Master 天然契合这一模型：不需要额外订阅 PPT 平台、没有专有积分、没有按人头收费的演示工具费用。
 
-作为对比，Gamma 订阅 $8–20/月，Beautiful.ai $12–45/月——无论用多少都得付这个底价。PPT Master 在你现有 AI 支出之外不增加任何额外成本。
+而且它跑在编程 agent 里：走固定月费的订阅套餐，就能在套餐额度内多做 deck 而不额外多花钱；走 API 直连、按 token 计费则是另一种价格结构——由你选。无论走哪条，PPT Master 都不会在你的 AI 支出之外再加一层自己的费用。
 
 ## Q: 生成的图表可以编辑数据吗？
 
@@ -150,7 +150,7 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 `on-click` 适合现场演示。通过 `--recorded-narration` 做旁白/视频导出时会拒绝它，因为 PPT Master 只写页面级计时，不生成对象级点击计时；带旁白的 deck 请使用 `after-previous` 或 `with-previous`。
 
-完整效果列表、`<g id="...">` 锚点机制、降级行为、限制：见 [转场与动画](./animations.md)。
+常用命令、Start 模式选择与对象级自定义见[转场与动画](./animations.md)；精确效果与校验行为由其中链接的执行规范维护。
 
 ## Q: 推荐用什么 AI 模型？
 
@@ -162,7 +162,7 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 ## Q: 有人说 PPT Master "只是个玩具"——这个评价准确吗？
 
-不准确。PPT Master 是一个 **harness**，不是完整的 agent——`harness + model = agent`，输出上限完全由模型决定，而不是由 harness 本身决定。用弱模型或小上下文窗口来评价 PPT Master，就好比挂着一档开跑车然后说它跑不快。
+不准确。PPT Master 是演示文稿工作流，不是模型，也不是完整 agent。它提供演示文稿专用的推理、合同、项目状态、确定性转换与质量门；最终质量上限仍由所选模型决定。用弱模型或小上下文窗口来评价这套工作流，就好比挂着一档开跑车然后说它跑不快。
 
 **发挥完整实力的组合：**
 
@@ -171,21 +171,19 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 如果你看到的效果差强人意，先对照以下几点检查你的配置，再下结论：用的什么模型？上下文开了多大？有没有接入图片生成 API？同样的工作流，Claude Opus 配 100 万 token 上下文配 `gpt-image-2` 的结果，和小参数开源模型配零配置的结果，是截然不同的体验。
 
-**harness 决定工作流上限，model 决定质量上限。** 如果 agent 能力不达预期，请先升级模型，再来评价 harness。
-
 > **没有 Claude 渠道？** 本项目赞助商 [PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude 及其他主流模型的按量付费接入——无需订阅，无需境外信用卡，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
 
 最后再说一句：这是一个免费、个人维护的开源项目。合用就用，能帮到你我很高兴；不合用，换个工具就好。真诚的反馈与建议始终欢迎——这也是项目一点点变好的方式。
 
 ## Q: 文字超出边框 / 元素错位怎么办？
 
-这几乎都是模型能力问题，不是 PPT Master 的 bug。SVG 排版是纯手动绝对定位——模型必须准确计算坐标、字体度量和容器尺寸。
+原因取决于偏差出现在哪一层。如果源 SVG 本身已经溢出或错位，通常属于创作 / 排版问题：模型需要准确计算坐标、字体度量和容器尺寸。如果 SVG 预览正确、导出的 PPTX 却不同，则可能是转换器或渲染器问题，应连同两份产物一起反馈。
 
 **解决办法**：
-1. 切换到 **Claude**（Opus 或 Sonnet），如果你用的是其他模型
+1. 对比 `svg_output/` 中的页面与导出 PPTX，先区分创作问题和转换问题
 2. 告诉 AI 哪一页有问题、具体是什么问题——它可以单独重新生成某一页
-3. 直接打开 SVG 源文件，让 AI 修正坐标
-4. 记住：生成的 PPTX 是**高质量起点**，不是最终成品——在 PowerPoint 中做少量调整是正常的
+3. 如果 SVG 本身持续出错，换更强的模型，或让 AI 直接修正坐标
+4. 记住：生成的 PPTX 是**高质量、可编辑的草稿**，不是封闭的最终成品——在 PowerPoint 中做少量收尾是正常的
 
 ## Q: 生成一份 PPT 要多久？
 
@@ -209,16 +207,16 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 ## Q: 我手上有一份现成的 PPT，想基于它做东西，该走哪条路？
 
-把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应四条路：
+把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应三种生成路径，以及直接保留原文件这一种无需生成的结果：
 
 | 意图 | 路线 | 固定不变的东西 |
 |---|---|---|
-| 留内容 + 重做版式 | **beautify（美化 / 重排）** | 页数、页序、每页文字、图表/表格数据 |
-| 换内容 + 留设计 | **template-fill（套模板）** | 原生页面设计；可选择、乱序、复用源页 |
-| 只留内容，设计与分页都重来 | **主管线** | 源事实；故事结构和页数都可重构 |
+| 留内容 + 重做版式 | **Generate PPTX + beautify profile** | 页数、页序、每页文字、图表/表格数据 |
+| 换内容 + 留设计 | **Fill Native PPTX** | 原生页面设计；可选择、乱序、复用源页 |
+| 只留内容，设计与分页都重来 | **Generate PPTX** | 源事实；故事结构和页数都可重构 |
 | 留内容 + 留设计 | 不必生成 | 直接用原文件 |
 
-用 **beautify** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，只重排版式、层级和留白，并继承原配色字体。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify 工作流](../../skills/ppt-master/workflows/beautify-pptx.md)。
+使用 **beautify profile** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，只重排版式、层级和留白，并继承原配色字体。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify profile](../../skills/ppt-master/workflows/profiles/beautify-pptx.md)。
 
 用 **主管线** 的前提是：原 PPT 只是内容材料。流程会用 `ppt_to_md` 抽成 Markdown，并读取 `analysis/` 里的 PPTX intake 事实，再由 Strategist 自由重构大纲（合页 / 拆页 / 换序）。典型说法是「用这份 PPT 的内容重做一份更好的」或「提炼成 10 页高管汇报」。
 
@@ -244,15 +242,15 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第一步 — 准备参考材料**
 
-**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持的视觉对象，不做语义归纳。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
+**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取包内实际存在且受支持的主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则把这些已验证的来源事实物化到新工作区，不做语义归纳或缺口补造。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
 
-完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
+完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 
 **第二步 — 让 AI 创建模板**
 
-使用 AI 编程代理（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将这些参考材料转换成模板。提供的信息越详细，效果越好，例如：
+使用支持 Agent 的 AI 工具（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将这些参考材料转换成模板。提供的信息越详细，效果越好，例如：
 
 - 模板名称和适用场景（如政府汇报、高端咨询、产品宣讲等）
 - 期望的风格基调和配色（如"现代克制、深蓝主色调"）
@@ -264,7 +262,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第三步 — 等待完成**
 
-AI 代理会自动完成后续工作——分析参考、构建布局定义并验证模板。如果你明确需要 PowerPoint 审阅文件，它还会按需生成 `exports/<id>_template_preview.pptx`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 与 `exports/`：`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册；空的可选目录直接省略。把这个工作区根目录交给 Step 3 即可，Step 3 不会复制 `exports/`，全局库的预览导出也由 Git 忽略。旧式平铺包仍可把 `design_spec.md` 放在根目录，目录平铺本身不要求恢复结构。
+AI 代理会自动完成后续工作——分析参考、构建布局定义并验证模板。如果你明确需要 PowerPoint 审阅文件，它还会按需生成 `exports/<id>_template_preview.pptx`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 与 `exports/`：`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册；空的可选目录直接省略。把这个工作区根目录交给 Step 3 即可，Step 3 不会复制 `exports/`，全局库的预览导出也由 Git 忽略。根目录平铺 `design_spec.md` 的工作区只有在 SVG 已满足当前合同时才兼容；语义旧包必须通过 `create-template` 替换，不能原地升级。
 
 > **提示**：对风格和使用场景描述得越具体，生成的模板就越符合你的预期。
 

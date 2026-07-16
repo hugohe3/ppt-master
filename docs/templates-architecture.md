@@ -1,5 +1,9 @@
 # Template Architecture: Brand / Layout / Deck
 
+[English](./templates-architecture.md) | [Chinese](./zh/templates-architecture.md)
+
+---
+
 > This is the **architecture alignment document**. It defines the three template kinds at the data-model layer, the field sets of each `design_spec.md`, and the multi-path fusion + conflict resolution rules. Audience: contributors and AI workflows; answers "what should / shouldn't a template directory contain; how do they combine when multiple are supplied".
 >
 > For user-facing usage (how to trigger, how to pick), see [`templates-guide.md`](./templates-guide.md); not repeated here.
@@ -10,13 +14,15 @@
 
 | Kind | Library workspace root | What it writes | What it does NOT write | Originating workflow |
 |---|---|---|---|---|
-| **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-brand.md` |
-| **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template.md` (layout branch) |
-| **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template.md` (deck branch, default) |
+| **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-template/create-brand.md` |
+| **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template/create-layout.md` |
+| **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template/create-deck.md` (default child) |
 
-Every newly created or restored Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror restores the source roster, identities, parentage, placeholder facts, and supported visuals without semantic synthesis; fixed-layer source groups are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. Packages with legacy Master/Layout semantics first run `restore-pptx-structure`; a legacy flat directory with `design_spec.md` at its root remains a supported compatibility shape and flat placement alone does not trigger restoration.
+Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror materializes a new workspace from validated authoring IR: a native PPTX contributes only supported facts still present in its package, while a current-contract SVG template contributes only its declared contract. It never reconstructs missing topology from a legacy SVG; fixed-layer source groups that are valid inputs are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. A flat directory with `design_spec.md` at its root remains a supported compatibility shape only when its SVGs satisfy the current contract. Semantic-legacy packages must be replaced by a newly created template workspace; they are never upgraded in place.
 
 The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
+
+The fused project-level `design_spec.md` must also retain an accurate `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. The Strategist confirmation page uses this field to show `adaptive / strict` only for Deck/Layout bundles that actually own page structure.
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -32,7 +38,7 @@ native_structure_mode: structured
 ...
 ---
 
-# templates/decks/china_merchants_bank/templates/design_spec.md
+# templates/decks/中国电信/templates/design_spec.md
 ---
 kind: deck
 native_structure_mode: structured
@@ -89,7 +95,7 @@ To make multi-path fusion override cleanly, every field belongs to a named segme
 
 A deck is the **full identity + structure reference** derived from an existing PPT or confirmed design direction — its geometry, color palette, and typefaces form one coherent system. Its value is "validated cohesion", which a free layout + brand combo can't always reach.
 
-Its construction depends on replication mode. `standard` / `fidelity` author a new system from visual reference; mirror restores source identities and parentage one-to-one. Once packaged, either form is a complete reference solution that can be overridden by an explicitly supplied brand or layout.
+Its construction depends on replication mode. `standard` / `fidelity` author a new system from visual reference; mirror maps validated source identities and parentage one-to-one into a new workspace. Once packaged, either form is a complete reference solution that can be overridden by an explicitly supplied brand or layout.
 
 ---
 
@@ -209,7 +215,7 @@ this segment”.
 
 ## 3. The three index files
 
-Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick (following the "meta + summary" pattern from `charts_index.json`, but preserving structured metadata that helps selection).
+Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick, following the compact "meta + summary" pattern used by [`charts_index.json`](../skills/ppt-master/templates/charts/charts_index.json) while preserving structured metadata that helps selection.
 
 These indexes cover library scope only. A project-root workspace is intentionally absent from all three indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
 
@@ -312,7 +318,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 ```markdown
 > **Fused from:**
-> - deck: `templates/decks/china_merchants_bank/` (base)
+> - deck: `templates/decks/中国电信/` (base)
 > - brand: `templates/brands/anthropic/` (identity override)
 > - layout: `templates/layouts/presentation_core/` (structure override)
 > - conflicts resolved: Color Scheme from anthropic (user picked a)
@@ -324,7 +330,7 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with SKILL.md Step 3
 
-**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for compatibility, it also accepts a legacy flat root containing `<workspace>/design_spec.md`. Flat placement is only a directory-shape compatibility case. It does not trigger `restore-pptx-structure`; restoration is required only when the SVG contract has legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — an explicit workspace-root path is still required ([SKILL.md Step 3](../skills/ppt-master/SKILL.md#step-3-template-option)), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a flat root containing `<workspace>/design_spec.md` when the SVGs already satisfy the current contract. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
@@ -342,14 +348,16 @@ When a deck path is supplied, the user already has a complete solution; the Stra
 
 ---
 
-## 6. Relationship with workflows
+## 6. Relationship with routes and child workflows
 
-| Workflow | Produces |
+| Route or child workflow | Produces |
 |---|---|
-| `workflows/create-brand.md` | identity-only brand workspace using the common routes; empty optional directories are omitted |
-| `workflows/create-template.md` | complete layout or deck workspace. `standard` / `fidelity` author new semantic SVGs; mirror restores the source contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (`projects/<name>/`, no registration). Both use the same optional-directory routing; preview PPTX is on demand for one Master and mandatory for multiple Masters. The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
+| `workflows/create-template.md` | Fixed Create Template entry and shared scope, confirmation, preflight, structured-authoring, registration, completion, and handoff contract; dispatches exactly one child workflow |
+| `workflows/create-template/create-brand.md` | Identity-only Brand workspace; no SVG roster and empty optional directories are omitted |
+| `workflows/create-template/create-layout.md` | Brand-neutral structural Layout workspace with a structured SVG roster |
+| `workflows/create-template/create-deck.md` | Integrated identity-and-structure Deck workspace with a structured SVG roster; selected by default when both segments are requested |
 
-In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may migrate between scopes without reshaping; add or remove only the library index registration.
+In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may move between scopes without reshaping; add or remove only the library index registration.
 
 ---
 

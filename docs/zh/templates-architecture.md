@@ -1,5 +1,9 @@
 # 模板架构：Brand / Layout / Deck 三分类
 
+[English](../templates-architecture.md) | [Chinese](./templates-architecture.md)
+
+---
+
 > 本文是**架构对齐文档**，定义"模板"在数据模型层面的三种身份、各自的 `design_spec.md` 字段集、以及多路径合成与冲突解决规则。面向贡献者与 AI 工作流，回答"一个模板目录里应该写什么、不写什么；多个模板同时给时怎么合成"。
 >
 > 用户视角的用法（怎么触发、怎么选）见 [`templates-guide.md`](./templates-guide.md)；本文不重复。
@@ -10,11 +14,11 @@
 
 | 分类 | 全局库工作区根目录 | 写什么 | 不写什么 | 出处工作流 |
 |---|---|---|---|---|
-| **Brand** | `templates/brands/<id>/` | 仅身份段：color / typography / logo / voice / icon style | 不写 canvas、page structure、SVG roster | `workflows/create-brand.md` |
-| **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template.md`（layout 分支）|
-| **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template.md`（deck 分支，默认）|
+| **Brand** | `templates/brands/<id>/` | 仅身份段：color / typography / logo / voice / icon style | 不写 canvas、page structure、SVG roster | `workflows/create-template/create-brand.md` |
+| **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template/create-layout.md` |
+| **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template/create-deck.md`（默认子工作流）|
 
-每张新建或已恢复的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。`standard` / `fidelity` 重新创作 SVG 和新的结构，不保留、也不蒸馏来源拓扑。Mirror 按来源恢复 roster、身份、父子关系、placeholder 事实和受支持视觉，不做语义归纳；固定结构层的来源 group 只允许机械展开成直接原子。下游 `strict` 保持所选声明合同，`adaptive` 保持 Master 并可在创作时建立新 Layout 身份；两者都使用 `pptx_structure.mode: structured`。只有使用旧 Master/Layout 语义的包才必须先运行 `restore-pptx-structure`；旧包把 `design_spec.md` 平铺在根目录仍属于受支持的兼容目录形态，目录平铺本身不触发恢复。
+每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。`standard` / `fidelity` 重新创作 SVG 和新的结构，不保留、也不蒸馏来源拓扑。Mirror 从已验证的 authoring IR 物化一个新工作区：原生 PPTX 只贡献包内仍然存在且受支持的事实；满足当前合同的 SVG 模板只贡献其已声明合同。它不会从旧 SVG 重建缺失拓扑；作为有效输入的固定结构层 group 只允许机械展开成直接原子。下游 `strict` 保持所选声明合同，`adaptive` 保持 Master 并可在创作时建立新 Layout 身份；两者都使用 `pptx_structure.mode: structured`。根目录平铺 `design_spec.md` 的目录只有在 SVG 已满足当前合同时才兼容；带旧结构语义的包必须替换为新建模板工作区，不能原地升级。
 
 三者是**三种并列的 reference bundle**。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
 
@@ -69,7 +73,7 @@ native_structure_mode: structured
 
 导入向量统一使用 `data-icon="imported/<name>"`，唯一规范文件位于 `icons/imported/<name>.svg`。具备工作区感知的校验与导出会直接解析这个根目录路径；`templates/icons/` 不属于模板包结构。
 
-原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
+原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据，并作为不可变原生载荷后备；`svg_authoring_view.py` 生成可编辑 authoring IR，其中轻量 SVG 使用文档内 source ref 标识对象，manifest 只保存路径和初始 hash。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化模板，仅为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback，最终模板不包含 IR 专用 ref。导出只编译声明的结构，不推断归属。
 
 两种范围都在可移植 frontmatter 中保留 `kind: layout` 或 `kind: deck`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
@@ -89,7 +93,7 @@ native_structure_mode: structured
 
 Deck 是从一份现存 PPT 或明确设计方向形成的完整身份与结构参考——配色、字体、视觉节奏与页面类型共同组成一个整体。它的价值是「已验证的整体感」，是 layout + brand 自由拼合未必能达到的成品。
 
-它的构建方式由 replication mode 决定：`standard` / `fidelity` 根据视觉参考创作新系统；mirror 一对一恢复来源身份与父子关系。打包完成后，两者都作为可被显式 brand / layout 覆盖的完整参考方案使用。
+它的构建方式由 replication mode 决定：`standard` / `fidelity` 根据视觉参考创作新系统；mirror 把已验证的来源身份与父子关系一对一映射进新工作区。打包完成后，两者都作为可被显式 brand / layout 覆盖的完整参考方案使用。
 
 ---
 
@@ -203,7 +207,7 @@ primary_color: "<HEX>"
 
 ## 三、三套 index 文件
 
-每个 index 跟物理目录一一对应，字段按需精简（参照 [[project-charts-index-full-read-intentional]] 的"meta + summary"模式，但保留对 Strategist 选型有用的结构化元数据）。
+每个 index 跟物理目录一一对应，字段按需精简，沿用 [`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 的紧凑“meta + summary”模式，同时保留对 Strategist 选型有用的结构化元数据。
 
 三套索引只覆盖全局库范围。项目根工作区有意不进入任何索引，仍可通过显式 `projects/<name>/` 路径使用。因为两种范围采用相同工作区形态，完整核心工作区可在两者之间移动或复制，不需要重写素材路径；只有全局库注册不同。
 
@@ -316,7 +320,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ## 五、与 SKILL.md Step 3 的关系
 
-**触发规则仍以路径为准**——仍需显式工作区根目录路径（见 [[feedback-template-explicit-path-only]]），裸名称绝不触发。Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容旧包，也接受根目录直接包含 `<workspace>/design_spec.md` 的平铺形态。平铺只是目录兼容，不会触发 `restore-pptx-structure`；只有 SVG 合同仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记时才需要恢复。唯一的窄例外是当前对话刚完成 `create-template`：验证通过后可把精确的工作区根目录直接交给 Step 3。`kind` 字段决定**触发后 AI 怎么处理**：
+**触发规则仍以路径为准**——仍需显式工作区根目录路径（见 [SKILL.md Step 3](../../skills/ppt-master/SKILL.md#step-3-template-option)），裸名称绝不触发。Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md` 的平铺工作区，但其中 SVG 必须已经满足当前合同。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，Step 3 必须拒绝；先由 `create-template` 产出新工作区，再继续生成。唯一的窄例外是当前对话刚完成 `create-template`：验证通过后可把精确的工作区根目录直接交给 Step 3。`kind` 字段决定**触发后 AI 怎么处理**：
 
 | 用户路径指向 | Step 3 行为（按 kind 分支）|
 |---|---|
@@ -334,14 +338,16 @@ Deck 路径下用户已经拿到完整方案，策略师确认阶段收窄到"�
 
 ---
 
-## 六、与 workflows 的关系
+## 六、与路线和子工作流的关系
 
-| 工作流 | 产出 |
+| 路线或子工作流 | 产出 |
 |---|---|
-| `workflows/create-brand.md` | 使用统一路由的 identity-only brand 工作区；空的可选目录省略 |
-| `workflows/create-template.md` | 完整 layout 或 deck 工作区。`standard` / `fidelity` 创作新语义 SVG，mirror 恢复来源合同。输出范围默认 `library`（`templates/<kind>/<id>/` + 注册），确认 `project` 时写 `projects/<name>/`（不注册）。两者使用相同的可选目录路由；单 Master 预览 PPTX 按需生成，多 Master 必须生成并通过 package gate。内部 kind 分支仍默认 deck，用户明说"只要结构 / 丢掉品牌色"时走 layout |
+| `workflows/create-template.md` | 固定 Create Template 入口，以及范围、确认、预检、结构创作、注册、完成和交接的共享合同；只分派一个子工作流 |
+| `workflows/create-template/create-brand.md` | 仅身份的 Brand 工作区；无 SVG roster，空的可选目录省略 |
+| `workflows/create-template/create-layout.md` | 品牌中立、带结构化 SVG roster 的 Layout 工作区 |
+| `workflows/create-template/create-deck.md` | 身份与结构一体化、带结构化 SVG roster 的 Deck 工作区；两段都需要时默认选择 |
 
-在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。完整工作区可在两种范围之间迁移而不改形，只需增加或移除全局索引注册。
+在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。完整工作区可在两种范围之间移动而不改形，只需增加或移除全局索引注册。
 
 ---
 

@@ -1,5 +1,9 @@
 # 音频旁白与视频导出
 
+[English](../audio-narration.md) | [Chinese](./audio-narration.md)
+
+---
+
 PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edge-tts`](https://github.com/rany2/edge-tts) —— 微软 Edge 的在线神经网络语音；也可配置 ElevenLabs、MiniMax、Qwen TTS、CosyVoice 使用高质量或复刻音色），再把音频嵌入回 PPTX，由 PowerPoint 自带的"导出视频"一键产出带旁白和转场的 MP4，全程无需第三方工具。
 
 ## 你会得到什么
@@ -15,7 +19,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——生成模式、音色、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
 4. **执行**。脚本写出逐页音频到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。不支持长音频导入或自动拆分。
 
-完整流程见 [`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md)。
+共享阶段见 [`workflows/stages/generate-audio.md`](../../skills/ppt-master/workflows/stages/generate-audio.md)。
 
 ## 两条嵌入路径
 
@@ -56,7 +60,14 @@ uvx ppt-master total-md-split <project_path>
 uvx ppt-master notes-to-audio <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
 
-# 2B. 用 MiniMax 生成 MP3（支持系统音色或复刻 voice_id）
+# 2B. 用 ElevenLabs 生成 MP3（需要 ELEVENLABS_API_KEY）
+export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
+uvx ppt-master notes-to-audio <project_path> \
+  --provider elevenlabs \
+  --voice-id <elevenlabs-voice-id> \
+  --elevenlabs-model eleven_multilingual_v2
+
+# 2C. 用 MiniMax 生成 MP3（支持系统音色或复刻 voice_id）
 export MINIMAX_API_KEY="your-minimax-api-key"
 # 默认使用国内地址；海外访问可设置 MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2
 uvx ppt-master notes-to-audio <project_path> \
@@ -64,7 +75,7 @@ uvx ppt-master notes-to-audio <project_path> \
   --voice-id <minimax-voice-id> \
   --minimax-model speech-2.8-hd
 
-# 2C. 用 Qwen TTS 生成音频（系统音色或复刻音色）
+# 2D. 用 Qwen TTS 生成音频（系统音色或复刻音色）
 export DASHSCOPE_API_KEY="your-dashscope-api-key"
 uvx ppt-master notes-to-audio <project_path> \
   --provider qwen \
@@ -72,7 +83,7 @@ uvx ppt-master notes-to-audio <project_path> \
   --qwen-model qwen3-tts-flash \
   --qwen-language-type Chinese
 
-# 2D. 用 CosyVoice 生成 MP3（系统音色或复刻/设计音色）
+# 2E. 用 CosyVoice 生成 MP3（系统音色或复刻/设计音色）
 export COSYVOICE_API_KEY="your-dashscope-api-key"
 uvx ppt-master notes-to-audio <project_path> \
   --provider cosyvoice \
@@ -84,7 +95,16 @@ uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio
 ```
 
-edge 模式下 `--voice` 是必填项。云端 provider 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台/API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
+edge 模式下 `--voice` 是必填项，可用 `--list-voices --locale <locale>` 查看音色。
+
+ElevenLabs 模式下 `--voice-id` 是必填项，可从账户中列出音色：
+
+```bash
+export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
+uvx ppt-master notes-to-audio --provider elevenlabs --list-voices
+```
+
+MiniMax、Qwen 与 CosyVoice 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台 / API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
 
 进入 PPTX 的旁白音频必须是 PowerPoint 可靠格式：`m4a`（AAC）、`mp3` 或 `wav`。内置生成路径默认使用 `mp3`；如果 provider 产出 `pcm`、`opus` 或 `flac`，需要先转码再嵌入。
 
@@ -122,7 +142,7 @@ uvx ppt-master notes-to-audio <project_path> \
 
 - **授权** —— 只复刻你自己拥有的、或拿到了明确授权的声音。每个 provider 的服务条款都禁止冒用他人声音。
 - **语言覆盖** —— 复刻出来的音色会继承说话人的口音。对中英混合等多语 deck，建议挑一个对你样本语言组合处理较好的 provider；ElevenLabs `eleven_multilingual_v2` 和 CosyVoice 通常最宽容。
-- **一次复刻、长期复用** —— `voice_id` 不过期。复刻一次，可以给任意多份 deck 配旁白。
+- **Provider 保留策略** —— 只要该音色仍存在于你的 provider 账户中，就可以继续复用对应 `voice_id`；保留、删除与过期规则以各平台政策为准。
 
 ## 依赖
 

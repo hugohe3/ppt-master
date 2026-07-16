@@ -10,7 +10,7 @@ Almost anything: **PDF**, **DOCX**, **PPTX**, **EPUB**, **HTML**, **LaTeX**, **R
 
 ## Q: Can I generate a deck with just a topic, no source materials?
 
-Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The AI will trigger the **topic-research workflow** — gathering authoritative sources via web search (Wikipedia / official sites / institutional releases), assembling them into a Markdown research document + image folder, then feeding both into the main pipeline.
+Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The Generate PPTX route will run its **topic-research stage** — gathering authoritative sources via web search (Wikipedia / official sites / institutional releases), assembling them into a Markdown research document + image folder, then feeding both into the main pipeline.
 
 Quality depends on what's on the open web. If you already have specialized material (papers, internal docs), giving those files to the AI directly produces better results than web research alone.
 
@@ -30,7 +30,7 @@ Just specify the format when starting a project (e.g., `--format xhs`). The outp
 
 ## Q: What AI tools work with PPT Master?
 
-PPT Master works with any AI coding agent that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
+PPT Master works inside any agent-capable AI tool that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
 
 ## Q: I downloaded an old version. How do I update to the latest?
 
@@ -126,7 +126,7 @@ PPT Master itself is free and open source. The only cost is your own AI model us
 
 AI tools across the industry are shifting to usage-based billing — you pay for what you actually consume. PPT Master works with this model naturally: there's no separate PPT subscription, no proprietary credits, no per-seat fee for a presentation platform on top of what you're already paying for AI.
 
-For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/month — regardless of how much you actually use them. PPT Master adds zero cost on top of your existing AI spend.
+And because it runs inside a coding agent, a flat subscription plan lets you make many decks at no extra per-deck cost, while a direct per-token API is simply a different price structure — the choice is yours. Either way, PPT Master adds no cost of its own on top of your AI spend.
 
 ## Q: Are the charts in the generated PPTX editable?
 
@@ -148,7 +148,7 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # pr
 
 `on-click` is for live presentations. Narrated/video export via `--recorded-narration` rejects it because PPT Master writes page timings, not object-level click timings; use `after-previous` or `with-previous` for narrated decks.
 
-Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](../skills/ppt-master/references/animations.md).
+For common commands, Start-mode guidance, and object-level customization, see [Animations & Transitions](./animations.md). Exact effect and validation behavior remains in the linked execution reference.
 
 ## Q: Which AI model works best?
 
@@ -160,7 +160,7 @@ Other models (Gemini, GLM, MiniMax, etc.) vary in quality. In general, models wi
 
 ## Q: Someone said PPT Master is "just a toy" — is that fair?
 
-No. PPT Master is a **harness**, not a complete agent — `harness + model = agent`, and the output ceiling is set entirely by the model, not the harness. Evaluating PPT Master with a weak or small-context model is like test-driving a sports car in first gear and concluding it's slow.
+No. PPT Master is a presentation workflow, not a model or a complete agent. It supplies presentation-specific reasoning, contracts, project state, deterministic conversion, and quality gates; the selected model still sets the quality ceiling. Evaluating the workflow with a weak or small-context model is like test-driving a sports car in first gear and concluding it is slow.
 
 **The full-power combination:**
 
@@ -175,13 +175,13 @@ One last thing: this is a free, solo-maintained open-source project. If it fits 
 
 ## Q: Text overflows or elements are misaligned — what can I do?
 
-This is almost always a model capability issue, not a bug in PPT Master. SVG layout is essentially manual absolute positioning — the model must calculate coordinates, font metrics, and container sizes correctly.
+The cause depends on where the mismatch appears. If the source SVG already overflows or is misaligned, it is usually an authoring/layout problem: the model must calculate coordinates, font metrics, and container sizes correctly. If the SVG preview is correct but the exported PPTX differs, that may be a converter or renderer bug and should be reported with both artifacts.
 
 **Fixes to try**:
-1. Switch to **Claude** (Opus or Sonnet) if you're using another model
+1. Compare the page in `svg_output/` with the exported PPTX to isolate authoring from conversion
 2. Tell the AI which specific page has the problem and describe the issue — it can regenerate individual pages
-3. Open the SVG source file directly and ask the AI to fix coordinates
-4. Remember: the generated PPTX is a **high-quality starting point**, not a final deliverable — minor adjustments in PowerPoint are expected
+3. If the SVG itself is repeatedly wrong, use a stronger model or ask the AI to fix its coordinates directly
+4. Remember: the generated PPTX is a **high-quality editable draft**, not a sealed final deliverable — minor finishing adjustments in PowerPoint are expected
 
 ## Q: How long does a presentation take to generate?
 
@@ -205,16 +205,16 @@ For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — th
 
 ## Q: I have an existing PPT and want to build on it — which route should I use?
 
-Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to four routes:
+Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to three generation paths plus the option to keep the original unchanged:
 
 | Intent | Route | What stays fixed |
 |---|---|---|
-| Keep content + redo layout | **beautify (re-layout)** | Page count, page order, per-slide wording, chart/table data |
-| Replace content + keep design | **template-fill** | Native source slide design; selected pages may be reused/reordered |
-| Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
+| Keep content + redo layout | **Generate PPTX + beautify profile** | Page count, page order, per-slide wording, chart/table data |
+| Replace content + keep design | **Fill Native PPTX** | Native source slide design; selected pages may be reused/reordered |
+| Keep only content, redo design and pagination | **Generate PPTX** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
-Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
+Use the **beautify profile** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify profile](../skills/ppt-master/workflows/profiles/beautify-pptx.md).
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
@@ -240,7 +240,7 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead restores source slide order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets that are actually present and supported. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead materializes those validated source facts into a new workspace without semantic synthesis or gap filling. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
 
 Large imported SVGs may contain native-shape metadata, hidden carriers, and preview fingerprints. That lossless representation stays immutable in the temporary analysis workspace as payload backing. Template creation uses a lightweight editable IR with document-local source refs and a compact path/hash manifest. `standard` / `fidelity` author project-canonical SVG and use compact authored-preset groups only for exact registered preset matches. Mirror materializes final templates from the IR, reuses converter-supported payload only for unchanged Slide-local/slot refs, and keeps an SVG fallback for unsupported or edited objects.
 
@@ -248,7 +248,7 @@ If no source PPTX exists, screenshots of the key page types still work — cover
 
 **Step 2 — Let AI Create the Template**
 
-Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
+Use an agent-capable AI tool (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
 
 - Template name and intended use case (e.g., government reports, premium consulting)
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
@@ -260,7 +260,7 @@ You don't need to supply every detail upfront — the AI agent will ask follow-u
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration.
+The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. A flat workspace with `design_spec.md` at the root remains compatible only when its SVGs already satisfy the current contract; semantic-legacy packages must be replaced through `create-template` rather than upgraded in place.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

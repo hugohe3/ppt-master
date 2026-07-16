@@ -1,12 +1,41 @@
 # Templates Guide: Use, Derive, and Boundaries
 
-A PPT Master "template" is a **structure + style** preset bundle: complete standalone SVG pages whose metadata explicitly identifies one Master and Layout, atomic fixed-layer objects, and grouped content slots, plus `design_spec.md` and matching assets. Export deterministically reconstructs native PowerPoint structure from those SVGs.
+[English](./templates-guide.md) | [Chinese](./zh/templates-guide.md)
+
+---
+
+A PPT Master template is a reusable workspace with one of three explicit kinds: **Brand** owns identity, **Layout** owns reusable page structure, and **Deck** owns both plus deck-specific overview context. Layout and Deck workspaces include complete SVG prototypes with declared Master / Layout / slot contracts; Brand workspaces intentionally have no SVG roster. Each workspace's `design_spec.md` and matching assets declare exactly what that kind contributes.
 
 This guide answers three questions:
 
 1. [How do I use an existing template?](#1-use-an-existing-template)
 2. [How do I turn someone else's PPT — or my own brand — into a template? (the focus)](#2-derive-a-new-template-the-focus)
 3. [What are the limits of templates?](#3-template-boundaries)
+
+## 60-second template path
+
+Choose the route by the artifact you already have and the result you want:
+
+| Starting point and goal | Route | Copy-ready request |
+|---|---|---|
+| A raw `.pptx`; keep its existing slide shells and replace content | **Fill Native PPTX** | `Fill projects/source/template.pptx with projects/source/content.md.` |
+| A reusable Brand/Layout/Deck workspace; generate a fresh deck | **Generate PPTX with an explicit workspace path** | `Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/.` |
+| A PPTX, SVG set, brand guide, website, images, or mixed references; first build a reusable system | **Create Template → Generate PPTX** | `Use /create-template to create a reusable Deck workspace from projects/brand/our_deck.pptx.` |
+
+Do not pass a raw `.pptx` as a Generate PPTX template path. Fill it directly when you want its existing pages, or run Create Template first when you want a reusable system.
+
+Choose the workspace kind by what must be reused:
+
+| Kind | Reuses | Native PowerPoint result |
+|---|---|---|
+| **Brand** | Color, typography, logo, voice, icon style | Identity constraints only. Generated pages remain Slide-local under one clean project Master and Blank Layout. |
+| **Layout** | Page grammar, Master/Layout identities, slots, and layout roster | A structured deck with reusable native Masters, named Layouts, and placeholders; identity is chosen separately. |
+| **Deck** | Brand identity and page structure together | A structured deck with the template's complete identity plus reusable native Masters, named Layouts, and placeholders. |
+
+The two rules that prevent most mistakes:
+
+1. Supply the **workspace root**, not its `templates/` subdirectory and not a bare template name.
+2. Put the explicit workspace path in the initial generation request. The only exception is a Create Template run that immediately hands its validated workspace to Generate PPTX in the same conversation.
 
 ---
 
@@ -26,7 +55,7 @@ Send the Brand/Layout/Deck workspace root in your initial message. Anywhere in t
 
 For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
 
-> **Compatibility preflight:** Step 3 also accepts an older flat package with `design_spec.md` and SVGs directly at the supplied root. Flat placement by itself does not require restoration. Run [`restore-pptx-structure`](../skills/ppt-master/workflows/restore-pptx-structure.md) only when the SVGs use the former atomic-placeholder/unmapped Master/Layout semantics; Step 3 does not copy such a semantic-legacy package and defer migration.
+> **Compatibility preflight:** Step 3 also accepts a flat-directory workspace with `design_spec.md` and SVGs directly at the supplied root, but only when those SVGs already satisfy the current contract. Flat placement by itself is harmless. Former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
 
 ### What does NOT trigger the template flow
 
@@ -38,78 +67,75 @@ This is intentional — the AI never makes a fuzzy / interpretive judgment about
 
 To browse what's available in the built-in library, ask "what templates are available?" — the AI lists names and paths from the discovery index. Listing alone does not enter the template flow; you still need to send back a path to trigger Step 3.
 
+### Copy-ready examples
+
+Use one workspace:
+
+```text
+Make a deck from projects/q3-report/sources/report.pdf.
+Template workspace: skills/ppt-master/templates/layouts/presentation_core/
+```
+
+Combine identity and structure:
+
+```text
+Make a product-launch deck from projects/launch/sources/brief.md.
+Brand workspace: skills/ppt-master/templates/brands/anthropic/
+Layout workspace: skills/ppt-master/templates/layouts/presentation_core/
+```
+
+Use a project-scoped template created earlier:
+
+```text
+Make a deck from projects/annual-report/sources/report.md.
+Template workspace: projects/acme_template/
+```
+
+The path labels are optional; the paths themselves are mandatory. If two paths have the same kind, the workflow stops at the existing conflict-resolution gate instead of choosing one silently.
+
 ### Template catalog
 
-Templates are organized into three kinds, each in its own directory:
+Templates are organized into three kinds, each with a discovery index:
 
-- [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
-- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
-- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
+- [`brands_index.json`](../skills/ppt-master/templates/brands/brands_index.json) — identity-only workspaces: color / typography / logo / voice / icon style, with no SVG page roster
+- [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json) — structure-only workspaces: canvas / page grammar / page types / SVG roster, with identity selected downstream
+- [`decks_index.json`](../skills/ppt-master/templates/decks/decks_index.json) — complete identity + structure workspaces, including deck-specific overview context
 
-Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
+Ask "what templates are available?" for a readable list with workspace paths. The indexes are the current source of truth; the kind-specific READMEs define their contracts. Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
-Free design is **not** "no structure" or "no style" — the AI plans a fresh Master/Layout system and visual language **for that specific deck** before drawing the SVG pages. A template reuses an already-defined structure and style. Both use the same structured output contract; the difference is where the structure originates.
+Free design is **not** "no structure" or "no style" — the Strategist still plans the narrative, hierarchy, and visual system for that specific deck. Its generated pages use `pptx_structure.mode: flat`, so every visible object remains Slide-local. A Brand-only workspace also stays `flat` while supplying identity constraints. Layout and Deck workspaces use `pptx_structure.mode: structured`, because they contribute an explicit reusable Master / Layout / slot contract.
 
-> Rule of thumb: clear content direction + strong brand or scenario constraints (consulting reports, government briefings, defenses) → use a template. Essay-like content where atmosphere matters more (magazine, documentary narrative) → free design usually works better.
+> Rule of thumb: use a Brand workspace when identity must be fixed, a Layout workspace when page structure must be reused, and a Deck workspace when both must travel together. Use free design when the deck should develop its own composition from the content.
 
 ### Styles are not templates
 
-A **style** is a description ("minimalist" / "Keynote-style" / "editorial") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you give it an explicit directory path.
+A **style brief** is interpretive language ("minimalist" / "Keynote-style" / "editorial") that the Strategist turns into concrete design choices. A **template** is a real Brand / Layout / Deck workspace that the workflow consumes only when you provide its explicit directory path.
 
 | | Template | Style |
 |---|---|---|
 | How invoked | Explicit directory path in your message | Free-form description in your message |
-| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Strategist confirmation stage |
-| Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
-| Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
+| What it supplies | The segments declared by its kind: identity, structure, or both | Intent that the Strategist interprets into mode, visual style, color, typography, icons, and imagery |
+| Confirmation | Template-owned values become the starting contract; user-confirmed choices remain authoritative | No pre-authored values; the Strategist proposes concrete candidates and the user confirms them |
+| Best for | Reusing an existing identity and/or page system | Expressing a desired feel without adopting a stored workspace |
 
 A style description and a template name still go through different machinery: "minimalist" is interpretive language, while `presentation_core/` is a real template directory that requires an explicit path.
 
-### Common styles you can describe
+### How style briefs are interpreted
 
-Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chinese"):
+The Strategist separates two independent choices:
 
-**Aesthetic direction**
+- **Mode** controls how the deck communicates: `pyramid`, `narrative`, `instructional`, `showcase`, `briefing`, or a confirmed `custom` direction.
+- **Visual style** controls how the pages look: built-ins such as `swiss-minimal`, `editorial`, `dark-tech`, `data-journalism`, `ink-wash`, and others, plus `custom`.
 
-| Style | One-line characterization |
-|---|---|
-| **Minimalist** | High whitespace, 2-3 colors, single focal point per page |
-| **Information-dense** | McKinsey-style structured tables, high density, conclusion-first |
-| **Keynote-style** | Single-page hero text, premium whitespace, Apple-feel |
-| **Editorial** | Large hero images, asymmetric layouts, strong typography contrast |
-| **Editorial illustration** | Warm tones, hand-drawn feel, zine-like |
-
-**Scenario / Industry**
-
-| Style | One-line characterization |
-|---|---|
-| **Business consulting** | Data-driven, restrained, blue / grey palette |
-| **Academic defense** | Strict hierarchy, citation-heavy, clean |
-| **Government briefing** | Red / blue, formal, symmetric |
-| **Product launch** | Visually bold, marketing-driven, single hero per page |
-| **Education / training** | Clear hierarchy, friendly tone, bright palette |
-| **Pitch deck / BP** | Narrative-driven, conclusion-bold |
-
-**Visual character / atmosphere**
-
-| Style | One-line characterization |
-|---|---|
-| **Dark tech** | Dark backgrounds, neon accents, futuristic |
-| **Pixel retro** | 8-bit, scanlines, gaming aesthetic |
-| **Neo-Chinese** | Restrained traditional motifs, ink / vermilion |
-| **Scandinavian** | Light, natural, restrained |
-| **Memphis / pop** | High-saturation blocks, geometric, 80s |
-| **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
-
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. To use the built-in `presentation_core` structure, send its workspace path; to keep structure free, describe only the style and let the AI adapt it to the deck content.
+Any mode can pair with any visual style. Terms such as "Keynote-style product launch" may influence both axes — for example, a `showcase` narrative with a restrained high-whitespace visual system — but they are never a template lookup token. The user confirms the resulting choices before generation. The canonical catalogs live under [`references/modes/`](../skills/ppt-master/references/modes/) and [`references/visual-styles/`](../skills/ppt-master/references/visual-styles/).
 
 ---
 
 ## 2. Derive a new template (the focus)
 
-Turn a PPT you like, a brand guideline, or an existing PPTX file into a PPT Master template. This is the core of this guide.
+Turn one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, or direct written requirements into a PPT Master template. References may be combined, and a template may also be designed from a confirmed brief with no external source. This is the core of this guide.
 
 ### Entry point: the `/create-template` workflow
 
@@ -121,13 +147,17 @@ Please use the /create-template workflow to generate a new template based on the
 
 The workflow will then **mandatorily** confirm a template brief with you before doing anything (this gate cannot be skipped).
 
-### Step 1 — Prepare reference material
+The entry name always remains **Create Template**. It dispatches exactly one child workflow: Create Brand for identity only, Create Layout for brand-neutral structure only, or Create Deck for identity and structure together (the default when both are needed). The selected child is not reconsidered inside the brief.
 
-**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly and extracts every Master, Layout, placeholder, theme, native-shape fact, and reusable asset into layered analysis references. In `standard` / `fidelity`, Template_Designer uses them as visual reference and authors a new SVG roster plus a new Master/Layout/slot system. In mirror, it restores source identities, parentage, placeholder facts, and supported visuals one-to-one. The original PPTX remains analysis evidence and is not packaged into the new template.
+### Step 1 — Prepare a reference bundle or brief
+
+You may provide direct conversation text, pasted requirements, Markdown/TXT, DOCX/PDF/HTML/URL, websites, images/screenshots, logo/icon/font assets, PPTX/SVG files, or any useful combination. The workflow analyzes every applicable channel, keeps source provenance, and surfaces conflicts in the mandatory brief instead of silently choosing one source. Exact values authored by you are decisions whether they arrive in chat, pasted text, or your own brief file; a file carrier does not turn them into facts. Facts require independently traceable external authority or machine-observable source metadata. Visual estimates and vague-text interpretations remain suggestions until confirmed.
+
+**When an existing deck's native structure matters, hand over the original `.pptx` file.** The importer reads OOXML directly and extracts the Master, Layout, placeholder, theme, native-shape, and reusable-asset facts that are actually present and supported into layered analysis references. In `standard` / `fidelity`, Template_Designer uses them as visual reference and authors a new SVG roster plus a new Master/Layout/slot system. In mirror, it materializes those validated source facts into a new workspace without inventing missing topology or design intent. The original PPTX remains immutable analysis evidence and is not packaged into the new template.
 
 You can also design from scratch from a brand guideline: provide a logo, primary color HEX, fonts, tone description, and a few mood references — the AI will design the page skeletons on the spot. This suits brands that don't yet have a finished PPT, only a VI manual.
 
-> **Fallback when no source PPTX exists**: a screenshot set (`cover.png` / `chapter.png` / `content.png` / `closing.png`, ...) still works, but fidelity drops noticeably — decoration, fonts, and layout details all rely on the AI's visual inference. Use `.pptx` whenever you can. Screenshots are better used as annotation alongside a PPTX ("this is the look I want") than as the sole reference.
+> **Evidence boundary:** images, screenshots, text, documents, websites, and loose assets can independently drive `standard`. `fidelity` requires PPTX/SVG page evidence, while `mirror` requires an original PPTX or a complete current structured-SVG contract. Supplemental sources may clarify mirror evidence but cannot invent or change its native topology.
 
 ### Step 2 — The template brief (mandatory confirmation)
 
@@ -137,35 +167,36 @@ The workflow does not silently infer values — before generation it lists these
 |-------|-------|
 | **Output scope** | `library` (default) or `project`; both use the same portable workspace routing, while only library scope registers it globally |
 | **Target project** | Required only for `project`; give the exact initialized project path |
+| **Selected child workflow** | Create Brand / Create Layout / Create Deck, fixed by the entry dispatch |
 | **Template ID** | Portable template identity; in library scope it is also the directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
 | **Display name** | Human-readable name for documentation |
 | **Category** | One of `brand` / `general` / `scenario` / `government` / `special` |
 | **Use cases** | Annual report / consulting / defense / government briefing / ... |
 | **Tone summary** | One line, e.g. "modern, restrained, data-driven" |
-| **Theme mode** | Light / dark / gradient / ... |
-| **Canvas format** | Default `ppt169` (16:9); specify other formats up front |
-| **Replication mode** | `standard` (default compact roster) / `fidelity` (one variant per reusable semantic family) / `mirror` (one restored prototype per source slide). `standard` / `fidelity` author new SVG semantics; mirror restores source structure without synthesis. |
-| **Native structure facts** | The brief reports source Master/Layout counts, parent relationships, placeholder identities, and multi-master status. `standard` / `fidelity` treat them as reference only; mirror restores them one-to-one through the current `structured` contract. |
-| **Visual fidelity** | (required for `standard` / `fidelity` when a reference exists) `literal` (closely reproduce original geometry / decoration / sprite crops inside a newly authored structure) or `adapted` (use reference tone/composition but allow design evolution). Cover / chapter / ending are usually `literal`. **Not asked for `mirror`** — mirror restores the source visual. |
+| **Theme mode** | Create Layout/Create Deck only: light / dark / gradient / ... |
+| **Canvas format** | Create Layout/Create Deck only; default `ppt169` (16:9), with other formats specified up front |
+| **Replication mode** | Create Layout/Create Deck only: `standard` (default compact, brief-driven roster; may include a small number of explicitly required distinct variants) / `fidelity` (broader source-aligned coverage of useful semantic families) / `mirror` (one materialized prototype per source slide). `standard` / `fidelity` author new SVG semantics; mirror preserves only validated facts already present in the source package. |
+| **Native structure facts** | Create Layout/Create Deck only: the brief reports source Master/Layout counts, parent relationships, placeholder identities, and multi-master status. `standard` / `fidelity` treat them as reference only; mirror maps the supported facts one-to-one into the current `structured` contract. |
+| **Visual fidelity** | Create Layout/Create Deck only; required for `standard` / `fidelity` when a reference exists. Choose `literal` or `adapted`. **Not asked for `mirror`** — mirror preserves the supported source visual. |
 | **Keywords** | 3–5 tags for index lookup |
 | Theme color / design notes / asset list | Optional — can be auto-extracted from the source |
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. Existing empty scaffolding created by project initialization is allowed and left untouched; Create Template does not create optional directories merely to keep empty paths. A failed check stops before partial output; the workflow does not merge or overwrite.
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
-### Step 3 — `standard`, `fidelity`, or `mirror`?
+### Step 3 — Create Layout/Create Deck: `standard`, `fidelity`, or `mirror`?
 
-This is the most easily confused decision when deriving a template.
+This is the most easily confused decision when deriving a structured template. Create Brand skips it because identity-only work has no SVG roster or native structure.
 
 | | **standard** | **fidelity** | **mirror** |
 |---|---|---|---|
-| Output pages | 4–5 (cover / chapter / content / ending, with optional TOC) | one variant per reusable semantic family — count driven by the source | one restored prototype per source slide (1:1 roster) |
+| Output pages | Usually 4–6: cover / chapter / ending, optional TOC, and one or a small explicitly required set of content Layouts | broader useful semantic-family coverage — count driven by the source evidence | one materialized prototype per source slide (1:1 roster) |
 | Abstraction | High — clean, reusable skeleton | Medium — semantic source families redesigned with cleanup | None at the topology level; only mechanical structured-contract normalization |
 | Authoring placeholders | Yes (`{{TITLE}}`, `{{CONTENT_AREA}}`, …) | Yes | Literal text may remain, but imported native content slots still carry semantic metadata |
-| Best for | You want "tone + basic skeleton" to generate brand-new decks later | The source PPTX itself is a customized layout library and every variant matters | Someone else's polished deck is great as-is, you want every page available as a reference |
+| Best for | You want "tone + compact skeleton", including a few brief-required structures, to generate brand-new decks later | The source PPTX itself is a customized layout library and broader source-driven coverage matters | Someone else's polished deck is great as-is, you want every page available as a reference |
 | Typical use | Building a base brand template | Replicating a 20-variant government briefing layout set | Keeping all 50 source compositions available as faithful prototypes |
 | Source requirement | None | PPTX or SVG visual reference | PPTX, or SVGs with a complete explicit structure contract |
 | Decoration complexity | Usually simpler | Must preserve sprite-sheet crop structure | Preserves literal geometry while adding explicit layer ownership |
@@ -194,12 +225,12 @@ the designer writes that brief against the published roster.
 
 ### Step 4 — Validation, review export, registration, and discovery
 
-After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The only scope-specific action is library registration:
+After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate: Brand validates its identity-only spec and asset references, while Layout/Deck validate the SVG roster and structured contract. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. Authored templates use concise preview-only placeholder samples so long canonical markers stay readable without changing the source SVGs. The only scope-specific action is library registration:
 
 | Scope | Workspace root | Preview | Discovery behavior |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Optional `exports/<id>_template_preview.pptx` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
-| `project` | `projects/<name>/` | Optional `exports/<id>_template_preview.pptx` | Skip global index registration |
+| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand: N/A; Create Layout/Create Deck: optional for one Master, mandatory for multiple Masters | Register in the matching `brands_index.json`, `layouts_index.json`, or `decks_index.json` after validation |
+| `project` | `projects/<name>/` | Same kind-specific review behavior | Skip global index registration |
 
 Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
@@ -207,6 +238,24 @@ When a deck/layout template is selected, the Strategist confirmation stage asks 
 
 - **adaptive** — choose one template SVG per page; keep its Master and assign a new explicit Layout key during authoring when fixed Layout atoms or slot topology/bounds must change
 - **strict** — choose one template SVG per page and keep its Master/Layout/slot contract unchanged
+
+### Verify that Master and Layout were really applied
+
+For a generated deck that used a Layout or Deck workspace, verify the release artifact in Microsoft PowerPoint:
+
+| Check | Expected result |
+|---|---|
+| **View → Slide Master** | The declared Master(s) and named Layouts are present. |
+| **Home → New Slide** | The reusable Layout names appear in the layout picker under the intended Master. |
+| Select a generated slide and inspect **Layout** | The slide is bound to its declared Layout, not a generic inferred layout. |
+| Click a reusable content region | Template slots behave as native placeholders with the declared type and frame. |
+| Add a new slide from one of the emitted Layouts | Master/Layout visuals and placeholder geometry appear without copying a finished content slide. |
+
+Brand-only use is intentionally different: it applies identity while keeping authored content Slide-local, so do not expect a reusable template Layout roster beyond the clean package scaffold.
+
+`exports/<id>_template_preview.pptx` is review evidence created by Create Template when requested or required. It is not the template input; generation always consumes the workspace root.
+
+Microsoft PowerPoint is the acceptance target for Master/Layout behavior. Keynote, WPS, and LibreOffice can open PPTX files but may normalize template structure or load a large mirror roster of unused Layouts more slowly.
 
 ### What a derived template workspace looks like
 
@@ -219,8 +268,7 @@ Library and project scopes use the same core structure; substitute either `skill
 │   ├── 01_cover.svg
 │   ├── 02_toc.svg              # optional; without it: 02_chapter, 03_content, 04_ending
 │   ├── 03_chapter.svg
-│   ├── 04_content.svg
-│   ├── 04a_content_two_col.svg # fidelity variant
+│   ├── 04_content.svg          # use 04a/04b siblings when multiple variants exist
 │   └── 05_ending.svg
 ├── images/                         # optional
 │   └── *.png / *.jpg           # SVG references use ../images/<name>
@@ -253,8 +301,8 @@ The result is not a private or reduced project-only format. You can point Step 3
 
 Common misconceptions to avoid:
 
-- **A reusable template is an explicit SVG contract, not a packaged source PPTX.** Authored modes create that contract; mirror restores source ownership through it. Every page previews independently, and export compiles only declared Master/Layout/Slide structure
-- **A template is not a "style skin".** It bundles structure (which blocks per page, how information is hierarchized) with style (colors, fonts, decoration). Trying to swap "skin" without structure tends to put the information architecture and the visuals at odds
+- **A reusable template is an explicit workspace, not a packaged source PPTX.** Brand workspaces may contain identity only; Layout and Deck workspaces add the structured SVG contract. Authored modes create that contract, while mirror maps validated source ownership facts into it. Export compiles only declared structure
+- **A template is not one undifferentiated "style skin".** Brand, Layout, and Deck deliberately separate identity from structure so each segment can be reused or fused under an explicit ownership rule
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes
 - **`mirror` targets literal supported appearance and source topology, not byte-identical OOXML.** It inherits source import limitations and permits only mechanical normalization such as fixed-layer group expansion. Unsupported native objects keep their available SVG fallback or are reported; mirror never synthesizes replacement ownership.

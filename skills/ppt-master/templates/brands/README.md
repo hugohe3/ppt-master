@@ -2,7 +2,10 @@
 
 This directory holds **brand-only templates**: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Strategist locks the brand's identity segment as truth; Executor designs pages freely under those constraints.
 
-Brand is one of three template kinds in the library — alongside [`layouts/`](../layouts/) (structure-only) and [`decks/`](../decks/) (complete identity + structure). Full data model: [`docs/zh/templates-architecture.md`](../../../../docs/zh/templates-architecture.md).
+Brand is one of three template kinds in the library — alongside
+[`layouts/`](../layouts/) (structure-only) and [`decks/`](../decks/) (complete
+identity + structure). The shared kind and workspace model lives in the
+parent [`README.md`](../README.md).
 
 ## How brands are consumed
 
@@ -21,10 +24,10 @@ Brand application follows the **same explicit-path rule and workspace routing as
 
 ## Creating a new brand
 
-Run the standalone workflow:
+Enter the fixed Create Template route, which dispatches the Create Brand child workflow:
 
 ```
-Read skills/ppt-master/workflows/create-brand.md
+Read skills/ppt-master/workflows/create-template.md, which dispatches `kind: brand` to skills/ppt-master/workflows/create-template/create-brand.md
 ```
 
 Three input paths are supported: brand asset (logo / brand site URL / branded PPTX / brand PDF), verbal spec dictated in chat, or empty skeleton for the user to fill in later.

@@ -1,16 +1,16 @@
 ---
-description: Failure recovery matrix for PPT Master generation routes
+description: Cross-route stop/continue governance with a concrete recovery matrix and resume map for Generate PPTX.
 ---
 
-# Failure Recovery Matrix
+# Failure Recovery Governance
 
-Central recovery rules for common PPT Master failures. Route-specific workflow files may add narrower handling, but must not weaken these stop/continue decisions.
+Global stop/continue rules for all four top-level routes, plus concrete failure handling for Generate PPTX. Section 2 applies across routes; Sections 1 and 3 apply only to Generate PPTX. Owning route and stage documents may add narrower handling, but must not weaken the global rules or duplicate this matrix.
 
-**Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block generation.
+**Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block the active route.
 
 ---
 
-## 1. Recovery Matrix
+## 1. Generate PPTX Recovery Matrix
 
 | Failure point | Blocking | Automatic recovery | User intervention | Resume entry |
 |---|---:|---|---|---|
@@ -18,6 +18,7 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 | Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same stage or chat fallback |
 | Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
+| Step 3 rejects a legacy or incomplete template contract | Yes | Stop template consumption; create a new current workspace through Create Template from the original PPTX/reference, then return with its exact workspace root | Only when required source evidence or template choices are unavailable | Create Template → Generate PPTX Step 3 |
 | Formula rendering provider failure | No if fallback succeeds; yes if selected formulas remain missing | Provider fallback chain; otherwise mark affected rows manual only if acceptable | Only if rendered formula files are required and unavailable | Step 4 formula rendering / Step 7 image readiness gate |
 | AI image generation failure | No | Retry once through the confirmed path, then mark row `Needs-Manual` | Only when missing files are required before export | Step 5 / Step 7 image readiness gate |
 | Web image search/download failure | No | Adjust query/source per image-searcher rules, then mark `Needs-Manual` if unresolved | Only if the resource is required and no acceptable substitute exists | Step 5 |
@@ -38,32 +39,33 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 
 ---
 
-## 2. Stop/Continue Rules
+## 2. Global Stop/Continue Rules
 
 | Condition | Action |
 |---|---|
 | Required gate artifact missing | Stop at that gate and name the missing artifact. |
-| Optional workflow not explicitly requested | Do not run it as recovery. |
+| Optional stage not explicitly requested | Do not run it as recovery. |
 | Convenience UI/server failure | Fall back to chat or continue without the surface. |
 | Derived artifact stale | Regenerate it from its owning source. |
-| Manual image asset missing at Step 7 | Pause and list exact filenames; resume only after files exist. |
-| Checker/export error | Fix the source artifact, then rerun the failed command and downstream commands only. |
+| Required manual artifact missing | Pause and name the exact required artifacts; resume only after they exist. |
+| Validation or export failure | Fix the owning source artifact, then rerun the failed operation and affected downstream operations only. |
+| Confirmed execution choice cannot be honored | Retry the confirmed provider, mode, voice, effect, or path only as its owning workflow allows; if it remains unavailable, stop or request a new decision. Do not substitute another value or output semantics silently. |
 
-**Forbidden - silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file. Fix or pause at the owning gate.
+**Forbidden — silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file, and do not change a confirmed execution value merely to keep the route moving. Fix, pause, or request a new decision at the owning boundary.
 
 ---
 
-## 3. Resume Pointers
+## 3. Generate PPTX Resume Pointers
 
 | Last good state | Resume from |
 |---|---|
 | Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
-| `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](./resume-execute.md) |
+| `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](../stages/resume-execute.md) |
 | Images acquired but SVGs not started | `SKILL.md` Step 6 |
 | SVGs complete and checker passed, notes missing | Step 6 Logic Construction |
 | SVGs and notes complete | Step 7.1 |
 | Step 7.1 complete, export not complete | Step 7.2 |
 | Step 7.2 complete, PPTX not complete | Step 7.3 |
-| Browser annotations saved after export | [`live-preview`](./live-preview.md) Step 2 |
+| Browser annotations saved after export | [`live-preview`](../stages/live-preview.md) Step 2 |
 
 **Default - resume at the owning failed step**: Do not restart the planning session or regenerate prior artifacts unless the owning source has changed.

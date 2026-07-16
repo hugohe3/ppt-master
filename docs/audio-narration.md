@@ -1,5 +1,9 @@
 # Audio Narration & Video Export
 
+[English](./audio-narration.md) | [Chinese](./zh/audio-narration.md)
+
+---
+
 PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs, MiniMax, Qwen TTS, and CosyVoice when you need higher-quality cloud narration or a cloned voice. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
 
 ## What you get
@@ -15,7 +19,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
 4. **Generation runs.** The script writes page-level audio to `audio/`, then (if you kept embedding) re-exports the deck with audio attached. Long-audio import and automatic long-audio splitting are not supported.
 
-The full step-by-step is in [`workflows/generate-audio.md`](../skills/ppt-master/workflows/generate-audio.md).
+The shared stage is documented in [`workflows/stages/generate-audio.md`](../skills/ppt-master/workflows/stages/generate-audio.md).
 
 ## Two embedding paths
 
@@ -102,6 +106,8 @@ uvx ppt-master notes-to-audio --provider elevenlabs --list-voices
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
 
+Audio embedded into PPTX must use a PowerPoint-reliable format: `m4a` (AAC), `mp3`, or `wav`. Built-in generation defaults to `mp3`; transcode provider output such as `pcm`, `opus`, or `flac` before embedding.
+
 ## Use a cloned voice
 
 Four cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master narrates the entire deck in your cloned voice as long as you can hand it a `voice_id`. (`edge` does not support cloning.)
@@ -136,7 +142,7 @@ Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` as needed;
 
 - **Authorization** — only clone voices you own or have explicit permission to use. Each provider's terms forbid impersonation.
 - **Language coverage** — the cloned voice inherits the speaker's accent. For multilingual decks (e.g. Chinese with English terms), pick a provider whose model handles your sample's language mix; ElevenLabs `eleven_multilingual_v2` and CosyVoice tend to be the most forgiving.
-- **One-time setup, reusable forever** — the `voice_id` doesn't expire. Clone once, narrate any number of decks.
+- **Provider retention** — reuse the `voice_id` while that voice remains available in your provider account. Retention, deletion, and expiration policies are provider-specific.
 
 ## Dependency
 
@@ -170,6 +176,6 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 **Tips**:
 
 - **No mic, no recording session needed** — the audio is generated, not recorded, so re-runs are deterministic.
-- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
+- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](./animations.md).
 - **Want to tweak just one slide's audio?** Edit `notes/<page>.md`, re-run `notes_to_audio.py` and the embedding step, then re-export the video — total turnaround is usually under a minute per slide.
 - **File size**: a 20-page deck at Full HD typically lands at 30–80 MB depending on imagery. Drop to HD if you need a smaller file for sharing.
