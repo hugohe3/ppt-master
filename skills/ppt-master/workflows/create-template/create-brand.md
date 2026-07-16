@@ -31,7 +31,9 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 | PNG/JPG logo | Inspect visually | Logo asset and approximate colors |
 | Official brand site or manual | Convert/read the source | Published colors, fonts, voice, usage restrictions |
 | Branded PPTX/PDF | Use the existing source converters and theme/package facts | Observed colors, typography, logo assets, and tone |
+| Pasted text, Markdown, or text document | Use direct text or the parent workflow's converted text output | Explicit identity values, usage rules, voice, and restrictions |
 | Verbal brief | Use the user's words directly | Any identity field the user explicitly supplies |
+| Mixed reference bundle | Run every applicable row and retain per-source provenance | Combined identity evidence; unresolved conflicts go to the shared confirmation gate |
 | No reference | No analysis | Empty skeleton only when the user explicitly requests it |
 
 Use these provenance labels in the proposal and final Color Scheme table:
