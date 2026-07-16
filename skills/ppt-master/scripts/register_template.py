@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Register a brand / layout / deck template into the global template index.
 
-Three kinds, three workspace roots, three index files (see
-``docs/zh/templates-architecture.md`` for the data model):
+Three kinds, three workspace roots, three index files. The shared model lives
+in ``templates/README.md``; each kind's schema lives in its directory README:
 
 | --kind  | Workspace roots         | Index file                    |
 |---------|-------------------------|-------------------------------|

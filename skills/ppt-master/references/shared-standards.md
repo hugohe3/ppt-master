@@ -182,7 +182,7 @@ dropped.
 
 PPTX import compatibility, tolerant recovery, strict-mode rejection, and
 diagnostic behavior are indexed in
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
 ---
 
@@ -720,7 +720,7 @@ PPTX import is a user-input boundary, not generated authoring. Tolerant mode
 retains recognized color semantics, omits only unsupported paint properties,
 and records the decision in `conversion-report.json`; `--strict` keeps the
 closed parser checks. See
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 ---
 
 ### 6.3 Gradients and Paint Effects
@@ -747,7 +747,7 @@ retain only the first stop. Stop alpha and element opacity multiply.
 PPTX import normalizes compatible gradients and records any property-level
 degradation without aborting the deck; `--strict` keeps the closed parser
 contract. See
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
@@ -806,8 +806,8 @@ PowerPoint object; this exception does not authorize filters on ordinary groups.
 PPTX import preserves one registered shape/connector shadow or glow and records
 unsupported object/run effects as import diagnostics instead of exposing a new
 authoring surface. See
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11 for
-tolerant, strict, and release-handling behavior.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary)
+for tolerant, strict, and release-handling behavior.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract. Missing required
 geometry and malformed values are never replaced by effect defaults during
@@ -965,7 +965,7 @@ fidelity.
 PPTX import treats unsupported line properties as source diagnostics: tolerant
 mode retains the object and omits only the unsupported outline; `--strict`
 retains the closed rejection behavior. See
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses
@@ -1342,7 +1342,7 @@ grain and explicit circles/paths only for sparse editable marks.
 
 Unsupported source effects remain visible where possible and retain their
 import diagnostics. Resolve those diagnostics before release export; see
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §11.
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
 ---
 
@@ -1447,8 +1447,7 @@ type, chart data shape, and any imported fallback baseline before export.
 Imported marker freshness, fallback classification, provenance, and legacy
 read compatibility are operational import concerns. Keep generated authoring
 free of those attributes; use the exact behavior and field index in
-[`conversion.md`](../scripts/docs/conversion.md#pptx_to_svgpy) and
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §7/§11.
+[`conversion.md`](../scripts/docs/conversion.md#native-table-and-chart-import-claims).
 
 ```xml
 <g id="p03-revenue-chart" data-pptx-replace-with="chart">
@@ -1763,8 +1762,7 @@ the two optional canonical booleans below so export can write the preserved sour
 package fields without inferring visibility from which shapes happen to be
 present. Authored `standard` / `fidelity` templates normally omit both and use
 the default `true`. See
-[`powerpoint-svg-mapping.md`](../../../docs/powerpoint-svg-mapping.md) §2 and
-[`conversion.md`](../scripts/docs/conversion.md#pptx_to_svgpy).
+[`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
 **Master text-style contract**: Flat and structured export map the
 locked `title` size to every `a:defRPr` in Master `p:titleStyle`. Level 1 in

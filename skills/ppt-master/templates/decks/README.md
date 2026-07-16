@@ -14,9 +14,9 @@ mode decides whether the system is newly authored or materialized from validated
 
 The discovery source of truth is [`decks_index.json`](./decks_index.json)
 (`deck_id → { summary, canvas_format, page_count, primary_color }`). This README
-defines the kind and intentionally does not enumerate installed decks. See
-[`docs/zh/templates-architecture.md`](../../../../docs/zh/templates-architecture.md)
-for the complete data model.
+defines the kind and intentionally does not enumerate installed decks. The
+shared kind and workspace model lives in the parent
+[`README.md`](../README.md).
 
 ---
 

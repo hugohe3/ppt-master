@@ -1,6 +1,9 @@
 # Conversion Tools
 
-> Architecture rationale (why native-Python first with pandoc fallback, why curl_cffi for TLS impersonation): see [docs/technical-design.md "Source Content Conversion"](../../../../docs/technical-design.md#source-content-conversion).
+> **Design boundary**: use native-Python converters for supported formats,
+> invoke Pandoc only for explicit fallback formats, and let web conversion use
+> `curl_cffi` when available for sites that reject Python's default TLS
+> fingerprint.
 
 Source conversion tools turn PDFs, documents, slide decks, and web pages into Markdown before project creation.
 
@@ -255,6 +258,8 @@ relationship preference for asset identity; its existing missing-media gate
 remains strict rather than silently treating the raster preview as the
 template's canonical asset.
 
+### Import compatibility and recovery boundary
+
 Import is tolerant by default because the source deck is user-owned or comes
 from third-party authoring tools. Recovery happens at the narrowest safe
 boundary: first omit only an unsupported property or feature; if that is not
@@ -275,6 +280,8 @@ In the detailed native-object notes below, “fails closed” or “error” des
 the native replacement claim or strict mode. Default tolerant deck import
 retains the usable fallback/object and records the degradation; it does not
 discard unrelated shapes, pages, or the entire deck.
+
+### Native table and chart import claims
 
 Supported text-grid tables and conservative classic-chart caches carry a
 `data-pptx-replace-with` claim beside their SVG fallback, with the replacement
@@ -390,21 +397,39 @@ literal field fallback because one shared part can serve multiple slides.
 ### Maintenance smoke checks
 
 Run these checks from the repository root after changing `pptx_to_svg/` or its
-CLI. They use a shipped deck and generated adversarial input; do not replace
-them with a committed `test_*.py` suite.
+CLI. They generate every required input under `/tmp`; do not replace them with
+a committed `test_*.py` suite.
 
 #### Healthy generated deck
 
 ```bash
+python3 - <<'PY'
+from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.util import Inches
+
+presentation = Presentation()
+slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+shape = slide.shapes.add_shape(
+    MSO_SHAPE.RECTANGLE,
+    Inches(1),
+    Inches(1),
+    Inches(3),
+    Inches(1),
+)
+shape.text = "PPTX import smoke check"
+presentation.save("/tmp/ppt-master-smoke-healthy.pptx")
+PY
+
 python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
-  "examples/ppt169_kubernetes_blueprint_2026/exports/kubernetes_blueprint_2026.pptx" \
+  "/tmp/ppt-master-smoke-healthy.pptx" \
   --inheritance-mode flat \
-  -o "/tmp/ppt-master-smoke-kubernetes"
-python3 -c "import json; from pathlib import Path; report = json.loads(Path('/tmp/ppt-master-smoke-kubernetes/conversion-report.json').read_text()); assert report['summary'] == {'slides': 10, 'warnings': 0}, report['summary']; print('OK: 10 slides, 0 warnings')"
+  -o "/tmp/ppt-master-smoke-healthy"
+python3 -c "import json; from pathlib import Path; report = json.loads(Path('/tmp/ppt-master-smoke-healthy/conversion-report.json').read_text()); assert report['summary'] == {'slides': 1, 'warnings': 0}, report['summary']; print('OK: 1 slide, 0 warnings')"
 ```
 
 Expected: both commands exit `0`; the assertion prints
-`OK: 10 slides, 0 warnings`.
+`OK: 1 slide, 0 warnings`.
 
 #### Tolerant/strict color-structure probe
 

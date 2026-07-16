@@ -55,6 +55,10 @@ description: >
 > - `ppt-master` is a repository-specific workflow, not a general application scaffold
 > - Do NOT create `.worktrees/`, `tests/`, branch workflows, or generic engineering structure by default
 > - On conflict with a generic coding skill, follow this skill unless the user explicitly says otherwise
+> - Keep this Skill package self-contained: required workflow, reference,
+>   script, and template documentation MUST resolve inside this Skill directory;
+>   repository-level documents may link into the package, but package files
+>   MUST NOT depend on them
 
 ## Rule Strength Labels
 
@@ -277,7 +281,10 @@ There is no slug matching, no name lookup, no fuzzy resolution. A name without a
 
 #### Three template kinds
 
-The architecture has three independent reference bundles. Full schema in [`docs/zh/templates-architecture.md`](../../docs/zh/templates-architecture.md). Summary:
+The architecture has three independent reference bundles. The shared package
+model and workspace contract live in [`templates/README.md`](templates/README.md);
+kind-specific schemas live in the corresponding template-directory README.
+Summary:
 
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|
@@ -954,4 +961,4 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 ## Notes
 
 - Local preview: `python3 -m http.server -d <project_path>/svg_final 8000`
-- **Troubleshooting**: on generation issues (layout overflow, export errors, blank images, etc.), check `docs/faq.md` for known solutions
+- **Troubleshooting**: on generation issues (layout overflow, export errors, blank images, etc.), check [`scripts/docs/troubleshooting.md`](scripts/docs/troubleshooting.md)

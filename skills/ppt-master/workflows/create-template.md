@@ -30,7 +30,9 @@ Create Template is the fixed user-facing entry and common contract. It selects o
 
 Select Create Brand only for identity-only intent. Select Create Layout only when identity must remain downstream-selectable. Otherwise select Create Deck. Ask one discriminator question only when the user's requested reusable artifact is genuinely ambiguous; once selected, enter that child workflow and do not repeat route selection inside its confirmation gate.
 
-See [`docs/zh/templates-architecture.md`](../../../docs/zh/templates-architecture.md) for the kind/schema/fusion model.
+See [`templates/README.md`](../templates/README.md) for the shared kind and
+workspace model. Downstream template application and fusion remain owned by
+[`SKILL.md`](../SKILL.md) Step 3.
 
 ## Output scope — library (default) vs project
 
