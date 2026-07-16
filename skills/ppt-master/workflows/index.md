@@ -15,7 +15,7 @@ Registry for the route authorities and supporting runbooks referenced by [`SKILL
 | Route | Authority | Trigger | Mutation model | Output |
 |---|---|---|---|---|
 | Generate PPTX | [`SKILL.md`](../SKILL.md) | Create or visually regenerate a presentation from source material, a topic, or an existing deck | Author new SVG pages, then export a new PPTX | Project workspace with `design_spec.md`, `spec_lock.md`, `svg_output/`, and `exports/` |
-| Create Template | [`create-template.md`](./create-template.md) | Create a reusable `brand`, `layout`, or `deck` workspace | Read reference facts and author a new template workspace; never add Master/Layout structure to the reference file in place | Portable template workspace with required `templates/` and optional assets/review export |
+| Create Template | [`create-template.md`](./create-template.md) | Create a reusable `brand`, `layout`, or `deck` workspace from one or more reference channels or a direct-text brief | Read the complete reference bundle and author a new template workspace; never add Master/Layout structure to a reference file in place | Portable template workspace with required `templates/` and optional assets/review export |
 | Fill Native PPTX | [`template-fill-pptx.md`](./template-fill-pptx.md) | Reuse native slides from a raw PPTX and replace/fill their content | Clone and patch PPTX through OOXML; no SVG generation | New filled PPTX under the project `exports/` |
 | Enhance Native PPTX | [`native-enhance-pptx.md`](./native-enhance-pptx.md) | Add notes, narration audio, timings, or transitions while preserving finished slides | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX under the project `exports/` |
 

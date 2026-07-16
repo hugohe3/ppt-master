@@ -34,6 +34,8 @@ Use Create Template Step 1 for source ingestion and replication-mode eligibility
 - When the source is branded, explicitly confirm that Create Layout will strip that identity. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
 - `standard` and `fidelity` author a new Master/Layout/slot system. `mirror` is available only when the source contains a complete current structure contract and preserves validated structure facts in a new workspace without modifying the source.
 
+Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets may define or illustrate reusable structure. In a mixed bundle, combine those channels without treating identity-only evidence as layout ownership. Exact user instructions remain decisions; vague prose remains suggested interpretation until the shared confirmation gate.
+
 ## 2. Layout Brief and Schema
 
 Add these child-owned requirements to Create Template Step 2:

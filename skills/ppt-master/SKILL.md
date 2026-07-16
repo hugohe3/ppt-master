@@ -125,7 +125,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Raw PPTX template plus new material/topic, generate a PPTX | [`template-fill-pptx`](workflows/template-fill-pptx.md) |
 | Existing PPTX, preserve page count/order and slide wording 1:1, improve layout | Main pipeline with the [`beautify-pptx`](workflows/profiles/beautify-pptx.md) profile |
 | Existing PPTX as source material, rethink outline or change page count/order | Main pipeline via `source_to_md.py` plus PPTX intake |
-| Build a reusable Brand, Layout, or Deck workspace from a PPTX/design reference | [`create-template`](workflows/create-template.md), which dispatches one matching child workflow, then return with the generated template workspace path |
+| Build a reusable Brand, Layout, or Deck workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct-text requirements, or a mixed reference bundle | [`create-template`](workflows/create-template.md), which dispatches one matching child workflow, then return with the generated template workspace path |
 | Finished PPTX, keep content/layout stable and add notes/audio/timing/transitions | [`native-enhance-pptx`](workflows/native-enhance-pptx.md) |
 
 **MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template workspace path with a valid `templates/design_spec.md`, or a compatible flat-directory current-contract root with `design_spec.md`. Semantic-legacy packages are rejected and must be replaced through Create Template.

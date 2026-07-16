@@ -29,7 +29,7 @@ Route selection authority for PPT Master. Select exactly one top-level route, th
 | Route | Request shape | Authority | Preconditions | Mutation model | Output contract |
 |---|---|---|---|---|---|
 | Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally apply an explicit template workspace | Main [`SKILL.md`](../SKILL.md) | Source facts exist or the topic-research stage can gather them | Author new SVG pages and export a new PPTX | New project with `design_spec.md`, `spec_lock.md`, `svg_output/`, and `exports/` |
-| Create Template | Create a reusable brand/layout/deck template from a PPTX, SVG, image/PDF reference, website/brand assets, or a verbal brief | [`create-template`](./create-template.md) | Reference material or an explicit template brief exists; project scope additionally requires an initialized target project | Author a new portable workspace; never modify the reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
+| Create Template | Create a reusable brand/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
 | Fill Native PPTX | Use a raw PPTX's native slide shells and replace/fill content | [`template-fill-pptx`](./template-fill-pptx.md) | Source PPTX plus new material/topic | Clone and patch PPTX through OOXML; no SVG pipeline | New filled PPTX in project `exports/` |
 | Enhance Native PPTX | Keep a finished PPTX's visible slides stable while adding notes, audio, timings, or transitions | [`native-enhance-pptx`](./native-enhance-pptx.md) | Finished source PPTX exists | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX in project `exports/` |
 
@@ -71,7 +71,7 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | Input | Route behavior |
 |---|---|
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
-| PPTX/SVG/reference + reusable template request | Create Template |
+| Any supported reference bundle or direct-text brief + reusable template request | Create Template |
 | Current template workspace root + content | Generate PPTX Step 3 |
 | Legacy-flat root with current `design_spec.md` and current SVG contract | Generate PPTX Step 3 compatibility reader |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |

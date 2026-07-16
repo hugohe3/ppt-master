@@ -8,7 +8,7 @@ description: Create Template entry workflow and shared contract for the Create B
 >
 > **Role invoked for Create Layout/Create Deck**: [Template_Designer](../references/template-designer.md)
 
-Create one reusable template workspace under either the **global template library** or `projects/` by dispatching to exactly one child workflow.
+Create one reusable template workspace under either the **global template library** or `projects/` from one or more reference channels or a direct user brief, then dispatch to exactly one child workflow.
 
 **Default — library scope**: Write `skills/ppt-master/templates/<kind_dir>/<template_id>/` and register it in the matching discovery index.
 
@@ -65,7 +65,7 @@ Any failed check aborts before writing `design_spec.md`, SVGs, images, icons, or
 ## Process Overview
 
 ```
-Reference Intake & Analysis -> Fact-Based Brief Proposal -> User Confirmation Gate -> Preflight + Invoke Selected Child -> Validate Child Output -> [Structured Review PPTX: optional for one Master, required for multi-Master] -> [Register Library Index] -> Output
+Reference Bundle Intake & Analysis -> Fact-Based Brief Proposal -> User Confirmation Gate -> Preflight + Invoke Selected Child -> Validate Child Output -> [Structured Review PPTX: optional for one Master, required for multi-Master] -> [Register Library Index] -> Output
 ```
 
 The first three steps derive the brief from facts, not guesses. **No final template directory may be created and no template SVG / `design_spec.md` may be written until `[TEMPLATE_BRIEF_CONFIRMED]` is emitted in Step 3.** Reference-analysis intermediates produced by `pptx_template_import.py` (typically under `/tmp/pptx_template_import/`) are explicitly **not** subject to this gate — they are temporary workspaces feeding Step 2.
@@ -74,22 +74,30 @@ After dispatch, the selected child workflow executes these shared steps with its
 
 ---
 
-## Step 1: Reference Intake & Analysis
+## Step 1: Reference Bundle Intake & Analysis
 
-Branch by the type of reference source the user supplied. This step produces analysis artefacts only — it does **not** create the final template directory, write `design_spec.md`, or touch any template index. When Create Brand was selected, follow that child workflow's analysis rules and do not run page-topology analysis merely because the reference is a PPTX/PDF.
+Run every applicable input branch for the reference bundle the user supplied. A bundle may contain one source, several files of one type, multiple source types, direct text in the conversation, or no external file. This step produces analysis artefacts only — it does **not** create the final template directory, write `design_spec.md`, or touch any template index. When Create Brand was selected, follow that child workflow's analysis rules and do not run page-topology analysis merely because the reference is a PPTX/PDF.
 
 ### Input source taxonomy
 
-The replication-mode column applies to Create Layout/Create Deck. Create Brand uses the same reference formats for identity evidence but has no replication mode, SVG roster, or native-structure path.
+The rows are evidence channels, not mutually exclusive routes. Run every matching row and retain source-level provenance. The replication-mode column applies to Create Layout/Create Deck. Create Brand uses the same reference formats for identity evidence but has no replication mode, SVG roster, or native-structure path.
 
 | Type | What the user supplied | Tool / read path | Replication modes available |
 |------|-------------------------|------------------|------------------------------|
 | **A** `.pptx` reference | A `.pptx` file path | `pptx_template_import.py` → `manifest.json` + `native_structure.json` + `source_template.pptx` + layered SVGs + `assets/`; flat verification SVGs are opt-in | `standard` / `fidelity` / `mirror` |
 | **B** Existing SVG assets | `projects/<x>/svg_output/`, a current template workspace root, a legacy flat template root, or a loose `.svg` folder | Normalize the source directory, create an editable authoring IR bundle with `svg_authoring_view.py`, then use its page SVGs; also read companion `design_spec.md` / `spec_lock.md` when present | `standard` / `fidelity`; `mirror` only when the source already carries a complete explicit Master/Layout/placeholder/native-object contract |
-| **C** Image / visual references | Screenshot folder, single image, PDF pages | `ls` + `Read` each file (multimodal visual recognition) | `standard` only |
-| **D** No reference source | Verbal description only ("McKinsey style", "tech blue", "dark minimal") | — | `standard` only |
+| **C** Image / visual references | PNG/JPG/WebP images, screenshots, moodboards, PDF page visuals, or a visual-reference folder | `ls` + `Read` each supplied visual or PDF (multimodal recognition) | `standard` only by itself |
+| **D** Text / document / website / asset references | Direct conversation text, pasted requirements, Markdown/TXT, DOCX/PDF/HTML/URL, brand/design manuals, or supplied logo/icon/font assets | Use direct text as-is; read plain text/Markdown; convert supported documents/URLs with `source_to_md.py` into a temporary analysis workspace; inventory explicit assets | `standard` only by itself |
+| **E** No reference material | A template request with no external source and no substantive brief yet | Skip analysis; collect every required value in Steps 2–3 | `standard` only |
 
-`fidelity` and `mirror` are not available for type C / D — visual references and verbal-only briefs cannot drive page-by-page replication. Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, and inheritance facts describe the native structure that still exists in the PPTX package. Optional `svg-flat/` files are complete-page verification views, never structure authority. In `standard` / `fidelity`, imported facts and visuals do not define output topology.
+| Bundle rule | Behavior |
+|---|---|
+| Combine channels | `standard` may use every confirmed visual, textual, documentary, web, and asset source together. Do not force the user to choose one source type. |
+| Determine mode eligibility | `fidelity` requires Type A or B page evidence. `mirror` requires Type A or a complete current Type B structure contract. Type C/D/E evidence may supplement an eligible bundle but never creates native topology. |
+| Preserve provenance | Keep facts, explicit user decisions, and AI suggestions distinct. Surface contradictions in Step 2 instead of resolving them silently. |
+| Protect mirror | Supplemental text, images, websites, or assets may explain the source but cannot alter a confirmed `mirror` graph or visuals. Use `standard` / `fidelity` when the user wants those inputs to change the resulting system. |
+
+Type A is the canonical mirror path: `manifest.json`, `native_structure.json`, layered lossless `svg/`, and inheritance facts describe the native structure that still exists in the PPTX package. Optional `svg-flat/` files are complete-page verification views, never structure authority. In `standard` / `fidelity`, imported facts and visuals do not define output topology.
 
 **Type B source normalization**: when the supplied root contains `templates/design_spec.md`, use `<input>/templates/` as the SVG/spec source and resolve its workspace assets from sibling `<input>/images/` and `<input>/icons/`. Otherwise, use the supplied directory itself as the legacy-flat/loose SVG source. Directory flatness is not a semantic-structure signal.
 
@@ -310,9 +318,27 @@ If a `design_spec.md` or `spec_lock.md` accompanies the SVGs, read it too. In mi
 
 Be explicit in Step 2 that exact HEX values, font names, and placeholder structure are **estimates from visual inspection** (`[suggested]`), never `[fact]`.
 
-### 1D. No reference source
+### 1D. Text, document, website, and asset references
 
-Skip the analysis. Step 2 will list every Required item as `[decision]`; nothing is fact-derivable from a non-existent source.
+Direct text in the conversation is already a valid input; do not require the user to save it as a file. Read Markdown/TXT directly. Convert supported document or website inputs into a temporary analysis workspace so the reference file or final template workspace is not modified:
+
+```bash
+python3 skills/ppt-master/scripts/source_to_md.py "<file_or_URL_or_dir>" -o "<text_analysis_workspace>"
+```
+
+Inventory explicitly supplied logo, icon, font, and other brand/design assets. Raster assets also enter the Type C visual pass; readable SVG assets may additionally enter Type B when they are page/template SVGs. Do not infer asset licensing, official status, or native PowerPoint structure from filenames alone.
+
+Extract only what the source actually states:
+
+- Identity rules: colors, typography, logo usage, voice, icon style, and explicit exclusions.
+- Structure rules: canvas, page types, grids, zones, placeholders, density, image behavior, and requested variants.
+- Deck context: use cases, design intent, presentation rhythm, examples, and negative requirements.
+
+Treat an explicit value written by the user as `[decision]`. Treat a statement as `[fact]` only when it comes from an identified source such as an official manual or website. Any interpretation of vague prose remains `[suggested]` and must pass the Step 3 confirmation gate. Text and asset evidence never supplies Master/Layout topology by itself.
+
+### 1E. No reference material
+
+Skip the analysis. Step 2 will list every Required item as `[decision]`; nothing is fact-derivable from a non-existent source. Create Brand may emit an incomplete empty skeleton only under its explicit child-workflow rule; Create Layout/Create Deck still require the shared confirmation gate before authoring a `standard` workspace.
 
 ---
 
@@ -320,13 +346,13 @@ Skip the analysis. Step 2 will list every Required item as `[decision]`; nothing
 
 Compose a single message that surfaces every Required brief item to the user, **labelling each value's provenance**:
 
-- **`[fact]`** — extracted from Step 1 analysis (e.g. theme color from `manifest.json`)
+- **`[fact]`** — extracted from a traceable Step 1 source (e.g. theme color from `manifest.json` or an identified official manual)
 - **`[suggested]`** — AI-inferred from analysis or context (e.g. tone summary, applicable scenarios; visually estimated values from type C)
-- **`[decision]`** — pure user choice, no analysis substitute (e.g. `template_id`, `replication mode`, `category`)
+- **`[decision]`** — an explicit user instruction or choice, including exact values supplied directly in conversation (e.g. `template_id`, replication mode, category, palette, or layout rule)
 
 **Language adaptation rule**: write the Step 2 brief in the user's language. For technical enum values, show the localized label first and keep the English ID in parentheses only when needed for precision, for example `<localized deck label> (deck)`, `<localized layout label> (layout)`, or `<localized mirror label> (mirror)`. Do not assume users know what each English word means.
 
-**Option visibility rule**: for every field with a finite option set, show both the recommended value and the other valid options. Do not present a single recommended value as if no alternatives exist. If an option is unavailable for the current input type, list it under `Unavailable` with the reason.
+**Option visibility rule**: for every field with a finite option set, show both the recommended value and the other valid options. Do not present a single recommended value as if no alternatives exist. If an option is unavailable for the current bundle evidence, list it under `Unavailable` with the reason.
 
 | Field | Must show |
 |---|---|
@@ -343,7 +369,7 @@ Compose a single message that surfaces every Required brief item to the user, **
 
 Items to surface:
 
-| Item | Required | Provenance by input type |
+| Item | Required | Provenance by evidence channel |
 |------|----------|--------------------------|
 | Output scope | Yes | `[decision]` — `library` (default, globally reusable and indexed) or `project` (same portable workspace routing under one initialized project) |
 | Target project | Yes for `project`; N/A for `library` | `[decision]` — explicit path to the initialized target workspace; validate it during the Step 4 preflight |
@@ -352,21 +378,21 @@ Items to surface:
 | Category | Create Layout/Create Deck only | `[decision]` — Create Deck: `brand` / `general` / `scenario` / `government` / `special`; Create Layout: `general` / `scenario` / `government` / `special` |
 | Applicable scenarios | Yes | `[suggested]` from analysis; user confirms |
 | Identity tone or structural summary | Yes | Create Brand/Create Deck: identity tone. Create Layout: structural use case and density/rhythm summary only. |
-| Theme mode | Create Layout/Create Deck only | A: `[fact]` from `manifest.json` background colors. B: `[fact]` from SVG `fill`. C: `[suggested]` from visual estimate. D: `[decision]` |
-| Canvas format and dimensions | Create Layout/Create Deck only | A/B: `[fact]` from slide size or SVG `width` / `height` / `viewBox`; show `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, and `source_viewbox`. C: `[suggested]` from image aspect ratio. D: `[decision]`, default `ppt169` (`1280x720`, `0 0 1280 720`) |
-| Replication mode | Create Layout/Create Deck only | `[decision]` — `standard` always available; `fidelity` is available for A/B; `mirror` is available for A and for B sources with a complete explicit structure contract. `standard` / `fidelity` author new SVG semantics. Mirror retains one materialized prototype per source slide in source order and adds definition-only prototypes for source Layouts unused by those slides. Reject `fidelity` / `mirror` for C/D. |
+| Theme mode | Create Layout/Create Deck only | A: `[fact]` from `manifest.json` background colors. B: `[fact]` from SVG `fill`. C: `[suggested]` from visual estimate. D: `[fact]` from an identified source or `[decision]` from direct user text; otherwise `[suggested]`. E: `[decision]`. |
+| Canvas format and dimensions | Create Layout/Create Deck only | A/B: `[fact]` from slide size or SVG `width` / `height` / `viewBox`; show `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, and `source_viewbox`. C: `[suggested]` from image aspect ratio. D: `[fact]` from an identified source or `[decision]` from direct user text when specified. E: `[decision]`, default `ppt169` (`1280x720`, `0 0 1280 720`). |
+| Replication mode | Create Layout/Create Deck only | `[decision]` — `standard` is always available. `fidelity` requires A/B page evidence; `mirror` requires A or B with a complete explicit structure contract. C/D/E channels may supplement an eligible mixed bundle but do not establish mode eligibility. `standard` / `fidelity` author new SVG semantics. Mirror retains one materialized prototype per source slide in source order and adds definition-only prototypes for source Layouts unused by those slides. |
 | Native structure facts | Create Layout/Create Deck with Type A or structured Type B | `[fact]` from `native_structure.json` / source SVG contract: master/layout counts, parentage, page assignments, placeholder identities, and multi-master status. Mirror preserves these validated facts in the new workspace; authored modes do not use them as output topology. |
 | Mode-specific ownership | Create Layout/Create Deck only | `standard` / `fidelity`: `[decision]` newly authored Master/Layout ownership, including the reusable-family reason for every additional Master. `mirror`: `[fact]` source ownership mapped without synthesis. Every Master must own at least one emitted Layout and every Layout must have at least one emitted prototype; export never infers either contract. |
 | Visual fidelity for fixed pages | Create Layout/Create Deck `standard` / `fidelity` when reference exists; **N/A for `mirror` and Create Brand** | `[decision]` — `literal` (closely reproduce reference geometry / decoration / sprite crops within a newly authored structure) or `adapted` (use reference tone/composition but allow design evolution). Different page types may take different settings. |
 | Basic template norms | Yes when reference exists | Create Brand uses the identity fields and provenance rules from its child workflow. Create Layout/Create Deck use `[fact]` / `[suggested]` layout grammar, image system, density rhythm, page roster semantics, and asset policy from Step 1. |
 | Reference source | Optional | already known if Step 1 ran |
-| Theme color | Create Brand/Create Deck only | A: `[fact]` from theme XML. B: `[fact]` from dominant SVG `fill`. C: `[suggested]` from visual estimate (HEX is approximate). D: `[decision]`. Create Layout may use neutral preview paint but stores no identity color. |
-| Fonts | Create Brand/Create Deck only | A: `[fact]` from `manifest.json`. B: `[fact]` from SVG `font-family`. C / D: not derivable — `[decision]` if the child owns a custom stack. Create Layout stores no typography system. |
+| Theme color | Create Brand/Create Deck only | A: `[fact]` from theme XML. B: `[fact]` from dominant SVG `fill`. C: `[suggested]` from visual estimate (HEX is approximate). D: `[fact]` from an identified source or `[decision]` from direct user text; otherwise `[suggested]`. E: `[decision]`. Create Layout may use neutral preview paint but stores no identity color. |
+| Fonts | Create Brand/Create Deck only | A: `[fact]` from `manifest.json`. B: `[fact]` from SVG `font-family`. C: font family is not derivable — use `[decision]` if the user supplies one. D: `[fact]` from an identified source or `[decision]` from direct user text. E: `[decision]` when a custom stack is wanted. Create Layout stores no typography system. |
 | Design style | Optional | `[suggested]` from analysis |
-| Assets list | Optional | A: `[fact]` from `assets/` listing; user picks which to bundle. B / C: `[decision]` per file. D: none |
+| Assets list | Optional | A: `[fact]` from `assets/` listing; user picks which to bundle. B/C/D: retain each file's source and let the user confirm adoption. E: none. |
 | Keywords | Yes | `[suggested]` from analysis (3–5 short tags); user confirms |
 
-For type A Create Layout/Create Deck execution, also include in this message:
+When the bundle includes Type A for Create Layout/Create Deck, also include in this message:
 
 - the exact authoring-manifest documents required by the selected mode and verified during Step 1
 - a one-line summary of the source Master/Layout structure
@@ -385,7 +411,7 @@ The user replies with corrections, additions, or "all good".
 1. Echo back the finalized brief (post-corrections) in a single message
 2. Emit the marker `[TEMPLATE_BRIEF_CONFIRMED]` on its own line
 
-Skipping this gate — including silently inferring values from the reference source, opened IDE file, or prior conversation — is a route violation. Even if the user said "use this .pptx as a template" upfront, you MUST still surface Step 2 with provenance labels and obtain explicit confirmation here. The reference source informs the brief; it does not substitute for it.
+Skipping this gate — including silently inferring values from reference files, direct text, an opened IDE file, or prior conversation — is a route violation. Even if the user already supplied a PPTX, image, website, document, asset bundle, or complete written brief, you MUST still surface Step 2 with provenance labels and obtain explicit confirmation here. The reference bundle informs the brief; it does not substitute for it.
 
 **Required outcome of Step 3** (all must be true before emitting `[TEMPLATE_BRIEF_CONFIRMED]`):
 
@@ -395,7 +421,8 @@ Skipping this gate — including silently inferring values from the reference so
 - [ ] User has replied with values or explicit acceptance of suggested defaults
 - [ ] Output scope is confirmed; both scopes use the same workspace shape, while `project` includes an explicit initialized target-project path
 - [ ] For Create Layout/Create Deck, the canvas format is fixed before SVG generation
-- [ ] For Create Layout/Create Deck, replication mode is consistent with the input type (`fidelity` allowed for A/B; `mirror` allowed for A and structured B only; both forbidden for C/D)
+- [ ] For Create Layout/Create Deck, replication mode is consistent with the bundle evidence (`fidelity` requires A/B page evidence; `mirror` requires A or structured B; C/D/E channels alone permit only `standard`)
+- [ ] Every supplied visual, textual, documentary, web, and asset channel has been analyzed or explicitly excluded; mixed-input conflicts are surfaced rather than silently resolved
 - [ ] For Create Layout/Create Deck mirror, the source graph and supported geometry are complete; every source Layout absent from the source-slide roster is planned as a definition-only prototype, and any genuinely missing/unsupported facts were reported
 - [ ] Child-specific norms from prior content have been surfaced and accepted, or explicitly marked N/A when no reference exists: identity/provenance for Create Brand; layout/image/density/asset behavior for Create Layout/Create Deck
 - [ ] For Create Layout/Create Deck, mode-specific ownership is explicit: `standard` / `fidelity` author a new structure without source-topology distillation; `mirror` maps validated source ownership one-to-one into a new workspace
@@ -435,7 +462,7 @@ The preflight is atomic at the Create Template parent level: discover and settle
 
 **Create Layout/Create Deck branch**: continue in the selected child workflow, switch to the Template_Designer role, and generate per role definition. The role input is the finalized brief from Step 3 plus the analysis bundle from Step 1, including the accepted basic template norms.
 
-If the input source is type A, pass the following internal package to the role:
+When the bundle includes Type A, pass the following internal package to the role:
 
 - finalized brief from Step 3
 - `manifest.json`
@@ -447,16 +474,18 @@ If the input source is type A, pass the following internal package to the role:
 - for `mirror` only, matching immutable `svg/` payload backing plus `svg/inheritance.json`; immutable `svg-flat/` remains an optional visual cross-check
 - optional screenshots, if available
 
-For type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted vectors; open individual `icons/imported/*.svg` files only when needed.
-For type C, pass the image file list and the visual analysis notes.
-For type D, pass only the finalized brief.
+When the bundle includes Type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted vectors; open individual `icons/imported/*.svg` files only when needed.
+When the bundle includes Type C, pass the image file list and the visual analysis notes.
+When the bundle includes Type D, pass the direct text, converted document/website outputs, traceable source list, explicit asset inventory, and analysis notes.
+For Type E, pass only the finalized brief.
+For a mixed reference bundle, pass the union of the applicable packages while keeping each fact's source and every unresolved conflict explicit.
 
 The role interprets the package according to replication mode:
 
 | Mode | Final SVG authority | Structure behavior |
 |---|---|---|
 | `standard` / `fidelity` | Newly authored SVGs based on the confirmed brief and visual references | Design an intentional new Master/Layout/slot system. Source topology is neither preserved nor distilled into the output. |
-| `mirror` | Editable `authoring-svg/` IR plus native-structure facts and lossless payload backing | Restore source pages, Master/Layout identities and parentage, placeholder identity/bounds, ownership, and supported native-object metadata one-to-one. Materialization resolves unchanged source refs; it does not copy the lossless tree as the editable source. |
+| `mirror` | Editable `authoring-svg/` IR plus native-structure facts and lossless payload backing | Materialize source pages, Master/Layout identities and parentage, placeholder identity/bounds, ownership, and supported native-object metadata one-to-one in the new workspace. Materialization resolves unchanged source refs; it does not copy the lossless tree as the editable source. |
 
 For Type A `mirror`, materialize the reviewed layered IR into an empty template
 workspace with the deterministic compiler:

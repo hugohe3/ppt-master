@@ -32,6 +32,8 @@ Use Create Template Step 1 for source ingestion and replication-mode eligibility
 - Middle: use cases, design intent, presentation rhythm, and other deck-specific overview context.
 - `standard` and `fidelity` author a new complete system; source topology is not output topology. `mirror` preserves only validated package/contract facts in a new workspace and never modifies the source.
 
+Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets are first-class evidence under Create Template Step 1. In a mixed bundle, combine the applicable identity, structure, and middle evidence without erasing provenance. Exact user instructions remain decisions; vague prose remains suggested interpretation until the shared confirmation gate.
+
 Create Deck is the default child when identity and structure are both requested or when the source is a specific organization's branded presentation system. If the user explicitly wants identity-only or brand-neutral structure, return to Create Template dispatch before the shared confirmation marker is emitted.
 
 ## 2. Deck Brief and Schema
