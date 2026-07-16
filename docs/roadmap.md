@@ -6,13 +6,13 @@
 
 > PPT Master is a solo-maintained open source project, driven by **priority rather than fixed timelines**. This roadmap is here to align expectations: what's already shipped, what's under ongoing maintenance and evolution, and what's intentionally out of scope. Priorities shift with user feedback and real usage signals — no committed delivery windows.
 >
-> **Where we are**: AI generates SVG from scratch → converts to DrawingML for natively editable PPTX. The core axis is **going ever deeper into PowerPoint's native object model** — real native shapes, masters/layouts via templates, data-backed charts and tables — while holding pixel-fidelity across four renderers (PowerPoint / Keynote / LibreOffice / WPS). Every direction below serves that axis.
+> **Where we are**: PPT Master has four explicit artifact routes. Generate PPTX uses constrained SVG → DrawingML to author newly designed slides; Create Template produces reusable Brand / Layout / Deck workspaces; Fill Native PPTX and Enhance Native PPTX preserve existing packages through scoped OOXML operations. Across all four, the core axis is **going ever deeper into PowerPoint's native object model** while keeping each route's editability, fidelity, and preservation trade-offs explicit.
 
 ---
 
 ## Recent capability evolution
 
-The past two months' structural capability growth. Single flags / incremental polish go to the commit log.
+Structural capability growth since March 2026. Single flags and incremental polish stay in the commit log.
 
 ### 2026-03 — Native PPTX route takes shape
 
@@ -30,7 +30,7 @@ The past two months' structural capability growth. Single flags / incremental po
 ### 2026-05 — Visual editing + AI image systematization
 
 - **Live Preview enters the main pipeline** ([`workflows/stages/live-preview.md`](../skills/ppt-master/workflows/stages/live-preview.md)) — browser preview, click elements to write annotations, say "apply my annotations" and the AI rewrites that region (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85))
-- **Replicate any PPTX as a template** ([`workflows/create-template.md`](../skills/ppt-master/workflows/create-template.md)) — PPTX → SVG reverse + OOXML theme / master / layout / asset extraction
+- **Create a reusable template workspace from a PPTX** ([`workflows/create-template.md`](../skills/ppt-master/workflows/create-template.md)) — read the supported theme / Master / Layout / asset facts that still exist in the package, then author or materialize a new validated Brand / Layout / Deck workspace without modifying the source PPTX
 - **AI image three-dimension system** rendering × palette × type + Strategist h.5 lock, downstream consumes a fixed contract
 - **AI image `hero_page` dual-track** — local insert + full-canvas hero image coexist
 - **Brand identity preset subsystem** ([`workflows/create-template/create-brand.md`](../skills/ppt-master/workflows/create-template/create-brand.md)) — the Create Brand child workflow extracts and reuses brand palette / typography / logo / voice under the fixed Create Template entry
@@ -46,7 +46,7 @@ The past two months' structural capability growth. Single flags / incremental po
 
 ### 2026-06 — Mode & visual-style dual catalogs + PPTX intake & content-strategy expansion
 
-- **Replicate any PPTX's design → refill content route** ([`workflows/template-fill-pptx.md`](../skills/ppt-master/workflows/template-fill-pptx.md)) — when a user supplies an existing `.pptx` plus new material / a topic and asks to "reuse this deck's design / fill the content back in", the Fill Native PPTX route edits the PPTX directly and never enters the SVG generation pipeline. Output stays natively editable (it reuses the original slides' shapes / layouts, not a screenshot refill); it isolates private parts on reuse, exposes chart data, and runs capacity checks. Trigger follows the template rule — only on an explicit ask to reuse an existing deck — and it deliberately does not reflow / add pages / swap images (that's the Generate PPTX route). Distinguished from Non-goals #53 below
+- **Reuse a native PPTX's design → refill content route** ([`workflows/template-fill-pptx.md`](../skills/ppt-master/workflows/template-fill-pptx.md)) — when a user supplies an existing `.pptx` plus new material / a topic and asks to "reuse this deck's design / fill the content back in", the Fill Native PPTX route edits the PPTX directly and never enters the SVG generation pipeline. Output stays natively editable (it reuses the original slides' shapes / layouts, not a screenshot refill); it isolates private parts on reuse, exposes chart data, and runs capacity checks. Trigger follows the template rule — only on an explicit ask to reuse an existing deck — and it deliberately does not reflow / add pages / swap images (that's the Generate PPTX route). Distinguished from Non-goals #53 below
 - **Three executors retired → mode + visual-style dual catalogs** ([`references/modes/`](../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../skills/ppt-master/references/visual-styles/)) — the old three `executor-*.md` (general / consultant / consultant-top) entangled domain · audience · persuasion · narrative on one axis; split into two orthogonal catalogs (following the `image-renderings` pattern: flat dir + `_index` + on-demand read + Strategist locks one). **mode** = narrative skeleton (`pyramid` / `narrative` / `instructional` / `showcase`; consultant + top merge into pyramid since their narrative core is identical); **visual-style** = SVG layout aesthetic (`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`, each paired with an image-rendering, **zero HEX** — color truth stays in confirmation e + image-palettes). Strategist `§d` locks `mode` + `visual_style` independently into `spec_lock`; Executor loads the two locked files; any mode × any style. Render coordinates stay in `templates/charts/`
 - **Prompt constraint-strength decoupling** ([`docs/rules/prompt-style.md`](rules/prompt-style.md) §4) — three explicit strength tiers — rule (`Hard rule` / `Forbidden`) / default (`Default — … may override`) / reference (`Reference — not a constraint`) — plus an "objective failure vs taste" test and a checker boundary, so the model can tell "must keep vs may deviate" at a glance; the visual-style catalog is Reference-strength throughout
 - **visual-style catalog grows to 18, aligned with image-renderings + examples reclaimed** — first four distilled from the [examples library](../examples/) (`brutalist` / `blueprint` / `memphis` / `zine`), then six filling in the hand-drawn / textured renderings that have a layout twin (`sketch-notes` / `ink-notes` / `chalkboard` / `paper-cut` / `vintage-poster` / `pixel-art`), then four more reclaimed from still-uncovered example aesthetics: `ink-wash` (rice-paper whitespace, from Cangzhuo / Li Ziqi) · `glassmorphism` (dark frosted-glass + gradient light, from glassmorphism_demo, split out of soft-rounded) · `photo-editorial` (full-bleed photography dominates, text captions, from Pritzker / fashion_weekly) · `data-journalism` (Bloomberg/Economist multi-column micro-charts + sidebars, from global_ai_capital). The catalog is regrouped into five families (corporate-product / editorial-publication / expressive-print / hand-drawn-brush / specialty). **The test**: a rendering earns a visual-style twin only when it defines a whole-page layout language, not merely how an inserted image looks — so photo-*led composition* gets `photo-editorial` (paired with corporate-photo), while purely atmospheric renderings (nature / warm-scene / fantasy-animation) stay imagery-only and just pair with a layout style. Zero HEX, Reference strength throughout
@@ -111,19 +111,19 @@ Long-running improvements with no committed timeline. Only real directions are l
 
 ## Non-goals
 
-The directions below come up repeatedly and have been evaluated as **not on the path**. Listing them is not a value judgment on the underlying need — they simply don't fit this project's main route. If you specifically need these capabilities, consider other tools or forking.
+The directions below come up repeatedly and have been evaluated as **not on the path**. Listing them is not a value judgment on the underlying need — they simply do not fit this project's product direction. If you specifically need these capabilities, consider other tools or forking.
 
-### Read arbitrary PPTX templates → fill text only
+### Blindly refill arbitrary PPTX placeholder systems
 
 **Issues**: [#53](https://github.com/hugohe3/ppt-master/issues/53), [#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-PPT Master's main route is "AI generates SVG from scratch → DrawingML", with the whole pipeline built around full control of every shape / text / layout. A structured PPTX can inform a reviewed reusable package in two explicit ways: `standard` / `fidelity` author a new SVG and Master/Layout system from visual evidence, while `mirror` materializes a new workspace from the complete set of supported source facts actually present, including unused Layout definitions. Neither path modifies the source PPTX or recovers absent design intent. Generic "open any PPTX and blindly refill every placeholder" remains a different product shape.
+The Generate PPTX route is built around full control of newly authored shapes, text, and layout. A structured PPTX can inform a reviewed reusable package in two explicit ways: `standard` / `fidelity` author a new SVG and Master/Layout system from visual evidence, while `mirror` materializes a new workspace from the complete set of supported source facts actually present, including unused Layout definitions. Neither path modifies the source PPTX or recovers absent design intent. Generic "open any PPTX and blindly refill every placeholder" remains a different product shape.
 
 **The basic need is actually simple**: if you just need "replace Excel data into fixed positions in a PPT template", have the AI write a few lines of `python-pptx`. You don't need this pipeline.
 
 > **Supported boundaries**: Fill Native PPTX (`template-fill-pptx`) directly refills selected source slides. Create Template (`create-template`) either authors a new explicit SVG contract (`standard` / `fidelity`) or maps validated facts from a supported source contract into a new workspace without semantic synthesis (`mirror`). Strict and adaptive downstream compile the resulting declared contract into native structure. What remains out of scope is unreviewed, schema-free substitution against arbitrary third-party placeholder systems.
 
-### Switch to native PowerPoint charts (Excel-native chart)
+### Make native PowerPoint charts the default
 
 **Issues**: [#99](https://github.com/hugohe3/ppt-master/issues/99), [#100](https://github.com/hugohe3/ppt-master/issues/100)-class
 
@@ -148,9 +148,9 @@ Won't do: trading quality for "throw a few pages together" speed.
 
 If speed-sensitive and quality-tolerant, a zero-setup browser SaaS tool is a better fit.
 
-### CLI / SaaS / desktop app form factors
+### Standalone CLI / hosted SaaS / desktop app form factors
 
-The product form is firmly **chat-driven AI IDE skill** (Claude Code / Cursor / VS Code + Copilot / Codebuddy).
+The product form is a **chat-driven workflow / skill inside an agent-capable AI tool** (Claude Code, Codex, Cursor, VS Code agents, and others).
 
 Won't do: standalone CLI (`ppm`-style), SaaS web service, Electron shell. Any "make it run independently of chat" proposal will be declined. Chat is the interaction core, not a wrapper.
 

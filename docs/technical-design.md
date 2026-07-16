@@ -4,11 +4,11 @@
 
 ---
 
-## Design Philosophy — AI as Your Designer, Not Your Finisher
+## Design Philosophy — AI-Directed Workflow, Human-Controlled Draft
 
-The generated PPTX is a **design draft**, not a finished product. Think of it like an architect's rendering: the AI handles visual design, layout, and content structure — delivering a high-quality starting point. For truly polished results, **expect to do your own finishing work** in PowerPoint: swapping shapes, refining charts, adjusting colors, replacing placeholder graphics with native objects. The goal is to eliminate 90% of the blank-page work, not to replace human judgment in the final mile. Don't expect one AI pass to do everything — that's not how good presentations are made.
+PPT Master produces a **high-quality editable PowerPoint draft**, not a sealed final deck. The workflow reasons about the message, designs the pages, and authors or preserves native PowerPoint objects under an explicit route contract. The user reviews the direction and owns the final-mile judgment in PowerPoint. Remaining work should be refinement of a real deck, not reconstruction from slide images or a thin editable skin.
 
-**A tool's ceiling is your ceiling.** PPT Master amplifies the skills you already have — if you have a strong sense of design and content, it helps you execute faster. If you don't know what a great presentation looks like, the tool won't know either. The output quality is ultimately a reflection of your own taste and judgment.
+The workflow supplies presentation-specific reasoning, state, contracts, and quality gates; deterministic tools handle conversion, validation, packaging, and repeatable file operations. **The selected model still sets the quality ceiling**, while the user's taste and judgment guide review and finishing.
 
 ### SVG Is a Project-Specific Intermediate Language
 
@@ -34,7 +34,9 @@ The three layers have separate responsibilities and cannot substitute for one an
 
 ---
 
-## System Architecture
+## Generate PPTX Architecture
+
+The diagram below covers the Generate PPTX route, including its `beautify-pptx` profile. Create Template has its own workspace lifecycle, while Fill Native PPTX and Enhance Native PPTX operate directly on OOXML; the route table later in this document covers all four.
 
 ```
 User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
@@ -46,7 +48,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
 [Template / Brand / Layout (optional)] — default: skip, proceed with free design
-    Trigger only on an explicit Layout/Deck workspace root or direct Brand/legacy package path
+    Trigger only on an explicit current-contract Brand/Layout/Deck workspace root
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md
@@ -96,7 +98,7 @@ Minimal semantic markers do not weaken that closure. Free-design and brand-only 
 
 This is a page-design closure rule, not a claim that SVG describes the entire PPTX package. Rebuilding the visible slide from its completed SVG is the relevant invariant; reconstructing notes, audio, timing, relationships, or direct native edits from SVG alone is not.
 
-Direct PPTX workflows intentionally bypass the SVG authoring route and remain separate by design:
+Existing-PPTX requests split by mutation model: the two native workflows bypass SVG, while `beautify-pptx` remains a Generate PPTX profile that regenerates the visible design:
 
 | Workflow | Input role | Output mechanics | Why it is separate |
 |---|---|---|---|

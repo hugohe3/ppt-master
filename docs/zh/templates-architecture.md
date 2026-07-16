@@ -1,5 +1,9 @@
 # 模板架构：Brand / Layout / Deck 三分类
 
+[English](../templates-architecture.md) | [Chinese](./templates-architecture.md)
+
+---
+
 > 本文是**架构对齐文档**，定义"模板"在数据模型层面的三种身份、各自的 `design_spec.md` 字段集、以及多路径合成与冲突解决规则。面向贡献者与 AI 工作流，回答"一个模板目录里应该写什么、不写什么；多个模板同时给时怎么合成"。
 >
 > 用户视角的用法（怎么触发、怎么选）见 [`templates-guide.md`](./templates-guide.md)；本文不重复。
@@ -203,7 +207,7 @@ primary_color: "<HEX>"
 
 ## 三、三套 index 文件
 
-每个 index 跟物理目录一一对应，字段按需精简（参照 [[project-charts-index-full-read-intentional]] 的"meta + summary"模式，但保留对 Strategist 选型有用的结构化元数据）。
+每个 index 跟物理目录一一对应，字段按需精简，沿用 [`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 的紧凑“meta + summary”模式，同时保留对 Strategist 选型有用的结构化元数据。
 
 三套索引只覆盖全局库范围。项目根工作区有意不进入任何索引，仍可通过显式 `projects/<name>/` 路径使用。因为两种范围采用相同工作区形态，完整核心工作区可在两者之间移动或复制，不需要重写素材路径；只有全局库注册不同。
 
@@ -316,7 +320,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ## 五、与 SKILL.md Step 3 的关系
 
-**触发规则仍以路径为准**——仍需显式工作区根目录路径（见 [[feedback-template-explicit-path-only]]），裸名称绝不触发。Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md` 的平铺工作区，但其中 SVG 必须已经满足当前合同。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，Step 3 必须拒绝；先由 `create-template` 产出新工作区，再继续生成。唯一的窄例外是当前对话刚完成 `create-template`：验证通过后可把精确的工作区根目录直接交给 Step 3。`kind` 字段决定**触发后 AI 怎么处理**：
+**触发规则仍以路径为准**——仍需显式工作区根目录路径（见 [SKILL.md Step 3](../../skills/ppt-master/SKILL.md#step-3-template-option)），裸名称绝不触发。Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md` 的平铺工作区，但其中 SVG 必须已经满足当前合同。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，Step 3 必须拒绝；先由 `create-template` 产出新工作区，再继续生成。唯一的窄例外是当前对话刚完成 `create-template`：验证通过后可把精确的工作区根目录直接交给 Step 3。`kind` 字段决定**触发后 AI 怎么处理**：
 
 | 用户路径指向 | Step 3 行为（按 kind 分支）|
 |---|---|

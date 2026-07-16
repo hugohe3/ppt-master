@@ -42,4 +42,4 @@ User-facing documentation lives in this directory: English files are the canonic
 
 | Document | Description |
 |---|---|
-| [Style Rules](./rules/README.md) | Repo-wide style rules for prompt files, Python, and prose |
+| [Style Rules](./rules/README.md) | Contributor style rules for prompt references and Python scripts |

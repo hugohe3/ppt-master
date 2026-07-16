@@ -1,6 +1,10 @@
 # Templates Guide: Use, Derive, and Boundaries
 
-A PPT Master "template" is a **structure + style** preset bundle: complete standalone SVG pages whose metadata explicitly identifies one Master and Layout, atomic fixed-layer objects, and grouped content slots, plus `design_spec.md` and matching assets. Export deterministically compiles that declared contract into native PowerPoint structure.
+[English](./templates-guide.md) | [Chinese](./zh/templates-guide.md)
+
+---
+
+A PPT Master template is a reusable workspace with one of three explicit kinds: **Brand** owns identity, **Layout** owns reusable page structure, and **Deck** owns both plus deck-specific overview context. Layout and Deck workspaces include complete SVG prototypes with declared Master / Layout / slot contracts; Brand workspaces intentionally have no SVG roster. Each workspace's `design_spec.md` and matching assets declare exactly what that kind contributes.
 
 This guide answers three questions:
 
@@ -46,64 +50,35 @@ Templates are organized into three kinds, each in its own directory:
 - [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
 - [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
 
-Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
+Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
-Free design is **not** "no structure" or "no style" — the AI plans a fresh Master/Layout system and visual language **for that specific deck** before drawing the SVG pages. A template reuses an already-defined structure and style. Both use the same structured output contract; the difference is where the structure originates.
+Free design is **not** "no structure" or "no style" — the Strategist still plans the narrative, hierarchy, and visual system for that specific deck. Its generated pages use `pptx_structure.mode: flat`, so every visible object remains Slide-local. A Brand-only workspace also stays `flat` while supplying identity constraints. Layout and Deck workspaces use `pptx_structure.mode: structured`, because they contribute an explicit reusable Master / Layout / slot contract.
 
-> Rule of thumb: clear content direction + strong brand or scenario constraints (consulting reports, government briefings, defenses) → use a template. Essay-like content where atmosphere matters more (magazine, documentary narrative) → free design usually works better.
+> Rule of thumb: use a Brand workspace when identity must be fixed, a Layout workspace when page structure must be reused, and a Deck workspace when both must travel together. Use free design when the deck should develop its own composition from the content.
 
 ### Styles are not templates
 
-A **style** is a description ("minimalist" / "Keynote-style" / "editorial") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you give it an explicit directory path.
+A **style brief** is interpretive language ("minimalist" / "Keynote-style" / "editorial") that the Strategist turns into concrete design choices. A **template** is a real Brand / Layout / Deck workspace that the workflow consumes only when you provide its explicit directory path.
 
 | | Template | Style |
 |---|---|---|
 | How invoked | Explicit directory path in your message | Free-form description in your message |
-| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Strategist confirmation stage |
-| Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
-| Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
+| What it supplies | The segments declared by its kind: identity, structure, or both | Intent that the Strategist interprets into mode, visual style, color, typography, icons, and imagery |
+| Confirmation | Template-owned values become the starting contract; user-confirmed choices remain authoritative | No pre-authored values; the Strategist proposes concrete candidates and the user confirms them |
+| Best for | Reusing an existing identity and/or page system | Expressing a desired feel without adopting a stored workspace |
 
 A style description and a template name still go through different machinery: "minimalist" is interpretive language, while `presentation_core/` is a real template directory that requires an explicit path.
 
-### Common styles you can describe
+### How style briefs are interpreted
 
-Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chinese"):
+The Strategist separates two independent choices:
 
-**Aesthetic direction**
+- **Mode** controls how the deck communicates: `pyramid`, `narrative`, `instructional`, `showcase`, `briefing`, or a confirmed `custom` direction.
+- **Visual style** controls how the pages look: built-ins such as `swiss-minimal`, `editorial`, `dark-tech`, `data-journalism`, `ink-wash`, and others, plus `custom`.
 
-| Style | One-line characterization |
-|---|---|
-| **Minimalist** | High whitespace, 2-3 colors, single focal point per page |
-| **Information-dense** | McKinsey-style structured tables, high density, conclusion-first |
-| **Keynote-style** | Single-page hero text, premium whitespace, Apple-feel |
-| **Editorial** | Large hero images, asymmetric layouts, strong typography contrast |
-| **Editorial illustration** | Warm tones, hand-drawn feel, zine-like |
-
-**Scenario / Industry**
-
-| Style | One-line characterization |
-|---|---|
-| **Business consulting** | Data-driven, restrained, blue / grey palette |
-| **Academic defense** | Strict hierarchy, citation-heavy, clean |
-| **Government briefing** | Red / blue, formal, symmetric |
-| **Product launch** | Visually bold, marketing-driven, single hero per page |
-| **Education / training** | Clear hierarchy, friendly tone, bright palette |
-| **Pitch deck / BP** | Narrative-driven, conclusion-bold |
-
-**Visual character / atmosphere**
-
-| Style | One-line characterization |
-|---|---|
-| **Dark tech** | Dark backgrounds, neon accents, futuristic |
-| **Pixel retro** | 8-bit, scanlines, gaming aesthetic |
-| **Neo-Chinese** | Restrained traditional motifs, ink / vermilion |
-| **Scandinavian** | Light, natural, restrained |
-| **Memphis / pop** | High-saturation blocks, geometric, 80s |
-| **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
-
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. To use the built-in `presentation_core` structure, send its workspace path; to keep structure free, describe only the style and let the AI adapt it to the deck content.
+Any mode can pair with any visual style. Terms such as "Keynote-style product launch" may influence both axes — for example, a `showcase` narrative with a restrained high-whitespace visual system — but they are never a template lookup token. The user confirms the resulting choices before generation. The canonical catalogs live under [`references/modes/`](../skills/ppt-master/references/modes/) and [`references/visual-styles/`](../skills/ppt-master/references/visual-styles/).
 
 ---
 
@@ -257,8 +232,8 @@ The result is not a private or reduced project-only format. You can point Step 3
 
 Common misconceptions to avoid:
 
-- **A reusable template is an explicit SVG contract, not a packaged source PPTX.** Authored modes create that contract; mirror maps validated source ownership facts into it. Every page previews independently, and export compiles only declared Master/Layout/Slide structure
-- **A template is not a "style skin".** It bundles structure (which blocks per page, how information is hierarchized) with style (colors, fonts, decoration). Trying to swap "skin" without structure tends to put the information architecture and the visuals at odds
+- **A reusable template is an explicit workspace, not a packaged source PPTX.** Brand workspaces may contain identity only; Layout and Deck workspaces add the structured SVG contract. Authored modes create that contract, while mirror maps validated source ownership facts into it. Export compiles only declared structure
+- **A template is not one undifferentiated "style skin".** Brand, Layout, and Deck deliberately separate identity from structure so each segment can be reused or fused under an explicit ownership rule
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes
 - **`mirror` targets literal supported appearance and source topology, not byte-identical OOXML.** It inherits source import limitations and permits only mechanical normalization such as fixed-layer group expansion. Unsupported native objects keep their available SVG fallback or are reported; mirror never synthesizes replacement ownership.

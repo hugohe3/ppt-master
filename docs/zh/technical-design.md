@@ -4,11 +4,11 @@
 
 ---
 
-## 设计哲学 —— AI 是你的设计师，不是完工师
+## 设计哲学 —— AI 驱动工作流，人掌握最终判断
 
-生成的 PPTX 是一份**设计稿**，而非成品。把它理解成建筑师的效果图：AI 负责视觉设计、排版布局和内容结构，交付给你一个高质量的起点。要想获得真正精良的成品，**需要你自己在 PowerPoint 里做精装修**：换掉形状、细化图表、调整配色、把占位图形替换成原生对象。这个工具的目标是消除 90% 的从零开始的工作量，而不是替代人在最后一公里的判断。不要指望 AI 一遍搞定所有——好的演示文稿从来不是这样做出来的。
+PPT Master 交付的是一份**高质量、可继续编辑的 PowerPoint 草稿**，而不是封闭的最终成品。工作流先推理信息与论证，再设计页面，并按照明确的路线合同创作或保留 PowerPoint 原生对象。用户负责确认方向，并在 PowerPoint 中掌握最后一公里的判断。后续工作应当是对真实 deck 的精修，而不是从整页图片或浅层可编辑外壳重新搭建。
 
-**工具的上限是你的上限。** PPT Master 放大的是你已有的能力——你有设计感和内容判断力，它帮你快速落地；你不知道一个好的演示文稿应该长什么样，它也没法替你知道。输出的质量，归根结底是你自身品味与判断力的映射。
+工作流提供演示文稿专用的推理、状态、合同与质量门；确定性工具负责转换、校验、打包和可重复文件操作。**最终质量上限仍由所选模型决定**，用户的审美与判断则负责评审和收尾。
 
 ### SVG 是项目的规范中间语言
 
@@ -34,7 +34,9 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 ---
 
-## 系统架构
+## Generate PPTX 路线架构
+
+下图描述 Generate PPTX 路线，也包含其 `beautify-pptx` profile。Create Template 有独立的工作区生命周期；Fill Native PPTX 与 Enhance Native PPTX 直接操作 OOXML。本文后续路线表会覆盖全部四条顶层路线。
 
 ```
 用户输入 (PDF/DOCX/XLSX/PPTX/URL/Markdown/主题文本)
@@ -46,7 +48,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 [创建项目] → project_manager.py init <项目名> --format <格式>
     ↓
 [模板 / 品牌 / 布局（可选）] — 默认跳过，直接自由设计
-    仅在用户提供明确的 Layout/Deck 工作区根目录或直接 Brand/旧包路径时触发
+    仅在用户提供符合当前合同的明确 Brand/Layout/Deck 工作区根目录时触发
     原生 PPTX 模板请求进入 template-fill；可复用 SVG 模板需先通过 create-template 创建
     ↓
 [Strategist] 策略师 - 三阶段策略师确认与设计规范 → design_spec.md + spec_lock.md
@@ -97,7 +99,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 `svg_final/` 不改变这条边界。Step 7 必须从 `svg_output/` 派生这组自包含视觉预览，供 IDE、浏览器查看，也可由用户手动作为 SVG 图片插入 PowerPoint；它不是第二条 PPTX 导出路线，也不承担 PowerPoint 手工“转换为形状”的兼容性。需要可编辑形状时，唯一受支持的路径是项目转换器把 `svg_output/` 翻译为原生 DrawingML PPTX。
 
-以下直接 PPTX 工作流会有意绕过 SVG 创作路线，并继续保持独立：
+已有 PPTX 请求按修改模型分流：两条原生工作流绕过 SVG，`beautify-pptx` 则仍是 Generate PPTX 内部通过 SVG 重做可见设计的 profile：
 
 | 工作流 | 输入角色 | 输出机制 | 为什么独立 |
 |---|---|---|---|
