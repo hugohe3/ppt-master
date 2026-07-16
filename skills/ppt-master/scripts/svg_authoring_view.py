@@ -21,10 +21,11 @@ Dependencies:
     None (standard library only).
 
 The output directory is an authoring bundle: editable SVGs plus one
-`authoring_manifest.json` provenance sidecar. It is the template-creation input,
-not a release SVG directory; final templates are materialized from this IR.
-Directory runs prepare and stage the complete batch before publishing it, so a
-failed page leaves the existing destination set unchanged.
+model-readable `authoring_summary.json` and one tool-only
+`authoring_manifest.json` provenance sidecar. It is the template-creation
+input, not a release SVG directory; final templates are materialized from this
+IR. Directory runs prepare and stage the complete batch before publishing it,
+so a failed page leaves the existing destination set unchanged.
 """
 
 from __future__ import annotations
@@ -50,8 +51,19 @@ configure_utf8_stdio()
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
 AUTHORING_MANIFEST_NAME = "authoring_manifest.json"
+AUTHORING_SUMMARY_NAME = "authoring_summary.json"
 AUTHORING_SCHEMA = "ppt-master.svg-authoring-ir.v1"
+AUTHORING_SUMMARY_SCHEMA = "ppt-master.svg-authoring-summary.v1"
 SOURCE_REF_ATTRIBUTE = "data-pptx-source-ref"
+_DRAWABLE_TAGS = frozenset({
+    "circle",
+    "ellipse",
+    "line",
+    "path",
+    "polygon",
+    "polyline",
+    "rect",
+})
 
 ET.register_namespace("", SVG_NS)
 ET.register_namespace("xlink", XLINK_NS)
@@ -481,6 +493,211 @@ def _authoring_manifest_bytes(
     ).encode("utf-8")
 
 
+def _authoring_document_kind(path: Path) -> str:
+    name = path.name
+    if name.startswith("master_"):
+        return "master"
+    if name.startswith("layout_"):
+        return "layout"
+    if name.startswith("slide_"):
+        return "slide"
+    return "generic"
+
+
+def _authoring_summary_document(
+    path: Path,
+    relative_name: str,
+) -> dict[str, object]:
+    try:
+        root = ET.parse(path).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise ValueError(f"Cannot summarize authoring SVG {path}: {exc}") from exc
+    if _local_name(root.tag) != "svg":
+        raise ValueError(f"Authoring document root is not <svg>: {path}")
+
+    elements = list(root.iter())
+    icon_references = sorted({
+        icon_name
+        for element in elements
+        if (icon_name := element.get("data-icon"))
+    })
+    text_elements = [
+        element for element in elements
+        if _local_name(element.tag) == "text"
+    ]
+    return {
+        "file": relative_name,
+        "kind": _authoring_document_kind(path),
+        "bytes": path.stat().st_size,
+        "viewBox": root.get("viewBox"),
+        "elements": len(elements),
+        "top_level_elements": len(root),
+        "drawables": sum(
+            _local_name(element.tag) in _DRAWABLE_TAGS
+            for element in elements
+        ),
+        "text_elements": len(text_elements),
+        "text_characters": sum(
+            len("".join(element.itertext()))
+            for element in text_elements
+        ),
+        "images": sum(
+            _local_name(element.tag) == "image"
+            for element in elements
+        ),
+        "icon_uses": sum(
+            element.get("data-icon") is not None
+            for element in elements
+        ),
+        "icon_refs": icon_references,
+        "placeholders": sum(
+            element.get("data-pptx-placeholder") is not None
+            for element in elements
+        ),
+        "inline_source_refs": sum(
+            element.get(SOURCE_REF_ATTRIBUTE) is not None
+            for element in elements
+        ),
+    }
+
+
+def _load_authoring_summary_manifest(
+    authoring_dir: Path,
+) -> tuple[dict[str, object], list[str]]:
+    manifest_path = authoring_dir / AUTHORING_MANIFEST_NAME
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ValueError(
+            f"Authoring manifest not found: {manifest_path}"
+        ) from exc
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(
+            f"Cannot decode authoring manifest {manifest_path}: {exc}"
+        ) from exc
+    if not isinstance(manifest, dict) or manifest.get("schema") != AUTHORING_SCHEMA:
+        raise ValueError(
+            f"Unsupported authoring manifest schema in {manifest_path}"
+        )
+    documents = manifest.get("documents")
+    if not isinstance(documents, list):
+        raise ValueError(
+            f"Authoring manifest documents must be an array: {manifest_path}"
+        )
+
+    names: list[str] = []
+    for index, document in enumerate(documents):
+        if not isinstance(document, dict):
+            raise ValueError(
+                f"Authoring manifest documents[{index}] must be an object"
+            )
+        name = document.get("authoring")
+        relative = Path(name) if isinstance(name, str) else Path()
+        if (
+            not isinstance(name, str)
+            or not name
+            or relative.is_absolute()
+            or any(part in {"", ".", ".."} for part in relative.parts)
+            or relative.suffix.lower() != ".svg"
+        ):
+            raise ValueError(
+                f"Authoring manifest documents[{index}].authoring is invalid"
+            )
+        names.append(name)
+    if len(names) != len(set(names)):
+        raise ValueError("Authoring manifest contains duplicate document names")
+
+    actual_names = sorted(
+        path.relative_to(authoring_dir).as_posix()
+        for path in authoring_dir.rglob("*.svg")
+        if path.is_file()
+    )
+    if sorted(names) != actual_names:
+        raise ValueError(
+            "Authoring manifest/file roster differs while building summary"
+        )
+    return manifest, sorted(names)
+
+
+def _authoring_summary_bytes(authoring_dir: Path) -> bytes:
+    manifest, document_names = _load_authoring_summary_manifest(authoring_dir)
+    documents = [
+        _authoring_summary_document(authoring_dir / name, name)
+        for name in document_names
+    ]
+    total_icon_assets = {
+        icon_name
+        for document in documents
+        for icon_name in document["icon_refs"]
+    }
+    totals = {
+        "svg_bytes": sum(int(document["bytes"]) for document in documents),
+        "elements": sum(int(document["elements"]) for document in documents),
+        "top_level_elements": sum(
+            int(document["top_level_elements"])
+            for document in documents
+        ),
+        "drawables": sum(int(document["drawables"]) for document in documents),
+        "text_elements": sum(
+            int(document["text_elements"])
+            for document in documents
+        ),
+        "text_characters": sum(
+            int(document["text_characters"])
+            for document in documents
+        ),
+        "images": sum(int(document["images"]) for document in documents),
+        "icon_uses": sum(int(document["icon_uses"]) for document in documents),
+        "unique_icon_assets": len(total_icon_assets),
+        "placeholders": sum(
+            int(document["placeholders"])
+            for document in documents
+        ),
+        "inline_source_refs": sum(
+            int(document["inline_source_refs"])
+            for document in documents
+        ),
+        "machine_source_refs": manifest.get("source_ref_count"),
+    }
+    payload = {
+        "schema": AUTHORING_SUMMARY_SCHEMA,
+        "projection_kind": manifest.get("projection_kind"),
+        "authoring_root": ".",
+        "machine_manifest": AUTHORING_MANIFEST_NAME,
+        "machine_manifest_policy": "tool-only; do not load into model context",
+        "file_count": len(documents),
+        "totals": totals,
+        "documents": documents,
+    }
+    return (
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
+
+
+def write_authoring_summary(authoring_dir: Path) -> Path:
+    """Regenerate the model-readable summary from the current authoring SVGs."""
+    authoring_dir = Path(authoring_dir).resolve()
+    if not authoring_dir.is_dir():
+        raise ValueError(f"Authoring directory not found: {authoring_dir}")
+    payload = _authoring_summary_bytes(authoring_dir)
+    summary_path = authoring_dir / AUTHORING_SUMMARY_NAME
+    with tempfile.NamedTemporaryFile(
+        prefix=f".{AUTHORING_SUMMARY_NAME}.",
+        suffix=".tmp",
+        dir=authoring_dir,
+        delete=False,
+    ) as handle:
+        temporary_path = Path(handle.name)
+        handle.write(payload)
+    try:
+        temporary_path.chmod(0o644)
+        temporary_path.replace(summary_path)
+    except OSError:
+        temporary_path.unlink(missing_ok=True)
+        raise
+    return summary_path
+
+
 def _nearest_existing_directory(path: Path) -> Path:
     candidate = path
     while not os.path.lexists(candidate):
@@ -632,6 +849,13 @@ def project_svg_batch(
             )
         )
         staged.append((manifest_path, staged_manifest))
+        staged_summary = write_authoring_summary(new_root)
+        staged.append(
+            (
+                output_dir / AUTHORING_SUMMARY_NAME,
+                staged_summary,
+            )
+        )
 
         if not output_dir.exists():
             created: list[Path] = []
@@ -699,8 +923,15 @@ def build_parser() -> argparse.ArgumentParser:
         "-o",
         "--output-dir",
         type=Path,
-        required=True,
         help="Explicit destination directory for projected SVG copies",
+    )
+    parser.add_argument(
+        "--refresh-summary",
+        action="store_true",
+        help=(
+            "Regenerate authoring_summary.json for an existing authoring "
+            "bundle; input must be that bundle directory and -o is omitted"
+        ),
     )
     parser.add_argument(
         "--force",
@@ -714,19 +945,41 @@ def build_parser() -> argparse.ArgumentParser:
         "--projection-kind",
         choices=("layered", "flat", "generic"),
         default="generic",
-        help="Record the IR representation kind in authoring_manifest.json",
+        help="Record the IR representation kind in bundle metadata",
     )
     return parser
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
     input_path = args.input.resolve()
-    output_dir = args.output_dir.resolve()
 
     if not input_path.exists():
         print(f"Error: input does not exist: {input_path}", file=sys.stderr)
         return 1
+    if args.refresh_summary:
+        if args.output_dir is not None:
+            print(
+                "Error: --refresh-summary does not accept -o/--output-dir",
+                file=sys.stderr,
+            )
+            return 1
+        try:
+            summary_path = write_authoring_summary(input_path)
+        except (OSError, ValueError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        print(json.dumps({
+            "authoring_dir": str(input_path),
+            "summary": str(summary_path),
+            "summary_bytes": summary_path.stat().st_size,
+        }, ensure_ascii=False, indent=2))
+        return 0
+    if args.output_dir is None:
+        parser.error("-o/--output-dir is required unless --refresh-summary is used")
+    output_dir = args.output_dir.resolve()
+
     if output_dir.exists() and not output_dir.is_dir():
         print(f"Error: output path is not a directory: {output_dir}", file=sys.stderr)
         return 1
@@ -749,6 +1002,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     manifest_path = output_dir / AUTHORING_MANIFEST_NAME
     if os.path.lexists(manifest_path):
         collisions.append(manifest_path)
+    summary_path = output_dir / AUTHORING_SUMMARY_NAME
+    if os.path.lexists(summary_path):
+        collisions.append(summary_path)
     if collisions and not args.force:
         print(
             f"Error: {len(collisions)} output file(s) already exist; "
@@ -786,6 +1042,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         "input": str(input_path),
         "output_dir": str(output_dir),
         "manifest": str(output_dir / AUTHORING_MANIFEST_NAME),
+        "summary": str(output_dir / AUTHORING_SUMMARY_NAME),
         "projection_kind": args.projection_kind,
         "file_count": len(reports),
         "files": [report.as_dict() for report in reports],

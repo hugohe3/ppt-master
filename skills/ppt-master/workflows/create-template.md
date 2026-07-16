@@ -159,7 +159,14 @@ Only when the import explicitly used `--inheritance-mode both`, create the optio
 python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/svg-flat" -o "<import_workspace>/authoring-svg-flat" --projection-kind flat
 ```
 
-Each bundle contains editable SVGs plus `authoring_manifest.json`. The projection removes opaque text payload, duplicate hidden geometry carriers, and import-only identity attributes while keeping visible shape intent, compact preset/frame metadata, structure markers, logical ids, valid asset references, and a reserved `data-pptx-source-ref` on each imported logical object. The manifest records relative source files, document hashes, source paths, and initial authoring-subtree hashes; it does not duplicate opaque payload. Source refs are unique within one document and are interpreted together with that document's manifest record.
+Each bundle contains editable SVGs, a model-readable `authoring_summary.json`, and a tool-only `authoring_manifest.json`. The projection removes opaque text payload, duplicate hidden geometry carriers, and import-only identity attributes while keeping visible shape intent, compact preset/frame metadata, structure markers, logical ids, valid asset references, and a reserved `data-pptx-source-ref` on each imported logical object. The summary lists the current SVG roster plus per-file canvas, size, text, image, vector, placeholder, and source-ref counts. The machine manifest records relative source files, document hashes, source paths, and initial authoring-subtree hashes; it does not duplicate opaque payload and MUST NOT enter model context. Source refs are unique within one document and are interpreted by tools together with that document's manifest record.
+
+In-place vector and picture normalization refreshes the summary automatically.
+After any other direct IR edit, refresh it before the next analysis pass:
+
+```bash
+python3 skills/ppt-master/scripts/svg_authoring_view.py "<import_workspace>/authoring-svg" --refresh-summary
+```
 
 `authoring-svg/` is the canonical editable IR for template creation. The lossless trees are read only by materialization when an unchanged referenced object needs supported native payload or fallback evidence. Do not edit or copy the lossless SVGs directly. The IR is not a finished template directory and must be materialized into validated `<template_workspace>/templates/*.svg` before preview or export.
 
@@ -183,7 +190,7 @@ python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/auth
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --icon-namespace imported --reuse-inventory "<import_workspace>/authoring-svg_vector_asset_inventory.json" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
-The authoring SVGs in `<import_workspace>/authoring-svg/` and, when requested, `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..."/>` placeholders. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. The inventory is written beside the processed IR directory and records every preserved `data-pptx-source-ref`; re-inlining an asset therefore re-establishes the referenced object mapping before materialization. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
+The authoring SVGs in `<import_workspace>/authoring-svg/` and, when requested, `<import_workspace>/authoring-svg-flat/` are rewritten in place with compact `<use data-icon="imported/..."/>` placeholders. Each in-place extraction refreshes that bundle's `authoring_summary.json` automatically. Extracted assets have one canonical copy under `<import_workspace>/icons/imported/`; never duplicate them under `templates/icons/`. The root `icons/` directory remains a namespace container and must not contain rewritten page SVGs or inventories. The inventory is written beside the processed IR directory and records every preserved `data-pptx-source-ref`; re-inlining an asset therefore re-establishes the referenced object mapping before materialization. The existing icon embedding path re-inlines the extracted assets before final export, preserving multi-color artwork and non-square viewBox geometry as native SVG shapes. Text-bearing groups are never extracted; text must stay readable/editable in the working SVG. Extraction triggers on either many drawable elements or a large pure-vector XML block, so long single-path illustrations are factored out too. Pure-vector decoration runs inside text-bearing groups use a lower size threshold, allowing card borders and decorative paths to be extracted without hiding text. Referenced defs (`gradient` / `pattern` / `filter` / `clipPath` / `marker`) are copied into each asset and namespaced so the asset is self-contained after re-inline. If both layered and flat views are processed into the same icon namespace, keep distinct `--id-prefix` values to avoid asset ID collisions. `--clean-stale` removes only stale generated assets for the current SVG filenames and prefix inside the selected namespace; it is safe in this import workspace but should not be used against a shared hand-curated icon directory without a specific prefix.
 
 The layered pass owns the canonical extracted-vector pool. Each new asset records a source fingerprint before generated ID namespacing. The flat pass MUST consume the layered inventory through `--reuse-inventory`: an exact fingerprint match writes only a `<use>` reference to the existing layered asset, while an unmatched flat-only subtree may create one new asset under the `flat` prefix. Do not independently extract the two views into parallel asset sets. With `--clean-stale`, a rerun also removes obsolete generated `flat_*` duplicates while retaining every reused layered reference.
 
@@ -231,29 +238,32 @@ does not turn those vectors into a picture.
 
 | Mode | Required read set |
 |---|---|
-| `standard` / `fidelity` | `manifest.json`, exported assets, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered IR document (`authoring-svg/master_*.svg` / `layout_*.svg` / `slide_NN.svg`). The layered IR is the complete read surface: it covers Layouts unused by any sample slide (invisible in `svg-flat/` yet still template vocabulary), and per-page composition follows from `inheritance.json`. Cleaned flat pages are optional composition spot checks, not a required second pass over the same shapes. Source topology remains non-binding; the two modes differ in output design (`fidelity` designs a broader roster covering the useful visual range), not in read coverage. |
-| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, `authoring-svg/authoring_manifest.json`, and every cleaned layered Master/Layout/Slide IR document. The layered `authoring-svg/` tree is the sole editable and materialization input. Cleaned `authoring-svg-flat/` slides are optional visual composition checks only; never edit or feed them into template materialization. Materialization may resolve unchanged refs against the matching lossless backing without placing opaque payload in model context. |
+| `standard` / `fidelity` | `manifest.json`, exported assets, `svg/inheritance.json`, `authoring-svg/authoring_summary.json`, and every cleaned layered IR document (`authoring-svg/master_*.svg` / `layout_*.svg` / `slide_NN.svg`). Do not read `authoring_manifest.json`; it is compiler-only. The layered IR is the complete read surface: it covers Layouts unused by any sample slide (invisible in `svg-flat/` yet still template vocabulary), and per-page composition follows from `inheritance.json`. Cleaned flat pages are optional composition spot checks, not a required second pass over the same shapes. Source topology remains non-binding; the two modes differ in output design (`fidelity` designs a broader roster covering the useful visual range), not in read coverage. |
+| `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, `authoring-svg/authoring_summary.json`, and every cleaned layered Master/Layout/Slide IR document. Do not read `authoring_manifest.json`; `mirror_template_materialize.py` loads and validates it internally. The layered `authoring-svg/` tree is the sole editable and materialization input. Cleaned `authoring-svg-flat/` slides are optional visual composition checks only; never edit or feed them into template materialization. Materialization may resolve unchanged refs against the matching lossless backing without placing opaque payload in model context. |
 
 Use the compact facts in `manifest.json` for orientation. Use screenshots or the original PPTX only for visual cross-checking. Do not bulk-read opaque lossless payload into model context.
 
 Interpretation rule (carries forward into Steps 2 and 4):
 
 - `manifest.json` is the source of truth for facts about the source deck: slide size, theme colors, fonts, background inheritance, reusable asset inventory, declared source layout/master structure, and slide reuse relationships. It dictates which source facts mirror may preserve during materialization, but not `standard` / `fidelity` output topology.
+- `authoring_summary.json` is the model-facing index for the current authoring SVG roster and readability statistics. Regenerate it after direct IR edits before analysis.
+- `authoring_manifest.json` is machine-only provenance. Do not open or quote it in model context; the mirror compiler validates it internally against the edited IR and immutable backing.
 - `native_structure.json` is the source of truth for source PowerPoint identity: stable layout keys, picker names, parent masters, placeholder types/indices, and the source-package hash. Mirror preserves those facts one-to-one. `standard` / `fidelity` do not mine them into the new structure.
 - `manifest.json`, `native_structure.json`, and `svg/inheritance.json` intentionally overlap only at contract boundaries so materialization can cross-check source identity, graph ownership, and visibility; do not collapse them into a cache or substitute one for another
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
-- exported `icons/imported/*.svg` files are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific imported SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
+- exported `icons/imported/*.svg` files are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Use `authoring_summary.json` `icon_refs` and the cleaned SVGs first. Query `*_vector_asset_inventory.json` by an exact asset id only when source-ref or fingerprint detail is required; do not load the complete inventory into model context. Open a specific imported SVG only when that asset affects the current design decision.
 - cleaned layered authoring SVGs are the mirror editing and verification surface; they expose source ownership without requiring the model to read opaque payload. Do not use them to promote, demote, merge, or split source structure.
 - cleaned complete-page IR documents are optional composition spot checks for authored modes and verification views for mirror. They never replace the layered editable IR or immutable payload backing.
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
 **Mirror complete-graph gate**: compare every `native_structure.json` Layout
-and Master with the layered authoring manifest before offering `mirror`.
+and Master with the layered `authoring_summary.json` roster before offering `mirror`.
 Every source Layout—including one unused by all source slides—must have a
 layered IR document and matching payload backing from which a reusable
 definition SVG can be materialized. Every source Master must own at least one retained Layout. Missing IR documents
 or ambiguous parentage are blocking; unused identities themselves are supported
-and must not be dropped.
+and must not be dropped. The compiler performs the exact source-ref and hash
+checks from `authoring_manifest.json`.
 
 ### Basic norm extraction (mandatory when reference content exists)
 
@@ -274,12 +284,12 @@ Distinguish observed facts from template rules: "`slide_07` uses a left photo cr
 
 **Read gate**:
 
-- `standard` / `fidelity`: read and report every layered IR Master, Layout, and Slide plus the inheritance map; flat pages are optional spot checks
-- `mirror`: verify and report every layered IR Master, Layout, and Slide plus the authoring manifest and inheritance map, while keeping opaque payload out of model context
+- `standard` / `fidelity`: read `authoring_summary.json`, every layered IR Master, Layout, and Slide, and the inheritance map; flat pages are optional spot checks
+- `mirror`: read `authoring_summary.json`, verify and report every layered IR Master, Layout, and Slide plus the inheritance map, and leave `authoring_manifest.json` to the compiler
 
 Do not treat authoring IR documents as final template assets. `standard` / `fidelity` author new SVGs from the confirmed brief and IR references. Mirror edits the IR and materializes it with lossless native-payload backing.
 
-> **Mirror-mode materialization path** — use `native_structure.json`, `svg/inheritance.json`, and the authoring manifest as structural/provenance authority. The cleaned layered IR is the editable source and lossless layered SVGs are immutable payload backing; optional flat SVGs are verification-only. Preserve only the roster, appearance, ownership, placeholders, converter-supported native metadata, and available SVG fallbacks that are actually present and validated; do not synthesize missing facts or a different graph.
+> **Mirror-mode materialization path** — use `native_structure.json` and `svg/inheritance.json` as model-readable structural authority. The cleaned layered IR is the editable source, `authoring_summary.json` is its model-facing index, and lossless layered SVGs are immutable payload backing; optional flat SVGs are verification-only. `mirror_template_materialize.py` consumes the machine manifest internally. Preserve only the roster, appearance, ownership, placeholders, converter-supported native metadata, and available SVG fallbacks that are actually present and validated; do not synthesize missing facts or a different graph.
 
 ### 1B. Existing SVG assets
 
@@ -297,7 +307,8 @@ that contains both the IR and every local dependency referenced by the
 selected group. This does not authorize automatic group selection or mutation
 of the user's original SVG directory.
 
-Then `ls` the analysis workspace and `Read` every cleaned `authoring-svg/*.svg` to extract:
+Then read `authoring-svg/authoring_summary.json`, `ls` the analysis workspace,
+and read every cleaned `authoring-svg/*.svg` to extract:
 
 - canvas size (`viewBox` on the root `<svg>`)
 - recurring colors (`fill` / `stroke` values; identify the dominant 2–4 hex codes as candidate theme colors)
@@ -305,7 +316,12 @@ Then `ls` the analysis workspace and `Read` every cleaned `authoring-svg/*.svg` 
 - placeholder usage (existing `{{...}}` strings, if any)
 - structural decoration (recurring `<rect>` bars, `<path>` motifs, embedded `<image>` references)
 
-Read the generated `*_vector_asset_inventory.json` before opening individual `<svg_analysis_workspace>/icons/imported/*.svg`; do not bulk-read extracted vectors unless a specific asset affects a design decision or is selected for mirror preservation.
+Use `authoring_summary.json` `icon_refs` before opening individual
+`<svg_analysis_workspace>/icons/imported/*.svg`. Query the generated
+`*_vector_asset_inventory.json` by exact asset id only when provenance,
+source-ref, or fingerprint detail is required. Do not bulk-read the inventory
+or extracted vectors unless a specific asset affects a design decision or is
+selected for mirror preservation.
 
 If a `design_spec.md` or `spec_lock.md` accompanies the SVGs, read it too. In mirror it is part of the source contract and must agree with the SVG identities; in `standard` / `fidelity` it is visual/contextual reference only. Record the equivalent of a `manifest.json`'s factual fields in analysis notes so Step 2 can label them `[fact]`.
 
@@ -471,12 +487,12 @@ When the bundle includes Type A, pass the following internal package to the role
 - `native_structure.json` and `source_template.pptx`
 - `conversion-report.json` when source-recovery diagnostics exist
 - exported `assets/`
-- `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/imported/*.svg`
-- editable layered IR documents and manifest from `authoring-svg/`; optional `authoring-svg-flat/` is a visual cross-check only and never a template materialization input
+- `*_vector_asset_inventory.json`, when the vector readability pass extracted assets, as an exact-id query surface only; do not load it or `icons/imported/*.svg` wholesale
+- `authoring-svg/authoring_summary.json` and editable layered IR documents; keep `authoring_manifest.json` bundled for compiler use but do not load it into the role context; optional `authoring-svg-flat/` is a visual cross-check only and never a template materialization input
 - for `mirror` only, matching immutable `svg/` payload backing plus `svg/inheritance.json`; immutable `svg-flat/` remains an optional visual cross-check
 - optional screenshots, if available
 
-When the bundle includes Type B, pass the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read extracted vectors; open individual `icons/imported/*.svg` files only when needed.
+When the bundle includes Type B, pass `authoring_summary.json`, the cleaned SVG file list from the analysis workspace, `*_vector_asset_inventory.json` as an exact-id query surface if extraction ran, any companion `design_spec.md` / `spec_lock.md`, and the analysis notes. Do not bulk-read the inventory or extracted vectors; open individual `icons/imported/*.svg` files only when needed.
 When the bundle includes Type C, pass the image file list and the visual analysis notes.
 When the bundle includes Type D, pass the direct text, converted document/website outputs, traceable source list, explicit asset inventory, and analysis notes.
 For Type E, pass only the finalized brief.
@@ -561,9 +577,9 @@ Downstream, both template-adherence choices use `pptx_structure.mode: structured
 
 **Mirror-mode materialization contract** (type A or B): when `Replication mode: mirror`, the Template_Designer role:
 
-1. **Materializes one output SVG per source page** in `<template_workspace>/templates/`. Edit and normalize the matching `authoring-svg/` IR document, then materialize it with the authoring manifest, native structure facts, and immutable payload backing. Type A must use `mirror_template_materialize.py`; do not hand-copy or independently rebuild its graph. Preserve the source Master/Layout keys and picker names, Layout parentage, slide assignment, placeholder type/index/bounds, inherited-shape visibility, ownership, paint order, and supported native metadata that are present and validated. Mechanical namespace, root-declaration, asset-path, and fixed-layer group normalization is allowed only when source ownership and appearance remain unchanged.
-   - Type A authoring source: `<import_workspace>/authoring-svg/` plus its `authoring_manifest.json`; `<import_workspace>/svg/`, `svg/inheritance.json`, and `native_structure.json` provide payload and structural backing. Optional `<import_workspace>/svg-flat/` is verification-only.
-   - Type B authoring source: `<svg_analysis_workspace>/authoring-svg/` plus its manifest; the complete explicit source SVG contract is immutable backing
+1. **Materializes one output SVG per source page** in `<template_workspace>/templates/`. Edit and normalize the matching `authoring-svg/` IR document, then run `mirror_template_materialize.py`; the compiler consumes the tool-only authoring manifest together with native structure facts and immutable payload backing. Do not hand-copy or independently rebuild its graph. Preserve the source Master/Layout keys and picker names, Layout parentage, slide assignment, placeholder type/index/bounds, inherited-shape visibility, ownership, paint order, and supported native metadata that are present and validated. Mechanical namespace, root-declaration, asset-path, and fixed-layer group normalization is allowed only when source ownership and appearance remain unchanged.
+   - Type A model-facing source: `<import_workspace>/authoring-svg/authoring_summary.json` plus the editable SVGs; `<import_workspace>/svg/`, `svg/inheritance.json`, and `native_structure.json` provide payload and structural backing. The compiler alone reads `<import_workspace>/authoring-svg/authoring_manifest.json`. Optional `<import_workspace>/svg-flat/` is verification-only.
+   - Type B model-facing source: `<svg_analysis_workspace>/authoring-svg/authoring_summary.json` plus its editable SVGs; the complete explicit source SVG contract is immutable backing
    - For every source Layout unused by all source slides, additionally materialize one definition-only SVG named `layout_<layout_key>.svg` from its layered authoring IR document and payload backing. It carries the exact root identity, fixed atoms, and placeholder contract but is not a generated page assignment. Use source placeholder prompts/carriers; do not invent business content. This definition SVG lets downstream export register the Layout and any otherwise-unused parent Master without retaining an internal carrier slide.
 2. **Renames each file** using the source-order-first convention `<NNN>_<page_type>.svg`, where `<NNN>` is the source-order index zero-padded to 3 digits and `<page_type>` is typically `cover` / `toc` / `chapter` / `content` / `ending` (fall back to `content` when the type cannot be confidently classified). Examples: `001_cover.svg`, `002_toc.svg`, `003_content.svg`, ..., `050_ending.svg`.
    - Type A: derive `<page_type>` from `manifest.json.pageTypeCandidates`

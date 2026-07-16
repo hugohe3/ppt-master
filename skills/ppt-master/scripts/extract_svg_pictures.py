@@ -48,6 +48,10 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from svg_authoring_view import (
+    AUTHORING_MANIFEST_NAME,
+    write_authoring_summary,
+)
 
 configure_utf8_stdio()
 
@@ -968,12 +972,22 @@ def _run(args: argparse.Namespace) -> dict[str, object]:
         plans,
     )
     _write_outputs(tree, output, inventory, images_dir, plans, inventory_bytes)
+    summary_path: Path | None = None
+    if args.inplace and (source.parent / AUTHORING_MANIFEST_NAME).is_file():
+        try:
+            summary_path = write_authoring_summary(source.parent)
+        except (OSError, ValueError) as exc:
+            raise SvgPictureError(
+                "Picture extraction succeeded but authoring summary refresh "
+                f"failed: {exc}"
+            ) from exc
     print(f"Wrote rewritten SVG and {len(plans)} picture asset(s)", file=sys.stderr)
     return {
         "source": str(source),
         "output": str(output),
         "inventory": str(inventory),
         "assets": [str(plan.asset_path) for plan in plans],
+        "authoring_summary": str(summary_path) if summary_path is not None else None,
     }
 
 

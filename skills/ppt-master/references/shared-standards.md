@@ -309,14 +309,15 @@ one. This array is still diagnostic metadata, not an authoring surface.
 | Representation | Contract |
 |---|---|
 | Lossless import SVG | Keep complete native payload, hidden carriers, and preview evidence in the temporary analysis workspace. It is immutable native-payload backing, not the editable template source. |
-| Authoring IR bundle | Keep editable SVGs plus `authoring_manifest.json`. Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and a stable document-local `data-pptx-source-ref` on each imported logical object. The manifest owns source paths and initial hashes; it never duplicates raw payload. |
+| Authoring IR bundle | Keep editable SVGs plus model-readable `authoring_summary.json` and tool-only `authoring_manifest.json`. Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and a stable document-local `data-pptx-source-ref` on each imported logical object. The summary owns the compact current-file index; the manifest owns source paths and initial hashes and never enters model context. |
 | `standard` / `fidelity` output | Use the compact authored-preset contract (§1.5) for newly authored stock shapes; do not transplant opaque import payload or source topology. |
 | `mirror` output | Materialize from the edited authoring IR. Rehydrate supported imported metadata only when a Slide-local/slot object's source ref and initial authoring hash still match; otherwise keep the current SVG fallback. Expand fixed Master/Layout group wrappers into direct semantic atoms while preserving source ownership, paint order, and visible appearance. |
 
 **Hard rule — authoring source refs**: `data-pptx-source-ref` is reserved for
 the create-template authoring IR. Its value is unique within one authoring SVG,
 not across the workspace, and must be resolved through that document's
-`authoring_manifest.json` record. Moving a referenced subtree into
+`authoring_manifest.json` record by the owning tool. Models MUST NOT read that
+machine manifest. Moving a referenced subtree into
 `icons/imported/` for readability must preserve the attribute and record it in
 the vector inventory; re-inlining re-establishes the same mapping. Final materialized
 template SVGs and normal project `svg_output/` must not contain this attribute.
