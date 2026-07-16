@@ -15,7 +15,7 @@ PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**
 
 页内元素动画默认关闭。为整份 deck 开启只需导出时加 `-a auto`（无需配置文件）。若需要更具体的演示节奏，例如标题先淡入、图表第二个出现、关键注释最后飞入，可以使用可选的 `animations.json` sidecar。SVG 仍然只保存静态视觉结构；sidecar 只控制 PPTX 导出动画。
 
-当用户要求调整动画顺序、效果、时长或具体对象出现方式时，运行独立 [`customize-animations`](../../skills/ppt-master/workflows/customize-animations.md) 工作流。
+当用户要求调整动画顺序、效果、时长或具体对象出现方式时，运行按需 [`customize-animations`](../../skills/ppt-master/workflows/stages/customize-animations.md) 阶段。
 
 ```bash
 # 从真实顶层 <g id> 锚点生成可编辑模板

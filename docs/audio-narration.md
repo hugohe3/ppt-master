@@ -15,7 +15,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
 4. **Generation runs.** The script writes page-level audio to `audio/`, then (if you kept embedding) re-exports the deck with audio attached. Long-audio import and automatic long-audio splitting are not supported.
 
-The full step-by-step is in [`workflows/generate-audio.md`](../skills/ppt-master/workflows/generate-audio.md).
+The shared stage is documented in [`workflows/stages/generate-audio.md`](../skills/ppt-master/workflows/stages/generate-audio.md).
 
 ## Two embedding paths
 

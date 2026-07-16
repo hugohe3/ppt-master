@@ -1,6 +1,6 @@
 # 模板指南：选用、派生与边界
 
-PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 都能独立完整预览，并用 metadata 显式标出 Master、Layout、Slide 与 placeholder；同时包含 `design_spec.md` 和配套素材。导出器据此确定性还原 PowerPoint 原生结构。
+PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 都能独立完整预览，并用 metadata 显式标出 Master、Layout、Slide 与 placeholder；同时包含 `design_spec.md` 和配套素材。导出器据此把已声明合同确定性编译成 PowerPoint 原生结构。
 
 本文回答三个问题：
 
@@ -26,7 +26,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 对于当前所有模板类型，这里给的都是**模板工作区根目录**。Step 3 会解析其中的 `templates/design_spec.md`，然后把 `templates/` 及实际存在的 `images/`、`icons/` 安装进目标项目；如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 create-template 时，可把精确的已验证工作区根目录直接交给 Step 3；这是“首条消息显式路径”规则的唯一例外。
 
-> **兼容性预检：** Step 3 也接受旧式平铺包，即 `design_spec.md` 与 SVG 直接位于所给根目录。目录平铺本身不需要恢复；只有 SVG 仍使用旧的原子 placeholder / 未映射 Master/Layout 语义时，才先运行 [`restore-pptx-structure`](../../skills/ppt-master/workflows/restore-pptx-structure.md)。Step 3 不会先复制语义旧包、再延后恢复。
+> **兼容性预检：** Step 3 也接受 `design_spec.md` 与 SVG 直接位于所给根目录的平铺工作区，但这些 SVG 必须已经满足当前合同。目录平铺本身没有问题；旧的原子 placeholder、未映射 Master/Layout 等语义旧包会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
 
 ### 什么**不会**触发模板流程
 
@@ -121,9 +121,11 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 接下来工作流会**强制**先和你确认一份模板简报（不允许跳过）。
 
+入口名称始终保持 **Create Template**。它只分派一个子工作流：仅复用身份走 Create Brand，仅复用品牌中立的结构走 Create Layout，身份与结构一起复用走 Create Deck（两者都需要时默认选它）。子工作流一旦选定，不会在简报里再次选 kind。
+
 ### 第一步：准备参考材料
 
-**强烈推荐：直接给原始 `.pptx` 文件。** 导入器会读取 OOXML，提取全部 Master、Layout、placeholder、主题、原生形状事实与可复用素材，并生成分层分析参考。`standard` / `fidelity` 把它们当视觉参考，创作新的 SVG roster 与 Master/Layout/slot 系统；mirror 则一对一恢复来源身份、父子关系、placeholder 事实和受支持视觉。原 PPTX 只作分析证据，不进入新模板包。
+**强烈推荐：直接给原始 `.pptx` 文件。** 导入器会读取 OOXML，把包内实际存在且受支持的 Master、Layout、placeholder、主题、原生形状与可复用素材事实提取成分层分析参考。`standard` / `fidelity` 把它们当视觉参考，创作新的 SVG roster 与 Master/Layout/slot 系统；mirror 则把这些已验证的来源事实物化到新工作区，不补造缺失拓扑或设计意图。原 PPTX 始终是不可变的分析证据，不进入新模板包。
 
 也可以基于品牌指南从零设计：提供 logo、主色 HEX、字体、调性描述、几张氛围参考图，AI 会现场设计页面骨架。适合品牌方还没有成型 PPT、只有 VI 手册的场景。
 
@@ -137,16 +139,17 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 |------|------|
 | **输出范围** | `library`（默认）或 `project`；两者使用相同的可移植工作区路由，只有 library 会进入全局索引 |
 | **目标项目** | 仅 `project` 必填；必须给出已初始化项目的精确路径 |
+| **已选子工作流** | Create Brand / Create Layout / Create Deck，由入口分派后固定 |
 | **模板 ID** | 模板的可移植身份；在 `library` 下同时也是目录名 / 索引键。优先 ASCII slug，如 `acme_consulting`；中文品牌名也行，但要文件系统安全 |
 | **显示名称** | 文档中的人类可读名 |
 | **类别** | `brand` / `general` / `scenario` / `government` / `special` 五选一 |
 | **适用场景** | 年报 / 咨询 / 答辩 / 政府汇报…… |
 | **调性概要** | 一句话，如"现代克制、数据驱动" |
-| **主题模式** | 浅色 / 深色 / 渐变…… |
-| **画布格式** | 默认 `ppt169`（16:9），其他格式需提前指定 |
-| **复刻模式** | `standard`（默认精简基本套）/ `fidelity`（每个可复用语义家族一个变体）/ `mirror`（每张源页一个恢复原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 恢复来源结构，不做归纳。 |
-| **原生结构事实** | 简报会列出源 Master/Layout 数量、父子关系、placeholder 身份和多母版情况。`standard` / `fidelity` 只把它们当参考；mirror 通过当前 `structured` 合同一对一恢复。 |
-| **保真级别** | （`standard` / `fidelity` 有源时必填）`literal`（在新创作结构内尽量复现原几何、装饰和精灵图裁剪）/ `adapted`（借调性与构图、允许设计演化）。封面 / 章节 / 结尾通常用 `literal`。**`mirror` 模式不询问**——它恢复来源视觉。 |
+| **主题模式** | 仅 Create Layout/Create Deck：浅色 / 深色 / 渐变…… |
+| **画布格式** | 仅 Create Layout/Create Deck；默认 `ppt169`（16:9），其他格式需提前指定 |
+| **复刻模式** | 仅 Create Layout/Create Deck：`standard`（默认精简基本套）/ `fidelity`（每个可复用语义家族一个变体）/ `mirror`（每张源页一个物化原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 只保留来源包内已经存在且验证通过的事实。 |
+| **原生结构事实** | 仅 Create Layout/Create Deck：简报会列出源 Master/Layout 数量、父子关系、placeholder 身份和多母版情况。`standard` / `fidelity` 只把它们当参考；mirror 把受支持事实一对一映射进当前 `structured` 合同。 |
+| **保真级别** | 仅 Create Layout/Create Deck；`standard` / `fidelity` 有源时必填，选择 `literal` 或 `adapted`。**`mirror` 模式不询问**——它保留受支持的来源视觉。 |
 | **关键词** | 3–5 个标签，用于索引检索 |
 | 主题色 / 设计风格 / 素材清单 | 可选，可让 AI 从源里自动提取 |
 
@@ -156,13 +159,13 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 > 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是结构契约。先确认归属和几何，可避免半成品或资产落错目录。
 
-### 第三步：选 standard、fidelity 还是 mirror？
+### 第三步：Create Layout/Create Deck 选择 standard、fidelity 还是 mirror？
 
-这是派生模板里最容易混淆的决策。
+这是派生结构型模板里最容易混淆的决策。Create Brand 不执行这一步，因为 identity-only 工作没有 SVG roster 或原生结构。
 
 | | **standard** | **fidelity** | **mirror** |
 |---|---|---|---|
-| 输出页数 | 4–5 页（封面/章节/内容/结尾，可选目录） | 每个可复用语义家族一个变体——数量由源决定 | 每张源页一个恢复原型（1:1 页面集合） |
+| 输出页数 | 4–5 页（封面/章节/内容/结尾，可选目录） | 每个可复用语义家族一个变体——数量由源决定 | 每张源页一个物化原型（1:1 页面集合） |
 | 抽象程度 | 高 —— 干净可复用骨架 | 中 —— 语义家族重新设计 | 拓扑层面不抽象，只做 structured 合同要求的机械归一化 |
 | 作者占位符 | 是（`{{TITLE}}`、`{{CONTENT_AREA}}` 等） | 是 | 可保留原文字，但导入识别出的原生内容槽仍带语义 metadata |
 | 适合场景 | 你只需要"调性 + 基本骨架"，未来用模板生成全新 deck | 源 PPTX 本身就是高度定制的版式库 | 别人的精装 deck 直接好用、想把每页都当参考页 |
@@ -172,7 +175,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 **关于精灵图**：PPTX 导出的素材常常是**一张大图 + 多页通过 viewBox 裁剪不同区域**。`fidelity` 和 `mirror` 模式下必须保留这层嵌套 `<svg viewBox=...>` 包装，不能扁平化为单张 `<image>`——否则裁剪信息丢失，画面会错位。工作流会自动校验这一点。
 
-**关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 恢复转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
+**关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
 
 对于 PPTX 来源的 Type A mirror，最终物化统一使用一个确定性命令：
 
@@ -196,8 +199,8 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 | 范围 | 工作区根目录 | 预览 | 发现行为 |
 |---|---|---|---|
-| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | 可选 `exports/<id>_template_preview.pptx` | 校验后注册到对应 `layouts_index.json` 或 `decks_index.json` |
-| `project` | `projects/<name>/` | 可选 `exports/<id>_template_preview.pptx` | 跳过全局索引注册 |
+| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand：不适用；Create Layout/Create Deck：单 Master 可选、多 Master 必须 | 校验后注册到对应 `brands_index.json`、`layouts_index.json` 或 `decks_index.json` |
+| `project` | `projects/<name>/` | 沿用同一套 kind-specific 审阅规则 | 跳过全局索引注册 |
 
 全局注册让模板**可被发现**——下次有人问“有哪些模板可用？”时，AI 会从索引里把它列出来。两种范围的用法相同：按 SKILL.md Step 3 的规则，在第一条消息里给出工作区根目录，例如 `用这个模板：skills/ppt-master/templates/layouts/<your_template_id>/` 或 `用这个模板：projects/<name>/`。项目工作区也可以迁移或被其他工作区复用，因为核心结构完全一致；只有放进全局库并需要被发现时才执行注册。
 
@@ -248,7 +251,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 避免常见误解：
 
-- **可复用模板是一份显式 SVG 契约，不是打包后的源 PPTX**。创作模式新建该合同，mirror 通过该合同恢复来源归属；每页都能独立预览，导出只编译已声明的 Master/Layout/Slide 结构
+- **可复用模板是一份显式 SVG 契约，不是打包后的源 PPTX**。创作模式新建该合同，mirror 把已验证的来源归属事实映射进该合同；每页都能独立预览，导出只编译已声明的 Master/Layout/Slide 结构
 - **模板不是"风格皮肤"**。它包含结构（页面有几块、信息层级如何分布）+ 风格（配色、字体、装饰），两者不可分割。试图只换"皮肤"不换结构，往往会让信息架构和视觉打架
 - **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余

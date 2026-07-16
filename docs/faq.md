@@ -10,7 +10,7 @@ Almost anything: **PDF**, **DOCX**, **PPTX**, **EPUB**, **HTML**, **LaTeX**, **R
 
 ## Q: Can I generate a deck with just a topic, no source materials?
 
-Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The AI will trigger the **topic-research workflow** — gathering authoritative sources via web search (Wikipedia / official sites / institutional releases), assembling them into a Markdown research document + image folder, then feeding both into the main pipeline.
+Yes. Tell the AI your topic or scenario (e.g. "make a PPT about Hayao Miyazaki", "introduce our new product"). The Generate PPTX route will run its **topic-research stage** — gathering authoritative sources via web search (Wikipedia / official sites / institutional releases), assembling them into a Markdown research document + image folder, then feeding both into the main pipeline.
 
 Quality depends on what's on the open web. If you already have specialized material (papers, internal docs), giving those files to the AI directly produces better results than web research alone.
 
@@ -214,7 +214,7 @@ Think of "using an existing PPT" as two questions: **keep its content or not**, 
 | Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
 | Keep content + keep design | No generation needed | Use the original file |
 
-Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
+Use the **beautify profile** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify profile](../skills/ppt-master/workflows/profiles/beautify-pptx.md).
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
@@ -240,7 +240,7 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead restores source slide order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets that are actually present and supported. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead materializes those validated source facts into a new workspace without semantic synthesis or gap filling. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
 
 Large imported SVGs may contain native-shape metadata, hidden carriers, and preview fingerprints. That lossless representation stays immutable in the temporary analysis workspace as payload backing. Template creation uses a lightweight editable IR with document-local source refs and a compact path/hash manifest. `standard` / `fidelity` author project-canonical SVG and use compact authored-preset groups only for exact registered preset matches. Mirror materializes final templates from the IR, reuses converter-supported payload only for unchanged Slide-local/slot refs, and keeps an SVG fallback for unsupported or edited objects.
 
@@ -260,7 +260,7 @@ You don't need to supply every detail upfront — the AI agent will ask follow-u
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration.
+The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. A flat workspace with `design_spec.md` at the root remains compatible only when its SVGs already satisfy the current contract; semantic-legacy packages must be replaced through `create-template` rather than upgraded in place.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

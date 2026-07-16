@@ -15,7 +15,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——生成模式、音色、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
 4. **执行**。脚本写出逐页音频到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。不支持长音频导入或自动拆分。
 
-完整流程见 [`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md)。
+共享阶段见 [`workflows/stages/generate-audio.md`](../../skills/ppt-master/workflows/stages/generate-audio.md)。
 
 ## 两条嵌入路径
 

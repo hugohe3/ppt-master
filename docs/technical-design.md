@@ -59,9 +59,9 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── [Quality Check] svg_quality_checker.py (mandatory — 0 errors; warnings are non-blocking)
     └── Notes generation: complete speaker notes → notes/total.md
     ↓
-[Chart calibration (conditional)] → verify-charts workflow (required for decks containing data charts)
+[Chart calibration (conditional)] → verify-charts stage (required for decks containing data charts)
     ↓
-[Visual self-check (optional, opt-in)] → visual-review workflow (only when the user explicitly requests it)
+[Visual self-check (optional, opt-in)] → visual-review stage (only when the user explicitly requests it)
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py (defensive validation, then compilation)
     ↓
@@ -84,7 +84,7 @@ Output:
 
 For every workflow that authors or redesigns visual slides through SVG, `svg_output/` is the complete page-design authority, but SVG here means project-canonical SVG accepted by the project contract—not any SVG a browser can render. Every visible text, image, shape, diagram, chart/table fallback, background, and template-derived layout element that should appear on a slide must already exist in that page SVG or be explicitly referenced by it. Templates, `design_spec.md`, and `spec_lock.md` guide SVG authoring; the exporter does not use them as a second visual layer that fills in missing page content.
 
-Minimal semantic markers do not weaken that closure. Free-design and brand-only pages use `pptx_structure.mode: flat`: every represented object stays Slide-local and no Master/Layout identity, layer, or placeholder metadata is authored. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks without promoting Slide content. On structured deck/layout-template routes, every new page declares its Master/Layout identity from the first SVG draft. Fixed Master/Layout visuals are direct atomic root children, while reusable content slots are top-level groups with explicit design-zone bounds and one compatible carrier; composite `object` regions use an explicit proxy fallback, and zero-slot Layouts are valid. `data-pptx-role` is reserved for the few structural page-frame objects whose package or animation behavior is not already expressed by specialized metadata. Legacy structured/template projects whose structure contract is missing or uses an old form first run `restore-pptx-structure`; a flat project is intentionally unmapped, not legacy. Export never infers Master/Layout structure or placeholders.
+Minimal semantic markers do not weaken that closure. Free-design and brand-only pages use `pptx_structure.mode: flat`: every represented object stays Slide-local and no Master/Layout identity, layer, or placeholder metadata is authored. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks without promoting Slide content. On structured deck/layout-template routes, every new page declares its Master/Layout identity from the first SVG draft. Fixed Master/Layout visuals are direct atomic root children, while reusable content slots are top-level groups with explicit design-zone bounds and one compatible carrier; composite `object` regions use an explicit proxy fallback, and zero-slot Layouts are valid. `data-pptx-role` is reserved for the few structural page-frame objects whose package or animation behavior is not already expressed by specialized metadata. A semantic-legacy template package is not upgraded in place or accepted as a structured Step 3 input: create a new workspace through `create-template`, using a native PPTX's still-present package facts or an old SVG's visuals only as reference, then author new structured pages through the Generate PPTX route. A flat project is intentionally unmapped, not legacy. Export never infers, repairs, or migrates Master/Layout structure or placeholders.
 
 | Domain | Authority |
 |---|---|
@@ -114,18 +114,18 @@ Use this table before reasoning about implementation details. Most failed runs s
 
 | Request shape | Route | Boundary |
 |---|---|---|
-| Topic only, no source file or substantive source text | `topic-research` first, then main pipeline | web/source collection is a pre-pipeline step |
-| Source files or conversation text, deck structure may be rethought | main SVG pipeline | Strategist may split, merge, drop, reorder, and redesign |
-| PPTX as source material, user allows a new story/page structure | `ppt_to_md` + `pptx_intake`, then main SVG pipeline | PPTX identity/geometry are facts and candidates, not replica constraints |
-| Raw PPTX template plus new material/topic | `template-fill-pptx` | clone/fill native slides; no SVG generation |
-| Existing PPTX, preserve page count/order/wording 1:1, improve layout | `beautify-pptx` | regenerate through SVG; content and pagination are locked |
-| Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | `native-enhance-pptx` | direct OOXML patch; no design regeneration |
-| User wants a reusable template workspace from a PPTX or design reference | `create-template` or `create-brand` | outputs a workspace root that later triggers Step 3; create-template can export an on-demand review PPTX |
-| User supplies an explicit template path | main SVG pipeline Step 3 | current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat roots resolve direct `design_spec.md`; restore only legacy SVG semantics |
-| User asks to tune object-level animation order/effect/timing | `customize-animations` | optional export policy via `animations.json` |
-| User asks to preview, select, annotate, or re-export browser edits | `live-preview` | browser workflow; annotations apply only at defined handoff points |
+| Topic only, no source file or substantive source text | Generate PPTX + `topic-research` stage | web/source collection is a pre-pipeline stage |
+| Source files or conversation text, deck structure may be rethought | Generate PPTX | Strategist may split, merge, drop, reorder, and redesign |
+| PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
+| Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
+| Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | regenerate through SVG; content and pagination are locked |
+| Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
+| User wants a reusable template workspace from a PPTX or design reference | Create Template (`create-template`) | the fixed entry dispatches one Create Brand, Create Layout, or Create Deck child workflow; the resulting workspace root later triggers Generate Step 3 and structured children may export a review PPTX |
+| User supplies an explicit current-contract template path | Generate PPTX Step 3 | Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; flat roots may resolve direct `design_spec.md`; semantic-legacy packages are rejected and replaced through Create Template |
+| User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
+| User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
-Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Preserve means `beautify-pptx`; restructure means the main pipeline.
+Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Both use Generate PPTX; preservation selects the `beautify-pptx` profile, while restructuring uses the normal profile.
 
 ---
 
@@ -288,7 +288,7 @@ Templates are **opt-in, not default**. The default Strategist flow is free desig
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**Mechanical trigger, not semantic matching.** A bare name like `presentation_core`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat packages resolve direct `design_spec.md`. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+**Mechanical trigger, not semantic matching.** A bare name like `presentation_core`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible flat-directory packages resolve direct `design_spec.md` only when their SVGs already satisfy the current contract. Directory shape never authorizes structure migration. A package with legacy Master/Layout/placeholder semantics must be replaced by a newly created template workspace before Step 3. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
 
 All current Brand/Layout/Deck packages use one workspace routing contract. Brand workspaces omit the SVG roster; empty optional directories are omitted:
 
@@ -303,7 +303,7 @@ All current Brand/Layout/Deck packages use one workspace routing contract. Brand
 
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
 
-`standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` restores source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
+`standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
 
 The three template kinds own different segments of the design contract:
 
@@ -341,9 +341,9 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
-Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/failure-recovery.md); this section does not duplicate that matrix.
+Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); this section does not duplicate that matrix.
 
-Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify requests, native enhancement, custom animation, live preview, and other workflow triggers are not turned into open-ended user route questions when the repository already defines the boundary.
+Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify-profile requests, native enhancement, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
 The Role Switching Protocol (mandated read of `references/<role>.md` before mode change) serves two reinforcing purposes: forcing fresh role instructions into context overrides drift from the previous mode, and the visible marker in the conversation transcript creates an audit trail so the user can see when the agent moved between modes — critical when reviewing why a particular decision was made.
 
@@ -507,7 +507,7 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; when requested, create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is a self-contained visual-preview artifact rather than a PPTX source; users may insert it as an SVG picture, while PowerPoint's manual Convert to Shape command remains outside the supported contract.
 
-**Why structure is authored before visual generation on template routes.** Master and Layout are not post-processing discoveries. On a structured deck/layout-template route, the Strategist writes unique Master/Layout definitions and complete page assignments before SVG generation; the Executor writes those identities, fixed atoms, and slots while composing each page, and export only compiles declared structure. Free-design and brand-only decks make the opposite trade: they stay on `mode: flat`, keep every object Slide-local, author no structure metadata, and receive only a clean project-owned Master/Blank-Layout shell at export — reusable structure is a template-route deliverable, not a free-design authoring tax. Legacy structured/template projects enter `restore-pptx-structure`; neither route triggers heuristic Master/Layout promotion or placeholder inference.
+**Why structure is authored before visual generation on template routes.** Master and Layout are not post-processing discoveries. On a structured deck/layout-template route, the Strategist writes unique Master/Layout definitions and complete page assignments before SVG generation; the Executor writes those identities, fixed atoms, and slots while composing each page, and export only compiles declared structure. Free-design and brand-only decks make the opposite trade: they stay on `mode: flat`, keep every object Slide-local, author no structure metadata, and receive only a clean project-owned Master/Blank-Layout shell at export — reusable structure is a template-route deliverable, not a free-design authoring tax. Legacy inputs may inform a new `create-template` workspace, but they never enter an in-place structure-upgrade route; neither generation mode triggers heuristic Master/Layout promotion or placeholder inference.
 
 **Why Master/Layout visuals are atomic.** A Master or fixed Layout object must be one direct root child. Group-level transforms, opacity, styles, and z-order from imported PPTX objects are pushed into individual atoms during reconstruction. This deliberately gives up source group-editing hierarchy in exchange for a simple, deterministic ownership model that can be compared across pages and rebuilt into native parts without nested structural ambiguity.
 
@@ -515,13 +515,13 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why reusable bounds are design zones, not measured text boxes.** Slot bounds come from the intended safe area, column, panel inset, or picture frame—not glyph width, line count, or the current content's tight box. The current Slide retains its own authored carrier geometry, so 4:6, 3:7, and 5:5 instances may share one Layout when they express the same semantic composition. Text length therefore cannot accidentally split or mutate the reusable Layout contract.
 
-**Why strict and adaptive templates share one structured route.** `page_layouts` records the complete authoring prototype, `pptx_masters` / `pptx_layouts` record unique reusable definitions, and `page_pptx_layouts` records page assignment. Strict preserves the declared prototype contract. Adaptive retains its Master and defines a new Layout only when fixed Layout atoms or slot topology/bounds change; the assignment is updated during page authoring rather than inferred later. A template-backed definition may remain unused and still register in the final package. Non-mirror skin remains project-controlled, while mirror keeps restored output visual identities.
+**Why strict and adaptive templates share one structured route.** `page_layouts` records the complete authoring prototype, `pptx_masters` / `pptx_layouts` record unique reusable definitions, and `page_pptx_layouts` records page assignment. Strict preserves the declared prototype contract. Adaptive retains its Master and defines a new Layout only when fixed Layout atoms or slot topology/bounds change; the assignment is updated during page authoring rather than inferred later. A template-backed definition may remain unused and still register in the final package. Non-mirror skin remains project-controlled, while mirror keeps the preserved output visual identities declared by its new workspace.
 
 **Why explicit-Layout text defaults are split between Master and Layout.** Both flat and structured export write the locked title size and a deterministic nine-level body hierarchy into Master defaults while preserving indentation and bullet settings. On structured routes, each generated Layout text slot additionally copies its carrier's first run size into the level-one default while retaining the prompt's direct size. This preserves Layout-specific scale when placeholder text is inserted or reset; direct runs on generated Slides remain unchanged.
 
 **Why structured output is read back before publication.** Metadata preflight cannot prove package serialization preserved every relationship and registration. Export therefore reopens the temporary PPTX and validates published Slides separately from the complete Master/Layout roster, including definitions unused by all Slides. It checks Presentation → Master → Layout → Slide registration, physical part/content-type rosters, picker identities, exact static-object order, placeholder type/effective index/bounds, carrier bindings, hidden proxies, and zero-slot Layouts before publishing the file.
 
-**Why template creation has authored and restoration modes.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `standard` / `fidelity` use those assets and visuals as references, then author a new topology from the confirmed reusable behavior. Mirror instead restores the source roster and topology one-to-one, allowing only mechanical normalization required by the explicit structured contract. The original PPTX remains analysis evidence, not a packaged export dependency.
+**Why template creation has authored and preservation modes.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `standard` / `fidelity` use those assets and visuals as references, then author a new topology from the confirmed reusable behavior. Mirror instead materializes a new workspace from the validated source roster and topology one-to-one, allowing only mechanical normalization required by the explicit structured contract and never inventing absent facts. The original PPTX remains immutable analysis evidence, not a packaged export dependency.
 
 **Why create-template uses one workspace routing contract in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots require `templates/`; `images/`, `icons/`, and on-demand `exports/` appear only when they contain real files, and SVG asset references are identical. This makes the workspace migratable and reusable without a library-only package branch or a reduced project branch. The sole scope difference is global index registration, and both use the same `structured` contract.
 
@@ -571,26 +571,18 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 
 ---
 
-## Standalone Workflows
+## Routes and Supporting Runbooks
 
-The standalone workflow registry is authoritative in [`workflows/index.md`](../skills/ppt-master/workflows/index.md); this section explains why these capabilities stay separate.
+The authoritative registry is [`workflows/index.md`](../skills/ppt-master/workflows/index.md), with trigger precedence in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
 
-Standalone workflows are route definitions, not optional decorations. They exist when a capability has a different contract from the main pipeline or is too sparse to justify loading by default.
+Supporting files stay separate only to keep route contracts focused and load optional context on demand:
 
-| Workflow | Trigger | Contract |
+| Class | Runbooks | Owning route |
 |---|---|---|
-| `topic-research` | user provides only a topic and no source material | gather web materials before Step 1 |
-| `template-fill-pptx` | raw PPTX template + new material/topic | direct native slide clone/fill; no SVG pipeline |
-| `beautify-pptx` | existing PPTX, preserve page count/order/wording 1:1, improve layout | regenerate through SVG pipeline with source identity/content locked |
-| `create-template` | build a reusable layout/deck template workspace | output a portable workspace root; optionally generate `exports/<id>_template_preview.pptx`; only library scope registers it |
-| `create-brand` | extract or define a reusable brand identity | output `templates/brands/<id>/` |
-| `resume-execute` | fresh chat after the planning session; user says to continue a project | enter the execution session without rerunning Strategist |
-| `refine-spec` | user explicitly wants to review/refine the spec before generation | stop after full spec/lock for revision, then resume |
-| `verify-charts` | generated deck contains data charts | calibrate chart geometry before export |
-| `customize-animations` | user asks for object-level animation order/effect/timing | create/validate `animations.json` and re-export policy |
-| `live-preview` | user asks to preview, click/select, apply annotations, or re-export browser edits | start/re-enter browser preview and apply submitted edits only at the defined point |
-| `visual-review` | user explicitly requests per-page visual self-check | rubric pass between Executor and post-processing |
-| `generate-audio` | user asks for narration/video export | produce narration audio and recorded timing export path |
-| `native-enhance-pptx` | finished PPTX should keep existing content/layout while adding native enhancements | direct OOXML patch route |
+| Generation profile | `beautify-pptx` | Generate PPTX with wording, page count, and page order frozen 1:1 |
+| Template child workflows | `create-brand`, `create-layout`, `create-deck` | Create Template dispatches exactly one based on identity-only, structure-only, or integrated intent |
+| Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
+| Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |
+| Governance | `failure-recovery` | Stop/continue decisions across Generate PPTX stages |
 
-Keeping these files separate is a dependency-control decision. The main path loads only the roles and references it actually needs; a narration backend, animation sidecar, chart calibration rubric, or template-import contract is pulled into context only when the trigger fires. That keeps the default deck-generation path tight while making the rarer capabilities deterministic rather than improvised.
+This classification is a responsibility boundary, not a filename preference. A new top-level route is justified only by a distinct artifact lifecycle and mutation model; kind-specific execution inside Create Template remains a child workflow, while optional generation behavior remains a profile, stage, or governance document.

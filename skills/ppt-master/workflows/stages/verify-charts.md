@@ -1,12 +1,12 @@
 ---
-description: Verify chart coordinates against the design spec using svg_position_calculator.py
+description: Conditional quality-gate stage for chart coordinate verification.
 ---
 
-# Verify Charts Workflow
+# Verify Charts Stage
 
-> Standalone post-generation step. Run after a deck containing data charts has finished SVG generation, before post-processing & export. Catches the 10–50 px coordinate errors AI models routinely introduce when mapping data to pixel positions.
+> Conditional Generate-PPTX quality stage. Run after a deck containing data charts has finished SVG generation, before post-processing & export. Catches the 10–50 px coordinate errors AI models routinely introduce when mapping data to pixel positions.
 
-This workflow is **independent**: it reads `design_spec.md` and the generated SVGs, then runs the calculator script — no upstream conversation context required. Safe to invoke in a fresh session.
+This stage is **context-independent**: it reads `design_spec.md` and the generated SVGs, then runs the calculator script — no upstream conversation context required. Safe to invoke in a fresh session.
 
 ## When to Run
 
@@ -48,7 +48,7 @@ P11 11_share_split.svg   type=pie        mode=direct-calc
 P15 15_pareto.svg        type=pareto     mode=decomposable-calc
 ```
 
-If §VII is absent (legacy project / free-structure deck), skip this workflow and report: "design_spec.md has no §VII — chart pages cannot be enumerated authoritatively, verify-charts skipped". Do NOT fall back to guessing from SVG content; that reintroduces the silent-skip failure this workflow was built to eliminate.
+If §VII is absent (legacy project / free-structure deck), skip this stage and report: "design_spec.md has no §VII — chart pages cannot be enumerated authoritatively, verify-charts skipped". Do NOT fall back to guessing from SVG content; that reintroduces the silent-skip failure this stage was built to eliminate.
 
 If the filtered list is empty, output `verify-charts: spec declares no data-driven chart geometry, nothing to verify` and stop.
 
@@ -60,7 +60,7 @@ For each page in the Step 1 list:
 
 1. Read `<project_path>/svg_output/<page>.svg`.
 2. Locate the plot-area definition:
-   - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-base.md §3.1](../references/executor-base.md)). Read coordinates directly.
+   - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-base.md §3.1](../../references/executor-base.md)). Read coordinates directly.
    - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
 3. Read the data series from the SVG's `<text>` label/value elements.
 4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
@@ -256,7 +256,7 @@ verify-charts: 19_flow.svg | type=sankey | mode=manual-verify | link widths cons
 
 ## After verification
 
-Continue with post-processing & export ([SKILL.md Step 7](../SKILL.md)):
+Continue with post-processing & export ([SKILL.md Step 7](../../SKILL.md)):
 
 ```bash
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>

@@ -419,7 +419,7 @@ HEX_VALUE_RE = re.compile(
 # structure metadata. Template roster/placeholder checks always run. Current
 # bundled templates opt in to complete structure validation through their
 # native_structure_mode: structured declaration. Legacy template-mode packages
-# fail closed and must run the explicit restoration workflow.
+# fail closed; Create Template must author a new current-contract workspace.
 _CHECK_PPTX_STRUCTURED_PROJECT = True
 
 _BARE_HEX_VALUE_RE = re.compile(
@@ -4577,9 +4577,10 @@ class SVGQualityChecker:
                 'release SVG projects require an explicit spec_lock.md '
                 'pptx_structure.mode: flat (free design / brand-only) or '
                 f'structured (deck/layout template); found {label}. New '
-                'free-design projects use mode: flat; restore legacy '
-                'template/structured metadata by following skills/ppt-master/'
-                'workflows/restore-pptx-structure.md before export.',
+                'free-design projects use mode: flat; create a new template '
+                'workspace through skills/ppt-master/workflows/create-template.md, '
+                'then generate new structured SVG pages before export. Existing '
+                'PPTX/SVG files are not upgraded in place.',
             ))
             return
 
@@ -5293,7 +5294,7 @@ class SVGQualityChecker:
         - **Explicit structure gaps** are errors when positive structure checks
           are enabled: every current reusable SVG declares its Master and Layout
           identity. Zero-placeholder Layouts are valid. Legacy template-mode
-          packages fail and must run the structure-restoration workflow.
+          packages fail and must be replaced by a new create-template workspace.
         - **Placeholder gaps** are reported as *warnings*. Templates may
           legitimately omit conventional placeholders or swap them out (e.g.
           ``{{CLOSING_MESSAGE}}`` instead of ``{{THANK_YOU}}``), and a content
@@ -5315,7 +5316,7 @@ class SVGQualityChecker:
                 'explicit_structure_mode',
                 "design_spec.md frontmatter must declare "
                 "native_structure_mode: structured; legacy template-mode "
-                "workspaces must run restore-pptx-structure",
+                "workspaces must be re-created through create-template",
             ))
         if check_structure:
             native_contract_path = dir_path / 'native_structure.json'
@@ -5391,8 +5392,8 @@ class SVGQualityChecker:
                     'error',
                     'legacy_native_structure_pair',
                     "legacy native_structure.json/source_template.pptx template "
-                    "contracts must be restored through "
-                    "skills/ppt-master/workflows/restore-pptx-structure.md",
+                    "contracts must be replaced through "
+                    "skills/ppt-master/workflows/create-template.md",
                 ))
 
             if declared_structure_mode != 'structured':
@@ -5408,9 +5409,9 @@ class SVGQualityChecker:
                 self._template_issues.append((
                     'error',
                     'legacy_structure_contract',
-                    "legacy template structure detected; run "
-                    "skills/ppt-master/workflows/restore-pptx-structure.md before "
-                    "Step 3 consumption",
+                    "legacy template structure detected; create a new current "
+                    "workspace through skills/ppt-master/workflows/"
+                    "create-template.md before Step 3 consumption",
                 ))
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []
         custom_contract = self._extract_frontmatter_placeholders(spec_text) if spec_text else {}
@@ -5928,8 +5929,8 @@ def print_usage() -> None:
     print("                                  always enforce roster consistency and emit placeholder hints.")
     print("                                  native_structure_mode: structured also enables complete")
     print("                                  per-file and cross-page structure validation. Legacy")
-    print("                                  native_structure_mode: template fails and must run")
-    print("                                  restore-pptx-structure before validation.")
+    print("                                  native_structure_mode: template fails and must be")
+    print("                                  re-created through create-template before validation.")
     print("  Warnings are advisory: they require no modification and do not affect exit status;")
     print("  only errors make the command exit with status 1.")
 

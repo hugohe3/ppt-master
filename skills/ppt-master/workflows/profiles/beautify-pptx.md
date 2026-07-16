@@ -1,10 +1,10 @@
 ---
-description: Content-faithful PPT beautification — re-layout an existing deck while preserving its text verbatim and inheriting its visual identity, so regenerated elements share the original's palette/fonts and blend with it when pasted back.
+description: Main-generation profile for 1:1, content-faithful re-layout of an existing deck through the standard SVG pipeline.
 ---
 
-# Beautify PPTX (Re-layout) Workflow
+# Beautify PPTX (Re-layout) Profile
 
-> Mirror of [`template-fill-pptx.md`](./template-fill-pptx.md): template-fill reuses a deck's design and swaps in new content; beautify keeps a deck's content and redoes its layout.
+> Main-pipeline profile, not a top-level route. [`template-fill-pptx.md`](../template-fill-pptx.md) reuses a deck's design and swaps in new content; this profile keeps a deck's content and redoes its layout.
 
 Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source deck's visual identity (palette / fonts) is **inherited as truth**, and only layout, hierarchy, and whitespace are redesigned. Output is a brand-new native deck generated through the standard SVG pipeline — not a patch over the original.
 
@@ -22,11 +22,11 @@ Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source 
 
 **Hard rule — content is frozen**: every text string from the source is preserved exactly (no add / remove / reword / reorder). Beautification freedom lives only in layout, hierarchy, spacing, and visual rhythm.
 
-**Hard rule — not a patch, not a fill**: this regenerates a native deck through Strategist → Executor → export (SKILL.md Steps 4–7). It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](./template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
+**Hard rule — not a patch, not a fill**: this regenerates a native deck through Strategist → Executor → export (SKILL.md Steps 4–7). It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](../template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
 
 **Distinct from mirror templates**: `replication_mode: mirror` (executor §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
 
-**When this is the wrong route — re-architecture belongs to the main pipeline**: beautify preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — that is not beautify. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count, so it is the main pipeline, not beautify. Convert the deck with [`ppt_to_md`](../scripts/source_to_md/ppt_to_md.py) and run the main SKILL.md pipeline, where the Strategist re-architects the outline freely from the extracted content. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → beautify (here); improve → `ppt_to_md` + main pipeline.
+**When this profile is wrong — re-architecture belongs to the default main pipeline**: this profile preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — do not activate this profile. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count. Convert the deck with [`ppt_to_md`](../../scripts/source_to_md/ppt_to_md.py) and run the default main pipeline, where the Strategist re-architects the outline freely from the extracted content. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → activate this profile; improve → default main pipeline.
 
 ---
 
@@ -49,7 +49,7 @@ Match the canvas to the source so 1:1 pages and paste-back align. Determine the 
 |---|---|
 | ≈1.778 (16:9) | `ppt169` |
 | ≈1.333 (4:3) | `ppt43` |
-| other | nearest format in [`canvas-formats.md`](../references/canvas-formats.md); record the source pixel size in the spec |
+| other | nearest format in [`canvas-formats.md`](../../references/canvas-formats.md); record the source pixel size in the spec |
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
@@ -165,7 +165,7 @@ This step has two halves:
 
 **Visual re-confirm — full confirm UI seeded from the source**:
 
-Write `<project_path>/confirm_ui/recommendations.json` and launch the same confirm server SKILL.md Step 4 uses. Do **not** hide fields: seed **every** targeted-confirmation field with the inherited / source-derived default so the user sees the recommendation and keeps the place to change it. Schema → [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+Write `<project_path>/confirm_ui/recommendations.json` and launch the same confirm server SKILL.md Step 4 uses. Do **not** hide fields: seed **every** targeted-confirmation field with the inherited / source-derived default so the user sees the recommendation and keeps the place to change it. Schema → [`scripts/docs/confirm_ui.md`](../../scripts/docs/confirm_ui.md).
 
 ```json
 {
@@ -202,7 +202,7 @@ python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
 
 Read the confirmed canvas + palette + typography (incl. `body_size`) and any other overrides from `<project_path>/confirm_ui/result.json`. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and honor the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
 
-On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
+On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
 
 **Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Write `design_spec.md` + `spec_lock.md` per `strategist.md` §6, then hand off to the Executor.
 

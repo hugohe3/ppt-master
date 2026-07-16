@@ -15,7 +15,7 @@ defaults to `none`, exactly as before this validation upgrade.
 | Generated PPTX resolution and validation | `svg_to_pptx/pptx_package/builder.py` |
 | Narration timing merge | `svg_to_pptx/pptx_package/narration.py` |
 | Public authoring contract | `references/animations.md` |
-| Customization workflow | `workflows/customize-animations.md` |
+| Customization stage | `workflows/stages/customize-animations.md` |
 
 **Hard rule**: only the generated SVG-to-PPTX route writes object entrance
 animations. Direct-PPTX routes preserve source animations and run structural

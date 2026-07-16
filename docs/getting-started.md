@@ -78,7 +78,7 @@ A browser preview opens at `http://localhost:5050` while the deck is being gener
 
 PPT Master was chat-only by design; visual editing was folded in after enough users asked for it (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)).
 
-Full guide → [Live Preview Workflow](../skills/ppt-master/workflows/live-preview.md)
+Full guide → [Live Preview Stage](../skills/ppt-master/workflows/stages/live-preview.md)
 
 ---
 

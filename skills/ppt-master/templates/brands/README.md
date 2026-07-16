@@ -21,10 +21,10 @@ Brand application follows the **same explicit-path rule and workspace routing as
 
 ## Creating a new brand
 
-Run the standalone workflow:
+Enter the fixed Create Template route, which dispatches the Create Brand child workflow:
 
 ```
-Read skills/ppt-master/workflows/create-brand.md
+Read skills/ppt-master/workflows/create-template.md, which dispatches `kind: brand` to skills/ppt-master/workflows/create-template/create-brand.md
 ```
 
 Three input paths are supported: brand asset (logo / brand site URL / branded PPTX / brand PDF), verbal spec dictated in chat, or empty skeleton for the user to fill in later.

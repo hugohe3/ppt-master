@@ -6,7 +6,7 @@
 
 本指南从 PowerPoint 使用者的视角回答一个问题：**对于某项 PowerPoint 功能，项目中由什么表达承载，导出或回导时能保留什么？** 因此，PowerPoint 语义是唯一主索引，SVG 元素只作为某项 PowerPoint 能力的具体实现出现。
 
-这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；生成语法出现差异时，以该合同为准。PPTX 导入的恢复模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
+这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；生成语法出现差异时，以该合同为准。PPTX 导入的容错模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
 
 主路线编译的是**项目规范化 SVG**，而不是通用浏览器 SVG：
 
@@ -32,7 +32,7 @@ PowerPoint 意图
 | `Direct preservation` | 直接 PPTX 工作流可以保留源 OOXML；主 SVG 编译器不重建它。 |
 | `Unsupported` | 主生成路线没有已登记映射，不得猜测。 |
 
-下文中的“回导”是指 PPTX-to-SVG 路线对语义的重建，而不是恢复原始 SVG 语法。它不承诺恢复原始 `<defs>` 图、`<use>` 结构、path 命令或 `<tspan>` 排版。
+下文中的“回导”是指 PPTX-to-SVG 路线生成的语义投影，不是恢复原始 SVG 语法或补造缺失设计意图。它不承诺原始 `<defs>` 图、`<use>` 结构、path 命令或 `<tspan>` 排版。
 
 ## 1. 演示文稿、幻灯片与坐标模型
 
@@ -56,9 +56,9 @@ PowerPoint 意图
 |---|---|---|---|---|
 | 自由设计演示文稿结构 | `pptx_structure.mode: flat`；页面内容保持 Slide-local | 一个干净的项目 Master 和一个 Blank Layout，已表达对象留在 Slide | flat 路线包拓扑为 `Native-stable` | 禁止编写 Master/Layout/layer/placeholder metadata |
 | 基于模板的演示文稿结构 | `pptx_structure.mode: structured` 加显式 Master/Layout/页面分配 | 声明的 `p:sldMaster`、`p:sldLayout`、注册与 Slide 父子关系 | 在显式结构合同内为 `Native-stable` | 导出器绝不猜测 Master、Layout 或占位符拓扑 |
-| 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | 源结构由模板/导入工作流恢复 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
-| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | 可恢复源 Layout；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
-| 回导的继承图形可见性 | 分层分析记录规范化源布尔值；物化后的 structured mirror 在根写入精确小写的 `data-pptx-show-inherited-shapes` 与 `data-pptx-show-master-shapes` | 恢复 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp` | `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 省略即 true；使用同一 Layout key 的页面必须使用相同 Layout 值。背景、Slide-local 对象、占位符继承、part 与父子关系保持不变 |
+| 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | Create Template mirror 可把来源包中已验证的事实保留到新工作区；创作模式使用新身份 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
+| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | Create Template mirror 可把已验证的源 Layout 保留到新工作区；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
+| 回导的继承图形可见性 | 分层分析记录规范化源布尔值；物化后的 structured mirror 在根写入精确小写的 `data-pptx-show-inherited-shapes` 与 `data-pptx-show-master-shapes` | 把已声明来源值写入 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp` | `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 省略即 true；使用同一 Layout key 的页面必须使用相同 Layout 值。背景、Slide-local 对象、占位符继承、part 与父子关系保持不变 |
 | strict 模板 Layout | 选中的原型合同 | 保留现有已声明 Layout 拓扑 | 页面遵循原型时为 `Native-stable` | 不得改变固定 Layout atom 和 slot 结构 |
 | adaptive 模板 Layout | 选定 Master 加显式的当前或新声明 Layout | 可在可复用结构变化时创建新 Layout 身份 | 更新 lock 与页面映射后为 `Native-stable` | 绝不默默改变已复用 Layout key |
 | structured 模式以外的 Slide 背景填充 | 第一个合格的全幅 `<rect>`，可直接位于根下或位于简单单子组中，使用已登记纯色、线性/径向渐变或预设图案填充 | Slide 的原生 `p:bg` | 保真度遵循下文对应 paint 行 | transform、filter、clip、圆角、可见 stroke 或未映射 fill 会阻止提升 |
@@ -96,7 +96,7 @@ PowerPoint 意图
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
 | 折线 | `<polyline>` | 开放自定义几何 | `Native-normalized` | points 使用与其他生成几何相同的有限、已登记语法 |
 | PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，由该组承载 preset 意图与基础 paint，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 质检与导出动态重渲染 registry；规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
-| 导入的预设形状 | 含隐藏原生 carrier、可见 preview 证据与新鲜度 metadata 的 expanded 导入/往返组 | payload 合法且未改变时恢复 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
+| 导入的预设形状 | 含隐藏原生 carrier、可见 preview 证据与新鲜度 metadata 的 expanded 导入/往返组 | payload 合法且未改变时重新接入 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
 | 动作按钮形状 | compact authored `actionButton*` preset 组 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
 | 组 | `<g>` | `p:grpSp`，或对特殊 carrier 执行文档化的 flatten/collapse | 分组内容可重建为 `<g>` | 结构 atom 与 placeholder 合同优先于普通分组 |
 | 复用本地 symbol | 已登记的同文档 `<use>` 合同或项目 icon placeholder | 在生成 Slide 中展开为可编辑 shape | 回导不承诺恢复原 symbol 图 | 拒绝外部 use、不受支持的 symbol 能力和结构 metadata 复用 |
@@ -240,9 +240,9 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
 | 不支持的 graphic frame 或 SmartArt | 显式 preview、placeholder 或 unsupported 状态 |
 
-这是语义重建，不是语法往返。Master/Layout 恢复属于模板结构工作流；普通视觉导入不会从 Slide 外观推断可复用拓扑。
+这是语义投影，不是语法往返。只有 Create Template mirror 可把来源包中已验证的 Master/Layout 事实保留到新工作区；普通视觉导入不会从 Slide 外观推断可复用拓扑。
 
-### 导入运行模式与恢复边界
+### 导入运行模式与错误恢复边界
 
 `pptx_to_svg.py` 默认采用容错导入，因为输入来自用户或第三方 PPTX。`--strict` 用于 parser 开发、合同核验和复现第一个源文件违规点。生成 SVG 的严格校验与导出边界保持不变。
 
@@ -250,11 +250,11 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 |---|---|---|---|
 | 可识别颜色语义带无关源 metadata | 规范化已识别颜色与 modifier | 拒绝非规范结构 | warning；可用时包含 part、Slide 与 shape 上下文 |
 | 不支持的填充、轮廓、效果、图片填充、文字体或样式属性 | 保留对象，只省略不支持的属性或功能 | 在第一个违规点停止 | warning 说明省略内容与 fallback |
-| 无法按属性恢复的不支持对象 | 只把该对象替换为可见诊断占位；没有可用 frame 时才省略 | 在第一个违规点停止 | warning 标识源对象 |
+| 无法按属性映射的不支持对象 | 只把该对象替换为可见诊断占位；没有可用 frame 时才省略 | 在第一个违规点停止 | warning 标识源对象 |
 | 不支持的 Slide 或 part 背景 | 省略该背景，继续当前页面/part | 在第一个违规点停止 | warning 标识所属 part |
-| 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级恢复 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
+| 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级容错 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
 
-每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同恢复都可复核。
+每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
 
 ## 12. 校验职责
 
