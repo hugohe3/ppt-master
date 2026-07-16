@@ -887,8 +887,8 @@ def _design_spec_is_brand(spec_path: Path) -> bool:
 
     Lightweight detector that does not require PyYAML — scans only the
     frontmatter block (``---`` delimited) for a ``kind:`` line whose value
-    contains ``brand``. Used by ``check_directory`` to skip SVG validation
-    on brand-only template directories.
+    contains ``brand``. Used by ``check_directory`` to select Brand schema
+    validation instead of SVG-roster validation.
     """
     try:
         text = spec_path.read_text(encoding='utf-8')
@@ -1152,6 +1152,7 @@ class SVGQualityChecker:
         # template_mode=True). Each entry is (severity, kind, message) where
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
+        self._brand_template_checked = False
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._pptx_structure_issues: List[Tuple[str, str]] = []
@@ -4368,21 +4369,48 @@ class SVGQualityChecker:
             self.issue_types['Input issues'] += 1
             return []
 
-        # Brand-only template workspaces have no SVG roster. Resolve the current
-        # nested spec first and keep legacy-flat roots readable.
+        # Brand-only workspaces have no SVG roster. Validate their portable
+        # identity schema through the same authority used by library
+        # registration, while keeping project scope independent of global
+        # indexes and directory names.
         if self.template_mode and dir_path.is_dir():
             nested_spec = dir_path / 'templates' / 'design_spec.md'
             spec = nested_spec if nested_spec.is_file() else dir_path / 'design_spec.md'
             if spec.exists() and _design_spec_is_brand(spec):
+                self._brand_template_checked = True
+                self.summary['total'] += 1
+                brand_valid = True
                 print(
                     f"[INFO] Brand directory detected (kind: brand) — "
-                    f"SVG checks skipped."
+                    f"validating design_spec.md and referenced assets."
                 )
-                print(
-                    f"[INFO] Validate brand specs via: "
-                    f"python3 scripts/register_template.py "
-                    f"--kind brand <brand_id> --dry-run"
+                workspace_root = (
+                    spec.parent.parent
+                    if spec.parent.name == 'templates'
+                    else spec.parent
                 )
+                try:
+                    from register_template import (
+                        SpecParseError,
+                        validate_brand_workspace,
+                    )
+                    validate_brand_workspace(workspace_root)
+                except ImportError as exc:
+                    brand_valid = False
+                    self._template_issues.append((
+                        'error',
+                        'brand_contract',
+                        f"Brand schema validator could not be imported: {exc}",
+                    ))
+                except (OSError, SpecParseError) as exc:
+                    brand_valid = False
+                    self._template_issues.append((
+                        'error',
+                        'brand_contract',
+                        str(exc),
+                    ))
+                if brand_valid:
+                    self.summary['passed'] += 1
                 return self.results
 
         # Find all SVG files
@@ -5774,7 +5802,7 @@ class SVGQualityChecker:
         from ``main`` agrees), warnings under ``warnings``. Both are listed
         per file so the user can act on them directly.
         """
-        if not self._template_issues:
+        if not self._template_issues and not self._brand_template_checked:
             return
 
         errors = [item for item in self._template_issues if item[0] == 'error']
@@ -5789,11 +5817,14 @@ class SVGQualityChecker:
             print(f"  Warnings ({len(warnings)}):")
             for _sev, kind, msg in warnings:
                 print(f"    [{kind}] {msg}")
+        if self._brand_template_checked and not errors:
+            print("  Brand design_spec.md schema and asset references passed.")
         if not errors:
-            print("  No structural roster issues.")
-            print("  Conventional placeholder-name hints may be declared through "
-                  "'placeholders:' frontmatter. Placeholder bounds are mandatory "
-                  "design-zone metadata.")
+            if not self._brand_template_checked:
+                print("  No structural roster issues.")
+                print("  Conventional placeholder-name hints may be declared through "
+                      "'placeholders:' frontmatter. Placeholder bounds are mandatory "
+                      "design-zone metadata.")
 
     def _apply_aggregated_issue_counts(self):
         """Mirror project-level aggregate issues into summary counters once."""
@@ -5925,8 +5956,9 @@ def print_usage() -> None:
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
-    print("                                  glob *.svg directly and skip spec_lock checks;")
-    print("                                  always enforce roster consistency and emit placeholder hints.")
+    print("                                  Brand validates design_spec.md and referenced assets;")
+    print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
+    print("                                  enforce roster consistency, and emit placeholder hints.")
     print("                                  native_structure_mode: structured also enables complete")
     print("                                  per-file and cross-page structure validation. Legacy")
     print("                                  native_structure_mode: template fails and must be")
