@@ -1,16 +1,16 @@
 ---
-description: Governance matrix for stop/continue and recovery decisions across Generate PPTX stages.
+description: Cross-route stop/continue governance with a concrete recovery matrix and resume map for Generate PPTX.
 ---
 
 # Failure Recovery Governance
 
-Central recovery rules for common Generate PPTX failures. The route and stage documents may add narrower handling, but must not weaken these stop/continue decisions.
+Global stop/continue rules for all four top-level routes, plus concrete failure handling for Generate PPTX. Section 2 applies across routes; Sections 1 and 3 apply only to Generate PPTX. Owning route and stage documents may add narrower handling, but must not weaken the global rules or duplicate this matrix.
 
-**Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block generation.
+**Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block the active route.
 
 ---
 
-## 1. Recovery Matrix
+## 1. Generate PPTX Recovery Matrix
 
 | Failure point | Blocking | Automatic recovery | User intervention | Resume entry |
 |---|---:|---|---|---|
@@ -39,7 +39,7 @@ Central recovery rules for common Generate PPTX failures. The route and stage do
 
 ---
 
-## 2. Stop/Continue Rules
+## 2. Global Stop/Continue Rules
 
 | Condition | Action |
 |---|---|
@@ -47,14 +47,15 @@ Central recovery rules for common Generate PPTX failures. The route and stage do
 | Optional stage not explicitly requested | Do not run it as recovery. |
 | Convenience UI/server failure | Fall back to chat or continue without the surface. |
 | Derived artifact stale | Regenerate it from its owning source. |
-| Manual image asset missing at Step 7 | Pause and list exact filenames; resume only after files exist. |
-| Checker/export error | Fix the source artifact, then rerun the failed command and downstream commands only. |
+| Required manual artifact missing | Pause and name the exact required artifacts; resume only after they exist. |
+| Validation or export failure | Fix the owning source artifact, then rerun the failed operation and affected downstream operations only. |
+| Confirmed execution choice cannot be honored | Retry the confirmed provider, mode, voice, effect, or path only as its owning workflow allows; if it remains unavailable, stop or request a new decision. Do not substitute another value or output semantics silently. |
 
-**Forbidden - silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file. Fix or pause at the owning gate.
+**Forbidden — silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file, and do not change a confirmed execution value merely to keep the route moving. Fix, pause, or request a new decision at the owning boundary.
 
 ---
 
-## 3. Resume Pointers
+## 3. Generate PPTX Resume Pointers
 
 | Last good state | Resume from |
 |---|---|

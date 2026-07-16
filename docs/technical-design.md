@@ -341,7 +341,7 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
-Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); this section does not duplicate that matrix.
+Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
 Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify-profile requests, native enhancement, custom-animation stages, live-preview stages, and other registered triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
@@ -583,6 +583,6 @@ Supporting files stay separate only to keep route contracts focused and load opt
 | Template child workflows | `create-brand`, `create-layout`, `create-deck` | Create Template dispatches exactly one based on identity-only, structure-only, or integrated intent |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
 | Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |
-| Governance | `failure-recovery` | Stop/continue decisions across Generate PPTX stages |
+| Governance | `failure-recovery` | Global stop/continue policy for all four routes; concrete recovery matrix and resume pointers for Generate PPTX |
 
-This classification is a responsibility boundary, not a filename preference. A new top-level route is justified only by a distinct artifact lifecycle and mutation model; kind-specific execution inside Create Template remains a child workflow, while optional generation behavior remains a profile, stage, or governance document.
+This classification is a responsibility boundary, not a filename preference. A new top-level route is justified only by a distinct artifact lifecycle and mutation model; kind-specific execution inside Create Template remains a child workflow, optional route behavior remains a profile or stage, and cross-route policy remains governance.
