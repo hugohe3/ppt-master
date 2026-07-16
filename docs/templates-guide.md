@@ -125,7 +125,7 @@ The entry name always remains **Create Template**. It dispatches exactly one chi
 
 ### Step 1 — Prepare a reference bundle or brief
 
-You may provide direct conversation text, pasted requirements, Markdown/TXT, DOCX/PDF/HTML/URL, websites, images/screenshots, logo/icon/font assets, PPTX/SVG files, or any useful combination. The workflow analyzes every applicable channel, keeps source provenance, and surfaces conflicts in the mandatory brief instead of silently choosing one source. Exact values stated by you are decisions; traceable statements from identified manuals or official sites are facts; visual estimates and vague-text interpretations remain suggestions until confirmed.
+You may provide direct conversation text, pasted requirements, Markdown/TXT, DOCX/PDF/HTML/URL, websites, images/screenshots, logo/icon/font assets, PPTX/SVG files, or any useful combination. The workflow analyzes every applicable channel, keeps source provenance, and surfaces conflicts in the mandatory brief instead of silently choosing one source. Exact values authored by you are decisions whether they arrive in chat, pasted text, or your own brief file; a file carrier does not turn them into facts. Facts require independently traceable external authority or machine-observable source metadata. Visual estimates and vague-text interpretations remain suggestions until confirmed.
 
 **When an existing deck's native structure matters, hand over the original `.pptx` file.** The importer reads OOXML directly and extracts the Master, Layout, placeholder, theme, native-shape, and reusable-asset facts that are actually present and supported into layered analysis references. In `standard` / `fidelity`, Template_Designer uses them as visual reference and authors a new SVG roster plus a new Master/Layout/slot system. In mirror, it materializes those validated source facts into a new workspace without inventing missing topology or design intent. The original PPTX remains immutable analysis evidence and is not packaged into the new template.
 
@@ -149,7 +149,7 @@ The workflow does not silently infer values — before generation it lists these
 | **Tone summary** | One line, e.g. "modern, restrained, data-driven" |
 | **Theme mode** | Create Layout/Create Deck only: light / dark / gradient / ... |
 | **Canvas format** | Create Layout/Create Deck only; default `ppt169` (16:9), with other formats specified up front |
-| **Replication mode** | Create Layout/Create Deck only: `standard` (default compact roster) / `fidelity` (one variant per reusable semantic family) / `mirror` (one materialized prototype per source slide). `standard` / `fidelity` author new SVG semantics; mirror preserves only validated facts already present in the source package. |
+| **Replication mode** | Create Layout/Create Deck only: `standard` (default compact, brief-driven roster; may include a small number of explicitly required distinct variants) / `fidelity` (broader source-aligned coverage of useful semantic families) / `mirror` (one materialized prototype per source slide). `standard` / `fidelity` author new SVG semantics; mirror preserves only validated facts already present in the source package. |
 | **Native structure facts** | Create Layout/Create Deck only: the brief reports source Master/Layout counts, parent relationships, placeholder identities, and multi-master status. `standard` / `fidelity` treat them as reference only; mirror maps the supported facts one-to-one into the current `structured` contract. |
 | **Visual fidelity** | Create Layout/Create Deck only; required for `standard` / `fidelity` when a reference exists. Choose `literal` or `adapted`. **Not asked for `mirror`** — mirror preserves the supported source visual. |
 | **Keywords** | 3–5 tags for index lookup |
@@ -157,7 +157,7 @@ The workflow does not silently infer values — before generation it lists these
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves the required `templates/` destination and any optional asset destinations, requires an empty `templates/` root, and rejects bitmap or imported-vector filename collisions in `images/` and `icons/imported/`. It checks `exports/` only when a review PPTX was requested. Project scope additionally requires an initialized target project. Existing empty scaffolding created by project initialization is allowed and left untouched; Create Template does not create optional directories merely to keep empty paths. A failed check stops before partial output; the workflow does not merge or overwrite.
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
@@ -167,10 +167,10 @@ This is the most easily confused decision when deriving a structured template. C
 
 | | **standard** | **fidelity** | **mirror** |
 |---|---|---|---|
-| Output pages | 4–5 (cover / chapter / content / ending, with optional TOC) | one variant per reusable semantic family — count driven by the source | one materialized prototype per source slide (1:1 roster) |
+| Output pages | Usually 4–6: cover / chapter / ending, optional TOC, and one or a small explicitly required set of content Layouts | broader useful semantic-family coverage — count driven by the source evidence | one materialized prototype per source slide (1:1 roster) |
 | Abstraction | High — clean, reusable skeleton | Medium — semantic source families redesigned with cleanup | None at the topology level; only mechanical structured-contract normalization |
 | Authoring placeholders | Yes (`{{TITLE}}`, `{{CONTENT_AREA}}`, …) | Yes | Literal text may remain, but imported native content slots still carry semantic metadata |
-| Best for | You want "tone + basic skeleton" to generate brand-new decks later | The source PPTX itself is a customized layout library and every variant matters | Someone else's polished deck is great as-is, you want every page available as a reference |
+| Best for | You want "tone + compact skeleton", including a few brief-required structures, to generate brand-new decks later | The source PPTX itself is a customized layout library and broader source-driven coverage matters | Someone else's polished deck is great as-is, you want every page available as a reference |
 | Typical use | Building a base brand template | Replicating a 20-variant government briefing layout set | Keeping all 50 source compositions available as faithful prototypes |
 | Source requirement | None | PPTX or SVG visual reference | PPTX, or SVGs with a complete explicit structure contract |
 | Decoration complexity | Usually simpler | Must preserve sprite-sheet crop structure | Preserves literal geometry while adding explicit layer ownership |
@@ -199,7 +199,7 @@ the designer writes that brief against the published roster.
 
 ### Step 4 — Validation, review export, registration, and discovery
 
-After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The only scope-specific action is library registration:
+After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate: Brand validates its identity-only spec and asset references, while Layout/Deck validate the SVG roster and structured contract. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. Authored templates use concise preview-only placeholder samples so long canonical markers stay readable without changing the source SVGs. The only scope-specific action is library registration:
 
 | Scope | Workspace root | Preview | Discovery behavior |
 |---|---|---|---|
@@ -224,8 +224,7 @@ Library and project scopes use the same core structure; substitute either `skill
 │   ├── 01_cover.svg
 │   ├── 02_toc.svg              # optional; without it: 02_chapter, 03_content, 04_ending
 │   ├── 03_chapter.svg
-│   ├── 04_content.svg
-│   ├── 04a_content_two_col.svg # fidelity variant
+│   ├── 04_content.svg          # use 04a/04b siblings when multiple variants exist
 │   └── 05_ending.svg
 ├── images/                         # optional
 │   └── *.png / *.jpg           # SVG references use ../images/<name>

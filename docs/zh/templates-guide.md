@@ -125,7 +125,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 ### 第一步：准备参考材料包或简报
 
-你可以直接在对话中输入文字或粘贴要求，也可以提供 Markdown/TXT、DOCX/PDF/HTML/URL、网站、图片/截图、logo/icon/字体资产、PPTX/SVG，或这些材料的任意组合。工作流会分析每个适用通道，保留来源，并在强制简报中暴露冲突，而不是静默选择某一个来源。你明确写出的值属于决策；来自已识别手册或官网的可追溯陈述属于事实；视觉估算与模糊文字的解释在确认前都只是建议。
+你可以直接在对话中输入文字或粘贴要求，也可以提供 Markdown/TXT、DOCX/PDF/HTML/URL、网站、图片/截图、logo/icon/字体资产、PPTX/SVG，或这些材料的任意组合。工作流会分析每个适用通道，保留来源，并在强制简报中暴露冲突，而不是静默选择某一个来源。凡是你本人明确写出的值，无论来自对话、粘贴文字还是你编写的简报文件，都属于决策；文件载体本身不会把它变成事实。事实必须来自可独立追溯的外部权威，或可由机器直接观察的源文件/包元数据。视觉估算与模糊文字的解释在确认前都只是建议。
 
 **当现有演示文稿的原生结构很重要时，请直接提供原始 `.pptx` 文件。** 导入器会读取 OOXML，把包内实际存在且受支持的 Master、Layout、placeholder、主题、原生形状与可复用素材事实提取成分层分析参考。`standard` / `fidelity` 把它们当视觉参考，创作新的 SVG roster 与 Master/Layout/slot 系统；mirror 则把这些已验证的来源事实物化到新工作区，不补造缺失拓扑或设计意图。原 PPTX 始终是不可变的分析证据，不进入新模板包。
 
@@ -149,7 +149,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 | **调性概要** | 一句话，如"现代克制、数据驱动" |
 | **主题模式** | 仅 Create Layout/Create Deck：浅色 / 深色 / 渐变…… |
 | **画布格式** | 仅 Create Layout/Create Deck；默认 `ppt169`（16:9），其他格式需提前指定 |
-| **复刻模式** | 仅 Create Layout/Create Deck：`standard`（默认精简基本套）/ `fidelity`（每个可复用语义家族一个变体）/ `mirror`（每张源页一个物化原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 只保留来源包内已经存在且验证通过的事实。 |
+| **复刻模式** | 仅 Create Layout/Create Deck：`standard`（默认精简、由确认简报驱动；可包含少量明确要求的差异化变体）/ `fidelity`（根据来源证据覆盖更广的有用语义家族）/ `mirror`（每张源页一个物化原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 只保留来源包内已经存在且验证通过的事实。 |
 | **原生结构事实** | 仅 Create Layout/Create Deck：简报会列出源 Master/Layout 数量、父子关系、placeholder 身份和多母版情况。`standard` / `fidelity` 只把它们当参考；mirror 把受支持事实一对一映射进当前 `structured` 合同。 |
 | **保真级别** | 仅 Create Layout/Create Deck；`standard` / `fidelity` 有源时必填，选择 `literal` 或 `adapted`。**`mirror` 模式不询问**——它保留受支持的来源视觉。 |
 | **关键词** | 3–5 个标签，用于索引检索 |
@@ -157,7 +157,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 确认后，工作流会回显一份完整简报并写入标记 `[TEMPLATE_BRIEF_CONFIRMED]`，从这一刻起后续步骤才会启动。**这是一个硬门——简报没确认，不会开始生成**。
 
-无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/` 与 `icons/imported/` 中计划写入的位图和导入向量文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
+无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/` 与 `icons/imported/` 中计划写入的位图和导入向量文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。项目初始化时已存在的空脚手架目录可以保留且不会被算作模板产物；Create Template 不会为了保留空路径而新建可选目录。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
 
 > 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是结构契约。先确认归属和几何，可避免半成品或资产落错目录。
 
@@ -167,10 +167,10 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 | | **standard** | **fidelity** | **mirror** |
 |---|---|---|---|
-| 输出页数 | 4–5 页（封面/章节/内容/结尾，可选目录） | 每个可复用语义家族一个变体——数量由源决定 | 每张源页一个物化原型（1:1 页面集合） |
+| 输出页数 | 通常 4–6 页：封面/章节/结尾、可选目录，以及一个或少量简报明确要求的内容 Layout | 覆盖来源证据中更广的有用语义家族——数量由来源决定 | 每张源页一个物化原型（1:1 页面集合） |
 | 抽象程度 | 高 —— 干净可复用骨架 | 中 —— 语义家族重新设计 | 拓扑层面不抽象，只做 structured 合同要求的机械归一化 |
 | 作者占位符 | 是（`{{TITLE}}`、`{{CONTENT_AREA}}` 等） | 是 | 可保留原文字，但导入识别出的原生内容槽仍带语义 metadata |
-| 适合场景 | 你只需要"调性 + 基本骨架"，未来用模板生成全新 deck | 源 PPTX 本身就是高度定制的版式库 | 别人的精装 deck 直接好用、想把每页都当参考页 |
+| 适合场景 | 你需要“调性 + 精简骨架”，也可能包含少量简报明确要求的结构，未来用于生成全新 deck | 源 PPTX 本身就是高度定制的版式库，需要更广的来源驱动覆盖 | 别人的精装 deck 直接好用、想把每页都当参考页 |
 | 典型例子 | 给品牌做基础模板 | 复刻一套政府汇报的 20 种章节版式 | 把 50 张源构图都保留为视觉忠实的模板原型 |
 | 来源要求 | 无 | PPTX 或 SVG 视觉参考 | PPTX，或带完整显式结构合同的 SVG |
 | 装饰复杂度 | 通常较简洁 | 需要保留精灵图裁剪等结构 | 保留原几何，并补齐显式层级归属 |
@@ -197,7 +197,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 ### 第四步：验证、预览导出、注册与发现
 
-模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门。如果需要 PowerPoint 审阅文件，再运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。唯一按范围分流的动作是全局注册：
+模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门：Brand 校验 identity-only 规范与素材引用，Layout/Deck 校验 SVG roster 和 structured 合同。如果需要 PowerPoint 审阅文件，再运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。创作型模板会只在临时预览副本中使用简短占位示例，避免较长的 canonical marker 换行，不会修改源 SVG。唯一按范围分流的动作是全局注册：
 
 | 范围 | 工作区根目录 | 预览 | 发现行为 |
 |---|---|---|---|
@@ -222,8 +222,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 │   ├── 01_cover.svg
 │   ├── 02_toc.svg              # 可选；不含时为 02_chapter、03_content、04_ending
 │   ├── 03_chapter.svg
-│   ├── 04_content.svg
-│   ├── 04a_content_two_col.svg # fidelity 变体
+│   ├── 04_content.svg          # 同类有多个变体时改用 04a/04b 兄弟命名
 │   └── 05_ending.svg
 ├── images/                         # 可选
 │   └── *.png / *.jpg           # SVG 统一引用 ../images/<name>

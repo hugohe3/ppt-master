@@ -39,7 +39,7 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 Use these provenance labels in the proposal and final Color Scheme table:
 
 - `fact` — literal value from an official asset or manual.
-- `user` — value explicitly supplied by the user.
+- `user` — value explicitly authored by the user, whether in chat, pasted text, or a user-written brief file.
 - `approx` — visual estimate or pattern observed in an existing deck/site.
 
 **Hard rule — no inferred brand truth**: Do not promote a visual estimate, presentation convention, or observed neutral into an official brand fact. Do not invent semantic success/warning/error colors.
@@ -73,7 +73,7 @@ Create Template supplies an already resolved and collision-checked `<template_wo
 └── icons/        # optional; branded icon overrides only when adopted
 ```
 
-Do not create empty optional directories or `exports/`. Bitmap references from `templates/design_spec.md` use `../images/<name>`; branded icon references use `../icons/<name>`.
+Do not create optional directories or `exports/` solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and do not report it as Brand output. Bitmap references from `templates/design_spec.md` use `../images/<name>`; branded icon references use `../icons/<name>`.
 
 Write this personality-only schema:
 
@@ -138,9 +138,15 @@ Return these facts to Create Template:
 - Required sections I–VI exist; Page Roster and Signature Design Elements do not exist.
 - No `*.svg`, `native_structure_mode`, Master/Layout, placeholder, canvas, or page-count fields were written.
 - Every color is `#RRGGBB`, the primary table row matches frontmatter, and provenance is `fact`, `approx`, or `user`.
-- Every referenced asset exists under the same workspace; no empty optional directory or `exports/` directory was created.
+- Every referenced asset exists under the same workspace; this workflow created no optional directory or `exports/` directory solely to leave it empty. Pre-existing initialized-project scaffolding is allowed and remains untouched.
 
-For `library` scope, Create Template Step 5 validates with:
+For both scopes, Create Template Step 5 validates the portable Brand contract without registration:
+
+```bash
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode
+```
+
+For `library` scope, additionally validate the directory/index identity with:
 
 ```bash
 python3 skills/ppt-master/scripts/register_template.py <brand_id> --kind brand --dry-run
@@ -152,4 +158,4 @@ After that gate passes, Create Template Step 7 registers with:
 python3 skills/ppt-master/scripts/register_template.py <brand_id> --kind brand
 ```
 
-For `project` scope, skip both commands and report `Not registered (project workspace)`. Downstream consumption always uses the explicit workspace root through Generate PPTX Step 3; a bare brand name never activates it.
+For `project` scope, run only the shared validator, skip both registrar commands, and report `Not registered (project workspace)`. Downstream consumption always uses the explicit workspace root through Generate PPTX Step 3; a bare brand name never activates it.

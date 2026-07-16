@@ -96,8 +96,8 @@ The output page set is determined by **replication mode**, declared in the final
 
 | Mode | When to use | Roster |
 |------|-------------|--------|
-| `standard` (default) | Most templates — clean, reusable, balanced coverage | `01_cover`, `02_chapter`, `03_content`, `04_ending`; with the optional TOC the roster is `01_cover`, `02_toc`, `03_chapter`, `04_content`, `05_ending` |
-| `fidelity` | User wants a broader, source-aligned but newly designed template | Standard roster + intentionally designed variants that cover useful reference compositions |
+| `standard` (default) | Most templates — clean, reusable, compact coverage driven by the confirmed brief | Cover, chapter, ending, optional TOC, and one or a small explicitly required set of distinct content Layouts; typically 4–6 prototypes |
+| `fidelity` | User wants a broader, source-aligned but newly designed template | Canonical roles plus intentionally designed variants that cover the useful source composition range |
 | `mirror` | User wants a new template workspace that preserves validated native source facts | One SVG prototype materialized from the authoring IR per source slide, named `<NNN>_<page_type>.svg` by source order |
 
 **Hard rule — mode controls authorship**: `standard` and `fidelity` create new SVG documents and their own Master/Layout system. `mirror` maps the validated imported source contract into a new workspace and must not reauthor, distill, reinterpret, or supplement its structure.
@@ -114,7 +114,9 @@ The output page set is determined by **replication mode**, declared in the final
 
 **Design philosophy**: Templates define visual consistency and structural pages; content pages maintain maximum flexibility.
 
-**Naming note**: The numeric prefix is the template's own presentation order and stays contiguous with no duplicate index. When the optional TOC page is included it takes `02_toc.svg` and the later types shift by one: `01_cover`, `02_toc`, `03_chapter`, `04_content`, `05_ending`. Numbers carry no meaning across templates — tooling derives the page type from the token after the underscore, so both spellings of each type are equivalent.
+**Confirmed compact variants**: `standard` may include more than one Layout for the same canonical role when the user brief explicitly requires genuinely different reusable structures, such as two-column evidence and three-card KPI content. Keep the roster compact and brief-driven rather than mining the source page set. When siblings exist, suffix every sibling (`03a_content_two_col.svg`, `03b_content_three_card.svg`) instead of treating one arbitrary variant as the unsuffixed default. This does not require `fidelity`; use `fidelity` when the broader roster is derived from complete PPTX/SVG page evidence.
+
+**Naming note**: The numeric prefix is the template's own presentation order. Its base sequence stays contiguous; sibling variants share their parent's number only through unique lowercase suffixes such as `03a` / `03b`. When the optional TOC page is included it takes `02_toc.svg` and the later types shift by one: `01_cover`, `02_toc`, `03_chapter`, `04_content`, `05_ending`. Numbers carry no meaning across templates — tooling derives the page type from the token after the underscore, so both spellings of each type are equivalent.
 
 ### Fidelity mode
 
@@ -533,11 +535,11 @@ Mirror mode emits one SVG per source slide, named by source order:
 
 Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text and validated native structure facts are preserved when the authoring IR is materialized into the new workspace; IR-only refs and its manifest are not copied into the template output.
 
-**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` when explicitly requested and always for a multi-Master package gate. Create optional directories only when they contain real files; never add placeholders for empty directories. Do not branch asset placement by output scope.
+**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; place each imported vector exactly once in `icons/imported/` and reference it as `data-icon="imported/<name>"`. Never create `templates/icons/`. Write a review deck to `exports/` when explicitly requested and always for a multi-Master package gate. Create Template must not create optional directories or placeholder files solely to retain empty paths. An initialized project may already contain empty scaffolding; leave it untouched and omit it from completion unless real template files were written or adopted there. Do not branch asset placement by output scope.
 
 ### Template Preview
 
-When the user requests a PowerPoint review file or the validated roster declares multiple Masters, run `template_preview_pptx.py <template_workspace>` after SVG validation. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
+When the user requests a PowerPoint review file or the validated roster declares multiple Masters, run `template_preview_pptx.py <template_workspace>` after SVG validation. The command creates `exports/` on demand and verifies one slide per SVG prototype plus the expected Master/Layout counts. In authored modes, it shortens canonical marker text only in ephemeral review copies so prompts remain readable without changing the source SVG, carrier typography, or placeholder frames. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
 
 When a review deck was generated, include its path in the completion summary. Omit `exports/` only for an unrequested one-Master package.
 
@@ -587,7 +589,7 @@ templates/
 - [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] `standard` / `fidelity` SVGs and Master/Layout contracts were newly authored; `mirror` SVGs were materialized from the authoring IR while preserving the source graph without semantic redesign
-- [x] Placeholder markers are clear and standardized for `standard` / `fidelity`; mirror preserves literal source text plus source placeholder type/index/bounds
+- [x] Placeholder markers are clear and standardized for `standard` / `fidelity`; preview-only sample text remains readable without changing source markers, while mirror preserves literal source text plus source placeholder type/index/bounds
 - [x] Every SVG is a complete preview with explicit root Master/Layout identity and `native_structure_mode: structured`; authored modes use canonical fixed layers/slots, while mirror preserves source ownership and mechanically expands fixed-layer groups into direct atoms
 - [x] Authored `standard` / `fidelity` Layout keys are non-duplicative; mirror keeps distinct source Layout identities even when their current visible contracts are equivalent
 - [x] Template creation used the authoring IR; lossless expanded imports remained immutable payload backing for mirror materialization, while `standard` / `fidelity` used helper-generated compact canonical preset groups and `design_spec.md` paint
