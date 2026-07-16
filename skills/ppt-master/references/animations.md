@@ -1,8 +1,8 @@
 # Page Transitions & Per-Element Animations
 
-PPT Master's exported PPTX supports **page transitions** and **per-element
-entrance animations** as real PowerPoint OOXML. Other applications may
-interpret timing differently; this contract makes no unconditional Keynote guarantee.
+Execution contract for generated-PPTX **page transitions** and **per-element
+entrance animations**. This file owns defaults, sidecar semantics, anchor
+selection, validation, and package read-back.
 
 ## 1. Defaults
 

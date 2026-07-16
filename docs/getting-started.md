@@ -88,7 +88,7 @@ Exported decks carry page transitions and optional per-element entrance animatio
 
 Animation settings are strict: unknown effects or Start modes, invalid timing values, and missing sidecar targets fail instead of silently becoming another effect. Before the result replaces an existing output, PPT Master reads the candidate package back and checks timing placement, IDs, shape targets, effects, durations, and Start modes. Microsoft PowerPoint is the primary motion-validation target; other presentation apps can open the PPTX but may map individual animation effects differently.
 
-Full guide → [Animations & Transitions](../skills/ppt-master/references/animations.md)
+Full guide → [Animations & Transitions](./animations.md)
 
 ---
 

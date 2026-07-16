@@ -170,6 +170,6 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 **Tips**:
 
 - **No mic, no recording session needed** — the audio is generated, not recorded, so re-runs are deterministic.
-- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
+- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](./animations.md).
 - **Want to tweak just one slide's audio?** Edit `notes/<page>.md`, re-run `notes_to_audio.py` and the embedding step, then re-export the video — total turnaround is usually under a minute per slide.
 - **File size**: a 20-page deck at Full HD typically lands at 30–80 MB depending on imagery. Drop to HD if you need a smaller file for sharing.

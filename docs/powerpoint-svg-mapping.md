@@ -215,7 +215,7 @@ These capabilities belong to PPTX package semantics. Their absence from page SVG
 | Comment or review thread | No SVG or generation-side mapping | Not authored | `Direct preservation` only when explicitly owned by another route | Do not convert review metadata into visible slide content automatically |
 | Relationship not owned by a mapped feature | No generic SVG escape hatch | Not generated | `Direct preservation` where applicable | Arbitrary relationship injection is unsupported |
 
-See [`animations.md`](../skills/ppt-master/references/animations.md) and [`audio-narration.md`](./audio-narration.md) for the sidecar workflows.
+See [Animations & Transitions](./animations.md) (technical source: [`references/animations.md`](../skills/ppt-master/references/animations.md)) and [`audio-narration.md`](./audio-narration.md) for the sidecar workflows.
 
 ## 10. Other PowerPoint-native features
 

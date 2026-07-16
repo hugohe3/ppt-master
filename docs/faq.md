@@ -148,7 +148,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 `on-click` is for live presentations. Narrated/video export via `--recorded-narration` rejects it because PPT Master writes page timings, not object-level click timings; use `after-previous` or `with-previous` for narrated decks.
 
-Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](../skills/ppt-master/references/animations.md).
+For common commands, Start-mode guidance, and object-level customization, see [Animations & Transitions](./animations.md). Exact effect and validation behavior remains in the linked execution reference.
 
 ## Q: Which AI model works best?
 
