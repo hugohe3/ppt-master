@@ -1,27 +1,46 @@
 # Layout Templates
 
 **Layout = a structure-only reusable template bundle.** It owns canvas,
-Master/Layout structure, page types, slot geometry, and the SVG roster. It does
-not own color, typography, logo, voice, or icon style. Those identity decisions
-come from an explicit brand/deck source or from the Strategist confirmation
-stage.
+Master/Layout structure, page types, slot geometry, semantic text roles,
+alignment/wrapping/capacity behavior, and the SVG roster. It does not own
+brand color, typeface/weight identity, the final resolved type scale, logo,
+voice, or icon style. Those identity decisions come from an explicit
+brand/deck source or from the Strategist confirmation stage.
 
-Neutral colors and safe fonts may appear in SVG prototypes so the structure is
-reviewable. They are preview paint, not a locked identity segment. Non-mirror
-projects repaint and retype the selected structure from the project lock.
+A layout may describe the content shapes and delivery conditions its geometry
+can support. It must not own a communication objective, audience outcome,
+scenario-specific narrative sequence, fixed boilerplate, or example content
+that downstream generation is expected to preserve. Those application rules
+belong to a Deck. A structurally useful “board update” page can remain a
+Layout; a board-update sequence with required decision, risk, and action roles
+is a Deck.
+
+Neutral colors, safe fonts, and provisional sizes may appear in SVG prototypes
+so the structure is reviewable. They are preview values, not a locked identity
+segment or final type scale. The reusable rule is the role hierarchy and its
+spatial behavior. Downstream `layout` scope resolves its appearance from the
+Brand, reading mode, and confirmed project lock; explicit `mirror` scope keeps
+literal source formatting.
 
 | Axis | Layout behavior |
 |---|---|
 | Template kind | `layout`: structure only |
 | Creation mode | `standard` / `fidelity` author a new system; `mirror` materializes validated source-package facts into a new workspace |
 | Downstream adherence | Strategist selects `strict` or `adaptive` when the package is used |
-| PPTX structure | Always `structured`; `flat` is reserved for free design and brand-only routes |
+| PPTX structure | Workspace is `structured`; downstream `mirror` / `layout` use it, while confirmed `style` intentionally discards structure and generates `flat` |
 
 The discovery source of truth is [`layouts_index.json`](./layouts_index.json)
 (`layout_id → { summary, canvas_format, page_count, page_types }`). This README
 defines the kind and intentionally does not enumerate installed layouts. The
 shared kind and workspace model lives in the parent
 [`README.md`](../README.md).
+
+Layout mirror has one additional eligibility rule: the validated source
+contract must already be brand-neutral and application-neutral. A source
+outside that boundary can become a Layout only through `standard` or
+`fidelity`, which deliberately authors a new neutral system. If its identity or
+application rules must remain literal, create a Deck instead. Removing either
+kind of rule is never a mirror operation.
 
 ---
 
@@ -43,8 +62,9 @@ place. See [`SKILL.md`](../../SKILL.md) Step 3.
 ## `design_spec.md` contract
 
 The spec stores portable structural metadata plus rules unique to this layout.
-It omits the deck-only Template Overview and every identity section. The
-frontmatter `summary` carries the concise selection context.
+It omits the deck-only Template Overview/application contract and every
+identity section. The frontmatter `summary` carries the concise selection
+context.
 
 ```markdown
 ---
@@ -70,9 +90,11 @@ page_types: [cover, toc, chapter, content, ending]
 ```
 
 `Signature Design Elements` describes only reusable structure: grids, zones,
-image behavior, density rhythm, and slot conventions. It must not introduce a
-brand palette or typography system. `Page Roster` lists every SVG with its
-Layout key, PowerPoint picker name, intended content, and slot behavior.
+image behavior, density rhythm, semantic text roles, alignment/wrapping/
+capacity behavior, and slot conventions. It must not introduce a brand
+palette, typeface identity, final type scale, communication objective, or
+required narrative sequence. `Page Roster` lists every SVG with its Layout
+key, PowerPoint picker name, supported content shape, and slot behavior.
 
 ---
 

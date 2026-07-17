@@ -169,8 +169,8 @@ The output routes reusable vectors once to `icons/imported/`, bitmaps to
 `images/`, and other referenced files to `templates/assets/`. The JSON report
 reports payload occurrence, native-record, unique-byte, and compressed-store
 counts and is written to stdout only. The command intentionally does not create
-`templates/design_spec.md`; Template_Designer writes that personality and page
-roster after materialization. This compiler is for Type A mirror materialization,
+`templates/design_spec.md`; Template_Designer writes the package-specific rules
+and page roster after materialization. This compiler is for Type A mirror materialization,
 not `standard` / `fidelity`, loose Type B SVGs, ordinary generation, finalize,
 or export.
 

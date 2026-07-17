@@ -292,16 +292,22 @@ Summary:
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|
 | **brand** | `templates/brands/<id>/templates/` inside a complete workspace | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
-| **layout** | `templates/layouts/<id>/templates/` inside a complete workspace | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
-| **deck** | `templates/decks/<id>/templates/` inside a complete workspace | full identity + structure reference with the middle (template overview) segment | `kind: deck` |
+| **layout** | `templates/layouts/<id>/templates/` inside a complete workspace | brand-neutral structure: canvas / page structure / semantic text roles / page types / SVG roster | `kind: layout` |
+| **deck** | `templates/decks/<id>/templates/` inside a complete workspace | recurring presentation application + integrated identity + structure | `kind: deck` |
+
+Creation-mode eligibility does not weaken kind ownership: a Layout may be
+created with `mirror` only when the source contract is already brand-neutral
+and application-neutral. A branded or application-bearing source must be
+re-authored as Layout through `standard` / `fidelity` or retained as a Deck;
+removing identity or application rules is not mirror.
 
 **Segment ownership** (governs fusion override priority):
 
 | Segment | Sections | Owner kind on fusion |
 |---|---|---|
 | Identity | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
-| Structure | Canvas / Page Structure / Page Types / SVG Roster | layout |
-| Middle | Template Overview (use cases / design intent) | deck (no other kind writes this) |
+| Structure | Canvas / Page Structure / semantic text roles and spatial behavior / Page Types / SVG Roster | layout |
+| Application | Template Overview (recurring situations, audiences/outcomes, stable narrative/page roles, content reuse policy) | deck (no other kind writes this) |
 
 #### Single-path dispatch
 
@@ -309,7 +315,7 @@ Summary:
 |---|---|
 | `kind: brand` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. Identity is constrained by the brand; structure stays free. |
 | `kind: layout` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. The workspace exposes reusable structure; Stage 2 decides from scenario fit whether to consume it as `mirror` / `layout` / `style` where legal, then confirms the complete visual system. |
-| `kind: deck` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. The workspace exposes both identity and structure; Stage 2 still decides the legal reuse scope from the confirmed communication contract. |
+| `kind: deck` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. The workspace exposes an application contract with integrated identity and structure; Stage 1 independently confirms the current communication contract, then Stage 2 derivation compares the two and decides the legal reuse scope. |
 
 Normalize every explicit path before any write:
 
@@ -334,19 +340,26 @@ The Strategist confirmation stage first decides the selected deck/layout templat
 
 #### Multi-path fusion
 
-When the user gives two or more paths of **different kinds**, Step 3 fuses them into a single `<project>/templates/design_spec.md`. **Default granularity is segment-level integer replacement** — entire identity / structure / middle segments are taken from the highest-priority source for that segment, no implicit field-level mixing.
+When the user gives two or more paths of **different kinds**, Step 3 fuses them into a single `<project>/templates/design_spec.md`. **Default granularity is segment-level integer replacement** — entire identity / structure / application segments are taken from the highest-priority source for that segment, no implicit field-level mixing.
 
 Override priority by segment:
 
-| Combination | Identity from | Structure from | Middle from |
+| Combination | Identity from | Structure from | Application from |
 |---|---|---|---|
 | brand only | brand | (free design) | (none) |
 | layout only | (free design) | layout | (none) |
 | deck only | deck | deck | deck |
-| brand + layout | brand | layout | (none) |
+| brand + layout | brand | layout | current project's Stage-1 communication contract; no reusable Deck application is invented |
 | brand + deck | brand (overrides deck) | deck | deck |
-| layout + deck | deck | layout (overrides deck) | deck |
-| brand + layout + deck | brand | layout | deck |
+| layout + deck | deck | compatible layout (overrides deck) | deck |
+| brand + layout + deck | brand | compatible layout | deck |
+
+Before a Layout overrides a Deck's structure, compare the Deck application
+contract with the Layout's page roles, slot types, and capacity. If any required
+narrative/content role cannot be represented, stop the fusion and surface a
+conflict: retain the Deck structure, select another Layout, or explicitly
+revise the application contract. Never keep an application promise that the
+installed structure cannot satisfy.
 
 Field-level micro-adjustment (e.g. "use anthropic brand but primary changed to #FF0000") is **not** part of Step 3 fusion — it flows into Strategist confirmation stage e–g as a normal user request.
 
@@ -385,7 +398,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 Single-path Step 3 does **not** add provenance (the source is self-evident from the copied files).
 
-The fused frontmatter `kind` describes the resulting bundle: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. Keep this field accurate; the Strategist confirmation server uses it to show template adherence only for bundles that actually own page structure.
+The fused frontmatter `kind` describes the resulting project capability bundle: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not thereby promoted into a reusable library Deck; Stage 1 supplies the current project's application context. Keep this field accurate; the Strategist confirmation server uses it to show template adherence only for bundles that actually own page structure.
 
 **✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user supplied one or more explicit template paths, those have been copied, staged in place, or fused into `<project_path>/templates/` before advancing.**
 
@@ -440,7 +453,7 @@ Steps:
    Page opens at the launch-log URL such as `http://127.0.0.1:5050` — the **same port as the Step 6 live preview** (they never run at once: this page shuts down at the end of Step 4). If 5050 is held, the launcher **auto-advances** (5051, …) — read the actual URL from the launch log and report it. The page does **not** close after Stage 1: it shows a "deriving…" state and polls for Stage 2. **Launch or wait failure is non-fatal**: if it fails or times out (flask missing, port blocked, no GUI / remote / web host), do **NOT** troubleshoot — **on any non-zero exit, re-check `result.json` once** for a fresh `status: stage1-confirmed` before dropping to the chat fallback. **On success (exit 0 with a stage-1 result), do not pause or report — go straight to step 3 in the same turn.**
 3. **Derive Stage 2 once from the confirmed communication contract, write it, then wait for the solution handoff — immediately, same turn (the page is polling for it).** Read the stage-1 `result.json` (`status: stage1-confirmed`). Using the user's **actual** contract (not your originals), **overwrite** `recommendations.json` with `"stage": "stage2"` and author the complete deck solution:
    - Recommend PPT-only reading mode through the compatibility key `recommend.delivery_purpose` (`text` / `balanced` / `presentation`) from the confirmed audience, delivery context, and artifact afterlife. `text` makes the page self-contained with complete prose and detail; `balanced` shares meaning between page and presenter; `presentation` uses one idea, concise claims, and visual evidence per page while speech / notes carry explanation. Then recommend one narrative `mode` and page count from source volume × desired audience outcome × reading mode. Reading mode governs content grammar and page granularity as well as the body baseline; it is not a font-size preset. The page applies `reading mode → body baseline → unpinned role sizes` as a deterministic browser-only dependency. This never calls the backend, and a manually edited size is pinned against later reading-mode changes.
-   - When Step 3 loaded a deck/layout template, recommend `template_reuse_scope` now: `mirror`, `layout`, or `style`; `mirror` is legal only for `replication_mode: mirror`. Include `template_adherence: strict|adaptive` only for `mirror|layout`; `style` hides it and later writes `pptx_structure.mode: flat`. Select from scenario fit: literal recurring artifact → consider `mirror`; reusable structure with new content → `layout`; identity only or a contract that needs a different structure → `style`. Omit both fields for free design and brand-only templates.
+   - When Step 3 loaded a deck/layout template, recommend `template_reuse_scope` now: `mirror`, `layout`, or `style`; `mirror` is legal only for `replication_mode: mirror`. Include `template_adherence: strict|adaptive` only for `mirror|layout`; `style` hides it and later writes `pptx_structure.mode: flat`. For a Deck, first compare its application contract—situations, audiences/outcomes, required narrative/page roles, and content policy—with the confirmed Stage-1 contract; do not treat the stored application as truth when the current request differs. Select from scenario fit: literal recurring artifact → consider `mirror`; compatible reusable structure with new content → `layout`; identity only or a contract that needs a different structure → `style`. Omit both fields for free design and brand-only templates.
    - Author `design_directions` with ≥3 coordinated candidates (safe / shifted / bold; honest-shortfall exception unchanged). Each candidate carries one compatible `visual_style`, color object, typography object, icon id, and—when `image_usage` includes `ai`—one generated-image **rendering** object. The page applies a candidate as one coherent starting point and then exposes the component fields for deliberate override. Do not generate Cartesian combinations or random mix-and-match defaults.
    - Color candidates carry background / secondary_bg / primary / accent / secondary_accent / body_text. Typography splits CJK + Latin for heading/body, includes topic-matched sample text, and uses one fixed body baseline per reading mode (`text` 20 / `balanced` 24 / `presentation` 32 on PPT). Font and direction cards change font character while preserving the current reading-mode sizing state. Recommend one or more `image_usage` source ids (`["ai"]`, `["ai","provided"]`, `["web","placeholder"]`, or `["none"]`; `none` is exclusive) and keep mixed-source / page-role guidance in `image_notes`. When AI is included, each direction's `image_strategy` contains rendering / visual / mood only; **never offer or submit a separate image palette**. Image HEX and role behavior come directly from that direction's deck color object. Spot-illustration lean remains rationale, not a field.
 

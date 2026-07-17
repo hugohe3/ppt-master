@@ -15,9 +15,9 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 
 **Hard rule — child workflow, not a top-level route**: Create Layout executes only inside Create Template. It reuses the parent workflow's Steps 1–8 and never creates a competing entry route or second confirmation gate.
 
-**Hard rule — structure only**: A layout owns canvas, page grammar, Master/Layout families, slot geometry, page types, image behavior, density rhythm, and the SVG prototype roster. It owns no brand palette, typography system, logo, voice, or icon identity.
+**Hard rule — brand-neutral structure only**: A layout owns canvas, page grammar, Master/Layout families, slot geometry, semantic text roles, alignment/wrapping/capacity behavior, page types, image behavior, density rhythm, and the SVG prototype roster. It owns no brand palette, typeface/weight identity, final resolved type scale, logo, voice, icon identity, communication objective, audience outcome, required narrative sequence, fixed scenario copy, or example content that downstream generation is expected to preserve.
 
-Neutral colors and safe fonts may appear in SVG prototypes so the structure is reviewable. They are preview paint, not a locked identity segment, and must not be written as brand truth in `design_spec.md`.
+Neutral colors, safe fonts, and provisional sizes may appear in SVG prototypes so the structure is reviewable. They are preview values, not a locked identity segment or final project type scale, and must not be written as brand truth in `design_spec.md`. The reusable rule is the text role and its spatial behavior. Downstream `layout` scope resolves actual appearance from Brand, reading mode, and confirmed project typography; explicit `mirror` scope preserves the literal source formatting instead.
 
 ## Invocation Points
 
@@ -29,10 +29,11 @@ Neutral colors and safe fonts may appear in SVG prototypes so the structure is r
 
 Use Create Template Step 1 for source ingestion and replication-mode eligibility. Interpret source evidence only for reusable structure:
 
-- Canvas dimensions, grid, zones, page taxonomy, repeated chrome, image placement, density rhythm, and placeholder geometry may become layout facts or suggestions.
-- Colors, fonts, logos, voice, and icon style remain source context only. Do not copy them into the layout identity because a layout has no identity segment.
-- When the source is branded, explicitly confirm that Create Layout will strip that identity. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
-- `standard` and `fidelity` author a new Master/Layout/slot system. `mirror` is available only when the source contains a complete current structure contract and preserves validated structure facts in a new workspace without modifying the source.
+- Canvas dimensions, grid, zones, page taxonomy, repeated chrome, image placement, density rhythm, placeholder geometry, semantic text roles, alignment, wrapping, and capacity may become layout facts or suggestions.
+- Colors, font families, branded weight choices, final absolute sizes, logos, voice, and icon style remain source context only. Do not copy them into the layout identity because a layout has no identity segment.
+- A source scenario may inform the content shapes or delivery conditions the geometry can support. Do not turn that fit into an application contract. If the reusable artifact prescribes the objective, outcome, narrative sequence, boilerplate, or content policy, return to Create Template dispatch and select Create Deck.
+- When the source is branded, explicitly confirm that Create Layout will strip that identity and restrict replication mode to `standard` or `fidelity`. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
+- `standard` and `fidelity` author a new Master/Layout/slot system. `mirror` is available only when the complete current source contract is already brand-neutral and application-neutral; it preserves validated structure and visual facts in a new workspace without modifying the source.
 
 Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets may define or illustrate reusable structure. In a mixed bundle, combine those channels without treating identity-only evidence as layout ownership. Exact user-authored instructions remain decisions whether they arrive in chat or a user-written brief file; vague prose remains suggested interpretation until the shared confirmation gate.
 
@@ -43,11 +44,11 @@ Add these child-owned requirements to Create Template Step 2:
 | Field | Requirement |
 |---|---|
 | Layout ID and display name | Required; `layout_id` is a filesystem-safe ASCII slug |
-| Structural use cases | Required; describe content shapes and presentation contexts, not brand tone |
+| Structural use cases | Required; describe content shapes and delivery settings the geometry can support, not communication objectives, audience outcomes, narrative sequence, or brand tone |
 | Canvas | Required; exact format, dimensions, and `viewBox` |
-| Page grammar | Required; page types, variants, grids, zones, density rhythm, and image behavior |
+| Page grammar | Required; page types, variants, grids, zones, semantic text roles, alignment/wrapping/capacity, density rhythm, and image behavior |
 | Native structure | Required; Master families, Layout ownership, slot vocabulary, and zero-slot Layouts where intentional |
-| Replication mode | Required; `standard`, eligible `fidelity`, or eligible `mirror` under Create Template Step 1 |
+| Replication mode | Required; `standard`, eligible `fidelity`, or `mirror` only when the complete source contract is already brand-neutral and application-neutral |
 | Identity stripping | Required when branded reference material exists; list the identity facts intentionally excluded |
 
 Write this structure-only schema:
@@ -78,7 +79,10 @@ page_types: [cover, toc, chapter, content, ending]
 
 Omit `Placeholder Overrides` when no override exists. Omit Template Overview, Color Scheme, Typography, Logo, Voice, and every other identity section. Do not write `primary_color`.
 
-`Signature Design Elements` describes only reusable structure. `Page Roster` lists every SVG with its Master/Layout identity, picker name, intended content shape, and slot behavior.
+`Signature Design Elements` describes only reusable structure, including text-role hierarchy and spatial behavior without locking the final font identity or type scale. `Page Roster` lists every SVG with its Master/Layout identity, picker name, intended content shape, and slot behavior.
+
+`category: scenario` is a discovery-fit label only. It does not authorize a
+Template Overview or scenario-specific content policy.
 
 ## 3. Author or Materialize the Layout
 
@@ -95,7 +99,7 @@ The output is:
 └── exports/          # conditional review evidence
 ```
 
-Every SVG is a complete preview and declares one root Master and Layout under the shared structured contract. For authored modes, neutral preview paint must remain replaceable downstream. For mirror, preserve source structure and supported visuals exactly as allowed by Create Template, while keeping identity fields out of the layout spec.
+Every SVG is a complete preview and declares one root Master and Layout under the shared structured contract. For authored modes, neutral preview paint must remain replaceable downstream. For mirror, first prove the source contract already satisfies the complete Layout boundary, then preserve its structure and supported visuals exactly as allowed by Create Template. Never call removal or replacement of source identity or application rules “mirror”.
 
 ## 4. Layout Validation
 
@@ -103,10 +107,11 @@ In addition to Create Template Steps 5–6, verify:
 
 - `templates/design_spec.md` contains `layout_id`, `kind: layout`, `summary`, canvas fields, `replication_mode`, `native_structure_mode: structured`, `page_count`, and `page_types`.
 - `layout_id` matches the confirmed workspace ID in library scope.
-- Signature Design Elements and Page Roster exist; Template Overview and all identity sections do not.
-- `primary_color`, brand palette, brand typography, logo, voice, and icon-identity claims are absent.
+- Signature Design Elements and Page Roster exist; Template Overview, application-contract language, and all identity sections do not.
+- `primary_color`, brand palette, brand typeface/weight claims, final project type-scale claims, logo, voice, and icon-identity claims are absent; structural text roles and capacity rules may remain.
 - Every SVG in the roster satisfies the shared Master/Layout/slot contract and the roster is bidirectionally complete.
 - Neutral prototype paint is not described as a locked brand identity.
+- `replication_mode: mirror` is rejected for any source that retains organization-specific identity or reusable application rules; use authored Layout mode or Create Deck instead.
 
 For library scope, Create Template validates and registers with:
 
