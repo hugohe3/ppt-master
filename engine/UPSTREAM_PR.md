@@ -8,6 +8,19 @@ Thanks to **[@hugohe3](https://github.com/hugohe3) (Hugo He)** for creating and 
 
 Add optional **engine pack** build + CI so desktop hosts (e.g. MindMux) can ship a self-contained runtime without system Python.
 
+## Why
+
+ppt-master’s skill + Python pipeline already produces strong native PPTX quality. Desktop hosts want that path, but differ from IDE skill users:
+
+| Host need | Gap with skill-only releases |
+|-----------|------------------------------|
+| No system Python for end users | Skill zip assumes an existing Python + deps |
+| One-command provision | Hosts need a downloadable, versioned artifact |
+| Fixed layout + single launcher | Full git checkout / ad-hoc venv is fragile |
+| Smaller payload | Examples / full repo are unnecessary in-app |
+
+**Engine packs** freeze a minimal PyInstaller onedir runtime + slim skill tree, published on `engine-v*` tags so skill releases stay untouched. IDE users can ignore this; hosts pin a URL and unpack into app resources. We avoid vendoring the whole repo into each host app.
+
 ## Non-goals
 
 - Do not change the existing skill-only Release assets (`ppt-master-skill-v*.zip`).
