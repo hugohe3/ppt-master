@@ -60,6 +60,7 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from resource_paths import icon_search_dirs_for_project  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     clear_lock as _clear_lock,
@@ -95,7 +96,6 @@ from svg_to_pptx.geometry_properties import (  # noqa: E402
     materialize_inline_geometry_properties,
 )
 
-_ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
 _USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
 _XLINK_HREF = '{http://www.w3.org/1999/xlink}href'
 
@@ -158,9 +158,14 @@ def _normalize_preview_hrefs(root: ET.Element) -> None:
 # Lock / liveness helpers are shared with confirm_ui via server_common.
 
 
-def _inline_icons(content: str) -> tuple[str, list[dict]]:
+def _inline_icons(
+    content: str,
+    icons_dir: Path,
+    fallback_dir: Optional[Path] = None,
+) -> tuple[str, list[dict]]:
     """Replace <use data-icon="..."/> with rendered <g> for browser preview.
 
+    Resolve icons from the project directory first, then the shared library.
     Returns (rewritten_content, warnings). Each warning is
     ``{"icon": <name>, "reason": <str>}`` so the frontend can surface
     "icon X not found" to the user instead of silently dropping it.
@@ -179,7 +184,7 @@ def _inline_icons(content: str) -> tuple[str, list[dict]]:
             if not icon_name:
                 warnings.append({'icon': '', 'reason': 'missing data-icon attribute'})
                 continue
-            icon_path, _ = resolve_icon_path(icon_name, _ICONS_DIR)
+            icon_path, _ = resolve_icon_path(icon_name, icons_dir, fallback_dir)
             color = str(attrs.get('fill', '#000000'))
             elements, style, base_size = extract_paths_from_icon(icon_path, color)
         except Exception as exc:
@@ -423,6 +428,7 @@ def create_app(
     svg_dir = project_path / 'svg_output'
     images_dir = project_path / 'images'
     assets_dir = project_path / 'assets'
+    icons_dir, icons_fallback_dir = icon_search_dirs_for_project(project_path)
 
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['PROJECT_PATH'] = project_path
@@ -669,7 +675,11 @@ def create_app(
                     id_to_tag[eid] = tag
             _normalize_preview_hrefs(root)
             content = ET.tostring(root, encoding='unicode', xml_declaration=False)
-            content, warnings = _inline_icons(content)
+            content, warnings = _inline_icons(
+                content,
+                icons_dir,
+                icons_fallback_dir,
+            )
             if not pending_edits:
                 _cache_put(
                     _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
