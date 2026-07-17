@@ -520,7 +520,12 @@ extracted-vector inventory. It then stages and publishes the entire roster in
 one operation. It emits source-ordered page SVGs, unused-Layout definition
 SVGs, `icons/imported/`, referenced `images/` / `templates/assets/`, and one
 deduplicated `templates/native_payloads.json.gz` store when supported native
-payload or repeated restoration metadata exists. Template SVGs and imported
+payload or repeated restoration metadata exists. It also writes
+`templates/template_execution_manifest.json`, a compact model-readable prototype
+roster and grouped source-import warning summary. Each prototype points to one
+`templates/template_execution/*.text-slots.json` sidecar containing its exact
+mirror text selectors, segments, attributes, topology hashes, bounds, and font
+stacks. Template SVGs and imported
 vectors keep content-hash payload references plus short
 `data-pptx-native-ref` attribute-record ids. Structural Master/Layout,
 placeholder, layer, and editable-object fields remain inline. The command does
@@ -569,7 +574,7 @@ syntax here; its single authority is
 [`shared-standards.md`](../references/shared-standards.md), with selection and
 usage guidance in the native-shape reference.
 
-Downstream, both template-adherence choices use `pptx_structure.mode: structured`. `page_layouts` selects one complete authoring prototype per page, `pptx_masters` / `pptx_layouts` declare unique reusable definitions, and `page_pptx_layouts` assigns generated pages. Strict preserves the selected prototype contract. Adaptive keeps its Master and may explicitly create and assign a new Layout key/name while authoring the page that needs it. A retained Layout may remain unassigned while still registering through its definition SVG. A mirror-created package does not force a future generated deck to keep the source page count or order.
+Downstream, a mirror-created workspace supports three separately confirmed reuse scopes. `mirror` and `layout` use `pptx_structure.mode: structured`; `page_layouts` selects one complete authoring prototype per page, `pptx_masters` / `pptx_layouts` declare unique reusable definitions, and `page_pptx_layouts` assigns generated pages. Strict preserves the selected prototype contract. Adaptive keeps its Master and may explicitly create and assign a new Layout key/name while authoring the page that needs it. `mirror` additionally preserves literal visuals/text topology; `layout` allows project-controlled reflow/re-skinning. `style` uses `mode: flat` and takes only the workspace's design language. A retained Layout may remain unassigned while still registering through its definition SVG. No scope forces a future generated deck to keep the source page count or order.
 
 **Apply the visual-fidelity decision from Step 3 to authored modes**: in `standard` / `fidelity`, pages marked `literal` reproduce the selected reference geometry and decoration while still using a newly designed structure; pages marked `adapted` may evolve the composition. Mirror preserves every supported source visual represented by the validated IR and does not use this authored-page distinction.
 
@@ -681,6 +686,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Every additional authored Master represents a distinct reusable design family, not one Layout or an equivalent duplicate; every declared Master owns at least one emitted Layout and every declared Layout has at least one emitted prototype
 - [ ] Mirror output preserves source slide order, Master/Layout identity and parentage, placeholder facts, and ownership; fixed-layer group expansion is mechanical and pixel-equivalent, and the Source Preservation Map lists every source slide
+- [ ] Mirror materialization wrote the compact `templates/template_execution_manifest.json`; each prototype is listed once and links one `template_execution/*.text-slots.json` sidecar, every sidecar slot records selector/current segments/tspan attributes/topology hash/bounds/font stack, and source-import diagnostics are summarized separately from downstream generation issues
 - [ ] Mirror roots preserve source inherited-shape visibility with canonical lowercase `data-pptx-show-master-shapes` and `data-pptx-show-inherited-shapes`; same-key Layouts agree on the former, while each Slide retains its own latter value
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the preservation map explains them

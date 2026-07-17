@@ -4,7 +4,7 @@ description: Main-pipeline intake stage that gathers source material for topic-o
 
 # Topic Research Stage
 
-> Generate-PPTX intake stage. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document + image folder, both shaped to feed `project_manager.py import-sources` directly.
+> Generate-PPTX intake stage. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document, a stable fact-provenance file, and an image folder, all shaped to feed `project_manager.py import-sources` directly.
 
 This stage is **context-independent**: it owns source acquisition when no file exists; subsequent SKILL.md steps proceed normally with the produced materials as input.
 
@@ -74,11 +74,12 @@ python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>
 
 ## Step 3: Save materials
 
-Two artifacts under `projects/`:
+Three artifacts under `projects/`:
 
 | Artifact | Path |
 |---|---|
 | Research document | `projects/<topic_slug>.md` |
+| Fact provenance | `projects/<topic_slug>.facts.json` |
 | Image folder | `projects/<topic_slug>/` |
 
 **Hard rule — naming**: filename (without `.md`) and folder name MUST match. **Hard rule — location**: under `projects/`, never the repository root.
@@ -86,6 +87,27 @@ Two artifacts under `projects/`:
 **Document structure** — section layout follows the topic: person → biography / works / impact; technology → background / mechanism / applications / outlook; company → overview / products / market / culture. The file MUST end with a `## Sources` section listing the URLs used.
 
 **Content density** — concrete facts (dates, names, numbers, quotes). Skip filler prose; the Strategist composes final slide copy.
+
+**Fact provenance** — write every externally sourced, verifiable claim that may enter the deck to `<topic_slug>.facts.json` with a stable sequential ID, especially quantitative, date, ranking, attribution, and named-entity claims. Do not put invented demonstration values in this file; Strategist marks those as `scenario` later. When research yields no external claims, still write the schema with an empty `facts` array.
+
+```json
+{
+  "schema": "ppt-master.fact-provenance.v1",
+  "topic": "<topic>",
+  "facts": [
+    {
+      "fact_id": "F001",
+      "claim": "One concise, presentation-ready factual claim",
+      "source_title": "Authoritative page title",
+      "source_url": "https://example.org/source",
+      "classification": "external",
+      "retrieved_at": "YYYY-MM-DD"
+    }
+  ]
+}
+```
+
+IDs are immutable within the file. If a claim is corrected, update its value/source under the same ID; if a claim is removed, do not silently reuse its ID for a different fact. The research Markdown and `facts.json` must agree.
 
 **Images**:
 
@@ -110,10 +132,11 @@ Output a checkpoint, then continue with the main pipeline. The artifacts feed di
 ```markdown
 ## ✅ Topic Research Complete
 - [x] Document: `projects/<topic_slug>.md` (N sections)
+- [x] Facts: `projects/<topic_slug>.facts.json` (N external facts)
 - [x] Images: `projects/<topic_slug>/` (N files)
 - [ ] **Next**: SKILL.md Step 2 →
   `project_manager.py init <project_name> --format <format>`
-  `project_manager.py import-sources projects/<project_name> projects/<topic_slug>.md projects/<topic_slug>/*.* --move`
+  `project_manager.py import-sources projects/<project_name> projects/<topic_slug>.md projects/<topic_slug>.facts.json projects/<topic_slug>/*.* --move`
 ```
 
 `<project_name>` is the user's chosen project identifier (typically `<format>_<topic_slug>`, e.g. `ppt169_joe_hisaishi`); `--move` removes the research artifacts from `projects/<topic_slug>` after they are imported.

@@ -16,7 +16,7 @@ PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot 
 
 The completed SVG remains the full visible page. Removing the metadata must not change browser rendering. Do not copy visible text, geometry, style, or asset values into metadata.
 
-**Hard rule — route boundary**: Free-design and brand-only pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Deck/layout template pages declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
+**Hard rule — route boundary**: Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Only deck/layout template pages confirmed with `template_reuse_scope: mirror|layout` declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
 
 **Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-replace-with` for optional PowerPoint-native Chart/Table replacement, and the imported/authored shape metadata defined in [`shared-standards.md`](./shared-standards.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
 
@@ -24,7 +24,7 @@ The completed SVG remains the full visible page. Removing the metadata must not 
 
 ## 2. Master and Layout Atoms
 
-On structured deck/layout template routes, Master and fixed Layout visuals are atomic root children:
+On structured `template_reuse_scope: mirror|layout` routes, Master and fixed Layout visuals are atomic root children:
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ Do not add structural roles to ordinary titles, body copy, cards, KPIs, diagrams
 
 ## 5. Validation and Migration
 
-For structured deck/layout template projects, validation rejects:
+For structured `template_reuse_scope: mirror|layout` projects, validation rejects:
 
 - a missing root Master/Layout identity or a page-to-lock mismatch;
 - a Master/Layout `<g>`, nested structure marker, missing/stale id, or inconsistent shared atom contract;
