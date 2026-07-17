@@ -16,6 +16,7 @@ import re
 import json
 import html
 import math
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import Counter, defaultdict
@@ -1157,7 +1158,46 @@ class SVGQualityChecker:
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._pptx_structure_issues: List[Tuple[str, str]] = []
+        self._has_incomplete_page_roster = False
+        self._prototype_by_output: Dict[Path, Path] = {}
+        self._active_prototype_path: Path | None = None
+        self._active_template_reuse_scope: str | None = None
+        self._prototype_root_cache: Dict[Path, ET.Element | None] = {}
+        self._source_import_summary: Dict[str, object] = {
+            'warning_count': 0,
+            'by_code': {},
+        }
         self._aggregate_counts_applied = False
+
+    @staticmethod
+    def _append_inherited_info(
+        result: Dict,
+        kind: str,
+        message: str,
+    ) -> None:
+        """Record prototype-owned diagnostics outside the warning channel."""
+        result['info'].setdefault('inherited', []).append({
+            'kind': kind,
+            'message': message,
+        })
+
+    def _active_prototype_root(self) -> ET.Element | None:
+        """Parse the selected mirror prototype once for inherited checks."""
+        if (
+            self._active_template_reuse_scope != 'mirror'
+            or self._active_prototype_path is None
+        ):
+            return None
+        path = self._active_prototype_path.resolve()
+        if path in self._prototype_root_cache:
+            return self._prototype_root_cache[path]
+        try:
+            root = ET.parse(path).getroot()
+            hydrate_native_payload_refs(root, path)
+        except (OSError, ET.ParseError, NativePayloadError):
+            root = None
+        self._prototype_root_cache[path] = root
+        return root
 
     def check_file(
         self,
@@ -1199,8 +1239,9 @@ class SVGQualityChecker:
         }
 
         try:
-            with open(svg_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            source_bytes = svg_path.read_bytes()
+            result['source_sha256'] = hashlib.sha256(source_bytes).hexdigest()
+            content = source_bytes.decode('utf-8')
 
             # 0. Parse XML once — every other check assumes the file is valid
             # XML. Bail early on failure so the regex-based checks below don't
@@ -3468,6 +3509,7 @@ class SVGQualityChecker:
         non_visual = {'defs', 'title', 'desc', 'metadata', 'style'}
         group_indexes: Dict[str, List[int]] = defaultdict(list)
         ungrouped: List[str] = []
+        ungrouped_signatures: List[Tuple[object, ...]] = []
         visual_index = 0
 
         for child in root:
@@ -3507,6 +3549,9 @@ class SVGQualityChecker:
                 f'<{tag} id="{child_id}">'
                 if child_id else f'<{tag}> #{visual_index}'
             )
+            ungrouped_signatures.append(
+                self._prototype_element_signature(child)
+            )
 
         for group_id, indexes in sorted(group_indexes.items()):
             if len(indexes) > 1:
@@ -3520,11 +3565,77 @@ class SVGQualityChecker:
             samples = ', '.join(ungrouped[:3])
             if len(ungrouped) > 3:
                 samples += ', ...'
-            result['warnings'].append(
+            message = (
                 f'{len(ungrouped)} ungrouped top-level Slide-local element(s) '
                 f'in svg_output ({samples}); wrap each logical content unit '
                 'in a top-level <g id="...">'
             )
+            prototype_root = self._active_prototype_root()
+            prototype_ungrouped = (
+                self._ungrouped_slide_local_facts(prototype_root)
+                if prototype_root is not None
+                else ([], [])
+            )
+            if (
+                prototype_root is not None
+                and ungrouped == prototype_ungrouped[0]
+                and ungrouped_signatures == prototype_ungrouped[1]
+            ):
+                self._append_inherited_info(
+                    result,
+                    'animation_anchor',
+                    message,
+                )
+            else:
+                result['warnings'].append(message)
+
+    @staticmethod
+    def _prototype_element_signature(
+        element: ET.Element,
+    ) -> Tuple[object, ...]:
+        """Compare warning-owned topology/style while ignoring visible text."""
+        return (
+            _local_name(element),
+            tuple(sorted(element.attrib.items())),
+            tuple(
+                SVGQualityChecker._prototype_element_signature(child)
+                for child in element
+            ),
+        )
+
+    def _ungrouped_slide_local_facts(
+        self,
+        root: ET.Element,
+    ) -> Tuple[List[str], List[Tuple[object, ...]]]:
+        """Describe and fingerprint top-level non-group Slide-local atoms."""
+        non_visual = {'defs', 'title', 'desc', 'metadata', 'style'}
+        descriptors: List[str] = []
+        signatures: List[Tuple[object, ...]] = []
+        visual_index = 0
+        for child in root:
+            tag = _local_name(child)
+            if tag in non_visual:
+                continue
+            visual_index += 1
+            if tag == 'g' or child.get('data-pptx-layer') is not None:
+                continue
+            if (
+                _is_static_page_frame is not None
+                and _is_static_page_frame(
+                    child.get('data-pptx-role'),
+                    child.get('data-pptx-placeholder'),
+                )
+            ):
+                continue
+            if visual_index == 1 and self._is_full_canvas_root_rect(root, child):
+                continue
+            child_id = (child.get('id') or '').strip()
+            descriptors.append(
+                f'<{tag} id="{child_id}">'
+                if child_id else f'<{tag}> #{visual_index}'
+            )
+            signatures.append(self._prototype_element_signature(child))
+        return descriptors, signatures
 
     # OOXML ST_PresetPatternVal enum — anything outside this set produces a
     # PPTX schema violation ("PowerPoint found a problem with the content").
@@ -3913,8 +4024,8 @@ class SVGQualityChecker:
                 "frame, or move independently positioned lines outside the slot"
             )
 
-    @staticmethod
     def _append_structure_coverage_warnings(
+        self,
         root: ET.Element,
         result: Dict,
     ) -> None:
@@ -3924,8 +4035,29 @@ class SVGQualityChecker:
         advisory warnings. They neither fail the workflow gate nor require a
         per-warning disposition.
         """
-        if not (root.get('data-pptx-layout') or '').strip():
+        messages = self._structure_coverage_messages(root)
+        if not messages:
             return
+        prototype_root = self._active_prototype_root()
+        if (
+            prototype_root is not None
+            and messages == self._structure_coverage_messages(prototype_root)
+        ):
+            for message in messages:
+                self._append_inherited_info(
+                    result,
+                    'structure_coverage',
+                    message,
+                )
+            return
+        result['warnings'].extend(messages)
+
+    @staticmethod
+    def _structure_coverage_messages(root: ET.Element) -> List[str]:
+        """Return advisory coverage messages for one structured page."""
+        if not (root.get('data-pptx-layout') or '').strip():
+            return []
+        messages: List[str] = []
         has_layer_mark = any(
             elem.get('data-pptx-layer') is not None
             for elem in root.iter()
@@ -3939,7 +4071,7 @@ class SVGQualityChecker:
             for elem in root.iter()
         )
         if not has_layer_mark:
-            result['warnings'].append(
+            messages.append(
                 'Mapped page declares data-pptx-layout but no data-pptx-layer '
                 'mark; the exported Master gets no shared background/chrome '
                 'and the Layout gets no static framing. Generated templates '
@@ -3949,7 +4081,7 @@ class SVGQualityChecker:
                 'is required.'
             )
         if not has_placeholder and not has_layout_atom:
-            result['warnings'].append(
+            messages.append(
                 'Mapped page has no placeholder slot and no '
                 'data-pptx-layer="layout" atom; its Layout exports empty. '
                 'Generated templates should declare the slots the page actually '
@@ -3959,13 +4091,14 @@ class SVGQualityChecker:
                 'zero-slot composition. No change or disposition is required.'
             )
         elif not has_placeholder:
-            result['warnings'].append(
+            messages.append(
                 'Mapped Layout has static framing but no insertable '
                 'placeholder slot. Generated templates should declare the '
                 'slots the page actually has (title / subtitle / body / '
                 'picture / slide-number / footer) unless zero-slot is the '
                 'intended reusable contract. No change or disposition is required.'
             )
+        return messages
 
     def _check_semantic_markers(
         self,
@@ -4023,6 +4156,43 @@ class SVGQualityChecker:
                 return data
         return None
 
+    def _prototype_drift_allowances(
+        self,
+    ) -> Tuple[set[str], set[str], set[str]]:
+        """Return color/font/size values owned by the selected mirror page."""
+        if self._active_prototype_root() is None:
+            return set(), set(), set()
+        try:
+            content = self._active_prototype_path.read_text(encoding='utf-8')
+        except (AttributeError, OSError):
+            return set(), set(), set()
+
+        colors: set[str] = set()
+        for attribute in _PAINT_PROPERTIES or ():
+            for raw_value in self._svg_property_values(content, attribute):
+                normalized = raw_value.strip()
+                if normalized.lower() in {'none', 'transparent'} or re.fullmatch(
+                    r'url\(#[^)]+\)', normalized
+                ):
+                    continue
+                if _parse_export_color is not None:
+                    color, _alpha = _parse_export_color(normalized)
+                else:
+                    color = _normalize_hex_rgb(normalized)
+                if color:
+                    colors.add(color)
+        fonts = {
+            self._normalize_font_stack(value)
+            for value in self._font_family_values(content)
+            if self._normalize_font_stack(value)
+        }
+        sizes = {
+            self._normalize_size(value)
+            for value in self._svg_property_values(content, 'font-size')
+            if self._normalize_size(value)
+        }
+        return colors, fonts, sizes
+
     def _check_spec_lock_drift(
         self,
         content: str,
@@ -4043,6 +4213,9 @@ class SVGQualityChecker:
         lock = self._get_spec_lock(svg_path)
         if lock is None:
             return
+        prototype_colors, prototype_fonts, prototype_sizes = (
+            self._prototype_drift_allowances()
+        )
 
         # Build allow-sets from the lock
         allowed_colors = set()
@@ -4080,6 +4253,8 @@ class SVGQualityChecker:
                             color = _normalize_hex_rgb(raw_value)
                         if color:
                             allowed_colors.add(color)
+        locked_colors = set(allowed_colors)
+        allowed_colors.update(prototype_colors)
 
         typo = lock.get('typography', {})
         numeric_size_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
@@ -4115,6 +4290,8 @@ class SVGQualityChecker:
                 if not v_clean or v_clean.lower().startswith('same as'):
                     continue
                 allowed_fonts.add(self._normalize_font_stack(v_clean))
+        locked_fonts = set(allowed_fonts)
+        allowed_fonts.update(prototype_fonts)
 
         # Sizes: declared slots are anchors; body is the ramp baseline.
         allowed_sizes = set()
@@ -4128,9 +4305,12 @@ class SVGQualityChecker:
                     body_px = float(self._normalize_size(v))
                 except (ValueError, TypeError):
                     body_px = None
+        locked_sizes = set(allowed_sizes)
+        allowed_sizes.update(prototype_sizes)
 
         # Scan SVG for used values
         color_drifts = set()
+        inherited_colors = set()
         for attr in _PAINT_PROPERTIES or ():
             for raw_value in self._svg_property_values(content, attr):
                 normalized = raw_value.strip()
@@ -4150,11 +4330,20 @@ class SVGQualityChecker:
                         continue
                 if val not in allowed_colors:
                     color_drifts.add(f'#{val}')
+                elif val in prototype_colors and val not in locked_colors:
+                    inherited_colors.add(f'#{val}')
 
         font_drifts = set()
+        inherited_fonts = set()
         for val in self._font_family_values(content):
-            if allowed_fonts and self._normalize_font_stack(val) not in allowed_fonts:
+            normalized_font = self._normalize_font_stack(val)
+            if allowed_fonts and normalized_font not in allowed_fonts:
                 font_drifts.add(val)
+            elif (
+                normalized_font in prototype_fonts
+                and normalized_font not in locked_fonts
+            ):
+                inherited_fonts.add(val)
 
         # Poster / showcase contexts use unbounded hero type — drop the ceiling.
         mode = (lock.get('mode', {}).get('mode') or '').strip().lower()
@@ -4163,10 +4352,14 @@ class SVGQualityChecker:
                      else RAMP_MAX_RATIO)
 
         size_drifts = set()
+        inherited_sizes = set()
         used_sizes = []
         for raw_value in self._svg_property_values(content, 'font-size'):
             val = self._normalize_size(raw_value)
             used_sizes.append(val)
+            if val in prototype_sizes and val not in locked_sizes:
+                inherited_sizes.add(val)
+                continue
             if not allowed_sizes or val in allowed_sizes:
                 continue
             # Intermediate values are allowed when they sit inside the ramp
@@ -4205,6 +4398,20 @@ class SVGQualityChecker:
             result['warnings'].append(
                 f"spec_lock drift: {', '.join(parts)} not in spec_lock.md "
                 "(see drift summary for details)"
+            )
+        inherited_parts = []
+        if inherited_colors:
+            inherited_parts.append(f"{len(inherited_colors)} color(s)")
+        if inherited_fonts:
+            inherited_parts.append(f"{len(inherited_fonts)} font-family value(s)")
+        if inherited_sizes:
+            inherited_parts.append(f"{len(inherited_sizes)} font-size value(s)")
+        if inherited_parts:
+            self._append_inherited_info(
+                result,
+                'spec_lock_drift',
+                f"{', '.join(inherited_parts)} come unchanged from mirror "
+                "prototype and are accepted without expanding spec_lock.md",
             )
         if template_size_drift:
             result['warnings'].append(template_size_drift)
@@ -4374,6 +4581,74 @@ class SVGQualityChecker:
         else:
             return 'Other'
 
+    def _configure_prototype_context(
+        self,
+        target_path: Path,
+        svg_files: List[Path],
+    ) -> None:
+        """Map generated pages to selected prototypes for inherited diagnostics."""
+        self._prototype_by_output = {}
+        self._active_prototype_path = None
+        self._active_template_reuse_scope = None
+        self._source_import_summary = {
+            'warning_count': 0,
+            'by_code': {},
+        }
+        if self.template_mode or _load_pptx_structure_lock is None:
+            return
+        project_path = self._resolve_project_path(target_path)
+        try:
+            structure_lock = _load_pptx_structure_lock(project_path)
+        except (_TemplateStructureError, OSError):
+            # The project-level structure gate reports the actionable parser
+            # error. Inherited classification is optional and stays silent.
+            return
+        if structure_lock is None:
+            return
+        self._active_template_reuse_scope = getattr(
+            structure_lock,
+            'template_reuse_scope',
+            None,
+        )
+        references = {
+            reference.slide_num: reference.svg_path
+            for reference in structure_lock.prototypes
+        }
+        if target_path.is_file():
+            sibling_files = sorted(target_path.parent.glob('*.svg'))
+            resolved_target = target_path.resolve()
+            slide_num = next(
+                (
+                    index
+                    for index, sibling in enumerate(sibling_files, start=1)
+                    if sibling.resolve() == resolved_target
+                ),
+                1,
+            )
+            prototype = references.get(slide_num)
+            if prototype is not None:
+                self._prototype_by_output[resolved_target] = prototype.resolve()
+        else:
+            for slide_num, svg_path in enumerate(svg_files, start=1):
+                prototype = references.get(slide_num)
+                if prototype is not None:
+                    self._prototype_by_output[svg_path.resolve()] = prototype.resolve()
+
+        if self._active_template_reuse_scope not in {'mirror', 'layout'}:
+            return
+        manifest_path = (
+            project_path / 'templates' / 'template_execution_manifest.json'
+        )
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+        except (FileNotFoundError, OSError, json.JSONDecodeError):
+            return
+        if manifest.get('schema') != 'ppt-master.template-execution-manifest.v1':
+            return
+        source_import = manifest.get('source_import')
+        if isinstance(source_import, dict):
+            self._source_import_summary = source_import
+
     def check_directory(self, directory: str, expected_format: str = None) -> List[Dict]:
         """
         Check all SVG files in a directory
@@ -4386,6 +4661,7 @@ class SVGQualityChecker:
             List of check results
         """
         dir_path = Path(directory)
+        self._has_incomplete_page_roster = False
 
         if not dir_path.exists():
             print(f"[ERROR] Directory does not exist: {directory}")
@@ -4456,6 +4732,8 @@ class SVGQualityChecker:
             self.issue_types['Input issues'] += 1
             return []
 
+        self._configure_prototype_context(dir_path, svg_files)
+
         directory_expected_viewbox: str | None = None
         directory_expected_label = "the first SVG canvas"
         directory_lock_has_canvas = False
@@ -4503,6 +4781,9 @@ class SVGQualityChecker:
         print(f"\n[SCAN] Checking {len(svg_files)} SVG file(s)...\n")
 
         for svg_file in svg_files:
+            self._active_prototype_path = self._prototype_by_output.get(
+                svg_file.resolve()
+            )
             result = self.check_file(
                 str(svg_file),
                 expected_format,
@@ -4671,6 +4952,18 @@ class SVGQualityChecker:
             return
 
         if complete_roster:
+            actual_slides = {spec.slide_num for spec in specs}
+            expected_slides = {
+                reference.slide_num
+                for reference in structure_lock.layouts
+            }
+            expected_slides.update(
+                reference.slide_num
+                for reference in structure_lock.prototypes
+            )
+            self._has_incomplete_page_roster = bool(
+                expected_slides - actual_slides
+            )
             self._pptx_structure_issues.extend(
                 ('error', message)
                 for message in _template_lock_errors(specs, structure_lock)
@@ -5766,6 +6059,9 @@ class SVGQualityChecker:
         # Explicit PowerPoint master/layout structure aggregation.
         self._print_pptx_structure_summary()
 
+        # Source-owned import recovery belongs to the template, not this run.
+        self._print_source_import_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
@@ -5818,6 +6114,23 @@ class SVGQualityChecker:
         print("\n[PPTX STRUCTURE] Master/layout contract checks")
         for severity, message in self._pptx_structure_issues:
             print(f"  [{severity.upper()}] {message}")
+
+    def _print_source_import_summary(self):
+        """Print source-owned tolerant-import diagnostics as information."""
+        warning_count = _source_import_warning_count(
+            self._source_import_summary
+        )
+        if warning_count <= 0:
+            return
+        print("\n[SOURCE IMPORT] Template-owned compatibility diagnostics")
+        print(
+            f"  [INFO] {warning_count} source-import warning(s); unchanged "
+            "template recovery is not attributed to generated content."
+        )
+        by_code = self._source_import_summary.get('by_code')
+        if isinstance(by_code, dict):
+            for code, count in sorted(by_code.items()):
+                print(f"    {code}: {count}")
 
     def _print_template_summary(self):
         """Aggregate template-mode roster / placeholder issues at the bottom.
@@ -5962,6 +6275,187 @@ class SVGQualityChecker:
 
         print(f"\n[REPORT] Check report exported: {output_file}")
 
+    def export_json_report(
+        self,
+        output_file: str,
+        *,
+        target: str,
+        stage: str,
+    ) -> None:
+        """Write a machine-readable quality report with provenance classes."""
+        self._apply_aggregated_issue_counts()
+        introduced: List[Dict[str, str]] = []
+        blocking: List[Dict[str, str]] = []
+        inherited: List[Dict[str, str]] = []
+        for result in self.results:
+            filename = str(result.get('file') or '')
+            introduced.extend({
+                'file': filename,
+                'message': warning,
+            } for warning in result.get('warnings', []))
+            blocking.extend({
+                'file': filename,
+                'message': error,
+            } for error in result.get('errors', []))
+            info = result.get('info') or {}
+            for item in info.get('inherited', []):
+                if isinstance(item, dict):
+                    inherited.append({
+                        'file': filename,
+                        'kind': str(item.get('kind') or 'prototype'),
+                        'message': str(item.get('message') or ''),
+                    })
+
+        project_issues = {
+            'template': [
+                {'severity': severity, 'kind': kind, 'message': message}
+                for severity, kind, message in self._template_issues
+            ],
+            'animation': [
+                {'severity': severity, 'message': message}
+                for severity, message in self._animation_issues
+            ],
+            'illustration': [
+                {'severity': severity, 'kind': kind, 'message': message}
+                for severity, kind, message in self._illustration_issues
+            ],
+            'pptx_structure': [
+                {'severity': severity, 'message': message}
+                for severity, message in self._pptx_structure_issues
+            ],
+        }
+        for group, issues in project_issues.items():
+            for issue in issues:
+                item = {
+                    'scope': group,
+                    'message': issue['message'],
+                }
+                if issue['severity'] == 'error':
+                    blocking.append(item)
+                else:
+                    introduced.append(item)
+
+        drift = {
+            category: {
+                value: sorted(files)
+                for value, files in sorted(values.items())
+            }
+            for category, values in self._drift_summary.items()
+        }
+        source_import = dict(self._source_import_summary)
+        payload = {
+            'schema': 'ppt-master.svg-quality-report.v1',
+            'stage': stage,
+            'target': str(Path(target).resolve()),
+            'source_fingerprint': _quality_source_fingerprint(self.results),
+            'summary': dict(self.summary),
+            'issue_types': dict(sorted(self.issue_types.items())),
+            'categories': {
+                'blocking': {
+                    'count': len(blocking),
+                    'issues': blocking,
+                },
+                'introduced': {
+                    'count': len(introduced),
+                    'issues': introduced,
+                },
+                'inherited': {
+                    'count': len(inherited),
+                    'issues': inherited,
+                },
+                'source-import': {
+                    'count': _source_import_warning_count(source_import),
+                    'summary': source_import,
+                },
+            },
+            'drift': drift,
+            'project_issues': project_issues,
+            'files': self.results,
+        }
+        report_path = Path(output_file)
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2) + '\n',
+            encoding='utf-8',
+        )
+        print(f"\n[REPORT] JSON quality report exported: {report_path}")
+
+
+def _source_import_warning_count(summary: Dict[str, object]) -> int:
+    """Return only a schema-compatible non-negative warning count."""
+    value = summary.get('warning_count')
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        return 0
+    return value
+
+
+def _quality_source_fingerprint(results: List[Dict]) -> Dict[str, object]:
+    """Bind a quality report to the exact SVG bytes that were checked."""
+    files: List[Dict[str, object]] = []
+    aggregate = hashlib.sha256()
+    candidates = sorted(
+        (
+            result
+            for result in results
+            if result.get('exists') and result.get('path')
+        ),
+        key=lambda result: Path(str(result['path'])).name,
+    )
+    for result in candidates:
+        path = Path(str(result['path']))
+        file_sha256 = result.get('source_sha256')
+        if not isinstance(file_sha256, str):
+            files.append({
+                'file': path.name,
+                'sha256': None,
+                'error': 'source bytes were not available during validation',
+            })
+            file_sha256 = 'unreadable'
+        else:
+            files.append({'file': path.name, 'sha256': file_sha256})
+        aggregate.update(path.name.encode('utf-8'))
+        aggregate.update(b'\0')
+        aggregate.update(file_sha256.encode('ascii'))
+        aggregate.update(b'\n')
+    return {
+        'algorithm': 'sha256',
+        'digest': aggregate.hexdigest(),
+        'file_count': len(files),
+        'files': files,
+    }
+
+
+def _first_page_target(target: str) -> str:
+    """Resolve a project/directory target to its first authored SVG page."""
+    path = Path(target)
+    if path.is_file():
+        return str(path)
+    svg_root = path / 'svg_output' if (path / 'svg_output').is_dir() else path
+    svg_files = sorted(svg_root.glob('*.svg')) if svg_root.is_dir() else []
+    return str(svg_files[0]) if svg_files else target
+
+
+def _default_json_report_path(
+    checker: SVGQualityChecker,
+    target: str,
+    stage: str,
+) -> Path:
+    """Choose a stage-specific report path without overwriting the final gate."""
+    target_path = Path(target)
+    project_path = checker._resolve_project_path(target_path)
+    report_name = (
+        'svg_quality_report.json'
+        if stage == 'final'
+        else 'svg_quality_first_page_report.json'
+    )
+    if (
+        (project_path / 'svg_output').is_dir()
+        or (project_path / 'design_spec.md').is_file()
+    ):
+        return project_path / 'exports' / report_name
+    base = target_path if target_path.is_dir() else target_path.parent
+    return base / report_name
+
 
 def print_usage() -> None:
     """Print CLI usage information."""
@@ -5979,6 +6473,11 @@ def print_usage() -> None:
     print("  python3 scripts/svg_quality_checker.py templates/decks/中国电信/templates --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
+    print("  --stage <first-page|final>     first-page checks only the first authored SVG")
+    print("                                  with a partial structure roster; final (default)")
+    print("                                  requires the complete declared page roster.")
+    print("  --json                         Write a machine-readable quality report")
+    print("  --json-output <path>           Override the JSON report path")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
     print("                                  Brand validates design_spec.md and referenced assets;")
     print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
@@ -6012,14 +6511,27 @@ def main() -> None:
     # Parse arguments
     target = sys.argv[1]
     expected_format = None
+    stage = 'final'
 
     if '--format' in sys.argv:
         idx = sys.argv.index('--format')
         if idx + 1 < len(sys.argv):
             expected_format = sys.argv[idx + 1]
+    if '--stage' in sys.argv:
+        idx = sys.argv.index('--stage')
+        if idx + 1 >= len(sys.argv):
+            print("[ERROR] --stage requires first-page or final")
+            sys.exit(1)
+        stage = sys.argv[idx + 1]
+        if stage not in {'first-page', 'final'}:
+            print(f"[ERROR] Unsupported quality-check stage: {stage}")
+            sys.exit(1)
 
     # Execute check
     if target == '--all':
+        if stage != 'final':
+            print("[ERROR] --stage first-page does not support --all")
+            sys.exit(1)
         # Check all example projects
         base_dir = sys.argv[2] if len(sys.argv) > 2 else 'examples'
         from project_utils import find_all_projects
@@ -6031,7 +6543,16 @@ def main() -> None:
             print('=' * 80)
             checker.check_directory(str(project))
     else:
-        checker.check_directory(target, expected_format)
+        check_target = _first_page_target(target) if stage == 'first-page' else target
+        checker.check_directory(check_target, expected_format)
+
+    if stage == 'final' and Path(target).is_dir():
+        if checker._has_incomplete_page_roster:
+            print(
+                "[TIP] This final-stage run found an incomplete page roster. "
+                "During serial authoring, use --stage first-page for the first-page "
+                "gate; keep --stage final for the complete deck."
+            )
 
     # Print summary
     checker.print_summary()
@@ -6044,6 +6565,21 @@ def main() -> None:
             if idx + 1 < len(sys.argv):
                 output_file = sys.argv[idx + 1]
         checker.export_report(output_file)
+
+    if '--json' in sys.argv or '--json-output' in sys.argv:
+        if '--json-output' in sys.argv:
+            idx = sys.argv.index('--json-output')
+            if idx + 1 >= len(sys.argv):
+                print("[ERROR] --json-output requires a path")
+                sys.exit(1)
+            json_output = Path(sys.argv[idx + 1])
+        else:
+            json_output = _default_json_report_path(checker, target, stage)
+        checker.export_json_report(
+            str(json_output),
+            target=target,
+            stage=stage,
+        )
 
     # Return exit code
     if checker.summary['errors'] > 0:

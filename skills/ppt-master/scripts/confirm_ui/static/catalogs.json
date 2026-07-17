@@ -555,6 +555,38 @@
       "label_ja": "分割モード"
     }
   ],
+  "template_reuse_scope": [
+    {
+      "id": "layout",
+      "label": "layout",
+      "label_zh": "复用布局体系",
+      "label_en": "reuse layout system",
+      "label_ja": "レイアウト体系を再利用",
+      "desc_zh": "保留模板的 Master、布局语法和结构身份，可按内容重排，并在需要时创建新 Layout。",
+      "desc_en": "Keep the template Master and layout grammar, but allow content-driven reflow and new explicit Layouts.",
+      "desc_ja": "テンプレートのMasterとレイアウト体系を保ち、内容に応じた再配置や新しいLayoutの作成を許可する。"
+    },
+    {
+      "id": "style",
+      "label": "style",
+      "label_zh": "只参考视觉风格",
+      "label_en": "style reference only",
+      "label_ja": "ビジュアルスタイルのみ参照",
+      "desc_zh": "只采用颜色、字体、装饰语言和视觉节奏；页面走自由设计，不继承模板 Master/Layout。",
+      "desc_en": "Use only color, typography, decoration, and rhythm; author free-design pages without inheriting template Master/Layout structure.",
+      "desc_ja": "色、書体、装飾、リズムのみを参照し、テンプレートのMaster／Layoutを継承せず自由設計する。"
+    },
+    {
+      "id": "mirror",
+      "label": "mirror",
+      "label_zh": "镜像页面替换",
+      "label_en": "mirror page replacement",
+      "label_ja": "ミラーページ置換",
+      "desc_zh": "仅镜像模板可用；复制完整原型，只替换允许变化的可见文字，保持视觉和文本节点拓扑。",
+      "desc_en": "Mirror workspaces only: copy the complete prototype, replace allowed visible text, and preserve visual and text-node topology.",
+      "desc_ja": "mirrorワークスペース専用。完全な原型を複製し、許可された表示テキストだけを置換して視覚とテキストノード構造を維持する。"
+    }
+  ],
   "template_adherence": [
     {
       "id": "adaptive",

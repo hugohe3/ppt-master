@@ -514,29 +514,48 @@ _ANCHOR_RECOMMEND_KEYS = (
     'mode',
     'visual_style',
     'delivery_purpose',
+    'template_reuse_scope',
     'template_adherence',
 )
 _ANCHOR_VALUE_KEYS = ('audience', 'content_divergence')
 _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
+_TEMPLATE_REUSE_SCOPES = frozenset({'mirror', 'layout', 'style'})
+_TEMPLATE_ADHERENCE_MODES = frozenset({'strict', 'adaptive'})
 
 
-def _template_adherence_enabled(project_path: Path) -> bool:
-    """Return whether Step 3 loaded a deck/layout template into the project."""
+def _template_context(project_path: Path) -> dict[str, object]:
+    """Return the loaded template kind and replication contract."""
     spec_path = project_path / 'templates' / 'design_spec.md'
     try:
         lines = spec_path.read_text(encoding='utf-8').splitlines()
     except OSError:
-        return False
+        return {'enabled': False, 'kind': None, 'replication_mode': None}
     if not lines or lines[0].strip() != '---':
-        return False
+        return {'enabled': False, 'kind': None, 'replication_mode': None}
+    kind = None
+    replication_mode = None
     for line in lines[1:]:
         stripped = line.strip()
         if stripped == '---':
-            return False
-        match = re.fullmatch(r'kind\s*:\s*["\']?(brand|layout|deck)["\']?', stripped)
-        if match:
-            return match.group(1) in {'layout', 'deck'}
-    return False
+            break
+        kind_match = re.fullmatch(
+            r'kind\s*:\s*["\']?(brand|layout|deck)["\']?',
+            stripped,
+        )
+        if kind_match:
+            kind = kind_match.group(1)
+            continue
+        replication_match = re.fullmatch(
+            r'replication_mode\s*:\s*["\']?(standard|fidelity|mirror)["\']?',
+            stripped,
+        )
+        if replication_match:
+            replication_mode = replication_match.group(1)
+    return {
+        'enabled': kind in {'layout', 'deck'},
+        'kind': kind,
+        'replication_mode': replication_mode,
+    }
 
 
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
@@ -897,16 +916,31 @@ def create_app(
         # the user's choices instead of catalog defaults.
         if _recommendation_stage(data) >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
-        template_adherence_enabled = _template_adherence_enabled(project_path)
+        template_context = _template_context(project_path)
+        template_adherence_enabled = bool(template_context['enabled'])
         data['_template_adherence_enabled'] = template_adherence_enabled
+        data['_template_reuse_scope_enabled'] = template_adherence_enabled
+        data['_template_replication_mode'] = template_context['replication_mode']
         recommend = data.get('recommend')
         if template_adherence_enabled:
             if not isinstance(recommend, dict):
                 recommend = data['recommend'] = {}
-            recommend.setdefault('template_adherence', 'adaptive')
+            recommend.setdefault('template_reuse_scope', 'layout')
+            if (
+                recommend.get('template_reuse_scope') == 'mirror'
+                and template_context['replication_mode'] != 'mirror'
+            ):
+                recommend['template_reuse_scope'] = 'layout'
+            if recommend.get('template_reuse_scope') == 'style':
+                recommend.pop('template_adherence', None)
+                data.pop('template_adherence', None)
+            else:
+                recommend.setdefault('template_adherence', 'adaptive')
         else:
             if isinstance(recommend, dict):
+                recommend.pop('template_reuse_scope', None)
                 recommend.pop('template_adherence', None)
+            data.pop('template_reuse_scope', None)
             data.pop('template_adherence', None)
         # The page polls this endpoint after a stage-1 confirm until the AI
         # overwrites the file with the re-derived stage-2 recommendations, so it
@@ -923,6 +957,29 @@ def create_app(
             return jsonify({'error': 'invalid payload'}), 400
         confirm_dir.mkdir(parents=True, exist_ok=True)
         result = dict(payload)
+        template_context = _template_context(project_path)
+        if template_context['enabled']:
+            reuse_scope = result.get('template_reuse_scope')
+            if reuse_scope not in _TEMPLATE_REUSE_SCOPES:
+                return jsonify({
+                    'error': 'template_reuse_scope must be mirror, layout, or style',
+                }), 400
+            if (
+                reuse_scope == 'mirror'
+                and template_context['replication_mode'] != 'mirror'
+            ):
+                return jsonify({
+                    'error': 'mirror reuse requires replication_mode: mirror',
+                }), 400
+            if reuse_scope == 'style':
+                result.pop('template_adherence', None)
+            elif result.get('template_adherence') not in _TEMPLATE_ADHERENCE_MODES:
+                return jsonify({
+                    'error': 'template_adherence must be strict or adaptive',
+                }), 400
+        else:
+            result.pop('template_reuse_scope', None)
+            result.pop('template_adherence', None)
         # Staged flow: stage-1 / stage-2 submits record intermediate choices but do
         # NOT close the page. Only a final submit is a full confirmation. A
         # payload with no stage is a single-pass confirmation (chat-opt-out parity).
