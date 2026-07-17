@@ -1,5 +1,12 @@
-# Build and publish MindMux-compatible engine packs.
-# Trigger: push tag engine-v* or workflow_dispatch.
+# Build multi-arch engine packs and publish to GitHub Releases.
+#
+# Automatic path (canonical):
+#   git tag engine-v0.1.1 && git push origin engine-v0.1.1
+#   → matrix build → non-draft release on that tag with all zips
+#
+# Manual path:
+#   workflow_dispatch with optional release_tag (e.g. engine-v0.1.0)
+#   → rebuild and upload/replace assets on that tag (published, not draft)
 name: engine-pack
 
 on:
@@ -8,10 +15,11 @@ on:
       - "engine-v*"
   workflow_dispatch:
     inputs:
-      upload_release:
-        description: "Create/update a GitHub release and upload zips"
-        type: boolean
-        default: true
+      release_tag:
+        description: "Release tag to create/update (e.g. engine-v0.1.0). Empty = no release upload."
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -26,7 +34,7 @@ jobs:
             platform: darwin
             arch: arm64
             python: "3.11"
-          # macos-13 retired (2025-12); use Intel image for darwin-x64
+          # macos-13 retired (2025-12)
           - os: macos-15-intel
             platform: darwin
             arch: x64
@@ -49,30 +57,42 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install rsync (macOS runners have it; Linux ensure)
+      - name: Install rsync (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Resolve ENGINE_VERSION
+        id: ver
+        shell: bash
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            T="${{ github.ref_name }}"
+          elif [[ -n "${{ inputs.release_tag }}" ]]; then
+            T="${{ inputs.release_tag }}"
+          else
+            T="0.1.0-dev"
+          fi
+          V="${T#engine-v}"
+          V="${V#v}"
+          echo "engine_version=$V" >> "$GITHUB_OUTPUT"
+          echo "release_tag=${T}" >> "$GITHUB_OUTPUT"
+          echo "Using ENGINE_VERSION=$V (tag/input=$T)"
 
       - name: Build engine pack
         shell: bash
         env:
           PYTHON: python
-          ENGINE_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '0.1.0-dev' }}
+          ENGINE_VERSION: ${{ steps.ver.outputs.engine_version }}
         run: |
           chmod +x engine/build.sh
-          # Normalize ENGINE_VERSION tag engine-v0.1.0 → 0.1.0
-          V="${ENGINE_VERSION#engine-v}"
-          V="${V#v}"
-          export ENGINE_VERSION="$V"
           engine/build.sh
 
-      - name: Zip pack (if build.sh did not already)
+      - name: Ensure zip
         shell: bash
         run: |
           FOLDER="ppt-master-engine-${{ matrix.platform }}-${{ matrix.arch }}"
           cd dist-engine
           if [[ -f "${FOLDER}.zip" ]]; then
-            echo "zip already present from build.sh"
             ls -lh "${FOLDER}.zip"
             exit 0
           fi
@@ -104,8 +124,13 @@ jobs:
 
   release:
     needs: build
-    # Publish whatever matrix legs succeeded (do not block on one OS failure).
-    if: always() && (github.event_name == 'push' || inputs.upload_release)
+    # Tag push always publishes; dispatch only when release_tag is set.
+    if: >-
+      always()
+      && (
+        github.ref_type == 'tag'
+        || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
+      )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -113,22 +138,37 @@ jobs:
           path: artifacts
           pattern: pack-*
           merge-multiple: true
-          # continue if some matrix jobs failed and produced no artifact
-        continue-on-error: true
 
       - name: List artifacts
-        run: ls -lah artifacts/ || echo "no artifacts"
+        run: |
+          ls -lah artifacts/
+          test -n "$(ls artifacts/*.zip 2>/dev/null)" || { echo "no zips"; exit 1; }
 
-      - name: Publish GitHub Release
-        if: hashFiles('artifacts/*.zip') != ''
+      - name: Resolve release tag
+        id: tag
+        shell: bash
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish GitHub Release (tag → assets, not draft)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('engine-v0.1.0-dev-{0}', github.run_number) }}
-          name: ${{ github.ref_type == 'tag' && github.ref_name || format('Engine pack dev {0}', github.run_number) }}
-          draft: ${{ github.ref_type != 'tag' }}
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: ${{ steps.tag.outputs.name }}
+          # Tag-driven releases are always published (downloadable).
+          draft: false
+          # Re-running the same tag replaces/updates assets on that release.
+          make_latest: false
           files: artifacts/*.zip
+          fail_on_unmatched_files: true
           body: |
-            Self-contained **ppt-master engine packs** for desktop embeds (MindMux).
+            Self-contained **ppt-master engine packs** for desktop embeds (e.g. MindMux).
+
+            Built automatically from tag `${{ steps.tag.outputs.name }}`.
 
             | Asset | Platform |
             |-------|----------|
@@ -137,7 +177,6 @@ jobs:
             | `ppt-master-engine-linux-x64.zip` | Linux x64 |
             | `ppt-master-engine-win32-x64.zip` | Windows x64 |
 
-            Layout after unzip:
             ```
             ppt-master-engine-<platform>-<arch>/
               bin/ppt-master-engine/
@@ -145,7 +184,7 @@ jobs:
               manifest.json
             ```
 
-            MindMux: `pnpm setup:ppt-master-engine` with
-            `downloadUrlTemplate` pointing at these assets.
+            Consumer URL pattern:
+            `https://github.com/<owner>/ppt-master/releases/download/<tag>/ppt-master-engine-{platform}-{arch}.zip`
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
