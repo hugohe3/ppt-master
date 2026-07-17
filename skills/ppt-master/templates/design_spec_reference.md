@@ -16,7 +16,8 @@
 | **Use Case** | [Filled by Strategist] |
 | **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at c; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
-| **Template Adherence** | [`adaptive` / `strict` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. Also written under `spec_lock.md pptx_structure`.] |
+| **Template Reuse Scope** | [`mirror` / `layout` / `style` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. `mirror` requires a mirror-capable workspace; `style` uses the flat route.] |
+| **Template Adherence** | [`adaptive` / `strict` — include only when Template Reuse Scope is `mirror` or `layout`; omit for `style`. Also written under `spec_lock.md pptx_structure`.] |
 | **Created Date** | {date_str} |
 
 ---
@@ -308,7 +309,7 @@ Catalog read: 76 templates
 
 ## IX. Content Outline
 
-> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design and brand-only routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Deck/layout template routes use `mode: structured`: Strategist writes each unique Master/Layout definition once, assigns every page through `page_pptx_layouts`, and selects its authoring prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may define and assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Legacy prototypes are not selectable; create a current workspace through [`create-template`](../workflows/create-template.md) and generate new SVG pages from it. No deferred distillation or immediate-compatibility fallback exists.
+> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design, brand-only, and `template_reuse_scope: style` routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. `template_reuse_scope: mirror|layout` uses `mode: structured`: Strategist writes each unique Master/Layout definition once, assigns every page through `page_pptx_layouts`, and selects its authoring prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may define and assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Mirror also preserves literal visuals and text-node topology; layout permits project-controlled reflow/re-skinning. Legacy prototypes are not selectable; create a current workspace through [`create-template`](../workflows/create-template.md) and generate new SVG pages from it. No deferred distillation or immediate-compatibility fallback exists.
 
 ### Part 1: [Chapter Name]
 
@@ -325,6 +326,8 @@ Catalog read: 76 templates
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
 - **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
+- **Fact IDs**: [stable IDs from `sources/*.facts.json` used on this page, e.g. `F001, F004`; omit when none]
+- **Data class**: [`external` for sourced facts / `scenario` for invented demo KPIs, targets, internal ratios; identify the affected values when scenario; omit when the page has no factual/quantitative claims]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
 - **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:
   - [a connected sentence or two that argues the point]
