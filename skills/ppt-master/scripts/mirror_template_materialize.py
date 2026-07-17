@@ -27,6 +27,7 @@ import os
 import re
 import sys
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -66,6 +67,10 @@ XLINK_NS = "http://www.w3.org/1999/xlink"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 NATIVE_STRUCTURE_SCHEMA = "ppt-master.native-structure.v1"
 VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v1"
+TEMPLATE_EXECUTION_MANIFEST_NAME = "template_execution_manifest.json"
+TEMPLATE_EXECUTION_MANIFEST_SCHEMA = "ppt-master.template-execution-manifest.v1"
+TEMPLATE_TEXT_SLOTS_DIR = "template_execution"
+TEMPLATE_TEXT_SLOTS_SCHEMA = "ppt-master.template-text-slots.v1"
 IMPORTED_ICON_NAMESPACE = "imported"
 TRANSPARENT_PIXEL_DATA_URI = (
     "data:image/png;base64,"
@@ -199,6 +204,244 @@ class RestorationStats:
 class MaterializedFile:
     relative_path: Path
     payload: bytes
+
+
+def _ancestor_chain(
+    element: ET.Element,
+    parent_by_child: dict[ET.Element, ET.Element],
+) -> list[ET.Element]:
+    """Return one element followed by its ancestors up to the SVG root."""
+    chain = [element]
+    while chain[-1] in parent_by_child:
+        chain.append(parent_by_child[chain[-1]])
+    return chain
+
+
+def _stable_text_selector(
+    element: ET.Element,
+    parent_by_child: dict[ET.Element, ET.Element],
+) -> str:
+    """Build a stable, human-readable selector for one materialized text node."""
+    segments: list[str] = []
+    current = element
+    while True:
+        element_id = (current.get("id") or "").strip()
+        if element_id:
+            segments.append(f"#{element_id}")
+            break
+        parent = parent_by_child.get(current)
+        tag = _local_name(current.tag)
+        if parent is None:
+            segments.append(tag)
+            break
+        same_tag = [
+            child
+            for child in parent
+            if _local_name(child.tag) == tag
+        ]
+        position = same_tag.index(current) + 1
+        segments.append(f"{tag}:nth-of-type({position})")
+        current = parent
+    return " > ".join(reversed(segments))
+
+
+def _nearest_attribute(
+    chain: list[ET.Element],
+    name: str,
+) -> str | None:
+    for element in chain:
+        value = element.get(name)
+        if value is not None:
+            return value
+    return None
+
+
+def _text_slot_bounds(chain: list[ET.Element]) -> dict[str, float | None]:
+    """Read the nearest four-value placeholder/native frame when available."""
+    for name in ("data-pptx-placeholder-bounds", "data-pptx-frame"):
+        raw = _nearest_attribute(chain, name)
+        if raw is None:
+            continue
+        try:
+            values = [float(value) for value in raw.replace(",", " ").split()]
+        except ValueError:
+            continue
+        if len(values) == 4 and all(math.isfinite(value) for value in values):
+            return dict(zip(("x", "y", "width", "height"), values))
+    return {"x": None, "y": None, "width": None, "height": None}
+
+
+def _text_topology_sha256(element: ET.Element) -> str:
+    """Hash text/tspan topology and attributes while excluding visible values."""
+    digest = hashlib.sha256()
+
+    def visit(node: ET.Element) -> None:
+        digest.update(_local_name(node.tag).encode("utf-8"))
+        for name, value in sorted(node.attrib.items()):
+            digest.update(b"\0a")
+            digest.update(name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(value.encode("utf-8"))
+        for child in node:
+            digest.update(b"\0c")
+            visit(child)
+        digest.update(b"\0e")
+
+    visit(element)
+    return digest.hexdigest()
+
+
+def _template_text_slots(root: ET.Element) -> list[dict[str, object]]:
+    """Describe exact mirror-safe text replacement slots for one template."""
+    parent_by_child = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    slots: list[dict[str, object]] = []
+    for text_element in root.iter():
+        if _local_name(text_element.tag) != "text":
+            continue
+        chain = _ancestor_chain(text_element, parent_by_child)
+        placeholder = _nearest_attribute(chain, "data-pptx-placeholder")
+        editable_value = _nearest_attribute(chain, "data-pptx-editable")
+        inherited_layer = _nearest_attribute(chain, "data-pptx-layer")
+        tspans = [
+            child
+            for child in text_element.iter()
+            if child is not text_element and _local_name(child.tag) == "tspan"
+        ]
+        segments = [
+            text_element.text or "",
+            *[(tspan.text or "") for tspan in tspans],
+        ]
+        if tspans and not segments[0].strip():
+            segments = segments[1:]
+        slots.append({
+            "selector": _stable_text_selector(text_element, parent_by_child),
+            "role": placeholder or "text",
+            "editable": editable_value != "false" and inherited_layer is None,
+            "current_text": "".join(text_element.itertext()),
+            "text_segments": segments,
+            "text_attributes": dict(sorted(text_element.attrib.items())),
+            "tspan_count": len(tspans),
+            "tspan_attributes": [
+                dict(sorted(tspan.attrib.items()))
+                for tspan in tspans
+            ],
+            "topology_sha256": _text_topology_sha256(text_element),
+            "bbox": _text_slot_bounds(chain),
+            "font_stack": _nearest_attribute(chain, "font-family"),
+        })
+    return slots
+
+
+def _json_bytes(payload: dict[str, object]) -> bytes:
+    return (
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
+
+
+def _template_execution_manifest_files(
+    materialized_roots: list[tuple[Path, ET.Element]],
+    source_import: dict[str, object] | None,
+) -> list[MaterializedFile]:
+    """Serialize one compact roster plus per-prototype text-slot sidecars."""
+    templates: list[dict[str, object]] = []
+    files: list[MaterializedFile] = []
+    for relative_path, root in sorted(
+        materialized_roots,
+        key=lambda item: item[0].as_posix(),
+    ):
+        prototype = relative_path.name
+        text_slots = _template_text_slots(root)
+        text_slots_path = (
+            Path("templates")
+            / TEMPLATE_TEXT_SLOTS_DIR
+            / f"{relative_path.stem}.text-slots.json"
+        )
+        files.append(MaterializedFile(
+            text_slots_path,
+            _json_bytes({
+                "schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
+                "prototype": prototype,
+                "text_slot_count": len(text_slots),
+                "text_slots": text_slots,
+            }),
+        ))
+        templates.append({
+            "prototype": prototype,
+            "page_type": relative_path.stem.split("_", 1)[-1],
+            "viewBox": root.get("viewBox"),
+            "master": root.get("data-pptx-master"),
+            "layout": root.get("data-pptx-layout"),
+            "layout_name": root.get("data-pptx-layout-name"),
+            "text_slot_count": len(text_slots),
+            "editable_text_slot_count": sum(
+                1 for slot in text_slots if slot["editable"]
+            ),
+            "text_slots_path": text_slots_path.relative_to(
+                Path("templates")
+            ).as_posix(),
+        })
+    payload = {
+        "schema": TEMPLATE_EXECUTION_MANIFEST_SCHEMA,
+        "replication_mode": "mirror",
+        "template_root": ".",
+        "template_count": len(templates),
+        "execution_policy": (
+            "Read this compact roster once. Before authoring each page, read the "
+            "selected template's text_slots_path and complete prototype SVG. "
+            "Replace visible text values only; preserve every text/tspan node, "
+            "order, nesting level, and attribute."
+        ),
+        "source_import": source_import or {
+            "warning_count": 0,
+            "by_code": {},
+        },
+        "templates": templates,
+    }
+    files.append(MaterializedFile(
+        Path("templates") / TEMPLATE_EXECUTION_MANIFEST_NAME,
+        _json_bytes(payload),
+    ))
+    return files
+
+
+def _source_import_summary(import_workspace: Path) -> dict[str, object] | None:
+    """Summarize source-owned tolerant-import diagnostics by stable code."""
+    report_path = import_workspace / "conversion-report.json"
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return None
+    except (OSError, json.JSONDecodeError) as exc:
+        raise MirrorMaterializationError(
+            f"Cannot read source conversion report {report_path}: {exc}"
+        ) from exc
+    diagnostics = report.get("diagnostics")
+    if not isinstance(diagnostics, list):
+        raise MirrorMaterializationError(
+            f"Source conversion report has no diagnostics array: {report_path}"
+        )
+    by_code: Counter[str] = Counter()
+    samples: dict[str, str] = {}
+    for item in diagnostics:
+        if not isinstance(item, dict):
+            continue
+        severity = str(item.get("severity") or "warning").lower()
+        if severity != "warning":
+            continue
+        code = str(item.get("code") or "unknown")
+        by_code[code] += 1
+        message = item.get("message")
+        if code not in samples and isinstance(message, str) and message:
+            samples[code] = message
+    return {
+        "warning_count": sum(by_code.values()),
+        "by_code": dict(sorted(by_code.items())),
+        "samples": dict(sorted(samples.items())),
+    }
 
 
 def _local_name(name: object) -> str:
@@ -2659,6 +2902,13 @@ def materialize_mirror_template(
 
     for relative_path, root in output_roots:
         files.append(MaterializedFile(relative_path, _serialize_svg(root)))
+    execution_manifest_path = Path("templates") / TEMPLATE_EXECUTION_MANIFEST_NAME
+    files.extend(
+        _template_execution_manifest_files(
+            materialized_roots,
+            _source_import_summary(import_workspace),
+        )
+    )
 
     for relative_target, source in sorted(asset_sources.items()):
         files.append(MaterializedFile(relative_target, source.read_bytes()))
@@ -2729,6 +2979,8 @@ def materialize_mirror_template(
         "layout_count": len(layouts),
         "unused_layout_count": len(unused_layouts),
         "template_svg_count": len(materialized_roots),
+        "template_execution_manifest": execution_manifest_path.as_posix(),
+        "template_text_slot_manifest_count": len(materialized_roots),
         "imported_vector_count": len(referenced_icons),
         "packaged_asset_count": len(asset_sources),
         "restoration": total_stats.as_dict(),

@@ -120,6 +120,7 @@ _LOCK_ROW_RE = re.compile(r"^-\s+([^:]+?)\s*:\s*(.*?)\s*$")
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
 PPTX_STRUCTURE_MODES = frozenset({"structured", "preserve", "flat"})
 TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
+TEMPLATE_REUSE_SCOPES = frozenset({"mirror", "layout", "style"})
 PLACEHOLDER_BINDING_MODES = frozenset({"carrier", "proxy"})
 _TEMPLATE_SKIN_ATTRS = frozenset({
     "color",
@@ -209,6 +210,7 @@ class PptxStructureLock:
     """Optional project-level PPTX structure export policy."""
 
     mode: str
+    template_reuse_scope: str | None = None
     template_adherence: str | None = None
     masters: tuple[PptxMasterReference, ...] = ()
     layout_definitions: tuple[PptxLayoutDefinition, ...] = ()
@@ -653,6 +655,41 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             "spec_lock.md template_adherence is allowed only in structured or "
             "preserve mode"
         )
+
+    reuse_scope_rows = [
+        value.strip().lower()
+        for key, value in structure_rows
+        if key == "template_reuse_scope"
+    ]
+    if len(reuse_scope_rows) > 1:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_structure allows at most one "
+            "'- template_reuse_scope:' row"
+        )
+    template_reuse_scope = reuse_scope_rows[0] if reuse_scope_rows else None
+    if (
+        template_reuse_scope
+        and template_reuse_scope not in TEMPLATE_REUSE_SCOPES
+    ):
+        allowed = ", ".join(sorted(TEMPLATE_REUSE_SCOPES))
+        raise TemplateStructureError(
+            "spec_lock.md pptx_structure.template_reuse_scope must be one of: "
+            f"{allowed}"
+        )
+    if mode == "preserve" and template_reuse_scope:
+        raise TemplateStructureError(
+            "spec_lock.md preserve mode does not use template_reuse_scope; "
+            "the source PPTX structure is already authoritative"
+        )
+    if mode == "flat" and template_reuse_scope not in {None, "style"}:
+        raise TemplateStructureError(
+            "spec_lock.md flat mode permits only template_reuse_scope: style"
+        )
+    if mode == "structured" and template_reuse_scope == "style":
+        raise TemplateStructureError(
+            "spec_lock.md template_reuse_scope: style requires mode: flat and "
+            "must omit structured template mappings"
+        )
     if any(key == "layout_strategy" for key, _value in structure_rows):
         raise TemplateStructureError(
             "spec_lock.md pptx_structure.layout_strategy is obsolete; SVG pages "
@@ -764,6 +801,39 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     if prototypes and not template_adherence:
         raise TemplateStructureError(
             "spec_lock.md page_layouts requires template_adherence: strict or adaptive"
+        )
+    if template_reuse_scope in {"mirror", "layout"} and not prototypes:
+        raise TemplateStructureError(
+            "spec_lock.md template_reuse_scope mirror/layout requires one "
+            "page_layouts row per page"
+        )
+    if template_reuse_scope == "style" and prototypes:
+        raise TemplateStructureError(
+            "spec_lock.md template_reuse_scope: style must omit page_layouts"
+        )
+    if template_reuse_scope == "mirror":
+        non_mirror = sorted({
+            reference.template_basename
+            for reference in prototypes
+            if reference.replication_mode != "mirror"
+        })
+        if non_mirror:
+            raise TemplateStructureError(
+                "spec_lock.md template_reuse_scope: mirror requires a mirror "
+                "template workspace; non-mirror prototype(s): "
+                + ", ".join(non_mirror)
+            )
+    if mode == "structured" and template_reuse_scope is None and prototypes:
+        # Backward compatibility: projects created before the explicit reuse
+        # axis inherit their former behavior. Mirror workspaces stay literal;
+        # standard/fidelity workspaces remain structural layout references.
+        template_reuse_scope = (
+            "mirror"
+            if all(
+                reference.replication_mode == "mirror"
+                for reference in prototypes
+            )
+            else "layout"
         )
 
     layout_definitions: list[PptxLayoutDefinition] = []
@@ -922,6 +992,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             )
     return PptxStructureLock(
         mode=mode,
+        template_reuse_scope=template_reuse_scope,
         template_adherence=template_adherence,
         masters=tuple(masters),
         layout_definitions=tuple(layout_definitions),
@@ -2515,6 +2586,205 @@ def _layout_contract_difference(
     return "; ".join(details)
 
 
+def _mirror_comparable_attributes(
+    element: ET.Element,
+    svg_path: Path,
+    *,
+    ignore_structure_attrs: bool,
+) -> dict[str, str]:
+    """Return literal mirror attributes using the validator's normalization."""
+    return {
+        name: _signature_attr_value(
+            name,
+            value,
+            svg_path=svg_path,
+            asset_identity=True,
+        )
+        for name, value in element.attrib.items()
+        if not (
+            ignore_structure_attrs
+            and name.rsplit("}", 1)[-1] in _STRUCTURE_ATTRS
+        )
+    }
+
+
+def _mirror_node_label(element: ET.Element, index: int) -> str:
+    """Return a compact stable-enough path segment for one SVG node."""
+    tag = _local_tag(element)
+    element_id = (element.get("id") or "").strip()
+    return f"{tag}#{element_id}" if element_id else f"{tag}[{index}]"
+
+
+def _mirror_element_difference(
+    expected: ET.Element,
+    actual: ET.Element,
+    *,
+    expected_svg: Path,
+    actual_svg: Path,
+    path: str,
+    ignore_structure_attrs: bool,
+) -> str | None:
+    """Describe the first literal mirror subtree difference."""
+    expected_tag = _local_tag(expected)
+    actual_tag = _local_tag(actual)
+    if expected_tag != actual_tag:
+        return f"{path}: expected <{expected_tag}>, found <{actual_tag}>"
+
+    expected_attrs = _mirror_comparable_attributes(
+        expected,
+        expected_svg,
+        ignore_structure_attrs=ignore_structure_attrs,
+    )
+    actual_attrs = _mirror_comparable_attributes(
+        actual,
+        actual_svg,
+        ignore_structure_attrs=ignore_structure_attrs,
+    )
+    if expected_attrs != actual_attrs:
+        for name in sorted(set(expected_attrs) | set(actual_attrs)):
+            expected_value = expected_attrs.get(name)
+            actual_value = actual_attrs.get(name)
+            if expected_value != actual_value:
+                return (
+                    f"{path}: attribute {name.rsplit('}', 1)[-1]!r} expected "
+                    f"{expected_value!r}, found {actual_value!r}"
+                )
+
+    expected_children = list(expected)
+    actual_children = list(actual)
+    if len(expected_children) != len(actual_children):
+        expected_tspans = sum(
+            _local_tag(child) == "tspan" for child in expected_children
+        )
+        actual_tspans = sum(
+            _local_tag(child) == "tspan" for child in actual_children
+        )
+        if expected_tspans != actual_tspans:
+            return (
+                f"{path}: expected {expected_tspans} direct <tspan> child(ren), "
+                f"found {actual_tspans}; mirror text node count/order must stay "
+                "unchanged"
+            )
+        return (
+            f"{path}: expected {len(expected_children)} child node(s), found "
+            f"{len(actual_children)}"
+        )
+
+    for index, (expected_child, actual_child) in enumerate(
+        zip(expected_children, actual_children),
+        start=1,
+    ):
+        child_path = f"{path}/{_mirror_node_label(expected_child, index)}"
+        difference = _mirror_element_difference(
+            expected_child,
+            actual_child,
+            expected_svg=expected_svg,
+            actual_svg=actual_svg,
+            path=child_path,
+            ignore_structure_attrs=ignore_structure_attrs,
+        )
+        if difference:
+            return difference
+    return None
+
+
+def _mirror_slide_local_difference(
+    expected_spec: TemplateSlideSpec,
+    actual_spec: TemplateSlideSpec,
+    protected_ids: set[str],
+) -> str | None:
+    """Describe the first Slide-local mirror difference."""
+    expected_root = _parse_svg_root(expected_spec.svg_path)
+    actual_root = _parse_svg_root(actual_spec.svg_path)
+    materialize_inline_geometry_properties(expected_root)
+    materialize_inline_geometry_properties(actual_root)
+
+    def selected(root: ET.Element) -> list[ET.Element]:
+        output: list[ET.Element] = []
+        for child in root:
+            if _local_tag(child) in _NON_VISUAL_TAGS:
+                continue
+            element_id = (child.get("id") or "").strip()
+            if element_id and element_id not in protected_ids:
+                continue
+            output.append(child)
+        return output
+
+    expected_children = selected(expected_root)
+    actual_children = selected(actual_root)
+    if len(expected_children) != len(actual_children):
+        return (
+            f"svg: expected {len(expected_children)} Slide-local top-level "
+            f"element(s), found {len(actual_children)}"
+        )
+    for index, (expected, actual) in enumerate(
+        zip(expected_children, actual_children),
+        start=1,
+    ):
+        difference = _mirror_element_difference(
+            expected,
+            actual,
+            expected_svg=expected_spec.svg_path,
+            actual_svg=actual_spec.svg_path,
+            path=f"svg/{_mirror_node_label(expected, index)}",
+            ignore_structure_attrs=True,
+        )
+        if difference:
+            return difference
+    if _scope_visual_resources_signature(
+        expected_root,
+        tuple(expected_children),
+        expected_spec.svg_path,
+    ) != _scope_visual_resources_signature(
+        actual_root,
+        tuple(actual_children),
+        actual_spec.svg_path,
+    ):
+        return "svg: referenced defs, CSS, root styling, or asset identity differs"
+    return None
+
+
+def _mirror_structure_difference(
+    expected_spec: TemplateSlideSpec,
+    actual_spec: TemplateSlideSpec,
+    elements: tuple[TemplateElementSpec, ...],
+) -> str | None:
+    """Describe the first mirror difference in named structural elements."""
+    expected_root = _parse_svg_root(expected_spec.svg_path)
+    actual_root = _parse_svg_root(actual_spec.svg_path)
+    materialize_inline_geometry_properties(expected_root)
+    materialize_inline_geometry_properties(actual_root)
+    expected_by_id = {
+        (child.get("id") or "").strip(): child
+        for child in expected_root
+        if (child.get("id") or "").strip()
+    }
+    actual_by_id = {
+        (child.get("id") or "").strip(): child
+        for child in actual_root
+        if (child.get("id") or "").strip()
+    }
+    for item in elements:
+        expected = expected_by_id.get(item.element_id)
+        actual = actual_by_id.get(item.element_id)
+        if expected is None or actual is None:
+            return (
+                f"svg/{item.element_id}: expected direct structural element is "
+                "missing from one side"
+            )
+        difference = _mirror_element_difference(
+            expected,
+            actual,
+            expected_svg=expected_spec.svg_path,
+            actual_svg=actual_spec.svg_path,
+            path=f"svg/{_mirror_node_label(expected, 1)}",
+            ignore_structure_attrs=False,
+        )
+        if difference:
+            return difference
+    return None
+
+
 def template_prototype_errors(
     specs: list[TemplateSlideSpec],
     structure_lock: PptxStructureLock,
@@ -2559,7 +2829,11 @@ def template_prototype_errors(
             continue
 
         try:
-            literal_visual = reference.replication_mode == "mirror"
+            literal_visual = (
+                structure_lock.template_reuse_scope == "mirror"
+                if structure_lock.template_reuse_scope is not None
+                else reference.replication_mode == "mirror"
+            )
             expected_master_structure = _structure_subtree_signature(
                 prototype.svg_path,
                 prototype.master_elements,
@@ -2584,11 +2858,24 @@ def template_prototype_errors(
             )
             or actual_master_structure != expected_master_structure
         ):
+            master_difference = (
+                _mirror_structure_difference(
+                    prototype,
+                    spec,
+                    prototype.master_elements,
+                )
+                if literal_visual
+                else None
+            )
             errors.append(
                 f"{spec.svg_path.name}: template Master structure differs "
                 f"from prototype {reference.svg_path.name}; strict and adaptive "
                 "routes must retain its ids, topology, geometry, and content"
                 + (" including mirror visual styling" if literal_visual else "")
+                + (
+                    f"; first difference: {master_difference}"
+                    if master_difference else ""
+                )
             )
 
         if literal_visual:
@@ -2609,11 +2896,17 @@ def template_prototype_errors(
                 errors.append(str(exc))
                 continue
             if actual_slide_visual != expected_slide_visual:
+                difference = _mirror_slide_local_difference(
+                    prototype,
+                    spec,
+                    protected_slide_ids,
+                )
                 errors.append(
                     f"{spec.svg_path.name}: mirror Slide-local non-text visuals "
                     f"differ from prototype {reference.svg_path.name}; preserve "
                     "grouping, geometry, paint, effects, and referenced asset "
                     "identity, changing only visible text content"
+                    + (f"; first difference: {difference}" if difference else "")
                 )
 
         try:
@@ -2756,10 +3049,16 @@ def template_prototype_errors(
                     "contract; assign a new key and name"
                 )
         if literal_visual and not placeholder_visual_same:
+            difference = _mirror_structure_difference(
+                prototype,
+                spec,
+                prototype.placeholders,
+            )
             errors.append(
                 f"{spec.svg_path.name}: mirror placeholder geometry or visual "
                 f"styling differs from prototype {reference.svg_path.name}; "
                 "only visible text content may change under the reused Layout"
+                + (f"; first difference: {difference}" if difference else "")
             )
         if not layout_contract_same:
             qualifier = "mirror visual/structural" if literal_visual else "structural"
@@ -2767,6 +3066,14 @@ def template_prototype_errors(
                 spec.layout_elements,
                 prototype.layout_elements,
             )
+            if literal_visual:
+                literal_difference = _mirror_structure_difference(
+                    prototype,
+                    spec,
+                    prototype.layout_elements,
+                )
+                if literal_difference:
+                    difference += f"; first difference: {literal_difference}"
             if adherence == "strict":
                 errors.append(
                     f"{spec.svg_path.name}: strict Layout {qualifier} contract "

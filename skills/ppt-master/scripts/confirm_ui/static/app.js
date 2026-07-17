@@ -1,5 +1,6 @@
 /* PPT Master - Strategist confirmation stage UI
- * Finite/enumerable fields (canvas, mode, visual style, template adherence,
+ * Finite/enumerable fields (canvas, mode, visual style, template reuse scope,
+ * template adherence,
  * icons, image usage, AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
  * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
@@ -38,6 +39,7 @@
             sec_refine: "Refine spec first",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
+            sub_template_reuse_scope: "Template reuse scope",
             sub_template_adherence: "Template adherence",
             sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
             placeholder_divergence: "In your words — e.g. \"stick closely to the document\" / \"freely restructure and expand within the source\". Leave blank for a balanced default.",
@@ -150,6 +152,7 @@
             sec_refine: "先に設計仕様を精査",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
+            sub_template_reuse_scope: "テンプレートの再利用範囲",
             sub_template_adherence: "テンプレートの適用方法",
             sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
             placeholder_divergence: "自分の言葉でどうぞ — 例：「文書に忠実に」「元素材の範囲内で自由に再構成・展開」。空欄ならバランス型になります。",
@@ -262,6 +265,7 @@
             sec_refine: "先精修设计规范",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
+            sub_template_reuse_scope: "模板复用范围",
             sub_template_adherence: "模板遵循方式",
             sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
             placeholder_divergence: "用你自己的话写，例如「严格贴着文档来」/「在源材料范围内自由重组并展开」。留空则按平衡处理。",
@@ -723,7 +727,30 @@
         return (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
     }
 
+    function hasTemplateReuseScope() {
+        if (!REC) return false;
+        if (typeof REC._template_reuse_scope_enabled === "boolean") {
+            return REC._template_reuse_scope_enabled;
+        }
+        if (REC.recommend && REC.recommend.template_reuse_scope != null) return true;
+        return REC.template_reuse_scope != null;
+    }
+
+    function templateReuseScopeOptions() {
+        var options = (CAT && CAT.template_reuse_scope) || [];
+        if (REC && REC._template_replication_mode === "mirror") return options;
+        return options.filter(function (option) { return option.id !== "mirror"; });
+    }
+
+    function pickTemplateReuseScope() {
+        var options = templateReuseScopeOptions();
+        var recommended = recId("template_reuse_scope");
+        var ids = options.map(function (option) { return option.id; });
+        return ids.indexOf(recommended) >= 0 ? recommended : firstId(options);
+    }
+
     function hasTemplateAdherence() {
+        if (STATE.template_reuse_scope === "style") return false;
         if (!REC) return false;
         if (typeof REC._template_adherence_enabled === "boolean") {
             return REC._template_adherence_enabled;
@@ -1066,6 +1093,24 @@
             function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; refreshDirectionPreview(); },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
+        if (hasTemplateReuseScope()) {
+            var reuseField = el("div", "subfield");
+            var reuseOptions = templateReuseScopeOptions();
+            reuseField.appendChild(el("div", "subfield-label", t("sub_template_reuse_scope")));
+            enumField(reuseField, reuseOptions,
+                pickTemplateReuseScope(),
+                function () { return STATE.template_reuse_scope; },
+                function (v) {
+                    STATE.template_reuse_scope = v;
+                    if (v === "style") {
+                        delete STATE.template_adherence;
+                    } else if (!STATE.template_adherence) {
+                        STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
+                    }
+                    setTimeout(renderAll, 0);
+                });
+            sec.appendChild(reuseField);
+        }
         if (hasTemplateAdherence()) {
             var templateField = el("div", "subfield");
             templateField.appendChild(el("div", "subfield-label", t("sub_template_adherence")));
@@ -2095,6 +2140,11 @@
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
+        if (hasTemplateReuseScope()) {
+            STATE.template_reuse_scope = pickTemplateReuseScope();
+        } else {
+            delete STATE.template_reuse_scope;
+        }
         if (hasTemplateAdherence()) {
             STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
         } else {
@@ -2176,7 +2226,10 @@
             mode: STATE.mode,
             visual_style: STATE.visual_style
         };
-        if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
+        if (STATE.template_reuse_scope) payload.template_reuse_scope = STATE.template_reuse_scope;
+        if (STATE.template_reuse_scope !== "style" && STATE.template_adherence) {
+            payload.template_adherence = STATE.template_adherence;
+        }
         // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
         return payload;
@@ -2196,7 +2249,10 @@
             typography: STATE.typography,
             formula_policy: STATE.formula_policy
         };
-        if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
+        if (STATE.template_reuse_scope) payload.template_reuse_scope = STATE.template_reuse_scope;
+        if (STATE.template_reuse_scope !== "style" && STATE.template_adherence) {
+            payload.template_adherence = STATE.template_adherence;
+        }
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
         normalizeTypographyForSubmit(payload);
         return payload;
@@ -2274,6 +2330,7 @@
         var payload = JSON.parse(JSON.stringify(STATE));
         normalizeTypographyForSubmit(payload);
         payload.stage = "final";
+        if (payload.template_reuse_scope === "style") delete payload.template_adherence;
         payload.image_usage = selectedImageUsageIds(payload.image_usage);
         if (!payload.image_usage.length) {
             document.getElementById("confirm-status").textContent = t("image_usage_required");
