@@ -807,7 +807,9 @@
         return firstId(list);
     }
     // Render an enumerable field: ALL options from the catalog, recommended one
-    // badged, current selection from STATE, plus a trailing Custom box.
+    // badged, current selection from STATE, plus a trailing Custom box. Callers
+    // may place Custom on its own row when it represents a qualitatively
+    // different path rather than another preset.
     // `list` is either a flat array of {id,label,desc,dim,viewbox} or a grouped array
     // of {group, items:[...]}.
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
@@ -884,10 +886,11 @@
             return chip;
         }
 
+        var chipsClass = "chips" + (opts2.chipsClass ? " " + opts2.chipsClass : "");
         if (grouped) {
             list.forEach(function (g) {
                 if (groupLabel(g)) parent.appendChild(el("div", "group-label", groupLabel(g)));
-                var row = el("div", "chips");
+                var row = el("div", chipsClass);
                 (g.items || []).forEach(function (o) { row.appendChild(makeChip(o)); });
                 parent.appendChild(row);
             });
@@ -897,10 +900,15 @@
                 parent.appendChild(lastRow);
             }
         } else {
-            var wrap = el("div", "chips");
+            var wrap = el("div", chipsClass);
             flat.forEach(function (o) { wrap.appendChild(makeChip(o)); });
-            if (allowCustom) wrap.appendChild(buildCustomChip());
+            if (allowCustom && !opts2.customOnOwnRow) wrap.appendChild(buildCustomChip());
             parent.appendChild(wrap);
+            if (allowCustom && opts2.customOnOwnRow) {
+                var customRow = el("div", "chips custom-chip-row");
+                customRow.appendChild(buildCustomChip());
+                parent.appendChild(customRow);
+            }
         }
         if (allowCustom) parent.appendChild(customInput);
 
@@ -1308,15 +1316,53 @@
     function renderNarrativeDirection(host) {
         var sec = section(4, "sec_narrative");
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
-            function () { return STATE.mode; }, function (v) { STATE.mode = v; }, { allowCustom: true });
+            function () { return STATE.mode; }, function (v) { STATE.mode = v; },
+            { allowCustom: true, customOnOwnRow: true });
         host.appendChild(sec);
+    }
+
+    function visualStyleRecommendationSpectrum() {
+        var raw = (REC && Array.isArray(REC.visual_style_spectrum)) ? REC.visual_style_spectrum : [];
+        if (!raw.length) {
+            raw = designDirectionCandidates().map(function (candidate) {
+                return {
+                    id: candidate && candidate.visual_style,
+                    tag_zh: candidate && candidate.name_zh,
+                    tag_en: candidate && candidate.name_en,
+                    tag_ja: candidate && candidate.name_ja,
+                    note_zh: candidate && candidate.note_zh,
+                    note_en: candidate && candidate.note_en,
+                    note_ja: candidate && candidate.note_ja
+                };
+            });
+        }
+        var spectrum = [];
+        var seen = {};
+        raw.some(function (item) {
+            var id = normalizeRecId("visual_style", item && item.id);
+            if (!id || seen[id]) return false;
+            seen[id] = true;
+            spectrum.push(Object.assign({}, item, { id: id }));
+            return spectrum.length === 3;
+        });
+        if (!spectrum.length) {
+            var fallbackId = recId("visual_style") || normalizeRecId("visual_style", directionField("visual_style"));
+            if (fallbackId) spectrum.push({ id: fallbackId });
+        }
+        return spectrum;
     }
 
     function renderVisualDirection(host) {
         var sec = section(5, "sec_visual");
         enumField(sec, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
             function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
-            { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
+            {
+                allowCustom: true,
+                customOnOwnRow: true,
+                spectrum: visualStyleRecommendationSpectrum(),
+                preview: "visual_style",
+                chipsClass: "visual-style-grid"
+            });
         host.appendChild(sec);
     }
 

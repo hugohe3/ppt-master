@@ -297,7 +297,23 @@ body {
     margin: 4px 0 0;
 }
 .chip-preview-visual_style {
-    width: 320px;
+    width: min(100%, 430px);
+    flex-direction: row;
+    align-items: center;
+}
+.chip-preview-visual_style .option-preview {
+    flex: 0 0 clamp(116px, 36%, 160px);
+}
+.chip-preview-visual_style .chip-copy {
+    flex: 1;
+}
+.visual-style-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+}
+.visual-style-grid .chip-preview-visual_style {
+    width: 100%;
 }
 .option-preview {
     width: 100%;
@@ -589,6 +605,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 
 /* ---- custom input ---- */
 .custom-input { margin-top: 8px; }
+.custom-chip-row { margin-top: 8px; }
 
 /* ---- recommended chip + group labels ---- */
 .chip.recommended {
@@ -866,7 +883,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
         width: min(100%, 230px);
     }
     .chip-preview-visual_style {
-        width: min(100%, 320px);
+        width: 100%;
     }
     .style-preview-card {
         flex-wrap: wrap;
