@@ -46,29 +46,32 @@ rm -rf "$STAGE" "$BUILD_DIR"
 mkdir -p "$STAGE/bin" "$STAGE/skills" "$BUILD_DIR"
 
 # ── venv + deps ─────────────────────────────────────────────
+# Do NOT `source activate` — on Windows Git Bash the path is Scripts/, not bin/,
+# and sourcing is fragile in CI. Call venv interpreters by absolute path instead.
 VENV="$BUILD_DIR/venv"
 "$PYTHON" -m venv "$VENV"
-# shellcheck disable=SC1091
-if [[ -f "$VENV/bin/activate" ]]; then
-  # Unix
-  # shellcheck source=/dev/null
-  source "$VENV/bin/activate"
-elif [[ -f "$VENV/Scripts/activate" ]]; then
-  # Windows (Git Bash)
-  # shellcheck source=/dev/null
-  source "$VENV/Scripts/activate"
+if [[ -x "$VENV/bin/python" ]]; then
+  VENV_PY="$VENV/bin/python"
+  VENV_BIN="$VENV/bin"
+elif [[ -x "$VENV/Scripts/python.exe" ]]; then
+  VENV_PY="$VENV/Scripts/python.exe"
+  VENV_BIN="$VENV/Scripts"
+elif [[ -x "$VENV/Scripts/python" ]]; then
+  VENV_PY="$VENV/Scripts/python"
+  VENV_BIN="$VENV/Scripts"
 else
-  echo "error: venv activate script not found under $VENV" >&2
+  echo "error: venv python not found under $VENV (bin/ or Scripts/)" >&2
+  ls -la "$VENV" "$VENV/bin" "$VENV/Scripts" 2>/dev/null || true
   exit 1
 fi
-python -m pip install -U pip wheel setuptools
-python -m pip install -r "$ROOT/engine/requirements-engine.txt"
-# Ensure pyinstaller is on PATH for Windows Scripts/
-export PATH="$VENV/bin:$VENV/Scripts:$PATH"
+export PATH="$VENV_BIN:$PATH"
+echo "==> venv python: $VENV_PY"
+"$VENV_PY" -m pip install -U pip wheel setuptools
+"$VENV_PY" -m pip install -r "$ROOT/engine/requirements-engine.txt"
 
 # ── PyInstaller onedir launcher ─────────────────────────────
 echo "==> PyInstaller launcher"
-pyinstaller \
+"$VENV_PY" -m PyInstaller \
   --noconfirm \
   --clean \
   --onedir \
