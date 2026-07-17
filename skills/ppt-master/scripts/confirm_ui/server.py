@@ -57,14 +57,23 @@ from analysis_library import (  # noqa: E402
     build_library_manifest,
     compile_library,
     load_library,
+    resolve_domain_item_ids,
 )
 from intake_manifest import build_source_manifest  # noqa: E402
 from outline_gate import (  # noqa: E402
+    CONTENT_INVENTORY_PATH,
     CONFIRMED_NAME as OUTLINE_CONFIRMED_NAME,
     DRAFT_NAME as OUTLINE_DRAFT_NAME,
+    analysis_selection_hash,
     check_outline_confirmation,
     confirm_outline,
+    content_inventory_hash,
+    content_inventory_state,
+    image_manifest_ready,
+    load_workflow_selection,
+    planning_input_hash,
     validate_outline,
+    workflow_gates,
 )
 from project_manager import ProjectManager  # noqa: E402
 from server_common import (  # noqa: E402
@@ -173,53 +182,23 @@ def _analysis_library_catalog() -> dict:
     ):
         compile_library(workbook, _ANALYSIS_LIBRARY_DIR)
     library = load_library(_ANALYSIS_LIBRARY_DIR)
+    styles = []
+    for style in library['styles']:
+        item = dict(style)
+        item['preview_url'] = f"/analysis-library/{item['preview']}"
+        styles.append(item)
     return {
         'schema_version': library['schema_version'],
         'library_id': library['library_id'],
         'default_style_id': library['default_style_id'],
-        'styles': library['styles'],
+        'styles': styles,
         'domains': library['domains'],
     }
 
 
 def _image_manifest_ready(project_path: Path) -> tuple[bool, dict | None]:
-    """Return whether a selected pack has generated every enabled image."""
-    manifest = _read_json(project_path / 'images' / 'image_prompts.json')
-    selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
-    selected_item_ids = [
-        str(value) for value in selection.get('analysis_item_ids', []) if str(value).strip()
-    ]
-    if selected_item_ids:
-        if not isinstance(manifest, dict):
-            return False, None
-        if manifest.get('analysis_style_id') != selection.get('analysis_style_id'):
-            return False, manifest
-        manifest_items = {
-            str(item.get('analysis_item_id') or ''): item
-            for item in manifest.get('items') or []
-        }
-        ready = all(
-            item_id in manifest_items
-            and manifest_items[item_id].get('status') == 'Generated'
-            and (
-                project_path
-                / 'images'
-                / Path(str(manifest_items[item_id].get('filename') or '')).name
-            ).is_file()
-            for item_id in selected_item_ids
-        )
-        return ready, manifest
-    if not selection.get('analysis_pack_id'):
-        return True, manifest
-    if not isinstance(manifest, dict):
-        return False, None
-    items = manifest.get('items') or []
-    ready = bool(items) and all(
-        item.get('status') == 'Generated'
-        and (project_path / 'images' / Path(str(item.get('filename') or '')).name).is_file()
-        for item in items
-    )
-    return ready, manifest
+    """Backward-compatible alias for the shared workflow gate helper."""
+    return image_manifest_ready(project_path)
 
 
 def _wait_for_result(
@@ -530,6 +509,14 @@ def create_app(
     app.config['LOCK_FILE'] = lock_file
     app.config['LAST_REQUEST_TIME'] = time.time()
     app.config['WIZARD_MODE'] = wizard_mode
+    if wizard_mode:
+        version_path = project_path / 'workflow_version.json'
+        if not version_path.exists():
+            _write_json(version_path, {
+                'schema_version': 4,
+                'workflow': 'airi-content-planning',
+                'created_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+            })
 
     @app.before_request
     def _update_activity():
@@ -583,6 +570,10 @@ def create_app(
     def workflow_image(filename: str):
         return send_from_directory(project_path / 'images', filename)
 
+    @app.route('/analysis-library/<path:filename>')
+    def analysis_library_preview(filename: str):
+        return send_from_directory(_ANALYSIS_LIBRARY_DIR, filename)
+
     @app.route('/api/workflow/state')
     def workflow_state():
         """Serve the persisted v2 wizard state and discovery catalogs."""
@@ -590,7 +581,7 @@ def create_app(
             pack_index = _read_json(_ANALYSIS_PACKS_DIR / 'analysis_packs_index.json', {}) or {}
             analysis_library = _analysis_library_catalog()
             deck_index = _read_json(_TEMPLATES_DIR / 'decks' / 'decks_index.json', {}) or {}
-            analysis_ready, image_manifest = _image_manifest_ready(project_path)
+            analysis_ready, image_manifest = image_manifest_ready(project_path)
             images = []
             image_dir = project_path / 'images'
             if image_dir.is_dir():
@@ -603,16 +594,23 @@ def create_app(
                             'path': f'images/{path.name}',
                             'url': f'/workflow-images/{path.name}',
                         })
-            outline_ready, outline_message = check_outline_confirmation(
-                project_path,
-                optional=True,
+            gates, outline_message = workflow_gates(project_path)
+            selection = load_workflow_selection(project_path)
+            inventory_ready, content_inventory, inventory_message = content_inventory_state(
+                project_path
+            )
+            recommendations = _read_json(confirm_dir / RECOMMENDATIONS_NAME, {}) or {}
+            recommended_style = str(
+                (recommendations.get('recommend') or {}).get('visual_style') or 'swiss-minimal'
             )
             payload = {
-                'schema_version': 2,
+                'schema_version': 4,
                 'project': project_path.name,
                 'source_manifest': _read_json(project_path / 'source_manifest.json'),
                 'source_synthesis': _read_json(project_path / 'source_synthesis.json'),
-                'selection': _read_json(project_path / 'workflow_selection.json', {}) or {},
+                'workflow_brief': _read_json(project_path / 'workflow_brief.json', {}) or {},
+                'selection': selection,
+                'visual_style_recommendation': recommended_style,
                 'analysis_library': analysis_library,
                 'analysis_packs': pack_index.get('packs', []),
                 'templates': [
@@ -627,10 +625,14 @@ def create_app(
                 'images': images,
                 'image_manifest': image_manifest,
                 'analysis_ready': analysis_ready,
+                'content_inventory': content_inventory,
+                'content_inventory_ready': inventory_ready,
+                'content_inventory_message': inventory_message,
                 'outline_draft': _read_json(project_path / OUTLINE_DRAFT_NAME),
                 'outline_confirmed': _read_json(project_path / OUTLINE_CONFIRMED_NAME),
-                'outline_ready': outline_ready,
+                'outline_ready': gates['outline_ready'],
                 'outline_message': outline_message,
+                'gates': gates,
             }
             response = jsonify(payload)
             response.headers['Cache-Control'] = 'no-store'
@@ -684,6 +686,22 @@ def create_app(
                 move=True,
             )
             manifest_path, synthesis_path = build_source_manifest(project_path)
+            brief = {
+                'schema_version': 1,
+                'updated_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+                'audience': str(request.form.get('audience') or '').strip(),
+                'objective': str(request.form.get('objective') or '').strip(),
+                'canvas': str(request.form.get('canvas') or 'ppt169').strip(),
+                'delivery_purpose': str(request.form.get('delivery_purpose') or 'balanced').strip(),
+                'content_divergence': str(request.form.get('content_divergence') or '').strip(),
+                'color_notes': str(request.form.get('color_notes') or '').strip(),
+                'typography_notes': str(request.form.get('typography_notes') or '').strip(),
+                'presentation_image_policy': str(
+                    request.form.get('presentation_image_policy') or ''
+                ).strip(),
+            }
+            _write_json(project_path / 'workflow_brief.json', brief)
+            (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
             style_decks = sorted((project_path / 'sources').glob('style_template_*.ppt*'))
             if style_decks:
                 _write_json(
@@ -710,28 +728,41 @@ def create_app(
 
     @app.route('/api/workflow/selection', methods=['POST'])
     def workflow_selection():
-        """Persist deck style plus two-level analysis-library choices."""
+        """Persist schema-v4 style and explicit professional-analysis decisions."""
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):
             return jsonify({'error': 'invalid payload'}), 400
+        analysis_required = payload.get('analysis_required')
+        if not isinstance(analysis_required, bool):
+            return jsonify({'error': 'confirm whether AI analysis images are required'}), 400
+        visual_style = str(payload.get('visual_style') or '').strip()
+        visual_style_source = str(payload.get('visual_style_source') or '')
+        if not visual_style:
+            return jsonify({'error': 'select or accept a presentation visual style'}), 400
+        if visual_style_source not in {'user', 'auto'}:
+            return jsonify({'error': 'visual_style_source must be user or auto'}), 400
         selection = {
-            'schema_version': 3,
-            'status': 'selected',
+            'schema_version': 4,
+            'status': 'selection-confirmed',
             'updated_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
-            'visual_style': str(payload.get('visual_style') or ''),
+            'visual_style': visual_style,
+            'visual_style_source': visual_style_source,
             'template_id': str(payload.get('template_id') or ''),
             'custom_style_description': str(payload.get('custom_style_description') or ''),
-            'analysis_pack_id': str(payload.get('analysis_pack_id') or ''),
-            'analysis_library_id': str(payload.get('analysis_library_id') or ''),
-            'analysis_style_id': str(payload.get('analysis_style_id') or ''),
+            'analysis_required': analysis_required,
+            'analysis_selection_confirmed': False,
+            'analysis_pack_id': str(payload.get('analysis_pack_id') or '') if analysis_required else '',
+            'analysis_library_id': str(payload.get('analysis_library_id') or '') if analysis_required else '',
+            'analysis_style_id': str(payload.get('analysis_style_id') or '') if analysis_required else '',
+            'analysis_domain_id': str(payload.get('analysis_domain_id') or '') if analysis_required else '',
             'analysis_item_ids': list(dict.fromkeys(
                 str(value)
-                for value in (payload.get('analysis_item_ids') or [])
+                for value in ((payload.get('analysis_item_ids') or []) if analysis_required else [])
                 if str(value).strip()
             )),
             'reference_images': [
                 str(value)
-                for value in (payload.get('reference_images') or [])
+                for value in ((payload.get('reference_images') or []) if analysis_required else [])
                 if str(value).strip()
             ],
             'provider_profile': str(payload.get('provider_profile') or DEFAULT_PROFILE),
@@ -741,7 +772,7 @@ def create_app(
                 _pack_record(selection['analysis_pack_id'])
             except (OSError, ValueError) as exc:
                 return jsonify({'error': str(exc)}), 400
-        if selection['analysis_item_ids']:
+        if analysis_required:
             try:
                 library = _analysis_library_catalog()
                 valid_styles = {item['id'] for item in library.get('styles', [])}
@@ -754,23 +785,43 @@ def create_app(
                     raise ValueError('invalid analysis library id')
                 if selection['analysis_style_id'] not in valid_styles:
                     raise ValueError('select a valid analysis style')
-                unknown = [
-                    item_id
-                    for item_id in selection['analysis_item_ids']
-                    if item_id not in valid_items
-                ]
+                selection['analysis_item_ids'] = resolve_domain_item_ids(
+                    library,
+                    selection['analysis_domain_id'],
+                    selection['analysis_item_ids'],
+                )
+                unknown = [item_id for item_id in selection['analysis_item_ids'] if item_id not in valid_items]
                 if unknown:
                     raise ValueError(f"unknown analysis type(s): {', '.join(unknown)}")
             except (OSError, ValueError, json.JSONDecodeError) as exc:
                 return jsonify({'error': str(exc)}), 400
+        selection['analysis_selection_confirmed'] = True
+        selection['analysis_selection_hash'] = analysis_selection_hash(selection)
+        prior = load_workflow_selection(project_path)
         _write_json(project_path / 'workflow_selection.json', selection)
+        if any(
+            prior.get(key) != selection.get(key)
+            for key in (
+                'visual_style',
+                'visual_style_source',
+                'template_id',
+                'custom_style_description',
+                'analysis_required',
+                'analysis_selection_hash',
+            )
+        ):
+            (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
         return jsonify({'status': 'ok', 'selection': selection})
 
     @app.route('/api/workflow/generate-analysis', methods=['POST'])
     def workflow_generate_analysis():
-        """Generate selected analysis types using the selected image style."""
+        """Generate internally resolved analysis items for the selected domain and style."""
         payload = request.get_json(silent=True) or {}
-        selection = _read_json(project_path / 'workflow_selection.json', {}) or {}
+        selection = load_workflow_selection(project_path)
+        if selection.get('analysis_required') is not True:
+            return jsonify({'error': 'analysis generation is available only after choosing Yes'}), 409
+        if not selection.get('analysis_selection_confirmed'):
+            return jsonify({'error': 'confirm the analysis style and domain first'}), 409
         style_id = str(payload.get('analysis_style_id') or selection.get('analysis_style_id') or '')
         item_ids = payload.get('analysis_item_ids') or selection.get('analysis_item_ids') or []
         references = payload.get('reference_images') or selection.get('reference_images') or []
@@ -781,7 +832,7 @@ def create_app(
         )
         dry_run = bool(payload.get('dry_run'))
         if not style_id or not item_ids:
-            return jsonify({'error': 'select an analysis style and at least one type'}), 400
+            return jsonify({'error': 'select an analysis style and analysis domain'}), 400
         try:
             manifest = build_library_manifest(
                 _ANALYSIS_LIBRARY_DIR,
@@ -794,6 +845,9 @@ def create_app(
             )
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             return jsonify({'error': str(exc)}), 400
+        manifest_data = _read_json(Path(manifest), {}) or {}
+        manifest_data['analysis_selection_hash'] = selection['analysis_selection_hash']
+        _write_json(Path(manifest), manifest_data)
         command = [
             sys.executable,
             str(_SCRIPTS_DIR / 'image_gen.py'),
@@ -826,6 +880,40 @@ def create_app(
             'selected_count': len(item_ids),
             'stdout': completed.stdout[-4000:],
         })
+
+    @app.route('/api/workflow/content-inventory', methods=['GET', 'POST'])
+    def workflow_content_inventory():
+        """Read or persist the post-analysis content and page-count inventory."""
+        inventory_path = project_path / CONTENT_INVENTORY_PATH
+        if request.method == 'GET':
+            inventory = _read_json(inventory_path)
+            if inventory is None:
+                return jsonify({'error': 'content inventory not found'}), 404
+            return jsonify(inventory)
+        gates, message = workflow_gates(project_path)
+        required = ('style_confirmed', 'analysis_decided', 'analysis_selection_confirmed', 'analysis_ready')
+        if not all(gates.get(key) for key in required):
+            return jsonify({'error': message}), 409
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({'error': 'invalid payload'}), 400
+        try:
+            page_count = int(payload.get('recommended_page_count'))
+        except (TypeError, ValueError):
+            return jsonify({'error': 'recommended_page_count must be an integer'}), 400
+        if page_count <= 0 or not payload.get('page_count_rationale'):
+            return jsonify({'error': 'page count and rationale are required'}), 400
+        inventory = dict(payload)
+        inventory.update({
+            'schema_version': 1,
+            'status': 'ready',
+            'updated_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'recommended_page_count': page_count,
+            'planning_input_hash': planning_input_hash(project_path),
+        })
+        _write_json(inventory_path, inventory)
+        (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
+        return jsonify({'status': 'ok', 'inventory': inventory})
 
     @app.route('/api/workflow/generate-pack', methods=['POST'])
     def workflow_generate_pack():
@@ -893,13 +981,26 @@ def create_app(
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):
             return jsonify({'error': 'invalid payload'}), 400
-        errors = validate_outline(payload)
+        gates, message = workflow_gates(project_path)
+        prerequisites = (
+            'style_confirmed',
+            'analysis_decided',
+            'analysis_selection_confirmed',
+            'analysis_ready',
+            'content_inventory_ready',
+        )
+        if not all(gates.get(key) for key in prerequisites):
+            return jsonify({'error': message}), 409
+        candidate = dict(payload)
+        candidate['schema_version'] = 3
+        errors = validate_outline(candidate)
         if errors:
             return jsonify({'error': '; '.join(errors)}), 400
-        draft = dict(payload)
-        draft['schema_version'] = 2
+        draft = candidate
         draft['status'] = 'draft'
         draft['updated_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+        draft['planning_input_hash'] = planning_input_hash(project_path)
+        draft['content_inventory_hash'] = content_inventory_hash(project_path)
         _write_json(draft_path, draft)
         (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
         return jsonify({'status': 'ok', 'outline': draft})
@@ -907,9 +1008,17 @@ def create_app(
     @app.route('/api/workflow/outline/confirm', methods=['POST'])
     def workflow_outline_confirm():
         """Confirm the current outline only after selected analysis images exist."""
-        analysis_ready, _ = _image_manifest_ready(project_path)
-        if not analysis_ready:
-            return jsonify({'error': 'selected analysis images are not fully generated'}), 409
+        gates, message = workflow_gates(project_path)
+        prerequisites = (
+            'style_confirmed',
+            'analysis_decided',
+            'analysis_selection_confirmed',
+            'analysis_ready',
+            'content_inventory_ready',
+            'outline_ready',
+        )
+        if not all(gates.get(key) for key in prerequisites):
+            return jsonify({'error': message}), 409
         try:
             confirmed = confirm_outline(project_path)
         except (OSError, ValueError) as exc:
@@ -930,6 +1039,7 @@ def create_app(
             destination = image_dir / f'{destination.stem}_{int(time.time())}{destination.suffix}'
         file_storage.save(destination)
         build_source_manifest(project_path)
+        (project_path / OUTLINE_CONFIRMED_NAME).unlink(missing_ok=True)
         return jsonify({
             'status': 'ok',
             'name': destination.name,

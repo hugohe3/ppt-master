@@ -57,6 +57,12 @@ DOMAIN_IDS = {
     "城市规划": "planning",
     "规划": "planning",
 }
+DEFAULT_DOMAIN_ITEM_IDS = {
+    "architecture": ("ARC-010", "ARC-012", "ARC-024"),
+    "interior": ("INT-001", "INT-003", "INT-007"),
+    "landscape": ("LND-005", "LND-008", "LND-017"),
+    "planning": ("URB-006", "URB-008", "URB-016"),
+}
 EDITABLE_OVERLAY_SUFFIX = (
     "\n\n「PPT 可编辑输出约束（优先级最高）」成图内不要生成标题、段落、图例文字、"
     "地名、尺寸、层数、百分比或其他数值；不得虚构测绘、性能或计算数据。"
@@ -219,11 +225,23 @@ def compile_library(
             )
 
         first = sheet_rows[0]
+        preview_dir = destination / "previews"
+        preview_candidates = [
+            preview_dir / f"{style_id}{suffix}"
+            for suffix in (".svg", ".png", ".jpg", ".jpeg", ".webp")
+        ]
+        preview_path = next((path for path in preview_candidates if path.is_file()), None)
+        if preview_path is None:
+            raise ValueError(
+                f"Analysis style '{style_id}' is missing a preview under "
+                f"{preview_dir}"
+            )
         styles.append(
             {
                 "id": style_id,
                 "name_zh": _text(first["style_label"]) or sheet.title,
                 "sheet_name": sheet.title,
+                "preview": preview_path.relative_to(destination).as_posix(),
                 "tags": [tag for tag in _text(first["style_tags"]).split("|") if tag],
                 "item_count": len(sheet_rows),
                 "domain_counts": dict(domain_counts),
@@ -305,6 +323,13 @@ def load_library(library_dir: str | Path) -> dict[str, Any]:
     styles = json.loads(styles_path.read_text(encoding="utf-8"))
     types = json.loads(types_path.read_text(encoding="utf-8"))
     matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
+    for style in styles.get("styles", []):
+        preview = str(style.get("preview") or "")
+        preview_path = (directory / preview).resolve()
+        if not preview or directory not in preview_path.parents or not preview_path.is_file():
+            raise ValueError(
+                f"Analysis style '{style.get('id')}' has an invalid preview: {preview}"
+            )
     return {
         "schema_version": 1,
         "library_id": styles["library_id"],
@@ -313,6 +338,43 @@ def load_library(library_dir: str | Path) -> dict[str, Any]:
         "domains": types["domains"],
         "matrix": matrix,
     }
+
+
+def resolve_domain_item_ids(
+    library: dict[str, Any],
+    domain_id: str,
+    explicit_item_ids: list[str] | None = None,
+) -> list[str]:
+    """Resolve a user-facing domain into internal analysis type ids."""
+    domain = next(
+        (item for item in library.get("domains", []) if item.get("id") == domain_id),
+        None,
+    )
+    if domain is None:
+        raise ValueError(f"Unknown analysis domain: {domain_id}")
+    valid_ids = {str(item.get("id") or "") for item in domain.get("items", [])}
+    requested = list(
+        dict.fromkeys(
+            _text(item_id)
+            for item_id in (explicit_item_ids or [])
+            if _text(item_id)
+        )
+    )
+    if requested:
+        unknown = [item_id for item_id in requested if item_id not in valid_ids]
+        if unknown:
+            raise ValueError(
+                f"Analysis type(s) outside domain '{domain_id}': {', '.join(unknown)}"
+            )
+        return requested
+    defaults = [
+        item_id
+        for item_id in DEFAULT_DOMAIN_ITEM_IDS.get(domain_id, ())
+        if item_id in valid_ids
+    ]
+    if defaults:
+        return defaults
+    return [str(item.get("id")) for item in domain.get("items", [])[:3]]
 
 
 def build_library_manifest(

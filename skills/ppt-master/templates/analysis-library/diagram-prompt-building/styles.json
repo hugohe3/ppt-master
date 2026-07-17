@@ -2,7 +2,7 @@
   "schema_version": 1,
   "library_id": "diagram-prompt-building-v1",
   "source_workbook": "prompts_master.xlsx",
-  "compiled_at": "2026-07-15T18:53:18",
+  "compiled_at": "2026-07-17T17:10:25",
   "default_style_id": "light_fresh_ppt_detailed",
   "style_count": 7,
   "styles": [
@@ -10,6 +10,7 @@
       "id": "light_fresh_ppt_detailed",
       "name_zh": "浅色清新分析 PPT（详细版）",
       "sheet_name": "浅色清新分析 PPT（详细版）",
+      "preview": "previews/light_fresh_ppt_detailed.svg",
       "tags": [
         "light",
         "fresh",
@@ -29,6 +30,7 @@
       "id": "blueprint_report_clean",
       "name_zh": "蓝图技术报告风",
       "sheet_name": "蓝图技术报告风",
+      "preview": "previews/blueprint_report_clean.svg",
       "tags": [
         "blueprint",
         "report",
@@ -47,6 +49,7 @@
       "id": "competition_board_minimal",
       "name_zh": "极简竞赛展板风",
       "sheet_name": "极简竞赛展板风",
+      "preview": "previews/competition_board_minimal.svg",
       "tags": [
         "competition",
         "board",
@@ -65,6 +68,7 @@
       "id": "consulting_executive_clean",
       "name_zh": "咨询顾问简报风",
       "sheet_name": "咨询顾问简报风",
+      "preview": "previews/consulting_executive_clean.svg",
       "tags": [
         "consulting",
         "executive",
@@ -83,6 +87,7 @@
       "id": "dark_tech_presentation",
       "name_zh": "深色科技汇报风",
       "sheet_name": "深色科技汇报风",
+      "preview": "previews/dark_tech_presentation.svg",
       "tags": [
         "dark",
         "tech",
@@ -101,6 +106,7 @@
       "id": "editorial_magazine_soft",
       "name_zh": "杂志编辑软排版风",
       "sheet_name": "杂志编辑软排版风",
+      "preview": "previews/editorial_magazine_soft.svg",
       "tags": [
         "editorial",
         "magazine",
@@ -119,6 +125,7 @@
       "id": "pastel_campus_schematic",
       "name_zh": "白模体块叠涂分析图风",
       "sheet_name": "白模体块叠涂分析图风",
+      "preview": "previews/pastel_campus_schematic.svg",
       "tags": [
         "white_massing",
         "parallel_projection",

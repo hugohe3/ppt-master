@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect width="320" height="180" fill="#092f55"/><g stroke="#1b527c" stroke-width=".5"><path d="M0 20h320M0 40h320M0 60h320M0 80h320M0 100h320M0 120h320M0 140h320M0 160h320"/><path d="M20 0v180M40 0v180M60 0v180M80 0v180M100 0v180M120 0v180M140 0v180M160 0v180M180 0v180M200 0v180M220 0v180M240 0v180M260 0v180M280 0v180M300 0v180"/></g>
+  <g fill="none" stroke="#a8ddff" stroke-width="1.7"><path d="M62 132V78l58-31 46 24v61z"/><path d="M166 132V71l57-24 38 22v63z"/><path d="M48 142h232M54 151h216"/><path d="M120 47v85M223 47v85" stroke-dasharray="4 3"/></g>
+  <g font-family="Consolas,Arial" fill="#d9f1ff"><text x="17" y="24" font-size="12" font-weight="700">MASSING / A-01</text><text x="17" y="39" font-size="7">RESIDENTIAL VOLUME STUDY</text><text x="263" y="165" font-size="7">1:500</text></g>
+</svg>

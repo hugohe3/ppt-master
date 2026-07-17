@@ -1,7 +1,7 @@
 ---
 name: ppt-master
 description: >
-  AI-driven multi-source presentation system with a local intake/style/outline wizard,
+  AI-driven multi-source presentation system with reusable chat contact sheets,
   reference-image analysis packs, editable SVG pages, and native PPTX export. Converts
   PDF/DOCX/PPTX/Excel/images/URL/Markdown/text through multi-role collaboration. Use
   when user asks to "create PPT", "make presentation",
@@ -12,7 +12,7 @@ description: >
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
-**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
+**Core Pipeline**: `Source Intake → Visual Style + Analysis Decision → Analysis Generation → Content Inventory + Page Outline → Outline Confirmation → Executor → Export`
 
 > [!CAUTION]
 > ## 🚨 Global Execution Discipline (MANDATORY)
@@ -21,7 +21,7 @@ description: >
 >
 > 1. **SERIAL EXECUTION** — Steps MUST be executed in order; the output of each step is the input for the next. Non-BLOCKING adjacent steps may proceed continuously once prerequisites are met, without waiting for the user to say "continue"
 > 2. **BLOCKING = HARD STOP** — Steps marked ⛔ BLOCKING require a full stop; the AI MUST wait for an explicit user response before proceeding and MUST NOT make any decisions on behalf of the user
-> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: the Strategist confirmation stage in Step 4 is ⛔ BLOCKING — the AI MUST present recommendations and wait for explicit user confirmation before proceeding. Once the user confirms, all subsequent non-BLOCKING steps — design spec output, SVG generation, speaker notes, and post-processing — may proceed automatically without further user confirmation)
+> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. New/restructured decks have two ⛔ BLOCKING decisions: the explicit style + professional-analysis decision, then the final page-outline confirmation. Page count MUST NOT be locked before the analysis decision is resolved and all requested analysis images exist.
 > 4. **GATE BEFORE ENTRY** — Each Step has prerequisites (🚧 GATE) listed at the top; these MUST be verified before starting that Step
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
 > 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
@@ -90,6 +90,7 @@ description: >
 | `${SKILL_DIR}/scripts/analysis_pack.py` | Validate Excel prompt packs and build reference-image manifests |
 | `${SKILL_DIR}/scripts/analysis_library.py` | Compile one-style-per-sheet workbooks and build selected style × type manifests |
 | `${SKILL_DIR}/scripts/outline_gate.py` | Validate, confirm, and check the editable page-outline gate |
+| `${SKILL_DIR}/scripts/build_contact_sheets.py` | Rebuild reusable PPT-style / analysis-style selection sheets and the numbered analysis-type list |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
@@ -104,7 +105,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 | Analysis prompt packs | `${SKILL_DIR}/templates/analysis-packs/analysis_packs_index.json` | User-selected Excel prompt packs compiled to reference-image jobs |
-| Analysis prompt matrix | `${SKILL_DIR}/templates/analysis-library/diagram-prompt-building/` | First choose an image style, then select analysis types grouped by four domains |
+| Analysis prompt matrix | `${SKILL_DIR}/templates/analysis-library/diagram-prompt-building/` | User chooses one of four domains; Strategist resolves internal type ids against the selected image style |
 
 ## Standalone Workflows
 
@@ -114,13 +115,21 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 ### AIRI v2 Visual Route
 
-For new projects that need uploads, numbered style/template selection, reference-image analysis packs, or page-by-page editing, run [`airi-workflow-wizard`](workflows/airi-workflow-wizard.md). Launch with:
+For every new or restructured deck, run [`airi-workflow-wizard`](workflows/airi-workflow-wizard.md) as the planning gate. It owns the reusable style contact sheets, the explicit professional-analysis Yes/No decision, post-analysis content inventory, and page-by-page outline confirmation.
+
+**Default surface — chat contact sheets.** Show these reusable assets directly in chat and ask the user to reply with numbers / ids:
+
+- `assets/contact-sheets/ppt_visual_styles.png` (SVG fallback: `.svg`)
+- `assets/contact-sheets/analysis_visual_styles.png` (SVG fallback: `.svg`)
+- `assets/contact-sheets/analysis_domains.md` for the four user-facing domains: architecture / interior / landscape / planning
+
+After a visual style, analysis style, preview, or analysis domain is added or changed, rebuild all three artifacts once:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wizard --daemon
+python3 ${SKILL_DIR}/scripts/build_contact_sheets.py
 ```
 
-The legacy chat and three-stage Confirm UI paths remain valid. The v2 route adds a second hard confirmation: when `outline_draft.json` exists, `outline_confirmed.json` must match its current hash before Executor starts.
+Do not start the browser planning server by default. `confirm_ui/server.py --wizard` remains an explicit opt-in compatibility surface only when the user asks for an interactive browser editor. The two blocking decisions and their order remain unchanged; never return to early page-count confirmation.
 
 ### PPTX Route Boundary
 
@@ -268,7 +277,7 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 |---|---|
 | `kind: brand` | `design_spec.md` + non-image assets → `<project>/templates/`; logo / illustration / icon **bitmaps** → `<project>/images/`. Strategist locks identity segment as truth; structure stays free. |
 | `kind: layout` | `design_spec.md` + SVG roster → `<project>/templates/`; any **bitmap** assets → `<project>/images/`. Strategist locks structure; identity decided in Strategist confirmation stage e–g. |
-| `kind: deck` | `design_spec.md` + template SVGs → `<project>/templates/`; logos / backgrounds / other **bitmaps** → `<project>/images/`. Strategist locks all segments; Strategist confirmation stage narrows to deck-content fields (audience / page count / outline / tone tweaks). |
+| `kind: deck` | `design_spec.md` + template SVGs → `<project>/templates/`; logos / backgrounds / other **bitmaps** → `<project>/images/`. Strategist locks all segments; planning narrows to audience / tone before analysis, then derives page count from the post-analysis content inventory. |
 
 ```bash
 TEMPLATE_DIR=<user-supplied path>
@@ -355,58 +364,25 @@ Read references/strategist.md
 
 **Channel ownership — read each fact once from its owning channel.** In the main pipeline the **content contract is the content-type files in `sources/`** — primarily `<stem>.md`, but also any user-supplied content the import archived there: `.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml` (a `metrics.json` or `data.csv` may carry core content — judge by what the file holds). Text, tables, and chart data values come from these (`ppt_to_md` now transcribes native chart data into Markdown tables). **Do NOT read pipeline sidecars in `sources/` as content**: `*.conversion_profile.json` (conversion audit) and `*_files/image_manifest.json` (asset index) are process metadata — open them only to audit a conversion or resolve assets, never as slide content. Converted-source originals archived in `sources/` (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) are read via their converted `<stem>.md`, not scanned directly in the main pipeline. The `analysis/` chart / table entries are a **structural digest** for outline decisions (which slides carried charts, type, series names) — not a second copy of the values; do NOT also pull chart values from `<stem>.slide_library.json` in the main pipeline. The `<stem>.slide_library.json` full structured data is owned by the direct-PPTX workflows: template-fill uses it as the native fill contract; beautify uses it for native chart / table data while keeping slide text from the Markdown.
 
-**Strategist confirmation stage** (full template: `templates/design_spec_reference.md`):
+**Content-planning confirmation** (full contracts: [`airi-workflow-wizard.md`](workflows/airi-workflow-wizard.md) and [`confirm_ui.md`](scripts/docs/confirm_ui.md)):
 
-⛔ **BLOCKING**: present the Strategist confirmation stage and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. This is the single core confirmation gate — once the final confirmation lands, all subsequent steps proceed automatically. The default Confirm UI delivers the gate in **three stages** (direction → design system → images / execution; see below); the chat fallback mirrors the same staged order.
+⛔ **BLOCKING 1 — style + analysis plan**:
 
-1. Canvas format
-2. Page count range
-3. Target audience
-4. Style objective
-5. Color scheme
-6. Icon usage approach
-7. Typography plan, including formula rendering policy
-8. Image usage approach
+1. Present every registered `visual_style` as a thumbnail. Badge the Strategist recommendation, but do not preselect it. If the user says "随便" / equivalent or continues without picking, apply the recommendation and record `visual_style_source: auto`; otherwise record `user`.
+2. Require an explicit `analysis_required: true | false`. A missing domain is never an implicit No.
+3. When true, ask the user for exactly one user-facing domain — architecture / interior / landscape / planning — plus one analysis-library style. Do not expose or ask for `ARC-*` / `INT-*` / `LND-*` / `URB-*` ids. Strategist derives the smallest useful internal `analysis_item_ids` set from the source material and records it with `analysis_domain_id`; the server uses the domain's curated defaults only when no internal ids were supplied. Generate only through `analysis_library.py` + the selected provider profile. Keep professional analysis images separate from cover / decorative / photographic image policy.
 
-**Confirm UI Auto-Launch (Mandatory — default visual confirmation surface)**: by default the Strategist confirmation stage is presented through an interactive local page in **three stages within one browser session** — Stage 1 confirms the direction anchors; the AI then re-derives the design-system layer from the **user's actual** anchors; Stage 2 confirms that layer; the AI then re-derives image and execution choices from the confirmed direction + design system; Stage 3 confirms the final operational layer. Color swatches, live font previews, icon samples, image-style reference previews, and candidate picks appear where they help judgment; the chat path is the always-valid fallback. [`scripts/docs/confirm_ui.md`](scripts/docs/confirm_ui.md) owns the schema, server lifecycle, port strategy, and fallback details; this section keeps the orchestration contract. The split:
+🚧 **POST-ANALYSIS GATE — content inventory before page count**:
 
-| Stage | Confirms | Driven by |
-|---|---|---|
-| **1 — direction anchors** | canvas · audience + core message + `content_divergence` + `delivery_purpose` *(PPT only — omitted on non-PPT canvases)* (all §c key info) · `mode` + `visual_style` | the source + user intent |
-| **2 — design system** (re-derived from Stage 1) | page count · color · typography (font + size) · icons · formula policy | the confirmed Stage 1 |
-| **3 — images / execution** (re-derived from Stage 1 + Stage 2) | image usage · generated-image style · AI-image generation path · generation mode · refine-spec toggle | the confirmed direction + design system |
+1. Wait until every requested analysis image is `Generated` and present on disk; an explicit No skips generation.
+2. Build `analysis/content_inventory.json` from source facts, user images, generated analysis images, actual aspect ratios, intended full/half/combined placement, copy blocks, and presentation density.
+3. Write `recommended_page_count` plus `page_count_rationale` only now. Never ask the user to lock page count earlier; `len(outline_draft.pages)` becomes the working and final count.
 
-> **Why three stages.** Design-system fields are anchored by the same few choices (`visual_style` anchors color / icon / typography; `delivery_purpose` sets the body size, page density, **and** the page-count recommendation). Image strategy depends on both the confirmed visual direction and the confirmed color system — its palette is color behavior only, while final HEX values follow Stage 2. Confirming direction first, then design system, then image / execution choices means each downstream stage fits the user's *real* choices instead of the AI's original assumptions. Page count is a **derived** field (content volume × `delivery_purpose`), which is why it lives in Stage 2, not up front.
+⛔ **BLOCKING 2 — page outline**: write the sourced page cards only after the inventory is current, present them for add/delete/reorder/copy/image edits, and wait for explicit confirmation. Every page carries `source_refs`; every image carries `source`. Any upstream change invalidates the inventory and confirmation. Any outline edit invalidates only the confirmation.
 
-Steps:
+The reusable numbered contact sheets in `assets/contact-sheets/` are the default visual surface. Show them in chat and execute the same two blocking decisions in the same order. Use the browser wizard only when the user explicitly asks for it. Do not use the legacy three-stage `/confirm` sequence for new/restructured decks.
 
-> ⛔ **Steps 2 → 3 → 4 are ONE uninterrupted run — do NOT yield to the user mid-flow.** When an intermediate `--wait` returns, the AI **immediately and autonomously** re-derives and writes the next stage in the **same turn**: do **not** summarize, ask a question, report progress, or end the turn in between. The browser is sitting on a "deriving…" spinner polling for the next stage you must write — stopping here strands the page and the user must prod you in chat to finish (a bug, not the intended flow). **Stage-1 and Stage-2 confirmations are intermediate machine handoffs, not stopping points.** The single ⛔ BLOCKING wait is the **final** confirmation at the end of step 4. (Chat-fallback path — only when the page never opened — is the exception: there you do present each stage in chat and wait for a reply.)
-
-1. **Write Stage 1** to `<project_path>/confirm_ui/recommendations.json` with `"stage": "stage1"` and only the anchor fields. New recommendations MUST use the canonical `stage` selector. Enumerable anchors (`canvas` / `mode` / `visual_style` / `delivery_purpose`) name a recommended canonical `id` in a `recommend` block (the page lists common options from `confirm_ui/static/catalogs.json`); `visual_style` also carries the ≥3-style `visual_style_spectrum` (safe / shifted / bold — same hard rule as h.5). `audience` and `content_divergence` are plain `{ "value": "<free text>" }`. `content_divergence` is the **free-text** field shown under audience in §c — how closely to follow the source vs how freely to reshape it (blank = balanced; facts stay sourced at every level); it is consumed by Strategist when authoring `§IX`, recorded in `design_spec.md §I`, carries no page-count coupling, and is **not** written to `spec_lock.md`. Set `lang` to the page language (`zh` / `en` / `ja`); visible text matches `lang`, or provide multilingual `name_zh` / `name_en` / `name_ja` + `note_zh` / `note_en` / `note_ja` — when the user's language is Japanese, set `lang: "ja"` and always include the `_ja` variants (labels resolve in the page language first — a `ja` page falls back ja → en → zh, so missing `_ja` labels silently render in English; zh/en pages keep their zh↔en fallback and only try `_ja` last).
-2. **Launch + wait for Stage 1.** Background launch; the parent returns when the page writes the stage-1 `result.json`. **Long tool timeout — 600000 ms** (the `--wait` ≈590 s budget):
-   ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
-   ```
-   Page opens at `http://localhost:5050` — the **same port as the Step 6 live preview** (they never run at once: this page shuts down at the end of Step 4). If 5050 is held, the launcher **auto-advances** (5051, …) — read the actual URL from the launch log and report it. The page does **not** close after Stage 1: it shows a "deriving…" state and polls for Stage 2. **Launch or wait failure is non-fatal**: if it fails or times out (flask missing, port blocked, no GUI / remote / web host), do **NOT** troubleshoot — **on any non-zero exit, re-check `result.json` once** for a fresh `status: stage1-confirmed` before dropping to the chat fallback. **On success (exit 0 with a stage-1 result), do not pause or report — go straight to step 3 in the same turn.**
-3. **Re-derive Stage 2 from the confirmed anchors, write it, then wait for the design-system handoff — immediately, same turn (the page is polling for it).** Read the stage-1 `result.json` (`status: stage1-confirmed`). Using the user's **actual** confirmed anchors (not your originals), author the design-system candidates and **overwrite** `recommendations.json` with `"stage": "stage2"`: page count (content volume × `delivery_purpose`); color and typography as **generative ≥3-candidate** fields (creative recommendations always offer real choice; fewer than 3 only on the honest-shortfall exception, with a stated reason; color: core `palette` with background/secondary_bg/primary/accent/secondary_accent/body_text; typography: CJK + Latin for `heading` and `body` with `css` preview stacks + `body_size` as the body baseline in **px** (every canvas) — **one fixed value per confirmed `delivery_purpose`** (`text` 20 / `balanced` 24 / `presentation` 32), not a range; each typography candidate must include topic-matched `sample_heading` / `sample_heading_latin` / `sample_body` / `sample_body_latin` preview text, never a fixed unrelated industry sample); enumerable `icons` / `formula_policy` (recommended `id`). The still-open page polls, renders Stage 2, and preserves the user's Stage 1 picks. Then attach to the already-running page, do **not** relaunch:
-   ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
-   ```
-   This returns when the page writes the stage-2 `result.json` (`status: stage2-confirmed`). On a non-zero exit, re-check `result.json` once before falling back to chat.
-4. **Re-derive Stage 3 from the confirmed anchors + design system, then wait for the final confirmation.** Read the stage-2 `result.json`. Author the image and execution recommendations and **overwrite** `recommendations.json` with `"stage": "stage3"`: `image_usage` as one or more source ids (`["ai"]`, `["ai","provided"]`, `["web","placeholder"]`, or `["none"]`; `none` is exclusive); `image_strategy.candidates` as **exactly three non-custom** rendering × palette recommendations from h.5 when `image_usage` includes `ai` (the page adds the fourth Custom card itself); enumerable `image_ai_path` / `generation_mode` and `refine_spec` (recommended `id` / boolean). If the recommendation involves several image sources, keep the source list structured in `recommend.image_usage` and write the usage rationale / page-role guidance into `image_notes` (for example, "封面和章节页用 AI 主视觉，产品页优先用户素材，行业背景页可用网络参考"). Write `image_ai_path` only when `image_usage` includes `ai`. Spot-illustration lean is **not** a candidate field here: it derives from the locked `visual_style`'s illustration propensity and is expressed only in the recommendation rationale / `image_notes`, never as a new confirmation field. Generated-image style palettes are **color behavior only**; final image colors follow the confirmed Stage-2 `color`. Custom image-strategy dimensions are handled by the built-in Custom card, are prose-only, and should not promise a gallery reference image. Then attach to the already-running page, do **not** relaunch (same 600000 ms budget):
-   ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
-   ```
-   This is the ⛔ BLOCKING completion: returns when the page writes the final `result.json` (`status: confirmed`, `stage: final`, carrying Stage 1 + Stage 2 + Stage 3 fields). On a non-zero exit, re-check `result.json` once. Confirmed sizes are **already px** (the system is px-only — no pt anywhere, no conversion): write `result.json` `typography.body_size` / `sizes` into `design_spec.md` / `spec_lock.md` / SVG verbatim. `generation_mode: "split"` / `refine_spec: true` are explicit user choices.
-5. **Close the confirm page (Mandatory cleanup — every path).** Shut the server down before leaving Step 4 so it cannot keep holding port 5050 (which Step 6 live preview reuses):
-   ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
-   ```
-   **Idempotent and required regardless of whether Confirm was clicked**: clicking the final Confirm already shuts the page down (then a no-op); the chat-fallback path leaves it running. Run it after reading the confirmation, before Step 5.
-
-**Always also print each stage's recommendations + URL in chat** as the always-valid fallback. **The chat fallback is staged too**: if the page never opens or a wait times out with no fresh result, present Stage 1 in chat → get confirmation → re-derive → present Stage 2 → get confirmation → re-derive → present Stage 3 → get confirmation → take those values. Either path converges.
-
-**Honoring the confirmation (result.json is authoritative — Mandatory)**: the confirmed values **override your own recommendations** when you write `design_spec.md` / `spec_lock.md`. A user who changed any field changed it on purpose. In particular, map `image_usage` to §VIII `Acquire Via` (its value names differ from §h options — translate). `image_usage` may be either a legacy single string or a Confirm UI multi-select array; for arrays, apply every selected source. `image_notes`, when present, is a user-authored image intent note that Strategist must honor while assigning per-page §VIII rows:
+**Legacy performance-image compatibility**: for old `/confirm` projects, `result.json` remains authoritative. Its `image_usage` governs only cover / decorative / photographic acquisition; it never substitutes for schema-v4 `analysis_required`. Map it to §VIII `Acquire Via` as follows:
 
 | `result.json.image_usage` | §VIII `Acquire Via` | h.5 + Step 5 generation |
 |---|---|---|
@@ -421,7 +397,7 @@ When the confirmed `image_usage` does not include `ai` (and no legacy custom pro
 
 **Small spot illustrations are a Strategist judgment, not a confirmation field.** The user chooses image *source* through `image_usage`; whether the deck leans into decorative illustrations is anchored by the locked `visual_style`'s **illustration propensity** (`core` / `supportive` / `sparse`), expressed only in the `image_notes` rationale — never a new confirmation control. An explicit user request to use or skip illustrations overrides that default either way; `image_usage: none` still wins (write no illustration rows); and source still comes from `image_usage` — a `core` style does not silently generate AI spots when the user did not pick AI. They are ordinary §VIII image rows (`Type: Illustration` / `Illustration Sheet`) using normal `Acquire Via` values. If the plan needs ≥3 same-family AI spot illustrations, use the `ai` Illustration Sheet + `slice` workflow by default; do not generate one AI image per spot. Full rule + precedence: [`references/strategist.md`](references/strategist.md) §h. Use them on suitable pages and omit them where they would weaken clarity.
 
-**Upstream override → re-derive untouched downstream (Mandatory — chat-fallback / single-pass path).** On the **three-stage page path this is already handled** (Step 3 re-derives Stage 2 from the user's actual anchors; Step 4 re-derives Stage 3 from the confirmed anchors + design system). It still applies whenever anchors and downstream fields are confirmed **together** — the staged chat fallback collapsed into one bundle, or a legacy single-pass `result.json`. "Confirmed value wins" governs each field's *own* value — never recompute a value the user set (a size, canvas, or palette they edited stays verbatim). But a single-pass `result.json` can carry a changed **anchor** beside downstream fields still holding your original — now incoherent — recommendation (e.g. switched to `dark-tech` while the light palette you proposed is untouched). Before writing the spec, reconcile: when the user changed an anchor, re-derive the downstream fields the user did **not** themselves edit so they realize the new anchor; fields the user pinned stay as confirmed.
+**Upstream override → invalidate and re-derive (Mandatory).** When sources, visual style, professional-analysis decision/selection, provider profile, reference images, or generated analysis files change, treat `analysis/content_inventory.json` and the outline confirmation as stale. Rebuild the inventory before revising the outline. A user-confirmed field is never silently recomputed; only untouched dependent recommendations are re-derived.
 
 | Anchor the user changed | Re-derive (only the downstream fields the user left at your recommendation) |
 |---|---|
@@ -433,20 +409,20 @@ When the confirmed `image_usage` does not include `ai` (and no legacy custom pro
 
 Reconcile **without a new blocking wait** — fold the coherent values into `design_spec.md` / `spec_lock.md` and state the adjustment in the §8 next-step handoff (e.g. "you switched to `dark-tech`; the light palette you had left no longer fit, so background / accent were re-derived — tell me if you wanted the original"). Canvas is the explicit exception: font sizes are deliberately **not** rescaled on a canvas change (see strategist §g).
 
-**Opt-out**: if the user has said they don't want the page (e.g. "不要网页" / "just confirm in chat" / "纯聊天确认"), skip the launch entirely (step 2) and present the Strategist confirmation stage in chat as before — steps 1, 3, 4 still apply (recommendations summary in chat; wait; take chat values).
+**Browser opt-in**: chat contact sheets are the default. Only when the user explicitly requests the browser page, run the same ordered style gallery → explicit analysis decision → analysis generation/skip → content inventory → sourced page-outline confirmation there. Do not restore early page-count confirmation.
 
 The page is a **confirmation surface only** — Strategist still authors every recommendation; the page never generates content.
 
-**Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
+**Mandatory — split-mode note** (not a separate confirmation): after the content inventory has produced the page-count recommendation, append one short line about generation mode. Pick the variant by page count, source-material bulk, and research load:
 
 | Signal read | Line content |
 |---|---|
 | Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
 | Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](workflows/resume-execute.md). |
 
-This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page generation-mode toggle and is captured in `result.json` (`generation_mode`); the chat-summary fallback still prints this line.
+This line is required after the post-analysis page-count recommendation. Whether to act on it is the user's call; record the choice in the project handoff rather than using an early page-count screen.
 
-**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/refine-spec.md) workflow. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](workflows/refine-spec.md) workflow take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
+**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, tell the user they may run [refine-spec](workflows/refine-spec.md) after outline confirmation and before SVG generation. Default is OFF.
 
 **Formula rendering policy lives inside item 7 (Typography plan)**:
 
@@ -477,17 +453,18 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
-#### AIRI v2 Analysis + Outline Gate
+#### Schema-v4 Content Inventory + Outline Gate
 
-When `<project_path>/workflow_selection.json` exists, apply this gate before writing final `design_spec.md` / `spec_lock.md`:
+Every new/restructured deck MUST write schema-v4 `workflow_selection.json` and apply this gate before `design_spec.md` / `spec_lock.md`:
 
-1. If `analysis_item_ids` is non-empty, compile the analysis library, resolve each selected id under the confirmed `analysis_style_id`, and generate every selected intersection. Keep selected type ids when the style changes. Legacy `analysis_pack_id` projects remain valid.
-2. Write `outline_draft.json` only after selected analysis items are `Generated`; map each page's final copy to existing/generated image files.
-3. Present editable page cards through the wizard. Allow add/delete/reorder, copy edits, image replacement, prompt edits, and single-image regeneration.
-4. ⛔ **BLOCKING**: wait for explicit final outline confirmation. Any draft edit invalidates the prior confirmation.
-5. Run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>`. Only then copy the confirmed order/content/image mapping into `design_spec.md` Section IX and `spec_lock.md`.
+1. Save `visual_style_source`, explicit `analysis_required`, `analysis_selection_confirmed`, and `analysis_selection_hash`.
+2. When analysis is required, generate every selected item and require the image manifest hash plus every output file to match. When false, skip professional-analysis generation explicitly.
+3. After analysis is ready, POST or write `analysis/content_inventory.json` with the current `planning_input_hash`, `recommended_page_count`, `page_count_rationale`, source-backed content blocks, image facts, and placement recommendations.
+4. Write schema-v3 `outline_draft.json` from the current inventory. Each page needs `source_refs`; each image needs `source`.
+5. ⛔ **BLOCKING**: wait for explicit final outline confirmation. Any upstream change makes the inventory/confirmation stale; any draft edit invalidates the confirmation.
+6. Run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>`. It is the single generation-unlock gate. Only after it passes may Strategist write the final spec and Executor start.
 
-Analysis generation defaults to `gptimage2.0-1K-mid` (GPT Image 2, 1K, medium). The wizard may instead select `nanobanana-pro-2K` (Gemini 3 Pro Image / Nano Banana Pro, 2K). Both profiles support reference images and must pass `image_gen.py --dry-run` before a paid run.
+Analysis generation defaults to `gptimage2.0-1K-mid` (GPT Image 2, 1K, medium). In chat the user may instead select `nanobanana-pro-2K` (Gemini 3 Pro Image / Nano Banana Pro, 2K). Both profiles support reference images and must pass `image_gen.py --dry-run` before a paid run.
 
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative
@@ -497,7 +474,10 @@ Analysis generation defaults to `gptimage2.0-1K-mid` (GPT Image 2, 1K, medium). 
 ```markdown
 ## ✅ Strategist Phase Complete
 - [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
-- [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
+- [x] Visual style chosen/auto-accepted and professional-analysis Yes/No confirmed
+- [x] Requested professional analysis images generated, or explicit No recorded
+- [x] Current content inventory written with post-analysis page-count rationale
+- [x] Sourced page outline explicitly confirmed
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
 - [x] Design Specification & Content Outline generated
@@ -559,7 +539,7 @@ Workflow:
 - [x] analyze_images.py re-run so image_analysis.csv covers the acquired web / AI / sliced images
 ```
 
-**Default — auto-proceed to Step 6.** Only when the user's Step 4 response explicitly opted into split mode (in chat or via Confirm UI `result.json` with `generation_mode: "split"`), output the planning-session handoff below and stop this conversation:
+**Default — auto-proceed to Step 6 after `outline_gate.py check` passes.** Only when the user explicitly opted into split mode after seeing the post-analysis page count, output the planning-session handoff below and stop this conversation:
 
   ```markdown
   ## ✅ Planning Session Complete
@@ -574,7 +554,7 @@ Workflow:
 
 ### Step 6: Executor Phase
 
-When `outline_draft.json` exists, run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>` before starting live preview. Failure is a hard stop. Legacy projects without an outline draft remain compatible.
+Run `python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>` before starting live preview. Schema-v4 projects must pass every workflow gate; existence of files alone is insufficient. Legacy schema-v3 projects retain their prior outline compatibility behavior.
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
 

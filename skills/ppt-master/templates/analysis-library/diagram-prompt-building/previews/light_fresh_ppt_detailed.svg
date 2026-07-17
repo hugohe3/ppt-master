@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect width="320" height="180" fill="#f7fbf8"/><path d="M20 142h280" stroke="#bdd5ca"/>
+  <g fill="#dceee6" stroke="#4f8f78" stroke-width="2"><path d="M70 126V77l52-28 44 22v55z"/><path d="M166 126V71l54-24 35 21v58z"/></g>
+  <g fill="none" stroke="#ef9b72" stroke-width="2"><path d="M40 132c28-26 52-23 78-3"/><path d="M200 136c25-19 49-18 76-2"/></g>
+  <g font-family="Arial,'Microsoft YaHei'" fill="#234b3f"><text x="18" y="25" font-size="13" font-weight="700">住宅体量生成</text><text x="18" y="42" font-size="8">MASSING ANALYSIS · 01</text></g>
+  <g fill="#ef9b72"><circle cx="122" cy="49" r="4"/><circle cx="220" cy="47" r="4"/></g>
+</svg>

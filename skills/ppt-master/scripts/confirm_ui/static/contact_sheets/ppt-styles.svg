@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1100">
+  <rect width="960" height="1100" fill="#f4f7f5"/><text x="30" y="42" font-family="Arial,'Microsoft YaHei'" font-size="25" font-weight="700" fill="#003f3c">PPT Master 视觉风格 · 18 选 1</text>
+  <g font-family="Arial,'Microsoft YaHei'" font-size="13" fill="#12211e">
+    <g transform="translate(25 65)"><image href="../style_previews/swiss-minimal.svg" width="290" height="130"/><text y="152">01 · 瑞士极简 / swiss-minimal</text></g>
+    <g transform="translate(335 65)"><image href="../style_previews/soft-rounded.svg" width="290" height="130"/><text y="152">02 · 柔和圆角 / soft-rounded</text></g>
+    <g transform="translate(645 65)"><image href="../style_previews/glassmorphism.svg" width="290" height="130"/><text y="152">03 · 玻璃拟态 / glassmorphism</text></g>
+    <g transform="translate(25 235)"><image href="../style_previews/dark-tech.svg" width="290" height="130"/><text y="152">04 · 深色科技 / dark-tech</text></g>
+    <g transform="translate(335 235)"><image href="../style_previews/blueprint.svg" width="290" height="130"/><text y="152">05 · 蓝图 / blueprint</text></g>
+    <g transform="translate(645 235)"><image href="../style_previews/editorial.svg" width="290" height="130"/><text y="152">06 · 编辑出版 / editorial</text></g>
+    <g transform="translate(25 405)"><image href="../style_previews/photo-editorial.svg" width="290" height="130"/><text y="152">07 · 摄影编辑 / photo-editorial</text></g>
+    <g transform="translate(335 405)"><image href="../style_previews/data-journalism.svg" width="290" height="130"/><text y="152">08 · 数据新闻 / data-journalism</text></g>
+    <g transform="translate(645 405)"><image href="../style_previews/brutalist.svg" width="290" height="130"/><text y="152">09 · 粗野主义 / brutalist</text></g>
+    <g transform="translate(25 575)"><image href="../style_previews/memphis.svg" width="290" height="130"/><text y="152">10 · 孟菲斯 / memphis</text></g>
+    <g transform="translate(335 575)"><image href="../style_previews/zine.svg" width="290" height="130"/><text y="152">11 · 小刊 / zine</text></g>
+    <g transform="translate(645 575)"><image href="../style_previews/vintage-poster.svg" width="290" height="130"/><text y="152">12 · 复古海报 / vintage-poster</text></g>
+    <g transform="translate(25 745)"><image href="../style_previews/paper-cut.svg" width="290" height="130"/><text y="152">13 · 剪纸 / paper-cut</text></g>
+    <g transform="translate(335 745)"><image href="../style_previews/sketch-notes.svg" width="290" height="130"/><text y="152">14 · 手绘笔记 / sketch-notes</text></g>
+    <g transform="translate(645 745)"><image href="../style_previews/ink-notes.svg" width="290" height="130"/><text y="152">15 · 墨迹笔记 / ink-notes</text></g>
+    <g transform="translate(25 915)"><image href="../style_previews/chalkboard.svg" width="290" height="130"/><text y="152">16 · 黑板 / chalkboard</text></g>
+    <g transform="translate(335 915)"><image href="../style_previews/ink-wash.svg" width="290" height="130"/><text y="152">17 · 水墨 / ink-wash</text></g>
+    <g transform="translate(645 915)"><image href="../style_previews/pixel-art.svg" width="290" height="130"/><text y="152">18 · 像素风 / pixel-art</text></g>
+  </g>
+</svg>

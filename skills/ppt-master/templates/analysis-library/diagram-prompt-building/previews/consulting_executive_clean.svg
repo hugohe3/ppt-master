@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect width="320" height="180" fill="#f4f6f8"/><rect x="14" y="14" width="292" height="152" rx="8" fill="#fff" stroke="#d9dfe7"/>
+  <g fill="#dce6f4" stroke="#2f5f97" stroke-width="1.5"><path d="M55 132V84l47-26 38 20v54z"/><path d="M140 132V78l50-23 34 20v57z"/></g><path d="M42 139h194" stroke="#9eabb9"/>
+  <rect x="244" y="50" width="45" height="9" rx="4" fill="#2f5f97"/><rect x="244" y="67" width="34" height="7" rx="3" fill="#88a9cc"/><rect x="244" y="82" width="40" height="7" rx="3" fill="#c5d5e7"/>
+  <g font-family="Arial,'Microsoft YaHei'" fill="#1c2d42"><text x="28" y="35" font-size="12" font-weight="700">体量方案评估</text><text x="244" y="106" font-size="21" font-weight="700">+32%</text><text x="244" y="119" font-size="7">景观界面提升</text></g>
+</svg>

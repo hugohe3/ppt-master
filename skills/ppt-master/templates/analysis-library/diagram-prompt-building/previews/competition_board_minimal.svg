@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect width="320" height="180" fill="#ffffff"/><rect x="18" y="18" width="4" height="40" fill="#ff5b37"/>
+  <g fill="#f2f2f0" stroke="#222" stroke-width="1.2"><path d="M72 137V82l50-31 43 24v62z"/><path d="M165 137V75l55-27 39 24v65z"/></g>
+  <path d="M47 145h235" stroke="#222"/><g fill="#ff5b37"><circle cx="122" cy="51" r="4"/><circle cx="220" cy="48" r="4"/></g>
+  <g font-family="Arial,'Microsoft YaHei'" fill="#111"><text x="32" y="28" font-size="12" font-weight="700">体量策略</text><text x="32" y="43" font-size="7" letter-spacing="1">MASS / VOID / VIEW</text><text x="242" y="28" font-size="25" font-weight="700">01</text></g>
+</svg>

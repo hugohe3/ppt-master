@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 790">
+  <rect width="760" height="790" fill="#f4f7f5"/><text x="25" y="42" font-family="Arial,'Microsoft YaHei'" font-size="24" font-weight="700" fill="#003f3c">专业分析图风格 · 同一住宅体量案例</text>
+  <g font-family="Arial,'Microsoft YaHei'" font-size="13" fill="#12211e">
+    <g transform="translate(25 70)"><image href="/analysis-library/previews/light_fresh_ppt_detailed.svg" width="345" height="194"/><text y="216">01 · 浅色清新分析 PPT</text></g>
+    <g transform="translate(390 70)"><image href="/analysis-library/previews/blueprint_report_clean.svg" width="345" height="194"/><text y="216">02 · 蓝图技术报告风</text></g>
+    <g transform="translate(25 300)"><image href="/analysis-library/previews/competition_board_minimal.svg" width="345" height="194"/><text y="216">03 · 极简竞赛展板风</text></g>
+    <g transform="translate(390 300)"><image href="/analysis-library/previews/consulting_executive_clean.svg" width="345" height="194"/><text y="216">04 · 咨询顾问简报风</text></g>
+    <g transform="translate(25 530)"><image href="/analysis-library/previews/dark_tech_presentation.svg" width="345" height="194"/><text y="216">05 · 深色科技汇报风</text></g>
+    <g transform="translate(390 530)"><image href="/analysis-library/previews/editorial_magazine_soft.svg" width="165" height="93"/><text y="112">06 · 杂志编辑软排版风</text><image href="/analysis-library/previews/pastel_campus_schematic.svg" y="126" width="165" height="93"/><text y="239">07 · 白模体块叠涂分析图风</text></g>
+  </g>
+</svg>

@@ -1,14 +1,16 @@
-# Confirm UI — Strategist Confirmation Stage Page
+# Confirm UI — Optional Schema-v4 Browser Surface
 
-> The interactive, visual surface for SKILL.md Step 4 (the Strategist confirmation stage). Enumerable fields list **all** options from a catalog with the AI's recommendation badged; generative fields (color, typography, generated-image style) show **≥3** AI candidates (creative recommendations always offer real choice — same rule as the h.5 image strategy; fewer only on the honest-shortfall exception, with a stated reason). Fields whose universe is open (canvas, mode, visual style, icons) also get a **Custom** box; image usage is a multi-select source list plus a free-text `image_notes` box. Fully closed fields (AI source when applicable, formula policy, generation mode, refine spec) do not. The AI writes its recommendation to `recommendations.json`; the user's final choices are written back to `result.json` for the AI to read. On confirm the page saves the result and shuts the server down (auto-close). The chat path is always a valid fallback — if the browser cannot open (remote / headless / web host), the AI presents the same staged confirmation in chat.
+> The default planning surface is now the reusable chat contact sheets under `assets/contact-sheets/`. Run `scripts/build_contact_sheets.py` after catalog/preview changes. Start this browser UI only when the user explicitly asks for interactive browser editing.
+
+> `/workflow` is the mandatory planning surface for new and restructured decks. It orders intake, the full visual-style gallery, an explicit professional-analysis Yes/No decision, analysis generation, post-analysis content inventory/page-count derivation, sourced page-outline confirmation, and generation unlock. `/confirm` remains compatibility-only for older projects.
 
 ## Authority and Scope
 
 | Concern | Owner |
 |---|---|
 | Step 4 gate and pipeline order | `SKILL.md` |
-| Confirm UI schema | This document |
-| Stage 1 / Stage 2 / Stage 3 field membership | This document |
+| Wizard schema v4 and gates | This document |
+| Legacy Stage 1 / Stage 2 / Stage 3 compatibility | This document |
 | Server launch / wait / shutdown behavior | This document |
 | Port and lock behavior | This document |
 | Chat fallback equivalence | This document |
@@ -16,9 +18,54 @@
 
 **Hard rule**: Keep detailed Confirm UI behavior here. `SKILL.md` may summarize the orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
 
-**Fallback rule**: Browser failure never cancels Step 4. Re-check `result.json` once, then use the chat confirmation path with the same three-stage semantics.
+**Fallback rule**: Browser failure never changes ordering. Chat must show the same style/analysis contact sheets, require the same explicit Yes/No, derive page count only after analysis, and require the same sourced outline confirmation.
+
+## Schema-v4 Wizard Contract
+
+### Selection
+
+`workflow_selection.json` adds `visual_style_source: user|auto`, mandatory `analysis_required`, one user-facing `analysis_domain_id`, internal `analysis_item_ids`, `analysis_selection_confirmed`, and a deterministic `analysis_selection_hash` over professional-analysis style, domain, resolved types, references, provider profile, and library/pack ids.
+
+- The 18 PPT styles render from `static/style_previews/<id>.svg`; recommendation is a badge, not a default selection.
+- Continuing without a click applies the recommendation and records `auto`.
+- The seven analysis styles render from the compiled library's required `preview` field.
+- The user sees only architecture / interior / landscape / planning. Detailed type ids remain internal; the Strategist may supply a source-specific set, otherwise the server resolves the curated defaults for that domain.
+- `analysis_required: false` clears professional-analysis fields. Performance-image policy is stored separately in `workflow_brief.json`.
+
+### State API
+
+`GET /api/workflow/state` returns `gates` with:
+
+`style_confirmed`, `analysis_decided`, `analysis_selection_confirmed`, `analysis_ready`, `content_inventory_ready`, `outline_ready`, `outline_confirmed`, `generation_unlocked`.
+
+The unlock formula is the conjunction of every gate. An unanswered analysis decision is not ready. Missing generated files or a selection-hash mismatch locks the flow again.
+
+### Content Inventory and Outline
+
+`POST /api/workflow/content-inventory` accepts a positive integer `recommended_page_count`, non-empty `page_count_rationale`, and the source/image/content-block inventory. The server writes the current `planning_input_hash`.
+
+`POST /api/workflow/outline` is rejected until style, analysis decision, requested generation, and current content inventory are ready. It writes schema v3 plus `planning_input_hash` and `content_inventory_hash`. Each page requires non-empty `source_refs`; each image requires `source`.
+
+`POST /api/workflow/outline/confirm` verifies both upstream hashes and the page hash. `outline_gate.py check` uses the same gate and is mandatory before Executor.
+
+### Invalidation and Compatibility
+
+- Source/brief/style/analysis/reference/provider/generated-file changes stale the inventory and outline confirmation.
+- Outline edits invalidate only outline confirmation.
+- Schema v3 projects infer analysis required from existing types/packs; an empty legacy selection infers No and exposes `analysis_requirement_legacy_inferred` without rewriting the project.
+- New/restructured projects must write schema v4. Early `result.json.page_count` is legacy-only.
 
 ## `confirm_ui/server.py`
+
+Schema-v4 Wizard:
+
+```bash
+python3 scripts/confirm_ui/server.py <project_path> --wizard --daemon
+python3 scripts/confirm_ui/server.py <project_path> --wizard --no-browser
+python3 scripts/confirm_ui/server.py <project_path> --shutdown
+```
+
+Legacy `/confirm` lifecycle (existing projects only):
 
 ```bash
 python3 scripts/confirm_ui/server.py <project_path> --daemon --wait   # launch + wait for Stage 1
@@ -28,7 +75,6 @@ python3 scripts/confirm_ui/server.py <project_path> --daemon
 python3 scripts/confirm_ui/server.py <project_path> --daemon --port 5051
 python3 scripts/confirm_ui/server.py <project_path> --no-browser
 python3 scripts/confirm_ui/server.py <project_path> --timeout 0   # disable idle auto-shutdown
-python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 cleanup (idempotent)
 ```
 
 - Binds `127.0.0.1:5050` by default — or the next free port if another project already holds it (the launch log prints the actual URL) — and auto-opens the browser (suppress with `--no-browser`). `--port <other>` forces a specific port.
@@ -46,7 +92,11 @@ Dependency:
 pip install flask
 ```
 
-## Two kinds of field
+## Legacy `/confirm` Compatibility Details
+
+The sections below document the old three-stage surface only. They may be used to resume existing projects, but must not drive new/restructured deck planning or early page-count confirmation.
+
+### Two kinds of field
 
 - **Enumerable + custom** — canvas / mode / visual_style / icons. The page lists common options from `static/catalogs.json`, badges the AI's recommendation, and still offers a Custom box for edge cases (custom canvas size, bespoke narrative mode, self-provided icon system, etc.). `visual_style` additionally honors an optional `visual_style_spectrum` that badges a 3-pick personality spectrum (safe / shifted / bold, each with a temperament tag + analogy) in place of the single recommendation — see the schema below.
 - **Visual examples for hard-to-name choices** — the full-screen confirmation page loads real SVG page samples from `static/style_previews/` for `visual_style`, and renders real sample SVGs from `templates/icons` for `icons`. These thumbnails make style and icon-library choices visually comparable before the user locks them. Preview copy is fixed role text (big title / section title / body / points), not project content from `recommendations.json`, so users compare visual treatment rather than copywriting. These previews are a confirmation aid only: they do not add fields to `recommendations.json` or `result.json`, and they do not replace the later Step 6 live preview.
@@ -62,11 +112,11 @@ pip install flask
 
 The front-end loads `/api/catalogs` (served by the confirm server) and falls back to the static `/static/catalogs.json` if that route is unavailable. `/api/catalogs` returns the static file **with the `canvas` list synced live from `config.py CANVAS_FORMATS`** — the set of formats and their `dim` come from config (single source of truth, zero drift), while trilingual labels / use text stay in catalogs.json (a plain fallback label is synthesized for any new id config adds). Keys: `canvas`, `modes`, `visual_styles` (grouped), `icons`, `image_usage`, `image_ai_path`, `formula_policy`, `generation_mode`, `delivery_purpose`. Each entry is `{ "id", "label", "label_zh", "label_en", "label_ja", ... }`; descriptions use `desc_zh` / `desc_en` / `desc_ja`, and `visual_styles` groups use `group_zh` / `group_en` / `group_ja`. The front-end falls back to legacy `label` / `desc` / `group`, so old catalogs still load, but new user-facing catalog text must cover all three languages (zh / en / ja). English labels should mirror canonical reference names (`pyramid`, `swiss-minimal`, `Path A`, `mixed`, etc.); Chinese and Japanese labels should be translated for users. Descriptions render inline after the option title, not as a separate selected-option line. `visual_styles` is `[{ "group", "group_zh", "group_en", "group_ja", "items": [...] }]`. For `canvas` you only need to maintain the trilingual labels in catalogs.json; the format set and dimensions are authoritative in `config.py CANVAS_FORMATS`.
 
-## Round-trip data contract
+### Legacy round-trip data contract
 
 Both files live under `<project_path>/confirm_ui/`.
 
-### Three-stage flow
+#### Legacy three-stage flow
 
 The page runs as a **three-stage wizard in one browser session**. `recommendations.json` carries a top-level `"stage"` selector. Legacy payloads that still carry `"tier"` are accepted as read-only compatibility input, but new files must use `stage`.
 

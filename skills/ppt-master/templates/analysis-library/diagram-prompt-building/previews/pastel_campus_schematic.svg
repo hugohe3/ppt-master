@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect width="320" height="180" fill="#fbfaf5"/><path d="M35 145l66-38 88 17-64 39z" fill="#dcead2"/><path d="M149 137l65-37 68 15-62 40z" fill="#d7e6f4"/>
+  <g fill="#fff" stroke="#6e6b67" stroke-width="1.2"><path d="M68 128V82l52-30 44 22v54z"/><path d="M164 128V73l57-25 38 22v58z"/></g>
+  <path d="M42 134c30-20 48-18 70-5M212 139c22-17 40-18 66-4" fill="none" stroke="#ed9e83" stroke-width="5" opacity=".75"/>
+  <g font-family="Arial,'Microsoft YaHei'" fill="#4e4a46"><text x="18" y="25" font-size="12" font-weight="700">白模体块叠涂</text><text x="18" y="41" font-size="7">AXONOMETRIC STUDY</text></g>
+</svg>

@@ -4,9 +4,13 @@
   var STATE = null;
   var OUTLINE = { schema_version: 2, pages: [] };
   var SELECTED_TEMPLATE = "";
+  var SELECTED_VISUAL_STYLE = "";
+  var VISUAL_STYLE_SOURCE = "";
+  var RECOMMENDED_VISUAL_STYLE = "";
+  var VISUAL_STYLE_CATALOG = [];
+  var ANALYSIS_REQUIRED = null;
   var ANALYSIS_STYLE_ID = "";
-  var ACTIVE_ANALYSIS_DOMAIN = "architecture";
-  var SELECTED_ANALYSIS_IDS = new Set();
+  var ANALYSIS_DOMAIN_ID = "";
 
   function byId(id) { return document.getElementById(id); }
   function toast(message) {
@@ -36,10 +40,16 @@
       var selection = data.selection || {};
       var library = data.analysis_library || {};
       SELECTED_TEMPLATE = selection.template_id || "";
-      ANALYSIS_STYLE_ID = selection.analysis_style_id || library.default_style_id || "";
-      SELECTED_ANALYSIS_IDS = new Set(selection.analysis_item_ids || []);
+      SELECTED_VISUAL_STYLE = selection.visual_style || "";
+      VISUAL_STYLE_SOURCE = selection.visual_style_source || "";
+      RECOMMENDED_VISUAL_STYLE = data.visual_style_recommendation || "swiss-minimal";
+      ANALYSIS_REQUIRED = typeof selection.analysis_required === "boolean" ? selection.analysis_required : null;
+      ANALYSIS_STYLE_ID = selection.analysis_style_id || "";
+      ANALYSIS_DOMAIN_ID = selection.analysis_domain_id || "";
       renderIntakeSummary();
       renderTemplates();
+      renderVisualStyles();
+      renderAnalysisDecision();
       renderAnalysisLibrary();
       renderImages();
       OUTLINE = data.outline_draft || { schema_version: 2, pages: [] };
@@ -47,13 +57,79 @@
       byId("custom-style").value = selection.custom_style_description || "";
       byId("provider-profile").value = selection.provider_profile || "gptimage2.0-1K-mid";
       renderTemplates();
-      byId("outline-status").textContent = data.analysis_ready
-        ? (data.outline_draft ? "大纲可编辑；保存后需要重新确认。" : "等待 AI 写入 outline_draft.json，也可手动增加页面。")
-        : "所选分析图尚未全部生成，暂不能最终确认大纲。";
-      byId("confirm-status").textContent = data.outline_ready && data.outline_confirmed
+      renderInventorySummary();
+      var gates = data.gates || {};
+      byId("outline-status").textContent = gates.content_inventory_ready
+        ? (data.outline_draft ? "大纲可编辑；保存后需要重新确认。" : "内容盘点已完成，等待 AI 写入逐页大纲，也可手动增加页面。")
+        : "大纲尚未开放：" + (data.content_inventory_message || data.outline_message || "请先完成分析图决策与内容盘点");
+      byId("confirm-status").textContent = gates.generation_unlocked
         ? "当前大纲已确认，正式生成已解锁。"
-        : "尚未确认：" + (data.outline_message || "请先完成逐页大纲");
+        : "尚未解锁：" + (data.outline_message || "请按顺序完成前置步骤");
     }).catch(function (error) { toast(error.message); });
+  }
+
+  function renderInventorySummary() {
+    var host = byId("inventory-summary");
+    var inventory = STATE.content_inventory;
+    if (!inventory) {
+      host.textContent = "尚无内容盘点。分析图决策完成且所需图片全部生成后，由 Strategist 汇总全部素材并推导页数。";
+      return;
+    }
+    if (!STATE.content_inventory_ready) {
+      host.textContent = "现有内容盘点已因素材、风格或分析图变化而失效，需要重新整理。";
+      return;
+    }
+    var rationale = inventory.page_count_rationale;
+    if (Array.isArray(rationale)) rationale = rationale.join("；");
+    host.innerHTML = "";
+    host.appendChild(document.createTextNode("建议页数 "));
+    var count = document.createElement("strong"); count.textContent = inventory.recommended_page_count + " 页"; host.appendChild(count);
+    host.appendChild(document.createTextNode("\n" + (rationale || "") + "\n最终页数以确认时的页面卡片数量为准。"));
+  }
+
+  function renderVisualStyles() {
+    var host = byId("visual-style-grid");
+    if (!host || !VISUAL_STYLE_CATALOG.length) return;
+    host.innerHTML = "";
+    VISUAL_STYLE_CATALOG.forEach(function (group) {
+      var section = document.createElement("section"); section.className = "visual-style-group";
+      var heading = document.createElement("h4"); heading.textContent = group.group_zh || group.group || "视觉风格";
+      var items = document.createElement("div"); items.className = "visual-style-items";
+      (group.items || []).forEach(function (item) {
+        var card = document.createElement("button"); card.type = "button";
+        card.className = "visual-style-card" + (SELECTED_VISUAL_STYLE === item.id ? " selected" : "");
+        var preview = document.createElement("img"); preview.src = "/static/style_previews/" + item.id + ".svg"; preview.alt = item.label_zh || item.id;
+        var title = document.createElement("b"); title.textContent = item.label_zh || item.label || item.id;
+        var desc = document.createElement("small"); desc.textContent = item.desc_zh || item.desc || "";
+        card.appendChild(preview); card.appendChild(title); card.appendChild(desc);
+        if (item.id === RECOMMENDED_VISUAL_STYLE) {
+          var badge = document.createElement("span"); badge.className = "recommend-badge"; badge.textContent = "推荐"; card.appendChild(badge);
+        }
+        card.onclick = function () { SELECTED_VISUAL_STYLE = item.id; VISUAL_STYLE_SOURCE = "user"; renderVisualStyles(); };
+        items.appendChild(card);
+      });
+      section.appendChild(heading); section.appendChild(items); host.appendChild(section);
+    });
+    var customSection = document.createElement("section"); customSection.className = "visual-style-group";
+    var customHeading = document.createElement("h4"); customHeading.textContent = "自定义";
+    var customItems = document.createElement("div"); customItems.className = "visual-style-items";
+    var customCard = document.createElement("button"); customCard.type = "button";
+    customCard.className = "visual-style-card" + (SELECTED_VISUAL_STYLE === "custom" ? " selected" : "");
+    var customPreview = document.createElement("div"); customPreview.className = "custom-style-preview"; customPreview.textContent = "Aa / 自定义";
+    var customTitle = document.createElement("b"); customTitle.textContent = "自定义视觉风格";
+    var customDesc = document.createElement("small"); customDesc.textContent = "在下方描述配色、材料感、排版和氛围。";
+    customCard.appendChild(customPreview); customCard.appendChild(customTitle); customCard.appendChild(customDesc);
+    customCard.onclick = function () { SELECTED_VISUAL_STYLE = "custom"; VISUAL_STYLE_SOURCE = "user"; renderVisualStyles(); };
+    customItems.appendChild(customCard); customSection.appendChild(customHeading); customSection.appendChild(customItems); host.appendChild(customSection);
+  }
+
+  function renderAnalysisDecision() {
+    byId("analysis-yes").classList.toggle("selected", ANALYSIS_REQUIRED === true);
+    byId("analysis-no").classList.toggle("selected", ANALYSIS_REQUIRED === false);
+    byId("analysis-config").classList.toggle("locked-section", ANALYSIS_REQUIRED !== true);
+    byId("generation-log").textContent = ANALYSIS_REQUIRED === false
+      ? "已选择不补充专业分析图；保存后将跳过生图，直接进入内容盘点。"
+      : (ANALYSIS_REQUIRED === null ? "请先明确是否需要专业分析图。" : "");
   }
 
   function renderIntakeSummary() {
@@ -95,10 +171,8 @@
     var library = STATE.analysis_library || {};
     var styleGrid = byId("analysis-style-grid");
     var domainTabs = byId("analysis-domain-tabs");
-    var typeGroups = byId("analysis-type-groups");
     styleGrid.innerHTML = "";
     domainTabs.innerHTML = "";
-    typeGroups.innerHTML = "";
     if (!(library.styles || []).length) {
       styleGrid.textContent = "分析图库尚未编译。";
       return;
@@ -107,67 +181,33 @@
       var card = document.createElement("button");
       card.type = "button";
       card.className = "analysis-style-card" + (ANALYSIS_STYLE_ID === style.id ? " selected" : "");
+      var preview = document.createElement("img");
+      preview.src = style.preview_url || "";
+      preview.alt = style.name_zh || style.id;
       var title = document.createElement("b");
       title.textContent = (index + 1) + " · " + (style.name_zh || style.id);
       var detail = document.createElement("span");
       detail.textContent = style.item_count + " 种分析图";
-      card.appendChild(title); card.appendChild(detail);
+      card.appendChild(preview); card.appendChild(title); card.appendChild(detail);
+      if (style.id === library.default_style_id) {
+        var badge = document.createElement("span"); badge.className = "recommend-badge"; badge.textContent = "推荐"; card.appendChild(badge);
+      }
       card.onclick = function () { ANALYSIS_STYLE_ID = style.id; renderAnalysisLibrary(); };
       styleGrid.appendChild(card);
     });
 
     var domains = library.domains || [];
-    if (!domains.some(function (domain) { return domain.id === ACTIVE_ANALYSIS_DOMAIN; })) {
-      ACTIVE_ANALYSIS_DOMAIN = domains.length ? domains[0].id : "";
+    if (!domains.some(function (domain) { return domain.id === ANALYSIS_DOMAIN_ID; })) {
+      ANALYSIS_DOMAIN_ID = "";
     }
     domains.forEach(function (domain) {
       var tab = document.createElement("button");
       tab.type = "button";
-      tab.className = "analysis-domain-tab" + (ACTIVE_ANALYSIS_DOMAIN === domain.id ? " active" : "");
-      tab.textContent = domain.name_zh + "（" + domain.item_count + "）";
-      tab.onclick = function () { ACTIVE_ANALYSIS_DOMAIN = domain.id; renderAnalysisLibrary(); };
+      tab.className = "analysis-domain-tab" + (ANALYSIS_DOMAIN_ID === domain.id ? " active" : "");
+      tab.textContent = domain.name_zh;
+      tab.onclick = function () { ANALYSIS_DOMAIN_ID = domain.id; renderAnalysisLibrary(); };
       domainTabs.appendChild(tab);
     });
-
-    var active = domains.find(function (domain) { return domain.id === ACTIVE_ANALYSIS_DOMAIN; });
-    if (active) {
-      var toolbar = document.createElement("div");
-      toolbar.className = "analysis-type-toolbar";
-      var selectAll = document.createElement("button");
-      selectAll.type = "button"; selectAll.className = "secondary"; selectAll.textContent = "本类全选";
-      selectAll.onclick = function () {
-        (active.items || []).forEach(function (item) { SELECTED_ANALYSIS_IDS.add(item.id); });
-        renderAnalysisLibrary();
-      };
-      var clear = document.createElement("button");
-      clear.type = "button"; clear.className = "secondary"; clear.textContent = "清空本类";
-      clear.onclick = function () {
-        (active.items || []).forEach(function (item) { SELECTED_ANALYSIS_IDS.delete(item.id); });
-        renderAnalysisLibrary();
-      };
-      toolbar.appendChild(selectAll); toolbar.appendChild(clear); typeGroups.appendChild(toolbar);
-
-      var grid = document.createElement("div");
-      grid.className = "analysis-type-grid";
-      (active.items || []).forEach(function (item) {
-        var label = document.createElement("label");
-        label.className = "analysis-type-card" + (SELECTED_ANALYSIS_IDS.has(item.id) ? " selected" : "");
-        var checkbox = document.createElement("input");
-        checkbox.type = "checkbox"; checkbox.checked = SELECTED_ANALYSIS_IDS.has(item.id);
-        checkbox.onchange = function () {
-          if (checkbox.checked) SELECTED_ANALYSIS_IDS.add(item.id);
-          else SELECTED_ANALYSIS_IDS.delete(item.id);
-          renderAnalysisLibrary();
-        };
-        var copy = document.createElement("span");
-        var id = document.createElement("b"); id.textContent = item.id;
-        var name = document.createElement("small"); name.textContent = item.name_zh;
-        copy.appendChild(id); copy.appendChild(name);
-        label.appendChild(checkbox); label.appendChild(copy); grid.appendChild(label);
-      });
-      typeGroups.appendChild(grid);
-    }
-    byId("analysis-selected-count").textContent = SELECTED_ANALYSIS_IDS.size;
   }
 
   function renderImages() {
@@ -198,15 +238,23 @@
   }
 
   function collectSelection() {
+    var visualStyle = SELECTED_VISUAL_STYLE || RECOMMENDED_VISUAL_STYLE;
+    var visualSource = SELECTED_VISUAL_STYLE ? (VISUAL_STYLE_SOURCE || "user") : "auto";
     return {
-      visual_style: byId("visual-style").value,
+      visual_style: visualStyle,
+      visual_style_source: visualSource,
       template_id: SELECTED_TEMPLATE,
       custom_style_description: byId("custom-style").value,
+      analysis_required: ANALYSIS_REQUIRED,
+      analysis_selection_confirmed: ANALYSIS_REQUIRED === false || (
+        ANALYSIS_REQUIRED === true && Boolean(ANALYSIS_STYLE_ID) && Boolean(ANALYSIS_DOMAIN_ID)
+      ),
       analysis_pack_id: "",
       analysis_library_id: ((STATE.analysis_library || {}).library_id || ""),
-      analysis_style_id: ANALYSIS_STYLE_ID,
-      analysis_item_ids: Array.from(SELECTED_ANALYSIS_IDS),
-      reference_images: selectedReferences(),
+      analysis_style_id: ANALYSIS_REQUIRED ? ANALYSIS_STYLE_ID : "",
+      analysis_domain_id: ANALYSIS_REQUIRED ? ANALYSIS_DOMAIN_ID : "",
+      analysis_item_ids: [],
+      reference_images: ANALYSIS_REQUIRED ? selectedReferences() : [],
       provider_profile: byId("provider-profile").value
     };
   }
@@ -219,6 +267,10 @@
   }
 
   function runAnalysis(dryRun) {
+    if (ANALYSIS_REQUIRED !== true) {
+      toast("只有选择“需要专业分析图”后才能运行生图");
+      return Promise.resolve();
+    }
     var button = dryRun ? byId("dry-run-analysis") : byId("generate-analysis");
     setBusy(button, true, dryRun ? "验证中…" : "所选图片生成中…");
     return saveSelection().then(function () {
@@ -242,6 +294,7 @@
       title: "新页面",
       core_message: "填写本页核心信息",
       body: "",
+      source_refs: ["source_manifest.json"],
       images: []
     };
   }
@@ -272,7 +325,7 @@
     fields.appendChild(field("图片文件", image.filename || "", function (value) { image.filename = value; preview.src = imageUrl(value) || preview.src; }));
     fields.appendChild(field("图片来源", image.source || "ai", function (value) { image.source = value; }));
     fields.appendChild(field("分析图风格", image.analysis_style_id || "", function (value) { image.analysis_style_id = value; }));
-    fields.appendChild(field("分析图类型", image.analysis_item_id || "", function (value) { image.analysis_item_id = value; }));
+    fields.appendChild(field("分析图大类", image.analysis_domain_id || ANALYSIS_DOMAIN_ID, function (value) { image.analysis_domain_id = value; }));
     fields.appendChild(field("提示词", image.prompt || "", function (value) { image.prompt = value; }, true));
     var actions = document.createElement("div");
     actions.className = "slot-actions";
@@ -334,6 +387,9 @@
       grid.appendChild(field("标题", page.title || "", function (value) { page.title = value; }));
       grid.appendChild(field("核心信息", page.core_message || "", function (value) { page.core_message = value; }, true));
       grid.appendChild(field("正文", page.body || "", function (value) { page.body = value; }, true));
+      grid.appendChild(field("来源依据（每行一个）", (page.source_refs || []).join("\n"), function (value) {
+        page.source_refs = value.split(/\r?\n/).map(function (item) { return item.trim(); }).filter(Boolean);
+      }, true));
       card.appendChild(grid);
       (page.images || []).forEach(function (image, imageIndex) { renderImageSlot(page, image, imageIndex, card); });
       var addImage = document.createElement("button"); addImage.className = "secondary"; addImage.type = "button"; addImage.textContent = "增加图片槽";
@@ -345,14 +401,8 @@
 
   function initStyles() {
     request("/api/catalogs").then(function (catalogs) {
-      var select = byId("visual-style"); select.innerHTML = "";
-      (catalogs.visual_styles || []).forEach(function (group) {
-        (group.items || []).forEach(function (item) {
-          var option = document.createElement("option"); option.value = item.id; option.textContent = item.label_zh || item.label || item.id; select.appendChild(option);
-        });
-      });
-      var custom = document.createElement("option"); custom.value = "custom"; custom.textContent = "客制化"; select.appendChild(custom);
-      if (STATE && STATE.selection && STATE.selection.visual_style) select.value = STATE.selection.visual_style;
+      VISUAL_STYLE_CATALOG = catalogs.visual_styles || [];
+      renderVisualStyles();
     }).catch(function (error) { toast(error.message); });
   }
 
@@ -365,6 +415,14 @@
       .finally(function () { setBusy(button, false); });
   };
   byId("save-selection").onclick = saveSelection;
+  byId("analysis-yes").onclick = function () { ANALYSIS_REQUIRED = true; renderAnalysisDecision(); };
+  byId("analysis-no").onclick = function () {
+    ANALYSIS_REQUIRED = false;
+    ANALYSIS_STYLE_ID = "";
+    ANALYSIS_DOMAIN_ID = "";
+    renderAnalysisDecision();
+    renderAnalysisLibrary();
+  };
   byId("dry-run-analysis").onclick = function () { runAnalysis(true); };
   byId("generate-analysis").onclick = function () { runAnalysis(false); };
   byId("reload-outline").onclick = loadState;
@@ -382,5 +440,6 @@
       .finally(function () { setBusy(button, false); });
   };
 
-  loadState().then(initStyles);
+  initStyles();
+  loadState();
 }());

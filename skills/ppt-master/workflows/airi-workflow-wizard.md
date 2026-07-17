@@ -1,117 +1,98 @@
 ---
-description: Run the AIRI v2 local wizard for multi-source intake, two-level analysis-image selection, and editable page-outline confirmation
+description: Run the mandatory new/restructured-deck intake, style, professional-analysis, content-inventory, and sourced page-outline confirmation workflow
 ---
 
-# AIRI Workflow Wizard
+# AIRI Content Planning Wizard
 
-Run the local wizard when the user wants a visual intake-to-outline workflow before formal PPT generation.
+Use this workflow for every new or restructured deck. Fixed-page `template-fill`, strict 1:1 `beautify`, and `native-enhance` retain their own route boundaries.
 
-## 1. Launch
-
-Initialize a normal PPT Master project, then launch the shared Confirm UI server in wizard mode:
+## 1. Intake and Reusable Selection Assets
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format ppt169
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wizard --daemon
 ```
 
-**Hard rule**: Keep the chat fallback valid. If the page cannot open, create and confirm the same artifacts through chat and the CLI tools below.
+Import files, URLs, text, existing outlines, and style-reference PPTX files. Persist audience, objective, canvas, delivery purpose, content-divergence notes, color/typography notes, and the **performance-image policy** (cover / decorative / photographic only) in `workflow_brief.json`.
 
----
+Run `intake_manifest.py` after every source change. Source changes invalidate the content inventory and outline confirmation through the planning-input fingerprint.
 
-## 2. Intake and Source Synthesis
+Use the prebuilt chat assets by default:
 
-| Artifact | Owner | Contract |
-|---|---|---|
-| `source_manifest.json` | `intake_manifest.py` | Deterministic file inventory, hashes, duplicates, roles, and available assets |
-| `source_synthesis.json` | Strategist | Relationships, shared facts, conflicts, existing structure, and source-backed summary |
-| `template_request.json` | Wizard intake | Uploaded PPT style-reference request; page count is not preserved |
+- `assets/contact-sheets/ppt_visual_styles.png` (SVG fallback: `.svg`)
+- `assets/contact-sheets/analysis_visual_styles.png` (SVG fallback: `.svg`)
+- `assets/contact-sheets/analysis_domains.md`
 
-After every upload, run:
+When a source catalog or preview changes, rebuild once with `python3 ${SKILL_DIR}/scripts/build_contact_sheets.py`. Do not start a website for routine selection. The browser wizard is opt-in only when the user explicitly requests interactive browser editing.
+
+## 2. Blocking Decision 1: Visual Style and Professional Analysis
+
+### Visual style
+
+- Show the reusable numbered PPT-style contact sheet. Its order is generated from `catalogs.json`, so the user may reply with either the visible number or the style id.
+- Badge the Strategist recommendation but do not preselect it.
+- A user click records `visual_style_source: user`.
+- "随便" / equivalent or continuing without a click applies the recommendation and records `visual_style_source: auto`.
+- Keep a Custom card and store its prose in `custom_style_description`.
+
+### Explicit professional-analysis decision
+
+Require `analysis_required: true | false`; a missing domain never means No.
+
+- **False**: clear analysis style/domain/type/reference fields, skip professional-analysis generation, and continue to content inventory.
+- **True**: show the reusable numbered analysis-style contact sheet and the four entries from `assets/contact-sheets/analysis_domains.md`. Require one style, exactly one user-facing domain, the analysis library id, optional reference images, and a provider profile. Do not show the detailed type catalog. Strategist resolves the source-specific internal type ids after the user confirms; if none are supplied, the runtime uses the domain's curated default set. Generate only through `analysis_library.py` + `image_gen.py`.
+
+Write schema-v4 `workflow_selection.json` with `analysis_domain_id`, internal `analysis_item_ids`, `analysis_selection_confirmed`, and `analysis_selection_hash`. Changing style, domain, derived type set, reference image, provider profile, or the professional-analysis decision invalidates downstream artifacts.
+
+## 3. Analysis Generation and Content Inventory
+
+Every analysis style must have a preview declared by the compiled library. The seven current previews use the same residential massing example for fair comparison.
+
+When analysis is required:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/intake_manifest.py <project_path>
-```
-
-**Mandatory**: Replace `source_synthesis.json status: pending-ai` with `status: ready` after reading normalized source content and machine facts. Keep source ids in relationship/conflict records.
-
-**Uploaded PPT style reference**: Follow [`create-template.md`](./create-template.md) using `template_request.json`, write the temporary package to `<project>/templates/custom-upload/`, and keep `preserve_page_count: false`.
-
----
-
-## 3. Style and Analysis Images
-
-Complete the existing three-stage direction/design/image confirmation at `/confirm`. Persist the wizard choices to `workflow_selection.json`.
-
-**Two-level analysis selection**: Compile the one-style-per-sheet Excel source, then require one analysis style plus one or more analysis type ids. Keep the selected type ids when the user switches style.
-
-```bash
-python3 ${SKILL_DIR}/scripts/analysis_library.py compile <library_dir>/prompts_master.xlsx
 python3 ${SKILL_DIR}/scripts/analysis_library.py build-manifest \
-  <library_dir> <project_path> \
-  --style <style-id> --item <analysis-type-id> --reference <image>
+  <library_dir> <project_path> --style <style-id> --item <type-id> --reference <image>
+python3 ${SKILL_DIR}/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json --dry-run
 python3 ${SKILL_DIR}/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
 ```
 
-Use `--dry-run` on the final command to validate the selected provider request without credentials or network access.
+Do not proceed until every selected item is `Generated`, the manifest carries the current `analysis_selection_hash`, and every output file exists.
 
-Provider profiles:
+Then synthesize all source facts, user images, generated analysis images, actual sizes/aspect ratios, full/half/combined placement recommendations, copy blocks, and density into `analysis/content_inventory.json`. Save through `POST /api/workflow/content-inventory` so the server adds the current `planning_input_hash`.
 
-- `gptimage2.0-1K-mid` — default; GPT Image 2 reference edit, 1K, medium quality.
-- `nanobanana-pro-2K` — Gemini 3 Pro Image / Nano Banana Pro, Google GenAI `generateContent + inline_data`, 2K.
-- `gptimage2.0-1K-low` — legacy compatibility only.
-
-**Gate**: When `workflow_selection.json analysis_item_ids` is non-empty, every selected type must be `Generated` under the current `analysis_style_id` before final outline confirmation.
-
-**Legacy compatibility**: Existing flat `analysis_pack_id` projects continue through `analysis_pack.py`; do not expose that path as the default v2 selector.
-
----
-
-## 4. Editable Page Outline
-
-Strategist writes `<project>/outline_draft.json` after generated analysis images are available. Use this minimum page shape:
+Required inventory fields:
 
 ```json
 {
-  "schema_version": 2,
-  "pages": [
-    {
-      "page_id": "P01",
-      "title": "Project title",
-      "core_message": "One page, one message",
-      "body": "Final page copy",
-      "images": [
-        {
-          "source": "analysis-pack",
-          "filename": "ARC-010__arch_massing_study__light_fresh_ppt_detailed.png",
-          "analysis_library_id": "diagram-prompt-building-v1",
-          "analysis_style_id": "light_fresh_ppt_detailed",
-          "analysis_domain_id": "architecture",
-          "analysis_item_id": "ARC-010",
-          "prompt": "...",
-          "reference_images": ["project_render.png"]
-        }
-      ]
-    }
-  ]
+  "recommended_page_count": 12,
+  "page_count_rationale": ["3 full-page analysis diagrams", "3 residential renders", "balanced presentation density"],
+  "source_facts": [],
+  "images": [],
+  "content_blocks": []
 }
 ```
 
-The page supports add/delete/reorder, copy edits, image replacement, prompt edits, and single-image regeneration.
+Page count is first surfaced here. Never ask the user to lock it before this point.
 
-Confirm only after the user finishes editing:
+## 4. Blocking Decision 2: Sourced Page Outline
+
+Create schema-v3 `outline_draft.json` only from the current content inventory. `len(pages)` is the working page count.
+
+Each page requires `page_id`, `title`, `core_message`, `body`, non-empty `source_refs`, and an `images` array. Every image entry requires `source`. The wizard supports add/delete/reorder, copy edits, image replacement, prompt edits, and single-image regeneration.
+
+Any outline edit deletes the old confirmation. Any source/style/analysis/generated-file change makes the inventory and confirmation stale.
+
+Confirm and check:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/outline_gate.py confirm <project_path>
 python3 ${SKILL_DIR}/scripts/outline_gate.py check <project_path>
 ```
 
-**Hard gate**: Any draft edit invalidates `outline_confirmed.json`. Do not write SVG, start Executor live preview, or export PPTX until `outline_gate.py check` passes.
+Only after `check` reports `generation unlocked` may Strategist copy the confirmed page order/content/image mapping into `design_spec.md` Section IX and `spec_lock.md`, then start Executor.
 
----
+## 5. Browser Compatibility
 
-## 5. Handoff to the Main Pipeline
+Chat contact sheets are the default. If the user explicitly asks for an interactive browser surface, `confirm_ui/server.py --wizard` may present the same ordered decisions. Browser availability never changes the gate order, and early page-count confirmation remains forbidden.
 
-After confirmation, copy the confirmed page content and image mapping into `design_spec.md Section IX`, then generate `spec_lock.md` from the same page order. Continue with the existing Executor, quality, post-processing, and export steps.
-
-Do not add an AI-concept disclaimer to the generated analysis images or slide copy. Keep provider/profile/pack provenance only in project JSON artifacts.
+Schema-v3 compatibility is read-only: existing analysis selections infer `analysis_required: true`; old projects with no analysis selection infer false and expose `analysis_requirement_legacy_inferred: true`. New projects must write schema v4. Legacy flat analysis packs remain executable but are not the default selector.

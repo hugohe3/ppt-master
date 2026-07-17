@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07121f"/><stop offset="1" stop-color="#111d32"/></linearGradient></defs><rect width="320" height="180" fill="url(#g)"/>
+  <g fill="#0f3448" stroke="#38e0d0" stroke-width="1.7"><path d="M67 134V79l52-29 45 23v61z"/><path d="M164 134V72l57-25 38 22v65z"/></g>
+  <g fill="none" stroke="#c75cff"><path d="M39 144h242"/><path d="M119 50l-25 16M221 47l24 15" stroke-dasharray="3 3"/></g>
+  <g font-family="Arial" fill="#d8ffff"><text x="17" y="26" font-size="12" font-weight="700">MASSING SIMULATION</text><text x="17" y="42" font-size="7" fill="#38e0d0">LIVE MODEL / OPTION 01</text></g><circle cx="286" cy="25" r="8" fill="none" stroke="#38e0d0"/><circle cx="286" cy="25" r="2" fill="#c75cff"/>
+</svg>

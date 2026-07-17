@@ -10,17 +10,17 @@
   <header class="topbar">
     <div>
       <div class="eyebrow">PPT MASTER AIRI · V2</div>
-      <h1>图文协同生成向导</h1>
+      <h1>内容规划与图文生成向导</h1>
     </div>
     <div id="project-name" class="project-pill"></div>
   </header>
 
   <nav class="steps" aria-label="工作流步骤">
     <a href="#intake">1 输入</a>
-    <a href="#style">2 风格</a>
-    <a href="#analysis">3 分析图</a>
-    <a href="#outline">4 逐页大纲</a>
-    <a href="#confirm">5 确认生成</a>
+    <a href="#style">2 风格与分析策划</a>
+    <a href="#analysis">3 分析图生成</a>
+    <a href="#outline">4 内容盘点与大纲</a>
+    <a href="#confirm">5 正式生成</a>
   </nav>
 
   <main>
@@ -40,6 +40,18 @@
           <label>现有大纲<textarea name="outline_text" rows="5"></textarea></label>
           <label>设计说明<textarea name="design_brief" rows="5"></textarea></label>
           <label>设计任务书<textarea name="design_task" rows="5"></textarea></label>
+          <label>汇报受众<input name="audience" placeholder="业主、评审、管理层等"></label>
+          <label>汇报目标<input name="objective" placeholder="方案汇报、概念评审、销售展示等"></label>
+          <label>画布
+            <select name="canvas"><option value="ppt169">16:9 PPT</option><option value="ppt43">4:3 PPT</option></select>
+          </label>
+          <label>阅读方式
+            <select name="delivery_purpose"><option value="balanced">均衡汇报</option><option value="text">近距离阅读</option><option value="presentation">大屏演讲</option></select>
+          </label>
+          <label>内容重构程度<textarea name="content_divergence" rows="3" placeholder="例如：忠于原材料，但允许重组顺序"></textarea></label>
+          <label>表现型图片策略<textarea name="presentation_image_policy" rows="3" placeholder="仅指封面主视觉、装饰图和照片，不代表专业分析图"></textarea></label>
+          <label>配色补充要求<input name="color_notes" placeholder="可留空，由所选风格推导"></label>
+          <label>字体补充要求<input name="typography_notes" placeholder="可留空，由所选风格推导"></label>
         </div>
         <button type="submit" class="primary">导入并建立资料清单</button>
       </form>
@@ -48,57 +60,61 @@
 
     <section id="style" class="panel">
       <div class="section-heading">
-        <div><span class="step-no">02</span><h2>图面风格与模板</h2></div>
-        <p>先确定风格，再生成分析图和逐页图文大纲。</p>
+        <div><span class="step-no">02</span><h2>PPT 风格与分析图策划</h2></div>
+        <p>先看完整风格缩略图，再明确是否需要专业分析图。</p>
       </div>
-      <div class="grid two">
-        <label>视觉风格<select id="visual-style"></select></label>
-        <label>客制化描述<textarea id="custom-style" rows="3" placeholder="补充配色、材料感、排版、氛围等要求"></textarea></label>
-      </div>
+      <h3>整体 PPT 视觉风格</h3>
+      <p class="field-hint">推荐项只作提示。若不选择直接保存，将采用推荐风格并记录为自动选择。</p>
+      <div id="visual-style-grid" class="visual-style-grid"></div>
+      <label>客制化描述<textarea id="custom-style" rows="3" placeholder="补充配色、材料感、排版、氛围等要求"></textarea></label>
       <h3>可用模板</h3>
       <div id="template-grid" class="template-grid"></div>
-      <div class="button-row">
-        <a class="link-button" href="/confirm" target="_blank">打开方向 / 配色 / 字体 / 图像策略确认页</a>
+      <div class="analysis-decision">
+        <h3>是否需要 AI 补充专业分析图？</h3>
+        <p>这里仅指建筑、室内、景观、规划分析图；封面主视觉和装饰图片由上方“表现型图片策略”管理。</p>
+        <div class="decision-options">
+          <button id="analysis-yes" type="button" class="decision-card">需要，继续选择大类与风格</button>
+          <button id="analysis-no" type="button" class="decision-card">不需要，只使用已有内容</button>
+        </div>
       </div>
     </section>
 
     <section id="analysis" class="panel">
       <div class="section-heading">
-        <div><span class="step-no">03</span><h2>分析图风格与类型</h2></div>
-        <p>第一层选择图面风格，第二层按建筑、室内、景观、规划勾选具体分析图。</p>
+        <div><span class="step-no">03</span><h2>分析图风格、大类与生成</h2></div>
+        <p>只有明确选择“需要”后本区才开放；不需要时直接跳过。</p>
       </div>
-      <h3>第一层 · 分析图风格</h3>
-      <div id="analysis-style-grid" class="analysis-style-grid"></div>
-      <div class="analysis-type-heading">
-        <h3>第二层 · 分析图类型</h3>
-        <div class="selection-count">已选择 <strong id="analysis-selected-count">0</strong> 张</div>
+      <div id="analysis-config">
+        <h3>第一层 · 分析图风格</h3>
+        <div id="analysis-style-grid" class="analysis-style-grid"></div>
+        <div class="analysis-type-heading">
+          <h3>第二层 · 分析图大类</h3>
+          <p>只需选择建筑、室内、景观或规划；具体分析内容由系统根据素材自动匹配。</p>
+        </div>
+        <div id="analysis-domain-tabs" class="analysis-domain-tabs"></div>
+        <label class="profile-field">生图后端与档位
+          <select id="provider-profile">
+            <option value="gptimage2.0-1K-mid">GPT Image 2 · 1K · medium（默认）</option>
+            <option value="gptimage2.0-1K-low">GPT Image 2 · 1K · low（兼容旧项目）</option>
+            <option value="nanobanana-pro-2K">Nano Banana Pro · 2K</option>
+          </select>
+        </label>
+        <div><h3>参考效果图</h3><div id="reference-images" class="image-picker"></div></div>
+        <div class="button-row">
+          <button id="dry-run-analysis" class="secondary">离线验证所选图片</button>
+          <button id="generate-analysis" class="primary">生成所选分析图</button>
+        </div>
       </div>
-      <div id="analysis-domain-tabs" class="analysis-domain-tabs"></div>
-      <div id="analysis-type-groups" class="analysis-type-groups"></div>
-      <label class="profile-field">生图后端与档位
-        <select id="provider-profile">
-          <option value="gptimage2.0-1K-mid">GPT Image 2 · 1K · medium（默认）</option>
-          <option value="gptimage2.0-1K-low">GPT Image 2 · 1K · low（兼容旧项目）</option>
-          <option value="nanobanana-pro-2K">Nano Banana Pro · 2K</option>
-        </select>
-      </label>
-      <div>
-        <h3>参考效果图</h3>
-        <div id="reference-images" class="image-picker"></div>
-      </div>
-      <div class="button-row">
-        <button id="save-selection" class="secondary">保存风格与生图选择</button>
-        <button id="dry-run-analysis" class="secondary">离线验证所选图片</button>
-        <button id="generate-analysis" class="primary">生成所选分析图</button>
-      </div>
+      <div class="button-row"><button id="save-selection" class="secondary">保存风格与分析图决策</button></div>
       <pre id="generation-log" class="log"></pre>
     </section>
 
     <section id="outline" class="panel">
       <div class="section-heading">
-        <div><span class="step-no">04</span><h2>逐页图文大纲</h2></div>
-        <p>拖动页面排序；编辑后先保存，任何修改都会使旧确认失效。</p>
+        <div><span class="step-no">04</span><h2>内容盘点、页数建议与逐页大纲</h2></div>
+        <p>页数只在全部内容就绪后推导；最终页数等于当前页面卡片数量。</p>
       </div>
+      <div id="inventory-summary" class="inventory-summary"></div>
       <div class="button-row">
         <button id="reload-outline" class="secondary">重新载入</button>
         <button id="add-page" class="secondary">增加页面</button>
