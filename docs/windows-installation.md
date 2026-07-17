@@ -1,5 +1,9 @@
 # Windows Installation Guide
 
+[English](./windows-installation.md) | [Chinese](./zh/windows-installation.md)
+
+---
+
 This guide walks you through installing PPT Master on Windows step by step. Follow along and you'll have a working setup in under 10 minutes.
 
 ---
@@ -11,8 +15,6 @@ Python is the only hard requirement.
 1. Go to **[python.org/downloads](https://www.python.org/downloads/)** and download the latest **Python 3.10+** installer.
 
 2. **⚠️ CRITICAL: Check "Add python.exe to PATH"** during installation — this is the single most common mistake on Windows. Skipping this will break every step that follows.
-
-   ![Python installer — check Add to PATH](assets/windows-python-path.png)
 
 3. After installation, open **PowerShell** (search "PowerShell" in Start menu) and verify:
 
@@ -70,13 +72,18 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 ## Step 5 — Run a Minimal Example
 
-Open your AI editor (Cursor, VS Code + Copilot, etc.), open the `ppt-master` folder, and type in the chat:
+Open the `ppt-master` folder in an agent-capable AI tool (Claude Code, Codex, Cursor, a VS Code agent, etc.) and type in the chat:
 
 ```
 Please create a simple 3-page test PPT with a cover, one content page, and a closing page. Topic: "Hello World".
 ```
 
-If a `.pptx` file appears in `exports/` that opens in PowerPoint — **you're done.**
+After the standard flow finishes, you should see:
+
+- A native DrawingML `.pptx` under `exports/`, generated from `svg_output/`, that opens in PowerPoint and remains editable element by element.
+- A `svg_final/` directory containing self-contained visual-preview SVGs. They may be inserted manually as SVG pictures, but manual "Convert to Shape" is outside the supported contract.
+
+If both are present, **you're done.**
 
 ---
 

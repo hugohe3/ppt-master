@@ -20,10 +20,14 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import math
 import re
+import shutil
 import statistics
 import sys
+import tempfile
+from collections.abc import Iterator
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -57,6 +61,7 @@ _CANVAS_VIEWBOX_RE = re.compile(
 )
 _FONT_SIZE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)(?:px)?$")
 _FILENAME_UNSAFE_RE = re.compile(r"[\\/:*?\"<>|\x00-\x1f]+")
+_PLACEHOLDER_MARKER_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _TITLE_PLACEHOLDERS = frozenset({"title", "subtitle"})
 _BODY_PLACEHOLDERS = frozenset({
     "body",
@@ -66,6 +71,76 @@ _BODY_PLACEHOLDERS = frozenset({
 })
 _DEFAULT_TITLE_PX = 40.0
 _DEFAULT_BODY_PX = 24.0
+
+
+def _review_marker_text(match: re.Match[str]) -> str:
+    """Return concise preview-only text for one canonical marker."""
+    token = match.group(1)
+    if token in {"PAGE_NUM", "SLIDE_NUM"}:
+        return "1"
+    if token.endswith("_NUM"):
+        return "01"
+    if token == "DATE":
+        return "YYYY-MM-DD"
+    return token.replace("_", " ").title()
+
+
+def _write_review_svg(source: Path, target: Path) -> bool:
+    """Copy one SVG, shortening only visible placeholder-carrier prompts."""
+    tree = ET.parse(source)
+    changed = False
+    for slot in tree.getroot().iter():
+        if not (slot.get("data-pptx-placeholder") or "").strip():
+            continue
+        for carrier in slot.iter():
+            if (
+                carrier.get("data-pptx-placeholder-carrier") or ""
+            ).strip().lower() != "true":
+                continue
+            for element in carrier.iter():
+                if element.text:
+                    updated = _PLACEHOLDER_MARKER_RE.sub(
+                        _review_marker_text,
+                        element.text,
+                    )
+                    if updated != element.text:
+                        element.text = updated
+                        changed = True
+    if changed:
+        tree.write(target, encoding="utf-8", xml_declaration=True)
+    else:
+        shutil.copy2(source, target)
+    return changed
+
+
+@contextlib.contextmanager
+def _review_svg_sources(
+    workspace: Path,
+    svg_files: list[Path],
+    *,
+    shorten_placeholder_markers: bool,
+) -> Iterator[list[Path]]:
+    """Yield ephemeral review SVGs without modifying canonical template files."""
+    if not shorten_placeholder_markers:
+        yield svg_files
+        return
+
+    with tempfile.TemporaryDirectory(
+        prefix=".template-preview-",
+        dir=workspace,
+    ) as temporary:
+        review_dir = Path(temporary)
+        review_files: list[Path] = []
+        shortened = 0
+        for source in svg_files:
+            target = review_dir / source.name
+            shortened += int(_write_review_svg(source, target))
+            review_files.append(target)
+        print(
+            "  Review prompt text: preview-only samples in "
+            f"{shortened} SVG(s); canonical {{{{...}}}} markers unchanged"
+        )
+        yield review_files
 
 
 def _partition_svg_prototypes(
@@ -350,23 +425,34 @@ def main(argv: list[str] | None = None) -> int:
             print("  Review placeholder frames: full Layout bounds")
         print(f"  Output: {output_path}")
 
-        success = create_pptx_with_native_svg(
-            svg_files=svg_files,
-            output_path=output_path,
-            canvas_format=None,
-            expected_viewbox=locked_canvas,
-            verbose=True,
-            transition=None,
-            enable_notes=False,
-            animation=None,
-            image_optimize=False,
-            native_objects=True,
-            pptx_structure="flat" if args.visual_only else "structured",
-            use_layout_placeholder_frames=use_full_placeholder_frames,
-            master_text_style_spec=text_style,
-            structure_name=template_id,
-            layout_definition_files=layout_definition_files,
-        )
+        with _review_svg_sources(
+            workspace,
+            all_svg_files,
+            shorten_placeholder_markers=use_full_placeholder_frames,
+        ) as review_all_svg_files:
+            review_svg_files, review_layout_definition_files = (
+                _partition_svg_prototypes(
+                    review_all_svg_files,
+                    visual_only=args.visual_only,
+                )
+            )
+            success = create_pptx_with_native_svg(
+                svg_files=review_svg_files,
+                output_path=output_path,
+                canvas_format=None,
+                expected_viewbox=locked_canvas,
+                verbose=True,
+                transition=None,
+                enable_notes=False,
+                animation=None,
+                image_optimize=False,
+                native_objects=True,
+                pptx_structure="flat" if args.visual_only else "structured",
+                use_layout_placeholder_frames=use_full_placeholder_frames,
+                master_text_style_spec=text_style,
+                structure_name=template_id,
+                layout_definition_files=review_layout_definition_files,
+            )
         if not success or not output_path.is_file():
             print("Error: template preview export did not produce a PPTX", file=sys.stderr)
             return 1

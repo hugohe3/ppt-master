@@ -154,7 +154,7 @@ def build_source_profile(
             "standard_generation": (
                 "Use identity and slide-library fields as source facts and recommendation "
                 "candidates only; do not preserve original page count, order, or coordinates "
-                "unless the user selected a beautify/template-fill workflow."
+                "unless the user selected the beautify profile or Fill Native PPTX route."
             ),
             "beautify": (
                 "Promote source text, page order, page count, colors, fonts, and font sizes "

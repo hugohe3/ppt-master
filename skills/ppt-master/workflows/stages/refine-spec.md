@@ -1,12 +1,12 @@
 ---
-description: Opt-in spec-refinement loop between the Strategist confirmation stage and Image/Executor. Triggered only when the user explicitly asks; the Strategist produces the full design spec, then HARD STOPS so the user can review and revise any part of it before the pipeline continues.
+description: Optional main-pipeline stage for reviewing and revising the complete spec before generation.
 ---
 
-# Refine Spec Workflow
+# Refine Spec Stage
 
-> Standalone, **opt-in** spec-review pass. The default pipeline writes `design_spec.md` + `spec_lock.md` and auto-proceeds. When the user explicitly asks to refine the spec, the Strategist produces the full spec first, then **stops** — the user reviews and revises any part of it (outline, color, typography, layout, image strategy, page rhythm, …) before any image generation or SVG work begins.
+> **Opt-in Generate-PPTX stage** for spec review. The default pipeline writes `design_spec.md` + `spec_lock.md` and auto-proceeds. When the user explicitly asks to refine the spec, the Strategist produces the full spec first, then **stops** — the user reviews and revises any part of it (outline, color, typography, layout, image strategy, page rhythm, …) before any image generation or SVG work begins.
 
-This workflow is **conditional**, same shape as the split-mode choice: it never fires on its own and the default path is unchanged. The Strategist confirmation stage settles design directions up front as abstract recommendations; this pass lets the user revise the **concrete spec** the Strategist produced from them. It is most valuable for a zero-background user, who can judge a finished spec far better than the up-front recommendations — and the spec's content outline (`§IX`) is usually what they most want to adjust.
+This stage is **conditional**, same shape as the split-mode choice: it never fires on its own and the default path is unchanged. The Strategist confirmation stage settles design directions up front as abstract recommendations; this pass lets the user revise the **concrete spec** the Strategist produced from them. It is most valuable for a zero-background user, who can judge a finished spec far better than the up-front recommendations — and the spec's content outline (`§IX`) is usually what they most want to adjust.
 
 ## When to Run
 
@@ -18,7 +18,7 @@ The user **explicitly asks** to refine / review / revise the spec before generat
 | "let me revise the spec, then continue" | "send me the spec to confirm, I'll edit it" |
 | Any request to inspect/iterate the design spec before generation | "draft the full plan, I want to adjust it, then generate" |
 
-**Default is OFF.** Strategist surfaces this option as one short opt-in line inside the Strategist confirmation stage (see SKILL.md Step 4). No request → the spec is written in one go and the pipeline auto-proceeds as usual; this workflow never starts.
+**Default is OFF.** Strategist surfaces this option as one short opt-in line inside the Strategist confirmation stage (see SKILL.md Step 4). No request → the spec is written in one go and the pipeline auto-proceeds as usual; this stage never starts.
 
 **Prerequisite**: the Strategist confirmation stage is settled (mode + visual style + the rest). This pass revises the spec produced from that stage; it does not re-open the confirmation stage itself.
 
@@ -47,9 +47,9 @@ The user may revise **any part of the spec**, not just the outline — content o
 
 These overlap with what the locked `mode`, visual style, and §6.1 already shape — treat them as discussion angles to surface what is worth talking about, not a second pass to redo.
 
-**Keep both files in sync on every change.** Any revision the user approves must land in both `design_spec.md` and `spec_lock.md`; on divergence `spec_lock.md` wins (see [`strategist.md`](../references/strategist.md) §6.2). Iterate as many rounds as the user wants. The loop ends only when the user explicitly approves the spec.
+**Keep both files in sync on every change.** Any revision the user approves must land in both `design_spec.md` and `spec_lock.md`; on divergence `spec_lock.md` wins (see [`strategist.md`](../../references/strategist.md) §6.2). Iterate as many rounds as the user wants. The loop ends only when the user explicitly approves the spec.
 
-**Re-run the structured-template preflight after structural revisions.** If the user changes `template_adherence`, `page_layouts`, the Master/Layout definition roster, or any `page_pptx_layouts` assignment, repeat the Strategist preflight in [`strategist.md`](../references/strategist.md) §6.2 before approval and hand-back. Every newly selected prototype must declare root Master/Layout identity, direct atomic Master/Layout visuals, and valid top-level slot groups with positive bounds plus one compatible carrier or explicit composite `object` proxy. A zero-slot Layout is valid. Update `pptx_masters`, unique `pptx_layouts` definitions, and complete `page_pptx_layouts` assignments in both artifacts immediately. A legacy prototype must run [`restore-pptx-structure`](./restore-pptx-structure.md); do not create a fallback mode inside refinement.
+**Re-run the structured-template preflight after structural revisions.** If the user changes `template_adherence`, `page_layouts`, the Master/Layout definition roster, or any `page_pptx_layouts` assignment, repeat the Strategist preflight in [`strategist.md`](../../references/strategist.md) §6.2 before approval and hand-back. Every newly selected prototype must declare root Master/Layout identity, direct atomic Master/Layout visuals, and valid top-level slot groups with positive bounds plus one compatible carrier or explicit composite `object` proxy. A zero-slot Layout is valid. Update `pptx_masters`, unique `pptx_layouts` definitions, and complete `page_pptx_layouts` assignments in both artifacts immediately. A legacy prototype is not selectable; create a current workspace through [`create-template`](../create-template.md) before refinement.
 
 ---
 
@@ -57,4 +57,4 @@ These overlap with what the locked `mode`, visual style, and §6.1 already shape
 
 Once the user approves, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to SKILL.md and continue normally: Step 5 (Image Acquisition, if any `ai` / `web` rows) or Step 6 (Executor).
 
-> Note: this workflow does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. `strategist.md` / SKILL.md remain authoritative for how the spec is written.
+> Note: this stage does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. `strategist.md` / SKILL.md remain authoritative for how the spec is written.

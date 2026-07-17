@@ -2,7 +2,7 @@
 """
 PPT Master - Beautify Identity Extractor
 
-Extract a source deck's visual identity as JSON for the beautify-pptx workflow:
+Extract a source deck's visual identity as JSON for the beautify-pptx profile:
 the declared `theme` (palette + major/minor fonts + master placeholder sizes,
 full bodyStyle ramp in `sizes.body_levels`) plus `observed` usage (run-level
 fonts incl. CJK `ea`, explicit point sizes, and frequent explicit fill colors)
@@ -23,7 +23,7 @@ Examples:
 Dependencies:
     None beyond the standard library (reuses scripts/pptx_to_svg/).
 
-See workflows/beautify-pptx.md for how the emitted identity is consumed.
+See workflows/profiles/beautify-pptx.md for how the emitted identity is consumed.
 """
 
 from __future__ import annotations

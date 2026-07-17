@@ -419,7 +419,7 @@ HEX_VALUE_RE = re.compile(
 # structure metadata. Template roster/placeholder checks always run. Current
 # bundled templates opt in to complete structure validation through their
 # native_structure_mode: structured declaration. Legacy template-mode packages
-# fail closed and must run the explicit restoration workflow.
+# fail closed; Create Template must author a new current-contract workspace.
 _CHECK_PPTX_STRUCTURED_PROJECT = True
 
 _BARE_HEX_VALUE_RE = re.compile(
@@ -887,8 +887,8 @@ def _design_spec_is_brand(spec_path: Path) -> bool:
 
     Lightweight detector that does not require PyYAML — scans only the
     frontmatter block (``---`` delimited) for a ``kind:`` line whose value
-    contains ``brand``. Used by ``check_directory`` to skip SVG validation
-    on brand-only template directories.
+    contains ``brand``. Used by ``check_directory`` to select Brand schema
+    validation instead of SVG-roster validation.
     """
     try:
         text = spec_path.read_text(encoding='utf-8')
@@ -1152,6 +1152,7 @@ class SVGQualityChecker:
         # template_mode=True). Each entry is (severity, kind, message) where
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
+        self._brand_template_checked = False
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._pptx_structure_issues: List[Tuple[str, str]] = []
@@ -4368,21 +4369,53 @@ class SVGQualityChecker:
             self.issue_types['Input issues'] += 1
             return []
 
-        # Brand-only template workspaces have no SVG roster. Resolve the current
-        # nested spec first and keep legacy-flat roots readable.
+        # Brand-only workspaces have no SVG roster. Validate their portable
+        # identity schema through the same authority used by library
+        # registration, while keeping project scope independent of global
+        # indexes and directory names.
         if self.template_mode and dir_path.is_dir():
             nested_spec = dir_path / 'templates' / 'design_spec.md'
             spec = nested_spec if nested_spec.is_file() else dir_path / 'design_spec.md'
             if spec.exists() and _design_spec_is_brand(spec):
+                self._brand_template_checked = True
+                self.summary['total'] += 1
+                brand_valid = True
                 print(
                     f"[INFO] Brand directory detected (kind: brand) — "
-                    f"SVG checks skipped."
+                    f"validating design_spec.md and referenced assets."
                 )
                 print(
                     f"[INFO] Validate brand specs via: "
                     f"uvx ppt-master register-template "
                     f"--kind brand <brand_id> --dry-run"
                 )
+                workspace_root = (
+                    spec.parent.parent
+                    if spec.parent.name == 'templates'
+                    else spec.parent
+                )
+                try:
+                    from register_template import (
+                        SpecParseError,
+                        validate_brand_workspace,
+                    )
+                    validate_brand_workspace(workspace_root)
+                except ImportError as exc:
+                    brand_valid = False
+                    self._template_issues.append((
+                        'error',
+                        'brand_contract',
+                        f"Brand schema validator could not be imported: {exc}",
+                    ))
+                except (OSError, SpecParseError) as exc:
+                    brand_valid = False
+                    self._template_issues.append((
+                        'error',
+                        'brand_contract',
+                        str(exc),
+                    ))
+                if brand_valid:
+                    self.summary['passed'] += 1
                 return self.results
 
         # Find all SVG files
@@ -4577,9 +4610,10 @@ class SVGQualityChecker:
                 'release SVG projects require an explicit spec_lock.md '
                 'pptx_structure.mode: flat (free design / brand-only) or '
                 f'structured (deck/layout template); found {label}. New '
-                'free-design projects use mode: flat; restore legacy '
-                'template/structured metadata by following skills/ppt-master/'
-                'workflows/restore-pptx-structure.md before export.',
+                'free-design projects use mode: flat; create a new template '
+                'workspace through skills/ppt-master/workflows/create-template.md, '
+                'then generate new structured SVG pages before export. Existing '
+                'PPTX/SVG files are not upgraded in place.',
             ))
             return
 
@@ -5293,7 +5327,7 @@ class SVGQualityChecker:
         - **Explicit structure gaps** are errors when positive structure checks
           are enabled: every current reusable SVG declares its Master and Layout
           identity. Zero-placeholder Layouts are valid. Legacy template-mode
-          packages fail and must run the structure-restoration workflow.
+          packages fail and must be replaced by a new create-template workspace.
         - **Placeholder gaps** are reported as *warnings*. Templates may
           legitimately omit conventional placeholders or swap them out (e.g.
           ``{{CLOSING_MESSAGE}}`` instead of ``{{THANK_YOU}}``), and a content
@@ -5315,7 +5349,7 @@ class SVGQualityChecker:
                 'explicit_structure_mode',
                 "design_spec.md frontmatter must declare "
                 "native_structure_mode: structured; legacy template-mode "
-                "workspaces must run restore-pptx-structure",
+                "workspaces must be re-created through create-template",
             ))
         if check_structure:
             native_contract_path = dir_path / 'native_structure.json'
@@ -5391,8 +5425,8 @@ class SVGQualityChecker:
                     'error',
                     'legacy_native_structure_pair',
                     "legacy native_structure.json/source_template.pptx template "
-                    "contracts must be restored through "
-                    "skills/ppt-master/workflows/restore-pptx-structure.md",
+                    "contracts must be replaced through "
+                    "skills/ppt-master/workflows/create-template.md",
                 ))
 
             if declared_structure_mode != 'structured':
@@ -5408,9 +5442,9 @@ class SVGQualityChecker:
                 self._template_issues.append((
                     'error',
                     'legacy_structure_contract',
-                    "legacy template structure detected; run "
-                    "skills/ppt-master/workflows/restore-pptx-structure.md before "
-                    "Step 3 consumption",
+                    "legacy template structure detected; create a new current "
+                    "workspace through skills/ppt-master/workflows/"
+                    "create-template.md before Step 3 consumption",
                 ))
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []
         custom_contract = self._extract_frontmatter_placeholders(spec_text) if spec_text else {}
@@ -5773,7 +5807,7 @@ class SVGQualityChecker:
         from ``main`` agrees), warnings under ``warnings``. Both are listed
         per file so the user can act on them directly.
         """
-        if not self._template_issues:
+        if not self._template_issues and not self._brand_template_checked:
             return
 
         errors = [item for item in self._template_issues if item[0] == 'error']
@@ -5788,11 +5822,14 @@ class SVGQualityChecker:
             print(f"  Warnings ({len(warnings)}):")
             for _sev, kind, msg in warnings:
                 print(f"    [{kind}] {msg}")
+        if self._brand_template_checked and not errors:
+            print("  Brand design_spec.md schema and asset references passed.")
         if not errors:
-            print("  No structural roster issues.")
-            print("  Conventional placeholder-name hints may be declared through "
-                  "'placeholders:' frontmatter. Placeholder bounds are mandatory "
-                  "design-zone metadata.")
+            if not self._brand_template_checked:
+                print("  No structural roster issues.")
+                print("  Conventional placeholder-name hints may be declared through "
+                      "'placeholders:' frontmatter. Placeholder bounds are mandatory "
+                      "design-zone metadata.")
 
     def _apply_aggregated_issue_counts(self):
         """Mirror project-level aggregate issues into summary counters once."""
@@ -5924,12 +5961,13 @@ def print_usage() -> None:
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
-    print("                                  glob *.svg directly and skip spec_lock checks;")
-    print("                                  always enforce roster consistency and emit placeholder hints.")
+    print("                                  Brand validates design_spec.md and referenced assets;")
+    print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
+    print("                                  enforce roster consistency, and emit placeholder hints.")
     print("                                  native_structure_mode: structured also enables complete")
     print("                                  per-file and cross-page structure validation. Legacy")
-    print("                                  native_structure_mode: template fails and must run")
-    print("                                  restore-pptx-structure before validation.")
+    print("                                  native_structure_mode: template fails and must be")
+    print("                                  re-created through create-template before validation.")
     print("  Warnings are advisory: they require no modification and do not affect exit status;")
     print("  only errors make the command exit with status 1.")
 

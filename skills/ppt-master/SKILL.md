@@ -22,7 +22,7 @@ description: >
 | Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
 | `svg_final/` | Mandatory derived, self-contained SVG visual preview. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. |
 | SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It compiles only the selected route's explicit structure contract: `flat` keeps represented content Slide-local, while `structured` may place explicitly scoped content in Master/Layout/Slide parts. It MUST NOT infer structure, upgrade `flat`, or invent new visible page content. |
-| Direct PPTX and presentation-behavior workflows | Remain separate. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
+| Native PPTX routes and presentation-behavior stages | Remain outside SVG page-design closure. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
 **MUST — page-design closure**: For an SVG-authoring route, inspect the final page SVG to determine what the exported slide looks like. Do not reinterpret “SVG is the page-design language” as “SVG is the complete PPTX package description language.”
 
@@ -55,6 +55,10 @@ description: >
 > - `ppt-master` is a repository-specific workflow, not a general application scaffold
 > - Do NOT create `.worktrees/`, `tests/`, branch workflows, or generic engineering structure by default
 > - On conflict with a generic coding skill, follow this skill unless the user explicitly says otherwise
+> - Keep this Skill package self-contained: required workflow, reference,
+>   script, and template documentation MUST resolve inside this Skill directory;
+>   repository-level documents may link into the package, but package files
+>   MUST NOT depend on them
 
 ## Rule Strength Labels
 
@@ -72,10 +76,10 @@ description: >
 | Concern | Authority | Contract |
 |---|---|---|
 | Main pipeline sequencing | This `SKILL.md` | Owns Step 1-7 order, gates, role switching, and mandatory commands |
-| Route selection | [`workflows/routing.md`](workflows/routing.md) | Owns deterministic route choice before the main pipeline or a standalone workflow |
-| Workflow registry | [`workflows/index.md`](workflows/index.md) | Owns standalone workflow trigger/precondition/output inventory |
+| Route selection | [`workflows/routing.md`](workflows/routing.md) | Owns deterministic selection among the four top-level artifact routes |
+| Workflow registry | [`workflows/index.md`](workflows/index.md) | Separates top-level routes from supporting child workflows, profiles, stages, and governance |
 | Artifact ownership | [`references/artifact-ownership.md`](references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
-| Failure recovery | [`workflows/failure-recovery.md`](workflows/failure-recovery.md) | Owns stop/continue decisions for common failures |
+| Failure recovery | [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md) | Owns global stop/continue policy; its concrete matrix and resume pointers cover Generate PPTX |
 | Confirm UI details | [`scripts/docs/confirm_ui.md`](scripts/docs/confirm_ui.md) | Owns schema, launcher behavior, port strategy, and chat fallback details |
 
 ## Main Pipeline Scripts
@@ -97,7 +101,6 @@ description: >
 | `${SKILL_DIR}/scripts/finalize_svg.py` | SVG post-processing (unified entry) |
 | `${SKILL_DIR}/scripts/svg_to_pptx.py` | Export to PPTX |
 | `${SKILL_DIR}/scripts/native_enhance_pptx.py` | Existing PPTX enhancement project init / validation / direct OOXML patch export |
-| `${SKILL_DIR}/scripts/native_narration_pptx.py` | Backward-compatible entrypoint for existing PPTX notes / narration enhancement |
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
@@ -113,31 +116,33 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 
-## Standalone Workflows
+## Top-Level Routes and Supporting Runbooks
 
-**Route authority**: Use [`workflows/routing.md`](workflows/routing.md) before entering the main pipeline or any standalone workflow.
+**Route authority**: Use [`workflows/routing.md`](workflows/routing.md) to select exactly one top-level route. Child workflows, profiles, and stages never compete with that route.
 
-**Registry**: Use [`workflows/index.md`](workflows/index.md) for the complete workflow list, triggers, preconditions, exclusions, outputs, and blocking points.
+**Registry**: Use [`workflows/index.md`](workflows/index.md) for the route/supporting-document classification and ownership map.
 
 ### PPTX Route Boundary
 
 | User intent | Route |
 |---|---|
 | Raw PPTX template plus new material/topic, generate a PPTX | [`template-fill-pptx`](workflows/template-fill-pptx.md) |
-| Existing PPTX, preserve page count/order and slide wording 1:1, improve layout | [`beautify-pptx`](workflows/beautify-pptx.md) |
+| Existing PPTX, preserve page count/order and slide wording 1:1, improve layout | Main pipeline with the [`beautify-pptx`](workflows/profiles/beautify-pptx.md) profile |
 | Existing PPTX as source material, rethink outline or change page count/order | Main pipeline via `source_to_md.py` plus PPTX intake |
-| Build a reusable template package from a PPTX/design reference | [`create-template`](workflows/create-template.md), then return with the generated template workspace path |
+| Build a reusable Brand, Layout, or Deck workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct-text requirements, or a mixed reference bundle | [`create-template`](workflows/create-template.md), which dispatches one matching child workflow, then return with the generated template workspace path |
 | Finished PPTX, keep content/layout stable and add notes/audio/timing/transitions | [`native-enhance-pptx`](workflows/native-enhance-pptx.md) |
 
-**MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template workspace path with a valid `templates/design_spec.md`, or a supported direct/legacy package root with `design_spec.md`.
+**MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template workspace path with a valid `templates/design_spec.md`, or a compatible flat-directory current-contract root with `design_spec.md`. Semantic-legacy packages are rejected and must be replaced through Create Template.
 
-**MUST**: Beautify is strictly 1:1. Any split, merge, drop, reorder, or page-count change routes to the main pipeline.
+**MUST**: The beautify profile is strictly 1:1. Any split, merge, drop, reorder, or page-count change uses the default main-pipeline policy instead.
 
-**MUST — reusable template mode boundary**: `create-template` has two distinct
-contracts. `standard` and `fidelity` author new SVG prototypes and their own
+**MUST — reusable template mode boundary**: Create Template keeps its fixed
+entry name and dispatches exactly one of `create-brand`, `create-layout`, or
+`create-deck`. The Create Layout and Create Deck children have two structured
+replication contracts. `standard` and `fidelity` author new SVG prototypes and their own
 Master/Layout/slot system; source visuals and assets are references, and source
 Master/Layout topology is neither preserved nor distilled. `mirror` is a
-restoration path: preserve the source slide roster/order, visual appearance,
+native-preservation path: preserve only the source slide roster/order, visual appearance,
 Master/Layout parentage and identities, placeholder type/index/bounds, native
 object ownership, and supported native-shape metadata. The lossless import is
 the native-payload backing store; the `authoring-svg/` bundle and its
@@ -154,7 +159,14 @@ Slide plus one definition-only `layout_<layout_key>.svg` prototype for every
 source Layout unused by those Slides. The independent Master/Layout roster then
 registers the complete supported source graph without publishing synthetic
 carrier pages. Stop only when required native evidence is missing or unsupported;
-never silently drop or merge an identity.
+never silently drop or merge an identity. Mirror reads native facts that still
+exist in the source package or a complete current contract; it does not infer
+missing historical intent or modify the reference file.
+
+**MUST — no direct structure grafting**: Existing PPTX/SVG files are never
+upgraded in place with Master/Layout/placeholder structure. Create a separate
+validated workspace through `create-template`, pass that workspace to Step 3,
+and author new structured `svg_output/` pages before exporting a new PPTX.
 
 **FALLBACK**: Ambiguous requests such as "make this PPT more professional" require exactly one discriminator question: preserve original page count/order and slide wording, or treat the deck as source material and restructure it?
 
@@ -166,7 +178,7 @@ never silently drop or merge an identity.
 
 🚧 **GATE**: User has provided source material (PDF / DOCX / EPUB / URL / Markdown file / text description / conversation content — any form is acceptable).
 
-> **No source content?** When the user supplies only a topic name or requirements without any file or substantive description, run the [`topic-research`](workflows/topic-research.md) workflow first, then return here with its products as input.
+> **No source content?** When the user supplies only a topic name or requirements without any file or substantive description, run the [`topic-research`](workflows/stages/topic-research.md) intake stage first, then return here with its products as input.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -227,9 +239,9 @@ For PPTX sources, `import-sources` automatically runs the standard intake enrich
 uvx ppt-master pptx-intake <project_path>/sources/<source.pptx> -o <project_path>/analysis
 ```
 
-For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, observed usage) and `<stem>.slide_library.json` (text slots, geometry, native tables, native chart caches, SmartArt nodes/connections), and merges that deck's Strategist-facing digest into the single multi-deck index `analysis/source_profile.json` (`decks[]`, one self-contained entry per source deck, with prefixed artifact pointers). In the main generation path these are source facts and recommendation candidates, not replica constraints; beautify and template-fill workflows decide separately which fields become locked constraints.
+For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, observed usage) and `<stem>.slide_library.json` (text slots, geometry, native tables, native chart caches, SmartArt nodes/connections), and merges that deck's Strategist-facing digest into the single multi-deck index `analysis/source_profile.json` (`decks[]`, one self-contained entry per source deck, with prefixed artifact pointers). In the main generation path these are source facts and recommendation candidates, not replica constraints; the beautify profile and Fill Native PPTX route decide separately which fields become locked constraints.
 
-Multi-deck: several PPTX files may be imported into one main-pipeline project — each gets its own `<stem>.*` artifacts and a deck entry in `source_profile.json`. `source_profile.json` stays the single must-read index (one entry for a one-deck project, several for a combined-source project). Stems must be distinct; re-importing the same stem replaces that deck's entry. The beautify / template-fill workflows remain single-deck (1:1 to one chosen source deck) and read that deck's `<stem>.*` artifacts.
+Multi-deck: several PPTX files may be imported into one main-pipeline project — each gets its own `<stem>.*` artifacts and a deck entry in `source_profile.json`. `source_profile.json` stays the single must-read index (one entry for a one-deck project, several for a combined-source project). Stems must be distinct; re-importing the same stem replaces that deck's entry. The beautify profile and Fill Native PPTX route remain single-deck (1:1 to one chosen source deck) and read that deck's `<stem>.*` artifacts.
 
 > ⚠️ **MUST use `--move`** (not copy): all source files — Step 1's generated Markdown, original PDFs / MDs / images — go into `sources/` via `import-sources --move`. If Step 1 wrote Markdown beside the original sources, pass that source path/directory once. If Step 1 used `-o` to write Markdown elsewhere, pass both the original source path(s)/directory and the Markdown output path(s)/directory. After execution they no longer exist at the original location. Intermediate artifacts (e.g., `_files/`) are handled automatically.
 
@@ -245,7 +257,7 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 **Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: brand` / `kind: layout` / `kind: deck`, or a compatible legacy-flat package whose root `design_spec.md` declares one of those kinds.
 
-Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
+Do **not** reinterpret this boundary as permission to add Master/Layout structure to the raw PPTX or an existing SVG project. Use `template-fill` for raw PPTX template + generated PPTX requests. Use the beautify profile only when the source deck's page count, order, and wording are preserved while new SVG pages are authored.
 
 **Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message, plus one narrow workflow handoff: a project-scoped `create-template` run in the current conversation may pass its exact validated project workspace root directly into this Step. The trigger rule is mechanical, not interpretive:
 
@@ -257,7 +269,7 @@ Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use
 
 There is no slug matching, no name lookup, no fuzzy resolution. A name without a path does not trigger — the user must give a path the AI can `cd` into.
 
-**Structured-template preflight (before copy)**: For every deck/layout workspace, inspect all SVG roots and slots under its normalized template source. Every page must declare root Master/Layout key and picker names; Master/Layout visuals must be direct atoms rather than `<g>`; every slot must be a top-level `<g>` with positive bounds and exactly one compatible carrier, or an explicit composite `object` proxy. A zero-slot Layout is valid. If the SVG package uses a legacy semantic contract, run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) first and return to Step 3 with the migrated workspace. A legacy flat directory shape alone is read compatibility and does not trigger restoration.
+**Structured-template preflight (before copy)**: For every deck/layout workspace, inspect all SVG roots and slots under its normalized template source. Every page must declare root Master/Layout key and picker names; Master/Layout visuals must be direct atoms rather than `<g>`; every slot must be a top-level `<g>` with positive bounds and exactly one compatible carrier, or an explicit composite `object` proxy. A zero-slot Layout is valid. Reject a legacy semantic contract. Create a new current workspace through [`create-template`](workflows/create-template.md), using the original PPTX when existing native topology must be mirrored; legacy or incomplete SVGs may guide `standard` / `fidelity` only. A legacy-flat directory shape remains readable when its SVG contract is current.
 
 > Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow into the Strategist confirmation stage as a style brief (color / typography / tone in fields e–g).
 
@@ -265,11 +277,14 @@ There is no slug matching, no name lookup, no fuzzy resolution. A name without a
 
 > "What templates exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` / `layouts_index.json` / `decks_index.json` together with their paths. Listing alone does not advance the pipeline; the user must send a path back to trigger Step 3.
 
-> To create a new layout or deck, read [`workflows/create-template.md`](workflows/create-template.md). To create a new brand, read [`workflows/create-brand.md`](workflows/create-brand.md).
+> To create any new `brand`, `layout`, or `deck` workspace, enter [`workflows/create-template.md`](workflows/create-template.md). It dispatches exactly one child workflow: [`create-brand`](workflows/create-template/create-brand.md), [`create-layout`](workflows/create-template/create-layout.md), or [`create-deck`](workflows/create-template/create-deck.md).
 
 #### Three template kinds
 
-The architecture has three independent reference bundles. Full schema in [`docs/zh/templates-architecture.md`](../../docs/zh/templates-architecture.md). Summary:
+The architecture has three independent reference bundles. The shared package
+model and workspace contract live in [`templates/README.md`](templates/README.md);
+kind-specific schemas live in the corresponding template-directory README.
+Summary:
 
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|
@@ -310,7 +325,7 @@ When `create-template` used project output scope, its workspace root is the targ
 
 A project-scoped workspace has the same portable routing as a library workspace. It may be copied or promoted across roots as one unit (`templates/` plus any existing `images/` and `icons/`); `exports/` stays review-only. Do not pass only another project's `templates/` subdirectory because that would omit sibling assets.
 
-Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume those semantic contracts through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated workspace path. Old flat packaging remains readable when its SVG structure is already current.
+Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy, consume, or migrate those semantic contracts through Step 3. Create a new workspace through [`create-template`](workflows/create-template.md), preferably from the original PPTX when existing native topology matters, then return with that new workspace root. Old flat packaging remains readable when its SVG structure is already current.
 
 The Strategist confirmation stage decides whether the selected deck/layout template is used `strict` or `adaptive`. Those template projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, declare unique reusable identities in `pptx_masters` / `pptx_layouts`, and assign each page through `page_pptx_layouts` before SVG generation. A Layout definition may remain unused by generated pages when it names an installed template SVG as its prototype source. Brand-only projects remain on the free-design `mode: flat` route. Strict preserves the template's declared Master/Layout/slot contract. Adaptive keeps the template Master and may define and assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
 
@@ -477,12 +492,12 @@ The page is a **confirmation surface only** — Strategist still authors every r
 
 | Signal read | Line content |
 |---|---|
-| Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
-| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](workflows/resume-execute.md). |
+| Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/stages/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
+| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](workflows/stages/resume-execute.md). |
 
 This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page generation-mode toggle and is captured in `result.json` (`generation_mode`); the chat-summary fallback still prints this line.
 
-**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/refine-spec.md) workflow. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](workflows/refine-spec.md) workflow take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
+**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](workflows/stages/refine-spec.md) stage take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
 
 **Formula rendering policy lives inside item 7 (Typography plan)**:
 
@@ -523,7 +538,7 @@ uvx ppt-master analyze-images <project_path>/images
 - [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
 - [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
-- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
+- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
@@ -537,7 +552,7 @@ uvx ppt-master analyze-images <project_path>/images
 
 > **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6.
 
-**Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/failure-recovery.md`](workflows/failure-recovery.md). This Step keeps the acquisition procedure.
+**Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
 **Always load the common framework**:
 
@@ -589,7 +604,7 @@ Workflow:
   ## ✅ Planning Session Complete
   - [x] Spec: `design_spec.md`, `spec_lock.md`
   - [x] Resources: `sources/`, `images/`, `templates/`
-  - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](workflows/resume-execute.md) workflow.
+  - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](workflows/stages/resume-execute.md) stage.
   ```
 
 > On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to the checkpoint above.
@@ -623,8 +638,8 @@ uvx ppt-master confirm-ui <project_path> --live --daemon
 - Treat the launch URL as a checkpoint value: before writing the first SVG, either report the actual URL from the launcher or state the launch failure explicitly. Do not silently continue while claiming preview is available.
 - Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.
 - **Service must keep running** until one of: (a) the user clicks **Exit preview** in the browser, or (b) the user explicitly asks in chat to stop it. Generation continues even if the user closes the editor.
-- **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/live-preview.md`](workflows/live-preview.md).
-- The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/live-preview.md`](workflows/live-preview.md) Notes.
+- **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](workflows/stages/live-preview.md).
+- The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](workflows/stages/live-preview.md) Notes.
 
 **Pre-generation Batch Read (Mandatory)**: before the first SVG, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` and every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts). One read per file, up front — do not re-read these during page generation. See executor-base.md §1.0.
 
@@ -672,9 +687,9 @@ uvx ppt-master svg-quality-check <project_path>
 - [x] Speaker notes generated at notes/total.md
 ```
 
-> **Chart pages?** If this deck contains data charts (bar / line / pie / radar / etc.), run the standalone [`verify-charts`](workflows/verify-charts.md) workflow before Step 7 to calibrate coordinates. AI models routinely introduce 10–50 px errors when mapping data to pixel positions; verify-charts eliminates that class of error. Skip if no chart pages.
+> **Chart pages?** If this deck contains data charts (bar / line / pie / radar / etc.), run the [`verify-charts`](workflows/stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. AI models routinely introduce 10–50 px errors when mapping data to pixel positions; verify-charts eliminates that class of error. Skip if no chart pages.
 
-> **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the standalone [`visual-review`](workflows/visual-review.md) workflow before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
+> **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the [`visual-review`](workflows/stages/visual-review.md) quality-gate stage before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
 
 ---
 
@@ -684,7 +699,7 @@ uvx ppt-master svg-quality-check <project_path>
 
 🚧 **Image readiness GATE** (when Step 5 left ai rows in `Needs-Manual`): every expected file must exist at `project/images/<filename>` before running 7.1.
 
-**Failure recovery**: if a Step 7 command fails, fix the owning source artifact and resume from the failed sub-step per [`workflows/failure-recovery.md`](workflows/failure-recovery.md). Do not restart the planning session unless the owning source changed.
+**Failure recovery**: if a Step 7 command fails, fix the owning source artifact and resume from the failed sub-step per [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md). Do not restart the planning session unless the owning source changed.
 
 > If files are missing: PAUSE, list the missing filenames, point the user to `images/image_prompts.md` (each `### Image N:` block is paste-ready for ChatGPT / Gemini / Midjourney; auto-generated from `image_prompts.json`) and the required placement `project/images/<filename>`. Resume Step 7.1 only after all expected files are in place. `finalize_svg.py` and `svg_to_pptx.py` do not detect missing files at this layer — proceeding with gaps produces a deck with broken image references.
 
@@ -715,7 +730,7 @@ uvx ppt-master svg-to-pptx <project_path>
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
 # Add --native-charts-and-tables to replace marked fallbacks with PowerPoint-native Chart/Table objects:
 #   exports/<project_name>_<timestamp>_native_charts_tables.pptx  ← native Chart/Table replacements (data-pptx-replace-with markers)
-# Re-export with --recorded-narration audio (generate-audio workflow) embeds per-slide narration:
+# Re-export with --recorded-narration audio (generate-audio stage) embeds per-slide narration:
 #   exports/<project_name>_<timestamp>_narrated.pptx  ← narrated pptx (embedded audio + auto-advance timings)
 ```
 
@@ -779,9 +794,9 @@ uvx ppt-master svg-to-pptx <project_path>
 > using `baseline`, `template`,
 > `preserve`, `layout_strategy`, `data-pptx-layout-kind`,
 > `distilled`/`utility`, direct atomic placeholders, or incomplete Master
-> identity must run
-> [`restore-pptx-structure`](workflows/restore-pptx-structure.md) before
-> export.
+> identity cannot enter release export. Create a new current template workspace
+> through [`create-template`](workflows/create-template.md), then generate new
+> structured SVG pages from that workspace before export.
 
 
 > **Template structured export** — `page_layouts` records the complete
@@ -893,13 +908,13 @@ animation effects. The exact 22 tuples and OOXML rules live in
 
 **Optional custom animations** (only when the user asks to tune animation order/effects/timing for specific objects):
 
-Run the standalone [`customize-animations`](workflows/customize-animations.md) workflow. Default export applies page transitions but no per-element entrance animation; create `animations.json` (or pass `-a auto`) only when the user asks for element animation or object-level customization.
+Run the [`customize-animations`](workflows/stages/customize-animations.md) post-processing stage. Default export applies page transitions but no per-element entrance animation; create `animations.json` (or pass `-a auto`) only when the user asks for element animation or object-level customization.
 
 **Optional recorded narration** (only when the user asks for narrated/video export):
 
-Run the standalone [`generate-audio`](workflows/generate-audio.md) workflow. The AI picks a narration backend (`edge` by default, or a configured cloud provider such as ElevenLabs / MiniMax / Qwen / CosyVoice for high-quality or cloned voices), asks the user once (backend + voice + rate/settings + embed-or-not, all with recommended values), then executes `notes_to_audio.py` and (if chosen) re-exports the PPTX with `--recorded-narration audio`.
+Run the shared [`generate-audio`](workflows/stages/generate-audio.md) post-processing stage. The AI picks a narration backend (`edge` by default, or a configured cloud provider such as ElevenLabs / MiniMax / Qwen / CosyVoice for high-quality or cloned voices), asks the user once (backend + voice + rate/settings + embed-or-not, all with recommended values), then executes `notes_to_audio.py` and (if chosen) re-exports the PPTX with `--recorded-narration audio`.
 
-Do NOT call `notes_to_audio.py` directly without going through the workflow — `--voice` / `--voice-id` is required and the workflow produces the locale/provider-aware recommendation that makes the choice meaningful.
+Do NOT call `notes_to_audio.py` directly without going through the shared stage — `--voice` / `--voice-id` is required and the stage produces the locale/provider-aware recommendation that makes the choice meaningful.
 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 The compatibility contract covers PowerPoint OOXML; do not promise identical
@@ -908,11 +923,11 @@ animation playback in Keynote or other presentation applications.
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
 > ❌ **NEVER** use `-s final` for a release export. It is a diagnostic comparison only; the supported native route reads `svg_output/`.
 
-> **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
+> **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/stages/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
 
 > **Direct edits in the browser**: the user may also stage text / SVG attribute edits in the preview. These land in `svg_output/` only after the user clicks **Apply changes**. If they ask to "re-export" / "重新导出" after applying such edits, just re-run Step 7.2–7.3 (finalize + export); no annotation-application step is needed unless they also saved AI-needed annotations.
 
-> **Preview not running?** Any time the user mentions "live preview", "preview", "看效果", or wants to select/click a slide element and the service is not running, run [`live-preview`](workflows/live-preview.md) Step 1 to start it. If the service is already running, just point them at the URL — do not restart.
+> **Preview not running?** Any time the user mentions "live preview", "preview", "看效果", or wants to select/click a slide element and the service is not running, run [`live-preview`](workflows/stages/live-preview.md) Step 1 to start it. If the service is already running, just point them at the URL — do not restart.
 
 ---
 
@@ -946,4 +961,4 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 ## Notes
 
 - Local preview: `python3 -m http.server -d <project_path>/svg_final 8000`
-- **Troubleshooting**: on generation issues (layout overflow, export errors, blank images, etc.), check `docs/faq.md` for known solutions
+- **Troubleshooting**: on generation issues (layout overflow, export errors, blank images, etc.), check [`scripts/docs/troubleshooting.md`](scripts/docs/troubleshooting.md)
