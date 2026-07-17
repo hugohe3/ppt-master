@@ -85,7 +85,8 @@ jobs:
 
   release:
     needs: build
-    if: github.event_name == 'push' || inputs.upload_release
+    # Publish whatever matrix legs succeeded (do not block on one OS failure).
+    if: always() && (github.event_name == 'push' || inputs.upload_release)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -93,11 +94,14 @@ jobs:
           path: artifacts
           pattern: pack-*
           merge-multiple: true
+          # continue if some matrix jobs failed and produced no artifact
+        continue-on-error: true
 
       - name: List artifacts
-        run: ls -lah artifacts/
+        run: ls -lah artifacts/ || echo "no artifacts"
 
       - name: Publish GitHub Release
+        if: hashFiles('artifacts/*.zip') != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('engine-v0.1.0-dev-{0}', github.run_number) }}

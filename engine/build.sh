@@ -49,9 +49,22 @@ mkdir -p "$STAGE/bin" "$STAGE/skills" "$BUILD_DIR"
 VENV="$BUILD_DIR/venv"
 "$PYTHON" -m venv "$VENV"
 # shellcheck disable=SC1091
-source "$VENV/bin/activate"
+if [[ -f "$VENV/bin/activate" ]]; then
+  # Unix
+  # shellcheck source=/dev/null
+  source "$VENV/bin/activate"
+elif [[ -f "$VENV/Scripts/activate" ]]; then
+  # Windows (Git Bash)
+  # shellcheck source=/dev/null
+  source "$VENV/Scripts/activate"
+else
+  echo "error: venv activate script not found under $VENV" >&2
+  exit 1
+fi
 python -m pip install -U pip wheel setuptools
 python -m pip install -r "$ROOT/engine/requirements-engine.txt"
+# Ensure pyinstaller is on PATH for Windows Scripts/
+export PATH="$VENV/bin:$VENV/Scripts:$PATH"
 
 # ── PyInstaller onedir launcher ─────────────────────────────
 echo "==> PyInstaller launcher"
@@ -135,7 +148,7 @@ EOF
 
 # ── smoke ───────────────────────────────────────────────────
 BIN="$STAGE/bin/ppt-master-engine/ppt-master-engine"
-if [[ "$PLATFORM" == "win32" ]]; then
+if [[ -f "${BIN}.exe" ]]; then
   BIN="${BIN}.exe"
 fi
 chmod +x "$BIN" 2>/dev/null || true
