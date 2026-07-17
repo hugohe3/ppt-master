@@ -76,7 +76,7 @@ PowerPoint is valuable when a task needs several properties at once:
 |---|---|
 | Sequence | The author can control or propose an order of attention |
 | Modularity | Slides can be reordered, hidden, duplicated, replaced, or reused |
-| Multimedia composition | Text, diagrams, data, pictures, audio, video, and motion can share one canvas |
+| Multimedia composition | Text, diagrams, data, pictures, audio, and video can coexist within a slide; animation adds change over time, and transitions connect slides |
 | Presenter support | Notes, Presenter View, timing, and navigation support live delivery |
 | Reader support | Reading View, comments, notes pages, handouts, and sharing support asynchronous review |
 | Editability | The artifact can be revised, localized, extended, and repurposed |
