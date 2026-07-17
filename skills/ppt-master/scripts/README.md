@@ -45,7 +45,7 @@ uvx ppt-master update-repo
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
+| SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -81,7 +81,9 @@ Template source import:
 uvx ppt-master pptx-template-import <template.pptx>
 uvx ppt-master pptx-template-import <template.pptx> --manifest-only
 uvx ppt-master pptx-template-import <template.pptx> --inheritance-mode both
-uvx ppt-master svg-authoring-view <imported-svg-or-dir> -o <output-dir>
+uvx ppt-master svg-authoring-view <imported-svg-or-dir> -o <output-dir> --projection-kind layered
+uvx ppt-master svg-authoring-view <authoring-dir> --refresh-summary
+uvx ppt-master compact-svg-coordinates <template_workspace>/templates --inplace --keep-native-frames
 uvx ppt-master mirror-template-materialize <import_workspace> <empty_template_workspace>
 uvx ppt-master template-preview-pptx <template_workspace>
 uvx ppt-master template-preview-pptx <legacy_template_workspace> --visual-only
@@ -99,22 +101,34 @@ copy while retaining visible fallback geometry, text, images, stable element
 ids, root Master/Layout markers, selected native-shape intent, and
 document-local `data-pptx-source-ref` values.
 Relative local image references are rewritten so the projected copy still
-renders from its new location. The bundle's `authoring_manifest.json` records
-source/authoring hashes and object paths without duplicating opaque payload.
-The full imported SVG remains unchanged as native-payload backing. Template
-creation edits the IR and materializes validated `templates/*.svg`; the IR
-directory itself is not a final template or direct release export source.
+renders from its new location. The bundle's `authoring_summary.json` is the
+model-readable current-file index; `authoring_manifest.json` records
+source/authoring hashes and object paths for tools without duplicating opaque
+payload and does not enter model context. Imported model-facing frames and safe
+transform page coordinates use at most two decimals; immutable lossless SVGs
+retain the original precision. In-place vector/picture extraction
+refreshes the summary automatically; use `--refresh-summary` after other direct
+IR edits. The full imported SVG remains unchanged as native-payload backing.
+Template creation edits the IR and materializes validated `templates/*.svg`;
+the IR directory itself is not a final template or direct release export
+source.
 
 `mirror_template_materialize.py` is the deterministic Type A mirror compiler.
-It consumes only the layered `authoring-svg/` IR as editable input, validates
-its manifest against immutable `svg/`, `native_structure.json`,
+It consumes only the layered `authoring-svg/` IR as editable input, loads its
+tool-only manifest internally, and validates it against immutable `svg/`,
+`native_structure.json`,
 `svg/inheritance.json`, `source_template.pptx`, and any extracted-vector
 inventory, then publishes a complete structured template roster atomically.
 Unchanged supported Slide-local/slot refs may recover native payload; edited
 refs keep their current SVG fallback. Fixed Master/Layout wrappers are expanded
 mechanically into direct atoms, source visibility flags become canonical root
-metadata, and imported vectors are copied once to `icons/imported/`. Bitmap
-assets go to `images/`; other referenced source assets go to
+metadata, and imported vectors are copied once to `icons/imported/`. Large
+opaque `txBody`, shape-style, and custom-geometry payloads are deduplicated into
+`templates/native_payloads.json.gz`; repeated native restoration attributes
+are stored there as short `data-pptx-native-ref` records. Structural metadata
+stays inline, while checker, template-structure validation, and export hydrate
+both layers in memory. Legacy inline payload and v1 payload-only stores remain
+readable. Bitmap assets go to `images/`; other referenced source assets go to
 `templates/assets/`. The destination must be empty, and the command does not
 write `templates/design_spec.md`; Template_Designer owns that authored brief.
 
@@ -172,6 +186,7 @@ Create-template/source normalization (optional; never part of automatic export):
 uvx ppt-master extract-svg-assets <layered_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --inplace --id-prefix layered
 uvx ppt-master extract-svg-assets <flat_svg_dir> --icons-dir <icons_dir> --icon-namespace imported --reuse-inventory <layered_inventory.json> --inplace --id-prefix flat
 uvx ppt-master extract-svg-pictures "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<picture_assets_dir>" --inplace  # optional create-template normalization: one selected group -> one SVG picture
+uvx ppt-master compact-svg-coordinates <template_workspace>/templates --inplace --keep-native-frames
 uvx ppt-master mirror-template-materialize <import_workspace> <empty_template_workspace>  # Type A mirror only
 ```
 

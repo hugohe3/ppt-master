@@ -71,6 +71,8 @@ uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <projec
 uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
 uvx ppt-master confirm-ui <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
+# Shared create-template coordinate compaction before template validation
+uvx ppt-master compact-svg-coordinates "<template_workspace>/templates" --inplace --keep-native-frames
 # Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
 uvx ppt-master extract-svg-pictures "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
 # Type A create-template mirror: validated authoring IR -> deterministic structured template workspace

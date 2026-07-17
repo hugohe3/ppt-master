@@ -418,7 +418,7 @@ shape.text = "PPTX import smoke check"
 presentation.save("/tmp/ppt-master-smoke-healthy.pptx")
 PY
 
-python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+uvx ppt-master pptx-to-svg \
   "/tmp/ppt-master-smoke-healthy.pptx" \
   --inheritance-mode flat \
   -o "/tmp/ppt-master-smoke-healthy"
@@ -480,7 +480,7 @@ print(target)
 Run tolerant import and verify both the recovery report and the visible SVG:
 
 ```bash
-python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+uvx ppt-master pptx-to-svg \
   "/tmp/ppt-master-color-smoke.pptx" \
   --inheritance-mode flat \
   -o "/tmp/ppt-master-smoke-color-tolerant"
@@ -510,7 +510,7 @@ Expected: both commands exit `0`; the importer reports one
 Run the same probe in strict mode:
 
 ```bash
-python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
+uvx ppt-master pptx-to-svg \
   "/tmp/ppt-master-color-smoke.pptx" \
   --inheritance-mode flat \
   --strict \

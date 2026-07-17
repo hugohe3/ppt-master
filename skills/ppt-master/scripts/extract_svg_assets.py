@@ -45,6 +45,10 @@ from typing import Optional
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from svg_authoring_view import (
+    AUTHORING_MANIFEST_NAME,
+    write_authoring_summary,
+)
 
 configure_utf8_stdio()
 
@@ -443,6 +447,9 @@ def _existing_placeholder_entries(
     for asset, entry in sorted(by_asset.items()):
         asset_path = icons_dir / asset
         if asset_path.exists():
+            entry["asset_sha256"] = hashlib.sha256(
+                asset_path.read_bytes()
+            ).hexdigest()
             try:
                 root = ET.parse(asset_path).getroot()
             except ET.ParseError:
@@ -840,6 +847,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     }
     inventory_path.parent.mkdir(parents=True, exist_ok=True)
     inventory_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    summary_path: Path | None = None
+    if args.inplace and (svg_dir / AUTHORING_MANIFEST_NAME).is_file():
+        try:
+            summary_path = write_authoring_summary(svg_dir)
+        except (OSError, ValueError) as exc:
+            print(
+                f"[ERROR] vector extraction succeeded but authoring summary "
+                f"refresh failed: {exc}",
+                file=sys.stderr,
+            )
+            return 1
     print(
         f"[OK] extracted {extracted_count} new asset(s), reused {reused_count} asset(s), "
         f"inventoried {len(inventory)} asset reference(s) -> "
@@ -848,6 +866,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
     if stale_removed:
         print(f"[OK] removed {len(stale_removed)} stale generated asset(s)", file=sys.stderr)
+    if summary_path is not None:
+        print(f"[OK] refreshed model-readable summary: {summary_path}", file=sys.stderr)
     return 0
 
 
