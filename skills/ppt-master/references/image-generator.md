@@ -28,7 +28,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 
 **Hard rule — only what's actually hard**:
 
-- Same `deck_rendering` + same `deck_palette` for every image in the deck
+- Same `deck_rendering` + same locked deck color roles for every image in the deck
 - HEX codes and color names are rendering guidance — never visible text in the image
 - Long body copy / data points / bulleted lists / long quotes stay in SVG (improving them later means regenerating the image, which is expensive)
 - **In-image text is only for words that will not need editing later** — visual keywords, decorative lettering, mood words. Editable text (titles that may be reworded, subtitles, dates, authors, captions, body) belongs in SVG. Changing one in-image word costs an image regeneration; one SVG word costs a keystroke.
@@ -38,33 +38,31 @@ Everything else is the AI's judgment per page. No mandated padding, no type-lock
 
 ---
 
-## 2. Three Dimensions
+## 2. Style and Composition Inputs
 
-Every AI image is described by three orthogonal dimensions. Lock them in this order: **Rendering** (deck-wide) → **Palette** (deck-wide) → **Type** (per image).
+Every AI image uses one deck-wide rendering, the deck's already-locked color roles, and a per-image type / composition. Only rendering is a separate image-direction decision.
 
 | Dimension | Decides | When fixed |
 |---|---|---|
 | **Rendering** | Visual style family (vector / sketch-notes / 3d-isometric / corporate-photo / …) | Once per deck — every AI image in the deck shares one rendering |
-| **Palette** | How the deck's HEX colors are *used* (proportion + role + temperament). HEX values come from `design_spec.colors`, not from the palette | Once per deck |
+| **Deck colors** | The exact background / primary / accent / secondary-accent / text roles from `spec_lock.md colors`; these are consumed directly, not reconfirmed | Already locked in Stage 2 |
 | **Type** | What the image's internal composition skeleton looks like — geometric layout of a local infographic block (infographic / flowchart / framework / matrix / cycle / funnel / pyramid / comparison / timeline / map / scene). Only applies to `page_role: local`; for `page_role: hero_page`, describe composition with §4.1 primitives instead of picking a type. | Per image |
 
-> **What rendering vs palette means**: rendering is *how the image is drawn* (line quality, texture, depth). Palette is *how colors are distributed and behave* (which color dominates, which is accent, what proportion). The HEX values come from Strategist; palette is the **usage contract** for those HEX values.
+> Rendering decides *how the image is drawn* (line quality, texture, depth). Color instructions come from the deck roles: background / secondary background usually dominate, primary carries main forms, and accents stay scarce. Adjust those proportions to the page role, but never invent or substitute HEX.
 
 ### 2.1 Where to find each dimension
 
 | Reference | Loaded |
 |---|---|
 | [`image-renderings/_index.md`](./image-renderings/_index.md) — rendering catalog + auto-selection table | Always (Step 1 below) |
-| [`image-palettes/_index.md`](./image-palettes/_index.md) — palette catalog + auto-selection table | Always (Step 1 below) |
 | [`image-type-templates/_index.md`](./image-type-templates/_index.md) — type catalog + auto-selection table | Always (Step 1 below) |
 | `image-renderings/<chosen>.md` | After Step 2 picks the rendering — only the chosen one |
-| `image-palettes/<chosen>.md` | After Step 2 picks the palette — only the chosen one |
 | `image-type-templates/<chosen>.md` | After Step 3 picks the type per image — only the types actually used |
 
 **Hard rule — on-demand loading**:
 
-- Read the three `_index.md` files once at role entry.
-- After locking dimensions, read **only** the specific rendering / palette / type files you selected.
+- Read the rendering and type `_index.md` files once at role entry.
+- After locking inputs, read **only** the specific rendering / type files selected.
 - **Never** glob-read an entire subdirectory (`image-renderings/*.md` is forbidden). Token cost balloons and the AI loses focus.
 
 ---
@@ -73,44 +71,46 @@ Every AI image is described by three orthogonal dimensions. Lock them in this or
 
 ### Step 1 — Load the dimension indices
 
-Read all three index files. They are short (~50 lines each) and contain auto-selection tables that let you map `design_spec` signals → dimension values without reading every detail file.
+Read the two index files that own user-visible image direction and per-image composition.
 
 ```
 read_file references/image-renderings/_index.md
-read_file references/image-palettes/_index.md
 read_file references/image-type-templates/_index.md
 ```
 
-### Step 2 — Resolve deck-wide rendering + palette
+### Step 2 — Resolve deck-wide rendering + deck colors
 
-**Primary path — Strategist already locked these in `spec_lock.md colors`**:
+**Primary path — Strategist already locked rendering and ordinary deck colors in `spec_lock.md colors`**:
 
 ```
 image_rendering: vector-illustration
-image_palette: cool-corporate
+background: #F8F9FA
+primary: #1E3A5F
+accent: #D4AF37
 ```
 
-If both fields are present, use them directly — Strategist made the decision in h.5 with full d-e-f-g-h linkage context. Do NOT re-decide.
+Use them directly. Do not create another image-color choice and do not change HEX to suit a rendering.
 
-**Hard rule — `custom` escape hatch**: when either value is the literal string `custom`, do NOT `read_file` the preset library for that dimension. Read the sibling `*_behavior` line from `spec_lock.md colors` and splice that prose into the prompt in place of the preset's fewshot snippet. The behavior prose owns the style paragraph (for `custom` rendering) or the proportion/role rules (for `custom` palette). See [`image-renderings/_index.md`](./image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](./image-palettes/_index.md) §2 for the invocation rules.
+**Hard rule — `custom` escape hatch**: when `image_rendering` is `custom`, do not read a preset rendering file. Splice `image_rendering_behavior` into the prompt. The deck color-role rows remain authoritative.
 
-**Fallback path — when `spec_lock.md` lacks both fields** (legacy decks or pipelines that skipped h.5):
+**Fallback path — when `spec_lock.md` lacks rendering** (legacy decks or pipelines that skipped h.5):
 
 | Signal | Maps to |
 |---|---|
 | `design_spec.md d. Style` mode + descriptor | Rendering (consult renderings `_index.md` auto-selection table) |
-| `design_spec.md e. Color Scheme` (HEX) + content vibe | Palette (consult palettes `_index.md` auto-selection table) |
+| `design_spec.md e. Color Scheme` (HEX) | Deck color-role source; never turn it into a second user choice |
 | `design_spec.md f. Icon library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
 
-If the auto-selection table surfaces multiple candidates, pick the first; do not present a choice to the user.
+If rendering inference surfaces multiple candidates, pick the first; do not present another choice after confirmation.
 
-> **Tell the user**: when falling back, print one line "spec_lock.md missing `image_rendering`/`image_palette` — inferring `<X>` / `<Y>` from design_spec. For optimal deck consistency, lock these in Strategist h.5." Then proceed.
+> **Tell the user**: when falling back, print one line "spec_lock.md missing `image_rendering`—inferring `<X>` from design_spec; image colors still use the locked deck roles." Then proceed.
 
-Then `read_file` the **single resolved** rendering file and the **single resolved** palette file. These two files give you:
+Then read the **single resolved** rendering file. It gives you:
 
 - The 80-120 word style paragraph (rendering)
-- The proportion / role / temperament rules for the deck's three HEX values (palette)
-- Two ready-to-paste prompt snippets per file (fewshot)
+- Two ready-to-paste rendering snippets (fewshot)
+
+Derive color behavior directly from the available roles: background / secondary background carry roughly 55–70% of the image field, primary carries main forms, and accent / secondary accent together usually stay below 10%. A rendering may justify a different balance, but all colors still come from the lock and decorative text colors must remain readable.
 
 ### Step 3 — Per-image type + assembly
 
@@ -122,7 +122,7 @@ For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
 5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
-   - The palette's proportion + role rules applied to the deck's HEX values (from Step 2)
+   - Color-role instructions derived directly from the locked deck HEX values (from Step 2)
    - The type's structural layout (from Step 3)
    - The image's specific `Reference` intent (from `design_spec.md §VIII`)
    - The container sizing guidance from the type file (so the model knows it's painting a local block, not a full canvas)
@@ -142,7 +142,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 
 ```
 [Rendering style paragraph — 80-120 words from the chosen rendering file].
-[Palette behavior — apply the chosen palette's proportion + role rules to the deck's HEX values, e.g. "primary #1E3A5F dominates as the main shape, secondary #F8F9FA provides 60% breathing space, accent #D4AF37 appears in one or two emphasis points only"].
+[Deck color behavior — apply the locked color roles directly, e.g. "secondary background #F8F9FA provides 60% breathing space, primary #1E3A5F carries main forms, accent #D4AF37 appears in one or two emphasis points only"].
 [Type-specific composition — from the chosen type file, e.g. "central hub node with four radiating satellite nodes connected by clean lines"].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
 [Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid **only** when `page_role: hero_page` (SVG sits on top of the image). For `page_role: local`, the image sits inside a region block and the SVG layer never overlays its interior — never reserve overlay space in a local prompt].
@@ -242,7 +242,7 @@ Example opening for a triptych hero:
 
 ### 4.3 Illustration sheets — one generation, many spot elements
 
-When a deck wants several small **spot illustrations** scattered as decorative accessories across pages (the illustration counterpart to icons), do **not** generate them one image per slot — that multiplies generation cost and lets the style drift between calls. Generate **one sheet** that lays out all the elements in a grid, then slice it. One call buys a set of elements with an identical style, palette, and line quality — the same cross-page consistency the deck-wide `deck_rendering` / `deck_palette` lock exists to protect.
+When a deck wants several small **spot illustrations** scattered as decorative accessories across pages, do **not** generate them one image per slot. Generate one sheet and slice it. One call buys identical rendering, deck-color treatment, and line quality—the same consistency protected by `deck_rendering` + `color_scheme`.
 
 **When to use**: the §VIII image resource plan needs ≥3 small spot illustrations from the same family across the deck. For a single hero/local image, stay with the normal one-row-per-image flow (§4.1). Use sheets only where decorative illustration genuinely lifts the page; an unused element costs nothing, but a deck papered in decoration reads cheap.
 
@@ -254,7 +254,7 @@ When a deck wants several small **spot illustrations** scattered as decorative a
 - Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
 - State the intended cell shape in the prompt: compact square object, tall portrait element, or wide landscape vignette. Do not let the model shrink every subject into a centered square sticker.
 - One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box.
-- Shared `deck_rendering` + `deck_palette` as always. NO text, labels, or numbers anywhere (§5.1, §5.3).
+- Shared `deck_rendering` + `color_scheme` as always. NO text, labels, or numbers anywhere (§5.1, §5.3).
 
 **Cell geometry is designed, not assumed.** `slice_images.py --grid RxC` cuts rows first and columns second. The cell ratio is:
 
@@ -270,7 +270,7 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 | Tall side accents / upright objects | wide or square sheet | `1xN`, or any `MxN` whose cells are portrait |
 | Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
 
-If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room in its own cell. Keep the visual family consistent through the same `deck_rendering` and `deck_palette`, not by forcing all cells into one square sheet.
+If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
 
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists as a resource the Executor is allowed to reference (`spec_lock.md images`). So §VIII carries two row kinds (full rules: [`design_spec_reference.md`](../templates/design_spec_reference.md) §VIII):
 
@@ -294,7 +294,7 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 
 **Placement — these are decorative accessories, not boxed pictures.** A transparent spot wasted in a centered rectangle looks cheaper than no spot at all. Each element row's Layout pattern comes from the decorative-cutout family in [`image-layout-patterns.md`](./image-layout-patterns.md): `#63` sticker/cutout, `#4` bleed off the canvas edge, `#58` corner fragment, `#66` fade into the background, `#69` slight editorial rotation, `#49` asymmetric cluster. Push spots to the margins, let them run off-edge or sit behind/beside text, vary size and angle across pages, and overlap the content rather than reserving a tidy tile for them. Anchor most pages on one primary element and let the rest stay small ([primary-per-page](./strategist.md) §h) — scattered same-weight tiles are exactly the generic look to avoid.
 
-**Through-line — one family, many roles.** A spot sheet pays off more when the same motif family also drives the deck's cover and section dividers, so the deck reads as one designed system rather than a hero plus unrelated doodles. Because the slicer cuts a **uniform grid**, a large cover / divider anchor is **not** a giant cell in the spot sheet — generate it as its own `page_role: hero_page` image (§4.1 primitives) that shares this sheet's `deck_rendering`, `deck_palette`, and subject world. In §VIII the hero_page anchor row(s) and the `slice` spot rows then belong to one visual family (name the shared subject world in each `Reference`), differing only in scale and role. Plan this only when the deck leans into illustration — never a per-section quota; the planning rule lives in [strategist.md](./strategist.md) (deck illustration motif).
+**Through-line — one family, many roles.** A spot sheet pays off more when the same motif family also drives the cover and section dividers. A large cover / divider anchor is not a giant sheet cell—generate it as its own `hero_page` image sharing the sheet's `deck_rendering`, `color_scheme`, and subject world. Plan this only when the deck leans into illustration, never as a quota.
 
 ---
 
@@ -369,7 +369,7 @@ The table below is **a reference for the one case where you want the in-image le
 - Decorative / background lettering, posters, large mood words → describe the artistic treatment freely
 - Cover hero title that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
 - Sketch-notes / ink-notes / hand-drawn renderings where the lettering is part of the rendering itself → describe freely
-- Any case where rendering + palette already imply a font character (e.g. `vintage-poster` rendering implies period display lettering) → trust the rendering, no need to echo SVG body
+- Any case where rendering already implies a font character (e.g. `vintage-poster` implies period display lettering) → trust the rendering, no need to echo SVG body
 
 **When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
@@ -403,11 +403,13 @@ Write `project/images/image_prompts.json` with this shape:
   "project": "{project_name}",
   "generated_at": "{ISO-8601 date}",
   "deck_rendering": "vector-illustration",
-  "deck_palette": "cool-corporate",
   "color_scheme": {
+    "background": "#FFFFFF",
+    "secondary_bg": "#F8F9FA",
     "primary": "#1E3A5F",
-    "secondary": "#F8F9FA",
-    "accent": "#D4AF37"
+    "accent": "#D4AF37",
+    "secondary_accent": "#4A7BB5",
+    "body_text": "#1D2430"
   },
   "items": [
     {
@@ -441,8 +443,7 @@ Write `project/images/image_prompts.json` with this shape:
 | Field | Required | Source | Description |
 |---|---|---|---|
 | `deck_rendering` | yes | Step 2 lock | Single rendering name shared by all items in this deck |
-| `deck_palette` | yes | Step 2 lock | Single palette name shared by all items |
-| `color_scheme` | yes | `design_spec.md §III` | HEX triplet from Strategist |
+| `color_scheme` | yes | `spec_lock.md colors` | Exact deck color roles used by every item; no separate image palette |
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
 | `items[].type` | conditional | Step 3 per-image (only when `page_role: local`) | One of 11 internal-composition types: `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene`. **Omit `type` entirely when `page_role: hero_page`** — the composition comes from §4.1 primitives written directly into the prompt, not from a type file. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
@@ -457,7 +458,7 @@ Write `project/images/image_prompts.json` with this shape:
 
 > **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
 >
-> Existing manifests without `deck_rendering` / `deck_palette` / `type` / `page_role` / `text_policy` remain valid — older items default to `page_role: local`, `text_policy: none`. Legacy `page_role: full_page` (pre-2026-05-15) is read as `hero_page`.
+> Existing manifests without `deck_rendering` / `type` / `page_role` / `text_policy` remain valid—older items default to `page_role: local`, `text_policy: none`. A legacy `deck_palette` field may remain in an old manifest but cannot override `color_scheme`. Legacy `page_role: full_page` is read as `hero_page`.
 
 ---
 
@@ -627,7 +628,7 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 |---|---|---|
 | Image looks generic, model-average | Tag-soup prompt | Rewrite as one coherent paragraph per §4 |
 | Wrong style family (looks photorealistic when flat was intended) | Rendering mismatch or rendering paragraph diluted | Reaffirm chosen rendering's style paragraph at the top of the prompt |
-| Colors don't match deck | HEX not echoed in prompt, or palette proportion rule omitted | Repeat HEX values 2-3 times in the prompt; restate palette proportion rule |
+| Colors don't match deck | Locked role HEX not echoed, or their role / proportion instructions were diluted | Repeat the locked HEX values 2-3 times; restate which deck role owns the field, main forms, and sparse accents |
 | Hex code or color name visible as text in image | Missing §5.1 closing sentence | Append the §5.1 hard rule verbatim |
 | Garbled letters in supposedly text-free image | `text_policy: none` rule too weak | Strengthen with explicit list: "no letters, no numbers, no words, no signs, no labels, no captions, no watermarks" |
 | SVG text overlay clashes with busy image area | Page design needs negative space the prompt didn't request | Add a composition cue like "leave the {center / left third / lower band} relatively calm for text overlay" — only when the page actually overlays text on top of the image |
@@ -646,9 +647,9 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 
 - Generating prompts for `web` rows — those go through [`image-searcher.md`](./image-searcher.md)
 - Brand names or HEX codes inside the subject description (degrades output)
-- Mixing renderings or palettes across images in the same deck
+- Mixing renderings or inventing image-only colors across images in the same deck
 - Tag-soup prompts (keyword lists separated by commas without a coherent visual scene)
 - Globbing `image-renderings/*.md` or any subdirectory — read only the chosen file
 - Placing an image without updating its `image_prompts.json` `status` and the resource list status
-- Switching rendering or palette for a single image — `hero_page` is not an exception to deck-wide coherence
+- Switching rendering or deck-color roles for a single image—`hero_page` is not an exception to deck-wide coherence
 - Embedding body copy, data points, bullet lists, or long quotes inside an image — those route to SVG

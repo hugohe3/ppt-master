@@ -219,7 +219,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
-**`mirror` 模板怎么消费**：Strategist 为每个项目页选择一张 mirror 参考，Executor 复制完整 SVG 并原位修改可见文字，同时保留装饰、精灵图裁剪、几何坐标和全部 `data-pptx-*` 结构声明。
+**按 mirror 创建的工作区怎么消费**：从来源到工作区的 `replication_mode: mirror` 是能力，不是项目选择。开放式沟通契约确认后，Stage 2 只在“重复制作已知固定成果、且新内容适配现有页面角色与文字拓扑”时推荐 `mirror`；结构应延续但内容需要重排时用 `layout`；只需身份语言或论证必须换结构时用 `style`。确认 `mirror` 后，Strategist 为每个项目页选择一张原型，Executor 复制完整 SVG，只修改允许变更的可见文字，同时保留装饰、精灵图裁剪、几何坐标和规范化结构声明；这仍不要求沿用来源页数或页序。Mirror 保留受支持的画面外观，不承诺保留来源 PPTX 的分组编辑层级。
 
 ### 第四步：验证、预览导出、注册与发现
 

@@ -20,11 +20,11 @@ Chalk on a dark green or black board — classroom aesthetic. Used in teaching-f
 
 ## 3. Using the deck's HEX values
 
-chalkboard has a strong **fixed-palette tendency**: dark slate background + white chalk + pastel accents.
+chalkboard has a strong **material-color tendency**: dark field + light chalk + sparse accents. It never replaces deck colors. Offer it only when the confirmed background / body-text roles can support that contrast.
 
-- Background: dark slate green `#1F3A2E` or near-black `#1A1A1A` (does not use the deck's secondary)
-- Primary chalk: off-white `#F5F5F0` (the chalk itself); the deck's primary HEX may appear as a tinted pastel accent
-- Accent: the deck's accent HEX rendered as a soft pastel chalk shade
+- Board: use the deck's exact `background` or `secondary_bg` role
+- Chalk strokes: use the exact `body_text` role; dry texture supplies the chalk effect without changing its HEX
+- Accent marks: use exact `accent` / `secondary_accent` values sparingly; do not pastel-tint them
 
 ---
 
@@ -32,4 +32,4 @@ chalkboard has a strong **fixed-palette tendency**: dark slate background + whit
 
 **Snippet A — half-page lesson visual, text_policy: embedded**
 
-> Classroom chalkboard aesthetic. Dark slate green background `#1F3A2E` with visible chalk-dust texture at 20% opacity. Three rounded boxes drawn in soft white chalk strokes arranged in a row, each containing a simple chalk-drawn icon (a tree, a lightbulb, a paper plane). Above the boxes, a hand-lettered chalk title in confident white lettering reads "GROWTH" in English block caps. Hand-drawn chalk arrows connect the boxes left-to-right. Small chalk star and dot decorations sprinkled sparingly. One soft pastel-yellow chalk underline below the title, drawn with deliberate dry-medium quality. Composed as a 600×500 half-page block with 14% inner padding. Chalk text kept to short keywords. Color values are rendering guidance only.
+> Classroom chalkboard aesthetic. Use the deck's locked background role as the board, with visible chalk-dust texture at 20% opacity. Three rounded boxes drawn in the locked body-text color as soft chalk strokes sit in a row, each containing a simple chalk-drawn icon (a tree, a lightbulb, a paper plane). Above the boxes, a hand-lettered title reads "GROWTH" in English block caps. Hand-drawn chalk arrows connect the boxes left-to-right. Small chalk star and dot decorations appear sparingly. One underline uses the locked accent color with deliberate dry-medium texture. Composed as a 600×500 half-page block with 14% inner padding. Chalk text stays to short keywords.

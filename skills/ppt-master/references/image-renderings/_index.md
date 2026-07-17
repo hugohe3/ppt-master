@@ -2,7 +2,9 @@
 
 A **rendering** is a visual style family: line quality, texture, depth, material, mood. Lock one rendering per deck — every AI image in the deck shares it.
 
-> **HEX values are not in renderings**. The deck's HEX triplet comes from `design_spec.colors`. Rendering describes *how* the image is drawn; palette describes *how* the HEX values are distributed. See [`image-generator.md`](../image-generator.md) §2.
+> **HEX values are not in renderings.** Rendering describes how the image is drawn. The new flow reads exact deck color roles directly from `spec_lock.md colors`; it does not ask for or author a separate image palette. See [`image-generator.md`](../image-generator.md) §2.
+
+> **Deck HEX has hard precedence.** Any color name or sample HEX inside an individual rendering file is illustrative legacy prose and MUST be replaced by the current deck-role values when assembling a prompt. A rendering may change texture, lighting, opacity, and role proportions, but it may not tint, warm-grade, cool-grade, replace, or invent HEX. If its material language requires colors the selected deck roles cannot support, do not offer that rendering in Stage 2.
 
 ---
 

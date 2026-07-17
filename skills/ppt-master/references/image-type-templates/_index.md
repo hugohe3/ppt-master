@@ -86,6 +86,6 @@ For `page_role: hero_page` images, default container is the slide canvas (e.g. 1
 1. For each `page_role: local` row in the Image Resource List, pick the type using the auto-selection table above.
 2. For each `page_role: hero_page` row, **skip type selection** — go straight to [`image-generator.md`](../image-generator.md) §4.1 primitives.
 3. `read_file image-type-templates/<type>.md` — only the types actually used in this deck. Most decks use 2-4 types; load each at most once.
-4. Apply the type's composition skeleton when assembling the prompt, alongside the locked deck-wide rendering and palette.
+4. Apply the type's composition skeleton alongside the locked deck-wide rendering and deck color roles.
 
-**Multiple types per deck is normal.** Locking is at rendering + palette level, not type level.
+**Multiple types per deck is normal.** Rendering and deck colors stay fixed; type varies per image.

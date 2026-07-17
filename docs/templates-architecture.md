@@ -342,9 +342,9 @@ This lets both AI and humans trace which segment came from where.
 
 Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, Step 3 consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
 
-### Strategist confirmation stage narrowing per kind
+### Strategist confirmation stage behavior per kind
 
-When a deck path is supplied, the user already has a complete solution; the Strategist confirmation stage narrows to "target audience / page count / outline / tone tweaks" — deck-content fields. Other fields reuse the locked values directly. The narrowing rules live in `references/strategist.md` and `spec_lock_reference.md`.
+Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract. Brand supplies identity constraints while structure stays free; Layout and Deck expose structural capabilities, but Stage 2 still decides whether the project should consume them as `mirror`, `layout`, or `style` where legal. A mirror-authored workspace therefore enables literal reuse but never selects it automatically. Stage 3 realizes the confirmed direction with the identity and structure actually retained by that scope. The detailed rules live in `references/strategist.md` and `spec_lock_reference.md`.
 
 ---
 

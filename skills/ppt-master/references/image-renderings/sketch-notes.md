@@ -4,7 +4,7 @@ Warm cream paper with black hand-drawn lines and soft pastel color blocks. The m
 
 ## 1. Style paragraph (paste-ready, 110 words)
 
-> Warm hand-drawn sketchnote style on cream paper background. All lines are drawn with deliberate slight wobble — black ink on cream, never perfectly straight, with the human-hand quality that makes the image feel like a thoughtful teacher's whiteboard. Color blocks are soft pastels — light blue, mint, lavender, peach — filled into rounded shapes that don't quite reach their outlines (a deliberate "hand-painted overshoot" feel). Simple cartoon icons and small doodle decorations (stars, sparkles, dots, underlines) appear sparingly to add warmth. Composition is airy and well-organized, with generous white space between elements. Overall feel is warm, instructional, friendly — the visual language of educational explainer videos and knowledge cards.
+> Warm hand-drawn sketchnote style on the deck's light background role. All lines use the locked body-text color with deliberate slight wobble, never perfectly straight, giving the human-hand quality of a thoughtful teacher's whiteboard. Soft color blocks derive only from the locked primary, secondary-accent, and accent roles and fill rounded shapes without quite reaching their outlines (a deliberate "hand-painted overshoot" feel). Simple cartoon icons and small doodle decorations (stars, sparkles, dots, underlines) appear sparingly to add warmth. Composition is airy and well organized, with generous whitespace. Overall feel is instructional, friendly, and approachable.
 
 ---
 
@@ -20,11 +20,11 @@ Warm cream paper with black hand-drawn lines and soft pastel color blocks. The m
 
 ## 3. Using the deck's HEX values
 
-sketch-notes has a strong **built-in palette tendency** toward warm cream + black ink + soft pastels. When the deck's `design_spec.colors` align (warm-earth or macaron palette family), use them directly. When they don't align (cool-corporate primary), sketch-notes may be the wrong rendering — consult the compatibility matrix in `image-palettes/_index.md`.
+sketch-notes has a strong built-in tendency toward warm paper, dark ink, and soft color blocks. Offer it only when the locked deck roles can carry that tendency; otherwise choose another rendering in Stage 2. Once confirmed, use only the locked deck colors.
 
-- Cream paper background: keep close to the rendering's natural `#F5F0E8` even if `design_spec.secondary` differs slightly (the cream **is** part of sketch-notes)
-- Black ink lines: keep at `#1A1A1A` or near-black — do not replace with the deck's primary
-- Pastel color blocks: the deck's primary / secondary / accent HEX values, **rendered as soft pastel tints** rather than full saturation
+- Paper background: use the deck's `background` or `secondary_bg`; do not introduce a natural cream outside the lock
+- Ink lines: use the deck's `body_text` role
+- Color blocks: use the deck's primary / secondary-accent / accent roles with restrained coverage; do not invent pastel HEX
 - Single emphasis accent: the deck's accent HEX, used in 1-2 strong sparing places (a key arrow, an emphasized doodle)
 
 ---
@@ -33,4 +33,4 @@ sketch-notes has a strong **built-in palette tendency** toward warm cream + blac
 
 **Snippet A — half-page educational concept, text_policy: embedded**
 
-> Warm hand-drawn sketchnote on warm cream paper background. Black ink lines with slight wobble define three rounded rectangle info boxes arranged in a soft triangle layout. Each box is filled with a soft pastel block color: top box in light blue (a pastel tint of the deck's primary `#1E3A5F`), bottom-left box in mint, bottom-right box in lavender. Color fills don't completely reach the outlines (slight hand-painted overshoot). Hand-drawn wavy arrows connect the boxes — each arrow with a small inline hand-lettered keyword like "leads to", "becomes", "supports" (≤2 words per arrow). Each box contains one simple hand-drawn cartoon icon — a lightbulb, a plant, a gear — in black ink. Small doodle decorations (a few stars, dots, sparkles) sparingly around the composition. Composed as a 600×600 half-page block with 14% inner padding. Generous white space. Color values are rendering guidance only — do not display HEX codes or color names as text.
+> Warm hand-drawn sketchnote on the deck's locked background color. Lines use the locked body-text color with slight wobble and define three rounded rectangle info boxes arranged in a soft triangle. The top box uses the locked primary, the bottom-left uses the locked secondary accent, and the bottom-right uses the locked accent, each with restrained coverage and no invented tint. Color fills do not completely reach their outlines (slight hand-painted overshoot). Hand-drawn wavy arrows connect the boxes, each with a brief inline keyword such as "leads to", "becomes", or "supports" (≤2 words). Each box contains one simple hand-drawn cartoon icon — a lightbulb, a plant, a gear. Small doodle decorations appear sparingly. Composed as a 600×600 half-page block with 14% inner padding and generous whitespace.

@@ -29,9 +29,14 @@ This stage is **context-independent**: it owns source acquisition when no file e
 | Scope / focus | Broad overview |
 | Depth | General-knowledge level |
 | Output language | Match user input |
+| Target audience | Audience implied by the request; otherwise state a provisional general audience |
+| Research-facing communication intent | Open prose describing what the eventual presentation should accomplish; may combine several purposes |
+| Desired audience outcome | What the audience should know, understand, believe, decide, or do after the presentation |
 | Slug for files (`<topic_slug>`) | snake_case English identifier derived from topic |
 
 **Forbidden — itemized confirmation**: do NOT ask each row separately. One bundled clarifier or none.
+
+**Communication intent is not a pick-list.** You may mention inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off as examples that help the user answer, but never ask them to select one label. Preserve multiple purposes plus their priority / sequence. This intake captures only the subset needed to aim research; main-pipeline Stage 1 confirms the full communication contract—audience, outcome, core message / ask, delivery context, artifact afterlife, and source-treatment intent—after the facts exist. Every editable Stage-1 prose field may remain blank after confirmation. Stage 2 confirms reading mode with the complete deck solution.
 
 ---
 
@@ -84,7 +89,7 @@ Three artifacts under `projects/`:
 
 **Hard rule — naming**: filename (without `.md`) and folder name MUST match. **Hard rule — location**: under `projects/`, never the repository root.
 
-**Document structure** — section layout follows the topic: person → biography / works / impact; technology → background / mechanism / applications / outlook; company → overview / products / market / culture. The file MUST end with a `## Sources` section listing the URLs used.
+**Document structure** — begin with a compact `## Research Brief` carrying Target audience, Communication intent, and Desired audience outcome in open prose. Then let section layout follow the topic: person → biography / works / impact; technology → background / mechanism / applications / outlook; company → overview / products / market / culture. The file MUST end with a `## Sources` section listing the URLs used.
 
 **Content density** — concrete facts (dates, names, numbers, quotes). Skip filler prose; the Strategist composes final slide copy.
 
@@ -128,6 +133,8 @@ curl -L -o "projects/<topic_slug>/<descriptive_name>.<ext>" "<image_url>"
 ## Hand-off
 
 Output a checkpoint, then continue with the main pipeline. The artifacts feed directly into Step 2's `import-sources`:
+
+The Research Brief is evidence-facing context, not a locked presentation contract. Strategist reads it when preparing Stage 1, then confirms / edits the full contract with the user before choosing narrative mode, template reuse, or visual direction.
 
 ```markdown
 ## ✅ Topic Research Complete
