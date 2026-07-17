@@ -142,5 +142,17 @@ chmod +x "$BIN" 2>/dev/null || true
 echo "==> Smoke: $BIN --version"
 "$BIN" --version
 
+# ── zip (prefer ditto on macOS — preserves dylib layout without dangling links) ──
+ZIP_OUT="$ROOT/dist-engine/${FOLDER}.zip"
+rm -f "$ZIP_OUT"
+echo "==> Zip: $ZIP_OUT"
+if command -v ditto >/dev/null 2>&1; then
+  # ditto creates a Finder-compatible zip with correct symlink handling
+  (cd "$ROOT/dist-engine" && ditto -c -k --keepParent "$FOLDER" "${FOLDER}.zip")
+else
+  (cd "$ROOT/dist-engine" && zip -ry "${FOLDER}.zip" "$FOLDER")
+fi
+ls -lh "$ZIP_OUT"
+
 echo "==> Pack ready: $STAGE"
 du -sh "$STAGE" "$STAGE/bin" "$STAGE/skills" || true
