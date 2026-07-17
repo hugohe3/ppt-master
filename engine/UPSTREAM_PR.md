@@ -1,5 +1,9 @@
 # Upstream PR notes (hugohe3/ppt-master)
 
+## Acknowledgments
+
+Thanks to **[@hugohe3](https://github.com/hugohe3) (Hugo He)** for creating and maintaining [ppt-master](https://github.com/hugohe3/ppt-master). This engine pack only packages the existing skill runtime for desktop embeds; the product vision and core pipeline are his work.
+
 ## Goal
 
 Add optional **engine pack** build + CI so desktop hosts (e.g. MindMux) can ship a self-contained runtime without system Python.
