@@ -28,10 +28,11 @@ from native_payloads import NativePayloadError, hydrate_native_payload_refs
 configure_utf8_stdio()
 
 try:
-    from project_utils import CANVAS_FORMATS
+    from project_utils import CANVAS_FORMATS, validate_communication_trace
 except ImportError:
     print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
+    validate_communication_trace = None
 
 try:
     from pptx_effects import (
@@ -1157,6 +1158,7 @@ class SVGQualityChecker:
         self._brand_template_checked = False
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
+        self._communication_trace_issues: List[Tuple[str, str]] = []
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._has_incomplete_page_roster = False
         self._prototype_by_output: Dict[Path, Path] = {}
@@ -4807,6 +4809,12 @@ class SVGQualityChecker:
         if not self.template_mode and dir_path.is_dir():
             self._check_animation_config_contract(dir_path)
             self._check_illustration_resource_contract(dir_path)
+        if not self.template_mode and validate_communication_trace is not None:
+            project_path = self._resolve_project_path(dir_path)
+            self._communication_trace_issues.extend(
+                ('error', message)
+                for message in validate_communication_trace(project_path)
+            )
 
         return self.results
 
@@ -6056,6 +6064,9 @@ class SVGQualityChecker:
         # Illustration strategy aggregation.
         self._print_illustration_summary()
 
+        # Communication contract and per-page audience movement.
+        self._print_communication_trace_summary()
+
         # Explicit PowerPoint master/layout structure aggregation.
         self._print_pptx_structure_summary()
 
@@ -6113,6 +6124,14 @@ class SVGQualityChecker:
             return
         print("\n[PPTX STRUCTURE] Master/layout contract checks")
         for severity, message in self._pptx_structure_issues:
+            print(f"  [{severity.upper()}] {message}")
+
+    def _print_communication_trace_summary(self):
+        """Print project-level communication trace issues."""
+        if not self._communication_trace_issues:
+            return
+        print("\n[COMMUNICATION TRACE] Contract and Audience move checks")
+        for severity, message in self._communication_trace_issues:
             print(f"  [{severity.upper()}] {message}")
 
     def _print_source_import_summary(self):
@@ -6189,6 +6208,19 @@ class SVGQualityChecker:
         self.summary['warnings'] += len(illustration_warnings)
         for severity, kind, _msg in self._illustration_issues:
             self.issue_types[f'illustration_{kind}_{severity}'] += 1
+
+        communication_errors = [
+            item for item in self._communication_trace_issues
+            if item[0] == 'error'
+        ]
+        communication_warnings = [
+            item for item in self._communication_trace_issues
+            if item[0] == 'warning'
+        ]
+        self.summary['errors'] += len(communication_errors)
+        self.summary['warnings'] += len(communication_warnings)
+        for severity, _msg in self._communication_trace_issues:
+            self.issue_types[f'communication_trace_{severity}'] += 1
 
         structure_errors = [item for item in self._pptx_structure_issues if item[0] == 'error']
         structure_warnings = [item for item in self._pptx_structure_issues if item[0] == 'warning']
@@ -6318,6 +6350,10 @@ class SVGQualityChecker:
             'illustration': [
                 {'severity': severity, 'kind': kind, 'message': message}
                 for severity, kind, message in self._illustration_issues
+            ],
+            'communication_trace': [
+                {'severity': severity, 'message': message}
+                for severity, message in self._communication_trace_issues
             ],
             'pptx_structure': [
                 {'severity': severity, 'message': message}

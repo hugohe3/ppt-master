@@ -1,10 +1,8 @@
 /* PPT Master - Strategist confirmation stage UI
- * Finite/enumerable fields (canvas, mode, visual style, template reuse scope,
- * template adherence,
- * icons, image usage, AI source, formula policy, generation mode) list ALL options from
- * /static/catalogs.json with the AI's recommendation marked. Open/generative
- * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
- * Custom controls. On confirm the page saves result.json and closes.
+ * Stage 1 captures the communication contract, Stage 2 confirms a coherent
+ * deck solution, and Stage 3 resolves production mechanics. Finite fields use
+ * /static/catalogs.json; coordinated design directions seed color, typography,
+ * icons, and generated-image rendering. Final confirm saves result.json.
  */
 (function () {
     "use strict";
@@ -13,14 +11,15 @@
     var MESSAGES = {
         en: {
             page_title: "PPT Master - Confirm Design",
-            topbar_hint: "Pick or type your choices, then click Confirm — the page closes and you return to the chat.",
-            stage_anchors: "Stage 1 · Direction",
-            stage_design: "Stage 2 · Design system",
-            stage_images: "Stage 3 · Images & execution",
+            topbar_hint: "Answer the open questions, or pick and customize recommendations, then continue.",
+            stage_anchors: "Stage 1 · Communication contract",
+            stage_design: "Stage 2 · Deck direction & visual system",
+            stage_images: "Stage 3 · Resources & production",
             loading: "Loading…",
             load_error: "Could not load recommendations.json. The AI must write it before launch.",
             btn_confirm: "Confirm",
-            btn_next: "Next →",
+            btn_confirm_contract: "Confirm contract & continue →",
+            btn_confirm_solution: "Confirm solution & continue →",
             deriving: "Generating the downstream options from your choices…",
             connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
             already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
@@ -30,19 +29,38 @@
             sec_canvas: "Canvas format",
             sec_pages: "Page count",
             sec_audience: "Target audience",
-            sec_style: "Style objective",
+            sec_communication: "What this presentation must accomplish",
+            sec_delivery: "How it will be used and what must remain",
+            sec_style: "Narrative, visual & template direction",
             sec_color: "Color scheme",
             sec_icons: "Icon usage",
             sec_type: "Typography",
             sec_images: "Image usage",
+            sec_image_production: "Image production",
             sec_mode: "Generation mode",
             sec_refine: "Refine spec first",
+            sec_design_directions: "Coherent design directions",
+            design_directions_hint: "Each direction coordinates style, color, typography, icons, and generated-image rendering. You can fine-tune every field below.",
+            design_direction_apply: "Apply direction",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
             sub_template_reuse_scope: "Template reuse scope",
             sub_template_adherence: "Template adherence",
             sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
             placeholder_divergence: "In your words — e.g. \"stick closely to the document\" / \"freely restructure and expand within the source\". Leave blank for a balanced default.",
+            communication_intent: "What should this presentation accomplish?",
+            communication_intent_hint: "Open answer — combine any that apply: inform, explain, persuade, decide, align, teach, report/account, mobilize, or leave a record/hand-off. Describe priority or sequence when useful; do not choose labels.",
+            placeholder_communication_intent: "e.g. Report progress and surface risk first, then secure a decision on the next investment.",
+            audience_outcome: "Desired audience outcome / success condition",
+            placeholder_audience_outcome: "What should the audience know, understand, believe, decide, or do afterward?",
+            core_message: "Core message / decision ask / action",
+            placeholder_core_message: "Which claims, requests, or actions must land even if little else is remembered?",
+            delivery_context: "Delivery context",
+            placeholder_delivery_context: "e.g. 20-minute leadership review with a presenter; recording shared afterward.",
+            artifact_afterlife: "Artifact afterlife",
+            placeholder_artifact_afterlife: "e.g. approval, review, audit, archive, hand-off, or reuse; leave blank when no later use is expected.",
+            stage1_current_value_hint: "Editable fields contain recommendations. Keep, revise, or clear them; confirmation saves the current text exactly, including blank values.",
+            content_divergence_locked_hint: "This profile preserves the source wording and page structure, so this field is fixed.",
             custom: "Custom",
             custom_placeholder: "Type your own…",
             recommended: "Recommended",
@@ -54,17 +72,16 @@
             image_strategy: "Generated image style",
             image_strategy_empty: "No generated-image style candidates were provided.",
             image_strategy_rendering: "Rendering",
-            image_strategy_palette: "Palette",
             image_strategy_visual: "Visual",
-            image_strategy_color: "Color",
             image_strategy_mood: "Mood",
             image_strategy_manual: "Custom",
-            image_strategy_manual_desc: "Choose a rendering and palette manually, or use custom prose.",
+            image_strategy_manual_desc: "Choose a rendering manually, or add custom prose.",
             image_strategy_custom_prompt: "Custom prompt notes",
             image_strategy_custom_placeholder: "Describe the exact generated-image direction, subjects, composition, style cues, or things to avoid.",
-            image_strategy_reference_hint: "Reference images show rendering / color-behavior only. Final AI images use the color scheme selected above.",
-            image_strategy_color_follow: "Uses the color scheme selected above; the palette only controls color behavior.",
+            image_strategy_reference_hint: "Reference images show rendering only. Final AI images inherit the deck color scheme selected above.",
             image_strategy_no_reference: "No reference image for this custom choice.",
+            image_source_summary: "Confirmed image sources",
+            image_production_hint: "Image sources and rendering were confirmed in Stage 2. This stage only resolves the production path.",
             image_usage_notes: "Additional image requirements",
             image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
             image_usage_required: "Select at least one image usage option.",
@@ -77,9 +94,9 @@
             body_size_pt_hint: "Approximately {pt} pt (1px = 0.75pt; saved as px).",
             role_size_pt_hint: "≈ {pt} pt",
             body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
-            body_size_hint_purpose: "This delivery purpose recommends {def}px — one fixed size, not a range.",
+            body_size_hint_purpose: "This reading mode recommends {def}px — one fixed size, not a range.",
             body_size_hint_oor: "(Current value is outside the usual range for this canvas — check the unit is right and that it fits.)",
-            delivery_purpose: "Delivery purpose",
+            delivery_purpose: "Reading mode",
             delivery_purpose_hint: "Read-close decks can run smaller; projected decks need larger type.",
             size_override: "Per-role size override:",
             size_role_title: "title",
@@ -126,14 +143,15 @@
         },
         ja: {
             page_title: "PPT Master - デザイン確認",
-            topbar_hint: "各項目を選択または入力して「確定」を押してください。ページが閉じたらチャットに戻ります。",
-            stage_anchors: "ステージ 1 · 方向性",
-            stage_design: "ステージ 2 · デザインシステム",
-            stage_images: "ステージ 3 · 画像と実行方法",
+            topbar_hint: "自由記述の質問に答えるか、提案を選択・調整して次へ進んでください。",
+            stage_anchors: "ステージ 1 · コミュニケーション契約",
+            stage_design: "ステージ 2 · 全体方針とビジュアルシステム",
+            stage_images: "ステージ 3 · リソースと制作",
             loading: "読み込み中…",
             load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
-            btn_next: "次へ →",
+            btn_confirm_contract: "契約内容を確定して次へ →",
+            btn_confirm_solution: "全体方針を確定して次へ →",
             deriving: "選択内容をもとに後続の選択肢を生成しています…",
             connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
             already_confirmed: "すでに一度確定済みです。再送信すると前回の選択を上書きします。",
@@ -143,19 +161,38 @@
             sec_canvas: "キャンバス形式",
             sec_pages: "ページ数",
             sec_audience: "想定読者",
-            sec_style: "スタイルの狙い",
+            sec_communication: "このプレゼンで何を実現するか",
+            sec_delivery: "どう使い、何を残すか",
+            sec_style: "構成・ビジュアル・テンプレート方針",
             sec_color: "配色",
             sec_icons: "アイコンの使用",
             sec_type: "タイポグラフィ",
             sec_images: "画像の使用",
+            sec_image_production: "画像制作",
             sec_mode: "生成モード",
             sec_refine: "先に設計仕様を精査",
+            sec_design_directions: "統合デザイン方針",
+            design_directions_hint: "各案はスタイル、配色、書体、アイコン、生成画像のレンダリングを一体で提案します。下の各項目で微調整できます。",
+            design_direction_apply: "この方針を適用",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
             sub_template_reuse_scope: "テンプレートの再利用範囲",
             sub_template_adherence: "テンプレートの適用方法",
             sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
             placeholder_divergence: "自分の言葉でどうぞ — 例：「文書に忠実に」「元素材の範囲内で自由に再構成・展開」。空欄ならバランス型になります。",
+            communication_intent: "このプレゼンで何を実現したいですか？",
+            communication_intent_hint: "自由記述です。情報共有・説明・説得・意思決定・合意形成・教育・報告と説明責任・行動喚起・記録と引き継ぎを必要に応じて組み合わせ、必要なら優先順位や順序も書いてください。ラベルを選ぶ必要はありません。",
+            placeholder_communication_intent: "例：まず進捗とリスクを報告し、そのうえで次の投資判断を得る。",
+            audience_outcome: "聴衆に期待する変化・成功条件",
+            placeholder_audience_outcome: "終了後、聴衆は何を知り、理解し、信じ、決め、行動できる状態になるべきですか？",
+            core_message: "中核メッセージ／意思決定の依頼／行動",
+            placeholder_core_message: "ほかの内容が忘れられても、必ず残すべき主張・依頼・行動は何ですか？",
+            delivery_context: "利用状況",
+            placeholder_delivery_context: "例：発表者付きの20分経営レビュー。終了後に録画も共有。",
+            artifact_afterlife: "資料の利用後",
+            placeholder_artifact_afterlife: "例：承認、レビュー、監査、保管、引き継ぎ、再利用。後続利用がなければ空欄で構いません。",
+            stage1_current_value_hint: "編集可能な欄には提案が入っています。そのまま使う・修正する・空にすることができ、確定時の現在値を空欄も含めてそのまま保存します。",
+            content_divergence_locked_hint: "このプロファイルは原文とページ構成を保持するため、この項目は固定されています。",
             custom: "カスタム",
             custom_placeholder: "自由に入力…",
             recommended: "おすすめ",
@@ -167,17 +204,16 @@
             image_strategy: "生成画像のスタイル",
             image_strategy_empty: "生成画像スタイルの候補がまだありません。",
             image_strategy_rendering: "レンダリング",
-            image_strategy_palette: "パレット",
             image_strategy_visual: "ビジュアル",
-            image_strategy_color: "カラー",
             image_strategy_mood: "ムード",
             image_strategy_manual: "カスタム",
-            image_strategy_manual_desc: "レンダリングとパレットを手動で選ぶか、カスタム記述を使います。",
+            image_strategy_manual_desc: "レンダリングを手動で選ぶか、カスタム記述を追加します。",
             image_strategy_custom_prompt: "カスタム指示",
             image_strategy_custom_placeholder: "生成画像の方向性、被写体、構図、スタイル要素、避けたい要素を具体的に入力してください。",
-            image_strategy_reference_hint: "参照画像はレンダリング／色の使い方だけを示します。最終AI画像の色は上で選んだ配色に従います。",
-            image_strategy_color_follow: "上で選んだ配色を使用します。パレットは色の使い方だけを制御します。",
+            image_strategy_reference_hint: "参照画像はレンダリングのみを示します。最終AI画像の色は上で選んだデッキ配色を継承します。",
             image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
+            image_source_summary: "確定済みの画像ソース",
+            image_production_hint: "画像ソースとレンダリングはステージ2で確定済みです。ここでは制作経路だけを決めます。",
             image_usage_notes: "画像に関する補足要件",
             image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
             image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
@@ -190,9 +226,9 @@
             body_size_pt_hint: "約 {pt} pt（1px = 0.75pt 換算、保存は px）。",
             role_size_pt_hint: "約 {pt} pt",
             body_size_hint_canvas: "このキャンバスの目安は約{lo}–{hi}px（キャンバスの高さに応じて変化）。",
-            body_size_hint_purpose: "この利用シーンの推奨は{def}px — 範囲ではなく固定値です。",
+            body_size_hint_purpose: "この閲覧モードの推奨は{def}px — 範囲ではなく固定値です。",
             body_size_hint_oor: "（現在の値はこのキャンバスの通常範囲外です — 単位とサイズ感を確認してください。）",
-            delivery_purpose: "利用シーン",
+            delivery_purpose: "閲覧モード",
             delivery_purpose_hint: "手元で読む資料は小さめでOK、投影する資料は大きめの文字が必要です。",
             size_override: "役割ごとのサイズ上書き：",
             size_role_title: "タイトル",
@@ -239,14 +275,15 @@
         },
         zh: {
             page_title: "确认设计方案",
-            topbar_hint: "选择或自定义各项后点「确认」；页面会关闭，请回到聊天窗口。",
-            stage_anchors: "第一阶段 · 方向确认",
-            stage_design: "第二阶段 · 设计系统",
-            stage_images: "第三阶段 · 图片与执行方式",
+            topbar_hint: "回答开放问题，或选择并调整推荐项，然后继续。",
+            stage_anchors: "第一阶段 · 沟通契约",
+            stage_design: "第二阶段 · 完整方案与视觉系统",
+            stage_images: "第三阶段 · 资源与生产执行",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
-            btn_next: "下一步 →",
+            btn_confirm_contract: "确认沟通契约并继续 →",
+            btn_confirm_solution: "确认完整方案并继续 →",
             deriving: "正在根据你的选择生成下游选项…",
             connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
             already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
@@ -256,19 +293,38 @@
             sec_canvas: "画布格式",
             sec_pages: "页数",
             sec_audience: "目标受众",
-            sec_style: "风格目标",
+            sec_communication: "这份演示要完成什么",
+            sec_delivery: "如何使用、之后留下什么",
+            sec_style: "叙事、视觉与模板方向",
             sec_color: "色彩方案",
             sec_icons: "图标使用",
             sec_type: "字体方案",
             sec_images: "图片使用",
+            sec_image_production: "图片生产",
             sec_mode: "生成模式",
             sec_refine: "先精修设计规范",
+            sec_design_directions: "成套设计方向",
+            design_directions_hint: "每套方向会一起协调风格、配色、字体、图标和生成图渲染；你仍可在下方逐项微调。",
+            design_direction_apply: "应用这套方向",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
             sub_template_reuse_scope: "模板复用范围",
             sub_template_adherence: "模板遵循方式",
             sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
             placeholder_divergence: "用你自己的话写，例如「严格贴着文档来」/「在源材料范围内自由重组并展开」。留空则按平衡处理。",
+            communication_intent: "这份演示文稿需要完成什么？",
+            communication_intent_hint: "开放回答，可按需组合：告知、解释、说服、决策、对齐、教学、汇报与问责、动员、留档与交接。必要时说明主次或先后，不需要选择标签。",
+            placeholder_communication_intent: "例如：先汇报进展并暴露风险，再推动管理层决定下一阶段投入。",
+            audience_outcome: "期望的受众变化 / 成功条件",
+            placeholder_audience_outcome: "结束后，受众应该知道、理解、相信、决定或采取什么行动？",
+            core_message: "核心信息 / 决策请求 / 行动",
+            placeholder_core_message: "即使其他内容没有被记住，受众至少需要接住哪些主张、请求或行动？",
+            delivery_context: "使用情境",
+            placeholder_delivery_context: "例如：管理层现场评审 20 分钟，有主讲；会后分享录屏。",
+            artifact_afterlife: "演示后的成果用途",
+            placeholder_artifact_afterlife: "例如：审批、评审、审计、留档、交接或复用；没有后续用途时可留空。",
+            stage1_current_value_hint: "可编辑字段中是推荐内容。你可以保留、修改或清空；确认时会按当前内容原样保存，空白也会保持为空。",
+            content_divergence_locked_hint: "当前流程要求原文和页面结构保持不变，因此该字段已锁定。",
             custom: "自定义",
             custom_placeholder: "输入自定义内容…",
             recommended: "推荐",
@@ -280,17 +336,16 @@
             image_strategy: "生成图风格",
             image_strategy_empty: "还没有提供生成图风格候选。",
             image_strategy_rendering: "渲染风格",
-            image_strategy_palette: "图像调色",
             image_strategy_visual: "视觉",
-            image_strategy_color: "色彩",
             image_strategy_mood: "情绪",
             image_strategy_manual: "自定义",
-            image_strategy_manual_desc: "手动选择渲染风格和图像调色，也可以使用自定义描述。",
+            image_strategy_manual_desc: "手动选择渲染风格，也可以补充自定义描述。",
             image_strategy_custom_prompt: "自定义提示要求",
             image_strategy_custom_placeholder: "描述生成图的具体方向、主体、构图、风格关键词或需要避免的内容。",
-            image_strategy_reference_hint: "参考图只展示渲染风格 / 用色行为；最终 AI 图片颜色跟随上方色彩方案。",
-            image_strategy_color_follow: "使用上方已选色彩方案；图像调色只控制用色比例和行为。",
+            image_strategy_reference_hint: "参考图只展示渲染风格；最终 AI 图片直接继承上方已选的整套 PPT 配色。",
             image_strategy_no_reference: "自定义选择没有参考图。",
+            image_source_summary: "已确认的图片来源",
+            image_production_hint: "图片来源和渲染方向已在第二阶段确认；这里仅决定实际生产路径。",
             image_usage_notes: "图片补充要求",
             image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
             image_usage_required: "请至少选择一种图片使用方式。",
@@ -303,9 +358,9 @@
             body_size_pt_hint: "约 {pt} pt（按 1px = 0.75pt 换算；提交仍保存 px）。",
             role_size_pt_hint: "约 {pt} pt",
             body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
-            body_size_hint_purpose: "该交付目的推荐 {def}px（单一固定值，非区间）。",
+            body_size_hint_purpose: "该阅读模式推荐 {def}px（单一固定值，非区间）。",
             body_size_hint_oor: "（当前数值超出该画布的常用范围——请确认单位无误、是否合适。）",
-            delivery_purpose: "交付目的",
+            delivery_purpose: "阅读模式",
             delivery_purpose_hint: "近读型可以小一点；投影型需要更大的字。",
             size_override: "逐角色字号覆盖：",
             size_role_title: "标题",
@@ -393,22 +448,6 @@
             glassmorphism: { zh: "玻璃拟态", en: "Glassmorphism", ja: "グラスモーフィズム" },
             "vintage-poster": { zh: "复古海报", en: "Vintage poster", ja: "ヴィンテージポスター" },
             "paper-cut": { zh: "剪纸拼贴", en: "Paper cut", ja: "ペーパーカット" }
-        },
-        palette: {
-            "cool-corporate": { zh: "冷静企业色", en: "Cool corporate", ja: "クール企業色" },
-            "warm-earth": { zh: "暖土色", en: "Warm earth", ja: "ウォームアース" },
-            "tech-neon": { zh: "科技霓虹", en: "Tech neon", ja: "テックネオン" },
-            "editorial-classic": { zh: "经典编辑色", en: "Editorial classic", ja: "エディトリアルクラシック" },
-            macaron: { zh: "马卡龙", en: "Macaron", ja: "マカロン" },
-            "mono-ink": { zh: "单色墨线", en: "Mono ink", ja: "モノインク" },
-            "vivid-launch": { zh: "高饱和发布", en: "Vivid launch", ja: "ビビッドローンチ" },
-            "dark-cinematic": { zh: "暗色电影感", en: "Dark cinematic", ja: "ダークシネマティック" },
-            duotone: { zh: "双色调", en: "Duotone", ja: "デュオトーン" },
-            "nature-organic": { zh: "自然有机色", en: "Nature organic", ja: "自然オーガニック色" },
-            "jewel-tone": { zh: "宝石色", en: "Jewel tone", ja: "ジュエルトーン" },
-            "frost-ice": { zh: "霜冰浅色", en: "Frost ice", ja: "フロストアイス" },
-            "sunset-gradient": { zh: "日落渐变", en: "Sunset gradient", ja: "サンセットグラデーション" },
-            "earthy-dusty": { zh: "尘土大地色", en: "Earthy dusty", ja: "ダスティアース" }
         }
     };
 
@@ -596,10 +635,9 @@
     }
 
     function appendImageStrategyPreviews(card, candidate) {
-        if (candidate.rendering === "custom" || candidate.palette === "custom") return;
+        if (candidate.rendering === "custom") return;
         var previews = [
-            [t("image_strategy_rendering"), comparisonImageUrl("rendering", candidate.rendering)],
-            [t("image_strategy_palette"), comparisonImageUrl("palette", candidate.palette)]
+            [t("image_strategy_rendering"), comparisonImageUrl("rendering", candidate.rendering)]
         ].filter(function (item) { return item[1]; });
         if (!previews.length) return;
         var row = el("div", "image-strategy-previews");
@@ -658,11 +696,6 @@
         select.appendChild(customOption);
         select.value = firstComparisonId(kind, value);
         return select;
-    }
-
-    function imageStrategyColorSummary(candidate) {
-        var behavior = localized(candidate || {}, "color");
-        return t("image_strategy_color_follow") + (behavior ? " " + behavior : "");
     }
 
     // Section numbers run 1..N within the stage currently rendered; the counter is
@@ -727,6 +760,10 @@
         return (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
     }
 
+    function recommendationFieldLocked(field) {
+        return !!(REC && REC[field] && typeof REC[field] === "object" && REC[field].locked === true);
+    }
+
     function hasTemplateReuseScope() {
         if (!REC) return false;
         if (typeof REC._template_reuse_scope_enabled === "boolean") {
@@ -762,6 +799,7 @@
     // fallback so an enumerable field ALWAYS shows a badged recommendation.
     function recOrFirst(field, list) {
         var r = recId(field);
+        if (r == null || r === "") r = normalizeRecId(field, directionField(field));
         if (r != null && r !== "") return r;
         return firstId(list);
     }
@@ -896,6 +934,25 @@
         parent.appendChild(input);
     }
 
+    function textareaField(parent, getVal, setVal, placeholderKey, rows) {
+        var input = el("textarea", "text-input");
+        input.rows = rows || 2;
+        input.value = getVal() || "";
+        input.placeholder = t(placeholderKey);
+        input.addEventListener("input", function () { setVal(input.value); });
+        parent.appendChild(input);
+        return input;
+    }
+
+    function labeledTextarea(parent, labelKey, getVal, setVal, placeholderKey, hintKey, rows) {
+        var field = el("div", "subfield");
+        field.appendChild(el("div", "subfield-label", t(labelKey)));
+        if (hintKey) field.appendChild(el("div", "toggle-desc", t(hintKey)));
+        textareaField(field, getVal, setVal, placeholderKey, rows);
+        parent.appendChild(field);
+        return field;
+    }
+
     function normPalette(c) {
         function read(src, keys) {
             if (!src) return undefined;
@@ -967,6 +1024,45 @@
         return value == null ? "" : String(value).replace(/px$/i, "");
     }
 
+    function designDirectionSpec() {
+        return (REC && REC.design_directions) ||
+            (REC && REC.design && REC.design.directions) ||
+            {};
+    }
+
+    function designDirectionCandidates() {
+        var spec = designDirectionSpec();
+        return spec.candidates || spec.options || [];
+    }
+
+    function selectedDesignDirection() {
+        var candidates = designDirectionCandidates();
+        var selected = Number(designDirectionSpec().selected || 0);
+        if (!isFinite(selected) || selected < 0) selected = 0;
+        return candidates[Math.min(selected, Math.max(candidates.length - 1, 0))] || {};
+    }
+
+    function directionField(field) {
+        var candidate = selectedDesignDirection();
+        return candidate[field] != null ? candidate[field] : null;
+    }
+
+    function colorRecommendationCandidates() {
+        var direct = (REC.color && REC.color.candidates) || [];
+        if (direct.length) return direct;
+        return designDirectionCandidates().map(function (candidate) {
+            return candidate && candidate.color;
+        }).filter(Boolean);
+    }
+
+    function typographyRecommendationCandidates() {
+        var direct = (REC.typography && REC.typography.candidates) || [];
+        if (direct.length) return direct;
+        return designDirectionCandidates().map(function (candidate) {
+            return candidate && candidate.typography;
+        }).filter(Boolean);
+    }
+
     function imageStrategySpec() {
         return (REC && REC.image_strategy) ||
             (REC && REC.images && REC.images.strategy) ||
@@ -976,13 +1072,29 @@
 
     function imageStrategyCandidates() {
         var spec = imageStrategySpec();
-        return spec.candidates || spec.options || [];
+        var direct = spec.candidates || spec.options || [];
+        if (direct.length) return direct;
+        return designDirectionCandidates().map(function (candidate) {
+            return candidate && candidate.image_strategy;
+        }).filter(Boolean);
     }
 
     function imageStrategyRecommendationCandidates() {
         return imageStrategyCandidates().filter(function (candidate) {
-            return candidate && candidate.rendering !== "custom" && candidate.palette !== "custom";
+            return candidate && candidate.rendering !== "custom";
         }).slice(0, 3);
+    }
+
+    function normalizedImageStrategy(candidate) {
+        candidate = candidate || {};
+        var out = {
+            name: localized(candidate, "name") || candidate.name || "",
+            rendering: candidate.rendering || "",
+            visual: localized(candidate, "visual") || "",
+            mood: localized(candidate, "mood") || ""
+        };
+        if (candidate.custom) out.custom = candidate.custom;
+        return out;
     }
 
     function usesCustomImagePlanValue(value) {
@@ -1022,7 +1134,8 @@
 
     function imageStrategySelectedIndex() {
         var spec = imageStrategySpec();
-        var idx = spec.selected || 0;
+        var direct = spec.candidates || spec.options || [];
+        var idx = direct.length ? (spec.selected || 0) : (designDirectionSpec().selected || 0);
         return Math.min(idx, Math.max(imageStrategyRecommendationCandidates().length - 1, 0));
     }
 
@@ -1052,33 +1165,141 @@
         host.appendChild(sec);
     }
 
-    function renderAudience(host) {
-        var sec = section(3, "sec_audience");
-        textField(sec, function () { return STATE.audience; },
+    function renderCommunication(host) {
+        var sec = section(1, "sec_communication");
+        var audienceField = el("div", "subfield");
+        audienceField.appendChild(el("div", "subfield-label", t("sec_audience")));
+        textField(audienceField, function () { return STATE.audience; },
             function (v) { STATE.audience = v; }, "placeholder_audience", false);
-        // Material divergence — a distinct, free-text sub-question inside §c, shown
-        // right under the audience box: the user states in their own words how
-        // closely to follow the source vs. how freely to reshape it. Free prose, not
-        // fixed options; no page-count coupling, no source-signal recommendation.
-        var subDiv = el("div", "subfield");
-        subDiv.appendChild(el("div", "subfield-label", t("sub_divergence")));
-        textField(subDiv, function () { return STATE.content_divergence; },
-            function (v) { STATE.content_divergence = v; }, "placeholder_divergence", false);
-        sec.appendChild(subDiv);
-        // Delivery purpose (PPT only) lives in the §c key-information confirmation,
-        // beside audience — it is part of "who / how this deck is consumed". It is a
-        // Stage-1 anchor: its value sets the body size (one fixed value per purpose), page
-        // density, and the re-derived Stage-2 page-count recommendation. Non-PPT
-        // canvases scale the body by canvas height instead, so the axis does not apply.
-        if (isPptCanvas(STATE.canvas)) {
-            var purposeField = el("div", "subfield");
-            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
-            enumField(purposeField, CAT.delivery_purpose,
-                recOrFirst("delivery_purpose", CAT.delivery_purpose),
-                function () { return STATE.delivery_purpose; },
-                function (v) { STATE.delivery_purpose = v; });
-            sec.appendChild(purposeField);
+        sec.appendChild(audienceField);
+        labeledTextarea(sec, "communication_intent",
+            function () { return STATE.communication_intent; },
+            function (v) { STATE.communication_intent = v; },
+            "placeholder_communication_intent", "communication_intent_hint", 3);
+        labeledTextarea(sec, "audience_outcome",
+            function () { return STATE.audience_outcome; },
+            function (v) { STATE.audience_outcome = v; },
+            "placeholder_audience_outcome", null, 2);
+        labeledTextarea(sec, "core_message",
+            function () { return STATE.core_message; },
+            function (v) { STATE.core_message = v; },
+            "placeholder_core_message", null, 2);
+        host.appendChild(sec);
+    }
+
+    function renderDelivery(host) {
+        var sec = section(2, "sec_delivery");
+        labeledTextarea(sec, "delivery_context",
+            function () { return STATE.delivery_context; },
+            function (v) { STATE.delivery_context = v; },
+            "placeholder_delivery_context", null, 2);
+        labeledTextarea(sec, "artifact_afterlife",
+            function () { return STATE.artifact_afterlife; },
+            function (v) { STATE.artifact_afterlife = v; },
+            "placeholder_artifact_afterlife", null, 2);
+        // Material divergence remains open prose: it controls how source material
+        // may be reshaped, independently of communication intent and template reuse.
+        var divergenceField = labeledTextarea(sec, "sub_divergence",
+            function () { return STATE.content_divergence; },
+            function (v) { STATE.content_divergence = v; },
+            "placeholder_divergence", null, 2);
+        if (recommendationFieldLocked("content_divergence")) {
+            var divergenceInput = divergenceField.querySelector("textarea");
+            if (divergenceInput) {
+                divergenceInput.readOnly = true;
+                divergenceInput.classList.add("locked-field");
+            }
+            divergenceField.appendChild(el("div", "toggle-desc locked-field-hint", t("content_divergence_locked_hint")));
         }
+        host.appendChild(sec);
+    }
+
+    function renderReadingMode(host) {
+        if (!isPptCanvas(STATE.canvas)) return;
+        var sec = section("D", "delivery_purpose");
+        setSectionNote(sec, t("delivery_purpose_hint"));
+        enumField(sec, CAT.delivery_purpose,
+            recOrFirst("delivery_purpose", CAT.delivery_purpose),
+            function () { return STATE.delivery_purpose; },
+            function (v) {
+                STATE.delivery_purpose = v;
+                refreshBodySizeHint();
+            });
+        host.appendChild(sec);
+    }
+
+    function applyDesignDirection(candidate) {
+        candidate = candidate || {};
+        if (candidate.mode) STATE.mode = candidate.mode;
+        if (candidate.visual_style) STATE.visual_style = candidate.visual_style;
+        if (candidate.color) {
+            STATE.color = {
+                name: localized(candidate.color, "name") || candidate.color.name || "",
+                palette: Object.assign({}, normPalette(candidate.color))
+            };
+        }
+        if (candidate.typography) {
+            var typography = normTypography(candidate.typography);
+            STATE.typography = {
+                name: localized(typography, "name") || typography.name || "",
+                heading: typography.heading || {},
+                body: typography.body || {},
+                body_size: typography.body_size || defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose),
+                sizes: Object.assign({}, typography.sizes || {})
+            };
+        }
+        if (candidate.icons) STATE.icons = normalizeRecId("icons", candidate.icons);
+        if (candidate.image_strategy) {
+            STATE.image_strategy = normalizedImageStrategy(candidate.image_strategy);
+        }
+        if (candidate.image_usage) {
+            var usage = selectedImageUsageIds(candidate.image_usage);
+            if (usage.length) STATE.image_usage = usage;
+        }
+        renderAll();
+    }
+
+    function renderDesignDirections(host) {
+        var candidates = designDirectionCandidates();
+        if (!candidates.length) return;
+        var sec = section("B", "sec_design_directions", t("design_directions_hint"));
+        var grid = el("div", "font-grid design-direction-grid");
+        candidates.forEach(function (candidate, idx) {
+            var card = el("div", "font-card design-direction-card");
+            var head = el("div", "font-card-head");
+            head.appendChild(el("span", "font-card-name",
+                localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
+            head.appendChild(el("span", "rec-badge", t("design_direction_apply")));
+            card.appendChild(head);
+            if (candidate.visual_style) {
+                var preview = el("div", "design-direction-preview");
+                appendVisualStyleImage(preview, candidate.visual_style);
+                card.appendChild(preview);
+            }
+            var meta = [];
+            if (candidate.visual_style) meta.push(humanizeId(candidate.visual_style));
+            if (candidate.icons) meta.push(humanizeId(candidate.icons));
+            if (candidate.image_strategy && candidate.image_strategy.rendering) {
+                meta.push(comparisonValueLabel("rendering", candidate.image_strategy.rendering));
+            }
+            if (meta.length) card.appendChild(el("div", "font-card-meta", meta.join(" · ")));
+            var palette = normPalette(candidate.color || {});
+            var swatches = el("div", "palette-swatches design-direction-swatches");
+            ["background", "primary", "accent", "body_text"].forEach(function (role) {
+                var value = normHex(palette[role]);
+                if (!value) return;
+                var swatch = el("span", "swatch");
+                swatch.style.background = value;
+                swatch.title = role + ": " + value;
+                swatches.appendChild(swatch);
+            });
+            if (swatches.childElementCount) card.appendChild(swatches);
+            var note = localized(candidate, "note");
+            if (note) card.appendChild(el("div", "color-note", note));
+            card.addEventListener("click", function () { applyDesignDirection(candidate); });
+            grid.appendChild(card);
+        });
+        sec.appendChild(grid);
         host.appendChild(sec);
     }
 
@@ -1090,7 +1311,7 @@
         var sub2 = el("div", "subfield");
         sub2.appendChild(el("div", "subfield-label", t("sub_visual")));
         enumField(sub2, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
-            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; refreshDirectionPreview(); },
+            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
         if (hasTemplateReuseScope()) {
@@ -1143,9 +1364,7 @@
     // Replaced when the combined color+typography preview mounts; the color and
     // typography sections call it after every change so the preview stays live.
     var refreshStylePreview = function () {};
-    // Replaced when the Stage-1 visual-style preview mounts.
-    var refreshDirectionPreview = function () {};
-    // Replaced when the Stage-3 generated-image preview mounts.
+    // Replaced when a generated-image preview mounts.
     var refreshImageStrategyPreview = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
@@ -1188,7 +1407,7 @@
         return isPpt ? { lo: 0.031, hi: 0.047 } : { lo: 0.025, hi: 0.033 };
     }
 
-    // PPT canvases (16:9 / 4:3) take the fixed per-delivery-purpose body px;
+    // PPT canvases (16:9 / 4:3) take the fixed per-reading-mode body px;
     // social / print canvases scale the body px by canvas height instead.
     function isPptCanvas(canvasVal) {
         var dim = null;
@@ -1200,7 +1419,8 @@
             /1024\s*[×xX*]\s*768/.test(raw);
     }
 
-    // Body baseline in **px** per delivery purpose (see strategist.md §g). The
+    // Body baseline in **px** per reading mode (legacy key:
+    // delivery_purpose; see strategist.md §g). The
     // system is px-only — these are the SVG/execution px values, recalibrated for
     // the 1280×720 PPT canvas. No pt layer, no conversion. `def` is the fixed
     // recommendation; lo/hi are a sanity envelope for the out-of-range flag only.
@@ -1254,7 +1474,7 @@
     }
 
     function renderColor(host) {
-        var cands = (REC.color && REC.color.candidates) || [];
+        var cands = colorRecommendationCandidates();
         var sec = section(5, "sec_color");
         var grid = el("div", "color-grid");
         var hexInputs = {};
@@ -1281,7 +1501,10 @@
         function selectCard(idx) {
             var c = cands[idx] || {};
             selectedIdx = idx;
-            STATE.color = { name: c.name || "", palette: Object.assign({}, normPalette(c)) };
+            STATE.color = {
+                name: localized(c, "name") || c.name || "",
+                palette: Object.assign({}, normPalette(c))
+            };
             grid.querySelectorAll(".color-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
             customInput.style.display = "none";
             applyHexInputs(STATE.color.palette);
@@ -1363,7 +1586,9 @@
 
         var selIdx = -1;
         if (STATE.color && STATE.color.name && STATE.color.name !== "custom") {
-            cands.forEach(function (c, i) { if (c.name === STATE.color.name) selIdx = i; });
+            cands.forEach(function (c, i) {
+                if ((localized(c, "name") || c.name) === STATE.color.name) selIdx = i;
+            });
         }
         if (STATE.color && STATE.color.name === "custom") {
             customInput.value = STATE.color.custom || "";
@@ -1408,8 +1633,7 @@
     }
 
     function renderTypography(host) {
-        var f = REC.typography || {};
-        var cands = f.candidates || [];
+        var cands = typographyRecommendationCandidates();
         var sec = section(7, "sec_type");
         var grid = el("div", "font-grid");
         var customInput = el("textarea", "text-input custom-typography-input");
@@ -1421,7 +1645,7 @@
             var c = normTypography(cands[idx] || {});
             var prev = STATE.typography || {};
             STATE.typography = {
-                name: c.name || "",
+                name: localized(c, "name") || c.name || "",
                 heading: c.heading || {},
                 body: c.body || {},
                 body_size: (preserveSizing && prev.body_size) ? prev.body_size : (c.body_size || prev.body_size || ""),
@@ -1541,10 +1765,8 @@
         sizeField.appendChild(sizePtHint);
         sizeField.appendChild(sizeHint);
 
-        // Delivery purpose is a Stage-1 anchor confirmed inside renderAudience (§c) —
-        // it is set before this Stage-2 section exists, so its value drives the
-        // body-size hint here via STATE.delivery_purpose (preserved across the
-        // single-session transition). The control itself no longer lives here.
+        // Reading mode is confirmed in Stage 2 before typography is edited. Its
+        // compatibility key remains delivery_purpose, and it drives this hint.
         sec.appendChild(sizeField);
 
         // Per-role size override (parallel to color's per-role HEX override): the
@@ -1607,21 +1829,25 @@
         };
         refreshSizeInputs();
 
-        var subfp = el("div", "subfield");
-        subfp.appendChild(el("div", "subfield-label", t("formula_policy")));
-        enumField(subfp, CAT.formula_policy, recOrFirst("formula_policy", CAT.formula_policy),
-            function () { return STATE.formula_policy; }, function (v) { STATE.formula_policy = v; });
-        sec.appendChild(subfp);
         host.appendChild(sec);
 
         var selIdx = -1;
-        if (STATE.typography && STATE.typography.name) cands.forEach(function (c, i) { if (c.name === STATE.typography.name) selIdx = i; });
+        if (STATE.typography && STATE.typography.name) cands.forEach(function (c, i) {
+            if ((localized(c, "name") || c.name) === STATE.typography.name) selIdx = i;
+        });
         if (selIdx >= 0) selectFont(selIdx, true);
         else if (STATE.typography && STATE.typography.name === "custom") {
             customInput.value = STATE.typography.custom || "";
             customCard.classList.add("selected");
             customInput.style.display = "block";
         }
+    }
+
+    function renderFormulaPolicy(host) {
+        var sec = section("F", "formula_policy");
+        enumField(sec, CAT.formula_policy, recOrFirst("formula_policy", CAT.formula_policy),
+            function () { return STATE.formula_policy; }, function (v) { STATE.formula_policy = v; });
+        host.appendChild(sec);
     }
 
     // Combined color + typography + icon preview — not a separate confirmation, just a
@@ -1708,34 +1934,6 @@
         paint();
     }
 
-    function renderDirectionPreview(host) {
-        var wrap = el("div", "style-preview direction-preview");
-        var label = el("div", "style-preview-label");
-        label.appendChild(el("span", "spl-title", t("sub_visual")));
-        label.appendChild(el("span", "spl-note", t("style_preview_body")));
-        wrap.appendChild(label);
-        var card = el("div", "style-preview-card direction-preview-card");
-        var visual = el("div", "direction-preview-visual");
-        var copy = el("div", "direction-preview-copy");
-        var title = el("div", "direction-preview-title");
-        var desc = el("div", "direction-preview-desc");
-        copy.appendChild(title);
-        copy.appendChild(desc);
-        card.appendChild(visual);
-        card.appendChild(copy);
-        wrap.appendChild(card);
-        host.appendChild(wrap);
-        function paint() {
-            var option = findCatalogOption(CAT.visual_styles, STATE.visual_style);
-            visual.innerHTML = "";
-            appendVisualStyleImage(visual, STATE.visual_style);
-            title.textContent = option ? optionLabel(option) : (STATE.visual_style || "");
-            desc.textContent = option ? optionDesc(option) : "";
-        }
-        refreshDirectionPreview = paint;
-        paint();
-    }
-
     function renderImageStrategyPreview(host) {
         var wrap = el("div", "style-preview image-strategy-left-preview");
         var label = el("div", "style-preview-label");
@@ -1765,7 +1963,6 @@
             title.textContent = strategy.name || t("image_strategy_manual");
             var parts = [];
             if (strategy.rendering) parts.push(t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", strategy.rendering));
-            if (strategy.palette) parts.push(t("image_strategy_palette") + ": " + comparisonValueLabel("palette", strategy.palette));
             if (strategy.custom) parts.push(strategy.custom);
             desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
         }
@@ -1818,7 +2015,7 @@
         return out;
     }
 
-    function renderImages(host) {
+    function renderImageDirection(host) {
         var sec = section(8, "sec_images");
         var usageChips = el("div", "chips");
         var usageNote = el("div", "subfield");
@@ -1828,72 +2025,54 @@
         usageNoteInput.value = STATE.image_notes || "";
         usageNoteInput.addEventListener("input", function () { STATE.image_notes = usageNoteInput.value; });
         usageNote.appendChild(usageNoteInput);
-        var sub = el("div", "subfield");
-        sub.appendChild(el("div", "subfield-label", t("image_ai_path")));
+
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
         strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
         var strategyGrid = el("div", "font-grid");
         var strategyCands = imageStrategyRecommendationCandidates();
-        function needsGeneratedImages() {
-            return needsGeneratedImagesForUsage(STATE.image_usage);
-        }
-        function refreshAiControls() {
-            var needsAiPath = needsGeneratedImages();
-            sub.style.display = needsAiPath ? "block" : "none";
-            strategySub.style.display = needsAiPath ? "block" : "none";
-            refreshImageStrategyPreview();
-        }
+
         function markStrategyCard(selectedCard) {
             strategyGrid.querySelectorAll(".font-card").forEach(function (card) {
                 card.classList.toggle("selected", card === selectedCard);
             });
         }
+
         function selectImageStrategy(idx, selectedCard) {
-            var c = strategyCands[idx] || {};
-            STATE.image_strategy = {
-                name: localized(c, "name") || c.name || "",
-                rendering: c.rendering || "",
-                palette: c.palette || "",
-                visual: localized(c, "visual") || "",
-                color: imageStrategyColorSummary(c),
-                mood: localized(c, "mood") || ""
-            };
+            STATE.image_strategy = normalizedImageStrategy(strategyCands[idx]);
             markStrategyCard(selectedCard || strategyGrid.querySelector('[data-strategy-index="' + idx + '"]'));
             refreshImageStrategyPreview();
         }
+
         function imageStrategyCandidateIndex(strategy) {
             if (!strategy) return -1;
             for (var i = 0; i < strategyCands.length; i += 1) {
-                if (strategyCands[i] &&
-                        strategyCands[i].rendering === strategy.rendering &&
-                        strategyCands[i].palette === strategy.palette) {
-                    return i;
-                }
+                if (strategyCands[i] && strategyCands[i].rendering === strategy.rendering) return i;
             }
             return -1;
         }
+
         function isManualImageStrategy(strategy) {
             if (!strategy) return false;
             return Object.prototype.hasOwnProperty.call(strategy, "custom") ||
-                strategy.rendering === "custom" ||
-                strategy.palette === "custom" ||
-                imageStrategyCandidateIndex(strategy) < 0;
+                strategy.rendering === "custom" || imageStrategyCandidateIndex(strategy) < 0;
         }
-        strategyCands.forEach(function (c, idx) {
+
+        strategyCands.forEach(function (candidate, idx) {
             var card = el("div", "font-card");
             card.setAttribute("data-strategy-index", String(idx));
             var top = el("div", "font-card-head");
-            top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
-            var meta = [];
-            if (c.rendering) meta.push(t("image_strategy_rendering") + ":" + comparisonValueLabel("rendering", c.rendering));
-            if (c.palette) meta.push(t("image_strategy_palette") + ":" + comparisonValueLabel("palette", c.palette));
-            if (meta.length) top.appendChild(el("span", "font-card-meta", meta.join("  ·  ")));
+            top.appendChild(el("span", "font-card-name",
+                localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
+            if (candidate.rendering) {
+                top.appendChild(el("span", "font-card-meta",
+                    t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", candidate.rendering)));
+            }
             card.appendChild(top);
+            appendImageStrategyPreviews(card, candidate);
             [
-                ["image_strategy_visual", localized(c, "visual")],
-                ["image_strategy_color", imageStrategyColorSummary(c)],
-                ["image_strategy_mood", localized(c, "mood")]
+                ["image_strategy_visual", localized(candidate, "visual")],
+                ["image_strategy_mood", localized(candidate, "mood")]
             ].forEach(function (row) {
                 if (row[1]) card.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
             });
@@ -1901,24 +2080,21 @@
             strategyGrid.appendChild(card);
         });
         if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
+
         var manualCard = el("div", "font-card image-strategy-manual-card");
         var manualTop = el("div", "font-card-head");
         manualTop.appendChild(el("span", "font-card-name", t("image_strategy_manual")));
         manualTop.appendChild(el("span", "font-card-meta", t("image_strategy_manual_desc")));
         manualCard.appendChild(manualTop);
         var manualControls = el("div", "image-strategy-manual-controls");
-        var manualRendering = firstComparisonId("rendering", (STATE.image_strategy && STATE.image_strategy.rendering) || (strategyCands[0] && strategyCands[0].rendering));
-        var manualPalette = firstComparisonId("palette", (STATE.image_strategy && STATE.image_strategy.palette) || (strategyCands[0] && strategyCands[0].palette));
+        var manualRendering = firstComparisonId("rendering",
+            (STATE.image_strategy && STATE.image_strategy.rendering) ||
+            (strategyCands[0] && strategyCands[0].rendering));
         var renderingWrap = el("label", "image-strategy-select-wrap");
         renderingWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_rendering")));
         var renderingSelect = comparisonSelect("rendering", manualRendering);
         renderingWrap.appendChild(renderingSelect);
-        var paletteWrap = el("label", "image-strategy-select-wrap");
-        paletteWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_palette")));
-        var paletteSelect = comparisonSelect("palette", manualPalette);
-        paletteWrap.appendChild(paletteSelect);
         manualControls.appendChild(renderingWrap);
-        manualControls.appendChild(paletteWrap);
         manualCard.appendChild(manualControls);
         var customWrap = el("label", "image-strategy-custom-wrap");
         customWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_custom_prompt")));
@@ -1928,33 +2104,28 @@
         customInput.value = (STATE.image_strategy && STATE.image_strategy.custom) || "";
         customWrap.appendChild(customInput);
         manualCard.appendChild(customWrap);
+
         function selectManualImageStrategy() {
             var rendering = renderingSelect.value;
-            var palette = paletteSelect.value;
-            var custom = customInput.value || "";
             STATE.image_strategy = {
                 name: t("image_strategy_manual"),
                 rendering: rendering,
-                palette: palette,
-                visual: comparisonLabel(comparisonItem("rendering", rendering), "rendering") || comparisonValueLabel("rendering", rendering),
-                color: t("image_strategy_color_follow"),
+                visual: comparisonLabel(comparisonItem("rendering", rendering), "rendering") ||
+                    comparisonValueLabel("rendering", rendering),
                 mood: t("image_strategy_manual_desc"),
-                custom: custom
+                custom: customInput.value || ""
             };
             markStrategyCard(manualCard);
             refreshImageStrategyPreview();
         }
-        [renderingSelect, paletteSelect].forEach(function (select) {
-            select.addEventListener("click", function (e) { e.stopPropagation(); });
-            select.addEventListener("change", function () {
-                selectManualImageStrategy();
-            });
-        });
-        customInput.addEventListener("click", function (e) { e.stopPropagation(); });
+        renderingSelect.addEventListener("click", function (event) { event.stopPropagation(); });
+        renderingSelect.addEventListener("change", selectManualImageStrategy);
+        customInput.addEventListener("click", function (event) { event.stopPropagation(); });
         customInput.addEventListener("input", selectManualImageStrategy);
         manualCard.addEventListener("click", selectManualImageStrategy);
         strategyGrid.appendChild(manualCard);
         strategySub.appendChild(strategyGrid);
+
         var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
         if (!recommendedIds.length) recommendedIds = [defaultImageUsageId()];
         var usageChipById = {};
@@ -1964,43 +2135,45 @@
             });
             var noImages = STATE.image_usage.indexOf("none") >= 0;
             usageNote.style.display = noImages ? "none" : "block";
-            refreshAiControls();
+            strategySub.style.display = needsGeneratedImagesForUsage(STATE.image_usage) ? "block" : "none";
+            refreshImageStrategyPreview();
         }
         function toggleImageUsage(id) {
-            var cur = STATE.image_usage.slice();
+            var current = STATE.image_usage.slice();
             if (id === "none") {
-                cur = cur.indexOf("none") >= 0 ? [] : ["none"];
+                current = current.indexOf("none") >= 0 ? [] : ["none"];
             } else {
-                cur = cur.filter(function (item) { return item !== "none"; });
-                if (cur.indexOf(id) >= 0) cur = cur.filter(function (item) { return item !== id; });
-                else cur.push(id);
+                current = current.filter(function (item) { return item !== "none"; });
+                if (current.indexOf(id) >= 0) {
+                    current = current.filter(function (item) { return item !== id; });
+                } else {
+                    current.push(id);
+                }
             }
-            STATE.image_usage = cur;
+            STATE.image_usage = current;
             refreshUsageChips();
         }
-        (CAT.image_usage || []).forEach(function (o) {
-            var label = optionLabel(o);
-            var desc = optionDesc(o);
+        (CAT.image_usage || []).forEach(function (option) {
+            var label = optionLabel(option);
+            var desc = optionDesc(option);
             if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
             var chip = el("div", "chip");
             chip.appendChild(el("span", "chip-text", label));
-            if (recommendedIds.indexOf(o.id) >= 0) {
+            if (recommendedIds.indexOf(option.id) >= 0) {
                 chip.classList.add("recommended");
                 chip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
             }
-            chip.addEventListener("click", function () { toggleImageUsage(o.id); });
-            usageChipById[o.id] = chip;
+            chip.addEventListener("click", function () { toggleImageUsage(option.id); });
+            usageChipById[option.id] = chip;
             usageChips.appendChild(chip);
         });
         sec.appendChild(usageChips);
         sec.appendChild(usageNote);
-        enumField(sub, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
-            function () { return STATE.image_ai_path; }, function (v) { STATE.image_ai_path = v; });
-        sec.appendChild(sub);
         sec.appendChild(strategySub);
+
         if (isManualImageStrategy(STATE.image_strategy)) {
-            renderingSelect.value = firstComparisonId("rendering", STATE.image_strategy.rendering || renderingSelect.value);
-            paletteSelect.value = firstComparisonId("palette", STATE.image_strategy.palette || paletteSelect.value);
+            renderingSelect.value = firstComparisonId("rendering",
+                STATE.image_strategy.rendering || renderingSelect.value);
             customInput.value = STATE.image_strategy.custom || "";
             selectManualImageStrategy();
         } else if (STATE.image_strategy && imageStrategyCandidateIndex(STATE.image_strategy) >= 0) {
@@ -2011,6 +2184,28 @@
             selectManualImageStrategy();
         }
         refreshUsageChips();
+        host.appendChild(sec);
+    }
+
+    function renderImageProduction(host) {
+        var sec = section("P", "sec_image_production", t("image_production_hint"));
+        var summary = el("div", "subfield");
+        summary.appendChild(el("div", "subfield-label", t("image_source_summary")));
+        var chips = el("div", "chips locked-summary-chips");
+        (STATE.image_usage || []).forEach(function (id) {
+            var option = findCatalogOption(CAT.image_usage, id);
+            chips.appendChild(el("div", "chip selected locked-summary-chip",
+                option ? optionLabel(option) : humanizeId(id)));
+        });
+        summary.appendChild(chips);
+        sec.appendChild(summary);
+        if (needsGeneratedImagesForUsage(STATE.image_usage)) {
+            var pathField = el("div", "subfield");
+            pathField.appendChild(el("div", "subfield-label", t("image_ai_path")));
+            enumField(pathField, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
+                function () { return STATE.image_ai_path; }, function (value) { STATE.image_ai_path = value; });
+            sec.appendChild(pathField);
+        }
         host.appendChild(sec);
     }
 
@@ -2039,7 +2234,8 @@
     }
 
     // Stage of the staged confirm flow:
-    // 1 = direction anchors, 2 = design system, 3 = images/execution,
+    // 1 = communication contract, 2 = complete deck direction,
+    // 3 = resources + production execution,
     // "all" = legacy single-pass (recommendations.json carried no stage).
     var STAGE = 1;
 
@@ -2065,50 +2261,65 @@
         _secCounter = 0;
         var heading = document.querySelector("#topbar .topbar-titles h1");
         if (heading) heading.textContent = stageTitle(stage);
+        var hint = document.getElementById("topbar-hint");
+        if (hint) hint.textContent = stage === 1 ? t("stage1_current_value_hint") : t("topbar_hint");
         // Detach the previous preview's repaint closures before the sections
         // re-render: color/typography auto-select would otherwise call them and
         // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
-        refreshDirectionPreview = function () {};
         refreshImageStrategyPreview = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
         var previewHost = document.getElementById("topbar-preview");
         if (previewHost) previewHost.innerHTML = "";
         if (stage === 1) {
-            if (previewHost) renderDirectionPreview(previewHost);
-            // Direction anchors — Stage 2 is re-derived from these.
-            // Delivery purpose rides inside renderAudience (§c key info).
+            // Scene and communication intent come first; no design tool is
+            // selected before the contract exists.
+            renderCommunication(host);
+            renderDelivery(host);
             renderCanvas(host);
-            renderAudience(host);
-            renderStyle(host);
         } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
+            if (previewHost) renderImageStrategyPreview(previewHost);
+            // Stage 2 confirms one coherent deck solution. Bundles provide a
+            // coordinated starting point; individual controls remain editable.
+            renderDesignDirections(host);
+            renderStyle(host);
+            renderReadingMode(host);
             renderPages(host);
-            // Group the three sections reflected by the fixed preview strip.
             var styleGroup = el("div", "style-group");
             renderColor(styleGroup);
             renderIcons(styleGroup);
             renderTypography(styleGroup);
             host.appendChild(styleGroup);
+            renderImageDirection(host);
         } else if (stage === 3) {
+            if (previewHost) renderStylePreview(previewHost);
             if (previewHost) renderImageStrategyPreview(previewHost);
-            renderImages(host);
+            // Stage 3 contains production mechanics only. It summarizes the
+            // confirmed image source but does not reopen aesthetic decisions.
+            renderImageProduction(host);
+            renderFormulaPolicy(host);
             renderMode(host);
             renderRefine(host);
         } else {
             // Legacy single-pass: show every section on one page.
             if (previewHost) renderStylePreview(previewHost);
+            renderCommunication(host);
+            renderDelivery(host);
             renderCanvas(host);
-            renderAudience(host);
+            renderDesignDirections(host);
             renderStyle(host);
+            renderReadingMode(host);
             renderPages(host);
             var legacyStyleGroup = el("div", "style-group");
             renderColor(legacyStyleGroup);
             renderIcons(legacyStyleGroup);
             renderTypography(legacyStyleGroup);
             host.appendChild(legacyStyleGroup);
-            renderImages(host);
+            renderImageDirection(host);
+            renderImageProduction(host);
+            renderFormulaPolicy(host);
             renderMode(host);
             renderRefine(host);
         }
@@ -2120,8 +2331,11 @@
     function updateActionBar(stage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = false;
-        // Stage 1/2 advance; Stage 3 / single-pass confirm.
-        btn.textContent = (stage === 1 || stage === 2) ? t("btn_next") : t("btn_confirm");
+        // Stage 1/2 both confirm the current values before advancing. Stage 3
+        // and legacy single-pass submit the final result.
+        if (stage === 1) btn.textContent = t("btn_confirm_contract");
+        else if (stage === 2) btn.textContent = t("btn_confirm_solution");
+        else btn.textContent = t("btn_confirm");
     }
 
     // ---- state init (once) ----------------------------------------------
@@ -2131,13 +2345,34 @@
         return list[0].id;
     }
     function pick(field, catList) {
-        return recOrFirst(field, catList);
+        var recommended = recId(field);
+        if (recommended == null || recommended === "") {
+            recommended = normalizeRecId(field, directionField(field));
+        }
+        return recommended != null && recommended !== "" ? recommended : firstId(catList);
     }
 
     function initStage1State() {
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
+        STATE.communication_intent = (REC.communication_intent && REC.communication_intent.value) || "";
+        STATE.audience_outcome = (REC.audience_outcome && REC.audience_outcome.value) || "";
+        STATE.core_message = (REC.core_message && REC.core_message.value) || "";
+        STATE.delivery_context = (REC.delivery_context && REC.delivery_context.value) || "";
+        STATE.artifact_afterlife = (REC.artifact_afterlife && REC.artifact_afterlife.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
+    }
+
+    // Stage-2 fields are (re-)read from the recommendations. At boot they come from
+    // whatever recommendations.json carried; after a stage-1 confirm enterStage()
+    // calls this again with the re-derived candidates. Stage-1 STATE is preserved
+    // across the single-session transition — this never resets the contract.
+    function initStage2State() {
+        // Reading mode is a design-density tool, not part of the communication
+        // purpose. Keep the legacy delivery_purpose key for JSON compatibility.
+        STATE.delivery_purpose = recId("delivery_purpose") ||
+            directionField("delivery_purpose") || STATE.delivery_purpose || "balanced";
+        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
         if (hasTemplateReuseScope()) {
@@ -2150,36 +2385,29 @@
         } else {
             delete STATE.template_adherence;
         }
-        // Delivery purpose drives the PPT body px baseline; default balanced
-        // (not the catalog-first id) when the Strategist did not recommend one.
-        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
-    }
 
-    // Stage-2 fields are (re-)read from the recommendations. At boot they come from
-    // whatever recommendations.json carried; after a stage-1 confirm enterStage()
-    // calls this again with the re-derived candidates. Stage-1 STATE is preserved
-    // across the single-session transition — this never resets the anchors.
-    function initStage2State() {
-        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
-
-        var cc = (REC.color && REC.color.candidates) || [];
-        var csel = (REC.color && REC.color.selected) || 0;
+        var cc = colorRecommendationCandidates();
+        var csel = (REC.color && REC.color.selected != null) ? REC.color.selected :
+            (designDirectionSpec().selected || 0);
         var c0 = cc[Math.min(csel, Math.max(cc.length - 1, 0))] || {};
-        STATE.color = { name: c0.name || "", palette: Object.assign({}, normPalette(c0)) };
+        STATE.color = {
+            name: localized(c0, "name") || c0.name || "",
+            palette: Object.assign({}, normPalette(c0))
+        };
 
         STATE.icons = pick("icons", CAT.icons);
 
-        var tc = (REC.typography && REC.typography.candidates) || [];
-        var tsel = (REC.typography && REC.typography.selected) || 0;
+        var tc = typographyRecommendationCandidates();
+        var tsel = (REC.typography && REC.typography.selected != null) ? REC.typography.selected :
+            (designDirectionSpec().selected || 0);
         var t0 = normTypography(tc[Math.min(tsel, Math.max(tc.length - 1, 0))] || {});
         STATE.typography = {
-            name: t0.name || "",
+            name: localized(t0, "name") || t0.name || "",
             heading: t0.heading || {},
             body: t0.body || {},
             body_size: t0.body_size || typographyBodySize(REC.typography),
             sizes: Object.assign({}, t0.sizes || {})
         };
-        STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
         // Guarantee a body baseline even when a candidate omitted body_size, on
         // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
@@ -2187,15 +2415,24 @@
         if (STATE.typography && !STATE.typography.body_size) {
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
-    }
-
-    function initStage3State() {
-        var rawImageUsage = recValue("image_usage");
+        var rawImageUsage = recValue("image_usage") || directionField("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {
             STATE.image_usage = [defaultImageUsageId()];
         }
         STATE.image_notes = imageUsageNotesRecommendation(rawImageUsage);
+        var strategyCandidates = imageStrategyRecommendationCandidates();
+        if (strategyCandidates.length) {
+            STATE.image_strategy = normalizedImageStrategy(
+                strategyCandidates[imageStrategySelectedIndex()] || strategyCandidates[0]
+            );
+        } else if (directionField("image_strategy")) {
+            STATE.image_strategy = normalizedImageStrategy(directionField("image_strategy"));
+        }
+    }
+
+    function initStage3State() {
+        STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
@@ -2217,44 +2454,46 @@
     }
 
     // ---- staged submit + re-derive transitions --------------------------
-    function stage1Payload() {
-        var payload = {
-            stage: "stage1",
+    function communicationPayload() {
+        return {
             canvas: STATE.canvas,
             audience: STATE.audience,
-            content_divergence: STATE.content_divergence,
-            mode: STATE.mode,
-            visual_style: STATE.visual_style
+            communication_intent: STATE.communication_intent,
+            audience_outcome: STATE.audience_outcome,
+            core_message: STATE.core_message,
+            delivery_context: STATE.delivery_context,
+            artifact_afterlife: STATE.artifact_afterlife,
+            content_divergence: STATE.content_divergence
         };
-        if (STATE.template_reuse_scope) payload.template_reuse_scope = STATE.template_reuse_scope;
-        if (STATE.template_reuse_scope !== "style" && STATE.template_adherence) {
-            payload.template_adherence = STATE.template_adherence;
-        }
-        // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
-        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+    }
+
+    function stage1Payload() {
+        var payload = communicationPayload();
+        payload.stage = "stage1";
         return payload;
     }
 
     function stage2Payload() {
-        var payload = {
-            stage: "stage2",
-            canvas: STATE.canvas,
-            audience: STATE.audience,
-            content_divergence: STATE.content_divergence,
-            mode: STATE.mode,
-            visual_style: STATE.visual_style,
-            page_count: STATE.page_count,
-            color: STATE.color,
-            icons: STATE.icons,
-            typography: STATE.typography,
-            formula_policy: STATE.formula_policy
-        };
+        var payload = communicationPayload();
+        payload.stage = "stage2";
+        payload.mode = STATE.mode;
+        payload.visual_style = STATE.visual_style;
+        payload.page_count = STATE.page_count;
+        // Reading mode keeps the legacy delivery_purpose key for compatibility.
+        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
         if (STATE.template_reuse_scope) payload.template_reuse_scope = STATE.template_reuse_scope;
         if (STATE.template_reuse_scope !== "style" && STATE.template_adherence) {
             payload.template_adherence = STATE.template_adherence;
         }
-        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+        payload.color = JSON.parse(JSON.stringify(STATE.color || {}));
+        payload.icons = STATE.icons;
+        payload.typography = JSON.parse(JSON.stringify(STATE.typography || {}));
         normalizeTypographyForSubmit(payload);
+        payload.image_usage = selectedImageUsageIds(STATE.image_usage);
+        if (String(STATE.image_notes || "").trim()) payload.image_notes = STATE.image_notes;
+        if (needsGeneratedImagesForUsage(payload.image_usage)) {
+            payload.image_strategy = normalizedImageStrategy(STATE.image_strategy);
+        }
         return payload;
     }
 
@@ -2275,9 +2514,28 @@
         });
     }
 
-    function submitStage1() { submitStage(stage1Payload(), 2); }
+    function imageUsageValid(value) {
+        var ids = selectedImageUsageIds(value);
+        if (!ids.length) {
+            document.getElementById("confirm-status").textContent = t("image_usage_required");
+            return false;
+        }
+        if (ids.indexOf("none") >= 0 && ids.length > 1) {
+            document.getElementById("confirm-status").textContent = t("image_usage_none_exclusive");
+            return false;
+        }
+        return true;
+    }
 
-    function submitStage2() { submitStage(stage2Payload(), 3); }
+    function submitStage1() {
+        submitStage(stage1Payload(), 2);
+    }
+
+    function submitStage2() {
+        var payload = stage2Payload();
+        if (!imageUsageValid(payload.image_usage)) return;
+        submitStage(payload, 3);
+    }
 
     function showDeriving() {
         document.getElementById("sections").style.display = "none";
@@ -2332,18 +2590,13 @@
         payload.stage = "final";
         if (payload.template_reuse_scope === "style") delete payload.template_adherence;
         payload.image_usage = selectedImageUsageIds(payload.image_usage);
-        if (!payload.image_usage.length) {
-            document.getElementById("confirm-status").textContent = t("image_usage_required");
-            return;
-        }
-        if (payload.image_usage.indexOf("none") >= 0 && payload.image_usage.length > 1) {
-            document.getElementById("confirm-status").textContent = t("image_usage_none_exclusive");
-            return;
-        }
+        if (!imageUsageValid(payload.image_usage)) return;
         if (!String(payload.image_notes || "").trim()) delete payload.image_notes;
         if (!needsGeneratedImagesForUsage(payload.image_usage)) {
             delete payload.image_ai_path;
             delete payload.image_strategy;
+        } else {
+            payload.image_strategy = normalizedImageStrategy(payload.image_strategy);
         }
         btn.disabled = true;
         fetch("/api/confirm", {
