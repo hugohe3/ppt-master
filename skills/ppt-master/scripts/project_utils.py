@@ -85,6 +85,21 @@ CANVAS_FORMAT_ALIASES = {
     '小红书': 'xiaohongshu',
 }
 
+_DESIGN_SPEC_NAMES = (
+    'design_spec.md',
+    '设计规范与内容大纲.md',
+    'design_specification.md',
+    '设计规范.md',
+)
+_COMMUNICATION_TRACE_KEYS = (
+    'audience',
+    'communication_intent',
+    'audience_outcome',
+    'core_message',
+    'delivery_context',
+    'artifact_afterlife',
+)
+
 
 def normalize_canvas_format(format_key: str) -> str:
     """Normalize canvas format key name (supports common aliases)."""
@@ -193,8 +208,7 @@ def get_project_info(project_path: str) -> Dict:
     info['has_readme'] = (project_path / 'README.md').exists()
 
     # Check design specification files (current standard + legacy names)
-    spec_files = ['design_spec.md', '设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
-    for spec_file in spec_files:
+    for spec_file in _DESIGN_SPEC_NAMES:
         if (project_path / spec_file).exists():
             info['has_spec'] = True
             info['spec_file'] = spec_file
@@ -220,6 +234,125 @@ def get_project_info(project_path: str) -> Dict:
         info['canvas_info'] = CANVAS_FORMATS[info['format']]
 
     return info
+
+
+def validate_communication_trace(project_path: str | Path) -> List[str]:
+    """Validate the structural communication trace across both spec files."""
+    root = Path(project_path)
+    design_spec = next(
+        (root / name for name in _DESIGN_SPEC_NAMES if (root / name).is_file()),
+        None,
+    )
+    if design_spec is None:
+        return []
+
+    errors: List[str] = []
+    lock_path = root / 'spec_lock.md'
+    if not lock_path.is_file():
+        return [
+            'Communication trace: missing spec_lock.md with a '
+            '## communication section.',
+        ]
+
+    try:
+        lock_text = lock_path.read_text(encoding='utf-8-sig')
+        design_text = design_spec.read_text(encoding='utf-8-sig')
+    except OSError as exc:
+        return [f'Communication trace: unable to read specification files: {exc}']
+
+    communication_match = re.search(
+        r'^##[ \t]+communication[ \t]*$',
+        lock_text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if communication_match is None:
+        errors.append(
+            'Communication trace: spec_lock.md must contain a '
+            '## communication section.',
+        )
+    else:
+        next_section = re.search(
+            r'^##[ \t]+',
+            lock_text[communication_match.end():],
+            flags=re.MULTILINE,
+        )
+        section_end = (
+            communication_match.end() + next_section.start()
+            if next_section
+            else len(lock_text)
+        )
+        communication_block = lock_text[
+            communication_match.end():section_end
+        ]
+        missing_keys = [
+            key
+            for key in _COMMUNICATION_TRACE_KEYS
+            if re.search(
+                rf'^-[ \t]+{re.escape(key)}[ \t]*:',
+                communication_block,
+                flags=re.MULTILINE,
+            ) is None
+        ]
+        if missing_keys:
+            errors.append(
+                'Communication trace: spec_lock.md ## communication is '
+                f'missing key line(s): {", ".join(missing_keys)}.',
+            )
+
+    outline_match = re.search(
+        r'^##[ \t]+IX\.[ \t]+Content Outline\b.*$',
+        design_text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if outline_match is None:
+        errors.append(
+            'Communication trace: design_spec.md must contain '
+            '## IX. Content Outline.',
+        )
+        return errors
+    next_section = re.search(
+        r'^##[ \t]+',
+        design_text[outline_match.end():],
+        flags=re.MULTILINE,
+    )
+    outline_end = (
+        outline_match.end() + next_section.start()
+        if next_section
+        else len(design_text)
+    )
+    outline = design_text[outline_match.end():outline_end]
+    slide_matches = list(re.finditer(
+        r'^#{3,6}[ \t]+Slide[ \t]+([0-9]+|NN)\b.*$',
+        outline,
+        flags=re.IGNORECASE | re.MULTILINE,
+    ))
+    if not slide_matches:
+        errors.append(
+            'Communication trace: design_spec.md §IX contains no Slide blocks.',
+        )
+        return errors
+
+    missing_moves = []
+    for index, slide_match in enumerate(slide_matches):
+        block_end = (
+            slide_matches[index + 1].start()
+            if index + 1 < len(slide_matches)
+            else len(outline)
+        )
+        slide_block = outline[slide_match.end():block_end]
+        if re.search(
+            r'^[ \t]*-[ \t]+(?:\*\*)?Audience move(?:\*\*)?[ \t]*:',
+            slide_block,
+            flags=re.IGNORECASE | re.MULTILINE,
+        ) is None:
+            missing_moves.append(slide_match.group(1))
+    if missing_moves:
+        errors.append(
+            'Communication trace: every design_spec.md §IX Slide block must '
+            'contain an Audience move line; missing on Slide '
+            f'{", ".join(missing_moves)}.',
+        )
+    return errors
 
 
 def validate_project_structure(project_path: str, verbose: bool = False) -> Tuple[bool, List[str], List[str]]:
@@ -266,13 +399,14 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
         errors.append(msg)
 
     # Check design specification file
-    spec_files = ['design_spec.md', '设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
-    has_spec = any((project_path / f).exists() for f in spec_files)
+    has_spec = any((project_path / name).exists() for name in _DESIGN_SPEC_NAMES)
     if not has_spec:
         msg = "Missing design specification file (suggested filename: design_spec.md)"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
         warnings.append(msg)
+    else:
+        errors.extend(validate_communication_trace(project_path))
 
     # Check svg_output directory
     svg_output = project_path / 'svg_output'
