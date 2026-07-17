@@ -8,7 +8,11 @@ There's no shortage of AI presentation tools. This page explains what PPT Master
 
 I'm [Hugo He](https://www.hehugo.com/), an investment & finance professional who builds presentations every day. PPT Master is an open-source tool I've spent extensive time refining — because I'm its most demanding user.
 
-This page is the user-facing comparison. The project's long-term positioning, product promises, and capability boundaries live in [Project Positioning](./project-positioning.md).
+This page is the user-facing comparison. Its assumptions about what a presentation is, the jobs it serves, and the layers that determine quality come from [What Is a PPT?](./what-is-ppt.md). The project's long-term positioning, product promises, and capability boundaries live in [Project Positioning](./project-positioning.md).
+
+A good presentation's cost cannot be measured by slide-drawing time alone. It requires several coupled kinds of work: defining the audience and intended outcome, selecting and verifying evidence, shaping the argument and narrative, designing a coherent visual system, constructing an editable native PowerPoint document, and preparing the deck for delivery, review, and reuse. These are not independent passes. Change the message or delivery context, and the outline, slide design, native objects, notes, and validation may all need to change. Much of the cost lies in coordination and rework, not in drawing one more slide.
+
+That is the gap this project addresses. Compressing only one layer — drafting text, applying a theme, or rendering attractive pages — saves time only within that layer. PPT Master is designed to connect the reasoning, visual, and native-delivery layers, so time saved at one stage is not simply spent rebuilding the result at the next.
 
 ## 1. Native Depth — Command of PowerPoint's Feature Set
 
@@ -86,6 +90,8 @@ Feed it almost anything: PDF, DOCX, PPTX, EPUB, HTML, LaTeX, RST, web URLs, WeCh
 ### Multi-Format Output
 
 Output is not limited to standard 16:9 and 4:3 slide ratios. Xiaohongshu 3:4, WeChat/Instagram 1:1, vertical Story 9:16, A4 print — same pipeline, just specify the format.
+
+PowerPoint remains the project's core presentation artifact. When the same pipeline is used for social cards or print pages, those are adjacent canvas outputs — not a redefinition of the project's presentation focus.
 
 ---
 

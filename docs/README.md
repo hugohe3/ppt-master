@@ -34,6 +34,7 @@ User-facing documentation lives in this directory: English files are the canonic
 
 | Document | Description |
 |---|---|
+| [What Is a PPT?](./what-is-ppt.md) | The presentation medium, user jobs, delivery contexts, native object model, templates, and quality layers |
 | [Why PPT Master](./why-ppt-master.md) | Why choose it, and where it's not the right fit |
 | [Project Positioning](./project-positioning.md) | Long-term positioning, product promises, capability boundaries, and admission criteria |
 | [Roadmap](./roadmap.md) | Delivered capabilities, current priorities, and explicitly deferred directions |
