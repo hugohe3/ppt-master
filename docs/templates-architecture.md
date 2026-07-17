@@ -15,14 +15,14 @@
 | Kind | Library workspace root | What it writes | What it does NOT write | Originating workflow |
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-template/create-brand.md` |
-| **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template/create-layout.md` |
-| **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template/create-deck.md` (default child) |
+| **Layout** | `templates/layouts/<id>/` | Brand-neutral structure segment only: canvas / page structure / semantic text roles / page types / SVG roster | No brand identity and no recurring communication application | `workflows/create-template/create-layout.md` |
+| **Deck** | `templates/decks/<id>/` | A recurring presentation family: application contract + integrated identity + structure | — | `workflows/create-template/create-deck.md` |
 
 Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror materializes a new workspace from validated authoring IR: a native PPTX contributes only supported facts still present in its package, while a current-contract SVG template contributes only its declared contract. It never reconstructs missing topology from a legacy SVG; fixed-layer source groups that are valid inputs are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. A flat directory with `design_spec.md` at its root remains a supported compatibility shape only when its SVGs satisfy the current contract. Semantic-legacy packages must be replaced by a newly created template workspace; they are never upgraded in place.
 
-The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
+The three are **parallel reusable-rule bundles**, not PowerPoint package-object types. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
-The fused project-level `design_spec.md` must also retain an accurate `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. The Strategist confirmation page uses this field to show `adaptive / strict` only for Deck/Layout bundles that actually own page structure.
+The fused project-level `design_spec.md` retains the existing routing `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. For a project-local Brand + Layout composition, this label means “both capabilities are installed”; it does not promote that composition into a reusable library Deck or invent an application contract. The current project's Stage-1 communication contract supplies the application context. The Strategist confirmation page uses `kind` to show `adaptive / strict` only for bundles that actually own page structure.
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -45,6 +45,26 @@ native_structure_mode: structured
 ...
 ---
 ```
+
+### Native PowerPoint objects are compilation targets
+
+Project template kinds do not map one-to-one to PresentationML objects:
+
+| Project contract | Native projection |
+|---|---|
+| **Brand** | Theme colors/fonts/effects plus logo and other fixed identity-asset rules |
+| **Layout** | Master/Layout/Placeholder topology, reusable geometry, semantic text roles, and spatial slot behavior |
+| **Deck** | The Brand and Layout projections plus purpose-specific starting content and usage rules |
+
+A Slide Master may contain both structural geometry and brand visuals. Source
+ownership remains separated—Layout owns topology, placement, semantic text
+roles, and spatial behavior; Brand owns identity values and assets. Under
+downstream `layout` scope, export resolves final placeholder formatting from
+those rules plus the confirmed reading mode/type scale; `mirror` preserves
+literal source formatting and text topology. Export then compiles the
+applicable rules into the same native Master/Layout graph. Theme is therefore
+an implementation projection of resolved identity—whether supplied by Brand,
+Deck, or the current project—not a fourth template kind.
 
 ### Output scope is separate from kind
 
@@ -89,13 +109,29 @@ To make multi-path fusion override cleanly, every field belongs to a named segme
 |---|---|---|
 | **Identity** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
 | **Structure** | Portable canvas/page-type metadata, structure-owned Signature rules, SVG Page Roster, and the SVG Master/Layout/slot contract | layout |
-| **Middle** | Template Overview (use cases / design intent / page rhythm narrative) | deck only; brand / layout don't write this |
+| **Application** | Template Overview: recurring situations, audiences/outcomes, delivery assumptions, stable narrative/page roles, and content reuse policy | deck only; brand / layout don't write this |
 
 ### Why Deck is its own kind
 
-A deck is the **full identity + structure reference** derived from an existing PPT or confirmed design direction — its geometry, color palette, and typefaces form one coherent system. Its value is "validated cohesion", which a free layout + brand combo can't always reach.
+A Deck encodes a **recurring presentation family**, not merely a pre-combined
+Brand and Layout. It states what communication situations the template serves,
+which audience outcomes it supports, which narrative/page roles remain stable,
+and how starting content must be retained, replaced, or omitted. Identity and
+structure are integrated around that application contract.
 
-Its construction depends on replication mode. `standard` / `fidelity` author a new system from visual reference; mirror maps validated source identities and parentage one-to-one into a new workspace. Once packaged, either form is a complete reference solution that can be overridden by an explicitly supplied brand or layout.
+`standard` / `fidelity` author a new complete system from confirmed evidence;
+mirror maps validated source identities and parentage one-to-one into a new
+workspace. Mirror preserves source facts but does not prove that the source is
+a reusable Deck: creation still has to identify the stable application rules.
+A source that yields only identity becomes Brand; a brand-neutral reusable
+structure becomes Layout; a branded structural system or scenario-bearing
+content grammar becomes Deck.
+
+This also constrains creation mode: Layout mirror is valid only when the source
+contract is already brand-neutral and application-neutral. Removing brand
+paint, fonts, logos, fixed identity objects, or reusable application rules is
+authorship, so a source outside that boundary must either use `standard` /
+`fidelity` to create a new Layout or retain those facts as Deck mirror.
 
 ---
 
@@ -154,18 +190,23 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 ```
 
-**Body sections** (personality-only structure segment)
+**Body sections** (package-specific structure segment)
 
 | § | Title | Required fields |
 |---|---|---|
-| IV | Signature Design Elements | Layout-specific grid, zones, image behavior, density rhythm, neutral framing, and slot conventions |
+| IV | Signature Design Elements | Layout-specific grid, zones, image behavior, density rhythm, neutral framing, semantic text roles, alignment/wrapping/capacity behavior, and slot conventions |
 | V | Page Roster | Every SVG file, Layout key, picker name, intended content, and slot behavior |
 
 `Placeholder Overrides` is conditional and appears only when the layout changes
 the canonical authoring vocabulary. The frontmatter `summary` carries concise
 selection context. Layouts omit the deck-only Template Overview.
 
-**Forbidden**: Color Scheme, Typography, brand logo, brand voice & tone, Icon Style, or official-truth color (`provenance: fact`). Neutral SVG paint is allowed only as review scaffolding; it is not an identity segment. Color and typography are decided in the Strategist confirmation stage or supplied by another template kind.
+`category: scenario` is discovery fit only. A Layout may be optimized for a
+content shape or delivery setting, but it must not prescribe the communication
+objective, audience outcome, required narrative sequence, fixed boilerplate,
+or example content. If those rules are reusable, create a Deck instead.
+
+**Forbidden**: Color Scheme, brand typeface/weight identity, final resolved type scale, brand logo, brand voice & tone, Icon Style, or official-truth color (`provenance: fact`). A Layout may retain semantic text roles, alignment, wrapping, and capacity because those are structural; neutral SVG paint/font/size values are review scaffolding only. Final color and typography are resolved in the Strategist confirmation stage or supplied by another template kind.
 
 ### Deck schema
 
@@ -177,7 +218,7 @@ deck_id: <slug>
 kind: deck
 category: brand | general | scenario | government | special
 native_structure_mode: structured
-summary: <one-line use cases>
+summary: <one-line recurring presentation family and intended outcome>
 keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ...>
 canvas_width: <pixels>
@@ -192,11 +233,11 @@ primary_color: "<HEX>"
 ---
 ```
 
-**Body sections** (personality-only complete reference)
+**Body sections** (application + integrated identity/structure)
 
 | § | Title | Segment |
 |---|---|---|
-| I | Template Overview | Middle |
+| I | Template Overview | Application |
 | II | Color Scheme | Identity |
 | III | Typography | Identity; omit only when the shared default stack is used |
 | IV | Signature Design Elements | Template-specific identity motifs and reusable structural grammar |
@@ -204,12 +245,19 @@ primary_color: "<HEX>"
 | VI | Assets | Identity/supporting assets; omit when none |
 | VII | Placeholder Overrides | Structure vocabulary; omit when none |
 
+Template Overview must identify the recurring presentation family, intended
+audiences and outcomes, delivery/reading assumptions, stable narrative or page
+roles, and the reuse boundary between fixed, replaceable, optional, and
+example-only content. Page Roster must state the content policy of each
+prototype in addition to its Master/Layout/slot contract. These policies guide
+selection; they do not force every generated presentation to retain the same
+page count or order.
+
 Portable canvas fields, `page_count`, and the explicit SVG roster carry the
 rest of the structure contract. General spacing, font-ratio, SVG, and
 placeholder rules remain centralized and are not copied into each deck spec.
-Deck still owns the complete identity + structure reference; omitted
-conditional sections mean “shared default or no asset”, not “another kind owns
-this segment”.
+Omitted conditional sections mean “shared default or no asset”, not “another
+kind owns this segment”.
 
 ---
 
@@ -254,7 +302,7 @@ These indexes cover library scope only. A project-root workspace is intentionall
 ```json
 {
   "<deck_id>": {
-    "summary": "China Telecom government-enterprise briefing deck",
+    "summary": "China Telecom government-enterprise briefing for explaining a plan and aligning next actions",
     "canvas_format": "ppt169",
     "page_count": 5,
     "primary_color": "#XXXXXX"
@@ -263,7 +311,8 @@ These indexes cover library scope only. A project-root workspace is intentionall
 ```
 
 - Includes `primary_color` (decks carry identity) + structural metadata
-- Does not expand `page_types` — decks share the same page-type set as layouts; redundant to record
+- `summary` leads with the recurring presentation family and outcome, not merely visual tone
+- The detailed application contract stays in Template Overview; this compact index does not duplicate it
 
 ---
 
@@ -279,10 +328,17 @@ When the user supplies a set of paths in their initial message, Step 3 fuses the
 | brand only | Copy brand wholesale; structure stays free design |
 | layout only | Copy layout wholesale; identity stays free design (Strategist fields e/f/g decide) |
 | deck only | Copy deck wholesale |
-| brand + layout | brand provides identity, layout provides structure (follows existing SKILL.md fusion table) |
-| brand + deck | brand overrides deck's identity segment at segment level; structure + middle come from deck |
-| layout + deck | layout overrides deck's structure segment at segment level; identity + middle come from deck |
-| brand + layout + deck | brand overrides identity + layout overrides structure + deck provides middle; deck's original identity/structure segments are discarded wholesale |
+| brand + layout | brand provides identity, layout provides structure; this is a project-local assembled input, not a reusable Deck application contract |
+| brand + deck | brand overrides deck's identity segment at segment level; structure + application come from deck |
+| layout + deck | layout may override deck structure only when it can express the Deck's required narrative/content roles; identity + application come from deck |
+| brand + layout + deck | brand overrides identity + a compatible layout overrides structure + deck provides application; deck's original identity/structure segments are discarded wholesale |
+
+Before applying a Layout override to a Deck, compare the Deck application
+contract against the Layout's page roles, slot types, and capacity. If a
+required role cannot be represented, surface a fusion conflict: keep the Deck
+structure, choose another Layout, or explicitly revise the application
+contract. Never retain an application promise that the selected structure
+cannot satisfy.
 
 ### Whole-segment replacement (default granularity)
 
@@ -344,7 +400,7 @@ Bitmaps share the workspace `images/` pool and template SVGs reference them thro
 
 ### Strategist confirmation stage behavior per kind
 
-Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract. Brand supplies identity constraints while structure stays free; Layout and Deck expose structural capabilities, but Stage 2 still decides whether the project should consume them as `mirror`, `layout`, or `style` where legal. A mirror-authored workspace therefore enables literal reuse but never selects it automatically. Stage 3 realizes the confirmed direction with the identity and structure actually retained by that scope. The detailed rules live in `references/strategist.md` and `spec_lock_reference.md`.
+Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template. Brand supplies identity constraints while structure stays free; Layout exposes structural capability; Deck also contributes an application contract. Stage 2 derivation compares that stored application with the confirmed current contract rather than silently treating it as truth, then decides whether a compatible Deck/Layout should be consumed as `mirror`, `layout`, or `style` where legal. A mirror-authored workspace therefore enables literal reuse but never selects it automatically. Stage 3 realizes the confirmed direction with the identity, structure, and application rules actually retained by that scope. The detailed rules live in `references/strategist.md` and `spec_lock_reference.md`.
 
 ---
 
@@ -355,7 +411,7 @@ Installing a template does not narrow away the communication question. Stage 1 a
 | `workflows/create-template.md` | Fixed Create Template entry and shared scope, confirmation, preflight, structured-authoring, registration, completion, and handoff contract; dispatches exactly one child workflow |
 | `workflows/create-template/create-brand.md` | Identity-only Brand workspace; no SVG roster and empty optional directories are omitted |
 | `workflows/create-template/create-layout.md` | Brand-neutral structural Layout workspace with a structured SVG roster |
-| `workflows/create-template/create-deck.md` | Integrated identity-and-structure Deck workspace with a structured SVG roster; selected by default when both segments are requested |
+| `workflows/create-template/create-deck.md` | Recurring application contract with integrated identity/structure and a structured SVG roster; selected when the reusable artifact is branded or scenario-bearing, not merely because the source is a complete PPTX |
 
 In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may move between scopes without reshaping; add or remove only the library index registration.
 
@@ -367,3 +423,5 @@ In library scope, the frontmatter `kind` field determines which workspace parent
 - **No batch conflict resolution for three or more of the same kind** — ask the user to narrow it down in chat first
 - **No bilingual name mapping table** — templates are named in their brand / scenario's native language (Chinese templates use Chinese names; English templates use snake_case); no forced unification
 - **No output-scope structure fork or CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes declare `native_structure_mode: structured`
+- **No fourth Theme kind** — Theme projects resolved identity from Brand, Deck, or the current project; it is not a separate user-facing reusable contract
+- **No automatic promotion of Brand + Layout into a reusable library Deck** — the composition may route as a project-local deck-capability bundle, while a reusable Deck still requires an application contract

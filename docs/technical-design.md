@@ -310,17 +310,25 @@ All current Brand/Layout/Deck packages use one workspace routing contract. Brand
 
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
 
-`standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
+`standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Layout mirror is legal only when that preserved source is already brand-neutral and application-neutral; otherwise author a new Layout or retain the facts as Deck. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
 
 The three template kinds own different segments of the design contract:
 
 | Kind | Owns | Typical contents | Effect on Strategist |
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
-| `layout` | structure | canvas, page structure, page types, SVG roster | locks structure; identity is confirmed in the Strategist confirmation stage |
-| `deck` | identity + structure + template overview | complete identity + structure package | locks the full template grammar, with only content-specific choices left |
+| `layout` | brand-neutral structure | canvas, page structure, semantic text roles/spatial behavior, page types, SVG roster | exposes structure; identity and communication application remain downstream decisions |
+| `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, content policy, identity, and SVG roster | contributes an application contract that Stage 2 derivation compares with the independently confirmed Stage-1 contract before selecting reuse scope |
 
-When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the middle/template-overview segment. Same-kind conflicts are surfaced as conflicts rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
+Theme, Slide Master, Slide Layout, and Placeholder are compiled PowerPoint
+objects, not additional template kinds. Layout owns topology, placement,
+semantic text roles, and spatial behavior; Brand owns identity values and
+assets. Under `template_reuse_scope: layout`, export resolves final placeholder
+formatting from those rules plus the confirmed reading mode/type scale;
+`mirror` preserves literal source formatting and text topology. Export may
+place both rule sets into the same native Master/Layout graph.
+
+When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the application segment. A Layout may replace Deck structure only when its page roles and slots can express the Deck's required narrative/content roles; otherwise fusion surfaces a conflict. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
 
 **Raw PPTX templates are outside Step 3.** A `.pptx` may be source material, and PPTX intake can extract its identity and geometry. But a raw PPTX template plus a request to generate a new PPTX routes to `template-fill`, because the user's expectation is native slide cloning and text/table/chart replacement. The SVG route can consume only a reusable template workspace; to use a PPTX's design language in the SVG route, the PPTX must first pass through `create-template`, then the resulting workspace-root path can be supplied to Step 3.
 
@@ -589,7 +597,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 | Class | Runbooks | Owning route |
 |---|---|---|
 | Generation profile | `beautify-pptx` | Generate PPTX with wording, page count, and page order frozen 1:1 |
-| Template child workflows | `create-brand`, `create-layout`, `create-deck` | Create Template dispatches exactly one based on identity-only, structure-only, or integrated intent |
+| Template child workflows | `create-brand`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
 | Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |
 | Governance | `failure-recovery` | Global stop/continue policy for all four routes; concrete recovery matrix and resume pointers for Generate PPTX |

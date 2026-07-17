@@ -15,14 +15,14 @@
 | 分类 | 全局库工作区根目录 | 写什么 | 不写什么 | 出处工作流 |
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | 仅身份段：color / typography / logo / voice / icon style | 不写 canvas、page structure、SVG roster | `workflows/create-template/create-brand.md` |
-| **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template/create-layout.md` |
-| **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template/create-deck.md`（默认子工作流）|
+| **Layout** | `templates/layouts/<id>/` | 仅品牌中立的结构段：canvas / page structure / 语义文字角色 / page types / SVG roster | 不写品牌身份，也不拥有可重复沟通场景 | `workflows/create-template/create-layout.md` |
+| **Deck** | `templates/decks/<id>/` | 一类可重复演示：应用契约 + 一体化身份与结构 | —— | `workflows/create-template/create-deck.md` |
 
 每张新建的 Layout/Deck SVG 都是完整预览，并在根节点声明 Master/Layout key 与选择器名称；固定 Master/Layout 视觉是直接原子元素；语义槽位是顶层 group。普通槽位必须有正数设计区域 bounds 和恰好一个兼容 carrier；复合 `object` 区域走显式 proxy 绑定，零槽 Layout 也合法。这些专用标记具有最高优先级；最小 `data-pptx-role` 只补充它们无法表达的页面框架行为。`standard` / `fidelity` 重新创作 SVG 和新的结构，不保留、也不蒸馏来源拓扑。Mirror 从已验证的 authoring IR 物化一个新工作区：原生 PPTX 只贡献包内仍然存在且受支持的事实；满足当前合同的 SVG 模板只贡献其已声明合同。它不会从旧 SVG 重建缺失拓扑；作为有效输入的固定结构层 group 只允许机械展开成直接原子。下游 `strict` 保持所选声明合同，`adaptive` 保持 Master 并可在创作时建立新 Layout 身份；两者都使用 `pptx_structure.mode: structured`。根目录平铺 `design_spec.md` 的目录只有在 SVG 已满足当前合同时才兼容；带旧结构语义的包必须替换为新建模板工作区，不能原地升级。
 
-三者是**三种并列的 reference bundle**。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
+三者是**三种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
 
-多路径合成后的项目级 `design_spec.md` 也必须保留准确的 `kind`：同时具备身份段和结构段时为 `deck`，只有结构段时为 `layout`，只有身份段时为 `brand`。Strategist 确认页据此只对真正包含页面结构的 Deck/Layout 显示 `adaptive / strict`。
+多路径合成后的项目级 `design_spec.md` 沿用现有路由 `kind`：同时具备身份段和结构段时为 `deck`，只有结构段时为 `layout`，只有身份段时为 `brand`。对于项目内临时组合的 Brand + Layout，这个标签只表示“已安装两种能力”，不会把组合自动提升为可注册的 Deck，也不会凭空生成应用契约；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 确认页据此只对真正包含页面结构的 bundle 显示 `adaptive / strict`。
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -45,6 +45,18 @@ native_structure_mode: structured
 ...
 ---
 ```
+
+### PowerPoint 原生对象是编译目标
+
+项目模板 kind 与 PresentationML 对象不是一一对应关系：
+
+| 项目合同 | 原生投影 |
+|---|---|
+| **Brand** | Theme 的颜色、字体与效果，以及 Logo 等固定身份资产规则 |
+| **Layout** | Master/Layout/Placeholder 拓扑、可复用几何、语义文字角色与槽位空间行为 |
+| **Deck** | Brand 与 Layout 的投影，再加面向用途的起始内容和使用规则 |
+
+一个 Slide Master 可以同时包含结构几何和品牌视觉。来源规则仍分开归属：Layout 决定拓扑、位置、语义文字角色与空间行为，Brand 决定身份值与资产。下游选择 `layout` 时，导出结合已确认的阅读模式和字号体系解析最终 placeholder 格式；选择 `mirror` 时则保留来源的字面格式与文字拓扑。最后再把适用规则编译进同一套 Master/Layout 图谱。因此 Theme 是已解析身份的实现投影——身份可以来自 Brand、Deck 或当前项目——而不是第四种模板 kind。
 
 ### 输出范围与 kind 相互独立
 
@@ -87,13 +99,15 @@ native_structure_mode: structured
 |---|---|---|
 | **身份段** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand 覆盖 |
 | **结构段** | 可移植 canvas/page-type 元数据、结构归属的 Signature 规则、SVG Page Roster，以及 SVG Master/Layout/slot 合同 | layout 覆盖 |
-| **中间段** | Template Overview（use cases / design intent / page rhythm 等叙事字段）| deck 独有；brand / layout 不写 |
+| **应用段** | Template Overview：重复场景、受众与结果、交付假设、稳定叙事/页面角色及内容复用政策 | deck 独有；brand / layout 不写 |
 
 ### 为什么需要 Deck 这一类
 
-Deck 是从一份现存 PPT 或明确设计方向形成的完整身份与结构参考——配色、字体、视觉节奏与页面类型共同组成一个整体。它的价值是「已验证的整体感」，是 layout + brand 自由拼合未必能达到的成品。
+Deck 编码的是**一类可重复演示**，而不只是预先组合好的 Brand 和 Layout。它要说明模板服务哪些沟通场景、支持哪些受众结果、哪些叙事或页面角色会稳定重复，以及起始内容应保留、替换还是删除。身份与结构围绕这份应用契约形成一个整体。
 
-它的构建方式由 replication mode 决定：`standard` / `fidelity` 根据视觉参考创作新系统；mirror 把已验证的来源身份与父子关系一对一映射进新工作区。打包完成后，两者都作为可被显式 brand / layout 覆盖的完整参考方案使用。
+`standard` / `fidelity` 根据已确认的证据创作新完整系统；mirror 把已验证的来源身份与父子关系一对一映射进新工作区。Mirror 能保留来源事实，但不能单独证明来源就是可复用 Deck：创建时仍要识别稳定的应用规则。只得到身份时创建 Brand；得到品牌中立的可复用结构时创建 Layout；结构带品牌身份，或者包含场景叙事与内容语法时创建 Deck。
+
+这也约束创建模式：只有来源合同本身已经品牌中立且应用中立时，Layout mirror 才成立。删除品牌色、字体、Logo、固定身份对象或可复用应用规则都属于重新创作；越过这条边界的来源要么使用 `standard` / `fidelity` 创作新的 Layout，要么保留这些事实并创建 Deck mirror。
 
 ---
 
@@ -152,17 +166,19 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 ```
 
-**正文章节**（personality-only 的结构段）
+**正文章节**（该包特有的结构段）
 
 | 节 | 标题 | 必写字段 |
 |---|---|---|
-| IV | Signature Design Elements | 该 Layout 特有的网格、区域、图片行为、密度节奏、中性框架和 slot 约定 |
+| IV | Signature Design Elements | 该 Layout 特有的网格、区域、图片行为、密度节奏、中性框架、语义文字角色、对齐/换行/容量行为和 slot 约定 |
 | V | Page Roster | 每个 SVG 文件、Layout key、picker name、适用内容与 slot 行为 |
 
 只有 Layout 改写规范占位词汇时才增加 `Placeholder Overrides`。frontmatter
 `summary` 承担简短的选型语境；Layout 不写 deck 独有的 Template Overview。
 
-**不允许出现**：Color Scheme、Typography、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。SVG 可以使用便于审阅的中性预览 paint，但它不属于身份段；色彩与字体由 策略师确认阶段或其他模板 kind 决定。
+`category: scenario` 只表示发现时的适配标签。Layout 可以针对某种内容形态或交付环境优化几何，但不能规定沟通目的、受众结果、必需叙事顺序、固定措辞或示例内容；如果这些规则也要重复使用，应创建 Deck。
+
+**不允许出现**：Color Scheme、品牌字体家族/字重身份、最终字号体系、品牌 logo、品牌 voice & tone、Icon Style 或官方真值色（`provenance: fact`）。Layout 可以保留语义文字角色、对齐、换行与容量规则，因为它们属于结构；SVG 中性 paint、字体和字号只用于审阅。最终色彩与字体由策略师确认阶段或其他模板 kind 解析。
 
 ### Deck schema
 
@@ -174,7 +190,7 @@ deck_id: <slug>
 kind: deck
 category: brand | general | scenario | government | special
 native_structure_mode: structured
-summary: <一句话描述用途>
+summary: <一句话描述可重复演示类型与预期结果>
 keywords: [tag1, tag2, tag3]
 canvas_format: <ppt169 | ...>
 canvas_width: <像素>
@@ -189,11 +205,11 @@ primary_color: "<HEX>"
 ---
 ```
 
-**正文章节**（personality-only 的完整参考）
+**正文章节**（应用契约 + 一体化身份/结构）
 
 | 节 | 标题 | 归属段 |
 |---|---|---|
-| I | Template Overview | 中间段 |
+| I | Template Overview | 应用段 |
 | II | Color Scheme | 身份段 |
 | III | Typography | 身份段；只有使用共享默认字体栈时才省略 |
 | IV | Signature Design Elements | 模板特有的身份图形与可复用结构语法 |
@@ -201,7 +217,9 @@ primary_color: "<HEX>"
 | VI | Assets | 身份/支撑资产；无资产时省略 |
 | VII | Placeholder Overrides | 结构词汇；无覆盖时省略 |
 
-可移植 canvas 字段、`page_count` 和显式 SVG roster 承载其余结构合同。通用间距、字号比例、SVG 和 placeholder 规则保持集中管理，不复制进每个 deck spec。Deck 仍拥有完整身份 + 结构；省略条件章节只表示“采用共享默认值或没有资产”，不表示该段改由其他 kind 所有。
+Template Overview 必须写明可重复演示类型、目标受众与结果、交付/阅读假设、稳定叙事或页面角色，以及固定、可替换、可选、仅示例内容之间的复用边界。Page Roster 除 Master/Layout/slot 合同外，还必须说明每个原型的内容政策。这些政策用于选型，不要求每次生成都保持相同页数或页序。
+
+可移植 canvas 字段、`page_count` 和显式 SVG roster 承载其余结构合同。通用间距、字号比例、SVG 和 placeholder 规则保持集中管理，不复制进每个 deck spec。省略条件章节只表示“采用共享默认值或没有资产”，不表示该段改由其他 kind 所有。
 
 ---
 
@@ -246,7 +264,7 @@ primary_color: "<HEX>"
 ```json
 {
   "<deck_id>": {
-    "summary": "China Telecom government-enterprise briefing deck",
+    "summary": "中国电信政企方案说明与下一步对齐汇报",
     "canvas_format": "ppt169",
     "page_count": 5,
     "primary_color": "#XXXXXX"
@@ -255,7 +273,8 @@ primary_color: "<HEX>"
 ```
 
 - 含 `primary_color`（deck 自带身份）+ 结构元数据
-- 不展开 `page_types` —— deck 的页面类型与 layout 的相同集合，不冗余记录
+- `summary` 优先描述可重复演示类型与预期结果，而不只是视觉气质
+- 详细应用契约留在 Template Overview；紧凑索引不重复整份契约
 
 ---
 
@@ -271,10 +290,12 @@ primary_color: "<HEX>"
 | 只 brand | 复制 brand 全部，结构走自由设计 |
 | 只 layout | 复制 layout 全部，身份走自由设计（策略师确认阶段 e/f/g 决策） |
 | 只 deck | 复制 deck 全部 |
-| brand + layout | brand 提供身份段 + layout 提供结构段，沿用 SKILL.md 现有 fusion 表 |
-| brand + deck | brand 段级覆盖 deck 的身份段，结构段与中间段从 deck 拿 |
-| layout + deck | layout 段级覆盖 deck 的结构段，身份段与中间段从 deck 拿 |
-| brand + layout + deck | brand 覆盖身份 + layout 覆盖结构 + deck 提供中间段；身份/结构段的 deck 原值整段丢弃 |
+| brand + layout | brand 提供身份段 + layout 提供结构段；这是项目内组合输入，不是可复用 Deck 应用契约 |
+| brand + deck | brand 段级覆盖 deck 的身份段，结构段与应用段从 deck 拿 |
+| layout + deck | 只有 layout 能表达 Deck 的必需叙事/内容角色时才覆盖结构段；身份段与应用段从 deck 拿 |
+| brand + layout + deck | brand 覆盖身份 + 兼容的 layout 覆盖结构 + deck 提供应用段；身份/结构段的 deck 原值整段丢弃 |
+
+Layout 覆盖 Deck 前，必须把 Deck 应用契约与 Layout 的页面角色、槽位类型和容量对照。如果必需角色无法表达，就把它作为合成冲突交给用户：保留 Deck 结构、改选 Layout，或明确修改应用契约。不能保留一份当前结构无法兑现的场景承诺。
 
 ### 段级整段替换（默认粒度）
 
@@ -334,7 +355,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ### 策略师确认阶段在不同 kind 下的行为
 
-安装模板不会让沟通问题消失。Stage 1 始终确认同一份开放式沟通契约。Brand 提供身份约束、结构仍然自由；Layout 与 Deck 提供可用的结构能力，但 Stage 2 仍要根据场景判断，在合法范围内选择 `mirror`、`layout` 或 `style`。因此，按 mirror 创建的工作区只是允许原样复用，不会自动选中原样复用。Stage 3 再用该消费范围实际保留的身份与结构实现已确认方向。具体规则落在 `references/strategist.md` 与 `spec_lock_reference.md`。
+安装模板不会让沟通问题消失。Stage 1 始终独立确认同一份开放式沟通契约。Brand 提供身份约束、结构仍然自由；Layout 提供结构能力；Deck 还提供应用契约。Stage 2 推导时才把已保存的应用契约与当前确认结果对照，不能静默当成真值，再根据场景在合法范围内选择 `mirror`、`layout` 或 `style`。因此，按 mirror 创建的工作区只是允许原样复用，不会自动选中原样复用。Stage 3 再用该消费范围实际保留的身份、结构与应用规则实现已确认方向。具体规则落在 `references/strategist.md` 与 `spec_lock_reference.md`。
 
 ---
 
@@ -345,7 +366,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 | `workflows/create-template.md` | 固定 Create Template 入口，以及范围、确认、预检、结构创作、注册、完成和交接的共享合同；只分派一个子工作流 |
 | `workflows/create-template/create-brand.md` | 仅身份的 Brand 工作区；无 SVG roster，空的可选目录省略 |
 | `workflows/create-template/create-layout.md` | 品牌中立、带结构化 SVG roster 的 Layout 工作区 |
-| `workflows/create-template/create-deck.md` | 身份与结构一体化、带结构化 SVG roster 的 Deck 工作区；两段都需要时默认选择 |
+| `workflows/create-template/create-deck.md` | 应用契约与身份/结构一体化、带结构化 SVG roster 的 Deck 工作区；可复用成果带品牌身份或场景语义时选择，不能只因来源是一份完整 PPTX 就默认选择 |
 
 在全局库范围，frontmatter `kind` 字段决定工作区父目录位于 `templates/brands/` / `templates/layouts/` / `templates/decks/`。项目范围在项目工作区根目录保留同一 kind 语义。完整工作区可在两种范围之间移动而不改形，只需增加或移除全局索引注册。
 
@@ -357,3 +378,5 @@ AI: 你给了两个 brand，检测到段级冲突：
 - **不为同类三份及以上设计批量冲突解决** —— 用户先在 chat 里收敛到两份
 - **不引入双名映射表** —— 模板命名按其品牌/场景母语（中文模板用中文名，英文模板用 snake_case），不强制统一
 - **不为输出范围新增结构分支或 CLI flag** —— 输出范围是 `create-template` 简报里的执行选择；两种范围的 Layout/Deck 都声明 `native_structure_mode: structured`
+- **不增加第四种 Theme kind** —— Theme 投影 Brand、Deck 或当前项目解析后的身份，不是新的用户侧复用合同
+- **不把 Brand + Layout 自动提升成可注册的 Deck** —— 项目内组合可以按同时具备身份/结构能力来路由，但可复用 Deck 仍必须包含应用契约

@@ -154,6 +154,8 @@ For `mirror` / `layout`, surface the second closed Stage-2 choice, `template_adh
 
 **Default — layout + adaptive**: When the user supplied only a template path, recommend `layout` and `adaptive`. Preselect `strict` only when the user explicitly asks to keep the selected Layout contract unchanged. Record the confirmed scope in `design_spec.md §I` and as `template_reuse_scope` under `spec_lock.md pptx_structure`; record adherence only for `mirror` / `layout`.
 
+**Mandatory — consume the stored contract at the decision point**: Immediately before authoring the Stage-2 reuse recommendation for an installed `kind: deck`, re-read `<project_path>/templates/design_spec.md`. Compare the five application-contract rows in `## I. Template Overview` with the confirmed Stage-1 audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Then compare every `## V. Page Roster` content-policy value with the narrative/page roles the current artifact needs, including required / optional / repeatable status and fixed / replaceable / example-only content. Treat the stored contract as applicability evidence, never as the current project's truth; do not copy it into blank Stage-1 fields or infer fields it does not declare. For `kind: layout`, no application contract exists: compare the current contract only with the roster's structural roles, slots, and capacity.
+
 **Scenario fit comes before template capability.** A workspace advertising `mirror` does not mean the project should consume it in mirror mode. Recommend from the confirmed communication contract:
 
 | Scope | Appropriate when |

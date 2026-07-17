@@ -86,10 +86,16 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | Selected kind | Behavior |
 |---|---|
 | `brand` | Dispatch to [`create-brand`](./create-template/create-brand.md); write identity only and no SVG roster |
-| `layout` | Dispatch to [`create-layout`](./create-template/create-layout.md); author brand-neutral structure and an SVG roster |
-| `deck` | Dispatch to [`create-deck`](./create-template/create-deck.md); author identity, structure, template overview, and an SVG roster |
+| `layout` | Dispatch to [`create-layout`](./create-template/create-layout.md); author brand-neutral, application-neutral structure and an SVG roster |
+| `deck` | Dispatch to [`create-deck`](./create-template/create-deck.md); author a recurring application contract with integrated identity, structure, content policy, and an SVG roster |
 
 Create Template remains the fixed route name and owns the shared contract. These three documents are mutually exclusive child workflows, not additional top-level routes.
+
+**Hard rule — classify reusable rules, not source completeness**: A complete
+PPTX does not automatically select Deck. Use Brand when only identity is
+stable; use Layout when structure is brand-neutral and the communication
+application stays downstream-defined; use Deck when structure carries identity
+or reusable scenario/content semantics.
 
 ---
 

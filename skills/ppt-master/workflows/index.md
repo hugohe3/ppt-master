@@ -27,8 +27,8 @@ Registry for the route authorities and supporting runbooks referenced by [`SKILL
 |---|---|---|---|
 | Generation profile | `beautify-pptx` | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX route when wording, page count, and page order are frozen 1:1 |
 | Template child workflow | `create-brand` | [`create-template/create-brand.md`](./create-template/create-brand.md) | Create Template after identity-only intent is selected |
-| Template child workflow | `create-layout` | [`create-template/create-layout.md`](./create-template/create-layout.md) | Create Template after brand-neutral structure-only intent is selected |
-| Template child workflow | `create-deck` | [`create-template/create-deck.md`](./create-template/create-deck.md) | Create Template after integrated identity-and-structure intent is selected or defaulted |
+| Template child workflow | `create-layout` | [`create-template/create-layout.md`](./create-template/create-layout.md) | Create Template after brand-neutral, application-neutral structure intent is selected |
+| Template child workflow | `create-deck` | [`create-template/create-deck.md`](./create-template/create-deck.md) | Create Template after a branded structural system or recurring presentation application is selected |
 | Intake stage | `topic-research` | [`stages/topic-research.md`](./stages/topic-research.md) | Generate PPTX route before Step 1 for topic-only requests |
 | Control stage | `resume-execute` | [`stages/resume-execute.md`](./stages/resume-execute.md) | Generate PPTX route when a planned project resumes in a fresh chat |
 | Planning stage | `refine-spec` | [`stages/refine-spec.md`](./stages/refine-spec.md) | Generate PPTX route after confirmation when the user explicitly requests spec review |
