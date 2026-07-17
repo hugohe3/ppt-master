@@ -480,6 +480,19 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     gap: 8px;
     margin: 8px 0 10px;
 }
+.image-strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+}
+.image-strategy-grid > .font-card:not(.image-strategy-manual-card) {
+    min-width: 0;
+    padding: 10px;
+}
+.image-strategy-grid > .image-strategy-manual-card,
+.image-strategy-grid > .toggle-desc {
+    grid-column: 1 / -1;
+}
 .image-strategy-preview {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -545,9 +558,6 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     min-height: 34px;
     padding: 6px 8px;
 }
-.image-strategy-manual-preview-host > .image-strategy-previews {
-    margin-bottom: 0;
-}
 .font-sample-heading { font-size: 24px; font-weight: 700; line-height: 1.3; }
 .font-sample-body { font-size: 14px; color: #333; margin-top: 4px; }
 .custom-typography-input { margin-top: 8px; min-height: 58px; resize: vertical; }
@@ -605,7 +615,8 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 
 /* ---- custom input ---- */
 .custom-input { margin-top: 8px; }
-.custom-chip-row { margin-top: 8px; }
+.custom-chip-row,
+.standalone-chip-row { margin-top: 8px; }
 
 /* ---- recommended chip + group labels ---- */
 .chip.recommended {

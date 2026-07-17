@@ -616,9 +616,9 @@
       "label_zh": "文字型 · 近读",
       "label_en": "text / read-close",
       "label_ja": "文書型・近距離閲覧",
-      "desc_zh": "当文件读、近距离看（报告、数据密集 brief、留底材料）。正文 20px。",
-      "desc_en": "Read close as a file (report, data-dense brief, leave-behind). Body 20px.",
-      "desc_ja": "資料として手元で読む用途（報告書、データ密度の高いブリーフ、配布資料）。本文20px。"
+      "desc_zh": "页面脱离讲者也能独立读懂：使用完整句、短段落、图注、表格和必要细节；bullet 只用于真正并列的项目。",
+      "desc_en": "The page stands alone without a presenter: use complete sentences, short prose, captions, tables, and necessary detail; reserve bullets for genuinely parallel items.",
+      "desc_ja": "話者なしでもページ単体で理解できる構成。完全な文、短い段落、注釈、表、必要な細部を用い、箇条書きは本当に並列な項目だけに使う。"
     },
     {
       "id": "balanced",
@@ -626,9 +626,9 @@
       "label_zh": "均衡 · 商务",
       "label_en": "balanced / business",
       "label_ja": "バランス型・ビジネス",
-      "desc_zh": "既投影也阅读（路演、业务评审）。默认档，正文 24px。",
-      "desc_en": "Both projected and read (roadshow, business review). The default option, body 24px.",
-      "desc_ja": "投影でも閲覧でも使う用途（ロードショー、事業レビュー）。デフォルトの選択、本文24px。"
+      "desc_zh": "页面与讲者共同承担信息：一条主结论配合简短说明、结构化证据或必要列表，适合路演和业务评审。",
+      "desc_en": "The page and presenter share the load: pair one primary claim with concise explanation, structured evidence, or a necessary list. Best for roadshows and business reviews.",
+      "desc_ja": "ページと話者で情報を分担する構成。主張を一つ置き、短い説明、構造化した根拠、または必要なリストを組み合わせる。ロードショーや事業レビュー向け。"
     },
     {
       "id": "presentation",
@@ -636,9 +636,9 @@
       "label_zh": "展示型 · 演讲",
       "label_en": "presentation / keynote",
       "label_ja": "プレゼン型・講演",
-      "desc_zh": "投影、远距离扫一眼、内容稀疏（keynote、发布、课堂）。正文 32px。",
-      "desc_en": "Projected, glanced from the back, sparse (keynote, launch, classroom). Body 32px.",
-      "desc_ja": "投影用で後方からも一目で分かる、情報量を絞った構成（キーノート、発表会、講義）。本文32px。"
+      "desc_zh": "讲者与视觉承担主要表达：一页一意，以简短主张、关键词、大图或大数字为主，解释进入讲述或备注，避免段落堆积。",
+      "desc_en": "The presenter and visuals carry the explanation: use one idea per page, concise claims, keywords, large visuals, or hero numbers; move detail into speech or notes and avoid paragraph dumps.",
+      "desc_ja": "話者とビジュアルが主に説明を担う構成。1枚1メッセージで、短い主張、キーワード、大きな図や数値を中心にし、詳細は話者またはノートに置いて段落の詰め込みを避ける。"
     }
   ]
 }
