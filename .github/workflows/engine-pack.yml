@@ -65,15 +65,33 @@ jobs:
           export ENGINE_VERSION="$V"
           engine/build.sh
 
-      - name: Zip pack
+      - name: Zip pack (if build.sh did not already)
         shell: bash
         run: |
           FOLDER="ppt-master-engine-${{ matrix.platform }}-${{ matrix.arch }}"
           cd dist-engine
-          if [[ "${{ matrix.platform }}" == "win32" ]]; then
+          if [[ -f "${FOLDER}.zip" ]]; then
+            echo "zip already present from build.sh"
+            ls -lh "${FOLDER}.zip"
+            exit 0
+          fi
+          if command -v 7z >/dev/null 2>&1; then
             7z a -tzip "${FOLDER}.zip" "${FOLDER}"
-          else
+          elif command -v zip >/dev/null 2>&1; then
             zip -ry "${FOLDER}.zip" "${FOLDER}"
+          elif command -v ditto >/dev/null 2>&1; then
+            ditto -c -k --keepParent "${FOLDER}" "${FOLDER}.zip"
+          else
+            python - <<PY
+          import pathlib, zipfile
+          root = pathlib.Path("${FOLDER}")
+          out = pathlib.Path("${FOLDER}.zip")
+          with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
+              for p in root.rglob("*"):
+                  if p.is_file():
+                      zf.write(p, p.as_posix())
+          print("wrote", out)
+          PY
           fi
           ls -lh "${FOLDER}.zip"
 
