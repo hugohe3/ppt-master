@@ -31,7 +31,9 @@
             sec_audience: "Target audience",
             sec_communication: "What this presentation must accomplish",
             sec_delivery: "How it will be used and what must remain",
-            sec_style: "Narrative, visual & template direction",
+            sec_narrative: "Narrative direction",
+            sec_visual: "Visual direction",
+            sec_template: "Template direction",
             sec_color: "Color scheme",
             sec_icons: "Icon usage",
             sec_type: "Typography",
@@ -41,7 +43,6 @@
             sec_refine: "Refine spec first",
             sec_design_directions: "Coherent design directions",
             design_directions_hint: "Each direction coordinates style, color, typography, icons, and generated-image rendering. You can fine-tune every field below.",
-            design_direction_apply: "Apply direction",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
             sub_template_reuse_scope: "Template reuse scope",
@@ -163,7 +164,9 @@
             sec_audience: "想定読者",
             sec_communication: "このプレゼンで何を実現するか",
             sec_delivery: "どう使い、何を残すか",
-            sec_style: "構成・ビジュアル・テンプレート方針",
+            sec_narrative: "ナラティブ方針",
+            sec_visual: "ビジュアル方針",
+            sec_template: "テンプレート方針",
             sec_color: "配色",
             sec_icons: "アイコンの使用",
             sec_type: "タイポグラフィ",
@@ -173,7 +176,6 @@
             sec_refine: "先に設計仕様を精査",
             sec_design_directions: "統合デザイン方針",
             design_directions_hint: "各案はスタイル、配色、書体、アイコン、生成画像のレンダリングを一体で提案します。下の各項目で微調整できます。",
-            design_direction_apply: "この方針を適用",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
             sub_template_reuse_scope: "テンプレートの再利用範囲",
@@ -295,7 +297,9 @@
             sec_audience: "目标受众",
             sec_communication: "这份演示要完成什么",
             sec_delivery: "如何使用、之后留下什么",
-            sec_style: "叙事、视觉与模板方向",
+            sec_narrative: "叙事方向",
+            sec_visual: "视觉方向",
+            sec_template: "模板方向",
             sec_color: "色彩方案",
             sec_icons: "图标使用",
             sec_type: "字体方案",
@@ -305,7 +309,6 @@
             sec_refine: "先精修设计规范",
             sec_design_directions: "成套设计方向",
             design_directions_hint: "每套方向会一起协调风格、配色、字体、图标和生成图渲染；你仍可在下方逐项微调。",
-            design_direction_apply: "应用这套方向",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
             sub_template_reuse_scope: "模板复用范围",
@@ -1269,7 +1272,6 @@
             var head = el("div", "font-card-head");
             head.appendChild(el("span", "font-card-name",
                 localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
-            head.appendChild(el("span", "rec-badge", t("design_direction_apply")));
             card.appendChild(head);
             if (candidate.visual_style) {
                 var preview = el("div", "design-direction-preview");
@@ -1285,7 +1287,7 @@
             if (meta.length) card.appendChild(el("div", "font-card-meta", meta.join(" · ")));
             var palette = normPalette(candidate.color || {});
             var swatches = el("div", "palette-swatches design-direction-swatches");
-            ["background", "primary", "accent", "body_text"].forEach(function (role) {
+            PALETTE_ROLES.forEach(function (role) {
                 var value = normHex(palette[role]);
                 if (!value) return;
                 var swatch = el("span", "swatch");
@@ -1303,35 +1305,38 @@
         host.appendChild(sec);
     }
 
-    function renderStyle(host) {
-        var sec = section(4, "sec_style");
-        sec.appendChild(el("div", "subfield-label", t("sub_mode")));
+    function renderNarrativeDirection(host) {
+        var sec = section(4, "sec_narrative");
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
             function () { return STATE.mode; }, function (v) { STATE.mode = v; }, { allowCustom: true });
-        var sub2 = el("div", "subfield");
-        sub2.appendChild(el("div", "subfield-label", t("sub_visual")));
-        enumField(sub2, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
+        host.appendChild(sec);
+    }
+
+    function renderVisualDirection(host) {
+        var sec = section(5, "sec_visual");
+        enumField(sec, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
             function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
-        sec.appendChild(sub2);
-        if (hasTemplateReuseScope()) {
-            var reuseField = el("div", "subfield");
-            var reuseOptions = templateReuseScopeOptions();
-            reuseField.appendChild(el("div", "subfield-label", t("sub_template_reuse_scope")));
-            enumField(reuseField, reuseOptions,
-                pickTemplateReuseScope(),
-                function () { return STATE.template_reuse_scope; },
-                function (v) {
-                    STATE.template_reuse_scope = v;
-                    if (v === "style") {
-                        delete STATE.template_adherence;
-                    } else if (!STATE.template_adherence) {
-                        STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
-                    }
-                    setTimeout(renderAll, 0);
-                });
-            sec.appendChild(reuseField);
-        }
+        host.appendChild(sec);
+    }
+
+    function renderTemplateDirection(host) {
+        if (!hasTemplateReuseScope()) return;
+        var sec = section(6, "sec_template");
+        var reuseOptions = templateReuseScopeOptions();
+        sec.appendChild(el("div", "subfield-label", t("sub_template_reuse_scope")));
+        enumField(sec, reuseOptions,
+            pickTemplateReuseScope(),
+            function () { return STATE.template_reuse_scope; },
+            function (v) {
+                STATE.template_reuse_scope = v;
+                if (v === "style") {
+                    delete STATE.template_adherence;
+                } else if (!STATE.template_adherence) {
+                    STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
+                }
+                setTimeout(renderAll, 0);
+            });
         if (hasTemplateAdherence()) {
             var templateField = el("div", "subfield");
             templateField.appendChild(el("div", "subfield-label", t("sub_template_adherence")));
@@ -2284,7 +2289,9 @@
             // Stage 2 confirms one coherent deck solution. Bundles provide a
             // coordinated starting point; individual controls remain editable.
             renderDesignDirections(host);
-            renderStyle(host);
+            renderNarrativeDirection(host);
+            renderVisualDirection(host);
+            renderTemplateDirection(host);
             renderReadingMode(host);
             renderPages(host);
             var styleGroup = el("div", "style-group");
@@ -2309,7 +2316,9 @@
             renderDelivery(host);
             renderCanvas(host);
             renderDesignDirections(host);
-            renderStyle(host);
+            renderNarrativeDirection(host);
+            renderVisualDirection(host);
+            renderTemplateDirection(host);
             renderReadingMode(host);
             renderPages(host);
             var legacyStyleGroup = el("div", "style-group");

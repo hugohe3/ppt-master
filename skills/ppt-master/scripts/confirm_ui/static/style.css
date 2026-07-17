@@ -434,9 +434,19 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 }
 .font-card-name { font-size: 13.5px; font-weight: 600; }
 .font-card-meta { font-size: 11.5px; color: var(--muted); }
-.design-direction-card .rec-badge { margin-left: auto; }
+.design-direction-grid {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+.design-direction-card {
+    flex: 1 0 calc((100% - 20px) / 3);
+    min-width: 200px;
+}
 .design-direction-preview {
-    width: 180px;
+    width: 100%;
     aspect-ratio: 16 / 9;
     margin-bottom: 8px;
     border: 1px solid var(--line);
