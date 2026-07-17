@@ -94,6 +94,38 @@ echo "==> PyInstaller launcher"
   "$ROOT/engine/launcher.py"
 
 # ── slim skill content ──────────────────────────────────────
+# copy_tree SRC/ DST/ [extra find -prune names ...]
+# Prefer rsync; fall back to cp (Windows runners have no rsync by default).
+copy_tree() {
+  local src="$1"
+  local dst="$2"
+  shift 2
+  mkdir -p "$dst"
+  if command -v rsync >/dev/null 2>&1; then
+    local args=(-a --delete --exclude '__pycache__' --exclude '*.pyc' --exclude '.DS_Store')
+    local excl
+    for excl in "$@"; do
+      args+=(--exclude "$excl")
+    done
+    rsync "${args[@]}" "$src" "$dst"
+    return
+  fi
+  # cp fallback: wipe dest contents then copy, skipping common junk + optional names
+  find "$dst" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
+  # Use tar pipeline when available (Git Bash / Unix) for exclude support
+  if command -v tar >/dev/null 2>&1; then
+    local tar_ex=(--exclude='__pycache__' --exclude='*.pyc' --exclude='.DS_Store')
+    local excl
+    for excl in "$@"; do
+      tar_ex+=(--exclude="$excl")
+    done
+    # src is expected to end with /
+    (cd "${src%/}" && tar cf - "${tar_ex[@]}" .) | (cd "$dst" && tar xf -)
+    return
+  fi
+  cp -R "${src%/}/." "$dst/"
+}
+
 echo "==> Copy slim skill content"
 SKILL_SRC="$ROOT/skills/ppt-master"
 SKILL_DST="$STAGE/skills/ppt-master"
@@ -104,31 +136,20 @@ cp "$SKILL_SRC/SKILL.md" "$SKILL_DST/"
 cp "$SKILL_SRC/requirements.txt" "$SKILL_DST/" 2>/dev/null || true
 
 # Scripts (full — needed for dispatch)
-rsync -a --delete \
-  --exclude '__pycache__' \
-  --exclude '*.pyc' \
-  --exclude '.DS_Store' \
-  "$SKILL_SRC/scripts/" "$SKILL_DST/scripts/"
+copy_tree "$SKILL_SRC/scripts/" "$SKILL_DST/scripts/"
 
-# Templates (icons + charts + layouts; skip huge nothing)
+# Templates (icons + charts + layouts)
 if [[ -d "$SKILL_SRC/templates" ]]; then
-  rsync -a \
-    --exclude '__pycache__' \
-    --exclude '.DS_Store' \
-    "$SKILL_SRC/templates/" "$SKILL_DST/templates/"
+  copy_tree "$SKILL_SRC/templates/" "$SKILL_DST/templates/"
 fi
 
 # References without AI image comparison gallery (~43MB of PNGs)
 if [[ -d "$SKILL_SRC/references" ]]; then
-  rsync -a \
-    --exclude 'ai-image-comparison' \
-    --exclude '__pycache__' \
-    --exclude '.DS_Store' \
-    "$SKILL_SRC/references/" "$SKILL_DST/references/"
+  copy_tree "$SKILL_SRC/references/" "$SKILL_DST/references/" "ai-image-comparison"
 fi
 
 if [[ -d "$SKILL_SRC/workflows" ]]; then
-  rsync -a --exclude '.DS_Store' "$SKILL_SRC/workflows/" "$SKILL_DST/workflows/"
+  copy_tree "$SKILL_SRC/workflows/" "$SKILL_DST/workflows/"
 fi
 
 # ── manifest ────────────────────────────────────────────────
