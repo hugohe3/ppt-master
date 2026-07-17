@@ -1,0 +1,128 @@
+# Build and publish MindMux-compatible engine packs.
+# Trigger: push tag engine-v* or workflow_dispatch.
+name: engine-pack
+
+on:
+  push:
+    tags:
+      - "engine-v*"
+  workflow_dispatch:
+    inputs:
+      upload_release:
+        description: "Create/update a GitHub release and upload zips"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            platform: darwin
+            arch: arm64
+            python: "3.11"
+          - os: macos-13
+            platform: darwin
+            arch: x64
+            python: "3.11"
+          - os: ubuntu-22.04
+            platform: linux
+            arch: x64
+            python: "3.11"
+          - os: windows-2022
+            platform: win32
+            arch: x64
+            python: "3.11"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install rsync (macOS runners have it; Linux ensure)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Build engine pack
+        shell: bash
+        env:
+          PYTHON: python
+          ENGINE_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '0.1.0-dev' }}
+        run: |
+          chmod +x engine/build.sh
+          # Normalize ENGINE_VERSION tag engine-v0.1.0 → 0.1.0
+          V="${ENGINE_VERSION#engine-v}"
+          V="${V#v}"
+          export ENGINE_VERSION="$V"
+          engine/build.sh
+
+      - name: Zip pack
+        shell: bash
+        run: |
+          FOLDER="ppt-master-engine-${{ matrix.platform }}-${{ matrix.arch }}"
+          cd dist-engine
+          if [[ "${{ matrix.platform }}" == "win32" ]]; then
+            7z a -tzip "${FOLDER}.zip" "${FOLDER}"
+          else
+            zip -ry "${FOLDER}.zip" "${FOLDER}"
+          fi
+          ls -lh "${FOLDER}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pack-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist-engine/ppt-master-engine-${{ matrix.platform }}-${{ matrix.arch }}.zip
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: github.event_name == 'push' || inputs.upload_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: pack-*
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -lah artifacts/
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('engine-v0.1.0-dev-{0}', github.run_number) }}
+          name: ${{ github.ref_type == 'tag' && github.ref_name || format('Engine pack dev {0}', github.run_number) }}
+          draft: ${{ github.ref_type != 'tag' }}
+          files: artifacts/*.zip
+          body: |
+            Self-contained **ppt-master engine packs** for desktop embeds (MindMux).
+
+            | Asset | Platform |
+            |-------|----------|
+            | `ppt-master-engine-darwin-arm64.zip` | macOS Apple Silicon |
+            | `ppt-master-engine-darwin-x64.zip` | macOS Intel |
+            | `ppt-master-engine-linux-x64.zip` | Linux x64 |
+            | `ppt-master-engine-win32-x64.zip` | Windows x64 |
+
+            Layout after unzip:
+            ```
+            ppt-master-engine-<platform>-<arch>/
+              bin/ppt-master-engine/
+              skills/ppt-master/
+              manifest.json
+            ```
+
+            MindMux: `pnpm setup:ppt-master-engine` with
+            `downloadUrlTemplate` pointing at these assets.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,6 @@
+# Minimal runtime deps for the MindMux / App engine pack (no TTS / genai extras).
+python-pptx>=0.6.21
+XlsxWriter>=3.0.0
+lxml>=4.9.0
+Pillow>=10.0.0
+pyinstaller>=6.0.0
