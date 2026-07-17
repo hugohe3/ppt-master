@@ -168,6 +168,7 @@ PPT Master 不以成为以下产品为目标：
 
 | 文档 | 责任 |
 |---|---|
+| [`what-is-ppt.md`](./what-is-ppt.md) | 演示媒介、用户任务、生命周期、原生对象模型、模板与质量层次；本文定位判断的上游前提 |
 | 本文 | 长期产品定位、产品承诺、能力边界和准入判据 |
 | [`why-ppt-master.md`](./why-ppt-master.md) | 面向用户的差异化和选择理由 |
 | [`technical-design.md`](./technical-design.md) | 当前技术架构和实现不变量 |
