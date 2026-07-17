@@ -26,7 +26,8 @@ jobs:
             platform: darwin
             arch: arm64
             python: "3.11"
-          - os: macos-13
+          # macos-13 retired (2025-12); use Intel image for darwin-x64
+          - os: macos-15-intel
             platform: darwin
             arch: x64
             python: "3.11"
