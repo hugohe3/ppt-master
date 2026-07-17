@@ -2,7 +2,7 @@
 
 > **⚠️ Skeleton for Strategist — do NOT copy verbatim into a project.** When producing `<project_path>/spec_lock.md`, emit only `##` sections with filled-in `-` data lines. Do NOT carry over any `>` blockquote guidance, HARD-rule notes, or override examples — those are author-time guidance, not runtime data. Every output line must be parseable data.
 >
-> Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. For design narrative (rationale, audience, style), see `design_spec.md`.
+> Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. The compact communication section keeps every page aligned with why the deck exists; fuller rationale remains in `design_spec.md`.
 >
 > After SVG generation begins, this is the canonical source for color / font / icon / image values. Supported color/font modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync. Canvas changes are intentionally not bulk-rewritten by that tool.
 
@@ -11,6 +11,17 @@
 - format: PPT 16:9
 
 > Strategist: fill viewBox and format for the chosen canvas. New authoring uses the canonical `0 0 W H` spelling with positive integer pixels. Every generated page and internal Layout prototype must match this numeric canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story). Changing the canvas after authoring starts requires re-authoring and re-validating affected SVGs; `update_spec.py` does not propagate canvas changes.
+
+## communication
+- audience: Executive committee with finance and product leads
+- communication_intent: Report progress and expose delivery risk first; then obtain a decision on the next investment
+- audience_outcome: The committee can compare the options, accepts the risk framing, and chooses one funded path
+- core_message: Fund option B now because it protects the launch date at an acceptable incremental cost
+- delivery_context: Presenter-led 20-minute leadership review; recording and deck shared afterward
+- artifact_afterlife: Approval record, project hand-off reference, and quarterly audit trail
+- consumption_mode: balanced
+
+> Strategist: copy the confirmed Stage-1 prose plus Stage-2 reading mode. All keys above remain present; any Stage-1 prose value may be empty after explicit confirmation. Do not restore recommendation text into an empty value. `communication_intent` is open prose and may preserve several purposes plus priority / sequence; never replace it with one enum label. `consumption_mode` is the canonical execution name for the Confirm UI compatibility key `delivery_purpose`; use `text` / `balanced` / `presentation` on PPT canvases and omit it on non-PPT canvases. It is an execution constraint on page grammar, granularity, density / rhythm, and note burden—not a font-size label. Typography sizes remain separately locked below. Do not copy `content_divergence` here—its effect is already authored into §IX. Executor checks this global contract against every page's `Audience move`.
 
 ## mode
 - mode: pyramid
@@ -33,21 +44,18 @@
 - text_secondary: #......
 - border: #......
 - image_rendering: vector-illustration
-- image_palette: cool-corporate
 
 > Strategist: fill only colors actually used. Add extra rows as needed; delete unused rows rather than leave as `#......`.
 >
 > **PowerPoint theme roles.** Flat and structured export map `bg` / `background` / `master_bg` → `lt1`, `secondary_bg` / `bg_secondary` → `lt2`, `text` / `body_text` → `dk1`, `text_secondary` → `dk2`, `primary` → `accent1`, `accent` → `accent2`, `secondary_accent` → `accent3`, and `border` → `accent4`. The first two additional non-black/non-white roles become `accent5` / `accent6`; remaining colors stay fixed. Mapping is usage-aware, so a background HEX is not automatically reused for inverse text.
 >
-> **`image_rendering` and `image_palette`** — required only when `images` section below contains `ai`-sourced files. Values MUST be valid names from `references/image-renderings/_index.md` and `references/image-palettes/_index.md`, **or** the literal string `custom`. Image_Generator reads these and applies them deck-wide. Omit both rows when the deck has no AI-generated images.
+> **`image_rendering`** — required only when `images` below contains `ai`-sourced files. It is a valid name from `references/image-renderings/_index.md`, or the literal `custom`. Image_Generator applies it deck-wide and derives image color instructions directly from the ordinary color-role rows above. Omit it when the deck has no AI-generated images. New flows never author an independent `image_palette`; the current generation flow ignores a legacy row, which cannot override these HEX roles.
 >
-> **`custom` escape hatch.** When set to `custom`, add a sibling `*_behavior` row carrying a one-paragraph prose description. Image_Generator splices the prose into the prompt in place of the preset file's fewshot snippet. Tail-case only — see [`image-renderings/_index.md`](../references/image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](../references/image-palettes/_index.md) §2 for invocation rules.
+> **`custom` escape hatch.** When set to `custom`, add `image_rendering_behavior` with a one-paragraph description. Image_Generator splices it into the prompt in place of the preset rendering snippet. Tail-case only—see [`image-renderings/_index.md`](../references/image-renderings/_index.md) §1.5.
 >
 > ```
 > - image_rendering: custom
 > - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
-> - image_palette: custom
-> - image_palette_behavior: "Primary deep aubergine `#4C1D95` anchors ~35% of canvas; secondary warm cream `#FEF3C7` carries ~55% as breathing field; accent burnished gold `#D4AF37` in 5-10% as ceremonial accents. No fourth color."
 > ```
 
 ## typography
@@ -127,26 +135,35 @@
 ## pptx_structure
 - mode: flat
 
-> One deck-wide native PowerPoint structure policy. Free-design and brand-only routes use `flat`; deck/layout template routes use `structured`.
+> One deck-wide native PowerPoint structure policy. Free-design, brand-only, and template style-reference routes use `flat`; template layout/mirror routes use `structured`.
 >
 > `flat` keeps every SVG object Slide-local. Export materializes one clean project-owned Master plus one Blank Layout, maps the current color/typography lock into the theme and Master defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. In this mode, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`, and do not add root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder*` metadata to generated pages.
 >
-> When Step 3 loaded a deck/layout template, replace the `flat` row above with exactly one of:
+> When a loaded deck/layout template is used only as a visual-style reference, write:
+> ```
+> - mode: flat
+> - template_reuse_scope: style
+> ```
+> `style` may retain template-derived color/typography/decoration values elsewhere in this lock, but it MUST omit `template_adherence` and every structured mapping.
+>
+> For layout-system reuse, replace the `flat` row above with:
 > ```
 > - mode: structured
+> - template_reuse_scope: layout
 > - template_adherence: adaptive
 > ```
-> or:
+> Use `strict` instead of `adaptive` when the selected Layout contract cannot change. For literal page replacement from a mirror-capable workspace, write:
 > ```
 > - mode: structured
+> - template_reuse_scope: mirror
 > - template_adherence: strict
 > ```
-> Both values require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds cannot be selected or upgraded in place. Create a current workspace through [`create-template`](../workflows/create-template.md), then generate new structured pages from it.
+> `mirror` is legal only when the installed template frontmatter declares `replication_mode: mirror`; it preserves literal visuals and the complete `<text>` / `<tspan>` topology while replacing visible values. Both `layout` and `mirror` require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds cannot be selected or upgraded in place. Create a current workspace through [`create-template`](../workflows/create-template.md), then generate new structured pages from it.
 
 ## pptx_masters
 - master-default: Default Master
 
-> Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. A key contains 1–64 ASCII letters, digits, dots, underscores, or hyphens; its first character is a letter or digit. Spaces belong only in the PowerPoint picker name, never in the key. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
+> Structured `template_reuse_scope: mirror|layout` routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. A key contains 1–64 ASCII letters, digits, dots, underscores, or hyphens; its first character is a letter or digit. Spaces belong only in the PowerPoint picker name, never in the key. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
 
 ## pptx_layouts
 - cover-hero-split: master-default | Cover — Hero Split | template:01_cover
@@ -154,7 +171,7 @@
 - content-two-column: master-default | Two Column | template:03a_content_abstract
 - quote-focus: master-default | Quote Focus | template:04_quote_focus
 
-> Deck/layout template routes only. This is the unique reusable Layout roster, not a page roster. Layout keys use the same grammar as Master keys. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. Supply all three non-empty fields separated by `|`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`; the `template:` prefix is required, so a bare basename is invalid. Omit this section when `pptx_structure.mode: flat`.
+> Structured `template_reuse_scope: mirror|layout` routes only. This is the unique reusable Layout roster, not a page roster. Layout keys use the same grammar as Master keys. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. Supply all three non-empty fields separated by `|`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`; the `template:` prefix is required, so a bare basename is invalid. Omit this section when `pptx_structure.mode: flat`.
 >
 > Every Layout key appears exactly once, belongs to exactly one declared Master, and is globally unique even when two Masters use the same picker name. Every declared Master owns at least one Layout definition. A Layout may remain unused by generated pages; such a Layout must use `template:<basename>` so export can register it without manufacturing a published slide.
 >
@@ -172,20 +189,20 @@
 - P03: content-two-column
 - P04: content-two-column
 
-> Deck/layout template routes only. Include exactly one row per generated page. The value is one key declared in `pptx_layouts`; Master and picker name come from that unique definition and are not repeated per page. The generated SVG root must match the assigned definition. Omit this section when `pptx_structure.mode: flat`.
+> Structured `template_reuse_scope: mirror|layout` routes only. Include exactly one row per generated page. The value is one key declared in `pptx_layouts`; Master and picker name come from that unique definition and are not repeated per page. The generated SVG root must match the assigned definition. Omit this section when `pptx_structure.mode: flat`.
 
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
 - P04: 03a_content_abstract
 
-> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the authoring-input prototype mapping; `page_pptx_layouts` is the output page assignment, while `pptx_layouts` defines the unique reusable roster. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly define and assign a new Layout key while authoring. Non-mirror skin follows the project lock.
+> For `template_reuse_scope: mirror|layout`, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the authoring-input prototype mapping; `page_pptx_layouts` is the output page assignment, while `pptx_layouts` defines the unique reusable roster. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly define and assign a new Layout key while authoring. `layout` skin follows the project lock; `mirror` preserves literal visual/text topology.
 >
 > **No entry for a page** is an error in structured template mode.
 >
 > **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and finalize a new explicit Layout after design; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → required for free-design and brand-only `flat` routes. Template strict/adaptive routes require complete `page_layouts`. A legacy package that cannot satisfy the current structured contract must migrate before use; it never enters a compatibility branch inside normal generation.
+> **Whole section omitted** → required for free-design, brand-only, and `template_reuse_scope: style` flat routes. `mirror` / `layout` strict/adaptive routes require complete `page_layouts`. A legacy package that cannot satisfy the current structured contract must migrate before use; it never enters a compatibility branch inside normal generation.
 >
 > **Strategist source**: record each project-page choice in project `design_spec.md §IX Content Outline`, using the copied template package's `templates/design_spec.md §V Page Roster` descriptions as the roster authority. Basenames must match files in `templates/` exactly. A typo is a blocking contract error: stop before drawing and report it; never fall back to free design inside template mode.
 

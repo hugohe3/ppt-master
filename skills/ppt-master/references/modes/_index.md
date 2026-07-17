@@ -18,23 +18,23 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 | [`showcase`](./showcase.md) | Visual-led impact; big imagery / numbers; emotional rhythm | Launches, brand reveals, event / promo decks |
 | [`briefing`](./briefing.md) | Neutral, complete, scannable; topic titles, even weight, no thesis | Status updates, reference decks, catalogs, meeting packs, FAQs |
 
-> The five partition presentation *intent*, not aesthetics: persuade (`pyramid`) · tell a story (`narrative`) · teach (`instructional`) · impress (`showcase`) · simply inform (`briefing`).
+> The five are **argument strategies, not a taxonomy of communication purposes**. A presentation may inform + align + request a decision at once; that composite intent stays as open prose in the Stage-1 communication contract. Stage 2 chooses the mode that best carries the dominant body-page spine, or one concrete `custom` act sequence when no preset can serve the stated priority / sequence.
 >
 > **A mode is a lens, not a mandate over the user's own structure.** When the user brings their own outline, it is authoritative: transcribe it into `design_spec.md §IX` as given — page order and titles preserved — and let the mode govern only voice / register and page-internal treatment. A mode never reorders a user's pages or rewrites their given titles (mode is Reference-strength; a user-authored outline is exactly the override). When the user gives no structure, the mode does the structural lifting. To lay an outline out with the least reshaping, `briefing` imposes the lightest skeleton.
 
 ---
 
-## 2. Auto-selection — content / audience signal → mode
+## 2. Auto-selection — communication contract + source signal → mode
 
-| Signal | Recommended mode | Alternates |
+| Contract / source signal | Recommended mode | Alternates |
 |---|---|---|
-| Strategic decision / analysis / board / investor | `pyramid` | `narrative` |
-| Pitch / case study / origin story / campaign arc | `narrative` | `showcase` |
-| Course / onboarding / how-to / science explainer | `instructional` | `pyramid` |
-| Product launch / brand reveal / event opener / keynote / 发布会 / TED | `showcase` | `narrative` |
-| Status update / reference / catalog / FAQ / meeting pack / 周报 / 参考 | `briefing` | `pyramid` |
+| Decision / recommendation outcome; analysis, board, investor; criteria and trade-offs must land | `pyramid` | `narrative` |
+| Persuasion or mobilization lands through a case, tension, transformation, or origin arc | `narrative` | `showcase`, `pyramid` |
+| Understanding or capability must build step by step; course, onboarding, how-to, explainer | `instructional` | `pyramid`, `briefing` |
+| Attention / emotion / launch moment is primary; sparse presenter-led delivery | `showcase` | `narrative` |
+| Complete reference, status, record, hand-off, FAQ, meeting pack; no thesis dominates | `briefing` | `pyramid`, `instructional` |
 
-> No single signal dominates — read the deck's actual purpose from `c. Key Information`. When two modes fit, follow the **primary** intent of the body pages, not the cover. A data review legitimately runs almost entirely `pyramid`; do not force variety.
+> No keyword decides the mode. Read `communication_intent`, `audience_outcome`, `core_message`, delivery context / afterlife, source texture, and any user-authored outline together. When several purposes coexist, follow the dominant **argument movement of the body pages**, not the cover and not the first purpose word. A data review can legitimately run almost entirely `pyramid`; a progress report whose durable hand-off matters more than persuasion may stay `briefing`.
 
 **Close calls** — the genuinely adjacent pairs; every other pair is far enough apart that the auto-selection signal decides.
 
@@ -52,7 +52,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 ## 3. How to use
 
 1. Strategist reads this index at confirmation `d. Layer 1`.
-2. Pick one mode from the auto-selection table + the deck's stated purpose.
+2. Pick one mode from the auto-selection table + the confirmed communication contract and source structure.
 3. Lock it: write `- mode: <name>` into `spec_lock.md`, record the rationale in `design_spec.md`.
 4. Executor reads **only** `modes/<locked-mode>.md` at generation entry — never globs this directory.
 

@@ -101,9 +101,9 @@ PPT Master works in **unitless px end-to-end** — the confirm page, `spec_lock.
 
 PowerPoint displays pt, so the **export** converts px → pt automatically (`pt = px × 0.75`, kept to one decimal). For example a `24px` body becomes `18pt`, a `42px` title becomes `31.5pt`. So a non-integer like `13.5pt` or `31.5pt` in PowerPoint is **expected and intentional**, not a bug — the size is whatever the px works out to, no longer forced onto whole or half-point values.
 
-The body baseline is a fixed value per **delivery purpose** (not a range):
+The body baseline is a fixed value per **reading mode** (not a range). This controls reading distance and density; it is separate from the open-ended communication intent:
 
-| Delivery purpose | Body px | ≈ exported pt |
+| Reading mode | Body px | ≈ exported pt |
 |---|---|---|
 | `text` (read-close: report / leave-behind) | 20px | 15pt |
 | `balanced` (default: roadshow / review) | 24px | 18pt |

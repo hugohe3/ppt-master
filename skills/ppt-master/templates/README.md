@@ -8,12 +8,25 @@ inheritance hierarchy.
 | Kind | Owns | Does not own | Discovery index |
 |---|---|---|---|
 | [`brands/`](./brands/) | Identity: color, typography, logo, voice, icon style | Page structure or SVG roster | [`brands_index.json`](./brands/brands_index.json) |
-| [`layouts/`](./layouts/) | Structure: canvas, Master/Layout graph, page types, slots, SVG roster | Brand identity | [`layouts_index.json`](./layouts/layouts_index.json) |
-| [`decks/`](./decks/) | Complete identity + structure reference | — | [`decks_index.json`](./decks/decks_index.json) |
+| [`layouts/`](./layouts/) | Brand-neutral structure: canvas, Master/Layout graph, page types, slots, SVG roster | Brand identity or a recurring communication application | [`layouts_index.json`](./layouts/layouts_index.json) |
+| [`decks/`](./decks/) | A recurring presentation family: application contract + integrated identity + structure | — | [`decks_index.json`](./decks/decks_index.json) |
 
 A brand is not “a layout minus its pages”: it owns a different segment. Use a
-brand for identity with free page composition, a layout for fixed reusable
-structure with downstream identity, and a deck for a coherent complete system.
+brand for identity with free page composition, a layout for brand-neutral
+structure whose identity and communication purpose remain downstream
+decisions, and a deck for a recurring presentation family with an explicit
+application contract.
+
+PowerPoint package objects are compilation targets, not additional template
+kinds. Theme values and identity assets are projected from resolved identity
+rules supplied by Brand, Deck, or the current project; Layout rules project
+into Master/Layout/Placeholder topology, semantic text roles, and
+spatial behavior; Deck combines both with purpose-specific starting content
+and usage rules. Downstream `layout` scope resolves final placeholder formatting
+with the confirmed identity, reading mode, and type scale; `mirror` preserves
+literal source formatting. A compiled Slide Master may therefore contain both
+structural geometry and brand visuals even though their source rules remain
+separately owned.
 
 New workspaces always enter [`Create Template`](../workflows/create-template.md),
 which keeps the fixed route name and dispatches exactly one child workflow:
@@ -28,10 +41,10 @@ explicit workspace-root path supplied by the user.
 
 | Axis | Values | Meaning |
 |---|---|---|
-| Template kind | `brand` / `layout` / `deck` | Which design segments the package owns |
-| Creation mode | `standard` / `fidelity` / `mirror` | Create Layout/Create Deck only: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; Create Brand is N/A |
+| Template kind | `brand` / `layout` / `deck` | Which reusable contract the package owns: identity, brand-neutral structure, or a complete recurring application |
+| Creation mode | `standard` / `fidelity` / `mirror` | Create Layout/Create Deck only: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; Layout mirror additionally requires a source contract already inside the brand-neutral, application-neutral Layout boundary; Create Brand is N/A |
 | Downstream adherence | `strict` / `adaptive` | Preserve the selected Layout contract, or allow explicit new Layout identities |
-| PPTX structure | `flat` / `structured` | Free-design/brand-only content stays Slide-local; layout/deck routes compile declared Masters and Layouts |
+| PPTX structure | `flat` / `structured` | Free-design, brand-only, and confirmed `style` stay Slide-local; confirmed `mirror` / `layout` compile declared Masters and Layouts |
 
 These axes must not be used as synonyms. In particular, a mirror-created deck
 is still an ordinary reusable `deck` package after creation; it does not force
@@ -62,8 +75,9 @@ indicate legacy Master/Layout semantics.
 [`design_spec_reference.md`](./design_spec_reference.md) is the project-level
 Strategist reference for the generated presentation's full specification and
 content outline. Reusable template `design_spec.md` files are deliberately
-smaller: they contain portable metadata and only the personality or structure
-that distinguishes that package. General SVG/PPT rules remain centralized in
+smaller: they contain portable metadata and only the identity, structure, or
+application rules owned by that package. General SVG/PPT rules remain
+centralized in
 [`shared-standards.md`](../references/shared-standards.md).
 
 ## Visualization Templates

@@ -504,39 +504,74 @@ def _sync_session_state(
     return session
 
 
-# Stage-1 anchors and Stage-2 design-system choices. On later pages these sections
-# are not rendered (they were already confirmed), so their values live only in
-# browser STATE — lost on a refresh. Folding them from result.json into the
-# served recommendations lets a refresh / reopen re-initialize from the user's
-# actual choices instead of catalog defaults.
-_ANCHOR_RECOMMEND_KEYS = (
+# Earlier-stage choices are not rendered on later pages, so their values live
+# only in browser STATE and would be lost on refresh. Fold them from result.json
+# into the served recommendations so a refresh / reopen resumes from the user's
+# actual communication contract and complete deck-solution choices.
+_CONTRACT_RECOMMEND_KEYS = (
     'canvas',
+)
+_CONTRACT_VALUE_KEYS = (
+    'audience',
+    'communication_intent',
+    'audience_outcome',
+    'core_message',
+    'delivery_context',
+    'artifact_afterlife',
+    'content_divergence',
+)
+_DECK_DIRECTION_RECOMMEND_KEYS = (
+    'delivery_purpose',
     'mode',
     'visual_style',
-    'delivery_purpose',
+    'template_reuse_scope',
     'template_adherence',
+    'icons',
+    'image_usage',
 )
-_ANCHOR_VALUE_KEYS = ('audience', 'content_divergence')
-_DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
+_PRODUCTION_RECOMMEND_KEYS = (
+    'formula_policy',
+    'image_ai_path',
+    'generation_mode',
+)
+_LOCKED_RECOMMENDATIONS_KEY = '_locked_recommendations'
+_TEMPLATE_REUSE_SCOPES = frozenset({'mirror', 'layout', 'style'})
+_TEMPLATE_ADHERENCE_MODES = frozenset({'strict', 'adaptive'})
 
 
-def _template_adherence_enabled(project_path: Path) -> bool:
-    """Return whether Step 3 loaded a deck/layout template into the project."""
+def _template_context(project_path: Path) -> dict[str, object]:
+    """Return the loaded template kind and replication contract."""
     spec_path = project_path / 'templates' / 'design_spec.md'
     try:
         lines = spec_path.read_text(encoding='utf-8').splitlines()
     except OSError:
-        return False
+        return {'enabled': False, 'kind': None, 'replication_mode': None}
     if not lines or lines[0].strip() != '---':
-        return False
+        return {'enabled': False, 'kind': None, 'replication_mode': None}
+    kind = None
+    replication_mode = None
     for line in lines[1:]:
         stripped = line.strip()
         if stripped == '---':
-            return False
-        match = re.fullmatch(r'kind\s*:\s*["\']?(brand|layout|deck)["\']?', stripped)
-        if match:
-            return match.group(1) in {'layout', 'deck'}
-    return False
+            break
+        kind_match = re.fullmatch(
+            r'kind\s*:\s*["\']?(brand|layout|deck)["\']?',
+            stripped,
+        )
+        if kind_match:
+            kind = kind_match.group(1)
+            continue
+        replication_match = re.fullmatch(
+            r'replication_mode\s*:\s*["\']?(standard|fidelity|mirror)["\']?',
+            stripped,
+        )
+        if replication_match:
+            replication_mode = replication_match.group(1)
+    return {
+        'enabled': kind in {'layout', 'deck'},
+        'kind': kind,
+        'replication_mode': replication_mode,
+    }
 
 
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
@@ -548,26 +583,85 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
         recommend = data['recommend'] = {}
-    for key in _ANCHOR_RECOMMEND_KEYS:
+    for key in _CONTRACT_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
             recommend[key] = res[key]
-    for key in _ANCHOR_VALUE_KEYS:
+    for key in _CONTRACT_VALUE_KEYS:
         if key in res:
             data[key] = {'value': res.get(key) or ''}
     if _recommendation_stage(data) < 3:
         return
-    for key in _DESIGN_RECOMMEND_KEYS:
+    for key in _DECK_DIRECTION_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
             recommend[key] = res[key]
     if 'page_count' in res:
         data['page_count'] = {'value': res.get('page_count') or ''}
+    if 'image_notes' in res:
+        data['image_notes'] = {'value': res.get('image_notes') or ''}
     if isinstance(res.get('color'), dict):
         data['color'] = {'selected': 0, 'candidates': [res['color']]}
     if isinstance(res.get('typography'), dict):
-        typography = {'selected': 0, 'candidates': [res['typography']]}
-        if res.get('formula_policy') not in (None, ''):
-            typography['formula_policy'] = {'value': res['formula_policy']}
-        data['typography'] = typography
+        data['typography'] = {'selected': 0, 'candidates': [res['typography']]}
+    if isinstance(res.get('image_strategy'), dict):
+        data['image_strategy'] = {
+            'selected': 0,
+            'candidates': [res['image_strategy']],
+        }
+    # Stage 3 must retain its own production recommendations until final
+    # confirmation. A final-result reopen reflects those confirmed mechanics.
+    # Legacy single-pass results have no stage but do carry status=confirmed.
+    result_stage = _stage_key(res.get('stage'))
+    is_final = result_stage == 'final' or (
+        result_stage is None and res.get('status') == 'confirmed'
+    )
+    if not is_final:
+        return
+    for key in _PRODUCTION_RECOMMEND_KEYS:
+        if res.get(key) not in (None, ''):
+            recommend[key] = res[key]
+    if 'refine_spec' in res:
+        data['refine_spec'] = {'value': bool(res.get('refine_spec'))}
+
+
+def _apply_locked_recommendations(
+    result: dict,
+    recommendations_file: Path,
+    previous_result_file: Path,
+) -> dict:
+    """Restore profile-locked fields and return locks for staged carry-over."""
+    # This marker is server-owned; never accept a client-supplied carry-over map.
+    result.pop(_LOCKED_RECOMMENDATIONS_KEY, None)
+    locked_values = {}
+    try:
+        previous = _read_json_object(previous_result_file)
+    except (OSError, json.JSONDecodeError, ValueError):
+        previous = {}
+    previous_locks = previous.get(_LOCKED_RECOMMENDATIONS_KEY)
+    if isinstance(previous_locks, dict):
+        locked_values.update(previous_locks)
+
+    try:
+        recommendations = _read_json_object(recommendations_file)
+        recommendations_loaded = True
+    except (OSError, json.JSONDecodeError, ValueError):
+        recommendations = {}
+        recommendations_loaded = False
+
+    # Stage 1 starts a new contract and therefore replaces any stale locks left
+    # by an earlier run. Later stages inherit those locks across server restarts.
+    if (
+        recommendations_loaded
+        and _recommendation_stage(recommendations) in {0, 1}
+    ):
+        locked_values = {}
+    for key, field in recommendations.items():
+        if not isinstance(field, dict) or field.get('locked') is not True:
+            continue
+        if 'value' in field:
+            locked_values[key] = field.get('value') or ''
+    for key, value in locked_values.items():
+        result[key] = value
+    return locked_values
 
 
 def _wait_only_for_result(
@@ -741,8 +835,6 @@ def _ai_comparison_items(kind: str) -> list[dict[str, str]]:
 def _build_ai_image_comparison() -> dict:
     return {
         'rendering': _ai_comparison_items('rendering'),
-        'palette': _ai_comparison_items('palette'),
-        'type': _ai_comparison_items('type'),
     }
 
 
@@ -862,7 +954,7 @@ def create_app(
 
     @app.route('/api/ai-image-comparison')
     def get_ai_image_comparison_manifest():
-        """Serve generated-image reference options from ai-image-comparison."""
+        """Serve generated-image rendering references for the current UI."""
         try:
             resp = jsonify(_build_ai_image_comparison())
             resp.headers['Cache-Control'] = 'no-store'
@@ -872,8 +964,8 @@ def create_app(
 
     @app.route('/ai-image-comparison/<kind>/<filename>')
     def get_ai_image_comparison(kind: str, filename: str):
-        """Serve reference images for generated-image strategy candidates."""
-        if kind not in {'rendering', 'palette', 'type'}:
+        """Serve rendering images for generated-image strategy candidates."""
+        if kind != 'rendering':
             return jsonify({'error': 'invalid comparison kind'}), 404
         if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', filename or ''):
             return jsonify({'error': 'invalid comparison filename'}), 404
@@ -895,21 +987,43 @@ def create_app(
         # Later stages render only downstream sections, so fold earlier confirmed
         # choices from result.json back in. A refresh / reopen then re-inits from
         # the user's choices instead of catalog defaults.
-        if _recommendation_stage(data) >= 2 and result_file.exists():
+        rec_stage_number = _recommendation_stage(data)
+        if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
-        template_adherence_enabled = _template_adherence_enabled(project_path)
+        template_context = _template_context(project_path)
+        # Template use is a Stage-2 direction decision derived from the confirmed
+        # communication contract. Keep it off the Stage-1 page even when a
+        # deck/layout workspace is installed. Legacy single-pass files (stage 0)
+        # still expose the controls.
+        template_adherence_enabled = bool(
+            template_context['enabled'] and rec_stage_number != 1
+        )
         data['_template_adherence_enabled'] = template_adherence_enabled
+        data['_template_reuse_scope_enabled'] = template_adherence_enabled
+        data['_template_replication_mode'] = template_context['replication_mode']
         recommend = data.get('recommend')
         if template_adherence_enabled:
             if not isinstance(recommend, dict):
                 recommend = data['recommend'] = {}
-            recommend.setdefault('template_adherence', 'adaptive')
+            recommend.setdefault('template_reuse_scope', 'layout')
+            if (
+                recommend.get('template_reuse_scope') == 'mirror'
+                and template_context['replication_mode'] != 'mirror'
+            ):
+                recommend['template_reuse_scope'] = 'layout'
+            if recommend.get('template_reuse_scope') == 'style':
+                recommend.pop('template_adherence', None)
+                data.pop('template_adherence', None)
+            else:
+                recommend.setdefault('template_adherence', 'adaptive')
         else:
             if isinstance(recommend, dict):
+                recommend.pop('template_reuse_scope', None)
                 recommend.pop('template_adherence', None)
+            data.pop('template_reuse_scope', None)
             data.pop('template_adherence', None)
         # The page polls this endpoint after a stage-1 confirm until the AI
-        # overwrites the file with the re-derived stage-2 recommendations, so it
+        # overwrites the file with the once-authored stage-2 recommendations, so it
         # must never be served from a cache.
         resp = jsonify(data)
         resp.headers['Cache-Control'] = 'no-store'
@@ -923,18 +1037,49 @@ def create_app(
             return jsonify({'error': 'invalid payload'}), 400
         confirm_dir.mkdir(parents=True, exist_ok=True)
         result = dict(payload)
-        # Staged flow: stage-1 / stage-2 submits record intermediate choices but do
+        result_file = confirm_dir / RESULT_NAME
+        locked_values = _apply_locked_recommendations(
+            result,
+            confirm_dir / RECOMMENDATIONS_NAME,
+            result_file,
+        )
+        stage = _stage_key(result.get('stage'))
+        template_context = _template_context(project_path)
+        if template_context['enabled'] and stage != 'stage1':
+            reuse_scope = result.get('template_reuse_scope')
+            if reuse_scope not in _TEMPLATE_REUSE_SCOPES:
+                return jsonify({
+                    'error': 'template_reuse_scope must be mirror, layout, or style',
+                }), 400
+            if (
+                reuse_scope == 'mirror'
+                and template_context['replication_mode'] != 'mirror'
+            ):
+                return jsonify({
+                    'error': 'mirror reuse requires replication_mode: mirror',
+                }), 400
+            if reuse_scope == 'style':
+                result.pop('template_adherence', None)
+            elif result.get('template_adherence') not in _TEMPLATE_ADHERENCE_MODES:
+                return jsonify({
+                    'error': 'template_adherence must be strict or adaptive',
+                }), 400
+        else:
+            result.pop('template_reuse_scope', None)
+            result.pop('template_adherence', None)
+        # Staged flow: Stage 1 / Stage 2 submits record intermediate choices but do
         # NOT close the page. Only a final submit is a full confirmation. A
         # payload with no stage is a single-pass confirmation (chat-opt-out parity).
-        stage = _stage_key(result.get('stage'))
         if stage in {'stage1', 'stage2'}:
             result['stage'] = stage
             result['status'] = f'{stage}-confirmed'
+            if locked_values:
+                result[_LOCKED_RECOMMENDATIONS_KEY] = locked_values
         else:
+            result.pop(_LOCKED_RECOMMENDATIONS_KEY, None)
             result['stage'] = 'final'
             result['status'] = 'confirmed'
         result['confirmed_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
-        result_file = confirm_dir / RESULT_NAME
         _write_json_atomic(result_file, result)
         _sync_session_state(
             confirm_dir,
@@ -975,7 +1120,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--wait-stage', default='final', metavar='{stage2,final}',
         help='With --wait-only, wait for this result.json stage (default: final). '
-             'Use stage2 for the middle handoff in the three-stage flow.',
+             'Use stage2 for the direction handoff in the three-stage flow.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,

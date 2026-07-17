@@ -4821,6 +4821,12 @@ def create_pptx_with_native_svg(
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
             is_layout_definition = slide_num > public_slide_count
+            progress_label = (
+                f"[Layout definition {slide_num - public_slide_count}/"
+                f"{len(definition_svg_files)}]"
+                if is_layout_definition
+                else f"[Slide {slide_num}/{public_slide_count}]"
+            )
             expected_animation_targets: list[tuple[int, int, str, float]] = []
             expected_animation_duration = animation_duration
             expected_animation_trigger = normalize_animation_trigger(animation_trigger)
@@ -5251,19 +5257,18 @@ def create_pptx_with_native_svg(
                     has_notes = slide_num in notes_slides_created
                     notes_str = " +notes" if has_notes else ""
                     narration_str = " +narration" if slide_num in narration_slides_created else ""
-                    definition_str = (
-                        " [Layout definition]" if is_layout_definition else ""
-                    )
                     print(
-                        f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}"
-                        f"{notes_str}{narration_str}{definition_str}"
+                        f"  {progress_label} {svg_path.name}{mode_str}"
+                        f"{notes_str}{narration_str}"
                     )
 
                 success_count += 1
 
             except Exception as e:
                 if verbose:
-                    print(f"  [{i}/{len(svg_files)}] {svg_path.name} - Error: {e}")
+                    print(
+                        f"  {progress_label} {svg_path.name} - Error: {e}"
+                    )
                 if use_native_shapes:
                     raise
 

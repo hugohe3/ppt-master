@@ -168,6 +168,7 @@ Future work should improve this outcome in the following priority order:
 
 | Document | Responsibility |
 |---|---|
+| [`what-is-ppt.md`](./what-is-ppt.md) | Definition of the presentation medium, user jobs, lifecycle, native object model, templates, and quality layers; the upstream premise for this document |
 | This document | Long-term product position, promises, capability boundary, and admission test |
 | [`why-ppt-master.md`](./why-ppt-master.md) | User-facing differentiation and reasons to choose the project |
 | [`technical-design.md`](./technical-design.md) | Current architecture and implementation invariants |
