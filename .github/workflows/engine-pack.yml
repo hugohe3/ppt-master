@@ -1,25 +1,14 @@
 # Build multi-arch engine packs and publish to GitHub Releases.
 #
-# Automatic path (canonical):
-#   git tag engine-v0.1.1 && git push origin engine-v0.1.1
-#   → matrix build → non-draft release on that tag with all zips
-#
-# Manual path:
-#   workflow_dispatch with optional release_tag (e.g. engine-v0.1.0)
-#   → rebuild and upload/replace assets on that tag (published, not draft)
+# Only path: push a tag matching engine-v*
+#   git tag engine-v0.1.0 && git push origin engine-v0.1.0
+#   → matrix build → published release on that tag (all platform zips)
 name: engine-pack
 
 on:
   push:
     tags:
       - "engine-v*"
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: "Release tag to create/update (e.g. engine-v0.1.0). Empty = no release upload."
-        type: string
-        required: false
-        default: ""
 
 permissions:
   contents: write
@@ -61,30 +50,17 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y rsync
 
-      - name: Resolve ENGINE_VERSION
-        id: ver
-        shell: bash
-        run: |
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            T="${{ github.ref_name }}"
-          elif [[ -n "${{ inputs.release_tag }}" ]]; then
-            T="${{ inputs.release_tag }}"
-          else
-            T="0.1.0-dev"
-          fi
-          V="${T#engine-v}"
-          V="${V#v}"
-          echo "engine_version=$V" >> "$GITHUB_OUTPUT"
-          echo "release_tag=${T}" >> "$GITHUB_OUTPUT"
-          echo "Using ENGINE_VERSION=$V (tag/input=$T)"
-
       - name: Build engine pack
         shell: bash
         env:
           PYTHON: python
-          ENGINE_VERSION: ${{ steps.ver.outputs.engine_version }}
+          # tag engine-v0.1.0 → 0.1.0
+          ENGINE_VERSION: ${{ github.ref_name }}
         run: |
           chmod +x engine/build.sh
+          V="${ENGINE_VERSION#engine-v}"
+          V="${V#v}"
+          export ENGINE_VERSION="$V"
           engine/build.sh
 
       - name: Ensure zip
@@ -124,13 +100,8 @@ jobs:
 
   release:
     needs: build
-    # Tag push always publishes; dispatch only when release_tag is set.
-    if: >-
-      always()
-      && (
-        github.ref_type == 'tag'
-        || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
-      )
+    # Publish whatever matrix legs produced artifacts (do not require every OS).
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -141,34 +112,22 @@ jobs:
 
       - name: List artifacts
         run: |
-          ls -lah artifacts/
-          test -n "$(ls artifacts/*.zip 2>/dev/null)" || { echo "no zips"; exit 1; }
+          ls -lah artifacts/ || true
+          test -n "$(ls artifacts/*.zip 2>/dev/null)" || { echo "no zips to publish"; exit 1; }
 
-      - name: Resolve release tag
-        id: tag
-        shell: bash
-        run: |
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            echo "name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "name=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish GitHub Release (tag → assets, not draft)
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.name }}
-          name: ${{ steps.tag.outputs.name }}
-          # Tag-driven releases are always published (downloadable).
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           draft: false
-          # Re-running the same tag replaces/updates assets on that release.
           make_latest: false
           files: artifacts/*.zip
           fail_on_unmatched_files: true
           body: |
             Self-contained **ppt-master engine packs** for desktop embeds (e.g. MindMux).
 
-            Built automatically from tag `${{ steps.tag.outputs.name }}`.
+            Built automatically from tag `${{ github.ref_name }}`.
 
             | Asset | Platform |
             |-------|----------|
@@ -184,7 +143,7 @@ jobs:
               manifest.json
             ```
 
-            Consumer URL pattern:
-            `https://github.com/<owner>/ppt-master/releases/download/<tag>/ppt-master-engine-{platform}-{arch}.zip`
+            URL:
+            `https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/ppt-master-engine-{platform}-{arch}.zip`
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
