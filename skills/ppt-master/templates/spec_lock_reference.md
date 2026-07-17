@@ -2,7 +2,7 @@
 
 > **⚠️ Skeleton for Strategist — do NOT copy verbatim into a project.** When producing `<project_path>/spec_lock.md`, emit only `##` sections with filled-in `-` data lines. Do NOT carry over any `>` blockquote guidance, HARD-rule notes, or override examples — those are author-time guidance, not runtime data. Every output line must be parseable data.
 >
-> Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. For design narrative (rationale, audience, style), see `design_spec.md`.
+> Machine-readable execution contract. Executor MUST `read_file` this before every SVG page. Values not listed here must NOT appear in SVGs. The compact communication section keeps every page aligned with why the deck exists; fuller rationale remains in `design_spec.md`.
 >
 > After SVG generation begins, this is the canonical source for color / font / icon / image values. Supported color/font modifications should go through `scripts/update_spec.py` to keep this file and generated SVGs in sync. Canvas changes are intentionally not bulk-rewritten by that tool.
 
@@ -11,6 +11,17 @@
 - format: PPT 16:9
 
 > Strategist: fill viewBox and format for the chosen canvas. New authoring uses the canonical `0 0 W H` spelling with positive integer pixels. Every generated page and internal Layout prototype must match this numeric canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story). Changing the canvas after authoring starts requires re-authoring and re-validating affected SVGs; `update_spec.py` does not propagate canvas changes.
+
+## communication
+- audience: Executive committee with finance and product leads
+- communication_intent: Report progress and expose delivery risk first; then obtain a decision on the next investment
+- audience_outcome: The committee can compare the options, accepts the risk framing, and chooses one funded path
+- core_message: Fund option B now because it protects the launch date at an acceptable incremental cost
+- delivery_context: Presenter-led 20-minute leadership review; recording and deck shared afterward
+- artifact_afterlife: Approval record, project hand-off reference, and quarterly audit trail
+- consumption_mode: balanced
+
+> Strategist: copy the confirmed Stage-1 prose plus Stage-2 reading mode. All keys above remain present; any Stage-1 prose value may be empty after explicit confirmation. Do not restore recommendation text into an empty value. `communication_intent` is open prose and may preserve several purposes plus priority / sequence; never replace it with one enum label. `consumption_mode` is the canonical execution name for the Confirm UI compatibility key `delivery_purpose`; use `text` / `balanced` / `presentation` on PPT canvases and omit it on non-PPT canvases. Do not copy `content_divergence` here—its effect is already authored into §IX. Executor checks this global contract against every page's `Audience move`.
 
 ## mode
 - mode: pyramid
@@ -33,21 +44,18 @@
 - text_secondary: #......
 - border: #......
 - image_rendering: vector-illustration
-- image_palette: cool-corporate
 
 > Strategist: fill only colors actually used. Add extra rows as needed; delete unused rows rather than leave as `#......`.
 >
 > **PowerPoint theme roles.** Flat and structured export map `bg` / `background` / `master_bg` → `lt1`, `secondary_bg` / `bg_secondary` → `lt2`, `text` / `body_text` → `dk1`, `text_secondary` → `dk2`, `primary` → `accent1`, `accent` → `accent2`, `secondary_accent` → `accent3`, and `border` → `accent4`. The first two additional non-black/non-white roles become `accent5` / `accent6`; remaining colors stay fixed. Mapping is usage-aware, so a background HEX is not automatically reused for inverse text.
 >
-> **`image_rendering` and `image_palette`** — required only when `images` section below contains `ai`-sourced files. Values MUST be valid names from `references/image-renderings/_index.md` and `references/image-palettes/_index.md`, **or** the literal string `custom`. Image_Generator reads these and applies them deck-wide. Omit both rows when the deck has no AI-generated images.
+> **`image_rendering`** — required only when `images` below contains `ai`-sourced files. It is a valid name from `references/image-renderings/_index.md`, or the literal `custom`. Image_Generator applies it deck-wide and derives image color instructions directly from the ordinary color-role rows above. Omit it when the deck has no AI-generated images. New flows never author an independent `image_palette`; the current generation flow ignores a legacy row, which cannot override these HEX roles.
 >
-> **`custom` escape hatch.** When set to `custom`, add a sibling `*_behavior` row carrying a one-paragraph prose description. Image_Generator splices the prose into the prompt in place of the preset file's fewshot snippet. Tail-case only — see [`image-renderings/_index.md`](../references/image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](../references/image-palettes/_index.md) §2 for invocation rules.
+> **`custom` escape hatch.** When set to `custom`, add `image_rendering_behavior` with a one-paragraph description. Image_Generator splices it into the prompt in place of the preset rendering snippet. Tail-case only—see [`image-renderings/_index.md`](../references/image-renderings/_index.md) §1.5.
 >
 > ```
 > - image_rendering: custom
 > - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
-> - image_palette: custom
-> - image_palette_behavior: "Primary deep aubergine `#4C1D95` anchors ~35% of canvas; secondary warm cream `#FEF3C7` carries ~55% as breathing field; accent burnished gold `#D4AF37` in 5-10% as ceremonial accents. No fourth color."
 > ```
 
 ## typography

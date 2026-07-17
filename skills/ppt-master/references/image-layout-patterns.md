@@ -247,7 +247,7 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 
 **Skip-detection signal** — if every page's `Layout pattern` column resolves to bare #2 / #3 / #5 / #6 with no Modifier ids, the catalog was not consulted. Re-read and reconsider.
 
-**Cross-page through-line (recurring motif).** The patterns above are per-page, but a deck reads as *designed* when one illustration motif family recurs across pages — a cover anchor, section dividers repeating the motif for chapter identity (`#75`), and small `#63` spots from the same family threaded through the body. Keep them one family (shared rendering / palette / subject world), vary scale and placement, and never let the recurrence harden into a per-section quota. Planning lives in [strategist.md](./strategist.md) (deck illustration motif); generation mechanics split by role — hero / divider anchors: [image-generator.md](./image-generator.md) §4.1 primitives; body spot sheets: §4.3.
+**Cross-page through-line (recurring motif).** The patterns above are per-page, but a deck reads as *designed* when one illustration motif family recurs across pages—a cover anchor, section dividers repeating the motif (`#75`), and small `#63` spots threaded through the body. Keep one family (shared rendering / locked deck colors / subject world), vary scale and placement, and never turn recurrence into a quota.
 
 ## Hard Constraints
 

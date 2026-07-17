@@ -62,7 +62,7 @@ Source material + intent
 | Mobilize | People move from awareness to action |
 | Record and hand off | The organization retains an approvable, auditable, reusable artifact |
 
-A single deck may serve several jobs, but it still needs a primary job. A “status update,” for example, may appear to inform while its real purpose is to secure a decision, expose risk, or assign responsibility.
+A single deck may serve several jobs. The useful question is not which one label wins, but how those jobs relate: whether any outcome leads, which ones support one another, and in what sequence. A “status update,” for example, may report progress, expose risk, and request a decision in the same flow.
 
 Organizational-communication research treats recurring forms such as proposals, meetings, and reports as socially recognized responses to recurring situations and purposes. That framing is useful here: a deck is not a neutral container; it participates in an organizational communication practice. See Yates and Orlikowski, [“Genres of Organizational Communication”](https://doi.org/10.5465/amr.1992.4279545).
 

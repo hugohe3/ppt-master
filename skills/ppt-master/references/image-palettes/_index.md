@@ -1,4 +1,6 @@
-# Palettes — Index
+# Palettes — Index (Legacy / Internal Reference)
+
+> New confirmation flows do **not** present or author `image_palette`. Image colors inherit `spec_lock.md colors` directly. This catalog remains only as legacy documentation and for maintaining the historical comparison gallery; the current generation flow ignores legacy `image_palette` rows. Never turn it into a user-facing choice or let it override deck HEX roles.
 
 A **palette** is the deck's **color behavior** — proportion, role, temperament. It does **not** supply HEX values; those come from `design_spec.colors`. The palette tells the model how to use the HEX values: which dominates, which carries accent, what proportion the background occupies, what the overall temperament feels like.
 
@@ -29,7 +31,7 @@ Each palette has its own file with: rendering compatibility matrix and a fewshot
 
 ---
 
-## 2. Escape hatch — `custom`
+## 2. Legacy escape hatch — `custom`
 
 When no preset temperament matches (brand HEX outside preset ranges, ceremonial / cultural / niche aesthetic), set `image_palette: custom` and supply a one-paragraph `image_palette_behavior`.
 
@@ -61,7 +63,7 @@ When no preset temperament matches (brand HEX outside preset ranges, ceremonial 
 
 ---
 
-## 3. Auto-selection table — `design_spec` → palette
+## 3. Legacy auto-selection table — `design_spec` → palette
 
 Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wins. **No row matches** → use `custom` per §2 rather than force-fitting `cool-corporate`.
 
@@ -87,7 +89,7 @@ Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wi
 
 ---
 
-## 4. Rendering × Palette compatibility
+## 4. Historical Rendering × Palette compatibility
 
 Some combinations clash. Use this matrix as a sanity check after auto-selection.
 
@@ -118,10 +120,8 @@ Some combinations clash. Use this matrix as a sanity check after auto-selection.
 
 ---
 
-## 5. How to use
+## 5. Legacy interpretation only
 
-1. After picking rendering, look up your candidate palette in the auto-selection table.
-2. Cross-check the compatibility matrix — if `✗`, pick the alternate.
-3. `read_file image-palettes/<chosen>.md` and apply its proportion + role rules to the deck's HEX values when assembling prompts. (For `custom`, this step is replaced by the consumption branch in [`image-generator.md`](../image-generator.md) Step 2 — no preset file to read.)
+Use this catalog only to understand a historical lock or maintain comparison assets. Do not select a palette, load a palette file, or author `image_palette` / `image_palette_behavior` in the current flow; assemble image prompts from the locked deck color roles instead.
 
 **Lock for the whole deck.**
