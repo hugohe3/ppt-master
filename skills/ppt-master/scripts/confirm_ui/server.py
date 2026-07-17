@@ -1023,7 +1023,7 @@ def create_app(
             data.pop('template_reuse_scope', None)
             data.pop('template_adherence', None)
         # The page polls this endpoint after a stage-1 confirm until the AI
-        # overwrites the file with the re-derived stage-2 recommendations, so it
+        # overwrites the file with the once-authored stage-2 recommendations, so it
         # must never be served from a cache.
         resp = jsonify(data)
         resp.headers['Cache-Control'] = 'no-store'

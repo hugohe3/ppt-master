@@ -21,7 +21,7 @@
 - artifact_afterlife: Approval record, project hand-off reference, and quarterly audit trail
 - consumption_mode: balanced
 
-> Strategist: copy the confirmed Stage-1 prose plus Stage-2 reading mode. All keys above remain present; any Stage-1 prose value may be empty after explicit confirmation. Do not restore recommendation text into an empty value. `communication_intent` is open prose and may preserve several purposes plus priority / sequence; never replace it with one enum label. `consumption_mode` is the canonical execution name for the Confirm UI compatibility key `delivery_purpose`; use `text` / `balanced` / `presentation` on PPT canvases and omit it on non-PPT canvases. Do not copy `content_divergence` here—its effect is already authored into §IX. Executor checks this global contract against every page's `Audience move`.
+> Strategist: copy the confirmed Stage-1 prose plus Stage-2 reading mode. All keys above remain present; any Stage-1 prose value may be empty after explicit confirmation. Do not restore recommendation text into an empty value. `communication_intent` is open prose and may preserve several purposes plus priority / sequence; never replace it with one enum label. `consumption_mode` is the canonical execution name for the Confirm UI compatibility key `delivery_purpose`; use `text` / `balanced` / `presentation` on PPT canvases and omit it on non-PPT canvases. It is an execution constraint on page grammar, granularity, density / rhythm, and note burden—not a font-size label. Typography sizes remain separately locked below. Do not copy `content_divergence` here—its effect is already authored into §IX. Executor checks this global contract against every page's `Audience move`.
 
 ## mode
 - mode: pyramid

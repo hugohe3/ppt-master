@@ -98,7 +98,7 @@
             body_size_hint_purpose: "This reading mode recommends {def}px — one fixed size, not a range.",
             body_size_hint_oor: "(Current value is outside the usual range for this canvas — check the unit is right and that it fits.)",
             delivery_purpose: "Reading mode",
-            delivery_purpose_hint: "Read-close decks can run smaller; projected decks need larger type.",
+            delivery_purpose_hint: "Choose where the meaning lives: read-close decks explain themselves with complete sentences and detail; presenter-led decks use one idea, concise claims, and visual evidence.",
             size_override: "Per-role size override:",
             size_role_title: "title",
             size_role_subtitle: "subtitle",
@@ -231,7 +231,7 @@
             body_size_hint_purpose: "この閲覧モードの推奨は{def}px — 範囲ではなく固定値です。",
             body_size_hint_oor: "（現在の値はこのキャンバスの通常範囲外です — 単位とサイズ感を確認してください。）",
             delivery_purpose: "閲覧モード",
-            delivery_purpose_hint: "手元で読む資料は小さめでOK、投影する資料は大きめの文字が必要です。",
+            delivery_purpose_hint: "情報を主にページと話者のどちらに担わせるかを決めます。近距離閲覧は完全な文と細部で自立させ、プレゼン型は1枚1メッセージで短い主張と視覚的根拠を中心にします。",
             size_override: "役割ごとのサイズ上書き：",
             size_role_title: "タイトル",
             size_role_subtitle: "サブタイトル",
@@ -364,7 +364,7 @@
             body_size_hint_purpose: "该阅读模式推荐 {def}px（单一固定值，非区间）。",
             body_size_hint_oor: "（当前数值超出该画布的常用范围——请确认单位无误、是否合适。）",
             delivery_purpose: "阅读模式",
-            delivery_purpose_hint: "近读型可以小一点；投影型需要更大的字。",
+            delivery_purpose_hint: "决定信息主要由页面还是讲者承担：近读型用完整句、短段落和细节自洽；演讲型一页一意，以简短主张和视觉证据为主。",
             size_override: "逐角色字号覆盖：",
             size_role_title: "标题",
             size_role_subtitle: "副标题",
@@ -808,8 +808,8 @@
     }
     // Render an enumerable field: ALL options from the catalog, recommended one
     // badged, current selection from STATE, plus a trailing Custom box. Callers
-    // may place Custom on its own row when it represents a qualitatively
-    // different path rather than another preset.
+    // may place Custom or selected sentinel options on their own rows when they
+    // represent qualitatively different paths rather than another preset.
     // `list` is either a flat array of {id,label,desc,dim,viewbox} or a grouped array
     // of {group, items:[...]}.
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
@@ -901,9 +901,17 @@
             }
         } else {
             var wrap = el("div", chipsClass);
-            flat.forEach(function (o) { wrap.appendChild(makeChip(o)); });
+            var ownRowIds = opts2.ownRowIds || [];
+            flat.filter(function (o) { return ownRowIds.indexOf(o.id) === -1; })
+                .forEach(function (o) { wrap.appendChild(makeChip(o)); });
             if (allowCustom && !opts2.customOnOwnRow) wrap.appendChild(buildCustomChip());
             parent.appendChild(wrap);
+            flat.filter(function (o) { return ownRowIds.indexOf(o.id) >= 0; })
+                .forEach(function (o) {
+                    var ownRow = el("div", "chips standalone-chip-row");
+                    ownRow.appendChild(makeChip(o));
+                    parent.appendChild(ownRow);
+                });
             if (allowCustom && opts2.customOnOwnRow) {
                 var customRow = el("div", "chips custom-chip-row");
                 customRow.appendChild(buildCustomChip());
@@ -1234,7 +1242,10 @@
             function () { return STATE.delivery_purpose; },
             function (v) {
                 STATE.delivery_purpose = v;
-                refreshBodySizeHint();
+                // Same-stage dependency, resolved entirely in the browser: do
+                // not ask the backend to author Stage 2 again. Manual size
+                // overrides remain authoritative.
+                syncUnpinnedTypographySizes(true);
             });
         host.appendChild(sec);
     }
@@ -1251,12 +1262,16 @@
         }
         if (candidate.typography) {
             var typography = normTypography(candidate.typography);
+            var previousTypography = STATE.typography || {};
             STATE.typography = {
                 name: localized(typography, "name") || typography.name || "",
                 heading: typography.heading || {},
                 body: typography.body || {},
-                body_size: typography.body_size || defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose),
-                sizes: Object.assign({}, typography.sizes || {})
+                // A direction changes font character, not the already-visible
+                // reading-mode sizing state.
+                body_size: previousTypography.body_size ||
+                    defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose),
+                sizes: Object.assign({}, previousTypography.sizes || {})
             };
         }
         if (candidate.icons) STATE.icons = normalizeRecId("icons", candidate.icons);
@@ -1415,13 +1430,13 @@
     // Replaced when the combined color+typography preview mounts; the color and
     // typography sections call it after every change so the preview stays live.
     var refreshStylePreview = function () {};
-    // Replaced when a generated-image preview mounts.
+    // Replaced when the selected generated-image preview mounts.
     var refreshImageStrategyPreview = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
     var refreshBodySizeHint = function () {};
-    // Replaced when the typography section mounts; body-size / delivery changes
-    // call it so the per-role size overrides the user hasn't pinned re-derive.
+    // Replaced when the typography section mounts; body-size / reading-mode
+    // changes call it so unpinned per-role values update locally.
     var refreshSizeInputs = function () {};
 
     // Per-role size slots the user can edit directly (parallel to color roles).
@@ -1429,6 +1444,19 @@
     // values are px (the system's only unit).
     var SIZE_ROLES = ["title", "subtitle", "annotation"];
     var SIZE_RATIO = { title: 1.75, subtitle: 1.35, annotation: 0.78 };
+    var TYPOGRAPHY_SIZE_OVERRIDES = {
+        body: false,
+        title: false,
+        subtitle: false,
+        annotation: false
+    };
+
+    function resetTypographySizeOverrides() {
+        Object.keys(TYPOGRAPHY_SIZE_OVERRIDES).forEach(function (role) {
+            TYPOGRAPHY_SIZE_OVERRIDES[role] = false;
+        });
+    }
+
     function deriveSize(role, bodyVal) {
         var raw = (bodyVal || 0) * (SIZE_RATIO[role] || 1);
         // All px. On PPT, snap the recommended role size to a clean even number so
@@ -1487,6 +1515,31 @@
         if (!h) return 40;
         var band = bodySizeRatioBand(canvasVal);
         return Math.round(h * (band.lo + band.hi) / 2);
+    }
+
+    // Resolve the only deterministic same-stage size dependency locally. The
+    // backend authors Stage 2 once; changing reading mode or body size updates
+    // only unpinned values already visible in this page.
+    function syncUnpinnedTypographySizes(resetBodyFromReadingMode) {
+        if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
+        if (!STATE.typography.sizes) STATE.typography.sizes = {};
+        if (resetBodyFromReadingMode && !TYPOGRAPHY_SIZE_OVERRIDES.body) {
+            STATE.typography.body_size = defaultBodySizeForCanvas(
+                STATE.canvas, STATE.delivery_purpose
+            );
+        }
+        var body = parseFloat(STATE.typography.body_size);
+        if (!isFinite(body)) {
+            body = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
+        }
+        SIZE_ROLES.forEach(function (role) {
+            if (!TYPOGRAPHY_SIZE_OVERRIDES[role]) {
+                STATE.typography.sizes[role] = deriveSize(role, body);
+            }
+        });
+        refreshSizeInputs();
+        refreshBodySizeHint();
+        refreshStylePreview();
     }
 
     function roundSize(value) {
@@ -1655,7 +1708,7 @@
         var sec = section(6, "sec_icons");
         enumField(sec, CAT.icons, recOrFirst("icons", CAT.icons),
             function () { return STATE.icons; }, function (v) { STATE.icons = v; refreshStylePreview(); },
-            { allowCustom: true });
+            { allowCustom: true, customOnOwnRow: true, ownRowIds: ["none"] });
         host.appendChild(sec);
     }
 
@@ -1692,15 +1745,18 @@
         customInput.placeholder = t("custom_typography_placeholder");
         customInput.style.display = "none";
 
-        function selectFont(idx, preserveSizing) {
+        function selectFont(idx) {
             var c = normTypography(cands[idx] || {});
             var prev = STATE.typography || {};
             STATE.typography = {
                 name: localized(c, "name") || c.name || "",
                 heading: c.heading || {},
                 body: c.body || {},
-                body_size: (preserveSizing && prev.body_size) ? prev.body_size : (c.body_size || prev.body_size || ""),
-                sizes: (preserveSizing && prev.sizes) ? Object.assign({}, prev.sizes) : Object.assign({}, c.sizes || {})
+                // Font cards choose family and character. Reading mode and
+                // explicit size inputs own the sizing state.
+                body_size: prev.body_size ||
+                    defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose),
+                sizes: Object.assign({}, prev.sizes || {})
             };
             if (sizeInput) sizeInput.value = STATE.typography.body_size || "";
             customInput.style.display = "none";
@@ -1735,7 +1791,6 @@
             top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             var meta = t("font_heading") + " " + t("cjk") + ":" + (head.cjk || "—") + " / " + t("latin") + ":" + (head.latin || "—")
                 + "  ·  " + t("font_body") + " " + t("cjk") + ":" + (body.cjk || "—") + " / " + t("latin") + ":" + (body.latin || "—");
-            if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + "px";
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
             var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css, "heading"); card.appendChild(hbox);
@@ -1766,22 +1821,22 @@
         sizeInput.max = "96";
         sizeInput.step = "1";
         sizeInput.value = (STATE.typography && STATE.typography.body_size) || "";
-        sizeInput.placeholder = isPptCanvas(STATE.canvas) ? "16 / 20 / 24" : "40 / 48";
+        sizeInput.placeholder = isPptCanvas(STATE.canvas) ? "20 / 24 / 32" : "40 / 48";
         sizeInput.addEventListener("input", function () {
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
-            // Independent input — body never auto-changes the role sizes (no
-            // interlinking); the role inputs carry their own values.
             STATE.typography.body_size = sizeInput.value;
-            refreshBodySizeHint();   // hint text only (e.g. out-of-range flag) — no value cascade
-            refreshStylePreview();
+            TYPOGRAPHY_SIZE_OVERRIDES.body = sizeInput.value !== "";
+            // Body is an explicit local anchor. Recompute only role values the
+            // user has not edited; no request leaves the browser.
+            syncUnpinnedTypographySizes(false);
         });
         sizeRow.appendChild(sizeInput);
         sizeRow.appendChild(el("span", "font-size-unit", "px"));
         var sizePtHint = el("div", "toggle-desc body-size-pt");
         var sizeHint = el("div", "toggle-desc body-size-hint");
-        // Hint only — the user's value is never overwritten; downstream §g
-        // re-derives if ignored. PPT body is one fixed px value per delivery
-        // purpose (not a range); non-PPT canvases scale px to canvas height.
+        // PPT body is one fixed px value per reading mode (not a range); non-PPT
+        // canvases scale px to canvas height. A manually pinned value is never
+        // overwritten by later reading-mode changes.
         // Everything is px — lo/hi are only a sanity envelope for the OOR flag.
         refreshBodySizeHint = function () {
             var txt = t("font_body_size_hint");
@@ -1799,7 +1854,7 @@
                         .replace("{lo}", lo).replace("{hi}", hi);
                 }
             }
-            // Flag (hint only — never auto-corrected) a value far outside the
+            // Flag (hint only) a value far outside the
             // canvas's usual px range, so an accidental extreme value is visible
             // instead of silently submitting it.
             var cur = parseFloat(STATE.typography && STATE.typography.body_size);
@@ -1816,8 +1871,9 @@
         sizeField.appendChild(sizePtHint);
         sizeField.appendChild(sizeHint);
 
-        // Reading mode is confirmed in Stage 2 before typography is edited. Its
-        // compatibility key remains delivery_purpose, and it drives this hint.
+        // Reading mode and typography are both confirmed in Stage 2. Its
+        // compatibility key remains delivery_purpose; the dependency is a local
+        // deterministic update, not a second Stage-2 recommendation.
         sec.appendChild(sizeField);
 
         // Per-role size override (parallel to color's per-role HEX override): the
@@ -1844,8 +1900,8 @@
             inp.addEventListener("input", function () {
                 if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
                 if (!STATE.typography.sizes) STATE.typography.sizes = {};
-                // Independent input — each role holds its own value; no cascade.
                 STATE.typography.sizes[role] = inp.value;
+                TYPOGRAPHY_SIZE_OVERRIDES[role] = true;
                 refreshRolePtHint(role);
                 refreshStylePreview();
             });
@@ -1860,14 +1916,12 @@
         sizeOverride.appendChild(srow);
         sec.appendChild(sizeOverride);
 
-        // Inputs are independent — this only **fills a role that has no value yet**
-        // (a one-time starting suggestion from the ramp) and reflects the current
-        // value into the input. It never overwrites an existing value, so editing
-        // body / purpose / canvas does not cascade into the role sizes, and a
-        // re-render (canvas / language switch) preserves exactly what the user sees.
+        // Reflect state into the controls. Derivation itself happens only through
+        // syncUnpinnedTypographySizes(); a re-render preserves the visible state.
         refreshSizeInputs = function () {
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
             if (!STATE.typography.sizes) STATE.typography.sizes = {};
+            sizeInput.value = STATE.typography.body_size || "";
             var bodyVal = parseFloat(STATE.typography.body_size) ||
                 (isPptCanvas(STATE.canvas) ? deliveryBodyPx(STATE.delivery_purpose).def : 40);
             SIZE_ROLES.forEach(function (role) {
@@ -1886,7 +1940,7 @@
         if (STATE.typography && STATE.typography.name) cands.forEach(function (c, i) {
             if ((localized(c, "name") || c.name) === STATE.typography.name) selIdx = i;
         });
-        if (selIdx >= 0) selectFont(selIdx, true);
+        if (selIdx >= 0) selectFont(selIdx);
         else if (STATE.typography && STATE.typography.name === "custom") {
             customInput.value = STATE.typography.custom || "";
             customCard.classList.add("selected");
@@ -2013,7 +2067,10 @@
             if (!row) visual.appendChild(el("div", "toggle-desc", t("image_strategy_no_reference")));
             title.textContent = strategy.name || t("image_strategy_manual");
             var parts = [];
-            if (strategy.rendering) parts.push(t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", strategy.rendering));
+            if (strategy.rendering) {
+                parts.push(t("image_strategy_rendering") + ": " +
+                    comparisonValueLabel("rendering", strategy.rendering));
+            }
             if (strategy.custom) parts.push(strategy.custom);
             desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
         }
@@ -2080,7 +2137,7 @@
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
         strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
-        var strategyGrid = el("div", "font-grid");
+        var strategyGrid = el("div", "font-grid image-strategy-grid");
         var strategyCands = imageStrategyRecommendationCandidates();
 
         function markStrategyCard(selectedCard) {
@@ -2132,6 +2189,8 @@
         });
         if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
 
+        // Custom is a separate full-width path below the three recommended
+        // thumbnails, not a fourth visual recommendation.
         var manualCard = el("div", "font-card image-strategy-manual-card");
         var manualTop = el("div", "font-card-head");
         manualTop.appendChild(el("span", "font-card-name", t("image_strategy_manual")));
@@ -2420,9 +2479,10 @@
 
     // Stage-2 fields are (re-)read from the recommendations. At boot they come from
     // whatever recommendations.json carried; after a stage-1 confirm enterStage()
-    // calls this again with the re-derived candidates. Stage-1 STATE is preserved
+    // calls this again with the newly authored candidates. Stage-1 STATE is preserved
     // across the single-session transition — this never resets the contract.
     function initStage2State() {
+        resetTypographySizeOverrides();
         // Reading mode is a design-density tool, not part of the communication
         // purpose. Keep the legacy delivery_purpose key for JSON compatibility.
         STATE.delivery_purpose = recId("delivery_purpose") ||
@@ -2470,6 +2530,10 @@
         if (STATE.typography && !STATE.typography.body_size) {
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
+        // A freshly authored Stage 2 starts from one deterministic reading-mode
+        // baseline. Stage 3 carries the confirmed Stage-2 values and must not
+        // normalize them again.
+        if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(true);
         var rawImageUsage = recValue("image_usage") || directionField("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {
@@ -2508,7 +2572,7 @@
         ov.style.display = "flex";
     }
 
-    // ---- staged submit + re-derive transitions --------------------------
+    // ---- staged submit + next-stage transitions -------------------------
     function communicationPayload() {
         return {
             canvas: STATE.canvas,
@@ -2602,7 +2666,7 @@
 
     // Poll session state first. It is derived from recommendations.json and
     // result.json, so a recovered server can tell the existing page exactly when
-    // the next re-derived stage is ready.
+    // the next once-authored stage is ready.
     function pollForStage(nextStage) {
         fetchJson("/api/session", "session")
             .then(function (session) {
