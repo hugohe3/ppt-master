@@ -1,10 +1,10 @@
 # Execution Lock Structure
 
-`spec_lock.md` is a compact Markdown data contract. Its machine contract is [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json); authoring starts from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md).
+`spec_lock.md` is the machine projection of an audited `design_spec.md`. After confirmation fidelity passes, start from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md); [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns its grammar.
 
 ## 1. Create the artifact
 
-Run the scaffold command once, then fill or remove placeholder data lines:
+After Generate Step 4 Gate 1, run once and project values from the Design Spec:
 
 ```bash
 python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>
@@ -88,6 +88,6 @@ Structured section value shapes:
 python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 ```
 
-Validation reads the existing Markdown form. It reports unresolved `[fill...]` scaffold placeholders, wrong section or field casing, unknown sections or fields, illegal declared enums, malformed page keys, catalog keys without their corresponding SVG asset, broken structured-layout references, and unmet required / forbidden conditional sections. It does not rewrite the lock and is not an automatic generation gate.
+Validation reports unresolved `[fill...]` placeholders, wrong casing, unknown sections or fields, illegal enums, malformed page keys, missing catalog assets, broken structured-layout references, and unmet conditions. It neither rewrites the lock nor checks semantic projection; Generate Step 4 Gate 2 owns that check.
 
 Field meaning and selection logic stay in the owning Strategist modules. Executor branch references own consumption behavior. The schema owns only artifact grammar and structural conditions.

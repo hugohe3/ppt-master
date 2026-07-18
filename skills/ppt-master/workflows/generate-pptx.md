@@ -247,10 +247,11 @@ After filling the lock, compare its machine-relevant values against the complete
 ## ✅ Strategist Phase Complete
 - [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
 - [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
-- [x] Final confirmation re-read; `design_spec.md` audited field by field against it with no confirmed value omitted, substituted, or weakened
+- [x] Final confirmation re-read before Design Spec authoring
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
 - [x] Design Specification & Content Outline generated
+- [x] Gate 1 passed: Design Spec preserves every confirmed value
 - [x] Execution lock (`spec_lock.md`) projected from the completed Design Spec with no independent design decision
 - [x] Communication trace validated: `spec_lock.md ## communication` contains all six contract key lines (optional values may be blank), and every `design_spec.md §IX` Slide block has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
