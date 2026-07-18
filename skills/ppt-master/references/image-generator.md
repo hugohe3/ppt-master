@@ -93,17 +93,21 @@ Use them directly. Do not create another image-color choice and do not change HE
 
 **Hard rule — `custom` escape hatch**: when `image_rendering` is `custom`, do not read a preset rendering file. Splice `image_rendering_behavior` into the prompt. The deck color-role rows remain authoritative.
 
-**Fallback path — when `spec_lock.md` lacks rendering** (legacy decks or pipelines that skipped h.5):
+**Declared-inference fallback — when an existing `spec_lock.md` omits the `image_rendering` key** (see [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2):
+
+This fallback covers a missing key only. An empty or invalid value stops for lock repair. If `spec_lock.md` itself is absent, stop at the [`SKILL.md`](../SKILL.md) Step 5 gate before prompt assembly or image generation; do not use `design_spec.md` as a substitute.
 
 | Signal | Maps to |
 |---|---|
 | `design_spec.md d. Style` mode + descriptor | Rendering (consult renderings `_index.md` auto-selection table) |
-| `design_spec.md e. Color Scheme` (HEX) | Deck color-role source; never turn it into a second user choice |
-| `design_spec.md f. Icon library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
+| Existing `spec_lock.md colors` rows | Deck color-role source; never replace them from `design_spec.md` |
+| Existing `spec_lock.md icons.library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
 
 If rendering inference surfaces multiple candidates, pick the first; do not present another choice after confirmation.
 
-> **Tell the user**: when falling back, print one line "spec_lock.md missing `image_rendering`—inferring `<X>` from design_spec; image colors still use the locked deck roles." Then proceed.
+If the table returns `custom`, stop and repair the lock: authoring `image_rendering_behavior` is a planning decision this fallback cannot make, and the deck's SVG style prose is not an image-rendering description.
+
+> **Tell the user**: when falling back, print one line "spec_lock.md has no `image_rendering`—inferring `<X>` from design_spec; image colors still use the locked deck roles." Then proceed.
 
 Then read the **single resolved** rendering file. It gives you:
 
@@ -116,9 +120,9 @@ Derive color behavior directly from the available roles: background / secondary 
 
 For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
-1. **Determine type** — only when `page_role: local` (the image sits as a region block on an SVG page). Match the row's `Purpose` against the `_index.md` auto-selection table (methodology visualization → `framework`; process steps → `flowchart`; SWOT/Eisenhower → `matrix`; PDCA / flywheel → `cycle`; etc.). `Purpose` is authoritative for picking among the 11 internal-composition types. **When `page_role: hero_page`, skip type selection** and describe composition directly using §4.1 primitives (single-subject / portrait / typographic / atmospheric).
-2. **Determine `text_policy`** — Strategist's value wins when set. Otherwise pick `none` or `embedded` based on whether in-image text serves the page. Long body / data / lists stay in SVG.
-3. **Determine `page_role`** — Strategist's value wins when set. Otherwise pick `local` or `hero_page` based on whether the image carries the page or sits inside one.
+1. **Determine `page_role`** — Strategist's explicit value wins; a blank or omitted value resolves to `local`. `hero_page` must be explicit.
+2. **Determine `text_policy`** — Strategist's value wins when set. **Declared-inference fallback for a blank or omitted value**: pick `none` or `embedded` from the row's `Purpose`, `Reference`, and page intent based on whether in-image text serves the page. Long body / data / lists stay in SVG.
+3. **Determine type** — only when the resolved `page_role` is `local` (the image sits as a region block on an SVG page). Match the row's `Purpose` against the `_index.md` auto-selection table (methodology visualization → `framework`; process steps → `flowchart`; SWOT/Eisenhower → `matrix`; PDCA / flywheel → `cycle`; etc.). `Purpose` is authoritative for picking among the 11 internal-composition types. **When the resolved `page_role` is `hero_page`, skip type selection** and describe composition directly using §4.1 primitives (single-subject / portrait / typographic / atmospheric).
 4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
 5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
@@ -458,7 +462,11 @@ Write `project/images/image_prompts.json` with this shape:
 
 > **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
 >
-> Existing manifests without `deck_rendering` / `type` / `page_role` / `text_policy` remain valid—older items default to `page_role: local`, `text_policy: none`. A legacy `deck_palette` field may remain in an old manifest but cannot override `color_scheme`. Legacy `page_role: full_page` is read as `hero_page`.
+> **Existing manifest compatibility**:
+>
+> - **Fixed compatibility defaults**: a missing `page_role` resolves to `local`; a missing `text_policy` resolves to `none`. Emit one aggregate legacy-compatibility warning per manifest.
+> - **Declared replay procedure**: an existing manifest may lack `deck_rendering`, or an existing local item may lack `type`, because `items[].prompt` is already assembled. Leave that metadata absent, execute the existing prompt verbatim, and do not reconstruct either value. This exception applies only to replaying an existing manifest; new manifests must satisfy the field table above. A `hero_page` item still omits `type` intentionally.
+> - A legacy `deck_palette` field may remain but cannot override `color_scheme`. Read legacy `page_role: full_page` as `hero_page`.
 
 ---
 
@@ -476,13 +484,13 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
-**Selection logic** — the confirmed user choice wins; absent one, fall back to the automatic A → B → C chain:
+**Selection logic — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When chat is silent and `image_ai_path` is `auto` or absent, use the automatic A → B → C chain:
 
 0. **Confirmed override (wins)** — honor the confirmed image source. The **chat choice is canonical**; the Confirm UI is only a convenience surface that, when used, records the same choice to `<project>/confirm_ui/result.json` as `image_ai_path` (so there is no `result.json` on the chat path — read the choice from the conversation). From either channel, if the choice is set and not `auto`, honor it directly, **even when it contradicts `IMAGE_BACKEND`**:
    - `api` → **Path A** (`image_gen.py --manifest`).
    - `host-native` → **Path B** (host's native image tool) — skip A and do **not** run `image_gen.py --manifest`, *even if `IMAGE_BACKEND` is configured*.
    - `manual` → **Offline Manual** (write prompts, render the Markdown sidecar, hand off; do **not** run `image_gen.py --manifest`).
-   ("use Codex's image tool" / "走接口生成" in chat = `host-native` / `api`.) If the chosen path turns out unavailable (e.g. `host-native` but the host has no image tool), fall through along the chain below from that point. Only when no source named a path (chat silent, and `image_ai_path` `auto` / absent) does the automatic chain decide.
+   ("use Codex's image tool" / "走接口生成" in chat = `host-native` / `api`.) If an explicitly chosen path is unavailable or still fails after its retry, mark the affected row `Needs-Manual`; do not switch to another automated provider. Only when no source named a path (chat silent, and `image_ai_path` `auto` / absent) does the automatic chain decide.
 1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
 2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
 3. **Fall to C (Offline Manual)** — if B is also unavailable (no host-native tool) or fails, write prompts to `images/image_prompts.json` and hand off to the user.
@@ -564,13 +572,13 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 ### Offline Manual Mode (C's third implementation mode)
 
-**Trigger**: Both Path A and Path B fail or are unavailable.
+**Trigger**: the automatic chain reaches this point after both Path A and Path B fail or are unavailable, the user explicitly confirmed `manual`, or an explicitly confirmed automated path still fails after its own retry.
 
 **Workflow** (no user prompting; system enters this mode automatically):
 
 1. Verify `images/image_prompts.json` was written
 2. Set `status: "Needs-Manual"` on every affected item per [`image-base.md`](./image-base.md) §6
-3. Continue to Step 6 — SVG references `images/<filename>` optimistically; Step 7 entry verifies presence
+3. Continue to Step 6 — Executor draws a dashed placeholder for each `Needs-Manual` row; the Step 7 image readiness gate verifies the supplied files and swaps them in
 4. Print one consolidated handoff to the user:
    - Filenames awaiting manual generation
    - Pointer to `images/image_prompts.md` (paste-ready `### Image N:` block per item) or `image_prompts.json` (`items[].prompt`)
@@ -583,12 +591,14 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 #### AI-specific Failure Handling (extends image-base.md §6)
 
-If Path A's backend fails twice in a row:
+When the path is `auto` and Path A's backend fails twice in a row:
 
 1. Do not halt. Automatically attempt to fall back to **Path B (Host-Native Tool)**.
 2. If Path B also fails or is unavailable, mark the row `Needs-Manual`.
 3. Report to user: filename, prompt used, error message.
 4. Fall through to **Offline Manual Mode** above.
+
+When `api` or `host-native` was explicitly confirmed, failure or unavailability does not authorize an automated provider switch. Retry the confirmed path once; if it still fails, mark the row `Needs-Manual`, report the filename/prompt/error, and use the manual handoff above.
 
 > If the alternate platform watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py`.
 
@@ -597,16 +607,16 @@ If Path A's backend fails twice in a row:
 **Hard rule**:
 
 - Do not claim an image is generated without an actual file at the expected path
-- `Needs-Manual` is set after a failed attempt OR on entering Offline Manual Mode — not as a way to skip work that automation could have done
-- Status transitions are evidence-driven: `Pending` → `Generated` (file exists) or `Pending` → `Needs-Manual` (no automation, or attempt failed once)
+- `Needs-Manual` is set only when `manual` was confirmed or the selected automated recovery path was attempted and failed — not as a way to skip work that automation could have done
+- Status transitions are evidence-driven: a file at the expected path permits `Generated`; an exhausted recovery path permits `Needs-Manual`
 
 ---
 
 ## 8. Common Issues & Variant Workflow
 
-### Reference field is blank — quick examples
+### Reference field is omitted or blank — declared-inference fallback for existing AI rows
 
-When the Resource List row has no `Reference`, infer a reasonable image from `Purpose`. Examples (not prescriptions):
+When an existing AI Resource List row omits `Reference` or contains a blank `Reference`, infer a reasonable image from its non-empty `Purpose`. If `Purpose` is also omitted or blank, stop and repair the row. Examples (not prescriptions):
 
 | Purpose | A reasonable starting point |
 |---------|-----------------------------|

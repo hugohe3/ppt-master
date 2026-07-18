@@ -57,7 +57,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 ## 2. Read Semantic Context
 
-**Mandatory**: before editing `animations.json`, read the deck's semantic planning files.
+**Context read**: before editing `animations.json`, read every semantic planning file below that exists.
 
 | File | Use |
 |---|---|
@@ -67,7 +67,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 **Hard rule**: semantic files determine animation intent; `svg_output/*.svg` determines valid animation targets. Never reference a slide or group id that is absent from the scaffold / SVG scan.
 
-**Missing context**: if one semantic file is absent, state what is missing and proceed with the remaining files plus real SVG group ids. If both `design_spec.md` and `spec_lock.md` are absent, do not infer detailed object choreography; use only conservative defaults and explicit user instructions.
+**Optional-context fallback**: these semantic files inform this supporting stage but are not its gate artifacts. If any are absent, state what is missing and proceed with every remaining file plus real SVG group ids. If all three context inputs are absent, use only explicit user instructions, real SVG group ids, and the resolution rules in [`animations.md`](../../references/animations.md); do not infer detailed object choreography.
 
 ---
 
@@ -174,8 +174,8 @@ them to `none` by default). Name a legacy chrome-like id only when the user
 explicitly wants that content animated and the SVG has no explicit structural
 layer, role, or placeholder marker.
 
-> Note: version-1 legacy sidecars may omit fields inside a listed slide and
-> inherit them from `defaults`; the loader preserves that compatibility. This
+> Note: version-1 legacy sidecars may omit fields inside a listed slide under
+> the declared inheritance in [`animations.md`](../../references/animations.md) §2. This
 > workflow writes complete new slide blocks, and validation still requires
 > every current SVG stem to be present under `slides`.
 

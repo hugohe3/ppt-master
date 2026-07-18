@@ -19,8 +19,8 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 | Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
 | Step 3 rejects a legacy or incomplete template contract | Yes | Stop template consumption; create a new current workspace through Create Template from the original PPTX/reference, then return with its exact workspace root | Only when required source evidence or template choices are unavailable | Create Template → Generate PPTX Step 3 |
-| Formula rendering provider failure | No if fallback succeeds; yes if selected formulas remain missing | Provider fallback chain; otherwise mark affected rows manual only if acceptable | Only if rendered formula files are required and unavailable | Step 4 formula rendering / Step 7 image readiness gate |
-| AI image generation failure | No | Retry once through the confirmed path, then mark row `Needs-Manual` | Only when missing files are required before export | Step 5 / Step 7 image readiness gate |
+| Formula rendering provider failure | No until the Step 7 readiness gate | Exhaust the provider chain; if unresolved, mark only the affected formula rows `Needs-Manual` and continue | Supply the exact target PNG or change formula policy | Step 4 / Step 7 image readiness gate |
+| AI image generation failure | No | `auto`: follow A → B → Offline Manual. Explicit `api` / `host-native`: retry only that path, then mark the row `Needs-Manual` without switching automated providers | Only when missing files are required before export | Step 5 / Step 7 image readiness gate |
 | Web image search/download failure | No | Adjust query/source per image-searcher rules, then mark `Needs-Manual` if unresolved | Only if the resource is required and no acceptable substitute exists | Step 5 |
 | Slice sheet missing | Yes for derived slice rows | Wait for parent sheet; run `slice_images.py`; rerun image analysis | Yes when sheet was manual/offline | Step 5 slice handling / Step 7 image readiness gate |
 | Residual `Pending` or `Failed` image row before Executor | Yes | Re-run path or mark `Needs-Manual` | Only if file must be supplied manually | Step 5 terminal-state check |
@@ -49,7 +49,9 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 | Derived artifact stale | Regenerate it from its owning source. |
 | Required manual artifact missing | Pause and name the exact required artifacts; resume only after they exist. |
 | Validation or export failure | Fix the owning source artifact, then rerun the failed operation and affected downstream operations only. |
-| Confirmed execution choice cannot be honored | Retry the confirmed provider, mode, voice, effect, or path only as its owning workflow allows; if it remains unavailable, stop or request a new decision. Do not substitute another value or output semantics silently. |
+| Confirmed execution choice cannot be honored | Retry the confirmed provider, mode, voice, effect, or path only as its owning workflow allows; if it remains unavailable, stop, request a new decision, or hand off through the owning workflow's declared manual fallback (e.g. `Needs-Manual` with a user summary). Never switch to another automated value or path silently. |
+
+**Missing values**: For a field in an existing artifact, follow only the exact requiredness, inference procedure, or fixed default declared by its owning schema or workflow; an active omission with no such rule stops at the owning boundary. Empty values, inactive conditional fields, whole artifacts, derived artifacts, and file-format attributes keep their own declared semantics—do not extend a fallback by analogy. Owning rules label their fallbacks with two terms used across this repository: a **declared-inference / declared-procedure fallback** states its missing condition and a bounded procedure that needs no new user decision; a **fixed compatibility default** states the exact fallback value, applied with one warning.
 
 **Forbidden — silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file, and do not change a confirmed execution value merely to keep the route moving. Fix, pause, or request a new decision at the owning boundary.
 
@@ -57,9 +59,15 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 
 ## 3. Generate PPTX Resume Pointers
 
+Here, **final confirmation evidence** means either the explicit final confirmation in the current chat or `<project>/confirm_ui/result.json` with `status: confirmed` and `stage: final`. Planning artifacts alone do not prove that the user confirmed their values.
+
 | Last good state | Resume from |
 |---|---|
 | Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
+| Stage 2 confirmation exists, final confirmation missing | Resume [`SKILL.md`](../../SKILL.md) Step 4 substep 4, "Derive Stage 3 once from the confirmed solution, then wait for the final confirmation." |
+| Final confirmation evidence exists; `design_spec.md` is missing, with or without a surviving `spec_lock.md` | Return to [`strategist.md`](../../references/strategist.md) §6 steps 1–4 and regenerate `design_spec.md` and `spec_lock.md` together from the source material and confirmed state; do not reconstruct the outline from an orphan lock. |
+| Final confirmation evidence exists; `design_spec.md` exists and `spec_lock.md` missing | Return to [`strategist.md`](../../references/strategist.md) §6 step 4 and regenerate `spec_lock.md`. |
+| No final confirmation evidence is available | Resume Step 4 from the latest stage evidenced by `confirm_ui/result.json`; if no stage is persisted, restart Step 4 at Stage 1. Do not infer confirmed choices from partial planning artifacts. |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](../stages/resume-execute.md) |
 | Images acquired but SVGs not started | `SKILL.md` Step 6 |
 | SVGs complete and checker passed, notes missing | Step 6 Logic Construction |

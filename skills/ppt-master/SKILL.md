@@ -539,9 +539,9 @@ After the Strategist confirmation stage is approved and **before outputting `des
    ```bash
    python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
    ```
-4. Include the rendered formula PNGs as `Acquire Via: formula`, `Status: Rendered`, `Type: Latex Formula` rows in `design_spec.md §VIII Image Resource List`; also list them in `spec_lock.md images` with `| no-crop`.
+4. Include each formula as an `Acquire Via: formula`, `Type: Latex Formula` row in `design_spec.md §VIII Image Resource List`: use `Status: Rendered` when the PNG exists, or `Status: Needs-Manual` after provider exhaustion. List every formula in `spec_lock.md images` with `| no-crop`.
 
-The formula renderer uses a provider fallback chain by default: `codecogs,quicklatex,mathpad,wikimedia`. The first three are color-aware; Wikimedia is an availability fallback. Formula PNGs are transparent by default: manifest `background` is the temporary render matte and transparency-removal reference, not a retained final background unless `transparent: false` is set for that item. Do not scan `spec_lock.md` for `$...$` or `$$...$$`. Dollar-delimited math in source material is only a signal for Strategist; the renderer consumes the explicit manifest.
+The formula renderer uses a provider fallback chain by default: `codecogs,quicklatex,mathpad,wikimedia`. The first three are color-aware; Wikimedia is an availability fallback. If every provider fails for a selected formula, report its manifest item, LaTeX source, target filename, and provider errors; mark only that row `Needs-Manual` and continue without claiming `Rendered`. The user may supply the exact target PNG before the Step 7 image-readiness gate or change the formula policy. Formula PNGs are transparent by default: manifest `background` is the temporary render matte and transparency-removal reference, not a retained final background unless `transparent: false` is set for that item. Do not scan `spec_lock.md` for `$...$` or `$$...$$`. Dollar-delimited math in source material is only a signal for Strategist; the renderer consumes the explicit manifest.
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
@@ -573,7 +573,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 ### Step 5: Image Acquisition Phase (Conditional)
 
-🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed. Any formula rows already have `Acquire Via: formula` and `Status: Rendered`.
+🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](workflows/governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
 > **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6.
 
@@ -609,7 +609,7 @@ Workflow:
 1. Extract all resource rows from the design spec and group them by `Acquire Via`; rows with `Status: Pending` or `Status: Failed` and `Acquire Via ∈ {ai, web, slice}` must all reach a terminal state before Executor starts
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](references/image-base.md) §3 dispatch table
 2.5. **Slice any spot-illustration sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](references/image-generator.md) §4.3.
-3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. The agent must resolve every residual `Failed` item by rerunning the confirmed path or marking it `Needs-Manual` before Executor starts
+3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. On `auto`, follow the owning fallback chain. On an explicitly confirmed `api` or `host-native` path, retry only that path; if it still fails, mark the row `Needs-Manual` without switching to another automated provider.
 4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
 **✅ Checkpoint — Confirm acquisition attempted for every row**:
@@ -666,7 +666,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](workflows/stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](workflows/stages/live-preview.md) Notes.
 
-**Pre-generation Template Read (Mandatory)**: first read `templates/template_execution_manifest.json` when present. It is the compact prototype roster and points each prototype to one `text_slots_path`. Use the roster to select prototypes; before each mirror page, read that prototype's text-slot sidecar and complete `templates/<basename>.svg`. Layout reuse reads the selected complete SVG but does not apply mirror-only text topology restrictions. When the manifest is absent, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` once before the first page. In both cases, batch-read every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts) once up front. Do not substitute a manifest or sidecar for the selected full prototype. See executor-base.md §1.0.
+**Pre-generation Template Read (Mandatory)**: first read `templates/template_execution_manifest.json` when present. It is the compact prototype roster and points each prototype to one `text_slots_path`. Use the roster to select prototypes; before each mirror page, read that prototype's text-slot sidecar and complete `templates/<basename>.svg`. Layout reuse reads the selected complete SVG but does not apply mirror-only text topology restrictions. When the manifest or selected sidecar is unavailable, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` once before the first page and apply the full-SVG mirror/layout rules. In all cases, batch-read every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts) once up front. Do not substitute a manifest or sidecar for the selected full prototype. See executor-base.md §1.0.
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
@@ -723,7 +723,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 
 🚧 **GATE**: Step 6 complete; all SVGs generated to `svg_output/`; speaker notes `notes/total.md` generated.
 
-🚧 **Image readiness GATE** (when Step 5 left ai rows in `Needs-Manual`): every expected file must exist at `project/images/<filename>` before running 7.1.
+🚧 **Image readiness GATE** (when any required resource row is `Needs-Manual`, including a formula row): every expected file must exist at `project/images/<filename>` before running 7.1. Once the files are supplied, re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images`, then update each affected page in `svg_output/`: replace the dashed placeholder with the real `<image>` reference and, for `no-crop` rows (formulas included), resize the container to the measured native ratio — planned dimensions are estimates, not the supplied file's truth.
 
 **Failure recovery**: if a Step 7 command fails, fix the owning source artifact and resume from the failed sub-step per [`workflows/governance/failure-recovery.md`](workflows/governance/failure-recovery.md). Do not restart the planning session unless the owning source changed.
 

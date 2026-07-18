@@ -26,7 +26,7 @@
 | Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
 | Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
 
-When `template_execution_manifest.json` exists, read its compact page roster once for selection/orientation. Before authoring each mirror page, read that roster entry's `text_slots_path` for selectors, current segments, bounds, font stacks, tspan attributes, and topology hashes, then read the selected complete `templates/<basename>.svg`; the SVG is the visual/structural authority. Layout reuse reads the selected complete SVG but does not need the mirror-only sidecar. When the manifest is absent, batch-read every distinct `<basename>` in `spec_lock.md page_layouts` before page 1 as the compatibility fallback. Chart SVGs remain one-time batch reads.
+When `template_execution_manifest.json` and the selected entry's `text_slots_path` exist, read the compact roster once for selection/orientation and the sidecar before authoring each mirror page; then read the selected complete `templates/<basename>.svg`, which remains the visual/structural authority. Layout reuse reads the selected complete SVG but does not need the mirror-only sidecar. When the manifest, selected entry, or sidecar is unavailable, batch-read every distinct `<basename>` in `spec_lock.md page_layouts` before page 1. On mirror, preserve text topology directly from the complete SVG under §1.1; missing derived metadata alone does not invalidate the workspace. Chart SVGs remain one-time batch reads.
 
 `spec_lock.md` is the only file re-read per page (§2.1).
 
@@ -165,7 +165,9 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
-**Missing `spec_lock.md`** → stop before Executor and report the missing gate artifact. Resume only after Strategist produces the current lock; a legacy project must complete or restart planning first. Do not generate from `design_spec.md` alone or silently downgrade (see [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2).
+**Missing `spec_lock.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not generate from `design_spec.md` alone or silently downgrade.
+
+**Missing field in an existing lock**: follow [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2.
 
 **Forbidden — values outside the lock**:
 
@@ -176,7 +178,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 - **The page's core message is primary — render it ≥ `body`.** The one-idea / key-claim / key-takeaway line a page is built around is its most important text; map it to the locked `lead` or `subtitle` slot (≥ `body`), never to a sub-`body` size. Demoting it below body while data callouts or labels sit larger inverts the hierarchy — the failure this prevents. If no `lead` / `subtitle` slot is locked for a recurring core-message line, surface it (per below) instead of improvising a smaller one. A footnote / page number / source credit uses the locked `footnote` (or `annotation`) slot — never an invented sub-`annotation` size; and the body-shrink last resort (§1.0) bottoms out at `body − 4`px, a hard floor never crossed.
 - **Write the locked px verbatim; at most 2 decimals.** `font-size` MUST be the exact px from `spec_lock.typography` — if `body` is `24`, write `24`; never substitute a "rounder" or PowerPoint-familiar number (`20` / `18` / `36`). The system is px-only — there is no pt to convert, and a remembered pt-style value written as px renders the whole deck the wrong size. Prefer whole numbers (sizes are clean even px); keep a decimal only for a slot that genuinely carries one in `spec_lock`. Never emit long tails like `20.8026`: the exporter rounds the final size to 1 decimal pt, so extra px precision is wasted noise.
 - Images MUST reference files listed under `images`; no invented filenames
-- Formula PNGs are images with `Acquire Via: formula` / `Status: Rendered`; place them only from the listed file path and never recreate the formula as text.
+- Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
 If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one. When an intentional deck-wide or recurring color, type role/size, icon, or image is approved, extend `spec_lock.md` **before** drawing the first affected object, re-read the lock, and only then author the page; do not draw with a temporary hardcoded value and retroactively silence drift warnings.
 
@@ -192,9 +194,9 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 > Without rhythm variation, every page defaults to card grids (the "AI-generated" look). `page_rhythm` is the only narrative lever that survives context compression.
 
-**Missing `page_rhythm` section** → emit `warning: spec_lock.md missing page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
+**Missing or empty `page_rhythm` section — fixed compatibility default** → emit `warning: spec_lock.md missing/empty page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
 
-**Tag not found for current page** → emit `warning: spec_lock.md page_rhythm tag not found for P<NN> — falling back to dense` once per deck (aggregate; do not repeat per page), fall back to `dense`. Do not invent a tag.
+**Tag not found for current page — fixed compatibility default** → emit `warning: spec_lock.md page_rhythm tag not found for P<NN> — falling back to dense` once per deck (aggregate; do not repeat per page), fall back to `dense`. Do not invent a tag.
 
 **Per-page template lookup — `page_layouts` section (`mirror` / `layout` only)**:
 
@@ -211,7 +213,7 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
 
 - When `pptx_structure.mode` is `flat` (including `template_reuse_scope: style`), skip this lookup and the structured scaffold below. `pptx_masters`, `pptx_layouts`, `page_layouts`, and the corresponding SVG metadata must all be absent; each root still declares its canonical `data-pptx-page-role`.
 - With `template_reuse_scope: mirror|layout`, `pptx_structure.mode` must equal `structured`; any other or missing value is rejected. Do not migrate an invalid structured contract in place: create a new current-contract workspace through Create Template before generation resumes.
-- Read the current page assignment as `P<NN>: <layout_key>`, resolve `layout_key` in `pptx_layouts`, then resolve that definition's `<master_key>` in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
+- Read the current page assignment as `P<NN>: <layout_key>`. Resolve the assigned Layout key in `pptx_layouts`, then resolve its Master key in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
 - On strict template use, the row and SVG contract match the selected prototype exactly.
 - On adaptive template use, retain the prototype Master. If the final composition changes fixed Layout atoms or slot topology/bounds, allocate a new key/name and update this row before completing the page.
@@ -318,7 +320,7 @@ into `svg_output/`.
 
 ### 3.1 Chart Plot-Area Marker (MANDATORY on every chart page)
 
-> The [`verify-charts`](../workflows/stages/verify-charts.md) stage enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. Missing marker → verify-charts has to re-derive the plot area from axis lines, paying the cost on every run.
+> The [`verify-charts`](../workflows/stages/verify-charts.md) stage enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. A missing marker invokes that stage's declared fallback and adds avoidable derivation work.
 
 **Hard rule**: every SVG page that contains a data visualization chart includes a plot-area marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
 
@@ -437,7 +439,9 @@ Strategist chooses the library and inventory; Executor only implements. Library 
 
 > ⚠️ **Color**: ALWAYS use `fill="#HEX"` on `<use data-icon="...">`. NEVER use `stroke` or `fill="none"`, even for stroke-style libraries.
 >
-> **stroke-width** (stroke-style libraries only, currently `tabler-outline`): allowed values `{1.5, 2, 3}`. If `spec_lock.md icons.stroke_width` is declared, all placeholders MUST use that value deck-wide. Default `2` if absent (legacy). Ignored on non-stroke libraries.
+> **stroke-width** (stroke-style libraries only, currently `tabler-outline`): allowed values `{1.5, 2, 3}`. If `spec_lock.md icons.stroke_width` is declared, all placeholders MUST use that value deck-wide. Ignored on non-stroke libraries.
+>
+> **Missing `icons.stroke_width` in an existing stroke-library lock — fixed compatibility default**: use `2`, emit one warning, and continue. New authoring must still declare the field.
 >
 > Icons are auto-embedded by `finalize_svg.py` — no need to run `embed_icons.py` manually.
 
@@ -515,7 +519,7 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 | **Generated** | Generated by Image_Generator | Reference images directly from `../images/` directory |
 | **Sourced** | Web-acquired by Image_Searcher | Reference from `../images/`. **Read [`image_sources.json`](image-searcher.md) to decide attribution** — see §6.1 below. |
 | **Rendered** | Deterministic formula PNG | Reference from `../images/`; use `preserveAspectRatio="xMidYMid meet"` |
-| **Needs-Manual** | Acquisition failed and file is absent | Use dashed border placeholder unless the expected file exists |
+| **Needs-Manual** | Acquisition failed and file is absent | Use dashed border placeholder unless the expected file exists; the Step 7 readiness gate swaps placeholders for real files before export |
 | **Placeholder** | Not yet prepared | Use dashed border placeholder |
 
 **Reference syntax**: see [`svg-image-embedding.md`](svg-image-embedding.md).
@@ -526,7 +530,7 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **`no-crop` images**: when a `spec_lock.md images` entry ends with ` | no-crop`, size the container to the image's native ratio (from `analyze_images.py` or file dims) and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries are croppable — default to `slice`.
 
-**Formula images**: rows with `Acquire Via: formula` or `Type: Latex Formula` MUST be treated as no-crop even if a legacy `spec_lock.md` forgot the flag. Use the dimensions from `design_spec.md §VIII`, `analysis/image_analysis.csv`, or `images/formula_manifest.json`; do not normalize all formulas to one height unless the spec explicitly states that layout choice.
+**Formula images — declared-inference fallback for a missing `no-crop` flag**: rows with `Acquire Via: formula` or `Type: Latex Formula` MUST be treated as no-crop. For a rendered file, use dimensions in this order: current `analysis/image_analysis.csv`, `design_spec.md §VIII`, then `images/formula_manifest.json`. For a `Needs-Manual` row, size the dashed placeholder from the planned dimensions in §VIII, then the manifest; the Step 7 readiness gate re-analyzes the supplied file and reconciles the container before export. Do not normalize all formulas to one height unless the spec explicitly states that layout choice.
 
 ### 6.1 Inline Attribution for Sourced Images (web path)
 
@@ -552,7 +556,7 @@ Use `attribution_text` from the manifest entry as the **starting point**, then c
 
 Source of truth: `spec_lock.md typography`. Use `font_family` as default; override per role with `title_family` / `body_family` / `emphasis_family` / `code_family` if declared. LaTeX formulas that Strategist rendered are PNG images, not a `code_family` text role.
 
-If `spec_lock.md` is absent, consult [`strategist.md`](strategist.md) §g — do not invent a stack.
+**Missing required field — `typography.font_family`** → stop and return to [`strategist.md`](strategist.md) §6 step 4 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 
 **Hard rule**: every SVG `font-family` stack MUST resolve to pre-installed exported Latin / EA typefaces (Microsoft YaHei / SimHei / SimSun / Arial / Calibri / Segoe UI / Times New Roman / Georgia / Consolas / Courier New / Impact / Arial Black). PPTX has no runtime fallback — missing fonts degrade to Calibri.
 

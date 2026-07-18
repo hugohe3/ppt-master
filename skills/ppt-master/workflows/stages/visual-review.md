@@ -88,7 +88,7 @@ Agent(
 The orchestrator prompt must be self-contained and is the **single** place where dispatch shape, batch size, and forbid lists are stated — the rubric (`references/visual-review.md`) defines the contract those prompts must satisfy. Required fields (all absolute paths):
 
 - `<project_path>` — project root
-- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; if §IX is absent, default every page to `content` and flag this in the final report)
+- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; **fixed compatibility default**: if an existing `design_spec.md` lacks §IX, use `content` for every page and flag this in the final report; if `design_spec.md` itself is missing, restore it through [`failure-recovery.md`](../governance/failure-recovery.md) §3 before dispatch)
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`
