@@ -12,13 +12,13 @@ description: Optional quality-gate stage for per-page rubric-based visual review
 
 ## Positioning
 
-This is an **optional auxiliary loop**, opt-in only. The main pipeline (SKILL.md Step 1–7) does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
+This is an **optional auxiliary loop**, opt-in only. The [`generate-pptx`](../generate-pptx.md) Step 1–7 pipeline does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
 
 **Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
 
 ## When to Run
 
-- Executor (SKILL.md Step 6) has finished all pages
+- Executor ([`generate-pptx`](../generate-pptx.md) Step 6) has finished all pages
 - `svg_quality_checker.py` has passed
 - Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not** yet run
 - The user has explicitly requested visual review
@@ -39,10 +39,10 @@ For decks containing data charts, run [`verify-charts`](./verify-charts.md) firs
 ```bash
 # 1. playwright + chromium installed (the PNG renderer)
 pip install playwright
-uv run playwright install chromium
+python3 -m playwright install chromium
 
 # 2. live-preview server running for this project (provides inlined SVG fetch)
-uvx ppt-master svg-editor <project_path> --no-browser
+uvx ppt-master confirm-ui <project_path> --no-browser
 # (single instance per project — if it's already running, skip)
 ```
 
@@ -88,7 +88,7 @@ Agent(
 The orchestrator prompt must be self-contained and is the **single** place where dispatch shape, batch size, and forbid lists are stated — the rubric (`references/visual-review.md`) defines the contract those prompts must satisfy. Required fields (all absolute paths):
 
 - `<project_path>` — project root
-- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; if §IX is absent, default every page to `content` and flag this in the final report)
+- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; **fixed compatibility default**: if an existing `design_spec.md` lacks §IX, use `content` for every page and flag this in the final report; if `design_spec.md` itself is missing, restore it through [`failure-recovery.md`](../governance/failure-recovery.md) §3 before dispatch)
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`
@@ -131,13 +131,9 @@ For each row in the table:
 
 If `brand_review.json` is non-empty, that's a single decision applied across the deck (e.g., bump footer text color from `#6E7681` to `#8B949E` — one change, every page benefits). Do this once, then optionally re-run visual-review for the affected pages only.
 
-After the table is clean, continue to post-processing per [`SKILL.md`](../../SKILL.md) Step 7:
-
-```bash
-uvx ppt-master total-md-split <project_path>
-uvx ppt-master finalize-svg <project_path>
-uvx ppt-master svg-to-pptx <project_path>
-```
+After the table is clean, continue to [`generate-pptx`](../generate-pptx.md)
+Step 7. That authority owns the serial commands, gates, and success criteria for
+post-processing and export.
 
 ---
 

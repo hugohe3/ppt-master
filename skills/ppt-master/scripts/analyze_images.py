@@ -5,7 +5,7 @@ Image Size Analysis Tool
 Reports objective parameters (width, height, aspect ratio, category) for all
 images in a folder. Intentionally does NOT prescribe a layout — the Strategist
 decides narrative intent (hero / atmosphere / side-by-side / accent) per
-references/strategist.md §h; this tool only supplies the numbers.
+references/strategist-image.md; this tool only supplies the numbers.
 
 When a canvas is specified, also reports the reference image/text area sizes
 that would apply *if* an image is placed side-by-side with body text. Those
@@ -406,7 +406,7 @@ def print_results(results: list[ImageAnalysis]) -> None:
     if has_layout:
         print("\nNote: 'Img (SxS)' shows the image area *if* the Strategist chooses the")
         print("side-by-side intent for this image. Decide narrative intent first — see")
-        print("references/strategist.md §h. Hero / atmosphere / accent intents ignore it.\n")
+        print("references/strategist-image.md. Hero / atmosphere / accent intents ignore it.\n")
         print(f"{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Img (SxS)':<14} {'Filename'}")
     else:
         print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Filename'}")
@@ -484,7 +484,7 @@ def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
     print(f"\n## Image Resource Inventory (Auto-scan Results — {fmt_name})\n")
 
     print("> Decide narrative intent per image (hero / atmosphere / side-by-side /")
-    print("> accent) per `references/strategist.md` §h before filling the table. The")
+    print("> accent) per `references/strategist-image.md` before filling the table. The")
     print("> `Img Area (SxS)` / `Text Area (SxS)` columns only apply if the chosen")
     print("> intent is side-by-side; ignore them for hero / atmosphere / accent intents.\n")
 
@@ -520,7 +520,7 @@ def save_csv(results: list[ImageAnalysis], csv_path: str) -> None:
     has_layout = 'layout_type' in results[0] if results else False
 
     # NOTE: ImageArea_SxS / TextArea_SxS apply only if Strategist picks the
-    # side-by-side intent for this image (see strategist.md §h). The tool
+    # side-by-side intent for this image (see strategist-image.md). The tool
     # does not prescribe a layout.
     with open(csv_path, 'w', encoding='utf-8') as f:
         if has_layout:

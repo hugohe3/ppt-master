@@ -30,7 +30,7 @@ Titles are short and evocative — a phrase, not a sentence.
 
 ## 3. Speaker-notes register
 
-Energetic, evocative — sets mood and builds anticipation. Short, punchy sentences. Lets the visual do the work and narrates the feeling around it. (Common framework: [`executor-base.md §8`](../executor-base.md).)
+Energetic, evocative — sets mood and builds anticipation. Short, punchy sentences. Lets the visual do the work and narrates the feeling around it. (Common framework: [`executor-notes.md`](../executor-notes.md) §1.)
 
 ---
 

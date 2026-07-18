@@ -28,7 +28,7 @@ Defined in `design_spec.md §VIII`. Status enum: see [`svg-image-embedding.md`](
 | formula_001.png | 736x168 | Block equation on P03 | Latex Formula | `formula` | Rendered | `E = mc^2` |
 | spot_team.png | TBD after slicing | Team spot illustration | Illustration | `slice` | Pending | From `spot_sheet.png` cell 1,1 |
 
-**Required per non-skipped row**: `Acquire Via`, `Status`, `Reference`.
+**Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row and every newly authored `ai` row. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
 
 ---
 
@@ -99,7 +99,7 @@ License / attribution data lives **only** in `project/images/image_sources.json`
 - SVG `<title>` / `<desc>` (stripped by `svg_to_pptx.py`)
 - A separate "Image Credits" appendix slide (lost on single-page sharing)
 
-Executor reads the manifest per slide and renders inline credits when needed — see [`executor-base.md`](./executor-base.md) §6.1 and [`image-searcher.md`](./image-searcher.md) §7.
+Executor reads the manifest per slide and renders inline credits when needed — see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7.
 
 ---
 

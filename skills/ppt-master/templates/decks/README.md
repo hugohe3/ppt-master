@@ -1,20 +1,21 @@
 # Deck Templates
 
 **Deck = a reusable solution for a recurring presentation family.** It owns an
-application contract together with presentation identity and reusable page
-structure. The application contract states which communication situations the
-template serves, which audience outcomes it supports, which narrative/page
-roles remain stable, and how starting content should be replaced or retained.
+application context together with presentation identity and reusable page
+structure. The application context states which communication situations the
+template serves, which audience outcomes it supports, and which narrative/page
+roles commonly appear. It describes the resource; it does not decide which
+pages or visible content a future presentation must retain.
 A deck template is not a finished content deck, and `kind: deck` does not mean
 “mirror the source PPT”. Its construction mode decides whether the system is
 newly authored or materialized from validated source facts.
 
 | Axis | Deck behavior |
 |---|---|
-| Template kind | `deck`: application contract + integrated identity + structure |
-| Creation mode | `standard` / `fidelity` author a new system; `mirror` materializes validated source-package facts into a new workspace |
-| Downstream adherence | Strategist selects `strict` or `adaptive` when the package is used |
-| PPTX structure | Workspace is `structured`; downstream `mirror` / `layout` use it, while confirmed `style` intentionally retains only visual language and generates `flat` |
+| Template kind | `deck`: descriptive application context + integrated identity + structure |
+| Internal creation strategy | AI derives `standard` / `fidelity` for a new system or `mirror` for validated source-package materialization; the field is tool provenance, not a user choice |
+| Application planning | Strategist automatically decides which prototypes to select, repeat, skip, or reorganize and derives the exporter behavior |
+| PPTX structure | The workspace is `structured`; the derived application plan decides whether generated pages compile its structure or use it only as visual reference |
 
 The discovery source of truth is [`decks_index.json`](./decks_index.json)
 (`deck_id → { summary, canvas_format, page_count, primary_color }`). This README
@@ -30,21 +31,12 @@ Overview when application fit must be judged in detail.
 
 ## Trigger and fusion
 
-Selection is opt-in through an explicit workspace-root path such as
-`skills/ppt-master/templates/decks/<deck_id>/`. Supplying a bare ID or reading
-the discovery index does not trigger template use. Current packages resolve
-`templates/design_spec.md`; a compatible flat-directory current-contract root
-may resolve `design_spec.md` directly. Semantic-legacy packages must be replaced
-through Create Template rather than upgraded in place. See [`SKILL.md`](../../SKILL.md) Step 3.
-
-A deck path alone supplies the complete reference. When combined with a brand
-or layout path, brand replaces the identity segment and layout may replace the
-structure segment; the deck remains the source of the application contract.
-Before a Layout override is accepted, its page roles and slot capabilities must
-support the Deck's required narrative/content roles. Treat an incompatibility
-as a fusion conflict instead of retaining an application promise the new
-structure cannot satisfy. Fusion never changes the package's stored SVGs in
-place.
+Selection uses the common explicit-path trigger in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. Supplying a bare ID
+or reading the discovery index does not trigger template use. The conditional
+[`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
+stage owns path normalization, compatibility checks, installation, and fusion.
+This file owns the Deck schema and application-context boundary.
 
 ---
 
@@ -81,18 +73,22 @@ page_count: <N>
 ## VII. Placeholder Overrides      # omit when none
 ```
 
-`Template Overview` is an application contract, not a style description. It
-must identify the recurring presentation family, intended audiences and
-outcomes, delivery/reading assumptions, stable narrative or page roles, and the
-reuse boundary between fixed, replaceable, optional, and example-only content.
-These values may be broad when the source supports a family of related uses,
-but they must be specific enough to judge whether new content fits the Deck.
+`replication_mode` records how the workspace was produced. Create Template
+derives it from the natural-language brief and source evidence; users do not
+need to select or understand this field.
+
+`Template Overview` is descriptive application context, not a style
+description or future-use policy. It identifies the recurring presentation
+family, intended audiences and outcomes, delivery/reading assumptions, and
+representative narrative or page roles. These values may be broad when the
+source supports a family of related uses, but they must be specific enough to
+help Strategist understand the resource.
 
 `Page Roster` must list every SVG and its declared Master/Layout identity, then
-state the content policy for that prototype: what role it can play, whether it
-is required/optional/repeatable, and which visible content is fixed,
-replaceable, or example-only. This policy does not force future presentations
-to keep the template's page count or order.
+describe its observed or intended role, visual character, reusable slots, and
+structural capacity. It must not mark pages required/optional/repeatable or
+content fixed/replaceable/example-only. Strategist inspects the actual roster
+and current material and decides what to use.
 
 Every additional authored Master represents a distinct reusable design family,
 not one Layout or an organizational duplicate.

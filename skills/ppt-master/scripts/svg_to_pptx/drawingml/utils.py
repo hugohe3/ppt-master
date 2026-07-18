@@ -1,7 +1,8 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1 and §6.2–§6.8 for project geometry,
-paint/effects, image-fit, line-presentation, and transform authoring contracts.
+See references/shared-standards-core.md §2.1 for project geometry and
+references/svg-effects.md §§6.2–6.8 for paint, image-fit, line-presentation,
+and transform authoring contracts.
 """
 
 from __future__ import annotations
@@ -55,6 +56,7 @@ EA_FONTS = {
     'Hiragino Kaku Gothic ProN', 'Hiragino Kaku Gothic Pro',
     'Hiragino Mincho Pro',
     'Noto Sans SC', 'Noto Sans TC', 'Noto Serif SC', 'Noto Serif TC',
+    'Noto Sans CJK SC',
     'Noto Sans JP', 'Noto Serif JP', 'Noto Sans CJK JP',
     'Source Han Sans SC', 'Source Han Sans TC',
     'Source Han Serif SC', 'Source Han Serif TC',
@@ -97,6 +99,7 @@ FONT_FALLBACK_WIN = {
     'Songti SC': 'SimSun',
     'Songti TC': 'SimSun',
     'Noto Sans SC': 'Microsoft YaHei',
+    'Noto Sans CJK SC': 'Microsoft YaHei',
     'Noto Sans TC': 'Microsoft JhengHei',
     'Noto Serif SC': 'SimSun',
     'Noto Serif TC': 'SimSun',

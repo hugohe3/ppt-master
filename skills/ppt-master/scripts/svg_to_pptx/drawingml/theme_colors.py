@@ -138,7 +138,14 @@ def _color_rows(lock_path: Path) -> dict[str, str]:
         match = _LOCK_ROW_RE.fullmatch(line)
         if not match:
             continue
-        color = parse_hex_color(match.group(2))
+        raw_color = match.group(2).strip()
+        if (
+            len(raw_color) >= 2
+            and raw_color[0] == raw_color[-1]
+            and raw_color[0] in {'"', "'"}
+        ):
+            raw_color = raw_color[1:-1].strip()
+        color = parse_hex_color(raw_color)
         if color is not None:
             rows[match.group(1)] = color
     return rows

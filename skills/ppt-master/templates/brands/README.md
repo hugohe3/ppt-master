@@ -9,18 +9,13 @@ kind and workspace model lives in the parent [`README.md`](../README.md).
 
 ## How brands are consumed
 
-Brand application follows the **same explicit-path rule and workspace routing as all template kinds** at SKILL.md Step 3:
-
-| User input at SKILL.md Step 3 | Behavior |
-|---|---|
-| An explicit brand workspace path (e.g. `templates/brands/anthropic/`) | Resolve `templates/design_spec.md`; stage `templates/` plus any existing `images/` and `icons/` into the matching project directories; Strategist locks the identity segment |
-| Bare brand name only ("use anthropic brand"), brand mention without path, or silence | Skip — same mechanical rule as all template kinds: bare names never trigger |
-| Brand path + layout path | Fuse into one `design_spec.md` — brand owns identity segment (color / typography / logo / voice / icon style); layout owns structure segment (canvas / page roster). See `SKILL.md` Step 3. |
-| Brand path + deck path | Fuse — brand identity overrides deck identity; structure + application segments come from deck |
-| Brand path + layout path + deck path | Three-way fuse — brand=identity, layout=structure, deck=application, subject to application/structure compatibility |
-| Two brand paths | Conflict resolution prompt before fusion — user picks per-segment source |
-
-`brands_index.json` is discovery-only; listing brands never advances the pipeline.
+Brand application follows the common explicit-path trigger in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The conditional
+[`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
+stage owns path normalization, portable-root installation, multi-kind fusion,
+same-kind conflict resolution, and provenance. This file owns only the Brand
+schema. `brands_index.json` is discovery-only; listing brands never advances
+the pipeline.
 
 ## Creating a new brand
 
@@ -55,4 +50,4 @@ Logo filenames are descriptive, not contractual — `templates/design_spec.md` �
 
 [brands_index.json](./brands_index.json) is a slim machine-readable map (`brand_id → { summary, primary_color }`). Refresh it with `register_template.py --kind brand <brand_id>` after a brand is created or edited. Registration rejects incomplete frontmatter, mismatched IDs, page SVGs, missing required identity sections, invalid or inconsistent colors/provenance, and broken workspace-local asset references.
 
-Listing the index does not trigger any pipeline action — Step 3 triggers only on an explicit directory path supplied by the user, regardless of whether the brand appears in the index.
+Listing the index does not trigger any pipeline action — Generate Step 3 triggers only on an explicit directory path supplied by the user or an exact validated Create Template handoff, regardless of whether the brand appears in the index.

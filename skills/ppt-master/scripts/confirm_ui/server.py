@@ -106,7 +106,6 @@ STARTUP_TIMEOUT = 10
 # result.json before falling back to chat.
 WAIT_TIMEOUT_DEFAULT = 590
 
-
 def _read_json_object(path: Path, retries: int = 2, delay: float = 0.08) -> dict:
     """Read a JSON object, retrying briefly around non-atomic external writes."""
     last_error: Exception = ValueError('unknown JSON read error')
@@ -261,6 +260,15 @@ def _wait_for_result(
         if result_file.exists():
             try:
                 if result_file.stat().st_mtime >= started_at:
+                    actual_stage = _result_stage(result_file)
+                    expected_stage = _expected_result_stage(result_file.parent)
+                    if actual_stage != expected_stage:
+                        logger.error(
+                            'confirmation stage mismatch: expected %s, found %s',
+                            expected_stage,
+                            actual_stage or 'invalid/absent',
+                        )
+                        return 2
                     logger.info('confirmation received: %s', result_file)
                     try:
                         proc.wait(timeout=3)
@@ -384,9 +392,107 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
     return (
         f'stage skip detected: recommendations.json is {_stage_name(rec_stage_number)} but the last '
         f'confirmed result is {result_stage or "absent"} — the page will not render a skipped stage. '
-        f'Stages confirm in order and an active template does not exempt stage2 (SKILL.md Step 4). '
+        f'Stages confirm in order and an active template does not exempt stage2 (generate-pptx Step 4). '
         f'Overwrite recommendations.json with the {expected} recommendations, then re-run with {reattach}.'
     )
+
+
+def _template_confirmation_required(project_path: Path, recommendations: dict) -> bool:
+    """Return whether this project must use the staged template confirmation."""
+    return (
+        'template_application' in recommendations
+        or (project_path / 'templates' / 'design_spec.md').is_file()
+    )
+
+
+def _template_stage2_error(
+    recommendations: dict,
+    *,
+    template_required: bool,
+) -> Optional[str]:
+    """Require the natural-language template plan in template Stage 2."""
+    if template_required and 'template_application' not in recommendations:
+        return (
+            'template Stage 2 recommendations must include '
+            'template_application.value'
+        )
+    return None
+
+
+def _submission_stage_error(
+    project_path: Path,
+    confirm_dir: Path,
+    submitted_stage: Optional[str],
+) -> Optional[str]:
+    """Reject a confirmation that does not match the staged recommendation."""
+    try:
+        recommendations = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        return f'cannot confirm without valid recommendations.json: {exc}'
+
+    rec_stage_number = _recommendation_stage(recommendations)
+    template_required = _template_confirmation_required(
+        project_path,
+        recommendations,
+    )
+    if rec_stage_number == 0:
+        if template_required:
+            return (
+                'an installed template requires the Stage 1 → Stage 2 → Stage 3 '
+                'flow; legacy single-pass confirmation is not allowed'
+            )
+        if submitted_stage not in {None, 'stage3', 'final'}:
+            return 'legacy single-pass recommendations accept only a final submission'
+        return None
+
+    if rec_stage_number == 2:
+        recommendation_error = _template_stage2_error(
+            recommendations,
+            template_required=template_required,
+        )
+        if recommendation_error:
+            return recommendation_error
+
+    allowed_submissions = {
+        1: {'stage1'},
+        2: {'stage2'},
+        3: {'stage3', 'final'},
+    }
+    if submitted_stage not in allowed_submissions[rec_stage_number]:
+        expected = 'final' if rec_stage_number == 3 else _stage_name(rec_stage_number)
+        return (
+            f'confirmation stage mismatch: recommendations.json is '
+            f'{_stage_name(rec_stage_number)}, so the submitted stage must be '
+            f'{expected}'
+        )
+
+    previous_stage = _result_stage(confirm_dir / RESULT_NAME)
+    allowed_predecessors = {
+        1: {None, 'stage1', 'stage2', 'final'},
+        2: {'stage1', 'stage2'},
+        3: {'stage2', 'final'},
+    }
+    if previous_stage not in allowed_predecessors[rec_stage_number]:
+        expected_previous = 'stage1' if rec_stage_number == 2 else 'stage2'
+        return (
+            f'confirmation predecessor mismatch: {_stage_name(rec_stage_number)} '
+            f'requires a confirmed {expected_previous} result, found '
+            f'{previous_stage or "absent"}'
+        )
+    return None
+
+
+def _expected_result_stage(confirm_dir: Path) -> str:
+    """Return the result stage expected from the current recommendations."""
+    try:
+        recommendations = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+    except (OSError, json.JSONDecodeError, ValueError):
+        return 'final'
+    return {
+        1: 'stage1',
+        2: 'stage2',
+        3: 'final',
+    }.get(_recommendation_stage(recommendations), 'final')
 
 
 def _file_version(path: Path) -> Optional[float]:
@@ -524,8 +630,6 @@ _DECK_DIRECTION_RECOMMEND_KEYS = (
     'delivery_purpose',
     'mode',
     'visual_style',
-    'template_reuse_scope',
-    'template_adherence',
     'icons',
     'image_usage',
 )
@@ -535,43 +639,6 @@ _PRODUCTION_RECOMMEND_KEYS = (
     'generation_mode',
 )
 _LOCKED_RECOMMENDATIONS_KEY = '_locked_recommendations'
-_TEMPLATE_REUSE_SCOPES = frozenset({'mirror', 'layout', 'style'})
-_TEMPLATE_ADHERENCE_MODES = frozenset({'strict', 'adaptive'})
-
-
-def _template_context(project_path: Path) -> dict[str, object]:
-    """Return the loaded template kind and replication contract."""
-    spec_path = project_path / 'templates' / 'design_spec.md'
-    try:
-        lines = spec_path.read_text(encoding='utf-8').splitlines()
-    except OSError:
-        return {'enabled': False, 'kind': None, 'replication_mode': None}
-    if not lines or lines[0].strip() != '---':
-        return {'enabled': False, 'kind': None, 'replication_mode': None}
-    kind = None
-    replication_mode = None
-    for line in lines[1:]:
-        stripped = line.strip()
-        if stripped == '---':
-            break
-        kind_match = re.fullmatch(
-            r'kind\s*:\s*["\']?(brand|layout|deck)["\']?',
-            stripped,
-        )
-        if kind_match:
-            kind = kind_match.group(1)
-            continue
-        replication_match = re.fullmatch(
-            r'replication_mode\s*:\s*["\']?(standard|fidelity|mirror)["\']?',
-            stripped,
-        )
-        if replication_match:
-            replication_mode = replication_match.group(1)
-    return {
-        'enabled': kind in {'layout', 'deck'},
-        'kind': kind,
-        'replication_mode': replication_mode,
-    }
 
 
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
@@ -598,6 +665,10 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
         data['page_count'] = {'value': res.get('page_count') or ''}
     if 'image_notes' in res:
         data['image_notes'] = {'value': res.get('image_notes') or ''}
+    if 'template_application' in res:
+        data['template_application'] = {
+            'value': res.get('template_application') or '',
+        }
     if isinstance(res.get('color'), dict):
         data['color'] = {'selected': 0, 'candidates': [res['color']]}
     if isinstance(res.get('typography'), dict):
@@ -680,9 +751,17 @@ def _wait_only_for_result(
     logger.info('waiting for browser confirmation stage=%s...', target_stage)
     deadline = None if timeout <= 0 else time.time() + timeout
     while True:
-        if _result_stage(result_file) == target_stage:
+        current_stage = _result_stage(result_file)
+        if current_stage == target_stage:
             logger.info('confirmation stage=%s received: %s', target_stage, result_file)
             return 0
+        if _result_stage_number(current_stage) > _result_stage_number(target_stage):
+            logger.error(
+                'confirmation skipped expected stage=%s and advanced to %s',
+                target_stage,
+                current_stage,
+            )
+            return 2
 
         skip_error = _stage_skip_error(result_file.parent)
         if skip_error:
@@ -990,38 +1069,25 @@ def create_app(
         rec_stage_number = _recommendation_stage(data)
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
-        template_context = _template_context(project_path)
-        # Template use is a Stage-2 direction decision derived from the confirmed
-        # communication contract. Keep it off the Stage-1 page even when a
-        # deck/layout workspace is installed. Legacy single-pass files (stage 0)
-        # still expose the controls.
-        template_adherence_enabled = bool(
-            template_context['enabled'] and rec_stage_number != 1
-        )
-        data['_template_adherence_enabled'] = template_adherence_enabled
-        data['_template_reuse_scope_enabled'] = template_adherence_enabled
-        data['_template_replication_mode'] = template_context['replication_mode']
+        if rec_stage_number == 2:
+            recommendation_error = _template_stage2_error(
+                data,
+                template_required=_template_confirmation_required(
+                    project_path,
+                    data,
+                ),
+            )
+            if recommendation_error:
+                return jsonify({'error': recommendation_error}), 409
+        # Template application is authored by Strategist from the installed
+        # workspace and current content. Never expose legacy mode fields as
+        # user-facing confirmation controls.
         recommend = data.get('recommend')
-        if template_adherence_enabled:
-            if not isinstance(recommend, dict):
-                recommend = data['recommend'] = {}
-            recommend.setdefault('template_reuse_scope', 'layout')
-            if (
-                recommend.get('template_reuse_scope') == 'mirror'
-                and template_context['replication_mode'] != 'mirror'
-            ):
-                recommend['template_reuse_scope'] = 'layout'
-            if recommend.get('template_reuse_scope') == 'style':
-                recommend.pop('template_adherence', None)
-                data.pop('template_adherence', None)
-            else:
-                recommend.setdefault('template_adherence', 'adaptive')
-        else:
-            if isinstance(recommend, dict):
-                recommend.pop('template_reuse_scope', None)
-                recommend.pop('template_adherence', None)
-            data.pop('template_reuse_scope', None)
-            data.pop('template_adherence', None)
+        if isinstance(recommend, dict):
+            recommend.pop('template_reuse_scope', None)
+            recommend.pop('template_adherence', None)
+        data.pop('template_reuse_scope', None)
+        data.pop('template_adherence', None)
         # The page polls this endpoint after a stage-1 confirm until the AI
         # overwrites the file with the once-authored stage-2 recommendations, so it
         # must never be served from a cache.
@@ -1038,38 +1104,27 @@ def create_app(
         confirm_dir.mkdir(parents=True, exist_ok=True)
         result = dict(payload)
         result_file = confirm_dir / RESULT_NAME
+        raw_stage = result.get('stage')
+        stage = _stage_key(raw_stage)
+        if raw_stage is not None and stage is None:
+            return jsonify({'error': 'invalid confirmation stage'}), 400
+        stage_error = _submission_stage_error(
+            project_path,
+            confirm_dir,
+            stage,
+        )
+        if stage_error:
+            return jsonify({'error': stage_error}), 409
         locked_values = _apply_locked_recommendations(
             result,
             confirm_dir / RECOMMENDATIONS_NAME,
             result_file,
         )
-        stage = _stage_key(result.get('stage'))
-        template_context = _template_context(project_path)
-        if template_context['enabled'] and stage != 'stage1':
-            reuse_scope = result.get('template_reuse_scope')
-            if reuse_scope not in _TEMPLATE_REUSE_SCOPES:
-                return jsonify({
-                    'error': 'template_reuse_scope must be mirror, layout, or style',
-                }), 400
-            if (
-                reuse_scope == 'mirror'
-                and template_context['replication_mode'] != 'mirror'
-            ):
-                return jsonify({
-                    'error': 'mirror reuse requires replication_mode: mirror',
-                }), 400
-            if reuse_scope == 'style':
-                result.pop('template_adherence', None)
-            elif result.get('template_adherence') not in _TEMPLATE_ADHERENCE_MODES:
-                return jsonify({
-                    'error': 'template_adherence must be strict or adaptive',
-                }), 400
-        else:
-            result.pop('template_reuse_scope', None)
-            result.pop('template_adherence', None)
+        result.pop('template_reuse_scope', None)
+        result.pop('template_adherence', None)
         # Staged flow: Stage 1 / Stage 2 submits record intermediate choices but do
         # NOT close the page. Only a final submit is a full confirmation. A
-        # payload with no stage is a single-pass confirmation (chat-opt-out parity).
+        # payload with no stage is a legacy free-design single-pass confirmation.
         if stage in {'stage1', 'stage2'}:
             result['stage'] = stage
             result['status'] = f'{stage}-confirmed'

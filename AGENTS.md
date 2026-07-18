@@ -2,19 +2,17 @@
 
 This file is the project entry point for general AI agents.
 
-**You MUST read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before any PPT generation task or repo modification.** This repository exists to generate presentations; SKILL.md is the authoritative workflow that owns project creation, role switching, serial execution, quality gates, post-processing, export, and every per-step command. The rest of this file only points to where related material lives — it never substitutes for SKILL.md.
+**You MUST read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before any PPT generation task or repo modification.** It owns global execution discipline and points to the route selector; after routing, the selected route authority owns its steps, gates, and commands. The rest of this file only points to where related material lives.
 
 ## Project Overview
 
-PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
-
-**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist confirmation stage → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export PPTX`
+PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML). The Generate route owns its pipeline sequence.
 
 **Route selection authority**: [`skills/ppt-master/workflows/routing.md`](skills/ppt-master/workflows/routing.md) owns the four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. Child workflows, profiles, stages, and governance documents refine one selected route; they are not competing top-level routes.
 
-- Topic-only requests run the [`topic-research`](skills/ppt-master/workflows/stages/topic-research.md) intake stage before SKILL.md Step 1.
+- Topic-only requests run the [`topic-research`](skills/ppt-master/workflows/stages/topic-research.md) intake stage before [`generate-pptx`](skills/ppt-master/workflows/generate-pptx.md) Step 1.
 - Raw PPTX template plus new material/topic routes to [`template-fill-pptx`](skills/ppt-master/workflows/template-fill-pptx.md), not the SVG pipeline.
-- Raw PPTX cannot be consumed as a Step 3 SVG template; run [`create-template`](skills/ppt-master/workflows/create-template.md) first and return with the generated template workspace root. Never add Master/Layout structure directly to an existing PPTX/SVG; generate new structured SVG pages from the workspace.
+- Raw PPTX cannot be consumed as a Generate Step 3 SVG template; run [`create-template`](skills/ppt-master/workflows/create-template.md) first and return with the generated template workspace root. Never add Master/Layout structure directly to an existing PPTX/SVG; generate new structured SVG pages from the workspace.
 - PPTX beautify is a strict 1:1 main-generation [`profile`](skills/ppt-master/workflows/profiles/beautify-pptx.md), not a separate route; any split/merge/drop/reorder uses the default main-pipeline policy.
 - Finished PPTX native enhancement uses [`native-enhance-pptx`](skills/ppt-master/workflows/native-enhance-pptx.md) and must not enter SVG regeneration.
 - [`visual-review`](skills/ppt-master/workflows/stages/visual-review.md), [`customize-animations`](skills/ppt-master/workflows/stages/customize-animations.md), and [`generate-audio`](skills/ppt-master/workflows/stages/generate-audio.md) are supporting stages; their trigger rules remain explicit/conditional.
@@ -22,7 +20,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 ## Execution Requirements
 
 - For any `brand`, `layout`, or `deck` workspace creation from PPTX/SVG, images/PDFs, documents/websites, brand assets, direct text, or mixed references, enter [`skills/ppt-master/workflows/create-template.md`](skills/ppt-master/workflows/create-template.md); it keeps the fixed Create Template name and dispatches exactly one of [`create-brand`](skills/ppt-master/workflows/create-template/create-brand.md), [`create-layout`](skills/ppt-master/workflows/create-template/create-layout.md), or [`create-deck`](skills/ppt-master/workflows/create-template/create-deck.md).
-- Technical SVG/PPT constraints live in [`skills/ppt-master/references/shared-standards.md`](skills/ppt-master/references/shared-standards.md).
+- Always-on SVG constraints live in [`skills/ppt-master/references/shared-standards-core.md`](skills/ppt-master/references/shared-standards-core.md). Load [`svg-effects.md`](skills/ppt-master/references/svg-effects.md), [`native-data-interface.md`](skills/ppt-master/references/native-data-interface.md), and [`pptx-structure-interface.md`](skills/ppt-master/references/pptx-structure-interface.md) only when their documented execution triggers apply.
 - Canvas choices live in [`skills/ppt-master/references/canvas-formats.md`](skills/ppt-master/references/canvas-formats.md).
 - Icon library details live in [`skills/ppt-master/templates/icons/README.md`](skills/ppt-master/templates/icons/README.md).
 
@@ -39,7 +37,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 ## Command Quick Reference
 
-Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
+Convenience summary only — route selection starts in [`SKILL.md`](skills/ppt-master/SKILL.md); the full SVG-generation workflow is [`generate-pptx.md`](skills/ppt-master/workflows/generate-pptx.md).
 
 ```bash
 # Source content conversion
@@ -48,6 +46,8 @@ uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]
 # Project management
 uvx ppt-master project init <project_name> --format ppt169
 uvx ppt-master project import-sources <project_path> <source_files_or_dirs_or_URLs...> --move
+uvx ppt-master project scaffold-spec <project_path>
+uvx ppt-master project scaffold-lock <project_path>
 uvx ppt-master project validate <project_path>
 
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
@@ -86,18 +86,15 @@ uvx ppt-master animation-config validate <project_path>  # optional, before re-e
 uvx ppt-master native-enhance-pptx init <PPTX_file> --name <project_slug>
 uvx ppt-master native-enhance-pptx validate <project_path>
 uvx ppt-master native-enhance-pptx apply <project_path>
-
-# Post-processing pipeline: run sequentially, one command at a time
-uvx ppt-master total-md-split <project_path>
-uvx ppt-master finalize-svg <project_path>
-uvx ppt-master svg-to-pptx <project_path>
-# Mergeable dy-stacked paragraph blocks collapse into one editable text frame by default; add --no-merge to keep every line as its own frame (strict line fidelity). See SKILL.md Step 7.3.
 ```
+
+For serial post-processing and export, follow [`generate-pptx.md`](skills/ppt-master/workflows/generate-pptx.md) Step 7 exactly. See [`svg-pipeline.md`](skills/ppt-master/scripts/docs/svg-pipeline.md) for tool flags and behavior.
 
 ## Core Directories
 
-- `skills/ppt-master/SKILL.md` — main workflow authority.
-- `skills/ppt-master/references/` — role definitions and technical specifications.
+- `skills/ppt-master/SKILL.md` — global discipline and route-entry authority.
+- `skills/ppt-master/workflows/generate-pptx.md` — Generate PPTX Step 1–7 authority.
+- `skills/ppt-master/references/` — role cores plus conditionally loaded role and technical modules.
 - `skills/ppt-master/scripts/` — runnable tool scripts.
 - `skills/ppt-master/scripts/docs/` — topic-focused script docs.
 - `skills/ppt-master/templates/` — layout templates, chart templates, icon library, brand presets.
