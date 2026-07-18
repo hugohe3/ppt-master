@@ -49,7 +49,7 @@ Read skills/ppt-master/workflows/generate-pptx.md
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
-- Read references (executor-base + shared-standards + the locked `mode` file under `modes/` + the locked `visual_style` file under `visual-styles/` + image-layout-spec + svg-image-embedding)
+- Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked mode / visual-style files), then only the branches selected by its condition table
 - Design Parameter Confirmation
 - Pre-generation Batch Read (every layout / chart SVG referenced in `spec_lock`)
 - Per-page `spec_lock` re-read + sequential page generation

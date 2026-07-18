@@ -93,7 +93,7 @@ Minimal semantic markers do not weaken that closure. Free-design, brand-only, an
 | Domain | Authority |
 |---|---|
 | Visible page content and layout on SVG-authoring routes | Final page SVG in `svg_output/` |
-| Project-canonical SVG syntax, compatible forms, and mapping boundary | [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
+| Project-canonical SVG syntax, compatible forms, and mapping boundary | The split authority set selected through [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
 | Master/Layout/Slide packaging and native-object mapping | SVG-to-PPTX translation; it may reorganize represented content but does not invent visible content |
 | Animations, transitions, speaker notes, and narration | Dedicated sidecars/assets and PPTX package post-processing |
 | Direct native-PPTX editing | The selected native workflow's PPTX/OOXML contract |
@@ -205,9 +205,9 @@ SVG wins because it shares the same world view as DrawingML: both are absolute-c
 | `linearGradient` / `radialGradient` | `<a:gradFill>` |
 | `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
 
-This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) that identifies its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
+This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in the applicable module selected by the [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) router, identifying its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
 
-For a PowerPoint-first, feature-by-feature view of those relationships, see the [PowerPoint Feature ↔ Project SVG Mapping Guide](./powerpoint-svg-mapping.md). It owns the public capability and PPTX-import recovery map; `shared-standards.md` remains the generated-authoring contract.
+For a PowerPoint-first, feature-by-feature view of those relationships, see the [PowerPoint Feature ↔ Project SVG Mapping Guide](./powerpoint-svg-mapping.md). It owns the public capability and PPTX-import recovery map; the authority set routed by `shared-standards.md` owns generated authoring.
 
 The main generation route uses **canonical narrow writes and controlled compatible reads**. New `svg_output/` and reusable templates use only project-canonical spellings—for example, uppercase opaque `#RRGGBB`, with transparency carried by the matching `fill-opacity`, `stroke-opacity`, `stop-opacity`, `flood-opacity`, or atomic-element `opacity`. Historical or manual input proceeds only when the compatibility contract documents it, the conversion has one meaning, and the output is valid. The checker emits a non-blocking warning for such input, and the converter normalizes it at the compilation boundary. Anything that requires guessing, lacks a mapping, or could produce a damaged PPTX is an error.
 
@@ -414,13 +414,13 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
 
-**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points there rather than restating the contract — so when a constraint changes, only one file changes, and a stale duplicate in patterns cannot silently keep enforcing the old rule.
+**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live in the authority set routed by [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points to that router rather than restating the contract, so each rule still has one owning module and no stale duplicate in the pattern catalog.
 
 ---
 
 ## Project-Canonical SVG and the Compatibility Boundary
 
-PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. That file is the sole authority for syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
+PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when the applicable module selected by [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. The split authority set owns syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
 
 **Why local reuse is compile-time reuse, not a retained PowerPoint object.** The canonical contract defines accepted authoring forms, and the shared validator enforces them. After validation, the pipeline recursively materializes each referenced subtree and rewrites clone-local IDs before export. PPTX-to-SVG import therefore returns expanded primitives rather than reconstructing the authoring-time reuse graph.
 

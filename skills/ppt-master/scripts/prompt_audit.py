@@ -1273,6 +1273,7 @@ def _has_schema_grammar_signal(line: str, schema_field: str) -> bool:
         or re.search(r"\b(formats?|grammars?|schemas?|syntaxes?|keys?|values?)\b", line, re.I)
         or re.search(r"P<NN>\s*:", line)
         or re.search(rf"{re.escape(schema_field)}\s*[:=]", line)
+        or re.search(rf'"{re.escape(schema_field)}"\s*:', line)
         or (" | " in line and re.search(r"<[^>]+>", line))
     )
 

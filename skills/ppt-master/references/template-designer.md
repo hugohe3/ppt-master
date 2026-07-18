@@ -1,4 +1,4 @@
-> See shared-standards.md for common technical constraints.
+> See [`shared-standards-core.md`](./shared-standards-core.md) for common technical constraints.
 
 # Template Designer — Template Design Role
 
@@ -82,7 +82,7 @@ color scheme. Do not copy an expanded import carrier/preview/fingerprint
 bundle into an authored template. `mirror` instead preserves the supported
 expanded lossless source representation. The exact syntax and validation
 contract remain owned by
-[`shared-standards.md`](./shared-standards.md) and the native-shape reference.
+[`shared-standards-core.md`](./shared-standards-core.md) and the native-shape reference.
 
 **Hard rule — complete mirror graph**: Preserve every supported source Layout represented by the validated import,
 including Layouts unused by source Slides. Emit one complete source-page
@@ -177,8 +177,8 @@ When the brief sets `Replication mode: mirror`, materialize a new template works
 
 **Scope rule — package-specific rules only.** A Deck `design_spec.md` describes its recurring application plus integrated identity and structure. A Layout spec describes only brand-neutral reusable structure and may state supported content shapes/delivery settings without owning a communication objective or narrative. Neither restates generic constraints — those live in the canonical references and are already loaded by every downstream role:
 
-- General SVG required / forbidden / conditional interfaces → [`shared-standards.md`](shared-standards.md)
-- Generic layout pattern library, spacing bands, font-size ratio bands → [`templates/design_spec_reference.md`](../templates/design_spec_reference.md) (read by Strategist when authoring the **project** design_spec)
+- Always-on SVG rules and conditional-module routing → [`shared-standards-core.md`](./shared-standards-core.md)
+- Generic layout pattern library, spacing bands, font-size ratio bands → [`strategist.md`](strategist.md) (used when authoring the **project** design spec)
 - Canonical placeholder vocabulary → §4 below
 - Content methodology (pyramid / SCQA / MECE) → [`strategist.md`](strategist.md)
 
@@ -314,10 +314,10 @@ Sections to **omit** from template `design_spec.md` (sourced elsewhere — listi
 
 | Don't write | Source |
 |---|---|
-| General SVG technical / compatibility rules | `shared-standards.md` |
-| Generic layout pattern library (centered card / three-column / timeline / …) | `design_spec_reference.md` §V |
-| Generic spacing bands (margin 40-60px, card gap 20-32px, etc.) | `design_spec_reference.md` §V |
-| Generic font-size hierarchy (cover 2.5-5x body, page title 1.5-2x, …) | `design_spec_reference.md` §IV |
+| Always-on SVG rules and conditional-module routing | `shared-standards-core.md` |
+| Generic layout pattern library (centered card / three-column / timeline / …) | `strategist.md` §4 |
+| Generic spacing bands (margin 40-60px, card gap 20-32px, etc.) | `strategist.md` §4 |
+| Generic font-size hierarchy (cover 2.5-5x body, page title 1.5-2x, …) | `strategist.md` §g |
 | Canonical placeholder table (`{{TITLE}}`, `{{PAGE_NUM}}`, …) | §4 below |
 | Content methodology (pyramid / SCQA / MECE) | `strategist.md` |
 | "Usage Instructions" boilerplate (copy template / select page / …) | `create-template.md` |

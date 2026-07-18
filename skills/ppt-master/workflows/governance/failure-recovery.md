@@ -64,9 +64,9 @@ Here, **final confirmation evidence** means either the explicit final confirmati
 | Last good state | Resume from |
 |---|---|
 | Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
-| Stage 2 confirmation exists, final confirmation missing | Resume [`generate-pptx`](../generate-pptx.md) Step 4 substep 4, "Derive Stage 3 once from the confirmed solution, then wait for the final confirmation." |
-| Final confirmation evidence exists; `design_spec.md` is missing, with or without a surviving `spec_lock.md` | Return to [`strategist.md`](../../references/strategist.md) §6 steps 1–4 and regenerate `design_spec.md` and `spec_lock.md` together from the source material and confirmed state; do not reconstruct the outline from an orphan lock. |
-| Final confirmation evidence exists; `design_spec.md` exists and `spec_lock.md` missing | Return to [`strategist.md`](../../references/strategist.md) §6 step 4 and regenerate `spec_lock.md`. |
+| Stage 2 confirmation exists, final confirmation missing | Resume [`generate-pptx`](../generate-pptx.md) Step 4 confirmation orchestration at Stage 3: derive production mechanics from the confirmed solution, then perform the final wait. |
+| Final confirmation evidence exists; `design_spec.md` is missing, with or without a surviving `spec_lock.md` | Return to Generate Step 4 and [`strategist.md`](../../references/strategist.md) §6.2; scaffold the missing artifact and regenerate `design_spec.md` and `spec_lock.md` together from the source material and confirmed state. Do not reconstruct the outline from an orphan lock. |
+| Final confirmation evidence exists; `design_spec.md` exists and `spec_lock.md` missing | Return to Generate Step 4, run `project_manager.py scaffold-lock`, and fill the lock from the confirmed state plus the design spec under [`strategist.md`](../../references/strategist.md) §6.2. |
 | No final confirmation evidence is available | Resume Step 4 from the latest stage evidenced by `confirm_ui/result.json`; if no stage is persisted, restart Step 4 at Stage 1. Do not infer confirmed choices from partial planning artifacts. |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](../stages/resume-execute.md) |
 | Images acquired but SVGs not started | [`generate-pptx`](../generate-pptx.md) Step 6 |

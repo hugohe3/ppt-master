@@ -355,7 +355,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ### 策略师确认阶段在不同 kind 下的行为
 
-安装模板不会让沟通问题消失。Stage 1 始终独立确认同一份开放式沟通契约。Brand 提供身份约束、结构仍然自由；Layout 提供结构能力；Deck 还提供应用契约。Stage 2 推导时才把已保存的应用契约与当前确认结果对照，不能静默当成真值，再根据场景在合法范围内选择 `mirror`、`layout` 或 `style`。因此，按 mirror 创建的工作区只是允许原样复用，不会自动选中原样复用。Stage 3 再用该消费范围实际保留的身份、结构与应用规则实现已确认方向。具体规则落在 `references/strategist.md` 与 `spec_lock_reference.md`。
+安装模板不会让沟通问题消失。Stage 1 始终独立确认同一份开放式沟通契约。Brand 提供身份约束、结构仍然自由；Layout 提供结构能力；Deck 还提供应用契约。Stage 2 推导时才把已保存的应用契约与当前确认结果对照，不能静默当成真值，再根据场景在合法范围内选择 `mirror`、`layout` 或 `style`。因此，按 mirror 创建的工作区只是允许原样复用，不会自动选中原样复用。Stage 3 再用该消费范围实际保留的身份、结构与应用规则实现已确认方向。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责，机器结构由 `templates/schemas/spec_lock.schema.json` 负责。
 
 ---
 

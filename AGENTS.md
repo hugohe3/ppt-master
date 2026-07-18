@@ -20,7 +20,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 ## Execution Requirements
 
 - For any `brand`, `layout`, or `deck` workspace creation from PPTX/SVG, images/PDFs, documents/websites, brand assets, direct text, or mixed references, enter [`skills/ppt-master/workflows/create-template.md`](skills/ppt-master/workflows/create-template.md); it keeps the fixed Create Template name and dispatches exactly one of [`create-brand`](skills/ppt-master/workflows/create-template/create-brand.md), [`create-layout`](skills/ppt-master/workflows/create-template/create-layout.md), or [`create-deck`](skills/ppt-master/workflows/create-template/create-deck.md).
-- Technical SVG/PPT constraints live in [`skills/ppt-master/references/shared-standards.md`](skills/ppt-master/references/shared-standards.md).
+- Always-on SVG constraints live in [`skills/ppt-master/references/shared-standards-core.md`](skills/ppt-master/references/shared-standards-core.md). Load [`svg-effects.md`](skills/ppt-master/references/svg-effects.md), [`native-data-interface.md`](skills/ppt-master/references/native-data-interface.md), and [`pptx-structure-interface.md`](skills/ppt-master/references/pptx-structure-interface.md) only when their documented execution triggers apply.
 - Canvas choices live in [`skills/ppt-master/references/canvas-formats.md`](skills/ppt-master/references/canvas-formats.md).
 - Icon library details live in [`skills/ppt-master/templates/icons/README.md`](skills/ppt-master/templates/icons/README.md).
 
@@ -46,6 +46,8 @@ python3 skills/ppt-master/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or
 # Project management
 python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
 python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs_or_URLs...> --move
+python3 skills/ppt-master/scripts/project_manager.py scaffold-spec <project_path>
+python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>
 python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
@@ -92,7 +94,7 @@ For serial post-processing and export, follow [`generate-pptx.md`](skills/ppt-ma
 
 - `skills/ppt-master/SKILL.md` — global discipline and route-entry authority.
 - `skills/ppt-master/workflows/generate-pptx.md` — Generate PPTX Step 1–7 authority.
-- `skills/ppt-master/references/` — role definitions and technical specifications.
+- `skills/ppt-master/references/` — role cores plus conditionally loaded role and technical modules.
 - `skills/ppt-master/scripts/` — runnable tool scripts.
 - `skills/ppt-master/scripts/docs/` — topic-focused script docs.
 - `skills/ppt-master/templates/` — layout templates, chart templates, icon library, brand presets.

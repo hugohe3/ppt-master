@@ -1,7 +1,8 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1 and §6.2–§6.8 for project geometry,
-paint/effects, image-fit, line-presentation, and transform authoring contracts.
+See references/shared-standards-core.md §2.1 for project geometry and
+references/svg-effects.md §§6.2–6.8 for paint, image-fit, line-presentation,
+and transform authoring contracts.
 """
 
 from __future__ import annotations

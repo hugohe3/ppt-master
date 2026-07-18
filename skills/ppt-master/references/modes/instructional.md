@@ -32,7 +32,7 @@ Titles state what the page teaches ("How attention weights are computed") — cl
 
 ## 3. Speaker-notes register
 
-Patient, explanatory. Define before using; analogy then principle. Anticipate the learner's question and answer it. Steady pace; signpost transitions ("now that we have X, we can ask Y"). Conversational data. (Common framework: [`executor-base.md §8`](../executor-base.md).)
+Patient, explanatory. Define before using; analogy then principle. Anticipate the learner's question and answer it. Steady pace; signpost transitions ("now that we have X, we can ask Y"). Conversational data. (Common framework: [`executor-notes.md`](../executor-notes.md) §1.)
 
 ---
 

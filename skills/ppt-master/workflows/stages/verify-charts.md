@@ -60,7 +60,7 @@ For each page in the Step 1 list:
 
 1. Read `<project_path>/svg_output/<page>.svg`.
 2. Locate the plot-area definition:
-   - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-base.md §3.1](../../references/executor-base.md)). Read coordinates directly.
+   - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-chart.md §2.1](../../references/executor-chart.md)). Read coordinates directly.
    - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
 3. Read the data series from the SVG's `<text>` label/value elements.
 4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.

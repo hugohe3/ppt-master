@@ -8,7 +8,7 @@
 
 本指南从 PowerPoint 使用者的视角回答一个问题：**对于某项 PowerPoint 功能，项目中由什么表达承载，导出或回导时能保留什么？** 因此，PowerPoint 语义是唯一主索引，SVG 元素只作为某项 PowerPoint 能力的具体实现出现。
 
-这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)；生成语法出现差异时，以该合同为准。PPTX 导入的容错模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
+这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同由 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由到拆分权威集；生成语法出现差异时，以适用模块为准。PPTX 导入的容错模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
 
 主路线编译的是**项目规范化 SVG**，而不是通用浏览器 SVG：
 
@@ -48,7 +48,7 @@ PowerPoint 意图
 | 主题颜色与字体 | `spec_lock.md` 锁定的角色；规范 SVG 使用解析后的值 | 当精确匹配锁定角色时保留 theme token，否则写直接 DrawingML 值 | 已登记角色为 `Native-stable` | 新页面不得自行发明未锁定颜色、字体或字号 |
 | PowerPoint 包身份 | `spec_lock.md` 结构声明与打包器 | Presentation、Master、Layout、relationship 与 content type 注册 | 从包结构读回，不从页面外观推断 | 最终包读回必须与声明的 roster 一致 |
 
-受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) §4.1。
+受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards-core.md` §4.1](../../skills/ppt-master/references/shared-standards-core.md#41-semantic-svg-marker-contract)。
 
 ## 2. Master、Layout、背景与占位符功能
 
@@ -80,9 +80,9 @@ PowerPoint 意图
 | cover/content/ending 等页面角色 | flat 路线根 `data-pptx-page-role` 编译提示 | 路由/校验提示；不是 PowerPoint 原生页面类型 | 没有独立 OOXML 对象 | structured 页面改用显式 Master/Layout 身份 |
 | 幻灯片节与自定义放映 | 无 SVG 映射 | 主生成路线不编写 | 当源保留工作流拥有该语义时为 `Direct preservation` | 不得编码为可见 metadata |
 
-精确的结构 metadata 与 slot 语法见规范中的 [PPTX 结构章节](../../skills/ppt-master/references/shared-standards.md#pptx-structure-routing)。
+精确的结构 metadata 与 slot 语法见 [PPTX 结构接口](../../skills/ppt-master/references/pptx-structure-interface.md#1-pptx-structure-routing)。
 
-内部标识符与 PowerPoint 显示名称是两件事：Master 和 Layout key 使用项目受限 ASCII 标识符语法，picker 名称可以含空格。每个 Layout 定义还必须指定父 Master 与一个显式原型来源。精确行语法由规范文档拥有。
+内部标识符与 PowerPoint 显示名称是两件事：Master 和 Layout key 使用项目受限 ASCII 标识符语法，picker 名称可以含空格。每个 Layout 定义还必须指定父 Master 与一个显式原型来源。精确行语法由 PPTX 结构接口拥有。
 
 ## 3. PowerPoint 形状与绘图对象
 
@@ -105,7 +105,7 @@ PowerPoint 意图
 | 图标 / 导入向量 | 由项目图标管线解析的 `<use data-icon="library/name">`；create-template 导入统一使用 `imported/<name>` | 展开后的可编辑矢量原语/组 | 重建几何，不恢复原图标库引用 | 标识区分大小写；导入素材仅在工作区根目录 `icons/imported/<name>.svg` 保留一份 |
 | SmartArt / DiagramML | 无主 SVG 对象映射 | 主重设计路线可以用普通 shape 重建语义 | 原生/模板路线中为 `Direct preservation`，否则为 preview 或显式 fallback | 不得将装饰性组标记为原生 SmartArt |
 
-项目创作 preset 有意采用 compact 表达，而 PPTX 导入继续保留无损往返裁决所需的 expanded 证据。精确机器合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)，preset 选择与创作行为见 [`native-shape-authoring.md`](../../skills/ppt-master/references/native-shape-authoring.md)。
+项目创作 preset 有意采用 compact 表达，而 PPTX 导入继续保留无损往返裁决所需的 expanded 证据。精确机器合同仍属于 [`shared-standards-core.md`](../../skills/ppt-master/references/shared-standards-core.md)，preset 选择与创作行为见 [`native-shape-authoring.md`](../../skills/ppt-master/references/native-shape-authoring.md)。
 
 ## 4. PowerPoint 文本功能
 
@@ -117,13 +117,13 @@ PowerPoint 意图
 | 有意义的文本空白 | `<text>`/`<tspan>` 上精确的 `xml:space="default"` 或 `xml:space="preserve"` | 可编辑 DrawingML run 中归一化或保留的 U+0020 文本 | `Native-normalized`；保留行内 run 所有权 | 使用项目 Chromium/SVG2 合同：LF/TAB 转为空格，`default` 跨 run 折叠，`preserve` 全部保留，Unicode 间隔字符保持字面值；CSS `white-space` 与 SVG 1.1 遗留换行删除不在映射内 |
 | 字体 | 根据项目 lock 解析的规范 `font-family` | 直接 typeface 或已登记 theme font | 在安装字体/替换边界内为 `Native-stable` | 校验会报告未锁定或不可用字体 |
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
-| 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
-| 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
+| 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
-| 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的垂直文本可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
-| 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 按 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) 拒绝不受支持的 CSS 排版、超出 DrawingML 范围的间距，以及导致生成 run advance 或文本框 extent 非正的负字距 |
+| 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 按 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) 拒绝不受支持的 CSS 排版、超出 DrawingML 范围的间距，以及导致生成 run advance 或文本框 extent 非正的负字距 |
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
 | 文本阴影或发光 | 受支持 filter/effect 合同 | 一个原生外阴影或发光 | `Approximate` | 仅支持一个已登记效果图；实质效果需复核 |
@@ -190,12 +190,12 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 | 视觉绘制图表 | 普通 SVG 几何与文本 | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 没有“编辑数据”工作簿 |
 | PowerPoint 原生经典图表 | 一个带 `<metadata type="application/json">` 已登记 JSON 数据和可见 fallback 的 `<g data-pptx-replace-with="chart">` | `p:graphicFrame`、经典 chart part 与嵌入工作簿 | 受支持的导入重建 fallback 加替换 metadata | chart type 与数据必须匹配封闭 schema；需要 `--native-charts-and-tables` |
 | 原生 ChartEx 图表 | 具有受支持 ChartEx family 的相同 marker 接口 | `cx:chart` part 与嵌入工作簿 | 受支持 family 可按语义重建 | 仅接受已登记 family/field 组合 |
-| 图表标题、图例、坐标轴、标签与系列格式 | 已登记原生图表 metadata | 原生 chart 属性 | `Native-normalized` | 精确字段与受支持 family 仍以 `shared-standards.md` 为规范 |
+| 图表标题、图例、坐标轴、标签与系列格式 | 已登记原生图表 metadata | 原生 chart 属性 | `Native-normalized` | 精确字段与受支持 family 仍以 `native-data-interface.md` 为规范 |
 | 图表说明、来源或脚注 | replacement marker 之外的普通伴随 SVG text | 图表旁边可编辑的 Slide 文本框 | 作为文本时为 `Native-stable` | 不得把 Slide 文案隐藏在 chart JSON 里 |
 | 已编辑 SVG fallback 与过期替换 metadata | 更新后的可见 SVG 加过期 hash | 默认导出保留可见 SVG；原生替换失败 | 显式安全行为 | 编译器绝不默默丢弃更新的视觉编辑 |
 | 不支持的 3D 或延后图表 family | SVG 绘制图表、烘焙资产或直接源保留 | 不猜测原生图表 | fallback / `Direct preservation` | 不支持的 alias 必须使原生校验失败 |
 
-完整图表/表格 schema 和受支持 family 列表有意仅保留在[规范化替换合同](../../skills/ppt-master/references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in)中。
+完整图表/表格 schema 和受支持 family 列表有意仅保留在[原生数据接口替换合同](../../skills/ppt-master/references/native-data-interface.md#2-powerpoint-native-chart--table-replacement-markers-opt-in)中。
 
 ## 9. PowerPoint 播放与打包功能
 
@@ -276,7 +276,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 应将映射变更视为编译器变更，而不是宽松 SVG parser 调整：
 
 1. 命名 PowerPoint 能力与预期的可编辑 DrawingML 结果。
-2. 在 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 中定义一种规范项目 SVG 或 sidecar 表达。
+2. 在 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由到的适用权威模块中定义一种规范项目 SVG 或 sidecar 表达。
 3. 将可接受兼容输入与生成创作分开声明。
 4. 实现导出；仅当支持语义重建时实现导入。
 5. 增加 Checker 分类：非法/歧义输入为 error，只有结果确定的兼容或近似输入可为 warning。
@@ -288,4 +288,4 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 - 导出：[`svg_to_pptx.py`](../../skills/ppt-master/scripts/svg_to_pptx.py) 与 `scripts/svg_to_pptx/`
 - 导入：[`pptx_to_svg.py`](../../skills/ppt-master/scripts/pptx_to_svg.py) 与 `scripts/pptx_to_svg/`
 - 校验：[`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py)
-- 规范合同：[`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)
+- 权威路由：[`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)

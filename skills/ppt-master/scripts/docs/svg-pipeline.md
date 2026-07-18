@@ -63,7 +63,7 @@ check and export rerender the locked registry to validate that group, so the
 compact form has no hidden carrier, preview wrapper, or serialized preview
 fingerprint. `pptx_to_svg.py` continues to emit the expanded carrier/preview
 evidence required for import and round-trip decisions. The normative boundary
-is owned by [`shared-standards.md`](../../references/shared-standards.md), with
+is owned by [`shared-standards-core.md`](../../references/shared-standards-core.md) §1.5, with
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
 
@@ -489,9 +489,11 @@ Replaces `<use data-icon="chunk-filled/name" .../>`, `<use data-icon="tabler-fil
 
 ## SVG Compatibility Contract
 
-The canonical SVG authoring and native-mapping contract lives exclusively in
-[`shared-standards.md`](../../references/shared-standards.md). This tool guide
-does not repeat accepted syntax, rejected constructs, or conditional limits.
+The always-on SVG authoring contract lives in
+[`shared-standards-core.md`](../../references/shared-standards-core.md), with
+advanced effects, native data objects, and structured PPTX metadata owned by
+their conditionally loaded modules. This tool guide does not repeat accepted
+syntax, rejected constructs, or conditional limits.
 
 `svg_quality_checker.py` validates source SVG before finalization.
 `finalize_svg.py` and native export apply the preprocessing required by that
