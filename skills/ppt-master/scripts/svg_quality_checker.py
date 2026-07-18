@@ -443,6 +443,8 @@ _NON_VISUAL_SVG_TAGS = frozenset({
     'style',
     'title',
 })
+_MODULE_BOUNDS_ATTR = 'data-pptx-module-bounds'
+_NATIVE_OBJECT_BOUNDS_LABEL = 'native chart/table bounds'
 _PPTX_ROOT_STRUCTURE_ATTRS = (
     'data-pptx-master',
     'data-pptx-master-name',
@@ -607,19 +609,30 @@ def _generated_theme_contract_errors(project_path: Path) -> List[str]:
     ]
 
 
-def _placeholder_bounds_error(value: str) -> str | None:
-    """Return a concise error for invalid design-zone bounds."""
+def _parse_positive_bounds(
+    value: str,
+) -> Tuple[float, float, float, float]:
+    """Parse one positive x/y/width/height boundary."""
     raw_values = [item for item in re.split(r"[\s,]+", value.strip()) if item]
     if len(raw_values) != 4:
-        return "must contain exactly four numbers: x y width height"
+        raise ValueError("must contain exactly four numbers: x y width height")
     try:
         values = tuple(float(item) for item in raw_values)
-    except ValueError:
-        return "must contain only numeric values"
+    except ValueError as exc:
+        raise ValueError("must contain only numeric values") from exc
     if not all(math.isfinite(item) for item in values):
-        return "must contain only finite values"
+        raise ValueError("must contain only finite values")
     if values[2] <= 0 or values[3] <= 0:
-        return "must use positive width and height"
+        raise ValueError("must use positive width and height")
+    return values
+
+
+def _placeholder_bounds_error(value: str) -> str | None:
+    """Return a concise error for invalid design-zone bounds."""
+    try:
+        _parse_positive_bounds(value)
+    except ValueError as exc:
+        return str(exc)
     return None
 
 
@@ -2492,8 +2505,10 @@ class SVGQualityChecker:
         result['info']['text_elements'] = text_count
         result['info']['tspan_elements'] = tspan_count
 
+        self._check_module_bounds_contract(root, result)
         self._check_text_output_geometry(root, result)
         self._check_single_line_text_bounds(root, result)
+        self._check_module_text_bounds(root, result)
         self._check_unmergeable_leading_text(root, result)
 
     @classmethod
@@ -2868,6 +2883,19 @@ class SVGQualityChecker:
                 for current in chain
             ):
                 continue
+            if any(
+                _local_name(current) == 'g'
+                and (
+                    any(current.get(attr) is not None for attr in (
+                        _MODULE_BOUNDS_ATTR,
+                        'data-pptx-placeholder-bounds',
+                        'data-pptx-frame',
+                    ))
+                    or self._explicit_native_object_bounds(current) is not None
+                )
+                for current in chain
+            ):
+                continue
             if text_el.get('data-paragraph-line-height') is not None:
                 continue
             if self._has_ancestor_id(text_el, parent_by_id, unchanged_groups):
@@ -2987,6 +3015,542 @@ class SVGQualityChecker:
                 'estimated horizontal bounds exceed the viewBox '
                 f'({sample}{suffix}); consider repositioning or using '
                 'positioned <tspan> lines'
+            )
+
+    @classmethod
+    def _positioned_text_lines(
+        cls,
+        text_el: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+    ) -> List[Tuple[ET.Element, float, float, List[Dict], float]] | None:
+        """Resolve direct positioned tspans into estimable visual lines."""
+        if _parse_project_geometry_length is None:
+            return None
+        children = list(text_el)
+        if not children or (text_el.text or '').strip():
+            return None
+        if any(
+            not cls._is_tspan(child)
+            or not cls._is_line_tspan(child)
+            or child.get('x') is None
+            or (child.tail or '').strip()
+            for child in children
+        ):
+            return None
+
+        try:
+            current_y = _parse_project_geometry_length(
+                text_el.get('y') or '0',
+                'y',
+            )
+        except ValueError:
+            return None
+
+        lines: List[Tuple[ET.Element, float, float, List[Dict], float]] = []
+        for child in children:
+            try:
+                line_x = _parse_project_geometry_length(child.get('x'), 'x')
+                line_y = (
+                    _parse_project_geometry_length(child.get('y'), 'y')
+                    if child.get('y') is not None
+                    else current_y
+                )
+                if child.get('dx') is not None:
+                    line_x += _parse_project_geometry_length(
+                        child.get('dx'),
+                        'dx',
+                    )
+                if child.get('dy') is not None:
+                    line_y += _parse_project_geometry_length(
+                        child.get('dy'),
+                        'dy',
+                    )
+                runs = cls._resolved_single_line_text_runs(
+                    child,
+                    parent_by_id,
+                    font_sizes,
+                    letter_spacings,
+                )
+            except (KeyError, TypeError, ValueError):
+                return None
+            current_y = line_y
+            if not runs:
+                continue
+            try:
+                font_size = max(float(run['font_size']) for run in runs)
+            except (KeyError, TypeError, ValueError):
+                return None
+            lines.append((child, line_x, line_y, runs, font_size))
+        return lines or None
+
+    @classmethod
+    def _estimated_text_line_bounds(
+        cls,
+        line_el: ET.Element,
+        x: float,
+        y: float,
+        runs: List[Dict],
+        font_size: float,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[float, float, float, float] | None:
+        """Estimate one line's transformed visible bounds in SVG coordinates."""
+        if any(helper is None for helper in (
+            _estimate_single_line_text_frame_width,
+            _IDENTITY_MATRIX,
+            _matrix_multiply,
+            _parse_project_text_anchor,
+            _parse_transform_matrix,
+            _transform_point,
+        )):
+            return None
+        try:
+            width = float(_estimate_single_line_text_frame_width(runs))
+            raw_anchor = (
+                _effective_presentation_value(
+                    line_el,
+                    'text-anchor',
+                    parent_by_id,
+                )
+                or 'start'
+            ).strip().lower()
+            anchor = _parse_project_text_anchor(raw_anchor).value
+        except (TypeError, ValueError):
+            return None
+        if not all(math.isfinite(value) for value in (x, y, width, font_size)):
+            return None
+        if width <= 0 or font_size <= 0:
+            return None
+
+        if anchor == 'middle':
+            left = x - width / 2
+            right = x + width / 2
+        elif anchor == 'end':
+            left = x - width
+            right = x
+        elif anchor == 'start':
+            left = x
+            right = x + width
+        else:
+            return None
+        top = y - font_size * 0.85
+        bottom = y + font_size * 0.35
+
+        return cls._transformed_rect_bounds(
+            line_el,
+            (left, top, right - left, bottom - top),
+            parent_by_id,
+        )
+
+    @classmethod
+    def _estimated_text_bounds(
+        cls,
+        text_el: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+    ) -> Tuple[float, float, float, float] | None:
+        """Estimate one single- or multi-line text carrier's visual bounds."""
+        lines: List[Tuple[ET.Element, float, float, List[Dict], float]] | None
+        try:
+            runs = cls._resolved_single_line_text_runs(
+                text_el,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+            )
+        except (KeyError, TypeError, ValueError):
+            return None
+        if runs:
+            try:
+                lines = [(
+                    text_el,
+                    _parse_project_geometry_length(text_el.get('x') or '0', 'x'),
+                    _parse_project_geometry_length(text_el.get('y') or '0', 'y'),
+                    runs,
+                    max(float(run['font_size']) for run in runs),
+                )]
+            except (KeyError, TypeError, ValueError):
+                return None
+        else:
+            lines = cls._positioned_text_lines(
+                text_el,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+            )
+        if not lines:
+            return None
+
+        bounds = [
+            cls._estimated_text_line_bounds(
+                line_el,
+                x,
+                y,
+                line_runs,
+                font_size,
+                parent_by_id,
+            )
+            for line_el, x, y, line_runs, font_size in lines
+        ]
+        resolved = [item for item in bounds if item is not None]
+        if not resolved:
+            return None
+        return (
+            min(item[0] for item in resolved),
+            min(item[1] for item in resolved),
+            max(item[2] for item in resolved),
+            max(item[3] for item in resolved),
+        )
+
+    @staticmethod
+    def _transformed_rect_bounds(
+        element: ET.Element,
+        bounds: Tuple[float, float, float, float],
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[float, float, float, float] | None:
+        """Transform one local rectangle into root SVG coordinates."""
+        if any(helper is None for helper in (
+            _IDENTITY_MATRIX,
+            _matrix_multiply,
+            _parse_transform_matrix,
+            _transform_point,
+        )):
+            return None
+        x, y, width, height = bounds
+        chain: List[ET.Element] = []
+        current: ET.Element | None = element
+        while current is not None:
+            chain.append(current)
+            current = parent_by_id.get(id(current))
+        matrix = _IDENTITY_MATRIX
+        try:
+            for current in reversed(chain):
+                raw_transform = current.get('transform')
+                if raw_transform:
+                    matrix = _matrix_multiply(
+                        matrix,
+                        _parse_transform_matrix(raw_transform),
+                    )
+            corners = [
+                _transform_point(matrix, corner_x, corner_y)
+                for corner_x, corner_y in (
+                    (x, y),
+                    (x + width, y),
+                    (x + width, y + height),
+                    (x, y + height),
+                )
+            ]
+        except (TypeError, ValueError):
+            return None
+        xs = [point[0] for point in corners]
+        ys = [point[1] for point in corners]
+        return min(xs), min(ys), max(xs), max(ys)
+
+    @classmethod
+    def _resolved_group_bounds(
+        cls,
+        group: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[str, Tuple[float, float, float, float]] | None:
+        """Return one group's nearest explicit boundary in root coordinates."""
+        for attribute in (
+            _MODULE_BOUNDS_ATTR,
+            'data-pptx-placeholder-bounds',
+            'data-pptx-frame',
+        ):
+            raw = group.get(attribute)
+            if raw is None:
+                continue
+            try:
+                local_bounds = _parse_positive_bounds(raw)
+            except ValueError:
+                return None
+            transformed = cls._transformed_rect_bounds(
+                group,
+                local_bounds,
+                parent_by_id,
+            )
+            if transformed is None:
+                return None
+            return attribute, transformed
+        native_bounds = cls._explicit_native_object_bounds(group)
+        if native_bounds is not None:
+            return _NATIVE_OBJECT_BOUNDS_LABEL, native_bounds
+        return None
+
+    @staticmethod
+    def _explicit_native_object_bounds(
+        group: ET.Element,
+    ) -> Tuple[float, float, float, float] | None:
+        """Return complete explicit native chart/table bounds in root space."""
+        if group.get('data-pptx-replace-with') not in {'chart', 'table'}:
+            return None
+        payload: Dict = {}
+        raw_payload = group.get('data-pptx-json')
+        if raw_payload:
+            try:
+                loaded = json.loads(raw_payload)
+            except json.JSONDecodeError:
+                loaded = None
+            if isinstance(loaded, dict):
+                payload = loaded
+        else:
+            for child in group:
+                if (
+                    _local_name(child) != 'metadata'
+                    or child.get('type') != 'application/json'
+                ):
+                    continue
+                try:
+                    loaded = json.loads(''.join(child.itertext()))
+                except json.JSONDecodeError:
+                    loaded = None
+                if isinstance(loaded, dict):
+                    payload = loaded
+                break
+
+        raw_values = (
+            payload.get('x', group.get('data-pptx-x')),
+            payload.get('y', group.get('data-pptx-y')),
+            payload.get('width', group.get('data-pptx-width')),
+            payload.get('height', group.get('data-pptx-height')),
+        )
+        if any(value is None for value in raw_values):
+            return None
+        try:
+            x, y, width, height = (float(value) for value in raw_values)
+        except (TypeError, ValueError):
+            return None
+        if (
+            not all(math.isfinite(value) for value in (x, y, width, height))
+            or width <= 0
+            or height <= 0
+        ):
+            return None
+        return x, y, x + width, y + height
+
+    @classmethod
+    def _nearest_group_bounds(
+        cls,
+        element: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[ET.Element, str, Tuple[float, float, float, float]] | None:
+        """Resolve the nearest ancestor module with an explicit boundary."""
+        current = parent_by_id.get(id(element))
+        while current is not None:
+            if _local_name(current) == 'g':
+                resolved = cls._resolved_group_bounds(current, parent_by_id)
+                if resolved is not None:
+                    attribute, bounds = resolved
+                    return current, attribute, bounds
+            current = parent_by_id.get(id(current))
+        return None
+
+    @staticmethod
+    def _bounds_overflow_axes(
+        inner: Tuple[float, float, float, float],
+        outer: Tuple[float, float, float, float],
+        *,
+        tolerance: float = 1.0,
+    ) -> str | None:
+        """Return the axes on which one root-coordinate box exceeds another."""
+        left, top, right, bottom = inner
+        outer_left, outer_top, outer_right, outer_bottom = outer
+        horizontal = (
+            left < outer_left - tolerance
+            or right > outer_right + tolerance
+        )
+        vertical = (
+            top < outer_top - tolerance
+            or bottom > outer_bottom + tolerance
+        )
+        if horizontal and vertical:
+            return 'horizontal and vertical'
+        if horizontal:
+            return 'horizontal'
+        if vertical:
+            return 'vertical'
+        return None
+
+    def _check_module_bounds_contract(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Validate explicit boundaries on visible authored SVG groups."""
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        viewbox = _parse_viewbox_values(root.get('viewBox') or '')
+        canvas = None
+        if viewbox is not None:
+            x, y, width, height = viewbox
+            canvas = (x, y, x + width, y + height)
+
+        for element in root.iter():
+            if (
+                element.get(_MODULE_BOUNDS_ATTR) is not None
+                and _local_name(element) != 'g'
+            ):
+                result['errors'].append(
+                    f'{_element_label(element)} {_MODULE_BOUNDS_ATTR} is valid '
+                    'only on a visible <g> module'
+                )
+
+        missing: List[str] = []
+        for group in root.iter(f'{{{SVG_NS}}}g'):
+            chain: List[ET.Element] = []
+            current: ET.Element | None = group
+            while current is not None:
+                chain.append(current)
+                current = parent_by_id.get(id(current))
+            if any(
+                _local_name(current) in _NON_VISUAL_SVG_TAGS
+                for current in chain
+            ):
+                continue
+
+            raw_module_bounds = group.get(_MODULE_BOUNDS_ATTR)
+            if raw_module_bounds is not None:
+                try:
+                    _parse_positive_bounds(raw_module_bounds)
+                except ValueError as exc:
+                    result['errors'].append(
+                        f'{_element_label(group)} {_MODULE_BOUNDS_ATTR} {exc}'
+                    )
+
+            explicit_attributes = [
+                attribute
+                for attribute in (
+                    _MODULE_BOUNDS_ATTR,
+                    'data-pptx-placeholder-bounds',
+                    'data-pptx-frame',
+                )
+                if group.get(attribute) is not None
+            ]
+            native_bounds = self._explicit_native_object_bounds(group)
+            boundary_sources = [*explicit_attributes]
+            if native_bounds is not None:
+                boundary_sources.append(_NATIVE_OBJECT_BOUNDS_LABEL)
+            if not boundary_sources:
+                missing.append(_element_label(group))
+                continue
+            if len(boundary_sources) > 1:
+                result['errors'].append(
+                    f'{_element_label(group)} declares multiple module '
+                    f'boundaries ({", ".join(boundary_sources)}); keep the '
+                    'specialized placeholder/native boundary or one ordinary '
+                    f'{_MODULE_BOUNDS_ATTR}, not both'
+                )
+                continue
+
+            resolved = self._resolved_group_bounds(group, parent_by_id)
+            if resolved is None:
+                continue
+            attribute, bounds = resolved
+            if attribute != _MODULE_BOUNDS_ATTR:
+                continue
+            parent_bounds = self._nearest_group_bounds(group, parent_by_id)
+            if parent_bounds is None:
+                if canvas is None:
+                    continue
+                outer_label = 'canvas viewBox'
+                outer = canvas
+            else:
+                parent_group, parent_attribute, outer = parent_bounds
+                outer_label = (
+                    f'{_element_label(parent_group)} {parent_attribute}'
+                )
+            axes = self._bounds_overflow_axes(bounds, outer)
+            if axes is None:
+                continue
+            left, top, right, bottom = bounds
+            outer_left, outer_top, outer_right, outer_bottom = outer
+            result['warnings'].append(
+                f'{_element_label(group)} {_MODULE_BOUNDS_ATTR} exceeds '
+                f'{outer_label} on the {axes} axis: module '
+                f'({left:.1f}, {top:.1f})-({right:.1f}, {bottom:.1f}), '
+                f'container ({outer_left:.1f}, {outer_top:.1f})-'
+                f'({outer_right:.1f}, {outer_bottom:.1f})'
+            )
+
+        if missing and not self.template_mode:
+            sample = '; '.join(missing[:3])
+            suffix = '' if len(missing) <= 3 else f'; +{len(missing) - 3} more'
+            result['warnings'].append(
+                f'Detected {len(missing)} visible <g> module(s) without an '
+                f'explicit boundary ({sample}{suffix}); generated ordinary '
+                f'groups add {_MODULE_BOUNDS_ATTR}="x y width height", while '
+                'placeholder/native groups reuse their existing specialized '
+                'boundary'
+            )
+
+    def _check_module_text_bounds(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Warn when estimable text exceeds its nearest module boundary."""
+        helpers = (
+            _estimate_single_line_text_frame_width,
+            _parse_project_font_weight,
+            _parse_project_geometry_length,
+            _parse_project_text_anchor,
+            _resolve_project_font_sizes,
+            _resolve_project_letter_spacings,
+        )
+        if any(helper is None for helper in helpers):
+            return
+        try:
+            font_sizes = _resolve_project_font_sizes(root)
+            letter_spacings = _resolve_project_letter_spacings(root, font_sizes)
+        except ValueError:
+            return
+
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        unchanged_groups = self._unchanged_txbody_group_ids(root)
+        for text_el in root.iter(f'{{{SVG_NS}}}text'):
+            if self._has_ancestor_id(text_el, parent_by_id, unchanged_groups):
+                continue
+            visible_text = ''.join(text_el.itertext())
+            if not visible_text.strip() or ('{{' in visible_text and '}}' in visible_text):
+                continue
+
+            resolved_group = self._nearest_group_bounds(text_el, parent_by_id)
+            if resolved_group is None:
+                continue
+            group, boundary_attribute, boundary = resolved_group
+
+            estimated = self._estimated_text_bounds(
+                text_el,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+            )
+            if estimated is None:
+                continue
+            left, top, right, bottom = estimated
+            axes = self._bounds_overflow_axes(estimated, boundary)
+            if axes is None:
+                continue
+
+            bound_left, bound_top, bound_right, bound_bottom = boundary
+            result['warnings'].append(
+                f'{_element_label(text_el)} exceeds '
+                f'{_element_label(group)} {boundary_attribute} on the '
+                f'{axes} axis: estimated ({left:.1f}, {top:.1f})-'
+                f'({right:.1f}, {bottom:.1f}), module ({bound_left:.1f}, '
+                f'{bound_top:.1f})-({bound_right:.1f}, {bound_bottom:.1f}); '
+                'reflow with positioned <tspan> lines or revise the module '
+                'layout within the applicable design/template contract'
             )
 
     def _check_unmergeable_leading_text(self, root: ET.Element, result: Dict) -> None:
