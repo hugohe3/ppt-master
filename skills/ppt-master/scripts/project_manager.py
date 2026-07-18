@@ -4,6 +4,8 @@
 Usage:
     python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir <path>]
     python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
+    python3 scripts/project_manager.py scaffold-spec <project_path>
+    python3 scripts/project_manager.py scaffold-lock <project_path>
     python3 scripts/project_manager.py validate <project_path>
     python3 scripts/project_manager.py info <project_path>
 """
@@ -23,6 +25,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from console_encoding import configure_utf8_stdio
+from project_specs import scaffold_project_artifact, validate_project_artifacts
 
 try:
     from project_utils import (
@@ -114,6 +117,10 @@ class ProjectManager:
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
         self.base_dir = Path(base_dir) if base_dir is not None else Path.cwd() / "projects"
+
+    def scaffold_artifact(self, project_path: str, artifact: str) -> str:
+        """Delegate deterministic Markdown scaffold rendering."""
+        return scaffold_project_artifact(Path(project_path), artifact)
 
     def init_project(
         self,
@@ -844,7 +851,19 @@ class ProjectManager:
 
     def validate_project(self, project_path: str) -> tuple[bool, list[str], list[str]]:
         project_path_obj = Path(project_path)
-        is_valid, errors, warnings = validate_project_structure(str(project_path_obj))
+        _, errors, warnings = validate_project_structure(
+            str(project_path_obj),
+            validate_communication=False,
+        )
+
+        if project_path_obj.exists() and project_path_obj.is_dir():
+            project_info = get_project_info_common(str(project_path_obj))
+            artifact_errors, artifact_warnings = validate_project_artifacts(
+                project_path_obj,
+                project_info,
+            )
+            errors.extend(artifact_errors)
+            warnings.extend(artifact_warnings)
 
         if project_path_obj.exists() and project_path_obj.is_dir():
             info = get_project_info_common(str(project_path_obj))
@@ -855,7 +874,7 @@ class ProjectManager:
                     expected_format = None
                 warnings.extend(validate_svg_viewbox(svg_files, expected_format))
 
-        return is_valid, errors, warnings
+        return not errors, list(dict.fromkeys(errors)), warnings
 
     def get_project_info(self, project_path: str) -> dict[str, object]:
         shared = get_project_info_common(project_path)
@@ -880,6 +899,8 @@ def build_parser() -> argparse.ArgumentParser:
         epilog="""Examples:
   python3 scripts/project_manager.py init demo --format ppt169
   python3 scripts/project_manager.py import-sources projects/demo file.md --move
+  python3 scripts/project_manager.py scaffold-spec projects/demo_ppt169_20260718
+  python3 scripts/project_manager.py scaffold-lock projects/demo_ppt169_20260718
   python3 scripts/project_manager.py validate projects/demo
   python3 scripts/project_manager.py info projects/demo
 """,
@@ -900,6 +921,18 @@ def build_parser() -> argparse.ArgumentParser:
     mode = import_sources.add_mutually_exclusive_group()
     mode.add_argument("--move", action="store_true", help="Move local source files")
     mode.add_argument("--copy", action="store_true", help="Copy local source files")
+
+    scaffold_spec = subparsers.add_parser(
+        "scaffold-spec",
+        help="Create design_spec.md from the versioned scaffold",
+    )
+    scaffold_spec.add_argument("project_path", help="Project directory")
+
+    scaffold_lock = subparsers.add_parser(
+        "scaffold-lock",
+        help="Create spec_lock.md from the versioned scaffold",
+    )
+    scaffold_lock.add_argument("project_path", help="Project directory")
 
     validate = subparsers.add_parser("validate", help="Validate a project directory")
     validate.add_argument("project_path", help="Project directory")
@@ -961,6 +994,16 @@ def main(argv: list[str] | None = None) -> int:
                 print("\nSkipped:")
                 for item in summary["skipped"]:
                     print(f"  - {item}")
+            return 0
+
+        if args.command == "scaffold-spec":
+            artifact_path = manager.scaffold_artifact(args.project_path, "design_spec")
+            print(f"[OK] Design spec scaffold created: {artifact_path}")
+            return 0
+
+        if args.command == "scaffold-lock":
+            artifact_path = manager.scaffold_artifact(args.project_path, "spec_lock")
+            print(f"[OK] Execution lock scaffold created: {artifact_path}")
             return 0
 
         if args.command == "validate":

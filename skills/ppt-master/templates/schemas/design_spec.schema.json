@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ppt-master://schemas/design-spec/v1",
+  "title": "PPT Master design_spec.md",
+  "description": "Schema for the Markdown section model emitted by the design-spec parser.",
+  "type": "object",
+  "required": [
+    "project_information",
+    "canvas_specification",
+    "visual_theme",
+    "typography_system",
+    "layout_principles",
+    "icon_usage",
+    "visualization_reference",
+    "image_resource_list",
+    "content_outline",
+    "speaker_notes"
+  ],
+  "properties": {
+    "project_information": {"type": "string", "minLength": 1},
+    "canvas_specification": {"type": "string", "minLength": 1},
+    "visual_theme": {"type": "string", "minLength": 1},
+    "typography_system": {"type": "string", "minLength": 1},
+    "layout_principles": {"type": "string", "minLength": 1},
+    "icon_usage": {"type": "string", "minLength": 1},
+    "visualization_reference": {"type": "string"},
+    "image_resource_list": {"type": "string"},
+    "content_outline": {"type": "string", "minLength": 1},
+    "speaker_notes": {"type": "string", "minLength": 1}
+  },
+  "x-markdown": {
+    "version": 1,
+    "marker": "design-spec/v1",
+    "parser": "heading-sections-v1",
+    "unresolved_patterns": ["(?i)\\[fill(?:[^\\]]*)\\]"],
+    "section_order": [
+      "project_information",
+      "canvas_specification",
+      "visual_theme",
+      "typography_system",
+      "layout_principles",
+      "icon_usage",
+      "visualization_reference",
+      "image_resource_list",
+      "content_outline",
+      "speaker_notes"
+    ],
+    "sections": [
+      {"id": "project_information", "pattern": "^I\\. Project Information$", "required": true, "min_body_chars": 1},
+      {"id": "canvas_specification", "pattern": "^II\\. Canvas Specification$", "required": true, "min_body_chars": 1},
+      {"id": "visual_theme", "pattern": "^III\\. Visual Theme$", "required": true, "min_body_chars": 1},
+      {"id": "typography_system", "pattern": "^IV\\. Typography System$", "required": true, "min_body_chars": 1},
+      {"id": "layout_principles", "pattern": "^V\\. Layout Principles$", "required": true, "min_body_chars": 1},
+      {"id": "icon_usage", "pattern": "^VI\\. Icon Usage Specification$", "required": true, "min_body_chars": 1},
+      {
+        "id": "visualization_reference",
+        "pattern": "^VII\\. Visualization Reference List(?: \\(if needed\\))?$",
+        "required": true
+      },
+      {
+        "id": "image_resource_list",
+        "pattern": "^VIII\\. Image Resource List(?: \\(if needed\\))?$",
+        "required": true
+      },
+      {"id": "content_outline", "pattern": "^IX\\. Content Outline$", "required": true, "min_body_chars": 1},
+      {
+        "id": "speaker_notes",
+        "pattern": "^X\\. Speaker Notes (?:Requirements|Plan|Strategy)$",
+        "required": true,
+        "min_body_chars": 1
+      }
+    ],
+    "conditions": [
+      {
+        "id": "ai-image-strategy",
+        "when": {
+          "section": "image_resource_list",
+          "body_regex": "(?im)^\\|[^\\n]*\\|\\s*ai\\s*\\|"
+        },
+        "then": {
+          "required_subheadings": [
+            {"section": "visual_theme", "heading": "AI Image Strategy"}
+          ]
+        }
+      }
+    ],
+    "slides": {
+      "section": "content_outline",
+      "heading_pattern": "^Slide[ \\t]+(?:[0-9]+|NN)\\b",
+      "required_fields": ["Audience move"]
+    }
+  }
+}

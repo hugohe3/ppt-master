@@ -236,68 +236,79 @@ def get_project_info(project_path: str) -> Dict:
     return info
 
 
-def validate_communication_trace(project_path: str | Path) -> List[str]:
-    """Validate the structural communication trace across both spec files."""
+def validate_communication_trace(
+    project_path: str | Path,
+    *,
+    check_lock: bool = True,
+    check_design: bool = True,
+) -> List[str]:
+    """Validate either or both legacy communication-trace surfaces."""
     root = Path(project_path)
     design_spec = next(
         (root / name for name in _DESIGN_SPEC_NAMES if (root / name).is_file()),
         None,
     )
-    if design_spec is None:
+    if design_spec is None or not (check_lock or check_design):
         return []
 
     errors: List[str] = []
     lock_path = root / 'spec_lock.md'
-    if not lock_path.is_file():
-        return [
-            'Communication trace: missing spec_lock.md with a '
-            '## communication section.',
-        ]
+    if check_lock:
+        if not lock_path.is_file():
+            return [
+                'Communication trace: missing spec_lock.md with a '
+                '## communication section.',
+            ]
+        try:
+            lock_text = lock_path.read_text(encoding='utf-8-sig')
+        except OSError as exc:
+            return [f'Communication trace: unable to read specification files: {exc}']
 
+        communication_match = re.search(
+            r'^##[ \t]+communication[ \t]*$',
+            lock_text,
+            flags=re.IGNORECASE | re.MULTILINE,
+        )
+        if communication_match is None:
+            errors.append(
+                'Communication trace: spec_lock.md must contain a '
+                '## communication section.',
+            )
+        else:
+            next_section = re.search(
+                r'^##[ \t]+',
+                lock_text[communication_match.end():],
+                flags=re.MULTILINE,
+            )
+            section_end = (
+                communication_match.end() + next_section.start()
+                if next_section
+                else len(lock_text)
+            )
+            communication_block = lock_text[
+                communication_match.end():section_end
+            ]
+            missing_keys = [
+                key
+                for key in _COMMUNICATION_TRACE_KEYS
+                if re.search(
+                    rf'^-[ \t]+{re.escape(key)}[ \t]*:',
+                    communication_block,
+                    flags=re.MULTILINE,
+                ) is None
+            ]
+            if missing_keys:
+                errors.append(
+                    'Communication trace: spec_lock.md ## communication is '
+                    f'missing key line(s): {", ".join(missing_keys)}.',
+                )
+
+    if not check_design:
+        return errors
     try:
-        lock_text = lock_path.read_text(encoding='utf-8-sig')
         design_text = design_spec.read_text(encoding='utf-8-sig')
     except OSError as exc:
         return [f'Communication trace: unable to read specification files: {exc}']
-
-    communication_match = re.search(
-        r'^##[ \t]+communication[ \t]*$',
-        lock_text,
-        flags=re.IGNORECASE | re.MULTILINE,
-    )
-    if communication_match is None:
-        errors.append(
-            'Communication trace: spec_lock.md must contain a '
-            '## communication section.',
-        )
-    else:
-        next_section = re.search(
-            r'^##[ \t]+',
-            lock_text[communication_match.end():],
-            flags=re.MULTILINE,
-        )
-        section_end = (
-            communication_match.end() + next_section.start()
-            if next_section
-            else len(lock_text)
-        )
-        communication_block = lock_text[
-            communication_match.end():section_end
-        ]
-        missing_keys = [
-            key
-            for key in _COMMUNICATION_TRACE_KEYS
-            if re.search(
-                rf'^-[ \t]+{re.escape(key)}[ \t]*:',
-                communication_block,
-                flags=re.MULTILINE,
-            ) is None
-        ]
-        if missing_keys:
-            errors.append(
-                'Communication trace: spec_lock.md ## communication is '
-                f'missing key line(s): {", ".join(missing_keys)}.',
-            )
 
     outline_match = re.search(
         r'^##[ \t]+IX\.[ \t]+Content Outline\b.*$',
@@ -355,13 +366,19 @@ def validate_communication_trace(project_path: str | Path) -> List[str]:
     return errors
 
 
-def validate_project_structure(project_path: str, verbose: bool = False) -> Tuple[bool, List[str], List[str]]:
+def validate_project_structure(
+    project_path: str,
+    verbose: bool = False,
+    *,
+    validate_communication: bool = True,
+) -> Tuple[bool, List[str], List[str]]:
     """
     Validate project structure completeness.
 
     Args:
         project_path: Project directory path
         verbose: Whether to show detailed fix suggestions
+        validate_communication: Whether to run the markerless legacy trace check
 
     Returns:
         (is_valid, error_list, warning_list)
@@ -405,7 +422,7 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
         warnings.append(msg)
-    else:
+    elif validate_communication:
         errors.extend(validate_communication_trace(project_path))
 
     # Check svg_output directory
