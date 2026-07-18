@@ -13,7 +13,7 @@ Examples:
     from project_specs import validate_markdown_schema
 
 Dependencies:
-    None (only uses the standard library and local project_utils.py)
+    None (only uses the standard library and local project modules)
 """
 
 from __future__ import annotations
@@ -607,8 +607,17 @@ def _validate_references(
                     )
 
             if isinstance(asset_pattern, str):
+                asset_value = reference_value
+                suffix_match = re.search(r"\{value\}(\.[A-Za-z0-9]+)$", asset_pattern)
+                if (
+                    suffix_match is not None
+                    and asset_value.casefold().endswith(
+                        suffix_match.group(1).casefold()
+                    )
+                ):
+                    asset_value = asset_value[: -len(suffix_match.group(1))]
                 try:
-                    relative_asset = asset_pattern.format(value=reference_value)
+                    relative_asset = asset_pattern.format(value=asset_value)
                 except (KeyError, ValueError) as exc:
                     errors.append(
                         f"{markdown_name} schema: reference '{rule_id}' has invalid "
@@ -702,6 +711,8 @@ def _validate_spec_lock_relations(
         _, _, source = parts
         if source.startswith("template:"):
             basename = source.removeprefix("template:").strip()
+            if basename.casefold().endswith(".svg"):
+                basename = basename[:-4]
             template_path = markdown_path.parent / "templates" / f"{basename}.svg"
             if not template_path.is_file():
                 errors.append(
@@ -908,14 +919,16 @@ def validate_markdown_schema(markdown_path: Path, schema_path: Path) -> list[str
 def validate_project_artifacts(
     project_path: Path,
     project_info: Mapping[str, object] | None = None,
+    *,
+    include_design: bool = True,
 ) -> tuple[list[str], list[str]]:
-    """Validate versioned artifacts and preserve markerless legacy projects."""
+    """Validate the lock and, when requested, the human-facing design brief."""
     info = project_info or get_project_info_common(str(project_path))
     errors: list[str] = []
     warnings: list[str] = []
     artifacts: list[tuple[Path, Path, str]] = []
     spec_name = info.get("spec_file")
-    if isinstance(spec_name, str):
+    if include_design and isinstance(spec_name, str):
         artifacts.append(
             (
                 project_path / spec_name,
@@ -934,6 +947,7 @@ def validate_project_artifacts(
 
     legacy_design = False
     legacy_lock = False
+    versioned_lock_valid = False
     for artifact_path, schema_path, artifact_kind in artifacts:
         try:
             text = artifact_path.read_text(encoding="utf-8-sig")
@@ -952,7 +966,23 @@ def validate_project_artifacts(
             legacy_design = legacy_design or artifact_kind == "design"
             legacy_lock = legacy_lock or artifact_kind == "lock"
             continue
-        errors.extend(validate_markdown_schema(artifact_path, schema_path))
+        artifact_errors = validate_markdown_schema(artifact_path, schema_path)
+        errors.extend(artifact_errors)
+        if artifact_kind == "lock" and not artifact_errors:
+            versioned_lock_valid = True
+    if versioned_lock_valid:
+        try:
+            from svg_to_pptx.pptx_package.template_structure import (
+                TemplateStructureError,
+                load_pptx_structure_lock,
+                template_prototype_lock_errors,
+            )
+
+            structure_lock = load_pptx_structure_lock(project_path)
+            if structure_lock is not None:
+                errors.extend(template_prototype_lock_errors(structure_lock))
+        except (ImportError, TemplateStructureError) as exc:
+            errors.append(f"spec_lock.md structure preflight failed: {exc}")
     if legacy_design or legacy_lock:
         errors.extend(
             validate_communication_trace(

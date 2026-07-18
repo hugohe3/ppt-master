@@ -1985,6 +1985,28 @@ def structured_layout_definition_files(
     return definition_files
 
 
+def template_prototype_lock_errors(
+    structure_lock: PptxStructureLock,
+) -> list[str]:
+    """Return template-root identity mismatches visible before page generation."""
+    if structure_lock.mode != "structured":
+        return []
+
+    errors: list[str] = []
+    specs: list[TemplateSlideSpec] = []
+    for prototype in structure_lock.prototypes:
+        try:
+            specs.append(
+                parse_template_slide(prototype.svg_path, prototype.slide_num)
+            )
+        except TemplateStructureError as exc:
+            errors.append(str(exc))
+    if errors:
+        return list(dict.fromkeys(errors))
+    errors.extend(template_lock_errors(specs, structure_lock))
+    return list(dict.fromkeys(errors))
+
+
 def template_lock_errors(
     specs: list[TemplateSlideSpec],
     structure_lock: PptxStructureLock,
