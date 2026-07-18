@@ -162,7 +162,9 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: final confirmation is the single user gate before the planning artifacts are written. Stage 1 and Stage 2 are intermediate handoffs inside one uninterrupted agent turn; after either wait returns, immediately author the next stage without yielding or asking in chat. Each stage is authored once, and the user's submitted value—including an empty string or an unusual mix of overrides—is authoritative.
+⛔ **BLOCKING**: unless the user explicitly delegates confirmation for this run, final confirmation is the single user gate before the planning artifacts are written. Stage 1 and Stage 2 are intermediate handoffs inside one uninterrupted agent turn; after either wait returns, immediately author the next stage without yielding or asking in chat. Each stage is authored once, and the user's submitted value—including an empty string or an unusual mix of overrides—is authoritative.
+
+**Confirmation ownership**: By default, only the user confirms. The agent may write `recommendations.json`, operate the server lifecycle, and read the resulting state, but MUST NOT call `/api/confirm`, automate page submission, synthesize a staged payload, or write/replace `result.json` on the user's behalf. If—and only if—the user explicitly says that confirmation is unnecessary and delegates the decisions to the AI, skip the UI, make the complete Stage-1/2/3 decisions, show one concise summary, and continue using that visible chat summary as the confirmation state; do not fabricate UI results. Delegation applies only to the current run. A timeout returns to the same stage in chat, and silence never implies delegation or confirmation.
 
 | Stage | Strategist writes | Completion evidence |
 |---|---|---|
@@ -194,7 +196,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
 
-If the user opted out of the page, skip launch and run the same three stages in chat. Otherwise report the launch URL and keep the staged chat summaries available as fallback. Both paths must preserve the final visible values; writing `design_spec.md`, `spec_lock.md`, and later pages consumes that state without a hidden repair or second recommendation pass. Map confirmed image sources through `strategist.md` §h, apply `strategist-template.md` §3 for an active template, and never write a separate image palette.
+If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback. Every path must preserve the final visible values; writing `design_spec.md`, `spec_lock.md`, and later pages consumes that state without a hidden repair or second recommendation pass. Map confirmed image sources through `strategist.md` §h, apply `strategist-template.md` §3 for an active template, and never write a separate image palette.
 
 **Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
