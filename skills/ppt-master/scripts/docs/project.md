@@ -40,9 +40,13 @@ Notes:
   `templates/schemas/design_spec.schema.json` and
   `templates/schemas/spec_lock.schema.json`. It reports missing sections and
   fields, illegal enums, malformed page keys, and unmet conditional sections;
-  it does not rewrite either artifact. Versioned scaffolds carry the schema
-  marker. Markerless legacy artifacts are left on their prior validation path
-  with a warning; malformed or unsupported markers are errors.
+  it does not rewrite either artifact or compare their values for textual
+  equality. The design schema is structural lint for the human-readable brief;
+  the lock schema owns machine execution values. For structured template use,
+  validation also compares the lock's Master/Layout identities with the actual
+  template SVG roots. Versioned scaffolds carry the schema marker. Markerless
+  legacy artifacts are left on their prior validation path with a warning;
+  malformed or unsupported markers are errors.
 - PPTX-family inputs are enriched automatically under `analysis/` with
   per-deck `<stem>.identity.json` / `<stem>.slide_library.json` plus the shared
   multi-deck index `source_profile.json` (`decks[]`).
@@ -53,7 +57,10 @@ Notes:
 
 `page-context` projects `design_spec.md` and `spec_lock.md` into one current-page
 view on stdout. The default command is read-only; `--pretty` changes JSON
-formatting only. `--bundle` appends only the route-selected authoring payloads:
+formatting only. Before projection it revalidates only the machine lock and any
+selected template-root identities; design-brief values are not treated as a
+second lock. Slide headings at H3–H6 remain readable by the projector.
+`--bundle` appends only the route-selected authoring payloads:
 
 | Project mode | Bundle contents |
 |---|---|

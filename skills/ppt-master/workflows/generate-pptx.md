@@ -152,7 +152,7 @@ Read references/strategist.md
 
 The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory structure gate**: for new planning artifacts, create the versioned I–X and lock skeletons with `project_manager.py scaffold-spec` / `scaffold-lock`; do not reconstruct their grammar from memory. The commands and validator consume the machine contracts under `templates/schemas/`. The compact reference indexes are only for schema/scaffold troubleshooting, not the normal generation load.
+> ⚠️ **Mandatory artifact gate**: scaffold the human-readable `design_spec.md` and machine-readable `spec_lock.md`; do not reconstruct lock grammar from memory. The design schema only keeps the brief readable and page-projectable—it is not a second execution lock, and cross-file textual equality is not required. Reference indexes are for troubleshooting, not normal generation load.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
