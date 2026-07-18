@@ -27,13 +27,13 @@ Neutral colors, safe fonts, and provisional sizes may appear in SVG prototypes s
 
 ## 1. Layout Input Interpretation
 
-Use Create Template Step 1 for source ingestion and replication-mode eligibility. Interpret source evidence only for reusable structure:
+Use Create Template Step 1 for source ingestion and internal creation-strategy feasibility. Interpret source evidence only for reusable structure:
 
 - Canvas dimensions, grid, zones, page taxonomy, repeated chrome, image placement, density rhythm, placeholder geometry, semantic text roles, alignment, wrapping, and capacity may become layout facts or suggestions.
 - Colors, font families, branded weight choices, final absolute sizes, logos, voice, and icon style remain source context only. Do not copy them into the layout identity because a layout has no identity segment.
 - A source scenario may inform the content shapes or delivery conditions the geometry can support. Do not turn that fit into an application contract. If the reusable artifact prescribes the objective, outcome, narrative sequence, boilerplate, or content policy, return to Create Template dispatch and select Create Deck.
-- When the source is branded, explicitly confirm that Create Layout will strip that identity and restrict replication mode to `standard` or `fidelity`. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
-- `standard` and `fidelity` author a new Master/Layout/slot system. `mirror` is available only when the complete current source contract is already brand-neutral and application-neutral; it preserves validated structure and visual facts in a new workspace without modifying the source.
+- When the source is branded, state in plain language that Create Layout will omit the identity. The AI therefore derives an authored internal strategy. If the user wants the identity retained with the structure, return to Create Template dispatch and select Create Deck before the shared confirmation marker is emitted.
+- Internally, `standard` and `fidelity` author a new Master/Layout/slot system. `mirror` may be derived only when the complete current source contract is already brand-neutral and application-neutral; it preserves validated structure and visual facts in a new workspace without modifying the source. Never ask the user to choose among these labels.
 
 Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets may define or illustrate reusable structure. In a mixed bundle, combine those channels without treating identity-only evidence as layout ownership. Exact user-authored instructions remain decisions whether they arrive in chat or a user-written brief file; vague prose remains suggested interpretation until the shared confirmation gate.
 
@@ -48,7 +48,7 @@ Add these child-owned requirements to Create Template Step 2:
 | Canvas | Required; exact format, dimensions, and `viewBox` |
 | Page grammar | Required; page types, variants, grids, zones, semantic text roles, alignment/wrapping/capacity, density rhythm, and image behavior |
 | Native structure | Required; Master families, Layout ownership, slot vocabulary, and zero-slot Layouts where intentional |
-| Replication mode | Required; `standard`, eligible `fidelity`, or `mirror` only when the complete source contract is already brand-neutral and application-neutral |
+| Creation intent | Required as natural-language prose: what should remain recognizable, what should become reusable structure, and how broad the page vocabulary should be. The AI derives `replication_mode` internally from this intent and the evidence. |
 | Identity stripping | Required when branded reference material exists; list the identity facts intentionally excluded |
 
 Write this structure-only schema:
@@ -77,7 +77,7 @@ page_types: [cover, toc, chapter, content, ending]
 ## VII. Placeholder Overrides
 ```
 
-Omit `Placeholder Overrides` when no override exists. Omit Template Overview, Color Scheme, Typography, Logo, Voice, and every other identity section. Do not write `primary_color`.
+`replication_mode` is required machine provenance, not a user-facing choice. Omit `Placeholder Overrides` when no override exists. Omit Template Overview, Color Scheme, Typography, Logo, Voice, and every other identity section. Do not write `primary_color`.
 
 `Signature Design Elements` describes only reusable structure, including text-role hierarchy and spatial behavior without locking the final font identity or type scale. `Page Roster` lists every SVG with its Master/Layout identity, picker name, intended content shape, and slot behavior.
 

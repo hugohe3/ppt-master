@@ -16,13 +16,13 @@
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-template/create-brand.md` |
 | **Layout** | `templates/layouts/<id>/` | Brand-neutral structure segment only: canvas / page structure / semantic text roles / page types / SVG roster | No brand identity and no recurring communication application | `workflows/create-template/create-layout.md` |
-| **Deck** | `templates/decks/<id>/` | A recurring presentation family: application contract + integrated identity + structure | — | `workflows/create-template/create-deck.md` |
+| **Deck** | `templates/decks/<id>/` | A recurring presentation family: descriptive application context + integrated identity + structure | — | `workflows/create-template/create-deck.md` |
 
-Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror materializes a new workspace from validated authoring IR: a native PPTX contributes only supported facts still present in its package, while a current-contract SVG template contributes only its declared contract. It never reconstructs missing topology from a legacy SVG; fixed-layer source groups that are valid inputs are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. A flat directory with `design_spec.md` at its root remains a supported compatibility shape only when its SVGs satisfy the current contract. Semantic-legacy packages must be replaced by a newly created template workspace; they are never upgraded in place.
+Every newly created Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. Create Template derives `standard` / `fidelity` / `mirror` internally from the natural-language intent and source evidence. Authored strategies create new SVGs and structure; mirror materializes validated source facts. Strategist later derives strict/adaptive exporter behavior from the actual prototypes and current content. None of these implementation values is a required user choice. A flat directory with `design_spec.md` at its root remains a supported compatibility shape only when its SVGs satisfy the current contract. Semantic-legacy packages must be replaced by a newly created template workspace; they are never upgraded in place.
 
 The three are **parallel reusable-rule bundles**, not PowerPoint package-object types. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
-The fused project-level `design_spec.md` retains the existing routing `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. For a project-local Brand + Layout composition, this label means “both capabilities are installed”; it does not promote that composition into a reusable library Deck or invent an application contract. The current project's Stage-1 communication contract supplies the application context. The Strategist confirmation page uses `kind` to show `adaptive / strict` only for bundles that actually own page structure.
+The fused project-level `design_spec.md` retains the existing routing `kind`: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. For a project-local Brand + Layout composition, this label means “both capabilities are installed”; it does not promote that composition into a reusable library Deck or invent application context. The current project's Stage-1 communication contract supplies that context. Strategist derives the template application plan internally; the confirmation page exposes no template mode controls.
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -54,7 +54,7 @@ Project template kinds do not map one-to-one to PresentationML objects:
 |---|---|
 | **Brand** | Theme colors/fonts/effects plus logo and other fixed identity-asset rules |
 | **Layout** | Master/Layout/Placeholder topology, reusable geometry, semantic text roles, and spatial slot behavior |
-| **Deck** | The Brand and Layout projections plus purpose-specific starting content and usage rules |
+| **Deck** | The Brand and Layout projections plus descriptive recurring-application context and actual prototypes |
 
 A Slide Master may contain both structural geometry and brand visuals. Source
 ownership remains separated—Layout owns topology, placement, semantic text
@@ -109,15 +109,15 @@ To make multi-path fusion override cleanly, every field belongs to a named segme
 |---|---|---|
 | **Identity** | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
 | **Structure** | Portable canvas/page-type metadata, structure-owned Signature rules, SVG Page Roster, and the SVG Master/Layout/slot contract | layout |
-| **Application** | Template Overview: recurring situations, audiences/outcomes, delivery assumptions, stable narrative/page roles, and content reuse policy | deck only; brand / layout don't write this |
+| **Application** | Template Overview: recurring situations, audiences/outcomes, delivery assumptions, and representative narrative/page roles | deck only; brand / layout don't write this |
 
 ### Why Deck is its own kind
 
 A Deck encodes a **recurring presentation family**, not merely a pre-combined
-Brand and Layout. It states what communication situations the template serves,
-which audience outcomes it supports, which narrative/page roles remain stable,
-and how starting content must be retained, replaced, or omitted. Identity and
-structure are integrated around that application contract.
+Brand and Layout. It describes the communication situations the template
+serves, the audience outcomes it supports, and representative narrative/page
+roles. Identity and structure are integrated around that context, while the
+current Strategist decides which prototypes and content to use.
 
 `standard` / `fidelity` author a new complete system from confirmed evidence;
 mirror maps validated source identities and parentage one-to-one into a new
@@ -245,13 +245,12 @@ primary_color: "<HEX>"
 | VI | Assets | Identity/supporting assets; omit when none |
 | VII | Placeholder Overrides | Structure vocabulary; omit when none |
 
-Template Overview must identify the recurring presentation family, intended
-audiences and outcomes, delivery/reading assumptions, stable narrative or page
-roles, and the reuse boundary between fixed, replaceable, optional, and
-example-only content. Page Roster must state the content policy of each
-prototype in addition to its Master/Layout/slot contract. These policies guide
-selection; they do not force every generated presentation to retain the same
-page count or order.
+Template Overview identifies the recurring presentation family, intended
+audiences and outcomes, delivery/reading assumptions, and representative
+narrative or page roles. Page Roster factually describes each prototype's
+Master/Layout/slot contract, visual character, intended role, and capacity. It
+must not assign required/optional/repeatable or fixed/replaceable/example-only
+policy; Strategist derives those decisions for the current content.
 
 Portable canvas fields, `page_count`, and the explicit SVG roster carry the
 rest of the structure contract. General spacing, font-ratio, SVG, and
@@ -400,7 +399,7 @@ Bitmaps share the workspace `images/` pool and template SVGs reference them thro
 
 ### Strategist confirmation stage behavior per kind
 
-Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template. Brand supplies identity constraints while structure stays free; Layout exposes structural capability; Deck also contributes an application contract. Stage 2 derivation compares that stored application with the confirmed current contract rather than silently treating it as truth, then decides whether a compatible Deck/Layout should be consumed as `mirror`, `layout`, or `style` where legal. A mirror-authored workspace therefore enables literal reuse but never selects it automatically. Stage 3 realizes the confirmed direction with the identity, structure, and application rules actually retained by that scope. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
+Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template. Brand supplies identity constraints while structure stays free; Layout exposes structural capability; Deck also contributes descriptive application context. After Stage 1, Strategist inspects the actual prototypes and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. The Confirm UI exposes no template-mode fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
 
 ---
 

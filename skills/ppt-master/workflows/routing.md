@@ -88,7 +88,7 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 |---|---|
 | `brand` | Dispatch to [`create-brand`](./create-template/create-brand.md); write identity only and no SVG roster |
 | `layout` | Dispatch to [`create-layout`](./create-template/create-layout.md); author brand-neutral, application-neutral structure and an SVG roster |
-| `deck` | Dispatch to [`create-deck`](./create-template/create-deck.md); author a recurring application contract with integrated identity, structure, content policy, and an SVG roster |
+| `deck` | Dispatch to [`create-deck`](./create-template/create-deck.md); author descriptive recurring-application context with integrated identity, structure, and an SVG roster |
 
 Create Template remains the fixed route name and owns the shared contract. These three documents are mutually exclusive child workflows, not additional top-level routes.
 

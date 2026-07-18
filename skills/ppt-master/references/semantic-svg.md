@@ -16,7 +16,7 @@ PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot 
 
 The completed SVG remains the full visible page. Removing the metadata must not change browser rendering. Do not copy visible text, geometry, style, or asset values into metadata.
 
-**Hard rule — route boundary**: Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Only deck/layout template pages confirmed with `template_reuse_scope: mirror|layout` declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
+**Hard rule — route boundary**: Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Only deck/layout template pages whose AI-derived lock records `template_reuse_scope: mirror|layout` declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
 
 **Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-replace-with` for optional PowerPoint-native Chart/Table replacement, and the imported/authored shape metadata defined in [`shared-standards-core.md`](./shared-standards-core.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
 

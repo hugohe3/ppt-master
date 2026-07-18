@@ -33,7 +33,6 @@
             sec_delivery: "How it will be used and what must remain",
             sec_narrative: "Narrative direction",
             sec_visual: "Visual direction",
-            sec_template: "Template direction",
             sec_color: "Color scheme",
             sec_icons: "Icon usage",
             sec_type: "Typography",
@@ -45,8 +44,6 @@
             design_directions_hint: "Each direction coordinates style, color, typography, icons, and generated-image rendering. You can fine-tune every field below.",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
-            sub_template_reuse_scope: "Template reuse scope",
-            sub_template_adherence: "Template adherence",
             sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
             placeholder_divergence: "In your words — e.g. \"stick closely to the document\" / \"freely restructure and expand within the source\". Leave blank for a balanced default.",
             communication_intent: "What should this presentation accomplish?",
@@ -166,7 +163,6 @@
             sec_delivery: "どう使い、何を残すか",
             sec_narrative: "ナラティブ方針",
             sec_visual: "ビジュアル方針",
-            sec_template: "テンプレート方針",
             sec_color: "配色",
             sec_icons: "アイコンの使用",
             sec_type: "タイポグラフィ",
@@ -178,8 +174,6 @@
             design_directions_hint: "各案はスタイル、配色、書体、アイコン、生成画像のレンダリングを一体で提案します。下の各項目で微調整できます。",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
-            sub_template_reuse_scope: "テンプレートの再利用範囲",
-            sub_template_adherence: "テンプレートの適用方法",
             sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
             placeholder_divergence: "自分の言葉でどうぞ — 例：「文書に忠実に」「元素材の範囲内で自由に再構成・展開」。空欄ならバランス型になります。",
             communication_intent: "このプレゼンで何を実現したいですか？",
@@ -299,7 +293,6 @@
             sec_delivery: "如何使用、之后留下什么",
             sec_narrative: "叙事方向",
             sec_visual: "视觉方向",
-            sec_template: "模板方向",
             sec_color: "色彩方案",
             sec_icons: "图标使用",
             sec_type: "字体方案",
@@ -311,8 +304,6 @@
             design_directions_hint: "每套方向会一起协调风格、配色、字体、图标和生成图渲染；你仍可在下方逐项微调。",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
-            sub_template_reuse_scope: "模板复用范围",
-            sub_template_adherence: "模板遵循方式",
             sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
             placeholder_divergence: "用你自己的话写，例如「严格贴着文档来」/「在源材料范围内自由重组并展开」。留空则按平衡处理。",
             communication_intent: "这份演示文稿需要完成什么？",
@@ -767,37 +758,6 @@
         return !!(REC && REC[field] && typeof REC[field] === "object" && REC[field].locked === true);
     }
 
-    function hasTemplateReuseScope() {
-        if (!REC) return false;
-        if (typeof REC._template_reuse_scope_enabled === "boolean") {
-            return REC._template_reuse_scope_enabled;
-        }
-        if (REC.recommend && REC.recommend.template_reuse_scope != null) return true;
-        return REC.template_reuse_scope != null;
-    }
-
-    function templateReuseScopeOptions() {
-        var options = (CAT && CAT.template_reuse_scope) || [];
-        if (REC && REC._template_replication_mode === "mirror") return options;
-        return options.filter(function (option) { return option.id !== "mirror"; });
-    }
-
-    function pickTemplateReuseScope() {
-        var options = templateReuseScopeOptions();
-        var recommended = recId("template_reuse_scope");
-        var ids = options.map(function (option) { return option.id; });
-        return ids.indexOf(recommended) >= 0 ? recommended : firstId(options);
-    }
-
-    function hasTemplateAdherence() {
-        if (STATE.template_reuse_scope === "style") return false;
-        if (!REC) return false;
-        if (typeof REC._template_adherence_enabled === "boolean") {
-            return REC._template_adherence_enabled;
-        }
-        if (REC.recommend && REC.recommend.template_adherence != null) return true;
-        return REC.template_adherence != null;
-    }
     // Guaranteed recommendation: the AI's pick, or the first catalog option as a
     // fallback so an enumerable field ALWAYS shows a badged recommendation.
     function recOrFirst(field, list) {
@@ -1378,35 +1338,6 @@
                 preview: "visual_style",
                 chipsClass: "visual-style-grid"
             });
-        host.appendChild(sec);
-    }
-
-    function renderTemplateDirection(host) {
-        if (!hasTemplateReuseScope()) return;
-        var sec = section(6, "sec_template");
-        var reuseOptions = templateReuseScopeOptions();
-        sec.appendChild(el("div", "subfield-label", t("sub_template_reuse_scope")));
-        enumField(sec, reuseOptions,
-            pickTemplateReuseScope(),
-            function () { return STATE.template_reuse_scope; },
-            function (v) {
-                STATE.template_reuse_scope = v;
-                if (v === "style") {
-                    delete STATE.template_adherence;
-                } else if (!STATE.template_adherence) {
-                    STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
-                }
-                setTimeout(renderAll, 0);
-            });
-        if (hasTemplateAdherence()) {
-            var templateField = el("div", "subfield");
-            templateField.appendChild(el("div", "subfield-label", t("sub_template_adherence")));
-            enumField(templateField, CAT.template_adherence,
-                recOrFirst("template_adherence", CAT.template_adherence),
-                function () { return STATE.template_adherence; },
-                function (v) { STATE.template_adherence = v; });
-            sec.appendChild(templateField);
-        }
         host.appendChild(sec);
     }
 
@@ -2396,7 +2327,6 @@
             renderDesignDirections(host);
             renderNarrativeDirection(host);
             renderVisualDirection(host);
-            renderTemplateDirection(host);
             renderReadingMode(host);
             renderPages(host);
             var styleGroup = el("div", "style-group");
@@ -2423,7 +2353,6 @@
             renderDesignDirections(host);
             renderNarrativeDirection(host);
             renderVisualDirection(host);
-            renderTemplateDirection(host);
             renderReadingMode(host);
             renderPages(host);
             var legacyStyleGroup = el("div", "style-group");
@@ -2490,17 +2419,6 @@
         STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
-        if (hasTemplateReuseScope()) {
-            STATE.template_reuse_scope = pickTemplateReuseScope();
-        } else {
-            delete STATE.template_reuse_scope;
-        }
-        if (hasTemplateAdherence()) {
-            STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
-        } else {
-            delete STATE.template_adherence;
-        }
-
         var cc = colorRecommendationCandidates();
         var csel = (REC.color && REC.color.selected != null) ? REC.color.selected :
             (designDirectionSpec().selected || 0);
@@ -2600,10 +2518,6 @@
         payload.page_count = STATE.page_count;
         // Reading mode keeps the legacy delivery_purpose key for compatibility.
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
-        if (STATE.template_reuse_scope) payload.template_reuse_scope = STATE.template_reuse_scope;
-        if (STATE.template_reuse_scope !== "style" && STATE.template_adherence) {
-            payload.template_adherence = STATE.template_adherence;
-        }
         payload.color = JSON.parse(JSON.stringify(STATE.color || {}));
         payload.icons = STATE.icons;
         payload.typography = JSON.parse(JSON.stringify(STATE.typography || {}));
@@ -2707,7 +2621,6 @@
         var payload = JSON.parse(JSON.stringify(STATE));
         normalizeTypographyForSubmit(payload);
         payload.stage = "final";
-        if (payload.template_reuse_scope === "style") delete payload.template_adherence;
         payload.image_usage = selectedImageUsageIds(payload.image_usage);
         if (!imageUsageValid(payload.image_usage)) return;
         if (!String(payload.image_notes || "").trim()) delete payload.image_notes;

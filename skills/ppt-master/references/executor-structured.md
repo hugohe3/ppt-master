@@ -48,7 +48,7 @@ Resolve the per-page template SVG from `page_context.template.prototype`; the ow
 
 ### 1.1 Mirror reuse — literal page replacement
 
-When `spec_lock.md` confirms `template_reuse_scope: mirror`, Executor switches to a literal replacement path. The workspace capability `replication_mode: mirror` is a prerequisite, not the trigger by itself:
+When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Executor switches to a literal replacement path. The workspace capability `replication_mode: mirror` is a prerequisite, not the trigger by itself:
 
 1. **Per-page reference selection** — Strategist selects one mirror page per project page via `spec_lock.md page_layouts` (e.g., `P04: 015_content`). The basename is the mirror filename without extension; Strategist made this choice by reading `design_spec.md §V Page Roster` descriptions, not by guessing.
 2. **Copy, don't fill** — open the referenced full mirror SVG immediately before authoring the page. Copy it as the starting point, then edit slide-specific text in place. Preserve every non-text element and every `data-pptx-*` structure attribute verbatim.
@@ -58,7 +58,7 @@ When `spec_lock.md` confirms `template_reuse_scope: mirror`, Executor switches t
 6. **Visible text editing** — mirror SVGs may keep literal source text rather than `{{...}}` authoring markers. Edit values in place while retaining imported semantic `data-pptx-placeholder` identity and exact text topology.
 7. **Output filename** — follow the standard project SVG naming convention (`<NN>_<page_name>.svg` where `<NN>` matches the project page index, not the mirror source index). The mirror filename is the *reference*, not the *output*.
 
-**Detecting mirror mode**: read `page_context.template.reuse_scope` from the current page-context bundle. `replication_mode: mirror` in the installed template only determines whether that confirmed scope is legal; it must never force mirror behavior when the confirmed scope is `layout` or `style`.
+**Detecting mirror mode**: read `page_context.template.reuse_scope` from the current page-context bundle. `replication_mode: mirror` in the installed template only determines whether that derived scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
 
 **Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
 
@@ -78,7 +78,7 @@ Before generating each page, output which template is used:
 
 ### 1.2 PowerPoint Master / Layout Mapping
 
-This section applies only when a deck/layout template is confirmed with `template_reuse_scope: mirror|layout`. `page_layouts` selects the input SVG prototype, `pptx_masters` / `pptx_layouts` declare unique reusable output definitions, and `page_pptx_layouts` assigns every generated page before the first page is drawn. `template_reuse_scope: style`, free-design, and brand-only routes use `pptx_structure.mode: flat`, omit all four sections, skip the rest of §1.2, and keep every SVG object Slide-local.
+This section applies only when a deck/layout template's AI-derived lock records `template_reuse_scope: mirror|layout`. `page_layouts` selects the input SVG prototype, `pptx_masters` / `pptx_layouts` declare unique reusable output definitions, and `page_pptx_layouts` assigns every generated page before the first page is drawn. `template_reuse_scope: style`, free-design, and brand-only routes use `pptx_structure.mode: flat`, omit all four sections, skip the rest of §1.2, and keep every SVG object Slide-local.
 
 **Hard rule — reuse-scope route**: `template_reuse_scope: mirror|layout` requires `pptx_structure.mode: structured`. `template_reuse_scope: style` requires `mode: flat` even though a template supplied its visual vocabulary. Missing mode or legacy values (`baseline`, `template`, `preserve`), `layout_strategy`, Layout-kind fields, partial mappings, and old direct placeholders stop generation. Create a new template workspace through [`create-template`](../workflows/create-template.md); do not upgrade the active SVG project in place.
 

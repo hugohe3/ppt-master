@@ -49,8 +49,8 @@ Before copying a Deck or Layout workspace, inspect every SVG root and slot:
 | Kind | Install behavior |
 |---|---|
 | `brand` | Install `templates/` plus existing `images/` and `icons/`; ignore `exports/`. Identity is constrained; structure remains free. |
-| `layout` | Install the same portable roots. Expose reusable structure; Strategist later confirms legal `mirror`, `layout`, or `style` reuse. |
-| `deck` | Install the same portable roots. Expose application, identity, and structure; Strategist compares the stored application with the current communication contract before choosing reuse. |
+| `layout` | Install the same portable roots. Expose the actual reusable structure; Strategist later inspects the prototypes and derives the application plan automatically. |
+| `deck` | Install the same portable roots. Expose descriptive application context, identity, structure, and the actual prototype roster; Strategist compares them with the current communication contract and content, then derives the application plan automatically. |
 
 For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `templates/`, bitmaps to project `images/`, and declared icons to project `icons/`. Do not infer legacy Master/Layout semantics from the flat directory shape.
 
