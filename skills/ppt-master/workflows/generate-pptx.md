@@ -393,7 +393,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
 - The same rule applies to structured-template warnings (empty/framing-only Layout, bare Master, duplicate layout keys): they may guide an optional template cleanup, but warnings alone never fail the quality gate. Flat `style`, free-design, and brand-only routes still rely on their existing hard errors for invalid structure metadata or incomplete required locks.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
-- The JSON report is written to `exports/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
+- The JSON report is written to `validation/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 
 **Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md) and generate speaker notes → `<project_path>/notes/total.md`
 
@@ -445,10 +445,10 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 ```
 
-**Success criterion**: The command exits successfully and publishes:
+**Success criterion**: The command exits successfully and produces:
 
 - `exports/<project_name>_<timestamp>.pptx`
-- `exports/<project_name>_<timestamp>.report.json` with `passed` or `passed-with-warnings` package/resource postflight status
+- `validation/<project_name>_<timestamp>.report.json` with `passed` or `passed-with-warnings` package/resource postflight status
 
 Disclose material postflight warnings to the user. A failed report or missing PPTX is not success.
 
@@ -457,5 +457,5 @@ Disclose material postflight warnings to the user. A failed report or missing PP
 - [x] Image readiness gate passed
 - [x] Notes split completed
 - [x] `svg_final/` preview completed
-- [x] Native PPTX and postflight report published
+- [x] Native PPTX published and postflight report written
 - [ ] **Next**: Report the exported PPTX path; run a supporting post-export stage only when its explicit trigger is present

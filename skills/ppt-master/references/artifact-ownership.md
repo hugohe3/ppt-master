@@ -39,8 +39,9 @@ Global artifact ownership rules for PPT Master projects.
 | `notes/total.md` | Speaker-note source | Complete notes before splitting | Step 6 writes; Step 7.1 splits |
 | `notes/slide_*.md` | Split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` |
 | `svg_final/` | Derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Rebuild from `svg_output/` with `finalize_svg.py`; do not use as a supported PPTX source |
-| `exports/svg_quality_report.json` | Quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | `svg_quality_checker.py --stage final --json` writes before export; postflight links it only when the export-source fingerprint matches. |
-| `exports/` | Delivery artifacts | Native DrawingML PPTX, `<output_stem>.report.json` postflight audit, and explicit native-object/narration variants | Step 7.3 writes final outputs from `svg_output/` |
+| `validation/svg_quality_report.json` | Quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | `svg_quality_checker.py --stage final --json` writes before export; postflight links it only when the export-source fingerprint matches. |
+| `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Step 7.3 writes after the PPTX passes package validation. |
+| `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Step 7.3 writes only final deliverables from `svg_output/`. |
 | `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
 | `animations.json` | Optional animation config | Object-level animation sidecar | Created only by explicit animation workflow/request |
 
@@ -80,7 +81,7 @@ Global artifact ownership rules for PPT Master projects.
 | `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `python3 ${SKILL_DIR}/scripts/svg_authoring_view.py <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
 | `notes/slide_*.md` | `notes/total.md` | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
 | `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
-| `exports/svg_quality_report.json` | `svg_output/`, locks, template provenance | `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json` |
-| Native PPTX + `<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
+| `validation/svg_quality_report.json` | `svg_output/`, locks, template provenance | `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json` |
+| Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

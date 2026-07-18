@@ -231,7 +231,7 @@ def _quality_report_context(
     source_fingerprint: dict[str, object],
 ) -> dict[str, object]:
     """Load the final SVG quality report when the preceding gate wrote one."""
-    quality_path = project_path / 'exports' / 'svg_quality_report.json'
+    quality_path = project_path / 'validation' / 'svg_quality_report.json'
     try:
         quality = json.loads(quality_path.read_text(encoding='utf-8'))
     except FileNotFoundError:
@@ -284,7 +284,7 @@ def _write_postflight_report(
     backup_path: Path | None,
     conversion_trace_path: Path | None,
 ) -> Path:
-    """Write the unified package/resource audit beside a successful PPTX."""
+    """Write the unified package/resource audit for a successful PPTX."""
     try:
         package = _package_part_counts(output_path)
     except (OSError, zipfile.BadZipFile) as exc:
@@ -337,7 +337,9 @@ def _write_postflight_report(
         report_status = 'passed'
     else:
         report_status = 'passed-with-warnings'
-    report_path = output_path.with_suffix('.report.json')
+    report_path = (
+        project_path / 'validation' / f'{output_path.stem}.report.json'
+    )
     report = {
         'schema': 'ppt-master.pptx-postflight-report.v1',
         'status': report_status,
@@ -382,6 +384,7 @@ def _write_postflight_report(
             else None
         ),
     }
+    report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8',
