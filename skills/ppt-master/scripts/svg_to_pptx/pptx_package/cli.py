@@ -10,6 +10,7 @@ import re
 import shutil
 import sys
 import zipfile
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -107,6 +108,18 @@ _CSS_GENERIC_FONT_FAMILIES = frozenset({
 
 class PptxPostflightValidationError(RuntimeError):
     """Reject a generated PPTX that fails package postflight validation."""
+
+
+@dataclass
+class _PostflightReceipt:
+    """Carry the compact export result printed after the audit is written."""
+
+    output_path: Path
+    report_path: Path
+    status: str
+    quality_gate: str
+    slide_count: int
+    warnings: tuple[str, ...]
 
 
 def _font_stack_is_generic_only(stack: str) -> bool:
@@ -274,6 +287,26 @@ def _quality_report_context(
     }
 
 
+def _postflight_warning_summaries(
+    *,
+    quality_gate: str,
+    unresolved_token_count: int,
+    external_image_count: int,
+    generic_font_stack_count: int,
+) -> tuple[str, ...]:
+    """Return stable warning summaries for the terminal receipt."""
+    warnings: list[str] = []
+    if quality_gate != 'passed':
+        warnings.append(f'quality_gate={quality_gate}')
+    if unresolved_token_count:
+        warnings.append(f'unresolved_template_tokens={unresolved_token_count}')
+    if external_image_count:
+        warnings.append(f'external_images={external_image_count}')
+    if generic_font_stack_count:
+        warnings.append(f'generic_only_font_stacks={generic_font_stack_count}')
+    return tuple(warnings)
+
+
 def _write_postflight_report(
     *,
     output_path: Path,
@@ -283,7 +316,7 @@ def _write_postflight_report(
     pptx_structure: str,
     backup_path: Path | None,
     conversion_trace_path: Path | None,
-) -> Path:
+) -> _PostflightReceipt:
     """Write the unified package/resource audit for a successful PPTX."""
     try:
         package = _package_part_counts(output_path)
@@ -389,7 +422,35 @@ def _write_postflight_report(
         json.dumps(report, ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8',
     )
-    return report_path
+    warnings = _postflight_warning_summaries(
+        quality_gate=quality_gate,
+        unresolved_token_count=len(unresolved_tokens),
+        external_image_count=external_image_count,
+        generic_font_stack_count=len(generic_only_font_stacks),
+    )
+    return _PostflightReceipt(
+        output_path=output_path,
+        report_path=report_path,
+        status=report_status,
+        quality_gate=quality_gate,
+        slide_count=int(package['slides']),
+        warnings=warnings,
+    )
+
+
+def _print_postflight_receipt(receipt: _PostflightReceipt) -> None:
+    """Print the compact completion evidence; keep the full JSON on disk."""
+    print(
+        '  [POSTFLIGHT] '
+        f'status={receipt.status} '
+        f'quality_gate={receipt.quality_gate} '
+        f'slides={receipt.slide_count} '
+        f'warning_categories={len(receipt.warnings)}'
+    )
+    for warning in receipt.warnings:
+        print(f'  [POSTFLIGHT][WARNING] {warning}')
+    print(f'  [PPTX] {receipt.output_path}')
+    print(f'  [REPORT] {receipt.report_path}')
 
 
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
@@ -1311,7 +1372,7 @@ Recorded narration:
 
     if success:
         try:
-            report_path = _write_postflight_report(
+            receipt = _write_postflight_report(
                 output_path=native_path,
                 project_path=project_path,
                 svg_files=native_files,
@@ -1340,7 +1401,7 @@ Recorded narration:
             print(f"  PPTX output remains at: {native_path}", file=sys.stderr)
             return 1
         if verbose:
-            print(f"  Postflight report: {report_path}")
+            _print_postflight_receipt(receipt)
 
     return 0 if success else 1
 
