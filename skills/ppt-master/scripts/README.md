@@ -45,7 +45,7 @@ python3 scripts/update_repo.py
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
-| Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
+| Project management | `project_manager.py`, `page_context.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
@@ -76,7 +76,16 @@ python3 scripts/project_manager.py import-sources <project_path> <source_files_o
 python3 scripts/project_manager.py scaffold-spec <project_path>
 python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
+python3 scripts/project_manager.py page-context <project_path> P07 --bundle --record-usage
+python3 scripts/project_manager.py page-context-report <project_path>
 ```
+
+`page-context` prints a read-only current-page projection by default. The
+optional bundle adds the complete selected prototype for structured layout
+reuse and, for mirror reuse, a minimal text-slot sidecar. `--record-usage`
+requires `--bundle` and writes one derived snapshot under
+`analysis/page-context/`; exact `o200k_base` token counts are optional and
+degrade to `tokens: null` when `tiktoken` is absent.
 
 Chart candidate recall:
 
@@ -138,9 +147,15 @@ opaque `txBody`, shape-style, and custom-geometry payloads are deduplicated into
 are stored there as short `data-pptx-native-ref` records. Structural metadata
 stays inline, while checker, template-structure validation, and export hydrate
 both layers in memory. Legacy inline payload and v1 payload-only stores remain
-readable. Bitmap assets go to `images/`; other referenced source assets go to
-`templates/assets/`. The destination must be empty, and the command does not
-write `templates/design_spec.md`; Template_Designer owns that authored brief.
+readable. The v1 execution manifest points to per-prototype
+`ppt-master.template-text-slots.v2-min` sidecars. Those sidecars expose only
+text selectors, semantic roles, current/segmented text, and tspan counts;
+page-context validates and strips their top-level tool integrity hash before
+model output, while checker and export validate output attributes, topology,
+and resource hashes against the complete prototype internally. Bitmap assets
+go to `images/`; other referenced source assets go to `templates/assets/`.
+The destination must be empty, and the command does not write
+`templates/design_spec.md`; Template_Designer owns that authored brief.
 
 `template_preview_pptx.py` reads a template workspace, exports every public `templates/*.svg` prototype as one structured review slide, and verifies the resulting Master/Layout package. Canonical definition-only `layout_<layout_key>.svg` prototypes are registered as reusable Layouts through internal carrier slides that are removed before publication; they never increase the review deck's visible slide count. This is an on-demand review action: its default output is `exports/<template_id>_template_preview.pptx`, and that directory need not exist before the command runs. It refuses an existing output unless an intentional re-export passes `--force`. `--visual-only` is an explicit migration aid for legacy SVG rosters: it creates a slide-local visual review deck without validating or claiming a reusable Master/Layout contract. This diagnostic path does not require a project `spec_lock.md`; it may retain generic theme/text defaults inside its clean one-Master/one-Layout shell. New structured templates use the default mode when a review deck is requested.
 

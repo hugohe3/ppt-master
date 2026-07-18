@@ -59,6 +59,10 @@ from svg_to_pptx.pptx_package.template_structure import (
     TemplateStructureError,
     parse_template_slides,
 )
+from template_text_slots import (
+    analyze_template_text_slots,
+    text_slot_integrity_sha256,
+)
 
 configure_utf8_stdio()
 
@@ -70,7 +74,7 @@ VECTOR_INVENTORY_SCHEMA = "vector_asset_inventory.v1"
 TEMPLATE_EXECUTION_MANIFEST_NAME = "template_execution_manifest.json"
 TEMPLATE_EXECUTION_MANIFEST_SCHEMA = "ppt-master.template-execution-manifest.v1"
 TEMPLATE_TEXT_SLOTS_DIR = "template_execution"
-TEMPLATE_TEXT_SLOTS_SCHEMA = "ppt-master.template-text-slots.v1"
+TEMPLATE_TEXT_SLOTS_SCHEMA = "ppt-master.template-text-slots.v2-min"
 IMPORTED_ICON_NAMESPACE = "imported"
 TRANSPARENT_PIXEL_DATA_URI = (
     "data:image/png;base64,"
@@ -206,139 +210,15 @@ class MaterializedFile:
     payload: bytes
 
 
-def _ancestor_chain(
-    element: ET.Element,
-    parent_by_child: dict[ET.Element, ET.Element],
-) -> list[ET.Element]:
-    """Return one element followed by its ancestors up to the SVG root."""
-    chain = [element]
-    while chain[-1] in parent_by_child:
-        chain.append(parent_by_child[chain[-1]])
-    return chain
-
-
-def _stable_text_selector(
-    element: ET.Element,
-    parent_by_child: dict[ET.Element, ET.Element],
-) -> str:
-    """Build a stable, human-readable selector for one materialized text node."""
-    segments: list[str] = []
-    current = element
-    while True:
-        element_id = (current.get("id") or "").strip()
-        if element_id:
-            segments.append(f"#{element_id}")
-            break
-        parent = parent_by_child.get(current)
-        tag = _local_name(current.tag)
-        if parent is None:
-            segments.append(tag)
-            break
-        same_tag = [
-            child
-            for child in parent
-            if _local_name(child.tag) == tag
-        ]
-        position = same_tag.index(current) + 1
-        segments.append(f"{tag}:nth-of-type({position})")
-        current = parent
-    return " > ".join(reversed(segments))
-
-
-def _nearest_attribute(
-    chain: list[ET.Element],
-    name: str,
-) -> str | None:
-    for element in chain:
-        value = element.get(name)
-        if value is not None:
-            return value
-    return None
-
-
-def _text_slot_bounds(chain: list[ET.Element]) -> dict[str, float | None]:
-    """Read the nearest four-value placeholder/native frame when available."""
-    for name in ("data-pptx-placeholder-bounds", "data-pptx-frame"):
-        raw = _nearest_attribute(chain, name)
-        if raw is None:
-            continue
-        try:
-            values = [float(value) for value in raw.replace(",", " ").split()]
-        except ValueError:
-            continue
-        if len(values) == 4 and all(math.isfinite(value) for value in values):
-            return dict(zip(("x", "y", "width", "height"), values))
-    return {"x": None, "y": None, "width": None, "height": None}
-
-
-def _text_topology_sha256(element: ET.Element) -> str:
-    """Hash text/tspan topology and attributes while excluding visible values."""
-    digest = hashlib.sha256()
-
-    def visit(node: ET.Element) -> None:
-        digest.update(_local_name(node.tag).encode("utf-8"))
-        for name, value in sorted(node.attrib.items()):
-            digest.update(b"\0a")
-            digest.update(name.encode("utf-8"))
-            digest.update(b"\0")
-            digest.update(value.encode("utf-8"))
-        for child in node:
-            digest.update(b"\0c")
-            visit(child)
-        digest.update(b"\0e")
-
-    visit(element)
-    return digest.hexdigest()
-
-
-def _template_text_slots(root: ET.Element) -> list[dict[str, object]]:
-    """Describe exact mirror-safe text replacement slots for one template."""
-    parent_by_child = {
-        child: parent
-        for parent in root.iter()
-        for child in parent
-    }
-    slots: list[dict[str, object]] = []
-    for text_element in root.iter():
-        if _local_name(text_element.tag) != "text":
-            continue
-        chain = _ancestor_chain(text_element, parent_by_child)
-        placeholder = _nearest_attribute(chain, "data-pptx-placeholder")
-        editable_value = _nearest_attribute(chain, "data-pptx-editable")
-        inherited_layer = _nearest_attribute(chain, "data-pptx-layer")
-        tspans = [
-            child
-            for child in text_element.iter()
-            if child is not text_element and _local_name(child.tag) == "tspan"
-        ]
-        segments = [
-            text_element.text or "",
-            *[(tspan.text or "") for tspan in tspans],
-        ]
-        if tspans and not segments[0].strip():
-            segments = segments[1:]
-        slots.append({
-            "selector": _stable_text_selector(text_element, parent_by_child),
-            "role": placeholder or "text",
-            "editable": editable_value != "false" and inherited_layer is None,
-            "current_text": "".join(text_element.itertext()),
-            "text_segments": segments,
-            "text_attributes": dict(sorted(text_element.attrib.items())),
-            "tspan_count": len(tspans),
-            "tspan_attributes": [
-                dict(sorted(tspan.attrib.items()))
-                for tspan in tspans
-            ],
-            "topology_sha256": _text_topology_sha256(text_element),
-            "bbox": _text_slot_bounds(chain),
-            "font_stack": _nearest_attribute(chain, "font-family"),
-        })
-    return slots
-
-
 def _json_bytes(payload: dict[str, object]) -> bytes:
     return (
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
+
+
+def _compact_json_bytes(payload: dict[str, object]) -> bytes:
+    return (
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n"
     ).encode("utf-8")
 
 
@@ -354,7 +234,14 @@ def _template_execution_manifest_files(
         key=lambda item: item[0].as_posix(),
     ):
         prototype = relative_path.name
-        text_slots = _template_text_slots(root)
+        try:
+            analyzed_slots = analyze_template_text_slots(root)
+        except ValueError as exc:
+            raise MirrorMaterializationError(
+                f"Cannot project text slots for {prototype}: {exc}"
+            ) from exc
+        text_slots = [slot.model_payload() for slot in analyzed_slots]
+        editable_text_slot_count = sum(slot.editable for slot in analyzed_slots)
         text_slots_path = (
             Path("templates")
             / TEMPLATE_TEXT_SLOTS_DIR
@@ -362,10 +249,11 @@ def _template_execution_manifest_files(
         )
         files.append(MaterializedFile(
             text_slots_path,
-            _json_bytes({
+            _compact_json_bytes({
                 "schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
                 "prototype": prototype,
                 "text_slot_count": len(text_slots),
+                "tool_integrity_sha256": text_slot_integrity_sha256(analyzed_slots),
                 "text_slots": text_slots,
             }),
         ))
@@ -377,9 +265,7 @@ def _template_execution_manifest_files(
             "layout": root.get("data-pptx-layout"),
             "layout_name": root.get("data-pptx-layout-name"),
             "text_slot_count": len(text_slots),
-            "editable_text_slot_count": sum(
-                1 for slot in text_slots if slot["editable"]
-            ),
+            "editable_text_slot_count": editable_text_slot_count,
             "text_slots_path": text_slots_path.relative_to(
                 Path("templates")
             ).as_posix(),
@@ -389,11 +275,16 @@ def _template_execution_manifest_files(
         "replication_mode": "mirror",
         "template_root": ".",
         "template_count": len(templates),
+        "text_slots_schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
         "execution_policy": (
-            "Read this compact roster once. Before authoring each page, read the "
-            "selected template's text_slots_path and complete prototype SVG. "
-            "Replace visible text values only; preserve every text/tspan node, "
-            "order, nesting level, and attribute."
+            "Read this compact roster once. Before authoring each page, run "
+            "project_manager.py page-context <project> P<NN> --bundle "
+            "--record-usage; do not "
+            "read text_slots_path directly. The bundle validates the selected "
+            f"{TEMPLATE_TEXT_SLOTS_SCHEMA} projection and includes the complete "
+            "prototype. Choose semantic replacements and edit only existing "
+            "visible text values; structured export validates text/tspan "
+            "topology and attributes against the prototype."
         ),
         "source_import": source_import or {
             "warning_count": 0,

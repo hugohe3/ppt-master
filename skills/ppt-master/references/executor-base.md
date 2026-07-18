@@ -29,11 +29,17 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 Before the first SVG page, output a confirmation listing: the compact communication intent + desired audience outcome, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
 
-### 2.1 Per-page spec_lock re-read (Mandatory)
+### 2.1 Per-page execution context (Mandatory)
 
-> Long decks drift off the declared palette/icons mid-deck due to context compression. `spec_lock.md` is the canonical execution reference — re-read it per page to bypass model memory.
+**Hard rule**: Before generating **each** SVG page, load its canonical projection and record the model-facing context size:
 
-**Hard rule**: Before generating **each** SVG page, `read_file <project_path>/spec_lock.md`. Use only values from this file, not from memory. Re-read the global `communication` section along with the technical locks. The current page's `design_spec.md §IX` brief must be in immediate context; if context was auto-compacted or the brief is not immediately available, re-read `design_spec.md` for that page before drawing.
+```bash
+python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage
+```
+
+Use the bundle's communication contract, canvas, mode/style, colors, typography, icons, current `design_spec.md §IX` brief, and current-page lock assignments. The bundle is a read-only projection of `design_spec.md` and `spec_lock.md`; it does not replace either required gate artifact or authorize values absent from the lock. After an approved upstream lock change, rerun the command before drawing the affected page.
+
+**Source facts**: The bundle carries page intent and locked execution values, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
 
 **Per-page communication trace**: Read the current §IX `Core message` and `Audience move` before choosing composition. The page must advance at least one purpose named in `communication.communication_intent` and move the audience toward `communication.audience_outcome`; `communication.core_message` remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 
@@ -55,7 +61,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
-**Missing `spec_lock.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not generate from `design_spec.md` alone or silently downgrade.
+**Missing `spec_lock.md` or `design_spec.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not bypass a failed page-context command or silently downgrade.
 
 **Missing field in an existing lock**: follow [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2.
 
@@ -71,7 +77,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one. When an intentional deck-wide or recurring color, type role/size, icon, or image is approved, extend `spec_lock.md` **before** drawing the first affected object, re-read the lock, and only then author the page; do not draw with a temporary hardcoded value and retroactively silence drift warnings.
+If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one. When an intentional deck-wide or recurring color, type role/size, icon, or image is approved, extend `spec_lock.md` **before** drawing the first affected object, regenerate that page's context bundle, and only then author the page; do not draw with a temporary hardcoded value and retroactively silence drift warnings.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 

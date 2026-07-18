@@ -129,6 +129,47 @@ def _parse_markdown_sections(
     return sections, errors
 
 
+def parse_markdown_artifact(
+    markdown_path: Path,
+    *,
+    report_duplicate_fields: bool = False,
+) -> list[dict[str, object]]:
+    """Parse one Markdown planning artifact without changing it.
+
+    This is the public read-only entry point for consumers that need the same
+    heading/data-line grammar as schema validation.  Keeping the parser here
+    prevents runtime projections from drifting into their own lock grammar.
+    """
+    text = markdown_path.read_text(encoding="utf-8")
+    sections, errors = _parse_markdown_sections(
+        text,
+        report_duplicate_fields=report_duplicate_fields,
+    )
+    if errors:
+        raise ValueError("; ".join(errors))
+    return sections
+
+
+def default_spec_lock_forbidden() -> frozenset[str]:
+    """Return the versioned scaffold's universal forbidden-item defaults."""
+    sections = parse_markdown_artifact(SCAFFOLD_DIR / "spec_lock.md")
+    section = next(
+        (
+            item
+            for item in sections
+            if str(item.get("heading", "")).strip().casefold() == "forbidden"
+        ),
+        None,
+    )
+    if section is None:
+        raise ValueError("spec-lock scaffold has no forbidden section")
+    return frozenset(
+        re.sub(r"^-[ \t]+", "", line.strip())
+        for line in str(section.get("body", "")).splitlines()
+        if line.strip()
+    )
+
+
 def _load_markdown_schema(schema_path: Path) -> dict[str, object]:
     """Load and sanity-check one versioned Markdown schema."""
     with schema_path.open("r", encoding="utf-8") as stream:
