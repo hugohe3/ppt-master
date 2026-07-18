@@ -18,7 +18,7 @@ The user **explicitly asks** to refine / review / revise the spec before generat
 | "let me revise the spec, then continue" | "send me the spec to confirm, I'll edit it" |
 | Any request to inspect/iterate the design spec before generation | "draft the full plan, I want to adjust it, then generate" |
 
-**Default is OFF.** Strategist surfaces this option as one short opt-in line inside the Strategist confirmation stage (see SKILL.md Step 4). No request → the spec is written in one go and the pipeline auto-proceeds as usual; this stage never starts.
+**Default is OFF.** Strategist surfaces this option as one short opt-in line inside the Strategist confirmation stage (see [`generate-pptx`](../generate-pptx.md) Step 4). No request → the spec is written in one go and the pipeline auto-proceeds as usual; this stage never starts.
 
 **Prerequisite**: the Strategist confirmation stage is settled (mode + visual style + the rest). This pass revises the spec produced from that stage; it does not re-open the confirmation stage itself.
 
@@ -26,7 +26,7 @@ The user **explicitly asks** to refine / review / revise the spec before generat
 
 ## Step 1: Produce the full spec
 
-Run the default Strategist output exactly as SKILL.md Step 4 specifies: write `design_spec.md` (§I–X) and `spec_lock.md`. Read the relevant `sources/` files so the content outline (`§IX`) carries real facts, not skeleton points. Nothing special here — this is the normal spec, just produced under the knowledge that the user is about to review it.
+Run the default Strategist output exactly as [`generate-pptx`](../generate-pptx.md) Step 4 specifies: write `design_spec.md` (§I–X) and `spec_lock.md`. Read the relevant `sources/` files so the content outline (`§IX`) carries real facts, not skeleton points. Nothing special here — this is the normal spec, just produced under the knowledge that the user is about to review it.
 
 ---
 
@@ -55,6 +55,6 @@ These overlap with what the locked `mode`, visual style, and §6.1 already shape
 
 ## Step 3: Hand back
 
-Once the user approves, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to SKILL.md and continue normally: Step 5 (Image Acquisition, if any `ai` / `web` rows) or Step 6 (Executor).
+Once the user approves, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to [`generate-pptx`](../generate-pptx.md): Step 5 when any `ai` / `web` rows require acquisition, otherwise Step 6.
 
-> Note: this stage does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. `strategist.md` / SKILL.md remain authoritative for how the spec is written.
+> Note: this stage does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. [`strategist.md`](../../references/strategist.md) and [`generate-pptx`](../generate-pptx.md) remain authoritative for spec content and route sequencing.

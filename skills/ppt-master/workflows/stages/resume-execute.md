@@ -4,9 +4,9 @@ description: Main-pipeline control stage for resuming execution in a fresh chat 
 
 # Resume Execute Stage
 
-> Generate-PPTX control stage for a fresh execution session. Run when planning (SKILL.md Step 1–5) completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 without selecting another route.
+> Generate-PPTX control stage for a fresh execution session. Run when [`generate-pptx`](../generate-pptx.md) Step 1–5 completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 inside the already selected Generate route.
 
-This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. By isolating SVG generation in its own session, the model gains 20–40K context headroom by not carrying the planning session's Strategist confirmation dialogue, image search/fetch results, or Strategist references.
+This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. Persisted project artifacts replace the planning session's confirmation dialogue and image-acquisition history.
 
 ## When to Run
 
@@ -36,15 +36,15 @@ Verify the project's planning-session artifacts before doing anything else:
 If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
 
 - Missing `design_spec.md` / `spec_lock.md` → use [`failure-recovery.md`](../governance/failure-recovery.md) §3.
-- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to SKILL.md Step 3 to restore the selected workspace; an AI, web, formula, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire, rerender, or derive it. An absent `Needs-Manual` file is not a Step 1 failure.
-- Missing `templates/` inputs → restore the selected workspace through `SKILL.md` Step 3. If the workspace is unavailable or invalid, run Create Template again rather than reconstructing a template inside this stage.
+- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to [`generate-pptx`](../generate-pptx.md) Step 3 to restore the selected workspace; an AI, web, formula, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire, rerender, or derive it. An absent `Needs-Manual` file is not a Step 1 failure.
+- Missing `templates/` inputs → restore the selected workspace through [`generate-pptx`](../generate-pptx.md) Step 3 and [`apply-template-workspace`](apply-template-workspace.md). If the workspace is unavailable or invalid, run Create Template again rather than reconstructing a template inside this stage.
 
 ---
 
-## Step 2: Load SKILL.md, proceed from Step 6
+## Step 2: Load the Generate authority, proceed from Step 6
 
 ```
-Read skills/ppt-master/SKILL.md
+Read skills/ppt-master/workflows/generate-pptx.md
 ```
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
@@ -57,11 +57,11 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 - Speaker notes generation
 - Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)
 
-The fresh session pays the cost of re-reading references (~14K tokens) but earns back substantially more headroom by dropping the planning session's accumulated context. Net win in both window pressure and reasoning budget per page.
+Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-**Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture. The split-mode handoff is designed to free context budget precisely for this kind of high-quality enrichment.
+**Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture.
 
-> Note: this stage does NOT duplicate Step 6 / Step 7 content. SKILL.md is the authoritative procedure; resume-execute only adds the resumption entry (When to Run + Step 1 sanity check above) and the source-materials guidance above.
+> Note: this stage does NOT duplicate Step 6 / Step 7 content. `generate-pptx.md` is the authoritative procedure; resume-execute only adds the resumption entry, sanity check, and source-materials guidance.
 
 ---
 
@@ -69,4 +69,4 @@ The fresh session pays the cost of re-reading references (~14K tokens) but earns
 
 When Step 7 completes and `exports/<project_name>_<timestamp>.pptx` is produced, the stage ends. Report the export path to the user.
 
-If the deck contains data charts, the [`verify-charts`](verify-charts.md) stage runs between Step 6 and Step 7 as documented in SKILL.md — resume mode handles it the same way the continuous mode does.
+If the deck contains data charts, the [`verify-charts`](verify-charts.md) stage runs between Step 6 and Step 7 as documented in [`generate-pptx`](../generate-pptx.md); resume mode handles it the same way as continuous mode.

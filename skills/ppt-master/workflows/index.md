@@ -1,51 +1,43 @@
 ---
-description: Registry of PPT Master's top-level routes and supporting child workflows, profiles, stages, and governance documents.
+description: Maintainer-only registry of PPT Master's route and supporting-workflow inventory.
 ---
 
 # Workflow Registry
 
-Registry for the route authorities and supporting runbooks referenced by [`SKILL.md`](../SKILL.md) and [`routing.md`](./routing.md).
+Maintainer-only inventory for adding, moving, or removing workflow documents. Runtime task execution does not consume this file.
 
-**Hard rule — four entry routes only**: User requests enter exactly one top-level route. Create Template child workflows, generation profiles, stages, and governance documents refine an active route; they are never presented as competing top-level routes.
+## 1. Route Authorities
 
----
-
-## 1. Top-Level Routes
-
-| Route | Authority | Trigger | Mutation model | Output |
-|---|---|---|---|---|
-| Generate PPTX | [`SKILL.md`](../SKILL.md) | Create or visually regenerate a presentation from source material, a topic, or an existing deck | Author new SVG pages, then export a new PPTX | Project workspace with `design_spec.md`, `spec_lock.md`, `svg_output/`, and `exports/` |
-| Create Template | [`create-template.md`](./create-template.md) | Create a reusable `brand`, `layout`, or `deck` workspace from one or more reference channels or a direct-text brief | Read the complete reference bundle and author a new template workspace; never add Master/Layout structure to a reference file in place | Portable template workspace with required `templates/` and optional assets/review export |
-| Fill Native PPTX | [`template-fill-pptx.md`](./template-fill-pptx.md) | Reuse native slides from a raw PPTX and replace/fill their content | Clone and patch PPTX through OOXML; no SVG generation | New filled PPTX under the project `exports/` |
-| Enhance Native PPTX | [`native-enhance-pptx.md`](./native-enhance-pptx.md) | Add notes, narration audio, timings, or transitions while preserving finished slides | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX under the project `exports/` |
-
----
+| ID | Class | Authority path |
+|---|---|---|
+| `generate-pptx` | Top-level route | [`generate-pptx.md`](./generate-pptx.md) |
+| `create-template` | Top-level route | [`create-template.md`](./create-template.md) |
+| `template-fill-pptx` | Top-level route | [`template-fill-pptx.md`](./template-fill-pptx.md) |
+| `native-enhance-pptx` | Top-level route | [`native-enhance-pptx.md`](./native-enhance-pptx.md) |
 
 ## 2. Supporting Documents
 
-| Class | ID | Path | Owner / trigger |
+| ID | Class | Path | Parent / lifecycle slot |
 |---|---|---|---|
-| Generation profile | `beautify-pptx` | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX route when wording, page count, and page order are frozen 1:1 |
-| Template child workflow | `create-brand` | [`create-template/create-brand.md`](./create-template/create-brand.md) | Create Template after identity-only intent is selected |
-| Template child workflow | `create-layout` | [`create-template/create-layout.md`](./create-template/create-layout.md) | Create Template after brand-neutral, application-neutral structure intent is selected |
-| Template child workflow | `create-deck` | [`create-template/create-deck.md`](./create-template/create-deck.md) | Create Template after a branded structural system or recurring presentation application is selected |
-| Intake stage | `topic-research` | [`stages/topic-research.md`](./stages/topic-research.md) | Generate PPTX route before Step 1 for topic-only requests |
-| Control stage | `resume-execute` | [`stages/resume-execute.md`](./stages/resume-execute.md) | Generate PPTX route when a planned project resumes in a fresh chat |
-| Planning stage | `refine-spec` | [`stages/refine-spec.md`](./stages/refine-spec.md) | Generate PPTX route after confirmation when the user explicitly requests spec review |
-| Quality gate | `verify-charts` | [`stages/verify-charts.md`](./stages/verify-charts.md) | Generate PPTX route when data charts exist |
-| Quality gate | `visual-review` | [`stages/visual-review.md`](./stages/visual-review.md) | Generate PPTX route only on explicit visual-review request |
-| Editor stage | `live-preview` | [`stages/live-preview.md`](./stages/live-preview.md) | Generate PPTX route for preview, element selection, or applying annotations |
-| Post-processing stage | `customize-animations` | [`stages/customize-animations.md`](./stages/customize-animations.md) | Generate PPTX route on explicit object-animation request |
-| Shared audio stage | `generate-audio` | [`stages/generate-audio.md`](./stages/generate-audio.md) | Generate PPTX post-processing or Enhance Native PPTX narration module |
-| Governance | `failure-recovery` | [`governance/failure-recovery.md`](./governance/failure-recovery.md) | Global stop/continue policy across all four routes; Generate PPTX recovery matrix and resume pointers |
+| `beautify-pptx` | Generation profile | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX |
+| `apply-template-workspace` | Template-input stage | [`stages/apply-template-workspace.md`](./stages/apply-template-workspace.md) | Generate Step 3 |
+| `create-brand` | Template child workflow | [`create-template/create-brand.md`](./create-template/create-brand.md) | Create Template |
+| `create-layout` | Template child workflow | [`create-template/create-layout.md`](./create-template/create-layout.md) | Create Template |
+| `create-deck` | Template child workflow | [`create-template/create-deck.md`](./create-template/create-deck.md) | Create Template |
+| `topic-research` | Intake stage | [`stages/topic-research.md`](./stages/topic-research.md) | Before Generate Step 1 |
+| `resume-execute` | Control stage | [`stages/resume-execute.md`](./stages/resume-execute.md) | Generate Step 6 resume |
+| `refine-spec` | Planning stage | [`stages/refine-spec.md`](./stages/refine-spec.md) | After Generate confirmation |
+| `verify-charts` | Quality gate | [`stages/verify-charts.md`](./stages/verify-charts.md) | Before Generate Step 7 |
+| `visual-review` | Quality gate | [`stages/visual-review.md`](./stages/visual-review.md) | Before Generate Step 7 |
+| `live-preview` | Editor stage | [`stages/live-preview.md`](./stages/live-preview.md) | Generate preview / post-export |
+| `customize-animations` | Post-processing stage | [`stages/customize-animations.md`](./stages/customize-animations.md) | Generate conditional export |
+| `generate-audio` | Shared audio stage | [`stages/generate-audio.md`](./stages/generate-audio.md) | Generate / Enhance Native |
+| `failure-recovery` | Governance | [`governance/failure-recovery.md`](./governance/failure-recovery.md) | All routes |
 
----
+## 3. Maintenance Rules
 
-## 3. Update Rules
-
-1. Add a row to §1 only when a request requires a genuinely distinct artifact lifecycle or mutation model.
-2. Add child workflows, profiles, stages, and governance documents only to §2; do not add them to the top-level route matrix in [`routing.md`](./routing.md).
-3. Update [`routing.md`](./routing.md) whenever a top-level trigger or route boundary changes.
-4. Keep execution commands in the owning route or supporting document, not in this registry.
-
-**Forbidden — duplicated route matrices**: Do not copy the full route matrix from [`routing.md`](./routing.md) into `SKILL.md` or stage documents.
+1. Add a top-level route only for a distinct artifact lifecycle and mutation model; synchronize [`routing.md`](./routing.md).
+2. Register profiles, stages, governance files, and Create Template children only in §2.
+3. Keep commands and trigger procedures in the owning authority, not in this registry.
+4. Update `scripts/prompt_audit_manifest.json` load sets and coverage in the same change.
+5. Keep this registry out of runtime load sets.

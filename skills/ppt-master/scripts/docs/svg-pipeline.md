@@ -226,13 +226,28 @@ Do not confuse this tool with `extract_svg_assets.py`:
 
 ## Recommended Pipeline
 
-Run these steps in order:
+Run these steps one at a time. Wait for each command to exit successfully before
+starting the next command.
 
 ```bash
 python3 scripts/total_md_split.py <project_path>
+```
+
+After `total_md_split.py` exits successfully, run:
+
+```bash
 python3 scripts/finalize_svg.py <project_path>
+```
+
+After `finalize_svg.py` exits successfully, run:
+
+```bash
 python3 scripts/svg_to_pptx.py <project_path>
 ```
+
+Do not start another post-processing command while the current command is still
+running. The canonical gates and success criteria are owned by
+[`generate-pptx.md`](../../workflows/generate-pptx.md) Step 7.
 
 ## `finalize_svg.py`
 
@@ -264,9 +279,12 @@ python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
 python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
 python3 scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
-python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
+
+For generated-project narration, follow the
+[`generate-audio`](../../workflows/stages/generate-audio.md) stage. It owns voice
+selection, audio generation, and the narrated re-export workflow.
 
 Behavior:
 - Default output (default-flow mode, no `-o`):

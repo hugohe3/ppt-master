@@ -34,8 +34,9 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The indexes are discovery aids only. Step 3 activates a template only from an
-explicit workspace-root path supplied by the user.
+The indexes are discovery aids only. [`generate-pptx`](../workflows/generate-pptx.md)
+Step 3 activates a template only from an explicit workspace-root path supplied
+by the user or an exact validated Create Template handoff.
 
 ## Orthogonal contracts
 
@@ -66,9 +67,10 @@ initialized project:
 
 Empty optional directories are omitted. Template SVGs reference bitmaps through
 `../images/<name>` and imported vectors through `data-icon="imported/<name>"`.
-Step 3 consumes `templates/`, `images/`, and `icons/` and ignores `exports/`.
-Compatible legacy-flat packages remain readable; directory shape alone does not
-indicate legacy Master/Layout semantics.
+The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
+stage owns installation and fusion: it consumes `templates/`, `images/`, and
+`icons/` and ignores `exports/`. Compatible legacy-flat packages remain
+readable; directory shape alone does not indicate legacy Master/Layout semantics.
 
 ## Design specification references
 

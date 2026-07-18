@@ -95,7 +95,7 @@ Use them directly. Do not create another image-color choice and do not change HE
 
 **Declared-inference fallback — when an existing `spec_lock.md` omits the `image_rendering` key** (see [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2):
 
-This fallback covers a missing key only. An empty or invalid value stops for lock repair. If `spec_lock.md` itself is absent, stop at the [`SKILL.md`](../SKILL.md) Step 5 gate before prompt assembly or image generation; do not use `design_spec.md` as a substitute.
+This fallback covers a missing key only. An empty or invalid value stops for lock repair. If `spec_lock.md` itself is absent, stop at [`generate-pptx.md`](../workflows/generate-pptx.md) Step 5 before prompt assembly or image generation; do not use `design_spec.md` as a substitute.
 
 | Signal | Maps to |
 |---|---|

@@ -524,7 +524,7 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Reference syntax**: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
-**Template-bundled images**: when a template (deck / layout / brand) is applied, its bitmaps are copied into the project's `images/` alongside every other runtime image (SKILL.md Step 3). Reference them the same way — `../images/<name>` — and do **not** reproduce a template SVG's bare sibling href (e.g. `href="cover_bg.png"`): the template SVG is reference material, the rendered page lives in `svg_output/` and must point at `../images/`. `template_reuse_scope: mirror` (§1.1) is the one exception — it copies hrefs verbatim, and the exporter resolves those bare hrefs against `images/`.
+**Template-bundled images**: when a template (deck / layout / brand) is applied, its bitmaps are copied into the project's `images/` alongside every other runtime image ([`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md)). Reference them the same way — `../images/<name>` — and do **not** reproduce a template SVG's bare sibling href (e.g. `href="cover_bg.png"`): the template SVG is reference material, the rendered page lives in `svg_output/` and must point at `../images/`. `template_reuse_scope: mirror` (§1.1) is the one exception — it copies hrefs verbatim, and the exporter resolves those bare hrefs against `images/`.
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
@@ -619,21 +619,9 @@ Auto-split `notes/total.md` into per-page files in `notes/`.
 
 > **Auto-continuation**: After Visual Construction Phase (all SVG pages) and Logic Construction Phase (all notes) are complete, the Executor proceeds directly to the post-processing pipeline.
 
-**Post-processing & Export** (canonical workflow: [`SKILL.md` Step 7](../SKILL.md)):
-
-```bash
-# 1. Split speaker notes
-python3 scripts/total_md_split.py <project_path>
-
-# 2. SVG post-processing (auto-embed icons/images and flatten positioned text)
-python3 scripts/finalize_svg.py <project_path>
-# Output: svg_final/ self-contained SVG visual previews
-
-# 3. Export PPTX
-python3 scripts/svg_to_pptx.py <project_path>
-# Output (default-flow mode):
-#   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output)
-#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
-```
+**Post-processing & Export**: Follow [`generate-pptx.md`](../workflows/generate-pptx.md)
+Step 7. That workflow owns the serial commands, gates, success criteria, and
+published artifacts; [`svg-pipeline.md`](../scripts/docs/svg-pipeline.md) owns
+tool-specific flags and behavior.
 
 `svg_final/` may be opened directly or manually inserted into PowerPoint as an SVG picture. It is not a second PPTX route. Use `-s final` only for converter diagnostics; release exports use the default `svg_output/` source. Manual Convert-to-Shape behavior is unsupported.
