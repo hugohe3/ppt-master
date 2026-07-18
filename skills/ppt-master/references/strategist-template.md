@@ -41,7 +41,11 @@ Record the resulting exporter plan internally:
 | `template_adherence: strict` | Every structured page fits an existing prototype contract without changing its Layout identity or slot topology. Mandatory for `template_reuse_scope: mirror`. |
 | `template_adherence: adaptive` | Structured reuse remains useful, but at least one page needs a new explicit Layout under the selected Master. |
 
-Write the derived values to `design_spec.md §I` and `spec_lock.md pptx_structure`; omit `template_adherence` for `style`. Do not put these values in `recommendations.json`, the Confirm UI, or `result.json`. Stage 2 may summarize the selected page/prototype plan as part of the complete deck solution, but it must not reopen template use as a separate user control.
+Write the derived values to `design_spec.md §I` and `spec_lock.md pptx_structure`; omit `template_adherence` for `style`. Do not put these values in `recommendations.json`, the Confirm UI, or `result.json`.
+
+**Mandatory — natural-language Stage-2 plan**: Include one concise natural-language summary of the template application in the complete Stage-2 solution: which pages/prototypes are used, skipped, repeated, or reordered; what remains literal; and what may be replaced or reorganized. Write it to top-level `template_application.value` in Stage-2 `recommendations.json`; omit the field when no template workspace is active. The Confirm UI returns the user's current text as `template_application`. After Stage 2, re-read that confirmed value from `result.json` (or the exact chat answer in chat fallback) before deriving `template_reuse_scope`, `template_adherence`, §IX page plans, and structure mappings; never reuse the initial recommendation after the user edits or clears it. Blank means no explicit user constraint and returns the decision to Strategist. Do not add a template questionnaire, expose internal values, or turn the summary into fixed template-use options.
+
+**Three-stage boundary**: An installed template changes the content of Stage 2, never the confirmation sequence. Run Stage 1 → Stage 2 → Stage 3 in order in both Confirm UI and chat fallback; do not skip a stage or treat template inspection as user confirmation. On browser timeout, return to the same stage in chat.
 
 ---
 

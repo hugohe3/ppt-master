@@ -2,7 +2,8 @@
  * Stage 1 captures the communication contract, Stage 2 confirms a coherent
  * deck solution, and Stage 3 resolves production mechanics. Finite fields use
  * /static/catalogs.json; coordinated design directions seed color, typography,
- * icons, and generated-image rendering. Final confirm saves result.json.
+ * icons, generated-image rendering, and conditional template-application prose.
+ * Final confirm saves result.json.
  */
 (function () {
     "use strict";
@@ -42,6 +43,9 @@
             sec_refine: "Refine spec first",
             sec_design_directions: "Coherent design directions",
             design_directions_hint: "Each direction coordinates style, color, typography, icons, and generated-image rendering. You can fine-tune every field below.",
+            sec_template_application: "Template application",
+            template_application_hint: "The AI recommends how to apply the installed template to this deck. Revise the plan directly in natural language.",
+            placeholder_template_application: "Describe which template pages or prototypes to use, skip, repeat, or reorder; what must stay; and what may be replaced or reorganized.",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
             sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
@@ -172,6 +176,9 @@
             sec_refine: "先に設計仕様を精査",
             sec_design_directions: "統合デザイン方針",
             design_directions_hint: "各案はスタイル、配色、書体、アイコン、生成画像のレンダリングを一体で提案します。下の各項目で微調整できます。",
+            sec_template_application: "テンプレートの適用方法",
+            template_application_hint: "AIが現在の内容に合わせたテンプレートの使い方を提案します。自然言語で直接修正できます。",
+            placeholder_template_application: "使用・省略・反復・並べ替えするページやプロトタイプ、保持する要素、差し替え・再構成できる内容を記述します。",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
             sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
@@ -302,6 +309,9 @@
             sec_refine: "先精修设计规范",
             sec_design_directions: "成套设计方向",
             design_directions_hint: "每套方向会一起协调风格、配色、字体、图标和生成图渲染；你仍可在下方逐项微调。",
+            sec_template_application: "模板应用方式",
+            template_application_hint: "AI 会根据当前内容推荐如何使用已安装模板；你可以直接用自然语言修改。",
+            placeholder_template_application: "说明使用、跳过、重复或重排哪些模板页面/原型，哪些内容必须保留，哪些可以替换或重组。",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
             sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
@@ -1141,6 +1151,26 @@
         var sec = section(2, "sec_pages");
         textField(sec, function () { return STATE.page_count; },
             function (v) { STATE.page_count = v; }, "placeholder_pages", true);
+        host.appendChild(sec);
+    }
+
+    function templateApplicationRecommendation() {
+        if (!REC || REC.template_application == null) return null;
+        var field = REC.template_application;
+        if (typeof field === "object") {
+            return field.value == null ? "" : String(field.value);
+        }
+        return String(field);
+    }
+
+    function renderTemplateApplication(host) {
+        if (templateApplicationRecommendation() == null) return;
+        var sec = section("T", "sec_template_application");
+        setSectionNote(sec, t("template_application_hint"));
+        textareaField(sec,
+            function () { return STATE.template_application; },
+            function (v) { STATE.template_application = v; },
+            "placeholder_template_application", 4);
         host.appendChild(sec);
     }
 
@@ -2324,6 +2354,7 @@
             if (previewHost) renderImageStrategyPreview(previewHost);
             // Stage 2 confirms one coherent deck solution. Bundles provide a
             // coordinated starting point; individual controls remain editable.
+            renderTemplateApplication(host);
             renderDesignDirections(host);
             renderNarrativeDirection(host);
             renderVisualDirection(host);
@@ -2350,6 +2381,7 @@
             renderCommunication(host);
             renderDelivery(host);
             renderCanvas(host);
+            renderTemplateApplication(host);
             renderDesignDirections(host);
             renderNarrativeDirection(host);
             renderVisualDirection(host);
@@ -2412,6 +2444,12 @@
     // across the single-session transition — this never resets the contract.
     function initStage2State() {
         resetTypographySizeOverrides();
+        var templateApplication = templateApplicationRecommendation();
+        if (templateApplication != null) {
+            STATE.template_application = templateApplication;
+        } else if (stageNumber(REC) === 2) {
+            delete STATE.template_application;
+        }
         // Reading mode is a design-density tool, not part of the communication
         // purpose. Keep the legacy delivery_purpose key for JSON compatibility.
         STATE.delivery_purpose = recId("delivery_purpose") ||
@@ -2513,6 +2551,9 @@
     function stage2Payload() {
         var payload = communicationPayload();
         payload.stage = "stage2";
+        if (Object.prototype.hasOwnProperty.call(STATE, "template_application")) {
+            payload.template_application = STATE.template_application;
+        }
         payload.mode = STATE.mode;
         payload.visual_style = STATE.visual_style;
         payload.page_count = STATE.page_count;

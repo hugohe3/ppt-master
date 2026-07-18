@@ -1,6 +1,6 @@
 # Confirm UI — Strategist Confirmation Stage Page
 
-> The interactive, visual surface for [`generate-pptx`](../../workflows/generate-pptx.md) Step 4. Stage 1 is an open communication brief: common purpose paths are prompt text, never checkboxes or a forced single label. Stage 2 offers **≥3 coordinated design directions** and then exposes their component values for deliberate override; color, typography, icons, and generated-image rendering are one system rather than unrelated grids. Generated images inherit the selected deck colors directly—there is no image-palette control. Stage 3 contains production mechanics only. The AI writes `recommendations.json`; confirmed values accumulate into `result.json`. Final confirm saves the result and shuts the server down. The chat path mirrors the same staged semantics.
+> The interactive, visual surface for [`generate-pptx`](../../workflows/generate-pptx.md) Step 4. Stage 1 is an open communication brief: common purpose paths are prompt text, never checkboxes or a forced single label. Stage 2 offers **≥3 coordinated design directions** and then exposes their component values for deliberate override; color, typography, icons, and generated-image rendering are one system rather than unrelated grids. When a template workspace is active, Stage 2 also shows one editable natural-language template-application plan—never internal mode controls. Generated images inherit the selected deck colors directly—there is no image-palette control. Stage 3 contains production mechanics only. The AI writes `recommendations.json`; confirmed values accumulate into `result.json`. Final confirm saves the result and shuts the server down. The chat path mirrors the same staged semantics.
 
 ## Authority and Scope
 
@@ -40,7 +40,7 @@ python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 clean
 - Refuses to start unless `<project_path>/confirm_ui/recommendations.json` exists (except `--shutdown`, which needs no recommendations).
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
 - Idle auto-shutdown after 900 s by default; `/api/shutdown` exits gracefully and releases the lock.
-- `/api/recommendations` and `/api/confirm` strip legacy `template_reuse_scope` and `template_adherence` fields. Template application is authored by Strategist from the installed workspace and current content; it is not a user-facing confirmation control.
+- `/api/recommendations` and `/api/confirm` strip legacy `template_reuse_scope` and `template_adherence` fields. Those exporter values are never user-facing controls; an active template instead exposes the editable natural-language `template_application` field in Stage 2.
 
 Dependency:
 
@@ -78,13 +78,13 @@ The page runs as a **three-stage wizard in one browser session**. `recommendatio
 | `recommendations.json stage` | Page renders | Button | On submit |
 |---|---|---|---|
 | `"stage1"` | communication contract — audience; open `communication_intent`; audience outcome; core message / delivery context / artifact afterlife / `content_divergence` (all prose fields may be blank); canvas | **Confirm contract & continue** | writes `result.json` `{ stage: "stage1", status: "stage1-confirmed", <communication contract> }`; the page stays open and polls |
-| `"stage2"` | complete deck solution — reading mode, mode, page count, visual direction, color, icons, typography, image usage, generated-image rendering | **Confirm solution & continue** | writes `result.json` `{ stage: "stage2", status: "stage2-confirmed", <contract + solution> }`; the page stays open and polls |
+| `"stage2"` | complete deck solution — conditional natural-language template application, reading mode, mode, page count, visual direction, color, icons, typography, image usage, generated-image rendering | **Confirm solution & continue** | writes `result.json` `{ stage: "stage2", status: "stage2-confirmed", <contract + solution> }`; the page stays open and polls |
 | `"stage3"` | production only — confirmed image-source summary, conditional AI acquisition path, formula policy, generation mode, refine spec | **Confirm** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
-| *(absent)* | legacy single-pass — every section on one page | **Confirm** | single final write (`status: "confirmed"`) — backward-compatible |
+| *(absent)* | legacy free-design single-pass — every section on one page | **Confirm** | single final write (`status: "confirmed"`) — backward-compatible only when no template workspace / `template_application` is active |
 
 The AI launches Stage 1, authors the complete Stage-2 solution once from the user's actual contract, then authors Stage-3 production mechanics once from the confirmed solution. An edit inside the current stage never requests another recommendation. The page preserves earlier answers across transitions. `GET /api/session` is the waiting-state endpoint; `GET /api/recommendations` is `no-store`, and the server folds confirmed earlier-stage choices back into later payloads so refresh / reopen restores the user's actual values—including Stage-2 color, typography, icon, image-source, and rendering choices.
 
-**Stage progression guard.** Stages confirm strictly in order — a staged `recommendations.json` may only run **one** stage past the last confirmed result. A file that skips ahead (e.g. `"stage3"` while only Stage 1 is confirmed) is never rendered: `/api/session` keeps reporting `waiting_agent` with `stage_skip: true`, and `--wait` / `--wait-only` exit `2` with a directive log line naming the expected stage to rewrite. An active deck/layout template does not exempt Stage 2: Strategist still derives its internal page/prototype plan from the confirmed communication contract. Legacy single-pass files (no `stage`) are not staged and bypass the guard.
+**Stage progression guard.** Stages confirm strictly in order — a staged `recommendations.json` may only run **one** stage past the last confirmed result, and `/api/confirm` accepts only the submit stage matching that file plus its required predecessor. A file that skips ahead (e.g. `"stage3"` while only Stage 1 is confirmed) is never rendered: `/api/session` keeps reporting `waiting_agent` with `stage_skip: true`, and `--wait` / `--wait-only` exit `2` if a result skips the stage being awaited. An active template does not exempt Stage 2: its Stage-2 recommendations must include `template_application.value`, and an installed workspace or that field disables the no-stage legacy single-pass path. Legacy single-pass remains available only for non-template compatibility payloads.
 
 ### Input — `recommendations.json` (written by Strategist before launch)
 
@@ -132,6 +132,9 @@ After Stage 1 is confirmed, overwrite the file with the complete Stage-2 solutio
     "image_usage": ["ai", "provided"]
   },
   "page_count": { "value": "12-15" },
+  "template_application": {
+    "value": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。"
+  },
   "image_notes": { "value": "封面和章节页用 AI 主视觉；产品页优先用户素材。" },
   "design_directions": {
     "selected": 0,
@@ -184,6 +187,7 @@ After Stage 2 is confirmed, overwrite it with Stage-3 production recommendations
 - `recommend.*` names the recommended `id` for each enumerable field (must match a `catalogs.json` id, or be a free string for a recommended custom value). The page badges and pre-selects it. **Guarantee**: if a `recommend.*` is omitted, the page falls back to the first catalog option so every enumerable field always shows one badged recommendation — but the AI should still set them for a meaningful default. Legacy aliases are accepted for old files (`line` → `tabler-outline`, `filled` → `tabler-filled`, `monochrome` → `chunk-filled`, `search` → `web`, `default` → `auto`, `builtin` → `host-native`), but new files should write canonical ids.
 - `audience`, `communication_intent`, and `audience_outcome` are load-bearing Stage-1 reasoning inputs, so seed concrete recommendations when the evidence supports them; they are not required user inputs. Every Stage-1 prose field may be blank after confirmation, while the six communication keys remain present as key lines in `spec_lock.md communication`. `communication_intent` may preserve several purposes plus priority / sequence; never add a `primary_job` enum.
 - Do not write `recommend.template_reuse_scope` or `recommend.template_adherence`. Strategist records those internal exporter values later in `design_spec.md` / `spec_lock.md` after inspecting the actual template and current content.
+- For an active template workspace, write one editable prose field as top-level `template_application.value`. It summarizes actual page/prototype use and preservation/reorganization decisions. Omit it for free design. The UI returns the current string through Stage 2, Stage 3, and final confirmation; never replace it with internal reuse/adherence ids or a fixed option menu.
 - `recommend.image_usage` should be an array of source ids when more than one source applies, e.g. `["ai", "provided"]`. A single string is still accepted for backward compatibility. Do not write bare `"custom"` and do not encode a mixed-source plan as prose here; write the prose to top-level `image_notes.value`.
 - `image_notes` is the initial strategy note shown under the image source chips. Use it for page-role guidance and constraints: which source applies where, what to avoid, which user assets are authoritative, how realistic / abstract the imagery should be, and what can remain as placeholders. It is intent guidance, not a separate finite option.
 - When confirmed Stage-2 `image_usage` includes `ai`, Stage 3 sets `recommend.image_ai_path` to one of `auto` / `api` / `host-native` / `manual`. Stage 2 never asks for the acquisition mechanism while the user is still deciding the image role.
@@ -212,6 +216,7 @@ After Stage 2 is confirmed, overwrite it with Stage-3 production recommendations
   "delivery_context": "Presenter-led 20-minute leadership review; recording shared afterward",
   "artifact_afterlife": "Approval record, hand-off reference, and audit trail",
   "content_divergence": "freely restructure and expand within the source",
+  "template_application": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。",
   "mode": "pyramid",
   "visual_style": "swiss-minimal",
   "color": { "name": "...", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
