@@ -485,6 +485,8 @@ The post-processing and export stages keep authoring, validation, preview, deliv
 | `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration audio`) | narrated deck for auto-play and PowerPoint video export | embedded per-slide audio plus auto-advance timings; name marks it apart from silent exports |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
 
+Validation JSON files are cold audit artifacts, not routine model inputs. The exporter reads the SVG quality report programmatically, then prints a compact `[POSTFLIGHT]` receipt with the status, quality-gate result, Slide count, warning-category counts, and artifact paths. Successful agents consume that receipt instead of loading either complete JSON; only failure investigation or an explicit audit extracts targeted report fields.
+
 ### SVG preprocessors have TWO consumers
 
 This is the key insight that's easy to miss when reading the code. Cleanup modules under `skills/ppt-master/scripts/svg_finalize/`, together with the local-reference expander, are used in two places for two different products.
