@@ -1,0 +1,778 @@
+{
+  "schema_version": 1,
+  "audit_only": true,
+  "runtime_consumed": false,
+  "budget_policy": "current_growth_ceiling",
+  "encoding": "o200k_base",
+  "documents": {
+    "include": [
+      "AGENTS.md",
+      "skills/ppt-master/**/*.md",
+      "skills/ppt-master/templates/charts/charts_index.json"
+    ],
+    "exclude": [],
+    "max_tokens": 375000
+  },
+  "file_budgets": {
+    "AGENTS.md": 2200,
+    "skills/ppt-master/SKILL.md": 25500,
+    "skills/ppt-master/references/executor-base.md": 16500,
+    "skills/ppt-master/references/shared-standards.md": 33000,
+    "skills/ppt-master/references/strategist.md": 25000,
+    "skills/ppt-master/templates/design_spec_reference.md": 7700,
+    "skills/ppt-master/templates/spec_lock_reference.md": 5800
+  },
+  "load_sets": {
+    "bootstrap.routing": {
+      "description": "Repository entry plus the single route-selection authority.",
+      "scope": "cumulative",
+      "files": [
+        "AGENTS.md",
+        "skills/ppt-master/SKILL.md",
+        "skills/ppt-master/workflows/routing.md",
+        "skills/ppt-master/workflows/index.md",
+        "skills/ppt-master/references/artifact-ownership.md"
+      ],
+      "max_tokens": 34500
+    },
+    "route.create-template.brand": {
+      "description": "Create Brand path; Template_Designer is not activated.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/workflows/create-template.md",
+        "skills/ppt-master/workflows/create-template/create-brand.md",
+        "skills/ppt-master/templates/README.md",
+        "skills/ppt-master/templates/brands/README.md"
+      ],
+      "max_tokens": 59500
+    },
+    "route.create-template.deck": {
+      "description": "Create Deck path through Template_Designer and shared SVG constraints.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/workflows/create-template.md",
+        "skills/ppt-master/workflows/create-template/create-deck.md",
+        "skills/ppt-master/references/template-designer.md",
+        "skills/ppt-master/references/shared-standards.md",
+        "skills/ppt-master/references/canvas-formats.md",
+        "skills/ppt-master/templates/README.md",
+        "skills/ppt-master/templates/decks/README.md"
+      ],
+      "max_tokens": 104500
+    },
+    "route.create-template.layout": {
+      "description": "Create Layout path through Template_Designer and shared SVG constraints.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/workflows/create-template.md",
+        "skills/ppt-master/workflows/create-template/create-layout.md",
+        "skills/ppt-master/references/template-designer.md",
+        "skills/ppt-master/references/shared-standards.md",
+        "skills/ppt-master/references/canvas-formats.md",
+        "skills/ppt-master/templates/README.md",
+        "skills/ppt-master/templates/layouts/README.md"
+      ],
+      "max_tokens": 104500
+    },
+    "route.enhance-native-pptx": {
+      "description": "Finished-PPTX native enhancement route.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/workflows/native-enhance-pptx.md"
+      ],
+      "max_tokens": 37500
+    },
+    "route.fill-native-pptx": {
+      "description": "Raw-PPTX native fill route.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/workflows/template-fill-pptx.md"
+      ],
+      "max_tokens": 40500
+    },
+    "route.generate.planning": {
+      "description": "Fixed Generate-PPTX planning context through Strategist output.",
+      "scope": "cumulative",
+      "include": [
+        "bootstrap.routing"
+      ],
+      "files": [
+        "skills/ppt-master/references/strategist.md",
+        "skills/ppt-master/templates/design_spec_reference.md",
+        "skills/ppt-master/templates/spec_lock_reference.md",
+        "skills/ppt-master/references/modes/_index.md",
+        "skills/ppt-master/references/visual-styles/_index.md",
+        "skills/ppt-master/scripts/docs/confirm_ui.md",
+        "skills/ppt-master/templates/icons/README.md",
+        "skills/ppt-master/templates/charts/charts_index.json",
+        {
+          "glob": "skills/ppt-master/references/visual-styles/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 1,
+          "load_event": "strategist",
+          "registry": "visual-styles"
+        }
+      ],
+      "max_tokens": 91500
+    },
+    "route.generate.planning-image": {
+      "description": "Generate-PPTX planning context when the image resource list is active.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning"
+      ],
+      "files": [
+        "skills/ppt-master/references/image-layout-patterns.md"
+      ],
+      "max_tokens": 97500
+    },
+    "route.generate.planning-ai": {
+      "description": "Generate-PPTX planning context when AI image direction is available.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning-image"
+      ],
+      "files": [
+        "skills/ppt-master/references/image-renderings/_index.md"
+      ],
+      "max_tokens": 99500
+    },
+    "route.generate.flat-no-image": {
+      "description": "Default fixed Generate-PPTX context with no image-acquisition role.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning",
+        "stage.generate.executor.flat"
+      ],
+      "files": [],
+      "max_tokens": 146500
+    },
+    "route.generate.flat-ai-two-types": {
+      "description": "Generate-PPTX context with AI images, one rendering, and two local types.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning-ai",
+        "stage.generate.executor.flat",
+        "stage.generate.image.ai-two-types"
+      ],
+      "files": [],
+      "max_tokens": 175500
+    },
+    "route.generate.flat-in-hand-image": {
+      "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning-image",
+        "stage.generate.executor.flat"
+      ],
+      "files": [],
+      "max_tokens": 152500
+    },
+    "route.generate.flat-web-image": {
+      "description": "Generate-PPTX context with web image acquisition.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning-image",
+        "stage.generate.executor.flat",
+        "stage.generate.image.web"
+      ],
+      "files": [],
+      "max_tokens": 159500
+    },
+    "route.enhance-native-pptx.audio": {
+      "description": "Enhance Native PPTX with the shared narration-audio stage.",
+      "scope": "cumulative",
+      "include": [
+        "route.enhance-native-pptx",
+        "stage.shared.generate-audio"
+      ],
+      "files": [],
+      "max_tokens": 40500
+    },
+    "route.generate.beautify-flat-no-image": {
+      "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.flat-no-image",
+        "profile.generate.beautify-pptx"
+      ],
+      "files": [],
+      "max_tokens": 153000
+    },
+    "route.generate.flat-no-image-chart": {
+      "description": "Default flat Generate-PPTX path with the chart verification stage.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.flat-no-image",
+        "stage.generate.chart-authoring",
+        "stage.generate.verify-charts"
+      ],
+      "files": [],
+      "max_tokens": 164500
+    },
+    "route.generate.brand-flat-no-image": {
+      "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning",
+        "stage.generate.executor.flat"
+      ],
+      "files": [
+        {
+          "glob": "skills/ppt-master/templates/brands/*/templates/design_spec.md",
+          "select": 1,
+          "load_event": "template-selection"
+        }
+      ],
+      "max_tokens": 147500
+    },
+    "route.generate.deck-structured-no-image": {
+      "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning",
+        "stage.generate.executor.structured"
+      ],
+      "files": [
+        {
+          "glob": "skills/ppt-master/templates/decks/*/templates/design_spec.md",
+          "select": 1,
+          "load_event": "template-selection"
+        }
+      ],
+      "max_tokens": 148000
+    },
+    "route.generate.layout-structured-no-image": {
+      "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning",
+        "stage.generate.executor.structured"
+      ],
+      "files": [
+        {
+          "glob": "skills/ppt-master/templates/layouts/*/templates/design_spec.md",
+          "select": 1,
+          "load_event": "template-selection"
+        }
+      ],
+      "max_tokens": 148000
+    },
+    "route.generate.topic-only-flat-no-image": {
+      "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
+      "scope": "cumulative",
+      "include": [
+        "stage.generate.topic-research",
+        "route.generate.flat-no-image"
+      ],
+      "files": [],
+      "max_tokens": 148000
+    },
+    "stage.generate.executor.flat": {
+      "description": "Incremental flat Executor rules with one locked mode and visual style.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/executor-base.md",
+        "skills/ppt-master/references/shared-standards.md",
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/semantic-svg.md",
+        {
+          "glob": "skills/ppt-master/references/modes/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 1,
+          "load_event": "executor",
+          "registry": "modes"
+        },
+        {
+          "glob": "skills/ppt-master/references/visual-styles/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 1,
+          "load_event": "executor",
+          "registry": "visual-styles",
+          "allow_repeat": true
+        }
+      ],
+      "max_tokens": 55500
+    },
+    "stage.generate.executor.structured": {
+      "description": "Structured Executor uses the same current mandatory references; structured interfaces remain inside shared-standards.",
+      "scope": "incremental",
+      "include": [
+        "stage.generate.executor.flat"
+      ],
+      "files": [],
+      "max_tokens": 55500
+    },
+    "stage.generate.image.ai-two-types": {
+      "description": "Incremental AI-image role with one preset rendering and two selected local types.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/image-base.md",
+        "skills/ppt-master/references/image-generator.md",
+        {
+          "glob": "skills/ppt-master/references/image-renderings/_index.md",
+          "select": 1,
+          "load_event": "image-generator",
+          "allow_repeat": true
+        },
+        "skills/ppt-master/references/image-type-templates/_index.md",
+        {
+          "glob": "skills/ppt-master/references/image-renderings/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 1,
+          "registry": "image-renderings"
+        },
+        {
+          "glob": "skills/ppt-master/references/image-type-templates/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 2,
+          "registry": "image-type-templates"
+        }
+      ],
+      "max_tokens": 22500
+    },
+    "stage.generate.image.web": {
+      "description": "Incremental web-image acquisition role.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/image-base.md",
+        "skills/ppt-master/references/image-searcher.md"
+      ],
+      "max_tokens": 7000
+    },
+    "stage.generate.resume-execute": {
+      "description": "Fresh-session resume plus the shared Executor set and resume-only image references.",
+      "scope": "fresh-session",
+      "include": [
+        "stage.generate.executor.flat"
+      ],
+      "files": [
+        "AGENTS.md",
+        "skills/ppt-master/SKILL.md",
+        "skills/ppt-master/workflows/stages/resume-execute.md",
+        "skills/ppt-master/references/artifact-ownership.md",
+        "skills/ppt-master/references/image-layout-spec.md",
+        "skills/ppt-master/references/svg-image-embedding.md"
+      ],
+      "max_tokens": 92500
+    },
+    "stage.generate.topic-research": {
+      "description": "Topic-only intake stage.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/topic-research.md"
+      ],
+      "max_tokens": 1800
+    },
+    "profile.generate.beautify-pptx": {
+      "description": "Strict 1:1 wording, order, and page-count generation profile.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/profiles/beautify-pptx.md"
+      ],
+      "max_tokens": 6800
+    },
+    "stage.generate.refine-spec": {
+      "description": "Explicit post-confirmation spec refinement runbook.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/refine-spec.md"
+      ],
+      "max_tokens": 1500
+    },
+    "stage.generate.verify-charts": {
+      "description": "Conditional chart-calibration gate.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/verify-charts.md"
+      ],
+      "max_tokens": 6200
+    },
+    "stage.generate.chart-authoring": {
+      "description": "Conditional visualization-library authoring guidance.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/templates/charts/README.md",
+        "skills/ppt-master/templates/charts/CHART_STYLE_GUIDE.md"
+      ],
+      "max_tokens": 12500
+    },
+    "stage.generate.visual-review": {
+      "description": "Explicit visual-review stage plus its role reference.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/visual-review.md",
+        "skills/ppt-master/references/visual-review.md"
+      ],
+      "max_tokens": 6600
+    },
+    "stage.generate.live-preview": {
+      "description": "Live preview and annotation stage.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/live-preview.md"
+      ],
+      "max_tokens": 2700
+    },
+    "stage.generate.customize-animations": {
+      "description": "Object-animation stage plus animation resolution rules.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/customize-animations.md",
+        "skills/ppt-master/references/animations.md",
+        "skills/ppt-master/scripts/docs/pptx-animations.md",
+        "skills/ppt-master/scripts/docs/pptx-transitions.md",
+        "skills/ppt-master/scripts/docs/svg-pipeline.md"
+      ],
+      "max_tokens": 18500
+    },
+    "stage.shared.generate-audio": {
+      "description": "Shared narration-audio stage.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/generate-audio.md"
+      ],
+      "max_tokens": 2800
+    },
+    "governance.failure-recovery": {
+      "description": "Global stop, retry, and resume policy.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/governance/failure-recovery.md"
+      ],
+      "max_tokens": 2000
+    },
+    "stage.shared.conversion-reference": {
+      "description": "Conditional source-conversion and import compatibility reference.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/scripts/docs/conversion.md"
+      ],
+      "max_tokens": 6200
+    },
+    "stage.shared.troubleshooting": {
+      "description": "Conditional troubleshooting reference for generation failures.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/scripts/docs/troubleshooting.md"
+      ],
+      "max_tokens": 800
+    },
+    "stage.create-template.authored-preset": {
+      "description": "Conditional native-preset authoring reference for Create Layout/Create Deck.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/native-shape-authoring.md"
+      ],
+      "max_tokens": 2600
+    }
+  },
+  "duplicates": {
+    "min_chars": 100,
+    "min_words": 20,
+    "shingle_words": 4,
+    "min_shared_shingles": 3,
+    "max_shingle_frequency": 24,
+    "near_similarity": 0.82,
+    "max_exact_results": 100,
+    "max_near_results": 100,
+    "accepted": [
+      {
+        "kind": "exact",
+        "fingerprint": "7c36a9231d14",
+        "paths": [
+          "skills/ppt-master/templates/decks/README.md",
+          "skills/ppt-master/templates/layouts/README.md"
+        ],
+        "reason": "Shared boilerplate between sibling template-kind docs; kept in lockstep on purpose."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "d886e9fcb8dc",
+        "paths": [
+          "skills/ppt-master/templates/brands/中国电信/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/中国电建/templates/design_spec.md"
+        ],
+        "reason": "Brand preset scaffolds share fixed section boilerplate by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "0faa93c4c11f",
+        "paths": [
+          "skills/ppt-master/templates/brands/中国电信/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/中国电建/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/中汽研/templates/design_spec.md"
+        ],
+        "reason": "Brand preset scaffolds share fixed section boilerplate by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "e7a8a8eeee32",
+        "paths": [
+          "skills/ppt-master/references/shared-standards.md",
+          "skills/ppt-master/references/strategist.md"
+        ],
+        "reason": "One-line pointer to the canvas-formats authority; a cross-reference, not a second definition."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "0d0f56615a1f",
+        "paths": [
+          "skills/ppt-master/references/ai-image-comparison/palette/_manifest.md",
+          "skills/ppt-master/references/ai-image-comparison/rendering/_manifest.md",
+          "skills/ppt-master/references/ai-image-comparison/type/_manifest.md"
+        ],
+        "reason": "Generated comparison-asset manifests share an identical header by construction."
+      }
+    ]
+  },
+  "authority_edges": [
+    {
+      "concern": "main-workflow",
+      "from": "AGENTS.md",
+      "to": "skills/ppt-master/SKILL.md"
+    },
+    {
+      "concern": "route-selection",
+      "from": "AGENTS.md",
+      "to": "skills/ppt-master/workflows/routing.md"
+    },
+    {
+      "concern": "failure-policy",
+      "from": "skills/ppt-master/SKILL.md",
+      "to": "skills/ppt-master/workflows/governance/failure-recovery.md"
+    },
+    {
+      "concern": "artifact-ownership",
+      "from": "skills/ppt-master/SKILL.md",
+      "to": "skills/ppt-master/references/artifact-ownership.md"
+    },
+    {
+      "concern": "svg-technical-contract",
+      "from": "skills/ppt-master/references/executor-base.md",
+      "to": "skills/ppt-master/references/shared-standards.md"
+    }
+  ],
+  "registries": [
+    {
+      "name": "image-layout-patterns",
+      "kind": "numbered_markdown",
+      "source": "skills/ppt-master/references/image-layout-patterns.md",
+      "entry_pattern": "^(?P<id>\\d+)\\.\\s+\\*\\*",
+      "reference_terms": [
+        "image-layout-patterns",
+        "image-text layout patterns"
+      ],
+      "claim_nouns": [
+        "technique",
+        "techniques",
+        "pattern",
+        "patterns",
+        "entry",
+        "entries"
+      ]
+    },
+    {
+      "name": "modes",
+      "kind": "directory",
+      "source": "skills/ppt-master/references/modes/_index.md",
+      "validate_index_links": true,
+      "glob": "skills/ppt-master/references/modes/*.md",
+      "exclude": [
+        "*/_index.md"
+      ],
+      "reference_terms": [
+        "modes/_index.md",
+        "modes — index"
+      ],
+      "claim_nouns": [
+        "mode",
+        "modes"
+      ]
+    },
+    {
+      "name": "visual-styles",
+      "kind": "directory",
+      "source": "skills/ppt-master/references/visual-styles/_index.md",
+      "validate_index_links": true,
+      "glob": "skills/ppt-master/references/visual-styles/*.md",
+      "exclude": [
+        "*/_index.md"
+      ],
+      "reference_terms": [
+        "visual-styles/_index.md",
+        "visual styles"
+      ],
+      "claim_nouns": [
+        "style",
+        "styles",
+        "visual style",
+        "visual styles"
+      ]
+    },
+    {
+      "name": "image-renderings",
+      "kind": "directory",
+      "source": "skills/ppt-master/references/image-renderings/_index.md",
+      "validate_index_links": true,
+      "glob": "skills/ppt-master/references/image-renderings/*.md",
+      "exclude": [
+        "*/_index.md"
+      ],
+      "reference_terms": [
+        "image-renderings/_index.md",
+        "renderings — index"
+      ],
+      "claim_nouns": [
+        "rendering",
+        "renderings"
+      ]
+    },
+    {
+      "name": "image-type-templates",
+      "kind": "directory",
+      "source": "skills/ppt-master/references/image-type-templates/_index.md",
+      "validate_index_links": true,
+      "glob": "skills/ppt-master/references/image-type-templates/*.md",
+      "exclude": [
+        "*/_index.md"
+      ],
+      "reference_terms": [
+        "image-type-templates/_index.md",
+        "type templates"
+      ],
+      "claim_nouns": [
+        "type",
+        "types"
+      ]
+    },
+    {
+      "name": "chart-templates",
+      "kind": "json_collection",
+      "source": "skills/ppt-master/templates/charts/charts_index.json",
+      "key": "charts",
+      "reference_terms": [
+        "charts_index.json",
+        "chart catalog",
+        "catalog read"
+      ],
+      "claim_nouns": [
+        "chart",
+        "charts",
+        "summary",
+        "summaries",
+        "template",
+        "templates",
+        "type",
+        "types"
+      ]
+    }
+  ],
+  "schema_grammars": [
+    {
+      "source": "skills/ppt-master/templates/spec_lock_reference.md",
+      "fields": [
+        "font_family",
+        "image_rendering",
+        "page_charts",
+        "page_layouts",
+        "page_pptx_layouts",
+        "page_rhythm",
+        "pptx_layouts",
+        "pptx_masters",
+        "stroke_width"
+      ],
+      "scan": [
+        "skills/ppt-master/SKILL.md",
+        "skills/ppt-master/references/*.md",
+        "skills/ppt-master/references/**/*.md",
+        "skills/ppt-master/workflows/*.md",
+        "skills/ppt-master/workflows/**/*.md",
+        "skills/ppt-master/templates/*.md"
+      ]
+    },
+    {
+      "source": "skills/ppt-master/scripts/docs/confirm_ui.md",
+      "fields": [
+        "image_ai_path"
+      ],
+      "scan": [
+        "skills/ppt-master/SKILL.md",
+        "skills/ppt-master/references/*.md",
+        "skills/ppt-master/references/**/*.md",
+        "skills/ppt-master/workflows/*.md",
+        "skills/ppt-master/workflows/**/*.md",
+        "skills/ppt-master/templates/*.md"
+      ]
+    }
+  ],
+  "coverage": {
+    "exempt": [
+      {
+        "glob": "skills/ppt-master/references/ai-image-comparison/README.md",
+        "reason": "Maintenance-only comparison-gallery overview; never loaded by generation roles."
+      },
+      {
+        "glob": "skills/ppt-master/references/ai-image-comparison/*/_manifest.md",
+        "reason": "Generated comparison-gallery manifests; never loaded by generation roles."
+      },
+      {
+        "glob": "skills/ppt-master/references/ai-image-comparison/*/_subject.md",
+        "reason": "Generated comparison-gallery subjects; never loaded by generation roles."
+      },
+      {
+        "glob": "skills/ppt-master/references/image-palettes/*.md",
+        "reason": "Legacy tombstone and archived presets; _index.md forbids loading them in current generation."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/README.md",
+        "reason": "Script inventory for maintainers; not loaded by generation roles."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/image.md",
+        "reason": "Maintainer command reference; image roles use their owning role documents instead."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/project.md",
+        "reason": "Maintainer command reference; route steps carry the required project commands."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/prompt_audit.md",
+        "reason": "Maintainer-only documentation for this audit tool."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/update_spec.md",
+        "reason": "Maintainer command reference for an optional helper script."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/pptx_shapes/data/NOTICE.md",
+        "reason": "License notice; never loaded as prompt context."
+      }
+    ]
+  }
+}

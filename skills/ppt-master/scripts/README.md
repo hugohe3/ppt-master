@@ -12,6 +12,7 @@ This directory contains user-facing scripts for conversion, project setup, direc
 - `scripts/template_import/`: internal PPTX reference-preparation helpers used by `pptx_template_import.py`
 - `scripts/svg_finalize/`: internal post-processing helpers used by `finalize_svg.py`
 - `scripts/docs/`: topic-focused script documentation
+- `scripts/prompt_audit.py` + `scripts/prompt_audit_manifest.json`: maintainer-only prompt budget/governance lint (see [`docs/prompt_audit.md`](docs/prompt_audit.md)); the manifest is audit-only and never loaded as prompt context
 - `scripts/assets/`: static assets consumed by scripts
 
 ## Quick Start
