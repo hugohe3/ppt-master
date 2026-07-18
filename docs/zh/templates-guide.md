@@ -4,7 +4,7 @@
 
 ---
 
-PPT Master 模板是一种可复用工作区，明确分为三类：**Brand** 只拥有身份系统，**Layout** 只拥有可复用页面结构，**Deck** 同时拥有两者及 deck 专属概览信息。Layout 与 Deck 工作区包含声明 Master / Layout / slot 合同的完整 SVG 原型；Brand 工作区则有意不包含 SVG roster。每个工作区的 `design_spec.md` 与配套素材共同声明该 kind 实际提供什么。
+PPT Master 模板是一种可复用工作区，明确分为三类：**Brand** 只拥有身份系统，**Layout** 只拥有品牌中立的可复用页面结构，**Deck** 拥有一类可重复演示的应用契约及一体化身份与结构。Layout 与 Deck 工作区包含声明 Master / Layout / slot 合同的完整 SVG 原型；Brand 工作区则有意不包含 SVG roster。每个工作区的 `design_spec.md` 与配套素材共同声明该 kind 实际提供什么。
 
 本文回答三个问题：
 
@@ -29,8 +29,10 @@ PPT Master 模板是一种可复用工作区，明确分为三类：**Brand** �
 | Kind | 复用什么 | 原生 PowerPoint 结果 |
 |---|---|---|
 | **Brand** | 颜色、字体、Logo、语调、图标风格 | 只提供身份约束。生成页面保持 Slide 本地，文件只有干净的项目 Master 与 Blank Layout 脚手架。 |
-| **Layout** | 页面语法、Master/Layout 身份、槽位与版式 roster | 结构化 deck，包含可复用原生 Master、具名 Layout 与 placeholder；身份系统另行选择。 |
-| **Deck** | 品牌身份与页面结构一起复用 | 结构化 deck，同时带完整身份系统和可复用原生 Master、具名 Layout 与 placeholder。 |
+| **Layout** | 品牌中立的页面语法、Master/Layout 身份、语义文字角色、槽位与版式 roster | 结构化 deck，包含可复用原生 Master、具名 Layout 与 placeholder；身份、阅读模式字号和沟通应用另行解析。 |
+| **Deck** | 一类可重复演示：应用规则、身份、页面结构与起始内容政策 | 结构化 deck，同时带一体化身份、可复用原生结构和面向场景的起始规则。 |
+
+Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象，不是新的工作区 kind。Brand 与 Layout 的规则会被编译进这些对象。使用 `layout` 时，语义文字角色来自 Layout，最终字体和字号体系由身份与阅读模式共同解析；使用 `mirror` 时则保留来源的字面格式。最终 Master 可以同时包含结构几何和品牌视觉，但来源合同仍保持分离。
 
 最容易避免误用的两条规则：
 
@@ -99,15 +101,15 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 
 - [`brands_index.json`](../../skills/ppt-master/templates/brands/brands_index.json) — 仅身份工作区：color / typography / logo / voice / icon style，不含 SVG 页面 roster
 - [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json) — 仅结构工作区：canvas / 页面语法 / page types / SVG roster，身份系统下游再选
-- [`decks_index.json`](../../skills/ppt-master/templates/decks/decks_index.json) — 完整身份 + 结构工作区，包含 deck 专属概览信息
+- [`decks_index.json`](../../skills/ppt-master/templates/decks/decks_index.json) — 可重复演示应用，包含一体化身份、结构与内容复用规则
 
 直接问“有哪些模板可以用？”即可得到带工作区路径的可读清单。索引是当前安装内容的真值，三类 README 负责定义合同。完整数据模型与三类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
 ### 自由设计 vs 模板
 
-自由设计不是“没有结构”或“没有风格”——Strategist 仍会为这份 deck 规划叙事、层级与视觉系统，但生成页面使用 `pptx_structure.mode: flat`，所有可见对象都保留在 Slide 本地。仅使用 Brand 工作区时同样保持 `flat`，只是由 Brand 提供身份约束。Layout 与 Deck 工作区使用 `pptx_structure.mode: structured`，因为它们提供显式可复用的 Master / Layout / slot 合同。
+自由设计不是“没有结构”或“没有风格”——Strategist 仍会为这份 deck 规划叙事、层级与视觉系统，但生成页面使用 `pptx_structure.mode: flat`，所有可见对象都保留在 Slide 本地。仅使用 Brand 工作区时同样保持 `flat`，只是由 Brand 提供身份约束。Layout 与 Deck 工作区提供可复用 Master / Layout / slot 合同：确认使用 `mirror` 或 `layout` 时通过 `pptx_structure.mode: structured` 消费；确认使用 `style` 时则有意舍弃原生结构并生成 `flat`。
 
-> 经验：需要锁定身份系统时用 Brand，需要复用页面结构时用 Layout，两者都要一起复用时用 Deck；希望版式从内容出发重新生长时走自由设计。
+> 经验：需要锁定身份系统时用 Brand；需要复用品牌中立结构、但让用途保持开放时用 Layout；需要把品牌化结构或可重复沟通场景作为一份契约复用时用 Deck；希望版式从当前内容出发重新生长时走自由设计。
 
 ### 风格不是模板
 
@@ -147,7 +149,7 @@ Strategist 会把方向拆成两个彼此独立的选择：
 
 接下来工作流会**强制**先和你确认一份模板简报（不允许跳过）。
 
-入口名称始终保持 **Create Template**。它只分派一个子工作流：仅复用身份走 Create Brand，仅复用品牌中立的结构走 Create Layout，身份与结构一起复用走 Create Deck（两者都需要时默认选它）。子工作流一旦选定，不会在简报里再次选 kind。
+入口名称始终保持 **Create Template**。它只分派一个子工作流：仅复用身份走 Create Brand；复用品牌中立结构、且沟通应用保持开放时走 Create Layout；复用品牌化结构或可重复演示应用时走 Create Deck。来源是一份完整 PPTX 并不会自动决定 kind，工作流只按真正稳定、值得重复使用的规则分类。子工作流一旦选定，不会在简报里再次选 kind。
 
 ### 第一步：准备参考材料包或简报
 
@@ -175,7 +177,7 @@ Strategist 会把方向拆成两个彼此独立的选择：
 | **调性概要** | 一句话，如"现代克制、数据驱动" |
 | **主题模式** | 仅 Create Layout/Create Deck：浅色 / 深色 / 渐变…… |
 | **画布格式** | 仅 Create Layout/Create Deck；默认 `ppt169`（16:9），其他格式需提前指定 |
-| **复刻模式** | 仅 Create Layout/Create Deck：`standard`（默认精简、由确认简报驱动；可包含少量明确要求的差异化变体）/ `fidelity`（根据来源证据覆盖更广的有用语义家族）/ `mirror`（每张源页一个物化原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 只保留来源包内已经存在且验证通过的事实。 |
+| **复刻模式** | 仅 Create Layout/Create Deck：`standard`（默认精简、由确认简报驱动；可包含少量明确要求的差异化变体）/ `fidelity`（根据来源证据覆盖更广的有用语义家族）/ `mirror`（每张源页一个物化原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 只保留来源包内已经存在且验证通过的事实。只有来源合同本身已经品牌中立且应用中立时，Layout 才能使用 mirror。 |
 | **原生结构事实** | 仅 Create Layout/Create Deck：简报会列出源 Master/Layout 数量、父子关系、placeholder 身份和多母版情况。`standard` / `fidelity` 只把它们当参考；mirror 把受支持事实一对一映射进当前 `structured` 合同。 |
 | **保真级别** | 仅 Create Layout/Create Deck；`standard` / `fidelity` 有源时必填，选择 `literal` 或 `adapted`。**`mirror` 模式不询问**——它保留受支持的来源视觉。 |
 | **关键词** | 3–5 个标签，用于索引检索 |
@@ -201,6 +203,8 @@ Strategist 会把方向拆成两个彼此独立的选择：
 | 来源要求 | 无 | PPTX 或 SVG 视觉参考 | PPTX，或带完整显式结构合同的 SVG |
 | 装饰复杂度 | 通常较简洁 | 需要保留精灵图裁剪等结构 | 保留原几何，并补齐显式层级归属 |
 
+`mirror` 不能一边保留身份或应用规则，一边又产出品牌中立、应用中立的 Layout。若要移除这些规则，应选 `standard` / `fidelity` 重新创作 Layout；若要原样保留，应创建 Deck mirror。
+
 **关于精灵图**：PPTX 导出的素材常常是**一张大图 + 多页通过 viewBox 裁剪不同区域**。`fidelity` 和 `mirror` 模式下必须保留这层嵌套 `<svg viewBox=...>` 包装，不能扁平化为单张 `<image>`——否则裁剪信息丢失，画面会错位。工作流会自动校验这一点。
 
 **关于 PowerPoint 原生形状**：完整导入 SVG 作为原生载荷后备留在临时分析工作区且保持不可变；模板创建使用轻量、可编辑的 `authoring-svg/` IR 及其 source-ref/hash manifest。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板 SVG，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已支持的载荷；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback，最终模板不包含 IR 专用 ref。
@@ -219,7 +223,7 @@ uvx ppt-master mirror-template-materialize \
 
 **Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
-**`mirror` 模板怎么消费**：Strategist 为每个项目页选择一张 mirror 参考，Executor 复制完整 SVG 并原位修改可见文字，同时保留装饰、精灵图裁剪、几何坐标和全部 `data-pptx-*` 结构声明。
+**按 mirror 创建的工作区怎么消费**：从来源到工作区的 `replication_mode: mirror` 是能力，不是项目选择。开放式沟通契约确认后，Stage 2 先把 Deck 保存的应用契约与当前受众、结果和内容角色对照；只在“重复制作已知固定成果、且新内容适配现有页面角色与文字拓扑”时推荐 `mirror`。结构兼容、但内容需要重排时用 `layout`；只需身份语言或论证必须换结构时用 `style`。确认 `mirror` 后，Strategist 为每个项目页选择一张原型，Executor 复制完整 SVG，只修改允许变更的可见文字，同时保留装饰、精灵图裁剪、几何坐标和规范化结构声明；这仍不要求沿用来源页数或页序。Mirror 保留受支持的画面外观，不承诺保留来源 PPTX 的分组编辑层级。
 
 ### 第四步：验证、预览导出、注册与发现
 

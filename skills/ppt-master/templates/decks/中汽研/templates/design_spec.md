@@ -2,7 +2,7 @@
 deck_id: 中汽研
 kind: deck
 category: brand
-summary: 中汽研认证展示、技术交流与业务来访场景的深蓝专业模板。
+summary: 中汽研认证展示、评测汇报与技术交流，用于建立可信理解并推进评审或合作；采用专业的深蓝工程视觉。
 keywords: [中汽研, 认证, 评测, 技术交流]
 primary_color: "#004098"
 canvas_format: ppt169
@@ -21,7 +21,14 @@ page_count: 5
 
 ## I. Template Overview
 
-- 适用于产品认证展示、评测汇报、技术推广和业务来访。
+| Application contract | Definition |
+| --- | --- |
+| Recurring presentation family | 产品认证展示、评测汇报、技术推广和业务来访 |
+| Intended audiences and outcomes | 面向客户、技术评审者、合作伙伴与来访团队；帮助受众理解认证或评测能力、信任证据，并推进评审、交流或合作下一步 |
+| Delivery and reading assumptions | 以现场讲解和技术交流为主，同时允许会后独立阅读；页面需保留关键结论、证据标签与必要上下文 |
+| Stable narrative/page roles | 必需封面；可选目录与章节页；正文页可重复；正式交流可使用结束页。具体论证顺序由当前项目的沟通契约决定 |
+| Content reuse boundary | Logo、机构英文名与固定结构图形可保留；项目标题、目录、章节名、正文、数据、案例和联系信息必须替换；原型示例不得作为事实复用 |
+
 - 视觉以中汽研深蓝、白底内容页、方形章节编号和简洁网格为识别核心，强调专业、可信和工程秩序。
 - 结构上分为两个可复用 Master 家族：CATARC Dark 服务封面、章节与收尾，CATARC Light 服务目录与正文；它们按深浅视觉体系分工，不是按单个 Layout 拆分出的重复 Master。
 
@@ -55,13 +62,13 @@ page_count: 5
 
 ## V. Page Roster
 
-| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots |
-| --- | --- | --- | --- | --- | --- |
-| `01_cover.svg` | CATARC Dark | cover | Cover | 深蓝背景、居中大型 Logo 与标题簇 | 标题、副标题、单位、英文单位 |
-| `02_toc.svg` | CATARC Light | agenda | Agenda | 数字双竖线目录、右侧数据面板 | 页面标题、五个目录项、数据对象、页码 |
-| `03_chapter.svg` | CATARC Dark | section | Section Header | 深蓝章节页、居中章节号和标题 | 章节号、章节标题、章节副标题 |
-| `04_content.svg` | CATARC Light | content | Title and Content | 方形章节号页眉与开放内容面板 | 章节号、页面标题、内容对象、页码 |
-| `05_ending.svg` | CATARC Dark | closing | Closing | 深蓝网格背景、居中 Logo 与结束语 | 结束标题、英文副标题、联系信息、页脚 |
+| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots | Content policy |
+| --- | --- | --- | --- | --- | --- | --- |
+| `01_cover.svg` | CATARC Dark | cover | Cover | 深蓝背景、居中大型 Logo 与标题簇 | 标题、副标题、单位、英文单位 | 必需起始页；机构标识固定，演示标题信息全部替换 |
+| `02_toc.svg` | CATARC Light | agenda | Agenda | 数字双竖线目录、右侧数据面板 | 页面标题、五个目录项、数据对象、页码 | 可选；目录与数据对象按当前叙事生成，不保留原型示例 |
+| `03_chapter.svg` | CATARC Dark | section | Section Header | 深蓝章节页、居中章节号和标题 | 章节号、章节标题、章节副标题 | 可选且可重复；章节信息全部替换，机构视觉固定 |
+| `04_content.svg` | CATARC Light | content | Title and Content | 方形章节号页眉与开放内容面板 | 章节号、页面标题、内容对象、页码 | 可重复；承载当前项目的事实、证据、数据、案例或行动，所有内容均替换 |
+| `05_ending.svg` | CATARC Dark | closing | Closing | 深蓝网格背景、居中 Logo 与结束语 | 结束标题、英文副标题、联系信息、页脚 | 可选收束页；机构视觉固定，结束语与联系信息按项目替换 |
 
 ## VI. Assets
 

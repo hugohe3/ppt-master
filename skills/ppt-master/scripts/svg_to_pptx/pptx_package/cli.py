@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-import sys
+import argparse
+import hashlib
 import json
 import math
 import re
 import shutil
-import argparse
+import sys
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -86,6 +88,305 @@ _LEGACY_PPTX_STRUCTURE_MODES = frozenset({
     'template',
 })
 _RELEASE_PPTX_STRUCTURE_MODES = frozenset({'flat', 'structured'})
+_CSS_GENERIC_FONT_FAMILIES = frozenset({
+    'cursive',
+    'emoji',
+    'fangsong',
+    'fantasy',
+    'math',
+    'monospace',
+    'sans-serif',
+    'serif',
+    'system-ui',
+    'ui-monospace',
+    'ui-rounded',
+    'ui-sans-serif',
+    'ui-serif',
+})
+
+
+class PptxPostflightValidationError(RuntimeError):
+    """Reject a generated PPTX that fails package postflight validation."""
+
+
+def _font_stack_is_generic_only(stack: str) -> bool:
+    """Return whether a CSS font stack contains no concrete family name."""
+    families = [
+        family.strip().strip('"\'').strip().lower()
+        for family in stack.split(',')
+        if family.strip().strip('"\'').strip()
+    ]
+    return bool(families) and all(
+        family in _CSS_GENERIC_FONT_FAMILIES
+        for family in families
+    )
+
+
+def _package_part_counts(pptx_path: Path) -> dict[str, object]:
+    """Count public and structural OOXML parts in a completed PPTX package."""
+    with zipfile.ZipFile(pptx_path) as archive:
+        bad_member = archive.testzip()
+        names = archive.namelist()
+
+    def count(pattern: str) -> int:
+        matcher = re.compile(pattern)
+        return sum(bool(matcher.fullmatch(name)) for name in names)
+
+    return {
+        'zip_integrity': 'passed' if bad_member is None else 'failed',
+        'corrupt_member': bad_member,
+        'slides': count(r'ppt/slides/slide\d+\.xml'),
+        'notes': count(r'ppt/notesSlides/notesSlide\d+\.xml'),
+        'masters': count(r'ppt/slideMasters/slideMaster\d+\.xml'),
+        'layouts': count(r'ppt/slideLayouts/slideLayout\d+\.xml'),
+    }
+
+
+def _source_resource_audit(svg_files: list[Path]) -> dict[str, object]:
+    """Collect unresolved tokens and portability-oriented source inventories."""
+    placeholder_re = re.compile(r'\{\{[^{}]+\}\}')
+    placeholders: list[dict[str, str]] = []
+    font_stacks: set[str] = set()
+    image_counts = {
+        'data_uri': 0,
+        'local': 0,
+        'external': 0,
+    }
+    external_images: list[dict[str, str]] = []
+    for svg_path in svg_files:
+        try:
+            content = svg_path.read_text(encoding='utf-8')
+            root = ET.fromstring(content)
+        except (OSError, ET.ParseError):
+            continue
+        for token in sorted(set(placeholder_re.findall(content))):
+            placeholders.append({'file': svg_path.name, 'token': token})
+        for element in root.iter():
+            font_family = element.get('font-family')
+            if font_family:
+                font_stacks.add(font_family.strip())
+            style = element.get('style') or ''
+            for declaration in style.split(';'):
+                if ':' not in declaration:
+                    continue
+                name, value = declaration.split(':', 1)
+                if name.strip().lower() == 'font-family' and value.strip():
+                    font_stacks.add(value.strip())
+            if element.tag.rsplit('}', 1)[-1] != 'image':
+                continue
+            href = (
+                element.get('href')
+                or element.get('{http://www.w3.org/1999/xlink}href')
+                or ''
+            ).strip()
+            if href.startswith('data:'):
+                image_counts['data_uri'] += 1
+            elif re.match(r'^[a-z][a-z0-9+.-]*://', href, re.IGNORECASE):
+                image_counts['external'] += 1
+                external_images.append({
+                    'file': svg_path.name,
+                    'href': href,
+                })
+            elif href:
+                image_counts['local'] += 1
+    generic_only_font_stacks = sorted({
+        stack
+        for stack in font_stacks
+        if _font_stack_is_generic_only(stack)
+    })
+    return {
+        'unresolved_template_tokens': placeholders,
+        'fonts': {
+            'stacks': sorted(font_stacks),
+            'generic_only_stacks': generic_only_font_stacks,
+        },
+        'images': {
+            **image_counts,
+            'external_references': external_images,
+        },
+    }
+
+
+def _svg_source_fingerprint(svg_files: list[Path]) -> dict[str, object]:
+    """Return one deterministic digest for the exact SVG export inputs."""
+    files: list[dict[str, object]] = []
+    aggregate = hashlib.sha256()
+    for path in sorted(svg_files, key=lambda item: item.name):
+        file_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+        files.append({'file': path.name, 'sha256': file_sha256})
+        aggregate.update(path.name.encode('utf-8'))
+        aggregate.update(b'\0')
+        aggregate.update(file_sha256.encode('ascii'))
+        aggregate.update(b'\n')
+    return {
+        'algorithm': 'sha256',
+        'digest': aggregate.hexdigest(),
+        'file_count': len(files),
+        'files': files,
+    }
+
+
+def _quality_report_context(
+    project_path: Path,
+    source_fingerprint: dict[str, object],
+) -> dict[str, object]:
+    """Load the final SVG quality report when the preceding gate wrote one."""
+    quality_path = project_path / 'exports' / 'svg_quality_report.json'
+    try:
+        quality = json.loads(quality_path.read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        return {'status': 'not-provided', 'path': str(quality_path)}
+    except (OSError, json.JSONDecodeError) as exc:
+        return {
+            'status': 'unreadable',
+            'path': str(quality_path),
+            'error': str(exc),
+        }
+    schema = quality.get('schema')
+    if schema != 'ppt-master.svg-quality-report.v1':
+        return {
+            'status': 'unsupported-schema',
+            'path': str(quality_path),
+            'schema': schema,
+        }
+    categories = quality.get('categories')
+    quality_fingerprint = quality.get('source_fingerprint')
+    if not isinstance(quality_fingerprint, dict):
+        source_match = 'unavailable'
+    elif (
+        quality_fingerprint.get('algorithm') == 'sha256'
+        and quality_fingerprint.get('digest') == source_fingerprint.get('digest')
+        and quality_fingerprint.get('file_count')
+        == source_fingerprint.get('file_count')
+    ):
+        source_match = 'passed'
+    else:
+        source_match = 'mismatch'
+    return {
+        'status': 'loaded',
+        'path': str(quality_path),
+        'schema': schema,
+        'stage': quality.get('stage'),
+        'source_match': source_match,
+        'source_fingerprint': quality_fingerprint,
+        'summary': quality.get('summary'),
+        'categories': categories if isinstance(categories, dict) else {},
+    }
+
+
+def _write_postflight_report(
+    *,
+    output_path: Path,
+    project_path: Path,
+    svg_files: list[Path],
+    layout_definition_files: list[Path],
+    pptx_structure: str,
+    backup_path: Path | None,
+    conversion_trace_path: Path | None,
+) -> Path:
+    """Write the unified package/resource audit beside a successful PPTX."""
+    try:
+        package = _package_part_counts(output_path)
+    except (OSError, zipfile.BadZipFile) as exc:
+        raise PptxPostflightValidationError(
+            f"generated PPTX is not a readable ZIP package: {exc}"
+        ) from exc
+    if package['zip_integrity'] != 'passed':
+        raise PptxPostflightValidationError(
+            f"PPTX ZIP integrity failed at {package['corrupt_member']}"
+        )
+    if package['slides'] != len(svg_files):
+        raise PptxPostflightValidationError(
+            "Published Slide count does not match authored SVG count: "
+            f"{package['slides']} != {len(svg_files)}"
+        )
+    source_audit = _source_resource_audit(svg_files)
+    source_fingerprint = _svg_source_fingerprint(svg_files)
+    quality = _quality_report_context(project_path, source_fingerprint)
+    quality_categories = quality.get('categories')
+    blocking_count = None
+    if isinstance(quality_categories, dict):
+        blocking = quality_categories.get('blocking')
+        if isinstance(blocking, dict):
+            blocking_count = blocking.get('count')
+    if quality.get('status') != 'loaded':
+        quality_gate = str(quality.get('status') or 'not-provided')
+    elif quality.get('stage') != 'final':
+        quality_gate = 'non-final'
+    elif not isinstance(blocking_count, int):
+        quality_gate = 'unverified'
+    elif blocking_count > 0:
+        quality_gate = 'failed'
+    elif quality.get('source_match') == 'mismatch':
+        quality_gate = 'stale'
+    elif quality.get('source_match') != 'passed':
+        quality_gate = 'unverified'
+    else:
+        quality_gate = 'passed'
+    unresolved_tokens = source_audit['unresolved_template_tokens']
+    external_image_count = source_audit['images']['external']
+    generic_only_font_stacks = source_audit['fonts']['generic_only_stacks']
+    if quality_gate == 'failed':
+        report_status = 'failed'
+    elif (
+        not unresolved_tokens
+        and not external_image_count
+        and not generic_only_font_stacks
+        and quality_gate == 'passed'
+    ):
+        report_status = 'passed'
+    else:
+        report_status = 'passed-with-warnings'
+    report_path = output_path.with_suffix('.report.json')
+    report = {
+        'schema': 'ppt-master.pptx-postflight-report.v1',
+        'status': report_status,
+        'output': {
+            'path': str(output_path.resolve()),
+            'bytes': output_path.stat().st_size,
+        },
+        'source': {
+            'svg_slide_count': len(svg_files),
+            'layout_definition_count': len(layout_definition_files),
+            'fingerprint': source_fingerprint,
+        },
+        'package': package,
+        'checks': {
+            'zip_integrity': 'passed',
+            'slide_count': 'passed',
+            'internal_relationships': 'enforced-at-build',
+            'structured_package': (
+                'enforced-at-build'
+                if pptx_structure == 'structured'
+                else 'not-applicable'
+            ),
+            'transitions': 'enforced-at-build',
+            'animations': 'enforced-at-build',
+            'quality_gate': quality_gate,
+            'template_tokens': (
+                'passed' if not unresolved_tokens else 'warning'
+            ),
+            'external_images': (
+                'passed' if not external_image_count else 'warning'
+            ),
+            'font_portability': (
+                'passed' if not generic_only_font_stacks else 'warning'
+            ),
+        },
+        'quality': quality,
+        'resources': source_audit,
+        'backup_path': str(backup_path.resolve()) if backup_path else None,
+        'conversion_trace_path': (
+            str(conversion_trace_path.resolve())
+            if conversion_trace_path and conversion_trace_path.is_file()
+            else None
+        ),
+    }
+    report_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8',
+    )
+    return report_path
 
 
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
@@ -121,15 +422,17 @@ def _print_structure_contract_error(mode: str | None) -> None:
     label = repr(mode) if mode else 'missing (legacy implicit baseline)'
     print(
         "Error: release SVG export requires an explicit spec_lock.md "
-        "pptx_structure.mode: flat (free design / brand-only) or structured "
-        "(deck/layout template); found " + label + ".",
+        "pptx_structure.mode: flat (style reference / free design / brand-only) "
+        "or structured (mirror/layout reuse); found " + label + ".",
         file=sys.stderr,
     )
     print(
-        "  New free-design and brand-only projects use mode: flat. Create a "
-        "new template workspace through skills/ppt-master/workflows/"
-        "create-template.md, then generate new structured SVG pages before "
-        "export. Existing PPTX/SVG files are not upgraded in place.",
+        "  Style-reference, free-design, and brand-only projects must write a "
+        "new mode: flat lock and regenerate project-canonical flat SVG pages. "
+        "Mirror/layout reuse must first create a current template workspace "
+        "through skills/ppt-master/workflows/create-template.md, then generate "
+        "new structured SVG pages. Existing PPTX/SVG files are not upgraded "
+        "in place.",
         file=sys.stderr,
     )
 
@@ -356,9 +659,10 @@ Recorded narration:
         default=None,
         help=(
             'PPTX structure strategy for native export. Omitting this flag reads '
-            'spec_lock.md: flat is the free-design/brand-only release mode and '
+            'spec_lock.md: flat is the style-reference/free-design/brand-only '
+            'release mode and '
             'builds one clean project-owned Master plus Blank Layout while keeping '
-            'all SVG objects slide-local; structured is the deck/layout-template '
+            'all SVG objects slide-local; structured is the mirror/layout reuse '
             'mode and requires complete explicit metadata. baseline, template, '
             'preserve, and generated are accepted only to report a migration error.'
         ),
@@ -954,15 +1258,16 @@ Recorded narration:
         print(f"  Output file: {native_path}")
         print()
 
+    conversion_trace_path = (
+        native_path.with_name(native_path.name + '.trace.json')
+        if args.conversion_trace else None
+    )
     try:
         success = create_pptx_with_native_svg(
             output_path=native_path,
             use_native_shapes=True,
             svg_files=native_files,
-            conversion_trace_path=(
-                native_path.with_name(native_path.name + '.trace.json')
-                if args.conversion_trace else None
-            ),
+            conversion_trace_path=conversion_trace_path,
             **shared_kwargs,
         )
     except (TemplateStructureError, ValueError) as exc:
@@ -972,6 +1277,7 @@ Recorded narration:
     # Archive svg_output/ once per default-flow export. This preserves the
     # authored SVG sources under backup/<ts>/svg_output/ for inspection and
     # deterministic re-export.
+    backup_path: Path | None = None
     if success and backup_dir is not None:
         svg_output_src = project_path / "svg_output"
         if svg_output_src.is_dir():
@@ -983,6 +1289,7 @@ Recorded narration:
                 if verbose:
                     print(f"  [warn] svg_output backup skipped: {exc}")
             else:
+                backup_path = svg_output_dst
                 if verbose:
                     print(f"  svg_output backup: {svg_output_dst}")
                 payload_store_src = project_path / PAYLOAD_STORE_RELATIVE_PATH
@@ -998,6 +1305,39 @@ Recorded narration:
                             print(f"  [warn] native payload backup skipped: {exc}")
         elif verbose:
             print(f"  [info] svg_output/ not found, backup skipped")
+
+    if success:
+        try:
+            report_path = _write_postflight_report(
+                output_path=native_path,
+                project_path=project_path,
+                svg_files=native_files,
+                layout_definition_files=layout_definition_files,
+                pptx_structure=pptx_structure,
+                backup_path=backup_path,
+                conversion_trace_path=conversion_trace_path,
+            )
+        except PptxPostflightValidationError as exc:
+            print(
+                "Error: generated PPTX failed postflight validation and must "
+                f"not be used: {exc}",
+                file=sys.stderr,
+            )
+            print(
+                f"  Invalid output remains at: {native_path}",
+                file=sys.stderr,
+            )
+            return 1
+        except OSError as exc:
+            print(
+                "Error: PPTX generation succeeded, but its postflight report "
+                f"could not be written: {exc}",
+                file=sys.stderr,
+            )
+            print(f"  PPTX output remains at: {native_path}", file=sys.stderr)
+            return 1
+        if verbose:
+            print(f"  Postflight report: {report_path}")
 
     return 0 if success else 1
 

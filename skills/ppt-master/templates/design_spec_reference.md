@@ -2,7 +2,7 @@
 
 > Human-readable design narrative — rationale, audience, style, color choices, content outline. Read once by downstream roles for context.
 >
-> Machine-readable execution contract: `spec_lock.md` (color / typography / icon / image short form). Executor re-reads `spec_lock.md` before every SVG page to resist context-compression drift. Keep both in sync; on divergence, `spec_lock.md` wins.
+> Machine-readable communication + execution contract: `spec_lock.md` (compact communication trace plus color / typography / icon / image / structure locks). Executor re-reads it before every SVG page to resist purpose and design drift. Keep both in sync; on divergence, `spec_lock.md` wins.
 
 ## I. Project Information
 
@@ -11,12 +11,17 @@
 | **Project Name** | {project_name} |
 | **Canvas Format** | {canvas_info['name']} ({canvas_info['dimensions']}) |
 | **Page Count** | [Filled by Strategist] |
-| **Design Style** | {design_style} |
 | **Target Audience** | [Filled by Strategist] |
-| **Use Case** | [Filled by Strategist] |
-| **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at c; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
+| **Communication Intent** | [Open prose: what the presentation must accomplish; preserve multiple purposes plus priority / sequence when present. Common purpose names are prompts, not enum values.] |
+| **Desired Audience Outcome** | [The observable success condition: what the audience will know, understand, believe, decide, or do.] |
+| **Core Message / Ask / Action** | [The claim(s), decision request(s), or action(s) that must land; preserve their relationship when several coexist.] |
+| **Delivery Context** | [Presenter-led / reader-led / hybrid / recorded; occasion, time constraint, and interaction context.] |
+| **Artifact Afterlife** | [Review / approval / audit / archive / hand-off / reuse / none planned; state what the file must support after the event.] |
+| **Reading Mode** | [`text` read-close / `balanced` business / `presentation`; Confirm UI compatibility key: `delivery_purpose`, execution-lock key: `consumption_mode`. Defines how meaning is divided among the page, visuals, presenter, and notes; therefore drives page grammar, granularity, density / rhythm, page-count recommendation, and note burden. The body baseline is a downstream typography default, not the definition shown to the user. See strategist.md §6.1.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
-| **Template Adherence** | [`adaptive` / `strict` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. Also written under `spec_lock.md pptx_structure`.] |
+| **Design Style** | {design_style} |
+| **Template Reuse Scope** | [`mirror` / `layout` / `style` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. `mirror` requires a mirror-capable workspace; `style` uses the flat route.] |
+| **Template Adherence** | [`adaptive` / `strict` — include only when Template Reuse Scope is `mirror` or `layout`; omit for `style`. Also written under `spec_lock.md pptx_structure`.] |
 | **Created Date** | {date_str} |
 
 ---
@@ -67,10 +72,8 @@
 
 - **Image Rendering**: [one of the 20 names in `references/image-renderings/_index.md` (e.g. `vector-illustration`), or `custom`]
 - **Image Rendering Behavior**: [required when Rendering is `custom`; one-paragraph prose per `image-renderings/_index.md §1.5`]
-- **Image Palette**: [one of the 14 names in `references/image-palettes/_index.md` (e.g. `cool-corporate`), or `custom`]
-- **Image Palette Behavior**: [required when Palette is `custom`; one-paragraph prose per `image-palettes/_index.md §2`]
 
-> Strategist: lock these once per deck in h.5; every AI image inherits them. Cross-check the rendering × palette compatibility matrix in `image-palettes/_index.md` — avoid `✗` combinations (matrix only covers presets; when either dimension is `custom`, Strategist owns the compatibility judgment). Leave the section out entirely if §VIII has no `ai` rows. Omit the `Behavior` rows whenever the corresponding dimension is a preset name.
+> Strategist: lock rendering once per deck in h.5; every AI image inherits it. Image color is not independently confirmed: Image_Generator reads the ordinary §III Color Scheme / `spec_lock.md colors` roles directly. Leave this section out if §VIII has no `ai` rows; omit the Behavior row for a preset rendering.
 
 ### Gradient Scheme (if needed, using SVG syntax)
 
@@ -100,7 +103,7 @@
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
-> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the body baseline in **px** (the system's only unit, every canvas), in `confirm_ui/recommendations.json`; the confirmed `result.json` carries px directly — no conversion. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks), in `confirm_ui/recommendations.json`. The Stage-2 reading mode supplies one shared initial `body_size` baseline in **px** (the system's only unit, every canvas); switching font / direction cards preserves the current sizing state. The confirmed `result.json` carries px directly — no conversion. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 Two views on the same font decisions — fill both, keep them consistent:
 
@@ -133,9 +136,9 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 > **Ramp discipline, not a fixed menu.** `body` is the single anchor; every other size is a ratio of it. Each row below gives the role's allowed ratio band. **Structural roles (page title / body / subtitle / annotation / footnote) resolve to one size each and stay that size deck-wide** — pick the value once, lock it, reuse it on every page; same-role drift is what makes a deck look unprofessional. The in-band freedom to use an intermediate value without pre-declaring is for **special / feature elements** (hero number, cover / section display headline, one-off emphasis); if such a size recurs, declare it as its own slot so it too stays consistent.
 > **Unit boundary (HARD rule).** Author this section in **unitless px** — the system's only unit, every canvas. There is no pt layer and no conversion: the confirmed value is already px. Never write `pt`, `px`, `em`, or any unit in `spec_lock.md` or SVG. Geometry (margins / gaps / card sizes) is px everywhere.
-> **Baseline selection**: **delivery purpose** sets the body baseline to **one fixed value** (not a range); content density and visual style drive page treatment / rhythm / the *other* roles, **not** the body size.
+> **Baseline selection**: after reading mode has made the information-carriage decision, the Confirm UI uses it to seed one fixed body baseline and derives unpinned role sizes locally. This is a typography default, not part of the reading-mode label or card description. Communication intent, content density, and visual style drive page treatment / rhythm / the *other* roles, **not** the body size.
 
-**Baseline (unitless px)**: Body font size = [fill in]. For PPT 16:9, the confirmed delivery-purpose value is **one fixed px per purpose, not a range**: **`text` / read-close** `20`, **`balanced` / business** `24` (default), **`presentation`** `32`. The body baseline is purely a function of delivery purpose — density and visual style drive page treatment / rhythm / the other roles, never the body size. The user may also pin individual role sizes (`title` / `subtitle` / `annotation`) directly in the Confirm UI — a confirmed per-role value (`result.json typography.sizes`) is already px and becomes the locked slot for that role; the rest derive from the ramp. For non-PPT canvases, author px from the confirmed canvas scale (see [strategist.md §g](../references/strategist.md) per-canvas table).
+**Baseline (unitless px)**: Body font size = [fill in]. For PPT 16:9, the initial typography default is **`text`** `20`, **`balanced`** `24` (default), **`presentation`** `32`. The browser applies `reading mode → body baseline → unpinned role sizes` locally without regenerating Stage 2. A user-edited body or role value is pinned; every confirmed `result.json typography.body_size` / `sizes` value is already px and becomes the locked slot verbatim. For non-PPT canvases, author px from the confirmed canvas scale (see [strategist.md §g](../references/strategist.md) per-canvas table).
 
 | Purpose | Ratio to body | Example @ body=32 (`presentation`) | Example @ body=24 (`balanced`) | Weight |
 | ------- | ------------- | --------------------------- | ------------------------- | ------ |
@@ -300,21 +303,22 @@ Catalog read: 76 templates
 **page_role** (`ai` rows only; leave blank for default):
 
 - *blank / `local`* — image is a region block on an SVG page
-- `hero_page` — image is the page's main voice; SVG overlay is minimal or empty. Use on covers, chapter dividers, mood transitions, single-number data heroes, closing quotes. Same rendering and palette as the rest of the deck regardless
+- `hero_page` — image is the page's main voice; SVG overlay is minimal or empty. Use on covers, chapter dividers, mood transitions, single-number data heroes, closing quotes. Same rendering and deck colors as the rest of the deck regardless
 
-**Reference grammar** (`ai` rows): write **subject + intent + composition** only. Do NOT repeat style words ("flat design", "modern") or HEX values — both are already locked deck-wide by `design_spec §III AI Image Strategy` (rendering + palette) and `§III Color Scheme` (HEX triplet). Image_Generator's prompt assembler injects them.
+**Reference grammar** (`ai` rows): write **subject + intent + composition** only. Do NOT repeat style words or HEX values—rendering is locked by `design_spec §III AI Image Strategy`, and colors by `§III Color Scheme`. Image_Generator injects both.
 
 ---
 
 ## IX. Content Outline
 
-> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design and brand-only routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Deck/layout template routes use `mode: structured`: Strategist writes each unique Master/Layout definition once, assigns every page through `page_pptx_layouts`, and selects its authoring prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may define and assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Legacy prototypes are not selectable; create a current workspace through [`create-template`](../workflows/create-template.md) and generate new SVG pages from it. No deferred distillation or immediate-compatibility fallback exists.
+> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design, brand-only, and `template_reuse_scope: style` routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. `template_reuse_scope: mirror|layout` uses `mode: structured`: Strategist writes each unique Master/Layout definition once, assigns every page through `page_pptx_layouts`, and selects its authoring prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may define and assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Mirror also preserves literal visuals and text-node topology; layout permits project-controlled reflow/re-skinning. Legacy prototypes are not selectable; create a current workspace through [`create-template`](../workflows/create-template.md) and generate new SVG pages from it. No deferred distillation or immediate-compatibility fallback exists.
 
 ### Part 1: [Chapter Name]
 
 #### Slide 01 - Cover
 
 - **Cover impact**: [MANDATORY — see strategist.md §6.2. Name one concrete hook (provocative core claim / hero number / object-scene metaphor / founder-product-audience moment / distilled conflict) + one composition strategy (full-bleed image + floating title / typographic poster / hero object / data hook / editorial scene / high-contrast abstract geometry / or a fresh one the subject suggests). This is the cover's spine — do NOT fall back to "title + subtitle + decorative background".]
+- **Audience move**: [How this opening changes the audience's state — establish relevance, tension, urgency, trust, or the decision frame. It must advance the global Desired Audience Outcome.]
 - **Layout**: [realize the Cover impact above; choose the composition that delivers it — not a default centered title block]
 - **Title**: [Main title]
 - **Subtitle**: [Subtitle]
@@ -325,6 +329,9 @@ Catalog read: 76 templates
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
 - **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
+- **Audience move**: [the specific transition this page causes — e.g. unaware → aware, confused → understands cause, undecided → sees the trade-off, aligned → owns the next step. Must advance at least one purpose in the global Communication Intent.]
+- **Fact IDs**: [stable IDs from `sources/*.facts.json` used on this page, e.g. `F001, F004`; omit when none]
+- **Data class**: [`external` for sourced facts / `scenario` for invented demo KPIs, targets, internal ratios; identify the affected values when scenario; omit when the page has no factual/quantitative claims]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
 - **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:
   - [a connected sentence or two that argues the point]
@@ -342,6 +349,7 @@ Catalog read: 76 templates
 #### Slide NN - Closing  *(only if the deck genuinely lands on a conclusion / CTA / final-takeaway page — do NOT invent one to fill this slot; see strategist.md §6.2)*
 
 - **Closing impact**: [MANDATORY for the closing page — name the one thing the audience leaves with (distilled takeaway / forward call / memorable restatement of the core claim) + one composition that lands it. Do NOT write a generic "Thank you" / contact-only / centered-title reprise of the cover.]
+- **Audience move**: [the final transition or commitment that completes the Desired Audience Outcome.]
 - **Layout**: [realize the Closing impact above — the deck's final impression, not a default sign-off]
 - **Content**: [the takeaway / call-to-action itself, phrased to land]
 

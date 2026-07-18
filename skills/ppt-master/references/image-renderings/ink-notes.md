@@ -4,7 +4,7 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 
 ## 1. Style paragraph (paste-ready, 105 words)
 
-> Professional hand-drawn visual-note style on pure white paper. All line work is black ink with slight wobble — confident, intentional, with the human-hand quality of a thoughtful whiteboard session. Hand-lettered titles appear bold and slightly oversized (when text policy allows). Color is intentionally sparse — black ink dominates ~85% of the visible content, with one or two semantic accent colors (coral red for risk/emphasis, muted teal for positive/solution, dusty lavender for neutral categories) covering less than 10% of canvas combined. Backgrounds and shape fills are mostly empty white. Small doodle decorations — stars, dashes, dots — are minimal. Overall feel is professional, considered, manifesto-quality.
+> Professional hand-drawn visual-note style on a clean paper field. All line work uses the deck's body-text color with slight wobble — confident, intentional, with the human-hand quality of a thoughtful whiteboard session. Hand-lettered titles appear bold and slightly oversized (when text policy allows). Color is intentionally sparse: line work dominates ~85% of the visible content, while one or two semantic accents drawn only from the deck's locked accent roles cover less than 10% combined. Backgrounds and shape fills remain mostly empty. Small doodle decorations — stars, dashes, dots — are minimal. Overall feel is professional, considered, manifesto-quality.
 
 ---
 
@@ -20,13 +20,13 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 
 ## 3. Using the deck's HEX values
 
-ink-notes has a near-fixed visual language: **black ink + white background + 1-2 semantic accents**. This palette tendency may override `design_spec.colors`:
+ink-notes has a near-fixed material language: **dark ink + light background + 1-2 semantic accents**. It never overrides `design_spec.colors`; offer it only when the confirmed roles can support that contrast:
 
-- Background: pure white `#FFFFFF` (do not replace with the deck's secondary unless it's already near-white)
-- Lines and text: near-black `#1A1A1A` (do not replace with the deck's primary)
-- Semantic accents: ink-notes traditionally uses coral red, muted teal, dusty lavender. The deck's `accent` HEX can serve as the emphasis color, but consider whether it carries the right semantic weight (red=risk, teal=positive, gold=highlight)
+- Background: use the deck's `background` / `secondary_bg`
+- Lines and text: use the deck's `body_text`
+- Semantic accents: use the deck's `accent` / `secondary_accent` roles and their established meaning; do not add traditional ink-notes colors outside the lock
 
-This makes ink-notes **the rendering most likely to deviate from the deck's HEX**. Reaffirm in the prompt that the ink-notes natural palette is intentional and the deck's primary HEX is reserved for the accent role.
+This makes ink-notes the rendering most likely to fight a deck's HEX. Offer it only when the locked background / text / accent roles can support the treatment; never invent traditional coral / teal / lavender after confirmation.
 
 ---
 
@@ -34,4 +34,4 @@ This makes ink-notes **the rendering most likely to deviate from the deck's HEX*
 
 **Snippet A — Before/After methodology (comparison type), text_policy: embedded**
 
-> Professional hand-drawn visual-note style on pure white background. Composition is a Before/After split — vertical hand-drawn divider down the center. Both sides use black ink line work with slight wobble. Left side ("Before") shows a simple stick-figure character with a frustrated posture, a speech bubble with hand-lettered "OLD WAY" in English block caps, and a small list of three hand-drawn dashes with brief 1-2 word annotations (e.g. "manual", "slow", "fragile"). Right side ("After") shows a confident stick-figure character with a clean checkmark above, hand-lettered "NEW WAY" in English block caps, and three checkbox-style annotations (e.g. "automated", "fast", "reliable"). A curved hand-drawn "mindset shift" arrow bridges left to right with a small hand-lettered label "the shift". Sparse semantic color: coral red `#E8655A` (the deck's accent) appears only on the left side's pain points; muted teal `#5FA8A8` appears only on the right side's positives. Total color accent area under 10% of canvas. All hand-lettered text is short keywords. Composed as a 1200×500 hero banner with 14% inner padding.
+> Professional hand-drawn visual-note style on the deck's locked background color. Composition is a Before/After split — vertical hand-drawn divider down the center. Both sides use the locked body-text color as ink line work with slight wobble. Left side ("Before") shows a simple stick-figure character with a frustrated posture, a speech bubble with hand-lettered "OLD WAY" in English block caps, and a small list of three hand-drawn dashes with brief 1-2 word annotations (e.g. "manual", "slow", "fragile"). Right side ("After") shows a confident stick-figure character with a clean checkmark above, hand-lettered "NEW WAY" in English block caps, and three checkbox-style annotations (e.g. "automated", "fast", "reliable"). A curved hand-drawn "mindset shift" arrow bridges left to right with a small hand-lettered label "the shift". Sparse semantic color: the locked accent marks the left-side pain points and the locked secondary accent marks the right-side positives. Total accent area stays under 10% of canvas. All hand-lettered text is short keywords. Composed as a 1200×500 hero banner with 14% inner padding.

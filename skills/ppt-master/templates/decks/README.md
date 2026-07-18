@@ -1,22 +1,30 @@
 # Deck Templates
 
-**Deck = a complete reusable template bundle.** It owns both presentation
-identity and reusable page structure. A deck template is not a finished content
-deck, and `kind: deck` does not mean “mirror the source PPT”. Its construction
-mode decides whether the system is newly authored or materialized from validated source facts.
+**Deck = a reusable solution for a recurring presentation family.** It owns an
+application contract together with presentation identity and reusable page
+structure. The application contract states which communication situations the
+template serves, which audience outcomes it supports, which narrative/page
+roles remain stable, and how starting content should be replaced or retained.
+A deck template is not a finished content deck, and `kind: deck` does not mean
+“mirror the source PPT”. Its construction mode decides whether the system is
+newly authored or materialized from validated source facts.
 
 | Axis | Deck behavior |
 |---|---|
-| Template kind | `deck`: identity + structure + deck-specific overview |
+| Template kind | `deck`: application contract + integrated identity + structure |
 | Creation mode | `standard` / `fidelity` author a new system; `mirror` materializes validated source-package facts into a new workspace |
 | Downstream adherence | Strategist selects `strict` or `adaptive` when the package is used |
-| PPTX structure | Always `structured`; `flat` is reserved for free design and brand-only routes |
+| PPTX structure | Workspace is `structured`; downstream `mirror` / `layout` use it, while confirmed `style` intentionally retains only visual language and generates `flat` |
 
 The discovery source of truth is [`decks_index.json`](./decks_index.json)
 (`deck_id → { summary, canvas_format, page_count, primary_color }`). This README
 defines the kind and intentionally does not enumerate installed decks. The
 shared kind and workspace model lives in the parent
 [`README.md`](../README.md).
+
+Index `summary` values lead with the recurring presentation family and intended
+outcome. Visual tone alone is not enough to select a Deck; open its Template
+Overview when application fit must be judged in detail.
 
 ---
 
@@ -30,24 +38,28 @@ may resolve `design_spec.md` directly. Semantic-legacy packages must be replaced
 through Create Template rather than upgraded in place. See [`SKILL.md`](../../SKILL.md) Step 3.
 
 A deck path alone supplies the complete reference. When combined with a brand
-or layout path, brand replaces the identity segment and layout replaces the
-structure segment; the deck remains the source of deck-specific overview
-context. Fusion never changes the package's stored SVGs in place.
+or layout path, brand replaces the identity segment and layout may replace the
+structure segment; the deck remains the source of the application contract.
+Before a Layout override is accepted, its page roles and slot capabilities must
+support the Deck's required narrative/content roles. Treat an incompatibility
+as a fusion conflict instead of retaining an application promise the new
+structure cannot satisfy. Fusion never changes the package's stored SVGs in
+place.
 
 ---
 
 ## `design_spec.md` contract
 
-The spec stores portable metadata plus template-specific personality. It does
-not repeat generic SVG rules, spacing libraries, font-ratio bands, or the
-canonical placeholder table.
+The spec stores portable metadata plus package-owned application, identity,
+and structure rules. It does not repeat generic SVG rules, spacing libraries,
+font-ratio bands, or the canonical placeholder table.
 
 ```markdown
 ---
 deck_id: <slug>
 kind: deck
 category: brand | general | scenario | government | special
-summary: <one-line use case and tone>
+summary: <one-line recurring presentation family and intended outcome>
 primary_color: "#XXXXXX"
 canvas_format: ppt169
 canvas_width: 1280
@@ -69,7 +81,19 @@ page_count: <N>
 ## VII. Placeholder Overrides      # omit when none
 ```
 
-`Page Roster` must list every SVG and its declared Master/Layout identity.
+`Template Overview` is an application contract, not a style description. It
+must identify the recurring presentation family, intended audiences and
+outcomes, delivery/reading assumptions, stable narrative or page roles, and the
+reuse boundary between fixed, replaceable, optional, and example-only content.
+These values may be broad when the source supports a family of related uses,
+but they must be specific enough to judge whether new content fits the Deck.
+
+`Page Roster` must list every SVG and its declared Master/Layout identity, then
+state the content policy for that prototype: what role it can play, whether it
+is required/optional/repeatable, and which visible content is fixed,
+replaceable, or example-only. This policy does not force future presentations
+to keep the template's page count or order.
+
 Every additional authored Master represents a distinct reusable design family,
 not one Layout or an organizational duplicate.
 
@@ -108,7 +132,7 @@ Library scope writes `skills/ppt-master/templates/decks/<deck_id>/` and updates
 the index. Project scope uses an initialized `projects/<name>/` workspace and
 does not register globally. Empty optional directories are omitted.
 
-1. Enter [`workflows/create-template.md`](../../workflows/create-template.md), which dispatches integrated identity-and-structure output to [`create-deck.md`](../../workflows/create-template/create-deck.md).
+1. Enter [`workflows/create-template.md`](../../workflows/create-template.md), which dispatches recurring-application output with integrated identity and structure to [`create-deck.md`](../../workflows/create-template/create-deck.md).
 2. Validate with `svg_quality_checker.py --template-mode`.
 3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
 4. In library scope, register with `register_template.py <id> --kind deck`.
