@@ -8,6 +8,8 @@ Usage:
     python3 scripts/project_manager.py scaffold-lock <project_path>
     python3 scripts/project_manager.py validate <project_path>
     python3 scripts/project_manager.py info <project_path>
+    python3 scripts/project_manager.py page-context <project_path> P07 [--bundle] [--record-usage]
+    python3 scripts/project_manager.py page-context-report <project_path>
 """
 
 from __future__ import annotations
@@ -25,6 +27,12 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from console_encoding import configure_utf8_stdio
+from page_context import (
+    build_page_context,
+    page_context_usage_report,
+    record_page_context_usage,
+    render_page_context,
+)
 from project_specs import scaffold_project_artifact, validate_project_artifacts
 
 try:
@@ -903,6 +911,8 @@ def build_parser() -> argparse.ArgumentParser:
   python3 scripts/project_manager.py scaffold-lock projects/demo_ppt169_20260718
   python3 scripts/project_manager.py validate projects/demo
   python3 scripts/project_manager.py info projects/demo
+  python3 scripts/project_manager.py page-context projects/demo P07 --bundle --record-usage
+  python3 scripts/project_manager.py page-context-report projects/demo
 """,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -939,6 +949,34 @@ def build_parser() -> argparse.ArgumentParser:
 
     info = subparsers.add_parser("info", help="Print project metadata")
     info.add_argument("project_path", help="Project directory")
+
+    page_context = subparsers.add_parser(
+        "page-context",
+        help="Print one deterministic per-page execution view",
+    )
+    page_context.add_argument("project_path", help="Project directory")
+    page_context.add_argument("page", help="Positive page key such as P07")
+    page_context.add_argument(
+        "--bundle",
+        action="store_true",
+        help="Include the selected min sidecar and complete prototype SVG",
+    )
+    page_context.add_argument(
+        "--pretty",
+        action="store_true",
+        help="Pretty-print the page-context JSON payload",
+    )
+    page_context.add_argument(
+        "--record-usage",
+        action="store_true",
+        help="With --bundle, write token telemetry under analysis/page-context/",
+    )
+
+    page_context_report = subparsers.add_parser(
+        "page-context-report",
+        help="Summarize fresh per-page context telemetry",
+    )
+    page_context_report.add_argument("project_path", help="Project directory")
     return parser
 
 
@@ -1046,6 +1084,35 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Source count: {info['source_count']}")
             print(f"Canvas format: {info['canvas_format']}")
             print(f"Created: {info['create_date']}")
+            return 0
+
+        if args.command == "page-context":
+            if args.record_usage and not args.bundle:
+                parser.error("page-context --record-usage requires --bundle")
+            result = build_page_context(args.project_path, args.page)
+            output, measured_reads = render_page_context(
+                result,
+                bundle=args.bundle,
+                pretty=args.pretty,
+            )
+            if args.record_usage:
+                _usage_path, token_status = record_page_context_usage(
+                    result,
+                    output,
+                    measured_reads,
+                )
+                if token_status != "exact":
+                    print(
+                        "[WARN] tiktoken/o200k_base unavailable; recorded bytes "
+                        "and hashes without token counts",
+                        file=sys.stderr,
+                    )
+            print(output, end="")
+            return 0
+
+        if args.command == "page-context-report":
+            report = page_context_usage_report(args.project_path)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
             return 0
 
         parser.error(f"Unknown command: {args.command}")

@@ -12,7 +12,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Generate pages sequentially, one page at a time, in one continuous pass; grouped page batches are forbidden.
-- Before each page, re-read `<project_path>/spec_lock.md` and apply the current communication, design, resource, rhythm, chart, and conditional template mappings.
+- Before each page, generate its canonical page-context bundle and apply the projected communication, design, resource, rhythm, chart, and conditional template mappings.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
 ### SVG Page-Design Boundary
@@ -220,7 +220,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative
-- `<project_path>/spec_lock.md` — machine-readable communication + execution contract; Executor re-reads before every page
+- `<project_path>/spec_lock.md` — machine-readable communication + execution contract; Executor consumes its current-page projection from `page-context`
 
 For a new artifact pair, run these commands once after final confirmation and before filling the files; each refuses to overwrite an existing artifact:
 
@@ -354,11 +354,17 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Conditional pre-generation reads**: on a structured route, follow `executor-structured.md` to read the template execution roster/sidecars and every distinct locked layout SVG; flat routes skip that template read. When `spec_lock.page_charts` or §VII names selected chart templates, follow `executor-chart.md` and batch-read those distinct chart SVGs once before the first affected page. A summary or sidecar never substitutes for the selected full SVG.
+**Conditional pre-generation reads**: On a structured route, follow `executor-structured.md` to read the template capabilities and compact execution roster once; the selected complete layout/mirror prototype arrives in each page bundle. Flat routes skip those template reads. When `spec_lock.page_charts` or §VII names selected chart templates, follow `executor-chart.md` and read those distinct chart SVGs once before the first affected page. A summary or sidecar never substitutes for the selected full SVG.
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
-**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md`; check the global `communication` contract, including `consumption_mode`, against the current §IX `Core message` + `Audience move`, and use only the lock's colors / fonts / icons / images, plus `pptx_structure.mode`, `template_reuse_scope`, and the per-page `page_rhythm` / `page_charts` lookups. Read `page_layouts` / `page_pptx_layouts` / `pptx_masters` / `pptx_layouts` only on a structured `template_reuse_scope: mirror|layout` route; they are absent in flat `style`, free-design, and brand-only projects. Resists purpose and design drift on long decks. See executor-base.md §2.1.
+**Per-page context load (Mandatory)**: before **each** SVG page, run:
+
+```bash
+python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage
+```
+
+Use this canonical projection for the global communication contract, current §IX `Core message` + `Audience move`, locked colors/fonts/icons/images, and current-page rhythm/chart/structure assignments. Flat bundles contain only page context; `layout` bundles also contain the selected complete prototype; `mirror` bundles contain that prototype plus its minimal text-slot view. This derived view does not replace `design_spec.md`, `spec_lock.md`, their gates, or any source facts needed by the page. See [`executor-base.md`](../references/executor-base.md) §2.1 and [`executor-structured.md`](../references/executor-structured.md) §1.0.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).

@@ -28,10 +28,10 @@ Verify the project's planning-session artifacts before doing anything else:
 
 | File / Directory | Required when | Reason |
 |---|---|---|
-| `<project_path>/spec_lock.md` | Always | Strategist's execution contract; Executor reads it per page |
-| `<project_path>/design_spec.md` | Always | Section IX page outline; Executor cross-references it |
+| `<project_path>/spec_lock.md` | Always | Strategist's execution contract; `page-context` projects its current-page values |
+| `<project_path>/design_spec.md` | Always | Section IX page outline; `page-context` projects the current page block |
 | `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
-| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / chart SVGs needed for batch read |
+| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / mirror prototypes and chart SVGs required by execution |
 
 If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
 
@@ -51,8 +51,8 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 - Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked mode / visual-style files), then only the branches selected by its condition table
 - Design Parameter Confirmation
-- Pre-generation Batch Read (every layout / chart SVG referenced in `spec_lock`)
-- Per-page `spec_lock` re-read + sequential page generation
+- Pre-generation compact template-roster read when structured, plus each distinct selected chart SVG once
+- Per-page `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage` load + sequential page generation
 - Quality Check Gate
 - Speaker notes generation
 - Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)

@@ -79,7 +79,7 @@ preserve/mirror round-trip contract.
 ## 3. Fragment Generation
 
 Run one command for one selected object. Generated project pages take colors
-from the current page's re-read `spec_lock.md`; `create-template` takes colors
+from the current page-context projection of `spec_lock.md`; `create-template` takes colors
 from the confirmed brief and template `design_spec.md`. Mirror/preserve input
 keeps the source object's paint instead of regenerating this authored form.
 

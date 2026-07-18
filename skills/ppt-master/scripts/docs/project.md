@@ -17,6 +17,8 @@ python3 scripts/project_manager.py scaffold-spec <project_path>
 python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
 python3 scripts/project_manager.py info <project_path>
+python3 scripts/project_manager.py page-context <project_path> P07 [--bundle] [--pretty] [--record-usage]
+python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
@@ -47,6 +49,48 @@ Notes:
   Multi-deck per project: several PPTX imports each get their own `<stem>.*`
   artifacts and a `decks[]` entry; re-importing the same stem replaces its entry.
 
+### Per-page execution view
+
+`page-context` projects `design_spec.md` and `spec_lock.md` into one current-page
+view on stdout. The default command is read-only; `--pretty` changes JSON
+formatting only. `--bundle` appends only the route-selected authoring payloads:
+
+| Project mode | Bundle contents |
+|---|---|
+| `flat` | page context |
+| structured `layout` | page context + complete selected prototype SVG |
+| structured `mirror` | page context + `text-slots.v2-min` + complete selected prototype SVG |
+
+The projection keeps project-specific forbidden rules; universal SVG and icon
+rules remain in the always-loaded execution core. Image rows are selected from
+the current §IX brief, explicit §VIII page assignments, and mirror prototype
+references. When those sources assign images elsewhere but not to the current
+page, the view excludes those assigned images. Any still-unassigned legacy
+image remains in a compatibility subset; `confirmed-none` is emitted only when
+all locked images have a deterministic assignment elsewhere.
+
+Mirror materialization publishes `ppt-master.template-text-slots.v2-min` with
+only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count` per
+text node. Its top-level integrity hash covers selectors plus immutable text
+and tspan topology/attributes. `page-context` recomputes that hash and every
+model-visible field from the complete prototype before stripping the hash from
+the bundle. A legacy v1 sidecar receives the same checks and is projected to the
+same model-facing shape in memory; the workspace is not rewritten. The complete
+SVG remains in the bundle. Checker and structured export validate output
+attributes, text/tspan topology, and referenced-resource hashes internally, so
+authoring supplies only semantic choices and edits only the existing visible
+text values.
+
+`--record-usage` requires `--bundle` and writes a derived snapshot to
+`analysis/page-context/P<NN>.usage.json`. It hashes every input and measures the
+exact controlled stdout plus each component; expected-but-absent optional inputs
+are recorded so later artifact creation invalidates the snapshot. `tiktoken` is
+loaded lazily with `o200k_base`; when unavailable, the command still succeeds
+and records bytes, characters, hashes, and `tokens: null`.
+`page-context-report` summarizes only fresh snapshots and identifies stale or
+token-unavailable pages. The telemetry does not include source-material reads
+or session-level prompt references.
+
 Common formats:
 - `ppt169`
 - `ppt43`
@@ -64,6 +108,8 @@ python3 scripts/project_manager.py scaffold-spec projects/my_presentation_ppt169
 python3 scripts/project_manager.py scaffold-lock projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
+python3 scripts/project_manager.py page-context projects/my_presentation_ppt169_20251116 P07 --bundle --record-usage
+python3 scripts/project_manager.py page-context-report projects/my_presentation_ppt169_20251116
 ```
 
 ## `project_utils.py`

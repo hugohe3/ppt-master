@@ -162,14 +162,16 @@ sources/*.facts.json ───────────┤
 analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spec_lock.md
 analysis/image_analysis.csv ────┘
 
-spec_lock.md + images/ + icons/ + templates/
-             + templates/template_execution_manifest.json
-             + selected templates/template_execution/*.text-slots.json
-    └─> Executor -> svg_output/
-              ├─> svg_quality_checker.py -> exports/svg_quality_report.json
-              ├─> finalize_svg.py -> svg_final/
-              └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + <output_stem>.report.json
-                                      backup/<ts>/svg_output/
+design_spec.md + spec_lock.md + images/ + icons/ + templates/
+    └─> project_manager.py page-context <project> P<NN> --bundle
+          + [selected complete prototype SVG]
+          + [mirror text-slots.v2-min]
+        ├─> Executor -> svg_output/
+        │     ├─> svg_quality_checker.py -> exports/svg_quality_report.json
+        │     ├─> finalize_svg.py -> svg_final/
+        │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + <output_stem>.report.json
+        │                             backup/<ts>/svg_output/
+        └─> --record-usage -> analysis/page-context/P<NN>.usage.json
 
 Direct OOXML routes:
 analysis/<stem>.slide_library.json + source PPTX + fill_plan.json
@@ -270,8 +272,8 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 |---|---|
 | `sources/` content-type files are the main-pipeline content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
 | `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist; they do not lock page count/order except in workflows that say so |
-| `design_spec.md` explains the design; `spec_lock.md` executes it | Executor reads locked values from `spec_lock.md`, not from prose memory |
-| `spec_lock.md` is re-read before every page | colors, fonts, icons, images, rhythm, layouts, and chart choices stay stable across long decks |
+| `design_spec.md` explains the design; `spec_lock.md` executes it | the per-page projection derives narrative and locked values from their owning artifacts, not from prose memory |
+| `page-context` is rebuilt before every page | each read-only view contains the current global lock, page brief, rhythm, chart/image choice, and route-selected template inputs |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
 | `svg_final/` is mandatory but derived | it is regenerated from `svg_output/` for self-contained visual preview or manual insertion as an SVG picture; it does not become the native export source of truth, and PowerPoint Convert to Shape is outside the supported contract |
 | Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
@@ -348,7 +350,7 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 **Image analysis goes through regenerated metadata, not pixels.** When images exist, Strategist and Executor use `analyze_images.py` output (`analysis/image_analysis.csv`) rather than directly opening image files. The CSV is a regenerated view over the live `images/` folder, not a durable cache. Re-running it before image-sensitive decisions is the staleness strategy: user images, extracted images, web images, AI outputs, formulas, and sliced elements all converge into the same measured fact table.
 
-**Per-page spec_lock re-read** is the long-deck anti-drift mechanism — full rationale in § Spec Propagation below.
+**Per-page context projection** is the long-deck anti-drift mechanism — full rationale in § Spec Propagation below.
 
 ---
 
@@ -371,9 +373,15 @@ The Strategist phase produces two artifacts that look redundant but serve differ
 - `design_spec.md` — human-readable narrative; the "why" of the deck (communication intent, audience outcome, narrative / template / visual rationale, page outline)
 - `spec_lock.md` — machine-readable execution contract; the compact communication trace plus the exact values Executor must literally use (HEX colors, font stacks, icon library, image resources, and structure mappings)
 
-Why both? Without `spec_lock.md`, the Executor would re-read `design_spec.md` per page during long decks and the LLM's context-compression drift would gradually mutate colors and fonts mid-deck. `spec_lock.md` is the **anti-drift mechanism** — [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) mandates `read_file <project>/spec_lock.md` before every page, so values stay verbatim across 20+ slides.
+Why both? Without `spec_lock.md`, the Executor would derive exact values from narrative prose and context-compression drift would gradually mutate colors and fonts mid-deck. [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) instead rebuilds a read-only `page-context` view before every page. The projector reads the current lock and the matching `design_spec.md` page block, then emits only the global execution values and current-page routing facts needed for authoring.
+
+The view omits universal SVG/icon prohibitions already owned by the always-loaded Executor core and retains only project-specific forbidden rows. It selects images from the current page brief, explicit image-resource page assignments, and mirror prototype references. Images assigned elsewhere are excluded; any unresolved legacy image remains in a compatibility subset, and `confirmed-none` appears only when every locked image has a deterministic assignment elsewhere.
 
 The lock is also the per-page routing table. Beyond global colors and typography, it carries `page_rhythm` (`anchor` / `dense` / `breathing`), `page_charts` (which chart template should be adapted), image rows with placement/cropping contracts, and the locked `mode` / `visual_style` references that decide which execution rule files are loaded. `template_reuse_scope: mirror|layout` projects additionally carry `page_layouts` (which input template SVG each page inherits), unique `pptx_masters` / `pptx_layouts` definitions, and `page_pptx_layouts` assignments. `template_reuse_scope: style`, free-design, and brand-only projects use `pptx_structure.mode: flat` and omit those sections entirely rather than writing empty values. Empty entries elsewhere are meaningful signals: no chart or no image is often a design decision rather than missing data.
+
+`page-context --bundle` is route-sensitive: flat pages add no template payload, structured layout pages add the complete selected prototype, and mirror pages add that prototype plus `ppt-master.template-text-slots.v2-min`. Each v2-min slot contains only selector, role, current/segmented text, and tspan count. A top-level tool hash covers selectors plus immutable text/tspan topology and attributes; page-context recomputes it and every projected field from the complete prototype, then strips the hash before model output. Legacy v1 sidecars receive the same compatibility validation and are projected to this shape in memory. The model supplies semantic decisions and replacement text. Checker and structured export validate output attributes, text topology, and resource hashes against the complete prototype internally.
+
+`--record-usage` requires `--bundle` and writes a derived, input-hashed snapshot for that page under `analysis/page-context/`; expected-but-absent optional inputs are recorded so later artifact creation also makes the snapshot stale. Token counting lazily uses `o200k_base`; a missing `tiktoken` installation records `tokens: null` without blocking execution. `page-context-report` excludes stale snapshots and exposes the measured component totals used to decide whether a future mirror text-patch tool is warranted; no such tool is introduced by this phase.
 
 `update_spec.py` propagates a post-generation change in two coordinated steps: write the new value to `spec_lock.md`, then literal-replace it across every `svg_output/*.svg`. The tool's scope is deliberately narrow — only `colors.*` (HEX values, case-insensitive replacement) and `typography.font_family` (attribute-scoped). Other fields (font sizes, icons, images, canvas) are intentionally **not supported** because their replacements would need attribute-scoped or semantic awareness whose risk/benefit doesn't justify bulk propagation. For those, edit `spec_lock.md` and re-author the affected pages.
 

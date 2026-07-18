@@ -165,6 +165,19 @@ fields remain inline. Source `p:sldLayout@showMasterSp` and
 Checker, template-structure validation, and export hydrate both store layers in
 memory; legacy inline payload and v1 payload-only stores remain readable.
 
+The published `ppt-master.template-execution-manifest.v1` roster points to one
+compact `ppt-master.template-text-slots.v2-min` sidecar per prototype. Each text
+slot contains only `selector`, `role`, `current_text`, `text_segments`, and
+`tspan_count`; a top-level tool hash covers its selectors and immutable
+text/tspan topology and attributes. A current-page mirror bundle still includes
+the complete prototype SVG. Page projection recomputes the hash and projected
+fields against that prototype, then strips the hash from model context. The
+model chooses semantics and edits only existing visible text values, while
+checker and structured export validate output attributes, text/tspan topology,
+and referenced-resource hashes against the prototype. Runtime page projection
+accepts legacy v1 text-slot sidecars and reduces them to v2-min without
+rewriting the workspace.
+
 The output routes reusable vectors once to `icons/imported/`, bitmaps to
 `images/`, and other referenced files to `templates/assets/`. The JSON report
 reports payload occurrence, native-record, unique-byte, and compressed-store

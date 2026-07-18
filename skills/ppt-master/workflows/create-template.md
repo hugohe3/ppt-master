@@ -525,11 +525,15 @@ one operation. It emits source-ordered page SVGs, unused-Layout definition
 SVGs, `icons/imported/`, referenced `images/` / `templates/assets/`, and one
 deduplicated `templates/native_payloads.json.gz` store when supported native
 payload or repeated restoration metadata exists. It also writes
-`templates/template_execution_manifest.json`, a compact model-readable prototype
+`templates/template_execution_manifest.json` with schema
+`ppt-master.template-execution-manifest.v1`, a compact model-readable prototype
 roster and grouped source-import warning summary. Each prototype points to one
-`templates/template_execution/*.text-slots.json` sidecar containing its exact
-mirror text selectors, segments, attributes, topology hashes, bounds, and font
-stacks. Template SVGs and imported
+`templates/template_execution/*.text-slots.json` sidecar with schema
+`ppt-master.template-text-slots.v2-min`. Each slot contains only
+`selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; the complete
+prototype remains authoritative. Page-context verifies the top-level tool hash
+and strips it before model output; validators/export own attribute and topology
+checks. Template SVGs and imported
 vectors keep content-hash payload references plus short
 `data-pptx-native-ref` attribute-record ids. Structural Master/Layout,
 placeholder, layer, and editable-object fields remain inline. The command does
@@ -690,7 +694,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Every additional authored Master represents a distinct reusable design family, not one Layout or an equivalent duplicate; every declared Master owns at least one emitted Layout and every declared Layout has at least one emitted prototype
 - [ ] Mirror output preserves source slide order, Master/Layout identity and parentage, placeholder facts, and ownership; fixed-layer group expansion is mechanical and pixel-equivalent, and the Source Preservation Map lists every source slide
-- [ ] Mirror materialization wrote the compact `templates/template_execution_manifest.json`; each prototype is listed once and links one `template_execution/*.text-slots.json` sidecar, every sidecar slot records selector/current segments/tspan attributes/topology hash/bounds/font stack, and source-import diagnostics are summarized separately from downstream generation issues
+- [ ] Mirror materialization wrote one compact `ppt-master.template-execution-manifest.v1` roster and one linked `ppt-master.template-text-slots.v2-min` sidecar per prototype; each slot has only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; page-context verifies and strips the tool hash, while validation/export check the complete prototype
 - [ ] Mirror roots preserve source inherited-shape visibility with canonical lowercase `data-pptx-show-master-shapes` and `data-pptx-show-inherited-shapes`; same-key Layouts agree on the former, while each Slide retains its own latter value
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the preservation map explains them
