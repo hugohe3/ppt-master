@@ -32,7 +32,7 @@ Resolve the per-page template SVG from `page_context.template.prototype`; the ow
 
 > Note: `page_layouts` disambiguates the multiple content variants a template may ship; missing mappings are contract errors.
 
-**Templates supply structure, not skin (`layout` scope)**: a chart or layout template's gradients, drop-shadows, palette, **and font sizes** are placeholder. Inherit its geometry, label / legend placement, and series-encoding logic; re-skin every fill / stroke to the deck's `visual_style` + `spec_lock.colors` — flat styles strip the gradients and shadows, gradient / glass styles repaint their own. Forbidden — shipping a template's default `<linearGradient>` / `cardShadow` / Tailwind fills unchanged. `mirror` scope is the exception: §1.1 preserves visuals verbatim.
+**Default — re-skin `layout` (may override when the application plan keeps template visuals and the lock reflects them)**: inherit geometry, label/legend placement, and series encoding; otherwise repaint template gradients, shadows, fills, and strokes from the current style/lock. Template font sizes remain placeholders. `mirror` preserves visuals under §1.1.
 
 **Font size is skin, not geometry (non-mirror).** A chart / layout template's hardcoded `font-size` values (often 11–16px, sized for the template's own dense placeholder text) are NOT inherited — classify each text into its `spec_lock.md` role and use that role's locked size, exactly as you re-skin color. **Structural roles (page title / body / subtitle / annotation / footnote) hold their one deck-wide size on every page** — the template's placeholder px never overrides it; same-role text drifting page to page is what makes a deck look unprofessional.
 
@@ -88,7 +88,7 @@ This section applies only when a deck/layout template's AI-derived lock records 
 
 **Hard rule — PowerPoint paint order**: Direct children appear in this order: Master background atoms, Layout background atoms, optional Slide background, remaining Master atoms, remaining Layout atoms, then slot groups and Slide-local content groups. Backgrounds are the inheritance plane beneath all shapes.
 
-**Mandatory — slot authoring**: A reusable content slot is one direct root `<g id>` carrying `data-pptx-placeholder` and positive `data-pptx-placeholder-bounds`. A normal slot contains exactly one compatible direct drawable child marked `data-pptx-placeholder-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. Decorations do not belong in the slot; move reusable decoration to a root Layout atom and keep page-specific labels/captions in another slot or Slide-local group.
+**Mandatory — slot authoring**: A reusable content slot is one direct root `<g id>` carrying `data-pptx-placeholder` and positive `data-pptx-placeholder-bounds`; that design zone is also the slot module's boundary, so do not duplicate it with `data-pptx-module-bounds`. A normal slot contains exactly one compatible direct drawable child marked `data-pptx-placeholder-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. Decorations do not belong in the slot; move reusable decoration to a root Layout atom and keep page-specific labels/captions in another bounded slot or Slide-local group.
 
 **Mandatory — slot identity**: Preserve imported `data-pptx-placeholder-idx` values where available; otherwise omit the title index and assign unique indices only where repeated roles need disambiguation. Pages sharing one Layout key repeat the same slot ids/types/effective indices/default bounds/binding modes. Current text, crop, and Slide-local carrier geometry may differ.
 
@@ -106,7 +106,7 @@ This section applies only when a deck/layout template's AI-derived lock records 
 
 **Layout identity**: Different keys differ in fixed Layout atoms or slot topology/default bounds/binding modes. Identical contracts should share one key. Current wording, imagery, crop, and Slide-local geometry never define identity.
 
-**Template adherence**: Strict copies the prototype Master/Layout/slot contract exactly. Adaptive keeps the prototype Master and may change reusable Layout atoms or slots only under a new explicit Layout key/name. When the completed composition genuinely needs that change, update `spec_lock.md pptx_layouts` immediately while authoring the first affected page; later pages may reuse the new key only by repeating its exact contract. Changing only a label is not a new Layout.
+**Template adherence**: Strict preserves reusable Master/Layout atoms and slot ids/types/indices/default bounds/bindings. Under `layout`, the application plan may still change current text/tspans, line height, crop, and carrier-local geometry inside those bounds; `mirror` remains topology-frozen. Adaptive keeps the prototype Master and changes reusable atoms or slots only under a new explicit Layout key/name, written to `spec_lock.md pptx_layouts` while authoring the first affected page. Changing only content is not a new Layout.
 
 **Layout-content boundary**: Mark only genuinely reusable fixed framing as a Master/Layout atom. Concrete titles, body copy, metrics, chart marks, images, and page-specific groups remain inside slot groups or ordinary Slide-local content groups. The exporter never infers or clusters structure.
 

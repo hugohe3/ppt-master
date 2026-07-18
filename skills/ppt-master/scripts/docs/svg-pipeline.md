@@ -80,8 +80,9 @@ python3 scripts/compact_svg_coordinates.py <template-directory> \
 
 The default run is a dry-run JSON report. `--inplace` atomically replaces only
 changed SVG files. The shared create-template final pass uses
-`--keep-native-frames`: it compacts `data-pptx-placeholder-bounds`, translation
-values, rotation centers, and matrix `e/f`, while preserving canonical
+`--keep-native-frames`: it compacts `data-pptx-module-bounds`,
+`data-pptx-placeholder-bounds`, translation values, rotation centers, and
+matrix `e/f`, while preserving canonical
 authored-preset or inline native frames. `svg_authoring_view.py` separately
 compacts imported model-facing frames because unchanged mirror refs can recover
 their exact coordinates from immutable lossless backing.
@@ -331,6 +332,7 @@ Behavior:
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
 - Omitting `--pptx-structure` reads `spec_lock.md`. Free-design, brand-only, and `template_reuse_scope: style` releases declare `mode: flat`, omit Master/Layout mappings and SVG structure metadata, and materialize one clean project-owned Master plus one Blank Layout from the current lock. Deck/layout templates use `mode: structured` only for `template_reuse_scope: mirror|layout`, with complete unique `pptx_masters` / `pptx_layouts` rosters and one `page_pptx_layouts` assignment per page. A template-backed Layout definition may remain unused by pages and still register in the final package.
 - On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct semantic atoms. Ordinary layer `<g>` elements are invalid; one validated compact authored-preset `<g>` emitted by `preset_shape_svg.py` is the sole group exception because it compiles to one native shape.
+- Every visible authored `<g>` is a module with one explicit boundary. Ordinary groups use `data-pptx-module-bounds`; placeholder/native groups reuse their specialized boundary. The checker aggregates missing boundaries, warns when a module exceeds its parent/canvas, and warns when estimable text exceeds its nearest module. It never auto-wraps or resizes text.
 - On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
 - Flat export maps locked typography/colors into a clean project-owned theme/Master, removes stock content placeholders and unused built-in Layouts, retains only the standard date/footer/slide-number capability hooks, and keeps one Blank Layout without promoting Slide content. Structured export additionally creates one reusable Layout per declared key and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
 - Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when fixed Layout atoms or slot topology/bounds change.

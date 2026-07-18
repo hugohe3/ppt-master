@@ -40,7 +40,8 @@ _NUMBER_RE = re.compile(rf"^{_NUMBER_TOKEN}$")
 _TRANSFORM_FUNCTION_RE = re.compile(r"([A-Za-z]+)\s*\(([^)]*)\)")
 _COMPACTABLE_ATTRIBUTE_RE = re.compile(
     r"(?<![A-Za-z0-9_.:-])"
-    r"(?P<name>data-pptx-frame|data-pptx-placeholder-bounds|transform)"
+    r"(?P<name>data-pptx-frame|data-pptx-module-bounds|"
+    r"data-pptx-placeholder-bounds|transform)"
     r"(?P<spacing>\s*=\s*)"
     r"(?P<quote>[\"'])"
     r"(?P<value>.*?)"
@@ -54,21 +55,29 @@ class CoordinateCompactionStats:
     """Count safely compacted coordinate-bearing SVG attributes."""
 
     native_frames: int = 0
+    module_bounds: int = 0
     placeholder_bounds: int = 0
     transforms: int = 0
 
     @property
     def changed_attributes(self) -> int:
-        return self.native_frames + self.placeholder_bounds + self.transforms
+        return (
+            self.native_frames
+            + self.module_bounds
+            + self.placeholder_bounds
+            + self.transforms
+        )
 
     def merge(self, other: "CoordinateCompactionStats") -> None:
         self.native_frames += other.native_frames
+        self.module_bounds += other.module_bounds
         self.placeholder_bounds += other.placeholder_bounds
         self.transforms += other.transforms
 
     def as_dict(self) -> dict[str, int]:
         return {
             "native_frames": self.native_frames,
+            "module_bounds": self.module_bounds,
             "placeholder_bounds": self.placeholder_bounds,
             "transforms": self.transforms,
             "changed_attributes": self.changed_attributes,
@@ -141,7 +150,10 @@ def _compact_attribute_value(
 ) -> str:
     if name == "data-pptx-frame":
         return _compact_coordinate_quad(value) if compact_native_frames else value
-    if name == "data-pptx-placeholder-bounds":
+    if name in {
+        "data-pptx-module-bounds",
+        "data-pptx-placeholder-bounds",
+    }:
         return _compact_coordinate_quad(value)
     if name == "transform":
         return _compact_transform(value)
@@ -151,6 +163,8 @@ def _compact_attribute_value(
 def _record_change(stats: CoordinateCompactionStats, name: str) -> None:
     if name == "data-pptx-frame":
         stats.native_frames += 1
+    elif name == "data-pptx-module-bounds":
+        stats.module_bounds += 1
     elif name == "data-pptx-placeholder-bounds":
         stats.placeholder_bounds += 1
     elif name == "transform":
@@ -167,6 +181,7 @@ def compact_svg_tree(
     for element in root.iter():
         for name in (
             "data-pptx-frame",
+            "data-pptx-module-bounds",
             "data-pptx-placeholder-bounds",
             "transform",
         ):
@@ -256,8 +271,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--keep-native-frames",
         action="store_true",
         help=(
-            "Leave data-pptx-frame unchanged while compacting slot bounds and "
-            "transform translations"
+            "Leave data-pptx-frame unchanged while compacting module/slot "
+            "bounds and transform translations"
         ),
     )
     return parser
