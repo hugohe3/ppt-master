@@ -26,7 +26,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 
-from project_specs import default_spec_lock_forbidden, parse_markdown_artifact
+from project_specs import (
+    default_spec_lock_forbidden,
+    parse_markdown_artifact,
+    validate_project_artifacts,
+)
 from svg_to_pptx.pptx_package.template_structure import (
     PptxStructureLock,
     TemplateStructureError,
@@ -52,10 +56,10 @@ TEXT_SLOTS_TOKEN_TARGET = 1000
 
 _PAGE_RE = re.compile(r"^(?:P)?([0-9]+)$", re.IGNORECASE)
 _SLIDE_HEADING_RE = re.compile(
-    r"^####[ \t]+Slide[ \t]+0*([0-9]+)(?:[ \t]*(?:[-:–—]).*)?$",
+    r"^#{3,6}[ \t]+Slide[ \t]+0*([0-9]+)(?:[ \t]*(?:[-:–—]).*)?$",
     re.IGNORECASE | re.MULTILINE,
 )
-_BLOCK_BOUNDARY_RE = re.compile(r"^#{2,4}[ \t]+", re.MULTILINE)
+_BLOCK_BOUNDARY_RE = re.compile(r"^#{2,6}[ \t]+", re.MULTILINE)
 _PART_HEADING_RE = re.compile(r"^###[ \t]+(?!#)(.+?)[ \t]*$", re.MULTILINE)
 _PAGE_TOKEN_RE = re.compile(
     r"(?<![A-Za-z0-9_])P0*([1-9][0-9]*)(?![A-Za-z0-9_])",
@@ -583,6 +587,21 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     for required in (lock_path, design_path):
         if not required.is_file():
             raise PageContextError(f"required artifact not found: {required.name}")
+    preflight_errors, _preflight_warnings = validate_project_artifacts(
+        project_path,
+        include_design=False,
+    )
+    if preflight_errors:
+        preview = "; ".join(preflight_errors[:8])
+        suffix = (
+            ""
+            if len(preflight_errors) <= 8
+            else f"; +{len(preflight_errors) - 8} more"
+        )
+        raise PageContextError(
+            "spec_lock/template preflight failed before page generation: "
+            f"{preview}{suffix}"
+        )
     try:
         lock_sections_raw = parse_markdown_artifact(
             lock_path,

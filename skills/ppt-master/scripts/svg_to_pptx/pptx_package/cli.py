@@ -290,6 +290,7 @@ def _quality_report_context(
 def _postflight_warning_summaries(
     *,
     quality_gate: str,
+    introduced_warning_count: int,
     unresolved_token_count: int,
     external_image_count: int,
     generic_font_stack_count: int,
@@ -298,6 +299,8 @@ def _postflight_warning_summaries(
     warnings: list[str] = []
     if quality_gate != 'passed':
         warnings.append(f'quality_gate={quality_gate}')
+    if introduced_warning_count:
+        warnings.append(f'quality_introduced_warnings={introduced_warning_count}')
     if unresolved_token_count:
         warnings.append(f'unresolved_template_tokens={unresolved_token_count}')
     if external_image_count:
@@ -338,10 +341,14 @@ def _write_postflight_report(
     quality = _quality_report_context(project_path, source_fingerprint)
     quality_categories = quality.get('categories')
     blocking_count = None
+    introduced_warning_count = 0
     if isinstance(quality_categories, dict):
         blocking = quality_categories.get('blocking')
         if isinstance(blocking, dict):
             blocking_count = blocking.get('count')
+        introduced = quality_categories.get('introduced')
+        if isinstance(introduced, dict) and isinstance(introduced.get('count'), int):
+            introduced_warning_count = int(introduced['count'])
     if quality.get('status') != 'loaded':
         quality_gate = str(quality.get('status') or 'not-provided')
     elif quality.get('stage') != 'final':
@@ -365,6 +372,7 @@ def _write_postflight_report(
         not unresolved_tokens
         and not external_image_count
         and not generic_only_font_stacks
+        and not introduced_warning_count
         and quality_gate == 'passed'
     ):
         report_status = 'passed'
@@ -398,6 +406,9 @@ def _write_postflight_report(
             'transitions': 'enforced-at-build',
             'animations': 'enforced-at-build',
             'quality_gate': quality_gate,
+            'quality_warnings': (
+                'passed' if not introduced_warning_count else 'warning'
+            ),
             'template_tokens': (
                 'passed' if not unresolved_tokens else 'warning'
             ),
@@ -424,6 +435,7 @@ def _write_postflight_report(
     )
     warnings = _postflight_warning_summaries(
         quality_gate=quality_gate,
+        introduced_warning_count=introduced_warning_count,
         unresolved_token_count=len(unresolved_tokens),
         external_image_count=external_image_count,
         generic_font_stack_count=len(generic_only_font_stacks),
