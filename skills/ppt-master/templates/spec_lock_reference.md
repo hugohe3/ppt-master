@@ -49,7 +49,7 @@
 >
 > **PowerPoint theme roles.** Flat and structured export map `bg` / `background` / `master_bg` → `lt1`, `secondary_bg` / `bg_secondary` → `lt2`, `text` / `body_text` → `dk1`, `text_secondary` → `dk2`, `primary` → `accent1`, `accent` → `accent2`, `secondary_accent` → `accent3`, and `border` → `accent4`. The first two additional non-black/non-white roles become `accent5` / `accent6`; remaining colors stay fixed. Mapping is usage-aware, so a background HEX is not automatically reused for inverse text.
 >
-> **`image_rendering`** — required only when `images` below contains `ai`-sourced files. It is a valid name from `references/image-renderings/_index.md`, or the literal `custom`. Image_Generator applies it deck-wide and derives image color instructions directly from the ordinary color-role rows above. Omit it when the deck has no AI-generated images. New flows never author an independent `image_palette`; the current generation flow ignores a legacy row, which cannot override these HEX roles.
+> **`image_rendering`** — required only when `images` below contains `ai`-sourced files. It is a valid name from `references/image-renderings/_index.md`, or the literal `custom`. Image_Generator applies it deck-wide and derives image color instructions directly from the ordinary color-role rows above. Omit it when the deck has no AI-generated images. An existing lock that omits this active key uses the declared inference in [`image-generator.md`](../references/image-generator.md) §3 Step 2. A missing whole lock stops at the Step 5 gate. New flows never author an independent `image_palette`; the current generation flow ignores a historical row, which cannot override these HEX roles.
 >
 > **`custom` escape hatch.** When set to `custom`, add `image_rendering_behavior` with a one-paragraph description. Image_Generator splices it into the prompt in place of the preset rendering snippet. Tail-case only—see [`image-renderings/_index.md`](../references/image-renderings/_index.md) §1.5.
 >
@@ -75,7 +75,7 @@
 > - **Omit** any `*_family` equal to `font_family` — Executor falls back to `font_family` for missing roles, so writing it twice is noise. (Exception: keep `code_family` even when equal — monospace is conceptually distinct.)
 > - `code_family` applies to code snippets only. LaTeX formulas rendered by `latex_render.py` are PNG image assets and must be listed under `images`.
 >
-> `font_family` is the default fallback. Every declared family is a CSS font-stack string.
+> `font_family` is required and is the default fallback for omitted role-specific families. Every declared family is a CSS font-stack string.
 >
 > **Source**: copy verbatim from the *Per-role font stacks* list in `design_spec.md §IV Font Plan`. Stack **order** encodes browser-rendering intent (Latin-led vs. CJK-led) that the breakdown table cannot — strings here must match character-for-character. See `design_spec.md §IV` for the explainer.
 >
@@ -96,7 +96,7 @@
 
 > `library` MUST be exactly one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` — mixing is forbidden. `brand_library: simple-icons` is optional; include only when the deck uses real company / product brand marks, otherwise omit. `inventory` lists approved icon names (no library prefix); Executor may only use icons from this list. Names are case-sensitive filenames: bundled-library inventory values are the exact verified lowercase basenames (`award`, never `Award`); custom icon names preserve the custom file's exact case.
 >
-> **`stroke_width` (stroke-style libraries only)** — required when `library` is stroke-based (currently `tabler-outline`); allowed values `1.5` / `2` / `3`. Executor MUST apply this value to every `<use data-icon="...">` placeholder via `stroke-width`, deck-wide. Omit for non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone`) — ignored there. For heavier weight switch library; do not exceed `3` (at 24×24 strokes merge and the icon stops reading as line art).
+> **`stroke_width` (stroke-style libraries only)** — required in every new lock when `library` is stroke-based (currently `tabler-outline`); allowed values `1.5` / `2` / `3`. Executor MUST apply this value to every `<use data-icon="...">` placeholder via `stroke-width`, deck-wide. An existing lock that omits the active field follows the fixed compatibility rule in [`executor-base.md`](../references/executor-base.md) §4. Omit for non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone`) — ignored there. For heavier weight switch library; do not exceed `3` (at 24×24 strokes merge and the icon stops reading as line art).
 >
 > Example for stroke-style libraries:
 > ```
@@ -130,7 +130,7 @@
 >
 > **Rhythm follows narrative**: `breathing` pages appear where narrative genuinely pauses — section transitions, a single argument worth standalone emphasis, a deliberate stop after a dense sequence. A data briefing or consulting analysis may legitimately be nearly all `dense` — **do not invent filler pages** to pad rhythm. Validation: every `breathing` page must answer "what independent thing is this page saying?".
 >
-> **Missing or empty section** → Executor falls back to `dense` for every page (legacy pre-rhythm behavior). Remove the section only for legacy decks; new decks MUST fill it.
+> **Missing or empty section — compatibility fallback** → follow the fixed default owned by [`executor-base.md`](../references/executor-base.md) §2.1. New authoring MUST fill the section.
 
 ## pptx_structure
 - mode: flat

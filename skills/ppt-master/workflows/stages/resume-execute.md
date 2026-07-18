@@ -30,10 +30,14 @@ Verify the project's planning-session artifacts before doing anything else:
 |---|---|---|
 | `<project_path>/spec_lock.md` | Always | Strategist's execution contract; Executor reads it per page |
 | `<project_path>/design_spec.md` | Always | Section IX page outline; Executor cross-references it |
-| `<project_path>/images/` | `spec_lock images` references any image | Images must exist for embedding |
+| `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
 | `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / chart SVGs needed for batch read |
 
-If any required artifact is missing → report which one(s) and stop. Do NOT auto-fall-back into planning; the user must either complete the planning session in the original chat or explicitly restart.
+If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
+
+- Missing `design_spec.md` / `spec_lock.md` → use [`failure-recovery.md`](../governance/failure-recovery.md) §3.
+- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to SKILL.md Step 3 to restore the selected workspace; an AI, web, formula, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire, rerender, or derive it. An absent `Needs-Manual` file is not a Step 1 failure.
+- Missing `templates/` inputs → restore the selected workspace through `SKILL.md` Step 3. If the workspace is unavailable or invalid, run Create Template again rather than reconstructing a template inside this stage.
 
 ---
 
