@@ -28,12 +28,12 @@
     "skills/ppt-master/references/svg-effects.md": 11600,
     "skills/ppt-master/references/native-data-interface.md": 6200,
     "skills/ppt-master/references/pptx-structure-interface.md": 4300,
-    "skills/ppt-master/references/strategist.md": 11250,
-    "skills/ppt-master/references/strategist-image.md": 1650,
-    "skills/ppt-master/references/strategist-template.md": 1700,
-    "skills/ppt-master/templates/design_spec_reference.md": 700,
+    "skills/ppt-master/references/strategist.md": 12250,
+    "skills/ppt-master/references/strategist-image.md": 1800,
+    "skills/ppt-master/references/strategist-template.md": 2100,
+    "skills/ppt-master/templates/design_spec_reference.md": 800,
     "skills/ppt-master/templates/spec_lock_reference.md": 1200,
-    "skills/ppt-master/workflows/generate-pptx.md": 11050,
+    "skills/ppt-master/workflows/generate-pptx.md": 11600,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
   },
   "load_sets": {
@@ -143,7 +143,7 @@
           "registry": "visual-styles"
         }
       ],
-      "max_tokens": 46250
+      "max_tokens": 47000
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed.",
@@ -153,7 +153,7 @@
         "stage.generate.strategist.image-layout"
       ],
       "files": [],
-      "max_tokens": 53800
+      "max_tokens": 54500
     },
     "route.generate.planning-formula": {
       "description": "Formula-only planning context with no non-formula image resource or layout catalog.",
@@ -163,7 +163,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 47000
+      "max_tokens": 48500
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning context when AI image direction is available.",
@@ -174,7 +174,7 @@
       "files": [
         "skills/ppt-master/references/image-renderings/_index.md"
       ],
-      "max_tokens": 55800
+      "max_tokens": 56500
     },
     "stage.generate.apply-template-workspace": {
       "description": "Conditional Step 3 workspace validation, installation, and fusion framework.",
@@ -369,7 +369,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 74250
+      "max_tokens": 75000
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -500,7 +500,7 @@
         "skills/ppt-master/workflows/stages/resume-execute.md",
         "skills/ppt-master/references/artifact-ownership.md"
       ],
-      "max_tokens": 41800
+      "max_tokens": 43000
     },
     "stage.generate.resume-execute-image": {
       "description": "Fresh-session resume when the locked resource plan contains image rows.",
@@ -510,7 +510,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 47250
+      "max_tokens": 48500
     },
     "stage.generate.topic-research": {
       "description": "Topic-only intake stage.",
@@ -534,7 +534,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/refine-spec.md"
       ],
-      "max_tokens": 1500
+      "max_tokens": 1600
     },
     "stage.generate.verify-charts": {
       "description": "Conditional chart-calibration gate.",
@@ -604,7 +604,7 @@
       "files": [
         "skills/ppt-master/workflows/governance/failure-recovery.md"
       ],
-      "max_tokens": 2100
+      "max_tokens": 2300
     },
     "stage.shared.conversion-reference": {
       "description": "Conditional source-conversion and import compatibility reference.",
@@ -638,7 +638,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 47900
+      "max_tokens": 48800
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
@@ -648,7 +648,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 57450
+      "max_tokens": 58600
     },
     "stage.generate.artifact-schema-guide": {
       "description": "Compact human guide loaded only to diagnose planning-artifact schema or scaffold failures.",
@@ -657,7 +657,7 @@
         "skills/ppt-master/templates/design_spec_reference.md",
         "skills/ppt-master/templates/spec_lock_reference.md"
       ],
-      "max_tokens": 1900
+      "max_tokens": 2050
     },
     "stage.generate.executor.chart": {
       "description": "Conditional chart/table page execution rules.",
@@ -692,7 +692,7 @@
       "files": [
         "skills/ppt-master/references/strategist-template.md"
       ],
-      "max_tokens": 1700
+      "max_tokens": 2100
     },
     "stage.generate.executor.native-data": {
       "description": "Conditional preset-pattern and native chart/table metadata interface.",
