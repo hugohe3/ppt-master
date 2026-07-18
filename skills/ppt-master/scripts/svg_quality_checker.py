@@ -6489,7 +6489,7 @@ def _default_json_report_path(
         (project_path / 'svg_output').is_dir()
         or (project_path / 'design_spec.md').is_file()
     ):
-        return project_path / 'exports' / report_name
+        return project_path / 'validation' / report_name
     base = target_path if target_path.is_dir() else target_path.parent
     return base / report_name
 

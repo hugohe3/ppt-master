@@ -169,6 +169,7 @@ class ProjectManager:
             "live_preview",
             SOURCE_DIRNAME,
             "analysis",
+            "validation",
             "exports",
         ):
             (project_path / rel_path).mkdir(parents=True, exist_ok=True)
@@ -190,7 +191,8 @@ class ProjectManager:
                 "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
-                "- `exports/`: native DrawingML pptx (timestamped); `_native_charts_tables.pptx` name with `--native-charts-and-tables`, `_narrated.pptx` name when narration audio is embedded\n"
+                "- `validation/`: SVG quality reports and PPTX postflight audit reports\n"
+                "- `exports/`: final native DrawingML pptx deliverables only (timestamped); `_native_charts_tables.pptx` name with `--native-charts-and-tables`, `_narrated.pptx` name when narration audio is embedded\n"
                 "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
             ),
             encoding="utf-8",

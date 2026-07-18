@@ -74,10 +74,12 @@ Output:
     # Every PPTX variant below is produced through the svg_output → native DrawingML route
     exports/
     ├── presentation_<timestamp>.pptx                ← Native shapes (DrawingML) — canonical output, edit & deliver from here
-    ├── presentation_<timestamp>.report.json         ← Postflight package/resource audit linked to the final SVG quality report
-    ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
     ├── presentation_<timestamp>_native_charts_tables.pptx  ← PowerPoint-native Chart/Table replacements (opt-in via --native-charts-and-tables)
     └── presentation_<timestamp>_narrated.pptx        ← Narrated version — embedded per-slide audio + auto-advance timings (via --recorded-narration audio)
+
+    validation/
+    ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
+    └── presentation_<timestamp>.report.json         ← Postflight package/resource audit linked to the final SVG quality report
 
     # Always written in default-flow mode (no -o)
     backup/<timestamp>/
@@ -167,9 +169,9 @@ design_spec.md + spec_lock.md + images/ + icons/ + templates/
           + [selected complete prototype SVG]
           + [mirror text-slots.v2-min]
         ├─> Executor -> svg_output/
-        │     ├─> svg_quality_checker.py -> exports/svg_quality_report.json
+        │     ├─> svg_quality_checker.py -> validation/svg_quality_report.json
         │     ├─> finalize_svg.py -> svg_final/
-        │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + <output_stem>.report.json
+        │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
         │                             backup/<ts>/svg_output/
         └─> --record-usage -> analysis/page-context/P<NN>.usage.json
 
@@ -468,17 +470,17 @@ If the same warning repeatedly appears in newly generated pages, fix the prompt,
 
 > Why each artifact and module exists in the engineering conversion stage, and which workflows would break if you delete it. Read this before considering any simplification of `svg_final/` / `finalize_svg.py` / `svg_to_pptx.py`.
 
-### Delivery artifacts and workflows
+### Post-processing artifacts and workflows
 
-The post-processing and export stages work with distinct artifacts. Each one serves a workflow that nothing else in the pipeline can replace. Every PPTX entry below is a variant of the same `svg_output/` → native DrawingML route, not a parallel image-based converter.
+The post-processing and export stages keep authoring, validation, preview, delivery, and archival artifacts distinct. Each one serves a workflow that nothing else in the pipeline can replace. Every PPTX entry below is a variant of the same `svg_output/` → native DrawingML route, not a parallel image-based converter.
 
 | Artifact | Workflow it serves | Why nothing else replaces it |
 | --- | --- | --- |
 | `svg_output/` | source of truth, manual editing, `update_spec.py`, `svg_quality_checker.py` | only directory whose contents are authored, not derived |
 | `svg_final/` | mandatory self-contained visual preview; IDE/browser inspection; manual insertion as an SVG picture | `.pptx` is not openable in IDEs; `svg_output/` won't render fully because of external icon / image refs. PowerPoint Convert to Shape is not supported |
 | `exports/<name>_<ts>.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
-| `exports/svg_quality_report.json` | machine-readable final SVG gate | separates blocking failures, introduced advisories, inherited prototype findings, and source-import losses, and fingerprints the checked SVG bytes |
-| `<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
+| `validation/svg_quality_report.json` | machine-readable final SVG gate | separates blocking failures, introduced advisories, inherited prototype findings, and source-import losses, and fingerprints the checked SVG bytes |
+| `validation/<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
 | `exports/<name>_<ts>_native_charts_tables.pptx` (opt-in via `--native-charts-and-tables`) | when `data-pptx-replace-with` markers should replace SVG-derived, shape-based charts/tables with PowerPoint-native Chart/Table objects | data-backed objects with chart/table-specific controls; the default DrawingML shapes remain independently editable |
 | `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration audio`) | narrated deck for auto-play and PowerPoint video export | embedded per-slide audio plus auto-advance timings; name marks it apart from silent exports |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
