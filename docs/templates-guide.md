@@ -43,7 +43,7 @@ stay separate.
 The two rules that prevent most mistakes:
 
 1. Supply the **workspace root**, not its `templates/` subdirectory and not a bare template name.
-2. Put the explicit workspace path in the initial generation request. The only exception is a Create Template run that immediately hands its validated workspace to Generate PPTX in the same conversation.
+2. Provide the explicit workspace path before [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option). A Create Template run may instead hand its validated workspace directly to Generate PPTX in the same conversation.
 
 ---
 
@@ -51,17 +51,17 @@ The two rules that prevent most mistakes:
 
 ### How to trigger
 
-The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **explicit directory path** only: name the path in your initial message.
+The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **explicit directory path** only: provide the path before Generate PPTX reaches Step 3.
 
 ### How to enter the template flow
 
-Send the Brand/Layout/Deck workspace root in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
+Send the Brand/Layout/Deck workspace root in chat before Generate PPTX reaches Step 3. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
 > "use this template: `skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "use last deck's template: `projects/last_deck/`" ✅
 > "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
-For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
+For every current template kind, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, then installs `templates/` plus any existing `images/` and `icons/` into the target project or consumes them in place when the workspace is already that project. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; user-supplied paths and current-conversation Create Template handoffs are the two valid triggers.
 
 > **Compatibility preflight:** Step 3 also accepts a flat-directory workspace with `design_spec.md` and SVGs directly at the supplied root, but only when those SVGs already satisfy the current contract. Flat placement by itself is harmless. Former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
 
@@ -245,7 +245,7 @@ After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-maste
 | `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand: N/A; Create Layout/Create Deck: optional for one Master, mandatory for multiple Masters | Register in the matching `brands_index.json`, `layouts_index.json`, or `decks_index.json` after validation |
 | `project` | `projects/<name>/` | Same kind-specific review behavior | Skip global index registration |
 
-Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
+Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option): provide the workspace root before Step 3 runs, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 

@@ -53,7 +53,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
    ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
-5. Post-processing & Export → follow [`SKILL.md` Step 7](../SKILL.md)
+5. Post-processing & Export → follow [`generate-pptx.md`](../workflows/generate-pptx.md) Step 7
 ```
 
 > Keep external references in `svg_output/` during generation. `finalize_svg.py` auto-embeds images into the mandatory `svg_final/` visual preview; native PPTX export independently reads `svg_output/`.
@@ -130,12 +130,11 @@ python3 -m http.server -d <project_path> 8000
 
 ## Conversion Process
 
-Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` remains mandatory and embeds image references into the self-contained `svg_final/` preview. The following PPTX command still reads `svg_output/` by default and converts it directly to native DrawingML; it does not consume `svg_final/` in the supported release route.
-
-```bash
-python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path>
-```
+Follow [`generate-pptx.md`](../workflows/generate-pptx.md) Step 7; it owns the
+serial post-processing and export commands. Its mandatory finalization step
+embeds image references into the self-contained `svg_final/` preview, while the
+supported native PPTX release still reads `svg_output/` and maps it directly to
+DrawingML.
 
 ### Standalone: align_embed_images.py (advanced)
 

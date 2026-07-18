@@ -6,7 +6,7 @@ description: Main-pipeline editor stage for starting live preview and applying s
 
 > **Purpose**: (1) start/reopen the browser SVG editor when no preview service is currently running, and (2) apply user-submitted annotations after Step 7 export completes.
 >
-> **Not in scope**: Executor's mandatory auto-startup — that lives in [`SKILL.md`](../../SKILL.md) Step 6. Do not re-launch a preview that is already running.
+> **Not in scope**: Executor's mandatory auto-startup — that lives in [`generate-pptx`](../generate-pptx.md) Step 6. Do not re-launch a preview that is already running.
 
 ## When to Run
 
@@ -61,17 +61,13 @@ Triggered by the user signals listed in "When to Run".
    - Edit the targeted element in `<project_path>/svg_output/<file>` per the annotation text.
    - Remove `data-edit-target` and `data-edit-annotation` from that element.
    - Append one `annotation_applied` JSONL record to `<project_path>/live_preview/annotations.jsonl` with `ts`, `file`, `element_id`, and the original annotation text.
-4. Re-export:
-   ```bash
-   python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
-   python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
-   ```
+4. Re-enter [`generate-pptx`](../generate-pptx.md) Step 7.2, wait for its success criterion, then run Step 7.3. Do not rerun Step 7.1 unless speaker notes changed.
 5. Tell the user (in their language): annotations applied, new PPTX exported, preview is still running. If the browser still shows the old slide, refresh or reselect the page.
 6. Loop: more annotations submitted → repeat from step 1. User signals done or "stop preview" → end.
 
 ---
 
-## Notes (editor invariants — referenced from SKILL.md Step 6)
+## Notes (editor invariants — referenced from Generate Step 6)
 
 - **UI**: trilingual (中文 / English / 日本語); auto-detects from `navigator.language`, persists in `localStorage`, switched via the language dropdown on the right panel. The right panel is an **Edit / Annotate** surface: direct SVG edits and AI-needed annotations are visually separated, with a pending-status strip showing staged direct edits and pages with unsaved annotations. Slide navigation: first/prev/next/last buttons at the top of the center panel, plus `←` / `→` / `Home` / `End` (suppressed while typing in the annotation textarea).
 - **Buttons**: `Add annotation` stages annotation text in memory; `Apply changes` writes staged direct edits plus annotation markers to disk and keeps the service running; `Exit preview` is the only UI action that stops Flask.

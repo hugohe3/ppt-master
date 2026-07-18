@@ -652,7 +652,7 @@ separate parent content group; never put them inside the preset group itself.
 ## 5. Workflow Authority
 
 The serial post-processing and export workflow belongs to
-[`SKILL.md` Step 7](../SKILL.md). This file defines SVG authoring boundaries
+[`generate-pptx.md`](../workflows/generate-pptx.md) Step 7. This file defines SVG authoring boundaries
 and intentionally does not mirror commands, flags, or output behavior.
 
 ---
@@ -1954,6 +1954,6 @@ Without an original PPTX or complete current Type B contract, do not claim mirro
 
 ## 8. Scope Boundary
 
-Project structure, commands, quality-gate order, and export products are owned
-by [`SKILL.md`](../SKILL.md). They are intentionally outside this SVG
-authoring policy.
+Generate project structure, commands, quality-gate order, and export products
+are owned by [`generate-pptx.md`](../workflows/generate-pptx.md). They are
+intentionally outside this SVG authoring policy.

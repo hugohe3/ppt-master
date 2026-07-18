@@ -46,16 +46,12 @@ kind of rule is never a mirror operation.
 
 ## Trigger and identity boundary
 
-Selection is opt-in through an explicit workspace-root path such as
-`skills/ppt-master/templates/layouts/<layout_id>/`. Supplying a bare ID or
-reading the discovery index does not trigger template use. A layout path alone
-locks structure while identity remains a downstream decision. Combined with a
-brand or deck, the layout replaces the complete structure segment.
-
-Current packages resolve `templates/design_spec.md`; compatible flat-directory
-current-contract roots may resolve `design_spec.md` directly. Semantic-legacy
-packages must be replaced through Create Template rather than upgraded in
-place. See [`SKILL.md`](../../SKILL.md) Step 3.
+Selection uses the common explicit-path trigger in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. Supplying a bare ID
+or reading the discovery index does not trigger template use. The conditional
+[`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
+stage owns path normalization, compatibility checks, installation, and fusion.
+This file owns the Layout schema and its identity/application boundary.
 
 ---
 

@@ -30,7 +30,7 @@ route selection. After selection, the route authority owns execution.
 
 | Route | Request shape | Authority | Preconditions | Mutation model | Output contract |
 |---|---|---|---|---|---|
-| Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally apply an explicit template workspace | Main [`SKILL.md`](../SKILL.md) | Source facts exist or the topic-research stage can gather them | Author new SVG pages and export a new PPTX | New project with `design_spec.md`, `spec_lock.md`, `svg_output/`, and `exports/` |
+| Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally apply an explicit template workspace | [`generate-pptx`](./generate-pptx.md) | Source facts exist or the topic-research stage can gather them | Author new SVG pages and export a new PPTX | New project with `design_spec.md`, `spec_lock.md`, `svg_output/`, and `exports/` |
 | Create Template | Create a reusable brand/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
 | Fill Native PPTX | Use a raw PPTX's native slide shells and replace/fill content | [`template-fill-pptx`](./template-fill-pptx.md) | Source PPTX plus new material/topic | Clone and patch PPTX through OOXML; no SVG pipeline | New filled PPTX in project `exports/` |
 | Enhance Native PPTX | Keep a finished PPTX's visible slides stable while adding notes, audio, timings, or transitions | [`native-enhance-pptx`](./native-enhance-pptx.md) | Finished source PPTX exists | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX in project `exports/` |
@@ -41,16 +41,17 @@ route selection. After selection, the route authority owns execution.
 
 | Request condition | Generate-route behavior |
 |---|---|
-| Topic only, no substantive source facts | Run [`topic-research`](./stages/topic-research.md), then return to main Step 1 |
-| Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through `ppt_to_md.py` and PPTX intake; use the default main pipeline |
+| Topic only, no substantive source facts | Run [`topic-research`](./stages/topic-research.md), then return to [`generate-pptx`](./generate-pptx.md) Step 1 |
+| Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; use the default Generate pipeline |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
-| Explicit current brand/layout/deck workspace root | Apply main Step 3; consume the workspace root, never only its inner `templates/` directory |
+| Explicit current brand/layout/deck workspace root | Enter [`generate-pptx`](./generate-pptx.md) Step 3 and conditionally load [`apply-template-workspace`](./stages/apply-template-workspace.md); consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Strategist confirmation |
 | Data charts exist | Run [`verify-charts`](./stages/verify-charts.md) before export |
 | User explicitly requests visual review | Run [`visual-review`](./stages/visual-review.md) before post-processing |
 | User requests preview, selection, or annotation application | Run [`live-preview`](./stages/live-preview.md) at the stage defined there |
-| User requests object-level animation | Run [`customize-animations`](./stages/customize-animations.md) during post-processing |
+| User requests page transitions, auto-advance, or deck-wide animation settings | Load [`animations`](../references/animations.md) and apply its export-level contract |
+| User requests per-slide or object-level animation control | Run [`customize-animations`](./stages/customize-animations.md) during post-processing |
 | Generated project needs narration audio | Run [`generate-audio`](./stages/generate-audio.md) after notes/export readiness |
 
 **Hard rule — profile, not fifth route**: The 1:1 beautify behavior uses the same Strategist → Executor → SVG export lifecycle as Generate PPTX. It changes content/page invariants; it does not define a separate artifact lifecycle.
@@ -62,7 +63,7 @@ route selection. After selection, the route authority owns execution.
 **Hard rule — no direct structure grafting**: An existing PPTX or SVG is never upgraded in place by adding Master/Layout/placeholder structure. If reusable native structure is required:
 
 1. Run [`create-template`](./create-template.md) to produce a separate validated workspace.
-2. Pass that workspace root to Generate PPTX Step 3.
+2. Pass that workspace root to [`generate-pptx`](./generate-pptx.md) Step 3.
 3. Author new structured SVG pages whose Master/Layout contract exists from their first generated draft.
 4. Export a new PPTX from those pages.
 
@@ -74,8 +75,8 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 |---|---|
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
-| Current template workspace root + content | Generate PPTX Step 3 |
-| Legacy-flat root with current `design_spec.md` and current SVG contract | Generate PPTX Step 3 compatibility reader |
+| Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Step 3 |
+| Legacy-flat root with current `design_spec.md` and current SVG contract | [`apply-template-workspace`](./stages/apply-template-workspace.md) compatibility reader |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
 | Request to add a master directly to an existing PPTX/SVG | Unsupported; explain the Create Template → Generate PPTX lifecycle |
 
@@ -114,7 +115,7 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 
 | User input | Behavior |
 |---|---|
-| Explicit current workspace root containing `templates/design_spec.md` | Enter Generate PPTX Step 3 |
+| Explicit current workspace root containing `templates/design_spec.md` | Enter [`generate-pptx`](./generate-pptx.md) Step 3 |
 | Bare template/brand name or style label | Do not resolve it to a local path; treat it as a style brief |
 | “What templates exist?” | List indexed workspace paths as Q&A; do not advance a route |
 

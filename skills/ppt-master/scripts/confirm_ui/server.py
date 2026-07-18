@@ -384,7 +384,7 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
     return (
         f'stage skip detected: recommendations.json is {_stage_name(rec_stage_number)} but the last '
         f'confirmed result is {result_stage or "absent"} — the page will not render a skipped stage. '
-        f'Stages confirm in order and an active template does not exempt stage2 (SKILL.md Step 4). '
+        f'Stages confirm in order and an active template does not exempt stage2 (generate-pptx Step 4). '
         f'Overwrite recommendations.json with the {expected} recommendations, then re-run with {reattach}.'
     )
 

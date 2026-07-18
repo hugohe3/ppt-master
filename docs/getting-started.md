@@ -125,7 +125,7 @@ The [FAQ](./faq.md) is the living troubleshooting reference — continuously upd
 
 | Situation | First thing to try |
 |---|---|
-| The AI drifts or forgets a step | Ask it to re-read `skills/ppt-master/SKILL.md`. |
+| The AI drifts or forgets a step | Ask it to re-read `skills/ppt-master/SKILL.md`, `skills/ppt-master/workflows/routing.md`, and the selected route authority. |
 | Visual quality disappoints | Switch to a large-context Claude model + `gpt-image-2` — the harness sets the floor, the model sets the ceiling. |
 | Text overflows or elements overlap | Re-run that page, or fix it in live preview; see the [FAQ](./faq.md). |
 | No image-generation API key | Zero-config web search still works as a fallback; see the [FAQ](./faq.md). |

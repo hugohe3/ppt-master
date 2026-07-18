@@ -320,7 +320,7 @@ These indexes cover library scope only. A project-root workspace is intentionall
 
 ### Override priority (implicit dispatch)
 
-When the user supplies a set of paths in their initial message, Step 3 fuses them into `<project>/templates/design_spec.md` per the table below:
+When the user supplies a set of explicit workspace-root paths, Step 3 fuses them into `<project>/templates/design_spec.md` per the table below:
 
 | User paths | Fusion behavior |
 |---|---|
@@ -384,9 +384,9 @@ This lets both AI and humans trace which segment came from where.
 
 ---
 
-## 5. Relationship with SKILL.md Step 3
+## 5. Relationship with Generate PPTX Step 3
 
-**Trigger rule stays path-based** — an explicit workspace-root path is still required ([SKILL.md Step 3](../skills/ppt-master/SKILL.md#step-3-template-option)), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a flat root containing `<workspace>/design_spec.md` when the SVGs already satisfy the current contract. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option)), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a flat root containing `<workspace>/design_spec.md` when the SVGs already satisfy the current contract. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|

@@ -256,7 +256,7 @@ Two converter design choices still shape the system:
 | `exports/` | timestamped native PPTX deliverables |
 | `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
 
-The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The production workflow in `SKILL.md` deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
+The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The Generate PPTX production workflow in [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
 
 ---
 
@@ -354,7 +354,7 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 ## Execution Discipline
 
-The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+Generate execution is governed by [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md), which owns Step 1–7 and the generation-specific rules; [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
@@ -371,7 +371,7 @@ The Strategist phase produces two artifacts that look redundant but serve differ
 - `design_spec.md` — human-readable narrative; the "why" of the deck (communication intent, audience outcome, narrative / template / visual rationale, page outline)
 - `spec_lock.md` — machine-readable execution contract; the compact communication trace plus the exact values Executor must literally use (HEX colors, font stacks, icon library, image resources, and structure mappings)
 
-Why both? Without `spec_lock.md`, the Executor would re-read `design_spec.md` per page during long decks and the LLM's context-compression drift would gradually mutate colors and fonts mid-deck. `spec_lock.md` is the **anti-drift mechanism** — the SKILL.md mandates `read_file <project>/spec_lock.md` before every page, so values stay verbatim across 20+ slides.
+Why both? Without `spec_lock.md`, the Executor would re-read `design_spec.md` per page during long decks and the LLM's context-compression drift would gradually mutate colors and fonts mid-deck. `spec_lock.md` is the **anti-drift mechanism** — [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) mandates `read_file <project>/spec_lock.md` before every page, so values stay verbatim across 20+ slides.
 
 The lock is also the per-page routing table. Beyond global colors and typography, it carries `page_rhythm` (`anchor` / `dense` / `breathing`), `page_charts` (which chart template should be adapted), image rows with placement/cropping contracts, and the locked `mode` / `visual_style` references that decide which execution rule files are loaded. `template_reuse_scope: mirror|layout` projects additionally carry `page_layouts` (which input template SVG each page inherits), unique `pptx_masters` / `pptx_layouts` definitions, and `page_pptx_layouts` assignments. `template_reuse_scope: style`, free-design, and brand-only projects use `pptx_structure.mode: flat` and omit those sections entirely rather than writing empty values. Empty entries elsewhere are meaningful signals: no chart or no image is often a design decision rather than missing data.
 
@@ -590,7 +590,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 
 ## Routes and Supporting Runbooks
 
-The authoritative registry is [`workflows/index.md`](../skills/ppt-master/workflows/index.md), with trigger precedence in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
+[`workflows/index.md`](../skills/ppt-master/workflows/index.md) is a maintainer-only inventory and does not enter the task-loading chain. Runtime route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
 
 Supporting files stay separate only to keep route contracts focused and load optional context on demand:
 

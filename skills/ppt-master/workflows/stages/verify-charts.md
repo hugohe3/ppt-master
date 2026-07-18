@@ -256,10 +256,5 @@ verify-charts: 19_flow.svg | type=sankey | mode=manual-verify | link widths cons
 
 ## After verification
 
-Continue with post-processing & export ([SKILL.md Step 7](../../SKILL.md)):
-
-```bash
-python3 skills/ppt-master/scripts/total_md_split.py <project_path>
-python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
-```
+Continue with [`generate-pptx`](../generate-pptx.md) Step 7. That authority owns
+the serial commands, gates, and success criteria for post-processing and export.

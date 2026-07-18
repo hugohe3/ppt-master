@@ -30,21 +30,12 @@ Overview when application fit must be judged in detail.
 
 ## Trigger and fusion
 
-Selection is opt-in through an explicit workspace-root path such as
-`skills/ppt-master/templates/decks/<deck_id>/`. Supplying a bare ID or reading
-the discovery index does not trigger template use. Current packages resolve
-`templates/design_spec.md`; a compatible flat-directory current-contract root
-may resolve `design_spec.md` directly. Semantic-legacy packages must be replaced
-through Create Template rather than upgraded in place. See [`SKILL.md`](../../SKILL.md) Step 3.
-
-A deck path alone supplies the complete reference. When combined with a brand
-or layout path, brand replaces the identity segment and layout may replace the
-structure segment; the deck remains the source of the application contract.
-Before a Layout override is accepted, its page roles and slot capabilities must
-support the Deck's required narrative/content roles. Treat an incompatibility
-as a fusion conflict instead of retaining an application promise the new
-structure cannot satisfy. Fusion never changes the package's stored SVGs in
-place.
+Selection uses the common explicit-path trigger in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. Supplying a bare ID
+or reading the discovery index does not trigger template use. The conditional
+[`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
+stage owns path normalization, compatibility checks, installation, and fusion.
+This file owns the Deck schema and application contract.
 
 ---
 

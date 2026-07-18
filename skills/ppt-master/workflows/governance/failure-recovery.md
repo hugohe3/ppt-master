@@ -14,7 +14,7 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 
 | Failure point | Blocking | Automatic recovery | User intervention | Resume entry |
 |---|---:|---|---|---|
-| Confirm UI launch failure | No | Re-check `confirm_ui/result.json` once, then use chat fallback | No | `SKILL.md` Step 4 chat confirmation |
+| Confirm UI launch failure | No | Re-check `confirm_ui/result.json` once, then use chat fallback | No | [`generate-pptx`](../generate-pptx.md) Step 4 chat confirmation |
 | Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same stage or chat fallback |
 | Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
@@ -64,12 +64,12 @@ Here, **final confirmation evidence** means either the explicit final confirmati
 | Last good state | Resume from |
 |---|---|
 | Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
-| Stage 2 confirmation exists, final confirmation missing | Resume [`SKILL.md`](../../SKILL.md) Step 4 substep 4, "Derive Stage 3 once from the confirmed solution, then wait for the final confirmation." |
+| Stage 2 confirmation exists, final confirmation missing | Resume [`generate-pptx`](../generate-pptx.md) Step 4 substep 4, "Derive Stage 3 once from the confirmed solution, then wait for the final confirmation." |
 | Final confirmation evidence exists; `design_spec.md` is missing, with or without a surviving `spec_lock.md` | Return to [`strategist.md`](../../references/strategist.md) §6 steps 1–4 and regenerate `design_spec.md` and `spec_lock.md` together from the source material and confirmed state; do not reconstruct the outline from an orphan lock. |
 | Final confirmation evidence exists; `design_spec.md` exists and `spec_lock.md` missing | Return to [`strategist.md`](../../references/strategist.md) §6 step 4 and regenerate `spec_lock.md`. |
 | No final confirmation evidence is available | Resume Step 4 from the latest stage evidenced by `confirm_ui/result.json`; if no stage is persisted, restart Step 4 at Stage 1. Do not infer confirmed choices from partial planning artifacts. |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](../stages/resume-execute.md) |
-| Images acquired but SVGs not started | `SKILL.md` Step 6 |
+| Images acquired but SVGs not started | [`generate-pptx`](../generate-pptx.md) Step 6 |
 | SVGs complete and checker passed, notes missing | Step 6 Logic Construction |
 | SVGs and notes complete | Step 7.1 |
 | Step 7.1 complete, export not complete | Step 7.2 |

@@ -4,18 +4,18 @@ description: Main-pipeline intake stage that gathers source material for topic-o
 
 # Topic Research Stage
 
-> Generate-PPTX intake stage. Run before SKILL.md Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document, a stable fact-provenance file, and an image folder, all shaped to feed `project_manager.py import-sources` directly.
+> Generate-PPTX intake stage. Run before [`generate-pptx`](../generate-pptx.md) Step 1 when the user supplies only a topic or requirements with no source files. Output is a research document, a stable fact-provenance file, and an image folder, all shaped to feed `project_manager.py import-sources` directly.
 
-This stage is **context-independent**: it owns source acquisition when no file exists; subsequent SKILL.md steps proceed normally with the produced materials as input.
+This stage is **context-independent**: it owns source acquisition when no file exists; subsequent [`generate-pptx`](../generate-pptx.md) steps proceed normally with the produced materials as input.
 
 ## When to Run
 
 | User-supplied input | Action |
 |---|---|
-| Topic name only (e.g. "做一个关于宫崎骏的 PPT") | Run this stage before main Step 1 |
-| Requirement description without facts (e.g. "介绍我们公司新产品") | Run this stage before main Step 1 |
-| ≥1 page of substantive content already in chat | Skip — feed chat content into SKILL.md Step 1 directly |
-| Source file attached (PDF / DOCX / URL / Markdown) | Skip — go to SKILL.md Step 1 source converter |
+| Topic name only (e.g. "做一个关于宫崎骏的 PPT") | Run this stage before Generate Step 1 |
+| Requirement description without facts (e.g. "介绍我们公司新产品") | Run this stage before Generate Step 1 |
+| ≥1 page of substantive content already in chat | Skip — feed chat content into [`generate-pptx`](../generate-pptx.md) Step 1 directly |
+| Source file attached (PDF / DOCX / URL / Markdown) | Skip — go to [`generate-pptx`](../generate-pptx.md) Step 1 source conversion |
 
 ---
 
@@ -141,7 +141,7 @@ The Research Brief is evidence-facing context, not a locked presentation contrac
 - [x] Document: `projects/<topic_slug>.md` (N sections)
 - [x] Facts: `projects/<topic_slug>.facts.json` (N external facts)
 - [x] Images: `projects/<topic_slug>/` (N files)
-- [ ] **Next**: SKILL.md Step 2 →
+- [ ] **Next**: [`generate-pptx`](../generate-pptx.md) Step 2 →
   `project_manager.py init <project_name> --format <format>`
   `project_manager.py import-sources projects/<project_name> projects/<topic_slug>.md projects/<topic_slug>.facts.json projects/<topic_slug>/*.* --move`
 ```
