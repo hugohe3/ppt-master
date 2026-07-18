@@ -165,7 +165,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
-**If `spec_lock.md` is missing**: emit `warning: spec_lock.md missing — generating without execution lock` once, then proceed using `design_spec.md` values. Expected only for legacy projects; new projects MUST have it (see [strategist.md](strategist.md) §6 step 4).
+**Missing `spec_lock.md`** → stop before Executor and report the missing gate artifact. Resume only after Strategist produces the current lock; a legacy project must complete or restart planning first. Do not generate from `design_spec.md` alone or silently downgrade (see [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2).
 
 **Forbidden — values outside the lock**:
 
@@ -211,7 +211,7 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
 
 - When `pptx_structure.mode` is `flat` (including `template_reuse_scope: style`), skip this lookup and the structured scaffold below. `pptx_masters`, `pptx_layouts`, `page_layouts`, and the corresponding SVG metadata must all be absent; each root still declares its canonical `data-pptx-page-role`.
 - With `template_reuse_scope: mirror|layout`, `pptx_structure.mode` must equal `structured`; any other or missing value is rejected. Do not migrate an invalid structured contract in place: create a new current-contract workspace through Create Template before generation resumes.
-- Read the current page row as `<master_key> | <layout_key> | <layout name>` and resolve `master_key` in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
+- Read the current page assignment as `P<NN>: <layout_key>`, resolve `layout_key` in `pptx_layouts`, then resolve that definition's `<master_key>` in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
 - On strict template use, the row and SVG contract match the selected prototype exactly.
 - On adaptive template use, retain the prototype Master. If the final composition changes fixed Layout atoms or slot topology/bounds, allocate a new key/name and update this row before completing the page.
