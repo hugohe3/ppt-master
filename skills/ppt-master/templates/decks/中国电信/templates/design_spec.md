@@ -21,13 +21,12 @@ page_count: 5
 
 ## I. Template Overview
 
-| Application contract | Definition |
+| Application context | Definition |
 | --- | --- |
 | Recurring presentation family | 政企数字化方案、转型规划、内部评审和客户汇报 |
 | Intended audiences and outcomes | 面向政企客户决策者、项目干系人与内部评审者；帮助受众理解背景与方案、形成判断，并明确下一步 |
 | Delivery and reading assumptions | 以会议讲解为主，同时需要会后流转和复核；页面应保留关键结论与必要证据，不依赖口头说明才能辨认主题 |
-| Stable narrative/page roles | 必需封面；可选目录与章节页；正文页可重复；需要正式收束时使用结束页。具体论证顺序由当前项目的沟通契约决定 |
-| Content reuse boundary | Logo、品牌口号与固定品牌图形可保留；项目标题、目录、章节名、正文、数据、来源和联系信息必须替换；原型中的示例文字不得进入成品 |
+| Representative narrative/page roles | 当前原型覆盖封面、目录、章节、开放内容和结束语；具体选页、重复、顺序与内容处理由当前项目的 Strategist 根据材料决定 |
 
 - 视觉基调为白底、通信红结构条、银灰内容承载区与少量城市线稿，强调权威、清晰和克制。
 - 结构上分为两个可复用 Master 家族：China Telecom Brand 服务封面、章节与收尾，China Telecom Content 服务目录与正文；它们按视觉体系分工，不是按单个 Layout 拆分出的重复 Master。
@@ -62,13 +61,13 @@ page_count: 5
 
 ## V. Page Roster
 
-| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots | Content policy |
-| --- | --- | --- | --- | --- | --- | --- |
-| `01_cover.svg` | China Telecom Brand | cover | Cover | 左侧标题簇、右侧品牌卡片、底部飘带 | 标题、副标题、单位、日期 | 必需起始页；品牌图形固定，演示标题信息全部替换 |
-| `02_toc.svg` | China Telecom Content | agenda | Agenda | 左侧品牌说明卡、右侧四行编号目录 | 页面标题、四个目录项、页码 | 可选；目录项按当前叙事生成，不保留原型示例 |
-| `03_chapter.svg` | China Telecom Brand | section | Section Header | 左侧章节信息、右侧品牌卡片、底部飘带 | 章节号、章节标题、章节副标题 | 可选且可重复；章节信息全部替换，品牌图形固定 |
-| `04_content.svg` | China Telecom Content | content | Title and Content | 红灰页眉与大面积浅灰开放内容区 | 栏目标、页面标题、内容对象、来源、页码 | 可重复；承载当前项目事实、论证、数据或行动，所有内容均替换 |
-| `05_ending.svg` | China Telecom Brand | closing | Closing | 左侧结束语、右侧品牌卡片、底部飘带 | 结束标题、副标题、联系信息、页码 | 可选收束页；品牌图形固定，结束语与联系信息按项目替换 |
+| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots |
+| --- | --- | --- | --- | --- | --- |
+| `01_cover.svg` | China Telecom Brand | cover | Cover | 左侧标题簇、右侧品牌卡片、底部飘带 | 标题、副标题、单位、日期 |
+| `02_toc.svg` | China Telecom Content | agenda | Agenda | 左侧品牌说明卡、右侧四行编号目录 | 页面标题、四个目录项、页码 |
+| `03_chapter.svg` | China Telecom Brand | section | Section Header | 左侧章节信息、右侧品牌卡片、底部飘带 | 章节号、章节标题、章节副标题 |
+| `04_content.svg` | China Telecom Content | content | Title and Content | 红灰页眉与大面积浅灰开放内容区 | 栏目标、页面标题、内容对象、来源、页码 |
+| `05_ending.svg` | China Telecom Brand | closing | Closing | 左侧结束语、右侧品牌卡片、底部飘带 | 结束标题、副标题、联系信息、页码 |
 
 ## VI. Assets
 

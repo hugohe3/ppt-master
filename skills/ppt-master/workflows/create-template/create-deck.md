@@ -15,7 +15,7 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 
 **Hard rule — child workflow, not a top-level route**: Create Deck executes only inside Create Template. It reuses the parent workflow's Steps 1–8 and never creates a competing entry route or second confirmation gate.
 
-**Hard rule — recurring application**: A deck owns an application contract together with integrated identity and structure. The contract states the recurring presentation family, intended audiences/outcomes, delivery/reading assumptions, stable narrative/page roles, and content reuse boundary. It is a reusable template workspace, not the user's finished content deck.
+**Hard rule — recurring application**: A deck owns descriptive application context together with integrated identity and structure. The context states the recurring presentation family, intended audiences/outcomes, delivery/reading assumptions, and representative narrative/page roles. It helps later AI planning understand the resource, but it does not prescribe which prototypes or visible content a future project must keep. It is a reusable template workspace, not the user's finished content deck.
 
 ## Invocation Points
 
@@ -25,12 +25,12 @@ Enter this child workflow only after [`Create Template`](../create-template.md) 
 
 ## 1. Deck Input Interpretation
 
-Use Create Template Step 1 for source ingestion and replication-mode eligibility. Interpret source evidence across all three segments:
+Use Create Template Step 1 for source ingestion and internal creation-strategy feasibility. Interpret source evidence across all three segments:
 
 - Identity: color, typography, logo, visual voice, and icon style, with fact/suggestion provenance preserved in the brief.
 - Structure: canvas, page grammar, Master/Layout families, slot geometry, semantic text roles, alignment/wrapping/capacity behavior, page types, image behavior, and density rhythm.
-- Application: recurring situations, intended audiences/outcomes, delivery or reading assumptions, stable narrative/page roles, and the boundary between fixed, replaceable, optional, and example-only content.
-- `standard` and `fidelity` author a new complete system; source topology is not output topology. `mirror` preserves only validated package/contract facts in a new workspace and never modifies the source.
+- Application: recurring situations, intended audiences/outcomes, delivery or reading assumptions, representative narrative/page roles, and the actual source-page vocabulary. Do not assign required/optional/repeatable status or fixed/replaceable/example-only policy.
+- Internally, `standard` and `fidelity` author a new complete system; source topology is not output topology. `mirror` preserves only validated package/contract facts in a new workspace and never modifies the source. The AI derives this implementation from the natural-language intent; it is not a user mode selector.
 
 Direct conversation text, pasted requirements, converted documents/websites, images, and supplied assets are first-class evidence under Create Template Step 1. In a mixed bundle, combine the applicable identity, structure, and application evidence without erasing provenance. Exact user-authored instructions remain decisions whether they arrive in chat or a user-written brief file; vague prose remains suggested interpretation until the shared confirmation gate.
 
@@ -46,12 +46,11 @@ Add these child-owned requirements to Create Template Step 2:
 | Recurring presentation family | Required; identify the repeatable situations this Deck serves rather than listing every plausible use |
 | Intended audiences and outcomes | Required; state who the recurring users/recipients are and what the presentation should enable |
 | Delivery and reading assumptions | Required; state whether the family is usually presented, closely read, handed off, or used in a mixed way |
-| Stable narrative/page roles | Required; identify roles that must or may recur without forcing one page count/order |
-| Content reuse boundary | Required; distinguish fixed, replaceable, optional, and example-only starting content |
+| Representative narrative/page roles | Required; describe the roles present in the source or useful to the recurring family without assigning future inclusion rules |
 | Identity | Required; primary color plus supported palette, typography, logo policy, visual voice, and icon style |
 | Canvas and page grammar | Required; exact canvas, page types, variants, grids, zones, density rhythm, and image behavior |
 | Native structure | Required; Master families, Layout ownership, slot vocabulary, and zero-slot Layouts where intentional |
-| Replication mode | Required; `standard`, eligible `fidelity`, or eligible `mirror` under Create Template Step 1 |
+| Creation intent | Required as natural-language prose: what should remain recognizable, what should be rebuilt into a reusable system, and whether the source page set should be preserved broadly or distilled. The AI derives `replication_mode` internally. |
 | Adopted assets | Optional; list included and excluded candidates with reasons |
 
 Write this complete schema:
@@ -84,13 +83,14 @@ page_count: <N>
 ## VII. Placeholder Overrides
 ```
 
-Omit Typography only when the shared default is intentionally used. Omit Assets and Placeholder Overrides when none exist. Do not restate generic SVG constraints, layout libraries, font-ratio bands, or the canonical placeholder table.
+`replication_mode` is required machine provenance, not a user-facing choice. Omit Typography only when the shared default is intentionally used. Omit Assets and Placeholder Overrides when none exist. Do not restate generic SVG constraints, layout libraries, font-ratio bands, or the canonical placeholder table.
 
-Write Template Overview as the application contract. In Page Roster, add one
-content-policy statement per prototype: supported narrative role,
-required/optional/repeatable status, and which visible content is fixed,
-replaceable, or example-only. These policies guide downstream selection but do
-not force future decks to retain the template page count or order.
+Write Template Overview as descriptive application context. In Page Roster,
+describe each prototype's observed or intended role, visual character,
+reusable slots, and structural capacity. Do not add required/optional/
+repeatable status or fixed/replaceable/example-only content policy; downstream
+Strategist inspects the actual template and current content and decides what to
+use.
 
 ## 3. Author or Materialize the Deck
 
@@ -115,7 +115,7 @@ In addition to Create Template Steps 5–6, verify:
 
 - `templates/design_spec.md` contains `deck_id`, `kind: deck`, `summary`, `primary_color`, canvas fields, `replication_mode`, `native_structure_mode: structured`, and `page_count`; `summary` names the recurring presentation family/outcome rather than only visual tone.
 - `deck_id` matches the confirmed workspace ID in library scope.
-- Template Overview, Color Scheme, Signature Design Elements, and Page Roster exist; Template Overview covers every application-contract field, every roster row states its content policy, and conditional sections match real choices/assets.
+- Template Overview, Color Scheme, Signature Design Elements, and Page Roster exist; Template Overview describes the recurring application context, every roster row factually describes its prototype and slots without future-use policy, and conditional sections match real choices/assets.
 - Every identity color is `#RRGGBB`; the primary table row matches frontmatter, and SVG paint follows the confirmed identity.
 - Every SVG in the roster satisfies the shared Master/Layout/slot contract and the roster is bidirectionally complete.
 - Every referenced image/icon exists under the same workspace; this workflow created no optional directory solely to leave it empty. Pre-existing initialized-project scaffolding is allowed and remains untouched.

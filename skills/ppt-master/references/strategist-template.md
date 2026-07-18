@@ -8,46 +8,56 @@ Conditional extension for applying an installed Brand/Layout/Deck workspace to S
 
 ---
 
-## 1. Reuse Scope and Adherence
+## 1. AI-Authored Template Application Plan
 
 **Template vs preset**: A style mention and a template directory are different inputs. Bare names and style words map to a visual-style preset; only the installed workspace activates the rules below. Its fused `<project_path>/templates/design_spec.md` is the template-design source.
 
 **Legacy template boundary**: A template containing `native_structure.json`, `source_template.pptx`, missing root Master identity, direct atomic placeholders, or old `baseline` / `preserve` / distillation metadata is not a Generate Step 3 input. Create a current workspace through [`create-template`](../workflows/create-template.md), preferably from the original PPTX when native topology matters. Do not mutate the input in place.
 
-**Template reuse confirmation**: Surface `template_reuse_scope` only for an installed `kind: deck` or `kind: layout` workspace. Omit it for brand-only workspaces.
+**No template-mode confirmation**: Never ask the user to select `template_reuse_scope`, `template_adherence`, `mirror`, `layout`, `style`, `strict`, or `adaptive`. These are internal execution values for the current exporter. The user communicates intent in natural language; explicit instructions such as “全部原样保留”, “从中选合适的页面”, “可以重组”, or “只参考视觉” are authoritative. Without an explicit instruction, Strategist decides.
 
-| Reuse scope | Planning and export behavior |
+Immediately before authoring the Stage-2 solution, inspect:
+
+- the installed `design_spec.md`, actual Page Roster, and relevant SVG prototypes;
+- the current communication contract, source obligations, planned page count, and content shape of every planned page;
+- the user's natural-language instructions, including any page names/numbers or elements they explicitly require.
+
+Then author one plan that decides all of the following without presenting an option menu:
+
+- whether the full prototype set, a relevant subset, or only the design language is useful;
+- which prototype each generated page starts from, which template pages are skipped, and which prototypes are repeated or reordered;
+- whether content is inserted directly, reorganized inside the existing structure, or rebuilt while retaining only visual language;
+- which visible elements must remain literal because the user said so, and which may change to serve the current content.
+
+Template size is evidence, not policy. A short template may use every prototype when the content genuinely fits; a 20–30 page source may contribute only a few suitable pages, or several pages may be reorganized into a new sequence. Never infer that all pages must be kept or that visible sample content is protected merely because it exists in the template.
+
+Record the resulting exporter plan internally:
+
+| Internal value | When the authored plan requires it |
 |---|---|
-| `mirror` | Mirror workspaces only. Start from the full selected page, preserve literal visuals and text-node topology, and replace only allowed visible text values. |
-| `layout` | Reuse the template Master/Layout system and input prototypes, but allow project-controlled reflow/re-skinning and explicit adaptive Layouts. |
-| `style` | Reuse only color, typography, decoration language, and rhythm. Plan `pptx_structure.mode: flat` with no template structure mappings. |
+| `template_reuse_scope: mirror` | The workspace has `replication_mode: mirror`, the plan calls for literal page reuse, and each page changes only allowed visible text values while preserving visual and text-node topology. |
+| `template_reuse_scope: layout` | The plan reuses the template Master/Layout system and prototypes while allowing current-project content and appearance decisions. |
+| `template_reuse_scope: style` | The plan uses only color, typography, decoration language, or rhythm and intentionally creates flat free-design pages. |
+| `template_adherence: strict` | Every structured page fits an existing prototype contract without changing its Layout identity or slot topology. Mandatory for `template_reuse_scope: mirror`. |
+| `template_adherence: adaptive` | Structured reuse remains useful, but at least one page needs a new explicit Layout under the selected Master. |
 
-**Deterministic language mapping**: “不要严格复用”, “只参考风格”, “参考这个风格”, and “不必照搬版式” recommend `style` unless the user explicitly asks to retain the layout system, in which case recommend `layout`. “原样复刻”, “替换内容”, and “保持模板页面外观” recommend `mirror` only when `replication_mode: mirror` is available. A bare workspace path with no stronger language defaults to `layout`.
-
-For `mirror` / `layout`, surface `template_adherence`. Hide it for `style`.
-
-| Value | Planning and export behavior |
-|---|---|
-| `strict` | Map every page to one template SVG. Keep its explicit Master/Layout/slot contract and output Layout key unchanged. |
-| `adaptive` | Map every page to the closest template SVG. Keep the template Master contract, but allow a new explicit Layout key when content requires a structural adaptation. |
-
-**Default — layout + adaptive**: For a workspace path without stronger language, recommend `layout` and `adaptive`. Preselect `strict` only when the user explicitly asks to keep the selected Layout contract unchanged. Record the confirmed scope in `design_spec.md §I` and `spec_lock.md pptx_structure`; record adherence only for `mirror` / `layout`.
+Write the derived values to `design_spec.md §I` and `spec_lock.md pptx_structure`; omit `template_adherence` for `style`. Do not put these values in `recommendations.json`, the Confirm UI, or `result.json`. Stage 2 may summarize the selected page/prototype plan as part of the complete deck solution, but it must not reopen template use as a separate user control.
 
 ---
 
 ## 2. Scenario Fit and Inherited Design
 
-**Mandatory — consume the stored contract at the decision point**: Immediately before recommending reuse for an installed `kind: deck`, re-read `<project_path>/templates/design_spec.md`. Compare its five `## I. Template Overview` application-contract rows with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Compare every `## V. Page Roster` content-policy value with the required narrative/page roles, including required / optional / repeatable status and fixed / replaceable / example-only content. Treat the contract as applicability evidence, never as the current project's truth; do not copy it into blank Stage-1 fields or infer fields it does not declare. For `kind: layout`, no application contract exists: compare only the roster's structural roles, slots, and capacity.
+**Mandatory — inspect the stored resource at the decision point**: For an installed `kind: deck`, re-read `<project_path>/templates/design_spec.md` and compare its descriptive Template Overview with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Compare the actual Page Roster and SVG prototypes with required narrative roles, content shapes, slots, and capacity. The template describes what exists; it never overrides the current project and it does not own required/optional/repeatable or fixed/replaceable/example-only policy. For `kind: layout`, compare only structural roles, slots, and capacity.
 
-| Scope | Appropriate when |
+| Internal scope | Appropriate when |
 |---|---|
 | `mirror` | The artifact repeats a known form; literal appearance and text topology are requirements; new content fits existing roles and slots. |
 | `layout` | The structural system and brand continue, but the communication outcome requires reflow, new emphasis, or an adaptive Layout. |
 | `style` | Only visual identity is reusable, or the outcome requires a different sequence, density, or composition system. |
 
-When the communication contract conflicts with the workspace, surface the mismatch. Template capability constrains what is legal; scenario fit decides what is useful.
+When the communication contract conflicts with the workspace, choose and state the best-fit application plan in the complete Stage-2 solution. Surface the mismatch only when it materially limits the result; do not respond with a mode questionnaire. Template capability constrains what is legal; scenario fit decides what is useful.
 
-> Note: `content_divergence` controls source reorganization; `template_reuse_scope` controls the reused layer; `template_adherence` controls strictness inside `mirror` / `layout`.
+> Internal note: `content_divergence` controls source reorganization; the AI-derived `template_reuse_scope` records the reused layer; `template_adherence` records whether a structured plan keeps or extends existing Layout identities.
 
 **Template design precedence**: User overrides win. Otherwise lock declared colors and title/body font stacks from the fused template `design_spec.md` directly; skip generic color/font candidates and do not adjust template values to fit an industry default. Keep the workspace's declared icon and image constraints when producing those conditional plans.
 
@@ -55,7 +65,7 @@ When the communication contract conflicts with the workspace, surface the mismat
 
 ## 3. Structured Lock Planning
 
-For `mirror` / `layout`, write `pptx_structure.mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows.
+For `mirror` / `layout`, write `pptx_structure.mode: structured` plus `template_adherence: strict|adaptive`; mirror always writes `strict`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows.
 
 - **Master roster**: Write one `pptx_masters` row per Master as `<master_key>: <picker name>` and copy the workspace's prototype roster. Keys use 1–64 ASCII letters, digits, dots, underscores, or hyphens, start with a letter/digit, and contain no spaces; human-readable spaces belong only in the picker name. Master visuals are root-level atomic elements and may never be `<g>`.
 - **Reusable Layout roster**: Write every unique Layout once as `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`. Copy installed `template:<basename>` sources, including currently unused Layouts. A new adaptive Layout uses its first generated `P<NN>` as source. Reuse a key only when fixed atoms and slot ids/types/indices/bounds/binding modes are identical. Name authored keys after composition, never page topic. A Layout may intentionally have zero slots; do not manufacture an empty `utility` kind or full-page fake slot.

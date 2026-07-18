@@ -30,7 +30,7 @@ Choose the workspace kind by what must be reused:
 |---|---|---|
 | **Brand** | Color, typography, logo, voice, icon style | Identity constraints only. Generated pages remain Slide-local under one clean project Master and Blank Layout. |
 | **Layout** | Brand-neutral page grammar, Master/Layout identities, semantic text roles, slots, and layout roster | A structured deck with reusable native Masters, named Layouts, and placeholders; identity, reading-mode typography, and communication application are resolved separately. |
-| **Deck** | A recurring presentation family: application rules, identity, page structure, and starting-content policy | A structured deck with the template's integrated identity, reusable native structure, and scenario-aware starting rules. |
+| **Deck** | A recurring presentation family: descriptive application context, identity, page structure, and actual prototypes | A deck whose page/prototype application plan is derived by AI from the template and current content. |
 
 Theme, Slide Master, Slide Layout, and Placeholder are native PowerPoint
 objects, not additional workspace kinds. Brand and Layout rules are compiled
@@ -101,19 +101,21 @@ Template workspace: projects/acme_template/
 
 The path labels are optional; the paths themselves are mandatory. If two paths have the same kind, the workflow stops at the existing conflict-resolution gate instead of choosing one silently.
 
+You do not need to choose a template-use mode. By default, Strategist reads the actual Master/Layout/prototype roster and current content, then decides which pages to select, repeat, skip, reorder, or reorganize. If you care about a specific boundary, state it in ordinary language in the same request—for example, “keep the cover and closing page exactly, choose suitable middle pages yourself” or “use only the visual language”. That explicit sentence wins over AI judgment.
+
 ### Template catalog
 
 Templates are organized into three kinds, each with a discovery index:
 
 - [`brands_index.json`](../skills/ppt-master/templates/brands/brands_index.json) — identity-only workspaces: color / typography / logo / voice / icon style, with no SVG page roster
 - [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json) — structure-only workspaces: canvas / page grammar / page types / SVG roster, with identity selected downstream
-- [`decks_index.json`](../skills/ppt-master/templates/decks/decks_index.json) — recurring presentation applications with integrated identity, structure, and content-reuse rules
+- [`decks_index.json`](../skills/ppt-master/templates/decks/decks_index.json) — recurring presentation applications with integrated identity, structure, and factual prototype descriptions
 
 Ask "what templates are available?" for a readable list with workspace paths. The indexes are the current source of truth; the kind-specific READMEs define their contracts. Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
-Free design is **not** "no structure" or "no style" — the Strategist still plans the narrative, hierarchy, and visual system for that specific deck. Its generated pages use `pptx_structure.mode: flat`, so every visible object remains Slide-local. A Brand-only workspace also stays `flat` while supplying identity constraints. Layout and Deck workspaces expose a reusable Master / Layout / slot contract: confirmed `mirror` or `layout` use it through `pptx_structure.mode: structured`, while confirmed `style` intentionally discards native structure and generates `flat`.
+Free design is **not** "no structure" or "no style" — the Strategist still plans the narrative, hierarchy, and visual system for that specific deck. Its generated pages use `pptx_structure.mode: flat`, so every visible object remains Slide-local. A Brand-only workspace also stays `flat` while supplying identity constraints. Layout and Deck workspaces expose a reusable Master / Layout / slot contract. Strategist inspects the real prototypes and current content, then automatically decides whether to use that structure or only its visual language.
 
 > Rule of thumb: use a Brand workspace when identity must be fixed; use a Layout workspace when brand-neutral structure should be reused while purpose remains open; use a Deck when a branded structural system or recurring communication application should travel as one contract. Use free design when composition should grow from the current content.
 
@@ -161,15 +163,15 @@ The entry name always remains **Create Template**. It dispatches exactly one chi
 
 You may provide direct conversation text, pasted requirements, Markdown/TXT, DOCX/PDF/HTML/URL, websites, images/screenshots, logo/icon/font assets, PPTX/SVG files, or any useful combination. The workflow analyzes every applicable channel, keeps source provenance, and surfaces conflicts in the mandatory brief instead of silently choosing one source. Exact values authored by you are decisions whether they arrive in chat, pasted text, or your own brief file; a file carrier does not turn them into facts. Facts require independently traceable external authority or machine-observable source metadata. Visual estimates and vague-text interpretations remain suggestions until confirmed.
 
-**When an existing deck's native structure matters, hand over the original `.pptx` file.** The importer reads OOXML directly and extracts the Master, Layout, placeholder, theme, native-shape, and reusable-asset facts that are actually present and supported into layered analysis references. In `standard` / `fidelity`, Template_Designer uses them as visual reference and authors a new SVG roster plus a new Master/Layout/slot system. In mirror, it materializes those validated source facts into a new workspace without inventing missing topology or design intent. The original PPTX remains immutable analysis evidence and is not packaged into the new template.
+**When an existing deck's native structure matters, hand over the original `.pptx` file.** The importer reads OOXML directly and extracts the Master, Layout, placeholder, theme, native-shape, and reusable-asset facts that are actually present and supported into layered analysis references. Tell the AI in ordinary language what result you want—for example, “preserve it as-is”, “extract a reusable Master/Layout system”, or “keep the visual language but redesign the structure”. It then chooses the compatible internal implementation. The original PPTX remains immutable analysis evidence and is not packaged into the new template.
 
 You can also design from scratch from a brand guideline: provide a logo, primary color HEX, fonts, tone description, and a few mood references — the AI will design the page skeletons on the spot. This suits brands that don't yet have a finished PPT, only a VI manual.
 
-> **Evidence boundary:** images, screenshots, text, documents, websites, and loose assets can independently drive `standard`. `fidelity` requires PPTX/SVG page evidence, while `mirror` requires an original PPTX or a complete current structured-SVG contract. Supplemental sources may clarify mirror evidence but cannot invent or change its native topology.
+> **Evidence boundary:** images, screenshots, text, documents, websites, and loose assets can drive a newly authored template. Broad source-aligned coverage requires PPTX/SVG page evidence; literal native preservation requires an original PPTX or a complete current structured-SVG contract. Supplemental sources may clarify preservation intent but cannot invent or change native topology.
 
 ### Step 2 — The template brief (mandatory confirmation)
 
-The workflow does not silently infer values — before generation it lists these items and waits for your reply:
+Before generation, the workflow writes one concise natural-language proposal and waits for corrections or acceptance. It does **not** ask you to choose template modes, fidelity enums, or page/content policies.
 
 | Field | Notes |
 |-------|-------|
@@ -178,16 +180,10 @@ The workflow does not silently infer values — before generation it lists these
 | **Selected child workflow** | Create Brand / Create Layout / Create Deck, fixed by the entry dispatch |
 | **Template ID** | Portable template identity; in library scope it is also the directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
 | **Display name** | Human-readable name for documentation |
-| **Category** | One of `brand` / `general` / `scenario` / `government` / `special` |
-| **Use cases** | Annual report / consulting / defense / government briefing / ... |
-| **Tone summary** | One line, e.g. "modern, restrained, data-driven" |
-| **Theme mode** | Create Layout/Create Deck only: light / dark / gradient / ... |
-| **Canvas format** | Create Layout/Create Deck only; default `ppt169` (16:9), with other formats specified up front |
-| **Replication mode** | Create Layout/Create Deck only: `standard` (default compact, brief-driven roster; may include a small number of explicitly required distinct variants) / `fidelity` (broader source-aligned coverage of useful semantic families) / `mirror` (one materialized prototype per source slide). `standard` / `fidelity` author new SVG semantics; mirror preserves only validated facts already present in the source package. Layout mirror is available only when that source contract is already brand-neutral and application-neutral. |
-| **Native structure facts** | Create Layout/Create Deck only: the brief reports source Master/Layout counts, parent relationships, placeholder identities, and multi-master status. `standard` / `fidelity` treat them as reference only; mirror maps the supported facts one-to-one into the current `structured` contract. |
-| **Visual fidelity** | Create Layout/Create Deck only; required for `standard` / `fidelity` when a reference exists. Choose `literal` or `adapted`. **Not asked for `mirror`** — mirror preserves the supported source visual. |
-| **Keywords** | 3–5 tags for index lookup |
-| Theme color / design notes / asset list | Optional — can be auto-extracted from the source |
+| **Template context** | One proposed category, use case, display name, tone summary, and index keywords; you may correct the prose directly |
+| **Canvas and visual direction** | Create Layout/Create Deck only: the proposed canvas, light/dark behavior, identity, and source-derived visual rules |
+| **Creation plan** | What the AI will preserve, rebuild, simplify, or extract; how broad the prototype set will be; and how native structure will be handled—all described in ordinary language |
+| **Source facts and assets** | Observable Master/Layout facts, supported native features, adopted assets, exclusions, and any material limitation |
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
@@ -195,24 +191,15 @@ Before either scope writes final files, one hard preflight resolves the required
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
-### Step 3 — Create Layout/Create Deck: `standard`, `fidelity`, or `mirror`?
+### Step 3 — The AI derives the implementation
 
-This is the most easily confused decision when deriving a structured template. Create Brand skips it because identity-only work has no SVG roster or native structure.
+You do not select a creation mode. The AI translates the confirmed prose into one internal strategy so deterministic tools can run:
 
-| | **standard** | **fidelity** | **mirror** |
-|---|---|---|---|
-| Output pages | Usually 4–6: cover / chapter / ending, optional TOC, and one or a small explicitly required set of content Layouts | broader useful semantic-family coverage — count driven by the source evidence | one materialized prototype per source slide (1:1 roster) |
-| Abstraction | High — clean, reusable skeleton | Medium — semantic source families redesigned with cleanup | None at the topology level; only mechanical structured-contract normalization |
-| Authoring placeholders | Yes (`{{TITLE}}`, `{{CONTENT_AREA}}`, …) | Yes | Literal text may remain, but imported native content slots still carry semantic metadata |
-| Best for | You want "tone + compact skeleton", including a few brief-required structures, to generate brand-new decks later | The source PPTX itself is a customized layout library and broader source-driven coverage matters | Someone else's polished deck is great as-is, you want every page available as a reference |
-| Typical use | Building a base brand template | Replicating a 20-variant government briefing layout set | Keeping all 50 source compositions available as faithful prototypes |
-| Source requirement | None | PPTX or SVG visual reference | PPTX, or SVGs with a complete explicit structure contract |
-| Decoration complexity | Usually simpler | Must preserve sprite-sheet crop structure | Preserves literal geometry while adding explicit layer ownership |
+- a compact reusable system when the request calls for distillation;
+- broader source-aligned coverage when the source itself contains useful variants;
+- literal materialization when the request calls for preservation and the source has a complete supported structure contract.
 
-`mirror` cannot preserve identity/application rules while also producing a
-brand-neutral, application-neutral Layout. Choose `standard` / `fidelity` when
-those rules should be removed and a new Layout authored; choose Create Deck
-mirror when they should remain literal.
+The resulting frontmatter still records `replication_mode: standard|fidelity|mirror` for tool compatibility and audit. It is an implementation record, not a user-facing choice. A brand-neutral Layout cannot literally preserve brand/application facts; the AI either re-authors it as a Layout or keeps those facts in a Deck according to the requested result.
 
 **About sprite sheets**: PPTX-exported assets are often a single large image referenced from multiple slides, each cropping a different region via nested `<svg viewBox=...>` wrappers. In `fidelity` and `mirror` modes this nesting must be preserved — you cannot flatten it to a bare `<image>`, or the crop is lost and the page misaligns. The workflow validates this automatically.
 
@@ -234,7 +221,7 @@ the designer writes that brief against the published roster.
 
 **Mirror graph boundary**: mirror preserves the complete supported source Master/Layout graph. It emits one complete prototype per source slide and one definition-only `layout_<layout_key>.svg` prototype for every source Layout unused by those slides. The latter registers in PowerPoint through the independent Layout roster without becoming a published page; its parent Master is retained with it. Preflight stops only when required source facts or supported geometry are missing, never merely because a Layout is unused.
 
-**How a mirror-authored workspace is consumed**: source-to-workspace `replication_mode: mirror` is a capability, not the project choice. After the open communication contract is confirmed, Stage 2 first compares a Deck's stored application contract with the current audience, outcome, and content roles. It recommends `mirror` only for a recurring artifact whose new content fits the existing page roles and text topology; use `layout` when compatible structure should continue but content needs reflow, and `style` when only identity should carry over or the argument needs a different structure. If `mirror` is confirmed, the Strategist picks one prototype per project page and the Executor copies that complete SVG and edits only allowed visible text values while preserving decoration, sprite crops, geometry, and normalized structured declarations. This still does not require the source page count or order. Mirror preserves supported appearance, not the source PPTX group-editing hierarchy.
+**How a mirror-authored workspace is consumed**: source-to-workspace `replication_mode: mirror` is a capability, not a project choice. Strategist inspects the actual prototypes, current content, and any explicit instruction, then decides which pages to select, repeat, skip, or reorder and whether literal, structural, or visual-only reuse is appropriate. Literal reuse copies a complete prototype and edits only allowed visible text values while preserving decoration, sprite crops, geometry, and normalized structured declarations. This never requires the source page count or order.
 
 ### Step 4 — Validation, review export, registration, and discovery
 
@@ -247,10 +234,7 @@ After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-maste
 
 Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option): provide the workspace root before Step 3 runs, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
-When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
-
-- **adaptive** — choose one template SVG per page; keep its Master and assign a new explicit Layout key during authoring when fixed Layout atoms or slot topology/bounds must change
-- **strict** — choose one template SVG per page and keep its Master/Layout/slot contract unchanged
+When a Deck/Layout template is selected, Strategist automatically authors the page/prototype plan. It may use the whole roster or a subset, repeat or reorder prototypes, and reorganize content where needed. `strict` / `adaptive` remain internal exporter values and do not appear as confirmation options.
 
 ### Verify that Master and Layout were really applied
 

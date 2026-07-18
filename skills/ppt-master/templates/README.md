@@ -21,10 +21,10 @@ PowerPoint package objects are compilation targets, not additional template
 kinds. Theme values and identity assets are projected from resolved identity
 rules supplied by Brand, Deck, or the current project; Layout rules project
 into Master/Layout/Placeholder topology, semantic text roles, and
-spatial behavior; Deck combines both with purpose-specific starting content
-and usage rules. Downstream `layout` scope resolves final placeholder formatting
-with the confirmed identity, reading mode, and type scale; `mirror` preserves
-literal source formatting. A compiled Slide Master may therefore contain both
+spatial behavior; Deck combines both with descriptive recurring-application
+context and actual prototype examples. Downstream AI planning decides which
+prototypes and content to use, then records the required exporter values.
+A compiled Slide Master may therefore contain both
 structural geometry and brand visuals even though their source rules remain
 separately owned.
 
@@ -43,13 +43,14 @@ by the user or an exact validated Create Template handoff.
 | Axis | Values | Meaning |
 |---|---|---|
 | Template kind | `brand` / `layout` / `deck` | Which reusable contract the package owns: identity, brand-neutral structure, or a complete recurring application |
-| Creation mode | `standard` / `fidelity` / `mirror` | Create Layout/Create Deck only: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; Layout mirror additionally requires a source contract already inside the brand-neutral, application-neutral Layout boundary; Create Brand is N/A |
-| Downstream adherence | `strict` / `adaptive` | Preserve the selected Layout contract, or allow explicit new Layout identities |
-| PPTX structure | `flat` / `structured` | Free-design, brand-only, and confirmed `style` stay Slide-local; confirmed `mirror` / `layout` compile declared Masters and Layouts |
+| Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
+| Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
+| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; style-only, brand-only, and free design remain Slide-local |
 
-These axes must not be used as synonyms. In particular, a mirror-created deck
-is still an ordinary reusable `deck` package after creation; it does not force
-future presentations to keep the source page count or order.
+These axes must not be used as synonyms or exposed as a user mode matrix. In
+particular, a mirror-created deck is still an ordinary reusable `deck` package
+after creation; it does not force future presentations to keep the source page
+count or order.
 
 ## Workspace contract
 
