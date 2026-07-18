@@ -13,6 +13,8 @@ Main entry point for project setup and validation.
 ```bash
 python3 scripts/project_manager.py init <project_name> --format ppt169
 python3 scripts/project_manager.py import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...]
+python3 scripts/project_manager.py scaffold-spec <project_path>
+python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
 python3 scripts/project_manager.py info <project_path>
 ```
@@ -28,6 +30,17 @@ Notes:
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.
 - `--move` and `--copy` are mutually exclusive.
+- `scaffold-spec` creates `design_spec.md` from
+  `templates/scaffolds/design_spec.md`; `scaffold-lock` creates `spec_lock.md`
+  from `templates/scaffolds/spec_lock.md`. Both substitute project/canvas
+  metadata deterministically and refuse to overwrite an existing artifact.
+- `validate` parses the existing Markdown artifacts against
+  `templates/schemas/design_spec.schema.json` and
+  `templates/schemas/spec_lock.schema.json`. It reports missing sections and
+  fields, illegal enums, malformed page keys, and unmet conditional sections;
+  it does not rewrite either artifact. Versioned scaffolds carry the schema
+  marker. Markerless legacy artifacts are left on their prior validation path
+  with a warning; malformed or unsupported markers are errors.
 - PPTX-family inputs are enriched automatically under `analysis/` with
   per-deck `<stem>.identity.json` / `<stem>.slide_library.json` plus the shared
   multi-deck index `source_profile.json` (`decks[]`).
@@ -47,6 +60,8 @@ Examples:
 
 ```bash
 python3 scripts/project_manager.py init my_presentation --format ppt169
+python3 scripts/project_manager.py scaffold-spec projects/my_presentation_ppt169_20251116
+python3 scripts/project_manager.py scaffold-lock projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
 ```

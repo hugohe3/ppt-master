@@ -1,4 +1,4 @@
-> See shared-standards.md for common technical constraints.
+> See [`shared-standards-core.md`](./shared-standards-core.md) for common technical constraints.
 
 # Image Layout Specification
 
@@ -6,14 +6,14 @@ Layout rules for pages where the image is placed **side-by-side with body text**
 
 **Core principle (side-by-side)**: compute container layout from the image's original aspect ratio so the image displays completely — no excess whitespace, no cropping.
 
-> **Scope**: this spec applies to *side-by-side* intent only. Other intents (hero / full-bleed, atmosphere / background, accent / inline) use full-bleed placement where ratio alignment is not a constraint and cropping is expected — the ratio→split table below does NOT apply. See `references/strategist.md` §h for intent selection.
+> **Scope**: this spec applies to *side-by-side* intent only. Other intents (hero / full-bleed, atmosphere / background, accent / inline) use full-bleed placement where ratio alignment is not a constraint and cropping is expected — the ratio→split table below does NOT apply. See `references/strategist-image.md` for intent selection.
 
 ---
 
 ## Layout Decision Flow
 
 ```
-1. Decide narrative intent (hero / atmosphere / side-by-side / accent) — see strategist.md §h
+1. Decide narrative intent (hero / atmosphere / side-by-side / accent) — see strategist-image.md
 2. If intent = side-by-side: continue below. Otherwise: compose per narrative; this spec does not apply.
 3. Get image original dimensions → Calculate ratio (width/height)
 4. Select layout type based on ratio

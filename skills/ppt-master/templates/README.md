@@ -74,17 +74,18 @@ readable; directory shape alone does not indicate legacy Master/Layout semantics
 
 ## Design specification references
 
-[`design_spec_reference.md`](./design_spec_reference.md) is the project-level
-Strategist reference for the generated presentation's full specification and
-content outline. Reusable template `design_spec.md` files are deliberately
-smaller: they contain portable metadata and only the identity, structure, or
-application rules owned by that package. General SVG/PPT rules remain
-centralized in
-[`shared-standards.md`](../references/shared-standards.md).
+[`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) and
+[`scaffolds/design_spec.md`](./scaffolds/design_spec.md) own the machine
+structure and starting artifact; [`design_spec_reference.md`](./design_spec_reference.md)
+is their compact authoring index. Reusable template `design_spec.md` files are
+deliberately smaller: they contain portable metadata and only the identity,
+structure, or application rules owned by that package. General SVG rules live
+in [`shared-standards-core.md`](../references/shared-standards-core.md), with
+effects and PowerPoint interfaces loaded only when triggered.
 
 ## Visualization Templates
 
-The `charts/` directory contains 57 standardized visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, strategic frameworks, and system architecture diagrams:
+The `charts/` directory contains the registered visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, strategic frameworks, and system architecture diagrams:
 
 - KPI Cards
 - Bar Chart / Stacked Bar Chart

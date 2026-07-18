@@ -30,7 +30,7 @@ Titles read as beats that advance the arc ("Then the numbers stopped adding up")
 
 ## 3. Speaker-notes register
 
-Conversational narration — like talking with the audience, not reading a report. Scenario-conflict-resolution per page. Metaphors make the abstract tangible ("like adding a turbocharger"). Plain rhetorical questions create suspense; bridge each page from the prior one. Conversational data ("nearly a third", "more than doubled"). (Common framework: [`executor-base.md §8`](../executor-base.md).)
+Conversational narration — like talking with the audience, not reading a report. Scenario-conflict-resolution per page. Metaphors make the abstract tangible ("like adding a turbocharger"). Plain rhetorical questions create suspense; bridge each page from the prior one. Conversational data ("nearly a third", "more than doubled"). (Common framework: [`executor-notes.md`](../executor-notes.md) §1.)
 
 ---
 

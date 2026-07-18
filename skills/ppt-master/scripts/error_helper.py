@@ -112,7 +112,7 @@ class ErrorHelper:
                 'Remove <foreignObject> elements',
                 'Use <text> + <tspan> for manual line wrapping',
                 'This is a project technical specification requirement',
-                'Reference: references/shared-standards.md'
+                'Reference: references/shared-standards-core.md'
             ],
             'severity': 'error'
         },
@@ -121,7 +121,7 @@ class ErrorHelper:
             'solutions': [
                 'Remove clip-path from shapes / groups / text',
                 'Draw the target geometry directly with the matching native element: <circle> / <ellipse> / <rect rx="..."> / <polygon> / <path>. A rect clipped to a circle is just a <circle>.',
-                'clip-path on <image> is conditionally allowed — see references/shared-standards.md §1.2'
+                'clip-path on <image> is conditionally allowed — see references/shared-standards-core.md §1.2'
             ],
             'severity': 'error'
         },
@@ -130,7 +130,7 @@ class ErrorHelper:
             'solutions': [
                 'Define the referenced <clipPath id="..."> inside <defs>',
                 'The clipPath must contain exactly one shape child (circle / ellipse / rect with rx,ry / path / polygon)',
-                'Reference: references/shared-standards.md §1.2'
+                'Reference: references/shared-standards-core.md §1.2'
             ],
             'severity': 'error'
         },
@@ -181,14 +181,14 @@ class ErrorHelper:
             'severity': 'error'
         },
         # Note: <marker> and marker-end are NO LONGER forbidden — they are
-        # conditionally allowed (see references/shared-standards.md §1.1).
+        # conditionally allowed (see references/shared-standards-core.md §1.1).
         # The converter maps qualifying markers to native DrawingML arrow heads.
         'marker_orphan_ref': {
             'message': 'marker-start/marker-end references a marker id, but no <marker> element is defined',
             'solutions': [
                 'Define the <marker> inside <defs>',
                 'Or remove the marker-start/marker-end attribute',
-                'See shared-standards.md §1.1 for marker constraints',
+                'See shared-standards-core.md §1.1 for marker constraints',
             ],
             'severity': 'error'
         },

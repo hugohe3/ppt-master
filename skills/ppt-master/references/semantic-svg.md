@@ -18,7 +18,7 @@ The completed SVG remains the full visible page. Removing the metadata must not 
 
 **Hard rule — route boundary**: Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Only deck/layout template pages confirmed with `template_reuse_scope: mirror|layout` declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
 
-**Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-replace-with` for optional PowerPoint-native Chart/Table replacement, and the imported/authored shape metadata defined in [`shared-standards.md`](./shared-standards.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
+**Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-replace-with` for optional PowerPoint-native Chart/Table replacement, and the imported/authored shape metadata defined in [`shared-standards-core.md`](./shared-standards-core.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
 
 ---
 
@@ -76,7 +76,7 @@ Use one direct root group as the authoring boundary and one compatible direct ch
 | Identity | `data-pptx-placeholder-idx` is optional; effective indices must be unique within one Layout. Preserve a source index when reconstructing an existing PPTX. |
 | Fixed decoration | Reusable decoration does not belong in the slot. Author it as a root Layout atom. Page-specific labels/captions use another slot or remain Slide-local. |
 
-Canonical placeholder values are `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and `slide-number`. Carrier compatibility is defined in [`shared-standards.md`](./shared-standards.md) §7.
+Canonical placeholder values are `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and `slide-number`. Carrier compatibility is defined in [`pptx-structure-interface.md`](./pptx-structure-interface.md) §2.
 
 ### 3.2 Explicit composite proxy
 

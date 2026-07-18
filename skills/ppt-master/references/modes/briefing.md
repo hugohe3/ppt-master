@@ -30,7 +30,7 @@ Neutral information delivery. Lay the facts out plainly and completely, organize
 
 ## 3. Speaker-notes register
 
-Even, factual, plain. State what the page shows without building tension or pressing a "so what". No rhetorical questions, no suspense — a clear read-out the listener can follow or skim. Numbers stated plainly. (Common framework: [`executor-base.md §8`](../executor-base.md).)
+Even, factual, plain. State what the page shows without building tension or pressing a "so what". No rhetorical questions, no suspense — a clear read-out the listener can follow or skim. Numbers stated plainly. (Common framework: [`executor-notes.md`](../executor-notes.md) §1.)
 
 ## 4. Page skeleton example
 

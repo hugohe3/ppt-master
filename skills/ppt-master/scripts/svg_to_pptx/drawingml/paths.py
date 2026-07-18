@@ -1,6 +1,6 @@
 """SVG path parsing, normalization, and DrawingML path command generation.
 
-See references/shared-standards.md §6.9 for the project freeform grammar.
+See references/svg-effects.md §6.9 for the project freeform grammar.
 """
 
 from __future__ import annotations

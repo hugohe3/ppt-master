@@ -167,7 +167,7 @@ Aim for **3–8 content groups per slide**. This is also the granularity PowerPo
 - ≤ 8 visible top-level primitives → each becomes one anchor (capped to avoid 70+ atom cascades on dense pages).
 - > 8 → animation is skipped on that slide. The slide still renders, just without entrance animation.
 
-Executors should wrap logical sections in `<g id>` regardless of whether you plan to animate. The Executor reference (`skills/ppt-master/references/shared-standards.md`) requires it.
+Executors should wrap logical sections in `<g id>` regardless of whether you plan to animate. [`shared-standards-core.md`](./shared-standards-core.md) requires it.
 
 ---
 

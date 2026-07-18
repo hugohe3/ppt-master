@@ -49,7 +49,7 @@ python3 scripts/update_repo.py
 | SVG pipeline | `preset_shape_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
-| Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
+| Spec maintenance | `update_spec.py`, `chart_recall.py` | [docs/update_spec.md](./docs/update_spec.md); [docs/chart-recall.md](./docs/chart-recall.md) |
 | Image tools | `image_gen.py`, `latex_render.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
 | Troubleshooting | validation, preview, export, dependency issues | [docs/troubleshooting.md](./docs/troubleshooting.md) |
@@ -73,7 +73,16 @@ Project setup:
 ```bash
 python3 scripts/project_manager.py init <project_name> --format ppt169
 python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...> --move
+python3 scripts/project_manager.py scaffold-spec <project_path>
+python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
+```
+
+Chart candidate recall:
+
+```bash
+python3 scripts/chart_recall.py recall --page P03 --tag "time series" --tag "three metrics" --tag "direction over time"
+python3 scripts/chart_recall.py validate line_chart
 ```
 
 Template source import:
@@ -176,7 +185,7 @@ carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
 are not rewritten into this authored form. Keep ordinary rectangles, ellipses,
 freeform geometry, charts, icons, and ambiguous silhouettes as regular SVG.
-See [`references/shared-standards.md`](../references/shared-standards.md) for
+See [`references/shared-standards-core.md`](../references/shared-standards-core.md) §1.5 for
 the normative contract and
 [`references/native-shape-authoring.md`](../references/native-shape-authoring.md)
 for selection and authoring guidance.

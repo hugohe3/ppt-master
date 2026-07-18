@@ -1,4 +1,4 @@
-> See [`image-base.md`](./image-base.md) for the common framework. Technical SVG/PPT constraints are in [`shared-standards.md`](./shared-standards.md).
+> See [`image-base.md`](./image-base.md) for the common framework. Technical SVG/PPT constraints are in [`shared-standards-core.md`](./shared-standards-core.md).
 
 # Image_Searcher Reference Manual
 
@@ -196,7 +196,7 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
    ```bash
    python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
-   Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds (executor-base §6.1);
+   Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds ([`executor-web-image.md`](./executor-web-image.md) §1);
 3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
 4. if nothing fits, mark the row `Needs-Manual`.
 

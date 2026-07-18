@@ -35,7 +35,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 | Main pipeline sequencing | This file | Owns Step 1–7 order, gates, role switching, and mandatory commands |
 | Artifact ownership | [`artifact-ownership.md`](../references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
 | Failure recovery | [`failure-recovery.md`](./governance/failure-recovery.md) | Owns stop/continue policy and resume pointers |
-| Confirm UI details | [`confirm_ui.md`](../scripts/docs/confirm_ui.md) | Owns schema, launcher behavior, port strategy, and chat fallback details |
+| Confirm UI details | [`confirm_ui.md`](../scripts/docs/confirm_ui.md) | Owns the JSON schema, launcher behavior, staged-result contract, port strategy, and chat fallback details |
 | Explicit template workspace | [`apply-template-workspace.md`](./stages/apply-template-workspace.md) | Owns Step 3 validation, installation, and fusion; load only when Step 3's explicit-path trigger fires |
 
 ## Workflow
@@ -140,12 +140,19 @@ Bare names, style descriptions, brand mentions, vague template intent, and silen
 
 🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied or confirmed in place in the project.
 
-First, read the role definition:
+First, read the role core, then only the modules triggered by the current plan:
 ```
 Read references/strategist.md
 ```
 
-> ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–X section structure. See `strategist.md` Section 1.
+| Deterministic trigger | Additional Strategist reference |
+|---|---|
+| Step 3 installed an explicit Brand/Layout/Deck workspace | `references/strategist-template.md` |
+| The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` before authoring image renderings, production detail, formula resources, or §VIII |
+
+The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
+
+> ⚠️ **Mandatory structure gate**: for new planning artifacts, create the versioned I–X and lock skeletons with `project_manager.py scaffold-spec` / `scaffold-lock`; do not reconstruct their grammar from memory. The commands and validator consume the machine contracts under `templates/schemas/`. The compact reference indexes are only for schema/scaffold troubleshooting, not the normal generation load.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -153,96 +160,41 @@ Read references/strategist.md
 
 **Channel ownership — read each fact once from its owning channel.** In the main pipeline the **content contract is the content-type files in `sources/`** — primarily `<stem>.md`, but also any user-supplied content the import archived there: `.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml` (a `metrics.json` or `data.csv` may carry core content — judge by what the file holds). Text, tables, chart data values, and SmartArt node wording come from these (`ppt_to_md` transcribes native charts as Markdown tables and SmartArt nodes as hierarchical bullets). **Do NOT read pipeline sidecars in `sources/` as content**: `*.conversion_profile.json` (conversion audit) and `*_files/image_manifest.json` (asset index) are process metadata — open them only to audit a conversion or resolve assets, never as slide content. Converted-source originals archived in `sources/` (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) are read via their converted `<stem>.md`, not scanned directly in the main pipeline. The `analysis/` chart / table / diagram entries are a **structural digest** for outline decisions (which slides carried charts, tables, or SmartArt; chart types / series names; SmartArt layout and hierarchy) — not a second copy of the content values; do NOT also pull chart values or SmartArt wording from `<stem>.slide_library.json` in the main pipeline. The `<stem>.slide_library.json` full structured data is owned by the direct-PPTX workflows: template-fill uses it as the native fill contract while preserving SmartArt unchanged; beautify uses it for native chart / table data and SmartArt relationships while keeping all wording from the Markdown.
 
-**Strategist confirmation stage** (full template: `templates/design_spec_reference.md`):
+**Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: present the Strategist confirmation stage and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. This is the single core confirmation gate — once the final confirmation lands, all subsequent steps proceed automatically. The default Confirm UI delivers the gate in **three stages** (communication contract → complete deck solution → resources / production; see below); the chat fallback mirrors the same staged order.
+⛔ **BLOCKING**: final confirmation is the single user gate before the planning artifacts are written. Stage 1 and Stage 2 are intermediate handoffs inside one uninterrupted agent turn; after either wait returns, immediately author the next stage without yielding or asking in chat. Each stage is authored once, and the user's submitted value—including an empty string or an unusual mix of overrides—is authoritative.
 
-1. Communication contract — target audience; open-ended `communication_intent` (one or several purposes, with priority / sequence when useful); desired `audience_outcome`; `core_message` / decision ask / action; delivery context; artifact afterlife
-2. Source-treatment intent — open-ended `content_divergence`; facts remain sourced at every level
-3. Canvas format
-4. Complete deck solution — reading mode (JSON compatibility key `delivery_purpose`); narrative mode; page count; visual / template direction; color; icons; typography; image sources and generated-image rendering
-5. Production plan — conditional AI-image acquisition path; formula rendering policy; execution mode; optional spec-refinement toggle
-
-**Confirm UI Auto-Launch (Mandatory — default visual confirmation surface)**: by default the Strategist confirmation stage is presented through an interactive local page in **three stages within one browser session**. Stage 1 confirms the scene and communication contract before asking the user to select tools. The AI then authors Stage 2's **complete deck solution once** from the user's actual contract: argument structure, reading density, template use, visual system, and image direction are judged together. After Stage 2 is confirmed, Stage 3 is authored once and asks only how to produce the already-decided solution. A change inside the current page never asks the AI or server to regenerate that stage. Color swatches, live font previews, icon samples, rendering references, and coordinated direction candidates appear where they help judgment; the chat path is the always-valid fallback. [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the schema, server lifecycle, port strategy, and fallback details; this section keeps the orchestration contract. The split:
-
-| Stage | Confirms | Driven by |
+| Stage | Strategist writes | Completion evidence |
 |---|---|---|
-| **1 — communication contract** | audience · open-ended `communication_intent` (may combine several purposes) · `audience_outcome` · `core_message` / delivery context / artifact afterlife · `content_divergence` (all prose fields may be blank) · canvas | the source + user intent |
-| **2 — complete deck solution** (derived once from Stage 1) | reading mode (`delivery_purpose`, PPT only) · narrative `mode` · page count · `visual_style` · conditional template reuse / adherence · color · typography · icons · image usage · generated-image rendering | the confirmed communication contract |
-| **3 — resources / production** (derived once from Stage 1 + Stage 2) | conditional AI-image acquisition path · formula policy · generation mode · refine-spec toggle | the confirmed solution |
+| `stage1` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
+| `stage2` | Complete deck solution from the confirmed contract; never skip for a template | `status: stage2-confirmed` |
+| `stage3` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec | `stage: final`, `status: confirmed` |
 
-> **Why three stages.** A presentation may serve several purposes at once (for example, report progress, expose risk, and request a decision), so Stage 1 uses open prose rather than a purpose enum. Every editable Stage-1 prose field is non-blocking: the user may retain, revise, or clear the recommendation, and confirmation makes the field's current value authoritative, including an empty string. Blank means no explicit user constraint; derive downstream defaults from the source and request without writing the old recommendation back into `result.json`. Stage 2 chooses tools only after that contract is known and keeps mutually dependent choices together: `mode` is the argument strategy, template reuse is the inheritance strategy, and reading mode decides how meaning is divided among the page, visuals, and presenter. It therefore drives content grammar, page granularity, density / rhythm, speaker-note burden, and the body baseline; the visual / image fields form the remaining deck system. `delivery_purpose` remains the compatibility key for **reading mode**, not communication purpose. Page count is derived from content volume × audience outcome × reading mode. Generated images inherit the chosen deck color roles directly; the user confirms rendering, not a second image palette. Stage 3 therefore contains production mechanics only, never another aesthetic decision. Each stage is authored once; documented deterministic UI dependencies may update visible values locally, but there is no same-stage AI recomputation.
+1. Write Stage 1 `confirm_ui/recommendations.json` per the Confirm UI contract, then launch and wait:
 
-Steps:
-
-> ⛔ **Steps 2 → 3 → 4 are ONE uninterrupted run — do NOT yield to the user mid-flow.** When an intermediate `--wait` returns, the AI **immediately and autonomously** derives and writes the next stage once in the **same turn**: do **not** summarize, ask a question, report progress, or end the turn in between. The browser is sitting on a "deriving…" spinner polling for the next stage you must write — stopping here strands the page and the user must prod you in chat to finish (a bug, not the intended flow). **Stage-1 and Stage-2 confirmations are intermediate machine handoffs, not stopping points.** The single ⛔ BLOCKING wait is the **final** confirmation at the end of step 4. (Chat-fallback path — only when the page never opened — is the exception: there you do present each stage in chat and wait for a reply.)
-
-1. **Write Stage 1** to `<project_path>/confirm_ui/recommendations.json` with `"stage": "stage1"` and only the communication-contract fields. New recommendations MUST use the canonical `stage` selector. Put only the recommended `canvas` id in `recommend`. Write `audience`, `communication_intent`, `audience_outcome`, `core_message`, `delivery_context`, `artifact_afterlife`, and `content_divergence` as `{ "value": "<free text>" }`. Seed concrete editable recommendations where the source and request support them; all seven prose values may be blank and none blocks confirmation. The submitted current value is the sole truth: preserve a user-cleared field as `""` through every later stage and the final `result.json`; never restore the earlier recommendation. `communication_intent` is deliberately open prose: it may combine several purposes and state their priority or sequence; the nine common paths are prompt examples only and MUST NOT become a checkbox / enum. `content_divergence` asks how closely to follow the source vs how freely to reshape it (blank = balanced; facts stay sourced at every level); it is consumed while authoring `§IX`, recorded in `design_spec.md §I`, and is not written to `spec_lock.md`. A profile may make this field read-only with `{ "value": "...", "locked": true }`; Beautify uses that contract and is the only exception to user editing. Do **not** include reading mode, `mode`, `visual_style`, page count, template, color, typography, icon, or image fields in Stage 1. Set `lang` to the page language (`zh` / `en` / `ja`); visible text matches `lang`, or provide multilingual name / note variants as documented by the Confirm UI.
-2. **Launch + wait for Stage 1.** Background launch; the parent returns when the page writes the stage-1 `result.json`. **Long tool timeout — 600000 ms** (the `--wait` ≈590 s budget):
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
    ```
-   Page opens at the launch-log URL such as `http://127.0.0.1:5050` — the **same port as the Step 6 live preview** (they never run at once: this page shuts down at the end of Step 4). If 5050 is held, the launcher **auto-advances** (5051, …) — read the actual URL from the launch log and report it. The page does **not** close after Stage 1: it shows a "deriving…" state and polls for Stage 2. **Launch or wait failure is non-fatal**: if it fails or times out (flask missing, port blocked, no GUI / remote / web host), do **NOT** troubleshoot — **on any non-zero exit, re-check `result.json` once** for a fresh `status: stage1-confirmed` before dropping to the chat fallback. **On success (exit 0 with a stage-1 result), do not pause or report — go straight to step 3 in the same turn.**
-3. **Derive Stage 2 once from the confirmed communication contract, write it, then wait for the solution handoff — immediately, same turn (the page is polling for it).** Read the stage-1 `result.json` (`status: stage1-confirmed`). Using the user's **actual** contract (not your originals), **overwrite** `recommendations.json` with `"stage": "stage2"` and author the complete deck solution:
-   - Recommend PPT-only reading mode through the compatibility key `recommend.delivery_purpose` (`text` / `balanced` / `presentation`) from the confirmed audience, delivery context, and artifact afterlife. `text` makes the page self-contained with complete prose and detail; `balanced` shares meaning between page and presenter; `presentation` uses one idea, concise claims, and visual evidence per page while speech / notes carry explanation. Then recommend one narrative `mode` and page count from source volume × desired audience outcome × reading mode. Reading mode governs content grammar and page granularity as well as the body baseline; it is not a font-size preset. The page applies `reading mode → body baseline → unpinned role sizes` as a deterministic browser-only dependency. This never calls the backend, and a manually edited size is pinned against later reading-mode changes.
-   - When Step 3 loaded a deck/layout template, recommend `template_reuse_scope` now: `mirror`, `layout`, or `style`; `mirror` is legal only for `replication_mode: mirror`. Include `template_adherence: strict|adaptive` only for `mirror|layout`; `style` hides it and later writes `pptx_structure.mode: flat`. For a Deck, first compare its application contract—situations, audiences/outcomes, required narrative/page roles, and content policy—with the confirmed Stage-1 contract; do not treat the stored application as truth when the current request differs. Select from scenario fit: literal recurring artifact → consider `mirror`; compatible reusable structure with new content → `layout`; identity only or a contract that needs a different structure → `style`. Omit both fields for free design and brand-only templates.
-   - Author `design_directions` with ≥3 coordinated candidates (safe / shifted / bold; honest-shortfall exception unchanged). Each candidate carries one compatible `visual_style`, color object, typography object, icon id, and—when `image_usage` includes `ai`—one generated-image **rendering** object. The page applies a candidate as one coherent starting point and then exposes the component fields for deliberate override. Do not generate Cartesian combinations or random mix-and-match defaults.
-   - Color candidates carry background / secondary_bg / primary / accent / secondary_accent / body_text. Typography splits CJK + Latin for heading/body, includes topic-matched sample text, and uses one fixed body baseline per reading mode (`text` 20 / `balanced` 24 / `presentation` 32 on PPT). Font and direction cards change font character while preserving the current reading-mode sizing state. Recommend one or more `image_usage` source ids (`["ai"]`, `["ai","provided"]`, `["web","placeholder"]`, or `["none"]`; `none` is exclusive) and keep mixed-source / page-role guidance in `image_notes`. When AI is included, each direction's `image_strategy` contains rendering / visual / mood only; **never offer or submit a separate image palette**. Image HEX and role behavior come directly from that direction's deck color object. Spot-illustration lean remains rationale, not a field.
 
-   **Stage 2 is never skipped** — an installed template is an input to the decision, not a substitute for deciding how it serves the contract. Never jump `recommendations.json` from `stage1` to `stage3`: the server refuses to render a skipped stage. The still-open page polls, renders Stage 2, and preserves Stage 1. Then attach to the already-running page; if Windows cleaned up the server, `--wait-only` auto-recovers it on the recorded/default port so the browser reconnects:
+2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Overwrite the recommendations with Stage 2, then wait:
+
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
    ```
-   This returns when the page writes the stage-2 `result.json` (`status: stage2-confirmed`). On a non-zero exit, re-check `result.json` once before falling back to chat — except a `stage skip detected` error, which is not a page failure: you wrote a stage out of order; rewrite `recommendations.json` with the stage the error names and re-attach.
-4. **Derive Stage 3 once from the confirmed solution, then wait for the final confirmation.** Read the stage-2 `result.json`. **Do not reopen aesthetic choices.** Overwrite `recommendations.json` with `"stage": "stage3"` and recommend only production mechanics: enumerable `formula_policy`; conditional `image_ai_path` when confirmed `image_usage` includes `ai`; `generation_mode`; and `refine_spec`. The page shows the confirmed image-source summary as read-only context. Then attach to the already-running page; `--wait-only` auto-recovers a dead server as above (same 600000 ms budget):
+
+3. Read the Stage 2 result, overwrite recommendations with Stage 3, then perform the final blocking wait:
+
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
    ```
-   This is the ⛔ BLOCKING completion: returns when the page writes the final `result.json` (`status: confirmed`, `stage: final`, carrying Stage 1 + Stage 2 + Stage 3 fields). On a non-zero exit, re-check `result.json` once (a `stage skip detected` error means Stage 2 was never confirmed — go back to step 3, not the chat fallback). Confirmed sizes are **already px** (the system is px-only — no pt anywhere, no conversion): write `result.json` `typography.body_size` / `sizes` into `design_spec.md` / `spec_lock.md` / SVG verbatim. `generation_mode: "split"` / `refine_spec: true` are explicit user choices.
-5. **Close the confirm page (Mandatory cleanup — every path).** Shut the server down before leaving Step 4 so it cannot keep holding port 5050 (which Step 6 live preview reuses):
+
+4. On any non-zero wait, re-read `result.json` once before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure. After final confirmation or chat fallback, always release the server:
+
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
-   **Idempotent and required regardless of whether Confirm was clicked**: clicking the final Confirm already shuts the page down (then a no-op); the chat-fallback path leaves it running. Run it after reading the confirmation, before Step 5.
 
-**Always also print each stage's recommendations + URL in chat** as the always-valid fallback. **The chat fallback is staged too**: if the page never opens or a wait times out with no fresh result, present Stage 1 as open communication questions (the common purposes are examples, never a numbered pick-list) → get confirmation → derive and present Stage 2 → get confirmation → derive and present Stage 3 → get confirmation → take those values. Either path converges.
-
-**Honoring the confirmation (result.json is authoritative — Mandatory)**: the confirmed values **override your own recommendations** when you write `design_spec.md` / `spec_lock.md`. A user who changed any field changed it on purpose. In particular, map `image_usage` to §VIII `Acquire Via` (its value names differ from §h options — translate). `image_usage` may be either a legacy single string or a Confirm UI multi-select array; for arrays, apply every selected source. `image_notes`, when present, is a user-authored image intent note that Strategist must honor while assigning per-page §VIII rows:
-
-For a confirmed template route, map `template_reuse_scope` mechanically: `style` → `pptx_structure.mode: flat` and omit `template_adherence`, `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`; `layout` / `mirror` → `mode: structured`, retain the confirmed `template_adherence`, and write the complete mappings. Never infer mirror behavior from the template workspace's `replication_mode` alone—the confirmed reuse scope is the downstream execution authority.
-
-| `result.json.image_usage` | §VIII `Acquire Via` | h.5 + Step 5 generation |
-|---|---|---|
-| `ai` | `ai` rows | Run h.5 (lock rendering; inherit deck colors); Step 5 generates |
-| `web` | `web` rows | None |
-| `provided` | **`user`** rows | None — never generate |
-| `placeholder` | `placeholder` rows | None |
-| `none` | no image rows (§h option A) | None |
-| Legacy custom prose | Infer the intended rows from the prose | Run h.5 only if the prose includes AI |
-
-When the confirmed `image_usage` does not include `ai` (and no legacy custom prose includes AI), do **NOT** run h.5, do **NOT** write `ai` rows, and do **NOT** generate images in Step 5 — regardless of what you recommended. `none` is exclusive: if confirmed, write no §VIII image rows. The same "confirmed value wins" rule applies to every field (color → §III, typography → §IV, etc.).
-
-**Small spot illustrations are a Strategist judgment, not a confirmation field.** The user chooses image *source* through `image_usage`; whether the deck leans into decorative illustrations is anchored by the locked `visual_style`'s **illustration propensity** (`core` / `supportive` / `sparse`), expressed only in the `image_notes` rationale — never a new confirmation control. An explicit user request to use or skip illustrations overrides that default either way; `image_usage: none` still wins (write no illustration rows); and source still comes from `image_usage` — a `core` style does not silently generate AI spots when the user did not pick AI. They are ordinary §VIII image rows (`Type: Illustration` / `Illustration Sheet`) using normal `Acquire Via` values. If the plan needs ≥3 same-family AI spot illustrations, use the `ai` Illustration Sheet + `slice` workflow by default; do not generate one AI image per spot. Full rule + precedence: [`references/strategist.md`](../references/strategist.md) §h. Use them on suitable pages and omit them where they would weaken clarity.
-
-**One authored recommendation per stage; final visible state wins (Mandatory).** Author each stage exactly once. A user edit inside Stage 2 MUST NOT trigger AI / backend re-recommendation, and confirmation MUST NOT be followed by a hidden repair pass that changes any displayed field. The page may apply only documented deterministic local dependencies: reading mode sets the default body baseline, body sets unpinned role sizes, and manual size edits pin those values. Font / direction changes preserve the current sizing state. No other advanced override silently rewrites a sibling choice.
-
-Writing `design_spec.md` / `spec_lock.md` and later pages is **consumption of the confirmed state**, not another confirmation-stage calculation. Preserve every confirmed field verbatim and use it as an execution constraint:
-
-| Confirmed anchor | Consume it in |
-|---|---|
-| `communication_intent` / `audience_outcome` / `core_message` | outline obligations, argument emphasis, and audience moves |
-| `delivery_context` / `artifact_afterlife` | page-vs-presenter information load, standalone completeness, notes / citation depth, and hand-off structure |
-| `visual_style` (§d Layer 2) | layout treatment, shape language, and visual rhythm while preserving the separately confirmed color / icon / typography values |
-| `mode` (§d Layer 1) | outline structure and register (§IX) |
-| `delivery_purpose` compatibility key (reading mode, §g) | content grammar, page granularity, notes burden, and per-page density / rhythm (§6.1); use the already-confirmed body / role sizes verbatim |
-| `audience` (§c) | tone, evidence depth, and outline emphasis (§IX) |
-| `color` HEX (§e) | exact deck roles and AI prompt color-role instructions; never invent or restore an image-palette choice |
-
-If a deliberately mixed set of advanced overrides is unusual, honor it rather than silently “fixing” it. Canvas remains the explicit exception only in the sense that changing canvas does not rescale font sizes (see strategist §g); it still does not trigger a second stage calculation.
-
-**Opt-out**: if the user has said they don't want the page (e.g. "不要网页" / "just confirm in chat" / "纯聊天确认"), skip the launch entirely (step 2) and present the Strategist confirmation stage in chat as before — steps 1, 3, 4 still apply (recommendations summary in chat; wait; take chat values).
-
-The page is a **confirmation surface only** — Strategist still authors every recommendation; the page never generates content.
+If the user opted out of the page, skip launch and run the same three stages in chat. Otherwise report the launch URL and keep the staged chat summaries available as fallback. Both paths must preserve the final visible values; writing `design_spec.md`, `spec_lock.md`, and later pages consumes that state without a hidden repair or second recommendation pass. Map confirmed image sources through `strategist.md` §h, apply `strategist-template.md` §3 for an active template, and never write a separate image palette.
 
 **Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
@@ -255,38 +207,29 @@ This line is required output every run — the user must always see the mode cho
 
 **Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
 
-**Formula rendering policy lives inside item 7 (Typography plan)**:
-
-| Policy | Behavior |
-|---|---|
-| `mixed` (default) | Strategist renders complex formula-worthy expressions as PNG assets; simple inline expressions remain editable text / Unicode |
-| `render-all` | Strategist renders every formula-worthy expression as PNG assets |
-| `text-only` | No formula rendering; formulas remain editable text / Unicode |
-
-After the Strategist confirmation stage is approved and **before outputting `design_spec.md` / `spec_lock.md`**, if the confirmed formula policy is `mixed` or `render-all` and the content contains formula-worthy expressions, Strategist MUST:
-
-1. Identify explicit LaTeX and any source expressions that should be faithfully structured as formulas.
-2. Write `<project_path>/images/formula_manifest.json` with only the formulas selected for rendering.
-3. Run:
-   ```bash
-   python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
-   ```
-4. Include each formula as an `Acquire Via: formula`, `Type: Latex Formula` row in `design_spec.md §VIII Image Resource List`: use `Status: Rendered` when the PNG exists, or `Status: Needs-Manual` after provider exhaustion. List every formula in `spec_lock.md images` with `| no-crop`.
-
-The formula renderer uses a provider fallback chain by default: `codecogs,quicklatex,mathpad,wikimedia`. The first three are color-aware; Wikimedia is an availability fallback. If every provider fails for a selected formula, report its manifest item, LaTeX source, target filename, and provider errors; mark only that row `Needs-Manual` and continue without claiming `Rendered`. The user may supply the exact target PNG before the Step 7 image-readiness gate or change the formula policy. Formula PNGs are transparent by default: manifest `background` is the temporary render matte and transparency-removal reference, not a retained final background unless `transparent: false` is set for that item. Do not scan `spec_lock.md` for `$...$` or `$$...$$`. Dollar-delimited math in source material is only a signal for Strategist; the renderer consumes the explicit manifest.
+**Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
 python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```
 
-> 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the §h image-usage recommendation (see [strategist.md](../references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
+> 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the image-source recommendation (see [strategist.md](../references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative
-- `<project_path>/spec_lock.md` — machine-readable communication + execution contract (skeleton: `templates/spec_lock_reference.md`); Executor re-reads before every page
+- `<project_path>/spec_lock.md` — machine-readable communication + execution contract; Executor re-reads before every page
+
+For a new artifact pair, run these commands once after final confirmation and before filling the files; each refuses to overwrite an existing artifact:
+
+```bash
+python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-spec <project_path>
+python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
+```
+
+After filling both files, run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>` and repair schema findings in their owning artifact before the checkpoint. A resume path edits the existing files and never re-scaffolds them.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
@@ -376,14 +319,27 @@ Workflow:
 
 Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
 ```
-Read references/executor-base.md                  # REQUIRED: common guidelines
-Read references/shared-standards.md               # REQUIRED: SVG/PPT technical constraints
-Read references/native-shape-authoring.md         # REQUIRED: stock-shape selection and fragment helper contract
+Read references/executor-base.md                  # REQUIRED: flat/shared execution core
+Read references/shared-standards-core.md          # REQUIRED: SVG compatibility core
+Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
 Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
 Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
 ```
 
-> Read executor-base + shared-standards + native-shape-authoring + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
+> Read only the five always-on references above plus the conditionally triggered modules below. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
+
+| Deterministic trigger | Additional references |
+|---|---|
+| `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
+| `spec_lock.page_charts` has any row, or §VII/current page declares a chart or text-grid table | `executor-chart.md` |
+| A page will use a preset pattern fill or evaluate native chart/table replacement | `native-data-interface.md` before deciding eligibility or emitting metadata |
+| `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
+| At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
+| The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
+| A page calls for a literal PowerPoint stock shape | `native-shape-authoring.md` before selecting or emitting that shape |
+| All SVG pages and SVG quality gates are complete | `executor-notes.md` before generating speaker notes |
+
+No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §VII/§VIII, the selected style, and the current page plan.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
@@ -398,7 +354,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Pre-generation Template Read (Mandatory)**: first read `templates/template_execution_manifest.json` when present. It is the compact prototype roster and points each prototype to one `text_slots_path`. Use the roster to select prototypes; before each mirror page, read that prototype's text-slot sidecar and complete `templates/<basename>.svg`. Layout reuse reads the selected complete SVG but does not apply mirror-only text topology restrictions. When the manifest or selected sidecar is unavailable, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` once before the first page and apply the full-SVG mirror/layout rules. In all cases, batch-read every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts) once up front. Do not substitute a manifest or sidecar for the selected full prototype. See executor-base.md §1.0.
+**Conditional pre-generation reads**: on a structured route, follow `executor-structured.md` to read the template execution roster/sidecars and every distinct locked layout SVG; flat routes skip that template read. When `spec_lock.page_charts` or §VII names selected chart templates, follow `executor-chart.md` and batch-read those distinct chart SVGs once before the first affected page. A summary or sidecar never substitutes for the selected full SVG.
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
@@ -409,7 +365,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Before drawing a literal stock shape, apply [`native-shape-authoring.md`](../references/native-shape-authoring.md): use the stdout-only helper when one PowerPoint preset exactly matches, keep basic SVG primitives for rect/round-rect/ellipse, and keep free SVG for custom semantics. Diagram relationships are Shape-first: use ordinary line/path shapes with registered arrow markers for thin edges and ordinary shape presets for solid block arrows; do not default to connector-family presets or author attachment metadata. Never infer a preset from contour similarity.
+Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
 `template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep all inherited visible objects in `svg_output/`, and preserve the locked root Master/Layout identity plus stable atomic Master/Layout and slot ids. Strict keeps the prototype structure unchanged. Adaptive keeps its Master contract and, when Layout atoms or slot topology/bounds genuinely evolve, assigns a new key/name and updates `spec_lock.md` immediately. `layout` pages may reflow and re-skin to the project lock; `mirror` pages preserve literal visuals and may change only visible `<text>` / `<tspan>` values while keeping text/tspan count, order, nesting, and every attribute unchanged. `template_reuse_scope: style` follows the flat free-design paragraph below and does not inherit template structure metadata.
 
@@ -433,7 +389,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 - The JSON report is written to `exports/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 
-**Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
+**Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md) and generate speaker notes → `<project_path>/notes/total.md`
 
 **✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Run the applicable conditional gates below, then proceed to Step 7**:
 ```markdown

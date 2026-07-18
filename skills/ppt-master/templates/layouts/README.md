@@ -140,4 +140,5 @@ omitted.
 4. In library scope, register with `register_template.py <id> --kind layout`.
 
 General SVG/PPT rules remain authoritative in
-[`shared-standards.md`](../../references/shared-standards.md).
+[`shared-standards-core.md`](../../references/shared-standards-core.md) and
+[`pptx-structure-interface.md`](../../references/pptx-structure-interface.md).

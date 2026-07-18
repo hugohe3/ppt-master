@@ -99,7 +99,7 @@ License / attribution data lives **only** in `project/images/image_sources.json`
 - SVG `<title>` / `<desc>` (stripped by `svg_to_pptx.py`)
 - A separate "Image Credits" appendix slide (lost on single-page sharing)
 
-Executor reads the manifest per slide and renders inline credits when needed — see [`executor-base.md`](./executor-base.md) §6.1 and [`image-searcher.md`](./image-searcher.md) §7.
+Executor reads the manifest per slide and renders inline credits when needed — see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7.
 
 ---
 

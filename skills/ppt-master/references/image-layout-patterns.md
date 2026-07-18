@@ -148,7 +148,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 24. **Custom path crop (blob, arrow, leaf, silhouette)** — `<clipPath><path d="…"/></clipPath>`; allows any curved or organic shape. PowerPoint export translates this to `custGeom` and survives roundtrip.
 
-25. **Layered paper-cut stack** — clip each image layer under the image-only contract in [`shared-standards.md`](shared-standards.md) §1.2; draw vector layers directly in their final geometry. A small conditional shadow on each layer can create physical separation.
+25. **Layered paper-cut stack** — clip each image layer under the image-only contract in [`shared-standards-core.md`](./shared-standards-core.md) §1.2; draw vector layers directly in their final geometry. A small conditional shadow on each layer can create physical separation.
 
 26. **Triptych baked into a single wide image** — one wide `<image width=1160 height=334>` whose internal composition already contains 2–3 scenes. Generate the triptych as one image (not three separate calls) when scene-to-scene consistency matters — the model preserves character identity, lighting continuity, and color grading far more reliably when panels are produced together.
 
@@ -204,7 +204,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 67. **Image with knock-out / cut-out shape** — overlay a shape filled with the background color or another image, creating the impression of a hole punched through the underlying image.
 
-68. **Text-as-mask over image** — letterforms revealing image through them. Under the canonical SVG compatibility boundary in [`shared-standards.md`](shared-standards.md), realize this pattern as a pre-rendered image rather than a runtime effect. Prompt for "large lettering revealing the underlying scene through letterforms" and treat the result as a fixed artistic choice.
+68. **Text-as-mask over image** — letterforms revealing image through them. Under the canonical SVG compatibility boundary in [`shared-standards-core.md`](./shared-standards-core.md), realize this pattern as a pre-rendered image rather than a runtime effect. Prompt for "large lettering revealing the underlying scene through letterforms" and treat the result as a fixed artistic choice.
 
 69. **Image rotated at a slight angle for editorial feel** — `transform="rotate(angle cx cy)"` on the `<image>` or its container `<g>`; 2–6 degrees typical. Adds dynamism without breaking layout.
 
@@ -252,8 +252,8 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 ## Hard Constraints
 
 - Long body copy, data points, numeric labels, and Chinese text always go in the SVG layer — never baked into the image.
-- All project-wide SVG compatibility exceptions and conditional mappings are
-  owned by [`shared-standards.md`](shared-standards.md). This catalog neither
+- Project-wide SVG compatibility rules start at [`shared-standards-core.md`](./shared-standards-core.md),
+  whose routing table names each conditional owner. This catalog neither
   restates nor relaxes that contract; each pattern records only its
   scenario-specific rendering choice.
 

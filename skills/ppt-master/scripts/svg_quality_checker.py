@@ -862,7 +862,7 @@ PPT_SAFE_FONTS = {
 }
 
 # Ramp envelope for font-size drift detection.
-# From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
+# From strategist.md §g — Font Size Ramp: the ramp spans
 # from page-number floor (0.5x body) to cover-title ceiling (5.0x body).
 # Intermediate px values within this envelope are permitted per
 # executor-base.md §2.1 ("Executor may use an intermediate size ... provided
@@ -1417,7 +1417,7 @@ class SVGQualityChecker:
                 f"Invalid XML: {e} — SVG must be well-formed XML. "
                 f"Use raw Unicode for typography (—, ©, →, NBSP); "
                 f"escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; "
-                f"(see references/shared-standards.md §1)."
+                f"(see references/shared-standards-core.md §1)."
             )
             return None
 
@@ -3716,7 +3716,7 @@ class SVGQualityChecker:
                     "will fail schema validation ('needs to be repaired'). "
                     "Use one of: smGrid / lgGrid / dotGrid (grids), "
                     "ltUpDiag / dkUpDiag / cross / diagCross / weave / plaid / "
-                    "horzBrick (others); see references/shared-standards.md §7 "
+                    "horzBrick (others); see references/native-data-interface.md §1 "
                     "for the full authoring enum."
                 )
 
@@ -4209,8 +4209,9 @@ class SVGQualityChecker:
         metadata), font-family, and font-size.
         Emits per-file warnings summarising the drift counts; exact drifting
         values are accumulated in self._drift_summary for the end-of-run
-        aggregation. When spec_lock.md is missing, silently skip (consistent
-        with executor-base.md §2.1's 'missing lock → warn and proceed' policy).
+        aggregation. When spec_lock.md is missing, silently skip this local
+        drift check; the Generate route's required-artifact gate owns whether
+        execution may begin.
         """
         lock = self._get_spec_lock(svg_path)
         if lock is None:
@@ -4277,7 +4278,7 @@ class SVGQualityChecker:
 
         # Font families: default `font_family` plus any per-role `*_family`
         # override (title_family / body_family / emphasis_family / code_family,
-        # per spec_lock_reference.md). Any of these is a legitimate declared
+        # per templates/schemas/spec_lock.schema.json). Any of these is a legitimate declared
         # value; an SVG that uses any one of them is not drifting.
         allowed_fonts = set()
         if typo:
