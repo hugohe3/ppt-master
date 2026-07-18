@@ -53,7 +53,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 1. Strategist reads this index at confirmation `d. Layer 1`.
 2. Pick one mode from the auto-selection table + the confirmed communication contract and source structure.
-3. Lock it: write `- mode: <name>` into `spec_lock.md`, record the rationale in `design_spec.md`.
+3. Record the confirmed mode and rationale in `design_spec.md`, then project `- mode: <name>` into `spec_lock.md`.
 4. Executor reads **only** `modes/<locked-mode>.md` at generation entry — never globs this directory.
 
 **Lock scope**: deck-wide (one mode per deck). The five are the catalog you select from; if the structure is genuinely mixed, pick the mode of the body pages and let pages vary within it, or recommend a `custom` blend (§4). Recommend the best fit; the user confirms.
@@ -64,7 +64,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 `custom` holds **any bespoke narrative direction the five don't give as-is** — and what *kind* of thing it is doesn't matter. It might be a nameable cadence (dialectic 正反合, myth-vs-reality, countdown / Top-N, Socratic), a deliberate multi-act fusion of several modes, or the user's own feel for how the deck should carry (confrontational here, detached there). Don't try to taxonomize it.
 
-**Either side may originate it.** The user can ask for it directly; or the Strategist — as the deck's strategist — may **recommend** `custom` when a bespoke direction (often a fusion of two modes) genuinely serves the deck better than any single preset. Like every confirmation, it's a recommendation the user confirms or overrides — and the recommendation must **spell the custom out in plain language** (what the cadence / fusion / posture actually is), never present the bare token `custom`, so the user confirms something legible. Either way, the Strategist **crystallizes the intent into a `- mode_behavior:` paragraph** — concrete enough that the Executor can follow it per page (the act sequence or posture shifts, the title voice, the page rhythm, the notes register). Set `- mode: custom` in `spec_lock.md` with that sibling line; the Executor follows the prose in place of a preset file. (This records the intent so it survives 20 pages of generation — the Executor only ever reads `spec_lock.md`, never the chat.)
+**Either side may originate it.** The user can ask for it directly; or the Strategist — as the deck's strategist — may **recommend** `custom` when a bespoke direction (often a fusion of two modes) genuinely serves the deck better than any single preset. Like every confirmation, it's a recommendation the user confirms or overrides — and the recommendation must **spell the custom out in plain language** (what the cadence / fusion / posture actually is), never present the bare token `custom`, so the user confirms something legible. Either way, the Strategist crystallizes the intent in the Design Spec first, then projects it as `- mode: custom` plus a concrete `- mode_behavior:` paragraph in `spec_lock.md`. The Executor follows that prose in place of a preset file. (This records the intent so it survives 20 pages of generation — the Executor only ever reads `spec_lock.md`, never the chat.)
 
 > **One value per deck — fusion is *one* `custom`, not several modes.** A deck always locks a single `mode`. A multi-mode blend is expressed as **one** `mode: custom` whose `mode_behavior` paragraph describes the acts — never by locking several modes.
 >

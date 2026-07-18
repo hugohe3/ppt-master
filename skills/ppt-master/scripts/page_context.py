@@ -611,6 +611,7 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     except (OSError, ValueError) as exc:
         raise PageContextError(str(exc)) from exc
     lock_sections = _section_index(lock_sections_raw)
+    design_sections_index = _section_index(design_sections)
     part, brief = _slide_block(design_sections, page_number)
     warnings: list[str] = []
     rhythm_fields = _section_fields(lock_sections, "page_rhythm")
@@ -684,6 +685,10 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     global_context = {
         "communication": _section_fields(lock_sections, "communication"),
         "canvas": _section_fields(lock_sections, "canvas"),
+        "template_application": _section_fields(
+            design_sections_index,
+            "I. Project Information",
+        ).get("Template Application"),
         "mode": _section_fields(lock_sections, "mode").get("mode"),
         "visual_style": _section_fields(
             lock_sections,

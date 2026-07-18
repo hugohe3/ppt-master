@@ -152,7 +152,7 @@ Read references/strategist.md
 
 The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory artifact gate**: scaffold the human-readable `design_spec.md` and machine-readable `spec_lock.md`; do not reconstruct lock grammar from memory. The design schema only keeps the brief readable and page-projectable—it is not a second execution lock, and cross-file textual equality is not required. Reference indexes are for troubleshooting, not normal generation load.
+> ⚠️ **Mandatory artifact gates**: scaffold the human-readable `design_spec.md` first; after it passes confirmation fidelity, scaffold the machine-readable `spec_lock.md` and project from the Design Spec. Do not reconstruct either grammar from memory. The design schema keeps the brief readable and page-projectable; the lock schema keeps its execution projection machine-readable. Cross-file textual equality is not required, but semantic projection fidelity is. Reference indexes are for troubleshooting, not normal generation load.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -190,13 +190,17 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
    ```
 
-4. On any non-zero wait, re-read `result.json` once before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure. After final confirmation or chat fallback, always release the server:
+4. After the final wait returns, re-read the complete `result.json` even when the wait succeeded. Proceed from the file only when it carries `stage: final` and `status: confirmed`. On a non-zero wait, perform this same read before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure.
+
+5. After final confirmation or chat fallback, always release the server:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
 
-If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback. Every path must preserve the final visible values; writing `design_spec.md`, `spec_lock.md`, and later pages consumes that state without a hidden repair or second recommendation pass. Map confirmed image sources through `strategist.md` §h, apply `strategist-template.md` §3 for an active template, and never write a separate image palette.
+If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
+
+⛔ **GATE — write the Design Spec from the final state, then project the lock.** Treat every explicitly present final value as a user-owned Design Spec requirement. The Strategist may autonomously elaborate only unconfirmed implementation details; it must not omit, delete, substitute, narrow, weaken, reinterpret, or re-recommend a confirmed value. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2, including every confirmed image source and explicit `image_notes` role. Only after that audit passes, derive `spec_lock.md` from the completed Design Spec without making another design decision. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If one confirmed value cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
 
 **Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
@@ -224,24 +228,30 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 - `<project_path>/design_spec.md` — human-readable design narrative
 - `<project_path>/spec_lock.md` — machine-readable communication + execution contract; Executor consumes its current-page projection from `page-context`
 
-For a new artifact pair, run these commands once after final confirmation and before filling the files; each refuses to overwrite an existing artifact:
+For a new project, scaffold the Design Spec after final confirmation; the command refuses to overwrite an existing artifact:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-spec <project_path>
+```
+
+Fill and audit `design_spec.md` against the complete final confirmation. Only after that audit passes, scaffold and fill the machine lock from the completed Design Spec:
+
+```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
 ```
 
-After filling both files, run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>` and repair schema findings in their owning artifact before the checkpoint. A resume path edits the existing files and never re-scaffolds them.
+After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
 ## ✅ Strategist Phase Complete
 - [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
 - [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
+- [x] Final confirmation re-read; `design_spec.md` audited field by field against it with no confirmed value omitted, substituted, or weakened
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
 - [x] Design Specification & Content Outline generated
-- [x] Execution lock (spec_lock.md) generated
+- [x] Execution lock (`spec_lock.md`) projected from the completed Design Spec with no independent design decision
 - [x] Communication trace validated: `spec_lock.md ## communication` contains all six contract key lines (optional values may be blank), and every `design_spec.md §IX` Slide block has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
 ```
@@ -252,7 +262,7 @@ After filling both files, run `python3 ${SKILL_DIR}/scripts/project_manager.py v
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. A final confirmation that selected `ai` or `web` without a matching §VIII resource row is an incomplete Design Spec, not a reason to skip Step 5; return to Step 4 Gate 1, repair the Design Spec from the final confirmation, and re-project the lock.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
@@ -366,7 +376,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage
 ```
 
-Use this canonical projection for the global communication contract, current §IX `Core message` + `Audience move`, locked colors/fonts/icons/images, and current-page rhythm/chart/structure assignments. Flat bundles contain only page context; `layout` bundles also contain the selected complete prototype; `mirror` bundles contain that prototype plus its minimal text-slot view. This derived view does not replace `design_spec.md`, `spec_lock.md`, their gates, or any source facts needed by the page. See [`executor-base.md`](../references/executor-base.md) §2.1 and [`executor-structured.md`](../references/executor-structured.md) §1.0.
+Use this projection for communication, optional `global.template_application`, current §IX `Core message` + `Audience move`, locked resources, and current-page assignments. Flat bundles contain page context; `layout` adds the selected complete prototype; `mirror` also adds its minimal text-slot view. The projection replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1 and [`executor-structured.md`](../references/executor-structured.md) §1.0.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
@@ -375,7 +385,7 @@ Use this canonical projection for the global communication contract, current §I
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
-`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep all inherited visible objects in `svg_output/`, and preserve the locked root Master/Layout identity plus stable atomic Master/Layout and slot ids. Strict keeps the prototype structure unchanged. Adaptive keeps its Master contract and, when Layout atoms or slot topology/bounds genuinely evolve, assigns a new key/name and updates `spec_lock.md` immediately. `layout` pages may reflow and re-skin to the project lock; `mirror` pages preserve literal visuals and may change only visible `<text>` / `<tspan>` values while keeping text/tspan count, order, nesting, and every attribute unchanged. `template_reuse_scope: style` follows the flat free-design paragraph below and does not inherit template structure metadata.
+`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, `global.template_application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive assigns a new Layout key/name and updates `spec_lock.md` when fixed atoms or slot topology/bounds change. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
 `template_reuse_scope: style`, free-design, and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 

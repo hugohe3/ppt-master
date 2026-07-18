@@ -41,8 +41,10 @@ Notes:
   `templates/schemas/spec_lock.schema.json`. It reports missing sections and
   fields, illegal enums, malformed page keys, and unmet conditional sections;
   it does not rewrite either artifact or compare their values for textual
-  equality. The design schema is structural lint for the human-readable brief;
-  the lock schema owns machine execution values. For structured template use,
+  equality. It also does not prove final-confirmation → Design Spec fidelity or
+  Design Spec → lock semantic projection; Generate Step 4 owns those two gates
+  before this structural validation. The design schema is structural lint for
+  the human-readable brief; the lock schema owns machine execution values. For structured template use,
   validation also compares the lock's Master/Layout identities with the actual
   template SVG roots. Versioned scaffolds carry the schema marker. Markerless
   legacy artifacts are left on their prior validation path with a warning;
@@ -59,7 +61,9 @@ Notes:
 view on stdout. The default command is read-only; `--pretty` changes JSON
 formatting only. Before projection it revalidates only the machine lock and any
 selected template-root identities; design-brief values are not treated as a
-second lock. Slide headings at H3–H6 remain readable by the projector.
+second lock. When present, the human-readable `Template Application` prose from
+`design_spec.md §I` is projected as `global.template_application`. Slide
+headings at H3–H6 remain readable by the projector.
 `--bundle` appends only the route-selected authoring payloads:
 
 | Project mode | Bundle contents |
