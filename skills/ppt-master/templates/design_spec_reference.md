@@ -1,6 +1,6 @@
 # Design Spec Structure
 
-Project-level `design_spec.md` is an English-heading Markdown artifact. Its machine contract is [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json); authoring starts from [`scaffolds/design_spec.md`](./scaffolds/design_spec.md).
+Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) provides structural lint for readable sections and page projection; it is not an execution lock and does not require textual equality with `spec_lock.md`. Authoring starts from [`scaffolds/design_spec.md`](./scaffolds/design_spec.md).
 
 ## 1. Create the artifact
 
