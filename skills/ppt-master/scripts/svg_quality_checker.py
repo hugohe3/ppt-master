@@ -442,6 +442,15 @@ _NON_VISUAL_SVG_TAGS = frozenset({
 _BOUNDS_ATTR = 'data-pptx-bounds'
 _BOUNDS_OVERFLOW_TOLERANCE = 1.0
 _BOUNDS_OVERFLOW_ERROR_RATIO = 0.05
+_PARAGRAPH_LINE_GAP_MIN_RATIO = 0.9
+_PARAGRAPH_LINE_GAP_MAX_RATIO = 2.05
+_PARAGRAPH_LINE_X_TOLERANCE = 0.5
+_PARAGRAPH_LINE_MIN_TOTAL_CHARS = 12
+_PARAGRAPH_LINE_MIN_LONGEST_CHARS = 8
+_PARAGRAPH_LINE_TERMINATOR_RE = re.compile(r'[.!?。！？;；]["\'”’）)]*$')
+_PARAGRAPH_LIST_MARKER_RE = re.compile(
+    r'^\s*(?:[•·・▪◦‣]\s*|[-–—*]\s+|\d+[.)、]\s+|[（(]\d+[）)]\s*)\S+'
+)
 _LEGACY_PPTX_ATTRIBUTE_RENAMES = {
     'data-pptx-module-bounds': _BOUNDS_ATTR,
     'data-pptx-placeholder-bounds': _BOUNDS_ATTR,
@@ -2511,6 +2520,7 @@ class SVGQualityChecker:
         self._check_module_bounds_contract(root, result)
         self._check_text_output_geometry(root, result)
         self._check_root_module_text_bounds(root, result)
+        self._check_fragmented_paragraph_text(root, result)
         self._check_unmergeable_leading_text(root, result)
 
     @classmethod
@@ -3392,6 +3402,179 @@ class SVGQualityChecker:
                 "Detected multi-line <text> with leading direct text that cannot "
                 f"be normalized for PPT paragraph merging ({sample}{suffix})"
             )
+
+    def _check_fragmented_paragraph_text(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Warn on high-confidence prose lines split into sibling text frames."""
+        helpers = (
+            _parse_project_geometry_length,
+            _resolve_project_font_sizes,
+        )
+        if any(helper is None for helper in helpers):
+            return
+        try:
+            font_sizes = _resolve_project_font_sizes(root)
+        except ValueError:
+            return
+
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        unchanged_groups = self._unchanged_txbody_group_ids(root)
+        style_properties = (
+            'fill',
+            'fill-opacity',
+            'font-family',
+            'font-style',
+            'font-weight',
+            'letter-spacing',
+            'opacity',
+            'stroke',
+            'stroke-opacity',
+            'stroke-width',
+            'text-decoration',
+        )
+
+        def line_record(element: ET.Element) -> Dict | None:
+            if (
+                _local_name(element) != 'text'
+                or list(element)
+                or element.get('x') is None
+                or element.get('y') is None
+                or any(element.get(name) is not None for name in ('dx', 'dy'))
+                or element.get('transform') is not None
+                or self._is_hidden_element(element, parent_by_id)
+                or self._has_ancestor_id(
+                    element,
+                    parent_by_id,
+                    unchanged_groups,
+                )
+            ):
+                return None
+            text = (element.text or '').strip()
+            compact_text = re.sub(r'\s+', '', text)
+            if (
+                not compact_text
+                or ('{{' in text and '}}' in text)
+                or _PARAGRAPH_LIST_MARKER_RE.match(text)
+            ):
+                return None
+            anchor = (
+                _effective_presentation_value(
+                    element,
+                    'text-anchor',
+                    parent_by_id,
+                )
+                or 'start'
+            ).strip().lower()
+            if anchor != 'start':
+                return None
+            try:
+                x = _parse_project_geometry_length(element.get('x'), 'x')
+                y = _parse_project_geometry_length(element.get('y'), 'y')
+                font_size = float(font_sizes[id(element)])
+            except (KeyError, TypeError, ValueError):
+                return None
+            if font_size <= 0:
+                return None
+            style = tuple(
+                (
+                    _effective_presentation_value(
+                        element,
+                        name,
+                        parent_by_id,
+                    )
+                    or ''
+                ).strip().lower()
+                for name in style_properties
+            )
+            return {
+                'chars': len(compact_text),
+                'font_size': font_size,
+                'style': style,
+                'text': text,
+                'x': x,
+                'y': y,
+            }
+
+        suspects: List[str] = []
+        for group in list(root):
+            if (
+                _local_name(group) != 'g'
+                or self._is_hidden_element(group, parent_by_id)
+            ):
+                continue
+            current_run: List[Dict] = []
+
+            def flush_run() -> None:
+                if len(current_run) < 2:
+                    return
+                total_chars = sum(line['chars'] for line in current_run)
+                longest_line = max(line['chars'] for line in current_run)
+                if (
+                    total_chars < _PARAGRAPH_LINE_MIN_TOTAL_CHARS
+                    or longest_line < _PARAGRAPH_LINE_MIN_LONGEST_CHARS
+                ):
+                    return
+                first = current_run[0]
+                last = current_run[-1]
+                suspects.append(
+                    f'{_element_label(group)} x={first["x"]:.1f}, '
+                    f'y={first["y"]:.1f}..{last["y"]:.1f}, '
+                    f'{len(current_run)} lines'
+                )
+
+            for child in list(group):
+                line = line_record(child)
+                if line is None:
+                    flush_run()
+                    current_run = []
+                    continue
+                if current_run:
+                    previous = current_run[-1]
+                    line_gap = line['y'] - previous['y']
+                    same_frame = (
+                        abs(line['x'] - previous['x'])
+                        <= _PARAGRAPH_LINE_X_TOLERANCE
+                        and line['style'] == previous['style']
+                        and math.isclose(
+                            line['font_size'],
+                            previous['font_size'],
+                            rel_tol=0.0,
+                            abs_tol=1e-6,
+                        )
+                        and line_gap
+                        >= line['font_size'] * _PARAGRAPH_LINE_GAP_MIN_RATIO
+                        and line_gap
+                        <= line['font_size'] * _PARAGRAPH_LINE_GAP_MAX_RATIO
+                        and not _PARAGRAPH_LINE_TERMINATOR_RE.search(
+                            previous['text']
+                        )
+                    )
+                    if not same_frame:
+                        flush_run()
+                        current_run = []
+                current_run.append(line)
+            flush_run()
+
+        if not suspects:
+            return
+        sample = '; '.join(suspects[:3])
+        suffix = '' if len(suspects) <= 3 else f'; +{len(suspects) - 3} more'
+        result['warnings'].append(
+            f'Detected {len(suspects)} paragraph-like line run(s) split '
+            f'across sibling <text> elements ({sample}{suffix}). If each run '
+            'is one prose paragraph, combine it into one <text>: keep its '
+            'first line as direct text and use direct <tspan> children with '
+            'the parent x and positive relative dy values for later lines. '
+            'An all-<tspan> form may start with dy="0". Keep semantically '
+            'independent text frames separate.'
+        )
 
     @staticmethod
     def _is_tspan(elem: ET.Element) -> bool:

@@ -417,6 +417,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - [x] Live preview started before the first SVG and kept available at the reported URL
 - [x] P01 gate passed; remaining pages authored without checker calls
 - [x] All SVGs generated to svg_output/
+- [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
 ```
