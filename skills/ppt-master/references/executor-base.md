@@ -27,7 +27,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 2. Design Parameter Confirmation (Mandatory Step)
 
-Before the first SVG page, output a confirmation listing: the compact communication intent + desired audience outcome, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
+Before the first SVG page, output a confirmation listing: the compact communication objective, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
 
 ### 2.1 Per-page execution context (Mandatory)
 
@@ -37,11 +37,11 @@ Before the first SVG page, output a confirmation listing: the compact communicat
 python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage
 ```
 
-Use the bundle's communication, canvas, mode/style, colors, typography, icons, current §IX brief/locks, and optional `global.template_application`. The latter governs which template content stays, changes, or moves; reuse/adherence select exporter mechanics only. This projection overrides neither facts, locks, nor technical constraints. After an approved lock change, rerun it before drawing the affected page.
+Use the bundle's communication, canvas, mode/style, conditional `mode_behavior` / `visual_style_behavior`, colors, typography, icons, current §IX brief/locks, and optional `global.template_application`. The latter governs which template content stays, changes, or moves; reuse/adherence select exporter mechanics only. This projection overrides neither facts, locks, nor technical constraints. After an approved lock change, rerun it before drawing the affected page.
 
 **Source facts**: The bundle carries page intent and locked execution values, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
 
-**Per-page communication trace**: Read the current §IX `Core message` and `Audience move` before choosing composition. The page must advance at least one purpose named in `communication.communication_intent` and move the audience toward `communication.audience_outcome`; `communication.core_message` remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
+**Per-page communication trace**: Read `communication.objective`, `communication.core_message`, and the current §IX `Core message` + `Audience move` before choosing composition. The page must advance the compact objective and move the audience as authored in §IX; the global core message remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 
 **Per-page reading-mode check**: Read `communication.consumption_mode` before choosing the page's composition. Apply it together with the authored §IX block texture and `page_rhythm`:
 
