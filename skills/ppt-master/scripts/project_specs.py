@@ -59,6 +59,17 @@ _SCHEMA_MARKER_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Confirmed `image_usage` source id → acceptable `## images` acquisition tokens.
+# Mirrors the strategist.md §h mapping (ai→ai, web→web, provided→user,
+# placeholder→placeholder); a confirmed `ai` plan may legitimately enter the
+# lock only as sliced sheet elements, so `slice` also satisfies `ai`.
+_CONFIRMED_IMAGE_SOURCE_TOKENS = {
+    "ai": ("ai", "slice"),
+    "web": ("web",),
+    "provided": ("user",),
+    "placeholder": ("placeholder",),
+}
+
 
 def _normalize_schema_value(value: str) -> str:
     """Normalize a Markdown scalar before enum, pattern, and catalog checks."""
@@ -682,6 +693,40 @@ def _validate_strict_data_surface(
     return errors
 
 
+def _confirmed_image_sources(project_dir: Path) -> list[str]:
+    """Return confirmed non-`none` image sources from the final Confirm UI state.
+
+    Reads ``confirm_ui/result.json`` only when it records a final confirmed
+    stage; a chat-delegated or superseded confirmation without that file keeps
+    the coverage check silent. Malformed payloads are treated as absent —
+    the Confirm UI owns result integrity, not this validator.
+    """
+    result_path = project_dir / "confirm_ui" / "result.json"
+    if not result_path.is_file():
+        return []
+    try:
+        payload = json.loads(result_path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return []
+    if not isinstance(payload, dict):
+        return []
+    if payload.get("status") != "confirmed" or payload.get("stage") != "final":
+        return []
+    raw_usage = payload.get("image_usage")
+    if isinstance(raw_usage, str):
+        raw_usage = [raw_usage]
+    if not isinstance(raw_usage, list):
+        return []
+    sources: list[str] = []
+    for item in raw_usage:
+        if not isinstance(item, str):
+            continue
+        token = item.strip().casefold()
+        if token and token != "none" and token not in sources:
+            sources.append(token)
+    return sources
+
+
 def _validate_spec_lock_relations(
     markdown_path: Path,
     matched: Mapping[str, dict[str, object] | None],
@@ -751,6 +796,26 @@ def _validate_spec_lock_relations(
             f"{markdown_name} schema: page_charts has unknown pages "
             f"{', '.join(unknown_chart_pages)}"
         )
+
+    confirmed_sources = _confirmed_image_sources(markdown_path.parent)
+    if confirmed_sources:
+        # Row values are free-form beyond the leading acquisition source;
+        # both `ai | ...` and `ai, ...` delimiter styles occur in practice.
+        image_tokens = {
+            _normalize_schema_value(re.split(r"[|,]", value, maxsplit=1)[0]).casefold()
+            for value in fields("images").values()
+        }
+        for source in confirmed_sources:
+            accepted = _CONFIRMED_IMAGE_SOURCE_TOKENS.get(source)
+            if accepted is None or not image_tokens.isdisjoint(accepted):
+                continue
+            expected = " or ".join(f"'{token}'" for token in accepted)
+            errors.append(
+                f"{markdown_name} schema: confirmed image source '{source}' "
+                f"(confirm_ui/result.json image_usage) has no '## images' row "
+                f"with acquisition {expected}; repair design_spec.md §VIII "
+                "from the final confirmation, then re-project the lock"
+            )
 
     info = get_project_info_common(str(markdown_path.parent))
     format_key = str(info.get("format", "unknown"))

@@ -43,7 +43,11 @@ Notes:
   it does not rewrite either artifact or compare their values for textual
   equality. It also does not prove final-confirmation → Design Spec fidelity or
   Design Spec → lock semantic projection; Generate Step 4 owns those two gates
-  before this structural validation. The design schema is structural lint for
+  before this structural validation. One slice is enforced mechanically: when
+  `confirm_ui/result.json` records a final confirmed stage, every confirmed
+  non-`none` `image_usage` source must appear in at least one `## images` row
+  of the lock (`provided` maps to `user`; `ai` is also satisfied by `slice`).
+  The design schema is structural lint for
   the human-readable brief; the lock schema owns machine execution values. For structured template use,
   validation also compares the lock's Master/Layout identities with the actual
   template SVG roots. Versioned scaffolds carry the schema marker. Markerless

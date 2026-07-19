@@ -240,7 +240,7 @@ Fill and audit `design_spec.md` against the complete final confirmation. Only af
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
 ```
 
-After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
+After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. `validate` mechanically enforces one slice of this: with a final confirmed `confirm_ui/result.json`, every confirmed non-`none` `image_usage` source must be represented by at least one `## images` row (`ai` is also satisfied by `slice`); the remaining semantic comparison stays with this gate. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
