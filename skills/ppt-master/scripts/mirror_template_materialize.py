@@ -277,12 +277,12 @@ def _template_execution_manifest_files(
         "template_count": len(templates),
         "text_slots_schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
         "execution_policy": (
-            "Read this compact roster once. Before authoring each page, run "
-            "project_manager.py page-context <project> P<NN> --bundle "
-            "--record-usage; do not "
-            "read text_slots_path directly. The bundle validates the selected "
-            f"{TEMPLATE_TEXT_SLOTS_SCHEMA} projection and includes the complete "
-            "prototype. Choose semantic replacements and edit only existing "
+            "This manifest and its text_slots_path records are derived tool "
+            "metadata, not page-authoring inputs. Before each page, run "
+            "project_manager.py page-context <project> P<NN> --record-usage. "
+            "Read the selected complete prototype only when its path and SHA "
+            "are absent from the active execution context or changed, then "
+            "reuse it. Choose semantic replacements and edit only existing "
             "visible text values; structured export validates text/tspan "
             "topology and attributes against the prototype."
         ),

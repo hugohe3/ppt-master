@@ -1982,7 +1982,13 @@ def structured_layout_definition_files(
 def template_prototype_lock_errors(
     structure_lock: PptxStructureLock,
 ) -> list[str]:
-    """Return template-root identity mismatches visible before page generation."""
+    """Validate selected input prototypes before generated pages exist.
+
+    ``page_layouts`` records authoring-input provenance. Strict execution keeps
+    that prototype's Layout identity, while adaptive execution may declare a
+    new Layout under the same Master. Final generated SVGs remain subject to
+    :func:`template_lock_errors` and :func:`template_prototype_errors`.
+    """
     if structure_lock.mode != "structured":
         return []
 
@@ -1997,7 +2003,140 @@ def template_prototype_lock_errors(
             errors.append(str(exc))
     if errors:
         return list(dict.fromkeys(errors))
-    errors.extend(template_lock_errors(specs, structure_lock))
+
+    try:
+        _validate_template_slide_contracts(specs)
+    except TemplateStructureError as exc:
+        errors.append(str(exc))
+
+    assignments = {
+        reference.slide_num: reference
+        for reference in structure_lock.layouts
+    }
+    definitions = {
+        definition.layout_key: definition
+        for definition in structure_lock.layout_definitions
+    }
+    master_names = {
+        master.master_key: master.master_name
+        for master in structure_lock.masters
+    }
+    prototype_pages = {spec.slide_num for spec in specs}
+    assignment_pages = set(assignments)
+    missing_assignments = sorted(prototype_pages - assignment_pages)
+    missing_prototypes = sorted(assignment_pages - prototype_pages)
+    if missing_assignments:
+        errors.append(
+            "spec_lock.md page_pptx_layouts is missing generated page(s): "
+            + ", ".join(
+                f"P{slide_num:02d}" for slide_num in missing_assignments
+            )
+        )
+    if missing_prototypes:
+        errors.append(
+            "spec_lock.md page_layouts is missing generated page(s): "
+            + ", ".join(f"P{slide_num:02d}" for slide_num in missing_prototypes)
+        )
+
+    adherence = structure_lock.template_adherence or "strict"
+    for spec in specs:
+        assignment = assignments.get(spec.slide_num)
+        if assignment is None:
+            continue
+        definition = definitions.get(assignment.layout_key)
+        if definition is None:
+            errors.append(
+                f"spec_lock.md P{spec.slide_num:02d} references undeclared "
+                f"Layout {assignment.layout_key!r}"
+            )
+            continue
+        expected_master_name = master_names.get(definition.master_key)
+        if (
+            spec.master_key != definition.master_key
+            or spec.master_name != expected_master_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: input prototype Master "
+                f"{spec.master_key!r} / {spec.master_name!r} does not match "
+                f"assigned Layout {definition.layout_key!r} Master "
+                f"{definition.master_key!r} / {expected_master_name!r}"
+            )
+
+        reuses_input_layout = spec.layout_key == definition.layout_key
+        must_match_layout = (
+            adherence == "strict"
+            or reuses_input_layout
+            or definition.prototype_svg_path is not None
+        )
+        if must_match_layout and (
+            spec.layout_key != definition.layout_key
+            or spec.layout_name != definition.layout_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: input prototype Layout "
+                f"{spec.layout_key!r} / {spec.layout_name!r} does not match "
+                f"assigned Layout {definition.layout_key!r} / "
+                f"{definition.layout_name!r}"
+            )
+        elif (
+            adherence == "adaptive"
+            and not reuses_input_layout
+            and spec.layout_name == definition.layout_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: adaptive output Layout "
+                f"{definition.layout_key!r} must use a new picker name instead "
+                f"of input prototype name {spec.layout_name!r}"
+            )
+
+    definition_specs = list(specs)
+    next_slide_num = max(prototype_pages, default=0) + 1
+    for definition in structure_lock.layout_definitions:
+        if definition.prototype_slide_num is not None:
+            source_assignment = assignments.get(definition.prototype_slide_num)
+            if source_assignment is None:
+                errors.append(
+                    f"spec_lock.md Layout {definition.layout_key!r} uses missing "
+                    f"prototype page P{definition.prototype_slide_num:02d}"
+                )
+            elif source_assignment.layout_key != definition.layout_key:
+                errors.append(
+                    f"spec_lock.md Layout {definition.layout_key!r} uses "
+                    f"P{definition.prototype_slide_num:02d}, but that page is "
+                    f"assigned to Layout {source_assignment.layout_key!r}"
+                )
+            continue
+        if definition.prototype_svg_path is None:
+            errors.append(
+                f"spec_lock.md Layout {definition.layout_key!r} has no prototype"
+            )
+            continue
+        try:
+            definition_spec = parse_template_slide(
+                definition.prototype_svg_path,
+                next_slide_num,
+            )
+            next_slide_num += 1
+        except TemplateStructureError as exc:
+            errors.append(str(exc))
+            continue
+        definition_specs.append(definition_spec)
+        expected_master_name = master_names.get(definition.master_key)
+        if (
+            definition_spec.layout_key != definition.layout_key
+            or definition_spec.layout_name != definition.layout_name
+            or definition_spec.master_key != definition.master_key
+            or definition_spec.master_name != expected_master_name
+        ):
+            errors.append(
+                f"spec_lock.md Layout {definition.layout_key!r} definition does "
+                f"not match prototype {definition_spec.svg_path.name} root identity"
+            )
+
+    try:
+        _validate_template_slide_contracts(definition_specs)
+    except TemplateStructureError as exc:
+        errors.append(str(exc))
     return list(dict.fromkeys(errors))
 
 
