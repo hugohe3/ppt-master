@@ -1,703 +1,388 @@
-# Chart SVG Style Guide
+# Chart Template Authoring Guide
 
-> 本文档定义了 `templates/charts/` 下所有 SVG 图表模板的视觉规范。  
-> 新增或修改图表时 **必须** 遵循以下标准，确保全库视觉一致性。
+`templates/charts/` 的模板负责可视化结构、数据编码和信息关系，不负责最终项目风格。模板必须保持源码可读、独立可渲染，并允许 Executor 根据项目 Design Spec 与 `spec_lock.md` 重做字体、配色和装饰。
 
-## 0. 上游规范引用
+## 0. 上游规范
 
-本文档只定义 **图表模板专用** 的美学与实现配方。项目级 SVG
-创作、兼容性例外与条件映射由
-[`references/shared-standards.md`](../../references/shared-standards.md)
-路由到各自的权威模块；本指南不摘录、不放宽这些合同。
+**Hard rule**: 本指南只定义 Chart 模板库的结构与中性预览合同。通用 SVG 语法、效果、原生数据接口和 PowerPoint 结构分别由以下权威文件定义：
 
----
+| 合同 | 权威文件 |
+|---|---|
+| 通用 SVG | [`shared-standards.md`](../../references/shared-standards.md) |
+| 效果与兼容输入 | [`svg-effects.md`](../../references/svg-effects.md) |
+| Native Chart/Table | [`native-data-interface.md`](../../references/native-data-interface.md) |
+| 画布格式 | [`canvas-formats.md`](../../references/canvas-formats.md) |
 
-## 1. 色彩系统 (Tailwind CSS Palette)
-
-### 1.1 文本颜色
-
-| 用途 | 色值 | Tailwind Token | 示例 |
-|------|------|----------------|------|
-| **主标题** | `#0F172A` | Slate 900 | 图表大标题 |
-| **数值标签** | `#0F172A` | Slate 900 | 柱顶数值、关键指标 |
-| **副标题** | `#64748B` | Slate 500 | 日期、单位说明 |
-| **坐标轴标签** | `#64748B` | Slate 500 | X/Y 轴刻度值 |
-| **轴标题 / 图例** | `#475569` | Slate 600 | "年薪（万元）"、图例文字 |
-| **数据来源** | `#94A3B8` | Slate 400 | 页面底部来源说明 |
-| **脚注 / 淡化提示** | `#CBD5E1` | Slate 300 | "各阶段可灵活调整" |
-
-### 1.2 主题色（数据系列）
-
-| 色名 | 主色 | 深色（渐变终点） | 用途 |
-|------|------|------------------|------|
-| **Blue** | `#3B82F6` | `#2563EB` | 第 1 系列（默认首选） |
-| **Emerald** | `#10B981` | `#059669` | 第 2 系列 |
-| **Amber** | `#F59E0B` | `#D97706` | 第 3 系列 |
-| **Violet** | `#8B5CF6` | `#7C3AED` | 第 4 系列 |
-| **Rose** | `#FB7185` | `#E11D48` | 第 5 系列 / 警告 |
-| **Pink** | `#EC4899` | `#BE185D` | 对比组（如蝴蝶图女性） |
-
-> 径向渐变（如气泡图）使用亮色变体：`#60A5FA`、`#34D399`、`#FBBF24`、`#A78BFA`、`#FB7185`
-
-### 1.3 语义色
-
-| 用途 | 色值 | 说明 |
-|------|------|------|
-| 达标 / 正面 | `#10B981` | Emerald 500 |
-| 警告 / 中性 | `#F59E0B` | Amber 500 |
-| 未达标 / 负面 | `#EF4444` | Red 500 |
-| 异常值标注 | `#F43F5E` | Rose 500 |
-
-### 1.4 UI 辅助色
-
-| 用途 | 色值 | 说明 |
-|------|------|------|
-| **坐标轴线** | `#94A3B8` | Slate 400, stroke-width="2" |
-| **网格线** | `#E2E8F0` 或 `#E0E0E0` | stroke-dasharray="4,4" |
-| **中心分隔线** | `#CBD5E1` | 如象限十字线 |
-| **卡片背景** | `#F8FAFC` / `#F8F9FA` | Slate 50 |
-| **卡片描边** | `#E2E8F0` | Slate 200 |
-| **行分隔线** | `#F1F5F9` | Slate 100（极淡） |
-| **Tint 背景**（蓝） | `#EFF6FF` | Blue 50 |
-| **Tint 背景**（绿） | `#ECFDF5` | Emerald 50 |
-| **Tint 背景**（红） | `#FFF1F2` | Rose 50 |
-| **Tint 背景**（黄） | `#FFFBEB` | Amber 50 |
+**Forbidden — second SVG specification**: 不在本指南复述或放宽上游语法。发生冲突时以上游权威文件为准。
 
 ---
 
-## 2. 排版规范
+## 1. 所有权边界
 
-### 2.1 字体栈
+### 1.1 模板与项目
 
-```
-font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
-```
+| Chart 模板拥有 | 项目拥有 |
+|---|---|
+| 可视化类型与数据到图形的映射 | 项目字体与字号体系 |
+| 节点、连接、轴、系列和标签关系 | 项目调色板与品牌色 |
+| 构图骨架、阅读顺序和容量边界 | 圆角、阴影、渐变、纹理和装饰语言 |
+| 必要的状态与语义区分 | 页面背景、页头、页脚和品牌 chrome |
+| 独立预览所需的中性样式 | 最终强调策略与页面级视觉层级 |
 
-- 纯英文场景可省略 `'PingFang SC', 'Microsoft YaHei'`
+**Hard rule**: Executor 适配模板时保留可视化类型、信息关系和数据准确性；最终视觉必须来自当前项目，而不是继承模板的示例审美。
 
-### 2.2 字号层级
+### 1.2 保留判断
 
-| 层级 | 字号（SVG px 语义） | font-weight | 用途 |
-|------|---------------------|-------------|------|
-| H1 | `30–36` | `700–800` | 图表主标题，按信息密度选择 |
-| H2 | `20–24` | `600–700` | 区域标题（如"详细数据"） |
-| Body L | `18–20` | `600–700` | 关键数值、百分比 |
-| Body M | `15–16` | `600` | 数据标签、分类名 |
-| Body S | `13–14` | 正常或 `600` | 副标题、图例、来源 |
-| Caption | `12–13` | 正常 | 坐标轴刻度、注释 |
+对每个视觉元素按顺序判断：
 
-表中数值采用 SVG px 语义，但规范创作属性必须使用无单位写法：写
-`font-size="34"`，不得写 `font-size="34px"`。显式 `px` 仅是项目转换器的
-兼容输入，会触发 Checker 归一化建议，不得反向扩散到模板创作。
+| 判断 | 处理 |
+|---|---|
+| 删除后会改变数据含义、关系、状态或阅读顺序 | 保留 |
+| 删除后会使独立 SVG 无法辨认结构或文本容量 | 使用最小中性表达 |
+| 只让示例显得更精致、立体、品牌化或“高级” | 删除 |
+| 只对某个项目风格成立 | 交给 Executor 重建 |
 
-> **最小字号下限：12**。所有文本不得小于 `font-size="12"`。
-
-### 2.3 同一图表标签的内联格式
-
-当一个图表标签需要在 PPT 中保持为单一可编辑文本框时，把同一逻辑行写进一个 `<text>`，并用内联 `<tspan>` 表达多色或多粗细。若本来就需要多个独立文本框，则可使用多个 `<text>`：
-
-```xml
-<!-- 正确：一个 text frame，三个 run -->
-<text x="100" y="200" font-size="24" fill="#333333">
-  实现<tspan fill="#3B82F6" font-weight="bold">10倍</tspan>效率提升
-</text>
-
-<!-- 若目标是单一文本框，则不适用：下面会生成三个独立 text frame -->
-<text x="100" y="200">实现</text>
-<text x="160" y="200" fill="#3B82F6">10倍</text>
-<text x="240" y="200">效率提升</text>
-```
-
-> 只有需要留在同一文本框内的 inline tspan 才不带 `x` / `y` / `dy`；带这些定位属性的 tspan 会按独立文本框处理。`dx` 可用于微调字距。
-
-### 2.4 数据高亮默认行为
-
-图表中的关键数据文本应默认高亮：
-- **数值结果** — 百分比、倍数、金额 → `<tspan fill="主题色" font-weight="bold">`
-- **对比项** — 增/减、达标/未达标 → 语义色（绿/红）
-- **不高亮** — 连接词、普通动词、结构性文字（轴标签、图例、页码）
+**Default — structure first (may override when semantics require it)**: 优先使用清楚的线、面、标签和留白。装饰不能成为理解结构的前提。
 
 ---
 
-## 3. 阴影滤镜
+## 2. 中性预览
 
-本节只规定图表模板库采用的阴影配方，不定义项目级 filter
-支持边界。图表阴影统一使用 `feFlood` 方案，本指南不采用
-`<feComponentTransfer>`：
+### 2.1 独立可渲染
 
-```xml
-<filter id="chartShadow" x="-15%" y="-15%" width="130%" height="130%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="2-4"/>
-    <feOffset dx="0" dy="1-3" result="offsetBlur"/>
-    <feFlood flood-color="#0F172A" flood-opacity="0.08-0.15" result="shadowColor"/>
-    <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
-    <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
-    </feMerge>
-</filter>
-```
-
-### 参数参考
-
-| 场景 | stdDeviation | dy | flood-opacity |
-|------|-------------|-----|---------------|
-| 重型元素（箭头、卡片） | 4-6 | 2-4 | 0.12-0.15 |
-| 中型元素（柱子、箱体） | 2-3 | 1-2 | 0.10-0.15 |
-| 轻型元素（底部卡片） | 4-6 | 2-4 | 0.06-0.08 |
-
-### 本指南实现约定
-
-- `flood-color="#000000"` → 必须用 `#0F172A`
-- `<feComponentTransfer>` + `<feFuncA slope=...>` → 用 `<feFlood flood-color flood-opacity>` 替代
-- `flood-opacity > 0.20` → 阴影过重，最大 0.15-0.20
-
-> 这是图表模板的色彩一致性约定，不是项目级 SVG 黑名单。单独排除
-> `feComponentTransfer/feFuncA(slope)`，是因为它只能调透明度、无法携带
-> 颜色，容易让阴影退回纯黑，与同页使用 `feFlood`
-> `flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
->
-> 简言之：本库的图表阴影必须显式表达颜色，而不能只表达透明度。
-
-### 图表阴影使用原则
-
-> **阴影是美学成分，不是默认处理。** 克制而非丰富才能产生"经过设计"的感觉。 "阴影被感知而非被看见" 是高端美学标准。
-
-**应加阴影**：浮在照片/彩色面板上方的卡片、唯一的主 CTA、叠加层（tooltip、callout）
-
-**不应加阴影**：背景面板/分隔条、网格中平等的同级卡片、已有描边/渐变的容器、正文段落容器、装饰线/图标、深色背景上（黑色阴影不可见）
-
-**每页预算**：最多 2-3 个带阴影元素。第 4 个需要阴影时，先移除现有某个的阴影。
-
-**统一光源**：同页所有 `feOffset` 的 `dx`/`dy` 方向必须一致（默认 `dx=0, dy=正值`，光从上方来）。
-
-**两级高度上限**：
-
-| 层级 | 场景 | dy | stdDeviation | flood-opacity |
-|------|------|----|--------------|---------------|
-| 地面（无阴影） | 背景、同级网格卡片、分隔线、正文容器 | — | — | — |
-| 静止 | 照片/面板上的卡片、次级 callout | 2-4 | 4-8 | 0.06-0.10 |
-| 抬升 | 主 CTA、焦点/推荐卡片、覆盖层 | 6-10 | 10-16 | 0.12-0.20 |
-
-**不要堆叠**：阴影 + 描边 + 圆角 + 渐变填充同时出现 = 模板感。容器的"看我"预算很小，选其一即可。
-
----
-
-## 4. 渐变规范
-
-### 4.1 线性渐变（柱状/条形图）
+**Hard rule**: 每个模板保持完整 `<svg>`、`viewBox="0 0 1280 720"` 和一个直接的白色全画布背景，使文件无需外部样式即可打开审阅。
 
 ```xml
-<linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-    <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
-    <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
-</linearGradient>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <!-- semantic content -->
+</svg>
 ```
 
-- 方向：从亮到深（顶到底 或 左到右）
-- 每个渐变 ID 应语义化：`barGrad1`、`leftGrad`、`actualBarBlue`
+白色背景是预览基线，不是项目背景指令。Executor 必须按当前页面风格处理最终背景。
 
-### 4.2 径向渐变（气泡图）
+### 2.2 中性参考色
 
-```xml
-<radialGradient id="bubbleGrad1" cx="30%" cy="30%">
-    <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:0.9" />
-    <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0.7" />
-</radialGradient>
-```
+以下色值只保证模板独立展示时清晰。它们不是最终项目调色板：
 
-- 高光偏左上方 (`cx="30%" cy="30%"`)
-- 边缘 opacity 降低至 0.7，制造通透感
-
----
-
-## 5. 结构规范
-
-### 5.1 图表层级分组
-
-使用 `<g id="...">` 进行语义分组，便于 PPT 中逐个操作/动画：
-
-```xml
-<g id="chartArea" data-pptx-bounds="60 140 820 480"> <!-- 图表主体 -->
-    <g id="bar-1">...</g>
-    <g id="bar-2">...</g>
-</g>
-<g id="legend" data-pptx-bounds="920 140 300 160"> <!-- 图例区域 -->
-    <g id="legend-high">...</g>
-</g>
-<g id="detailList" data-pptx-bounds="920 320 300 300"> <!-- 详情面板 -->
-    <g id="list-items">
-        <g id="item-1">...</g>
-    </g>
-</g>
-```
-
-**图表模板分组单元**：
-
-| 分组单元 | 包含内容 |
-|---------|---------|
-| 卡片/面板 | 背景 rect + 阴影（如适用）+ 图标 + 标题 + 正文 |
-| 流程步骤 | 编号圆 + 图标 + 标签 + 描述 |
-| 列表项 | 圆点/编号 + 图标 + 标题 + 描述 |
-| 图标-文字组合 | 图标元素 + 相邻标签 |
-| 页头 | 标题 + 副标题 + 装饰 |
-| 装饰集群 | 相关装饰形状（环、球、点） |
-
-**命名约定**：每个顶层语义组必须使用页面内唯一、描述性的 `id`（如
-`card-1`、`step-discover`、`header`、`footer`）。内部 `<g>` 可以保持匿名且无需
-`data-pptx-bounds`；即使存在嵌套 bounds，Checker 也会忽略。不要把 frame、
-icon、badge 等实现碎片暴露为独立的顶层动画锚点。
-
-目录中的 SVG 是适配前参考；复制到最终页面时，每个可见直属根 `<g>` 都必须新增
-或重写根坐标系 `data-pptx-bounds`。不得从当前示例文字的紧包围盒推断它。
-
-### 5.2 viewBox
-
-固定为 `0 0 1280 720`（PPT 16:9），不可修改。
-
-### 5.3 背景
-
-首行始终为白色全屏背景：
-```xml
-<rect width="1280" height="720" fill="#FFFFFF"/>
-```
-
-### 5.4 数据来源
-
-位于页面底部，固定格式：
-```xml
-<text x="60" y="695" font-family="..." font-size="14" fill="#94A3B8">
-    <tspan>数据来源: XXX</tspan>
-</text>
-```
-
----
-
-## 6. 通用 SVG 技术约束
-
-本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同入口见
-[`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
-必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
-
-### 6.1 Shape-first 对象模型
-
-`templates/charts/` 的图示默认由独立、可编辑的 PowerPoint Shape 组成，
-不依赖节点吸附、自动布线或 Connector attachment：
-
-| 图示对象 | 模板表达 | 最终 PPTX / 页面创作规则 |
+| 角色 | 中性参考值 | 使用边界 |
 |---|---|---|
-| 基础节点与容器 | `<rect>`、`<circle>`、`<ellipse>` | 导出为原生可编辑 Shape |
-| 细关系线或方向箭头 | `<line>`；折线路径优先拆成少量线段，仅末段带已登记 marker | 导出为静态可编辑线形状，不创建 `p:cxnSp` |
-| 实心块箭头、chevron、标准流程节点 | 当纯色 preset 精确匹配时，保存 `preset_shape_svg.py` 生成的完整 compact 原子 `<g>` | group 只写一次 metadata / 基础 paint，直接可见 path 是 registry 层且只带必要的分层 paint 覆盖；改动 preset、frame、adjustment 或 paint 时必须整体重新生成 |
-| 自定义轮廓、品牌图形、数据几何 | `<path>`、`<polygon>` | 导出为可编辑 `p:sp/a:custGeom`，无需伪装成 preset |
-| 数据图表 | SVG Shape fallback；符合合同的模板可带 chart replacement marker | 默认仍为 Shape 图表；仅显式 opt-in 时替换为 native Chart |
+| 主文本 | `#0F172A` | 标题、关键值 |
+| 正文 | `#475569` | 描述、图例 |
+| 次文本 | `#64748B` | 轴标签、辅助说明 |
+| 弱线 | `#CBD5E1` / `#E2E8F0` | 网格、边界、分隔 |
+| 参考强调 | `#2563EB` | 第一系列、当前状态或结构焦点 |
+| 正向语义 | `#059669` | 仅表示上升、完成、达标 |
+| 负向语义 | `#E11D48` | 仅表示下降、异常、未达标 |
+| 警示语义 | `#D97706` | 仅表示风险或待处理 |
 
-**硬规则**：图表模板不得包含 `data-pptx-object="connector"` 或 Connector
-端点 attachment metadata。authored preset 只能粘贴 helper 输出的完整 compact
-原子 `<g>`：不得手写或局部修改 metadata / path，也不得加入 hidden carrier、
-preview wrapper 或 fingerprint。修改时整体重生成。PPTX 导入与 `mirror` 的
-expanded 无损表达属于独立合同，不得复制为新模板创作格式。概念流程图、
-架构图、关系图也不得添加
-`data-pptx-replace-with="chart"`。来源 PPTX 已有 Connector 的导入/回导保真
-属于独立合同，不通过模板示例扩张到新页面创作。
+**Hard rule**: 多系列数据必须可区分；正负、完成/计划等语义状态必须可辨认。颜色承担这些信息时保留，颜色只承担装饰时移除。
 
----
+**Forbidden — fixed catalog palette**: 不要求每个卡片、步骤或能力点使用不同 Tailwind hue。项目配色不从模板示例反向推导。
 
-## 7. 旧色映射速查表
+### 2.3 页面 chrome
 
-在维护旧模板时，使用以下映射快速替换：
-
-| 旧色 (Material/Flat) | → | 新色 (Tailwind) | 角色 |
-|----------------------|---|-----------------|------|
-| `#2C3E50` | → | `#0F172A` | 主文本 |
-| `#7F8C8D` | → | `#64748B` | 副文本 |
-| `#5D6D7E` | → | `#475569` | 图例文本 |
-| `#95A5A6` | → | `#94A3B8` | 数据来源 |
-| `#BDC3C7` | → | `#CBD5E1` | 淡化元素 |
-| `#2196F3` / `#1976D2` | → | `#3B82F6` / `#2563EB` | 蓝色系列 |
-| `#4CAF50` / `#388E3C` | → | `#10B981` / `#059669` | 绿色系列 |
-| `#FF9800` / `#F57C00` | → | `#F59E0B` / `#D97706` | 橙色系列 |
-| `#E91E63` | → | `#F43F5E` | 异常值 |
-| `#000000` (shadow) | → | `#0F172A` | 阴影底色 |
+| 元素 | 模板行为 |
+|---|---|
+| 标题/副标题 | 可用简短占位文本展示层级和可用空间；不附带装饰条、徽章或品牌图形 |
+| 数据来源 | 仅当该可视化结构需要来源/脚注槽时保留；不是每个模板的固定页脚 |
+| 页码、Logo、部门名 | 省略 |
+| 进度徽章、状态胶囊 | 只有状态本身属于信息时保留，移除纯装饰外壳 |
 
 ---
 
-## 8. 占位内容规范 (Placeholder Content Strategy)
+## 3. 装饰与效果
 
-既然这些 SVG 文件是供 AI 后续调用的“模板”，它们的核心价值在于展示 **图形结构、排版约束与视觉空间**，而不是传递真实的业务数据。因此，写入模板的文本内容应遵循以下“占位原则”：
+### 3.1 默认省略
 
-### 8.0 全英文原则 (English-Only Rule)
-**强制要求**：所有图表模板中的占位文本（包括标题、副标题、坐标轴、图例、数据节点、详情描述及底部来源说明）**必须全部使用英文编写**。
-- **目的**：确保后续自动化管线中的 LLM 能够更精准地进行语义理解和结构化内容映射，同时英文单词的天然长度特征更易于在模板中展示排版时的换行逻辑与空间边界。
+**Default — no decorative effects (may override when data encoding requires it)**: 中性模板不使用阴影、发光、纹理、玻璃面板、装饰渐变或漂浮效果。
 
-### 8.1 结构边界演示
-- **展示最大宽度/换行逻辑**：刻意使用典型长度的字符串（如两到三个词的短语、多行 `tspan`）来明确展示文本框的边界。这样能确保 AI 填入真实文本时有直观的参考，防止溢出。
-- **展示数据格式**：使用能体现完整格式特征的占位数值（如 `$1,234.5M`、`98.5%`）而不仅是简单的 `10`，以验证符号和字符宽度是否适配。
+| 效果 | 默认 | 允许条件 |
+|---|---|---|
+| 阴影/filter | 省略 | 无；项目执行阶段按视觉风格决定 |
+| 渐变 | 省略 | 连续色阶、流量、深度面等确实承载数据或空间编码 |
+| 透明光晕 | 省略 | 透明度本身编码范围或不确定性 |
+| 圆角卡片 | 非默认 | 边界确实表达一个信息单元 |
+| 图标底板 | 非默认 | 需要明确图标槽位或状态边界 |
 
-### 8.2 通用性与中立性
-- 使用通用、专业的商业占位符，避免过于垂直或具象的特定业务数据（除非该模板本身具有强烈的行业属性）。
-- **推荐做法**：使用 `Category A`、`Q1 Revenue`、`Strategic Objective`、`Phase 01`。
-- **避免做法**：使用具体的长篇现实数据（如“某某品牌2023年特种设备销量分析”）。
+**Hard rule**: Heatmap 色阶、Sankey 流量宽度、系列区分和 Isometric 面向关系属于信息编码；普通卡片阴影、气泡高光、装饰性色带和大号淡色序号不属于。
 
-### 8.3 视觉平衡
-- 占位文本应当在视觉上保持图表的平衡性（例如蝴蝶图左右文本长度应大致相等，列表文本应长短错落有致），以便让人一眼看清图表的布局设计意图。
+### 3.2 容器克制
+
+**Hard rule**: 一个信息单元最多使用一种主要边界表达：留白、分隔线、描边或底色。不要同时叠加描边、阴影、渐变和多层圆角框。
+
+**Reference — not a constraint**: 项目最终可能采用强装饰风格。那是 Executor 根据 Design Spec 重建的项目决策，不是共享模板的默认形态。
 
 ---
 
-## 9. 注册到 charts_index.json
+## 4. 源码可读性与体积
 
-新增 SVG 模板后，**必须** 在 [`charts_index.json`](./charts_index.json) 中登记，否则 Strategist 选型时不会发现它。
+### 4.1 语义压缩
 
-### 9.1 字段规范
+**Hard rule**: 缩小模板时保留正常换行、缩进、语义 `id` 和必要分区注释。压缩目标是减少重复信息，不是把 XML 变成一行。
+
+| 做法 | 要求 |
+|---|---|
+| 字体继承 | 公共 `font-family` 放在根 `<svg>` 或清楚的父 `<g>` |
+| 属性继承 | 同组重复的 `fill`、`stroke`、字号或锚点可提升到父组 |
+| 注释 | 保留结构、语义和机器标记；删除色名、营销解释和重复说明 |
+| 文本 | 普通单行直接写在 `<text>`；只有多 run/多行需要 `<tspan>` |
+| 坐标 | 页面坐标使用必要精度；按上游合同运行 `compact_svg_coordinates.py` |
+| ID | 使用 `chart-area`、`series-1`、`card-1` 等结构名称，避免示例业务名 |
+
+### 4.2 禁止的压缩
+
+**Forbidden — opaque source**:
+
+- 单行 minify、随机缩写 ID 或删除结构注释。
+- 为省字符把核心构图拆成难以追踪的深层 `<symbol>/<use>` 图。
+- 把模板必要信息藏进外部 CSS、脚本或未登记依赖。
+- 用 Base64、压缩字符串或生成器说明替代可读的可视几何。
+
+静态同文档 `<use>` 只在重复原语保持清晰、且满足上游条件合同时使用；它不是默认瘦身手段。
+
+### 4.3 文本可读性
+
+| 角色 | 中性范围 |
+|---|---|
+| 页面标题 | `30–36`，`700–800` |
+| 区域标题 | `18–24`，`600–700` |
+| 正文/标签 | `13–16` |
+| Caption/轴刻度 | `12–14` |
+
+**Hard rule**: 所有文本 `font-size >= 12`，使用有限无单位数值。需要成为一个 PowerPoint 文本框的多格式逻辑行使用一个 `<text>` 加非定位 `<tspan>`；独立文本框使用独立 `<text>`。
+
+---
+
+## 5. 结构与边界
+
+### 5.1 语义分组
+
+**Hard rule**: 使用描述性顶层 `<g id>` 表达页面级逻辑单元，例如 Header、Chart、Legend、Card Grid 或 Process。不要为每条文字、图标或数据点建立一个直属根组。
+
+| 顶层组 | 典型内容 |
+|---|---|
+| `header` | 标题与副标题 |
+| `chart-area` / replacement carrier | 轴、数据系列、标签、必要 metadata |
+| `legend` | 系列或状态说明 |
+| `card-1` / `feature-card-1` | 一个完整信息单元 |
+| `timeline-track` | 时间轴与阶段标签 |
+| `milestone-cards` | 同一结构的一组里程碑卡片 |
+
+### 5.2 `data-pptx-bounds`
+
+**Hard rule**: 每个可见直属根 `<g>` 都声明正数、根坐标系的 `data-pptx-bounds="x y width height"`。即使该组已有 native chart/table frame，也保留 bounds。
+
+```xml
+<g id="header" data-pptx-bounds="60 40 1160 72">
+    <text x="60" y="74" font-size="32">Title</text>
+</g>
+
+<g id="card-1" data-pptx-bounds="60 150 560 250">
+    <!-- complete card -->
+</g>
+```
+
+| 边界要求 | 行为 |
+|---|---|
+| 坐标系 | 使用根 `viewBox` 坐标，不使用局部 transform 后坐标 |
+| 范围 | 覆盖该逻辑单元允许使用的布局子画布，不从示例文字紧包围盒推断 |
+| 精度 | 最多两位小数 |
+| 嵌套组 | 不写；Checker 忽略嵌套 bounds |
+| 背景/defs | 直接背景 primitive 与非可见定义不需要 bounds |
+
+**Forbidden — bounds noise**: 不给每个嵌套 `<g>`、图标、数据点或实现碎片添加 bounds。
+
+### 5.3 Shape-first
+
+| 对象 | 模板表达 |
+|---|---|
+| 基础节点/容器 | `<rect>`、`<circle>`、`<ellipse>` |
+| 细关系线 | `<line>` 或少量开放 `<path>` |
+| 标准块箭头/流程节点 | 仅在 preset 精确匹配时使用完整 compact authored-preset `<g>` |
+| 自定义数据几何 | `<path>`、`<polygon>`、`<polyline>` |
+| 数据图表 | 默认 Shape fallback；符合条件时附带 native replacement marker |
+
+**Forbidden — inferred native semantics**: 概念图、流程图和框架图不添加 `data-pptx-replace-with="chart"`；普通关系线不添加 Connector attachment metadata。
+
+---
+
+## 6. 数据图表合同
+
+### 6.1 绘图区标记
+
+**Hard rule**: calculator-supported 数据图表在 `<g id="chartArea">` 内、轴之后、首个数据元素之前保留精确机器注释：
+
+```xml
+<!-- chart-plot-area: 140,150,1160,550 -->
+```
+
+Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入，不得作为“清理注释”删除。
+
+### 6.2 Native Chart/Table
+
+**Hard rule**: 只有 [`native-data-interface.md`](../../references/native-data-interface.md) 支持的真实数据图表或纯文本表格使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。
+
+```xml
+<g id="line-chart"
+   data-pptx-bounds="100 140 1080 460"
+   data-pptx-replace-with="chart">
+    <metadata type="application/json">...</metadata>
+    <g id="chartArea">...</g>
+</g>
+```
+
+**Hard rule**: 项目颜色适配时同步修改可见系列颜色和 metadata `style.colors`。默认 Shape 输出与显式 native 输出都必须可验证。
+
+### 6.3 数据装饰边界
+
+| 元素 | 分类 |
+|---|---|
+| 轴、刻度、网格、图例 | 结构 |
+| 系列颜色、正负语义色 | 数据编码 |
+| 数据点节点 | `lineMarker` 等类型需要时保留 |
+| Area fill | 只有面积/累计量是信息时保留；普通 line chart 删除 |
+| 柱体渐变、节点高光、卡片阴影 | 装饰，默认删除 |
+| 来源与注释 | 内容需要时保留，不作为全库固定 chrome |
+
+---
+
+## 7. 占位内容与注册
+
+### 7.1 占位内容
+
+**Hard rule**: 模板占位文本使用英文，展示真实文本容量和数据格式，但不承载具体项目事实。
+
+| 应展示 | 示例 |
+|---|---|
+| 标题长度 | `Revenue Trend`、`Implementation Plan` |
+| 数据格式 | `$245.5M`、`98.5%`、`2026 Q1` |
+| 正常换行 | 2–3 行短描述 |
+| 结构容量 | 真实建议数量范围内的 series/items/nodes |
+
+**Forbidden — placeholder storytelling**: 不写长篇营销文案、部门归属、真实品牌或无法复用的项目背景。
+
+### 7.2 `charts_index.json`
+
+新增模板必须登记 `<key>.summary`：
 
 ```json
-"<key>": {
-  "summary": "Pick for <内容形态 + 规模>. Skip if <反例 → 替代模板>."
+"line_chart": {
+  "summary": "Pick for 1-3 time-series on a continuous axis showing direction. Skip if cumulative volume matters (use area_chart)."
 }
 ```
 
-- **`key`** = SVG 文件名去掉 `.svg`，下划线小写（如 `bullet_chart`）
-- **`summary`** 是**选型句**，不是描述句。语法见 `meta.summaryGrammar`：先说什么时候选它，再用 `Skip if ... (use <other_key>)` 指向最容易混淆的兄弟模板；该句会原样进入候选召回输出
-- **`meta.total`** 同步 +1
-
-> **不需要** `label` / `categories` / `quickLookup` / `keywords`。[`chart_recall.py`](../../scripts/chart_recall.py) 每次从当前 registry 动态召回候选，不维护第二份索引。`summary` 使用英文；Strategist 先把中文或行业术语（"中台"、"架构图"、"管道"）翻译为 3–8 个英文内容形态标签，再调用脚本。若模板命中依赖某个概念，把其英文等价物写进 `Pick for` 子句。
-
-### 9.2 召回烟测
-
-修改 `summary` 后，用一个正向页面形态执行召回，并确认目标模板进入候选；再验证模板 key：
-
-```bash
-python3 skills/ppt-master/scripts/chart_recall.py recall \
-  --page P03 --tag "time series" --tag "three metrics" --tag "trend" --limit 6
-python3 skills/ppt-master/scripts/chart_recall.py validate line_chart
-```
-
-### 9.3 反例
-
-❌ 只写"是什么"：`"summary": "Bidirectional comparison chart for two datasets"`
-✅ 写"何时选"：`"summary": "Pick for two mirrored datasets sharing a common axis (age pyramid, A/B). Skip for >2 sides (use grouped_bar_chart)."`
-
-❌ summary 过长（>400 字符）—— 选型时反而难抓重点，目标在 150-300 字符。
-
-> **Why not stricter**：单一结构模板常需覆盖多个商业框架/场景（如 `quadrant_text_bullets` 覆盖 SWOT + Ansoff，`top_down_tree` 覆盖 org + OKR），summary 需要列出关键词锚点（"principles, key takeaways, action items" 这种）才能让 Strategist 语义命中"非数字结构页"，所以 100-180 字符的旧基线在结构-派命名后已经太紧。
+**Hard rule**: `summary` 是选型句，使用 `Pick for ... Skip if ...`，不是视觉描述；`key` 与文件名一致，`meta.total` 与 catalog 数量一致。
 
 ---
 
-## 10. 检查清单
+## 8. 迁移边界
 
-新增或修改图表后，逐项检查：
+本指南是新建和修改模板的目标合同。尚未迁移的存量文件可继续存在，但不得作为新增装饰规则的依据。
 
-### 基础校验
-- [ ] `xmllint --noout` 通过
-- [ ] viewBox 为 `0 0 1280 720`
-- [ ] 首行为白色背景 `<rect width="1280" height="720" fill="#FFFFFF"/>`
+**Current reference set**:
 
-### 色彩
-- [ ] 无旧色残留（`grep` 验证，见下方命令）
-- [ ] 阴影 `flood-color` 为 `#0F172A`，opacity 小于等于 0.20
-- [ ] 数据来源用 `#94A3B8`
+| 模板 | 覆盖结构 |
+|---|---|
+| `timeline.svg` | 时间、状态和里程碑卡片 |
+| `kpi_cards.svg` | KPI 值、单位与趋势 |
+| `labeled_card.svg` | 2×2 标签卡片结构 |
+| `icon_grid.svg` | 2×3 图标槽与能力卡片 |
+| `line_chart.svg` | 双系列折线与 native chart metadata |
 
-### 排版
-- [ ] 无 `font-size < 12` 的文本
-- [ ] `font-size` 使用有限无单位数值；不把 `px` / `pt` 等兼容输入写进模板
-- [ ] 需要保持为单一 PPT 文本框的多格式标签使用 inline `<tspan>`；只有这类 inline run 不携带 `x` / `y` / `dy`
-- [ ] 标题、副标题、正文、标签与来源按 §2.2 的角色范围形成稳定层级
-
-### 结构
-- [ ] 每个可见直属根 `<g>` 都有根坐标系 `data-pptx-bounds` 和页面内唯一的描述性 `id`
-- [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
-- [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
-- [ ] authored preset 是 helper 输出的完整 compact 原子 `<g>`；无 carrier / preview wrapper / fingerprint，且 metadata / path 未手改
-- [ ] 只有受支持的数据图表/文本表格使用 replacement marker；概念图示不冒充 native Chart
-
-### 阴影
-- [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
-- [ ] 同页阴影 `dx`/`dy` 方向一致
-- [ ] 每页带阴影元素不超过 3 个
-
-### 注册（仅新增模板时）
-- [ ] `charts_index.json` 的 `charts.<key>` 已登记 `summary` 字段
-- [ ] `summary` 写成选型句（`Pick for ... Skip if ... (use <other>)`），不是描述句
-- [ ] `summary` 长度控制在 150-300 字符（>400 字符要重写）；如果模板覆盖多个商业框架/场景，可放宽到 350 字符以塞下关键词锚点
-- [ ] `meta.total` 同步 +1
-
-### 坐标校准标记（calculator-supported 图表必填）
-- [ ] 矩形坐标系图表（bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly）包含 `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` 标记
-- [ ] Pie / donut / radar 图表包含 `<!-- chart-plot-area: <type> | center: cx,cy | radius: r -->` 标记
-- [ ] 标记位于 `<g id="chartArea">` 内、坐标轴之后、数据元素之前
-- [ ] 坐标值与轴线的实际 SVG 坐标一致
-
-### 验证命令
-```bash
-# 全 catalog：索引、Checker、默认 Shape 路线、原生 Chart/Table 路线
-python3 -c '
-import contextlib
-import io
-import json
-import sys
-from pathlib import Path
-from xml.etree import ElementTree as ET
-
-scripts = Path("skills/ppt-master/scripts").resolve()
-sys.path.insert(0, str(scripts))
-
-from svg_quality_checker import SVGQualityChecker
-from svg_to_pptx.drawingml.converter import convert_svg_to_slide_shapes
-from svg_to_pptx.native_objects import native_replacement_kind
-
-catalog = Path("skills/ppt-master/templates/charts")
-index = json.loads((catalog / "charts_index.json").read_text(encoding="utf-8"))
-paths = sorted(catalog.glob("*.svg"))
-indexed = set(index["charts"])
-actual = {path.stem for path in paths}
-assert index["meta"]["total"] == len(indexed), "meta.total does not match index"
-assert actual == indexed, f"catalog/index mismatch: {sorted(actual ^ indexed)}"
-
-native_markers = 0
-for path in paths:
-    checked = SVGQualityChecker().check_file(str(path))
-    errors = checked["errors"]
-    assert errors == [], f"{path.name}: {errors}"
-
-    default_result = convert_svg_to_slide_shapes(path)
-    default_xml = default_result[0]
-    assert "<c:chart " not in default_xml
-    assert "<cx:chart " not in default_xml
-    assert "<a:tbl>" not in default_xml
-
-    root = ET.parse(path).getroot()
-    kinds = {
-        kind
-        for element in root.iter()
-        if (kind := native_replacement_kind(element))
-    }
-    with contextlib.redirect_stderr(io.StringIO()):
-        native_result = convert_svg_to_slide_shapes(path, native_objects=True)
-    native_xml = native_result[0]
-
-    if not kinds:
-        assert native_result == default_result, path.name
-        continue
-
-    assert len(kinds) == 1, f"{path.name}: {sorted(kinds)}"
-    assert native_result != default_result, path.name
-    native_markers += 1
-    if kinds == {"chart"}:
-        assert "<c:chart " in native_xml or "<cx:chart " in native_xml
-        assert "<a:tbl>" not in native_xml
-    elif kinds == {"table"}:
-        assert "<a:tbl>" in native_xml
-        assert "<c:chart " not in native_xml
-        assert "<cx:chart " not in native_xml
-    else:
-        raise AssertionError(f"{path.name}: unsupported {sorted(kinds)}")
-
-print(
-    f"OK: {len(paths)} chart templates; "
-    f"{native_markers} native Chart/Table markers"
-)
-'
-# 预期：OK: 76 chart templates; 25 native Chart/Table markers
-
-# 单文件诊断
-f="your_chart.svg"
-python3 "skills/ppt-master/scripts/svg_quality_checker.py" \
-  "skills/ppt-master/templates/charts/$f"
-
-# 图表库专用视觉审计（有输出即需人工处理）
-rg -n '#2C3E50|#7F8C8D|#95A5A6|#5D6D7E|#000000' \
-  "skills/ppt-master/templates/charts/$f"
-rg --pcre2 -n 'font-size="(?:[0-9](?:\.[0-9]+)?|1[01](?:\.[0-9]+)?)"' \
-  "skills/ppt-master/templates/charts/$f"
-```
+**Hard rule**: 修改其他模板时按本指南删除无语义装饰、补齐直属根 bounds，并完成独立渲染与双路线验证。不要仅为追求 catalog 一次性整齐而进行未经视觉审阅的批量重写。
 
 ---
 
-## 11. 卡片容器图式 (Card Container Patterns)
+## 9. 检查清单
 
-容器卡是 PPT Master 中复用率最高的视觉单元（KPI 卡、分区卡、信息卡）。下面三种图式是经过验证、与 PPTX 往返兼容的"参考实现"，新增模板优先沿用，不要发明等价但实现脏的替代。
+### 9.1 结构与可读性
 
-### 11.1 半圆角分区头 (Half-Rounded Section Tab)
+- [ ] SVG 独立可渲染，`viewBox` 为 `0 0 1280 720`。
+- [ ] 源码有正常缩进、语义 ID 和必要结构注释。
+- [ ] 每个可见直属根 `<g>` 有准确的 `data-pptx-bounds`；嵌套组不滥加 bounds。
+- [ ] 模板只保留结构、数据编码和必要中性预览。
+- [ ] 字体在根或清楚父组继承，文本字号不小于 12。
 
-**用途**：给卡片或区块加一个有色"标签头"，标识分类（S/W/O/T、Political/Economic、自我介绍/获奖等）。比纯文字大标题更易识别，比独立标签条更紧凑。
+### 9.2 风格归属
 
-**两种形态**——根据 tab 的"视觉锚点"在上还是在下选择：
+- [ ] 无固定项目调色板、品牌字体或品牌 chrome。
+- [ ] 无纯装饰阴影、发光、纹理、渐变或大号淡色编号。
+- [ ] 颜色差异确实表达 series、state、positive/negative 等语义。
+- [ ] 标题、副标题和来源只用于展示必要结构或容量。
 
-| 形态 | 形状 | 视觉语义 | 典型场景 |
-|------|------|---------|---------|
-| **上圆下方** (圆顶角) | 顶部两角圆，底部两角直 | 从卡片"长出来"的标签 | 分区卡头部、quadrant 标题、信息卡分类 |
-| **上方下圆** (圆底角) | 顶部两角直，底部两角圆 | 从页头/章节条"悬挂下来"的吊牌 | 章节锚点、页头分隔条延伸、目录跳转标记 |
+### 9.3 数据与 PowerPoint
 
-> 两种形态的共同要求：**只圆一对角**，整条 path 直接画出来。不要用"全圆角矩形 + 同色矩形盖底/盖顶"的 hack（往返到 PPTX 时会变成两个独立对象，编辑时颜色容易脱钩）。
+- [ ] 数据图表保留准确 `chart-plot-area` 标记。
+- [ ] Eligible Chart/Table 的 metadata 与可见 fallback 数据一致。
+- [ ] 默认 Shape-first 导出通过。
+- [ ] 存在 replacement marker 时，显式 native Chart/Table 导出通过。
+- [ ] `svg_quality_checker.py` 无 error；warning 已人工判断。
 
-**实现一：上圆下方（默认）**
+### 9.4 Catalog
 
-```xml
-<!-- 模板：宽 W、高 H、圆角 R，左上原点 (x, y) -->
-<path d="M {x+R} {y} h {W-2R} a {R} {R} 0 0 1 {R} {R} v {H-R} h -{W} v -{H-R} a {R} {R} 0 0 1 {R} -{R} Z"
-      fill="#2563EB"/>
+- [ ] 新模板已登记 `charts_index.json`。
+- [ ] 修改 key/summary 后通过 `chart_recall.py validate` 和 recall 烟测。
+- [ ] 前后渲染对比确认结构仍可读。
+- [ ] 记录 bytes/tokens 变化，但不以牺牲源码可读性换取数字。
 
-<!-- 实例：240×50, r=25, 起点 (245, 140) -->
-<path d="M 245 140 h 190 a 25 25 0 0 1 25 25 v 25 h -240 v -25 a 25 25 0 0 1 25 -25 Z" fill="#2563EB"/>
+---
+
+## 10. 验证命令
+
+```bash
+# 单文件 SVG 合同
+python3 skills/ppt-master/scripts/svg_quality_checker.py \
+  skills/ppt-master/templates/charts/<key>.svg
+
+# Catalog key
+python3 skills/ppt-master/scripts/chart_recall.py validate <key>
+
+# 可安全压缩的页面坐标（默认 dry-run）
+python3 skills/ppt-master/scripts/compact_svg_coordinates.py \
+  skills/ppt-master/templates/charts/<key>.svg
 ```
 
-**实现二：上方下圆（悬挂吊牌）**
+**Validation**: 修改后至少完成 XML 解析、独立 SVG 渲染、Checker、默认 Shape-first 导出，以及 marker 模板的 native Chart/Table 导出。
 
-```xml
-<!-- 模板：宽 W、高 H、圆角 R，左上原点 (x, y) -->
-<path d="M {x} {y} h {W} v {H-R} a {R} {R} 0 0 1 -{R} {R} h -{W-2R} a {R} {R} 0 0 1 -{R} -{R} Z"
-      fill="#2563EB"/>
+---
 
-<!-- 实例：240×50, r=25, 起点 (245, 140) -->
-<path d="M 245 140 h 240 v 25 a 25 25 0 0 1 -25 25 h -190 a 25 25 0 0 1 -25 -25 Z" fill="#2563EB"/>
-```
+## 11. 结构图式兼容索引
 
-**禁用反例**（PEST/SWOT/comparison_columns 旧实现中常见）：
+本节保留旧引用锚点，但所有图式都受 §1 所有权边界约束。
 
-```xml
-<!-- ❌ 不要这样写：用全圆角矩形 + 白色矩形覆盖一边圆角 -->
-<rect width="260" height="120" rx="12" fill="#EFF6FF"/>
-<rect y="100" width="260" height="20" fill="#EFF6FF"/>
-```
+### 11.1 Attached Section Tab
 
-底部覆盖矩形在 SVG→PPTX 往返时会变成一个独立的、跟头部颜色绑定的矩形对象，PPT 里编辑头部颜色时容易漏改、视觉会"穿帮"。
+**Reference — not a constraint**: 半圆标签只在“标签从属于当前信息块”是结构信息时使用。颜色、圆角和高度由项目适配；它不是卡片的默认装饰。
 
-### 11.2 嵌套卡片描边 (Nested Card Border)
+**Forbidden — cover hack**: 不用“全圆角矩形 + 同色覆盖矩形”拼接单侧圆角；需要时直接使用一个可编辑 path。
 
-**用途**：让卡片有"被描边"的层次感，但避免 stroke。stroke 在 PPTX 中常被渲染为细线分层，且与阴影叠加易产生模板感。
+### 11.2 Nested Card Border
 
-**做法**：外层浅灰圆角 rect + 内层白色稍小圆角 rect，两层之间留出 8–20px 缝即可形成"边框"效果。
+**Default — single boundary (may override when hierarchy requires two levels)**: 中性模板优先一层描边或留白。浅色外框 + 内层白卡属于旧视觉配方，不再作为共享模板默认；只有外层与内层表达两个真实层级时才保留。
 
-```xml
-<!-- 外层"边框"层 -->
-<rect x="60" y="140" width="560" height="255" rx="20" fill="#F1F5F9"/>
-<!-- 内层白色内容卡（内缩 20px，半径变小） -->
-<rect x="80" y="210" width="520" height="165" rx="12" fill="#FFFFFF"/>
-```
+### 11.3 Card Grid
 
-**适用条件**：
-- 当卡片上方还有 §11.1 的分区头时，外层框充当头部的"背板"
-- 同页只用 **一种** 描边表达：外层框 OR stroke OR 阴影，不要同时用（参见 §3 阴影使用原则）
+卡片网格表达并列关系和容量，不决定最终卡片风格：
 
-### 11.3 卡片网格作为内容页骨架 (Card Grid as Page Skeleton)
+| 结构 | 典型容量 | 参考画布分配 |
+|---|---|---|
+| 2×2 | 4 个平行方面/KPI | `560×255`，横向间距约 40 |
+| 2×3 | 6 个能力/服务 | `370×260`，横向间距约 25 |
+| 1×3 | 3 个平行支柱 | 每列约 `400×540` |
+| 1×4 | 4 个紧凑指标 | 每列约 `280×250` |
 
-**用途**：当一页要并列展示 4 个平等的方面（pillar / aspect / quadrant），优先用 2×2 网格而非垂直叠加。
+**Hard rule**: `page_rhythm: breathing` 不因 catalog 示例自动变成卡片网格；最终结构仍服从页面内容和项目节奏。
 
-**网格尺寸建议**（1280×720 画布）：
+### 11.5 Diagonal Relationship Arrow
 
-| 网格 | 单卡宽 × 高 | 间距 | 起始 (x, y) |
-|------|-------------|------|-------------|
-| 2×2 | 560 × 255 | 40 | (60, 140) (660, 140) (60, 420) (660, 420) |
-| 2×3 (横) | 370 × 260 | 25 | (50, 130) 行距 290 |
-| 1×3 (横长) | 400 × 540 | 30 | (60, 130) 列距 430 |
-| 1×4 (顶) | 280 × 250 | 20 | (60, 150) 列距 300 |
+**Hard rule**: 倾斜虚线箭头只表达跨象限迁移、影响或建议方向，并配一条简短关系标签。颜色与标签外观由项目决定。
 
-**判定**："4 个并列方面" → 2×2；"3 个并列方面" → 1×3；"6 个能力点" → 2×3；"4 个关键指标" → 1×4。`page_rhythm` 标 `breathing` 的页面 **不要** 用卡片网格（见 executor-base.md §2.1）。
+### 11.6 Ground Anchor
 
-### 11.5 倾斜虚线关系箭头 (Diagonal Dashed Relationship Arrow)
+**Default — omit (may override when depth is semantic)**: 接地椭圆是深度装饰，不属于中性模板默认。只有物体与地面/层级的空间关系本身有意义时保留；不得为了“漂浮感”普遍添加。
 
-**用途**：表达"跨象限/跨层级"的关系——优先级迁移、影响传导、虚线汇报、对角趋势。水平/垂直箭头表达的是"流程进度"，倾斜虚线箭头表达的是"关系或方向引导"，两者语义不一样。
+### 11.7 Bidirectional Interaction Arrows
 
-**做法**：单条 `<line>` + `stroke-dasharray="6 5"` + `marker-end`。需要为这条线单独定义一个 marker（不复用主流程图的箭头颜色，建议用 Slate 600 `#475569` 表达"建议性、非强制"的色调）。
-
-```xml
-<defs>
-  <marker id="migrationArrow" markerWidth="12" markerHeight="12"
-          refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
-    <path d="M 0,0 L 10,6 L 0,12 Z" fill="#475569"/>
-  </marker>
-</defs>
-
-<!-- 从 Q4 (右下) 指向 Q2 (左上) 的优先级迁移箭头 -->
-<line x1="850" y1="605" x2="385" y2="200"
-      stroke="#475569" stroke-width="2"
-      stroke-dasharray="6 5" stroke-linecap="round"
-      marker-end="url(#migrationArrow)"/>
-
-<!-- 中段标签：白底胶囊压在箭头上，避免视觉打架 -->
-<rect x="525" y="385" width="190" height="28" rx="14"
-      fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
-<text x="620" y="403" text-anchor="middle" font-size="12"
-      font-weight="700" fill="#475569" letter-spacing="1">PRIORITY MIGRATION</text>
-```
-
-> **配对要求**：每条倾斜虚线箭头必须配一个中段标签（小胶囊或一行文字），否则读者会困惑"这条线在说什么"。无标签的箭头只允许出现在水平/垂直流程中（如 `process_flow`）。
-
-### 11.6 接地椭圆 (Ground Anchor Ellipse) — 非 filter 的深度表达
-
-**用途**：让"漂浮在卡片上的圆形/icon/人物头像/奖杯/角色徽章"获得"接触地面"的视觉锚定，**但不使用 `<filter>` 阴影**。
-
-**为什么有用**：
-1. PPTX 原生圆/椭圆对象，跨渲染器一致，不会被解析为 `<a:outerShdw>`（避免阴影颜色丢失或重排问题）
-2. 跟 §3 「克制阴影」呼应——一页阴影预算上限 2-3 个，剩下需要"深度"的元素可以走这条路
-3. 比 filter 阴影**更容易在 PPT 中二次编辑**（用户可以直接拖、改色、删除）
-
-**做法**：在浮动元素**正下方**画一个**横扁椭圆**（`ry << rx`），低透明度，颜色用主体色或 Slate 900：
-
-```xml
-<!-- 头像/徽章下方的接地阴影板，cy 比头像底边低 10-15px -->
-<ellipse cx="80" cy="172" rx="70" ry="5" fill="#0F172A" opacity="0.10"/>
-<!-- 然后再画头像本体（顺序很重要，椭圆必须先画） -->
-<circle cx="80" cy="80" r="80" fill="#E2E8F0"/>
-```
-
-**参数参考**：
-
-| 浮动元素半径 | 椭圆 rx | 椭圆 ry | opacity |
-|-------------|---------|---------|---------|
-| 30-50 px | r × 0.85 | 3-4 | 0.10-0.15 |
-| 50-100 px | r × 0.85 | 5-6 | 0.10-0.12 |
-| 100+ px | r × 0.85 | 7-9 | 0.08-0.10 |
-
-颜色：默认 `#0F172A`（中性深灰），可改为主体色的深色变体（如人物头像下用 `#1E3A8A`）表达"品牌色阴影"。
-
-**禁用**：不要把椭圆画成正圆或近正圆（`ry/rx > 0.25` 就显得失真）。也不要叠在`<filter>` 阴影上——挑一种就够。
-
-### 11.7 双向交互箭头 (Bidirectional Interaction Arrows)
-
-**用途**：表达"请求/响应"、"推/拉"、"上行/下行"、"供给/需求"等成对关系。区别于单向流程箭头。
-
-**做法**：两条平行的 `<line>` + 不同颜色的 `marker-end`，方向相反，**每条线都必须带动作标签**：
-
-```xml
-<defs>
-  <marker id="reqArrow" markerWidth="10" markerHeight="10" refX="9" refY="5"
-          orient="auto" markerUnits="strokeWidth">
-    <path d="M0,0 L10,5 L0,10 Z" fill="#3B82F6"/>
-  </marker>
-  <marker id="respArrow" markerWidth="10" markerHeight="10" refX="9" refY="5"
-          orient="auto" markerUnits="strokeWidth">
-    <path d="M0,0 L10,5 L0,10 Z" fill="#10B981"/>
-  </marker>
-</defs>
-
-<!-- 请求：左到右，蓝色 -->
-<line x1="380" y1="250" x2="926" y2="250" stroke="#3B82F6" stroke-width="2.5"
-      marker-end="url(#reqArrow)"/>
-<rect x="500" y="216" width="280" height="26" rx="11" fill="#FFFFFF"
-      stroke="#3B82F6" stroke-width="1"/>
-<text x="640" y="234" text-anchor="middle" font-size="14" font-weight="700"
-      fill="#3B82F6">① Login Request · POST /auth/login</text>
-
-<!-- 响应：右到左，绿色 -->
-<line x1="926" y1="290" x2="384" y2="290" stroke="#10B981" stroke-width="2.5"
-      marker-end="url(#reqArrow)"/>
-<!-- ...同样配标签... -->
-```
-
-**配色约定**：请求侧（initiator）用蓝色 `#3B82F6`、响应侧（responder）用绿色 `#10B981`。如果是对等关系（如 A↔B 协同），统一用 Slate 600 `#475569` 不区分颜色。
-
-**禁用**：不允许画"裸线"——双向箭头**每条都必须带标签**说明动作；否则读者无法分辨方向语义。
-
-### 11.8 参考实现
-
-| 图式 | 参考模板 |
-|------|---------|
-| §11.1 半圆角分区头（上圆下方） | `quadrant_text_bullets.svg`, `labeled_card.svg`, `vertical_pillars.svg`, `comparison_columns.svg` |
-| §11.2 嵌套卡片描边 | `labeled_card.svg` |
-| §11.3 2×2 卡片网格 | `kpi_cards.svg`, `quadrant_text_bullets.svg`, `labeled_card.svg` |
-| §11.3 2×3 卡片网格 | `icon_grid.svg` |
-| §11.3 1×3/1×4 卡片网格 | `comparison_columns.svg`, `vertical_pillars.svg` |
-| §11.5 倾斜虚线连接箭头 | `matrix_2x2.svg` |
-| §11.6 接地椭圆 | `team_roster.svg` |
-| §11.7 双向交互箭头 | `client_server_flow.svg` |
+**Hard rule**: 双向关系使用两条方向明确的线，每条线都有动作标签。请求/响应的颜色只需可区分，最终映射由项目调色板决定。
