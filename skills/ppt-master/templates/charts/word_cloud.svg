@@ -1,24 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
     <!--
     Word Cloud Chart Template
     Purpose: Keyword weight visualization, trending topics
     Use cases: User feedback analysis, industry trends, tech stack overview
-    Feature: Mathematically mapped geometric distribution, non-overlapping Tailwind typography
+    Feature: Mathematically mapped geometric distribution and non-overlapping weighted typography
     -->
-    <defs>
-        <!-- Premium Radial Background -->
-        <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
-            <stop offset="0%" stop-color="#FFFFFF"/>
-            <stop offset="100%" stop-color="#F1F5F9"/>
-        </radialGradient>
-    </defs>
     <!-- Background -->
-    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+    <rect width="1280" height="720" fill="#FFFFFF"/>
     <!-- ==================== Header ==================== -->
-    <text x="640" y="60" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Industry Trending Keywords</text>
-    <text x="640" y="88" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">WORD CLOUD · FONT SIZE INDICATES KEYWORD WEIGHT &amp; FREQUENCY</text>
+    <g id="header" data-pptx-bounds="40 15 1200 125">
+        <text x="640" y="60" text-anchor="middle" font-size="32" font-weight="800" fill="#0F172A">Industry Trending Keywords</text>
+        <text x="640" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">WORD CLOUD · FONT SIZE INDICATES KEYWORD WEIGHT &amp; FREQUENCY</text>
+    </g>
     <!-- ==================== Word Cloud Geometry ==================== -->
-    <g id="word-cloud-body" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
+    <g id="word-cloud-body" data-pptx-bounds="0 74 1280 601" text-anchor="middle">
         <!-- Tier 1: Extreme (Center Core) -->
         <g font-weight="900" font-size="64" letter-spacing="-1">
             <text x="640" y="340" fill="#4F46E5">Artificial Intelligence</text>
@@ -70,9 +67,9 @@
         </g>
     </g>
     <!-- ==================== UI Legend ==================== -->
-    <g id="frequency-legend">
+    <g id="frequency-legend" data-pptx-bounds="265 633 750 54">
         <rect x="340" y="640" width="600" height="40" rx="20" fill="#FFFFFF"/>
-        <text x="640" y="665" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#475569" text-anchor="middle">
+        <text x="640" y="665" font-size="14" font-weight="600" fill="#475569" text-anchor="middle">
             Size indicates frequency:
             <tspan fill="#4F46E5" font-weight="800"> Extreme</tspan> ·
             <tspan fill="#F43F5E" font-weight="700"> High</tspan> ·
@@ -81,5 +78,7 @@
         </text>
     </g>
     <!-- ==================== Footer ==================== -->
-    <text x="1220" y="700" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Data Source: Industry Reports &amp; Social Media Analysis · 2025</text>
+    <g id="source" data-pptx-bounds="40 677 1200 38">
+        <text x="1220" y="700" text-anchor="end" font-weight="600" fill="#94A3B8">Data Source: Industry Reports &amp; Social Media Analysis · 2025</text>
+    </g>
 </svg>

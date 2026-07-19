@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+     font-size="12">
     <!--
     Isometric Stairs Chart Template
     Usage: Progressive stages, growth paths, maturity models
@@ -14,93 +16,97 @@
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
     <!-- ==================== Header ==================== -->
-    <text x="60" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Digital Transformation Roadmap</tspan></text>
-    <text x="60" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>STRATEGIC MILESTONES · SIX-STAGE PROGRESSIVE PATH</tspan></text>
+    <g id="header" data-pptx-bounds="40 15 1200 125">
+        <text x="60" y="60" font-size="32" font-weight="800" fill="#0F172A"><tspan>Digital Transformation Roadmap</tspan></text>
+        <text x="60" y="88" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>STRATEGIC MILESTONES · SIX-STAGE PROGRESSIVE PATH</tspan></text>
+    </g>
 
     <!-- Ground line: dashed faint line at the base where the bottom stair lands; anchors the climb visually -->
-    <line x1="60" y1="600" x2="1220" y2="600" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,6"/>
+    <g id="ground-line" data-pptx-bounds="0 590 1280 20">
+        <line x1="60" y1="600" x2="1220" y2="600" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,6"/>
+    </g>
 
     <!-- ==================== Stair 1 (Sky) ==================== -->
-    <g id="stair-01" transform="translate(80, 480)">
+    <g id="stair-01" data-pptx-bounds="46 430 328 172" transform="translate(80, 480)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#38BDF8"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#0EA5E9"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#0284C7"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.7"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>01</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>01</tspan></text>
     </g>
-    <g id="label-01">
+    <g id="label-01" data-pptx-bounds="71 608 278 64">
         <rect x="100" y="615" width="220" height="50" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5"/>
-        <text x="210" y="636" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Foundational IT</tspan></text>
-        <text x="210" y="654" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#0369A1"><tspan>Infrastructure setup</tspan></text>
+        <text x="210" y="636" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Foundational IT</tspan></text>
+        <text x="210" y="654" text-anchor="middle" font-weight="500" fill="#0369A1"><tspan>Infrastructure setup</tspan></text>
     </g>
 
     <!-- ==================== Stair 2 (Blue) ==================== -->
-    <g id="stair-02" transform="translate(230, 410)">
+    <g id="stair-02" data-pptx-bounds="196 360 328 172" transform="translate(230, 410)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#60A5FA"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#3B82F6"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#2563EB"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.7"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>02</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>02</tspan></text>
     </g>
-    <g id="label-02">
+    <g id="label-02" data-pptx-bounds="221 538 278 64">
         <rect x="250" y="545" width="220" height="50" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
-        <text x="360" y="566" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Process Digitization</tspan></text>
-        <text x="360" y="584" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#1D4ED8"><tspan>Core business online</tspan></text>
+        <text x="360" y="566" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Process Digitization</tspan></text>
+        <text x="360" y="584" text-anchor="middle" font-weight="500" fill="#1D4ED8"><tspan>Core business online</tspan></text>
     </g>
 
     <!-- ==================== Stair 3 (Indigo) ==================== -->
-    <g id="stair-03" transform="translate(380, 340)">
+    <g id="stair-03" data-pptx-bounds="346 290 328 172" transform="translate(380, 340)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#818CF8"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#6366F1"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#4F46E5"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.65"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>03</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>03</tspan></text>
     </g>
-    <g id="label-03">
+    <g id="label-03" data-pptx-bounds="371 468 278 64">
         <rect x="400" y="475" width="220" height="50" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
-        <text x="510" y="496" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Data Driven</tspan></text>
-        <text x="510" y="514" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#4338CA"><tspan>Analytics &amp; insights</tspan></text>
+        <text x="510" y="496" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Data Driven</tspan></text>
+        <text x="510" y="514" text-anchor="middle" font-weight="500" fill="#4338CA"><tspan>Analytics &amp; insights</tspan></text>
     </g>
 
     <!-- ==================== Stair 4 (Violet) ==================== -->
-    <g id="stair-04" transform="translate(530, 270)">
+    <g id="stair-04" data-pptx-bounds="496 220 328 172" transform="translate(530, 270)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#A78BFA"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#8B5CF6"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#7C3AED"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.6"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>04</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>04</tspan></text>
     </g>
-    <g id="label-04">
+    <g id="label-04" data-pptx-bounds="521 398 278 64">
         <rect x="550" y="405" width="220" height="50" rx="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1.5"/>
-        <text x="660" y="426" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Intelligent Ops</tspan></text>
-        <text x="660" y="444" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#6D28D9"><tspan>AI-augmented work</tspan></text>
+        <text x="660" y="426" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Intelligent Ops</tspan></text>
+        <text x="660" y="444" text-anchor="middle" font-weight="500" fill="#6D28D9"><tspan>AI-augmented work</tspan></text>
     </g>
 
     <!-- ==================== Stair 5 (Purple) ==================== -->
-    <g id="stair-05" transform="translate(680, 200)">
+    <g id="stair-05" data-pptx-bounds="646 150 328 172" transform="translate(680, 200)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#C084FC"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#A855F7"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#9333EA"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.55"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>05</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>05</tspan></text>
     </g>
-    <g id="label-05">
+    <g id="label-05" data-pptx-bounds="671 328 278 64">
         <rect x="700" y="335" width="220" height="50" rx="8" fill="#FAF5FF" stroke="#E9D5FF" stroke-width="1.5"/>
-        <text x="810" y="356" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Ecosystem Integration</tspan></text>
-        <text x="810" y="374" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#7E22CE"><tspan>Platform collaboration</tspan></text>
+        <text x="810" y="356" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Ecosystem Integration</tspan></text>
+        <text x="810" y="374" text-anchor="middle" font-weight="500" fill="#7E22CE"><tspan>Platform collaboration</tspan></text>
     </g>
 
     <!-- ==================== Stair 6 (Rose, peak) ==================== -->
-    <g id="stair-06" transform="translate(830, 130)">
+    <g id="stair-06" data-pptx-bounds="796 80 328 172" transform="translate(830, 130)">
         <polygon points="0,0 130,-38 260,0 130,38" fill="#FB7185"/>
         <polygon points="0,0 0,72 130,110 130,38" fill="#F43F5E"/>
         <polygon points="130,38 130,110 260,72 260,0" fill="#E11D48"/>
         <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.5"/>
-        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>06</tspan></text>
+        <text x="130" y="16" text-anchor="middle" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>06</tspan></text>
     </g>
-    <g id="label-06">
+    <g id="label-06" data-pptx-bounds="821 258 278 64">
         <rect x="850" y="265" width="220" height="50" rx="8" fill="#FFF1F2" stroke="#FECDD3" stroke-width="1.5"/>
-        <text x="960" y="286" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Industry Leadership</tspan></text>
-        <text x="960" y="304" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#BE123C"><tspan>Standard setting</tspan></text>
+        <text x="960" y="286" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A"><tspan>Industry Leadership</tspan></text>
+        <text x="960" y="304" text-anchor="middle" font-weight="500" fill="#BE123C"><tspan>Standard setting</tspan></text>
     </g>
 </svg>
