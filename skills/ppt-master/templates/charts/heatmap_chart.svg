@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+     font-size="12">
+    <!--
     Heatmap Chart Template
     Usage: Matrix data visualization, correlation analysis
     Scenarios: Activity heatmaps, time-series analysis, user behavior
@@ -14,55 +16,49 @@
             <stop offset="75%" style="stop-color:#F97316"/>
             <stop offset="100%" style="stop-color:#DC2626"/>
         </linearGradient>
-        <!-- Standard Shadow -->
-        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.1" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
     </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="#F8FAFC"/>
     <!-- Title -->
-    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="700" fill="#0F172A">User Activity Heatmap Analysis</text>
-    <text x="60" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="18" fill="#64748B">Active Users by Day and Time · Values in Thousands (K)</text>
+    <g id="header" data-pptx-bounds="60 25 720 75">
+        <text x="60" y="55"
+              font-size="32" font-weight="700" fill="#0F172A">User Activity Heatmap Analysis</text>
+        <text x="60" y="90"
+              font-size="18" fill="#64748B">Active Users by Day and Time · Values in Thousands (K)</text>
+    </g>
     <!-- Heatmap Area -->
-    <g id="heatmapArea" transform="translate(180, 130)">
+    <g id="heatmapArea" transform="translate(180, 135)" data-pptx-bounds="60 105 680 515">
         <!-- Column Titles (Days) -->
-        <text x="40" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="40" y="-15"
               font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Mon</text>
-        <text x="120" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="120" y="-15"
               font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Tue</text>
-        <text x="200" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="200" y="-15"
               font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Wed</text>
-        <text x="280" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="280" y="-15"
               font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Thu</text>
-        <text x="360" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="360" y="-15"
               font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Fri</text>
-        <text x="440" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="440" y="-15"
               font-size="14" font-weight="600" fill="#EF4444" text-anchor="middle">Sat</text>
-        <text x="520" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="520" y="-15"
               font-size="14" font-weight="600" fill="#EF4444" text-anchor="middle">Sun</text>
         <!-- Row Titles (Time) -->
-        <text x="-15" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="35"
               font-size="13" fill="#64748B" text-anchor="end">06:00 - 09:00</text>
-        <text x="-15" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="95"
               font-size="13" fill="#64748B" text-anchor="end">09:00 - 12:00</text>
-        <text x="-15" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="155"
               font-size="13" fill="#64748B" text-anchor="end">12:00 - 14:00</text>
-        <text x="-15" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="215"
               font-size="13" fill="#64748B" text-anchor="end">14:00 - 17:00</text>
-        <text x="-15" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="275"
               font-size="13" fill="#64748B" text-anchor="end">17:00 - 19:00</text>
-        <text x="-15" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="335"
               font-size="13" fill="#64748B" text-anchor="end">19:00 - 21:00</text>
-        <text x="-15" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="395"
               font-size="13" fill="#64748B" text-anchor="end">21:00 - 23:00</text>
-        <text x="-15" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="-15" y="455"
               font-size="13" fill="#64748B" text-anchor="end">23:00 - 06:00</text>
         <!-- Heatmap Cells -->
         <!-- Row 1 -->
@@ -131,51 +127,53 @@
         <rect x="480" y="425" width="78" height="58" rx="4" fill="#BFDBFE"/><text x="520" y="460" font-size="13" fill="#1E3A8A" text-anchor="middle">28</text>
     </g>
     <!-- Color Legend -->
-    <g id="colorLegend" transform="translate(780, 150)">
-        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <g id="colorLegend" transform="translate(800, 135)" data-pptx-bounds="800 118 400 75">
+        <text x="0" y="0"
               font-size="14" font-weight="600" fill="#0F172A">Activity Intensity</text>
-        <rect x="0" y="15" width="240" height="20" rx="4" fill="url(#heatGradient)"/>
-        <text x="0" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#64748B">Low (0)</text>
-        <text x="120" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#64748B" text-anchor="middle">Med (50)</text>
-        <text x="240" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#64748B" text-anchor="end">High (100)</text>
+        <rect x="0" y="15" width="400" height="20" rx="4" fill="url(#heatGradient)"/>
+        <text x="0" y="52"
+              fill="#64748B">Low (0)</text>
+        <text x="200" y="52"
+              fill="#64748B" text-anchor="middle">Med (50)</text>
+        <text x="400" y="52"
+              fill="#64748B" text-anchor="end">High (100)</text>
     </g>
     <!-- Stats Panel -->
-    <g id="statsPanel" transform="translate(780, 240)">
-        <rect x="0" y="0" width="240" height="180" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow)"/>
-        <text x="120" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <g id="statsPanel" transform="translate(800, 230)" data-pptx-bounds="800 230 400 190">
+        <rect x="0" y="0" width="400" height="190" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+        <text x="200" y="28"
               font-size="14" font-weight="600" fill="#0F172A" text-anchor="middle">Key Statistics</text>
-        <line x1="15" y1="42" x2="225" y2="42" stroke="#E2E8F0" stroke-width="1"/>
-        <text x="20" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <line x1="15" y1="42" x2="385" y2="42" stroke="#E2E8F0" stroke-width="1"/>
+        <text x="20" y="68"
               font-size="13" font-weight="600" fill="#475569">🔥 Peak Time</text>
-        <text x="20" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#DC2626">Sun 19:00-21:00 (98K)</text>
-        <text x="20" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="20" y="88"
+              fill="#DC2626">Sun 19:00-21:00 (98K)</text>
+        <text x="20" y="115"
               font-size="13" font-weight="600" fill="#475569">❄️ Low Time</text>
-        <text x="20" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#2563EB">Sun 06:00-09:00 (10K)</text>
-        <text x="20" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="20" y="135"
+              fill="#2563EB">Sun 06:00-09:00 (10K)</text>
+        <text x="20" y="162"
               font-size="13" font-weight="600" fill="#475569">📊 Daily Avg</text>
-        <text x="140" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="300" y="162"
               font-size="14" font-weight="700" fill="#0F172A">54.2K</text>
     </g>
     <!-- Insight Card -->
-    <g id="insightCard" transform="translate(780, 440)">
-        <rect x="0" y="0" width="240" height="120" rx="8" fill="#F0FDF4" stroke="#22C55E" stroke-width="1" filter="url(#cardShadow)"/>
-        <text x="20" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <g id="insightCard" transform="translate(800, 440)" data-pptx-bounds="800 440 400 140">
+        <rect x="0" y="0" width="400" height="140" rx="8" fill="#F0FDF4" stroke="#22C55E" stroke-width="1"/>
+        <text x="20" y="28"
               font-size="14" font-weight="600" fill="#166534">💡 Key Insights</text>
-        <text x="20" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#475569">• Peak activity on weekend nights</text>
-        <text x="20" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#475569">• Mid-day spikes on weekdays</text>
-        <text x="20" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#475569">• Lowest traffic in early hours</text>
-        <text x="20" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#64748B">Action: Scale servers on weekends</text>
+        <text x="20" y="58"
+              fill="#475569">• Peak activity on weekend nights</text>
+        <text x="20" y="80"
+              fill="#475569">• Mid-day spikes on weekdays</text>
+        <text x="20" y="102"
+              fill="#475569">• Lowest traffic in early hours</text>
+        <text x="20" y="126"
+              font-weight="600" fill="#64748B">Action: Scale servers on weekends</text>
     </g>
     <!-- Data Source -->
-    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" fill="#94A3B8">Source: User Behavior Analytics Platform</text>
+    <g id="source" data-pptx-bounds="60 675 380 25">
+        <text x="60" y="695"
+              font-size="14" fill="#94A3B8">Source: User Behavior Analytics Platform</text>
+    </g>
 </svg>
