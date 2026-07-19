@@ -36,23 +36,17 @@ from svg_to_pptx.pptx_package.template_structure import (
     TemplateStructureError,
     load_pptx_structure_lock,
 )
-from template_text_slots import (
-    MODEL_TEXT_SLOT_KEYS,
-    TemplateTextSlot,
-    analyze_template_text_slots,
-    text_slot_integrity_sha256,
-)
 
 
-PAGE_CONTEXT_SCHEMA = "ppt-master.page-context.v1"
-PAGE_CONTEXT_USAGE_SCHEMA = "ppt-master.page-context-usage.v1"
-PAGE_CONTEXT_REPORT_SCHEMA = "ppt-master.page-context-usage-report.v1"
-TEXT_SLOTS_V1_SCHEMA = "ppt-master.template-text-slots.v1"
-TEXT_SLOTS_MIN_SCHEMA = "ppt-master.template-text-slots.v2-min"
-EXECUTION_MANIFEST_SCHEMA = "ppt-master.template-execution-manifest.v1"
+PAGE_CONTEXT_SCHEMA = "ppt-master.page-context.v2"
+PAGE_CONTEXT_USAGE_SCHEMA = "ppt-master.page-context-usage.v2"
+PAGE_CONTEXT_REPORT_SCHEMA = "ppt-master.page-context-usage-report.v2"
 TOKEN_ENCODING = "o200k_base"
-PAGE_CONTEXT_TOKEN_TARGET = 800
-TEXT_SLOTS_TOKEN_TARGET = 1000
+PAGE_CONTEXT_TOKEN_TARGET = 2000
+LOCK_PROJECTION_TOKEN_TARGET = 1000
+
+_SKILL_DIR = Path(__file__).resolve().parent.parent
+_CHARTS_DIR = _SKILL_DIR / "templates" / "charts"
 
 _PAGE_RE = re.compile(r"^(?:P)?([0-9]+)$", re.IGNORECASE)
 _SLIDE_HEADING_RE = re.compile(
@@ -65,6 +59,8 @@ _PAGE_TOKEN_RE = re.compile(
     r"(?<![A-Za-z0-9_])P0*([1-9][0-9]*)(?![A-Za-z0-9_])",
     re.IGNORECASE,
 )
+
+
 class PageContextError(RuntimeError):
     """Reject an incomplete or ambiguous page-context request."""
 
@@ -76,20 +72,16 @@ class PageRead:
     kind: str
     path: str
     payload: str
-    source_path: Path | None = None
-    source_schema: str | None = None
 
 
 @dataclass(frozen=True)
 class PageContextResult:
-    """One projected page view plus its conditional document payloads."""
+    """One projected page view plus the files that make it current."""
 
     project_path: Path
     page: str
     context: dict[str, object]
-    reads: tuple[PageRead, ...]
     inputs: tuple[Path, ...]
-    absent_inputs: tuple[Path, ...]
 
 
 def normalize_page_key(raw_page: str) -> tuple[str, int]:
@@ -400,179 +392,40 @@ def _page_template(
     return template, prototype.svg_path
 
 
-def _project_text_slots(
-    payload: object,
-    expected_prototype: str,
-    prototype_slots: tuple[TemplateTextSlot, ...],
-) -> dict[str, object]:
-    if not isinstance(payload, dict):
-        raise PageContextError("text-slot sidecar root must be an object")
-    source_schema = payload.get("schema")
-    if source_schema not in {TEXT_SLOTS_V1_SCHEMA, TEXT_SLOTS_MIN_SCHEMA}:
-        raise PageContextError(f"unsupported text-slot schema: {source_schema!r}")
-    prototype = payload.get("prototype")
-    if prototype != expected_prototype:
-        raise PageContextError(
-            f"text-slot sidecar prototype {prototype!r} does not match "
-            f"{expected_prototype!r}"
-        )
-    raw_slots = payload.get("text_slots")
-    if not isinstance(raw_slots, list):
-        raise PageContextError("text-slot sidecar requires a text_slots array")
-    slots: list[dict[str, object]] = []
-    for index, raw_slot in enumerate(raw_slots, start=1):
-        if not isinstance(raw_slot, dict):
-            raise PageContextError(f"text slot {index} must be an object")
-        missing = [key for key in MODEL_TEXT_SLOT_KEYS if key not in raw_slot]
-        if missing:
-            raise PageContextError(
-                f"text slot {index} is missing: {', '.join(missing)}"
-            )
-        segments = raw_slot["text_segments"]
-        if not isinstance(segments, list) or not all(
-            isinstance(segment, str) for segment in segments
-        ):
-            raise PageContextError(
-                f"text slot {index} text_segments must be an array of strings"
-            )
-        if type(raw_slot["tspan_count"]) is not int or raw_slot["tspan_count"] < 0:
-            raise PageContextError(
-                f"text slot {index} tspan_count must be a non-negative integer"
-            )
-        if not all(
-            isinstance(raw_slot[key], str)
-            for key in ("selector", "role", "current_text")
-        ):
-            raise PageContextError(
-                f"text slot {index} selector/role/current_text must be strings"
-            )
-        slots.append({key: raw_slot[key] for key in MODEL_TEXT_SLOT_KEYS})
-    declared_count = payload.get("text_slot_count")
-    if type(declared_count) is not int or declared_count != len(slots):
-        raise PageContextError(
-            "text-slot sidecar text_slot_count does not match text_slots"
-        )
-    if len(prototype_slots) != len(slots):
-        raise PageContextError(
-            "text-slot sidecar does not match the prototype text-slot count"
-        )
-    expected_slots = [slot.model_payload() for slot in prototype_slots]
-    if source_schema == TEXT_SLOTS_MIN_SCHEMA:
-        integrity = payload.get("tool_integrity_sha256")
-        expected_integrity = text_slot_integrity_sha256(prototype_slots)
-        if integrity != expected_integrity:
-            raise PageContextError(
-                "text-slot sidecar integrity hash does not match the prototype"
-            )
-        if slots != expected_slots:
-            raise PageContextError(
-                "text-slot sidecar values do not match the prototype"
-            )
-    else:
-        for index, (raw_slot, actual_slot, expected_slot) in enumerate(
-            zip(raw_slots, prototype_slots, expected_slots),
-            start=1,
-        ):
-            if raw_slot["selector"] not in {
-                actual_slot.selector,
-                actual_slot.legacy_selector,
-            }:
-                raise PageContextError(
-                    f"legacy text slot {index} selector does not match the prototype"
-                )
-            if any(
-                raw_slot[key] != expected_slot[key]
-                for key in MODEL_TEXT_SLOT_KEYS
-                if key != "selector"
-            ):
-                raise PageContextError(
-                    f"legacy text slot {index} values do not match the prototype"
-                )
-            if raw_slot.get("topology_sha256") != actual_slot.topology_sha256:
-                raise PageContextError(
-                    f"legacy text slot {index} topology hash does not match the prototype"
-                )
+def _reference_payload(
+    kind: str,
+    path: Path,
+    *,
+    scope: str,
+    display_path: str,
+) -> dict[str, str]:
+    """Describe one large reference without injecting its contents per page."""
     return {
-        "schema": TEXT_SLOTS_MIN_SCHEMA,
-        "prototype": expected_prototype,
-        "text_slot_count": len(expected_slots),
-        "text_slots": expected_slots,
+        "kind": kind,
+        "scope": scope,
+        "path": display_path,
+        "sha256": _file_sha256(path),
+        "load_policy": "once-per-execution-context",
     }
 
 
-def _text_slots_read(
-    project_path: Path,
-    prototype_path: Path,
-    inputs: list[Path],
-    absent_inputs: list[Path],
-    warnings: list[str],
-) -> PageRead | None:
-    templates_dir = project_path / "templates"
-    manifest_path = templates_dir / "template_execution_manifest.json"
-    candidate: Path | None = None
-    if manifest_path.is_file():
-        inputs.append(manifest_path)
-        try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if manifest.get("schema") != EXECUTION_MANIFEST_SCHEMA:
-                raise PageContextError("unsupported template execution manifest schema")
-            entries = manifest.get("templates")
-            if not isinstance(entries, list):
-                raise PageContextError("template execution manifest has no templates list")
-            entry = next(
-                (
-                    item
-                    for item in entries
-                    if isinstance(item, dict)
-                    and item.get("prototype") == prototype_path.name
-                ),
-                None,
-            )
-            if entry is not None and isinstance(entry.get("text_slots_path"), str):
-                resolved = (templates_dir / str(entry["text_slots_path"])).resolve()
-                if resolved.is_relative_to(templates_dir.resolve()):
-                    candidate = resolved
-        except (OSError, json.JSONDecodeError, PageContextError) as exc:
-            warnings.append(
-                f"template execution manifest unavailable; using prototype only ({exc})"
-            )
-    else:
-        absent_inputs.append(manifest_path)
-    conventional = (
-        templates_dir
-        / "template_execution"
-        / f"{prototype_path.stem}.text-slots.json"
-    )
-    if candidate is None:
-        candidate = conventional
-    if not candidate.is_file():
-        absent_inputs.append(candidate)
-        warnings.append(
-            f"{prototype_path.name} has no usable text-slot sidecar; "
-            "use the complete prototype SVG"
+def _chart_reference(chart_key: str) -> tuple[dict[str, str], Path]:
+    """Resolve one locked chart key to the shared Skill catalog."""
+    if Path(chart_key).name != chart_key or not chart_key:
+        raise PageContextError(f"invalid page_charts key: {chart_key!r}")
+    chart_path = (_CHARTS_DIR / f"{chart_key}.svg").resolve()
+    if not chart_path.is_file():
+        raise PageContextError(
+            f"page_charts key {chart_key!r} has no shared SVG reference"
         )
-        return None
-    inputs.append(candidate)
-    try:
-        prototype_root = ET.parse(prototype_path).getroot()
-        prototype_slots = analyze_template_text_slots(prototype_root)
-        source_payload = json.loads(candidate.read_text(encoding="utf-8"))
-        projected = _project_text_slots(
-            source_payload,
-            prototype_path.name,
-            prototype_slots,
-        )
-    except (OSError, ET.ParseError, ValueError, json.JSONDecodeError, PageContextError) as exc:
-        warnings.append(
-            f"{candidate.name} is unusable; use the complete prototype SVG ({exc})"
-        )
-        return None
-    return PageRead(
-        kind="mirror-text-slots-min",
-        path=_relative_project_path(project_path, candidate),
-        payload=_compact_json(projected),
-        source_path=candidate,
-        source_schema=str(source_payload.get("schema")),
+    return (
+        _reference_payload(
+            "chart-svg",
+            chart_path,
+            scope="skill",
+            display_path=f"templates/charts/{chart_path.name}",
+        ),
+        chart_path,
     )
 
 
@@ -611,7 +464,6 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     except (OSError, ValueError) as exc:
         raise PageContextError(str(exc)) from exc
     lock_sections = _section_index(lock_sections_raw)
-    design_sections_index = _section_index(design_sections)
     part, brief = _slide_block(design_sections, page_number)
     warnings: list[str] = []
     rhythm_fields = _section_fields(lock_sections, "page_rhythm")
@@ -619,7 +471,7 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     if rhythm is None:
         rhythm = "dense"
         warnings.append(f"page_rhythm has no {page}; using compatibility default dense")
-    chart = _section_fields(lock_sections, "page_charts").get(page)
+    chart_key = _section_fields(lock_sections, "page_charts").get(page)
     try:
         structure_lock = load_pptx_structure_lock(project_path)
     except TemplateStructureError as exc:
@@ -659,38 +511,46 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         resolved_filenames,
     )
     inputs = [lock_path, design_path]
-    absent_inputs: list[Path] = []
-    reads: list[PageRead] = []
+    reference_set: list[dict[str, str]] = [
+        _reference_payload(
+            "design-spec",
+            design_path,
+            scope="project",
+            display_path="design_spec.md",
+        ),
+    ]
+    template_design_path = project_path / "templates" / "design_spec.md"
+    if template_design_path.is_file():
+        inputs.append(template_design_path)
+        reference_set.append(
+            _reference_payload(
+                "template-design-spec",
+                template_design_path,
+                scope="project",
+                display_path="templates/design_spec.md",
+            )
+        )
     if prototype_path is not None:
         inputs.append(prototype_path)
-        if (
-            structure_lock is not None
-            and structure_lock.template_reuse_scope == "mirror"
-        ):
-            text_slots = _text_slots_read(
-                project_path,
+        reference_set.append(
+            _reference_payload(
+                "prototype-svg",
                 prototype_path,
-                inputs,
-                absent_inputs,
-                warnings,
+                scope="project",
+                display_path=_relative_project_path(project_path, prototype_path),
             )
-            if text_slots is not None:
-                reads.append(text_slots)
-        reads.append(PageRead(
-            kind="prototype-svg",
-            path=_relative_project_path(project_path, prototype_path),
-            payload=prototype_path.read_text(encoding="utf-8"),
-            source_path=prototype_path,
-        ))
+        )
+    if chart_key is not None:
+        chart_reference, chart_path = _chart_reference(chart_key)
+        inputs.append(chart_path)
+        reference_set.append(chart_reference)
     mode_fields = _section_fields(lock_sections, "mode")
     visual_style_fields = _section_fields(lock_sections, "visual_style")
+    # Repeat this bounded projection per page intentionally: exact lock values
+    # are the anti-drift guard; large reference payloads use reference_set.
     global_context = {
         "communication": _section_fields(lock_sections, "communication"),
         "canvas": _section_fields(lock_sections, "canvas"),
-        "template_application": _section_fields(
-            design_sections_index,
-            "I. Project Information",
-        ).get("Template Application"),
         "mode": mode_fields.get("mode"),
         "mode_behavior": mode_fields.get("mode_behavior"),
         "visual_style": visual_style_fields.get("visual_style"),
@@ -708,26 +568,14 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         for key, value in global_context.items()
         if value not in ({}, [], None, "")
     }
-    read_set = [
-        {
-            "kind": read.kind,
-            "path": read.path,
-            **(
-                {"schema": TEXT_SLOTS_MIN_SCHEMA}
-                if read.kind == "mirror-text-slots-min"
-                else {}
-            ),
-        }
-        for read in reads
-    ]
     current_page: dict[str, object] = {
         "part": part,
         "brief_markdown": brief,
         "rhythm": rhythm,
         "image_selection": image_selection,
     }
-    if chart is not None:
-        current_page["chart"] = chart
+    if chart_key is not None:
+        current_page["chart"] = chart_key
     if selected_images:
         current_page["images"] = selected_images
     if template is not None:
@@ -735,26 +583,23 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     context: dict[str, object] = {
         "schema": PAGE_CONTEXT_SCHEMA,
         "page": page,
+        "lock_source": {
+            "path": "spec_lock.md",
+            "sha256": _file_sha256(lock_path),
+            "load_policy": "per-page-drift-guard",
+        },
         "global": global_context,
         "page_context": current_page,
+        "reference_set": reference_set,
     }
-    if read_set:
-        context["read_set"] = read_set
     if warnings:
         context["warnings"] = warnings
     unique_inputs = tuple(dict.fromkeys(path.resolve() for path in inputs))
-    unique_absent_inputs = tuple(
-        path
-        for path in dict.fromkeys(path.resolve() for path in absent_inputs)
-        if not path.exists()
-    )
     return PageContextResult(
         project_path=project_path,
         page=page,
         context=context,
-        reads=tuple(reads),
         inputs=unique_inputs,
-        absent_inputs=unique_absent_inputs,
     )
 
 
@@ -772,7 +617,7 @@ def render_page_context(
     bundle: bool = False,
     pretty: bool = False,
 ) -> tuple[str, tuple[PageRead, ...]]:
-    """Render the exact stdout payload and return its measured components."""
+    """Render compact stdout; ``bundle`` remains a compatibility no-op."""
     context_payload = (
         _pretty_json(result.context) if pretty else _compact_json(result.context)
     )
@@ -781,15 +626,7 @@ def render_page_context(
         path="stdout:page-context",
         payload=context_payload,
     )
-    if not bundle:
-        return context_payload, (context_read,)
-    reads = (context_read, *result.reads)
-    parts: list[str] = []
-    for read in reads:
-        parts.append(f"<<<{read.kind}:{read.path}>>>\n")
-        parts.append(read.payload.rstrip("\n"))
-        parts.append(f"\n<<<end:{read.kind}>>>\n")
-    return "".join(parts), reads
+    return context_payload, (context_read,)
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -802,6 +639,35 @@ def _file_sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _input_location(project_path: Path, path: Path) -> tuple[str, str]:
+    """Return a stable project- or Skill-relative locator for telemetry."""
+    resolved = path.resolve()
+    for scope, root in (("project", project_path), ("skill", _SKILL_DIR)):
+        try:
+            return scope, resolved.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            continue
+    raise PageContextError(f"input escapes project and Skill roots: {path}")
+
+
+def _resolve_input_location(
+    project_path: Path,
+    scope: str,
+    relative_path: str,
+) -> Path | None:
+    """Resolve one recorded input without accepting arbitrary filesystem roots."""
+    roots = {"project": project_path, "skill": _SKILL_DIR}
+    root = roots.get(scope)
+    if root is None:
+        return None
+    resolved = (root / relative_path).resolve()
+    try:
+        resolved.relative_to(root.resolve())
+    except ValueError:
+        return None
+    return resolved
 
 
 def _token_counter() -> tuple[Callable[[str], int] | None, str]:
@@ -826,17 +692,13 @@ def _payload_measurement(
     payload = read.payload.encode("utf-8")
     measurement: dict[str, object] = {
         "kind": read.kind,
-        "scope": "page",
+        "scope": "component" if read.kind == "lock-projection" else "page",
         "path": read.path,
         "sha256": _sha256_bytes(payload),
         "utf8_bytes": len(payload),
         "characters": len(read.payload),
         "tokens": count_tokens(read.payload) if count_tokens else None,
     }
-    if read.source_path is not None:
-        measurement["source_sha256"] = _file_sha256(read.source_path)
-    if read.source_schema is not None:
-        measurement["source_schema"] = read.source_schema
     return measurement
 
 
@@ -847,43 +709,46 @@ def record_page_context_usage(
 ) -> tuple[Path, str]:
     """Write one deterministic, derived token snapshot for the current page."""
     count_tokens, token_status = _token_counter()
+    lock_read = PageRead(
+        kind="lock-projection",
+        path="stdout:global",
+        payload=_compact_json(result.context["global"]),
+    )
     documents = [
         _payload_measurement(read, count_tokens)
-        for read in measured_reads
+        for read in (*measured_reads, lock_read)
     ]
     output_bytes = output.encode("utf-8")
-    input_records = [
-        {
-            "path": _relative_project_path(result.project_path, path),
-            "exists": True,
-            "sha256": _file_sha256(path),
-        }
-        for path in result.inputs
-    ]
-    input_records.extend(
-        {
-            "path": _relative_project_path(result.project_path, path),
-            "exists": False,
-        }
-        for path in result.absent_inputs
-    )
+    input_records: list[dict[str, object]] = []
+    for path in result.inputs:
+        scope, relative_path = _input_location(result.project_path, path)
+        input_records.append(
+            {
+                "scope": scope,
+                "path": relative_path,
+                "exists": True,
+                "sha256": _file_sha256(path),
+            }
+        )
     by_kind = {
         str(item["kind"]): item.get("tokens")
         for item in documents
     }
     route = dict(result.context["global"].get("pptx_structure", {}))
     template = result.context["page_context"].get("template")
-    if isinstance(template, dict) and isinstance(template.get("reuse_scope"), str):
-        route["template_reuse_scope"] = template["reuse_scope"]
+    if isinstance(template, dict):
+        if isinstance(value := template.get("reuse_scope"), str):
+            route["template_reuse_scope"] = value
     usage = {
         "schema": PAGE_CONTEXT_USAGE_SCHEMA,
         "page": result.page,
-        "output_mode": "bundle",
+        "output_mode": "compact",
         "route": route,
         "encoding": TOKEN_ENCODING,
         "token_status": token_status,
         "image_selection": result.context["page_context"]["image_selection"],
         "inputs": input_records,
+        "references": result.context.get("reference_set", []),
         "documents": documents,
         "controlled_output": {
             "sha256": _sha256_bytes(output_bytes),
@@ -893,14 +758,17 @@ def record_page_context_usage(
         },
         "totals": {
             "page_context": by_kind.get("page-context"),
-            "text_slots_min": by_kind.get("mirror-text-slots-min"),
-            "prototype_svg": by_kind.get("prototype-svg"),
+            "lock_projection": by_kind.get("lock-projection"),
         },
         "targets": {
             "page_context_max_tokens": PAGE_CONTEXT_TOKEN_TARGET,
-            "mirror_text_slots_max_tokens": TEXT_SLOTS_TOKEN_TARGET,
+            "lock_projection_max_tokens": LOCK_PROJECTION_TOKEN_TARGET,
         },
-        "untracked": ["source-material reads", "session-level prompt references"],
+        "untracked": [
+            "source-material reads",
+            "once-per-execution-context reference payloads",
+            "other session-level prompt references",
+        ],
     }
     usage_dir = result.project_path / "analysis" / "page-context"
     usage_dir.mkdir(parents=True, exist_ok=True)
@@ -961,7 +829,7 @@ def page_context_usage_report(project: str | Path) -> dict[str, object]:
             if record.get("schema") != PAGE_CONTEXT_USAGE_SCHEMA:
                 stale_pages.append(page)
                 continue
-            if record.get("output_mode") != "bundle":
+            if record.get("output_mode") != "compact":
                 stale_pages.append(page)
                 continue
             stale = False
@@ -969,10 +837,12 @@ def page_context_usage_report(project: str | Path) -> dict[str, object]:
                 if not isinstance(item, dict):
                     stale = True
                     break
-                source_path = (project_path / str(item.get("path", ""))).resolve()
-                try:
-                    source_path.relative_to(project_path)
-                except ValueError:
+                source_path = _resolve_input_location(
+                    project_path,
+                    str(item.get("scope", "project")),
+                    str(item.get("path", "")),
+                )
+                if source_path is None:
                     stale = True
                     break
                 expected_exists = item.get("exists", True)
@@ -1012,53 +882,30 @@ def page_context_usage_report(project: str | Path) -> dict[str, object]:
             int,
         )
     ]
-    prototype_values = tokens_for("prototype-svg")
-    mirror_records = [
-        record
+    unique_references = sorted({
+        f"{reference.get('scope', 'project')}:{reference.get('path', '')}"
         for record in records
-        if isinstance(record.get("route"), dict)
-        and record["route"].get("template_reuse_scope") == "mirror"
-    ]
-    mirror_controlled = [
-        value
-        for record in mirror_records
-        if isinstance(
-            value := record.get("controlled_output", {}).get("tokens"),
-            int,
-        )
-    ]
-    mirror_prototype_values = [
-        int(document["tokens"])
-        for record in mirror_records
-        for document in record.get("documents", [])
-        if isinstance(document, dict)
-        and document.get("kind") == "prototype-svg"
-        and isinstance(document.get("tokens"), int)
-    ]
-    prototype_share = (
-        round(sum(mirror_prototype_values) / sum(mirror_controlled), 4)
-        if mirror_prototype_values and sum(mirror_controlled)
-        else None
-    )
+        for reference in record.get("references", [])
+        if isinstance(reference, dict) and reference.get("path")
+    })
     return {
         "schema": PAGE_CONTEXT_REPORT_SCHEMA,
         "project": project_path.name,
         "record_count": len(records),
-        "mirror_record_count": len(mirror_records),
         "pages": sorted(str(record["page"]) for record in records),
         "stale_pages": sorted(set(stale_pages)),
         "token_unavailable_pages": sorted(set(unavailable_pages)),
+        "unique_reference_count": len(unique_references),
+        "unique_references": unique_references,
         "metrics": {
             "page_context": _metric(
                 tokens_for("page-context"),
                 target=PAGE_CONTEXT_TOKEN_TARGET,
             ),
-            "mirror_text_slots_min": _metric(
-                tokens_for("mirror-text-slots-min"),
-                target=TEXT_SLOTS_TOKEN_TARGET,
+            "lock_projection": _metric(
+                tokens_for("lock-projection"),
+                target=LOCK_PROJECTION_TOKEN_TARGET,
             ),
-            "prototype_svg": _metric(prototype_values),
             "controlled_output": _metric(controlled),
         },
-        "mirror_prototype_share_of_controlled_output": prototype_share,
     }
