@@ -92,14 +92,14 @@ Each style has its own file with: shape & decoration, typography character, colo
 
 ## 3. Escape hatch — `custom`
 
-When no preset captures the intended aesthetic, record the confirmed custom aesthetic in the Design Spec first, then project `- visual_style: custom` plus a `- visual_style_behavior:` line to `spec_lock.md`: one paragraph naming shape language, composition geometry (page-scale moves), decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. `custom` is a tail-case, not a default; reach for a preset first.
+Stage 2 always authors one visible, non-empty AI custom proposal beside the preset spectrum. Its paragraph names shape language, composition geometry (page-scale moves), decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. The proposal is initially unselected and remains recommendation-only unless the user chooses it; a template-backed proposal must stay inside the inherited identity and confirmed application plan. When selected, record the edited aesthetic in the Design Spec first, then project `- visual_style: custom` plus `- visual_style_behavior:` to `spec_lock.md`. The candidate is mandatory; selecting `custom` remains a tail-case, not the default.
 
 ---
 
 ## 4. How to use
 
 1. Strategist reads this index at confirmation `d. Layer 2`.
-2. Pick one style from the auto-selection table + the deck's vibe.
+2. Preselect one style from the auto-selection table + the deck's vibe; separately author the visible AI custom proposal from §3.
 3. Record the confirmed style and rationale in `design_spec.md`, then project `- visual_style: <name>` into `spec_lock.md`.
 4. Executor reads **only** `visual-styles/<locked-style>.md` at generation entry — never globs this directory.
 

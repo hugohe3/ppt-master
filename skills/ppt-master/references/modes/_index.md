@@ -52,7 +52,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 ## 3. How to use
 
 1. Strategist reads this index at confirmation `d. Layer 1`.
-2. Pick one mode from the auto-selection table + the confirmed communication contract and source structure.
+2. Preselect one mode from the auto-selection table + the confirmed communication contract and source structure; separately author the visible AI custom candidate required by §4.
 3. Record the confirmed mode and rationale in `design_spec.md`, then project `- mode: <name>` into `spec_lock.md`.
 4. Executor reads **only** `modes/<locked-mode>.md` at generation entry — never globs this directory.
 
@@ -64,10 +64,10 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 `custom` holds **any bespoke narrative direction the five don't give as-is** — and what *kind* of thing it is doesn't matter. It might be a nameable cadence (dialectic 正反合, myth-vs-reality, countdown / Top-N, Socratic), a deliberate multi-act fusion of several modes, or the user's own feel for how the deck should carry (confrontational here, detached there). Don't try to taxonomize it.
 
-**Either side may originate it.** The user can ask for it directly; or the Strategist — as the deck's strategist — may **recommend** `custom` when a bespoke direction (often a fusion of two modes) genuinely serves the deck better than any single preset. Like every confirmation, it's a recommendation the user confirms or overrides — and the recommendation must **spell the custom out in plain language** (what the cadence / fusion / posture actually is), never present the bare token `custom`, so the user confirms something legible. Either way, the Strategist crystallizes the intent in the Design Spec first, then projects it as `- mode: custom` plus a concrete `- mode_behavior:` paragraph in `spec_lock.md`. The Executor follows that prose in place of a preset file. (This records the intent so it survives 20 pages of generation — the Executor only ever reads `spec_lock.md`, never the chat.)
+**Always author the candidate; select it only when warranted.** Stage 2 includes one visible, non-empty AI custom proposal beside the five presets, spelling out the cadence / fusion / posture in plain language. It is initially unselected and does not replace the best-fit preset recommendation unless the user already supplied that exact custom direction; with a template, it must fit available prototype capacity. When the user selects it, the editable prose is saved as `mode: custom` plus `mode_behavior`; otherwise it remains recommendation-only. The Strategist crystallizes a selected custom direction in the Design Spec first, then projects the same pair to `spec_lock.md`. The Executor follows that prose in place of a preset file. (This records the intent so it survives 20 pages of generation — the Executor only ever reads `spec_lock.md`, never the chat.)
 
 > **One value per deck — fusion is *one* `custom`, not several modes.** A deck always locks a single `mode`. A multi-mode blend is expressed as **one** `mode: custom` whose `mode_behavior` paragraph describes the acts — never by locking several modes.
 >
 > **First ask whether it's really fusion.** A locked mode is a *tendency*, not a cage: a `narrative` deck can still carry one analytical (pyramid-style) page, an `instructional` deck one showcase reveal — that is leaning within a dominant mode, and needs **no** `custom`. Reach for `custom` only when there is genuinely no single dominant spine.
 
-**The one thing to avoid**: reaching for `custom` as a *dodge* — defaulting to it because picking among the five takes judgment. When a preset genuinely fits, lock the preset; propose `custom` when a bespoke direction earns its place, not to avoid choosing. (And a user-stated direction is authoritative the same way a user-supplied outline is — see the lens-not-mandate note in §1.)
+**The one thing to avoid**: selecting `custom` as a *dodge* — defaulting to it because picking among the five takes judgment. The custom candidate is mandatory; a custom lock is not. When a preset genuinely fits, keep that preset selected. A user-stated direction remains authoritative the same way a user-supplied outline is — see the lens-not-mandate note in §1.

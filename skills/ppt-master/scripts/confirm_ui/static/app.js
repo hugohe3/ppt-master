@@ -65,6 +65,11 @@
             content_divergence_locked_hint: "This profile preserves the source wording and page structure, so this field is fixed.",
             custom: "Custom",
             custom_placeholder: "Type your own…",
+            ai_custom_candidate: "AI custom proposal",
+            ai_custom_candidate_hint: "Always visible for comparison. It is not selected by default; select it to edit.",
+            custom_behavior_required: "The selected AI custom proposal cannot be blank.",
+            mode_behavior_placeholder: "Describe the act sequence, title voice, page rhythm, and presentation posture.",
+            visual_style_behavior_placeholder: "Describe shape language, composition, decoration density, whitespace, typography character, and texture.",
             recommended: "Recommended",
             placeholder_audience: "Who is this deck for?",
             placeholder_pages: "e.g. 12-15",
@@ -76,9 +81,8 @@
             image_strategy_rendering: "Rendering",
             image_strategy_visual: "Visual",
             image_strategy_mood: "Mood",
-            image_strategy_manual: "Custom",
-            image_strategy_manual_desc: "Choose a rendering manually, or add custom prose.",
-            image_strategy_custom_prompt: "Custom prompt notes",
+            image_strategy_ai_custom: "AI custom proposal",
+            image_strategy_ai_custom_desc: "A complete out-of-catalog rendering proposal. Select it to edit.",
             image_strategy_custom_placeholder: "Describe the exact generated-image direction, subjects, composition, style cues, or things to avoid.",
             image_strategy_reference_hint: "Reference images show rendering only. Final AI images inherit the deck color scheme selected above.",
             image_strategy_no_reference: "No reference image for this custom choice.",
@@ -198,6 +202,11 @@
             content_divergence_locked_hint: "このプロファイルは原文とページ構成を保持するため、この項目は固定されています。",
             custom: "カスタム",
             custom_placeholder: "自由に入力…",
+            ai_custom_candidate: "AIカスタム案",
+            ai_custom_candidate_hint: "比較できるよう常に全文を表示します。初期選択はされず、選択後に編集できます。",
+            custom_behavior_required: "選択したAIカスタム案を空欄にはできません。",
+            mode_behavior_placeholder: "構成の流れ、タイトルの語り口、ページのリズム、表現姿勢を記述します。",
+            visual_style_behavior_placeholder: "形状言語、構図、装飾密度、余白、書体の性格、質感を記述します。",
             recommended: "おすすめ",
             placeholder_audience: "この資料は誰に向けたもの？",
             placeholder_pages: "例：12-15",
@@ -209,9 +218,8 @@
             image_strategy_rendering: "レンダリング",
             image_strategy_visual: "ビジュアル",
             image_strategy_mood: "ムード",
-            image_strategy_manual: "カスタム",
-            image_strategy_manual_desc: "レンダリングを手動で選ぶか、カスタム記述を追加します。",
-            image_strategy_custom_prompt: "カスタム指示",
+            image_strategy_ai_custom: "AIカスタム案",
+            image_strategy_ai_custom_desc: "カタログ外の完全なレンダリング案です。選択後に編集できます。",
             image_strategy_custom_placeholder: "生成画像の方向性、被写体、構図、スタイル要素、避けたい要素を具体的に入力してください。",
             image_strategy_reference_hint: "参照画像はレンダリングのみを示します。最終AI画像の色は上で選んだデッキ配色を継承します。",
             image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
@@ -331,6 +339,11 @@
             content_divergence_locked_hint: "当前流程要求原文和页面结构保持不变，因此该字段已锁定。",
             custom: "自定义",
             custom_placeholder: "输入自定义内容…",
+            ai_custom_candidate: "AI 自定义方案",
+            ai_custom_candidate_hint: "始终展示完整内容用于比较；默认不选中，选择后可编辑。",
+            custom_behavior_required: "已选择的 AI 自定义方案不能为空。",
+            mode_behavior_placeholder: "描述叙事阶段、标题语气、页面节奏和表达姿态。",
+            visual_style_behavior_placeholder: "描述形状语言、构图、装饰密度、留白、字体气质和纹理。",
             recommended: "推荐",
             placeholder_audience: "这份演示文稿面向谁？",
             placeholder_pages: "如：12-15",
@@ -342,9 +355,8 @@
             image_strategy_rendering: "渲染风格",
             image_strategy_visual: "视觉",
             image_strategy_mood: "情绪",
-            image_strategy_manual: "自定义",
-            image_strategy_manual_desc: "手动选择渲染风格，也可以补充自定义描述。",
-            image_strategy_custom_prompt: "自定义提示要求",
+            image_strategy_ai_custom: "AI 自定义方案",
+            image_strategy_ai_custom_desc: "一套完整的目录外渲染方案；选择后可以编辑。",
             image_strategy_custom_placeholder: "描述生成图的具体方向、主体、构图、风格关键词或需要避免的内容。",
             image_strategy_reference_hint: "参考图只展示渲染风格；最终 AI 图片直接继承上方已选的整套 PPT 配色。",
             image_strategy_no_reference: "自定义选择没有参考图。",
@@ -535,7 +547,6 @@
     var CAT = null;     // catalogs.json — finite option universe
     var REC = null;     // recommendations.json — AI picks + candidates
     var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
-    var AI_IMAGE_COMPARISON = {};  // /api/ai-image-comparison — reference PNG options
     var STATE = {};
     var REC_ALIASES = {
         icons: {
@@ -663,45 +674,6 @@
         return row;
     }
 
-    function comparisonItems(kind) {
-        return (AI_IMAGE_COMPARISON && AI_IMAGE_COMPARISON[kind]) || [];
-    }
-
-    function comparisonItem(kind, id) {
-        var items = comparisonItems(kind);
-        for (var i = 0; i < items.length; i += 1) {
-            if (items[i] && items[i].id === id) return items[i];
-        }
-        return null;
-    }
-
-    function comparisonLabel(item, kind) {
-        return item ? (comparisonValueLabel(kind, item.id) || item.label || item.id || "") : "";
-    }
-
-    function firstComparisonId(kind, fallback) {
-        var items = comparisonItems(kind);
-        if (fallback === "custom") return fallback;
-        if (fallback && comparisonItem(kind, fallback)) return fallback;
-        return items.length ? items[0].id : (fallback || "");
-    }
-
-    function comparisonSelect(kind, value) {
-        var select = el("select", "text-input image-strategy-select");
-        comparisonItems(kind).forEach(function (item) {
-            var option = document.createElement("option");
-            option.value = item.id;
-            option.textContent = comparisonLabel(item, kind);
-            select.appendChild(option);
-        });
-        var customOption = document.createElement("option");
-        customOption.value = "custom";
-        customOption.textContent = t("custom");
-        select.appendChild(customOption);
-        select.value = firstComparisonId(kind, value);
-        return select;
-    }
-
     // Section numbers run 1..N within the stage currently rendered; the counter is
     // reset at the top of renderForStage. The legacy `num` arg is ignored so each
     // stage numbers its own sections cleanly (stage 2 is not a continuation of 1).
@@ -777,9 +749,10 @@
         return firstId(list);
     }
     // Render an enumerable field: ALL options from the catalog, recommended one
-    // badged, current selection from STATE, plus a trailing Custom box. Callers
-    // may place Custom or selected sentinel options on their own rows when they
-    // represent qualitatively different paths rather than another preset.
+    // badged, current selection from STATE, plus an optional Custom box. An
+    // AI-authored custom candidate stays fully visible while unselected and
+    // becomes editable only after selection; legacy custom inputs keep their
+    // compact free-text behavior.
     // `list` is either a flat array of {id,label,desc,dim,viewbox} or a grouped array
     // of {group, items:[...]}.
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
@@ -797,10 +770,12 @@
             if (s && s.id) specById[s.id] = { tag: localized(s, "tag"), note: localized(s, "note") };
         });
         var allowCustom = opts2.allowCustom === true;  // only for fields not fully enumerable
-        var customSentinel = opts2.customSentinel || "";
+        var aiCustom = opts2.aiCustom || null;
+        var customSentinel = opts2.customSentinel || (aiCustom ? "custom" : "");
         var customInvalidValues = opts2.customInvalidValues || [];
         var cur = getVal();
-        var isCustom = cur != null && cur !== "" && ids.indexOf(cur) === -1;
+        var isCustom = cur != null && cur !== "" &&
+            (cur === customSentinel || ids.indexOf(cur) === -1);
         if (!allowCustom && isCustom) {
             // closed field with an out-of-catalog value → snap to recommended/first
             cur = ids.indexOf(recommendedId) >= 0 ? recommendedId : ids[0];
@@ -809,13 +784,32 @@
         }
 
         var allChips = [];
-        var customInput = el("input", "text-input custom-input");
+        var customInput = el(aiCustom ? "textarea" : "input", "text-input custom-input");
         if (opts2.inputClass) customInput.classList.add(opts2.inputClass);
-        customInput.type = "text";
+        if (aiCustom) customInput.rows = aiCustom.rows || 4;
+        else customInput.type = "text";
         customInput.placeholder = opts2.placeholder || t("custom_placeholder");
         customInput.style.display = "none";
+        var customPreview = null;
 
-        function deselect() { allChips.forEach(function (c) { c.classList.remove("selected"); }); }
+        function customText() {
+            if (!aiCustom) return customInput.value || "";
+            return String(aiCustom.getText ? aiCustom.getText() : (aiCustom.text || ""));
+        }
+
+        function syncAiCustom(selected) {
+            if (!aiCustom || !customPreview) return;
+            var value = customText();
+            customPreview.textContent = value;
+            customPreview.style.display = selected ? "none" : "block";
+            customInput.style.display = selected ? "block" : "none";
+            if (selected && customInput.value !== value) customInput.value = value;
+        }
+
+        function deselect() {
+            allChips.forEach(function (c) { c.classList.remove("selected"); });
+            if (aiCustom) syncAiCustom(false);
+        }
         function makeChip(o) {
             var label = optionLabel(o);
             var desc = optionDesc(o);
@@ -849,7 +843,7 @@
             chip.addEventListener("click", function () {
                 deselect();
                 chip.classList.add("selected");
-                customInput.style.display = "none";
+                if (!aiCustom) customInput.style.display = "none";
                 setVal(o.id);
             });
             allChips.push(chip);
@@ -865,7 +859,7 @@
                 parent.appendChild(row);
             });
             if (allowCustom) {
-                var lastRow = el("div", "chips");
+                var lastRow = el("div", aiCustom ? "chips custom-chip-row" : "chips");
                 lastRow.appendChild(buildCustomChip());
                 parent.appendChild(lastRow);
             }
@@ -888,30 +882,58 @@
                 parent.appendChild(customRow);
             }
         }
-        if (allowCustom) parent.appendChild(customInput);
+        if (allowCustom && !aiCustom) parent.appendChild(customInput);
 
         function buildCustomChip() {
-            var customChip = el("div", "chip", t("custom"));
-            if (recommendedId && ids.indexOf(recommendedId) === -1) {
+            var customChip = el("div", aiCustom ? "chip ai-custom-candidate" : "chip");
+            if (aiCustom) {
+                var customHead = el("div", "ai-custom-candidate-head");
+                customHead.appendChild(el("span", "chip-text",
+                    aiCustom.label || t("ai_custom_candidate")));
+                customHead.appendChild(el("span", "ai-custom-candidate-hint",
+                    aiCustom.hint || t("ai_custom_candidate_hint")));
+                customChip.appendChild(customHead);
+                customPreview = el("div", "ai-custom-candidate-copy", customText());
+                customChip.appendChild(customPreview);
+                customChip.appendChild(customInput);
+            } else {
+                customChip.appendChild(el("span", "chip-text", t("custom")));
+            }
+            if (recommendedId === customSentinel ||
+                    (recommendedId && ids.indexOf(recommendedId) === -1 && isCustom)) {
                 customChip.classList.add("recommended");
                 customChip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
             }
             if (isCustom) {
                 customChip.classList.add("selected");
-                customInput.style.display = "block";
-                customInput.value = customInvalidValues.indexOf(cur) >= 0 ? "" : cur;
+                if (aiCustom) syncAiCustom(true);
+                else {
+                    customInput.style.display = "block";
+                    customInput.value = customInvalidValues.indexOf(cur) >= 0 ? "" : cur;
+                }
+            } else if (aiCustom) {
+                syncAiCustom(false);
             }
             customChip.addEventListener("click", function () {
                 deselect();
                 customChip.classList.add("selected");
-                customInput.style.display = "block";
+                if (aiCustom) syncAiCustom(true);
+                else customInput.style.display = "block";
                 customInput.focus();
-                setVal(customInput.value || customSentinel);
+                setVal(aiCustom ? customSentinel : (customInput.value || customSentinel));
             });
             allChips.push(customChip);
             return customChip;
         }
-        customInput.addEventListener("input", function () { setVal(customInput.value || customSentinel); });
+        customInput.addEventListener("click", function (event) { event.stopPropagation(); });
+        customInput.addEventListener("input", function () {
+            if (aiCustom) {
+                if (aiCustom.setText) aiCustom.setText(customInput.value);
+                setVal(customSentinel);
+            } else {
+                setVal(customInput.value || customSentinel);
+            }
+        });
     }
 
     function textField(parent, getVal, setVal, placeholderKey, numeric) {
@@ -1036,6 +1058,36 @@
         return candidate[field] != null ? candidate[field] : null;
     }
 
+    function customCandidateSpec(field) {
+        var candidates = REC && REC.custom_candidates;
+        var candidate = candidates && candidates[field];
+        if (typeof candidate === "string") return { behavior: candidate };
+        if (candidate && typeof candidate === "object") return candidate;
+        var legacy = REC && REC[field + "_behavior"];
+        if (legacy && typeof legacy === "object") legacy = legacy.value;
+        return legacy ? { behavior: legacy } : {};
+    }
+
+    function customCandidateBehavior(field) {
+        var candidate = customCandidateSpec(field);
+        return String(localized(candidate, "behavior") || candidate.value || candidate.custom || "");
+    }
+
+    function creativeCustomOptions(field, stateKey, placeholderKey) {
+        var candidate = customCandidateSpec(field);
+        var current = String(STATE[stateKey] || customCandidateBehavior(field) || "");
+        if (!current.trim()) return null;
+        STATE[stateKey] = current;
+        return {
+            label: localized(candidate, "name") || t("ai_custom_candidate"),
+            hint: t("ai_custom_candidate_hint"),
+            getText: function () { return STATE[stateKey] || ""; },
+            setText: function (value) { STATE[stateKey] = value; },
+            rows: 4,
+            placeholder: t(placeholderKey)
+        };
+    }
+
     function colorRecommendationCandidates() {
         var direct = (REC.color && REC.color.candidates) || [];
         if (direct.length) return direct;
@@ -1074,6 +1126,19 @@
         }).slice(0, 3);
     }
 
+    function imageStrategyCustomCandidate() {
+        var candidate = customCandidateSpec("image_strategy");
+        if (!customCandidateBehavior("image_strategy")) {
+            candidate = imageStrategyCandidates().filter(function (item) {
+                return item && item.rendering === "custom";
+            })[0] || {};
+        }
+        if (!candidate || typeof candidate !== "object") return null;
+        candidate = Object.assign({}, candidate, { rendering: "custom" });
+        var normalized = normalizedImageStrategy(candidate);
+        return String(normalized.behavior || "").trim() ? normalized : null;
+    }
+
     function normalizedImageStrategy(candidate) {
         candidate = candidate || {};
         var out = {
@@ -1082,7 +1147,8 @@
             visual: localized(candidate, "visual") || "",
             mood: localized(candidate, "mood") || ""
         };
-        if (candidate.custom) out.custom = candidate.custom;
+        var behavior = localized(candidate, "behavior") || candidate.behavior || candidate.custom || "";
+        if (behavior) out.behavior = behavior;
         return out;
     }
 
@@ -1242,8 +1308,18 @@
 
     function applyDesignDirection(candidate) {
         candidate = candidate || {};
-        if (candidate.mode) STATE.mode = candidate.mode;
-        if (candidate.visual_style) STATE.visual_style = candidate.visual_style;
+        if (candidate.mode) {
+            STATE.mode = candidate.mode;
+            if (candidate.mode === "custom" && candidate.mode_behavior) {
+                STATE.mode_behavior = candidate.mode_behavior;
+            }
+        }
+        if (candidate.visual_style) {
+            STATE.visual_style = candidate.visual_style;
+            if (candidate.visual_style === "custom" && candidate.visual_style_behavior) {
+                STATE.visual_style_behavior = candidate.visual_style_behavior;
+            }
+        }
         if (candidate.color) {
             STATE.color = {
                 name: localized(candidate.color, "name") || candidate.color.name || "",
@@ -1320,9 +1396,16 @@
 
     function renderNarrativeDirection(host) {
         var sec = section(4, "sec_narrative");
+        var custom = creativeCustomOptions("mode", "mode_behavior", "mode_behavior_placeholder");
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
             function () { return STATE.mode; }, function (v) { STATE.mode = v; },
-            { allowCustom: true, customOnOwnRow: true });
+            {
+                allowCustom: !!custom,
+                customOnOwnRow: true,
+                customSentinel: "custom",
+                placeholder: t("mode_behavior_placeholder"),
+                aiCustom: custom
+            });
         host.appendChild(sec);
     }
 
@@ -1359,11 +1442,17 @@
 
     function renderVisualDirection(host) {
         var sec = section(5, "sec_visual");
+        var custom = creativeCustomOptions(
+            "visual_style", "visual_style_behavior", "visual_style_behavior_placeholder"
+        );
         enumField(sec, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
             function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
             {
-                allowCustom: true,
+                allowCustom: !!custom,
                 customOnOwnRow: true,
+                customSentinel: "custom",
+                placeholder: t("visual_style_behavior_placeholder"),
+                aiCustom: custom,
                 spectrum: visualStyleRecommendationSpectrum(),
                 preview: "visual_style",
                 chipsClass: "visual-style-grid"
@@ -2026,13 +2115,15 @@
             var row = appendImageStrategyPreviews(visual, strategy);
             visual.classList.toggle("image-strategy-preview-empty", !row);
             if (!row) visual.appendChild(el("div", "toggle-desc", t("image_strategy_no_reference")));
-            title.textContent = strategy.name || t("image_strategy_manual");
+            title.textContent = strategy.name || t("image_strategy_ai_custom");
             var parts = [];
             if (strategy.rendering) {
                 parts.push(t("image_strategy_rendering") + ": " +
                     comparisonValueLabel("rendering", strategy.rendering));
             }
-            if (strategy.custom) parts.push(strategy.custom);
+            if (strategy.visual) parts.push(t("image_strategy_visual") + ": " + strategy.visual);
+            if (strategy.mood) parts.push(t("image_strategy_mood") + ": " + strategy.mood);
+            if (strategy.behavior) parts.push(strategy.behavior);
             desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
         }
         refreshImageStrategyPreview = paint;
@@ -2100,6 +2191,10 @@
         strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
         var strategyGrid = el("div", "font-grid image-strategy-grid");
         var strategyCands = imageStrategyRecommendationCandidates();
+        var customStrategy = STATE.image_strategy_custom || imageStrategyCustomCandidate();
+        var customCard = null;
+        var syncCustomStrategy = function () {};
+        var selectCustomImageStrategy = function () {};
 
         function markStrategyCard(selectedCard) {
             strategyGrid.querySelectorAll(".font-card").forEach(function (card) {
@@ -2110,6 +2205,7 @@
         function selectImageStrategy(idx, selectedCard) {
             STATE.image_strategy = normalizedImageStrategy(strategyCands[idx]);
             markStrategyCard(selectedCard || strategyGrid.querySelector('[data-strategy-index="' + idx + '"]'));
+            syncCustomStrategy(false);
             refreshImageStrategyPreview();
         }
 
@@ -2119,12 +2215,6 @@
                 if (strategyCands[i] && strategyCands[i].rendering === strategy.rendering) return i;
             }
             return -1;
-        }
-
-        function isManualImageStrategy(strategy) {
-            if (!strategy) return false;
-            return Object.prototype.hasOwnProperty.call(strategy, "custom") ||
-                strategy.rendering === "custom" || imageStrategyCandidateIndex(strategy) < 0;
         }
 
         strategyCands.forEach(function (candidate, idx) {
@@ -2150,51 +2240,59 @@
         });
         if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
 
-        // Custom is a separate full-width path below the three recommended
-        // thumbnails, not a fourth visual recommendation.
-        var manualCard = el("div", "font-card image-strategy-manual-card");
-        var manualTop = el("div", "font-card-head");
-        manualTop.appendChild(el("span", "font-card-name", t("image_strategy_manual")));
-        manualTop.appendChild(el("span", "font-card-meta", t("image_strategy_manual_desc")));
-        manualCard.appendChild(manualTop);
-        var manualControls = el("div", "image-strategy-manual-controls");
-        var manualRendering = firstComparisonId("rendering",
-            (STATE.image_strategy && STATE.image_strategy.rendering) ||
-            (strategyCands[0] && strategyCands[0].rendering));
-        var renderingWrap = el("label", "image-strategy-select-wrap");
-        renderingWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_rendering")));
-        var renderingSelect = comparisonSelect("rendering", manualRendering);
-        renderingWrap.appendChild(renderingSelect);
-        manualControls.appendChild(renderingWrap);
-        manualCard.appendChild(manualControls);
-        var customWrap = el("label", "image-strategy-custom-wrap");
-        customWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_custom_prompt")));
-        var customInput = el("textarea", "text-input image-strategy-custom-input");
-        customInput.rows = 3;
-        customInput.placeholder = t("image_strategy_custom_placeholder");
-        customInput.value = (STATE.image_strategy && STATE.image_strategy.custom) || "";
-        customWrap.appendChild(customInput);
-        manualCard.appendChild(customWrap);
+        if (customStrategy) {
+            customStrategy = normalizedImageStrategy(customStrategy);
+            STATE.image_strategy_custom = customStrategy;
+            customCard = el("div", "font-card image-strategy-custom-card ai-custom-candidate");
+            var customTop = el("div", "font-card-head");
+            customTop.appendChild(el("span", "font-card-name",
+                customStrategy.name || t("image_strategy_ai_custom")));
+            customTop.appendChild(el("span", "font-card-meta", t("image_strategy_ai_custom_desc")));
+            customCard.appendChild(customTop);
+            [
+                ["image_strategy_visual", customStrategy.visual],
+                ["image_strategy_mood", customStrategy.mood]
+            ].forEach(function (row) {
+                if (row[1]) customCard.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
+            });
+            var customCopy = el("div", "ai-custom-candidate-copy", customStrategy.behavior);
+            customCard.appendChild(customCopy);
+            var customInput = el("textarea", "text-input image-strategy-custom-input");
+            customInput.rows = 4;
+            customInput.placeholder = t("image_strategy_custom_placeholder");
+            customInput.value = customStrategy.behavior;
+            customInput.style.display = "none";
+            customCard.appendChild(customInput);
 
-        function selectManualImageStrategy() {
-            var rendering = renderingSelect.value;
-            STATE.image_strategy = {
-                name: t("image_strategy_manual"),
-                rendering: rendering,
-                visual: comparisonLabel(comparisonItem("rendering", rendering), "rendering") ||
-                    comparisonValueLabel("rendering", rendering),
-                mood: t("image_strategy_manual_desc"),
-                custom: customInput.value || ""
+            syncCustomStrategy = function (selected) {
+                customCopy.textContent = customStrategy.behavior || "";
+                customCopy.style.display = selected ? "none" : "block";
+                customInput.style.display = selected ? "block" : "none";
+                if (selected && customInput.value !== customStrategy.behavior) {
+                    customInput.value = customStrategy.behavior || "";
+                }
             };
-            markStrategyCard(manualCard);
-            refreshImageStrategyPreview();
+
+            selectCustomImageStrategy = function () {
+                STATE.image_strategy = normalizedImageStrategy(customStrategy);
+                markStrategyCard(customCard);
+                syncCustomStrategy(true);
+                refreshImageStrategyPreview();
+            };
+
+            customInput.addEventListener("click", function (event) { event.stopPropagation(); });
+            customInput.addEventListener("input", function () {
+                customStrategy.behavior = customInput.value;
+                STATE.image_strategy_custom = normalizedImageStrategy(customStrategy);
+                selectCustomImageStrategy();
+            });
+            customCard.addEventListener("click", function () {
+                selectCustomImageStrategy();
+                customInput.focus();
+            });
+            syncCustomStrategy(false);
+            strategyGrid.appendChild(customCard);
         }
-        renderingSelect.addEventListener("click", function (event) { event.stopPropagation(); });
-        renderingSelect.addEventListener("change", selectManualImageStrategy);
-        customInput.addEventListener("click", function (event) { event.stopPropagation(); });
-        customInput.addEventListener("input", selectManualImageStrategy);
-        manualCard.addEventListener("click", selectManualImageStrategy);
-        strategyGrid.appendChild(manualCard);
         strategySub.appendChild(strategyGrid);
 
         var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
@@ -2242,17 +2340,14 @@
         sec.appendChild(usageNote);
         sec.appendChild(strategySub);
 
-        if (isManualImageStrategy(STATE.image_strategy)) {
-            renderingSelect.value = firstComparisonId("rendering",
-                STATE.image_strategy.rendering || renderingSelect.value);
-            customInput.value = STATE.image_strategy.custom || "";
-            selectManualImageStrategy();
+        if (STATE.image_strategy && STATE.image_strategy.rendering === "custom" && customCard) {
+            selectCustomImageStrategy();
         } else if (STATE.image_strategy && imageStrategyCandidateIndex(STATE.image_strategy) >= 0) {
             selectImageStrategy(imageStrategyCandidateIndex(STATE.image_strategy));
         } else if (strategyCands.length) {
             selectImageStrategy(imageStrategySelectedIndex());
-        } else {
-            selectManualImageStrategy();
+        } else if (customCard) {
+            selectCustomImageStrategy();
         }
         refreshUsageChips();
         host.appendChild(sec);
@@ -2427,6 +2522,17 @@
         return recommended != null && recommended !== "" ? recommended : firstId(catList);
     }
 
+    function initCreativeSelection(field, catalog, behaviorKey) {
+        var value = pick(field, catalog);
+        var behavior = customCandidateBehavior(field);
+        if (value && value !== "custom" && !findCatalogOption(catalog, value)) {
+            behavior = String(value);
+            value = "custom";
+        }
+        STATE[field] = value;
+        STATE[behaviorKey] = behavior;
+    }
+
     function initStage1State() {
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
@@ -2455,8 +2561,8 @@
         STATE.delivery_purpose = recId("delivery_purpose") ||
             directionField("delivery_purpose") || STATE.delivery_purpose || "balanced";
         STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
-        STATE.mode = pick("mode", CAT.modes);
-        STATE.visual_style = pick("visual_style", CAT.visual_styles);
+        initCreativeSelection("mode", CAT.modes, "mode_behavior");
+        initCreativeSelection("visual_style", CAT.visual_styles, "visual_style_behavior");
         var cc = colorRecommendationCandidates();
         var csel = (REC.color && REC.color.selected != null) ? REC.color.selected :
             (designDirectionSpec().selected || 0);
@@ -2496,13 +2602,22 @@
             STATE.image_usage = [defaultImageUsageId()];
         }
         STATE.image_notes = imageUsageNotesRecommendation(rawImageUsage);
+        STATE.image_strategy_custom = imageStrategyCustomCandidate();
         var strategyCandidates = imageStrategyRecommendationCandidates();
-        if (strategyCandidates.length) {
+        var directionStrategy = directionField("image_strategy");
+        var customStrategyRecommended = recId("image_strategy") === "custom";
+        if ((customStrategyRecommended ||
+                (directionStrategy && directionStrategy.rendering === "custom")) &&
+                STATE.image_strategy_custom) {
+            STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy_custom);
+        } else if (strategyCandidates.length) {
             STATE.image_strategy = normalizedImageStrategy(
                 strategyCandidates[imageStrategySelectedIndex()] || strategyCandidates[0]
             );
-        } else if (directionField("image_strategy")) {
-            STATE.image_strategy = normalizedImageStrategy(directionField("image_strategy"));
+        } else if (directionStrategy) {
+            STATE.image_strategy = normalizedImageStrategy(directionStrategy);
+        } else if (STATE.image_strategy_custom) {
+            STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy_custom);
         }
     }
 
@@ -2548,6 +2663,36 @@
         return payload;
     }
 
+    function normalizeCreativePayload(payload) {
+        if (payload.mode !== "custom") delete payload.mode_behavior;
+        if (payload.visual_style !== "custom") delete payload.visual_style_behavior;
+        var imageStrategy = payload.image_strategy;
+        if (imageStrategy && imageStrategy.rendering === "custom") {
+            if (!imageStrategy.behavior && imageStrategy.custom) {
+                imageStrategy.behavior = imageStrategy.custom;
+            }
+            delete imageStrategy.custom;
+        } else if (imageStrategy) {
+            delete imageStrategy.behavior;
+            delete imageStrategy.custom;
+        }
+        delete payload.image_strategy_custom;
+        return payload;
+    }
+
+    function customSelectionsValid(payload) {
+        var imageStrategy = payload.image_strategy || {};
+        var valid = payload.mode !== "custom" || String(payload.mode_behavior || "").trim();
+        valid = valid && (payload.visual_style !== "custom" ||
+            String(payload.visual_style_behavior || "").trim());
+        valid = valid && (imageStrategy.rendering !== "custom" ||
+            String(imageStrategy.behavior || "").trim());
+        if (!valid) {
+            document.getElementById("confirm-status").textContent = t("custom_behavior_required");
+        }
+        return !!valid;
+    }
+
     function stage2Payload() {
         var payload = communicationPayload();
         payload.stage = "stage2";
@@ -2555,7 +2700,9 @@
             payload.template_application = STATE.template_application;
         }
         payload.mode = STATE.mode;
+        payload.mode_behavior = STATE.mode_behavior;
         payload.visual_style = STATE.visual_style;
+        payload.visual_style_behavior = STATE.visual_style_behavior;
         payload.page_count = STATE.page_count;
         // Reading mode keeps the legacy delivery_purpose key for compatibility.
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
@@ -2568,7 +2715,7 @@
         if (needsGeneratedImagesForUsage(payload.image_usage)) {
             payload.image_strategy = normalizedImageStrategy(STATE.image_strategy);
         }
-        return payload;
+        return normalizeCreativePayload(payload);
     }
 
     function submitStage(payload, nextStage) {
@@ -2608,6 +2755,7 @@
     function submitStage2() {
         var payload = stage2Payload();
         if (!imageUsageValid(payload.image_usage)) return;
+        if (!customSelectionsValid(payload)) return;
         submitStage(payload, 3);
     }
 
@@ -2671,6 +2819,8 @@
         } else {
             payload.image_strategy = normalizedImageStrategy(payload.image_strategy);
         }
+        normalizeCreativePayload(payload);
+        if (!customSelectionsValid(payload)) return;
         btn.disabled = true;
         fetch("/api/confirm", {
             method: "POST",
@@ -2725,11 +2875,6 @@
 
     function loadIconPreviews() {
         return fetchJson("/api/icon-previews", "icon previews")
-            .catch(function () { return {}; });
-    }
-
-    function loadAiImageComparison() {
-        return fetchJson("/api/ai-image-comparison", "ai image comparison")
             .catch(function () { return {}; });
     }
 
@@ -2818,13 +2963,11 @@
         Promise.all([
             loadCatalogs(),
             fetchJson("/api/recommendations", "recommendations"),
-            loadIconPreviews(),
-            loadAiImageComparison()
+            loadIconPreviews()
         ]).then(function (res) {
             CAT = res[0];
             REC = res[1];
             ICON_PREVIEWS = res[2] || {};
-            AI_IMAGE_COMPARISON = res[3] || {};
             if (REC.lang === "zh" || REC.lang === "en" || REC.lang === "ja") {
                 var hasStored = false;
                 try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
