@@ -11,7 +11,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 **Generate-specific execution discipline**:
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
-- Generate pages sequentially, one page at a time, in one continuous pass; grouped page batches are forbidden.
+- Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
 - Before each page, load compact page-context; its lock projection guards drift while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
@@ -380,7 +380,7 @@ python3 skills/ppt-master/scripts/project_manager.py page-context <project_path>
 Use `global` as the lock drift guard, `page_context` as the page delta, and `reference_set` under the Executor load policy. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
-> ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
+> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
@@ -396,9 +396,9 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page
 ```
-Fix every `error` on page 1 first — structural violations are systematic, and a first-page error repeated deck-wide costs a whole-deck rewrite.
+Fix P01 errors and rerun this gate as needed. After it passes, draw P02 through the final page without checker calls.
 
-**Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
+**Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
 ```
@@ -415,7 +415,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 ```markdown
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
-- [x] First-page gate run after page 1 (errors fixed before page 2)
+- [x] P01 gate passed; remaining pages authored without checker calls
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
