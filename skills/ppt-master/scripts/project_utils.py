@@ -93,11 +93,8 @@ _DESIGN_SPEC_NAMES = (
 )
 _COMMUNICATION_TRACE_KEYS = (
     'audience',
-    'communication_intent',
-    'audience_outcome',
+    'objective',
     'core_message',
-    'delivery_context',
-    'artifact_afterlife',
 )
 
 
@@ -242,7 +239,7 @@ def validate_communication_trace(
     check_lock: bool = True,
     check_design: bool = True,
 ) -> List[str]:
-    """Validate either or both legacy communication-trace surfaces."""
+    """Validate either or both communication-trace surfaces."""
     root = Path(project_path)
     design_spec = next(
         (root / name for name in _DESIGN_SPEC_NAMES if (root / name).is_file()),
@@ -378,7 +375,7 @@ def validate_project_structure(
     Args:
         project_path: Project directory path
         verbose: Whether to show detailed fix suggestions
-        validate_communication: Whether to run the markerless legacy trace check
+        validate_communication: Whether to run the communication trace check
 
     Returns:
         (is_valid, error_list, warning_list)

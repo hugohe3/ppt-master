@@ -253,7 +253,7 @@ After filling the lock, compare its machine-relevant values against the complete
 - [x] Design Specification & Content Outline generated
 - [x] Gate 1 passed: Design Spec preserves every confirmed value
 - [x] Execution lock (`spec_lock.md`) projected from the completed Design Spec with no independent design decision
-- [x] Communication trace validated: `spec_lock.md ## communication` contains all six contract key lines (optional values may be blank), and every `design_spec.md §IX` Slide block has an `Audience move`
+- [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
 ```
 

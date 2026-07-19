@@ -7,11 +7,8 @@
 
 ## communication
 - audience:
-- communication_intent:
-- audience_outcome:
+- objective:
 - core_message:
-- delivery_context:
-- artifact_afterlife:
 - consumption_mode: [fill]
 
 ## mode

@@ -74,27 +74,18 @@
         "required": true,
         "required_fields": [
           "audience",
-          "communication_intent",
-          "audience_outcome",
-          "core_message",
-          "delivery_context",
-          "artifact_afterlife"
+          "objective",
+          "core_message"
         ],
         "allow_empty_fields": [
           "audience",
-          "communication_intent",
-          "audience_outcome",
-          "core_message",
-          "delivery_context",
-          "artifact_afterlife"
+          "objective",
+          "core_message"
         ],
         "allowed_fields": [
           "audience",
-          "communication_intent",
-          "audience_outcome",
+          "objective",
           "core_message",
-          "delivery_context",
-          "artifact_afterlife",
           "consumption_mode"
         ],
         "field_enums": {
