@@ -4,7 +4,7 @@
 
 Conditional Executor authority for data charts, chart-catalog adaptations, chart verification markers, and eligible native chart/table replacement metadata.
 
-**Trigger**: load when `design_spec.md §VII` contains a chart/table visualization, `spec_lock.md page_charts` contains any row, or the page carries an eligible data chart or text-grid table.
+**Trigger**: load when `design_spec.md §VII` contains a chart/table visualization, `spec_lock.md page_charts` contains any row, or the current page carries any data-encoded chart or text-grid table. Mini charts, sparklines, inset charts, and small multiples count even when they are absent from `page_charts` or the chart catalog.
 
 ## 1. Reference Loading and Per-page Selection
 
@@ -56,7 +56,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 **Per-page verification** — after writing each chart SVG, confirm the marker exists:
 
 ```bash
-grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
+rg -n "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 ```
 
 > Calculator-supported data-chart templates in `templates/charts/` include this
@@ -71,6 +71,10 @@ Technical SVG/PPT constraints remain in [`shared-standards-core.md`](./shared-st
 
 **Hard rule**: before deciding whether a chart or table is eligible for native replacement, load [`native-data-interface.md`](./native-data-interface.md). Every data chart whose type appears in that authority's **Supported chart types** list gets `data-pptx-replace-with="chart"` plus one `<metadata type="application/json">` JSON child on its top-level `<g>`, transcribing the same data just plotted. Every pure text-grid data table gets `data-pptx-replace-with="table"` the same way, transcribing all visible cell text into `columns` / `rows`. The parent marker determines the JSON schema; do not duplicate a chart/table kind on the metadata child.
 
+**MUST — atomic authoring**: Treat the visible SVG fallback, the parent `data-pptx-replace-with` marker, and its JSON `<metadata>` child as one object. Write all three in the same SVG edit while the plotted data is in context. A supported chart or eligible table is unfinished if either the marker or metadata is missing; do not defer either one to `verify-charts`, the final quality gate, or export.
+
+**Hard rule — eligibility follows data semantics**: Size, point count, visual prominence, page role, catalog match, and the current export mode do not change eligibility. A two-point mini line chart, sparkline, chart inset, KPI-card trend, or small multiple that encodes recoverable categories/values still gets its own marked top-level `<g>` and metadata payload when its chart type is supported. Decorative strokes and arrows without recoverable chart data remain ordinary SVG geometry.
+
 Generated authoring MUST omit `data-pptx-import-source` and
 `data-pptx-fallback-sha256`: those attributes record imported-PPTX provenance
 and its sealed fallback baseline. Never copy a static baseline from a chart
@@ -78,7 +82,7 @@ catalog or reusable template; normal content edits would make it stale.
 
 `data-pptx-replace-with` is a **data-backed replacement claim**, not a generic label for a group that contains numbers and not a marker for ordinary PowerPoint shapes or connectors. Add it only when the matching JSON payload can be written in the same edit; if the object is meant to remain SVG geometry, do not add the marker.
 
-- Chart types absent from that list and conceptual/diagrammatic graphics (process flows, cycles, quadrant cards, timelines, KPI cards) get **no marker** — `svg_quality_checker.py` rejects unsupported marker types.
+- Chart types absent from that list and conceptual/diagrammatic graphics (process flows, cycles, quadrant cards, timelines, or a KPI card container) get **no marker** — `svg_quality_checker.py` rejects unsupported marker types. A supported data chart nested visually inside one of those compositions still gets its own marker.
 - Canonical rectangular merged text cells may carry a table marker by putting anchor-only `row_span` / `col_span` in metadata and leaving covered cells blank. Nonrectangular/overlapping merges, nonblank covered cells, and graphical cells (icons, harvey balls, rating dots) get **no table marker** and stay on the SVG fallback route.
 - Transcribe, don't restyle: `categories` / `series[].values` are the numbers just plotted; `style.colors` carries the series HEX values already used on the page (from `spec_lock.colors`).
 - Data-point color: when a single column/bar series uses data-point colors in the fallback, copy those fills into `series[].point_colors` in category order.
@@ -93,10 +97,10 @@ catalog or reusable template; normal content edits would make it stale.
 - The marker group's transform stays translate/scale only (no rotate / matrix / skew).
 - Visual parity is not a goal: the SVG drawing remains the designed visual and exports as editable DrawingML shapes; the native object is the data-backed counterpart with PowerPoint's chart/table-specific model. Never simplify the SVG design to match what a native object could show.
 
-**Per-page verification** — after writing each eligible data-chart or text-grid table page, confirm the marker exists:
+**Per-page verification** — after writing each eligible data-chart or text-grid table page, enumerate the eligible objects and confirm a one-to-one match: every object has one parent marker and exactly one JSON metadata child. Finding one marker somewhere on a page is insufficient when the page contains multiple eligible objects.
 
 ```bash
-grep "data-pptx-replace-with" <project_path>/svg_output/<current_page>.svg
+rg -n 'data-pptx-replace-with="(chart|table)"|<metadata type="application/json">' <project_path>/svg_output/<current_page>.svg
 ```
 
 
