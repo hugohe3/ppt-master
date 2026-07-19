@@ -170,14 +170,14 @@ The published `ppt-master.template-execution-manifest.v1` roster points to one
 compact `ppt-master.template-text-slots.v2-min` sidecar per prototype. Each text
 slot contains only `selector`, `role`, `current_text`, `text_segments`, and
 `tspan_count`; a top-level tool hash covers its selectors and immutable
-text/tspan topology and attributes. A current-page mirror bundle still includes
-the complete prototype SVG. Page projection recomputes the hash and projected
-fields against that prototype, then strips the hash from model context. The
-model chooses semantics and edits only existing visible text values, while
-checker and structured export validate output attributes, text/tspan topology,
-and referenced-resource hashes against the prototype. Runtime page projection
-accepts legacy v1 text-slot sidecars and reduces them to v2-min without
-rewriting the workspace.
+text/tspan topology and attributes. These records are deterministic tool
+diagnostics, not page-authoring inputs. Page-context emits only the complete
+prototype's path and SHA for that reference, so the model reads the SVG once
+per execution context and reuses it until the SHA changes. The model chooses
+semantics and edits only existing visible text values, while checker and
+structured export validate output attributes, text/tspan topology, and
+referenced-resource hashes against
+the prototype.
 
 The output routes reusable vectors once to `icons/imported/`, bitmaps to
 `images/`, and other referenced files to `templates/assets/`. The JSON report

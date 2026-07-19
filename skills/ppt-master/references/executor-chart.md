@@ -8,7 +8,7 @@ Conditional Executor authority for data charts, chart-catalog adaptations, chart
 
 ## 1. Reference Loading and Per-page Selection
 
-Read each selected chart SVG once before its first use. If a later page introduces a chart absent from the initial selection, read that file once and continue.
+For each selected `templates/charts/<key>.svg`, use its Skill-relative `reference_set` path + SHA: read once before first use or after change, otherwise reuse it. Never load the full catalog.
 
 **Per-page chart reference — `page_charts` section**:
 

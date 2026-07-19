@@ -75,7 +75,7 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 ✅ Good (from `executor-base.md`):
 ```
 **Hard rule**: Before generating **each** SVG page, run:
-`python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage`.
+`python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage`.
 
 **Forbidden — values outside the lock**:
 - Colors (fill / stroke / stop-color) MUST come from `colors`

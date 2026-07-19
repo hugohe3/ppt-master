@@ -166,10 +166,12 @@ analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spe
 analysis/image_analysis.csv ────┘
 
 design_spec.md + spec_lock.md + images/ + icons/ + templates/
-    └─> project_manager.py page-context <project> P<NN> --bundle
-          + [当前完整原型 SVG]
-          + [mirror text-slots.v2-min]
+    └─> project_manager.py page-context <project> P<NN>
+          + [有界重复的 lock 投影]
+          + [当前页 delta]
+          + [Design Spec / 原型 / 图表的路径与 SHA 指纹]
         ├─> Executor -> svg_output/
+        │     ├─> 未变化的大型引用保留在当前上下文中
         │     ├─> svg_quality_checker.py -> validation/svg_quality_report.json
         │     ├─> finalize_svg.py -> svg_final/
         │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
@@ -377,9 +379,9 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 这份 lock 同时也是逐页路由表。除了全局配色和字体，它还承载 `page_rhythm`（`anchor` / `dense` / `breathing`）、`page_charts`（某页应适配哪个图表模板）、带放置/裁剪契约的图片行，以及决定加载哪些执行规则文件的 `mode` / `visual_style`。选定 custom 方向时，lock 还承载已消解的 `mode_behavior` / `visual_style_behavior`，page-context 会把它们投影给 Executor，而不是只留下字面上的 `custom` id。`template_reuse_scope: mirror|layout` 项目额外承载 `page_layouts`（每页继承哪个输入模板 SVG）、唯一的 `pptx_masters` / `pptx_layouts` 定义，以及 `page_pptx_layouts` 页面分配；`template_reuse_scope: style`、自由设计和 brand-only 项目使用 `pptx_structure.mode: flat`，那些段整段省略，而不是写成空值。其余字段的空值本身仍是信号：没有图表、没有图片，很多时候是设计选择，而不是漏填。
 
-`page-context --bundle` 按路线收敛输入：flat 页面不增加模板 payload；structured layout 页面增加当前完整原型；mirror 页面再增加 `ppt-master.template-text-slots.v2-min`。v2-min 的每个 slot 只包含 selector、role、当前/分段文本和 tspan 数量；顶层 tool hash 覆盖 selector 及不可变文字/tspan 拓扑和属性。page-context 会根据完整原型重算该 hash 与所有投影字段，再从模型输出中剥离 hash；旧 v1 sidecar 也会经过同等兼容校验并在内存中投影成同一形状。模型只负责语义决策和 replacement 文本；Checker 与 structured export 在内部根据完整原型校验输出属性、文字拓扑和资源 hash。
+`page-context v2` 把有界的一致性状态与大型引用分开。它有意在每页重复紧凑的全局 lock 投影，作为防漂移护栏，并用 `lock_source.sha256` 绑定版本。当前 §IX brief、节奏、图片选择和模板/图表分配构成逐页 delta。项目/模板 Design Spec、选中的原型，以及 `templates/charts/<key>.svg` 只以带 scope 的路径/SHA 指纹出现。只有该指纹不在当前执行上下文中或 SHA 已变化时，Executor 才读取文件一次；后续页面直接复用已有理解。flat 页面没有原型引用；structured 页面引用权威的完整 SVG。manifest 与 text-slot sidecar 只保留为派生工具诊断，不注入页面创作上下文。
 
-`--record-usage` 必须与 `--bundle` 同用；它在 `analysis/page-context/` 下写入当前页的派生快照，并记录所有输入 hash；预期但缺失的可选输入也会记录，因此后续补出产物会使快照过期。token 计数按需加载 `o200k_base`；没有安装 `tiktoken` 时写入 `tokens: null`，但不阻塞执行。`page-context-report` 排除过期快照，并汇总各组件的实测 token，用于判断未来是否值得引入 mirror text-patch 工具；本阶段不引入该工具。
+`--record-usage` 在 `analysis/page-context/` 下写入当前页的派生快照，记录输入 hash 和紧凑 stdout 的实测大小。token 计数按需加载 `o200k_base`；没有安装 `tiktoken` 时写入 `tokens: null`，但不阻塞执行。`page-context-report` 排除过期快照，汇总紧凑 page-context，并列出唯一引用指纹；一次加载的大型引用 payload 与其他会话上下文有意不纳入统计。
 
 `update_spec.py` 把生成后的修改用两个协调步骤传播：把新值写入 `spec_lock.md`，然后字面替换到每一份 `svg_output/*.svg`。工具的范围**故意收得很窄**——只支持 `colors.*`（HEX 值，大小写不敏感替换）和 `typography.font_family`（属性级）。其他字段（字号、图标、图片、画布）**有意不支持**——它们的替换需要属性级或语义级理解，风险/收益不值得做批量传播。这些情况手动改 `spec_lock.md` 然后重做受影响的页面。
 
