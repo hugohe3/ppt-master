@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
     <!--
     Concentric Circles / Bullseye Chart Template
     Structure: 3-5 nested rings expressing priority from core (deepest color) outward to periphery (lightest), paired with descriptor cards
@@ -10,47 +12,37 @@
             <stop offset="0%" stop-color="#6366F1"/>
             <stop offset="100%" stop-color="#3730A3"/>
         </radialGradient>
-        <filter id="coreShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#3730A3" flood-opacity="0.30" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
     </defs>
 
     <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
     <!-- ==================== Header ==================== -->
-    <g id="header">
+    <g id="header" data-pptx-bounds="60 42 1180 60">
         <rect x="60" y="42" width="4" height="60" rx="2" fill="#4338CA"/>
-        <text x="78" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#0F172A">
+        <text x="78" y="68" font-size="30" font-weight="800" fill="#0F172A">
             <tspan>Product Strategy Priority Layers</tspan>
         </text>
-        <text x="78" y="94" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="2">
+        <text x="78" y="94" font-size="13" font-weight="700" fill="#64748B" letter-spacing="2">
             <tspan>FY24 RESOURCE ALLOCATION FRAMEWORK · 4 PRIORITY TIERS</tspan>
         </text>
         <!-- Header right chip -->
         <g transform="translate(1010, 50)">
             <rect x="0" y="0" width="200" height="48" rx="14" fill="#EEF2FF"/>
-            <text x="22" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#4338CA">
+            <text x="22" y="32" font-size="22" font-weight="800" fill="#4338CA">
                 <tspan>100%</tspan>
             </text>
-            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#312E81" letter-spacing="1.5">
+            <text x="92" y="22" font-weight="800" fill="#312E81" letter-spacing="1.5">
                 <tspan>ALLOCATED</tspan>
             </text>
-            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#6366F1">
+            <text x="92" y="38" font-weight="600" fill="#6366F1">
                 <tspan>4 tiers · core → edge</tspan>
             </text>
         </g>
     </g>
 
     <!-- ==================== Tick-marked outer rim (depth) ==================== -->
-    <g id="ticks">
+    <g id="ticks" data-pptx-bounds="108 78 664 619">
         <!-- 12 tick marks at 30° intervals on radius 320, stroke-opacity per-element (no <g opacity>, see §6.2) -->
         <line x1="440" y1="90" x2="440" y2="78" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="600" y1="133" x2="606" y2="123" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
@@ -58,7 +50,6 @@
         <line x1="760" y1="410" x2="772" y2="410" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="717" y1="570" x2="727" y2="576" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="600" y1="687" x2="606" y2="697" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
-        <line x1="440" y1="730" x2="440" y2="742" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="280" y1="687" x2="274" y2="697" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="163" y1="570" x2="153" y2="576" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
         <line x1="120" y1="410" x2="108" y2="410" stroke="#A5B4FC" stroke-width="2" stroke-opacity="0.4"/>
@@ -67,73 +58,73 @@
     </g>
 
     <!-- ==================== Concentric Bullseye (center 440, 410; single-hue Indigo progression) ==================== -->
-    <g id="bullseye">
+    <g id="bullseye" data-pptx-bounds="140 110 600 600">
         <!-- Layer 4: Ecosystem (lightest, outermost) -->
         <circle cx="440" cy="410" r="300" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="2"/>
         <!-- Layer 3: Growth Engine -->
         <circle cx="440" cy="410" r="220" fill="#E0E7FF" stroke="#A5B4FC" stroke-width="2"/>
         <!-- Layer 2: Core Support -->
         <circle cx="440" cy="410" r="140" fill="#C7D2FE" stroke="#818CF8" stroke-width="2"/>
-        <!-- Layer 1: Core (deepest, focal — only element with shadow) -->
-        <circle cx="440" cy="410" r="68" fill="url(#coreGrad)" filter="url(#coreShadow)"/>
-        <text x="440" y="403" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#C7D2FE" text-anchor="middle" letter-spacing="2">
+        <!-- Layer 1: Core (deepest focal layer) -->
+        <circle cx="440" cy="410" r="68" fill="url(#coreGrad)"/>
+        <text x="440" y="403" font-weight="800" fill="#C7D2FE" text-anchor="middle" letter-spacing="2">
             <tspan>TIER 01</tspan>
         </text>
-        <text x="440" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+        <text x="440" y="428" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">
             <tspan>Core</tspan>
         </text>
-        <text x="440" y="448" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+        <text x="440" y="448" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">
             <tspan>Product</tspan>
         </text>
     </g>
 
     <!-- ==================== Ring Labels (at 12 o'clock, with leader dot) ==================== -->
-    <g id="ring-labels">
+    <g id="ring-labels" data-pptx-bounds="330 104 220 198">
         <!-- Layer 4 (outermost) at top -->
         <circle cx="440" cy="110" r="4" fill="#4338CA"/>
-        <text x="440" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" text-anchor="middle" letter-spacing="2">
+        <text x="440" y="138" font-weight="800" fill="#4338CA" text-anchor="middle" letter-spacing="2">
             <tspan>ECOSYSTEM</tspan>
         </text>
         <!-- Layer 3 -->
         <circle cx="440" cy="190" r="4" fill="#4338CA"/>
-        <text x="440" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" text-anchor="middle" letter-spacing="2">
+        <text x="440" y="218" font-weight="800" fill="#4338CA" text-anchor="middle" letter-spacing="2">
             <tspan>GROWTH ENGINE</tspan>
         </text>
         <!-- Layer 2 -->
         <circle cx="440" cy="270" r="4" fill="#FFFFFF"/>
-        <text x="440" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#312E81" text-anchor="middle" letter-spacing="2">
+        <text x="440" y="298" font-weight="800" fill="#312E81" text-anchor="middle" letter-spacing="2">
             <tspan>CORE SUPPORT</tspan>
         </text>
     </g>
 
     <!-- ==================== Right Cards: 4 priority tiers ==================== -->
-    <g id="cards">
+    <g id="cards" data-pptx-bounds="810 130 410 508">
         <!-- Card 1: Tier 01 (Core) — focal -->
         <g id="card-1" transform="translate(810, 130)">
             <rect x="0" y="0" width="410" height="118" rx="12" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="1.5"/>
             <rect x="0" y="0" width="6" height="118" rx="3" fill="#4338CA"/>
             <!-- Tier badge -->
             <circle cx="40" cy="32" r="16" fill="#4338CA"/>
-            <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+            <text x="40" y="38" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>01</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" letter-spacing="2">
+            <text x="64" y="28" font-weight="800" fill="#4338CA" letter-spacing="2">
                 <tspan>HIGHEST PRIORITY · CORE</tspan>
             </text>
-            <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
+            <text x="64" y="46" font-size="16" font-weight="800" fill="#0F172A">
                 <tspan>Core Product</tspan>
             </text>
-            <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
-                <tspan>UX features driving retention &amp; conversion</tspan>
+            <text x="22" y="70" font-size="13" font-weight="500" fill="#64748B">
+                <tspan>UX features driving retention </tspan><tspan x="22" dy="16">&amp; conversion</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="108" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>BI-WEEKLY ITERATION</tspan>
             </text>
             <!-- Resource % hero -->
-            <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#4338CA" text-anchor="end">
+            <text x="388" y="60" font-size="32" font-weight="800" fill="#4338CA" text-anchor="end">
                 <tspan>60%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <!-- Mini bar -->
@@ -146,25 +137,25 @@
             <rect x="0" y="0" width="410" height="118" rx="12" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="1.5"/>
             <rect x="0" y="0" width="6" height="118" rx="3" fill="#6366F1"/>
             <circle cx="40" cy="32" r="16" fill="#6366F1"/>
-            <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+            <text x="40" y="38" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>02</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#6366F1" letter-spacing="2">
+            <text x="64" y="28" font-weight="800" fill="#6366F1" letter-spacing="2">
                 <tspan>HIGH PRIORITY · CORE SUPPORT</tspan>
             </text>
-            <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
+            <text x="64" y="46" font-size="16" font-weight="800" fill="#0F172A">
                 <tspan>Foundational Capabilities</tspan>
             </text>
-            <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
-                <tspan>Security, performance, infrastructure</tspan>
+            <text x="22" y="70" font-size="13" font-weight="500" fill="#64748B">
+                <tspan>Security, performance, </tspan><tspan x="22" dy="16">infrastructure</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="108" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>MONTHLY ITERATION</tspan>
             </text>
-            <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#6366F1" text-anchor="end">
+            <text x="388" y="60" font-size="32" font-weight="800" fill="#6366F1" text-anchor="end">
                 <tspan>25%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#E0E7FF"/>
@@ -176,25 +167,25 @@
             <rect x="0" y="0" width="410" height="118" rx="12" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="1.5"/>
             <rect x="0" y="0" width="6" height="118" rx="3" fill="#818CF8"/>
             <circle cx="40" cy="32" r="16" fill="#818CF8"/>
-            <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+            <text x="40" y="38" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle">
                 <tspan>03</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#6366F1" letter-spacing="2">
+            <text x="64" y="28" font-weight="800" fill="#6366F1" letter-spacing="2">
                 <tspan>MEDIUM PRIORITY · GROWTH ENGINE</tspan>
             </text>
-            <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">
+            <text x="64" y="46" font-size="16" font-weight="800" fill="#0F172A">
                 <tspan>Acquisition &amp; Monetization</tspan>
             </text>
-            <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
-                <tspan>Channel ops, paywall, conversion funnels</tspan>
+            <text x="22" y="70" font-size="13" font-weight="500" fill="#64748B">
+                <tspan>Channel ops, paywall, </tspan><tspan x="22" dy="16">conversion funnels</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1">
+            <text x="22" y="108" font-weight="700" fill="#94A3B8" letter-spacing="1">
                 <tspan>QUARTERLY PLANNING</tspan>
             </text>
-            <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#818CF8" text-anchor="end">
+            <text x="388" y="60" font-size="32" font-weight="800" fill="#818CF8" text-anchor="end">
                 <tspan>10%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#E0E7FF"/>
@@ -206,25 +197,25 @@
             <rect x="0" y="0" width="410" height="118" rx="12" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="1.5" stroke-dasharray="6,4"/>
             <rect x="0" y="0" width="6" height="118" rx="3" fill="#C7D2FE"/>
             <circle cx="40" cy="32" r="16" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="2.5"/>
-            <text x="40" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#A5B4FC" text-anchor="middle">
+            <text x="40" y="38" font-size="14" font-weight="800" fill="#A5B4FC" text-anchor="middle">
                 <tspan>04</tspan>
             </text>
-            <text x="64" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#A5B4FC" letter-spacing="2">
+            <text x="64" y="28" font-weight="800" fill="#A5B4FC" letter-spacing="2">
                 <tspan>EXPLORATORY · ECOSYSTEM</tspan>
             </text>
-            <text x="64" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#334155">
+            <text x="64" y="46" font-size="16" font-weight="800" fill="#334155">
                 <tspan>Open Platform &amp; Partnerships</tspan>
             </text>
-            <text x="22" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#94A3B8">
-                <tspan>ISV integrations, API marketplace</tspan>
+            <text x="22" y="70" font-size="13" font-weight="500" fill="#94A3B8">
+                <tspan>ISV integrations, API </tspan><tspan x="22" dy="16">marketplace</tspan>
             </text>
-            <text x="22" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#CBD5E1" letter-spacing="1">
+            <text x="22" y="108" font-weight="700" fill="#CBD5E1" letter-spacing="1">
                 <tspan>SEMI-ANNUAL REVIEW</tspan>
             </text>
-            <text x="388" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#A5B4FC" text-anchor="end">
+            <text x="388" y="60" font-size="32" font-weight="800" fill="#A5B4FC" text-anchor="end">
                 <tspan>5%</tspan>
             </text>
-            <text x="388" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
+            <text x="388" y="78" font-weight="800" fill="#64748B" text-anchor="end" letter-spacing="1.5">
                 <tspan>OF RESOURCES</tspan>
             </text>
             <rect x="280" y="92" width="110" height="6" rx="3" fill="#F1F5F9"/>
@@ -233,7 +224,9 @@
     </g>
 
     <!-- ==================== Footer ==================== -->
-    <text x="440" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="middle">
-        <tspan>Closer to the center → higher priority &amp; deeper resource concentration</tspan>
-    </text>
+    <g id="footer" data-pptx-bounds="170 675 540 25">
+        <text x="440" y="695" font-weight="600" fill="#94A3B8" text-anchor="middle">
+            <tspan>Closer to the center → higher priority &amp; deeper resource concentration</tspan>
+        </text>
+    </g>
 </svg>

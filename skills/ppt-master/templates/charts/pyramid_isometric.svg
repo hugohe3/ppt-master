@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+     font-size="12">
     <!--
     Pyramid Isometric Chart Template (3D variant)
     Purpose: Hierarchical capability/achievement model with strong visual drama
@@ -73,12 +75,14 @@
     <rect width="1280" height="720" fill="#F8FAFC"/>
 
     <!-- ==================== Header ==================== -->
-    <text x="60" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Capability Maturity Pyramid</tspan></text>
-    <text x="60" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5"><tspan>FOUR-TIER GROWTH MODEL · STAGE-BY-STAGE ACHIEVEMENT</tspan></text>
+    <g id="header" data-pptx-bounds="40 15 1200 125">
+        <text x="60" y="62" font-size="32" font-weight="800" fill="#0F172A"><tspan>Capability Maturity Pyramid</tspan></text>
+        <text x="60" y="92" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5"><tspan>FOUR-TIER GROWTH MODEL · STAGE-BY-STAGE ACHIEVEMENT</tspan></text>
+    </g>
 
     <!-- ==================== Ground Shadow Base ==================== -->
     <!-- Twin rhombi simulate the 3D ground-plane shadow on which the pyramid sits. -->
-    <g id="base-shadow">
+    <g id="base-shadow" data-pptx-bounds="117 460 1046 223">
         <polygon points="640,474.4 1080.2,571.44 640,668.48 199.8,571.44" fill="url(#pyrBaseShadowOuter)" stroke="#CBD5E1" stroke-width="1"/>
         <polygon points="641.36,482.28 1015.16,564.68 641.36,647.08 267.55,564.68" fill="url(#pyrBaseShadowInner)" stroke="#94A3B8" stroke-width="1" stroke-opacity="0.4"/>
     </g>
@@ -86,7 +90,7 @@
     <!-- ==================== Pyramid Body ==================== -->
     <!-- Diamond facets (top surfaces of each tier) — solid dark navy, simulating top-light shadow.
          Drawn first so side faces overlap them at the silhouette edges. -->
-    <g id="pyramid">
+    <g id="pyramid" data-pptx-bounds="284 77 712 574">
         <!-- Tier 3 top diamond (largest visible flat) -->
         <polygon points="640.16,395.12 865.26,453.36 640.16,511.59 415.06,453.36" fill="#172554" stroke="none"/>
         <!-- Tier 2 top diamond -->
@@ -117,7 +121,7 @@
 
     <!-- ==================== Tier Number Labels (left slope, tilted ~14.66°) ==================== -->
     <!-- Numbers sit on the left side-face of each tier, tilted along the slope. -->
-    <g id="tier-numbers" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" fill="#FFFFFF" fill-opacity="0.92">
+    <g id="tier-numbers" data-pptx-bounds="470 145 178 446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" fill="#FFFFFF" fill-opacity="0.92">
         <text transform="rotate(14.66 607.51 210.91)" x="588" y="226" font-size="56"><tspan>1</tspan></text>
         <text transform="rotate(14.66 577.71 316.99)" x="559" y="333" font-size="56"><tspan>2</tspan></text>
         <text transform="rotate(14.66 547.9 423.07)" x="529" y="439" font-size="56"><tspan>3</tspan></text>
@@ -126,7 +130,7 @@
 
     <!-- ==================== Tier Names (right slope, tilted ~-15°) ==================== -->
     <!-- Short tier labels engraved on the right side-face. -->
-    <g id="tier-names" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-weight="700" fill="#FFFFFF" fill-opacity="0.92">
+    <g id="tier-names" data-pptx-bounds="584 150 256 434" font-weight="700" fill="#FFFFFF" fill-opacity="0.92">
         <text transform="rotate(-15.04 669.06 210.44)" x="669.06" y="208" font-size="20" text-anchor="middle"><tspan>Foundation</tspan></text>
         <text transform="rotate(-15.04 700 320)" x="700" y="320" font-size="20" text-anchor="middle"><tspan>Practice</tspan></text>
         <text transform="rotate(-15.04 730 425)" x="730" y="425" font-size="20" text-anchor="middle"><tspan>Mastery</tspan></text>
@@ -134,15 +138,15 @@
     </g>
 
     <!-- ==================== Legend Cards (right side) ==================== -->
-    <!-- Per-tier one-line description, color-coded swatch matches the pyramid tier face. -->
-    <g id="legend" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <!-- Per-tier two-line description, color-coded swatch matches the pyramid tier face. -->
+    <g id="legend" data-pptx-bounds="900 118 380 361">
         <!-- Tier 1 -->
         <g>
             <rect x="940" y="140" width="280" height="62" rx="10" fill="url(#pyrLegendPill)"/>
         </g>
         <rect x="940" y="140" width="6" height="62" rx="3" fill="#60A5FA"/>
         <text x="962" y="165" font-size="15" font-weight="800" fill="#0F172A"><tspan>① Foundation</tspan></text>
-        <text x="962" y="187" font-size="12" fill="#475569"><tspan>Onboarding, environment fluency, baseline skills</tspan></text>
+        <text x="962" y="183" fill="#475569">Onboarding, environment fluency,<tspan x="962" dy="14">baseline skills</tspan></text>
 
         <!-- Tier 2 -->
         <g>
@@ -150,7 +154,7 @@
         </g>
         <rect x="940" y="225" width="6" height="62" rx="3" fill="#3B82F6"/>
         <text x="962" y="250" font-size="15" font-weight="800" fill="#0F172A"><tspan>② Practice</tspan></text>
-        <text x="962" y="272" font-size="12" fill="#475569"><tspan>Deepens execution, owns small projects end-to-end</tspan></text>
+        <text x="962" y="268" fill="#475569">Deepens execution, owns small<tspan x="962" dy="14">projects end-to-end</tspan></text>
 
         <!-- Tier 3 -->
         <g>
@@ -158,7 +162,7 @@
         </g>
         <rect x="940" y="310" width="6" height="62" rx="3" fill="#2563EB"/>
         <text x="962" y="335" font-size="15" font-weight="800" fill="#0F172A"><tspan>③ Mastery</tspan></text>
-        <text x="962" y="357" font-size="12" fill="#475569"><tspan>Optimizes processes, mentors juniors, sets standards</tspan></text>
+        <text x="962" y="353" fill="#475569">Optimizes processes, mentors<tspan x="962" dy="14">juniors, sets standards</tspan></text>
 
         <!-- Tier 4 -->
         <g>
@@ -166,9 +170,11 @@
         </g>
         <rect x="940" y="395" width="6" height="62" rx="3" fill="#1E40AF"/>
         <text x="962" y="420" font-size="15" font-weight="800" fill="#0F172A"><tspan>④ Leadership</tspan></text>
-        <text x="962" y="442" font-size="12" fill="#475569"><tspan>Drives strategy, accountable for org-level outcomes</tspan></text>
+        <text x="962" y="438" fill="#475569">Drives strategy, accountable for<tspan x="962" dy="14">org-level outcomes</tspan></text>
     </g>
 
     <!-- ==================== Footer ==================== -->
-    <text x="640" y="700" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="500" fill="#94A3B8"><tspan>Source: Annual capability review · Tiers map to broad maturity bands, not job titles</tspan></text>
+    <g id="source" data-pptx-bounds="40 676 1200 39">
+        <text x="640" y="700" text-anchor="middle" font-size="13" font-weight="500" fill="#94A3B8"><tspan>Source: Annual capability review · Tiers map to broad maturity bands, not job titles</tspan></text>
+    </g>
 </svg>
