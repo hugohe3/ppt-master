@@ -682,6 +682,8 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
             payload=prototype_path.read_text(encoding="utf-8"),
             source_path=prototype_path,
         ))
+    mode_fields = _section_fields(lock_sections, "mode")
+    visual_style_fields = _section_fields(lock_sections, "visual_style")
     global_context = {
         "communication": _section_fields(lock_sections, "communication"),
         "canvas": _section_fields(lock_sections, "canvas"),
@@ -689,11 +691,12 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
             design_sections_index,
             "I. Project Information",
         ).get("Template Application"),
-        "mode": _section_fields(lock_sections, "mode").get("mode"),
-        "visual_style": _section_fields(
-            lock_sections,
-            "visual_style",
-        ).get("visual_style"),
+        "mode": mode_fields.get("mode"),
+        "mode_behavior": mode_fields.get("mode_behavior"),
+        "visual_style": visual_style_fields.get("visual_style"),
+        "visual_style_behavior": visual_style_fields.get(
+            "visual_style_behavior"
+        ),
         "colors": _section_fields(lock_sections, "colors"),
         "typography": _section_fields(lock_sections, "typography"),
         "icons": _section_fields(lock_sections, "icons"),
