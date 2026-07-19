@@ -8,9 +8,9 @@ This directory contains the standardized SVG visualization templates used by PPT
 
 For one planned page, provide 3-8 English semantic content-shape tags, then inspect the positive-scoring returned summaries plus the explicit `no-template-match` option. The requested 3-8 limit is a cap: the tool never pads a weak result with zero-score keys, and zero positive matches returns only the fallback. See [`chart-recall.md`](../../scripts/docs/chart-recall.md). The Generate workflow remains the authority for when Strategist uses this helper; maintainers may still open the registry directly when editing or auditing the catalog.
 
-## Style rules
+## Authoring contract
 
-See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typography, and SVG authoring conventions all templates must follow.
+[`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) owns readable standalone SVG, semantic structure, root-group bounds, data encoding, and neutral previews. The active Design Spec and `spec_lock.md` own final palette, typography, containers, effects, and chrome. Unmigrated style comments describe preview only, not execution rules.
 
 ## Visualization output model
 
@@ -64,4 +64,4 @@ Replacement payloads must include explicit `name`, `x`, `y`, `width`, and `heigh
 
 ## Usage
 
-Before generating a chart page, open the selected `<key>.svg` file to read its structure and layout. Files are named after the `key` field in `charts_index.json` (e.g. `column_chart.svg`, `quadrant_bubble_scatter.svg`). Templates are named by visual structure, not by business-model name — terms like SWOT, BCG, PEST, OKR, Porter's Five Forces, and Value Chain are translated into semantic content-shape tags before candidate recall.
+Execution loads only selected keys under [`executor-chart.md`](../../references/executor-chart.md) §1 and reuses unchanged path + SHA. Files are named after the `key` field in `charts_index.json` (e.g. `column_chart.svg`, `quadrant_bubble_scatter.svg`). Templates are named by visual structure, not by business-model name — terms like SWOT, BCG, PEST, OKR, Porter's Five Forces, and Value Chain are translated into semantic content-shape tags before candidate recall.
