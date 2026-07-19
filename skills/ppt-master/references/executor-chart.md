@@ -14,7 +14,7 @@ For each selected `templates/charts/<key>.svg`, use its Skill-relative `referenc
 
 Before drawing each page, look up its entry in `page_charts` to decide which chart structure applies (the SVG itself was loaded in §1):
 
-- Entry present (e.g., `P09: timeline_horizontal`) → adapt the corresponding chart SVG already in context. Apply project colors/typography/density; do not copy verbatim. Use the selected §VII row and SVG; do not load the full chart catalog during execution.
+- Entry present (e.g., `P09: timeline_horizontal`) → adapt the corresponding chart SVG already in context under §3; do not copy it verbatim. Use the selected §VII row and SVG; do not load the full chart catalog during execution.
 - No entry for this page → either no chart on this page, or a chart that didn't match any catalog template (Strategist's `no-template-match` fallback). Design the visualization from scratch using `design_spec.md §VII` for guidance.
 - Whole section absent → no chart pages in this deck.
 
@@ -106,13 +106,14 @@ grep "data-pptx-replace-with" <project_path>/svg_output/<current_page>.svg
 
 Chart SVGs referenced in **VII. Visualization Reference List** are loaded once through §1. This section governs adaptation only.
 
-**Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply project colors, typography, content; preserve visualization type.
+**Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply the active Design Spec and `spec_lock.md`; preserve the visualization type and data semantics.
 
 **Adaptation rules**:
-- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…) as specified
-- **Adapt**: data, labels, colors (project scheme), dimensions
+- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, and data encoding
+- **Adapt**: data, labels, dimensions, axes, legend, and spacing as the content requires
+- **Project-owned**: palette, typography, container treatment, effects, background, and page chrome; catalog preview values are fallbacks, never defaults
 - **Bound final body modules**: add or revise root-coordinate `data-pptx-bounds` on every visible direct root `<g>` copied into the final page; nested groups need none, chart geometry and local references are not content-boundary inputs, and catalog reference warnings never waive the final-page contract
-- **Freely adjust**: composition, axis ranges, grid, legend, spacing, decoration — as long as the chart stays accurate and readable
+- **Freely adjust**: composition, axis ranges, and grid within the project contract, as long as the chart stays accurate and readable
 - **Forbidden**: changing visualization type without spec justification; omitting data points or structural elements from the outline
 
 > Templates: `templates/charts/`. The Strategist's selected key is already locked in `page_charts`; execution opens only that key's SVG.
