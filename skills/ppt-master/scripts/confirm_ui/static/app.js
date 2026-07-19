@@ -68,6 +68,7 @@
             ai_custom_candidate: "AI custom proposal",
             ai_custom_candidate_hint: "Always visible for comparison. It is not selected by default; select it to edit.",
             custom_behavior_required: "The selected AI custom proposal cannot be blank.",
+            design_system_required: "Choose a complete palette and typography system before continuing.",
             mode_behavior_placeholder: "Describe the act sequence, title voice, page rhythm, and presentation posture.",
             visual_style_behavior_placeholder: "Describe shape language, composition, decoration density, whitespace, typography character, and texture.",
             recommended: "Recommended",
@@ -205,6 +206,7 @@
             ai_custom_candidate: "AIカスタム案",
             ai_custom_candidate_hint: "比較できるよう常に全文を表示します。初期選択はされず、選択後に編集できます。",
             custom_behavior_required: "選択したAIカスタム案を空欄にはできません。",
+            design_system_required: "続行する前に、完全な配色と書体システムを選択してください。",
             mode_behavior_placeholder: "構成の流れ、タイトルの語り口、ページのリズム、表現姿勢を記述します。",
             visual_style_behavior_placeholder: "形状言語、構図、装飾密度、余白、書体の性格、質感を記述します。",
             recommended: "おすすめ",
@@ -342,6 +344,7 @@
             ai_custom_candidate: "AI 自定义方案",
             ai_custom_candidate_hint: "始终展示完整内容用于比较；默认不选中，选择后可编辑。",
             custom_behavior_required: "已选择的 AI 自定义方案不能为空。",
+            design_system_required: "请先选择完整的配色与字体方案，再继续确认。",
             mode_behavior_placeholder: "描述叙事阶段、标题语气、页面节奏和表达姿态。",
             visual_style_behavior_placeholder: "描述形状语言、构图、装饰密度、留白、字体气质和纹理。",
             recommended: "推荐",
@@ -1685,7 +1688,9 @@
                 var col = el("div", "swatch-col");
                 var s = el("div", "swatch"); s.style.background = pal[role];
                 refs[role] = s;
-                col.appendChild(s); col.appendChild(el("div", "swatch-role", t("role_" + role)));
+                col.appendChild(s);
+                col.appendChild(el("div", "swatch-role", t("role_" + role)));
+                col.appendChild(el("div", "color-hex", normHex(pal[role]) || pal[role]));
                 sw.appendChild(col);
             });
             cardSwatchRefs[idx] = refs;
@@ -2693,6 +2698,42 @@
         return !!valid;
     }
 
+    function positiveNumber(value) {
+        var number = parseFloat(value);
+        return isFinite(number) && number > 0;
+    }
+
+    function designSystemValid(payload) {
+        var color = payload.color || {};
+        var palette = color.palette || {};
+        var completePalette = PALETTE_ROLES.every(function (role) {
+            return !!normHex(palette[role]);
+        });
+        var customPalette = color.name === "custom" && String(color.custom || "").trim();
+
+        var typography = payload.typography || {};
+        var completeFontRole = function (role) {
+            var font = typography[role] || {};
+            return ["cjk", "latin", "css"].every(function (field) {
+                return !!String(font[field] || "").trim();
+            });
+        };
+        var completeFamilies = completeFontRole("heading") && completeFontRole("body");
+        var customFamilies = typography.name === "custom" &&
+            String(typography.custom || "").trim();
+        var sizes = typography.sizes || {};
+        var completeSizes = positiveNumber(typography.body_size) &&
+            ["title", "subtitle", "annotation"].every(function (role) {
+                return positiveNumber(sizes[role]);
+            });
+        var valid = (completePalette || customPalette) &&
+            (completeFamilies || customFamilies) && completeSizes;
+        if (!valid) {
+            document.getElementById("confirm-status").textContent = t("design_system_required");
+        }
+        return !!valid;
+    }
+
     function stage2Payload() {
         var payload = communicationPayload();
         payload.stage = "stage2";
@@ -2755,6 +2796,7 @@
     function submitStage2() {
         var payload = stage2Payload();
         if (!imageUsageValid(payload.image_usage)) return;
+        if (!designSystemValid(payload)) return;
         if (!customSelectionsValid(payload)) return;
         submitStage(payload, 3);
     }
@@ -2820,6 +2862,7 @@
             payload.image_strategy = normalizedImageStrategy(payload.image_strategy);
         }
         normalizeCreativePayload(payload);
+        if (!designSystemValid(payload)) return;
         if (!customSelectionsValid(payload)) return;
         btn.disabled = true;
         fetch("/api/confirm", {

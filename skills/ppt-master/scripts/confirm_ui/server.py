@@ -9,9 +9,9 @@ clickable page (color swatches, live font previews, candidate picks). On
 submit it writes the user's final choices to
 ``<project>/confirm_ui/result.json`` for the AI to read back.
 
-This is the confirmation surface only. The chat fallback always remains valid:
-if the browser cannot open (remote / headless / web host), the AI presents the
-same Strategist confirmation stage in chat.
+This is the default confirmation surface. The chat fallback is used only when
+the user explicitly requests chat-only confirmation or the browser launch
+fails; it preserves the same staged semantics.
 
 See scripts/docs/confirm_ui.md for the round-trip data contract and schema.
 
@@ -79,6 +79,17 @@ CONFIRM_DIR_NAME = 'confirm_ui'
 RECOMMENDATIONS_NAME = 'recommendations.json'
 RESULT_NAME = 'result.json'
 SESSION_NAME = 'session.json'
+
+_PALETTE_ROLES = (
+    'background',
+    'secondary_bg',
+    'primary',
+    'accent',
+    'secondary_accent',
+    'body_text',
+)
+_TYPOGRAPHY_SIZE_ROLES = ('title', 'subtitle', 'annotation')
+_HEX_COLOR_RE = re.compile(r'#?(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})\Z')
 
 # Static option universe served at /api/catalogs (canvas synced live from config).
 _CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
@@ -427,6 +438,139 @@ def _localized_text_present(candidate: dict, field: str) -> bool:
     )
 
 
+def _recommended_image_usage(recommendations: dict):
+    """Return the Stage 2 image-source recommendation in either schema."""
+    recommend = recommendations.get('recommend')
+    usage = recommend.get('image_usage') if isinstance(recommend, dict) else None
+    if usage is None:
+        usage = recommendations.get('image_usage')
+        if isinstance(usage, dict):
+            usage = usage.get('value')
+    return usage
+
+
+def _uses_ai_images(recommendations: dict) -> bool:
+    """Return whether Stage 2 proposes AI-generated images."""
+    usage = _recommended_image_usage(recommendations)
+    return 'ai' in usage if isinstance(usage, list) else usage == 'ai'
+
+
+def _palette_error(color: object, label: str) -> Optional[str]:
+    """Validate one complete user-facing palette."""
+    if not isinstance(color, dict):
+        return f'{label} must be an object'
+    palette = color.get('palette')
+    if not isinstance(palette, dict):
+        palette = color
+    for role in _PALETTE_ROLES:
+        value = palette.get(role)
+        if role == 'body_text' and value is None:
+            value = palette.get('text')
+        if not isinstance(value, str) or not _HEX_COLOR_RE.fullmatch(value.strip()):
+            return f'{label}.palette.{role} must be a HEX color'
+    return None
+
+
+def _positive_number(value: object) -> bool:
+    """Return whether a JSON value is a positive finite number."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return False
+    return number > 0 and number != float('inf')
+
+
+def _typography_error(typography: object, label: str, *, require_sizes: bool) -> Optional[str]:
+    """Validate one complete user-facing typography recommendation or choice."""
+    if not isinstance(typography, dict):
+        return f'{label} must be an object'
+    for role in ('heading', 'body'):
+        font = typography.get(role)
+        if not isinstance(font, dict):
+            return f'{label}.{role} must be an object'
+        for field in ('cjk', 'latin', 'css'):
+            if not isinstance(font.get(field), str) or not font[field].strip():
+                return f'{label}.{role}.{field} must be non-empty'
+    if not _positive_number(typography.get('body_size')):
+        return f'{label}.body_size must be a positive number'
+    if not require_sizes:
+        return None
+    sizes = typography.get('sizes')
+    if not isinstance(sizes, dict):
+        return f'{label}.sizes must be an object'
+    for role in _TYPOGRAPHY_SIZE_ROLES:
+        if not _positive_number(sizes.get(role)):
+            return f'{label}.sizes.{role} must be a positive number'
+    return None
+
+
+def _candidate_list(spec: object) -> list:
+    """Return candidates from the current or legacy recommendation shape."""
+    if not isinstance(spec, dict):
+        return []
+    candidates = spec.get('candidates')
+    if not isinstance(candidates, list):
+        candidates = spec.get('options')
+    return candidates if isinstance(candidates, list) else []
+
+
+def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
+    """Require three complete coordinated Stage 2 design systems."""
+    directions = recommendations.get('design_directions')
+    if isinstance(directions, dict):
+        candidates = _candidate_list(directions)
+        if len(candidates) < 3:
+            return 'Stage 2 design_directions must include at least 3 candidates'
+        for index, candidate in enumerate(candidates, start=1):
+            label = f'design_directions.candidates[{index - 1}]'
+            if not isinstance(candidate, dict):
+                return f'{label} must be an object'
+            if not _localized_text_present(candidate, 'name'):
+                return f'{label} requires a non-empty localized name'
+            for field in ('visual_style', 'icons'):
+                if not isinstance(candidate.get(field), str) or not candidate[field].strip():
+                    return f'{label}.{field} must be non-empty'
+            error = _palette_error(candidate.get('color'), f'{label}.color')
+            if error:
+                return error
+            error = _typography_error(
+                candidate.get('typography'),
+                f'{label}.typography',
+                require_sizes=False,
+            )
+            if error:
+                return error
+            if _uses_ai_images(recommendations):
+                image_strategy = candidate.get('image_strategy')
+                if not isinstance(image_strategy, dict) or not str(
+                    image_strategy.get('rendering') or ''
+                ).strip():
+                    return f'{label}.image_strategy.rendering must be non-empty'
+        return None
+
+    # Legacy staged files remain readable, but they must still provide three
+    # complete color combinations and at least one complete typography choice.
+    colors = _candidate_list(recommendations.get('color'))
+    if len(colors) < 3:
+        return 'Stage 2 recommendations must include 3 complete color candidates'
+    for index, color in enumerate(colors):
+        error = _palette_error(color, f'color.candidates[{index}]')
+        if error:
+            return error
+    typography = _candidate_list(recommendations.get('typography'))
+    if not typography:
+        return 'Stage 2 recommendations must include typography candidates'
+    for index, candidate in enumerate(typography):
+        error = _typography_error(
+            candidate,
+            f'typography.candidates[{index}]',
+            require_sizes=False,
+        )
+        if error:
+            return error
+    return None
+
+
 def _stage2_custom_candidates_error(recommendations: dict) -> Optional[str]:
     """Require visible AI-authored custom alternatives in new Stage 2 files."""
     candidates = recommendations.get('custom_candidates')
@@ -444,14 +588,7 @@ def _stage2_custom_candidates_error(recommendations: dict) -> Optional[str]:
                     f'{prose_field}'
                 )
 
-    recommend = recommendations.get('recommend')
-    usage = recommend.get('image_usage') if isinstance(recommend, dict) else None
-    if usage is None:
-        usage = recommendations.get('image_usage')
-        if isinstance(usage, dict):
-            usage = usage.get('value')
-    uses_ai = 'ai' in usage if isinstance(usage, list) else usage == 'ai'
-    if not uses_ai:
+    if not _uses_ai_images(recommendations):
         return None
 
     image_candidate = candidates.get('image_strategy')
@@ -504,6 +641,9 @@ def _submission_stage_error(
         recommendation_error = _stage2_custom_candidates_error(recommendations)
         if recommendation_error:
             return recommendation_error
+        recommendation_error = _stage2_design_directions_error(recommendations)
+        if recommendation_error:
+            return recommendation_error
 
     allowed_submissions = {
         1: {'stage1'},
@@ -549,6 +689,40 @@ def _custom_selection_error(result: dict) -> Optional[str]:
         behavior = image_strategy.get('behavior') or image_strategy.get('custom')
         if not str(behavior or '').strip():
             return 'image_strategy.rendering=custom requires non-empty behavior'
+    return None
+
+
+def _stage2_solution_error(result: dict) -> Optional[str]:
+    """Reject a Stage 2/final payload with an incomplete design system."""
+    color = result.get('color')
+    color_error = _palette_error(color, 'color')
+    color_custom = (
+        isinstance(color, dict)
+        and color.get('name') == 'custom'
+        and str(color.get('custom') or '').strip()
+    )
+    if color_error and not color_custom:
+        return color_error
+
+    typography = result.get('typography')
+    typography_error = _typography_error(
+        typography,
+        'typography',
+        require_sizes=True,
+    )
+    typography_custom = (
+        isinstance(typography, dict)
+        and typography.get('name') == 'custom'
+        and str(typography.get('custom') or '').strip()
+        and _positive_number(typography.get('body_size'))
+        and isinstance(typography.get('sizes'), dict)
+        and all(
+            _positive_number(typography['sizes'].get(role))
+            for role in _TYPOGRAPHY_SIZE_ROLES
+        )
+    )
+    if typography_error and not typography_custom:
+        return typography_error
     return None
 
 
@@ -1189,6 +1363,9 @@ def create_app(
             recommendation_error = _stage2_custom_candidates_error(data)
             if recommendation_error:
                 return jsonify({'error': recommendation_error}), 409
+            recommendation_error = _stage2_design_directions_error(data)
+            if recommendation_error:
+                return jsonify({'error': recommendation_error}), 409
         # Template application is authored by Strategist from the installed
         # workspace and current content. Never expose legacy mode fields as
         # user-facing confirmation controls.
@@ -1228,6 +1405,16 @@ def create_app(
         custom_error = _custom_selection_error(result)
         if custom_error:
             return jsonify({'error': custom_error}), 400
+        try:
+            current_recommendations = _read_json_object(
+                confirm_dir / RECOMMENDATIONS_NAME,
+            )
+        except (OSError, json.JSONDecodeError, ValueError):
+            current_recommendations = {}
+        if stage == 'stage2' or _recommendation_stage(current_recommendations) == 3:
+            solution_error = _stage2_solution_error(result)
+            if solution_error:
+                return jsonify({'error': solution_error}), 400
         _normalize_custom_selections(result)
         locked_values = _apply_locked_recommendations(
             result,
