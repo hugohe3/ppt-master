@@ -1,104 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
     <!--
     Circular Stages Template
     Structure: Closed-loop ring of 4-6 stages connected by arrows
     Use cases: PDCA, flywheel compounding loops (Attract → Engage → Delight), agile iteration, lifecycle, continuous improvement, any cyclical or self-reinforcing process
     Supports: 5-stage cycle (4-6 recommended)
     -->
-    <defs>
-        <!-- Node Shadow -->
-        <filter id="nodeShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.15" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-    </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
     <!-- Title Area -->
-    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="700" fill="#0F172A" letter-spacing="-0.5">Continuous Improvement Cycle</text>
-    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" fill="#64748B">Continuous Improvement Cycle · Five-stage closed-loop drive</text>
-    <!-- Center guide ring (dashed) -->
-    <circle cx="480" cy="410" r="200" fill="none" stroke="#E0E0E0" stroke-width="2" stroke-dasharray="8,4"/>
-    <circle cx="480" cy="410" r="130" fill="none" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
-    <!-- Center text -->
-    <text x="480" y="398" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="24" font-weight="800" fill="#0F172A">Continuous</text>
-    <text x="480" y="428" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="15" fill="#94A3B8">Continuous Loop</text>
-    <!-- 5 nodes distributed along the ring (center 480,410 r=200) -->
-    <!-- Positions: Top(480,210), Top-right(670,350), Bottom-right(600,570), Bottom-left(360,570), Top-left(290,350) -->
-    <!-- Connecting arc arrows (curved path + polygon triangle) -->
-    <!-- 1→2 -->
-    <path d="M 510,220 Q 620,240 650,340" stroke="#8B5CF6" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <polygon points="655,340 645,332 648,348" fill="#8B5CF6" fill-opacity="0.6"/>
-    <!-- 2→3 -->
-    <path d="M 670,380 Q 680,480 610,555" stroke="#10B981" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <polygon points="605,558 618,552 610,565" fill="#10B981" fill-opacity="0.6"/>
-    <!-- 3→4 -->
-    <path d="M 575,580 Q 480,620 375,575" stroke="#F59E0B" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <polygon points="372,572 380,584 368,580" fill="#F59E0B" fill-opacity="0.6"/>
-    <!-- 4→5 -->
-    <path d="M 340,555 Q 280,470 285,365" stroke="#F43F5E" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <polygon points="287,360 278,372 294,368" fill="#F43F5E" fill-opacity="0.6"/>
-    <!-- 5→1 -->
-    <path d="M 310,340 Q 340,250 460,215" stroke="#3B82F6" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <polygon points="462,213 452,206 454,222" fill="#3B82F6" fill-opacity="0.6"/>
-    <g id="nodes">
+    <g id="header" data-pptx-bounds="40 15 1200 125">
+        <text x="60" y="70"
+              font-size="32" font-weight="700" fill="#0F172A" letter-spacing="-0.5">Continuous Improvement Cycle</text>
+        <text x="60" y="100"
+              font-size="16" fill="#64748B">Continuous Improvement Cycle · Five-stage closed-loop drive</text>
+    </g>
+    <g id="cycle-frame" data-pptx-bounds="225 132 510 516">
+            <!-- Center guide ring (dashed) -->
+            <circle cx="480" cy="410" r="200" fill="none" stroke="#E0E0E0" stroke-width="2" stroke-dasharray="8,4"/>
+            <circle cx="480" cy="410" r="130" fill="none" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+            <!-- Center text -->
+            <text x="480" y="398" text-anchor="middle" font-size="24" font-weight="800" fill="#0F172A">Continuous</text>
+            <text x="480" y="428" text-anchor="middle" font-size="15" fill="#94A3B8">Continuous Loop</text>
+        <!-- 5 nodes distributed along the ring (center 480,410 r=200) -->
+        <!-- Positions: Top(480,210), Top-right(670,350), Bottom-right(600,570), Bottom-left(360,570), Top-left(290,350) -->
+        <!-- Connecting arc arrows (curved path + polygon triangle) -->
+        <!-- 1→2 -->
+        <path d="M 510,220 Q 620,240 650,340" stroke="#8B5CF6" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+        <polygon points="655,340 645,332 648,348" fill="#8B5CF6" fill-opacity="0.6"/>
+        <!-- 2→3 -->
+        <path d="M 670,380 Q 680,480 610,555" stroke="#10B981" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+        <polygon points="605,558 618,552 610,565" fill="#10B981" fill-opacity="0.6"/>
+        <!-- 3→4 -->
+        <path d="M 575,580 Q 480,620 375,575" stroke="#F59E0B" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+        <polygon points="372,572 380,584 368,580" fill="#F59E0B" fill-opacity="0.6"/>
+        <!-- 4→5 -->
+        <path d="M 340,555 Q 280,470 285,365" stroke="#F43F5E" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+        <polygon points="287,360 278,372 294,368" fill="#F43F5E" fill-opacity="0.6"/>
+        <!-- 5→1 -->
+        <path d="M 310,340 Q 340,250 460,215" stroke="#3B82F6" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+            <polygon points="462,213 452,206 454,222" fill="#3B82F6" fill-opacity="0.6"/>
+    </g>
+    <g id="nodes" data-pptx-bounds="186 135 588 510">
     <g id="node-1">
     <!-- Node 1: Research & Analysis (Top) -->
-    <circle cx="480" cy="210" r="45" fill="#8B5CF6" filter="url(#nodeShadow)"/>
-    <text x="480" y="205" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <circle cx="480" cy="210" r="45" fill="#8B5CF6"/>
+    <text x="480" y="205" text-anchor="middle"
           font-size="32" font-weight="700" fill="#FFFFFF">01</text>
-    <text x="480" y="228" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="480" y="228" text-anchor="middle"
           font-size="13" font-weight="600" fill="#FFFFFF" fill-opacity="0.85">Research</text>
         </g>
     <g id="node-2">
     <!-- Node 2: Solution Design (Top-right) -->
-    <circle cx="670" cy="355" r="45" fill="#10B981" filter="url(#nodeShadow)"/>
-    <text x="670" y="350" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <circle cx="670" cy="355" r="45" fill="#10B981"/>
+    <text x="670" y="350" text-anchor="middle"
           font-size="32" font-weight="700" fill="#FFFFFF">02</text>
-    <text x="670" y="373" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="670" y="373" text-anchor="middle"
           font-size="13" font-weight="600" fill="#FFFFFF" fill-opacity="0.85">Design</text>
         </g>
     <g id="node-3">
     <!-- Node 3: Execution (Bottom-right) -->
-    <circle cx="600" cy="570" r="45" fill="#F59E0B" filter="url(#nodeShadow)"/>
-    <text x="600" y="565" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <circle cx="600" cy="570" r="45" fill="#F59E0B"/>
+    <text x="600" y="565" text-anchor="middle"
           font-size="32" font-weight="700" fill="#FFFFFF">03</text>
-    <text x="600" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="600" y="588" text-anchor="middle"
           font-size="13" font-weight="600" fill="#FFFFFF" fill-opacity="0.85">Execution</text>
         </g>
     <g id="node-4">
     <!-- Node 4: Evaluation (Bottom-left) -->
-    <circle cx="360" cy="570" r="45" fill="#F43F5E" filter="url(#nodeShadow)"/>
-    <text x="360" y="565" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <circle cx="360" cy="570" r="45" fill="#F43F5E"/>
+    <text x="360" y="565" text-anchor="middle"
           font-size="32" font-weight="700" fill="#FFFFFF">04</text>
-    <text x="360" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="360" y="588" text-anchor="middle"
           font-size="13" font-weight="600" fill="#FFFFFF" fill-opacity="0.85">Evaluation</text>
         </g>
     <g id="node-5">
     <!-- Node 5: Iteration (Top-left) -->
-    <circle cx="290" cy="355" r="45" fill="#3B82F6" filter="url(#nodeShadow)"/>
-    <text x="290" y="350" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <circle cx="290" cy="355" r="45" fill="#3B82F6"/>
+    <text x="290" y="350" text-anchor="middle"
           font-size="32" font-weight="700" fill="#FFFFFF">05</text>
-    <text x="290" y="373" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="290" y="373" text-anchor="middle"
           font-size="13" font-weight="600" fill="#FFFFFF" fill-opacity="0.85">Iteration</text>
         </g>
     </g>
-    <g id="cards">
+    <g id="cards" data-pptx-bounds="724 121 552 493">
     <!-- Right Description Panel -->
     <g id="card-1">
     <g>
         <rect x="780" y="150" width="440" height="75" rx="8" fill="#FFFFFF"/>
         <rect x="780" y="150" width="5" height="75" rx="3" fill="#8B5CF6"/>
-        <text x="802" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="180"
               font-size="18" font-weight="700" fill="#8B5CF6">01 Research &amp; Analysis</text>
-        <text x="802" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="206"
               font-size="14" fill="#64748B">Conduct research and collect user data</text>
     </g>
     </g>
@@ -106,9 +100,9 @@
     <g>
         <rect x="780" y="240" width="440" height="75" rx="8" fill="#FFFFFF"/>
         <rect x="780" y="240" width="5" height="75" rx="3" fill="#10B981"/>
-        <text x="802" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="270"
               font-size="18" font-weight="700" fill="#10B981">02 Solution Design</text>
-        <text x="802" y="296" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="296"
               font-size="14" fill="#64748B">Define clear goals and improvement paths</text>
     </g>
     </g>
@@ -116,9 +110,9 @@
     <g>
         <rect x="780" y="330" width="440" height="75" rx="8" fill="#FFFFFF"/>
         <rect x="780" y="330" width="5" height="75" rx="3" fill="#F59E0B"/>
-        <text x="802" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="360"
               font-size="18" font-weight="700" fill="#D97706">03 Execution</text>
-        <text x="802" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="386"
               font-size="14" fill="#64748B">Implement solutions and track project progress</text>
     </g>
     </g>
@@ -126,9 +120,9 @@
     <g>
         <rect x="780" y="420" width="440" height="75" rx="8" fill="#FFFFFF"/>
         <rect x="780" y="420" width="5" height="75" rx="3" fill="#F43F5E"/>
-        <text x="802" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="450"
               font-size="18" font-weight="700" fill="#F43F5E">04 Evaluation</text>
-        <text x="802" y="476" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="476"
               font-size="14" fill="#64748B">Measure outcomes against target objectives</text>
     </g>
     </g>
@@ -136,14 +130,16 @@
     <g>
         <rect x="780" y="510" width="440" height="75" rx="8" fill="#FFFFFF"/>
         <rect x="780" y="510" width="5" height="75" rx="3" fill="#3B82F6"/>
-        <text x="802" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="540"
               font-size="18" font-weight="700" fill="#3B82F6">05 Iteration &amp; Optimization</text>
-        <text x="802" y="566" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="802" y="566"
               font-size="14" fill="#64748B">Review lessons learned for the next cycle</text>
     </g>
         </g>
     </g>
     <!-- Footer Note -->
-    <text x="60" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="12" fill="#94A3B8">With each completed cycle, overall capability leaps to a higher level</text>
+    <g id="source" data-pptx-bounds="40 667 1200 38">
+        <text x="60" y="690"
+     fill="#94A3B8">With each completed cycle, overall capability leaps to a higher level</text>
+    </g>
 </svg>

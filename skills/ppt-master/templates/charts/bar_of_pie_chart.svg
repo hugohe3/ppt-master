@@ -1,30 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
     <!--
     Bar of Pie Chart Template
     Purpose: Expand small pie slices into a stacked bar
     Use cases: long-tail composition, category share decomposition, expense detail
     Feature: Native bar-of-pie marker with fallback split bar detail
     -->
-    <defs>
-        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetBlur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
+
     <rect width="1280" height="720" fill="#FFFFFF"/>
-    <g id="header">
-        <text x="60" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <g id="header" data-pptx-bounds="40 15 1200 125">
+        <text x="60" y="78"
               font-size="34" font-weight="800" fill="#0F172A"><tspan>Category Share with Bar Detail</tspan></text>
-        <text x="60" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        <text x="60" y="112"
               font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>BAR OF PIE · STACKED DETAIL FOR SMALL SEGMENTS</tspan></text>
     </g>
-    <g id="bar_of_pie_chart" data-pptx-replace-with="chart">
+    <g id="bar_of_pie_chart" data-pptx-bounds="0 115 1062 510" data-pptx-replace-with="chart">
         <metadata type="application/json">
             {
               "name": "bar_of_pie_chart",
@@ -41,15 +32,15 @@
             }
         </metadata>
         <g id="chartArea">
-            <rect x="80" y="145" width="900" height="450" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+            <rect x="80" y="145" width="900" height="450" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
             <!-- chart-plot-area: bar-of-pie | pie-center: 360,370 | radius: 170 | bar: 720,240,900,500 -->
             <g id="mainPie">
                 <circle cx="360" cy="370" r="170" fill="#EFF6FF"/>
                 <path d="M 360,370 L 360,200 A 170,170 0 1,1 307.5,531.7 Z" fill="#2563EB" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
                 <path d="M 360,370 L 307.5,531.7 A 170,170 0 0,1 198.3,317.5 Z" fill="#10B981" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
                 <path d="M 360,370 L 198.3,317.5 A 170,170 0 0,1 360,200 Z" fill="#F59E0B" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
-                <text x="360" y="374" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>82%</tspan></text>
-                <text x="360" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Primary slices</tspan></text>
+                <text x="360" y="374" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>82%</tspan></text>
+                <text x="360" y="570" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Primary slices</tspan></text>
             </g>
             <g id="connectorLines">
                 <line x1="515" y1="300" x2="720" y2="240" stroke="#CBD5E1" stroke-width="2"/>
@@ -60,26 +51,28 @@
                 <rect x="720" y="356" width="180" height="87" fill="#EC4899"/>
                 <rect x="720" y="443" width="180" height="57" fill="#94A3B8"/>
                 <rect x="720" y="240" width="180" height="260" fill="none" stroke="#FFFFFF" stroke-width="4"/>
-                <text x="810" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail D · 8%</tspan></text>
-                <text x="810" y="407" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail E · 6%</tspan></text>
-                <text x="810" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail F · 4%</tspan></text>
-                <text x="810" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Stacked tail detail</tspan></text>
+                <text x="810" y="306" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail D · 8%</tspan></text>
+                <text x="810" y="407" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail E · 6%</tspan></text>
+                <text x="810" y="478" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Tail F · 4%</tspan></text>
+                <text x="810" y="570" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Stacked tail detail</tspan></text>
             </g>
         </g>
     </g>
-    <g id="splitPanel" transform="translate(1010, 170)">
-        <rect x="0" y="0" width="220" height="360" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
-        <text x="24" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A"><tspan>Split Logic</tspan></text>
+    <g id="splitPanel" data-pptx-bounds="981 146 278 408" transform="translate(1010, 170)">
+        <rect x="0" y="0" width="220" height="360" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+        <text x="24" y="38" font-size="16" font-weight="800" fill="#0F172A"><tspan>Split Logic</tspan></text>
         <line x1="24" y1="58" x2="196" y2="58" stroke="#E2E8F0"/>
-        <text x="24" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Main pie</tspan></text>
-        <text x="24" y="124" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#2563EB"><tspan>82%</tspan></text>
-        <text x="24" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Stacked detail</tspan></text>
-        <text x="24" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#8B5CF6"><tspan>18%</tspan></text>
+        <text x="24" y="95" font-size="13" font-weight="700" fill="#64748B"><tspan>Main pie</tspan></text>
+        <text x="24" y="124" font-size="28" font-weight="800" fill="#2563EB"><tspan>82%</tspan></text>
+        <text x="24" y="165" font-size="13" font-weight="700" fill="#64748B"><tspan>Stacked detail</tspan></text>
+        <text x="24" y="194" font-size="28" font-weight="800" fill="#8B5CF6"><tspan>18%</tspan></text>
         <rect x="24" y="235" width="172" height="78" rx="8" fill="#F5F3FF" stroke="#DDD6FE"/>
-        <text x="42" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#6D28D9"><tspan>Best when</tspan></text>
-        <text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#475569"><tspan>tail slices need</tspan></text>
-        <text x="42" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#475569"><tspan>ranked comparison.</tspan></text>
+        <text x="42" y="263" font-size="13" font-weight="800" fill="#6D28D9"><tspan>Best when</tspan></text>
+        <text x="42" y="286" font-weight="600" fill="#475569"><tspan>tail slices need</tspan></text>
+        <text x="42" y="304" font-weight="600" fill="#475569"><tspan>ranked comparison.</tspan></text>
     </g>
-    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Product Analytics</tspan></text>
+    <g id="source" data-pptx-bounds="40 670 1200 40">
+        <text x="60" y="695"
+              font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Product Analytics</tspan></text>
+    </g>
 </svg>

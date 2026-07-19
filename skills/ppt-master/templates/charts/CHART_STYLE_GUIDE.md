@@ -287,7 +287,7 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 
 ## 8. 迁移边界
 
-本指南是新建和修改模板的目标合同。尚未迁移的存量文件可继续存在，但不得作为新增装饰规则的依据。
+本指南是新建和修改模板的目标合同。当前目录中的 76 个 SVG 均已纳入该合同；后续不得以历史文件为由恢复无语义装饰，也不得把中性化误解为删除结构边界。
 
 **Current reference set**:
 
@@ -321,8 +321,56 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `fishbone_diagram.svg` | 核心问题、六类原因分支和具体成因标签 |
 | `numbered_steps.svg` | 编号步骤、连接顺序、任务卡和阶段时长 |
 | `pareto_chart.svg` | 80/20 分界、降序柱体、累计曲线和行动洞察 |
+| `top_down_tree.svg` | 父子层级、汇报连线和末级节点摘要 |
+| `butterfly_chart.svg` | 共用中轴、双侧镜像系列和对称刻度 |
+| `chevron_chain_with_tail.svg` | 连续箭头阶段、支撑标签和结果汇总尾块 |
+| `gauge_chart.svg` | 单项指标、目标区间、当前值和状态说明 |
+| `gantt_chart.svg` | 任务行、时间跨度、依赖关系和当前时间标记 |
+| `waterfall_chart.svg` | 起始值、增减贡献、连接基线和最终合计 |
+| `hub_inward_arrows.svg` | 外围输入、向心关系和中心结论 |
+| `treemap_chart.svg` | 层级面积编码、分类色块、标签和解释注记 |
+| `hub_spoke.svg` | 中心枢纽、径向连接、能力节点和参考环 |
+| `matrix_2x2.svg` | 双轴象限、点位分布、象限标签和优先级说明 |
+| `process_flow.svg` | 顺序节点、连接关系、阶段时长和状态图例 |
+| `donut_chart.svg` | 环形占比、中心总值、系列图例和摘要指标 |
+| `grouped_bar_chart.svg` | 多系列并列柱、共用分类轴和系列图例 |
+| `pyramid_isometric.svg` | 分层金字塔、等距深度面和层级说明 |
+| `progress_bar_chart.svg` | 多项进度、目标标记、当前值和状态分组 |
+| `basic_table.svg` | 表头、数据行、对齐列和状态单元格 |
+| `mind_map.svg` | 中心主题、放射分支、二级节点和分支骨架 |
+| `comparison_columns.svg` | 并列方案列、价格层级、功能清单和推荐状态 |
+| `bullet_chart.svg` | 定性区间、实际值、目标线和多指标对照 |
+| `comparison_table.svg` | 多方案表头、横向属性行和结果强调 |
+| `client_server_flow.svg` | 客户端与服务端分区、请求响应和交互方向 |
+| `dumbbell_chart.svg` | 双状态端点、变化连线、差值和项目排序 |
+| `pyramid_chart.svg` | 递进层级、分层容量和层级说明 |
+| `vertical_pillars.svg` | 并列支柱、分类标题、要点列表和底部结论 |
+| `journey_map.svg` | 阶段轨道、用户行动、情绪曲线和痛点卡片 |
+| `consulting_table.svg` | 分层行列、指标数值、数据条和重点结论 |
+| `pros_cons_chart.svg` | 正反双栏、判断轴、论据列表和建议结论 |
+| `project_schedule_table.svg` | 任务表格、负责人、状态和横向排期 |
+| `horizontal_bar_chart.svg` | 长标签排名、横向数值条和洞察侧栏 |
+| `funnel_chart.svg` | 递减阶段、转化率、流失关系和摘要指标 |
+| `isometric_stairs.svg` | 递进台阶、阶段标签、空间顺序和接地基线 |
+| `pie_chart.svg` | 单层占比、扇区标签、图例和总量摘要 |
+| `circular_stages.svg` | 环形阶段、循环方向、阶段说明和中心主题 |
+| `team_roster.svg` | 成员卡片、头像槽、姓名职务和简介容量 |
+| `harvey_balls_table.svg` | 评价行列、分级圆点、评分图例和汇总状态 |
+| `column_chart.svg` | 单系列分类柱、数值标签、坐标轴和基准线 |
+| `arc_anchored_list.svg` | 弧线主轴、锚点节点、顺序条目和配对说明 |
+| `vertical_list.svg` | 纵向轨道、顺序节点、内容卡片和阶段状态 |
+| `sunburst_chart.svg` | 多层环形层级、父子占比、叶子图例和解释面板 |
+| `agenda_list.svg` | 编号议程、条目说明、时长信息和纵向导轨 |
+| `stock_chart.svg` | OHLC 蜡烛、日期轴、价格区间和指标摘要 |
+| `feature_matrix_table.svg` | 功能行、产品列、二元状态和方案对照 |
+| `histogram_chart.svg` | 连续分箱、频数柱、统计标记和分布解释 |
+| `venn_diagram.svg` | 集合边界、交集区域、关系标签和结论说明 |
+| `quadrant_bubble_scatter.svg` | 双轴象限、气泡位置、尺寸编码和项目标签 |
+| `bar_of_pie_chart.svg` | 主饼占比、长尾聚合、堆叠条明细和连接关系 |
+| `pie_of_pie_chart.svg` | 主饼占比、长尾聚合、次级饼明细和连接关系 |
+| `word_cloud.svg` | 词项权重、字号编码、主题分布和关键词层级 |
 
-**Hard rule**: 修改其他模板时先冻结可见文本、数据和结构层级，再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线验证。未经明确说明的文本删除、改写或结构边界丢失都会阻断迁移。不要仅为追求 catalog 一次性整齐而批量重写。
+**Hard rule**: 修改任一模板时先冻结可见文本、数据和结构层级，再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线验证。未经明确说明的文本删除、改写或结构边界丢失都会阻断变更。不要仅为追求 catalog 一次性整齐而批量重写。
 
 ---
 

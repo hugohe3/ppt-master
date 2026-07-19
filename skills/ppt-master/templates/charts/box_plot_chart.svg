@@ -231,24 +231,14 @@
             <text x="70" y="140"
                   fill="#F43F5E">Outlier</text>
         </g>
-        <text x="15" y="220"
-              fill="#94A3B8">IQR = Q3 - Q1</text>
-        <text x="15" y="232"
-              fill="#94A3B8">异常值 > Q3+1.5*IQR</text>
+        <text x="15" y="220" fill="#94A3B8">IQR = Q3 - Q1<tspan x="15" dy="12">异常值 &gt; Q3+1.5*IQR</tspan></text>
     </g>
     <!-- Stats Summary -->
     <g id="statsSummary" transform="translate(1040, 390)" data-pptx-bounds="1040 390 200 160">
         <rect x="0" y="0" width="200" height="160" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1"/>
         <text x="15" y="25"
               font-size="13" font-weight="600" fill="#059669">📊 Stats Summary</text>
-        <text x="15" y="50"
-              fill="#475569">Highest Median: Tech 350K</text>
-        <text x="15" y="70"
-              fill="#475569">Lowest Median: Ops 200K</text>
-        <text x="15" y="95"
-              fill="#475569">Widest Range: Tech</text>
-        <text x="15" y="115"
-              fill="#475569">Narrowest Range: Ops</text>
+        <text x="15" y="50" fill="#475569">Highest Median: Tech 350K<tspan x="15" dy="20">Lowest Median: Ops 200K</tspan><tspan x="15" dy="25">Widest Range: Tech</tspan><tspan x="15" dy="20">Narrowest Range: Ops</tspan></text>
         <text x="15" y="140"
               fill="#F43F5E">Outliers Found: 2</text>
     </g>
