@@ -10,14 +10,14 @@
     fill="#EEF2F6" stroke="#D6DCE3" stroke-width="1"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="title-picture-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 40 1152 72">
-    <text id="title-picture-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 40 1152 72">
+    <text id="title-picture-title-carrier" data-pptx-carrier="true"
       x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="title-picture-picture-slot" data-pptx-placeholder="picture" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="64 152 1152 504">
-    <image id="title-picture-picture-carrier" data-pptx-placeholder-carrier="true"
+  <g id="title-picture-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="64 152 1152 504">
+    <image id="title-picture-picture-carrier" data-pptx-carrier="true"
       x="64" y="152" width="1152" height="504" preserveAspectRatio="none"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
   </g>

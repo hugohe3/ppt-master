@@ -1231,9 +1231,9 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             'data-pptx-geometry-status',
             'data-pptx-geometry-reason',
             'data-pptx-placeholder',
-            'data-pptx-placeholder-bounds',
-            'data-pptx-placeholder-carrier',
-            'data-pptx-placeholder-idx',
+            'data-pptx-bounds',
+            'data-pptx-carrier',
+            'data-pptx-idx',
             'data-pptx-role',
         ):
             value = elem.get(attr)

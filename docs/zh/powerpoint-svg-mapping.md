@@ -70,7 +70,7 @@ PowerPoint 意图
 | 标题占位符 | 含一个文本 carrier 的结构化 slot 组 | Layout 和 Slide 的 `title` 类型 `p:ph` | `Native-stable` | carrier 数量、边界、类型与有效 index 必须与 Layout 合同一致 |
 | 副标题占位符 | 含一个文本 carrier 的结构化 slot 组 | `subTitle` 类型 `p:ph` | `Native-stable` | 与标题相同的 slot 规则 |
 | 正文占位符 | 含一个文本 carrier 的结构化 slot 组 | `body` 类型 `p:ph` | `Native-stable` | 多行 carrier 仍必须是一个文本框 |
-| mirror 回导文本占位符的 Slide frame | slot 的 `<text>` carrier 保留正数源 `data-pptx-frame="x y width height"`，并与 slot 的可复用 bounds 分开 | Slide carrier 保持该精确 `a:xfrm`；文字仍可编辑，源硬换行保留为显式段落 | 在受支持回导文本范围内为 `Native-stable` | `data-pptx-placeholder-bounds` 仍只定义 Layout 默认 frame，二者可以不同；standard/fidelity 创作不得为复制 bounds 而添加此 frame |
+| mirror 回导文本占位符的 Slide frame | slot 的 `<text>` carrier 保留正数源 `data-pptx-frame="x y width height"`，并与 slot 的可复用 bounds 分开 | Slide carrier 保持该精确 `a:xfrm`；文字仍可编辑，源硬换行保留为显式段落 | 在受支持回导文本范围内为 `Native-stable` | `data-pptx-bounds` 仍只定义 Layout 默认 frame，二者可以不同；standard/fidelity 创作不得为复制 bounds 而添加此 frame |
 | 日期、页脚与页码占位符 | 结构化文本 slot | `dt`、`ftr` 与 `sldNum` 类型 `p:ph`，带匹配的 Layout 页眉/页脚标志 | `Native-stable` | 占位符 index 必须唯一且合法 |
 | 图片占位符 | 含一个图片或受支持 crop carrier 的结构化 slot | `pic` 类型 `p:ph` | 在图片合同内为 `Native-stable` | slot 必须恰好含一个兼容的直接 carrier |
 | 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生 Chart/Table 导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-charts-and-tables` |

@@ -2778,7 +2778,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     full_text = ''.join(r['text'] for r in runs) if runs else ''
     if not full_text.strip():
         is_placeholder_carrier = (
-            (elem.get('data-pptx-placeholder-carrier') or '').strip().lower()
+            (elem.get('data-pptx-carrier') or '').strip().lower()
             == 'true'
         )
         if not is_placeholder_carrier:
@@ -4086,7 +4086,7 @@ _NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
     'data-pptx-frame',
     'data-pptx-layer',
     'data-pptx-object',
-    'data-pptx-placeholder-carrier',
+    'data-pptx-carrier',
     'data-pptx-prst',
     'data-pptx-shape-id',
     'data-pptx-shape-name',

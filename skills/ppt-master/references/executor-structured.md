@@ -88,11 +88,11 @@ This section applies only when a deck/layout template's AI-derived lock records 
 
 **Hard rule — PowerPoint paint order**: Direct children appear in this order: Master background atoms, Layout background atoms, optional Slide background, remaining Master atoms, remaining Layout atoms, then slot groups and Slide-local content groups. Backgrounds are the inheritance plane beneath all shapes.
 
-**Mandatory — slot authoring**: A reusable content slot is one direct root `<g id>` carrying `data-pptx-placeholder` and positive `data-pptx-placeholder-bounds`; that design zone is also the slot module's boundary, so do not duplicate it with `data-pptx-module-bounds`. A normal slot contains exactly one compatible direct drawable child marked `data-pptx-placeholder-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. Decorations do not belong in the slot; move reusable decoration to a root Layout atom and keep page-specific labels/captions in another bounded slot or Slide-local group.
+**Mandatory — slot authoring**: A reusable content slot is one direct root `<g id>` carrying `data-pptx-placeholder` and one positive `data-pptx-bounds`; the same design zone is both the reusable Layout default and the slot module boundary. A normal slot contains exactly one compatible direct drawable child marked `data-pptx-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. Decorations do not belong in the slot; move reusable decoration to a root Layout atom and keep page-specific labels/captions in another bounded slot or Slide-local group.
 
-**Mandatory — slot identity**: Preserve imported `data-pptx-placeholder-idx` values where available; otherwise omit the title index and assign unique indices only where repeated roles need disambiguation. Pages sharing one Layout key repeat the same slot ids/types/effective indices/default bounds/binding modes. Current text, crop, and Slide-local carrier geometry may differ.
+**Mandatory — slot identity**: Preserve imported `data-pptx-idx` values where available; otherwise omit the title index and assign unique indices only where repeated roles need disambiguation. Pages sharing one Layout key repeat the same slot ids/types/effective indices/default bounds/binding modes. Current text, crop, and Slide-local carrier geometry may differ.
 
-**Composite proxy fallback**: A genuinely composite region may use a direct `<g data-pptx-placeholder="object" data-pptx-placeholder-binding="proxy">` with positive bounds. Its visible group remains Slide-local and export creates one hidden transparent matching placeholder proxy. This downgrade is valid only for `object`; do not use it for an ordinary title, body, picture, chart, table, or media slot.
+**Composite proxy fallback**: A genuinely composite region may use a direct `<g data-pptx-placeholder="object" data-pptx-binding="proxy">` with positive bounds. Its visible group remains Slide-local and export creates one hidden transparent matching placeholder proxy. This downgrade is valid only for `object`; do not use it for an ordinary title, body, picture, chart, table, or media slot.
 
 **Forbidden — dummy carriers**: Never satisfy a carrier slot with tiny text, near-transparent glyphs, background-colored punctuation, or other fake content. Leave an intentionally blank text carrier empty/whitespace-only—the exporter emits a legal invisible U+200B run—or use the composite `object` proxy contract. If `strict` prototype binding cannot represent the completed composition, surface the mismatch; select a compatible prototype or create an explicit adaptive Layout instead of hiding the conflict.
 
@@ -155,21 +155,21 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
   <text id="master-footer" data-pptx-layer="master" …>…</text>   <!-- no Master/Layout g -->
   <path id="layout-rule" data-pptx-layer="layout" …/>            <!-- one atomic Layout object -->
   <g id="title-slot" data-pptx-placeholder="title"
-     data-pptx-placeholder-bounds="60 36 1160 64">
-    <text id="title-carrier" data-pptx-placeholder-carrier="true" …>…</text>
+     data-pptx-bounds="60 36 1160 64">
+    <text id="title-carrier" data-pptx-carrier="true" …>…</text>
   </g>
   <g id="body-slot" data-pptx-placeholder="body"
-     data-pptx-placeholder-idx="1"
-     data-pptx-placeholder-bounds="60 120 470 500">
-    <text id="body-carrier" data-pptx-placeholder-carrier="true" …>…</text>
+     data-pptx-idx="1"
+     data-pptx-bounds="60 120 470 500">
+    <text id="body-carrier" data-pptx-carrier="true" …>…</text>
   </g>
   <g id="picture-slot" data-pptx-placeholder="picture"
-     data-pptx-placeholder-idx="2"
-     data-pptx-placeholder-bounds="570 120 650 500">
-    <image id="picture-carrier" data-pptx-placeholder-carrier="true" …/>
+     data-pptx-idx="2"
+     data-pptx-bounds="570 120 650 500">
+    <image id="picture-carrier" data-pptx-carrier="true" …/>
   </g>
-  <g id="content-block-1">…</g>                                  <!-- 3–8 content groups -->
-  <g id="content-block-2">…</g>
+  <g id="content-block-1" data-pptx-bounds="60 120 470 500">…</g>   <!-- 3–8 content groups -->
+  <g id="content-block-2" data-pptx-bounds="570 120 650 500">…</g>
 </svg>
 ```
 

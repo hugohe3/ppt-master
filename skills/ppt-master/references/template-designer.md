@@ -391,7 +391,7 @@ reserved for optional PowerPoint-native Chart/Table replacement markers.
 | Master/Layout identity | Root `data-pptx-master` / `data-pptx-master-name` plus `data-pptx-layout` / `data-pptx-layout-name`; authored keys for `standard` / `fidelity`, source keys for `mirror` |
 | Authored Master/Layout visual | In `standard` / `fidelity`, use a direct atomic child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"`. An ordinary `<g>` is forbidden; one validated compact canonical authored-preset `<g>` is a semantic atom and is the sole group exception. |
 | Preserved source Master/Layout visual | In `mirror`, recursively expand each fixed-layer source group into direct atoms with the same Master/Layout ownership, transforms, styles, paint order, and appearance; semantic regrouping is forbidden |
-| Content slot | Direct `<g id>` with `data-pptx-placeholder` and explicit `data-pptx-placeholder-bounds`; `standard` / `fidelity` author the slot, while `mirror` preserves source type/index/bounds and carrier identity |
+| Content slot | Direct `<g id>` with `data-pptx-placeholder` and explicit `data-pptx-bounds`; `standard` / `fidelity` author the slot, while `mirror` preserves source type/index/bounds and carrier identity |
 | Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
 | Structural page-frame hint | Optional `data-pptx-role` only when background/decoration/header/footer/logo/watermark/chrome/page-number behavior is not already expressed by layer/placeholder metadata; stable unique `id` required |
 
@@ -404,7 +404,7 @@ direct carrier. A validated compact canonical authored-preset `<g>` counts as
 one carrier for an `object` slot because it compiles to one native shape; an
 ordinary multi-object `<g>` does not. Only a genuinely composite region may
 declare `data-pptx-placeholder="object"` with
-`data-pptx-placeholder-binding="proxy"`; the visible group stays Slide-local
+`data-pptx-binding="proxy"`; the visible group stays Slide-local
 and export creates a hidden transparent binding proxy. Do not use proxy binding
 as the default template slot form.
 
@@ -417,7 +417,7 @@ identity exactly when the importer supports them. Do not replace source
 assign stable indices only when repeated roles need disambiguation inside the
 new Layout.
 
-**Hard rule — explicit design-zone bounds**: Every slot carries `data-pptx-placeholder-bounds="x y width height"` with at most two decimals per value. Mirror uses the source Layout placeholder frame. `standard` / `fidelity` author bounds from the intended safe area, column, panel inset, or media frame. Do not use character count, glyph width, current wrapping, or the tight sample-content box. An authored Layout may intentionally have zero slots.
+**Hard rule — explicit design-zone bounds**: Every slot carries `data-pptx-bounds="x y width height"` with at most two decimals per value. Mirror uses the source Layout placeholder frame. `standard` / `fidelity` author bounds from the intended safe area, column, panel inset, or media frame. Do not use character count, glyph width, current wrapping, or the tight sample-content box. An authored Layout may intentionally have zero slots.
 
 ### 3. Placeholder Markers
 
@@ -428,8 +428,8 @@ Use clear placeholder markers for replaceable content:
 ```xml
 <!-- Text slot -->
 <g id="title-slot" data-pptx-placeholder="title"
-   data-pptx-placeholder-bounds="80 280 1120 96">
-  <text id="title-carrier" data-pptx-placeholder-carrier="true"
+   data-pptx-bounds="80 280 1120 96">
+  <text id="title-carrier" data-pptx-carrier="true"
         x="80" y="320" fill="#FFFFFF" font-size="48" font-weight="bold">
     {{TITLE}}
   </text>
@@ -438,8 +438,8 @@ Use clear placeholder markers for replaceable content:
 <!-- Content area placeholder (content page only) -->
 <rect x="40" y="90" width="1200" height="550" fill="#FFFFFF" rx="8"/>
 <g id="body-slot" data-pptx-placeholder="body"
-   data-pptx-placeholder-bounds="40 90 1200 550">
-  <text id="body-carrier" data-pptx-placeholder-carrier="true"
+   data-pptx-bounds="40 90 1200 550">
+  <text id="body-carrier" data-pptx-carrier="true"
         x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="16">
     {{CONTENT_AREA}}
   </text>
