@@ -11,45 +11,54 @@
 
     <!-- Card 1 -->
     <g id="card-1" data-pptx-bounds="60 140 560 255">
-        <rect x="60" y="140" width="560" height="255" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <rect x="60" y="140" width="560" height="255" rx="20" fill="#F1F5F9"/>
         <path d="M 245 140 H 435 A 25 25 0 0 1 460 165 V 190 H 220 V 165 A 25 25 0 0 1 245 140 Z" fill="#2563EB"/>
         <text x="340" y="174" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">Discovery</text>
-        <text x="90" y="238" font-size="15" font-weight="700" fill="#0F172A">Stakeholder Research</text>
-        <text x="90" y="264" font-size="13" fill="#475569">Interview stakeholders to surface the underlying problem statement.</text>
-        <text x="90" y="316" font-size="15" font-weight="700" fill="#0F172A">Quantitative Baseline</text>
-        <text x="90" y="342" font-size="13" fill="#475569">Lock the metrics used to evaluate every option later.</text>
+        <rect x="80" y="210" width="520" height="165" rx="12" fill="#FFFFFF"/>
+        <text x="105" y="248" font-size="15" font-weight="700" fill="#0F172A">Stakeholder Research</text>
+        <text x="105" y="272" font-size="13" fill="#475569">Interview 15+ stakeholders to surface the underlying problem statement.</text>
+        <text x="105" y="312" font-size="15" font-weight="700" fill="#0F172A">Quantitative Baseline</text>
+        <text x="105" y="336" font-size="13" fill="#475569">Lock the metrics that will be used to evaluate every option later.</text>
     </g>
 
     <!-- Card 2 -->
     <g id="card-2" data-pptx-bounds="660 140 560 255">
-        <rect x="660" y="140" width="560" height="255" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <rect x="660" y="140" width="560" height="255" rx="20" fill="#F1F5F9"/>
         <path d="M 845 140 H 1035 A 25 25 0 0 1 1060 165 V 190 H 820 V 165 A 25 25 0 0 1 845 140 Z" fill="#2563EB"/>
         <text x="940" y="174" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">Design</text>
-        <text x="690" y="238" font-size="15" font-weight="700" fill="#0F172A">Solution Shaping</text>
-        <text x="690" y="264" font-size="13" fill="#475569">Translate findings into viable architectures with explicit trade-offs.</text>
-        <text x="690" y="316" font-size="15" font-weight="700" fill="#0F172A">Prototype Validation</text>
-        <text x="690" y="342" font-size="13" fill="#475569">Build the thinnest slice that proves the direction can ship.</text>
+        <rect x="680" y="210" width="520" height="165" rx="12" fill="#FFFFFF"/>
+        <text x="698" y="248" font-size="15" font-weight="700" fill="#0F172A">Solution Shaping</text>
+        <text x="698" y="272" font-size="13" fill="#475569">Translate findings into three viable architectures with explicit trade-offs.</text>
+        <text x="698" y="312" font-size="15" font-weight="700" fill="#0F172A">Prototype Validation</text>
+        <text x="698" y="336" font-size="13" fill="#475569">Build the thinnest slice that proves the chosen direction can ship.</text>
     </g>
 
     <!-- Card 3 -->
     <g id="card-3" data-pptx-bounds="60 420 560 255">
-        <rect x="60" y="420" width="560" height="255" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <rect x="60" y="420" width="560" height="255" rx="20" fill="#F1F5F9"/>
         <path d="M 245 420 H 435 A 25 25 0 0 1 460 445 V 470 H 220 V 445 A 25 25 0 0 1 245 420 Z" fill="#2563EB"/>
         <text x="340" y="454" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">Delivery</text>
-        <text x="90" y="518" font-size="15" font-weight="700" fill="#0F172A">Implementation Sprints</text>
-        <text x="90" y="544" font-size="13" fill="#475569">Use a short cadence with a demo and explicit go/no-go gate.</text>
-        <text x="90" y="596" font-size="15" font-weight="700" fill="#0F172A">Quality Gates</text>
-        <text x="90" y="622" font-size="13" fill="#475569">Combine automated checks with clear release ownership.</text>
+        <rect x="80" y="490" width="520" height="165" rx="12" fill="#FFFFFF"/>
+        <text x="105" y="528" font-size="15" font-weight="700" fill="#0F172A">Implementation Sprints</text>
+        <text x="105" y="552" font-size="13" fill="#475569">Two-week cadence with end-of-sprint demo and explicit go/no-go gate.</text>
+        <text x="105" y="592" font-size="15" font-weight="700" fill="#0F172A">Quality Gates</text>
+        <text x="105" y="616" font-size="13" fill="#475569">Automated checks plus a release captain who owns the deploy decision.</text>
     </g>
 
     <!-- Card 4 -->
     <g id="card-4" data-pptx-bounds="660 420 560 255">
-        <rect x="660" y="420" width="560" height="255" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <rect x="660" y="420" width="560" height="255" rx="20" fill="#F1F5F9"/>
         <path d="M 845 420 H 1035 A 25 25 0 0 1 1060 445 V 470 H 820 V 445 A 25 25 0 0 1 845 420 Z" fill="#2563EB"/>
         <text x="940" y="454" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">Evolve</text>
-        <text x="690" y="518" font-size="15" font-weight="700" fill="#0F172A">Telemetry Loop</text>
-        <text x="690" y="544" font-size="13" fill="#475569">Feed production metrics back into the discovery backlog.</text>
-        <text x="690" y="596" font-size="15" font-weight="700" fill="#0F172A">Quarterly Rebase</text>
-        <text x="690" y="622" font-size="13" fill="#475569">Reset priorities against the latest market signal.</text>
+        <rect x="680" y="490" width="520" height="165" rx="12" fill="#FFFFFF"/>
+        <text x="698" y="528" font-size="15" font-weight="700" fill="#0F172A">Telemetry Loop</text>
+        <text x="698" y="552" font-size="13" fill="#475569">Production metrics flow back into the discovery backlog within 24 hours.</text>
+        <text x="698" y="592" font-size="15" font-weight="700" fill="#0F172A">Quarterly Rebase</text>
+        <text x="698" y="616" font-size="13" fill="#475569">Reset priorities against the latest market signal, not yesterday's roadmap.</text>
+    </g>
+
+    <!-- Source -->
+    <g id="source" data-pptx-bounds="390 688 500 22">
+        <text x="640" y="705" text-anchor="middle" font-size="13" font-weight="500" fill="#94A3B8">Source: Methodology framework · Updated for the current planning cycle</text>
     </g>
 </svg>

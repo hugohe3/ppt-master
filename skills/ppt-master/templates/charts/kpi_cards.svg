@@ -14,7 +14,7 @@
         <rect x="60" y="150" width="560" height="250" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <line x1="80" y1="174" x2="80" y2="232" stroke="#2563EB" stroke-width="4"/>
         <text x="100" y="194" font-size="18" font-weight="700" fill="#334155">Total Revenue</text>
-        <text x="100" y="218" font-size="14" fill="#64748B">Gross billings</text>
+        <text x="100" y="218" font-size="14" fill="#64748B">Gross Billings</text>
         <text x="100" y="300" font-size="68" font-weight="800" fill="#0F172A">$245.5</text>
         <text x="350" y="300" font-size="28" font-weight="600" fill="#64748B">M</text>
         <polygon points="112,348 120,362 104,362" fill="#059669"/>
@@ -27,7 +27,7 @@
         <rect x="660" y="150" width="560" height="250" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <line x1="680" y1="174" x2="680" y2="232" stroke="#2563EB" stroke-width="4"/>
         <text x="700" y="194" font-size="18" font-weight="700" fill="#334155">Active Users</text>
-        <text x="700" y="218" font-size="14" fill="#64748B">Monthly active users</text>
+        <text x="700" y="218" font-size="14" fill="#64748B">Monthly Active Users</text>
         <text x="700" y="300" font-size="68" font-weight="800" fill="#0F172A">1.28</text>
         <text x="850" y="300" font-size="28" font-weight="600" fill="#64748B">M</text>
         <polygon points="712,348 720,362 704,362" fill="#059669"/>
@@ -39,11 +39,11 @@
     <g id="kpi-card-3" data-pptx-bounds="60 440 560 250">
         <rect x="60" y="440" width="560" height="250" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <line x1="80" y1="464" x2="80" y2="522" stroke="#2563EB" stroke-width="4"/>
-        <text x="100" y="484" font-size="18" font-weight="700" fill="#334155">Average Order Value</text>
-        <text x="100" y="508" font-size="14" fill="#64748B">Revenue per user</text>
+        <text x="100" y="484" font-size="18" font-weight="700" fill="#334155">Avg Order Value</text>
+        <text x="100" y="508" font-size="14" fill="#64748B">Per User Revenue</text>
         <text x="100" y="590" font-size="68" font-weight="800" fill="#0F172A">$43.2</text>
         <polygon points="104,638 120,638 112,652" fill="#E11D48"/>
-        <text x="136" y="650" font-size="20" font-weight="700" fill="#E11D48">−3.2%</text>
+        <text x="136" y="650" font-size="20" font-weight="700" fill="#E11D48">-3.2%</text>
         <text x="218" y="650" font-size="16" fill="#64748B">vs. last month</text>
     </g>
 
@@ -52,10 +52,15 @@
         <rect x="660" y="440" width="560" height="250" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <line x1="680" y1="464" x2="680" y2="522" stroke="#2563EB" stroke-width="4"/>
         <text x="700" y="484" font-size="18" font-weight="700" fill="#334155">Conversion Rate</text>
-        <text x="700" y="508" font-size="14" fill="#64748B">Paid conversion</text>
+        <text x="700" y="508" font-size="14" fill="#64748B">Paid Conversion</text>
         <text x="700" y="590" font-size="68" font-weight="800" fill="#0F172A">8.7%</text>
         <polygon points="712,638 720,652 704,652" fill="#059669"/>
         <text x="736" y="650" font-size="20" font-weight="700" fill="#059669">+0.8%</text>
-        <text x="816" y="650" font-size="16" fill="#64748B">point increase</text>
+        <text x="816" y="650" font-size="16" fill="#64748B">pt increase</text>
+    </g>
+
+    <!-- Source -->
+    <g id="source" data-pptx-bounds="820 692 400 20">
+        <text x="1220" y="708" font-size="13" font-weight="500" fill="#94A3B8" text-anchor="end">Source: Internal Financial Dashboard · As of Q4 2025</text>
     </g>
 </svg>

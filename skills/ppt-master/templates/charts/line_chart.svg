@@ -6,7 +6,7 @@
     <!-- Header -->
     <g id="header" data-pptx-bounds="60 40 1160 82">
         <text x="60" y="80" font-size="32" font-weight="800" fill="#0F172A">Revenue &amp; Net Profit Trend</text>
-        <text x="60" y="112" font-size="15" font-weight="600" fill="#64748B" letter-spacing="1">FISCAL YEAR 2025 · VALUES IN USD MILLIONS</text>
+        <text x="60" y="112" font-size="15" font-weight="600" fill="#64748B" letter-spacing="1">FISCAL YEAR 2025 · JAN TO DEC · VALUES IN USD MILLIONS</text>
     </g>
 
     <!-- Native chart replacement scope -->
@@ -123,5 +123,10 @@
         <line x1="1030" y1="630" x2="1060" y2="630" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
         <circle cx="1045" cy="630" r="5" fill="#059669"/>
         <text x="1075" y="635">Net Profit</text>
+    </g>
+
+    <!-- Source -->
+    <g id="source" data-pptx-bounds="60 680 290 20">
+        <text x="60" y="695" font-size="13" font-weight="500" fill="#94A3B8">Source: Corporate Finance Department</text>
     </g>
 </svg>
