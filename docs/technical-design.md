@@ -165,10 +165,12 @@ analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spe
 analysis/image_analysis.csv ────┘
 
 design_spec.md + spec_lock.md + images/ + icons/ + templates/
-    └─> project_manager.py page-context <project> P<NN> --bundle
-          + [selected complete prototype SVG]
-          + [mirror text-slots.v2-min]
+    └─> project_manager.py page-context <project> P<NN>
+          + [bounded repeated lock projection]
+          + [current-page delta]
+          + [Design Spec / prototype / chart path + SHA fingerprints]
         ├─> Executor -> svg_output/
+        │     ├─> unchanged large references stay in the active context
         │     ├─> svg_quality_checker.py -> validation/svg_quality_report.json
         │     ├─> finalize_svg.py -> svg_final/
         │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
@@ -381,9 +383,9 @@ The view omits universal SVG/icon prohibitions already owned by the always-loade
 
 The lock is also the per-page routing table. Beyond global colors and typography, it carries `page_rhythm` (`anchor` / `dense` / `breathing`), `page_charts` (which chart template should be adapted), image rows with placement/cropping contracts, and the locked `mode` / `visual_style` references that decide which execution rule files are loaded. A selected custom direction also carries its resolved `mode_behavior` / `visual_style_behavior`, and page-context projects those fields instead of leaving Executor with only the literal `custom` ids. `template_reuse_scope: mirror|layout` projects additionally carry `page_layouts` (which input template SVG each page inherits), unique `pptx_masters` / `pptx_layouts` definitions, and `page_pptx_layouts` assignments. `template_reuse_scope: style`, free-design, and brand-only projects use `pptx_structure.mode: flat` and omit those sections entirely rather than writing empty values. Empty entries elsewhere are meaningful signals: no chart or no image is often a design decision rather than missing data.
 
-`page-context --bundle` is route-sensitive: flat pages add no template payload, structured layout pages add the complete selected prototype, and mirror pages add that prototype plus `ppt-master.template-text-slots.v2-min`. Each v2-min slot contains only selector, role, current/segmented text, and tspan count. A top-level tool hash covers selectors plus immutable text/tspan topology and attributes; page-context recomputes it and every projected field from the complete prototype, then strips the hash before model output. Legacy v1 sidecars receive the same compatibility validation and are projected to this shape in memory. The model supplies semantic decisions and replacement text. Checker and structured export validate output attributes, text topology, and resource hashes against the complete prototype internally.
+`page-context v2` separates bounded consistency state from large references. It deliberately repeats the compact global lock projection on every page as an anti-drift guard and binds it to `lock_source.sha256`. The current §IX brief, rhythm, image choice, and template/chart assignment form the page delta. The project/template Design Specs plus selected prototype and `templates/charts/<key>.svg` files appear only as scoped path/SHA fingerprints. Executor reads one of those files only when that fingerprint is absent from the active context or changed, then reuses the retained understanding. Flat pages have no prototype reference; structured pages reference the authoritative complete SVG. Manifests and text-slot sidecars remain derived tool diagnostics and are never injected into page authoring.
 
-`--record-usage` requires `--bundle` and writes a derived, input-hashed snapshot for that page under `analysis/page-context/`; expected-but-absent optional inputs are recorded so later artifact creation also makes the snapshot stale. Token counting lazily uses `o200k_base`; a missing `tiktoken` installation records `tokens: null` without blocking execution. `page-context-report` excludes stale snapshots and exposes the measured component totals used to decide whether a future mirror text-patch tool is warranted; no such tool is introduced by this phase.
+`--record-usage` writes a derived, input-hashed compact-output snapshot for that page under `analysis/page-context/`. Token counting lazily uses `o200k_base`; a missing `tiktoken` installation records `tokens: null` without blocking execution. `page-context-report` excludes stale snapshots, reports compact page-context totals, and lists unique reference fingerprints. The once-loaded reference payloads and other session context remain intentionally unmeasured.
 
 `update_spec.py` propagates a post-generation change in two coordinated steps: write the new value to `spec_lock.md`, then literal-replace it across every `svg_output/*.svg`. The tool's scope is deliberately narrow — only `colors.*` (HEX values, case-insensitive replacement) and `typography.font_family` (attribute-scoped). Other fields (font sizes, icons, images, canvas) are intentionally **not supported** because their replacements would need attribute-scoped or semantic awareness whose risk/benefit doesn't justify bulk propagation. For those, edit `spec_lock.md` and re-author the affected pages.
 

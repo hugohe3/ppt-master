@@ -31,15 +31,19 @@ Before the first SVG page, output a confirmation listing: the compact communicat
 
 ### 2.1 Per-page execution context (Mandatory)
 
-**Hard rule**: Before generating **each** SVG page, load its canonical projection and record the model-facing context size:
+Before the first SVG, retain `design_spec.md`: continuous execution reuses planning context; fresh/resumed execution reads it once.
+
+**Hard rule**: Before generating **each** SVG page, load its canonical current-page delta and record its model-facing size:
 
 ```bash
-python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --bundle --record-usage
+python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage
 ```
 
-Use the bundle's communication, canvas, mode/style, conditional `mode_behavior` / `visual_style_behavior`, colors, typography, icons, current §IX brief/locks, and optional `global.template_application`. The latter governs which template content stays, changes, or moves; reuse/adherence select exporter mechanics only. This projection overrides neither facts, locks, nor technical constraints. After an approved lock change, rerun it before drawing the affected page.
+`global` deliberately repeats the sub-1000-token lock projection as an anti-drift guard; `lock_source.sha256` binds its version. `page_context` is the current §IX/resource/template/chart delta. For every `reference_set` entry—project/template Design Spec or selected prototype/chart SVG—reuse an in-context path + SHA; read it once only when absent or changed.
 
-**Source facts**: The bundle carries page intent and locked execution values, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
+Use lock values literally and optional `Template Application` from the retained Design Spec. The delta overrides neither facts nor constraints. After an approved change, rerun the command and reload only changed references. Deprecated `--bundle` is a compatibility no-op.
+
+**Source facts**: The page delta carries page intent and routing facts, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
 
 **Per-page communication trace**: Read `communication.objective`, `communication.core_message`, and the current §IX `Core message` + `Audience move` before choosing composition. The page must advance the compact objective and move the audience as authored in §IX; the global core message remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 

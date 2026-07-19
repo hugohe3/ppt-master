@@ -17,7 +17,7 @@ python3 scripts/project_manager.py scaffold-spec <project_path>
 python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
 python3 scripts/project_manager.py info <project_path>
-python3 scripts/project_manager.py page-context <project_path> P07 [--bundle] [--pretty] [--record-usage]
+python3 scripts/project_manager.py page-context <project_path> P07 [--pretty] [--record-usage]
 python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
@@ -48,10 +48,12 @@ Notes:
   non-`none` `image_usage` source must appear in at least one `## images` row
   of the lock (`provided` maps to `user`; `ai` is also satisfied by `slice`).
   The design schema is structural lint for
-  the human-readable brief; the lock schema owns machine execution values. For structured template use,
-  validation also compares the lock's Master/Layout identities with the actual
-  template SVG roots. Versioned scaffolds carry the schema marker. Markerless
-  legacy artifacts are left on their prior validation path with a warning;
+  the human-readable brief; the lock schema owns machine execution values. For
+  structured template use, strict input prototypes must match their assigned
+  Master/Layout; adaptive input prototypes retain the assigned Master while a
+  new output Layout is validated only after its generated SVG exists. Versioned
+  scaffolds carry the schema marker. Markerless legacy artifacts are left on
+  their prior validation path with a warning;
   malformed or unsupported markers are errors.
 - PPTX-family inputs are enriched automatically under `analysis/` with
   per-deck `<stem>.identity.json` / `<stem>.slide_library.json` plus the shared
@@ -61,20 +63,24 @@ Notes:
 
 ### Per-page execution view
 
-`page-context` projects `design_spec.md` and `spec_lock.md` into one current-page
-view on stdout. The default command is read-only; `--pretty` changes JSON
-formatting only. Before projection it revalidates only the machine lock and any
-selected template-root identities; design-brief values are not treated as a
-second lock. When present, the human-readable `Template Application` prose from
-`design_spec.md §I` is projected as `global.template_application`. Slide
-headings at H3–H6 remain readable by the projector.
-`--bundle` appends only the route-selected authoring payloads:
+`page-context` projects `design_spec.md` and `spec_lock.md` into one compact
+current-page view on stdout. The default command is read-only; `--pretty`
+changes JSON formatting only. Before projection it revalidates the machine lock
+and selected template-root identities; design-brief values are not treated as
+a second lock. Slide headings at H3–H6 remain readable by the projector.
 
-| Project mode | Bundle contents |
-|---|---|
-| `flat` | page context |
-| structured `layout` | page context + complete selected prototype SVG |
-| structured `mirror` | page context + `text-slots.v2-min` + complete selected prototype SVG |
+The output deliberately repeats the bounded `global` lock projection on every
+page as an anti-drift guard. `lock_source` binds that projection to the current
+`spec_lock.md` SHA. `page_context` contains the current §IX brief, rhythm,
+resources, and conditional template/chart assignment. `reference_set` contains
+only `kind`, scoped path, SHA, and `once-per-execution-context` policy for the
+project/template Design Specs and selected prototype/chart SVGs. A model reads
+a referenced file only when that exact path + SHA is absent from its active
+context or has changed, then reuses the retained understanding on later pages.
+
+The deprecated `--bundle` flag remains accepted as a compatibility no-op. It
+never appends a Design Spec, prototype SVG, chart SVG, manifest, or text-slot
+sidecar to stdout.
 
 The projection keeps project-specific forbidden rules; universal SVG and icon
 rules remain in the always-loaded execution core. Image rows are selected from
@@ -84,27 +90,21 @@ page, the view excludes those assigned images. Any still-unassigned legacy
 image remains in a compatibility subset; `confirmed-none` is emitted only when
 all locked images have a deterministic assignment elsewhere.
 
-Mirror materialization publishes `ppt-master.template-text-slots.v2-min` with
-only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count` per
-text node. Its top-level integrity hash covers selectors plus immutable text
-and tspan topology/attributes. `page-context` recomputes that hash and every
-model-visible field from the complete prototype before stripping the hash from
-the bundle. A legacy v1 sidecar receives the same checks and is projected to the
-same model-facing shape in memory; the workspace is not rewritten. The complete
-SVG remains in the bundle. Checker and structured export validate output
-attributes, text/tspan topology, and referenced-resource hashes internally, so
-authoring supplies only semantic choices and edits only the existing visible
-text values.
+Mirror materialization may publish deterministic
+`ppt-master.template-text-slots.v2-min` diagnostics. They are not page-context
+or model inputs. The complete SVG remains the sole template authority; checker
+and structured export validate output attributes, text/tspan topology, and
+referenced-resource hashes against it internally.
 
-`--record-usage` requires `--bundle` and writes a derived snapshot to
-`analysis/page-context/P<NN>.usage.json`. It hashes every input and measures the
-exact controlled stdout plus each component; expected-but-absent optional inputs
-are recorded so later artifact creation invalidates the snapshot. `tiktoken` is
+`--record-usage` writes a derived snapshot to
+`analysis/page-context/P<NN>.usage.json`. It hashes every input, measures the
+exact compact stdout, and records the reference fingerprints. `tiktoken` is
 loaded lazily with `o200k_base`; when unavailable, the command still succeeds
 and records bytes, characters, hashes, and `tokens: null`.
 `page-context-report` summarizes only fresh snapshots and identifies stale or
-token-unavailable pages. The telemetry does not include source-material reads
-or session-level prompt references.
+token-unavailable pages plus unique referenced files. The telemetry does not
+measure the once-loaded reference payloads, source-material reads, or other
+session-level prompt references.
 
 Common formats:
 - `ppt169`
@@ -123,7 +123,7 @@ python3 scripts/project_manager.py scaffold-spec projects/my_presentation_ppt169
 python3 scripts/project_manager.py scaffold-lock projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
-python3 scripts/project_manager.py page-context projects/my_presentation_ppt169_20251116 P07 --bundle --record-usage
+python3 scripts/project_manager.py page-context projects/my_presentation_ppt169_20251116 P07 --record-usage
 python3 scripts/project_manager.py page-context-report projects/my_presentation_ppt169_20251116
 ```
 

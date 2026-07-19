@@ -76,15 +76,16 @@ python3 scripts/project_manager.py import-sources <project_path> <source_files_o
 python3 scripts/project_manager.py scaffold-spec <project_path>
 python3 scripts/project_manager.py scaffold-lock <project_path>
 python3 scripts/project_manager.py validate <project_path>
-python3 scripts/project_manager.py page-context <project_path> P07 --bundle --record-usage
+python3 scripts/project_manager.py page-context <project_path> P07 --record-usage
 python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
-`page-context` prints a read-only current-page projection by default. The
-optional bundle adds the complete selected prototype for structured layout
-reuse and, for mirror reuse, a minimal text-slot sidecar. `--record-usage`
-requires `--bundle` and writes one derived snapshot under
-`analysis/page-context/`; exact `o200k_base` token counts are optional and
+`page-context` prints a read-only compact current-page projection. Its global
+lock projection repeats per page as an anti-drift guard; large Design Specs,
+prototype, and `templates/charts/` references are emitted only as scoped
+path/SHA fingerprints and are read once per execution context. `--bundle` is a
+deprecated compatibility no-op. `--record-usage` writes one derived snapshot
+under `analysis/page-context/`; exact `o200k_base` token counts are optional and
 degrade to `tokens: null` when `tiktoken` is absent.
 
 Chart candidate recall:
@@ -148,11 +149,10 @@ are stored there as short `data-pptx-native-ref` records. Structural metadata
 stays inline, while checker, template-structure validation, and export hydrate
 both layers in memory. Legacy inline payload and v1 payload-only stores remain
 readable. The v1 execution manifest points to per-prototype
-`ppt-master.template-text-slots.v2-min` sidecars. Those sidecars expose only
-text selectors, semantic roles, current/segmented text, and tspan counts;
-page-context validates and strips their top-level tool integrity hash before
-model output, while checker and export validate output attributes, topology,
-and resource hashes against the complete prototype internally. Bitmap assets
+`ppt-master.template-text-slots.v2-min` diagnostic sidecars. They are derived
+tool metadata and are not injected into model context. Checker and export
+validate output attributes, topology, and resource hashes against the complete
+prototype internally. Bitmap assets
 go to `images/`; other referenced source assets go to `templates/assets/`.
 The destination must be empty, and the command does not write
 `templates/design_spec.md`; Template_Designer owns that authored brief.

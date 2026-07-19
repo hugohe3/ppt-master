@@ -12,15 +12,15 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 | Context | Load policy |
 |---|---|
-| Chosen template's `templates/design_spec.md` capabilities | Once before page generation |
-| `templates/template_execution_manifest.json`, when present | Once for prototype roster/orientation |
-| Current page context and selected prototype | Run [`executor-base.md`](./executor-base.md) §2.1 immediately before that page |
+| `templates/design_spec.md` | Strategist reads once; continuous Executor reuses it, fresh Executor reads it once |
+| Current page delta | Run [`executor-base.md`](./executor-base.md) §2.1 immediately before that page |
+| Selected prototype SVG | Read once on an absent/changed `reference_set` path + SHA; otherwise reuse it |
 
-**Hard rule**: The current-page bundle carries the selected complete prototype SVG. A `mirror` bundle also carries the selected `ppt-master.template-text-slots.v2-min` view; a `layout` bundle omits that mirror-only view. Never author a structured page from the roster or sidecar alone.
+**Hard rule**: Page-context carries no prototype payload. `reference_set` identifies the authoritative complete SVG; never author from a roster, manifest, sidecar, filename, or summary alone.
 
-**Missing or malformed derived sidecar** → continue from the complete prototype SVG in the bundle. Missing derived metadata alone does not invalidate a legacy workspace or authorize changing text topology.
+Manifest/text-slot files are derived tool metadata, not model inputs. Missing metadata neither invalidates a legacy workspace nor permits text-topology changes.
 
-**Exception**: If the user adds a page or swaps its prototype mid-deck, update the owning planning mapping and regenerate that page's bundle before authoring it.
+**Mapping change**: update the owning plan and regenerate that page's delta; load only a new/changed prototype fingerprint.
 
 Resolve the per-page template SVG from `page_context.template.prototype`; the owning `spec_lock.md page_layouts` row remains authoritative. There is no filename/page-type fallback.
 
@@ -51,14 +51,14 @@ Resolve the per-page template SVG from `page_context.template.prototype`; the ow
 When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Executor switches to a literal replacement path. The workspace capability `replication_mode: mirror` is a prerequisite, not the trigger by itself:
 
 1. **Per-page reference selection** — Strategist selects one mirror page per project page via `spec_lock.md page_layouts` (e.g., `P04: 015_content`). The basename is the mirror filename without extension; Strategist made this choice by reading `design_spec.md §V Page Roster` descriptions, not by guessing.
-2. **Copy, don't fill** — open the referenced full mirror SVG immediately before authoring the page. Copy it as the starting point, then edit slide-specific text in place. Preserve every non-text element and every `data-pptx-*` structure attribute verbatim.
-3. **What you may edit** — decide the semantic slot mapping and replacement text only. Change only visible string values already carried by `<text>` and `<tspan>` nodes that express slide-specific content (title, body, captions, KPI labels, dates, page numbers). Keep the number, order, nesting relationship, and **all attributes** of every `<text>` / `<tspan>` node unchanged. Never merge or split nodes, move a string between nodes, add a new tspan, or delete an empty carrier. The minimal sidecar exposes only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; `svg_quality_checker.py` and export validate attributes, topology, and prototype hashes internally.
+2. **Copy, don't fill** — use the retained full mirror SVG as the starting point, then edit slide-specific text in place. Preserve every non-text element and every `data-pptx-*` structure attribute verbatim. Do not reopen the same path + SHA merely because another page selects it.
+3. **What you may edit** — decide the semantic slot mapping and replacement text only. Change only visible string values already carried by `<text>` and `<tspan>` nodes that express slide-specific content (title, body, captions, KPI labels, dates, page numbers). Keep the number, order, nesting relationship, and **all attributes** of every `<text>` / `<tspan>` node unchanged. Never merge or split nodes, move a string between nodes, add a new tspan, or delete an empty carrier. `svg_quality_checker.py` and export validate attributes, topology, and prototype hashes against the complete prototype internally.
 4. **What you must not touch** — element positions, sizes, fonts, colors, fills, strokes, gradients, **which image each `<image>` points at**, `<g>` grouping, sprite-sheet `<svg viewBox>` wrappers, decorative `<rect>` / `<path>` / `<circle>` / `<polygon>` shapes, `<use data-icon="...">` markers, embedded chart data structures. Mirror's value is preserving the source deck's visual identity — any geometric / decorative drift defeats the purpose. **The `href` path is not the image**: normalizing a bare `href="cover_bg.png"` to `href="../images/<name>"` (when Step 3 relocated the asset to `images/`) points at the *same* image and changes nothing visual — that is an allowed path fix, not a fidelity edit. Leaving the bare href as-is is also fine; the exporter and live preview resolve bare hrefs against `images/` either way.
 5. **Content fit** — if the replacement needs a different number of text segments/items, do not merge/split nodes, drop sourced content, or restructure the grid. Select a better mirror prototype and update the planning mappings, or report `warning: P<NN> content does not fit mirror reference <basename>; choose another prototype or change template_reuse_scope to layout/style`.
 6. **Visible text editing** — mirror SVGs may keep literal source text rather than `{{...}}` authoring markers. Edit values in place while retaining imported semantic `data-pptx-placeholder` identity and exact text topology.
 7. **Output filename** — follow the standard project SVG naming convention (`<NN>_<page_name>.svg` where `<NN>` matches the project page index, not the mirror source index). The mirror filename is the *reference*, not the *output*.
 
-**Detecting mirror mode**: read `page_context.template.reuse_scope` from the current page-context bundle. `replication_mode: mirror` in the installed template only determines whether that derived scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
+**Detecting mirror mode**: read `page_context.template.reuse_scope` from the current page delta. `replication_mode: mirror` in the installed template only determines whether that derived scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
 
 **Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
 
@@ -126,7 +126,7 @@ The exporter writes these solid fills as real Master/Layout/Slide `p:bg`, not se
 
 **Per-page template lookup — `page_layouts` section (`mirror` / `layout` only)**:
 
-Before drawing each page, use the bundled `page_context.template.prototype` to identify the inherited basename (the full prototype is included under §1.0):
+Before drawing each page, use `page_context.template.prototype` to identify the inherited basename. Its matching `reference_set` entry supplies the complete SVG's path and SHA; §1.0 owns whether that file must be read or can be reused from the active context:
 
 - Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding full SVG. The basename **must match** an actual file in the chosen template directory. If it does not, stop before drawing and report the invalid mapping; neither `strict` nor `adaptive` may fall back to free design inside a structured template deck.
 - No entry for this page with `template_reuse_scope: mirror|layout` → stop before drawing and report the missing Strategist mapping. Adaptive mode still requires one selected complete template SVG; flexibility applies to the post-design output Layout, not to whether an input prototype exists.

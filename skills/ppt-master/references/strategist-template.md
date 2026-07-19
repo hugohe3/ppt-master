@@ -16,7 +16,8 @@ Conditional extension for applying an installed Brand/Layout/Deck workspace to S
 
 **No template-mode confirmation**: Never ask the user to select `template_reuse_scope`, `template_adherence`, `mirror`, `layout`, `style`, `strict`, or `adaptive`. These are internal execution values for the current exporter. The user communicates intent in natural language; explicit instructions such as “全部原样保留”, “从中选合适的页面”, “可以重组”, or “只参考视觉” are authoritative. Without an explicit instruction, Strategist decides.
 
-Immediately before authoring the Stage-2 solution, inspect:
+Immediately before authoring the Stage-2 solution, load each relevant template
+resource once per path + SHA and inspect:
 
 - the installed `design_spec.md`, actual Page Roster, and relevant SVG prototypes;
 - the current communication contract, source obligations, planned page count, and content shape of every planned page;
@@ -51,7 +52,7 @@ Write only the derived values to `spec_lock.md pptx_structure`; omit `template_a
 
 ## 2. Scenario Fit and Inherited Design
 
-**Mandatory — inspect the stored resource at the decision point**: For an installed `kind: deck`, re-read `<project_path>/templates/design_spec.md` and compare its descriptive Template Overview with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Compare the actual Page Roster and SVG prototypes with required narrative roles, content shapes, slots, and capacity. The template describes what exists; it never overrides the current project and it does not own required/optional/repeatable or fixed/replaceable/example-only policy. For `kind: layout`, compare only structural roles, slots, and capacity.
+**Mandatory — decide from the §1 inspection**: For an installed `kind: deck`, compare the retained Template Overview with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Compare the retained Page Roster/relevant SVG prototypes with required narrative roles, content shapes, slots, and capacity. Reopen a resource only when its path + SHA changed. The template describes what exists; it never overrides the current project or own required/optional/repeatable or fixed/replaceable/example-only policy. For `kind: layout`, compare only structural roles, slots, and capacity.
 
 | Internal scope | Appropriate when |
 |---|---|
