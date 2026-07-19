@@ -9,20 +9,20 @@
   <rect id="editorial-split-rail" x="552" y="64" width="4" height="592" rx="2" fill="#CBD5E1"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="editorial-split-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 64 448 104">
-    <text id="editorial-split-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 64 448 104">
+    <text id="editorial-split-title-carrier" data-pptx-carrier="true"
       x="64" y="132" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="38" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="editorial-split-body-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="64 208 448 352">
-    <text id="editorial-split-body-carrier" data-pptx-placeholder-carrier="true"
+  <g id="editorial-split-body-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="64 208 448 352">
+    <text id="editorial-split-body-carrier" data-pptx-carrier="true"
       x="64" y="260" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="24">{{BODY_TEXT}}</text>
   </g>
-  <g id="editorial-split-picture-slot" data-pptx-placeholder="picture" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="592 64 624 592">
-    <image id="editorial-split-picture-carrier" data-pptx-placeholder-carrier="true"
+  <g id="editorial-split-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="2"
+    data-pptx-bounds="592 64 624 592">
+    <image id="editorial-split-picture-carrier" data-pptx-carrier="true"
       x="592" y="64" width="624" height="592" preserveAspectRatio="none"
       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
   </g>

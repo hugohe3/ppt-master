@@ -31,7 +31,8 @@ Verify the project's planning-session artifacts before doing anything else:
 | `<project_path>/spec_lock.md` | Always | Strategist's execution contract; `page-context` projects its current-page values |
 | `<project_path>/design_spec.md` | Always | Section IX page outline; `page-context` projects the current page block |
 | `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
-| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / mirror prototypes and chart SVGs required by execution |
+| `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout / mirror prototypes required by execution |
+| `skills/ppt-master/templates/charts/` | `spec_lock page_charts` references any | Shared chart SVGs selected by key |
 
 If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
 

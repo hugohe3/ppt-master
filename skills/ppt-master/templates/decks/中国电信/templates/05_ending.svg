@@ -30,28 +30,28 @@
     href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="closing-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="96 226 620 72">
-    <text id="closing-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="96 226 620 72">
+    <text id="closing-title-carrier" data-pptx-carrier="true"
       x="96" y="274" fill="#111827"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="40" font-weight="700">{{THANK_YOU}}</text>
   </g>
-  <g id="closing-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="96 300 620 40">
-    <text id="closing-subtitle-carrier" data-pptx-placeholder-carrier="true"
+  <g id="closing-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="96 300 620 40">
+    <text id="closing-subtitle-carrier" data-pptx-carrier="true"
       x="96" y="328" fill="#6B7280"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{ENDING_SUBTITLE}}</text>
   </g>
-  <g id="closing-contact-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="96 388 620 64">
-    <text id="closing-contact-carrier" data-pptx-placeholder-carrier="true"
+  <g id="closing-contact-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="96 388 620 64">
+    <text id="closing-contact-carrier" data-pptx-carrier="true"
       x="96" y="420" fill="#2B2F33"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="18">{{CONTACT_INFO}}</text>
   </g>
   <g id="closing-slide-number-slot" data-pptx-placeholder="slide-number"
-    data-pptx-placeholder-idx="3" data-pptx-placeholder-bounds="1128 658 80 28">
-    <text id="closing-slide-number-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-idx="3" data-pptx-bounds="1128 658 80 28">
+    <text id="closing-slide-number-carrier" data-pptx-carrier="true"
       x="1208" y="678" text-anchor="end" fill="#FFFFFF"
       font-family="Arial, sans-serif" font-size="13">{{PAGE_NUM}}</text>
   </g>

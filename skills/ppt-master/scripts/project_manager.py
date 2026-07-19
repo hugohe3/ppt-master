@@ -2,10 +2,14 @@
 """PPT Master project management helpers.
 
 Usage:
-    uv run scripts/project_manager.py init <project_name> [--format ppt169] [--dir <path>]
-    uv run scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
-    uv run scripts/project_manager.py validate <project_path>
-    uv run scripts/project_manager.py info <project_path>
+    uvx ppt-master project init <project_name> [--format ppt169] [--dir <path>]
+    uvx ppt-master project import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
+    uvx ppt-master project scaffold-spec <project_path>
+    uvx ppt-master project scaffold-lock <project_path>
+    uvx ppt-master project validate <project_path>
+    uvx ppt-master project info <project_path>
+    uvx ppt-master project page-context <project_path> P07 [--record-usage]
+    uvx ppt-master project page-context-report <project_path>
 """
 
 from __future__ import annotations
@@ -882,6 +886,8 @@ def build_parser() -> argparse.ArgumentParser:
   python3 scripts/project_manager.py import-sources projects/demo file.md --move
   python3 scripts/project_manager.py validate projects/demo
   python3 scripts/project_manager.py info projects/demo
+  uvx ppt-master project page-context projects/demo P07 --record-usage
+  uvx ppt-master project page-context-report projects/demo
 """,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -906,6 +912,35 @@ def build_parser() -> argparse.ArgumentParser:
 
     info = subparsers.add_parser("info", help="Print project metadata")
     info.add_argument("project_path", help="Project directory")
+
+
+    page_context = subparsers.add_parser(
+        "page-context",
+        help="Print one deterministic per-page execution view",
+    )
+    page_context.add_argument("project_path", help="Project directory")
+    page_context.add_argument("page", help="Positive page key such as P07")
+    page_context.add_argument(
+        "--bundle",
+        action="store_true",
+        help="Deprecated compatibility flag; output remains compact",
+    )
+    page_context.add_argument(
+        "--pretty",
+        action="store_true",
+        help="Pretty-print the page-context JSON payload",
+    )
+    page_context.add_argument(
+        "--record-usage",
+        action="store_true",
+        help="Write compact-output token telemetry under analysis/page-context/",
+    )
+
+    page_context_report = subparsers.add_parser(
+        "page-context-report",
+        help="Summarize fresh per-page context telemetry",
+    )
+    page_context_report.add_argument("project_path", help="Project directory")
     return parser
 
 
@@ -1003,6 +1038,40 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Source count: {info['source_count']}")
             print(f"Canvas format: {info['canvas_format']}")
             print(f"Created: {info['create_date']}")
+            return 0
+
+
+        if args.command == "page-context":
+            from page_context import (
+                build_page_context,
+                record_page_context_usage,
+                render_page_context,
+            )
+            result = build_page_context(args.project_path, args.page)
+            output, measured_reads = render_page_context(
+                result,
+                bundle=args.bundle,
+                pretty=args.pretty,
+            )
+            if args.record_usage:
+                _usage_path, token_status = record_page_context_usage(
+                    result,
+                    output,
+                    measured_reads,
+                )
+                if token_status != "exact":
+                    print(
+                        "[WARN] tiktoken/o200k_base unavailable; recorded bytes "
+                        "and hashes without token counts",
+                        file=sys.stderr,
+                    )
+            print(output, end="")
+            return 0
+
+        if args.command == "page-context-report":
+            from page_context import page_context_usage_report
+            report = page_context_usage_report(args.project_path)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
             return 0
 
         parser.error(f"Unknown command: {args.command}")

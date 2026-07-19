@@ -39,22 +39,22 @@
   <image id="section-skyline" x="876" y="348" width="300" height="92"
     href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
     data-pptx-layer="layout" data-pptx-editable="false"/>
-  <g id="section-number-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="96 148 300 116">
-    <text id="section-number-carrier" data-pptx-placeholder-carrier="true"
+  <g id="section-number-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="96 148 300 116">
+    <text id="section-number-carrier" data-pptx-carrier="true"
       x="96" y="242" fill="#C00000" fill-opacity="0.14"
       font-family="Arial, sans-serif" font-size="112" font-weight="700">{{CHAPTER_NUM}}</text>
   </g>
   <g id="section-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="96 270 680 72">
-    <text id="section-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="96 270 680 72">
+    <text id="section-title-carrier" data-pptx-carrier="true"
       x="96" y="318" fill="#111827"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="42" font-weight="700">{{CHAPTER_TITLE}}</text>
   </g>
-  <g id="section-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="96 346 680 40">
-    <text id="section-subtitle-carrier" data-pptx-placeholder-carrier="true"
+  <g id="section-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="2"
+    data-pptx-bounds="96 346 680 40">
+    <text id="section-subtitle-carrier" data-pptx-carrier="true"
       x="96" y="374" fill="#6B7280"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{CHAPTER_SUBTITLE}}</text>
   </g>

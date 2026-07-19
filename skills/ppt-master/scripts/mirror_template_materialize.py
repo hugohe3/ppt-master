@@ -277,12 +277,12 @@ def _template_execution_manifest_files(
         "template_count": len(templates),
         "text_slots_schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
         "execution_policy": (
-            "Read this compact roster once. Before authoring each page, run "
-            "project_manager.py page-context <project> P<NN> --bundle "
-            "--record-usage; do not "
-            "read text_slots_path directly. The bundle validates the selected "
-            f"{TEMPLATE_TEXT_SLOTS_SCHEMA} projection and includes the complete "
-            "prototype. Choose semantic replacements and edit only existing "
+            "This manifest and its text_slots_path records are derived tool "
+            "metadata, not page-authoring inputs. Before each page, run "
+            "project_manager.py page-context <project> P<NN> --record-usage. "
+            "Read the selected complete prototype only when its path and SHA "
+            "are absent from the active execution context or changed, then "
+            "reuse it. Choose semantic replacements and edit only existing "
             "visible text values; structured export validates text/tspan "
             "topology and attributes against the prototype."
         ),
@@ -1667,7 +1667,7 @@ def _copy_text_carrier(source: ET.Element | None) -> ET.Element | None:
             "data-pptx-frame",
             " ".join(format_coordinate(value) for value in source_frame),
         )
-    carrier.set("data-pptx-placeholder-carrier", "true")
+    carrier.set("data-pptx-carrier", "true")
     return carrier
 
 
@@ -1929,7 +1929,7 @@ def _blank_text_carrier(
                 "y": format_coordinate(y + min(height, 24)),
                 "font-size": "18",
                 "fill": "#000000",
-                "data-pptx-placeholder-carrier": "true",
+                "data-pptx-carrier": "true",
             },
         )
     carrier.text = None
@@ -1940,7 +1940,7 @@ def _blank_text_carrier(
             "data-pptx-frame",
             " ".join(format_coordinate(value) for value in plan.bounds),
         )
-    carrier.set("data-pptx-placeholder-carrier", "true")
+    carrier.set("data-pptx-carrier", "true")
     return carrier
 
 
@@ -1955,7 +1955,7 @@ def _blank_image_carrier(plan: SlotPlan) -> ET.Element:
             "height": format_coordinate(height),
             "href": TRANSPARENT_PIXEL_DATA_URI,
             "preserveAspectRatio": "none",
-            "data-pptx-placeholder-carrier": "true",
+            "data-pptx-carrier": "true",
         },
     )
 
@@ -1986,13 +1986,13 @@ def _slot_wrapper(
         {
             "id": plan.slot_id,
             "data-pptx-placeholder": plan.semantic_role,
-            "data-pptx-placeholder-bounds": " ".join(
+            "data-pptx-bounds": " ".join(
                 format_coordinate(item) for item in plan.bounds
             ),
         },
     )
     if plan.idx is not None:
-        wrapper.set("data-pptx-placeholder-idx", str(plan.idx))
+        wrapper.set("data-pptx-idx", str(plan.idx))
 
     extras: list[ET.Element] = []
     if plan.semantic_role in {
@@ -2012,7 +2012,7 @@ def _slot_wrapper(
             master_guide,
         )
         for extra in extras:
-            extra.attrib.pop("data-pptx-placeholder-carrier", None)
+            extra.attrib.pop("data-pptx-carrier", None)
         wrapper.append(carrier)
         return wrapper, extras
 
@@ -2031,7 +2031,7 @@ def _slot_wrapper(
             raise MirrorMaterializationError(
                 f"Object slot {plan.slot_id!r} has no visible proxy content"
             )
-        wrapper.set("data-pptx-placeholder-binding", "proxy")
+        wrapper.set("data-pptx-binding", "proxy")
         for child in visible:
             wrapper.append(child)
         return wrapper, extras
@@ -2068,7 +2068,7 @@ def _slot_wrapper(
             raise MirrorMaterializationError(
                 f"Slot {plan.slot_id!r} {plan.semantic_role} carrier lacks native marker"
             )
-    carrier.set("data-pptx-placeholder-carrier", "true")
+    carrier.set("data-pptx-carrier", "true")
     wrapper.append(carrier)
     return wrapper, extras
 

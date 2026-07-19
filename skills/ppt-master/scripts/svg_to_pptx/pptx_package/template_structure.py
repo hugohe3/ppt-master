@@ -55,10 +55,9 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-show-inherited-shapes",
     "data-pptx-show-master-shapes",
     "data-pptx-placeholder",
-    "data-pptx-placeholder-binding",
-    "data-pptx-placeholder-bounds",
-    "data-pptx-placeholder-carrier",
-    "data-pptx-placeholder-idx",
+    "data-pptx-binding",
+    "data-pptx-carrier",
+    "data-pptx-idx",
     "data-pptx-editable",
 })
 _FLAT_FORBIDDEN_STRUCTURE_ATTRS = frozenset(
@@ -1182,7 +1181,7 @@ def _parse_placeholder_bounds(
     parts = [part for part in re.split(r"[\s,]+", raw.strip()) if part]
     if len(parts) != 4:
         raise TemplateStructureError(
-            f"{svg_path.name}: {element_id} data-pptx-placeholder-bounds must be "
+            f"{svg_path.name}: {element_id} data-pptx-bounds must be "
             "'x y width height'"
         )
     try:
@@ -1213,13 +1212,13 @@ def _parse_placeholder_idx(
     value = raw.strip()
     if not value or not value.isdigit():
         raise TemplateStructureError(
-            f"{svg_path.name}: {element_id} data-pptx-placeholder-idx must be "
+            f"{svg_path.name}: {element_id} data-pptx-idx must be "
             "a non-negative integer"
         )
     parsed = int(value)
     if parsed > OOXML_UINT32_MAX:
         raise TemplateStructureError(
-            f"{svg_path.name}: {element_id} data-pptx-placeholder-idx must be "
+            f"{svg_path.name}: {element_id} data-pptx-idx must be "
             f"at most {OOXML_UINT32_MAX}"
         )
     return parsed
@@ -1437,10 +1436,10 @@ def parse_template_slide(
         placeholder = (
             (placeholder_raw or "").strip().lower() or None
         )
-        bounds_raw = elem.get("data-pptx-placeholder-bounds")
-        placeholder_idx_raw = elem.get("data-pptx-placeholder-idx")
-        binding_raw = elem.get("data-pptx-placeholder-binding")
-        carrier_raw = elem.get("data-pptx-placeholder-carrier")
+        bounds_raw = elem.get("data-pptx-bounds")
+        placeholder_idx_raw = elem.get("data-pptx-idx")
+        binding_raw = elem.get("data-pptx-binding")
+        carrier_raw = elem.get("data-pptx-carrier")
         editable_raw = elem.get("data-pptx-editable")
         is_background = _is_full_canvas_solid_rect(elem, canvas)
         effective_layer = layer or ("slide" if is_background else None)
@@ -1496,11 +1495,6 @@ def parse_template_slide(
                 f"{svg_path.name}: {element_id or tag} is a <g> on the {layer} "
                 "layer; Master/Layout fixed elements must be root-level atoms"
             )
-        if bounds_raw is not None and not placeholder:
-            raise TemplateStructureError(
-                f"{svg_path.name}: {element_id or tag} has placeholder bounds without "
-                "data-pptx-placeholder"
-            )
         if placeholder_idx_raw is not None and not placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} has placeholder idx without "
@@ -1514,7 +1508,7 @@ def parse_template_slide(
         if carrier_raw is not None:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} declares "
-                "data-pptx-placeholder-carrier on a root child; the marker belongs "
+                "data-pptx-carrier on a root child; the marker belongs "
                 "on the direct child inside a placeholder <g>"
             )
         if (effective_layer or placeholder) and not element_id:
@@ -1545,14 +1539,14 @@ def parse_template_slide(
         last_order_rank = order_rank
 
         placeholder_bounds = _parse_placeholder_bounds(
-            bounds_raw,
+            bounds_raw if placeholder else None,
             svg_path=svg_path,
             element_id=element_id or tag,
         )
         if structured and placeholder and placeholder_bounds is None:
             raise TemplateStructureError(
                 f"{svg_path.name}: Layout placeholder {element_id!r} requires "
-                "explicit data-pptx-placeholder-bounds; define the "
+                "explicit data-pptx-bounds; define the "
                 "reusable frame from the design zone, not the current text bounds"
             )
         placeholder_idx = _parse_placeholder_idx(
@@ -1584,7 +1578,7 @@ def parse_template_slide(
             if binding_raw is not None and not binding_raw.strip():
                 raise TemplateStructureError(
                     f"{svg_path.name}: placeholder {element_id!r} has an empty "
-                    "data-pptx-placeholder-binding"
+                    "data-pptx-binding"
                 )
             if placeholder_binding not in PLACEHOLDER_BINDING_MODES:
                 allowed = ", ".join(sorted(PLACEHOLDER_BINDING_MODES))
@@ -1598,13 +1592,13 @@ def parse_template_slide(
             carrier_children = [
                 child
                 for child in visual_children
-                if (child.get("data-pptx-placeholder-carrier") or "")
+                if (child.get("data-pptx-carrier") or "")
                 .strip()
                 .lower()
                 == "true"
             ]
             for child in elem:
-                marker = child.get("data-pptx-placeholder-carrier")
+                marker = child.get("data-pptx-carrier")
                 if marker is not None and marker.strip().lower() != "true":
                     raise TemplateStructureError(
                         f"{svg_path.name}: placeholder {element_id!r} carrier marker "
@@ -1613,7 +1607,7 @@ def parse_template_slide(
                 illegal_child_attrs = [
                     attr
                     for attr in _structure_attrs(child)
-                    if attr != "data-pptx-placeholder-carrier"
+                    if attr != "data-pptx-carrier"
                 ]
                 if illegal_child_attrs:
                     raise TemplateStructureError(
@@ -1650,7 +1644,7 @@ def parse_template_slide(
                 if len(visual_children) != 1 or len(carrier_children) != 1:
                     composite_hint = (
                         " For composite object content, declare "
-                        "data-pptx-placeholder-binding='proxy' in the prototype "
+                        "data-pptx-binding='proxy' in the prototype "
                         "and page, or create an adaptive Layout; never add a tiny "
                         "or transparent dummy carrier."
                         if placeholder == "object" else ""
@@ -1658,7 +1652,7 @@ def parse_template_slide(
                     raise TemplateStructureError(
                         f"{svg_path.name}: carrier placeholder {element_id!r} must "
                         "contain exactly one visual direct child and mark it "
-                        "data-pptx-placeholder-carrier='true'."
+                        "data-pptx-carrier='true'."
                         f"{composite_hint}"
                     )
                 carrier = carrier_children[0]
@@ -1988,7 +1982,13 @@ def structured_layout_definition_files(
 def template_prototype_lock_errors(
     structure_lock: PptxStructureLock,
 ) -> list[str]:
-    """Return template-root identity mismatches visible before page generation."""
+    """Validate selected input prototypes before generated pages exist.
+
+    ``page_layouts`` records authoring-input provenance. Strict execution keeps
+    that prototype's Layout identity, while adaptive execution may declare a
+    new Layout under the same Master. Final generated SVGs remain subject to
+    :func:`template_lock_errors` and :func:`template_prototype_errors`.
+    """
     if structure_lock.mode != "structured":
         return []
 
@@ -2003,7 +2003,140 @@ def template_prototype_lock_errors(
             errors.append(str(exc))
     if errors:
         return list(dict.fromkeys(errors))
-    errors.extend(template_lock_errors(specs, structure_lock))
+
+    try:
+        _validate_template_slide_contracts(specs)
+    except TemplateStructureError as exc:
+        errors.append(str(exc))
+
+    assignments = {
+        reference.slide_num: reference
+        for reference in structure_lock.layouts
+    }
+    definitions = {
+        definition.layout_key: definition
+        for definition in structure_lock.layout_definitions
+    }
+    master_names = {
+        master.master_key: master.master_name
+        for master in structure_lock.masters
+    }
+    prototype_pages = {spec.slide_num for spec in specs}
+    assignment_pages = set(assignments)
+    missing_assignments = sorted(prototype_pages - assignment_pages)
+    missing_prototypes = sorted(assignment_pages - prototype_pages)
+    if missing_assignments:
+        errors.append(
+            "spec_lock.md page_pptx_layouts is missing generated page(s): "
+            + ", ".join(
+                f"P{slide_num:02d}" for slide_num in missing_assignments
+            )
+        )
+    if missing_prototypes:
+        errors.append(
+            "spec_lock.md page_layouts is missing generated page(s): "
+            + ", ".join(f"P{slide_num:02d}" for slide_num in missing_prototypes)
+        )
+
+    adherence = structure_lock.template_adherence or "strict"
+    for spec in specs:
+        assignment = assignments.get(spec.slide_num)
+        if assignment is None:
+            continue
+        definition = definitions.get(assignment.layout_key)
+        if definition is None:
+            errors.append(
+                f"spec_lock.md P{spec.slide_num:02d} references undeclared "
+                f"Layout {assignment.layout_key!r}"
+            )
+            continue
+        expected_master_name = master_names.get(definition.master_key)
+        if (
+            spec.master_key != definition.master_key
+            or spec.master_name != expected_master_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: input prototype Master "
+                f"{spec.master_key!r} / {spec.master_name!r} does not match "
+                f"assigned Layout {definition.layout_key!r} Master "
+                f"{definition.master_key!r} / {expected_master_name!r}"
+            )
+
+        reuses_input_layout = spec.layout_key == definition.layout_key
+        must_match_layout = (
+            adherence == "strict"
+            or reuses_input_layout
+            or definition.prototype_svg_path is not None
+        )
+        if must_match_layout and (
+            spec.layout_key != definition.layout_key
+            or spec.layout_name != definition.layout_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: input prototype Layout "
+                f"{spec.layout_key!r} / {spec.layout_name!r} does not match "
+                f"assigned Layout {definition.layout_key!r} / "
+                f"{definition.layout_name!r}"
+            )
+        elif (
+            adherence == "adaptive"
+            and not reuses_input_layout
+            and spec.layout_name == definition.layout_name
+        ):
+            errors.append(
+                f"{spec.svg_path.name}: adaptive output Layout "
+                f"{definition.layout_key!r} must use a new picker name instead "
+                f"of input prototype name {spec.layout_name!r}"
+            )
+
+    definition_specs = list(specs)
+    next_slide_num = max(prototype_pages, default=0) + 1
+    for definition in structure_lock.layout_definitions:
+        if definition.prototype_slide_num is not None:
+            source_assignment = assignments.get(definition.prototype_slide_num)
+            if source_assignment is None:
+                errors.append(
+                    f"spec_lock.md Layout {definition.layout_key!r} uses missing "
+                    f"prototype page P{definition.prototype_slide_num:02d}"
+                )
+            elif source_assignment.layout_key != definition.layout_key:
+                errors.append(
+                    f"spec_lock.md Layout {definition.layout_key!r} uses "
+                    f"P{definition.prototype_slide_num:02d}, but that page is "
+                    f"assigned to Layout {source_assignment.layout_key!r}"
+                )
+            continue
+        if definition.prototype_svg_path is None:
+            errors.append(
+                f"spec_lock.md Layout {definition.layout_key!r} has no prototype"
+            )
+            continue
+        try:
+            definition_spec = parse_template_slide(
+                definition.prototype_svg_path,
+                next_slide_num,
+            )
+            next_slide_num += 1
+        except TemplateStructureError as exc:
+            errors.append(str(exc))
+            continue
+        definition_specs.append(definition_spec)
+        expected_master_name = master_names.get(definition.master_key)
+        if (
+            definition_spec.layout_key != definition.layout_key
+            or definition_spec.layout_name != definition.layout_name
+            or definition_spec.master_key != definition.master_key
+            or definition_spec.master_name != expected_master_name
+        ):
+            errors.append(
+                f"spec_lock.md Layout {definition.layout_key!r} definition does "
+                f"not match prototype {definition_spec.svg_path.name} root identity"
+            )
+
+    try:
+        _validate_template_slide_contracts(definition_specs)
+    except TemplateStructureError as exc:
+        errors.append(str(exc))
     return list(dict.fromkeys(errors))
 
 
@@ -3016,7 +3149,7 @@ def template_prototype_errors(
             if adherence == "strict":
                 errors.append(
                     f"{reference.svg_path.name}: deferred strict template "
-                    "authoring requires explicit data-pptx-placeholder-bounds "
+                    "authoring requires explicit data-pptx-bounds "
                     "on every prototype placeholder; missing: "
                     + ", ".join(missing_bounds)
                 )
@@ -3251,7 +3384,7 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
         for slot in root
         if (slot.get("data-pptx-placeholder") or "").strip()
         for carrier in slot
-        if carrier.get("data-pptx-placeholder-carrier") is not None
+        if carrier.get("data-pptx-carrier") is not None
     }
     for elem in root.iter():
         if elem is root or elem in direct_children:
@@ -3260,7 +3393,7 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
         if elem in allowed_carriers:
             attrs = [
                 attr for attr in attrs
-                if attr != "data-pptx-placeholder-carrier"
+                if attr != "data-pptx-carrier"
             ]
         if attrs:
             element_id = elem.get("id") or _local_tag(elem) or "<unnamed>"

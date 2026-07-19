@@ -73,7 +73,7 @@ _SEMANTIC_ATTRS = (
 _TEMPLATE_ATOM_ATTRS = (
     "data-pptx-layer",
     "data-pptx-editable",
-    "data-pptx-placeholder-carrier",
+    "data-pptx-carrier",
     "data-pptx-role",
 )
 

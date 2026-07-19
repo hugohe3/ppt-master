@@ -12,7 +12,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Generate pages sequentially, one page at a time, in one continuous pass; grouped page batches are forbidden.
-- Before each page, generate its canonical page-context bundle and apply the projected communication, design, resource, rhythm, chart, and conditional template mappings.
+- Before each page, load compact page-context; its lock projection guards drift while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
 ### SVG Page-Design Boundary
@@ -162,9 +162,9 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: unless the user explicitly delegates confirmation for this run, final confirmation is the single user gate before the planning artifacts are written. Stage 1 and Stage 2 are intermediate handoffs inside one uninterrupted agent turn; after either wait returns, immediately author the next stage without yielding or asking in chat. Each stage is authored once, and the user's submitted value—including an empty string or an unusual mix of overrides—is authoritative.
+⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single user gate. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
-**Confirmation ownership**: By default, only the user confirms. The agent may write `recommendations.json`, operate the server lifecycle, and read the resulting state, but MUST NOT call `/api/confirm`, automate page submission, synthesize a staged payload, or write/replace `result.json` on the user's behalf. If—and only if—the user explicitly says that confirmation is unnecessary and delegates the decisions to the AI, skip the UI, make the complete Stage-1/2/3 decisions, show one concise summary, and continue using that visible chat summary as the confirmation state; do not fabricate UI results. Delegation applies only to the current run. A timeout returns to the same stage in chat, and silence never implies delegation or confirmation.
+**Confirmation ownership and surface**: Only the user confirms. Default Stage 1 is `--daemon --wait`; use chat only by explicit chat-only/delegation or after launch failure/timeout plus a `result.json` re-check. Chat tools do not replace launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
 
 | Stage | Strategist writes | Completion evidence |
 |---|---|---|
@@ -240,7 +240,7 @@ Fill and audit `design_spec.md` against the complete final confirmation. Only af
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
 ```
 
-After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
+After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. `validate` mechanically enforces one slice of this: with a final confirmed `confirm_ui/result.json`, every confirmed non-`none` `image_usage` source must be represented by at least one `## images` row (`ai` is also satisfied by `slice`); the remaining semantic comparison stays with this gate. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
@@ -253,7 +253,7 @@ After filling the lock, compare its machine-relevant values against the complete
 - [x] Design Specification & Content Outline generated
 - [x] Gate 1 passed: Design Spec preserves every confirmed value
 - [x] Execution lock (`spec_lock.md`) projected from the completed Design Spec with no independent design decision
-- [x] Communication trace validated: `spec_lock.md ## communication` contains all six contract key lines (optional values may be blank), and every `design_spec.md §IX` Slide block has an `Audience move`
+- [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
 ```
 
@@ -367,7 +367,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Conditional pre-generation reads**: On a structured route, follow `executor-structured.md` to read the template capabilities and compact execution roster once; the selected complete layout/mirror prototype arrives in each page bundle. Flat routes skip those template reads. When `spec_lock.page_charts` or §VII names selected chart templates, follow `executor-chart.md` and read those distinct chart SVGs once before the first affected page. A summary or sidecar never substitutes for the selected full SVG.
+**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for `templates/charts/<key>.svg`. Both reuse unchanged `reference_set` path + SHA fingerprints; flat routes skip template reads. Summaries and sidecars never replace full SVGs.
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
@@ -377,7 +377,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage
 ```
 
-Use this projection for communication, optional `global.template_application`, current §IX `Core message` + `Audience move`, locked resources, and current-page assignments. Flat bundles contain page context; `layout` adds the selected complete prototype; `mirror` also adds its minimal text-slot view. The projection replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1 and [`executor-structured.md`](../references/executor-structured.md) §1.0.
+Use `global` as the lock drift guard, `page_context` as the page delta, and `reference_set` under the Executor load policy. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
@@ -386,7 +386,7 @@ Use this projection for communication, optional `global.template_application`, c
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
-`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, `global.template_application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive assigns a new Layout key/name and updates `spec_lock.md` when fixed atoms or slot topology/bounds change. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
+`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive assigns a new Layout key/name and updates `spec_lock.md` when fixed atoms or slot topology/bounds change. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
 `template_reuse_scope: style`, free-design, and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 

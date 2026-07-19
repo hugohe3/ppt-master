@@ -11,26 +11,26 @@
   <rect id="three-card-panel-three" x="848" y="168" width="368" height="472" rx="16" fill="#F4F6F8"
     stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="three-card-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 48 1152 80">
-    <text id="three-card-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 48 1152 80">
+    <text id="three-card-title-carrier" data-pptx-carrier="true"
       x="64" y="102" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="three-card-one-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="88 192 320 424">
-    <text id="three-card-one-carrier" data-pptx-placeholder-carrier="true"
+  <g id="three-card-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="88 192 320 424">
+    <text id="three-card-one-carrier" data-pptx-carrier="true"
       x="88" y="230" fill="#64748B"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CARD_1}}</text>
   </g>
-  <g id="three-card-two-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="480 192 320 424">
-    <text id="three-card-two-carrier" data-pptx-placeholder-carrier="true"
+  <g id="three-card-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="480 192 320 424">
+    <text id="three-card-two-carrier" data-pptx-carrier="true"
       x="480" y="230" fill="#64748B"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CARD_2}}</text>
   </g>
-  <g id="three-card-three-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="3"
-    data-pptx-placeholder-bounds="872 192 320 424">
-    <text id="three-card-three-carrier" data-pptx-placeholder-carrier="true"
+  <g id="three-card-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="872 192 320 424">
+    <text id="three-card-three-carrier" data-pptx-carrier="true"
       x="872" y="230" fill="#64748B"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CARD_3}}</text>
   </g>

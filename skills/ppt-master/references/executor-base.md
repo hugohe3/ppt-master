@@ -27,21 +27,25 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 2. Design Parameter Confirmation (Mandatory Step)
 
-Before the first SVG page, output a confirmation listing: the compact communication intent + desired audience outcome, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
+Before the first SVG page, output a confirmation listing: the compact communication objective, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
 
 ### 2.1 Per-page execution context (Mandatory)
 
-**Hard rule**: Before generating **each** SVG page, load its canonical projection and record the model-facing context size:
+Before the first SVG, retain `design_spec.md`: continuous execution reuses planning context; fresh/resumed execution reads it once.
+
+**Hard rule**: Before generating **each** SVG page, load its canonical current-page delta and record its model-facing size:
 
 ```bash
 uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage
 ```
 
-Use the bundle's communication, canvas, mode/style, colors, typography, icons, current §IX brief/locks, and optional `global.template_application`. The latter governs which template content stays, changes, or moves; reuse/adherence select exporter mechanics only. This projection overrides neither facts, locks, nor technical constraints. After an approved lock change, rerun it before drawing the affected page.
+`global` deliberately repeats the sub-1000-token lock projection as an anti-drift guard; `lock_source.sha256` binds its version. `page_context` is the current §IX/resource/template/chart delta. For every `reference_set` entry—project/template Design Spec or selected prototype/chart SVG—reuse an in-context path + SHA; read it once only when absent or changed.
 
-**Source facts**: The bundle carries page intent and locked execution values, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
+Use lock values literally and optional `Template Application` from the retained Design Spec. The delta overrides neither facts nor constraints. After an approved change, rerun the command and reload only changed references. Deprecated `--bundle` is a compatibility no-op.
 
-**Per-page communication trace**: Read the current §IX `Core message` and `Audience move` before choosing composition. The page must advance at least one purpose named in `communication.communication_intent` and move the audience toward `communication.audience_outcome`; `communication.core_message` remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
+**Source facts**: The page delta carries page intent and routing facts, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
+
+**Per-page communication trace**: Read `communication.objective`, `communication.core_message`, and the current §IX `Core message` + `Audience move` before choosing composition. The page must advance the compact objective and move the audience as authored in §IX; the global core message remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 
 **Per-page reading-mode check**: Read `communication.consumption_mode` before choosing the page's composition. Apply it together with the authored §IX block texture and `page_rhythm`:
 
@@ -101,7 +105,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 ## 3. Execution Guidelines
 
 - **Proximity**: group related elements with tight spacing; separate unrelated groups
-- **Element grouping (Mandatory)**: wrap every logical Slide-local content unit — title, core-message line, each content block, card, list item, and diagram — in a top-level `<g id="...">` with a descriptive, page-unique id. Treat every visible `<g>` as one module and declare exactly one boundary: ordinary groups use `data-pptx-module-bounds="x y width height"`; slots and native/preset groups reuse their existing specialized bounds. Nested groups also declare bounds and stay inside their nearest parent module; text stays inside its nearest module. Nested implementation groups may remain anonymous, but never unbounded. Flat pages use ordinary semantic groups; structured pages already count slot groups, while direct Master/Layout atoms remain the grouping exception. When a preset needs labels or decorations, put it and those siblings inside a separately bounded parent group; never put them inside the preset group itself.
+- **Element grouping (Mandatory)**: wrap each logical Slide-local body unit in a descriptive, page-unique top-level `<g id>`. Every visible direct root `<g>` declares root-coordinate `data-pptx-bounds="x y width height"`; frame/native coordinates do not replace it, and placeholder bounds also supply the slot frame. Nested groups need no bounds and any such values are ignored. Checker compares root bounds with the `viewBox` and recursively checks only estimable text against its root module: through `1px` is ignored, through `5%` warns, above `5%` fails per side. Images, shapes, paths, `<use>`, effects, and object frames remain geometrically free. Flat pages use ordinary groups; structured slots already qualify, while titles and direct Master/Layout atoms may remain root primitives.
 - **Spec adherence**: follow color, layout, canvas format, and typography in the spec
 - **Template structure**: inherit the native visual framework only for `template_reuse_scope: mirror|layout`; `style` uses the flat route
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity

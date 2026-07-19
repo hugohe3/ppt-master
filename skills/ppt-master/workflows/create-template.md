@@ -524,14 +524,15 @@ SVGs, `icons/imported/`, referenced `images/` / `templates/assets/`, and one
 deduplicated `templates/native_payloads.json.gz` store when supported native
 payload or repeated restoration metadata exists. It also writes
 `templates/template_execution_manifest.json` with schema
-`ppt-master.template-execution-manifest.v1`, a compact model-readable prototype
+`ppt-master.template-execution-manifest.v1`, a compact tool-readable prototype
 roster and grouped source-import warning summary. Each prototype points to one
 `templates/template_execution/*.text-slots.json` sidecar with schema
-`ppt-master.template-text-slots.v2-min`. Each slot contains only
-`selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; the complete
-prototype remains authoritative. Page-context verifies the top-level tool hash
-and strips it before model output; validators/export own attribute and topology
-checks. Template SVGs and imported
+`ppt-master.template-text-slots.v2-min`. Each slot contains only `selector`,
+`role`, `current_text`, `text_segments`, and `tspan_count`; the complete
+prototype remains authoritative. The manifest and sidecars are deterministic
+tool diagnostics; page-context does not inject or require them, and models do
+not read them during page authoring. Validators/export own attribute and
+topology checks. Template SVGs and imported
 vectors keep content-hash payload references plus short
 `data-pptx-native-ref` attribute-record ids. Structural Master/Layout,
 placeholder, layer, and editable-object fields remain inline. The command does
@@ -615,16 +616,16 @@ Mirror mode does not simplify the visual target or synthesize layer ownership. T
 **Hard rule — placeholder examples are executable defaults**: In authored
 `standard` / `fidelity` templates, a carrier is not a floating review label. It
 becomes the prototype Slide placeholder, while
-`data-pptx-placeholder-bounds` becomes the reusable Layout frame.
+`data-pptx-bounds` becomes the reusable Layout frame.
 
 | Concern | Requirement |
 |---|---|
-| Full editable frame | `data-pptx-placeholder-bounds` describes the complete intended text, picture, chart, table, or object box. Never derive it from the sample text's glyph bounds or leave it as a one-line tight box. |
+| Full editable frame | `data-pptx-bounds` describes the complete intended text, picture, chart, table, or object box. Never derive it from the sample text's glyph bounds or leave it as a one-line tight box. |
 | Generic text entry | General `body` and text-carried `object` slots begin at the upper-left, use left paragraph alignment, and wrap inside the full frame. Title/subtitle alignment follows the authored composition. |
 | Centered exceptions | Center alignment is reserved for semantically short focal content such as KPI values, short process nodes, hero statements, and compact takeaways. Record a template-wide exception in `design_spec.md §IV` when it is part of the layout grammar. |
 | Review Slide binding | `template_preview_pptx.py` sizes each authored Slide carrier to the same complete frame as its registered Layout placeholder. A review deck whose Slide carrier is only the prompt text's tight box fails Step 6. |
 | Review prompt legibility | For `standard` / `fidelity`, the preview exporter substitutes concise sample text only in ephemeral review SVGs so long canonical markers such as `{{CHAPTER_NUM}}` or `{{PAGE_NUM}}` do not wrap. The source SVG markers, carrier font sizes, slot metadata, and Layout frames remain unchanged. |
-| Mirror boundary | `mirror` preserves source Slide carrier geometry exactly in the tool-side native record referenced by its text carrier and keeps `data-pptx-placeholder-bounds` as the reusable Layout default. Do not normalize one to the other when the source intentionally overrides that frame. |
+| Mirror boundary | `mirror` preserves source Slide carrier geometry exactly in the tool-side native record referenced by its text carrier and keeps `data-pptx-bounds` as the reusable Layout default. Do not normalize one to the other when the source intentionally overrides that frame. |
 
 ---
 
@@ -692,7 +693,7 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Every additional authored Master represents a distinct reusable design family, not one Layout or an equivalent duplicate; every declared Master owns at least one emitted Layout and every declared Layout has at least one emitted prototype
 - [ ] Mirror output preserves source slide order, Master/Layout identity and parentage, placeholder facts, and ownership; fixed-layer group expansion is mechanical and pixel-equivalent, and the Source Preservation Map lists every source slide
-- [ ] Mirror materialization wrote one compact `ppt-master.template-execution-manifest.v1` roster and one linked `ppt-master.template-text-slots.v2-min` sidecar per prototype; each slot has only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; page-context verifies and strips the tool hash, while validation/export check the complete prototype
+- [ ] Mirror materialization wrote one compact `ppt-master.template-execution-manifest.v1` roster and one linked `ppt-master.template-text-slots.v2-min` diagnostic sidecar per prototype; each slot has only `selector`, `role`, `current_text`, `text_segments`, and `tspan_count`; neither artifact is injected into page authoring, while validation/export check the complete prototype
 - [ ] Mirror roots preserve source inherited-shape visibility with canonical lowercase `data-pptx-show-master-shapes` and `data-pptx-show-inherited-shapes`; same-key Layouts agree on the former, while each Slide retains its own latter value
 - [ ] Mirror preflight covered the complete source graph; each unused Layout has one `layout_<layout_key>.svg` definition prototype and each otherwise-unused Master is retained through at least one such Layout
 - [ ] For `standard` / `fidelity`, no duplicate-Layout-contract warning remains; mirror may keep equivalent source Layout identities when the preservation map explains them

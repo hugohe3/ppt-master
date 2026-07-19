@@ -301,8 +301,7 @@ one. This array is still diagnostic metadata, not an authoring surface.
 | Surface | Precision contract |
 |---|---|
 | Imported `data-pptx-frame` in authoring IR | At most two decimals. An unchanged mirror source ref recovers the exact lossless frame before tool-side native-record externalization. |
-| `data-pptx-module-bounds` in generated SVG | At most two decimals. |
-| `data-pptx-placeholder-bounds` in final template SVG | At most two decimals. |
+| `data-pptx-bounds` in generated and final template SVG | At most two decimals. |
 | `translate(...)`, `rotate(... cx cy)`, and `matrix(... e f)` | Translation values and rotation centers use at most two decimals. Keep the rotation angle and matrix `a b c d` coefficients unchanged. |
 | Protected values | Do not apply this compaction to path/points geometry, normalized crop or nested `viewBox` ratios, gradient offsets, opacity, scale arguments, canonical authored-preset frames, or lossless/tool-side native frames. |
 
@@ -403,7 +402,7 @@ is required.
 
 Template ownership metadata is orthogonal to preset geometry. After inserting
 the complete helper output, `create-template` may add only the registered
-`data-pptx-layer`, `data-pptx-editable`, `data-pptx-placeholder-carrier`, or
+`data-pptx-layer`, `data-pptx-editable`, `data-pptx-carrier`, or
 `data-pptx-role` attribute needed by the surrounding structured contract. It
 must not change preset/frame/adjustment/paint metadata or any direct path.
 
@@ -582,9 +581,9 @@ These forms are needed only when the stated PPT behavior matters:
 
 ### 4.3 Element Grouping (Mandatory)
 
-**Hard rule — every visible `<g>` is a bounded module**: Declare exactly one positive local-coordinate `x y width height` boundary. Ordinary groups use `data-pptx-module-bounds`; slots use `data-pptx-placeholder-bounds`; imported/native and preset groups use `data-pptx-frame`; native chart/table groups may use complete explicit metadata bounds. Never duplicate sources. Keep nested modules inside their nearest parent and text inside its nearest module. Missing bounds and estimable overflow warn; fix `<tspan>` lines or module geometry because export never auto-wraps/resizes SVG text.
+**Hard rule — root groups protect body-text layout**: Every visible direct root `<g>` declares positive root-coordinate `data-pptx-bounds="x y width height"`. Keep it when frame/native coordinates size one PowerPoint object; placeholder bounds also supply the slot frame. Checker validates this subcanvas against the root `viewBox`, then recursively validates only estimable `<text>` descendants against it. Nested groups and all shapes, images, paths, `<use>` instances, effects, and object frames are not content-boundary inputs. Per side, Checker ignores text/bounds overflow through `1px`, warns through `5%` of the containing boundary dimension, and fails above `5%`. Bounds do not clip or reflow.
 
-Wrap each logical Slide-local unit in a descriptive top-level `<g id>`; aim for **3–8 ordinary groups**, each becoming one animation step. Nested implementation groups may be anonymous but remain bounded. Flat pages use ordinary groups; structured slots already qualify, while direct atomic Master/Layout elements are the exception. Ungrouped Slide-local content produces an aggregate Checker warning.
+Wrap each logical Slide-local body unit in a descriptive top-level `<g id>`; aim for **3–8 ordinary groups**, each becoming one animation step. Nested implementation groups may remain anonymous and need no bounds; any nested bounds are ignored. Flat pages use ordinary groups; structured slots already qualify, while titles, direct atomic Master/Layout elements, and canvas-level decoration may remain root primitives.
 
 **Structural atoms and slots are excluded automatically.** `data-pptx-layer` and `data-pptx-placeholder` semantics are read first; otherwise explicit `data-pptx-role` values (`background`, `decoration`, `header`, `footer`, `chrome`, `watermark`, `page-number`, `logo`) mark Slide-local static framing (§4.1, [`semantic-svg.md`](semantic-svg.md)). A normal slot group has exactly one direct compatible carrier; several drawing atoms require the explicit composite `object` proxy fallback. Native chart/table carrier groups retain their specialized [`native-data-interface.md`](./native-data-interface.md) contract.
 
@@ -615,7 +614,7 @@ separate parent content group; never put them inside the preset group itself.
 **Naming — required.** A descriptive, page-unique `id` on every top-level content `<g>` (`card-1`, `step-discover`, `header`, `footer`) is mandatory; it is the stable SVG-side animation and trace anchor. An anonymous top-level group still converts, but `animations.json` cannot reference it; an anonymous one-child implementation wrapper may also flatten. Primitive fallback is unrelated and applies only to roots with no top-level groups.
 
 ```xml
-<g id="card-benefits-1" data-pptx-module-bounds="60 115 565 260">
+<g id="card-benefits-1" data-pptx-bounds="60 115 565 260">
   <!-- Shadow only if the card floats over a colored panel; on flat white, omit it. -->
   <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
   <use data-icon="chunk-filled/bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>

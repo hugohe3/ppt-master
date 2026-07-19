@@ -73,13 +73,13 @@ prototype size remain unchanged.
 | `data-pptx-layer="layout"` | direct semantic atom | Moves one repeated static object/background into the selected Layout; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
 | `data-pptx-placeholder="..."` | direct slot `<g id>` | Declares a reusable Layout slot whose visible content remains Slide-local |
-| `data-pptx-placeholder-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units with at most two decimals per value |
-| `data-pptx-placeholder-idx="1"` | slot `<g>` | Retains an imported source Layout placeholder index; optional for reconstructed layouts |
-| `data-pptx-placeholder-carrier="true"` | one compatible direct child of a normal slot | Binds that visible child as the real Slide placeholder carrier |
-| `data-pptx-placeholder-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
+| `data-pptx-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units with at most two decimals per value |
+| `data-pptx-idx="1"` | slot `<g>` | Retains an imported source Layout placeholder index; optional for reconstructed layouts |
+| `data-pptx-carrier="true"` | one compatible direct child of a normal slot | Binds that visible child as the real Slide placeholder carrier |
+| `data-pptx-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
-**Hard rule — explicit only**: On a structured `template_reuse_scope: mirror|layout` route, every SVG requires the four root Master/Layout identity attributes. Optional inherited-shape visibility uses only exact lowercase `true` / `false`; other spellings fail, and omission means `true`. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat `template_reuse_scope: style`, free-design, and brand-only pages omit the entire interface, including the visibility attributes.
+**Hard rule — explicit only**: On a structured `template_reuse_scope: mirror|layout` route, every SVG requires the four root Master/Layout identity attributes. Optional inherited-shape visibility uses only exact lowercase `true` / `false`; other spellings fail, and omission means `true`. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat `template_reuse_scope: style`, free-design, and brand-only pages omit the structural markers and visibility attributes; ordinary groups still use the shared `data-pptx-bounds` module contract.
 
 **Layer order**: Author the SVG in PowerPoint paint order: Master background,
 Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms,
@@ -103,8 +103,8 @@ and visible-stroke rects also remain ordinary objects.
 
 | Placeholder value | Direct carrier inside slot `<g>` | PowerPoint placeholder |
 |---|---|---|
-| `title`, `subtitle`, `body` | one `<text data-pptx-placeholder-carrier="true">` | `title`, `subTitle`, `body` |
-| `date`, `footer`, `slide-number` | one `<text data-pptx-placeholder-carrier="true">` | `dt`, `ftr`, `sldNum` |
+| `title`, `subtitle`, `body` | one `<text data-pptx-carrier="true">` | `title`, `subTitle`, `body` |
+| `date`, `footer`, `slide-number` | one `<text data-pptx-carrier="true">` | `dt`, `ftr`, `sldNum` |
 | `picture` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `pic` |
 | `chart`, `table` | one matching `data-pptx-replace-with` marker group, marked as carrier | `chart`, `tbl` |
 | `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
@@ -120,7 +120,7 @@ For a materialized mirror, an imported text carrier may additionally keep the
 source shape's positive `data-pptx-frame="x y width height"`. That frame owns
 the Slide carrier `a:xfrm`; the converter reconstructs text-body insets from the
 visible SVG anchor/baseline instead of shrinking the shape to glyph bounds.
-`data-pptx-placeholder-bounds` remains the reusable Layout default and may
+`data-pptx-bounds` remains the reusable Layout default and may
 legitimately differ. Do not add `data-pptx-frame` to an authored
 `standard` / `fidelity` carrier merely to duplicate its Layout bounds.
 
@@ -142,7 +142,7 @@ Because an omitted `p:ph@idx` has the effective value `0`, an omitted-index
 title reserves `0`; no other placeholder on that Layout may use the same
 effective index.
 
-**Slot prototype**: The prototype source declared by the unique Layout definition supplies that Layout's placeholder formatting. `data-pptx-placeholder-bounds` supplies the reusable default frame and is mandatory on every slot. Derive it from
+**Slot prototype**: The prototype source declared by the unique Layout definition supplies that Layout's placeholder formatting. `data-pptx-bounds` supplies the reusable default frame and is mandatory on every slot. Derive it from
 the intended design zone, column, panel inset, safe area, or picture frame —
 never from text length, glyph width, line count, or a tight content bounding
 box. Repeat the same slot ids/types/effective indices/default bounds/binding modes on every slide using that Layout. The Layout owns the reusable `p:ph`; normal visible carriers keep a matching Slide binding so approved rendering stays identical. A composite `object` proxy adds one hidden transparent binding shape to suppress empty inherited placeholder paint. Bounds define the Layout default only; actual Slide content and local carrier geometry may differ.

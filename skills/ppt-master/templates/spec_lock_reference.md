@@ -21,7 +21,7 @@ The command refuses to overwrite an existing `spec_lock.md`. Re-running it with 
 | Section | Required keys | Notes |
 | --- | --- | --- |
 | `canvas` | `viewBox`, `format` | `format` is the canonical display name (for example `PPT 16:9`); `viewBox` is the matching exact geometry |
-| `communication` | `audience`, `communication_intent`, `audience_outcome`, `core_message`, `delivery_context`, `artifact_afterlife` | Values may be empty after explicit confirmation; `consumption_mode` is optional off PPT canvases |
+| `communication` | `audience`, `objective`, `core_message` | Compact execution projection; `objective` combines intent and audience outcome; `consumption_mode` is optional off PPT canvases |
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Used color roles | `image_rendering` appears only for AI images |
@@ -71,6 +71,7 @@ Structured section value shapes:
 ## 4. Field Grammar Index
 
 - `font_family` grammar: one PPT-safe family name; role-specific families may extend it in the same section.
+- `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.

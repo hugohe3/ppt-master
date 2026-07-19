@@ -9,14 +9,14 @@
   <circle id="section-header-anchor" cx="1128" cy="180" r="72" fill="#F4F6F8"
     stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="section-header-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="160 224 896 112">
-    <text id="section-header-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="160 224 896 112">
+    <text id="section-header-title-carrier" data-pptx-carrier="true"
       x="160" y="298" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="50" font-weight="700">{{CHAPTER_TITLE}}</text>
   </g>
-  <g id="section-header-body-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="160 356 800 92">
-    <text id="section-header-body-carrier" data-pptx-placeholder-carrier="true"
+  <g id="section-header-body-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="160 356 800 92">
+    <text id="section-header-body-carrier" data-pptx-carrier="true"
       x="160" y="408" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="24">{{CHAPTER_DESC}}</text>
   </g>

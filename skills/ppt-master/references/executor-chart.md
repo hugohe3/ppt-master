@@ -8,7 +8,7 @@ Conditional Executor authority for data charts, chart-catalog adaptations, chart
 
 ## 1. Reference Loading and Per-page Selection
 
-Read each selected chart SVG once before its first use. If a later page introduces a chart absent from the initial selection, read that file once and continue.
+For each selected `templates/charts/<key>.svg`, use its Skill-relative `reference_set` path + SHA: read once before first use or after change, otherwise reuse it. Never load the full catalog.
 
 **Per-page chart reference — `page_charts` section**:
 
@@ -111,6 +111,7 @@ Chart SVGs referenced in **VII. Visualization Reference List** are loaded once t
 **Adaptation rules**:
 - **Preserve**: visualization type (bar/line/pie/timeline/process/framework…) as specified
 - **Adapt**: data, labels, colors (project scheme), dimensions
+- **Bound final body modules**: add or revise root-coordinate `data-pptx-bounds` on every visible direct root `<g>` copied into the final page; nested groups need none, chart geometry and local references are not content-boundary inputs, and catalog reference warnings never waive the final-page contract
 - **Freely adjust**: composition, axis ranges, grid, legend, spacing, decoration — as long as the chart stays accurate and readable
 - **Forbidden**: changing visualization type without spec justification; omitting data points or structural elements from the outline
 
