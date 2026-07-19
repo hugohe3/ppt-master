@@ -77,7 +77,7 @@ When no preset carries the deck's temperament, set `image_rendering: custom` and
 - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
 ```
 
-**Hard rule**: `custom` is a tail-case, not a default. See [`strategist.md`](../strategist.md) h.5 for the one-`custom`-per-dimension limit.
+**Hard rule**: `custom` is a tail-case, not a default. See [`strategist-image.md`](../strategist-image.md) for the one-`custom`-per-dimension limit.
 
 ---
 

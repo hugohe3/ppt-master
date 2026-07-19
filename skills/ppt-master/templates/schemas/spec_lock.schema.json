@@ -1,0 +1,314 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ppt-master://schemas/spec-lock/v1",
+  "title": "PPT Master spec_lock.md",
+  "description": "Schema for the Markdown section-and-data-line model emitted by the spec-lock parser.",
+  "type": "object",
+  "required": [
+    "canvas",
+    "communication",
+    "mode",
+    "visual_style",
+    "colors",
+    "typography",
+    "icons",
+    "page_rhythm",
+    "pptx_structure",
+    "forbidden"
+  ],
+  "properties": {
+    "canvas": {"type": "object"},
+    "communication": {"type": "object"},
+    "mode": {"type": "object"},
+    "visual_style": {"type": "object"},
+    "colors": {
+      "type": "object",
+      "properties": {
+        "image_rendering": {"type": "string"},
+        "image_rendering_behavior": {"type": "string"}
+      }
+    },
+    "typography": {
+      "type": "object",
+      "properties": {
+        "font_family": {"type": "string", "minLength": 1},
+        "body": {"type": "number"},
+        "title": {"type": "number"}
+      }
+    },
+    "icons": {
+      "type": "object",
+      "properties": {
+        "library": {"type": "string"},
+        "inventory": {"type": "string"},
+        "stroke_width": {"enum": [1.5, 2, 3]}
+      }
+    },
+    "images": {"type": "object"},
+    "page_rhythm": {"type": "object"},
+    "pptx_structure": {"type": "object"},
+    "pptx_masters": {"type": "object"},
+    "pptx_layouts": {"type": "object"},
+    "page_pptx_layouts": {"type": "object"},
+    "page_layouts": {"type": "object"},
+    "page_charts": {"type": "object"},
+    "forbidden": {"type": "string"}
+  },
+  "x-markdown": {
+    "version": 1,
+    "marker": "spec-lock/v1",
+    "parser": "heading-data-lines-v1",
+    "strict_lines": true,
+    "unresolved_patterns": ["(?i)\\[fill(?:[^\\]]*)\\]"],
+    "sections": [
+      {
+        "id": "canvas",
+        "pattern": "^canvas$",
+        "required": true,
+        "required_fields": ["viewBox", "format"],
+        "allowed_fields": ["viewBox", "format"]
+      },
+      {
+        "id": "communication",
+        "pattern": "^communication$",
+        "required": true,
+        "required_fields": [
+          "audience",
+          "communication_intent",
+          "audience_outcome",
+          "core_message",
+          "delivery_context",
+          "artifact_afterlife"
+        ],
+        "allow_empty_fields": [
+          "audience",
+          "communication_intent",
+          "audience_outcome",
+          "core_message",
+          "delivery_context",
+          "artifact_afterlife"
+        ],
+        "allowed_fields": [
+          "audience",
+          "communication_intent",
+          "audience_outcome",
+          "core_message",
+          "delivery_context",
+          "artifact_afterlife",
+          "consumption_mode"
+        ],
+        "field_enums": {
+          "consumption_mode": ["text", "balanced", "presentation"]
+        }
+      },
+      {
+        "id": "mode",
+        "pattern": "^mode$",
+        "required": true,
+        "required_fields": ["mode"],
+        "allowed_fields": ["mode", "mode_behavior"],
+        "field_enums": {
+          "mode": ["pyramid", "narrative", "instructional", "showcase", "briefing", "custom"]
+        }
+      },
+      {
+        "id": "visual_style",
+        "pattern": "^visual_style$",
+        "required": true,
+        "required_fields": ["visual_style"],
+        "allowed_fields": ["visual_style", "visual_style_behavior"]
+      },
+      {"id": "colors", "pattern": "^colors$", "required": true, "min_entries": 1},
+      {
+        "id": "typography",
+        "pattern": "^typography$",
+        "required": true,
+        "required_fields": ["font_family", "body", "title"],
+        "field_patterns": {
+          "body": "^[0-9]+(?:\\.[0-9]+)?$",
+          "title": "^[0-9]+(?:\\.[0-9]+)?$"
+        }
+      },
+      {
+        "id": "icons",
+        "pattern": "^icons$",
+        "required": true,
+        "required_fields": ["library", "inventory"],
+        "allowed_fields": ["library", "inventory", "stroke_width"],
+        "field_enums": {
+          "stroke_width": ["1.5", "2", "3"]
+        }
+      },
+      {"id": "images", "pattern": "^images$", "required": false},
+      {
+        "id": "page_rhythm",
+        "pattern": "^page_rhythm$",
+        "required": true,
+        "min_entries": 1,
+        "entry_key_pattern": "^P[0-9]{2,}$",
+        "value_enum": ["anchor", "dense", "breathing"]
+      },
+      {
+        "id": "pptx_structure",
+        "pattern": "^pptx_structure$",
+        "required": true,
+        "required_fields": ["mode"],
+        "allowed_fields": ["mode", "template_reuse_scope", "template_adherence"],
+        "field_enums": {
+          "mode": ["flat", "structured"],
+          "template_reuse_scope": ["style", "layout", "mirror"],
+          "template_adherence": ["adaptive", "strict"]
+        }
+      },
+      {
+        "id": "pptx_masters",
+        "pattern": "^pptx_masters$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "value_pattern": "^\\S(?:.*\\S)?$"
+      },
+      {
+        "id": "pptx_layouts",
+        "pattern": "^pptx_layouts$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "value_pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\\s*\\|\\s*[^|]+\\s*\\|\\s*(?:template:[A-Za-z0-9._-]+|P[0-9]{2,})$"
+      },
+      {
+        "id": "page_pptx_layouts",
+        "pattern": "^page_pptx_layouts$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^P[0-9]{2,}$",
+        "value_pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+      },
+      {
+        "id": "page_layouts",
+        "pattern": "^page_layouts$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^P[0-9]{2,}$",
+        "value_pattern": "^[A-Za-z0-9._-]+$"
+      },
+      {
+        "id": "page_charts",
+        "pattern": "^page_charts$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^P[0-9]{2,}$",
+        "value_catalog": {
+          "path": "../charts/charts_index.json",
+          "pointer": ["charts"],
+          "asset_path_pattern": "../charts/{value}.svg"
+        }
+      },
+      {"id": "forbidden", "pattern": "^forbidden$", "required": true, "min_body_chars": 1}
+    ],
+    "conditions": [
+      {
+        "id": "custom-mode",
+        "when": {"section": "mode", "field": "mode", "equals": "custom"},
+        "then": {"required_fields": [{"section": "mode", "fields": ["mode_behavior"]}]}
+      },
+      {
+        "id": "custom-visual-style",
+        "when": {"section": "visual_style", "field": "visual_style", "equals": "custom"},
+        "then": {
+          "required_fields": [{"section": "visual_style", "fields": ["visual_style_behavior"]}]
+        }
+      },
+      {
+        "id": "custom-image-rendering",
+        "when": {"section": "colors", "field": "image_rendering", "equals": "custom"},
+        "then": {
+          "required_fields": [{"section": "colors", "fields": ["image_rendering_behavior"]}]
+        }
+      },
+      {
+        "id": "stroke-icon-weight",
+        "when": {"section": "icons", "field": "library", "equals": "tabler-outline"},
+        "then": {"required_fields": [{"section": "icons", "fields": ["stroke_width"]}]}
+      },
+      {
+        "id": "structured-pptx",
+        "when": {"section": "pptx_structure", "field": "mode", "equals": "structured"},
+        "then": {
+          "required_sections": ["pptx_masters", "pptx_layouts", "page_pptx_layouts", "page_layouts"],
+          "required_fields": [
+            {"section": "pptx_structure", "fields": ["template_reuse_scope", "template_adherence"]}
+          ],
+          "field_values": [
+            {
+              "section": "pptx_structure",
+              "field": "template_reuse_scope",
+              "enum": ["layout", "mirror"]
+            }
+          ]
+        }
+      },
+      {
+        "id": "style-is-flat",
+        "when": {"section": "pptx_structure", "field": "template_reuse_scope", "equals": "style"},
+        "then": {
+          "field_values": [{"section": "pptx_structure", "field": "mode", "enum": ["flat"]}]
+        }
+      },
+      {
+        "id": "layout-is-structured",
+        "when": {"section": "pptx_structure", "field": "template_reuse_scope", "equals": "layout"},
+        "then": {
+          "field_values": [{"section": "pptx_structure", "field": "mode", "enum": ["structured"]}]
+        }
+      },
+      {
+        "id": "mirror-is-strict",
+        "when": {"section": "pptx_structure", "field": "template_reuse_scope", "equals": "mirror"},
+        "then": {
+          "required_fields": [
+            {"section": "pptx_structure", "fields": ["template_adherence"]}
+          ],
+          "field_values": [
+            {"section": "pptx_structure", "field": "mode", "enum": ["structured"]},
+            {"section": "pptx_structure", "field": "template_adherence", "enum": ["strict"]}
+          ]
+        }
+      },
+      {
+        "id": "flat-has-no-structured-mappings",
+        "when": {"section": "pptx_structure", "field": "mode", "equals": "flat"},
+        "then": {
+          "forbidden_sections": [
+            "pptx_masters",
+            "pptx_layouts",
+            "page_pptx_layouts",
+            "page_layouts"
+          ],
+          "field_values": [
+            {"section": "pptx_structure", "field": "template_reuse_scope", "enum": ["style"]},
+            {"section": "pptx_structure", "field": "template_adherence", "enum": []}
+          ]
+        }
+      }
+    ],
+    "references": [
+      {
+        "id": "layout-master",
+        "from_section": "pptx_layouts",
+        "value_component": {"separator": "|", "index": 0},
+        "target_section": "pptx_masters"
+      },
+      {
+        "id": "page-pptx-layout",
+        "from_section": "page_pptx_layouts",
+        "target_section": "pptx_layouts"
+      },
+      {
+        "id": "page-input-prototype",
+        "from_section": "page_layouts",
+        "asset_path_pattern": "templates/{value}.svg"
+      }
+    ]
+  }
+}

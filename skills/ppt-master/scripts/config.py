@@ -489,11 +489,18 @@ LAYOUT_MARGINS = {
 # SVG Policy Reference
 # ============================================================
 
-# Do not mirror element/attribute rules here. The shared standard is the
-# authoring authority and the quality checker enforces it.
-# Keep the exported key for compatibility with existing config consumers.
+# Do not mirror element/attribute rules here. The router selects the mandatory
+# core and feature-triggered interfaces; the quality checker enforces them.
+# Keep the exported authority key as the compatibility router for existing
+# config consumers.
 SVG_CONSTRAINTS = {
     'authority': 'skills/ppt-master/references/shared-standards.md',
+    'core_authority': 'skills/ppt-master/references/shared-standards-core.md',
+    'conditional_authorities': {
+        'effects': 'skills/ppt-master/references/svg-effects.md',
+        'native_data': 'skills/ppt-master/references/native-data-interface.md',
+        'pptx_structure': 'skills/ppt-master/references/pptx-structure-interface.md',
+    },
     'validator': 'skills/ppt-master/scripts/svg_quality_checker.py',
 }
 

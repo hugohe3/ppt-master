@@ -6,9 +6,9 @@
 ## 0. 上游规范引用
 
 本文档只定义 **图表模板专用** 的美学与实现配方。项目级 SVG
-创作、兼容性例外与条件映射统一以
+创作、兼容性例外与条件映射由
 [`references/shared-standards.md`](../../references/shared-standards.md)
-为权威；本指南不摘录、不放宽该合同。
+路由到各自的权威模块；本指南不摘录、不放宽这些合同。
 
 ---
 
@@ -272,7 +272,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ## 6. 通用 SVG 技术约束
 
-本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同统一见
+本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同入口见
 [`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
 必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
 
@@ -354,12 +354,22 @@ expanded 无损表达属于独立合同，不得复制为新模板创作格式�
 ```
 
 - **`key`** = SVG 文件名去掉 `.svg`，下划线小写（如 `bullet_chart`）
-- **`summary`** 是**选型句**，不是描述句。语法见 `meta.summaryGrammar`：先说什么时候选它，再用 `Skip if ... (use <other_key>)` 指向最容易混淆的兄弟模板
+- **`summary`** 是**选型句**，不是描述句。语法见 `meta.summaryGrammar`：先说什么时候选它，再用 `Skip if ... (use <other_key>)` 指向最容易混淆的兄弟模板；该句会原样进入候选召回输出
 - **`meta.total`** 同步 +1
 
-> **不需要** `label` / `categories` / `quickLookup` / `keywords` —— 这些都已经移除。Strategist 全量读取 summary 列表后语义匹配，不依赖任何预计算索引。**注意**：summary 是英文，但 source 文档常含中文/行业术语（"中台"、"架构图"、"管道"），Strategist 自己负责语义翻译再匹配。如果一个模板的命中强依赖某个中文短语，把它的英文等价物写进 summary 的 Pick 子句里。
+> **不需要** `label` / `categories` / `quickLookup` / `keywords`。[`chart_recall.py`](../../scripts/chart_recall.py) 每次从当前 registry 动态召回候选，不维护第二份索引。`summary` 使用英文；Strategist 先把中文或行业术语（"中台"、"架构图"、"管道"）翻译为 3–8 个英文内容形态标签，再调用脚本。若模板命中依赖某个概念，把其英文等价物写进 `Pick for` 子句。
 
-### 9.2 反例
+### 9.2 召回烟测
+
+修改 `summary` 后，用一个正向页面形态执行召回，并确认目标模板进入候选；再验证模板 key：
+
+```bash
+uvx ppt-master chart-recall recall \
+  --page P03 --tag "time series" --tag "three metrics" --tag "trend" --limit 6
+uvx ppt-master chart-recall validate line_chart
+```
+
+### 9.3 反例
 
 ❌ 只写"是什么"：`"summary": "Bidirectional comparison chart for two datasets"`
 ✅ 写"何时选"：`"summary": "Pick for two mirrored datasets sharing a common axis (age pyramid, A/B). Skip for >2 sides (use grouped_bar_chart)."`

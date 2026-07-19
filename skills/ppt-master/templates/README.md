@@ -21,10 +21,10 @@ PowerPoint package objects are compilation targets, not additional template
 kinds. Theme values and identity assets are projected from resolved identity
 rules supplied by Brand, Deck, or the current project; Layout rules project
 into Master/Layout/Placeholder topology, semantic text roles, and
-spatial behavior; Deck combines both with purpose-specific starting content
-and usage rules. Downstream `layout` scope resolves final placeholder formatting
-with the confirmed identity, reading mode, and type scale; `mirror` preserves
-literal source formatting. A compiled Slide Master may therefore contain both
+spatial behavior; Deck combines both with descriptive recurring-application
+context and actual prototype examples. Downstream AI planning decides which
+prototypes and content to use, then records the required exporter values.
+A compiled Slide Master may therefore contain both
 structural geometry and brand visuals even though their source rules remain
 separately owned.
 
@@ -34,21 +34,23 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The indexes are discovery aids only. Step 3 activates a template only from an
-explicit workspace-root path supplied by the user.
+The indexes are discovery aids only. [`generate-pptx`](../workflows/generate-pptx.md)
+Step 3 activates a template only from an explicit workspace-root path supplied
+by the user or an exact validated Create Template handoff.
 
 ## Orthogonal contracts
 
 | Axis | Values | Meaning |
 |---|---|---|
 | Template kind | `brand` / `layout` / `deck` | Which reusable contract the package owns: identity, brand-neutral structure, or a complete recurring application |
-| Creation mode | `standard` / `fidelity` / `mirror` | Create Layout/Create Deck only: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; Layout mirror additionally requires a source contract already inside the brand-neutral, application-neutral Layout boundary; Create Brand is N/A |
-| Downstream adherence | `strict` / `adaptive` | Preserve the selected Layout contract, or allow explicit new Layout identities |
-| PPTX structure | `flat` / `structured` | Free-design, brand-only, and confirmed `style` stay Slide-local; confirmed `mirror` / `layout` compile declared Masters and Layouts |
+| Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
+| Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
+| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; style-only, brand-only, and free design remain Slide-local |
 
-These axes must not be used as synonyms. In particular, a mirror-created deck
-is still an ordinary reusable `deck` package after creation; it does not force
-future presentations to keep the source page count or order.
+These axes must not be used as synonyms or exposed as a user mode matrix. In
+particular, a mirror-created deck is still an ordinary reusable `deck` package
+after creation; it does not force future presentations to keep the source page
+count or order.
 
 ## Workspace contract
 
@@ -66,23 +68,25 @@ initialized project:
 
 Empty optional directories are omitted. Template SVGs reference bitmaps through
 `../images/<name>` and imported vectors through `data-icon="imported/<name>"`.
-Step 3 consumes `templates/`, `images/`, and `icons/` and ignores `exports/`.
-Compatible legacy-flat packages remain readable; directory shape alone does not
-indicate legacy Master/Layout semantics.
+The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
+stage owns installation and fusion: it consumes `templates/`, `images/`, and
+`icons/` and ignores `exports/`. Compatible legacy-flat packages remain
+readable; directory shape alone does not indicate legacy Master/Layout semantics.
 
 ## Design specification references
 
-[`design_spec_reference.md`](./design_spec_reference.md) is the project-level
-Strategist reference for the generated presentation's full specification and
-content outline. Reusable template `design_spec.md` files are deliberately
-smaller: they contain portable metadata and only the identity, structure, or
-application rules owned by that package. General SVG/PPT rules remain
-centralized in
-[`shared-standards.md`](../references/shared-standards.md).
+[`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) and
+[`scaffolds/design_spec.md`](./scaffolds/design_spec.md) own the machine
+structure and starting artifact; [`design_spec_reference.md`](./design_spec_reference.md)
+is their compact authoring index. Reusable template `design_spec.md` files are
+deliberately smaller: they contain portable metadata and only the identity,
+structure, or application rules owned by that package. General SVG rules live
+in [`shared-standards-core.md`](../references/shared-standards-core.md), with
+effects and PowerPoint interfaces loaded only when triggered.
 
 ## Visualization Templates
 
-The `charts/` directory contains 57 standardized visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, strategic frameworks, and system architecture diagrams:
+The `charts/` directory contains the registered visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, strategic frameworks, and system architecture diagrams:
 
 - KPI Cards
 - Bar Chart / Stacked Bar Chart

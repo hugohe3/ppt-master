@@ -4,9 +4,9 @@ description: Main-pipeline control stage for resuming execution in a fresh chat 
 
 # Resume Execute Stage
 
-> Generate-PPTX control stage for a fresh execution session. Run when planning (SKILL.md Step 1–5) completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 without selecting another route.
+> Generate-PPTX control stage for a fresh execution session. Run when [`generate-pptx`](../generate-pptx.md) Step 1–5 completed in a previous chat and the user wants to continue with SVG generation + export. Loads project state from disk and runs Step 6 + Step 7 inside the already selected Generate route.
 
-This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. By isolating SVG generation in its own session, the model gains 20–40K context headroom by not carrying the planning session's Strategist confirmation dialogue, image search/fetch results, or Strategist references.
+This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. Persisted project artifacts replace the planning session's confirmation dialogue and image-acquisition history.
 
 ## When to Run
 
@@ -28,36 +28,40 @@ Verify the project's planning-session artifacts before doing anything else:
 
 | File / Directory | Required when | Reason |
 |---|---|---|
-| `<project_path>/spec_lock.md` | Always | Strategist's execution contract; Executor reads it per page |
-| `<project_path>/design_spec.md` | Always | Section IX page outline; Executor cross-references it |
-| `<project_path>/images/` | `spec_lock images` references any image | Images must exist for embedding |
-| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / chart SVGs needed for batch read |
+| `<project_path>/spec_lock.md` | Always | Strategist's execution contract; `page-context` projects its current-page values |
+| `<project_path>/design_spec.md` | Always | Section IX page outline; `page-context` projects the current page block |
+| `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
+| `<project_path>/templates/` | `spec_lock page_layouts` / `page_charts` references any | Layout / mirror prototypes and chart SVGs required by execution |
 
-If any required artifact is missing → report which one(s) and stop. Do NOT auto-fall-back into planning; the user must either complete the planning session in the original chat or explicitly restart.
+If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
+
+- Missing `design_spec.md` / `spec_lock.md` → use [`failure-recovery.md`](../governance/failure-recovery.md) §3.
+- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to [`generate-pptx`](../generate-pptx.md) Step 3 to restore the selected workspace; an AI, web, formula, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire, rerender, or derive it. An absent `Needs-Manual` file is not a Step 1 failure.
+- Missing `templates/` inputs → restore the selected workspace through [`generate-pptx`](../generate-pptx.md) Step 3 and [`apply-template-workspace`](apply-template-workspace.md). If the workspace is unavailable or invalid, run Create Template again rather than reconstructing a template inside this stage.
 
 ---
 
-## Step 2: Load SKILL.md, proceed from Step 6
+## Step 2: Load the Generate authority, proceed from Step 6
 
 ```
-Read skills/ppt-master/SKILL.md
+Read skills/ppt-master/workflows/generate-pptx.md
 ```
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
-- Read references (executor-base + shared-standards + the locked `mode` file under `modes/` + the locked `visual_style` file under `visual-styles/` + image-layout-spec + svg-image-embedding)
+- Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked mode / visual-style files), then only the branches selected by its condition table
 - Design Parameter Confirmation
-- Pre-generation Batch Read (every layout / chart SVG referenced in `spec_lock`)
-- Per-page `spec_lock` re-read + sequential page generation
+- Pre-generation compact template-roster read when structured, plus each distinct selected chart SVG once
+- Per-page `uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage` load + sequential page generation
 - Quality Check Gate
 - Speaker notes generation
 - Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)
 
-The fresh session pays the cost of re-reading references (~14K tokens) but earns back substantially more headroom by dropping the planning session's accumulated context. Net win in both window pressure and reasoning budget per page.
+Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-**Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture. The split-mode handoff is designed to free context budget precisely for this kind of high-quality enrichment.
+**Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture.
 
-> Note: this stage does NOT duplicate Step 6 / Step 7 content. SKILL.md is the authoritative procedure; resume-execute only adds the resumption entry (When to Run + Step 1 sanity check above) and the source-materials guidance above.
+> Note: this stage does NOT duplicate Step 6 / Step 7 content. `generate-pptx.md` is the authoritative procedure; resume-execute only adds the resumption entry, sanity check, and source-materials guidance.
 
 ---
 
@@ -65,4 +69,4 @@ The fresh session pays the cost of re-reading references (~14K tokens) but earns
 
 When Step 7 completes and `exports/<project_name>_<timestamp>.pptx` is produced, the stage ends. Report the export path to the user.
 
-If the deck contains data charts, the [`verify-charts`](verify-charts.md) stage runs between Step 6 and Step 7 as documented in SKILL.md — resume mode handles it the same way the continuous mode does.
+If the deck contains data charts, the [`verify-charts`](verify-charts.md) stage runs between Step 6 and Step 7 as documented in [`generate-pptx`](../generate-pptx.md); resume mode handles it the same way as continuous mode.

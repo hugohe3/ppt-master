@@ -44,7 +44,7 @@ SCQA opening, pyramid body:
 
 ## 3. Speaker-notes register
 
-Conclusion-driven: the first sentence of each page's notes is the takeaway, then 2-3 supporting facts in flowing prose. Composed, authoritative. Every number paired with its comparison in the same sentence ("23% — nearly double the industry's 12%"). Spell percentages as words where the spoken form reads more naturally. (Common framework: [`executor-base.md §8`](../executor-base.md).)
+Conclusion-driven: the first sentence of each page's notes is the takeaway, then 2-3 supporting facts in flowing prose. Composed, authoritative. Every number paired with its comparison in the same sentence ("23% — nearly double the industry's 12%"). Spell percentages as words where the spoken form reads more naturally. (Common framework: [`executor-notes.md`](../executor-notes.md) §1.)
 
 ---
 

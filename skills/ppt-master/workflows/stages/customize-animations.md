@@ -4,17 +4,22 @@ description: Optional post-processing stage for per-slide and per-object animati
 
 # Customize Animations Stage
 
-> Optional Generate-PPTX post-processing stage. Run when the user asks to tune animation order, effects, timing, or object-level reveals — including simply turning per-element entrance animation on (it is off by default; page transitions still apply). This stage creates `animations.json` overrides when the user wants element animation or finer control.
+> Optional Generate-PPTX post-processing stage for per-slide or per-object
+> animation control. Run when the user asks to customize slide-specific motion,
+> object order, effects, timing, or reveals. Deck-wide transitions,
+> auto-advance, and per-element entrance settings use
+> [`animations.md`](../../references/animations.md) directly and do not activate
+> this stage.
 
 ## When to Run
 
 | Condition | Action |
 |---|---|
-| User asks for object-level animation, reveal order, timing, or effect changes | Run this stage |
+| User asks for per-slide or per-object animation, reveal order, timing, or effect changes | Run this stage |
 | User only wants the default deck (page transitions, no element builds) | Do not run; normal `svg_to_pptx.py` export is enough |
-| User just wants per-element entrance animation back on, deck-wide | No config needed — export with `svg_to_pptx.py -a auto`; run this stage only for per-slide/per-object control |
+| User only wants deck-wide page transitions, auto-advance, or per-element entrance animation | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
-| Existing `animations.json` is present | Validate and edit it; do not overwrite unless the user asks |
+| This stage is triggered and `animations.json` is present | Validate and edit it; do not overwrite unless the user asks |
 
 ---
 
@@ -57,7 +62,7 @@ uvx ppt-master animation-config validate <project_path>
 
 ## 2. Read Semantic Context
 
-**Mandatory**: before editing `animations.json`, read the deck's semantic planning files.
+**Context read**: before editing `animations.json`, read every semantic planning file below that exists.
 
 | File | Use |
 |---|---|
@@ -67,7 +72,7 @@ uvx ppt-master animation-config validate <project_path>
 
 **Hard rule**: semantic files determine animation intent; `svg_output/*.svg` determines valid animation targets. Never reference a slide or group id that is absent from the scaffold / SVG scan.
 
-**Missing context**: if one semantic file is absent, state what is missing and proceed with the remaining files plus real SVG group ids. If both `design_spec.md` and `spec_lock.md` are absent, do not infer detailed object choreography; use only conservative defaults and explicit user instructions.
+**Optional-context fallback**: these semantic files inform this supporting stage but are not its gate artifacts. If any are absent, state what is missing and proceed with every remaining file plus real SVG group ids. If all three context inputs are absent, use only explicit user instructions, real SVG group ids, and the resolution rules in [`animations.md`](../../references/animations.md); do not infer detailed object choreography.
 
 ---
 
@@ -174,8 +179,8 @@ them to `none` by default). Name a legacy chrome-like id only when the user
 explicitly wants that content animated and the SVG has no explicit structural
 layer, role, or placeholder marker.
 
-> Note: version-1 legacy sidecars may omit fields inside a listed slide and
-> inherit them from `defaults`; the loader preserves that compatibility. This
+> Note: version-1 legacy sidecars may omit fields inside a listed slide under
+> the declared inheritance in [`animations.md`](../../references/animations.md) §2. This
 > workflow writes complete new slide blocks, and validation still requires
 > every current SVG stem to be present under `slides`.
 
@@ -262,7 +267,14 @@ uvx ppt-master animation-config validate <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 ```
 
-**Validation**: the exported native PPTX must reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`. Unknown animation effects/modes/triggers; boolean, NaN, or Infinity numeric values; non-positive durations; negative delay/stagger; invalid order; missing slides/groups; and structural-layer targets fail validation. Transition validation remains strict as well. None of these failures substitutes a fallback effect or silently drops a requested target.
+**Validation**: the exported native PPTX must reflect the per-slide and
+per-object overrides. `--animation none` still disables all per-element
+animation and overrides `animations.json`. Unknown animation
+effects/modes/triggers; boolean, NaN, or Infinity numeric values; non-positive
+durations; negative delay/stagger; invalid order; missing slides/groups; and
+structural-layer targets fail validation. Transition validation remains strict
+as well. None of these failures substitutes a fallback effect or silently drops
+a requested target.
 
 Generated export performs semantic read-back per slide, comparing row order, trigger, target, resolved effect tuple, duration, and offset. It then validates timing-tree placement, `p:cTn` ids, and `p:spTgt` references across the packaged PPTX. Stable `random` choices appear in the conversion trace when export enables `--conversion-trace`. Narration merges audio into the existing timing tree and must preserve these rows.
 
@@ -272,7 +284,7 @@ Direct-PPTX routes are preserve-only for object animation: they compare the sour
 
 ## ✅ Customize Animations Complete
 
-- [x] `animations.json` exists only because object-level customization was requested
+- [x] `animations.json` exists only because per-slide or per-object customization was requested
 - [x] `design_spec.md`, `spec_lock.md`, and available speaker notes were checked before editing animation overrides
 - [x] Every slide in `svg_output/` appears under `slides` with explicit `transition` + `animation` blocks
 - [x] Group-level entries were added only for groups that diverge from the slide's `animation` block

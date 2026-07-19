@@ -74,10 +74,12 @@ Output:
     # Every PPTX variant below is produced through the svg_output → native DrawingML route
     exports/
     ├── presentation_<timestamp>.pptx                ← Native shapes (DrawingML) — canonical output, edit & deliver from here
-    ├── presentation_<timestamp>.report.json         ← Postflight package/resource audit linked to the final SVG quality report
-    ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
     ├── presentation_<timestamp>_native_charts_tables.pptx  ← PowerPoint-native Chart/Table replacements (opt-in via --native-charts-and-tables)
     └── presentation_<timestamp>_narrated.pptx        ← Narrated version — embedded per-slide audio + auto-advance timings (via --recorded-narration audio)
+
+    validation/
+    ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
+    └── presentation_<timestamp>.report.json         ← Postflight package/resource audit linked to the final SVG quality report
 
     # Always written in default-flow mode (no -o)
     backup/<timestamp>/
@@ -88,12 +90,12 @@ Output:
 
 For every workflow that authors or redesigns visual slides through SVG, `svg_output/` is the complete page-design authority, but SVG here means project-canonical SVG accepted by the project contract—not any SVG a browser can render. Every visible text, image, shape, diagram, chart/table fallback, background, and template-derived layout element that should appear on a slide must already exist in that page SVG or be explicitly referenced by it. Templates, `design_spec.md`, and `spec_lock.md` guide SVG authoring; the exporter does not use them as a second visual layer that fills in missing page content.
 
-Minimal semantic markers do not weaken that closure. Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`: every represented object stays Slide-local and no Master/Layout identity, layer, or placeholder metadata is authored. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks without promoting Slide content. Only `template_reuse_scope: mirror|layout` uses the structured route, where every new page declares its Master/Layout identity from the first SVG draft. Fixed Master/Layout visuals are direct atomic root children, while reusable content slots are top-level groups with explicit design-zone bounds and one compatible carrier; composite `object` regions use an explicit proxy fallback, and zero-slot Layouts are valid. `data-pptx-role` is reserved for the few structural page-frame objects whose package or animation behavior is not already expressed by specialized metadata. A semantic-legacy template package is not upgraded in place or accepted as a structured Step 3 input: create a new workspace through `create-template`, using a native PPTX's still-present package facts or an old SVG's visuals only as reference, then author new pages through the confirmed reuse-scope route. A flat project is intentionally unmapped, not legacy. Export never infers, repairs, or migrates Master/Layout structure or placeholders.
+Minimal semantic markers do not weaken that closure. Free-design, brand-only, and `template_reuse_scope: style` pages use `pptx_structure.mode: flat`: every represented object stays Slide-local and no Master/Layout identity, layer, or placeholder metadata is authored. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks without promoting Slide content. Only `template_reuse_scope: mirror|layout` uses the structured route, where every new page declares its Master/Layout identity from the first SVG draft. Fixed Master/Layout visuals are direct atomic root children, while reusable content slots are top-level groups with explicit design-zone bounds and one compatible carrier; composite `object` regions use an explicit proxy fallback, and zero-slot Layouts are valid. `data-pptx-role` is reserved for the few structural page-frame objects whose package or animation behavior is not already expressed by specialized metadata. A semantic-legacy template package is not upgraded in place or accepted as a structured Step 3 input: create a new workspace through `create-template`, using a native PPTX's still-present package facts or an old SVG's visuals only as reference, then author new pages through the AI-derived application route. A flat project is intentionally unmapped, not legacy. Export never infers, repairs, or migrates Master/Layout structure or placeholders.
 
 | Domain | Authority |
 |---|---|
 | Visible page content and layout on SVG-authoring routes | Final page SVG in `svg_output/` |
-| Project-canonical SVG syntax, compatible forms, and mapping boundary | [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
+| Project-canonical SVG syntax, compatible forms, and mapping boundary | The split authority set selected through [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) |
 | Master/Layout/Slide packaging and native-object mapping | SVG-to-PPTX translation; it may reorganize represented content but does not invent visible content |
 | Animations, transitions, speaker notes, and narration | Dedicated sidecars/assets and PPTX package post-processing |
 | Direct native-PPTX editing | The selected native workflow's PPTX/OOXML contract |
@@ -162,14 +164,16 @@ sources/*.facts.json ───────────┤
 analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spec_lock.md
 analysis/image_analysis.csv ────┘
 
-spec_lock.md + images/ + icons/ + templates/
-             + templates/template_execution_manifest.json
-             + selected templates/template_execution/*.text-slots.json
-    └─> Executor -> svg_output/
-              ├─> svg_quality_checker.py -> exports/svg_quality_report.json
-              ├─> finalize_svg.py -> svg_final/
-              └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + <output_stem>.report.json
-                                      backup/<ts>/svg_output/
+design_spec.md + spec_lock.md + images/ + icons/ + templates/
+    └─> project_manager.py page-context <project> P<NN> --bundle
+          + [selected complete prototype SVG]
+          + [mirror text-slots.v2-min]
+        ├─> Executor -> svg_output/
+        │     ├─> svg_quality_checker.py -> validation/svg_quality_report.json
+        │     ├─> finalize_svg.py -> svg_final/
+        │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
+        │                             backup/<ts>/svg_output/
+        └─> --record-usage -> analysis/page-context/P<NN>.usage.json
 
 Direct OOXML routes:
 analysis/<stem>.slide_library.json + source PPTX + fill_plan.json
@@ -205,9 +209,9 @@ SVG wins because it shares the same world view as DrawingML: both are absolute-c
 | `linearGradient` / `radialGradient` | `<a:gradFill>` |
 | `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
 
-This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) that identifies its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
+This table shows conceptual counterparts, not a commitment to the entire SVG standard or a promise of lossless semantics. Every supported capability must have an explicit mapping in the applicable module selected by the [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) router, identifying its project-canonical spelling, accepted compatible inputs, target DrawingML expression, fidelity, and rejection boundary; capabilities that support PPTX import must also identify the source PPTX/OOXML semantics. A mapping may be exact, deterministically normalized, an explicit fallback, a sidecar, or unsupported. Package semantics such as notes, animations, and relationships do not need to be forced into SVG, but their owning route must be explicit.
 
-For a PowerPoint-first, feature-by-feature view of those relationships, see the [PowerPoint Feature ↔ Project SVG Mapping Guide](./powerpoint-svg-mapping.md). It owns the public capability and PPTX-import recovery map; `shared-standards.md` remains the generated-authoring contract.
+For a PowerPoint-first, feature-by-feature view of those relationships, see the [PowerPoint Feature ↔ Project SVG Mapping Guide](./powerpoint-svg-mapping.md). It owns the public capability and PPTX-import recovery map; the authority set routed by `shared-standards.md` owns generated authoring.
 
 The main generation route uses **canonical narrow writes and controlled compatible reads**. New `svg_output/` and reusable templates use only project-canonical spellings—for example, uppercase opaque `#RRGGBB`, with transparency carried by the matching `fill-opacity`, `stroke-opacity`, `stop-opacity`, `flood-opacity`, or atomic-element `opacity`. Historical or manual input proceeds only when the compatibility contract documents it, the conversion has one meaning, and the output is valid. The checker emits a non-blocking warning for such input, and the converter normalizes it at the compilation boundary. Anything that requires guessing, lacks a mapping, or could produce a damaged PPTX is an error.
 
@@ -256,7 +260,7 @@ Two converter design choices still shape the system:
 | `exports/` | timestamped native PPTX deliverables |
 | `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
 
-The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The production workflow in `SKILL.md` deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
+The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The Generate PPTX production workflow in [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
 
 ---
 
@@ -270,8 +274,8 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 |---|---|
 | `sources/` content-type files are the main-pipeline content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
 | `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist; they do not lock page count/order except in workflows that say so |
-| `design_spec.md` explains the design; `spec_lock.md` executes it | Executor reads locked values from `spec_lock.md`, not from prose memory |
-| `spec_lock.md` is re-read before every page | colors, fonts, icons, images, rhythm, layouts, and chart choices stay stable across long decks |
+| `design_spec.md` explains the design; `spec_lock.md` executes it | the per-page projection derives narrative and locked values from their owning artifacts, not from prose memory |
+| `page-context` is rebuilt before every page | each read-only view contains the current global lock, page brief, rhythm, chart/image choice, and route-selected template inputs |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
 | `svg_final/` is mandatory but derived | it is regenerated from `svg_output/` for self-contained visual preview or manual insertion as an SVG picture; it does not become the native export source of truth, and PowerPoint Convert to Shape is outside the supported contract |
 | Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
@@ -318,7 +322,7 @@ The three template kinds own different segments of the design contract:
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
 | `layout` | brand-neutral structure | canvas, page structure, semantic text roles/spatial behavior, page types, SVG roster | exposes structure; identity and communication application remain downstream decisions |
-| `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, content policy, identity, and SVG roster | contributes an application contract that Stage 2 derivation compares with the independently confirmed Stage-1 contract before selecting reuse scope |
+| `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, representative page roles, identity, and actual SVG roster | contributes descriptive context and prototypes that Strategist compares with the independently confirmed Stage-1 contract and current content before deriving the application plan |
 
 Theme, Slide Master, Slide Layout, and Placeholder are compiled PowerPoint
 objects, not additional template kinds. Layout owns topology, placement,
@@ -344,17 +348,17 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 **Why role-specialized references, not one mega prompt.** Strategist runs in "negotiate with user" mode (open-ended, conversational, willing to back up); Executor runs in "produce strict XML" mode (no improvisation, no missing attributes). Mixing both into one prompt forces the model to hold incompatible discipline in the same turn — every prompt-engineering pathology of mode-mixing shows up. Splitting into per-role files lets each role load only what it needs and discard the rest.
 
-**Strategist confirmation stage as the only blocking gate.** Strategist ends with one gate delivered in three dependency-ordered stages. Stage 1 confirms an open communication contract and canvas. Its prose boxes contain editable recommendations, but none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Stage 2 is authored once from that contract and confirms the complete deck solution: reading mode, narrative mode, page count, template strategy, coordinated visual system, image sources, and generated-image rendering. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. Stage 3 is authored once and contains production mechanics only: conditional AI acquisition, formula policy, generation mode, and spec refinement. The compatibility key `delivery_purpose` means reading mode. Generated images inherit the selected deck color roles directly; there is no independent image-palette choice. The final visible state in `confirm_ui/result.json` is authoritative—there is no hidden post-confirm repair—and project validation requires the six contract key lines under `spec_lock.md ## communication` (any prose value may be blank) plus an `Audience move` in every §IX Slide block.
+**Strategist confirmation stage as the only blocking gate.** Strategist ends with one gate delivered in three dependency-ordered stages. Stage 1 confirms an open communication contract and canvas. Its prose boxes contain editable recommendations, but none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Stage 2 is authored once from that contract and confirms the complete deck solution: reading mode, narrative mode, page count, coordinated visual system, image sources, and generated-image rendering. When a template is installed, Strategist also derives its page/prototype application plan from the actual workspace and current content and exposes that plan as editable natural-language prose; only the internal reuse/adherence modes stay hidden. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. Stage 3 is authored once and contains production mechanics only: conditional AI acquisition, formula policy, generation mode, and spec refinement. The compatibility key `delivery_purpose` means reading mode. Generated images inherit the selected deck color roles directly; there is no independent image-palette choice. The final visible state in `confirm_ui/result.json` is authoritative—there is no hidden post-confirm repair—and project validation requires the six contract key lines under `spec_lock.md ## communication` (any prose value may be blank) plus an `Audience move` in every §IX Slide block.
 
 **Image analysis goes through regenerated metadata, not pixels.** When images exist, Strategist and Executor use `analyze_images.py` output (`analysis/image_analysis.csv`) rather than directly opening image files. The CSV is a regenerated view over the live `images/` folder, not a durable cache. Re-running it before image-sensitive decisions is the staleness strategy: user images, extracted images, web images, AI outputs, formulas, and sliced elements all converge into the same measured fact table.
 
-**Per-page spec_lock re-read** is the long-deck anti-drift mechanism — full rationale in § Spec Propagation below.
+**Per-page context projection** is the long-deck anti-drift mechanism — full rationale in § Spec Propagation below.
 
 ---
 
 ## Execution Discipline
 
-The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+Generate execution is governed by [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md), which owns Step 1–7 and the generation-specific rules; [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
@@ -371,9 +375,15 @@ The Strategist phase produces two artifacts that look redundant but serve differ
 - `design_spec.md` — human-readable narrative; the "why" of the deck (communication intent, audience outcome, narrative / template / visual rationale, page outline)
 - `spec_lock.md` — machine-readable execution contract; the compact communication trace plus the exact values Executor must literally use (HEX colors, font stacks, icon library, image resources, and structure mappings)
 
-Why both? Without `spec_lock.md`, the Executor would re-read `design_spec.md` per page during long decks and the LLM's context-compression drift would gradually mutate colors and fonts mid-deck. `spec_lock.md` is the **anti-drift mechanism** — the SKILL.md mandates `read_file <project>/spec_lock.md` before every page, so values stay verbatim across 20+ slides.
+Why both? Without `spec_lock.md`, the Executor would derive exact values from narrative prose and context-compression drift would gradually mutate colors and fonts mid-deck. [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) instead rebuilds a read-only `page-context` view before every page. The projector reads the current lock and the matching `design_spec.md` page block, then emits only the global execution values and current-page routing facts needed for authoring.
+
+The view omits universal SVG/icon prohibitions already owned by the always-loaded Executor core and retains only project-specific forbidden rows. It selects images from the current page brief, explicit image-resource page assignments, and mirror prototype references. Images assigned elsewhere are excluded; any unresolved legacy image remains in a compatibility subset, and `confirmed-none` appears only when every locked image has a deterministic assignment elsewhere.
 
 The lock is also the per-page routing table. Beyond global colors and typography, it carries `page_rhythm` (`anchor` / `dense` / `breathing`), `page_charts` (which chart template should be adapted), image rows with placement/cropping contracts, and the locked `mode` / `visual_style` references that decide which execution rule files are loaded. `template_reuse_scope: mirror|layout` projects additionally carry `page_layouts` (which input template SVG each page inherits), unique `pptx_masters` / `pptx_layouts` definitions, and `page_pptx_layouts` assignments. `template_reuse_scope: style`, free-design, and brand-only projects use `pptx_structure.mode: flat` and omit those sections entirely rather than writing empty values. Empty entries elsewhere are meaningful signals: no chart or no image is often a design decision rather than missing data.
+
+`page-context --bundle` is route-sensitive: flat pages add no template payload, structured layout pages add the complete selected prototype, and mirror pages add that prototype plus `ppt-master.template-text-slots.v2-min`. Each v2-min slot contains only selector, role, current/segmented text, and tspan count. A top-level tool hash covers selectors plus immutable text/tspan topology and attributes; page-context recomputes it and every projected field from the complete prototype, then strips the hash before model output. Legacy v1 sidecars receive the same compatibility validation and are projected to this shape in memory. The model supplies semantic decisions and replacement text. Checker and structured export validate output attributes, text topology, and resource hashes against the complete prototype internally.
+
+`--record-usage` requires `--bundle` and writes a derived, input-hashed snapshot for that page under `analysis/page-context/`; expected-but-absent optional inputs are recorded so later artifact creation also makes the snapshot stale. Token counting lazily uses `o200k_base`; a missing `tiktoken` installation records `tokens: null` without blocking execution. `page-context-report` excludes stale snapshots and exposes the measured component totals used to decide whether a future mirror text-patch tool is warranted; no such tool is introduced by this phase.
 
 `update_spec.py` propagates a post-generation change in two coordinated steps: write the new value to `spec_lock.md`, then literal-replace it across every `svg_output/*.svg`. The tool's scope is deliberately narrow — only `colors.*` (HEX values, case-insensitive replacement) and `typography.font_family` (attribute-scoped). Other fields (font sizes, icons, images, canvas) are intentionally **not supported** because their replacements would need attribute-scoped or semantic awareness whose risk/benefit doesn't justify bulk propagation. For those, edit `spec_lock.md` and re-author the affected pages.
 
@@ -414,13 +424,13 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
 
-**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points there rather than restating the contract — so when a constraint changes, only one file changes, and a stale duplicate in patterns cannot silently keep enforcing the old rule.
+**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live in the authority set routed by [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points to that router rather than restating the contract, so each rule still has one owning module and no stale duplicate in the pattern catalog.
 
 ---
 
 ## Project-Canonical SVG and the Compatibility Boundary
 
-PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. That file is the sole authority for syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
+PowerPoint's DrawingML is a strict subset of what SVG can express, so the main compiler route does not treat “the browser can render it” as “the project can export it.” Input is accepted only when the applicable module selected by [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md) registers a project-canonical expression or an explicit compatible form with a deterministic DrawingML mapping. The split authority set owns syntax, structure, units, metadata, compatible aliases, fidelity, and rejection conditions; this architecture document defines the layering principle without duplicating individual rules.
 
 **Why local reuse is compile-time reuse, not a retained PowerPoint object.** The canonical contract defines accepted authoring forms, and the shared validator enforces them. After validation, the pipeline recursively materializes each referenced subtree and rewrites clone-local IDs before export. PPTX-to-SVG import therefore returns expanded primitives rather than reconstructing the authoring-time reuse graph.
 
@@ -460,20 +470,22 @@ If the same warning repeatedly appears in newly generated pages, fix the prompt,
 
 > Why each artifact and module exists in the engineering conversion stage, and which workflows would break if you delete it. Read this before considering any simplification of `svg_final/` / `finalize_svg.py` / `svg_to_pptx.py`.
 
-### Delivery artifacts and workflows
+### Post-processing artifacts and workflows
 
-The post-processing and export stages work with distinct artifacts. Each one serves a workflow that nothing else in the pipeline can replace. Every PPTX entry below is a variant of the same `svg_output/` → native DrawingML route, not a parallel image-based converter.
+The post-processing and export stages keep authoring, validation, preview, delivery, and archival artifacts distinct. Each one serves a workflow that nothing else in the pipeline can replace. Every PPTX entry below is a variant of the same `svg_output/` → native DrawingML route, not a parallel image-based converter.
 
 | Artifact | Workflow it serves | Why nothing else replaces it |
 | --- | --- | --- |
 | `svg_output/` | source of truth, manual editing, `update_spec.py`, `svg_quality_checker.py` | only directory whose contents are authored, not derived |
 | `svg_final/` | mandatory self-contained visual preview; IDE/browser inspection; manual insertion as an SVG picture | `.pptx` is not openable in IDEs; `svg_output/` won't render fully because of external icon / image refs. PowerPoint Convert to Shape is not supported |
 | `exports/<name>_<ts>.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
-| `exports/svg_quality_report.json` | machine-readable final SVG gate | separates blocking failures, introduced advisories, inherited prototype findings, and source-import losses, and fingerprints the checked SVG bytes |
-| `<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
+| `validation/svg_quality_report.json` | machine-readable final SVG gate | separates blocking failures, introduced advisories, inherited prototype findings, and source-import losses, and fingerprints the checked SVG bytes |
+| `validation/<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
 | `exports/<name>_<ts>_native_charts_tables.pptx` (opt-in via `--native-charts-and-tables`) | when `data-pptx-replace-with` markers should replace SVG-derived, shape-based charts/tables with PowerPoint-native Chart/Table objects | data-backed objects with chart/table-specific controls; the default DrawingML shapes remain independently editable |
 | `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration audio`) | narrated deck for auto-play and PowerPoint video export | embedded per-slide audio plus auto-advance timings; name marks it apart from silent exports |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
+
+Validation JSON files are cold audit artifacts, not routine model inputs. The exporter reads the SVG quality report programmatically, then prints a compact `[POSTFLIGHT]` receipt with the status, quality-gate result, Slide count, warning-category counts, and artifact paths. Successful agents consume that receipt instead of loading either complete JSON; only failure investigation or an explicit audit extracts targeted report fields.
 
 ### SVG preprocessors have TWO consumers
 
@@ -532,7 +544,7 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why reusable bounds are design zones, not measured text boxes.** Slot bounds come from the intended safe area, column, panel inset, or picture frame—not glyph width, line count, or the current content's tight box. The current Slide retains its own authored carrier geometry, so 4:6, 3:7, and 5:5 instances may share one Layout when they express the same semantic composition. Text length therefore cannot accidentally split or mutate the reusable Layout contract.
 
-**Why reuse scope and adherence are separate.** `template_reuse_scope` first selects literal mirror reuse, structural layout reuse, or flat style reference. Only `mirror` and `layout` then use `template_adherence: strict|adaptive` on the structured route: `page_layouts` records the complete authoring prototype, `pptx_masters` / `pptx_layouts` record unique reusable definitions, and `page_pptx_layouts` records page assignment. Strict preserves the declared prototype contract. Adaptive retains its Master and defines a new Layout only when fixed Layout atoms or slot topology/bounds change; the assignment is updated during page authoring rather than inferred later. A template-backed definition may remain unused and still register in the final package. Layout skin remains project-controlled, while mirror additionally preserves literal visuals and text-node topology. `style` has no adherence value or structure mappings.
+**Why the internal application plan retains two fields.** Strategist derives `template_reuse_scope` to record literal mirror reuse, structural layout reuse, or flat style reference. Structured plans then derive `template_adherence: strict|adaptive`: `page_layouts` records the complete authoring prototype, `pptx_masters` / `pptx_layouts` record unique reusable definitions, and `page_pptx_layouts` records page assignment. Strict preserves the declared prototype contract. Adaptive retains its Master and defines a new Layout only when fixed Layout atoms or slot topology/bounds change; the assignment is updated during page authoring rather than inferred later. These are exporter values, not user confirmation options. A template-backed definition may remain unused and still register in the final package. Layout skin remains project-controlled, while mirror additionally preserves literal visuals and text-node topology. `style` has no adherence value or structure mappings.
 
 **Why explicit-Layout text defaults are split between Master and Layout.** Both flat and structured export write the locked title size and a deterministic nine-level body hierarchy into Master defaults while preserving indentation and bullet settings. On structured routes, each generated Layout text slot additionally copies its carrier's first run size into the level-one default while retaining the prompt's direct size. This preserves Layout-specific scale when placeholder text is inserted or reset; direct runs on generated Slides remain unchanged.
 
@@ -590,7 +602,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 
 ## Routes and Supporting Runbooks
 
-The authoritative registry is [`workflows/index.md`](../skills/ppt-master/workflows/index.md), with trigger precedence in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
+[`workflows/index.md`](../skills/ppt-master/workflows/index.md) is a maintainer-only inventory and does not enter the task-loading chain. Runtime route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md). PPT Master has exactly four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. A user request enters one of those routes; no supporting runbook competes with them.
 
 Supporting files stay separate only to keep route contracts focused and load optional context on demand:
 
