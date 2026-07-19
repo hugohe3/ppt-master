@@ -1,170 +1,161 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+     font-size="12">
     <!--
     Snake Flow Diagram Template
     Purpose: Long sequential journey winding across multiple rows
     Use cases: Multi-year roadmap, lifecycle, multi-stage workflow, 6-10 milestone timeline
-    Design Principles:
-      - Three-row serpentine (4-2-4 node distribution); two-row variant works for 6-8
-      - Each node carries its own Tailwind hue (CHART_STYLE_GUIDE §1.2 spectrum)
-      - Visual weight comes from: thick ribbon path (24px), large dual-ring nodes (r=32 solid), filled cards with top color band, strong shadows
-      - NO mid-path chevron arrows (row direction reads as flow)
+    Structure: Three-row serpentine with a 4-2-4 node distribution
+    Encoding: Ordered node colors, dual-ring milestones, and matching card bands
     -->
-    <defs>
-        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
-            <feOffset dx="0" dy="3" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.12" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="nodeShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="3" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.15" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-    </defs>
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
     <!-- ==================== Header ==================== -->
-    <text x="640" y="58" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Ten-Year Strategic Roadmap</tspan></text>
-    <text x="640" y="86" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>DECADE JOURNEY · TEN MILESTONES · THREE-ROW SERPENTINE</tspan></text>
+    <g id="header" data-pptx-bounds="260 28 760 68">
+        <text x="640" y="58" text-anchor="middle" font-size="32" font-weight="800" fill="#0F172A"><tspan>Ten-Year Strategic Roadmap</tspan></text>
+        <text x="640" y="86" text-anchor="middle" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>DECADE JOURNEY · TEN MILESTONES · THREE-ROW SERPENTINE</tspan></text>
+    </g>
 
     <!-- ==================== Continuous Ribbon Path (3-row S, 4-2-4 layout) ==================== -->
     <!-- Top row y=200 (x=200..1020), right U-turn r=100, mid row y=400 (R->L), left U-turn r=90, bottom row y=580 -->
-    <!-- Heavy ribbon base + thin inner rail for "tracked" feel -->
-    <path d="M 200 200 H 1020 A 100 100 0 0 1 1020 400 H 200 A 90 90 0 0 0 200 580 H 1020"
-          fill="none" stroke="#E0E7FF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M 200 200 H 1020 A 100 100 0 0 1 1020 400 H 200 A 90 90 0 0 0 200 580 H 1020"
-          fill="none" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <g id="ribbon-track" data-pptx-bounds="95 187 1040 406">
+        <!-- Heavy ribbon base + thin inner rail preserve the winding reading path. -->
+        <path d="M 200 200 H 1020 A 100 100 0 0 1 1020 400 H 200 A 90 90 0 0 0 200 580 H 1020"
+              fill="none" stroke="#E0E7FF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 200 200 H 1020 A 100 100 0 0 1 1020 400 H 200 A 90 90 0 0 0 200 580 H 1020"
+              fill="none" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    </g>
 
-    <!-- ==================== Cards (filled tint + top color band + shadow) ==================== -->
+    <!-- ==================== Milestone Cards ==================== -->
+    <g id="milestone-cards" data-pptx-bounds="80 110 1060 570">
     <!-- Top row cards: ABOVE the row (between title and nodes) -->
     <g id="card-01">
-        <rect x="80" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="80" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="80" y="110" width="240" height="5" fill="#6366F1"/>
-        <text x="200" y="138" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="200" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="200" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="200" y="160" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-02">
-        <rect x="353" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="353" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="353" y="110" width="240" height="5" fill="#8B5CF6"/>
-        <text x="473" y="138" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="473" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="473" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="473" y="160" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-03">
-        <rect x="627" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="627" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="627" y="110" width="240" height="5" fill="#3B82F6"/>
-        <text x="747" y="138" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="747" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="747" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="747" y="160" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-04">
-        <rect x="900" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="900" y="110" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="900" y="110" width="240" height="5" fill="#0EA5E9"/>
-        <text x="1020" y="138" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="1020" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="1020" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="1020" y="160" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
 
     <!-- Mid row cards: BELOW the nodes -->
     <g id="card-05">
-        <rect x="627" y="438" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="627" y="438" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="627" y="438" width="240" height="5" fill="#06B6D4"/>
-        <text x="747" y="466" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="747" y="488" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="747" y="466" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="747" y="488" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-06">
-        <rect x="353" y="438" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="353" y="438" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="353" y="438" width="240" height="5" fill="#10B981"/>
-        <text x="473" y="466" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="473" y="488" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="473" y="466" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="473" y="488" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
 
     <!-- Bottom row cards: BELOW the nodes -->
     <g id="card-07">
-        <rect x="80" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="80" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="80" y="618" width="240" height="5" fill="#F59E0B"/>
-        <text x="200" y="646" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="200" y="668" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="200" y="646" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="200" y="668" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-08">
-        <rect x="353" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="353" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="353" y="618" width="240" height="5" fill="#F97316"/>
-        <text x="473" y="646" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="473" y="668" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="473" y="646" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="473" y="668" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-09">
-        <rect x="627" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="627" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="627" y="618" width="240" height="5" fill="#F43F5E"/>
-        <text x="747" y="646" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="747" y="668" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="747" y="646" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="747" y="668" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
     </g>
     <g id="card-10">
-        <rect x="900" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <rect x="900" y="618" width="240" height="62" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
         <rect x="900" y="618" width="240" height="5" fill="#EC4899"/>
-        <text x="1020" y="646" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
-        <text x="1020" y="668" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+        <text x="1020" y="646" text-anchor="middle" font-size="14" font-weight="700" fill="#0F172A"><tspan>Milestone Title</tspan></text>
+        <text x="1020" y="668" text-anchor="middle" fill="#475569"><tspan>Concise description of scope.</tspan></text>
+    </g>
     </g>
 
     <!-- ==================== Nodes (heavy dual-ring: halo r=46 + white separator r=38 + solid disc r=32) ==================== -->
+    <g id="milestone-nodes" data-pptx-bounds="154 154 912 472">
     <g id="node-01">
         <circle cx="200" cy="200" r="46" fill="#6366F1" fill-opacity="0.15"/>
-        <circle cx="200" cy="200" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="200" cy="200" r="38" fill="#FFFFFF"/>
         <circle cx="200" cy="200" r="32" fill="#6366F1"/>
-        <text x="200" y="208" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>01</tspan></text>
+        <text x="200" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>01</tspan></text>
     </g>
     <g id="node-02">
         <circle cx="473" cy="200" r="46" fill="#8B5CF6" fill-opacity="0.15"/>
-        <circle cx="473" cy="200" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="473" cy="200" r="38" fill="#FFFFFF"/>
         <circle cx="473" cy="200" r="32" fill="#8B5CF6"/>
-        <text x="473" y="208" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>02</tspan></text>
+        <text x="473" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>02</tspan></text>
     </g>
     <g id="node-03">
         <circle cx="747" cy="200" r="46" fill="#3B82F6" fill-opacity="0.15"/>
-        <circle cx="747" cy="200" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="747" cy="200" r="38" fill="#FFFFFF"/>
         <circle cx="747" cy="200" r="32" fill="#3B82F6"/>
-        <text x="747" y="208" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>03</tspan></text>
+        <text x="747" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>03</tspan></text>
     </g>
     <g id="node-04">
         <circle cx="1020" cy="200" r="46" fill="#0EA5E9" fill-opacity="0.15"/>
-        <circle cx="1020" cy="200" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="1020" cy="200" r="38" fill="#FFFFFF"/>
         <circle cx="1020" cy="200" r="32" fill="#0EA5E9"/>
-        <text x="1020" y="208" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>04</tspan></text>
+        <text x="1020" y="208" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>04</tspan></text>
     </g>
     <g id="node-05">
         <circle cx="747" cy="400" r="46" fill="#06B6D4" fill-opacity="0.15"/>
-        <circle cx="747" cy="400" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="747" cy="400" r="38" fill="#FFFFFF"/>
         <circle cx="747" cy="400" r="32" fill="#06B6D4"/>
-        <text x="747" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>05</tspan></text>
+        <text x="747" y="408" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>05</tspan></text>
     </g>
     <g id="node-06">
         <circle cx="473" cy="400" r="46" fill="#10B981" fill-opacity="0.15"/>
-        <circle cx="473" cy="400" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="473" cy="400" r="38" fill="#FFFFFF"/>
         <circle cx="473" cy="400" r="32" fill="#10B981"/>
-        <text x="473" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>06</tspan></text>
+        <text x="473" y="408" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>06</tspan></text>
     </g>
     <g id="node-07">
         <circle cx="200" cy="580" r="46" fill="#F59E0B" fill-opacity="0.15"/>
-        <circle cx="200" cy="580" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="200" cy="580" r="38" fill="#FFFFFF"/>
         <circle cx="200" cy="580" r="32" fill="#F59E0B"/>
-        <text x="200" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>07</tspan></text>
+        <text x="200" y="588" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>07</tspan></text>
     </g>
     <g id="node-08">
         <circle cx="473" cy="580" r="46" fill="#F97316" fill-opacity="0.15"/>
-        <circle cx="473" cy="580" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="473" cy="580" r="38" fill="#FFFFFF"/>
         <circle cx="473" cy="580" r="32" fill="#F97316"/>
-        <text x="473" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>08</tspan></text>
+        <text x="473" y="588" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>08</tspan></text>
     </g>
     <g id="node-09">
         <circle cx="747" cy="580" r="46" fill="#F43F5E" fill-opacity="0.15"/>
-        <circle cx="747" cy="580" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="747" cy="580" r="38" fill="#FFFFFF"/>
         <circle cx="747" cy="580" r="32" fill="#F43F5E"/>
-        <text x="747" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>09</tspan></text>
+        <text x="747" y="588" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>09</tspan></text>
     </g>
     <g id="node-10">
         <circle cx="1020" cy="580" r="46" fill="#EC4899" fill-opacity="0.15"/>
-        <circle cx="1020" cy="580" r="38" fill="#FFFFFF" filter="url(#nodeShadow)"/>
+        <circle cx="1020" cy="580" r="38" fill="#FFFFFF"/>
         <circle cx="1020" cy="580" r="32" fill="#EC4899"/>
-        <text x="1020" y="588" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>10</tspan></text>
+        <text x="1020" y="588" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF"><tspan>10</tspan></text>
+    </g>
     </g>
 </svg>
