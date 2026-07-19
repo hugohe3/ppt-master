@@ -298,6 +298,19 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `labeled_card.svg` | 2×2 标签卡片结构 |
 | `icon_grid.svg` | 2×3 图标槽与能力卡片 |
 | `line_chart.svg` | 双系列折线与 native chart metadata |
+| `pipeline_with_stages.svg` | 分阶段管线、贯通流程和输出链 |
+| `layered_architecture.svg` | 分层架构、能力输出和底座 |
+| `stacked_area_chart.svg` | 累计面积、图例和统计卡片 |
+| `heatmap_chart.svg` | 时间×日期矩阵、连续色阶和统计侧栏 |
+| `bubble_chart.svg` | 三变量气泡、象限、系列清单和尺寸图例 |
+| `quadrant_text_bullets.svg` | 二轴四象限、分区说明和行动标签 |
+| `financial_statement_table.svg` | 财务层级、数值列和强调合计行 |
+| `box_plot_chart.svg` | 五数分布、异常值、图例和统计摘要 |
+| `dual_axis_line_chart.svg` | 双轴序列、阶段带和数据标注 |
+| `stacked_bar_chart.svg` | 堆叠分类、总量标签和洞察侧栏 |
+| `segmented_wheel.svg` | 中心主题、等权扇区和配对说明卡 |
+| `sankey_chart.svg` | 零损耗流向、节点层级和流量编码 |
+| `roadmap_vertical.svg` | 纵向里程碑、状态轨道和目标侧栏 |
 
 **Hard rule**: 修改其他模板时先冻结可见文本、数据和结构层级，再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线验证。未经明确说明的文本删除、改写或结构边界丢失都会阻断迁移。不要仅为追求 catalog 一次性整齐而批量重写。
 
