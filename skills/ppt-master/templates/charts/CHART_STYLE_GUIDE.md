@@ -218,14 +218,14 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 使用 `<g id="...">` 进行语义分组，便于 PPT 中逐个操作/动画：
 
 ```xml
-<g id="chartArea">        <!-- 图表主体 -->
-    <g id="bar-1">...</g>  <!-- 每个数据元素独立分组 -->
+<g id="chartArea" data-pptx-bounds="60 140 820 480"> <!-- 图表主体 -->
+    <g id="bar-1">...</g>
     <g id="bar-2">...</g>
 </g>
-<g id="legend">            <!-- 图例区域 -->
+<g id="legend" data-pptx-bounds="920 140 300 160"> <!-- 图例区域 -->
     <g id="legend-high">...</g>
 </g>
-<g id="detailList">        <!-- 详情面板 -->
+<g id="detailList" data-pptx-bounds="920 320 300 300"> <!-- 详情面板 -->
     <g id="list-items">
         <g id="item-1">...</g>
     </g>
@@ -244,9 +244,12 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 装饰集群 | 相关装饰形状（环、球、点） |
 
 **命名约定**：每个顶层语义组必须使用页面内唯一、描述性的 `id`（如
-`card-1`、`step-discover`、`header`、`footer`）。仅用于局部绘制、样式继承
-或几何组织的内部 `<g>` 可以保持匿名；不要把 frame、icon、badge 等实现
-碎片暴露为独立的顶层动画锚点。
+`card-1`、`step-discover`、`header`、`footer`）。内部 `<g>` 可以保持匿名且无需
+`data-pptx-bounds`；即使存在嵌套 bounds，Checker 也会忽略。不要把 frame、
+icon、badge 等实现碎片暴露为独立的顶层动画锚点。
+
+目录中的 SVG 是适配前参考；复制到最终页面时，每个可见直属根 `<g>` 都必须新增
+或重写根坐标系 `data-pptx-bounds`。不得从当前示例文字的紧包围盒推断它。
 
 ### 5.2 viewBox
 
@@ -401,7 +404,7 @@ python3 skills/ppt-master/scripts/chart_recall.py validate line_chart
 - [ ] 标题、副标题、正文、标签与来源按 §2.2 的角色范围形成稳定层级
 
 ### 结构
-- [ ] 每个顶层语义组都有页面内唯一的描述性 `<g id="...">`；内部实现组可匿名
+- [ ] 每个可见直属根 `<g>` 都有根坐标系 `data-pptx-bounds` 和页面内唯一的描述性 `id`
 - [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
 - [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
 - [ ] authored preset 是 helper 输出的完整 compact 原子 `<g>`；无 carrier / preview wrapper / fingerprint，且 metadata / path 未手改
