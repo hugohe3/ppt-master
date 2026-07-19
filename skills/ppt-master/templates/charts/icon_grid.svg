@@ -13,6 +13,7 @@
     <g id="feature-card-1" data-pptx-bounds="50 130 370 260">
         <rect x="50" y="130" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="80" y="160" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="390" y="186" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">01</text>
         <g id="icon-1" transform="translate(106 186)" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round">
             <line x1="-10" y1="10" x2="10" y2="10"/>
             <line x1="-7" y1="10" x2="-7" y2="3"/>
@@ -21,15 +22,18 @@
         </g>
         <text x="80" y="250" font-size="19" font-weight="700" fill="#0F172A">Smart Data Analytics</text>
         <text x="80" y="274" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">AI-DRIVEN ENGINE</text>
-        <text x="80" y="312" font-size="14" fill="#475569">Multi-dimensional analytics that</text>
-        <text x="80" y="334" font-size="14" fill="#475569">discovers trends and anomalies</text>
-        <text x="80" y="356" font-size="14" fill="#475569">for actionable insights.</text>
+        <text x="80" y="310" font-size="14" fill="#475569">
+            <tspan x="80" dy="0">AI-driven multi-dimensional analytics</tspan>
+            <tspan x="80" dy="22">engine that automatically discovers trends</tspan>
+            <tspan x="80" dy="22">and anomalies for actionable insights.</tspan>
+        </text>
     </g>
 
     <!-- Feature card 2 -->
     <g id="feature-card-2" data-pptx-bounds="455 130 370 260">
         <rect x="455" y="130" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="485" y="160" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="795" y="186" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">02</text>
         <g id="icon-2" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round">
             <circle cx="508" cy="181" r="4"/>
             <path d="M 500 199 C 500 192 504 189 508 189 C 512 189 516 192 516 199"/>
@@ -38,30 +42,36 @@
         </g>
         <text x="485" y="250" font-size="19" font-weight="700" fill="#0F172A">Real-time Collaboration</text>
         <text x="485" y="274" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">TEAM SYNCHRONIZATION</text>
-        <text x="485" y="312" font-size="14" fill="#475569">Simultaneous editing with</text>
-        <text x="485" y="334" font-size="14" fill="#475569">real-time synchronization, comments,</text>
-        <text x="485" y="356" font-size="14" fill="#475569">and complete version history.</text>
+        <text x="485" y="310" font-size="14" fill="#475569">
+            <tspan x="485" dy="0">Support for simultaneous online editing,</tspan>
+            <tspan x="485" dy="22">real-time synchronization, built-in</tspan>
+            <tspan x="485" dy="22">comments, and complete version history.</tspan>
+        </text>
     </g>
 
     <!-- Feature card 3 -->
     <g id="feature-card-3" data-pptx-bounds="860 130 370 260">
         <rect x="860" y="130" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="890" y="160" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="1200" y="186" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">03</text>
         <g id="icon-3" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M 916 174 L 928 178 V 190 C 928 196 923 200 916 203 C 909 200 904 196 904 190 V 178 Z"/>
             <path d="M 911 188 L 915 192 L 922 184"/>
         </g>
         <text x="890" y="250" font-size="19" font-weight="700" fill="#0F172A">Security &amp; Compliance</text>
         <text x="890" y="274" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">ENTERPRISE GRADE</text>
-        <text x="890" y="312" font-size="14" fill="#475569">Data encryption and access control</text>
-        <text x="890" y="334" font-size="14" fill="#475569">with compliance support</text>
-        <text x="890" y="356" font-size="14" fill="#475569">and complete audit trails.</text>
+        <text x="890" y="310" font-size="14" fill="#475569">
+            <tspan x="890" dy="0">Enterprise-grade data encryption and</tspan>
+            <tspan x="890" dy="22">access control. Fully compliant with</tspan>
+            <tspan x="890" dy="22">SOC2 and GDPR with complete audit trails.</tspan>
+        </text>
     </g>
 
     <!-- Feature card 4 -->
     <g id="feature-card-4" data-pptx-bounds="50 420 370 260">
         <rect x="50" y="420" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="80" y="450" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="390" y="476" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">04</text>
         <g id="icon-4" transform="translate(106 476)" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round">
             <circle r="7"/>
             <circle r="2"/>
@@ -72,15 +82,18 @@
         </g>
         <text x="80" y="540" font-size="19" font-weight="700" fill="#0F172A">Workflow Automation</text>
         <text x="80" y="564" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">PROCESS ORCHESTRATION</text>
-        <text x="80" y="602" font-size="14" fill="#475569">Visual process orchestration with</text>
-        <text x="80" y="624" font-size="14" fill="#475569">configurable triggers that reduce</text>
-        <text x="80" y="646" font-size="14" fill="#475569">repetitive manual work.</text>
+        <text x="80" y="600" font-size="14" fill="#475569">
+            <tspan x="80" dy="0">Visual process orchestration with</tspan>
+            <tspan x="80" dy="22">no-code trigger configurations to</tspan>
+            <tspan x="80" dy="22">eliminate repetitive manual operations.</tspan>
+        </text>
     </g>
 
     <!-- Feature card 5 -->
     <g id="feature-card-5" data-pptx-bounds="455 420 370 260">
         <rect x="455" y="420" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="485" y="450" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="795" y="476" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">05</text>
         <g id="icon-5" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="505,468 497,476 505,484"/>
             <polyline points="517,468 525,476 517,484"/>
@@ -88,15 +101,18 @@
         </g>
         <text x="485" y="540" font-size="19" font-weight="700" fill="#0F172A">Open API Integration</text>
         <text x="485" y="564" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">SEAMLESS CONNECTIONS</text>
-        <text x="485" y="602" font-size="14" fill="#475569">Standard APIs support integration</text>
-        <text x="485" y="624" font-size="14" fill="#475569">with SaaS, ERP, CRM,</text>
-        <text x="485" y="646" font-size="14" fill="#475569">and other business systems.</text>
+        <text x="485" y="600" font-size="14" fill="#475569">
+            <tspan x="485" dy="0">Access to 200+ standard APIs that</tspan>
+            <tspan x="485" dy="22">support seamless integration with</tspan>
+            <tspan x="485" dy="22">mainstream SaaS, ERP, and CRM systems.</tspan>
+        </text>
     </g>
 
     <!-- Feature card 6 -->
     <g id="feature-card-6" data-pptx-bounds="860 420 370 260">
         <rect x="860" y="420" width="370" height="260" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
         <rect x="890" y="450" width="52" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+        <text x="1200" y="476" text-anchor="end" font-size="22" font-weight="700" fill="#94A3B8">06</text>
         <g id="icon-6" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M 905 466 H 921 L 927 472 V 490 H 905 Z"/>
             <path d="M 921 466 V 472 H 927"/>
@@ -106,8 +122,10 @@
         </g>
         <text x="890" y="540" font-size="19" font-weight="700" fill="#0F172A">Smart Reporting Center</text>
         <text x="890" y="564" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1.2">ADVANCED DASHBOARDS</text>
-        <text x="890" y="602" font-size="14" fill="#475569">Generate custom dashboards</text>
-        <text x="890" y="624" font-size="14" fill="#475569">and multi-dimensional reports</text>
-        <text x="890" y="646" font-size="14" fill="#475569">for executive decisions.</text>
+        <text x="890" y="600" font-size="14" fill="#475569">
+            <tspan x="890" dy="0">One-click generation of custom data</tspan>
+            <tspan x="890" dy="22">dashboards and multi-dimensional reports</tspan>
+            <tspan x="890" dy="22">to support executive decision-making.</tspan>
+        </text>
     </g>
 </svg>

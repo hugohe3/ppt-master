@@ -109,11 +109,12 @@ Chart SVGs referenced in **VII. Visualization Reference List** are loaded once t
 **Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply the active Design Spec and `spec_lock.md`; preserve the visualization type and data semantics.
 
 **Adaptation rules**:
-- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, and data encoding
-- **Adapt**: data, labels, dimensions, axes, legend, and spacing as the content requires
+- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, data encoding, structural grouping, and capacity
+- **Carry forward**: every planned label, value, unit, status, source, and explanatory block; never shorten or drop content to imitate a lighter catalog preview
+- **Adapt**: project data and labels, dimensions, axes, legend, and spacing as the authored content requires
 - **Project-owned**: palette, typography, container treatment, effects, background, and page chrome; catalog preview values are fallbacks, never defaults
 - **Bound final body modules**: add or revise root-coordinate `data-pptx-bounds` on every visible direct root `<g>` copied into the final page; nested groups need none, chart geometry and local references are not content-boundary inputs, and catalog reference warnings never waive the final-page contract
-- **Freely adjust**: composition, axis ranges, and grid within the project contract, as long as the chart stays accurate and readable
+- **Adjust with fidelity**: composition, axis ranges, and grid may change within the project contract only when no content, relationship, hierarchy, or capacity is lost
 - **Forbidden**: changing visualization type without spec justification; omitting data points or structural elements from the outline
 
 > Templates: `templates/charts/`. The Strategist's selected key is already locked in `page_charts`; execution opens only that key's SVG.
