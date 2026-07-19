@@ -9,20 +9,20 @@
   <rect id="two-content-right-panel" x="664" y="152" width="552" height="504" rx="12" fill="#F4F6F8"
     stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="two-content-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 40 1152 72">
-    <text id="two-content-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 40 1152 72">
+    <text id="two-content-title-carrier" data-pptx-carrier="true"
       x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="two-content-left-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="88 176 504 456">
-    <text id="two-content-left-carrier" data-pptx-placeholder-carrier="true"
+  <g id="two-content-left-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="88 176 504 456">
+    <text id="two-content-left-carrier" data-pptx-carrier="true"
       x="88" y="214" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{LEFT_CONTENT}}</text>
   </g>
-  <g id="two-content-right-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="688 176 504 456">
-    <text id="two-content-right-carrier" data-pptx-placeholder-carrier="true"
+  <g id="two-content-right-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="688 176 504 456">
+    <text id="two-content-right-carrier" data-pptx-carrier="true"
       x="688" y="214" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{RIGHT_CONTENT}}</text>
   </g>

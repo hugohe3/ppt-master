@@ -15,38 +15,38 @@
   <rect id="kpi-dashboard-evidence-panel" x="64" y="320" width="1152" height="320" rx="12" fill="#F4F6F8"
     stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="kpi-dashboard-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 40 1152 72">
-    <text id="kpi-dashboard-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 40 1152 72">
+    <text id="kpi-dashboard-title-carrier" data-pptx-carrier="true"
       x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="kpi-dashboard-one-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="80 168 232 96">
-    <text id="kpi-dashboard-one-carrier" data-pptx-placeholder-carrier="true"
+  <g id="kpi-dashboard-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="80 168 232 96">
+    <text id="kpi-dashboard-one-carrier" data-pptx-carrier="true"
       x="196" y="224" text-anchor="middle" fill="#334155"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_1}}</text>
   </g>
-  <g id="kpi-dashboard-two-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="376 168 232 96">
-    <text id="kpi-dashboard-two-carrier" data-pptx-placeholder-carrier="true"
+  <g id="kpi-dashboard-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="376 168 232 96">
+    <text id="kpi-dashboard-two-carrier" data-pptx-carrier="true"
       x="492" y="224" text-anchor="middle" fill="#334155"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_2}}</text>
   </g>
-  <g id="kpi-dashboard-three-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="3"
-    data-pptx-placeholder-bounds="672 168 232 96">
-    <text id="kpi-dashboard-three-carrier" data-pptx-placeholder-carrier="true"
+  <g id="kpi-dashboard-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="672 168 232 96">
+    <text id="kpi-dashboard-three-carrier" data-pptx-carrier="true"
       x="788" y="224" text-anchor="middle" fill="#334155"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_3}}</text>
   </g>
-  <g id="kpi-dashboard-four-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="4"
-    data-pptx-placeholder-bounds="968 168 232 96">
-    <text id="kpi-dashboard-four-carrier" data-pptx-placeholder-carrier="true"
+  <g id="kpi-dashboard-four-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="968 168 232 96">
+    <text id="kpi-dashboard-four-carrier" data-pptx-carrier="true"
       x="1084" y="224" text-anchor="middle" fill="#334155"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_4}}</text>
   </g>
-  <g id="kpi-dashboard-evidence-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="5"
-    data-pptx-placeholder-bounds="88 344 1104 272">
-    <text id="kpi-dashboard-evidence-carrier" data-pptx-placeholder-carrier="true"
+  <g id="kpi-dashboard-evidence-slot" data-pptx-placeholder="object" data-pptx-idx="5"
+    data-pptx-bounds="88 344 1104 272">
+    <text id="kpi-dashboard-evidence-carrier" data-pptx-carrier="true"
       x="88" y="382" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CONTENT_AREA}}</text>
   </g>

@@ -94,7 +94,7 @@ def _write_review_svg(source: Path, target: Path) -> bool:
             continue
         for carrier in slot.iter():
             if (
-                carrier.get("data-pptx-placeholder-carrier") or ""
+                carrier.get("data-pptx-carrier") or ""
             ).strip().lower() != "true":
                 continue
             for element in carrier.iter():
@@ -240,7 +240,7 @@ def _carrier_sizes(svg_files: list[Path]) -> tuple[list[float], list[float]]:
             if placeholder not in _TITLE_PLACEHOLDERS | _BODY_PLACEHOLDERS:
                 continue
             for carrier in slot.iter():
-                if carrier.get("data-pptx-placeholder-carrier") != "true":
+                if carrier.get("data-pptx-carrier") != "true":
                     continue
                 size = _font_size_px(carrier)
                 if size is None:

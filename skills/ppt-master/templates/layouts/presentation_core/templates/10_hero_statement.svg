@@ -9,14 +9,14 @@
   <rect id="hero-statement-accent" x="96" y="144" width="160" height="6" rx="3" fill="#CBD5E1"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="hero-statement-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="96 184 1088 208">
-    <text id="hero-statement-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="96 184 1088 208">
+    <text id="hero-statement-title-carrier" data-pptx-carrier="true"
       x="96" y="304" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="68" font-weight="700">{{KEY_MESSAGE}}</text>
   </g>
-  <g id="hero-statement-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="96 424 760 72">
-    <text id="hero-statement-subtitle-carrier" data-pptx-placeholder-carrier="true"
+  <g id="hero-statement-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="96 424 760 72">
+    <text id="hero-statement-subtitle-carrier" data-pptx-carrier="true"
       x="96" y="472" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="26">{{SUBTITLE}}</text>
   </g>

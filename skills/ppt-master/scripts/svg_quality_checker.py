@@ -443,8 +443,15 @@ _NON_VISUAL_SVG_TAGS = frozenset({
     'style',
     'title',
 })
-_MODULE_BOUNDS_ATTR = 'data-pptx-module-bounds'
+_BOUNDS_ATTR = 'data-pptx-bounds'
 _NATIVE_OBJECT_BOUNDS_LABEL = 'native chart/table bounds'
+_LEGACY_PPTX_ATTRIBUTE_RENAMES = {
+    'data-pptx-module-bounds': _BOUNDS_ATTR,
+    'data-pptx-placeholder-bounds': _BOUNDS_ATTR,
+    'data-pptx-placeholder-carrier': 'data-pptx-carrier',
+    'data-pptx-placeholder-binding': 'data-pptx-binding',
+    'data-pptx-placeholder-idx': 'data-pptx-idx',
+}
 _PPTX_ROOT_STRUCTURE_ATTRS = (
     'data-pptx-master',
     'data-pptx-master-name',
@@ -461,15 +468,13 @@ _PPTX_STRUCTURE_ATTRS = frozenset({
     'data-pptx-layer',
     'data-pptx-layout-kind',
     'data-pptx-placeholder',
-    'data-pptx-placeholder-binding',
-    'data-pptx-placeholder-bounds',
-    'data-pptx-placeholder-carrier',
-    'data-pptx-placeholder-idx',
+    'data-pptx-binding',
+    'data-pptx-carrier',
+    'data-pptx-idx',
 })
 _PPTX_PLACEHOLDER_DETAIL_ATTRS = frozenset({
-    'data-pptx-placeholder-binding',
-    'data-pptx-placeholder-bounds',
-    'data-pptx-placeholder-idx',
+    'data-pptx-binding',
+    'data-pptx-idx',
 })
 _PPTX_STRUCTURE_SECTION_RE = re.compile(
     r"(?ms)^##[ \t]+pptx_structure[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)"
@@ -752,11 +757,11 @@ def _local_pptx_structure_errors(
                     "authoring boundary and may carry only id/data-pptx-*; remove "
                     + ', '.join(wrapper_attrs)
                 )
-            bounds = (elem.get('data-pptx-placeholder-bounds') or '').strip()
+            bounds = (elem.get('data-pptx-bounds') or '').strip()
             if not bounds:
                 errors.append(
                     f"{svg_path.name}: placeholder slot {element_id} requires "
-                    "data-pptx-placeholder-bounds"
+                    "data-pptx-bounds"
                 )
             else:
                 bounds_error = _placeholder_bounds_error(bounds)
@@ -767,7 +772,7 @@ def _local_pptx_structure_errors(
                     )
 
             binding = (
-                elem.get('data-pptx-placeholder-binding') or 'carrier'
+                elem.get('data-pptx-binding') or 'carrier'
             ).strip().lower()
             if binding not in {'carrier', 'proxy'}:
                 errors.append(
@@ -777,7 +782,7 @@ def _local_pptx_structure_errors(
             carrier_descendants = [
                 child for child in elem.iter()
                 if child is not elem
-                and child.get('data-pptx-placeholder-carrier') is not None
+                and child.get('data-pptx-carrier') is not None
             ]
             visual_children = [
                 child for child in list(elem)
@@ -785,7 +790,7 @@ def _local_pptx_structure_errors(
             ]
             direct_carriers = [
                 child for child in visual_children
-                if (child.get('data-pptx-placeholder-carrier') or '').strip().lower()
+                if (child.get('data-pptx-carrier') or '').strip().lower()
                 == 'true'
             ]
             nested_carriers = [
@@ -806,7 +811,7 @@ def _local_pptx_structure_errors(
                     errors.append(
                         f"{svg_path.name}: placeholder slot {element_id} requires "
                         "exactly one visual direct child, marked "
-                        "data-pptx-placeholder-carrier=\"true\""
+                        "data-pptx-carrier=\"true\""
                     )
             if binding == 'proxy':
                 if placeholder != 'object':
@@ -825,12 +830,12 @@ def _local_pptx_structure_errors(
                         "contain visible Slide-local content"
                     )
 
-        carrier_value = elem.get('data-pptx-placeholder-carrier')
+        carrier_value = elem.get('data-pptx-carrier')
         if carrier_value is not None:
             if carrier_value.strip().lower() != 'true':
                 errors.append(
                     f"{svg_path.name}: {element_id} "
-                    "data-pptx-placeholder-carrier must equal true"
+                    "data-pptx-carrier must equal true"
                 )
             if parent is None or not (
                 parent.get('data-pptx-placeholder') or ''
@@ -1282,6 +1287,7 @@ class SVGQualityChecker:
                     expected_viewbox=expected_viewbox,
                     expected_viewbox_label=expected_viewbox_label,
                 )
+                self._check_legacy_pptx_attributes(root, svg_path, result)
 
                 # 1a. Validate exact importer transport before compatible
                 # inline geometry is materialized on the shared tree.
@@ -2887,8 +2893,7 @@ class SVGQualityChecker:
                 _local_name(current) == 'g'
                 and (
                     any(current.get(attr) is not None for attr in (
-                        _MODULE_BOUNDS_ATTR,
-                        'data-pptx-placeholder-bounds',
+                        _BOUNDS_ATTR,
                         'data-pptx-frame',
                     ))
                     or self._explicit_native_object_bounds(current) is not None
@@ -3256,8 +3261,7 @@ class SVGQualityChecker:
     ) -> Tuple[str, Tuple[float, float, float, float]] | None:
         """Return one group's nearest explicit boundary in root coordinates."""
         for attribute in (
-            _MODULE_BOUNDS_ATTR,
-            'data-pptx-placeholder-bounds',
+            _BOUNDS_ATTR,
             'data-pptx-frame',
         ):
             raw = group.get(attribute)
@@ -3393,11 +3397,11 @@ class SVGQualityChecker:
 
         for element in root.iter():
             if (
-                element.get(_MODULE_BOUNDS_ATTR) is not None
+                element.get(_BOUNDS_ATTR) is not None
                 and _local_name(element) != 'g'
             ):
                 result['errors'].append(
-                    f'{_element_label(element)} {_MODULE_BOUNDS_ATTR} is valid '
+                    f'{_element_label(element)} {_BOUNDS_ATTR} is valid '
                     'only on a visible <g> module'
                 )
 
@@ -3414,20 +3418,19 @@ class SVGQualityChecker:
             ):
                 continue
 
-            raw_module_bounds = group.get(_MODULE_BOUNDS_ATTR)
-            if raw_module_bounds is not None:
+            raw_bounds = group.get(_BOUNDS_ATTR)
+            if raw_bounds is not None:
                 try:
-                    _parse_positive_bounds(raw_module_bounds)
+                    _parse_positive_bounds(raw_bounds)
                 except ValueError as exc:
                     result['errors'].append(
-                        f'{_element_label(group)} {_MODULE_BOUNDS_ATTR} {exc}'
+                        f'{_element_label(group)} {_BOUNDS_ATTR} {exc}'
                     )
 
             explicit_attributes = [
                 attribute
                 for attribute in (
-                    _MODULE_BOUNDS_ATTR,
-                    'data-pptx-placeholder-bounds',
+                    _BOUNDS_ATTR,
                     'data-pptx-frame',
                 )
                 if group.get(attribute) is not None
@@ -3442,9 +3445,9 @@ class SVGQualityChecker:
             if len(boundary_sources) > 1:
                 result['errors'].append(
                     f'{_element_label(group)} declares multiple module '
-                    f'boundaries ({", ".join(boundary_sources)}); keep the '
-                    'specialized placeholder/native boundary or one ordinary '
-                    f'{_MODULE_BOUNDS_ATTR}, not both'
+                    f'boundaries ({", ".join(boundary_sources)}); keep exactly '
+                    f'one {_BOUNDS_ATTR}, data-pptx-frame, or complete native '
+                    'chart/table boundary'
                 )
                 continue
 
@@ -3452,7 +3455,7 @@ class SVGQualityChecker:
             if resolved is None:
                 continue
             attribute, bounds = resolved
-            if attribute != _MODULE_BOUNDS_ATTR:
+            if attribute != _BOUNDS_ATTR:
                 continue
             parent_bounds = self._nearest_group_bounds(group, parent_by_id)
             if parent_bounds is None:
@@ -3471,7 +3474,7 @@ class SVGQualityChecker:
             left, top, right, bottom = bounds
             outer_left, outer_top, outer_right, outer_bottom = outer
             result['warnings'].append(
-                f'{_element_label(group)} {_MODULE_BOUNDS_ATTR} exceeds '
+                f'{_element_label(group)} {_BOUNDS_ATTR} exceeds '
                 f'{outer_label} on the {axes} axis: module '
                 f'({left:.1f}, {top:.1f})-({right:.1f}, {bottom:.1f}), '
                 f'container ({outer_left:.1f}, {outer_top:.1f})-'
@@ -3484,9 +3487,8 @@ class SVGQualityChecker:
             result['warnings'].append(
                 f'Detected {len(missing)} visible <g> module(s) without an '
                 f'explicit boundary ({sample}{suffix}); generated ordinary '
-                f'groups add {_MODULE_BOUNDS_ATTR}="x y width height", while '
-                'placeholder/native groups reuse their existing specialized '
-                'boundary'
+                f'and placeholder groups add {_BOUNDS_ATTR}="x y width height", '
+                'while native/preset groups reuse data-pptx-frame'
             )
 
     def _check_module_text_bounds(
@@ -4530,7 +4532,7 @@ class SVGQualityChecker:
             if not (slot.get('data-pptx-placeholder') or '').strip():
                 continue
             binding = (
-                slot.get('data-pptx-placeholder-binding') or 'carrier'
+                slot.get('data-pptx-binding') or 'carrier'
             ).strip().lower()
             if binding != 'carrier':
                 continue
@@ -4540,7 +4542,7 @@ class SVGQualityChecker:
             ]
             carriers = [
                 child for child in visual_children
-                if (child.get('data-pptx-placeholder-carrier') or '')
+                if (child.get('data-pptx-carrier') or '')
                 .strip()
                 .lower()
                 == 'true'
@@ -4665,6 +4667,22 @@ class SVGQualityChecker:
                 'intended reusable contract. No change or disposition is required.'
             )
         return messages
+
+    @staticmethod
+    def _check_legacy_pptx_attributes(
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Reject superseded long-form authoring attributes."""
+        for element in root.iter():
+            for legacy, canonical in _LEGACY_PPTX_ATTRIBUTE_RENAMES.items():
+                if element.get(legacy) is None:
+                    continue
+                result['errors'].append(
+                    f'{svg_path.name}: {_element_label(element)} uses legacy '
+                    f'{legacy}; rename it to {canonical}'
+                )
 
     def _check_semantic_markers(
         self,
@@ -5765,16 +5783,16 @@ class SVGQualityChecker:
                     grandchild.tag.rsplit('}', 1)[-1]
                     for grandchild in list(child)
                     if (
-                        grandchild.get('data-pptx-placeholder-carrier') or ''
+                        grandchild.get('data-pptx-carrier') or ''
                     ).strip().lower() == 'true'
                 )
                 placeholder_parts.append((
                     placeholder,
                     child.tag.rsplit('}', 1)[-1],
-                    child.get('data-pptx-placeholder-bounds') or '',
-                    child.get('data-pptx-placeholder-idx') or '',
+                    child.get('data-pptx-bounds') or '',
+                    child.get('data-pptx-idx') or '',
                     (
-                        child.get('data-pptx-placeholder-binding') or 'carrier'
+                        child.get('data-pptx-binding') or 'carrier'
                     ).strip().lower(),
                     carrier_tags,
                 ))
@@ -6293,7 +6311,7 @@ class SVGQualityChecker:
                     child.get('id') or child.tag.rsplit('}', 1)[-1]
                     for child in list(root)
                     if child.get('data-pptx-placeholder') is not None
-                    and child.get('data-pptx-placeholder-bounds') is None
+                    and child.get('data-pptx-bounds') is None
                 ]
                 if missing_bounds:
                     legacy_structure_detected = True
@@ -6301,7 +6319,7 @@ class SVGQualityChecker:
                         'error',
                         'placeholder_bounds_missing',
                         f"{svg_file.name}: reusable templates require "
-                        "explicit design-zone data-pptx-placeholder-bounds; missing: "
+                        "explicit design-zone data-pptx-bounds; missing: "
                         + ', '.join(missing_bounds),
                     ))
             if native_contract_path.exists() or source_template_path.exists():

@@ -9,14 +9,14 @@
   <rect id="title-content-panel" x="64" y="152" width="1152" height="504" rx="12" fill="#F4F6F8"
     stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="title-content-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 40 1152 72">
-    <text id="title-content-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 40 1152 72">
+    <text id="title-content-title-carrier" data-pptx-carrier="true"
       x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="title-content-object-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="88 176 1104 456">
-    <text id="title-content-object-carrier" data-pptx-placeholder-carrier="true"
+  <g id="title-content-object-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="88 176 1104 456">
+    <text id="title-content-object-carrier" data-pptx-carrier="true"
       x="88" y="214" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CONTENT_AREA}}</text>
   </g>

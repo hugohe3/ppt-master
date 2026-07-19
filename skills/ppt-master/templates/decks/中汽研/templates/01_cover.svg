@@ -17,27 +17,27 @@
     stroke-width="1" stroke-opacity="0.4" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <g id="cover-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="160 356 960 92">
-    <text id="cover-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="160 356 960 92">
+    <text id="cover-title-carrier" data-pptx-carrier="true"
       x="640" y="416" text-anchor="middle" fill="#FFFFFF"
       font-family="Microsoft YaHei, SimHei, Arial, sans-serif"
       font-size="48" font-weight="700">{{TITLE}}</text>
   </g>
-  <g id="cover-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="220 452 840 56">
-    <text id="cover-subtitle-carrier" data-pptx-placeholder-carrier="true"
+  <g id="cover-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="220 452 840 56">
+    <text id="cover-subtitle-carrier" data-pptx-carrier="true"
       x="640" y="490" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.86"
       font-family="Microsoft YaHei, Arial, sans-serif" font-size="26">{{SUBTITLE}}</text>
   </g>
-  <g id="cover-author-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="300 560 680 44">
-    <text id="cover-author-carrier" data-pptx-placeholder-carrier="true"
+  <g id="cover-author-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="300 560 680 44">
+    <text id="cover-author-carrier" data-pptx-carrier="true"
       x="640" y="590" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.9"
       font-family="Microsoft YaHei, Arial, sans-serif" font-size="22">{{AUTHOR}}</text>
   </g>
-  <g id="cover-footer-slot" data-pptx-placeholder="footer" data-pptx-placeholder-idx="3"
-    data-pptx-placeholder-bounds="300 606 680 32">
-    <text id="cover-footer-carrier" data-pptx-placeholder-carrier="true"
+  <g id="cover-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="3"
+    data-pptx-bounds="300 606 680 32">
+    <text id="cover-footer-carrier" data-pptx-carrier="true"
       x="640" y="628" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.7"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="16">{{AUTHOR_EN}}</text>
   </g>

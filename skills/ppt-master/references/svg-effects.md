@@ -286,7 +286,7 @@ only the root SVG and ordinary visual `<g>` wrappers; definitions, text,
 render-only geometry details, and other non-visual containers cannot own this
 transport. The outer wrapper may additionally carry `id`, a supported
 `transform`, registered structure metadata (`data-pptx-layer` or
-`data-pptx-placeholder-carrier`), and the importer metadata
+`data-pptx-carrier`), and the importer metadata
 `data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`,
 `data-pptx-shape-name`, and `data-pptx-shape-scope`. A shape clip is present
 only when exact `data-pptx-crop="1"` and a registered image-only `clip-path`

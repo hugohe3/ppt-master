@@ -2075,7 +2075,7 @@ def _shape_bounds_emu(
     if xfrm is None:
         raise TemplateStructureError(
             "Placeholder shape has no directly readable DrawingML transform; "
-            "set data-pptx-placeholder-bounds"
+            "set data-pptx-bounds"
         )
     off = xfrm.find(f"{{{DML_NS}}}off")
     ext = xfrm.find(f"{{{DML_NS}}}ext")

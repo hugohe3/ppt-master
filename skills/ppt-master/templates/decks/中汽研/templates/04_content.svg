@@ -22,28 +22,28 @@
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect id="content-panel-accent" x="60" y="110" width="6" height="550" fill="#004098"
     data-pptx-layer="layout" data-pptx-editable="false"/>
-  <g id="content-chapter-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="60 30 50 50">
-    <text id="content-chapter-carrier" data-pptx-placeholder-carrier="true"
+  <g id="content-chapter-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="60 30 50 50">
+    <text id="content-chapter-carrier" data-pptx-carrier="true"
       x="85" y="65" text-anchor="middle" fill="#FFFFFF"
       font-family="Arial, sans-serif" font-size="24" font-weight="700">{{CHAPTER_NUM}}</text>
   </g>
   <g id="content-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="130 32 920 48">
-    <text id="content-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="130 32 920 48">
+    <text id="content-title-carrier" data-pptx-carrier="true"
       x="130" y="65" fill="#333333"
       font-family="Microsoft YaHei, SimHei, Arial, sans-serif"
       font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="content-object-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="88 138 1104 494">
-    <text id="content-object-carrier" data-pptx-placeholder-carrier="true"
+  <g id="content-object-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="88 138 1104 494">
+    <text id="content-object-carrier" data-pptx-carrier="true"
       x="88" y="172" fill="#7890A8"
       font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">{{CONTENT_AREA}}</text>
   </g>
   <g id="content-slide-number-slot" data-pptx-placeholder="slide-number"
-    data-pptx-placeholder-idx="3" data-pptx-placeholder-bounds="1140 682 80 24">
-    <text id="content-slide-number-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-idx="3" data-pptx-bounds="1140 682 80 24">
+    <text id="content-slide-number-carrier" data-pptx-carrier="true"
       x="1220" y="702" text-anchor="end" fill="#999999"
       font-family="Arial, sans-serif" font-size="14">{{PAGE_NUM}}</text>
   </g>

@@ -75,43 +75,43 @@
     data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <g id="agenda-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="40 42 146 44">
-    <text id="agenda-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="40 42 146 44">
+    <text id="agenda-title-carrier" data-pptx-carrier="true"
       x="40" y="73" fill="#FFFFFF"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="24" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="agenda-item-1-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="496 186 624 50">
-    <text id="agenda-item-1-carrier" data-pptx-placeholder-carrier="true"
+  <g id="agenda-item-1-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="496 186 624 50">
+    <text id="agenda-item-1-carrier" data-pptx-carrier="true"
       x="496" y="218" fill="#C00000"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="24" font-weight="700">{{TOC_ITEM_1_TITLE}}</text>
   </g>
-  <g id="agenda-item-2-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="496 290 624 50">
-    <text id="agenda-item-2-carrier" data-pptx-placeholder-carrier="true"
+  <g id="agenda-item-2-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="496 290 624 50">
+    <text id="agenda-item-2-carrier" data-pptx-carrier="true"
       x="496" y="322" fill="#111827"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="24" font-weight="700">{{TOC_ITEM_2_TITLE}}</text>
   </g>
-  <g id="agenda-item-3-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="3"
-    data-pptx-placeholder-bounds="496 394 624 50">
-    <text id="agenda-item-3-carrier" data-pptx-placeholder-carrier="true"
+  <g id="agenda-item-3-slot" data-pptx-placeholder="body" data-pptx-idx="3"
+    data-pptx-bounds="496 394 624 50">
+    <text id="agenda-item-3-carrier" data-pptx-carrier="true"
       x="496" y="426" fill="#111827"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="24" font-weight="700">{{TOC_ITEM_3_TITLE}}</text>
   </g>
-  <g id="agenda-item-4-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="4"
-    data-pptx-placeholder-bounds="496 498 624 50">
-    <text id="agenda-item-4-carrier" data-pptx-placeholder-carrier="true"
+  <g id="agenda-item-4-slot" data-pptx-placeholder="body" data-pptx-idx="4"
+    data-pptx-bounds="496 498 624 50">
+    <text id="agenda-item-4-carrier" data-pptx-carrier="true"
       x="496" y="530" fill="#111827"
       font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
       font-size="24" font-weight="700">{{TOC_ITEM_4_TITLE}}</text>
   </g>
   <g id="agenda-slide-number-slot" data-pptx-placeholder="slide-number"
-    data-pptx-placeholder-idx="5" data-pptx-placeholder-bounds="1128 666 80 24">
-    <text id="agenda-slide-number-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-idx="5" data-pptx-bounds="1128 666 80 24">
+    <text id="agenda-slide-number-carrier" data-pptx-carrier="true"
       x="1208" y="684" text-anchor="end" fill="#6B7280"
       font-family="Arial, sans-serif" font-size="13">{{PAGE_NUM}}</text>
   </g>

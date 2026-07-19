@@ -61,9 +61,9 @@ Use one direct root group as the authoring boundary and one compatible direct ch
 ```xml
 <g id="title-slot"
    data-pptx-placeholder="title"
-   data-pptx-placeholder-bounds="72 48 1136 72">
+   data-pptx-bounds="72 48 1136 72">
   <text id="title-carrier"
-        data-pptx-placeholder-carrier="true"
+        data-pptx-carrier="true"
         x="72" y="100">Actual title</text>
 </g>
 ```
@@ -71,9 +71,9 @@ Use one direct root group as the authoring boundary and one compatible direct ch
 | Requirement | Rule |
 |---|---|
 | Placement | The slot `<g id>` is a direct root child. Structural metadata may not be nested below it. |
-| Bounds | `data-pptx-placeholder-bounds="x y width height"` is mandatory, finite, and positive. It describes the reusable design zone, not the current glyph/content tight bounds. |
-| Carrier | The group contains exactly one compatible direct drawable child marked `data-pptx-placeholder-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. |
-| Identity | `data-pptx-placeholder-idx` is optional; effective indices must be unique within one Layout. Preserve a source index when reconstructing an existing PPTX. |
+| Bounds | `data-pptx-bounds="x y width height"` is mandatory, finite, and positive. It describes the reusable design zone, not the current glyph/content tight bounds. |
+| Carrier | The group contains exactly one compatible direct drawable child marked `data-pptx-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. |
+| Identity | `data-pptx-idx` is optional; effective indices must be unique within one Layout. Preserve a source index when reconstructing an existing PPTX. |
 | Fixed decoration | Reusable decoration does not belong in the slot. Author it as a root Layout atom. Page-specific labels/captions use another slot or remain Slide-local. |
 
 Canonical placeholder values are `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and `slide-number`. Carrier compatibility is defined in [`pptx-structure-interface.md`](./pptx-structure-interface.md) §2.
@@ -85,8 +85,8 @@ When one reusable region is a composite object that cannot bind to one real Powe
 ```xml
 <g id="hero-composite-slot"
    data-pptx-placeholder="object"
-   data-pptx-placeholder-binding="proxy"
-   data-pptx-placeholder-bounds="544 160 664 472">
+   data-pptx-binding="proxy"
+   data-pptx-bounds="544 160 664 472">
   <rect x="544" y="160" width="664" height="472" fill="#E2E8F0"/>
   <text x="576" y="214">Visible composite content</text>
 </g>

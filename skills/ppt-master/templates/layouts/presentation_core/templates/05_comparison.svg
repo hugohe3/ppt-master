@@ -11,32 +11,32 @@
   <rect id="comparison-divider" x="638" y="184" width="4" height="440" rx="2" fill="#CBD5E1"
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <g id="comparison-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="64 40 1152 72">
-    <text id="comparison-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="64 40 1152 72">
+    <text id="comparison-title-carrier" data-pptx-carrier="true"
       x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
   </g>
-  <g id="comparison-left-title-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="88 176 504 56">
-    <text id="comparison-left-title-carrier" data-pptx-placeholder-carrier="true"
+  <g id="comparison-left-title-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="88 176 504 56">
+    <text id="comparison-left-title-carrier" data-pptx-carrier="true"
       x="88" y="214" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="24" font-weight="700">{{LEFT_TITLE}}</text>
   </g>
-  <g id="comparison-left-content-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="88 248 504 376">
-    <text id="comparison-left-content-carrier" data-pptx-placeholder-carrier="true"
+  <g id="comparison-left-content-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="88 248 504 376">
+    <text id="comparison-left-content-carrier" data-pptx-carrier="true"
       x="88" y="286" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{LEFT_CONTENT}}</text>
   </g>
-  <g id="comparison-right-title-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="3"
-    data-pptx-placeholder-bounds="688 176 504 56">
-    <text id="comparison-right-title-carrier" data-pptx-placeholder-carrier="true"
+  <g id="comparison-right-title-slot" data-pptx-placeholder="body" data-pptx-idx="3"
+    data-pptx-bounds="688 176 504 56">
+    <text id="comparison-right-title-carrier" data-pptx-carrier="true"
       x="688" y="214" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
       font-size="24" font-weight="700">{{RIGHT_TITLE}}</text>
   </g>
-  <g id="comparison-right-content-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="4"
-    data-pptx-placeholder-bounds="688 248 504 376">
-    <text id="comparison-right-content-carrier" data-pptx-placeholder-carrier="true"
+  <g id="comparison-right-content-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="688 248 504 376">
+    <text id="comparison-right-content-carrier" data-pptx-carrier="true"
       x="688" y="286" fill="#94A3B8"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{RIGHT_CONTENT}}</text>
   </g>

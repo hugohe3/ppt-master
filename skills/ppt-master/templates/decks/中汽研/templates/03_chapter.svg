@@ -19,22 +19,22 @@
     data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect id="section-title-accent" x="600" y="370" width="80" height="6" fill="#FFFFFF"
     data-pptx-layer="layout" data-pptx-editable="false"/>
-  <g id="section-number-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
-    data-pptx-placeholder-bounds="440 176 400 152">
-    <text id="section-number-carrier" data-pptx-placeholder-carrier="true"
+  <g id="section-number-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="440 176 400 152">
+    <text id="section-number-carrier" data-pptx-carrier="true"
       x="640" y="288" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.1"
       font-family="Arial, sans-serif" font-size="120" font-weight="700">{{CHAPTER_NUM}}</text>
   </g>
   <g id="section-title-slot" data-pptx-placeholder="title"
-    data-pptx-placeholder-bounds="180 398 920 86">
-    <text id="section-title-carrier" data-pptx-placeholder-carrier="true"
+    data-pptx-bounds="180 398 920 86">
+    <text id="section-title-carrier" data-pptx-carrier="true"
       x="640" y="454" text-anchor="middle" fill="#FFFFFF"
       font-family="Microsoft YaHei, SimHei, Arial, sans-serif"
       font-size="48" font-weight="700">{{CHAPTER_TITLE}}</text>
   </g>
-  <g id="section-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="2"
-    data-pptx-placeholder-bounds="240 494 800 50">
-    <text id="section-subtitle-carrier" data-pptx-placeholder-carrier="true"
+  <g id="section-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="2"
+    data-pptx-bounds="240 494 800 50">
+    <text id="section-subtitle-carrier" data-pptx-carrier="true"
       x="640" y="528" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.72"
       font-family="Arial, Microsoft YaHei, sans-serif" font-size="24">{{CHAPTER_SUBTITLE}}</text>
   </g>
