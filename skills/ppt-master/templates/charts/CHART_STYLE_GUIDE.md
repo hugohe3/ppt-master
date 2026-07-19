@@ -311,6 +311,16 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `segmented_wheel.svg` | 中心主题、等权扇区和配对说明卡 |
 | `sankey_chart.svg` | 零损耗流向、节点层级和流量编码 |
 | `roadmap_vertical.svg` | 纵向里程碑、状态轨道和目标侧栏 |
+| `snake_flow.svg` | 多行蛇形长流程、顺序节点和配对里程碑卡 |
+| `concentric_circles.svg` | 同心优先级、资源占比和分层说明卡 |
+| `scatter_chart.svg` | 双系列散点、回归趋势、置信区间和统计洞察 |
+| `area_chart.svg` | 双系列累计面积、月度趋势和摘要指标 |
+| `chevron_process.svg` | 连续阶段箭头、周期带和阶段交付物 |
+| `radar_chart.svg` | 多维能力对比、系列面积和基准数据表 |
+| `module_composition.svg` | 父模块边界、三级处理链和端到端数据流 |
+| `fishbone_diagram.svg` | 核心问题、六类原因分支和具体成因标签 |
+| `numbered_steps.svg` | 编号步骤、连接顺序、任务卡和阶段时长 |
+| `pareto_chart.svg` | 80/20 分界、降序柱体、累计曲线和行动洞察 |
 
 **Hard rule**: 修改其他模板时先冻结可见文本、数据和结构层级，再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线验证。未经明确说明的文本删除、改写或结构边界丢失都会阻断迁移。不要仅为追求 catalog 一次性整齐而批量重写。
 
