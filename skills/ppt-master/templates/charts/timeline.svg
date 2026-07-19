@@ -1,299 +1,130 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!--
-    Timeline / Roadmap Template
-    Purpose: Chronological event display and project planning
-    Use cases: Product roadmaps, historical milestones, project plans
-    Feature: Year-band background, half-rounded card tabs (§11.1), TODAY focus marker, status-driven semantics
-    -->
-    <defs>
-        <!-- Track gradient: Emerald → Indigo at the In-Progress node -->
-        <linearGradient id="trackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#10B981"/>
-            <stop offset="70%" stop-color="#10B981"/>
-            <stop offset="100%" stop-color="#6366F1"/>
-        </linearGradient>
-        <!-- In-Progress node pulse ring -->
-        <radialGradient id="pulseGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#6366F1" stop-opacity="0.35"/>
-            <stop offset="60%" stop-color="#6366F1" stop-opacity="0.12"/>
-            <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
-        </radialGradient>
-        <!-- Soft card shadow (static elevation) -->
-        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="3" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-        <!-- Focus shadow for In-Progress card (lifted) -->
-        <filter id="focusShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
-            <feOffset dx="0" dy="6" result="offsetblur"/>
-            <feFlood flood-color="#4338CA" flood-opacity="0.20" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
-
-    <!-- Background -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <!-- Timeline: six milestones with completed, current, and planned states. -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
-    <!-- ==================== Header ==================== -->
-    <g id="header">
-        <!-- Accent bar -->
-        <rect x="60" y="48" width="4" height="56" rx="2" fill="#6366F1"/>
-        <text x="78" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#0F172A">
-            <tspan>Product Development Roadmap</tspan>
-        </text>
-        <text x="78" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="1.5">
-            <tspan>2024 — 2026 · SIX KEY MILESTONES</tspan>
-        </text>
-
-        <!-- Progress badge (right) -->
-        <rect x="1010" y="56" width="210" height="48" rx="24" fill="#F1F5F9"/>
-        <rect x="1010" y="56" width="105" height="48" rx="24" fill="#10B981"/>
-        <rect x="1095" y="56" width="20" height="48" fill="#10B981"/>
-        <text x="1062" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">
-            <tspan>50% DONE</tspan>
-        </text>
-        <text x="1167" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#475569" text-anchor="middle" letter-spacing="1">
-            <tspan>3 / 6</tspan>
-        </text>
+    <!-- Header -->
+    <g id="header" data-pptx-bounds="60 38 1160 72">
+        <text x="60" y="74" font-size="32" font-weight="800" fill="#0F172A">Product Development Roadmap</text>
+        <text x="60" y="102" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1">2024—2026 · SIX KEY MILESTONES</text>
     </g>
 
-    <!-- ==================== Year Bands (background) ==================== -->
-    <g id="yearBands">
-        <!-- 2024 band -->
-        <rect x="100" y="334" width="540" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="120" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
-            <tspan>2024</tspan>
-        </text>
-        <!-- 2025 band -->
-        <rect x="650" y="334" width="330" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="670" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
-            <tspan>2025</tspan>
-        </text>
-        <!-- 2026 band -->
-        <rect x="990" y="334" width="190" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="1010" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
-            <tspan>2026</tspan>
-        </text>
+    <!-- Year labels and timeline track -->
+    <g id="timeline-track" data-pptx-bounds="100 314 1080 66">
+        <text x="120" y="334" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">2024</text>
+        <text x="670" y="334" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">2025</text>
+        <text x="1010" y="334" font-size="12" font-weight="700" fill="#94A3B8" letter-spacing="1.5">2026</text>
+        <line x1="120" y1="360" x2="1160" y2="360" stroke="#CBD5E1" stroke-width="8" stroke-linecap="round"/>
+        <line x1="120" y1="360" x2="736" y2="360" stroke="#2563EB" stroke-width="8" stroke-linecap="round"/>
     </g>
 
-    <!-- ==================== Timeline Track ==================== -->
-    <g id="timelineTrack">
-        <!-- Future track (dashed, light) -->
-        <line x1="120" y1="360" x2="1160" y2="360" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round"/>
-        <line x1="736" y1="360" x2="1160" y2="360" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" stroke-dasharray="2,8"/>
-        <!-- Active progress track (gradient) -->
-        <rect x="115" y="355" width="626" height="10" rx="5" fill="url(#trackGrad)"/>
+    <!-- Current-date marker -->
+    <g id="current-date-marker" data-pptx-bounds="680 112 112 222">
+        <line x1="736" y1="142" x2="736" y2="334" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="736" y="132" font-size="12" font-weight="700" fill="#2563EB" text-anchor="middle" letter-spacing="1.5">TODAY</text>
     </g>
 
-    <!-- ==================== TODAY Indicator ==================== -->
-    <g id="todayMarker">
-        <line x1="736" y1="148" x2="736" y2="334" stroke="#6366F1" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.45"/>
-        <rect x="691" y="124" width="90" height="26" rx="13" fill="#6366F1"/>
-        <text x="736" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
-            <tspan>· TODAY ·</tspan>
-        </text>
+    <!-- Milestone nodes -->
+    <g id="milestone-nodes" data-pptx-bounds="140 300 1000 120">
+        <g id="node-1">
+            <line x1="160" y1="304" x2="160" y2="342" stroke="#2563EB" stroke-width="2"/>
+            <circle cx="160" cy="360" r="16" fill="#2563EB"/>
+            <path d="M 153 360 L 158 365 L 167 355" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="node-2">
+            <line x1="352" y1="378" x2="352" y2="416" stroke="#2563EB" stroke-width="2"/>
+            <circle cx="352" cy="360" r="16" fill="#2563EB"/>
+            <path d="M 345 360 L 350 365 L 359 355" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="node-3">
+            <line x1="544" y1="304" x2="544" y2="342" stroke="#2563EB" stroke-width="2"/>
+            <circle cx="544" cy="360" r="16" fill="#2563EB"/>
+            <path d="M 537 360 L 542 365 L 551 355" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="node-4">
+            <line x1="736" y1="378" x2="736" y2="416" stroke="#2563EB" stroke-width="2"/>
+            <circle cx="736" cy="360" r="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="4"/>
+            <circle cx="736" cy="360" r="7" fill="#2563EB"/>
+        </g>
+        <g id="node-5">
+            <line x1="928" y1="304" x2="928" y2="342" stroke="#94A3B8" stroke-width="2"/>
+            <circle cx="928" cy="360" r="13" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
+        </g>
+        <g id="node-6">
+            <line x1="1120" y1="378" x2="1120" y2="416" stroke="#94A3B8" stroke-width="2"/>
+            <circle cx="1120" cy="360" r="13" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
+        </g>
     </g>
 
-    <!-- ==================== Nodes ==================== -->
-    <!-- Node 1: Completed -->
-    <g id="node-1">
-        <line x1="160" y1="304" x2="160" y2="340" stroke="#10B981" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
-        <circle cx="160" cy="360" r="26" fill="#10B981" opacity="0.12"/>
-        <circle cx="160" cy="360" r="17" fill="#10B981"/>
-        <path d="M 153,360 L 158,365 L 167,355" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <!-- Node 2: Completed -->
-    <g id="node-2">
-        <line x1="352" y1="380" x2="352" y2="416" stroke="#10B981" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
-        <circle cx="352" cy="360" r="26" fill="#10B981" opacity="0.12"/>
-        <circle cx="352" cy="360" r="17" fill="#10B981"/>
-        <path d="M 345,360 L 350,365 L 359,355" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <!-- Node 3: Completed -->
-    <g id="node-3">
-        <line x1="544" y1="304" x2="544" y2="340" stroke="#10B981" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
-        <circle cx="544" cy="360" r="26" fill="#10B981" opacity="0.12"/>
-        <circle cx="544" cy="360" r="17" fill="#10B981"/>
-        <path d="M 537,360 L 542,365 L 551,355" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <!-- Node 4: In-Progress (focal) -->
-    <g id="node-4">
-        <line x1="736" y1="380" x2="736" y2="416" stroke="#6366F1" stroke-width="2" stroke-dasharray="4,4" opacity="0.7"/>
-        <circle cx="736" cy="360" r="42" fill="url(#pulseGrad)"/>
-        <circle cx="736" cy="360" r="22" fill="#FFFFFF" stroke="#6366F1" stroke-width="4"/>
-        <circle cx="736" cy="360" r="9" fill="#6366F1"/>
-    </g>
-    <!-- Node 5: Planned -->
-    <g id="node-5">
-        <line x1="928" y1="304" x2="928" y2="340" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="4,4"/>
-        <circle cx="928" cy="360" r="22" fill="#FFFFFF"/>
-        <circle cx="928" cy="360" r="13" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
-        <circle cx="928" cy="360" r="3" fill="#94A3B8"/>
-    </g>
-    <!-- Node 6: Planned -->
-    <g id="node-6">
-        <line x1="1120" y1="380" x2="1120" y2="416" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="4,4"/>
-        <circle cx="1120" cy="360" r="22" fill="#FFFFFF"/>
-        <circle cx="1120" cy="360" r="13" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
-        <circle cx="1120" cy="360" r="3" fill="#94A3B8"/>
+    <!-- Milestone cards -->
+    <g id="milestone-cards" data-pptx-bounds="60 150 1160 440">
+        <g id="card-1">
+            <rect x="62" y="160" width="196" height="144" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <rect x="62" y="160" width="196" height="34" rx="10" fill="#2563EB"/>
+            <rect x="62" y="184" width="196" height="10" fill="#2563EB"/>
+            <text x="160" y="183" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">2024 Q1</text>
+            <text x="160" y="230" font-size="16" font-weight="700" fill="#0F172A" text-anchor="middle">Project Initiation</text>
+            <text x="160" y="256" font-size="13" fill="#64748B" text-anchor="middle">Requirement analysis</text>
+            <text x="160" y="278" font-size="13" fill="#64748B" text-anchor="middle">Technical architecture</text>
+        </g>
+
+        <g id="card-2">
+            <rect x="254" y="416" width="196" height="144" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <rect x="254" y="526" width="196" height="34" rx="10" fill="#2563EB"/>
+            <rect x="254" y="526" width="196" height="10" fill="#2563EB"/>
+            <text x="352" y="549" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">2024 Q2</text>
+            <text x="352" y="452" font-size="16" font-weight="700" fill="#0F172A" text-anchor="middle">MVP Development</text>
+            <text x="352" y="478" font-size="13" fill="#64748B" text-anchor="middle">Core features launch</text>
+            <text x="352" y="500" font-size="13" fill="#64748B" text-anchor="middle">Alpha testing</text>
+        </g>
+
+        <g id="card-3">
+            <rect x="446" y="160" width="196" height="144" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <rect x="446" y="160" width="196" height="34" rx="10" fill="#2563EB"/>
+            <rect x="446" y="184" width="196" height="10" fill="#2563EB"/>
+            <text x="544" y="183" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">2024 Q3</text>
+            <text x="544" y="230" font-size="16" font-weight="700" fill="#0F172A" text-anchor="middle">Public Beta</text>
+            <text x="544" y="256" font-size="13" fill="#64748B" text-anchor="middle">Open registration</text>
+            <text x="544" y="278" font-size="13" fill="#64748B" text-anchor="middle">5,000+ users target</text>
+        </g>
+
+        <g id="card-4">
+            <rect x="630" y="416" width="212" height="164" rx="10" fill="#FFFFFF" stroke="#2563EB" stroke-width="2.5"/>
+            <text x="650" y="444" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1">IN PROGRESS</text>
+            <text x="736" y="482" font-size="17" font-weight="700" fill="#0F172A" text-anchor="middle">Feature Iteration</text>
+            <text x="736" y="508" font-size="13" fill="#64748B" text-anchor="middle">AI integration</text>
+            <text x="736" y="530" font-size="13" fill="#64748B" text-anchor="middle">Multi-platform sync</text>
+            <line x1="650" y1="550" x2="822" y2="550" stroke="#2563EB" stroke-width="2"/>
+            <text x="736" y="572" font-size="13" font-weight="700" fill="#2563EB" text-anchor="middle">2024 Q4</text>
+        </g>
+
+        <g id="card-5">
+            <rect x="830" y="160" width="196" height="144" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <line x1="830" y1="194" x2="1026" y2="194" stroke="#CBD5E1" stroke-width="1.5"/>
+            <text x="928" y="183" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">2025 Q2</text>
+            <text x="928" y="230" font-size="16" font-weight="700" fill="#334155" text-anchor="middle">Commercialization</text>
+            <text x="928" y="256" font-size="13" fill="#64748B" text-anchor="middle">Premium tiers launch</text>
+            <text x="928" y="278" font-size="13" fill="#64748B" text-anchor="middle">Marketing campaign</text>
+        </g>
+
+        <g id="card-6">
+            <rect x="1022" y="416" width="196" height="144" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <line x1="1022" y1="526" x2="1218" y2="526" stroke="#CBD5E1" stroke-width="1.5"/>
+            <text x="1120" y="549" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">2026 Q1</text>
+            <text x="1120" y="452" font-size="16" font-weight="700" fill="#334155" text-anchor="middle">Scale-up</text>
+            <text x="1120" y="478" font-size="13" fill="#64748B" text-anchor="middle">Global expansion</text>
+            <text x="1120" y="500" font-size="13" fill="#64748B" text-anchor="middle">Ecosystem building</text>
+        </g>
     </g>
 
-    <!-- ==================== Cards ==================== -->
-    <!-- Card 1 (Completed, above) -->
-    <g id="card-1">
-        <rect x="62" y="160" width="196" height="144" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <path d="M 74 160 h 172 a 12 12 0 0 1 12 12 v 28 h -196 v -28 a 12 12 0 0 1 12 -12 Z" fill="#10B981"/>
-        <text x="160" y="183" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
-            <tspan>2024 Q1</tspan>
-        </text>
-        <text x="160" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">
-            <tspan>Project Initiation</tspan>
-        </text>
-        <text x="160" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">
-            <tspan>Requirement analysis</tspan>
-        </text>
-        <text x="160" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">
-            <tspan>Technical architecture</tspan>
-        </text>
-        <!-- Status check -->
-        <circle cx="244" cy="290" r="9" fill="#10B981"/>
-        <path d="M 240,290 L 243,293 L 248,287" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Status legend -->
+    <g id="legend" data-pptx-bounds="60 646 380 28"
+       transform="translate(60 658)" font-size="13" fill="#475569">
+        <circle cx="8" cy="0" r="7" fill="#2563EB"/>
+        <text x="22" y="4">Completed</text>
+        <circle cx="130" cy="0" r="7" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+        <text x="144" y="4">In progress</text>
+        <circle cx="260" cy="0" r="7" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+        <text x="274" y="4">Planned</text>
     </g>
-
-    <!-- Card 2 (Completed, below) -->
-    <g id="card-2">
-        <rect x="254" y="416" width="196" height="144" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <path d="M 254 548 v -136 a 12 12 0 0 1 12 -12 h 172 a 12 12 0 0 1 12 12 v 136 a 12 12 0 0 1 -12 12 h -172 a 12 12 0 0 1 -12 -12 Z" fill="none"/>
-        <path d="M 254 548 v 0 a 12 12 0 0 0 12 12 h 172 a 12 12 0 0 0 12 -12 v -28 h -196 Z" fill="#10B981"/>
-        <text x="352" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
-            <tspan>2024 Q2</tspan>
-        </text>
-        <text x="352" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">
-            <tspan>MVP Development</tspan>
-        </text>
-        <text x="352" y="476" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">
-            <tspan>Core features launch</tspan>
-        </text>
-        <text x="352" y="496" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">
-            <tspan>Alpha testing</tspan>
-        </text>
-        <circle cx="436" cy="432" r="9" fill="#10B981"/>
-        <path d="M 432,432 L 435,435 L 440,429" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-
-    <!-- Card 3 (Completed, above) -->
-    <g id="card-3">
-        <rect x="446" y="160" width="196" height="144" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <path d="M 458 160 h 172 a 12 12 0 0 1 12 12 v 28 h -196 v -28 a 12 12 0 0 1 12 -12 Z" fill="#10B981"/>
-        <text x="544" y="183" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
-            <tspan>2024 Q3</tspan>
-        </text>
-        <text x="544" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">
-            <tspan>Public Beta</tspan>
-        </text>
-        <text x="544" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">
-            <tspan>Open registration</tspan>
-        </text>
-        <text x="544" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#10B981" text-anchor="middle">
-            <tspan font-weight="800">5,000+</tspan><tspan> users target</tspan>
-        </text>
-        <circle cx="628" cy="290" r="9" fill="#10B981"/>
-        <path d="M 624,290 L 627,293 L 632,287" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-
-    <!-- Card 4 (In Progress, below — focal) -->
-    <g id="card-4">
-        <rect x="630" y="416" width="212" height="164" rx="14" fill="#FFFFFF" filter="url(#focusShadow)"/>
-        <path d="M 630 564 v 0 a 16 16 0 0 0 16 16 h 180 a 16 16 0 0 0 16 -16 v -32 h -212 Z" fill="#6366F1"/>
-        <text x="736" y="554" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
-            <tspan>2024 Q4</tspan>
-        </text>
-        <!-- Status pill at top -->
-        <rect x="650" y="430" width="110" height="24" rx="12" fill="#EEF2FF"/>
-        <circle cx="664" cy="442" r="4" fill="#6366F1"/>
-        <text x="676" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" letter-spacing="1.5">
-            <tspan>IN PROGRESS</tspan>
-        </text>
-        <text x="736" y="482" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="800" fill="#0F172A" text-anchor="middle">
-            <tspan>Feature Iteration</tspan>
-        </text>
-        <text x="736" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle">
-            <tspan>AI integration</tspan>
-        </text>
-        <text x="736" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle">
-            <tspan>Multi-platform sync</tspan>
-        </text>
-    </g>
-
-    <!-- Card 5 (Planned, above) -->
-    <g id="card-5">
-        <rect x="830" y="160" width="196" height="144" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <path d="M 842 160 h 172 a 12 12 0 0 1 12 12 v 28 h -196 v -28 a 12 12 0 0 1 12 -12 Z" fill="#F1F5F9"/>
-        <text x="928" y="183" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#64748B" text-anchor="middle" letter-spacing="2">
-            <tspan>2025 Q2</tspan>
-        </text>
-        <text x="928" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#334155" text-anchor="middle">
-            <tspan>Commercialization</tspan>
-        </text>
-        <text x="928" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8" text-anchor="middle">
-            <tspan>Premium tiers launch</tspan>
-        </text>
-        <text x="928" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8" text-anchor="middle">
-            <tspan>Marketing campaign</tspan>
-        </text>
-        <circle cx="1012" cy="290" r="9" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
-    </g>
-
-    <!-- Card 6 (Planned, below) -->
-    <g id="card-6">
-        <rect x="1022" y="416" width="196" height="144" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <path d="M 1022 548 v 0 a 12 12 0 0 0 12 12 h 172 a 12 12 0 0 0 12 -12 v -28 h -196 Z" fill="#F1F5F9"/>
-        <text x="1120" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#64748B" text-anchor="middle" letter-spacing="2">
-            <tspan>2026 Q1</tspan>
-        </text>
-        <text x="1120" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#334155" text-anchor="middle">
-            <tspan>Scale-up</tspan>
-        </text>
-        <text x="1120" y="476" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8" text-anchor="middle">
-            <tspan>Global expansion</tspan>
-        </text>
-        <text x="1120" y="496" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8" text-anchor="middle">
-            <tspan>Ecosystem building</tspan>
-        </text>
-        <circle cx="1204" cy="432" r="9" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
-    </g>
-
-    <!-- ==================== Legend ==================== -->
-    <g id="legend" transform="translate(60, 660)">
-        <circle cx="8" cy="0" r="8" fill="#10B981"/>
-        <path d="M 4,0 L 7,3 L 12,-3" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <text x="24" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">
-            <tspan>Completed</tspan>
-        </text>
-        <circle cx="130" cy="0" r="8" fill="#FFFFFF" stroke="#6366F1" stroke-width="2.5"/>
-        <circle cx="130" cy="0" r="3.5" fill="#6366F1"/>
-        <text x="146" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">
-            <tspan>In Progress</tspan>
-        </text>
-        <circle cx="252" cy="0" r="7" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
-        <text x="266" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">
-            <tspan>Planned</tspan>
-        </text>
-    </g>
-
-    <!-- ==================== Footer ==================== -->
-    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="end">
-        <tspan>Data source: Product Management Dept</tspan>
-    </text>
 </svg>
