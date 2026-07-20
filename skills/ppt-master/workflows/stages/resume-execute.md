@@ -50,7 +50,7 @@ Read skills/ppt-master/workflows/generate-pptx.md
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
-- Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked mode / visual-style files), then only the branches selected by its condition table
+- Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked preset mode / visual-style files); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
 - Design Parameter Confirmation
 - Read the project Design Spec and, when structured, the template Design Spec once; retain both in the fresh execution context
 - Per-page `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage` load + sequential page generation; the stable anchor projection repeats intentionally without becoming a color/font allowlist, while each prototype/chart SVG is loaded only before its first use or after its SHA changes

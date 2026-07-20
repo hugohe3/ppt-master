@@ -56,13 +56,13 @@ Every AI image uses one deck-wide rendering, the deck's stable color anchors/sem
 |---|---|
 | [`image-renderings/_index.md`](./image-renderings/_index.md) — rendering catalog + auto-selection table | Always (Step 1 below) |
 | [`image-type-templates/_index.md`](./image-type-templates/_index.md) — type catalog + auto-selection table | Always (Step 1 below) |
-| `image-renderings/<chosen>.md` | After Step 2 picks the rendering — only the chosen one |
+| `image-renderings/<chosen>.md` | After Step 2 resolves the rendering — one preset file, or every exact reference listed for `custom` |
 | `image-type-templates/<chosen>.md` | After Step 3 picks the type per image — only the types actually used |
 
 **Hard rule — on-demand loading**:
 
 - Read the rendering and type `_index.md` files once at role entry.
-- After locking inputs, read **only** the specific rendering / type files selected.
+- After locking inputs, read **only** the specific preset rendering, custom rendering references, and type files selected.
 - **Never** glob-read an entire subdirectory (`image-renderings/*.md` is forbidden). Token cost balloons and the AI loses focus.
 
 ---
@@ -91,7 +91,7 @@ accent: #D4AF37
 
 Use them as identity anchors. Do not create another user-facing image-color choice. The rendering and image subject may derive coherent tonal transitions, material colors, lighting, and atmospheric hues when the context requires them, while the core roles keep their established meaning.
 
-**Hard rule — `custom` escape hatch**: when `image_rendering` is `custom`, do not read a preset rendering file. Splice `image_rendering_behavior` into the prompt. The deck color-role rows remain authoritative.
+**Hard rule — `custom` catalog basis**: when `image_rendering` is `custom`, first inspect the optional `image_rendering_references` row. If present, read every exact `image-renderings/<id>.md` it lists and synthesize their line, texture, depth, material, and mood guidance under `image_rendering_behavior` before assembling prompts. If absent, the custom is genuinely novel: read no preset file and use `image_rendering_behavior` directly. Never infer or add adjacent references during execution. The deck color-role rows remain authoritative.
 
 **Declared-inference fallback — when an existing `spec_lock.md` omits the `image_rendering` key** (see [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2):
 
@@ -659,7 +659,7 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 - Brand names or HEX codes inside the subject description (degrades output)
 - Mixing renderings or introducing an unrelated image-only palette across images in the same deck
 - Tag-soup prompts (keyword lists separated by commas without a coherent visual scene)
-- Globbing `image-renderings/*.md` or any subdirectory — read only the chosen file
+- Globbing `image-renderings/*.md` or any subdirectory — read only the chosen preset or exact custom-reference files
 - Placing an image without updating its `image_prompts.json` `status` and the resource list status
 - Switching rendering or core deck-color semantics for a single image—`hero_page` is not an exception to deck-wide coherence
 - Embedding body copy, data points, bullet lists, or long quotes inside an image — those route to SVG

@@ -335,11 +335,11 @@ Read the execution references for this deck's locked `mode` + `visual_style` (fr
 Read references/executor-base.md                  # REQUIRED: flat/shared execution core
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility core
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
-Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
-Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
+Read references/modes/<resolved-id>.md            # one preset id, or each `mode_references` id
+Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visual_style_references` id
 ```
 
-> Read only the five always-on references above plus the conditionally triggered modules below. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
+> Read only the five always-on references above plus the conditionally triggered modules below. A preset reads its one locked file. For `mode: custom` or `visual_style: custom`, read every exact file named by the optional `mode_references` / `visual_style_references`, then synthesize those sources under the corresponding behavior. If the reference field is absent, the direction is genuinely novel: read no preset file and follow the behavior directly. Never infer adjacent references or glob `modes/` / `visual-styles/`.
 
 | Deterministic trigger | Additional references |
 |---|---|

@@ -39,9 +39,9 @@ Optional data sections: `images`, `page_charts`.
 
 | Trigger | Required addition |
 | --- | --- |
-| `mode.mode: custom` | `mode_behavior` in `mode` |
-| `visual_style.visual_style: custom` | `visual_style_behavior` in `visual_style` |
-| `colors.image_rendering: custom` | `image_rendering_behavior` in `colors` |
+| `mode.mode: custom` | `mode_behavior` in `mode`; optional `mode_references` only when catalog modes are actually used |
+| `visual_style.visual_style: custom` | `visual_style_behavior` in `visual_style`; optional `visual_style_references` only when catalog styles are actually used |
+| `colors.image_rendering: custom` | `image_rendering_behavior` in `colors`; optional `image_rendering_references` only when catalog renderings are actually used |
 | `icons.library: tabler-outline` | `stroke_width: 1.5`, `2`, or `3` |
 | `pptx_structure.mode: structured` | `template_reuse_scope: layout\|mirror`, `template_adherence`, plus `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` |
 | `pptx_structure.template_reuse_scope: mirror` | `mode: structured` and `template_adherence: strict` |
@@ -73,6 +73,7 @@ Structured section value shapes:
 - `font_family` grammar: one non-empty PPT-safe exported family stack; role-specific families may extend it in the same section.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
+- Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
 - `page_charts` grammar: `P` + at least two digits followed by a `charts_index` key; the key and `<key>.svg` must both exist.
@@ -80,6 +81,15 @@ Structured section value shapes:
 - `pptx_layouts` grammar: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`.
 - `page_pptx_layouts` grammar: `P` + at least two digits followed by a declared Layout key.
 - `page_layouts` grammar: `P` + at least two digits followed by a template SVG basename.
+
+Catalog-based custom example:
+
+```markdown
+## mode
+- mode: custom
+- mode_references: pyramid, narrative
+- mode_behavior: Lead each act with the decision-first clarity of pyramid, then develop it through a narrative tension-and-resolution arc.
+```
 
 ---
 
