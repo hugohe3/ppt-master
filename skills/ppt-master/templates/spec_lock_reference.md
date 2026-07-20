@@ -1,10 +1,10 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the machine projection of an audited `design_spec.md`. After confirmation fidelity passes, start from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md); [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns its grammar.
+`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. After confirmation fidelity passes, start from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md); [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns its grammar.
 
 ## 1. Create the artifact
 
-After Generate Step 4 Gate 1, run once and project values from the Design Spec:
+After Generate Step 4 Gate 1, run once and author the execution anchors from the Design Spec plus current page/resource/template context:
 
 ```bash
 python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>
@@ -24,8 +24,8 @@ The command refuses to overwrite an existing `spec_lock.md`. Re-running it with 
 | `communication` | `audience`, `objective`, `core_message` | Compact execution projection; `objective` combines intent and audience outcome; `consumption_mode` is optional off PPT canvases |
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
-| `colors` | Used color roles | `image_rendering` appears only for AI images |
-| `typography` | `font_family`, `body`, `title` | Sizes are unitless numbers |
+| `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
+| `typography` | `font_family`, `body`, `title` | Core family/size anchors; sizes are unitless numbers |
 | `icons` | `library`, `inventory` | `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
@@ -70,7 +70,7 @@ Structured section value shapes:
 
 ## 4. Field Grammar Index
 
-- `font_family` grammar: one PPT-safe family name; role-specific families may extend it in the same section.
+- `font_family` grammar: one non-empty PPT-safe exported family stack; role-specific families may extend it in the same section.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
@@ -92,3 +92,10 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 Validation reports unresolved `[fill...]` placeholders, wrong casing, unknown sections or fields, illegal enums, malformed page keys, missing catalog assets, broken structured-layout references, and unmet conditions. It neither rewrites the lock nor checks semantic projection; Generate Step 4 Gate 2 owns that check.
 
 Field meaning and selection logic stay in the owning Strategist modules. Executor branch references own consumption behavior. The schema owns only artifact grammar and structural conditions.
+
+## 6. Anchor and extension semantics
+
+- Confirmed core palette roles and structural title/body typography remain stable cross-page anchors.
+- Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off export-safe display families may be authored from context without adding a lock row.
+- When a contextual value becomes a recurring semantic role, add one descriptive `colors` or `*_family` row and regenerate page-context before later pages use that role.
+- Do not expand the lock merely to make an informational checker comparison empty. A lock edit should express reuse or identity, not enumerate incidental literals.

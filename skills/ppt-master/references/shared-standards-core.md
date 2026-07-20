@@ -424,12 +424,14 @@ helper cannot write a project, select layout, or generate a page.
 
 **Authoring paint boundary**: v1 accepts `none` or six-digit solid HEX fill and
 stroke, optional fill/stroke opacity, stroke width, line cap, and line join.
-Generated pages take colors from `spec_lock.md`; `create-template` authored
-templates take them from the confirmed brief and template `design_spec.md`.
+Generated pages use `spec_lock.md` for stable semantic color anchors and choose
+page-local paint from the retained Design Spec, style, and composition context;
+`create-template` authored templates take their values from the confirmed brief
+and template `design_spec.md`.
 Use ordinary SVG for gradients, patterns, filters, or other treatments outside
-this narrow contract. Registry-derived multi-path darken/lighten colors are
-authorized derivatives of the locked base paint and do not count as color
-drift. Mirror preserves source paint under §1.4 instead.
+this narrow contract. Registry-derived multi-path darken/lighten colors and
+other contextual derivatives need no separate lock row unless they become a
+recurring named role. Mirror preserves source paint under §1.4 instead.
 
 **Validation**: quality check and export both rerender authored fragments from
 `preset + frame + adjustments + group paint` and compare every visible path and

@@ -12,7 +12,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
-- Before each page, load compact page-context; its lock projection guards drift while unchanged large references stay in context.
+- Before each page, load compact page-context; its repeated global values are continuity anchors, while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
 ### SVG Page-Design Boundary
@@ -190,7 +190,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
    ```
 
-4. After the final wait returns, re-read the complete `result.json` even when the wait succeeded. Proceed from the file only when it carries `stage: final` and `status: confirmed`. On a non-zero wait, perform this same read before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure.
+4. After the final wait returns, read the complete `result.json` exactly once and retain that object through Design Spec authoring and its fidelity audit. Proceed only when it carries `stage: final` and `status: confirmed`. Do not reopen the file during normal lock authoring or downstream execution. On a non-zero wait, this same single read determines whether the persisted result succeeded before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure.
 
 5. After final confirmation or chat fallback, always release the server:
 
@@ -200,7 +200,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
 
-⛔ **GATE — write the Design Spec from the final state, then project the lock.** Treat every explicitly present final value as a user-owned Design Spec requirement. The Strategist may autonomously elaborate only unconfirmed implementation details; it must not omit, delete, substitute, narrow, weaken, reinterpret, or re-recommend a confirmed value. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2, including every confirmed image source and explicit `image_notes` role. Only after that audit passes, derive `spec_lock.md` from the completed Design Spec without making another design decision. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If one confirmed value cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
+⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as a user-owned Design Spec requirement. The Strategist may autonomously elaborate only unconfirmed implementation details; it must not omit, delete, substitute, narrow, weaken, reinterpret, or re-recommend a confirmed value. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, every confirmed image source, and explicit `image_notes` role. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, choose reusable execution anchors and routing values, and do not enumerate page-local paint or font choices. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If one confirmed value cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
 
 **Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
@@ -225,8 +225,8 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
 **Output**:
-- `<project_path>/design_spec.md` — human-readable design narrative
-- `<project_path>/spec_lock.md` — machine-readable communication + execution contract; Executor consumes its current-page projection from `page-context`
+- `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
+- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor consumes its current-page projection from `page-context`
 
 For a new project, scaffold the Design Spec after final confirmation; the command refuses to overwrite an existing artifact:
 
@@ -234,25 +234,25 @@ For a new project, scaffold the Design Spec after final confirmation; the comman
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-spec <project_path>
 ```
 
-Fill and audit `design_spec.md` against the complete final confirmation. Only after that audit passes, scaffold and fill the machine lock from the completed Design Spec:
+Fill and audit `design_spec.md` against the retained complete final confirmation. This is the only normal consumption of the final result. Only after that audit passes, scaffold and author the machine lock from the completed Design Spec plus current execution context:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
 ```
 
-After filling the lock, compare its machine-relevant values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A `result.json` → Design Spec mismatch or Design Spec → lock projection mismatch is blocking even when the standalone Markdown schemas pass. `validate` mechanically enforces one slice of this: with a final confirmed `confirm_ui/result.json`, every confirmed non-`none` `image_usage` source must be represented by at least one `## images` row (`ai` is also satisfied by `slice`); the remaining semantic comparison stays with this gate. Repair the Design Spec only from the final confirmation state, then re-project the affected lock rows. A resume path edits existing files in the same order and never re-scaffolds them.
+After filling the lock, compare its identity anchors and routing values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume path edits existing files in the same order and never re-scaffolds them.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
 ## ✅ Strategist Phase Complete
 - [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
 - [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
-- [x] Final confirmation re-read before Design Spec authoring
+- [x] Final confirmation read once and retained through Design Spec authoring/audit; `result.json` not reopened in the normal path
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
 - [x] Design Specification & Content Outline generated
 - [x] Gate 1 passed: Design Spec preserves every confirmed value
-- [x] Execution lock (`spec_lock.md`) projected from the completed Design Spec with no independent design decision
+- [x] Execution lock (`spec_lock.md`) authored from the completed Design Spec + current context as stable anchors/routing, not an exhaustive value whitelist
 - [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
 ```
@@ -263,7 +263,7 @@ After filling the lock, compare its machine-relevant values against the complete
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. A final confirmation that selected `ai` or `web` without a matching §VIII resource row is an incomplete Design Spec, not a reason to skip Step 5; return to Step 4 Gate 1, repair the Design Spec from the final confirmation, and re-project the lock.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. If the completed Design Spec records `ai` or `web` acquisition intent without a matching §VIII resource row, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
@@ -290,7 +290,7 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > 💡 **ai path — spot illustrations as one sheet**: when the §VIII image resource plan needs ≥3 same-family spot illustrations as decorative accessories, generate **one grid sheet** (a single `ai` sheet row) instead of one row per element, then slice it (workflow step 2.5 below). Choose sheet geometry from intended placement: `1xN` / `Nx1` are useful for extreme portrait / landscape cells, and a designed `MxN` grid is valid when its cell ratio fits the planned elements. The sheet row is generated but not placed; each cut **element row** (`Acquire Via: slice`) is placed and must appear in `spec_lock.md images`. One generation = one coherent style across all pieces. Resource contract + the geometry rules: [image-generator.md](../references/image-generator.md) §4.3.
 
-> ⚠️ **Honor the confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — a confirmed choice other than `auto` wins, whether it came from chat or, when the page was used, `result.json.image_ai_path`. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never run `image_gen.py --manifest` when the confirmed value is `host-native` or `manual`. Full selection rule: [image-generator.md](../references/image-generator.md) §7 Path Selection.
+> ⚠️ **Honor the Design Spec's confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — the production value recorded in `design_spec.md §I` wins. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never reopen `result.json` here, and never run `image_gen.py --manifest` when the recorded value is `host-native` or `manual`. Full selection rule: [image-generator.md](../references/image-generator.md) §7 Path Selection.
 
 Workflow:
 
@@ -311,7 +311,7 @@ Workflow:
 - [x] analyze_images.py re-run so image_analysis.csv covers the acquired web / AI / sliced images
 ```
 
-**Default — auto-proceed to Step 6.** Only when the user's Step 4 response explicitly opted into split mode (in chat or via Confirm UI `result.json` with `generation_mode: "split"`), output the planning-session handoff below and stop this conversation:
+**Default — auto-proceed to Step 6.** Only when `design_spec.md §I` records `generation_mode: split`, output the planning-session handoff below and stop this conversation:
 
   ```markdown
   ## ✅ Planning Session Complete
@@ -377,7 +377,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage
 ```
 
-Use `global` as the lock drift guard, `page_context` as the page delta, and `reference_set` under the Executor load policy. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
+Use `global` as the compact cross-page anchor set, `page_context` as the page delta, and `reference_set` under the Executor load policy. Anchors are defaults and reusable semantic roles, not a color/font allowlist. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
@@ -394,16 +394,17 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 
 **First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page --json
 ```
-Fix P01 errors and rerun this gate as needed. After it passes, draw P02 through the final page without checker calls.
+Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
 ```
 - **MUST**: Before this gate, every supported chart/table—including mini charts and sparklines—already has its own draw-time marker plus JSON metadata.
-- Any `error` (banned/unsupported SVG features, invalid values, unresolved references, viewBox mismatch, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
+- Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.
+- On failure, review all `blocking` errors and all advisory warnings from that run before editing. Choose which warnings merit work, fix every blocking error and the selected warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never run the checker between individual fixes or use repeated invocations to discover one next issue at a time. If terminal output is truncated, extract only `categories.blocking.issues` and, when needed, `categories.introduced.issues` from the report written by that same run.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
 - The same rule applies to structured-template warnings (empty/framing-only Layout, bare Master, duplicate layout keys): they may guide an optional template cleanup, but warnings alone never fail the quality gate. Flat `style`, free-design, and brand-only routes still rely on their existing hard errors for invalid structure metadata or incomplete required locks.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
@@ -417,6 +418,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
 - [x] P01 gate passed; remaining pages authored without checker calls
+- [x] Each failing checker run was reviewed as one complete issue set and followed by one consolidated edit pass; checker output was not filtered
 - [x] All SVGs generated to svg_output/
 - [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
 - [x] svg_quality_checker.py passed (0 errors)

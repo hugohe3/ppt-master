@@ -81,7 +81,7 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 `page-context` prints a read-only compact current-page projection. Its global
-lock projection repeats per page as an anti-drift guard; large Design Specs,
+lock projection repeats per page as a continuity anchor set, not a color/font allowlist; large Design Specs,
 prototype, and `templates/charts/` references are emitted only as scoped
 path/SHA fingerprints and are read once per execution context. `--bundle` is a
 deprecated compatibility no-op. `--record-usage` writes one derived snapshot

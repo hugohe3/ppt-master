@@ -2,7 +2,7 @@
 
 Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) provides structural lint for readable sections and page projection; it is not an execution lock and does not require textual equality with `spec_lock.md`. Authoring starts from [`scaffolds/design_spec.md`](./scaffolds/design_spec.md).
 
-Strategist writes this artifact from the complete final confirmation plus source analysis, audits every confirmed field here first, and only then projects `spec_lock.md` from the completed Design Spec.
+Strategist reads the complete final confirmation once, writes this artifact from that retained state plus source analysis, and audits every confirmed field here. Afterward, `spec_lock.md` is authored from the completed Design Spec plus current project/page/template context; normal lock authoring never reopens `result.json`.
 
 ## 1. Create the artifact
 
@@ -43,7 +43,7 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
 Validation reads the Markdown directly. It reports missing or out-of-order I–X sections, unresolved `[fill...]` scaffold placeholders, missing per-slide `Audience move`, and a missing §III `AI Image Strategy` when an §VIII table selects `ai` acquisition.
 
-The schema owns structure only. Strategist role modules own field meaning, recommendation logic, page planning, image policy, and template policy. `spec_lock.md` owns the compact execution projection. On divergence, first repair the Design Spec from the final confirmation when Gate 1 fails; otherwise repair the lock from the audited Design Spec. Never use the lock to overwrite a valid Design Spec decision.
+The schema owns structure only. Strategist role modules own field meaning, recommendation logic, page planning, image policy, and template policy. `spec_lock.md` owns stable execution anchors and routing selected in context; it is not an exhaustive value projection. On divergence, repair the Design Spec from the retained final state when Gate 1 fails, then re-author affected lock anchors from the audited Design Spec and current context. Never reopen `result.json` merely to author or validate the lock, and never use the lock to overwrite a valid Design Spec decision.
 
 ---
 
