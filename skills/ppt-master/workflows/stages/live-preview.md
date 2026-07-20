@@ -29,7 +29,7 @@ description: Main-pipeline editor stage for starting live preview and applying s
 **Precondition**: no preview service running on this project.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon
+uvx ppt-master confirm-ui <project_path> --daemon
 ```
 
 (Plain mode — no `--live`. The `--live` flag is reserved for Step 6's auto-startup.)
@@ -53,7 +53,7 @@ Triggered by the user signals listed in "When to Run".
 
 1. Discover annotations:
    ```bash
-   python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
+   uvx ppt-master check-annotations <project_path>
    ```
    The output already lists each pending change as `file → element_id → annotation text → content preview`. Use it directly as the to-do list; no need to re-parse SVG attributes yourself.
 2. If the output says no annotations: tell the user, stop.
@@ -92,9 +92,9 @@ Triggered by the user signals listed in "When to Run".
 If the project lives on a remote Linux server, run with `--no-browser`:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon --no-browser
+uvx ppt-master confirm-ui <project_path> --daemon --no-browser
 # or for Step 6's auto-startup on a remote host:
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon --no-browser
+uvx ppt-master confirm-ui <project_path> --live --daemon --no-browser
 ```
 
 - **VS Code / Cursor Remote-SSH**: open the **PORTS** panel (`Ctrl+Shift+P` → `Ports: Focus on Ports View`), click **Forward a Port**, enter `5050`. The workspace remembers it.

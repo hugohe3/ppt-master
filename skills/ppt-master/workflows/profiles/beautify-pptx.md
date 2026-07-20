@@ -52,8 +52,8 @@ Match the canvas to the source so 1:1 pages and paste-back align. Determine the 
 | other | nearest format in [`canvas-formats.md`](../../references/canvas-formats.md); record the source pixel size in the spec |
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
-python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source.pptx> --move
+uvx ppt-master project init <project_name> --format <format>
+uvx ppt-master project import-sources <project_path> <source.pptx> --move
 ```
 
 ---
@@ -63,7 +63,7 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <s
 Use the standard PPTX intake bundle from Step 3. `project_manager.py import-sources` already writes it under `analysis/` for PPTX-family inputs. If the bundle is missing because the project predates this workflow, generate it once:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx> -o <project_path>/analysis
+uvx ppt-master pptx-intake <project_path>/sources/<source.pptx> -o <project_path>/analysis
 ```
 
 **Content + images — already produced by Step 3.** `import-sources` ran `ppt_to_md` on the deck, so the **frozen content contract** is `sources/<stem>.md` (one source slide per block, in order). If the source deck contains pictures, they are already propagated to `images/` with per-slide binding in `images/image_manifest.json` (`occurrences[].slide_index`). Do **not** re-run `ppt_to_md` — it would duplicate the conversion and write images to `analysis/<stem>_files/` instead of `images/`.
@@ -95,8 +95,8 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 **Optional source-SVG visual reference**: when the source deck has complex vector decoration, distinctive page chrome, or a visual language that cannot be captured by `<stem>.identity.json` colors/fonts alone, create a read-only SVG reference package under `analysis/`. This is for understanding style only; it is not a carry-over asset path.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/pptx_to_svg.py <project_path>/sources/<source.pptx> -o <project_path>/analysis/source_svg_import
-python3 ${SKILL_DIR}/scripts/extract_svg_assets.py <project_path>/analysis/source_svg_import/svg-flat \
+uvx ppt-master pptx-to-svg <project_path>/sources/<source.pptx> -o <project_path>/analysis/source_svg_import
+uvx ppt-master extract-svg-assets <project_path>/analysis/source_svg_import/svg-flat \
     --icons-dir <project_path>/analysis/source_svg_import/icons \
     --icon-namespace imported \
     --inplace --id-prefix source_flat --min-decoration-bytes 3000 --clean-stale
@@ -111,7 +111,7 @@ Optional reuse gate: if a candidate is a non-text brand/logo/motif/decorative as
 **Assemble the inventory** — the deterministic join into one per-slide ledger, `analysis/beautify_inventory.json`, the contract Step 5 confirms and Step 7 verifies against:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/<stem>.slide_library.json \
+uvx ppt-master beautify-inventory <project_path>/analysis/<stem>.slide_library.json \
     --images <project_path>/images/image_manifest.json -o <project_path>/analysis/beautify_inventory.json
 ```
 
@@ -203,7 +203,7 @@ Write `<project_path>/confirm_ui/recommendations.json` and launch the same confi
 - **`body_size` is the load-bearing field, and the replica follows the source's own size**: seed the replica candidate's `body_size` from the source's actual body size — take the dominant `observed.sizes_pt` value (the most frequent run-level size, the **body proxy**) and **convert it to px (`× 4/3`)** before seeding, since the system is px-only and the source measures in pt: a source 20pt body becomes `26.67`px, so the replica renders at the source's true size (seeding the bare `20` as px would shrink it ~25% — the pt-as-px trap). Whichever source value you land on below (observed mode, or `theme.sizes.body`) gets the same `× 4/3` conversion. The confirm page (and chat fallback) then writes that px to `result.json` (`body_size`) **directly — no further conversion, no `body_size_pt` provenance** (pt never enters the contract). The "most frequent = body" read is a proxy, not a guarantee — `observed.sizes_pt` counts every explicit run size (titles, captions, footnotes, chart/label text included, no placeholder-type resolution), so a deck dense with small labels can let a caption size outrank true body; cross-check the proxy against the page's actual body blocks and the sanity range below before trusting it, and prefer the size the body paragraphs visibly render at over the raw mode when the two disagree. Fall back to `theme.sizes.body` (the declared placeholder size) when `observed.sizes_pt` is empty, and to a PPT consumption-mode baseline (`text` 20 / `balanced` 24 / `presentation` 32 px — one fixed value per mode) only when neither is present. Note `theme.sizes.body` is the master `bodyStyle` **level-1 declared default** — a coarse value that commonly **over-reads** the real body density (decks often render body at a deeper outline level or override it smaller), so when you land on this fallback treat it as an upper-ish guess and run it through the sanity check below, never as a precise body size. `theme.sizes.body_levels` and `layout_sizes_pt` are **reference context, not extra fallback tiers**: consult them to judge a saner body value when the deck is theme-driven (`observed` empty) — e.g. a deeper `body_levels` entry or a `layout_sizes_pt` hint may read truer than level-1 — but do not auto-seed from them; the seed chain stays `observed → theme.sizes.body → consumption-mode baseline`, and a theme-driven deck whose body size genuinely can't be pinned cleanly is exactly the case the sanity check is for. The canvas hint stays a **sanity range**, not the seed: if the source's own size lands far outside it (a dense source doc reads tiny on a projection canvas), surface that to the user rather than silently snapping — the replica recommendation is the source's size, the user confirms or overrides. Non-replica alternatives may use the consumption-mode baseline. This is what prevents the deck from exporting at an unintentionally small size while still honoring the source.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
+uvx ppt-master confirm-ui <project_path> --daemon --wait
 ```
 
 Read the confirmed canvas + palette + typography (incl. `body_size`) and any other overrides from `<project_path>/confirm_ui/result.json`. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and honor the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
@@ -226,7 +226,7 @@ post-processing commands, gates, success criteria, and export artifacts.
 ## 7. Validate Output
 
 ```bash
-python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<output.pptx>
+uvx ppt-master ppt-to-md <project_path>/exports/<output.pptx>
 ```
 
 | Check | Expected |
