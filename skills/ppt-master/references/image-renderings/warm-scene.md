@@ -4,7 +4,7 @@ Golden-hour cinematic warmth — illustrated scenes with intentional warm lighti
 
 ## 1. Style paragraph (paste-ready, 100 words)
 
-> Atmospheric scene illustration with golden-hour cinematic lighting. Forms are softly rendered — recognizable but not photorealistic, with soft edges and intentional light direction. The scene has a clear primary light source (low sun, lamplight, window light) casting long soft shadows. Exact colors come only from the deck's locked roles; emotional warmth comes from light placement, bloom, contrast, and atmosphere rather than hue substitution. Composition follows narrative principles — foreground subject, middle-ground context, atmospheric background. Overall feel is cinematic, contemplative, and emotionally warm, well suited to brand story and personal narrative content.
+> Atmospheric scene illustration with golden-hour cinematic lighting. Forms are softly rendered — recognizable but not photorealistic, with soft edges and intentional light direction. The scene has a clear primary light source (low sun, lamplight, window light) casting long soft shadows. Core colors are anchored by the deck roles; emotional warmth may derive through light placement, bloom, contrast, atmospheric haze, and coherent warm transitions without replacing the deck identity. Composition follows narrative principles — foreground subject, middle-ground context, atmospheric background. Overall feel is cinematic, contemplative, and emotionally warm, well suited to brand story and personal narrative content.
 
 ---
 
@@ -20,13 +20,13 @@ Golden-hour cinematic warmth — illustrated scenes with intentional warm lighti
 
 ## 3. Using the deck's HEX values
 
-warm-scene uses the deck's exact HEX roles and creates warmth through light, not recoloring:
+warm-scene uses the deck's HEX roles as identity anchors and creates warmth through light and contextual tonal transitions:
 
-- Primary HEX: dominant tone in shadows and middle ground, unchanged
-- Secondary HEX: lit field or atmospheric separation, unchanged
-- Accent HEX: a small concentrated zone — sun bloom, lamp glow, or key reflection, unchanged
+- Primary HEX: anchors shadows and middle-ground color family
+- Secondary HEX: anchors the lit field or atmospheric separation
+- Accent HEX: anchors a small concentrated zone — sun bloom, lamp glow, or key reflection
 
-If the locked roles cannot support an emotionally warm scene without hue shifts, do not offer `warm-scene` in Stage 2. Never warm-grade a cool primary after confirmation.
+Derive warm light and haze without replacing those core families. Do not apply a generic orange grade that erases a deliberately cool brand identity; choose another rendering when that replacement would be necessary.
 
 ---
 
@@ -34,4 +34,4 @@ If the locked roles cannot support an emotionally warm scene without hue shifts,
 
 **Snippet A — half-page personal story, text_policy: none**
 
-> Atmospheric scene illustration with golden-hour cinematic lighting. A softly rendered figure (simplified silhouette, no detailed face) walks along a path — foreground left, a small distant cabin in the middle ground, soft hills in the atmospheric background. Strong low-angle light comes from the upper right and casts long soft shadows. The sky uses the deck's locked secondary-background role, main forms use the locked primary, and a small sun bloom uses the locked accent; none is hue-shifted. No hard outlines — forms emerge from light and shadow. Add subtle bloom and film grain at 8% opacity. Composed as a 600×800 half-page block with 10% inner padding. Simplified silhouette figures only; no realistic faces, text, or labels.
+> Atmospheric scene illustration with golden-hour cinematic lighting. A softly rendered figure (simplified silhouette, no detailed face) walks along a path — foreground left, a small distant cabin in the middle ground, soft hills in the atmospheric background. Strong low-angle light comes from the upper right and casts long soft shadows. The sky derives from the deck's secondary-background family, main forms from primary, and a small sun bloom from accent; coherent light/shadow transitions support the atmosphere without replacing those anchors. No hard outlines — forms emerge from light and shadow. Add subtle bloom and film grain at 8% opacity. Composed as a 600×800 half-page block with 10% inner padding. Simplified silhouette figures only; no realistic faces, text, or labels.

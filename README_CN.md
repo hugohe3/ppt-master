@@ -128,7 +128,7 @@
 
 > [!IMPORTANT]
 > ### 这是一个工具，不是一个许愿池
-> `harness + model = agent`——PPT Master 只负责工作流，产出上限由模型决定。推荐 **Claude 大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2`）**；其他模型能跑通流程，但有质量差距。
+> `harness + model = agent`——PPT Master 只负责工作流，产出上限由模型决定。推荐 **Kimi K3（或 Claude）大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2` 或 Google `gemini-3.1-flash-image`）**；其他模型能跑通流程，但有质量差距。
 >
 > 也别指望一把就拿到完美成品。它的价值是帮你把大部分枯燥的活儿干掉，剩下的打磨交给你——做原生可编辑的 PPT，本就是为了让你接着改，而不是甩给你一张改不动的图。模型越便宜，要补的人工就越多；效果不理想，先升级模型，再对照[快速入门](./docs/zh/getting-started.md)和示例工程检查用法。
 
@@ -239,7 +239,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 | **IDE 插件 / 扩展** | [Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[GitHub Copilot](https://github.com/features/copilot)、[Cline](https://cline.bot/)、通义灵码 等 | 装在 VS Code / JetBrains 等宿主里使用 |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
 
-> **模型推荐**：追求最佳效果选 **Claude Opus**，搭配 `gpt-image-2` 生图；**Gemini 3.5 Flash** 目前综合性价比很高，尤其速度很快，值得一试。
+> **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图 —— **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
 
 **🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
 

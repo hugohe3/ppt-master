@@ -14,7 +14,7 @@ If the static checker has not been run or has failed, the subagent must abort wi
 
 - font-size ramp drift (`RAMP_MIN_RATIO=0.5` / `MAX=5.0`)
 - id uniqueness, XML well-formed
-- spec_lock drift (colors / fonts / canvas)
+- canvas/structural typography validation and informational spec-lock anchor comparison (contextual colors/fonts are allowed)
 - animation_config compliance
 
 ## §0.1 Subagent inputs
