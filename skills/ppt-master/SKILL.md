@@ -105,7 +105,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 | Analysis prompt packs | `${SKILL_DIR}/templates/analysis-packs/analysis_packs_index.json` | User-selected Excel prompt packs compiled to reference-image jobs |
-| Analysis prompt matrix | `${SKILL_DIR}/templates/analysis-library/diagram-prompt-building/` | User chooses one of four domains; Strategist resolves internal type ids against the selected image style |
+| Analysis prompt matrix | `${SKILL_DIR}/templates/analysis-library/diagram-prompt-building/` | User chooses one of four domains, reviews that domain's complete type list, and confirms all items or exclusions against the selected image style |
 
 ## Standalone Workflows
 
@@ -370,7 +370,7 @@ Read references/strategist.md
 
 1. Present every registered `visual_style` as a thumbnail. Badge the Strategist recommendation, but do not preselect it. If the user says "随便" / equivalent or continues without picking, apply the recommendation and record `visual_style_source: auto`; otherwise record `user`.
 2. Require an explicit `analysis_required: true | false`. A missing domain is never an implicit No.
-3. When true, ask the user for exactly one user-facing domain — architecture / interior / landscape / planning — plus one analysis-library style. Do not expose or ask for `ARC-*` / `INT-*` / `LND-*` / `URB-*` ids. Strategist derives the smallest useful internal `analysis_item_ids` set from the source material and records it with `analysis_domain_id`; the server uses the domain's curated defaults only when no internal ids were supplied. Generate only through `analysis_library.py` + the selected provider profile. Keep professional analysis images separate from cover / decorative / photographic image policy.
+3. When true, ask the user for exactly one domain — architecture / interior / landscape / planning — plus one analysis-library style. After the domain is selected, read its complete ordered item list from `analysis_types.json`, state the total, list every item with its stable id and user-facing name, and ask: "Generate all N items? If not, reply with the ids to exclude." This remains inside BLOCKING 1: do not generate until the user explicitly confirms all or supplies exclusions. Default the confirmed set to the full domain and remove only user-excluded ids; never auto-filter, rank, recommend, or reduce the set from source material. Persist the resulting `analysis_item_ids` with `analysis_domain_id`; an empty runtime selection resolves to the domain's full item list for compatibility. Generate only through `analysis_library.py` + the selected provider profile. Keep professional analysis images separate from cover / decorative / photographic image policy. If a requested type lacks measured source data, keep it selected but frame the output as a source-grounded conceptual diagram and do not invent measurements, simulation results, performance claims, or compliance conclusions.
 
 🚧 **POST-ANALYSIS GATE — content inventory before page count**:
 

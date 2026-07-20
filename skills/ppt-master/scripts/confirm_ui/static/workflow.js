@@ -11,6 +11,8 @@
   var ANALYSIS_REQUIRED = null;
   var ANALYSIS_STYLE_ID = "";
   var ANALYSIS_DOMAIN_ID = "";
+  var ANALYSIS_ITEM_IDS = [];
+  var ANALYSIS_ITEMS_INITIALIZED = false;
 
   function byId(id) { return document.getElementById(id); }
   function toast(message) {
@@ -46,6 +48,8 @@
       ANALYSIS_REQUIRED = typeof selection.analysis_required === "boolean" ? selection.analysis_required : null;
       ANALYSIS_STYLE_ID = selection.analysis_style_id || "";
       ANALYSIS_DOMAIN_ID = selection.analysis_domain_id || "";
+      ANALYSIS_ITEM_IDS = (selection.analysis_item_ids || []).slice();
+      ANALYSIS_ITEMS_INITIALIZED = ANALYSIS_ITEM_IDS.length > 0;
       renderIntakeSummary();
       renderTemplates();
       renderVisualStyles();
@@ -171,8 +175,11 @@
     var library = STATE.analysis_library || {};
     var styleGrid = byId("analysis-style-grid");
     var domainTabs = byId("analysis-domain-tabs");
+    var typeGrid = byId("analysis-type-grid");
+    var typeSummary = byId("analysis-type-summary");
     styleGrid.innerHTML = "";
     domainTabs.innerHTML = "";
+    typeGrid.innerHTML = "";
     if (!(library.styles || []).length) {
       styleGrid.textContent = "分析图库尚未编译。";
       return;
@@ -199,14 +206,54 @@
     var domains = library.domains || [];
     if (!domains.some(function (domain) { return domain.id === ANALYSIS_DOMAIN_ID; })) {
       ANALYSIS_DOMAIN_ID = "";
+      ANALYSIS_ITEM_IDS = [];
+      ANALYSIS_ITEMS_INITIALIZED = false;
     }
     domains.forEach(function (domain) {
       var tab = document.createElement("button");
       tab.type = "button";
       tab.className = "analysis-domain-tab" + (ANALYSIS_DOMAIN_ID === domain.id ? " active" : "");
-      tab.textContent = domain.name_zh;
-      tab.onclick = function () { ANALYSIS_DOMAIN_ID = domain.id; renderAnalysisLibrary(); };
+      tab.textContent = domain.name_zh + " · " + (domain.item_count || (domain.items || []).length);
+      tab.onclick = function () {
+        if (ANALYSIS_DOMAIN_ID !== domain.id) {
+          ANALYSIS_DOMAIN_ID = domain.id;
+          ANALYSIS_ITEM_IDS = (domain.items || []).map(function (item) { return item.id; });
+          ANALYSIS_ITEMS_INITIALIZED = true;
+        }
+        renderAnalysisLibrary();
+      };
       domainTabs.appendChild(tab);
+    });
+
+    var selectedDomain = domains.find(function (domain) { return domain.id === ANALYSIS_DOMAIN_ID; });
+    var items = selectedDomain ? (selectedDomain.items || []) : [];
+    var validIds = items.map(function (item) { return item.id; });
+    ANALYSIS_ITEM_IDS = ANALYSIS_ITEM_IDS.filter(function (itemId) { return validIds.indexOf(itemId) >= 0; });
+    if (selectedDomain && !ANALYSIS_ITEMS_INITIALIZED) {
+      ANALYSIS_ITEM_IDS = validIds.slice();
+      ANALYSIS_ITEMS_INITIALIZED = true;
+    }
+    typeSummary.textContent = selectedDomain
+      ? ("将生成 " + ANALYSIS_ITEM_IDS.length + " / " + items.length + " 张" + selectedDomain.name_zh + "分析图；默认全选，可取消不需要的项目。")
+      : "请选择一个分析图大类。";
+    items.forEach(function (item, index) {
+      var label = document.createElement("label");
+      var input = document.createElement("input");
+      var copy = document.createElement("span");
+      var title = document.createElement("b");
+      var detail = document.createElement("small");
+      input.type = "checkbox";
+      input.checked = ANALYSIS_ITEM_IDS.indexOf(item.id) >= 0;
+      title.textContent = (index + 1) + " · " + (item.name_zh || item.id);
+      detail.textContent = item.id;
+      label.className = "analysis-type-card" + (input.checked ? " selected" : "");
+      input.onchange = function () {
+        if (input.checked && ANALYSIS_ITEM_IDS.indexOf(item.id) < 0) ANALYSIS_ITEM_IDS.push(item.id);
+        if (!input.checked) ANALYSIS_ITEM_IDS = ANALYSIS_ITEM_IDS.filter(function (itemId) { return itemId !== item.id; });
+        renderAnalysisLibrary();
+      };
+      copy.appendChild(title); copy.appendChild(detail);
+      label.appendChild(input); label.appendChild(copy); typeGrid.appendChild(label);
     });
   }
 
@@ -247,13 +294,13 @@
       custom_style_description: byId("custom-style").value,
       analysis_required: ANALYSIS_REQUIRED,
       analysis_selection_confirmed: ANALYSIS_REQUIRED === false || (
-        ANALYSIS_REQUIRED === true && Boolean(ANALYSIS_STYLE_ID) && Boolean(ANALYSIS_DOMAIN_ID)
+        ANALYSIS_REQUIRED === true && Boolean(ANALYSIS_STYLE_ID) && Boolean(ANALYSIS_DOMAIN_ID) && ANALYSIS_ITEM_IDS.length > 0
       ),
       analysis_pack_id: "",
       analysis_library_id: ((STATE.analysis_library || {}).library_id || ""),
       analysis_style_id: ANALYSIS_REQUIRED ? ANALYSIS_STYLE_ID : "",
       analysis_domain_id: ANALYSIS_REQUIRED ? ANALYSIS_DOMAIN_ID : "",
-      analysis_item_ids: [],
+      analysis_item_ids: ANALYSIS_REQUIRED ? ANALYSIS_ITEM_IDS.slice() : [],
       reference_images: ANALYSIS_REQUIRED ? selectedReferences() : [],
       provider_profile: byId("provider-profile").value
     };
@@ -420,7 +467,21 @@
     ANALYSIS_REQUIRED = false;
     ANALYSIS_STYLE_ID = "";
     ANALYSIS_DOMAIN_ID = "";
+    ANALYSIS_ITEM_IDS = [];
+    ANALYSIS_ITEMS_INITIALIZED = false;
     renderAnalysisDecision();
+    renderAnalysisLibrary();
+  };
+  byId("select-all-analysis-types").onclick = function () {
+    var domains = ((STATE || {}).analysis_library || {}).domains || [];
+    var domain = domains.find(function (item) { return item.id === ANALYSIS_DOMAIN_ID; });
+    ANALYSIS_ITEM_IDS = domain ? (domain.items || []).map(function (item) { return item.id; }) : [];
+    ANALYSIS_ITEMS_INITIALIZED = true;
+    renderAnalysisLibrary();
+  };
+  byId("clear-analysis-types").onclick = function () {
+    ANALYSIS_ITEM_IDS = [];
+    ANALYSIS_ITEMS_INITIALIZED = true;
     renderAnalysisLibrary();
   };
   byId("dry-run-analysis").onclick = function () { runAnalysis(true); };

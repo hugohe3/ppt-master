@@ -4,7 +4,7 @@ Use analysis packs to turn one or more project reference images into a repeatabl
 
 ## 1. Two-Level Analysis Library
 
-The AIRI wizard uses one Excel worksheet per image style. Every worksheet must contain the same internal analysis type ids, grouped into Architecture, Interior, Landscape, and Planning. The user chooses only one domain; detailed type ids are resolved internally from the source material or the domain's curated defaults.
+The AIRI wizard uses one Excel worksheet per image style. Every worksheet must contain the same analysis type ids, grouped into Architecture, Interior, Landscape, and Planning. The user chooses one domain, then reviews that domain's complete ordered item list and confirms all items or explicit exclusions. The workflow never reduces the set automatically from the source material.
 
 | File | Role |
 |---|---|
@@ -31,7 +31,7 @@ python3 ${SKILL_DIR}/scripts/analysis_library.py build-manifest \
   --reference <project_path>/images/project_render.png
 ```
 
-**Hard rule**: Keep style selection independent from domain selection. Switching style preserves the chosen domain and resolved internal type ids, then resolves new prompts from the matrix. Never surface the detailed type catalog as a user confirmation step.
+**Hard rule**: Keep style selection independent from domain selection. Switching style preserves the chosen domain and user-confirmed type ids, then resolves new prompts from the matrix. After domain selection, always surface the complete domain catalog and require an all-items confirmation or explicit exclusions before generation.
 
 ---
 

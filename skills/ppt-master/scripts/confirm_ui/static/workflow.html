@@ -89,9 +89,18 @@
         <div id="analysis-style-grid" class="analysis-style-grid"></div>
         <div class="analysis-type-heading">
           <h3>第二层 · 分析图大类</h3>
-          <p>只需选择建筑、室内、景观或规划；具体分析内容由系统根据素材自动匹配。</p>
+          <p>选择建筑、室内、景观或规划后，将完整列出该类全部分析图。</p>
         </div>
         <div id="analysis-domain-tabs" class="analysis-domain-tabs"></div>
+        <div class="analysis-type-heading">
+          <h3>第三层 · 生成范围</h3>
+          <p id="analysis-type-summary">请选择一个分析图大类。</p>
+        </div>
+        <div class="analysis-type-toolbar">
+          <button id="select-all-analysis-types" type="button" class="secondary">全部选择</button>
+          <button id="clear-analysis-types" type="button" class="secondary">全部取消</button>
+        </div>
+        <div id="analysis-type-grid" class="analysis-type-grid"></div>
         <label class="profile-field">生图后端与档位
           <select id="provider-profile">
             <option value="gptimage2.0-1K-mid">GPT Image 2 · 1K · medium（默认）</option>

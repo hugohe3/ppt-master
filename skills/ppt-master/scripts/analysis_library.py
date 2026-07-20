@@ -57,12 +57,6 @@ DOMAIN_IDS = {
     "城市规划": "planning",
     "规划": "planning",
 }
-DEFAULT_DOMAIN_ITEM_IDS = {
-    "architecture": ("ARC-010", "ARC-012", "ARC-024"),
-    "interior": ("INT-001", "INT-003", "INT-007"),
-    "landscape": ("LND-005", "LND-008", "LND-017"),
-    "planning": ("URB-006", "URB-008", "URB-016"),
-}
 EDITABLE_OVERLAY_SUFFIX = (
     "\n\n「PPT 可编辑输出约束（优先级最高）」成图内不要生成标题、段落、图例文字、"
     "地名、尺寸、层数、百分比或其他数值；不得虚构测绘、性能或计算数据。"
@@ -367,14 +361,7 @@ def resolve_domain_item_ids(
                 f"Analysis type(s) outside domain '{domain_id}': {', '.join(unknown)}"
             )
         return requested
-    defaults = [
-        item_id
-        for item_id in DEFAULT_DOMAIN_ITEM_IDS.get(domain_id, ())
-        if item_id in valid_ids
-    ]
-    if defaults:
-        return defaults
-    return [str(item.get("id")) for item in domain.get("items", [])[:3]]
+    return [str(item.get("id")) for item in domain.get("items", []) if item.get("id")]
 
 
 def build_library_manifest(

@@ -125,7 +125,14 @@ def rasterize(svg_path: Path, width: int, height: int, browser: Path) -> Path:
             f"--screenshot={png_path}",
             svg_path.resolve().as_uri(),
         ]
-        completed = subprocess.run(command, capture_output=True, text=True, timeout=120)
+        completed = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=120,
+        )
     if completed.returncode != 0 or not png_path.is_file():
         detail = (completed.stderr or completed.stdout).strip()
         raise RuntimeError(f"Browser PNG export failed: {detail}")
@@ -142,7 +149,7 @@ def write_analysis_domains(output: Path, catalog: dict) -> None:
     lines = [
         "# 专业分析图大类选择",
         "",
-        "> 用户只需选择一个大类；具体分析类型由 Strategist 根据素材自动匹配，不向用户展示内部类型编号。",
+        "> 先选择一个大类；随后系统会完整列出该类全部分析图，默认全选，并等待用户确认全部或说明需要排除的编号。",
         "",
     ]
     for domain in catalog.get("domains", []):
@@ -154,7 +161,7 @@ def write_analysis_domains(output: Path, catalog: dict) -> None:
     lines.extend(
         [
             "",
-            "内部仍使用 `analysis_types.json` 和类型 ID 生成图片，但这些字段不属于用户确认项。",
+            "完整清单、数量和稳定编号来自 `analysis_types.json`；不得根据素材自动筛减。",
             "",
         ]
     )

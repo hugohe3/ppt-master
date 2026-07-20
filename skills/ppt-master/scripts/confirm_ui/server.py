@@ -774,6 +774,11 @@ def create_app(
                 return jsonify({'error': str(exc)}), 400
         if analysis_required:
             try:
+                if (
+                    'analysis_selection_confirmed' in payload
+                    and not bool(payload.get('analysis_selection_confirmed'))
+                ):
+                    raise ValueError('confirm at least one analysis type before saving')
                 library = _analysis_library_catalog()
                 valid_styles = {item['id'] for item in library.get('styles', [])}
                 valid_items = {

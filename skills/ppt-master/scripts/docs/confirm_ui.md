@@ -29,7 +29,7 @@
 - The 18 PPT styles render from `static/style_previews/<id>.svg`; recommendation is a badge, not a default selection.
 - Continuing without a click applies the recommendation and records `auto`.
 - The seven analysis styles render from the compiled library's required `preview` field.
-- The user sees only architecture / interior / landscape / planning. Detailed type ids remain internal; the Strategist may supply a source-specific set, otherwise the server resolves the curated defaults for that domain.
+- The user first selects architecture / interior / landscape / planning, then sees that domain's complete ordered type list. All items are selected by default; the user confirms all or deselects explicit exclusions. The server resolves an empty compatibility payload to the domain's full item list, never to a curated subset.
 - `analysis_required: false` clears professional-analysis fields. Performance-image policy is stored separately in `workflow_brief.json`.
 
 ### State API
