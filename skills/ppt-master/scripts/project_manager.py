@@ -645,12 +645,14 @@ class ProjectManager:
         }
 
         expanded_items: list[str] = []
+        supplied_dirs: list[Path] = []
         for item in source_items:
             if is_url(item):
                 expanded_items.append(item)
                 continue
             item_path = Path(item)
             if item_path.is_dir():
+                supplied_dirs.append(item_path)
                 directory_files = sorted(
                     path for path in item_path.iterdir() if path.is_file()
                 )
@@ -856,6 +858,22 @@ class ProjectManager:
                 summary["markdown"].append(str(markdown_path))
             else:
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
+
+        # Cleanup: a supplied source directory that ends up empty (moved out or
+        # empty from the start) is removed so no husk is left behind. Only under
+        # move semantics — explicit --copy, or default copy outside the repo,
+        # must not delete a user directory.
+        for directory in supplied_dirs:
+            if copy or not (move or is_within_path(directory, REPO_ROOT)):
+                continue
+            if directory.is_dir() and not any(directory.iterdir()):
+                try:
+                    directory.rmdir()
+                except OSError:
+                    continue
+                summary["notes"].append(
+                    f"{directory}: removed empty source directory after import"
+                )
 
         return summary
 
