@@ -17,6 +17,10 @@
 | Reading Mode | [fill] |
 | Content Strategy | [fill] |
 | Design Style | [fill] |
+| Formula Policy | [fill] |
+| AI Image Acquisition Path | [fill or not applicable] |
+| Generation Mode | [fill] |
+| Spec Refinement | [fill] |
 | Created Date | {{CREATED_DATE}} |
 
 ## II. Canvas Specification

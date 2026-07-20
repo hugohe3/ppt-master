@@ -546,8 +546,8 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         reference_set.append(chart_reference)
     mode_fields = _section_fields(lock_sections, "mode")
     visual_style_fields = _section_fields(lock_sections, "visual_style")
-    # Repeat this bounded projection per page intentionally: exact lock values
-    # are the anti-drift guard; large reference payloads use reference_set.
+    # Repeat this bounded projection per page intentionally: stable lock roles
+    # are continuity anchors, while large reference payloads use reference_set.
     global_context = {
         "communication": _section_fields(lock_sections, "communication"),
         "canvas": _section_fields(lock_sections, "canvas"),
@@ -586,7 +586,7 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         "lock_source": {
             "path": "spec_lock.md",
             "sha256": _file_sha256(lock_path),
-            "load_policy": "per-page-drift-guard",
+            "load_policy": "per-page-context-anchors",
         },
         "global": global_context,
         "page_context": current_page,
