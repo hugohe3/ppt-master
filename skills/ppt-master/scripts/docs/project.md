@@ -45,12 +45,10 @@ Notes:
   fields, illegal enums, malformed page keys, and unmet conditional sections;
   it does not rewrite either artifact or compare their values for textual
   equality. It also does not prove final-confirmation → Design Spec fidelity or
-  Design Spec → lock semantic projection; Generate Step 4 owns those two gates
-  before this structural validation. One slice is enforced mechanically: when
-  `confirm_ui/result.json` records a final confirmed stage, every confirmed
-  non-`none` `image_usage` source must appear in at least one `## images` row
-  of the lock (`provided` maps to `user`; `ai` is also satisfied by `slice`).
-  The design schema is structural lint for
+  Design Spec/context → lock semantic fidelity; Generate Step 4 owns those two
+  gates before this structural validation. Validation reads the planning
+  artifacts only and never reopens `confirm_ui/result.json`; the final result is
+  consumed once into the Design Spec before validation begins. The design schema is structural lint for
   the human-readable brief; the lock schema owns machine execution values. For
   structured template use, strict input prototypes must match their assigned
   Master/Layout; adaptive input prototypes retain the assigned Master while a
@@ -72,8 +70,8 @@ changes JSON formatting only. Before projection it revalidates the machine lock
 and selected template-root identities; design-brief values are not treated as
 a second lock. Slide headings at H3–H6 remain readable by the projector.
 
-The output deliberately repeats the bounded `global` lock projection on every
-page as an anti-drift guard. `lock_source` binds that projection to the current
+The output deliberately repeats the bounded `global` anchor set on every
+page as a cross-page anchor set, not a color/font allowlist. `lock_source` binds that projection to the current
 `spec_lock.md` SHA. `page_context` contains the current §IX brief, rhythm,
 resources, and conditional template/chart assignment. `reference_set` contains
 only `kind`, scoped path, SHA, and `once-per-execution-context` policy for the

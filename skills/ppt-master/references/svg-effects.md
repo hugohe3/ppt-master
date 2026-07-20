@@ -16,12 +16,15 @@ Use any compatible technique when it serves the locked visual style and content.
 | Decision layer | Authority |
 |---|---|
 | Technical validity | Required / Forbidden / Conditional contracts in this file |
-| Project values | `<project_path>/spec_lock.md` colors, fonts, icons, and images |
+| Project values | `<project_path>/spec_lock.md` stable anchors plus the retained Design Spec and current page context |
 | Aesthetic fit | Locked `visual_style` / `visual_style_behavior` |
 | Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
 
-**Hard rule — illustrative colors**: colors below demonstrate syntax only;
-generated pages use matching `spec_lock.md` roles. Fidelity labels are defined
+**Reference — illustrative colors**: colors below demonstrate syntax only;
+generated pages choose paint from the locked identity anchors, visual style,
+content semantics, and current composition. A contextual tint, gradient stop,
+shadow/glow paint, or one-off display color need not already be a lock row;
+promote it only when it becomes a recurring named role. Fidelity labels are defined
 in [`shared-standards-core.md`](./shared-standards-core.md). Review an `Approximate` result in native PPTX
 when the effect carries material meaning.
 
@@ -121,6 +124,9 @@ contract. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
+Gradient-stop colors are contextual paint values. Keep them coherent with the
+deck anchors and page intent; they are not required to duplicate existing
+`spec_lock.colors` literals.
 
 **Hard rule — non-degenerate gradient geometry**: an `objectBoundingBox`
 gradient stroke requires non-zero intrinsic width and height. SVG stroke width

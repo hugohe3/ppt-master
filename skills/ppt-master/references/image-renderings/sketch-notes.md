@@ -4,7 +4,7 @@ Warm cream paper with black hand-drawn lines and soft pastel color blocks. The m
 
 ## 1. Style paragraph (paste-ready, 110 words)
 
-> Warm hand-drawn sketchnote style on the deck's light background role. All lines use the locked body-text color with deliberate slight wobble, never perfectly straight, giving the human-hand quality of a thoughtful teacher's whiteboard. Soft color blocks derive only from the locked primary, secondary-accent, and accent roles and fill rounded shapes without quite reaching their outlines (a deliberate "hand-painted overshoot" feel). Simple cartoon icons and small doodle decorations (stars, sparkles, dots, underlines) appear sparingly to add warmth. Composition is airy and well organized, with generous whitespace. Overall feel is instructional, friendly, and approachable.
+> Warm hand-drawn sketchnote style anchored by the deck's light background and body-text roles. Lines retain the body-text character with deliberate slight wobble, never perfectly straight, giving the human-hand quality of a thoughtful teacher's whiteboard. Soft color blocks derive from the primary, secondary-accent, and accent families, allowing restrained pastel tints and paper/material transitions that stay coherent with those anchors. Simple cartoon icons and small doodle decorations (stars, sparkles, dots, underlines) appear sparingly to add warmth. Composition is airy and well organized, with generous whitespace. Overall feel is instructional, friendly, and approachable.
 
 ---
 
@@ -20,11 +20,11 @@ Warm cream paper with black hand-drawn lines and soft pastel color blocks. The m
 
 ## 3. Using the deck's HEX values
 
-sketch-notes has a strong built-in tendency toward warm paper, dark ink, and soft color blocks. Offer it only when the locked deck roles can carry that tendency; otherwise choose another rendering in Stage 2. Once confirmed, use only the locked deck colors.
+sketch-notes has a strong built-in tendency toward warm paper, dark ink, and soft color blocks. Use the deck roles as identity anchors, then derive the paper warmth and pastel blocks contextually without creating an unrelated palette.
 
-- Paper background: use the deck's `background` or `secondary_bg`; do not introduce a natural cream outside the lock
+- Paper background: begin with `background` or `secondary_bg`; a subtle contextual paper tint is allowed when it preserves the deck's identity and contrast
 - Ink lines: use the deck's `body_text` role
-- Color blocks: use the deck's primary / secondary-accent / accent roles with restrained coverage; do not invent pastel HEX
+- Color blocks: derive restrained pastel tints from the primary / secondary-accent / accent families
 - Single emphasis accent: the deck's accent HEX, used in 1-2 strong sparing places (a key arrow, an emphasized doodle)
 
 ---
@@ -33,4 +33,4 @@ sketch-notes has a strong built-in tendency toward warm paper, dark ink, and sof
 
 **Snippet A — half-page educational concept, text_policy: embedded**
 
-> Warm hand-drawn sketchnote on the deck's locked background color. Lines use the locked body-text color with slight wobble and define three rounded rectangle info boxes arranged in a soft triangle. The top box uses the locked primary, the bottom-left uses the locked secondary accent, and the bottom-right uses the locked accent, each with restrained coverage and no invented tint. Color fills do not completely reach their outlines (slight hand-painted overshoot). Hand-drawn wavy arrows connect the boxes, each with a brief inline keyword such as "leads to", "becomes", or "supports" (≤2 words). Each box contains one simple hand-drawn cartoon icon — a lightbulb, a plant, a gear. Small doodle decorations appear sparingly. Composed as a 600×600 half-page block with 14% inner padding and generous whitespace.
+> Warm hand-drawn sketchnote anchored by the deck background. Lines use the body-text family with slight wobble and define three rounded rectangle info boxes arranged in a soft triangle. The top box derives from primary, the bottom-left from secondary accent, and the bottom-right from accent; each uses a restrained pastel tint coherent with its anchor. Color fills do not completely reach their outlines (slight hand-painted overshoot). Hand-drawn wavy arrows connect the boxes, each with a brief inline keyword such as "leads to", "becomes", or "supports" (≤2 words). Each box contains one simple hand-drawn cartoon icon — a lightbulb, a plant, a gear. Small doodle decorations appear sparingly. Composed as a 600×600 half-page block with 14% inner padding and generous whitespace.

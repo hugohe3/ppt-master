@@ -8,9 +8,9 @@ Compatibility tombstone for retired `image_palette` fields and historical palett
 
 | Input | Current behavior |
 |---|---|
-| `spec_lock.md colors` | Sole source of generated-image color roles and exact HEX values |
+| `spec_lock.md colors` | Core recurring deck-color anchors; interpret them with the completed Design Spec and image context, and allow coherent tonal/material/lighting derivatives without creating another palette |
 | `image_rendering` | Controls rendering treatment only; it does not create a second color decision |
-| Legacy `image_palette` row | Ignore it; it cannot override the deck color lock |
+| Legacy `image_palette` row | Ignore it; it cannot override the confirmed deck identity or current contextual color judgment |
 | No palette row | Expected; do not synthesize a preset or `custom` fallback |
 
 **Forbidden — legacy activation**:

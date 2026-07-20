@@ -4,7 +4,7 @@ Ghibli/Disney-inspired hand-drawn animation warmth. Soft painterly forms, gentle
 
 ## 1. Style paragraph (paste-ready, 110 words)
 
-> Hand-drawn animation style inspired by Ghibli and classic Disney storybook aesthetics. Forms are softly rendered with painterly fills and gentle outlines — never harsh. Exact colors come only from the deck's locked roles; dreamy warmth comes from soft window light, gentle glow, morning haze, brush texture, and atmospheric perspective rather than invented pastel or earth-tone HEX. Characters (when present) are stylized in a friendly cartoon manner — large expressive eyes, simplified anatomy, warm body language. Foreground forms are richer and the background softer. Overall feel is dreamy, magical, comforting, and storybook-like.
+> Hand-drawn animation style inspired by Ghibli and classic Disney storybook aesthetics. Forms are softly rendered with painterly fills and gentle outlines — never harsh. Core colors are anchored by the deck roles; dreamy warmth may derive through soft window light, gentle glow, morning haze, brush texture, atmospheric perspective, and coherent pastel/earth-tone transitions. Characters (when present) are stylized in a friendly cartoon manner — large expressive eyes, simplified anatomy, warm body language. Foreground forms are richer and the background softer. Overall feel is dreamy, magical, comforting, and storybook-like.
 
 ---
 
@@ -20,13 +20,13 @@ Ghibli/Disney-inspired hand-drawn animation warmth. Soft painterly forms, gentle
 
 ## 3. Using the deck's HEX values
 
-fantasy-animation uses the exact deck roles with a storybook treatment:
+fantasy-animation uses the deck roles as identity anchors with a storybook treatment:
 
-- Primary HEX: dominant environment or character color, unchanged
-- Secondary HEX: atmospheric field or haze, unchanged
-- Accent HEX: a small magical focal point — perhaps a window, flower, or key character element, unchanged
+- Primary HEX: anchors the dominant environment or character family
+- Secondary HEX: anchors the atmospheric field or haze family
+- Accent HEX: anchors a small magical focal point — perhaps a window, flower, or key character element
 
-If those roles cannot support the intended storybook mood without recoloring, choose another rendering in Stage 2.
+Derive light, haze, and material tones coherently from those anchors; choose another rendering only when the required mood would replace the deck identity.
 
 ---
 
@@ -34,4 +34,4 @@ If those roles cannot support the intended storybook mood without recoloring, ch
 
 **Snippet A — half-page storybook scene, text_policy: none**
 
-> Hand-drawn storybook animation. A small cottage sits on a hillside with a winding path leading to the foreground. The sky and haze use the deck's locked secondary-background role, the hillside and tree use the locked primary, and one small glowing cottage window uses the locked accent. Do not tint or replace those values. Painterly brush texture, soft light, and atmospheric perspective create the warmth: distant hills are softer, while foreground forms carry more visual weight. A simplified storybook tree stands at foreground left. Composed as a 600×800 half-page block with 10% inner padding. Any figures are gentle cartoon silhouettes with no realistic faces. No text or labels.
+> Hand-drawn storybook animation. A small cottage sits on a hillside with a winding path leading to the foreground. The sky and haze derive from the deck's secondary-background family, the hillside and tree from primary, and one small glowing cottage window from accent. Coherent lighter/darker atmospheric transitions are allowed; do not replace these families with an unrelated storybook palette. Painterly brush texture, soft light, and atmospheric perspective create the warmth: distant hills are softer, while foreground forms carry more visual weight. A simplified storybook tree stands at foreground left. Composed as a 600×800 half-page block with 10% inner padding. Any figures are gentle cartoon silhouettes with no realistic faces. No text or labels.

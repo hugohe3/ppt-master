@@ -53,7 +53,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 - Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked mode / visual-style files), then only the branches selected by its condition table
 - Design Parameter Confirmation
 - Read the project Design Spec and, when structured, the template Design Spec once; retain both in the fresh execution context
-- Per-page `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage` load + sequential page generation; the lock projection repeats intentionally, while each prototype/chart SVG is loaded only before its first use or after its SHA changes
+- Per-page `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage` load + sequential page generation; the stable anchor projection repeats intentionally without becoming a color/font allowlist, while each prototype/chart SVG is loaded only before its first use or after its SHA changes
 - Quality Check Gate
 - Speaker notes generation
 - Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)

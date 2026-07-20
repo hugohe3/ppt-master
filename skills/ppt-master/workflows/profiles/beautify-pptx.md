@@ -206,17 +206,17 @@ Write `<project_path>/confirm_ui/recommendations.json` and launch the same confi
 python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
 ```
 
-Read the confirmed canvas + palette + typography (incl. `body_size`) and any other overrides from `<project_path>/confirm_ui/result.json`. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and honor the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
+After the final wait returns, read `<project_path>/confirm_ui/result.json` exactly once and retain the complete confirmed object through Design Spec authoring. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and retain the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
 
-On confirmation, enter [`generate-pptx`](../generate-pptx.md) Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
+On confirmation, enter [`generate-pptx`](../generate-pptx.md) Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Write the retained confirmed object completely into `design_spec.md` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. Do not reopen `result.json` afterward. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
 
-**Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Write `design_spec.md` + `spec_lock.md` per `strategist.md` §6, then hand off to the Executor.
+**Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Complete and audit `design_spec.md` first, then author `spec_lock.md` from that Design Spec plus the source/page/template context per `strategist.md` §6 before handing off to the Executor.
 
 ---
 
 ## 6. Executor + Export
 
-Run the standard pipeline ([`generate-pptx`](../generate-pptx.md) Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using **only** the inherited palette + fonts from `spec_lock.md`, regenerates charts / tables as native SVG from the extracted data, and re-lays-out the source pictures.
+Run the standard pipeline ([`generate-pptx`](../generate-pptx.md) Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using the semantic anchors in `spec_lock.md` plus current page/source/template context; valid page-local colors, gradients, effects, and export-safe display faces need not be added to the lock. It regenerates charts / tables as native SVG from the extracted data and re-lays-out the source pictures.
 
 Follow [`generate-pptx`](../generate-pptx.md) Step 7 for the canonical serial
 post-processing commands, gates, success criteria, and export artifacts.

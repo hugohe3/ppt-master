@@ -78,8 +78,9 @@ preserve/mirror round-trip contract.
 
 ## 3. Fragment Generation
 
-Run one command for one selected object. Generated project pages take colors
-from the current page-context projection of `spec_lock.md`; `create-template` takes colors
+Run one command for one selected object. Generated project pages choose the
+object's solid paint from the current page context, using `spec_lock.md` roles as
+reusable anchors rather than an exhaustive palette; `create-template` takes colors
 from the confirmed brief and template `design_spec.md`. Mirror/preserve input
 keeps the source object's paint instead of regenerating this authored form.
 
@@ -179,7 +180,7 @@ otherwise regenerate the complete compact group.
 | Connector attachment | Authoring helper v1 creates an unconnected `p:cxnSp` and does not accept endpoint/site metadata. Do not hand-add it. The imported-shape contract may preserve an attachment that already exists in a source PPTX; creating a new attached connector is currently unsupported. |
 | Action button behavior | `actionButton*` presets map visual geometry only. No action, navigation target, or hyperlink is created automatically. |
 | Gradient/pattern paint | Authoring helper v1 accepts solid HEX paint only. Use ordinary SVG when a complex paint treatment is essential. |
-| Multi-path darken/lighten | Direct visible layers use the shared normalized paint behavior from the PPTX importer. Their registry-derived HEX values are authorized derivatives of the locked base color, not spec-lock drift. |
+| Multi-path darken/lighten | Direct visible layers use the shared normalized paint behavior from the PPTX importer. Their registry-derived HEX values are authorized derivatives of the selected base color and need no separate lock row. |
 | Expanded compatibility | Existing helper-authored carrier/preview fragments remain readable as ordinary Slide-local input and receive a non-blocking migration warning; they do not become structured fixed atoms or object-slot carriers. Imported expanded fragments remain the lossless mirror/preserve form. |
 | External edits | Any registry-path, style, or semantic mismatch fails quality check and export; regenerate the fragment. |
 

@@ -49,7 +49,7 @@ Role definition for the **web image acquisition path**: translate Strategist int
 | `Run X.` | `You should typically run X because ...` |
 | `Output: Y` | `The role outputs Y, which is important because ...` |
 | `MUST come from Z` | `It is recommended to source from Z` |
-| `Forbidden — values outside the lock` | `Anti-pattern: using values outside the lock` |
+| `Forbidden — unresolved image references` | `Anti-pattern: broken image links` |
 
 **Hard rule**: if a sentence explains *why*, demote it to a single `> Note` blockquote line OR cut it. The agent does not need motivation, only behavior.
 
@@ -77,9 +77,9 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 **Hard rule**: Before generating **each** SVG page, run:
 `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage`.
 
-**Forbidden — values outside the lock**:
-- Colors (fill / stroke / stop-color) MUST come from `colors`
+**Forbidden — unresolved asset references**:
 - Icons MUST come from `icons.inventory`
+- Images MUST resolve to declared project assets
 ```
 
 **Choosing the strength** — before labeling a constraint, ask: *if a page violates it, does it objectively fail (text overlaps, overflows, misaligns, becomes unreadable, loses information, breaks across renderers), or could it merely look worse?*

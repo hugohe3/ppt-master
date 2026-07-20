@@ -4,7 +4,7 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 
 ## 1. Style paragraph (paste-ready, 105 words)
 
-> Professional hand-drawn visual-note style on a clean paper field. All line work uses the deck's body-text color with slight wobble — confident, intentional, with the human-hand quality of a thoughtful whiteboard session. Hand-lettered titles appear bold and slightly oversized (when text policy allows). Color is intentionally sparse: line work dominates ~85% of the visible content, while one or two semantic accents drawn only from the deck's locked accent roles cover less than 10% combined. Backgrounds and shape fills remain mostly empty. Small doodle decorations — stars, dashes, dots — are minimal. Overall feel is professional, considered, manifesto-quality.
+> Professional hand-drawn visual-note style on a clean paper field. All line work is anchored by the deck's body-text color with slight wobble — confident, intentional, with the human-hand quality of a thoughtful whiteboard session. Hand-lettered titles appear bold and slightly oversized (when text policy allows). Color is intentionally sparse: line work dominates ~85% of the visible content, while one or two semantic accents derive from the deck's accent families and cover less than 10% combined. Backgrounds and shape fills remain mostly empty. Small doodle decorations — stars, dashes, dots — are minimal. Overall feel is professional, considered, manifesto-quality.
 
 ---
 
@@ -24,9 +24,9 @@ ink-notes has a near-fixed material language: **dark ink + light background + 1-
 
 - Background: use the deck's `background` / `secondary_bg`
 - Lines and text: use the deck's `body_text`
-- Semantic accents: use the deck's `accent` / `secondary_accent` roles and their established meaning; do not add traditional ink-notes colors outside the lock
+- Semantic accents: derive from the deck's `accent` / `secondary_accent` roles and preserve their established meaning; contextual ink/paper tonal variants are allowed
 
-This makes ink-notes the rendering most likely to fight a deck's HEX. Offer it only when the locked background / text / accent roles can support the treatment; never invent traditional coral / teal / lavender after confirmation.
+This makes ink-notes the rendering most likely to fight a deck's identity. Offer it only when the background / text / accent anchors can support the treatment; do not substitute a stock coral / teal / lavender palette merely because the rendering traditionally uses one.
 
 ---
 
