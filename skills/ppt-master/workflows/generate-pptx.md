@@ -11,7 +11,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 **Generate-specific execution discipline**:
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
-- Generate pages sequentially, one page at a time, in one continuous pass; grouped page batches are forbidden.
+- Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
 - Before each page, load compact page-context; its lock projection guards drift while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
@@ -344,8 +344,8 @@ Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `vis
 | Deterministic trigger | Additional references |
 |---|---|
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
-| `spec_lock.page_charts` has any row, or §VII/current page declares a chart or text-grid table | `executor-chart.md` |
-| A page will use a preset pattern fill or evaluate native chart/table replacement | `native-data-interface.md` before deciding eligibility or emitting metadata |
+| Any data chart/table, including mini or inset charts and sparklines | `executor-chart.md` |
+| Preset pattern or supported native chart/table | `native-data-interface.md` before drawing |
 | `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
@@ -380,7 +380,7 @@ uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage
 Use `global` as the lock drift guard, `page_context` as the page delta, and `reference_set` under the Executor load policy. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
-> ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
+> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
@@ -396,12 +396,13 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page
 ```
-Fix every `error` on page 1 first — structural violations are systematic, and a first-page error repeated deck-wide costs a whole-deck rewrite.
+Fix P01 errors and rerun this gate as needed. After it passes, draw P02 through the final page without checker calls.
 
-**Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
+**Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
 ```
+- **MUST**: Before this gate, every supported chart/table—including mini charts and sparklines—already has its own draw-time marker plus JSON metadata.
 - Any `error` (banned/unsupported SVG features, invalid values, unresolved references, viewBox mismatch, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
 - The same rule applies to structured-template warnings (empty/framing-only Layout, bare Master, duplicate layout keys): they may guide an optional template cleanup, but warnings alone never fail the quality gate. Flat `style`, free-design, and brand-only routes still rely on their existing hard errors for invalid structure metadata or incomplete required locks.
@@ -415,13 +416,14 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 ```markdown
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
-- [x] First-page gate run after page 1 (errors fixed before page 2)
+- [x] P01 gate passed; remaining pages authored without checker calls
 - [x] All SVGs generated to svg_output/
+- [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
 ```
 
-> **Chart pages?** If this deck contains data charts (bar / line / pie / radar / etc.), run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. AI models routinely introduce 10–50 px errors when mapping data to pixel positions; verify-charts eliminates that class of error. Skip if no chart pages.
+> **Chart pages?** If this deck contains data charts, run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. Skip if no chart pages.
 
 > **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the [`visual-review`](stages/visual-review.md) quality-gate stage before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
 
