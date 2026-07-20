@@ -28,6 +28,9 @@ Notes:
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
   the original source path/directory and the Markdown output path/directory.
+- Under move semantics, a supplied source directory left strictly empty after
+  import (or empty from the start) is removed; a directory that still holds any
+  file or subdirectory is left untouched. `--copy` never removes directories.
 - Files already inside the repo are moved into `sources/` by default (with a stderr
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.
