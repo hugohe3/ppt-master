@@ -9,7 +9,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | `pptx_structure.mode: structured` | [`executor-structured.md`](./executor-structured.md) |
 | Any data chart, chart catalog selection, or text-grid table | [`executor-chart.md`](./executor-chart.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
-| Any image or formula resource, including template-bundled images | [`executor-image.md`](./executor-image.md) |
+| Any image or formula resource, including template-bundled images | [`executor-image.md`](./executor-image.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) |
 | Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Speaker notes generation after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
@@ -22,6 +22,22 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 **Hard rule — supported PPTX route**: The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter. Step 7.2 still generates `svg_final/` as a mandatory self-contained visual preview that may be inserted as an SVG picture. Do not treat PowerPoint's manual Convert-to-Shape operation as an authoring target or compatibility requirement.
 
 > Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
+
+---
+
+## 1. Effect Capability Discovery
+
+**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. After selecting one, load [`svg-effects.md`](./svg-effects.md) before authoring it.
+
+| Visual need | Available construction |
+|---|---|
+| Color / material | alpha paint, gradients, translucent overlays |
+| Elevation | shadow, glow, explicit highlights |
+| Image integration | scrim, vignette, brand wash, clipping, faux glass |
+| Line / type | dash/cap/join, markers, gradient stroke; tracking, outline, alpha/gradient text |
+| Space / constructed style | transform/reuse, curves/arcs, hand-drawn, ink/Riso, halftone, isometric, paper cut |
+
+**Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
 
 ---
 
@@ -41,9 +57,13 @@ uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage
 
 `global` deliberately repeats the sub-1000-token cross-page anchor set; `lock_source.sha256` binds its version. These anchors preserve identity and recurring semantics but do not enumerate every legal color or font. `page_context` is the current §IX/resource/template/chart delta. For every `reference_set` entry—project/template Design Spec or selected prototype/chart SVG—reuse an in-context path + SHA; read it once only when absent or changed.
 
+**Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
+
+**Hard rule — selection vs realization**: use Strategist-selected content, resources/paths, chart/layout keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never selection, except sparse local font/color garnish allowed below. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Selection changes require upstream repair.
+
 Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. The delta overrides neither facts nor constraints. After an approved change, rerun the command and reload only changed references. Deprecated `--bundle` is a compatibility no-op.
 
-**Source facts**: The page delta carries page intent and routing facts, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
+**Source verification**: `design_spec.md §IX` owns the final page wording; the page delta does not carry the complete source corpus. Read relevant `sources/` content only to resolve listed `Fact IDs` or verify exact claims, quotes, names, or data already required by the current §IX block. Do not enrich, expand, or substitute the authored content. An underspecified §IX block is an upstream defect; return for Design Spec repair.
 
 **Per-page communication trace**: Read `communication.objective`, `communication.core_message`, and the current §IX `Core message` + `Audience move` before choosing composition. The page must advance the compact objective and move the audience as authored in §IX; the global core message remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 
@@ -59,7 +79,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 
 **Per-block expression**: render each `design_spec.md §IX Content` block in its written texture — a full-sentence block as wrapped prose, a fragment/label block as bullets/keywords. **Never split a full-sentence block into a bullet list** — splitting loses the information that the block was continuous reasoning, not a set of parallel points; not because a bullet lays out easier, and not because an inherited template slot is shaped as a list. If a block carries no clear texture, infer the mode from its wording and the page layout.
 
-- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never one sibling `<text>` per visual line. Keep the first line as direct text; each later wrap is a direct `<tspan>` that repeats the parent `x`, keeps its effective font size, and uses one positive relative `dy`. An all-`<tspan>` form may start with `dy="0"`. Line height: 1.4–1.5× for dense/small body, 1.6–2.0× for large/breathing text.
+- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never one sibling `<text>` per visual line. Keep the first line as direct text; each later wrap is a direct `<tspan>` that repeats the parent `x`, keeps its effective font size, and uses one positive relative `dy`. An all-`<tspan>` form may start with `dy="0"`. Choose consistent positive line spacing from the typeface, size, density, and reading distance; no fixed ratio overrides legibility or the selected style.
 - **Template precedence**: when an inherited template slot is a bullet list but the §IX block is prose, the prose wins — widen or reflow the container to hold the paragraph, or drop that card; do not pour the sentence back into the list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
 
@@ -72,8 +92,8 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 **Execution anchors and contextual values**:
 
 - Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
-- Core color roles in `colors` retain their confirmed meaning. Use them directly for recurring semantic roles. Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off illustration colors may be chosen from context when they preserve the deck's visual identity, contrast, and semantic color behavior.
-- Structural title/body typography uses its declared role override (`title_family` / `body_family` / `emphasis_family` / `code_family`) or `font_family` fallback. A page-local display treatment may use another installed/export-safe family when the content and locked visual style justify it; promote it to a named `*_family` role only when it recurs.
+- Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
+- Resolve structural families by role: exact `<role>_family` first, then `title_family` for title roles or `body_family` for other unoverridden roles, then legacy `font_family`. Never flatten declared role overrides. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
 - Font sizes follow a ramp anchored on `typography.body`. Structural roles use their locked size deck-wide; recurring feature roles such as lead, pull quote, or hero number need their own lock slot. Never resize one role page by page or inherit a template placeholder size.
 - **Core message ≥ `body`**: map the page's primary claim to locked `lead` / `subtitle`, never below body. Footnotes, page numbers, and credits use locked `footnote` / `annotation`; do not invent smaller sizes.
 - **Write locked px verbatim, with at most two decimals.** Do not substitute familiar pt-style numbers or emit long precision tails.
@@ -81,7 +101,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-When an intentional value becomes deck-wide or gains a recurring semantic role, extend `spec_lock.md` **before the next affected page**, regenerate that page's context, and use the named role thereafter. A genuinely page-local color, gradient/effect paint, or export-safe display family stays in the SVG and does not require a lock edit. Never expand the lock merely to silence the checker's informational anchor comparison. Icons, images, structural font roles, and recurring type sizes keep their explicit inventory/role rules.
+Return upstream before any derived/accent value becomes recurring or structural, then regenerate context. Local garnish needs no lock row. Never expand the lock to silence a comparison. Icons, images, structural fonts/sizes, and resources keep their inventory/role rules.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
@@ -116,7 +136,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, consider one page-specific polygon/path that expresses the relationship before stacking generic arrows. This does not override §3.0 when one literal stock shape is the semantic object.
 - **Reference — create depth with restraint**: use rhythm, spacing, typography, accent bars, and subtle tints before shadows. Reserve lift for a few genuinely floating elements; keep peer grids, dividers, and body containers flat.
 - **Phased generation** (recommended):
-  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per [`executor-chart.md`](./executor-chart.md) §2.1 on every chart page — coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)) that depends on these markers — and **native object metadata** per [`executor-chart.md`](./executor-chart.md) §2.2 on every eligible data-chart page. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG). **First-page gate (Mandatory)**: after completing the first page, run `uvx ppt-master svg-quality-check <project_path> --stage first-page --json` without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
+  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per [`executor-chart.md`](./executor-chart.md) §2.1 on every §VII data-chart page — coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)) that depends on these markers — and **native object metadata** per [`executor-chart.md`](./executor-chart.md) §2.2 on every planned native-ready object. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG). **First-page gate (Mandatory)**: after completing the first page, run `uvx ppt-master svg-quality-check <project_path> --stage first-page --json` without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
   2. **Quality Check Gate**: only after every planned SVG exists, run `uvx ppt-master svg-quality-check <project_path> --stage final --json` on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
@@ -176,7 +196,7 @@ Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.s
 
 Strategist chooses the library and inventory; Executor only implements. Library details and one-library rule: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
 
-> **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. **Custom icons**: drop an `.svg` into `<project_path>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any other. Reference only icons in the `spec_lock.md` inventory.
+> **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. Custom SVGs must already exist in the prepared project inventory under `<project_path>/icons/<lib>/`. Reference only icons in `spec_lock.md icons.inventory`.
 
 > **Icon identifiers are case-sensitive filenames.** For bundled libraries, copy the verified lowercase basename exactly (`tabler-outline/award`, never `tabler-outline/Award`) into `spec_lock.md` and every `data-icon` value. Custom icon identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 
@@ -211,49 +231,20 @@ Strategist chooses the library and inventory; Executor only implements. Library 
 >
 > Icons are auto-embedded by `finalize_svg.py` — no need to run `embed_icons.py` manually.
 
-**Searching for icons** — use terminal, zero token cost:
+**Locked-id verification only**: verify the exact project-local file already named in `icons.inventory`:
 ```bash
-ls skills/ppt-master/templates/icons/chunk-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
-ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
-ls skills/ppt-master/templates/icons/simple-icons/ | grep github
+test -f "<project_path>/icons/<lib>/<name>.svg"
 ```
 
-**Abstract concept → icon name** (names for `chunk-filled`; tabler libraries use their own equivalents — verify with `ls | grep`):
+**Missing locked icon** → return to Strategist's inventory / `icon_sync.py` gate. Do not search the global library, select an alternative, copy a candidate, or edit the lock in Executor.
 
-| Concept | chunk-filled | tabler-filled / tabler-outline |
-|---------|-------|-------------------------------|
-| Growth / Increase | `arrow-trend-up` | same |
-| Decline / Decrease | `arrow-trend-down` | same |
-| Success / Complete | `circle-checkmark` | `circle-check` |
-| Warning / Risk | `triangle-exclamation` | `alert-triangle` |
-| Innovation / Idea | `lightbulb` | `bulb` |
-| Strategy / Goal | `target` | same |
-| Efficiency / Speed | `bolt` | same |
-| Collaboration / Team | `users` | same |
-| Settings / Config | `cog` | `settings` |
-| Security / Trust | `shield` | same |
-| Money / Finance | `dollar` | `currency-dollar` |
-| Time / Deadline | `clock` | same |
-| Location / Region | `map-pin` | same |
-| Communication | `comment` | `message` |
-| Analysis / Data | `chart-bar` | same |
-| Process / Flow | `arrows-rotate-clockwise` | `refresh` |
-| Global / World | `globe` | `world` |
-| Excellence / Award | `star` | same |
-| Expand / Scale | `maximize` | same |
-| Problem / Issue | `bug` | same |
-
-> For self-evident names (home, user, file, search, arrow, etc.) — just `grep chunk-filled/` directly without consulting the table.
-
-> ⚠️ **Icon validation**: only use icons from the Design Spec's approved inventory. Verify each via `ls | grep` before use. Mixing libraries within one deck is FORBIDDEN.
+**Hard rule — icon inventory**: use only the Design Spec's approved inventory. Mixing stylistic libraries within one deck is FORBIDDEN.
 
 ---
 
 ## 5. Font Usage
 
-Structural typography anchors come from `spec_lock.md typography`. Use `font_family` as default; override recurring roles with `title_family` / `body_family` / `emphasis_family` / `code_family` if declared. Contextual one-off display type remains allowed under §2.1 when export-safe. LaTeX formulas that Strategist rendered are PNG images, not a `code_family` text role.
+Structural typography anchors come from `spec_lock.md typography`. Use an exact `<role>_family` when declared; title roles otherwise use `title_family`, and body/support roles otherwise use `body_family`. `font_family` is the legacy/default fallback, not a reason to erase role differences. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 

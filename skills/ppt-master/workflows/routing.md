@@ -41,7 +41,7 @@ route selection. After selection, the route authority owns execution.
 
 | Request condition | Generate-route behavior |
 |---|---|
-| Topic only, no substantive source facts | Run [`topic-research`](./stages/topic-research.md), then return to [`generate-pptx`](./generate-pptx.md) Step 1 |
+| Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside [`generate-pptx`](./generate-pptx.md) Step 1: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps, then continue Step 2 |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; use the default Generate pipeline |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
 | Explicit current brand/layout/deck workspace root | Enter [`generate-pptx`](./generate-pptx.md) Step 3 and conditionally load [`apply-template-workspace`](./stages/apply-template-workspace.md); consume the workspace root, never only its inner `templates/` directory |

@@ -1,16 +1,14 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. After confirmation fidelity passes, start from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md); [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns its grammar.
+`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. This file owns normal authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns machine grammar.
 
-## 1. Create the artifact
+## 1. Author the complete artifact
 
-After Generate Step 4 Gate 1, run once and author the execution anchors from the Design Spec plus current page/resource/template context:
+After Generate Step 4 Gate 1, read the completed Design Spec and current page/resource/template context, compose the entire lock in active context, then create `<project_path>/spec_lock.md` once.
 
-```bash
-uvx ppt-master project scaffold-lock <project_path>
-```
+**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: spec-lock/v1 -->`, followed by `# Execution Lock`. Write only final sections and values; do not create a blank lock, copy inactive optional sections, or patch scaffold placeholders. Do not reopen final confirmation or interpret it independently.
 
-The command refuses to overwrite an existing `spec_lock.md`. Re-running it with the same project metadata produces the same bytes.
+`project_manager.py scaffold-lock` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. When a credible completed Design Spec/lock pair needs correction, repair only the affected projection after auditing the Design Spec. When the Design Spec was missing and an orphan lock survived, discard that lock as authority and re-author the complete lock from the recovered, audited Design Spec plus current context.
 
 **Hard rule**: A project lock contains only `##` sections and `- key: value` data lines, except `## forbidden`, whose list items are literal rules. Do not copy guidance paragraphs into the lock.
 
@@ -25,13 +23,22 @@ The command refuses to overwrite an existing `spec_lock.md`. Re-running it with 
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
-| `typography` | `font_family`, `body`, `title` | Core family/size anchors; sizes are unitless numbers |
+| `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; sizes are unitless numbers |
 | `icons` | `library`, `inventory` | `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
 Optional data sections: `images`, `page_charts`.
+
+The required universal block is:
+
+```markdown
+## forbidden
+- Mixing icon libraries
+- `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
+- HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
+```
 
 ---
 
@@ -66,13 +73,24 @@ Structured section value shapes:
 
 `page_charts` values must exist as keys in `charts/charts_index.json`; pages using the explicit `no-template-match` result do not appear there.
 
+Typography projection is role-for-role, not a lossy summary:
+
+| Design Spec §IV role | `spec_lock.md` field |
+| --- | --- |
+| Title | `title_family` |
+| Body | `body_family` and compatibility/default `font_family` |
+| Any additional recurring role `<role>` | `<role>_family` |
+
+New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row in the Design Spec must appear under the same lowercase snake_case role; omit only roles that inherit without an explicit override. Existing locks without role fields remain readable through `font_family` fallback.
+
 ---
 
 ## 4. Field Grammar Index
 
-- `font_family` grammar: one non-empty PPT-safe exported family stack; role-specific families may extend it in the same section.
+- `font_family`, `title_family`, `body_family`, and every optional `<role>_family` use one non-empty PPT-safe exported family stack. `font_family` is the body/default compatibility stack, not permission to erase role differences.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
+- `images`: `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; omit unplaced Illustration Sheets.
 - Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
@@ -105,7 +123,7 @@ Field meaning and selection logic stay in the owning Strategist modules. Executo
 
 ## 6. Anchor and extension semantics
 
-- Confirmed core palette roles and structural title/body typography remain stable cross-page anchors.
+- Confirmed core palette roles and every declared structural/recurring typography family remain stable cross-page anchors.
 - Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off export-safe display families may be authored from context without adding a lock row.
 - When a contextual value becomes a recurring semantic role, add one descriptive `colors` or `*_family` row and regenerate page-context before later pages use that role.
 - Do not expand the lock merely to make an informational checker comparison empty. A lock edit should express reuse or identity, not enumerate incidental literals.

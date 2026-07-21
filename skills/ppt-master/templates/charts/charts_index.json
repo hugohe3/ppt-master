@@ -5,8 +5,8 @@
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
     "libraryPositioning": "Visualization template library covering charts, infographics, diagrams, and strategic frameworks. The `charts/` path is retained for backward compatibility. Templates are named by visual structure, not by business-model name — model-specific frameworks (SWOT, BCG, PEST, OKR, Porter's Five Forces, Value Chain, etc.) are matched via keywords in `summary`.",
-    "summaryGrammar": "Each chart's `summary` is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'. Strategist supplies 3–8 semantic content-shape tags per candidate page; chart_recall.py returns a bounded shortlist without loading the full catalog into the runtime prompt.",
-    "updated": "2026-07-03"
+    "summaryGrammar": "Each chart's `summary` is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'. Strategist supplies 3–8 semantic content-shape tags per candidate page; chart_recall.py returns a bounded lexical shortlist and exposes the full catalog only for low/no confidence or requested semantic fallback.",
+    "updated": "2026-07-21"
   },
   "charts": {
     "area_chart": {

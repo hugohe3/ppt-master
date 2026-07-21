@@ -51,7 +51,7 @@ Role definition for the **web image acquisition path**: translate Strategist int
 | `MUST come from Z` | `It is recommended to source from Z` |
 | `Forbidden — unresolved image references` | `Anti-pattern: broken image links` |
 
-**Hard rule**: if a sentence explains *why*, demote it to a single `> Note` blockquote line OR cut it. The agent does not need motivation, only behavior.
+**Hard rule — retain failure predicates**: Cut narrative teaching and background motivation. Keep one compact protected invariant or failure predicate when it determines the rule's strength, scope, or safe generalization; attach it to the rule or one `> Note` line. Runtime prompts need the behavior and its objective failure boundary, not the full rationale.
 
 ---
 
@@ -92,7 +92,27 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 
 Boundary cases go by this test, not by how strong the verb feels: "never split a full sentence into bullets" stays near-MUST because splitting *loses the information that the block was continuous reasoning*, not because "never" sounds strict.
 
+**Hard rule**: A `Hard rule` or `Forbidden` label whose failure boundary is not self-evident retains one compact objective predicate. If no objective predicate exists, demote the instruction to `Default` or `Reference` instead of preserving only a strong verb.
+
 > Note: only a MUST with a concrete objective trigger may become a `svg_quality_checker.py` rule. SHOULD is at most a `warning`; MAY is never checked — encoding taste as a check turns the checker into a de-facto spec.
+
+### 4.1 Ownership Contract: Ingredients → Plan + Preparation → Realization
+
+Constraint strength and decision ownership are independent. Preserve this chain whenever writing, compressing, or reviewing multi-role prompts:
+
+| Layer | Owns |
+|---|---|
+| User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
+| Strategist / plan + preparation | Assess material sufficiency; trigger permitted fact research; decide the approved content, resources, keys, identity anchors, and exact page roster; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution |
+| Executor / realization | Use only the prepared inventory and realize the approved selections through geometry, composition, hierarchy, and treatment; sparse local font/color garnish is allowed only while non-structural and non-recurring |
+
+**Preparation timing**: Fact research required for planning may run before final confirmation. AI / web / slice acquisition runs only from the completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling execute Strategist-owned preparation; they are not independent decision owners.
+
+**Hard rule**: downstream freedom exists only in dimensions left open upstream. A named outcome retains identity; a broad semantic request permits in-class choice. Once the plan resolves that choice, execution cannot reopen or substitute it. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
+
+> Mnemonic — restaurant contract: the customer supplies initial ingredients and the desired dish; Strategist plans the dish and prepares the complete mise en place; Executor cooks from that prepared inventory. “Mapo tofu” cannot become tomato-and-eggs or tofu soup, while “a tofu dish” leaves deliberate in-class freedom.
+
+**Review gate**: treat any prompt refactor that erases this ownership chain, moves acquisition into Executor, turns a permission into a quota, or turns flexible realization into silent reselection as a semantic regression even when the compressed wording is shorter.
 
 ---
 
@@ -206,3 +226,21 @@ The canonical exemplars to model new files after:
 | A shared spec across roles | [`image-base.md`](../../skills/ppt-master/references/image-base.md), [`shared-standards-core.md`](../../skills/ppt-master/references/shared-standards-core.md) |
 | A technical / format spec | [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md), [`svg-image-embedding.md`](../../skills/ppt-master/references/svg-image-embedding.md), [`image-layout-spec.md`](../../skills/ppt-master/references/image-layout-spec.md) |
 | Stage runbook | [`workflows/stages/verify-charts.md`](../../skills/ppt-master/workflows/stages/verify-charts.md) |
+
+---
+
+## 13. Prompt Refactor Review
+
+Prompt compression is complete only after reviewing token reduction and semantic change separately.
+
+| Check | Required evidence |
+|---|---|
+| Owner and consumer | Each moved field or capability still has one authority, and every runtime consumer loads or projects that authority |
+| Strength delta | Record `before → after` for deleted, moved, or rewritten `Hard rule`, `Forbidden`, `Default`, and `Reference` instructions |
+| Failure predicate | Preserve the compact objective invariant that justifies every non-self-evident hard boundary |
+| Freedom boundary | A permission did not become a quota, a reference did not become a lock, and flexible realization did not become silent reselection |
+| Preparation timing | Strategist-owned acquisition and materialization did not move into Executor or before final confirmation |
+| Capability discovery | Conditional deep specifications retain a short visible menu or an externally observable trigger before their load gate |
+| Token delta | Report route/file budget changes separately; a budget pass does not prove semantic equivalence |
+
+**Hard rule**: A shorter prompt that changes decision ownership, constraint strength, preparation timing, or capability discoverability is a semantic regression even when structural and token-budget audits pass.

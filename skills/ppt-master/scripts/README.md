@@ -73,8 +73,8 @@ Project setup:
 ```bash
 uvx ppt-master project init <project_name> --format ppt169
 uvx ppt-master project import-sources <project_path> <source_files_or_dirs...> --move
-uvx ppt-master project scaffold-spec <project_path>
-uvx ppt-master project scaffold-lock <project_path>
+uvx ppt-master project scaffold-spec <project_path>  # optional manual helper
+uvx ppt-master project scaffold-lock <project_path>  # optional manual helper
 uvx ppt-master project validate <project_path>
 uvx ppt-master project page-context <project_path> P07 --bundle --record-usage
 uvx ppt-master project page-context-report <project_path>

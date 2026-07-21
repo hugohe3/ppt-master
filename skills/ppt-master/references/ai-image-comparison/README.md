@@ -26,7 +26,7 @@ Each subdirectory contains:
 | Choice | Reason |
 |---|---|
 | rendering=`vector-illustration` | Most versatile in the catalog; ✓✓ compatible with all 14 palettes; minimal interference when used as the "origin" for palette / type comparisons |
-| palette=`cool-corporate` | Most neutral and most common; simple color behavior (HEX 60-30-10 applied directly) so it doesn't overpower the dimension under comparison |
+| palette=`cool-corporate` | Most neutral and common; clear dominant/support/accent roles keep the compared dimension visible |
 | composition=single-subject hero (§4.1 Primitive A) | One dominant subject (60-70% of canvas) — the most visually representative shape, so rendering / palette differences show up most clearly |
 
 ## How the images were generated

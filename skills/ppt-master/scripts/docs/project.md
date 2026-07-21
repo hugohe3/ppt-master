@@ -13,8 +13,8 @@ Main entry point for project setup and validation.
 ```bash
 uvx ppt-master project init <project_name> --format ppt169
 uvx ppt-master project import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...]
-uvx ppt-master project scaffold-spec <project_path>
-uvx ppt-master project scaffold-lock <project_path>
+uvx ppt-master project scaffold-spec <project_path>  # optional manual helper
+uvx ppt-master project scaffold-lock <project_path>  # optional manual helper
 uvx ppt-master project validate <project_path>
 uvx ppt-master project info <project_path>
 uvx ppt-master project page-context <project_path> P07 [--bundle] [--pretty] [--record-usage]
@@ -35,7 +35,11 @@ Notes:
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.
 - `--move` and `--copy` are mutually exclusive.
-- `scaffold-spec` creates `design_spec.md` from
+- Normal Generate authoring reads `templates/design_spec_reference.md`, writes
+  the complete `design_spec.md` from scratch, then reads
+  `templates/spec_lock_reference.md` and writes the complete lock projection.
+  It does not call either scaffold command.
+- Optional `scaffold-spec` creates `design_spec.md` from
   `templates/scaffolds/design_spec.md`; `scaffold-lock` creates `spec_lock.md`
   from `templates/scaffolds/spec_lock.md`. Both substitute project/canvas
   metadata deterministically and refuse to overwrite an existing artifact.
@@ -55,8 +59,10 @@ Notes:
   the human-readable brief; the lock schema owns machine execution values. For
   structured template use, strict input prototypes must match their assigned
   Master/Layout; adaptive input prototypes retain the assigned Master while a
-  new output Layout is validated only after its generated SVG exists. Versioned
-  scaffolds carry the schema marker. Markerless legacy artifacts are left on
+  new output Layout already declared by Strategist is cross-validated after its
+  generated SVG exists. Versioned
+  Direct-authored current artifacts and optional scaffolds carry the schema
+  marker. Markerless legacy artifacts are left on
   their prior validation path with a warning;
   malformed or unsupported markers are errors.
 - PPTX-family inputs are enriched automatically under `analysis/` with
@@ -123,8 +129,8 @@ Examples:
 
 ```bash
 uvx ppt-master project init my_presentation --format ppt169
-uvx ppt-master project scaffold-spec projects/my_presentation_ppt169_20251116
-uvx ppt-master project scaffold-lock projects/my_presentation_ppt169_20251116
+uvx ppt-master project scaffold-spec projects/my_presentation_ppt169_20251116  # optional
+uvx ppt-master project scaffold-lock projects/my_presentation_ppt169_20251116  # optional
 uvx ppt-master project validate projects/my_presentation_ppt169_20251116
 uvx ppt-master project info projects/my_presentation_ppt169_20251116
 uvx ppt-master project page-context projects/my_presentation_ppt169_20251116 P07 --bundle --record-usage

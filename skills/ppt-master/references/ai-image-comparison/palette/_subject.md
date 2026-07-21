@@ -47,5 +47,5 @@ Scan all 14 images side by side. Focus on:
 
 - **Color temperature** — cool-professional vs warm-human vs neutral-editorial
 - **Saturation** — restrained vs vivid vs monochrome
-- **The 60-30-10 proportional feel** — how dominant the secondary really is
+- **Dominant/support/accent balance** — how strongly each semantic role appears
 - **Accent weight** — how much visual presence the small accent commands

@@ -25,6 +25,8 @@
 
 ## typography
 - font_family: [fill]
+- title_family: [fill]
+- body_family: [fill]
 - body: [fill]
 - title: [fill]
 
