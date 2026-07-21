@@ -1,6 +1,6 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. This file owns normal authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns machine grammar.
+`spec_lock.md` is the compact execution contract from audited `design_spec.md` plus current context. It keeps stable cross-page anchors and routes, not every page-local paint or typeface. This file owns authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns grammar.
 
 ## 1. Author the complete artifact
 
@@ -92,7 +92,7 @@ New locks always write `title_family` and `body_family`, even when their values 
 - Every non-family `typography` value is a positive unitless px anchor. Intermediate values need no lock row when they stay within the mapped role's anchor `±2px`; a new semantic role or an outside-band size requires Design Spec repair and a new anchor.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
-- `images`: `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; omit unplaced Illustration Sheets.
+- `images`: `- <key>: <path> | source=<via> | pattern=<layout> | crop=<adaptive|no-crop>`; e.g. `- p04: images/a.png | source=user | pattern=#2 Left image | crop=no-crop`. Omit unplaced sheets.
 - Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.

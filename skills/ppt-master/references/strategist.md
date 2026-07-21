@@ -287,7 +287,7 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-The command returns a bounded lexical shortlist plus `no-template-match`. Treat `confidence` as a diagnostic only: `low` / `none` never expands the output or decides whether to use a template. Semantically review the returned candidates. If terminology mismatch or structural ambiguity suggests that the shortlist missed a relevant catalog structure, rerun with `--semantic-fallback` and compare the returned rules semantically. This explicit fallback is optional, not a routine gate before `no-template-match`. Do not open the catalog separately or maintain a second index.
+The command returns a bounded shortlist plus `no-template-match`. Read it unfiltered: `--limit` already bounds output, while `tail` / `head` / `grep` can hide higher-ranked candidates. `confidence` is diagnostic only. Semantically review the candidates; if terminology or structural ambiguity suggests a missed catalog structure, rerun with `--semantic-fallback` and compare its rules. This is optional, not a routine no-match gate. Do not open a second index.
 
 **Selection**:
 
