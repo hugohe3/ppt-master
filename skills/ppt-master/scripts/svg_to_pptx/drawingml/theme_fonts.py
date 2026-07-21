@@ -239,7 +239,7 @@ def apply_master_text_style_spec(
     extract_dir: Path,
     spec: MasterTextStyleSpec,
 ) -> int:
-    """Install locked title/body sizes into generated slide-master txStyles."""
+    """Install declared title/body anchors into generated slide-master txStyles."""
     master_dir = extract_dir / "ppt" / "slideMasters"
     master_paths = sorted(master_dir.glob("slideMaster*.xml"))
     if not master_paths:

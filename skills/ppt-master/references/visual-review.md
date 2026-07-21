@@ -12,7 +12,7 @@ Executor finishes page → svg_quality_checker.py passes → visual_review.py re
 
 If the static checker has not been run or has failed, the subagent must abort with status `prereq_failed` and not start the rubric. Topics already enforced by the static checker (do **not** re-check here):
 
-- font-size ramp drift (`RAMP_MIN_RATIO=0.5` / `MAX=5.0`)
+- font-size anchor drift (more than `2px` from every declared role anchor)
 - id uniqueness, XML well-formed
 - canvas/structural typography validation and informational spec-lock anchor comparison (contextual colors/fonts are allowed)
 - animation_config compliance
@@ -85,7 +85,7 @@ Hard boundary, equal weight to §1.
 
 - **Brand decisions** — color tokens, font families, geometry style (decided by `spec_lock.md` / brand directory)
 - **Layout restructure** — do not change column counts, replace chart types, add/remove sections
-- **Content** — do not add or remove copy; only adjust position, font-size (within ramp), spacing, letter-spacing, alignment, scrim
+- **Content** — do not add or remove copy; only adjust position, font-size (within the mapped role's anchor `±2px`), spacing, letter-spacing, alignment, scrim
 - **Other files** — never edit `design_spec.md` / `spec_lock.md` / `animations.json` / `image_prompts.json` / `images/` / other pages' SVGs
 - **Atomicity** — one edit per fix, no bulk multi-element replacements
 

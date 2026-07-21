@@ -218,7 +218,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Strategist-owned role extension after confirmation**: Confirm UI keeps the heading/body choice unchanged. While authoring the complete §IX roster and §IV typography plan, scan the actual content for recurring roles that materially need a different family for character or legibility—such as `annotation`, `footer`, `footnote`, `data`, `emphasis`, `quote`, or `code`. Add a lowercase snake_case role and exact stack only when it recurs; inherited roles and one-off garnish stay omitted. The extension must remain coherent with the confirmed heading/body system and locked visual style, and it does not reopen confirmation. Record one compact `Role rationale` in §IV stating the added roles and why, or that no additional family role is justified.
 
-**Size lock — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
+**Size anchors — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
 
 | Reading mode on PPT | Initial body | Information posture |
 |---|---:|---|
@@ -226,7 +226,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 | `balanced` | 24 | mixed reading + presentation |
 | `presentation` | 32 | projected / sparse |
 
-Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed visible values always win: take Confirm UI `body_size` / `sizes` verbatim; a manually edited role remains pinned, and changing canvas does not secretly rescale it.
+Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed role-anchor values always win: take Confirm UI `body_size` / `sizes` verbatim as anchors; a manually edited anchor remains pinned, and changing canvas does not secretly rescale it.
 
 | Recurring role | Ratio to body |
 |---|---:|
@@ -239,7 +239,7 @@ Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md)
 | Annotation | 0.7–0.85× |
 | Footnote / page number | 0.5–0.65× |
 
-Scan §IX before locking. Declare every recurring role, including `lead`, `footnote`, and chart annotations when used; a lead is always at least body size. One role has one deck-wide size. Snap derived values to clean even px (for body 24, a sound set is title 42, subtitle 32, lead 30, annotation 18, footnote 16). Feature elements may exceed the normal bands only through an explicit named slot.
+Scan §IX before locking. Declare every recurring role, including `lead`, `footnote`, and chart annotations when used; a lead is always at least body size. Give each role one deck-wide anchor and snap derived anchors to clean even px (for body 24, a sound set is title 42, subtitle 32, lead 30, annotation 18, footnote 16). Executor may vary one occurrence within that role's anchor ±2px while preserving hierarchy and readability. A new semantic role or any size outside ±2px requires an explicit named slot; feature elements that need a larger departure are planned here rather than improvised downstream.
 #### Formula Planning Trigger
 
 Formula policy and formula-asset planning are conditional. If the source contains formula-worthy expressions, or the user explicitly requests formula handling, read [`strategist-image.md`](./strategist-image.md) §3 before confirming the production policy or writing formula rows. Load it even when `image_usage` is `none`; otherwise omit formula planning from the core path.
@@ -402,7 +402,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
 | Communication contract and `content_divergence` | §I records the confirmed contract; §IX realizes every stated purpose, outcome, priority, and source-treatment constraint |
 | Canvas, reading mode, and page count | §I records the confirmed input and exact resolved count; §IX contains that many ordered pages. Executor produces exactly one output slide per entry, in order |
 | Mode, visual style, palette, and generated-image rendering | §I and §III record the selected direction as identity anchors; named core roles stay stable while page-local expression remains contextual |
-| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records the confirmed heading/body stacks, any recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` values; never discard a declared role override or re-derive a confirmed size |
+| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records the confirmed heading/body stacks, any recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` anchor values; never discard a declared role override or re-derive a confirmed anchor |
 | Icons | §VI uses the confirmed library or confirmed no-icon/custom path |
 | Confirmed image-source set, `image_notes`, and AI strategy | §VIII uses only permitted sources and includes every explicitly required source, asset, or page role; a permitted but unused source needs no row |
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |
@@ -412,7 +412,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
 
 ⛔ **GATE 2 — lock context fidelity.** After the Design Spec passes Gate 1, author its machine-relevant execution anchors and routing values into `spec_lock.md`. The lock may normalize syntax and add named recurring implementation roles justified by the Design Spec/page plan, but it must not change confirmed identity or introduce a competing direction. It is intentionally not a field-for-field copy and not a whitelist of every legal SVG value. If authoring exposes a contradiction or missing confirmed decision, return to Gate 1 and repair the Design Spec from the retained final-confirmation state; on a fresh recovery turn only, read the persisted final result once to restore that state.
 
-**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography size; never re-derive a confirmed role. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
+**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography role and any planned feature role that needs to leave another role's ±2px band; never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
 
 **Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or patterns require upstream repair; Executor never reverse-projects a choice as fact. Promote garnish upstream before reuse, regenerate page-context, and never add values to silence a comparison.
 

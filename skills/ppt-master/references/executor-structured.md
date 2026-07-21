@@ -34,17 +34,17 @@ Resolve the per-page template SVG from `page_context.template.prototype`; the ow
 
 **Default — re-skin `layout` (may override when the application plan keeps template visuals and the lock reflects them)**: inherit geometry, label/legend placement, and series encoding; otherwise repaint template gradients, shadows, fills, and strokes from the current style/lock. Template font sizes remain placeholders. `mirror` preserves visuals under §1.1.
 
-**Font size is skin, not geometry (non-mirror).** A chart / layout template's hardcoded `font-size` values (often 11–16px, sized for the template's own dense placeholder text) are NOT inherited — classify each text into its `spec_lock.md` role and use that role's locked size, exactly as you re-skin color. **Structural roles (page title / body / subtitle / annotation / footnote) hold their one deck-wide size on every page** — the template's placeholder px never overrides it; same-role text drifting page to page is what makes a deck look unprofessional.
+**Font size is skin, not geometry (non-mirror).** A chart / layout template's hardcoded `font-size` values (often 11–16px, sized for the template's own dense placeholder text) are NOT inherited. Classify each text into its `spec_lock.md` role, start from that role's anchor, and keep any contextual adjustment within anchor `±2`px. The template's placeholder px never becomes the starting point or an extra role.
 
 **Typography execution order (mandatory):**
 
 1. Build a per-page text inventory from `design_spec.md §IX` + the current `notes/<NN>_*.md`.
-2. Classify each text item before drawing. **Structural roles** (`title`, `subtitle` / `lead`, `body`, `annotation`, `footnote` / `page_number`) must map to their declared `spec_lock.typography` slot. A **one-off feature element** (a single hero number, an isolated emphasis label) may take an in-ramp intermediate value — the ramp is anchored on `body`, not a closed menu — but a feature size that **recurs** must be promoted to a declared slot. The failure mode this guards against is structural text silently inheriting the template's compact px, not legitimate feature sizing.
-3. Copy the role's locked px value into `font-size` verbatim. Do this before placing the text; never start from a template `font-size` and then "adjust".
-4. Layout from those locked sizes: compute line-height, wrapped line count, child `y` / `dy`, card padding, card height, column gaps, and available image/chart area from the chosen px values.
-5. Only after this reflow may you inspect fit. If fit fails, move / resize containers or simplify local geometry first; do not reduce the role size merely because the inherited template slot was smaller.
+2. Classify each text item before drawing. **Structural and feature roles** (`title`, `subtitle` / `lead`, `body`, `annotation`, `footnote` / `page_number`, hero or emphasis slots) map to a declared `spec_lock.typography` size role. A missing semantic role returns upstream; do not borrow an unrelated size because it is numerically close.
+3. Choose the role anchor or one contextual value within anchor `±2`px before placing the text. Never start from a template `font-size` and then adjust it.
+4. Layout from those chosen sizes: compute line-height, wrapped line count, child `y` / `dy`, card padding, card height, column gaps, and available image/chart area.
+5. Reflow containers and local geometry together with the bounded role treatment; an inherited template slot never justifies leaving the declared band.
 
-**Geometry adapts to the type, never the reverse**: when the locked size is larger than the template's placeholder text, widen or heighten the card, open spacing, and recompute child `y` / `dy`; do not shrink text to inherit a smaller container. Recompute line-height and downstream coordinates, and allocate wrapped-line height plus padding. Page count and density remain the confirmed Strategist decision: do not repaginate, split, or drop content. If a fully reflowed block still fails, apply the single bounded body-fit exception in [`executor-base.md`](./executor-base.md) §2.1. Mirror instead preserves source typography under §1.1.
+**Geometry and bounded type co-adapt**: widen or heighten the card, open spacing, recompute child `y` / `dy`, and choose within the mapped role's anchor `±2`px instead of inheriting the template's compact size. Page count and density remain the confirmed Strategist decision: do not repaginate, split, or drop content. If the page still needs a value outside the band, return upstream under [`executor-base.md`](./executor-base.md) §2.1. Mirror instead preserves source typography under §1.1.
 
 ### 1.1 Mirror reuse — literal page replacement
 

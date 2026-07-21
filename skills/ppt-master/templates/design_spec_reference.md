@@ -101,7 +101,7 @@ Use these exact subsections and field shapes:
 
 ### Font Size Hierarchy
 
-| Purpose | Size (px) |
+| Purpose | Anchor Size (px) |
 | --- | ---: |
 | Body | <confirmed value> |
 | Title | <confirmed value> |
@@ -132,7 +132,7 @@ Use these exact subsections and field shapes:
 | --- | --- | --- |
 ```
 
-Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. `Role rationale` records the decision but does not itself become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Add every recurring palette role and typography size established by the plan, including `Lead` or `Footnote` sizes only when they recur; do not enumerate one-off paint or display garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
+Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. `Role rationale` records the decision but does not itself become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Treat every Font Size Hierarchy value as a role anchor: Executor may adjust one occurrence within anchor `±2px`, but a new semantic role or any planned feature outside that band needs its own row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 
