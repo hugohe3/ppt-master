@@ -19,10 +19,10 @@ This directory provides **11,600+ high-quality SVG icons** across five libraries
 This directory is the **global library**. At selection time the Strategist copies the chosen icons into the deck's own `<project>/icons/<lib>/` with `icon_sync.py`:
 
 ```bash
-python3 skills/ppt-master/scripts/icon_sync.py <project_path> chunk-filled/home tabler-outline/bulb
+python3 skills/ppt-master/scripts/icon_sync.py <project_path> tabler-outline/home tabler-outline/bulb simple-icons/github
 ```
 
-A name the library does not have is reported and the command exits non-zero — re-pick a real one then, not at export. `finalize_svg.py embed-icons` embeds **project-first** (from `<project>/icons/`), falling back to this global library per-icon.
+Missing names and batches that mix stylistic libraries exit non-zero; `simple-icons` may coexist for real brand marks. `finalize_svg.py embed-icons` embeds **project-first** from `<project>/icons/`, with per-icon global fallback.
 
 **Custom icons**: drop your own `.svg` into `<project>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any library icon.
 
@@ -71,15 +71,16 @@ python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 
 ## Searching for Icons
 
-Use `ls | grep` — zero token cost:
+For a known basename, run `icon_sync.py` directly; it copies and validates without a per-file precheck.
+
+For an uncertain basename, search only the chosen stylistic library; use `simple-icons` only for a real brand mark:
 
 ```bash
-ls skills/ppt-master/templates/icons/chunk-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
-ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
-ls skills/ppt-master/templates/icons/simple-icons/ | grep github
+rg --files "skills/ppt-master/templates/icons/tabler-outline" -g '*chart*.svg'
+rg --files "skills/ppt-master/templates/icons/simple-icons" -g '*github*.svg'
 ```
+
+Do not load a full index or enumerate broad keyword families. Re-pick from the narrow result and rerun the final batch until clean; never switch stylistic libraries for a missing generic icon.
 
 ---
 
