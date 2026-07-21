@@ -108,7 +108,7 @@ IDs are immutable within the file. Correct a claim under the same ID; never reus
 Import the research supplement and provenance alongside any user-supplied sources in Generate Step 2:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py import-sources projects/<project_name> [<source_paths...>] projects/<research_slug>.md projects/<research_slug>.facts.json --move
+python3 ${SKILL_DIR}/scripts/project_manager.py import-sources projects/<project_name> [<source_paths...>] projects/<research_slug>.md projects/<research_slug>.facts.json
 ```
 
 The Research Brief remains evidence-facing context, not a locked presentation contract. Strategist reads all imported source material, then confirms the complete contract and decides the content, page roster, and image resource plan. Generate Step 5 acquires only the selected image rows after that confirmation.

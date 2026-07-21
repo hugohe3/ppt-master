@@ -27,7 +27,7 @@ python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
 python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
 python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
 python3 scripts/project_manager.py init <project_name> --format ppt169
-python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...> --move
+python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
 python3 scripts/animation_config.py scaffold <project_path>  # optional object-level animation overrides
@@ -72,7 +72,7 @@ Project setup:
 
 ```bash
 python3 scripts/project_manager.py init <project_name> --format ppt169
-python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...> --move
+python3 scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>
 python3 scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
 python3 scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper
 python3 scripts/project_manager.py validate <project_path>

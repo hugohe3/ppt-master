@@ -1,8 +1,8 @@
 # Project Tools
 
-> **Import boundary**: copy out-of-repository sources by default to protect user
-> files; move in-repository sources by default to avoid leaving accidental
-> commit artifacts. Explicit `--copy` / `--move` flags override the default.
+> **Import boundary**: move only sources already under the repository's
+> `projects/` tree. Copy every other local path, even when `--move` is supplied.
+> Use `--copy` to preserve a projects-local source.
 
 Project tools create, validate, and inspect the standard PPT Master workspace.
 
@@ -22,18 +22,17 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
-- Files outside the repo are copied into `sources/` by default
-- With `--move`, files outside the repo are moved into `sources/`
+- Files outside `projects/` are always copied into `sources/`
+- `--move` applies only to sources under the repository's `projects/` tree
 - Directory inputs are expanded non-recursively. After Step 1 conversion,
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
   the original source path/directory and the Markdown output path/directory.
-- Under move semantics, a supplied source directory left strictly empty after
-  import (or empty from the start) is removed; a directory that still holds any
-  file or subdirectory is left untouched. `--copy` never removes directories.
-- Files already inside the repo are moved into `sources/` by default (with a stderr
-  note), to avoid leaving unintended artifacts that could be committed by mistake.
-  Pass `--copy` to force a copy for in-repo sources instead.
+- A projects-local supplied source directory left strictly empty after import
+  (or empty from the start) is removed; every directory outside `projects/`
+  remains untouched. `--copy` never removes directories.
+- Files already under `projects/` move into `sources/` by default. Pass `--copy`
+  to preserve them in place.
 - `--move` and `--copy` are mutually exclusive.
 - Normal Generate authoring reads `templates/design_spec_reference.md`, writes
   the complete `design_spec.md` from scratch, then reads
