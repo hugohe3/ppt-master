@@ -19,7 +19,7 @@ English | [中文](./README_CN.md)
   <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-en.png" alt="Kimi" width="100%"></a>
 </p>
 
-Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this project! [Kimi K2.7](https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart) is an open-source agentic model developed by Moonshot AI. With PPT Master, Kimi can understand source materials such as PDFs, DOCX files, and web pages, identify key points, structure the narrative, and generate a natively editable PPTX that you can continue refining in PowerPoint.
+Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this project! [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) is the world's first open 3T-class model, featuring native vision and a 1-million-token context window. With PPT Master, K3 can understand source materials such as PDFs, DOCX files, and web pages, identify key points, structure the narrative, and generate a natively editable PPTX that you can continue refining in PowerPoint.
 
 **Try [Kimi Code](https://www.kimi.com/code/?aff=ppt-master), or access the API through the Kimi Open Platform ([中文站](https://platform.kimi.com?aff=ppt-master) | [Global](https://platform.kimi.ai?aff=ppt-master)).**
 
