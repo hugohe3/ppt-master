@@ -93,7 +93,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 
 - Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
 - Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
-- Use declared role families or `font_family`. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
+- Resolve structural families by role: exact `<role>_family` first, then `title_family` for title roles or `body_family` for other unoverridden roles, then legacy `font_family`. Never flatten declared role overrides. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
 - Font sizes follow a ramp anchored on `typography.body`. Structural roles use their locked size deck-wide; recurring feature roles such as lead, pull quote, or hero number need their own lock slot. Never resize one role page by page or inherit a template placeholder size.
 - **Core message ≥ `body`**: map the page's primary claim to locked `lead` / `subtitle`, never below body. Footnotes, page numbers, and credits use locked `footnote` / `annotation`; do not invent smaller sizes.
 - **Write locked px verbatim, with at most two decimals.** Do not substitute familiar pt-style numbers or emit long precision tails.
@@ -244,7 +244,7 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Structural typography anchors come from `spec_lock.md typography`. Use `font_family` by default and declared role overrides when present. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
+Structural typography anchors come from `spec_lock.md typography`. Use an exact `<role>_family` when declared; title roles otherwise use `title_family`, and body/support roles otherwise use `body_family`. `font_family` is the legacy/default fallback, not a reason to erase role differences. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 

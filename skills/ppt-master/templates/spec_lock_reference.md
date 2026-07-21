@@ -23,7 +23,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
-| `typography` | `font_family`, `body`, `title` | Core family/size anchors; sizes are unitless numbers |
+| `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; sizes are unitless numbers |
 | `icons` | `library`, `inventory` | `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
@@ -73,11 +73,21 @@ Structured section value shapes:
 
 `page_charts` values must exist as keys in `charts/charts_index.json`; pages using the explicit `no-template-match` result do not appear there.
 
+Typography projection is role-for-role, not a lossy summary:
+
+| Design Spec §IV role | `spec_lock.md` field |
+| --- | --- |
+| Title | `title_family` |
+| Body | `body_family` and compatibility/default `font_family` |
+| Any additional recurring role `<role>` | `<role>_family` |
+
+New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row in the Design Spec must appear under the same lowercase snake_case role; omit only roles that inherit without an explicit override. Existing locks without role fields remain readable through `font_family` fallback.
+
 ---
 
 ## 4. Field Grammar Index
 
-- `font_family` grammar: one non-empty PPT-safe exported family stack; role-specific families may extend it in the same section.
+- `font_family`, `title_family`, `body_family`, and every optional `<role>_family` use one non-empty PPT-safe exported family stack. `font_family` is the body/default compatibility stack, not permission to erase role differences.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
 - `images`: `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; omit unplaced Illustration Sheets.
@@ -113,7 +123,7 @@ Field meaning and selection logic stay in the owning Strategist modules. Executo
 
 ## 6. Anchor and extension semantics
 
-- Confirmed core palette roles and structural title/body typography remain stable cross-page anchors.
+- Confirmed core palette roles and every declared structural/recurring typography family remain stable cross-page anchors.
 - Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off export-safe display families may be authored from context without adding a lock row.
 - When a contextual value becomes a recurring semantic role, add one descriptive `colors` or `*_family` row and regenerate page-context before later pages use that role.
 - Do not expand the lock merely to make an informational checker comparison empty. A lock edit should express reuse or identity, not enumerate incidental literals.
