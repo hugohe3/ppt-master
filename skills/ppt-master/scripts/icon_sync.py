@@ -2,22 +2,19 @@
 """
 PPT Master - Icon Sync
 
-Copy chosen library icons into a project's own `icons/` folder at the moment they
-are selected. Run it with the icon names you are picking; each is copied from the
-global library into `<project>/icons/<lib>/`. Any name the library does not have
-is reported on the spot and the command exits non-zero — so you re-pick a valid
-icon then, not at export time. Over-copying candidates is fine: finalize only
-embeds the icons actually referenced by `<use data-icon>`, the rest sit unused.
+Copy chosen library icons into `<project>/icons/<lib>/` when selected. Missing
+names exit non-zero before export. Known basenames need no separate existence
+check; search the chosen library only for unresolved concepts.
 
-Custom icons you place in `<project>/icons/<lib>/` yourself are honored too — a
-name already present in the project is treated as satisfied, not missing.
+Project-local custom icons count as satisfied. `simple-icons` may accompany one
+stylistic library only for real brand marks.
 
 Usage:
     python3 scripts/icon_sync.py <project_path> <lib/name> [<lib/name> ...]
 
 Examples:
-    python3 scripts/icon_sync.py projects/deck chunk-filled/home tabler-outline/chart
-    python3 scripts/icon_sync.py projects/deck simple-icons/github
+    python3 scripts/icon_sync.py projects/deck tabler-outline/home tabler-outline/chart
+    python3 scripts/icon_sync.py projects/deck tabler-outline/home simple-icons/github
 
 Dependencies:
     None (standard library only).
@@ -38,6 +35,12 @@ from console_encoding import configure_utf8_stdio
 configure_utf8_stdio()
 
 _LIB_ALIASES = {"chunk": "chunk-filled"}
+_STYLISTIC_LIBRARIES = {
+    "chunk-filled",
+    "phosphor-duotone",
+    "tabler-filled",
+    "tabler-outline",
+}
 _GLOBAL_ICONS_DIR = Path(__file__).resolve().parent.parent / "templates" / "icons"
 
 
@@ -93,6 +96,19 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"[ERROR] project not found: {project}", file=sys.stderr)
         return 1
 
+    requested_libraries = {_split_name(raw)[0] for raw in args.icons}
+    stylistic_libraries = sorted(requested_libraries & _STYLISTIC_LIBRARIES)
+    if len(stylistic_libraries) > 1:
+        print(
+            f"[ERROR] mixed stylistic icon libraries: {', '.join(stylistic_libraries)}",
+            file=sys.stderr,
+        )
+        print(
+            "Choose one stylistic library per deck; simple-icons may coexist for real brand marks.",
+            file=sys.stderr,
+        )
+        return 1
+
     copied, missing = sync_icons(project, args.icons)
 
     if copied:
@@ -104,7 +120,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"\n[MISSING] {len(missing)} icon(s) not in the library — re-pick before continuing:", file=sys.stderr)
         for m in missing:
             lib = m.split("/", 1)[0]
-            print(f"     ✗ {m}   (search: ls {_GLOBAL_ICONS_DIR}/{lib}/ | grep <keyword>)", file=sys.stderr)
+            print(
+                f'     ✗ {m}   (search: rg --files "{_GLOBAL_ICONS_DIR / lib}" -g \'*<keyword>*.svg\')',
+                file=sys.stderr,
+            )
         return 1
 
     return 0
