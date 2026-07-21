@@ -153,20 +153,9 @@ Record the confirmed visual style and rationale in `design_spec.md` first, inclu
 
 ### e. Color Scheme Recommendation
 
-**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of ≥3 directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Only without user/template colors use the table below.
+**Hard rule**: User-specified colors are truth. Lock supplied HEX, brand colors, or natural-language directives; templates follow inherited-design precedence. Even direct locks fill all six roles (`background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`) in each of ≥3 directions: repeat fixed roles and vary only open ones. Never emit an empty palette. Keep body-text contrast at least 4.5:1 and preserve confirmed/brand semantic roles.
 
-Proactively provide a color scheme (HEX values) based on content characteristics and industry.
-
-**Industry color quick reference** (full 14-industry list in `scripts/config.py` under `INDUSTRY_COLORS`):
-
-| Industry | Primary Color | Characteristics |
-|----------|--------------|-----------------|
-| Finance / Business | `#003366` Navy Blue | Stable, trustworthy |
-| Technology / Internet | `#1565C0` Bright Blue | Innovative, energetic |
-| Healthcare / Health | `#00796B` Teal Green | Professional, reassuring |
-| Government / Public Sector | `#C41E3A` Red | Authoritative, dignified |
-
-**Color rules**: 60-30-10 rule (primary 60%, secondary 30%, accent 10%); text contrast ratio >= 4.5:1; no more than 4 colors per page.
+**Reference — not a constraint**: Without user/template colors, propose project-specific directions from content and style. `scripts/config.py` industry colors and dominant/support/accent hierarchy are recall aids, never default locks, ratios, or color-count quotas.
 
 **Lock recurring semantic anchors, not every possible paint.** Add the neutral roles already known to recur across the deck—such as `surface`, `grid`, `scrim`, `overlay`, or `block-shade`—when the visual style and page plan establish a stable meaning for them. Do not try to predict every page-local tint, gradient stop, shadow/glow color, transparency composite, or one-off illustration tone. Those values are chosen from page context during execution; promote one into `spec_lock.colors` only when it becomes a reusable named role.
 
@@ -296,14 +285,13 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-The command reads the live `charts_index.json` and returns positive-scoring candidates up to the requested 3–8 limit, plus an explicit `no-template-match` option. It never pads the shortlist with zero-score keys; zero positive matches means use the fallback. Do not load the full catalog into the prompt.
+The command returns a lexical shortlist plus `no-template-match`. `low` / `none` also returns the full catalog under `semantic_fallback`; if stronger candidates all conflict, rerun with `--semantic-fallback`. Compare every returned catalog rule semantically—lexical overlap is unnecessary. Do not open the catalog separately or maintain a second index.
 
 **Selection**:
 
-1. Inspect every returned `Pick for` / `Skip if` summary against the page; prefer the most specific valid structure.
-2. Keep one primary visualization per page. Adapt its composition, density, colors, and decoration to the page; do not mimic blindly.
-3. If every candidate conflicts, choose `no-template-match`: data-driven content falls back to a table, conceptual/illustrative content to an AI image when the confirmed image source permits it, and structural content to a custom layout.
-4. Validate all selected keys before writing the lock:
+1. Choose the most specific valid structure from the applicable review; keep one primary visualization per page and adapt its treatment rather than mimicking it.
+2. Only after that review finds no fit, use `no-template-match`: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout.
+3. Validate all selected keys before writing the lock:
 
 ```bash
 python3 skills/ppt-master/scripts/chart_recall.py validate <key> [<key> ...]
@@ -313,10 +301,12 @@ A failed validation must be corrected with a recalled key. `no-template-match` i
 
 **Section VII audit**: Use one combined table. Copy the selected candidate's returned `summary` verbatim into `Summary-quote`; record its returned path and page-specific usage. List real returned runners-up with page-specific rejection reasons. If no candidate fits, record `no-template-match`, the fallback, and why.
 
+**Native-ready boundary**: Put every independent data chart or pure text-grid table in §VII and set `Native-ready: yes|no`; use `n/a` for conceptual rows. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Incidental sparklines, KPI trends, and insets stay in §IX; Executor never promotes them.
+
 ```
-| Page | Template | Path | Summary-quote (verbatim) | Usage |
-|---|---|---|---|---|
-| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <intent> |
+| Page | Template | Path | Summary-quote (verbatim) | Native-ready | Usage |
+|---|---|---|---|---|---|
+| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <yes/no/n/a> | <intent> |
 
 Runners-up considered:
 - <returned_key> | rejected for P03: <page-specific reason>
@@ -345,7 +335,7 @@ Read the relevant `_index.md` at confirmation `d` (Layer 1 / Layer 2) for its ca
 
 ## 3. Color Selection Reference
 
-Do not start from a universal palette. Precedence is user / brand values → active template inheritance → the industry anchors in `scripts/config.py` → a project-specific proposal that realizes the locked visual style. Keep body-text contrast at least 4.5:1 and normally use no more than four chromatic colors on one page.
+Do not start from a universal palette. Precedence is user / brand → active template → project-specific proposal; `scripts/config.py` industry anchors are optional recall. Keep body-text contrast at least 4.5:1; color count and distribution follow encoding, style, and natural assets, not a quota.
 
 Lock the stable role set the deck needs, including recurring neutrals such as `surface`, `grid`, `scrim`, `overlay`, or `block-shade`. These are identity anchors, not an exhaustive paint list. Executor may derive tints, shades, alpha, gradients, and effects, preserve necessary natural asset colors, and add sparse page-local accents for differentiation or ornament. Such accents must not form a competing/recurring palette; Strategist owns reusable positive / warning / negative roles.
 
@@ -420,7 +410,7 @@ Generate Step 4 owns both artifact scaffolds. `design_spec.md` is the Strategist
 
 ⛔ **GATE 2 — lock context fidelity.** After the Design Spec passes Gate 1, author its machine-relevant execution anchors and routing values into `spec_lock.md`. The lock may normalize syntax and add named recurring implementation roles justified by the Design Spec/page plan, but it must not change confirmed identity or introduce a competing direction. It is intentionally not a field-for-field copy and not a whitelist of every legal SVG value. If authoring exposes a contradiction or missing confirmed decision, return to Gate 1 and repair the Design Spec from the retained final-confirmation state; on a fresh recovery turn only, read the persisted final result once to restore that state.
 
-**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography size; never re-derive a confirmed role. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every §VIII image row with its acquisition source. Omit planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
+**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography size; never re-derive a confirmed role. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
 
 **Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or patterns require upstream repair; Executor never reverse-projects a choice as fact. Promote garnish upstream before reuse, regenerate page-context, and never add values to silence a comparison.
 

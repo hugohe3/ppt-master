@@ -22,6 +22,8 @@ The calculator has direct CLI models for simple bars, lines/scatter, pie/donut, 
 
 Read `<project_path>/design_spec.md` §VII Visualization Reference List (authoritative deck plan; cross-check against §IX page outline) and include every page whose SVG geometry is driven by data values. Classify each included page into exactly one mode:
 
+Incidental microvisuals outside §VII are not inferred into this list. If one requires coordinate verification, repair §VII first so the Strategist-owned plan remains authoritative.
+
 | Mode | `charts_index.json` keys | Notes |
 |------|--------------------------|-------|
 | `direct-calc` | `column_chart`, `horizontal_bar_chart` | Use `calc bar`; add `--horizontal` for horizontal bars. |

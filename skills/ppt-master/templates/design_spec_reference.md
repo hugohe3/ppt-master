@@ -26,8 +26,8 @@ The command refuses to shadow any recognized existing design-spec artifact, incl
 | IV. Typography System | Per-role stacks and locked size slots | Additional recurring roles when used |
 | V. Layout Principles | Page regions and project spacing | Template-specific constraints only when active |
 | VI. Icon Usage Specification | Approved icon inventory | Empty table when no icons are used |
-| VII. Visualization Reference List | Selected candidates or an empty table | Only pages with visualization work |
-| VIII. Image Resource List | Image acquisition and placement rows or an empty table | AI-only columns apply to `ai` rows |
+| VII. Visualization Reference List | Candidates and independent charts/tables with `Native-ready`, or empty | Incidental microvisuals stay in §IX |
+| VIII. Image Resource List | Rows with `Layout pattern` and `Crop Policy`, or empty | AI columns apply only to `ai` rows |
 | IX. Content Outline | Complete ordered execution roster; one Slide block per final page, matching the exact Page Count; each has `Audience move` | Page-specific facts, charts, images, and template mappings |
 | X. Speaker Notes Requirements | Filename and content policy | — |
 

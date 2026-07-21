@@ -33,7 +33,7 @@
     "skills/ppt-master/references/strategist-template.md": 2100,
     "skills/ppt-master/templates/design_spec_reference.md": 850,
     "skills/ppt-master/templates/spec_lock_reference.md": 1650,
-    "skills/ppt-master/workflows/generate-pptx.md": 12200,
+    "skills/ppt-master/workflows/generate-pptx.md": 12300,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
   },
   "load_sets": {
@@ -77,7 +77,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 57100
+      "max_tokens": 57200
     },
     "route.create-template.layout": {
       "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
@@ -95,7 +95,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 57300
+      "max_tokens": 57400
     },
     "route.enhance-native-pptx": {
       "description": "Finished-PPTX native enhancement route.",
@@ -399,7 +399,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 92000
+      "max_tokens": 92200
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -411,7 +411,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 92500
+      "max_tokens": 92700
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -601,7 +601,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 18500
+      "max_tokens": 18600
     },
     "stage.generate.animation-options": {
       "description": "Conditional deck-wide transition, auto-advance, and entrance-animation options.",

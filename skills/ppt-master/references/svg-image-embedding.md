@@ -11,15 +11,10 @@ Technical spec and workflow for adding images to SVG files.
 Defined in the Design Specification & Content Outline; each image carries an `Acquire Via` field plus a status annotation. This file is authoritative for status names and SVG embedding behavior. If image approach includes "B) User-provided": run `analyze_images.py` right after the Strategist confirmation stage and complete the list before outputting the design spec.
 
 ```markdown
-| Filename | Dimensions | Purpose | Type | Acquire Via | Status | Reference |
-|----------|------------|---------|------|-------------|--------|-----------|
-| cover_bg.png | 1280x720 | Cover background | Background | ai | Pending | Modern tech abstract, deep blue gradient |
-| team.jpg | 800x600 | Team photo | Photography | web | Pending | Diverse engineering team in modern office |
-| product.png | 600x400 | Page 3 product photo | Photography | user | Existing | - |
-| formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | Rendered | `E = mc^2` |
-| chart.png | 600x400 | Page 5 placeholder | Illustration | placeholder | Placeholder | Team collaboration scene to be added later |
-| spot_sheet.png | 1024x1024 | 2x2 spot illustration sheet, not placed | Illustration Sheet | ai | Pending | Four same-family spot illustrations on a clean grid |
-| spot_team.png | TBD after slicing | Page 4 team spot illustration | Illustration | slice | Pending | From `spot_sheet.png` cell 1,1 |
+| Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
+|----------|------------|---------|------|----------------|-------------|-------------|--------|-----------|
+| team.jpg | 800x600 | Team photo | Photography | `#2 left-third` | adaptive | web | Pending | Diverse engineering team in modern office |
+| formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | no-crop | formula | Rendered | `E = mc^2` |
 ```
 
 ### Image Status Enum

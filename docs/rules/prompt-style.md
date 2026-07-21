@@ -51,7 +51,7 @@ Role definition for the **web image acquisition path**: translate Strategist int
 | `MUST come from Z` | `It is recommended to source from Z` |
 | `Forbidden — unresolved image references` | `Anti-pattern: broken image links` |
 
-**Hard rule**: if a sentence explains *why*, demote it to a single `> Note` blockquote line OR cut it. The agent does not need motivation, only behavior.
+**Hard rule — retain failure predicates**: Cut narrative teaching and background motivation. Keep one compact protected invariant or failure predicate when it determines the rule's strength, scope, or safe generalization; attach it to the rule or one `> Note` line. Runtime prompts need the behavior and its objective failure boundary, not the full rationale.
 
 ---
 
@@ -91,6 +91,8 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 | No right answer — taste, style, or scenario fit | `**Reference — not a constraint**:` |
 
 Boundary cases go by this test, not by how strong the verb feels: "never split a full sentence into bullets" stays near-MUST because splitting *loses the information that the block was continuous reasoning*, not because "never" sounds strict.
+
+**Hard rule**: A `Hard rule` or `Forbidden` label whose failure boundary is not self-evident retains one compact objective predicate. If no objective predicate exists, demote the instruction to `Default` or `Reference` instead of preserving only a strong verb.
 
 > Note: only a MUST with a concrete objective trigger may become a `svg_quality_checker.py` rule. SHOULD is at most a `warning`; MAY is never checked — encoding taste as a check turns the checker into a de-facto spec.
 
@@ -224,3 +226,21 @@ The canonical exemplars to model new files after:
 | A shared spec across roles | [`image-base.md`](../../skills/ppt-master/references/image-base.md), [`shared-standards-core.md`](../../skills/ppt-master/references/shared-standards-core.md) |
 | A technical / format spec | [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md), [`svg-image-embedding.md`](../../skills/ppt-master/references/svg-image-embedding.md), [`image-layout-spec.md`](../../skills/ppt-master/references/image-layout-spec.md) |
 | Stage runbook | [`workflows/stages/verify-charts.md`](../../skills/ppt-master/workflows/stages/verify-charts.md) |
+
+---
+
+## 13. Prompt Refactor Review
+
+Prompt compression is complete only after reviewing token reduction and semantic change separately.
+
+| Check | Required evidence |
+|---|---|
+| Owner and consumer | Each moved field or capability still has one authority, and every runtime consumer loads or projects that authority |
+| Strength delta | Record `before → after` for deleted, moved, or rewritten `Hard rule`, `Forbidden`, `Default`, and `Reference` instructions |
+| Failure predicate | Preserve the compact objective invariant that justifies every non-self-evident hard boundary |
+| Freedom boundary | A permission did not become a quota, a reference did not become a lock, and flexible realization did not become silent reselection |
+| Preparation timing | Strategist-owned acquisition and materialization did not move into Executor or before final confirmation |
+| Capability discovery | Conditional deep specifications retain a short visible menu or an externally observable trigger before their load gate |
+| Token delta | Report route/file budget changes separately; a budget pass does not prove semantic equivalence |
+
+**Hard rule**: A shorter prompt that changes decision ownership, constraint strength, preparation timing, or capability discoverability is a semantic regression even when structural and token-budget audits pass.

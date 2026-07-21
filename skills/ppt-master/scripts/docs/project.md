@@ -55,7 +55,8 @@ Notes:
   the human-readable brief; the lock schema owns machine execution values. For
   structured template use, strict input prototypes must match their assigned
   Master/Layout; adaptive input prototypes retain the assigned Master while a
-  new output Layout is validated only after its generated SVG exists. Versioned
+  new output Layout already declared by Strategist is cross-validated after its
+  generated SVG exists. Versioned
   scaffolds carry the schema marker. Markerless legacy artifacts are left on
   their prior validation path with a warning;
   malformed or unsupported markers are errors.
