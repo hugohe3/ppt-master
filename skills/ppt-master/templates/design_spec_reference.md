@@ -1,37 +1,197 @@
 # Design Spec Structure
 
-Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) provides structural lint for readable sections and page projection; it is not an execution lock and does not require textual equality with `spec_lock.md`. Authoring starts from [`scaffolds/design_spec.md`](./scaffolds/design_spec.md).
+Project-level `design_spec.md` is a human-readable English-heading Markdown artifact. This file owns its normal authoring structure. [`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) provides structural lint for readable sections and page projection; it is not an execution lock and does not require textual equality with `spec_lock.md`.
 
 Strategist reads the complete final confirmation once, writes this artifact from that retained state plus source analysis, and audits every confirmed field here. Afterward, `spec_lock.md` is authored from the completed Design Spec plus current project/page/template context; normal lock authoring never reopens `result.json`.
 
-## 1. Create the artifact
+## 1. Author the complete artifact
 
-Run the scaffold command once, then replace every `[fill]` value while preserving the section headings:
+After final confirmation, compose the entire document in active context from the retained final state, source analysis, and project context. Then create `<project_path>/design_spec.md` once, from the first line through §X.
 
-```bash
-python3 skills/ppt-master/scripts/project_manager.py scaffold-spec <project_path>
-```
+**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, followed by `# <Project Name> - Design Spec`. Write all ten sections with final values and the complete page roster. Do not create a placeholder-bearing project file, copy example rows, or patch a scaffold field by field.
 
-The command refuses to shadow any recognized existing design-spec artifact, including legacy filenames. Re-running it in an otherwise equivalent empty project produces the same bytes.
+`project_manager.py scaffold-spec` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. Resume and refine paths edit an existing completed Design Spec rather than replacing it with a scaffold.
 
 ---
 
-## 2. Section contract
+## 2. Exact document contract
 
-| Section | Required content | Conditional content |
+Angle-bracketed text below is authoring notation, not project content. Resolve every universal value before writing the file; omit only rows explicitly marked conditional. Keep all ten `##` headings even when §VII or §VIII has no data rows. Do not copy examples, notation tokens, or a second schema description into the project artifact.
+
+### 2.1 Header and project contract
+
+Start with this exact heading order:
+
+```markdown
+<!-- ppt-master-schema: design-spec/v1 -->
+# <Project Name> - Design Spec
+
+## I. Project Information
+
+| Item | Value |
+| --- | --- |
+| Project Name | <resolved project name> |
+| Canvas Format | <canonical format and dimensions> |
+| Page Count | <exact final count matching §IX> |
+| Target Audience | <confirmed audience> |
+| Communication Intent | <confirmed intent, including priority or sequence> |
+| Desired Audience Outcome | <confirmed observable outcome> |
+| Core Message / Ask / Action | <confirmed core message or ask> |
+| Delivery Context | <confirmed delivery context> |
+| Artifact Afterlife | <confirmed afterlife> |
+| Reading Mode | <text, balanced, presentation, or the active non-PPT equivalent> |
+| Content Strategy | <confirmed material-divergence prose or balanced default> |
+| Design Style | <resolved design direction> |
+| Formula Policy | <mixed, render-all, or text-only> |
+| AI Image Acquisition Path | <confirmed path or not applicable> |
+| Generation Mode | <continuous or split> |
+| Spec Refinement | <enabled or disabled> |
+| Created Date | <YYYY-MM-DD> |
+
+## II. Canvas Specification
+
+| Property | Value |
+| --- | --- |
+| Format | <canonical format name> |
+| Dimensions | <width × height> |
+| viewBox | `<exact viewBox>` |
+| Margins | <safe margins> |
+| Content Area | <usable bounds> |
+```
+
+When a template workspace is active, append exactly one line after the §I table: `- **Template Application**: <confirmed or Strategist-resolved natural-language plan>`. Omit it for free design. Never replace this prose with internal reuse/adherence ids.
+
+### 2.2 Visual, typography, layout, and icons
+
+Use these exact subsections and field shapes:
+
+```markdown
+## III. Visual Theme
+
+### Theme Style
+
+- **Mode**: <confirmed preset or custom>
+- **Visual style**: <confirmed preset or custom>
+- **Theme**: <resolved identity direction>
+- **Tone**: <resolved tone>
+
+### Color Scheme
+
+| Role | HEX | Purpose |
 | --- | --- | --- |
-| I. Project Information | Project and confirmed communication context | `Template Application` prose when template-active |
-| II. Canvas Specification | Format, dimensions, viewBox, margins | — |
-| III. Visual Theme | Mode, visual style, colors | `### AI Image Strategy` when §VIII contains an `ai` row |
-| IV. Typography System | Per-role stacks and locked size slots | Additional recurring roles when used |
-| V. Layout Principles | Page regions and project spacing | Template-specific constraints only when active |
-| VI. Icon Usage Specification | Approved icon inventory | Empty table when no icons are used |
-| VII. Visualization Reference List | Candidates and independent charts/tables with `Native-ready`, or empty | Incidental microvisuals stay in §IX |
-| VIII. Image Resource List | Rows with `Layout pattern` and `Crop Policy`, or empty | AI columns apply only to `ai` rows |
-| IX. Content Outline | Complete ordered execution roster; one Slide block per final page, matching the exact Page Count; each has `Audience move` | Page-specific facts, charts, images, and template mappings |
-| X. Speaker Notes Requirements | Filename and content policy | — |
+| Background | <HEX> | <semantic use> |
+| Secondary background | <HEX> | <semantic use> |
+| Primary | <HEX> | <semantic use> |
+| Accent | <HEX> | <semantic use> |
+| Secondary accent | <HEX> | <semantic use> |
+| Body text | <HEX> | <semantic use> |
 
-**Hard rule**: Keep all ten `##` headings, even when §VII or §VIII contains no rows. Do not add a second schema description inside the project artifact.
+## IV. Typography System
+
+### Font Plan
+
+| Role | Chinese | English | Fallback tail |
+| --- | --- | --- | --- |
+| Title | <family> | <family> | <fallback> |
+| Body | <family> | <family> | <fallback> |
+
+- **Title stack**: <complete ordered stack>
+- **Body stack**: <complete ordered stack>
+
+### Font Size Hierarchy
+
+| Purpose | Size (px) |
+| --- | ---: |
+| Body | <confirmed value> |
+| Title | <confirmed value> |
+| Subtitle | <confirmed value> |
+| Annotation | <confirmed value> |
+
+## V. Layout Principles
+
+### Page Structure
+
+- **Header area**: <rule>
+- **Content area**: <rule>
+- **Footer area**: <rule>
+
+### Spacing Specification
+
+| Element | Current Project |
+| --- | --- |
+| Safe margin | <value> |
+| Content block gap | <value> |
+| Icon-text gap | <value> |
+
+## VI. Icon Usage Specification
+
+- **Library**: <confirmed library, custom, or none>
+
+| Purpose | Icon Path | Page |
+| --- | --- | --- |
+```
+
+Add every recurring palette role and typography role established by the plan, including `Emphasis`, `Code`, `Lead`, or `Footnote` rows/stacks/sizes only when they recur; do not enumerate one-off paint or display garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
+
+When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
+
+```markdown
+### AI Image Strategy
+
+- **Image Rendering**: <confirmed preset or custom>
+- **Visual**: <confirmed visual treatment>
+- **Mood**: <confirmed mood and analogy>
+```
+
+For a selected custom rendering, also add `Image Rendering Behavior`; add `Image Rendering References` only when the confirmed custom direction actually uses catalog material. Never add a separate image palette.
+
+### 2.3 Visualization and image resources
+
+Use these exact combined tables; an inactive section keeps its header row and no data rows:
+
+```markdown
+## VII. Visualization Reference List
+
+| Page | Template | Path | Summary-quote (verbatim) | Native-ready | Usage |
+| --- | --- | --- | --- | --- | --- |
+
+## VIII. Image Resource List
+
+| Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+```
+
+In §VII, use `yes`, `no`, or `n/a` for `Native-ready`; record `no-template-match` plus the fallback and reason when recall finds no fit. After the table, list real runners-up as `- <returned_key> | rejected for P<NN>: <page-specific reason>` when candidates were compared. Incidental sparklines, KPI trends, and insets stay in the relevant §IX page rather than becoming independent §VII rows.
+
+In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Copy the selected `Layout pattern` id/name and modifiers verbatim; set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `formula`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them.
+
+### 2.4 Complete page roster and notes
+
+Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is final wording, not an Executor writing prompt.
+
+```markdown
+## IX. Content Outline
+
+### Part 1: <section name>
+
+#### Slide 01 - <page name>
+
+- **Audience move**: <audience state before → after>
+- **Layout**: <composition; include the chosen prototype when template-active>
+- **Title**: <final title>
+- **Core message**: <one governing assertion>
+- **Content**: <complete final on-slide wording and hierarchy>
+
+## X. Speaker Notes Requirements
+
+- **Filename**: match each SVG filename under `notes/`
+- **Content**: <notes content and source-handling policy>
+- **Total duration**: <resolved duration>
+- **Notes style**: <formal, conversational, interactive, or resolved equivalent>
+- **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
+```
+
+Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local microvisual. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
 
 ---
 
@@ -41,32 +201,6 @@ The command refuses to shadow any recognized existing design-spec artifact, incl
 python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 ```
 
-Validation reads the Markdown directly. It reports missing or out-of-order I–X sections, unresolved `[fill...]` scaffold placeholders, missing per-slide `Audience move`, and a missing §III `AI Image Strategy` when an §VIII table selects `ai` acquisition.
+Validation reads the Markdown directly. It reports missing or out-of-order I–X sections, unresolved `[fill...]` placeholders, missing per-slide `Audience move`, and a missing §III `AI Image Strategy` when an §VIII table selects `ai` acquisition.
 
-The schema owns structure only. Strategist role modules own field meaning, recommendation logic, page planning, image policy, and template policy. `spec_lock.md` owns stable execution anchors and routing selected in context; it is not an exhaustive value projection. On divergence, repair the Design Spec from the retained final state when Gate 1 fails, then re-author affected lock anchors from the audited Design Spec and current context. Never reopen `result.json` merely to author or validate the lock, and never use the lock to overwrite a valid Design Spec decision.
-
----
-
-## 4. Minimal filled shape
-
-```markdown
-## III. Visual Theme
-
-### Theme Style
-- **Mode**: briefing
-- **Visual style**: swiss-minimal
-
-### Color Scheme
-| Role | HEX | Purpose |
-| --- | --- | --- |
-| Background | `#FFFFFF` | Canvas |
-
-## IX. Content Outline
-
-#### Slide 01 - Decision frame
-- **Audience move**: undecided → understands the decision
-- **Layout**: claim + evidence
-- **Title**: Choose the funded path
-```
-
-Use the scaffold for the complete shape; this excerpt is not a second template.
+The schema validates structure only. Strategist role modules own field meaning, recommendation logic, page planning, image policy, and template policy. `spec_lock.md` owns stable execution anchors and routing selected in context; it is not an exhaustive value projection. On divergence, repair the Design Spec from the retained final state when Gate 1 fails, then re-author affected lock anchors from the audited Design Spec and current context. Never reopen `result.json` merely to author or validate the lock, and never use the lock to overwrite a valid Design Spec decision.
