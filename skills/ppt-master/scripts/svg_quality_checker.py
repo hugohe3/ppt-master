@@ -885,29 +885,16 @@ PPT_SAFE_FONTS = {
     'impact',
 }
 
-# Ramp envelope for font-size role review.
-# From strategist.md §g — Font Size Ramp: the ramp spans
-# from page-number floor (0.5x body) to cover-title ceiling (5.0x body).
-# Intermediate px values within this envelope are permitted per
-# executor-base.md §2.1 ("Executor may use an intermediate size ... provided
-# the size's ratio to body falls within the corresponding role's band"); only
-# values outside every band — i.e. outside this envelope — need review.
-RAMP_MIN_RATIO = 0.5
-RAMP_MAX_RATIO = 5.0
+# Cheap numeric envelope for font-size role review. Semantic role assignment is
+# prompt-owned; Checker only verifies that a used value is close to at least one
+# declared size anchor.
+FONT_SIZE_ANCHOR_TOLERANCE_PX = 2.0
 
 # Oversampling alone does not imply distortion and is often harmless for small
 # logos. Warn about downscaling only when the source also has material on-disk
 # weight, because PPTX embeds the compressed source asset rather than raw pixels.
 IMAGE_DOWNSIZE_WARN_RATIO = 4.0
 IMAGE_DOWNSIZE_WARN_MIN_BYTES = 1024 * 1024
-
-# Modes / visual styles that legitimately use unbounded hero / poster type
-# (huge cover numerals, act dividers, single-number reveals). For these the
-# size-drift upper bound is dropped — the oversize is the design, not Executor
-# drift. The lower bound still applies.
-POSTER_SIZE_MODES = {'showcase'}
-POSTER_SIZE_STYLES = {'zine'}
-
 
 def _design_spec_is_brand(spec_path: Path) -> bool:
     """Return True when a design_spec.md frontmatter declares ``kind: brand``.
@@ -4792,8 +4779,8 @@ class SVGQualityChecker:
         Covers colors (fill / stroke / stop-color / flood-color / pattern
         metadata), font-family, and font-size.
         Additional colors and font families are valid contextual authoring and
-        are recorded as information. Font sizes outside declared roles and the
-        allowed ramp remain warnings. Exact values are accumulated in
+        are recorded as information. Font sizes outside every declared role
+        anchor's ±2px band remain warnings. Exact values are accumulated in
         self._anchor_value_summary for the end-of-run aggregation. When
         spec_lock.md is missing, silently skip this local comparison; the
         Generate route's required-artifact gate owns whether execution may begin.
@@ -4881,18 +4868,20 @@ class SVGQualityChecker:
         locked_fonts = set(allowed_fonts)
         allowed_fonts.update(prototype_fonts)
 
-        # Sizes: declared slots are anchors; body is the ramp baseline.
+        # Sizes: declared slots are anchors. Checker cannot infer which role a
+        # text node carries, so it uses the union of their ±2px bands as a cheap
+        # numeric safety net; prompt rules own semantic role mapping.
         allowed_sizes = set()
-        body_px = None
+        anchor_sizes = []
         for k, v in typo.items():
             if k == 'font_family' or k.endswith('_family'):
                 continue
-            allowed_sizes.add(self._normalize_size(v))
-            if k == 'body':
-                try:
-                    body_px = float(self._normalize_size(v))
-                except (ValueError, TypeError):
-                    body_px = None
+            normalized_size = self._normalize_size(v)
+            allowed_sizes.add(normalized_size)
+            try:
+                anchor_sizes.append(float(normalized_size))
+            except (ValueError, TypeError):
+                pass
         locked_sizes = set(allowed_sizes)
         allowed_sizes.update(prototype_sizes)
 
@@ -4933,40 +4922,29 @@ class SVGQualityChecker:
             ):
                 inherited_fonts.add(val)
 
-        # Poster / showcase contexts use unbounded hero type — drop the ceiling.
-        mode = (lock.get('mode', {}).get('mode') or '').strip().lower()
-        vstyle = (lock.get('visual_style', {}).get('visual_style') or '').strip().lower()
-        max_ratio = (float('inf') if mode in POSTER_SIZE_MODES or vstyle in POSTER_SIZE_STYLES
-                     else RAMP_MAX_RATIO)
-
         size_drifts = set()
         inherited_sizes = set()
-        used_sizes = []
         for raw_value in self._svg_property_values(content, 'font-size'):
             val = self._normalize_size(raw_value)
-            used_sizes.append(val)
             if val in prototype_sizes and val not in locked_sizes:
                 inherited_sizes.add(val)
                 continue
             if not allowed_sizes or val in allowed_sizes:
                 continue
-            # Intermediate values are allowed when they sit inside the ramp
-            # envelope (ratio to body within [RAMP_MIN_RATIO, max_ratio]).
-            if body_px and body_px > 0:
-                try:
-                    ratio = float(val) / body_px
-                    if RAMP_MIN_RATIO <= ratio <= max_ratio:
-                        continue
-                except ValueError:
-                    pass
+            try:
+                used_px = float(val)
+            except (TypeError, ValueError):
+                size_drifts.add(val)
+                continue
+            if any(
+                abs(used_px - anchor_px) <= FONT_SIZE_ANCHOR_TOLERANCE_PX
+                for anchor_px in anchor_sizes
+            ):
+                continue
             size_drifts.add(val)
 
-        template_size_drift = self._detect_template_size_drift(
-            used_sizes, allowed_sizes, body_px
-        )
-
         # Record in run-wide aggregation. Colors/fonts beyond the anchor set are
-        # contextual values, not release issues. Sizes retain role/ramp review.
+        # contextual values, not release issues. Sizes retain role-anchor review.
         fname = svg_path.name
         for v in color_drifts:
             self._anchor_value_summary['colors'][v].add(fname)
@@ -4986,8 +4964,8 @@ class SVGQualityChecker:
         if size_drifts:
             result['warnings'].append(
                 f"spec_lock typography-size review: {len(size_drifts)} "
-                "font-size value(s) fall outside declared roles and the "
-                "allowed body-size ramp (see anchor comparison summary)"
+                "font-size value(s) fall outside ±2px of every declared "
+                "role anchor (see anchor comparison summary)"
             )
         inherited_parts = []
         if inherited_colors:
@@ -5003,73 +4981,6 @@ class SVGQualityChecker:
                 f"{', '.join(inherited_parts)} come unchanged from mirror "
                 "prototype and are accepted without expanding spec_lock.md",
             )
-        if template_size_drift:
-            result['warnings'].append(template_size_drift)
-
-    def _detect_template_size_drift(self, used_sizes, allowed_sizes, body_px):
-        """Warn when template-like small sizes bypass the locked type ramp.
-
-        The normal drift check deliberately permits in-ramp feature sizes, so
-        it should not hard-fail valid hero numbers or one-off labels. This
-        warning targets the common executor failure mode: copying a template's
-        compact 12/15/16px text stack instead of mapping content roles to
-        spec_lock typography, then reflowing from those locked px values.
-        """
-        if not allowed_sizes or not body_px or body_px <= 0:
-            return None
-
-        try:
-            declared_min = min(float(v) for v in allowed_sizes)
-        except ValueError:
-            declared_min = None
-
-        # Stay narrow on purpose: real decks carry legitimate undeclared
-        # sub-body sizes (intermediate levels, labels, emphasis) just below the
-        # locked body, so "any size < body" floods the warning and destroys its
-        # credibility. Only flag values that read as genuine template leftovers
-        # — at or below `body * 0.75`, or below the smallest declared slot. This
-        # under-warns (a stray 15/16 against a body of 18 can slip through) in
-        # exchange for not crying wolf on valid intermediate type.
-        template_like_limit = body_px * 0.75
-        template_like_sub_body = []
-        for raw in used_sizes:
-            if raw in allowed_sizes:
-                continue
-            try:
-                size = float(raw)
-            except (TypeError, ValueError):
-                continue
-            below_declared_floor = declared_min is not None and size < declared_min
-            if size <= template_like_limit or below_declared_floor:
-                template_like_sub_body.append(raw)
-
-        if not template_like_sub_body:
-            return None
-
-        counts = Counter(template_like_sub_body)
-        distinct = sorted(counts, key=lambda v: float(v))
-        repeated_total = sum(counts.values())
-
-        below_declared_floor = []
-        if declared_min is not None:
-            below_declared_floor = [v for v in distinct if float(v) < declared_min]
-
-        if len(distinct) < 2 and repeated_total < 4 and not below_declared_floor:
-            return None
-
-        sample = ', '.join(
-            f"{v}x{counts[v]}" if counts[v] > 1 else v
-            for v in distinct[:5]
-        )
-        more = len(distinct) - 5
-        suffix = f" (+{more} more)" if more > 0 else ""
-        return (
-            "possible template font-size drift: undeclared sub-body size(s) "
-            f"{sample}{suffix}. Map each text item to a spec_lock typography "
-            "role first, then reflow card height / y / dy / line-height from "
-            "the locked px values."
-        )
-
     def _find_image_sources_manifest(self, svg_path: Path) -> Path | None:
         """Locate image_sources.json for a project SVG.
 
@@ -6798,7 +6709,7 @@ class SVGQualityChecker:
         if not has_contextual and not has_size_review:
             print(
                 "\n[OK] spec_lock anchor comparison: no additional contextual "
-                "colors/fonts or out-of-ramp font sizes"
+                "colors/fonts or out-of-band font sizes"
             )
             return
 
@@ -6827,7 +6738,10 @@ class SVGQualityChecker:
             )
 
         if has_size_review:
-            print("\nTypography sizes outside declared roles/ramp (review warnings):")
+            print(
+                "\nTypography sizes outside every declared role anchor ±2px "
+                "(review warnings):"
+            )
             entries = sorted(
                 self._anchor_value_summary['sizes'].items(),
                 key=lambda item: (-len(item[1]), item[0]),
