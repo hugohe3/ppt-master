@@ -94,14 +94,14 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 - Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
 - Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
 - Resolve structural families by role: exact `<role>_family` first, then `title_family` for title roles or `body_family` for other unoverridden roles, then legacy `font_family`. Never flatten declared role overrides. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
-- Font sizes follow a ramp anchored on `typography.body`. Structural roles use their locked size deck-wide; recurring feature roles such as lead, pull quote, or hero number need their own lock slot. Never resize one role page by page or inherit a template placeholder size.
-- **Core message ≥ `body`**: map the page's primary claim to locked `lead` / `subtitle`, never below body. Footnotes, page numbers, and credits use locked `footnote` / `annotation`; do not invent smaller sizes.
-- **Write locked px verbatim, with at most two decimals.** Do not substitute familiar pt-style numbers or emit long precision tails.
-- **Bounded body-fit last resort**: reflow geometry first; only an overflowing body block may step down by `2`px, never below `body − 4`px. Other roles never shrink. At the floor, warn instead of dropping content or repaginating. Mirror pages preserve source typography.
+- Font sizes use the named `typography` role values as deck-wide anchors. Map every structural or feature text item to a declared role before drawing; never inherit a template placeholder size. Start from the anchor, then use composition and content fit to adjust that occurrence by at most `±2`px. Keep same-page peers consistent and preserve the role hierarchy; bounded adjustment does not create a new role.
+- **Core message ≥ `body`**: map the page's primary claim to declared `lead` / `subtitle`, never below the current body treatment. Footnotes, page numbers, and credits use declared `footnote` / `annotation`; do not invent a smaller role.
+- **Write unitless px, with at most two decimals.** Use only the mapped role's anchor or a value within its `±2`px band; do not substitute familiar pt-style numbers or emit long precision tails.
+- **Outside-band recovery**: reflow geometry and use the declared role band locally. If the page needs a new semantic role, a size outside anchor `±2`px, or a hierarchy change, stop and return to Strategist to repair the Design Spec and `spec_lock.md`, then regenerate page-context. Never flatten a justified distinction into another role merely to avoid that return. Mirror pages preserve source typography.
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-Return upstream before any derived/accent value becomes recurring or structural, then regenerate context. Local garnish needs no lock row. Never expand the lock to silence a comparison. Icons, images, structural fonts/sizes, and resources keep their inventory/role rules.
+Return upstream before any derived/accent identity becomes recurring or structural, or before typography needs a new semantic role or an outside-band size, then regenerate context. Local garnish and same-role `±2`px adjustments need no lock row. Never expand the lock to silence a comparison. Icons, images, structural fonts, role anchors, and resources keep their inventory/role rules.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 

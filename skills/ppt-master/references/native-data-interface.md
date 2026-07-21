@@ -137,7 +137,7 @@ materialized alternating row fills. Native table typography mirrors the
 visible SVG fallback: put `style.font_family` and `style.font_size` on the
 marker from the table text already drawn, then use `style.header_font_size` or
 per-cell `font_size` only when the fallback visibly differs. If the fallback
-has no explicit table font, use the deck body family and locked body size from
+has no explicit table font, use the deck body family and declared body anchor from
 `spec_lock.md`.
 
 **Hard rule — table metadata is the native source of truth**: Every row,

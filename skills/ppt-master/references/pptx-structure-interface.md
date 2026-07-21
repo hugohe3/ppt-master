@@ -34,9 +34,9 @@ present. Authored `standard` / `fidelity` templates normally omit both and use
 the default `true`. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
 
-**Master text-style contract**: Flat and structured export map the
-locked `title` size to every `a:defRPr` in Master `p:titleStyle`. Level 1 in
-both `p:bodyStyle` and `p:otherStyle` uses the locked `body` size; levels 2–9
+**Master text-style contract**: Flat and structured export map the declared
+`title` anchor to every `a:defRPr` in Master `p:titleStyle`. Level 1 in both
+`p:bodyStyle` and `p:otherStyle` uses the declared `body` anchor; levels 2–9
 use a deterministic descending hierarchy from `15/16` through `8/16` of that
 size, rounded to 0.5 pt and floored at the smaller of 8 pt or the body size.
 Existing per-level indentation and bullet properties remain unchanged.
