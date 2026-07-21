@@ -262,7 +262,7 @@ Two converter design choices still shape the system:
 | `exports/` | timestamped native PPTX deliverables |
 | `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
 
-The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The Generate PPTX production workflow in [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
+The CLI supports `--move`, `--copy`, and an automatic default, with one fixed ownership boundary: only sources already under the repository's `projects/` tree may move into a target project's `sources/`; every other local path is copied and remains untouched, even when `--move` is supplied. `--copy` preserves a projects-local input. Generate PPTX uses the automatic mode so canonical repository documents and external user files cannot be removed during intake.
 
 ---
 

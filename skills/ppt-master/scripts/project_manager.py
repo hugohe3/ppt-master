@@ -58,6 +58,7 @@ except ImportError:
 TOOLS_DIR = Path(__file__).resolve().parent
 SKILL_DIR = TOOLS_DIR.parent
 REPO_ROOT = SKILL_DIR.parent.parent
+PROJECTS_ROOT = REPO_ROOT / "projects"
 SOURCE_TO_MD_TOOLS_DIR = TOOLS_DIR / "source_to_md"
 if str(SOURCE_TO_MD_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(SOURCE_TO_MD_TOOLS_DIR))
@@ -707,19 +708,25 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
+            inside_projects = is_within_path(source_path, PROJECTS_ROOT)
             if copy:
                 effective_move = False
-            elif move:
+            elif inside_projects:
                 effective_move = True
-            elif is_within_path(source_path, REPO_ROOT):
-                effective_move = True
-                print(
-                    f"note: {source_path} is inside the ppt-master repo; moved "
-                    f"(not copied) to avoid accidental commit. Pass --copy to override.",
-                    file=sys.stderr,
-                )
             else:
                 effective_move = False
+            if move and not inside_projects:
+                print(
+                    f"note: {source_path} is outside {PROJECTS_ROOT}; copied "
+                    f"(not moved). Only sources under projects/ may be moved.",
+                    file=sys.stderr,
+                )
+            elif inside_projects and not move and not copy:
+                print(
+                    f"note: {source_path} is under projects/; moved into the target "
+                    f"project. Pass --copy to preserve it.",
+                    file=sys.stderr,
+                )
             suffix = source_path.suffix.lower()
 
             if suffix in {".md", ".markdown"}:
@@ -859,12 +866,11 @@ class ProjectManager:
             else:
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
 
-        # Cleanup: a supplied source directory that ends up empty (moved out or
-        # empty from the start) is removed so no husk is left behind. Only under
-        # move semantics — explicit --copy, or default copy outside the repo,
-        # must not delete a user directory.
+        # Cleanup: only a projects-local source directory may be removed after
+        # its files move into the target project. Every other location is copied
+        # and remains untouched, even when the caller passes --move.
         for directory in supplied_dirs:
-            if copy or not (move or is_within_path(directory, REPO_ROOT)):
+            if copy or not is_within_path(directory, PROJECTS_ROOT):
                 continue
             if directory.is_dir() and not any(directory.iterdir()):
                 try:
@@ -926,7 +932,7 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
   python3 scripts/project_manager.py init demo --format ppt169
-  python3 scripts/project_manager.py import-sources projects/demo file.md --move
+  python3 scripts/project_manager.py import-sources projects/demo file.md
   python3 scripts/project_manager.py scaffold-spec projects/demo_ppt169_20260718
   python3 scripts/project_manager.py scaffold-lock projects/demo_ppt169_20260718
   python3 scripts/project_manager.py validate projects/demo
@@ -949,7 +955,11 @@ def build_parser() -> argparse.ArgumentParser:
     import_sources.add_argument("project_path", help="Project directory")
     import_sources.add_argument("sources", nargs="+", help="Source files, directories, or URLs")
     mode = import_sources.add_mutually_exclusive_group()
-    mode.add_argument("--move", action="store_true", help="Move local source files")
+    mode.add_argument(
+        "--move",
+        action="store_true",
+        help="Move local sources under projects/; sources elsewhere are copied",
+    )
     mode.add_argument("--copy", action="store_true", help="Copy local source files")
 
     scaffold_spec = subparsers.add_parser(
