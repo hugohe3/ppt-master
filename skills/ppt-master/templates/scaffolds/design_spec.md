@@ -99,11 +99,6 @@
 | --- | --- | --- |
 | [fill] | [fill] | [fill] |
 
-## VII. Visualization Reference List
-
-| Page | Template | Path | Summary-quote | Native-ready | Usage |
-| --- | --- | --- | --- | --- | --- |
-
 ## VIII. Image Resource List
 
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |

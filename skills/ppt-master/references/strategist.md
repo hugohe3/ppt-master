@@ -292,7 +292,7 @@ The command returns a lexical shortlist plus `no-template-match`. `low` / `none`
 **Selection**:
 
 1. Choose the most specific valid structure from the applicable review; keep one primary visualization per page and adapt its treatment rather than mimicking it.
-2. Only after that review finds no fit, use `no-template-match`: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout.
+2. Only after that review finds no fit, retain `no-template-match` as the recall result: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the chosen fallback only in the affected page's §IX `Visualization` / `Layout`; do not serialize the negative result into §VII.
 3. Validate all selected keys before writing the lock:
 
 ```bash
@@ -301,20 +301,20 @@ python3 skills/ppt-master/scripts/chart_recall.py validate <key> [<key> ...]
 
 A failed validation must be corrected with a recalled key. `no-template-match` is not a key and never appears in `page_charts`.
 
-**Section VII audit**: Use one combined table. Copy the selected candidate's returned `summary` verbatim into `Summary-quote`; record its returned path and page-specific usage. List real returned runners-up with page-specific rejection reasons. If no candidate fits, record `no-template-match`, the fallback, and why.
+**Section VII audit**: §VII is a positive reference inventory. Include it only when at least one catalog candidate is selected. Every row copies the selected candidate's returned `summary` verbatim into `Summary-quote` and records its real path plus page-specific usage. List real returned runners-up only for pages with a selected reference. Never write an empty §VII, a `no-template-match` / `n/a` row, or prose saying no reference exists; a no-match page is described only in its §IX block.
 
-**Native-ready boundary**: Put every independent data chart or pure text-grid table in §VII and set `Native-ready: yes|no`; use `n/a` for conceptual rows. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Incidental sparklines, KPI trends, and insets stay in §IX; Executor never promotes them.
+**Native-ready boundary**: For every independent data chart or pure text-grid table, add `Native-ready: yes|no` to its §IX page block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Conceptual rows and incidental sparklines, KPI trends, or insets omit the field; Executor never promotes them.
 
 ```
-| Page | Template | Path | Summary-quote (verbatim) | Native-ready | Usage |
-|---|---|---|---|---|---|
-| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <yes/no/n/a> | <intent> |
+| Page | Template | Path | Summary-quote (verbatim) | Usage |
+|---|---|---|---|---|
+| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <intent> |
 
 Runners-up considered:
 - <returned_key> | rejected for P03: <page-specific reason>
 ```
 
-**Flag native-preset candidates**: For any §VII row, including `no-template-match`, append a `Usage` note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch.
+**Flag native-preset candidates**: In the affected page's §IX `Layout` / `Visualization`, note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch; this note never creates a §VII row by itself.
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 
@@ -427,7 +427,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
-   - **page_charts (write only for chart pages that match a catalog template)**: For each page in `design_spec.md §VII` whose `reference template path` points to `templates/charts/<name>.svg`, add `P<NN>: <chart_name>`. Pages with `no-template-match` in §VII MUST NOT appear here (Executor would look for a non-existent reference). If the deck has no data-visualization pages, omit the section.
+   - **page_charts (write only for pages with a selected catalog reference)**: For each page in `design_spec.md §VII` whose path points to `templates/charts/<name>.svg`, add `P<NN>: <chart_name>`. No-match pages never appear here because §VII omits them and Executor would otherwise look for a non-existent reference. If no catalog reference is selected, omit the section even when §IX contains custom data visualizations.
 
 ---
 

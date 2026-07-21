@@ -209,7 +209,8 @@ def recall_candidates(
             "key": "no-template-match",
             "instruction": (
                 "Use only when no catalog rule fits after the applicable lexical and "
-                "semantic review."
+                "semantic review. Keep this result out of Design Spec Section VII and "
+                "describe the chosen fallback in the page's Section IX block."
             ),
         },
     }
@@ -278,7 +279,8 @@ def _run_validate(args: argparse.Namespace) -> int:
     if invalid:
         print(
             "Error: replace each invalid key with a key returned by the recall command, "
-            "or record no-template-match without a page_charts entry.",
+            "or keep no-template-match out of Section VII and page_charts while "
+            "recording the custom fallback in the page's Section IX block.",
             file=sys.stderr,
         )
         return 1
