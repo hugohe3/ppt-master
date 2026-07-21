@@ -287,12 +287,12 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-The command returns a lexical shortlist plus `no-template-match`. `low` / `none` also returns the full catalog under `semantic_fallback`; if stronger candidates all conflict, rerun with `--semantic-fallback`. Compare every returned catalog rule semantically—lexical overlap is unnecessary. Do not open the catalog separately or maintain a second index.
+The command returns a bounded lexical shortlist plus `no-template-match`. Treat `confidence` as a diagnostic only: `low` / `none` never expands the output or decides whether to use a template. Semantically review the returned candidates. If terminology mismatch or structural ambiguity suggests that the shortlist missed a relevant catalog structure, rerun with `--semantic-fallback` and compare the returned rules semantically. This explicit fallback is optional, not a routine gate before `no-template-match`. Do not open the catalog separately or maintain a second index.
 
 **Selection**:
 
-1. Choose the most specific valid structure from the applicable review; keep one primary visualization per page and adapt its treatment rather than mimicking it.
-2. Only after that review finds no fit, retain `no-template-match` as the recall result: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the chosen fallback only in the affected page's §IX `Visualization` / `Layout`; do not serialize the negative result into §VII.
+1. Choose the most specific valid structure from the bounded candidates or an explicitly requested semantic fallback; keep one primary visualization per page and adapt its treatment rather than mimicking it.
+2. When no recalled reference fits, retain `no-template-match` by Strategist judgment: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the chosen fallback only in the affected page's §IX `Visualization` / `Layout`; do not serialize the negative result into §VII.
 3. Validate all selected keys before writing the lock:
 
 ```bash
