@@ -97,6 +97,7 @@ Use these exact subsections and field shapes:
 
 - **Title stack**: <complete ordered stack>
 - **Body stack**: <complete ordered stack>
+- **Role rationale**: <why the confirmed Title/Body system fits the content; name justified recurring family overrides, or state that none is needed>
 
 ### Font Size Hierarchy
 
@@ -131,7 +132,7 @@ Use these exact subsections and field shapes:
 | --- | --- | --- |
 ```
 
-Add every recurring palette role and typography role established by the plan, including `Emphasis`, `Code`, `Lead`, or `Footnote` rows/stacks/sizes only when they recur; do not enumerate one-off paint or display garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
+Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. `Role rationale` records the decision but does not itself become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Add every recurring palette role and typography size established by the plan, including `Lead` or `Footnote` sizes only when they recur; do not enumerate one-off paint or display garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 
