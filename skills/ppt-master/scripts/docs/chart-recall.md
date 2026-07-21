@@ -15,7 +15,7 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-`--limit` accepts 3-8 and defaults to 6. It is a maximum, not a padding target: the deterministic JSON contains only positive-scoring candidates, up to the requested limit. `confidence` reports lexical recall strength only; `low` / `none` never expands the result or decides whether a template should be used.
+`--limit` accepts 3-8 and defaults to 6. The JSON is already bounded and must be read unfiltered: `tail`, `head`, `grep`, or another truncator can discard higher-ranked candidates. `confidence` reports lexical strength only; `low` / `none` never decides whether a template should be used.
 
 Semantically review the bounded candidates. If none fits and the page clearly needs a custom composition, retain `no-template-match`. If terminology mismatch or structural ambiguity suggests that bounded recall may have missed a catalog match, rerun the same command with `--semantic-fallback`, then compare the returned rules semantically. The flag is an uncertainty fallback, not a routine no-match gate. Do not open or maintain a second keyword/category index. `no-template-match` is an internal recall result, not a Design Spec §VII row.
 
