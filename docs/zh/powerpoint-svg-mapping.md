@@ -59,10 +59,10 @@ PowerPoint 意图
 | 自由设计演示文稿结构 | `pptx_structure.mode: flat`；页面内容保持 Slide-local | 一个干净的项目 Master 和一个 Blank Layout，已表达对象留在 Slide | flat 路线包拓扑为 `Native-stable` | 禁止编写 Master/Layout/layer/placeholder metadata |
 | 基于模板的演示文稿结构 | `pptx_structure.mode: structured` 加显式 Master/Layout/页面分配 | 声明的 `p:sldMaster`、`p:sldLayout`、注册与 Slide 父子关系 | 在显式结构合同内为 `Native-stable` | 导出器绝不猜测 Master、Layout 或占位符拓扑 |
 | 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | Create Template mirror 可把来源包中已验证的事实保留到新工作区；创作模式使用新身份 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
-| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | Create Template mirror 可把已验证的源 Layout 保留到新工作区；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
+| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | Create Template mirror 可把已验证的源 Layout 保留到新工作区；Strategist 的 adaptive 计划可声明新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
 | 回导的继承图形可见性 | 分层分析记录规范化源布尔值；物化后的 structured mirror 在根写入精确小写的 `data-pptx-show-inherited-shapes` 与 `data-pptx-show-master-shapes` | 把已声明来源值写入 `p:sld@showMasterSp` 与 `p:sldLayout@showMasterSp` | `Native-stable`：Slide 为 false 时隐藏 Layout 与 Master 图形；Layout 为 false 时只隐藏 Master 图形 | 省略即 true；使用同一 Layout key 的页面必须使用相同 Layout 值。背景、Slide-local 对象、占位符继承、part 与父子关系保持不变 |
 | strict 模板 Layout | 选中的原型合同 | 保留现有已声明 Layout 拓扑 | 页面遵循原型时为 `Native-stable` | 不得改变固定 Layout atom 和 slot 结构 |
-| adaptive 模板 Layout | 选定 Master 加显式的当前或新声明 Layout | 可在可复用结构变化时创建新 Layout 身份 | 更新 lock 与页面映射后为 `Native-stable` | 绝不默默改变已复用 Layout key |
+| adaptive 模板 Layout | 选定 Master 加 Strategist 显式声明的当前或新 Layout | 可复用结构变化时创建已声明的新 Layout 身份 | Strategist 更新计划与 lock 映射、执行恢复后为 `Native-stable` | 制作中发现变化须退回上游；绝不在下游改变已复用 Layout key |
 | structured 模式以外的 Slide 背景填充 | 第一个合格的全幅 `<rect>`，可直接位于根下或位于简单单子组中，使用已登记纯色、线性/径向渐变或预设图案填充 | Slide 的原生 `p:bg` | 保真度遵循下文对应 paint 行 | transform、filter、clip、圆角、可见 stroke 或未映射 fill 会阻止提升 |
 | structured 模式的 Master/Layout/Slide 背景填充 | 声明结构层中一个直接铺满画布的纯色 `<rect>` | Master、Layout 或 Slide 层级的原生 `p:bg` | `Native-stable` | 显式 scoped background 所有权有意只支持纯色 |
 | structured 模式的渐变或图案背景形状 | 声明在 Master/Layout 层的普通渐变/图案 `<rect>`，或 Slide-local 内容 | 所属 part 上的可编辑 shape | 保真度遵循下文对应 paint 行 | structured 导出关闭通用背景提升；不得使用 `data-pptx-layer="slide"` |

@@ -4,7 +4,7 @@
 
 Sizing reference for side-by-side or multi-image pages. Use only after Strategist selects the composition; this file never selects layout or crop policy.
 
-**Selected pattern, flexible geometry**: Let original aspect ratio inform the container. A `no-crop` asset displays completely; an untagged asset may use `meet` or a focal-safe `slice`. Rework geometry within the selected pattern when either mode produces weak hierarchy, unsafe cropping, or excessive dead space; changing the pattern requires an upstream Design Spec update.
+**Selected pattern, flexible geometry**: Let original aspect ratio inform the container. A `no-crop` asset displays completely; an `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry within the selected pattern when either mode produces weak hierarchy, unsafe cropping, or excessive dead space; changing the pattern requires an upstream Design Spec update.
 
 > **Scope**: The ratio tables and formulas are calculation aids for a selected side-by-side or multi-image plan. Hero, background, accent, and other compositions stay outside this file. Layout never overrides the `no-crop` boundary owned by [`strategist-image.md`](./strategist-image.md) and [`executor-image.md`](./executor-image.md).
 
@@ -63,7 +63,8 @@ Image height = W / R = 1160 / R px
 Text area height = H - image height - gap(20px)
 
 Review: if the remaining text area cannot carry the planned copy legibly,
-recompose as left-right or choose another layout pattern.
+rebalance the rectangles within the selected pattern; otherwise return upstream
+for a Design Spec pattern update.
 ```
 
 ### Left-Right Layout Calculation
@@ -82,7 +83,7 @@ Image height = image width / R
 Text area width = W - image width - gap(20px)
 ```
 
-**Review**: if the remaining text area cannot carry the planned copy legibly, reduce the image area or choose another layout pattern.
+**Review**: if the remaining text area cannot carry the planned copy legibly, rebalance the image/text rectangles within the selected pattern; otherwise return upstream for a Design Spec pattern update.
 
 ---
 
@@ -106,8 +107,8 @@ Image: 773x560 (left), Text area: 367x560 (right) → 7:3 left-right
 
 ```
 Original: 1820x1040, R=1.75
-Try top-bottom: image height=663, text area=-43 ❌
-Switch to left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
+Strategist compares top-bottom: image height=663, text area=-43 ❌
+Strategist selects left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
 ```
 
 ---
@@ -176,7 +177,7 @@ Image positions:
 | Proportion does not reflect information weight | Rebalance image and text rectangles |
 | Container conflicts with the native ratio | Change the container, choose `meet`, or use a focal-safe crop |
 | Required pixels, labels, identity, or evidence would be cropped | Use `preserveAspectRatio="xMidYMid meet"` and recompose around the complete image |
-| Text area cannot carry the planned copy legibly | Increase its area or choose another composition |
+| Text area cannot carry the planned copy legibly | Increase its area within the selected pattern; otherwise return upstream |
 
 ---
 
@@ -188,8 +189,9 @@ This spec only defines layout calculation. Write computed fields into the Image 
 |-------|---------|
 | `Ratio` | Original image width / height |
 | `Layout pattern` | Strategist-selected catalog pattern; semantic composition fixed, geometry flexible |
+| `Crop Policy` | `no-crop` protects complete pixels; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
-| `spec_lock.md images` suffix | Add `no-crop` only when information integrity or explicit user intent requires complete display |
+| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>` |
 
 For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
@@ -203,7 +205,7 @@ Complete display (`no-crop` assets such as data charts):
        preserveAspectRatio="xMidYMid meet"/>
 ```
 
-Crop-to-fill (any untagged asset with a verified focal-safe crop):
+Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 
 ```xml
 <image href="../images/bg.png"

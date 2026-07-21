@@ -27,6 +27,6 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
-**`no-crop` images**: when a `spec_lock.md images` entry ends with ` | no-crop`, size the container to the image's native ratio (from `analyze_images.py` or file dims) and use `preserveAspectRatio="xMidYMid meet"`. Untagged permits, but does not require, cropping; choose `meet` or `slice` from purpose, focal safety, ratio, and container.
+**Crop policy**: read the §VIII row and matching lock projection. `crop=no-crop` (or a legacy trailing `| no-crop`) requires a native-ratio container and `preserveAspectRatio="xMidYMid meet"`. `crop=adaptive` permits but never requires cropping; choose `meet` or focal-safe `slice` from purpose, ratio, focus, and container. A missing or conflicting projection returns upstream instead of being inferred during execution.
 
 **Formula images — declared-inference fallback for a missing `no-crop` flag**: rows with `Acquire Via: formula` or `Type: Latex Formula` MUST be treated as no-crop. For a rendered file, use dimensions in this order: current `analysis/image_analysis.csv`, `design_spec.md §VIII`, then `images/formula_manifest.json`. For a `Needs-Manual` row, size the dashed placeholder from the planned dimensions in §VIII, then the manifest; the Step 7 readiness gate re-analyzes the supplied file and reconciles the container before export. Do not normalize all formulas to one height unless the spec explicitly states that layout choice.

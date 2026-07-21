@@ -20,7 +20,7 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 Manifest/text-slot files are derived tool metadata, not model inputs. Missing metadata neither invalidates a legacy workspace nor permits text-topology changes.
 
-**Mapping change**: update the owning plan and regenerate that page's delta; load only a new/changed prototype fingerprint.
+**Mapping change**: stop and return to Strategist to update the owning plan; regenerate that page's delta before resuming, then load only a new/changed prototype fingerprint.
 
 Resolve the per-page template SVG from `page_context.template.prototype`; the owning `spec_lock.md page_layouts` row remains authoritative. There is no filename/page-type fallback.
 
@@ -54,7 +54,7 @@ When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Execu
 2. **Copy, don't fill** — use the retained full mirror SVG as the starting point, then edit slide-specific text in place. Preserve every non-text element and every `data-pptx-*` structure attribute verbatim. Do not reopen the same path + SHA merely because another page selects it.
 3. **What you may edit** — decide the semantic slot mapping and replacement text only. Change only visible string values already carried by `<text>` and `<tspan>` nodes that express slide-specific content (title, body, captions, KPI labels, dates, page numbers). Keep the number, order, nesting relationship, and **all attributes** of every `<text>` / `<tspan>` node unchanged. Never merge or split nodes, move a string between nodes, add a new tspan, or delete an empty carrier. `svg_quality_checker.py` and export validate attributes, topology, and prototype hashes against the complete prototype internally.
 4. **What you must not touch** — element positions, sizes, fonts, colors, fills, strokes, gradients, **which image each `<image>` points at**, `<g>` grouping, sprite-sheet `<svg viewBox>` wrappers, decorative `<rect>` / `<path>` / `<circle>` / `<polygon>` shapes, `<use data-icon="...">` markers, embedded chart data structures. Mirror's value is preserving the source deck's visual identity — any geometric / decorative drift defeats the purpose. **The `href` path is not the image**: normalizing a bare `href="cover_bg.png"` to `href="../images/<name>"` (when Step 3 relocated the asset to `images/`) points at the *same* image and changes nothing visual — that is an allowed path fix, not a fidelity edit. Leaving the bare href as-is is also fine; the exporter and live preview resolve bare hrefs against `images/` either way.
-5. **Content fit** — if the replacement needs a different number of text segments/items, do not merge/split nodes, drop sourced content, or restructure the grid. Select a better mirror prototype and update the planning mappings, or report `warning: P<NN> content does not fit mirror reference <basename>; choose another prototype or change template_reuse_scope to layout/style`.
+5. **Content fit** — if the replacement needs a different number of text segments/items, do not merge/split nodes, drop sourced content, or restructure the grid. Report `warning: P<NN> content does not fit mirror reference <basename>; choose another prototype or change template_reuse_scope to layout/style`, then return to Strategist to select the prototype or scope and update the planning mappings.
 6. **Visible text editing** — mirror SVGs may keep literal source text rather than `{{...}}` authoring markers. Edit values in place while retaining imported semantic `data-pptx-placeholder` identity and exact text topology.
 7. **Output filename** — follow the standard project SVG naming convention (`<NN>_<page_name>.svg` where `<NN>` matches the project page index, not the mirror source index). The mirror filename is the *reference*, not the *output*.
 
@@ -142,7 +142,7 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
 - Read the current page assignment as `P<NN>: <layout_key>`. Resolve the assigned Layout key in `pptx_layouts`, then resolve its Master key in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
 - On strict template use, the row and SVG contract match the selected prototype exactly.
-- On adaptive template use, retain the prototype Master. If the final composition changes fixed Layout atoms or slot topology/bounds, allocate a new key/name and update this row before completing the page.
+- On adaptive template use, retain the prototype Master and realize the Layout key/name already declared for this page. If construction proves that fixed Layout atoms or slot topology/bounds must change, stop before completing the page and return to Strategist to declare the revised definition and assignment; regenerate the current page context before resuming.
 - A Layout key may repeat across non-adjacent pages only when its fixed atoms and slot contracts are identical.
 
 **Structured template-page scaffold**:
@@ -168,7 +168,7 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
      data-pptx-bounds="570 120 650 500">
     <image id="picture-carrier" data-pptx-carrier="true" …/>
   </g>
-  <g id="content-block-1" data-pptx-bounds="60 120 470 500">…</g>   <!-- 3–8 content groups -->
+  <g id="content-block-1" data-pptx-bounds="60 120 470 500">…</g>   <!-- one group per logical content unit -->
   <g id="content-block-2" data-pptx-bounds="570 120 650 500">…</g>
 </svg>
 ```

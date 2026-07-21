@@ -1,6 +1,6 @@
 # Chart Candidate Recall
 
-`chart_recall.py` gives the Strategist a bounded, deterministic shortlist without loading the full chart catalog into the runtime prompt. It reads `templates/charts/charts_index.json` on every invocation, so the catalog remains the only template registry.
+`chart_recall.py` gives the Strategist a bounded deterministic shortlist, then exposes the full live catalog only when lexical confidence is `low` / `none` or the caller requests semantic review after candidate conflict. It reads `templates/charts/charts_index.json` on every invocation, so the catalog remains the only template registry.
 
 ## Recall candidates
 
@@ -15,7 +15,9 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-`--limit` accepts 3-8 and defaults to 6. It is a maximum, not a padding target: the deterministic JSON contains only positive-scoring candidates, up to the requested limit. Zero positive matches return an empty `candidates` list plus the explicit `no-template-match` option.
+`--limit` accepts 3-8 and defaults to 6. It is a maximum, not a padding target: the deterministic JSON contains only positive-scoring candidates, up to the requested limit. `low` / `none` results also contain `semantic_fallback.catalog`, allowing the Strategist to compare the page meaning against every live `Pick` / `Skip` rule without requiring lexical overlap.
+
+When medium/high candidates all conflict with the page, rerun the same command with `--semantic-fallback`. Review the returned catalog semantically, then select one exact key or retain `no-template-match`; do not open or maintain a second keyword/category index.
 
 | Field | Contract |
 |---|---|
@@ -23,9 +25,10 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
 | `semantic_tags` | Deduplicated input tags |
 | `confidence` | Lexical recall strength; never a selection decision |
 | `candidates` | Ranked keys, SVG paths, verbatim catalog summaries, scores, and matched tags |
-| `no_template_match` | Explicit fallback option when every candidate conflicts with the page |
+| `semantic_fallback` | Full live catalog, present only for `low` / `none` or `--semantic-fallback`; requires semantic comparison |
+| `no_template_match` | Explicit fallback after the applicable lexical and semantic review finds no fit |
 
-The scorer treats the key and the summary's Pick clause as positive evidence and the Skip clause as negative evidence. A term found only in Skip cannot make a candidate eligible, and Skip matches explicitly reduce a candidate's score. Unicode input is NFKC-normalized before matching. The Strategist still applies semantic judgment: inspect every returned summary, reject candidates whose Skip clause matches, and prefer the most specific valid structure. A low score does not authorize a forced match; when no candidate has a positive final score, the result carries an empty shortlist and the explicit fallback.
+The scorer treats the key and the summary's Pick clause as positive evidence and the Skip clause as negative evidence. A term found only in Skip cannot make a candidate eligible, and Skip matches explicitly reduce a candidate's score. Unicode input is NFKC-normalized before matching. The Strategist still applies semantic judgment: inspect every applicable returned rule, reject candidates whose Skip clause matches, and prefer the most specific valid structure. An empty shortlist opens full semantic review; it does not authorize either a forced lexical match or immediate `no-template-match`.
 
 ## Validate selected keys
 

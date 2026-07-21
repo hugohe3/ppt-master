@@ -21,12 +21,9 @@ Active when at least one resource list row has `Acquire Via: ai` / `web` / `slic
 
 Defined in `design_spec.md §VIII`. Status enum: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
-| Filename | Dimensions | Purpose | Type | Acquire Via | Status | Reference |
-|---|---|---|---|---|---|---|
-| cover.png | 1280x720 | Cover background | Background | `ai` | Pending | Modern tech abstract, deep blue gradient #0A2540 |
-| team.jpg | 800x600 | Team photo | Photography | `web` | Pending | Diverse engineering team in modern office |
-| formula_001.png | 736x168 | Block equation on P03 | Latex Formula | `formula` | Rendered | `E = mc^2` |
-| spot_team.png | TBD after slicing | Team spot illustration | Illustration | `slice` | Pending | From `spot_sheet.png` cell 1,1 |
+| Filename | Dimensions | Purpose / Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
+|---|---|---|---|---|---|---|---|
+| `<planned file>` | `<planned size>` | `<planned role>` | `<Strategist selection>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
 
 **Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row and every newly authored `ai` row. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
 

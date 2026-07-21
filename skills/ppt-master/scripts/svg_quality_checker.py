@@ -5876,28 +5876,6 @@ class SVGQualityChecker:
                     f"{filename} is a Generated slice row but images/{filename} does not exist.",
                 ))
 
-        has_coverage_note = 'Image-as-canvas' in spec_text or 'image-as-canvas' in spec_text
-        pattern_ids = self._collect_layout_pattern_ids(image_rows)
-        if len(image_rows) >= 4 and not any(38 <= pid <= 46 for pid in pattern_ids):
-            if not has_coverage_note:
-                self._illustration_issues.append((
-                    'warning',
-                    'missing_image_as_canvas',
-                    "deck has 4+ image-bearing rows but no #38-#46 image-as-canvas "
-                    "layout and no coverage note in design_spec.md §VIII.",
-                ))
-
-        conventional_ids = {1, 2, 3, 5, 6}
-        if len(image_rows) >= 4 and pattern_ids and pattern_ids.issubset(conventional_ids):
-            if not has_coverage_note:
-                self._illustration_issues.append((
-                    'warning',
-                    'layout_pattern_degenerated',
-                    "all image-bearing rows use only basic full-bleed / left-right / "
-                    "top-bottom patterns (#1/#2/#3/#5/#6); re-check "
-                    "references/image-layout-patterns.md for modifiers or image-as-canvas options.",
-                ))
-
         for row in image_rows:
             self._check_decorative_image_row(row, project_path, svg_texts)
 
@@ -5981,14 +5959,6 @@ class SVGQualityChecker:
     @staticmethod
     def _row_layout(row: Dict[str, str]) -> str:
         return row.get('Layout pattern', '').strip()
-
-    @staticmethod
-    def _collect_layout_pattern_ids(rows: List[Dict[str, str]]) -> set[int]:
-        ids: set[int] = set()
-        for row in rows:
-            for match in re.finditer(r'#(\d+)\b', SVGQualityChecker._row_layout(row)):
-                ids.add(int(match.group(1)))
-        return ids
 
     def _load_project_lock_images(self, project_path: Path) -> set[str]:
         """Return filenames listed under spec_lock.md images."""

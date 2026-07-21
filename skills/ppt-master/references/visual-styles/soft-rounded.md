@@ -21,9 +21,9 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 ## 3. Using the deck's colors
 
 - Theme color used confidently on covers / chapter backgrounds; same-hue tints for card backings; accent for key figures.
-- Warmer, more generous color use than swiss / editorial — still disciplined (60-30-10), never rainbow.
+- Warmer, more generous color use than swiss / editorial. Assign hues by semantic role and visual hierarchy; intentional multi-hue compositions remain valid.
 
-> HEX values come from confirmation `e`; this style only governs the confident-but-disciplined (60-30-10) color use — it names no colors.
+> HEX values come from confirmation `e`; this style governs confident, friendly color use without naming colors or imposing a ratio.
 
 ## 4. Texture / elevation
 
