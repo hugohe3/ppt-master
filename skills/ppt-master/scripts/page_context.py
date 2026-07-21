@@ -398,15 +398,19 @@ def _reference_payload(
     *,
     scope: str,
     display_path: str,
+    same_context_edit_policy: str | None = None,
 ) -> dict[str, str]:
     """Describe one large reference without injecting its contents per page."""
-    return {
+    payload = {
         "kind": kind,
         "scope": scope,
         "path": display_path,
         "sha256": _file_sha256(path),
         "load_policy": "once-per-execution-context",
     }
+    if same_context_edit_policy is not None:
+        payload["same_context_edit_policy"] = same_context_edit_policy
+    return payload
 
 
 def _chart_reference(chart_key: str) -> tuple[dict[str, str], Path]:
@@ -517,6 +521,7 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
             design_path,
             scope="project",
             display_path="design_spec.md",
+            same_context_edit_policy="targeted-readback-and-rebind",
         ),
     ]
     template_design_path = project_path / "templates" / "design_spec.md"

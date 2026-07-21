@@ -180,7 +180,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 > **Mandatory rules when choosing C**:
 >
-> **At the Strategist confirmation stage — decide the library only. Do NOT run `ls | grep` yet.**
+> **At the Strategist confirmation stage — decide the library and stroke only; resolve and sync filenames after approval.**
 >
 > 1. **Pick exactly one stylistic library** — read the source material, then choose the library whose visual character best serves the deck:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
@@ -193,15 +193,15 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >
 > **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, then materialize the icon inventory:
 >
-> 3. Enumerate the concepts the deck actually needs (home, chart, users, …) based on the confirmed outline.
-> 4. Search for each concept's filename in the chosen library: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
-> 5. Use the verified filename (without `.svg`) as the icon name; always include the library prefix (e.g., `chunk-filled/home`). Icon identifiers are case-sensitive: bundled-library basenames are lowercase and MUST be copied exactly (`tabler-outline/award`, never `tabler-outline/Award`). Do not rely on downstream lowercasing; custom icons preserve their file's exact case.
-> 6. **Copy each chosen icon into the project as you confirm it** — `uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name> …]`. This populates `<project>/icons/<lib>/` (the set the Executor embeds from) and, more importantly, **validates existence on the spot**.
-> 7. List the final icon inventory and chosen library in `design_spec.md` §VI; record the same in `spec_lock.md icons` (including `stroke_width` for stroke-style libraries). Executor may only use icons from this list.
+> 3. Enumerate only the concepts required by the confirmed outline.
+> 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<keyword>*.svg'`; do not enumerate broad keyword families.
+> 5. **Copy and validate in one batch** — run `uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
+> 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
+> 7. Record the successful inventory, library, and stroke-library `stroke_width` in `design_spec.md` §VI and `spec_lock.md icons`. Executor may use only this list.
 >
-> 🚧 **GATE — missing icon = re-pick now**: if `icon_sync.py` reports any name as missing (non-zero exit), that icon is not in the library — re-pick a real filename via `ls … | grep`, fix `§VI` / `spec_lock.md`, and re-run until it exits clean. Never carry a missing icon forward to generation. Over-copying candidates is harmless — finalize embeds only the icons actually referenced by `<use data-icon>`.
+> 🚧 **GATE — missing icon = re-pick now**: on non-zero exit, search only the missing concept in the chosen library, re-pick, and rerun the final batch until clean. Never carry a missing icon forward or switch stylistic libraries to fill the gap.
 >
-> **Do NOT preload any index file** — when the inventory step arrives, use `ls | grep` to search on demand with zero token cost.
+> **Default — targeted lookup only**: do not load or rebuild a full index; search only unresolved concepts.
 
 ### g. Typography Plan Confirmation (Font + Size)
 
@@ -218,7 +218,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Strategist-owned role extension after confirmation**: Confirm UI keeps the heading/body choice unchanged. While authoring the complete §IX roster and §IV typography plan, scan the actual content for recurring roles that materially need a different family for character or legibility—such as `annotation`, `footer`, `footnote`, `data`, `emphasis`, `quote`, or `code`. Add a lowercase snake_case role and exact stack only when it recurs; inherited roles and one-off garnish stay omitted. The extension must remain coherent with the confirmed heading/body system and locked visual style, and it does not reopen confirmation. Record one compact `Role rationale` in §IV stating the added roles and why, or that no additional family role is justified.
 
-**Size lock — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
+**Size anchors — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
 
 | Reading mode on PPT | Initial body | Information posture |
 |---|---:|---|
@@ -226,7 +226,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 | `balanced` | 24 | mixed reading + presentation |
 | `presentation` | 32 | projected / sparse |
 
-Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed visible values always win: take Confirm UI `body_size` / `sizes` verbatim; a manually edited role remains pinned, and changing canvas does not secretly rescale it.
+Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed role-anchor values always win: take Confirm UI `body_size` / `sizes` verbatim as anchors; a manually edited anchor remains pinned, and changing canvas does not secretly rescale it.
 
 | Recurring role | Ratio to body |
 |---|---:|
@@ -239,7 +239,7 @@ Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md)
 | Annotation | 0.7–0.85× |
 | Footnote / page number | 0.5–0.65× |
 
-Scan §IX before locking. Declare every recurring role, including `lead`, `footnote`, and chart annotations when used; a lead is always at least body size. One role has one deck-wide size. Snap derived values to clean even px (for body 24, a sound set is title 42, subtitle 32, lead 30, annotation 18, footnote 16). Feature elements may exceed the normal bands only through an explicit named slot.
+Scan §IX before locking. Declare every recurring role, including `lead`, `footnote`, and chart annotations when used; a lead is always at least body size. Give each role one deck-wide anchor and snap derived anchors to clean even px (for body 24, a sound set is title 42, subtitle 32, lead 30, annotation 18, footnote 16). Executor may vary one occurrence within that role's anchor ±2px while preserving hierarchy and readability. A new semantic role or any size outside ±2px requires an explicit named slot; feature elements that need a larger departure are planned here rather than improvised downstream.
 #### Formula Planning Trigger
 
 Formula policy and formula-asset planning are conditional. If the source contains formula-worthy expressions, or the user explicitly requests formula handling, read [`strategist-image.md`](./strategist-image.md) §3 before confirming the production policy or writing formula rows. Load it even when `image_usage` is `none`; otherwise omit formula planning from the core path.
@@ -287,12 +287,12 @@ uvx ppt-master chart-recall recall \
   --limit 6
 ```
 
-The command returns a lexical shortlist plus `no-template-match`. `low` / `none` also returns the full catalog under `semantic_fallback`; if stronger candidates all conflict, rerun with `--semantic-fallback`. Compare every returned catalog rule semantically—lexical overlap is unnecessary. Do not open the catalog separately or maintain a second index.
+The command returns a bounded shortlist plus `no-template-match`. Read it unfiltered: `--limit` already bounds output, while `tail` / `head` / `grep` can hide higher-ranked candidates. `confidence` is diagnostic only. Semantically review the candidates; if terminology or structural ambiguity suggests a missed catalog structure, rerun with `--semantic-fallback` and compare its rules. This is optional, not a routine no-match gate. Do not open a second index.
 
 **Selection**:
 
-1. Choose the most specific valid structure from the applicable review; keep one primary visualization per page and adapt its treatment rather than mimicking it.
-2. Only after that review finds no fit, use `no-template-match`: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout.
+1. Choose the most specific valid structure from the bounded candidates or an explicitly requested semantic fallback; keep one primary visualization per page and adapt its treatment rather than mimicking it.
+2. When no recalled reference fits, retain `no-template-match` by Strategist judgment: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the chosen fallback only in the affected page's §IX `Visualization` / `Layout`; do not serialize the negative result into §VII.
 3. Validate all selected keys before writing the lock:
 
 ```bash
@@ -301,20 +301,20 @@ uvx ppt-master chart-recall validate <key> [<key> ...]
 
 A failed validation must be corrected with a recalled key. `no-template-match` is not a key and never appears in `page_charts`.
 
-**Section VII audit**: Use one combined table. Copy the selected candidate's returned `summary` verbatim into `Summary-quote`; record its returned path and page-specific usage. List real returned runners-up with page-specific rejection reasons. If no candidate fits, record `no-template-match`, the fallback, and why.
+**Section VII audit**: §VII is a positive reference inventory. Include it only when at least one catalog candidate is selected. Every row copies the selected candidate's returned `summary` verbatim into `Summary-quote` and records its real path plus page-specific usage. List real returned runners-up only for pages with a selected reference. Never write an empty §VII, a `no-template-match` / `n/a` row, or prose saying no reference exists; a no-match page is described only in its §IX block.
 
-**Native-ready boundary**: Put every independent data chart or pure text-grid table in §VII and set `Native-ready: yes|no`; use `n/a` for conceptual rows. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Incidental sparklines, KPI trends, and insets stay in §IX; Executor never promotes them.
+**Native-ready boundary**: For every independent data chart or pure text-grid table, add `Native-ready: yes|no` to its §IX page block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Conceptual rows and incidental sparklines, KPI trends, or insets omit the field; Executor never promotes them.
 
 ```
-| Page | Template | Path | Summary-quote (verbatim) | Native-ready | Usage |
-|---|---|---|---|---|---|
-| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <yes/no/n/a> | <intent> |
+| Page | Template | Path | Summary-quote (verbatim) | Usage |
+|---|---|---|---|---|
+| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <intent> |
 
 Runners-up considered:
 - <returned_key> | rejected for P03: <page-specific reason>
 ```
 
-**Flag native-preset candidates**: For any §VII row, including `no-template-match`, append a `Usage` note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch.
+**Flag native-preset candidates**: In the affected page's §IX `Layout` / `Visualization`, note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch; this note never creates a §VII row by itself.
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 
@@ -380,11 +380,11 @@ Content-outline and speaker-notes strategy follow the deck's locked **mode** —
 
 **Recommendation signals**: derive the initial reading mode from the confirmed `audience`, `delivery_context`, and `artifact_afterlife`. Asynchronous review, reference, approval, audit, and leave-behind use lean `text`; presenter-led projection, large-room delivery, launch, or classroom explanation lean `presentation`; hybrid review / roadshow use leans `balanced`. When live projection and durable afterlife both matter, recommend `balanced` unless the contract clearly prioritizes one. If the user confirms `presentation`, support afterlife through notes, appendix pages, captions, and visible sources instead of crowding every slide.
 
-**Per-block expression**: let the semantic relationship choose the form. Causal explanation, argument, interpretation, and narrative continuity use prose. Truly parallel, ordered, or enumerable items may use bullets / numbers. Never create bullets merely because copy is long or a template exposes a list slot. In `presentation`, distill one assertion and move its explanation into notes rather than turning every sentence into a fragment. Source texture remains a secondary cue: an article / transcript / talk leans prose, while a data sheet or inventory may lean structured labels. Write the final phrasing into §IX itself; do not leave skeleton points for Executor to expand.
+**Per-block expression**: let the semantic relationship choose the form. Causal explanation, argument, interpretation, and narrative continuity use prose. Truly parallel, ordered, or enumerable items may use bullets / numbers. Never create bullets merely because copy is long or a template exposes a list slot. In `presentation`, distill one assertion and move its explanation into notes rather than turning every sentence into a fragment. Source texture remains a secondary cue: an article / transcript / talk leans prose, while a data sheet or inventory may lean structured labels. Write complete, usable phrasing into §IX; do not leave skeletons for Executor. It is preferred wording unless literal preservation applies.
 
 This is what makes the axis meaningful: a `presentation` deck and a `text` deck built from the **same source and communication contract** must differ in page grammar, page count recommendation, per-page text volume, visual burden, layout density, rhythm, and notes—not only in font size. Page count stays the user's call; reading mode informs the recommendation when the user has not fixed one. Record it as **Reading Mode** in `design_spec.md §I` (compatibility key `delivery_purpose`, lock key `consumption_mode`). Separately, `communication_intent` / `audience_outcome` determine what the outline must accomplish, while `delivery_context` and `artifact_afterlife` help select the reading mode and still remain independent constraints after selection. The `page_rhythm` leans are a bias, not a quota. Preservation paths keep source wording and structure verbatim: honor reading mode only in styling and notes, never by rephrasing or re-paginating.
 
-> Note: §IX is the content copy projected into each Executor page-context — what you write there is what survives context compression.
+> Note: §IX is the complete page brief projected into each Executor page-context — what you write there is what survives context compression.
 
 ### 6.2 Planning Artifact Content
 
@@ -402,7 +402,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
 | Communication contract and `content_divergence` | §I records the confirmed contract; §IX realizes every stated purpose, outcome, priority, and source-treatment constraint |
 | Canvas, reading mode, and page count | §I records the confirmed input and exact resolved count; §IX contains that many ordered pages. Executor produces exactly one output slide per entry, in order |
 | Mode, visual style, palette, and generated-image rendering | §I and §III record the selected direction as identity anchors; named core roles stay stable while page-local expression remains contextual |
-| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records the confirmed heading/body stacks, any recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` values; never discard a declared role override or re-derive a confirmed size |
+| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records the confirmed heading/body stacks, any recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` anchor values; never discard a declared role override or re-derive a confirmed anchor |
 | Icons | §VI uses the confirmed library or confirmed no-icon/custom path |
 | Confirmed image-source set, `image_notes`, and AI strategy | §VIII uses only permitted sources and includes every explicitly required source, asset, or page role; a permitted but unused source needs no row |
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |
@@ -412,7 +412,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
 
 ⛔ **GATE 2 — lock context fidelity.** After the Design Spec passes Gate 1, author its machine-relevant execution anchors and routing values into `spec_lock.md`. The lock may normalize syntax and add named recurring implementation roles justified by the Design Spec/page plan, but it must not change confirmed identity or introduce a competing direction. It is intentionally not a field-for-field copy and not a whitelist of every legal SVG value. If authoring exposes a contradiction or missing confirmed decision, return to Gate 1 and repair the Design Spec from the retained final-confirmation state; on a fresh recovery turn only, read the persisted final result once to restore that state.
 
-**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography size; never re-derive a confirmed role. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
+**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography role and any planned feature role that needs to leave another role's ±2px band; never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor rebuilds page projection before every page ([executor-base.md](executor-base.md) §2.1). Repair the Design Spec only from retained final confirmation, then re-author affected lock rows.
 
 **Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or patterns require upstream repair; Executor never reverse-projects a choice as fact. Promote garnish upstream before reuse, regenerate page-context, and never add values to silence a comparison.
 
@@ -427,7 +427,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
-   - **page_charts (write only for chart pages that match a catalog template)**: For each page in `design_spec.md §VII` whose `reference template path` points to `templates/charts/<name>.svg`, add `P<NN>: <chart_name>`. Pages with `no-template-match` in §VII MUST NOT appear here (Executor would look for a non-existent reference). If the deck has no data-visualization pages, omit the section.
+   - **page_charts (write only for pages with a selected catalog reference)**: For each page in `design_spec.md §VII` whose path points to `templates/charts/<name>.svg`, add `P<NN>: <chart_name>`. No-match pages never appear here because §VII omits them and Executor would otherwise look for a non-existent reference. If no catalog reference is selected, omit the section even when §IX contains custom data visualizations.
 
 ---
 

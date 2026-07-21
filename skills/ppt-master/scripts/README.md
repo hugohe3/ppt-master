@@ -24,6 +24,8 @@ uvx ppt-master source-to-md <file-or-url-or-dir> [<file-or-url-or-dir> ...]
 # or direct backend calls:
 uvx ppt-master pdf-to-md <file.pdf>
 # or
+uvx ppt-master pdf-to-md <file.pdf>
+# or
 uvx ppt-master ppt-to-md <deck.pptx>
 uvx ppt-master excel-to-md <workbook.xlsx>
 uvx ppt-master project init <project_name> --format ppt169

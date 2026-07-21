@@ -11,7 +11,6 @@
     "typography_system",
     "layout_principles",
     "icon_usage",
-    "visualization_reference",
     "image_resource_list",
     "content_outline",
     "speaker_notes"
@@ -55,7 +54,7 @@
       {
         "id": "visualization_reference",
         "pattern": "^VII\\. Visualization Reference List(?: \\(if needed\\))?$",
-        "required": true
+        "required": false
       },
       {
         "id": "image_resource_list",
