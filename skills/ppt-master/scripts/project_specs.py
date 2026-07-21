@@ -47,6 +47,22 @@ SKILL_DIR = TOOLS_DIR.parent
 SCHEMA_DIR = SKILL_DIR / "templates" / "schemas"
 SCAFFOLD_DIR = SKILL_DIR / "templates" / "scaffolds"
 
+_CUSTOM_REFERENCE_CATALOGS = (
+    ("mode", "mode", "mode_references", SKILL_DIR / "references" / "modes"),
+    (
+        "visual_style",
+        "visual_style",
+        "visual_style_references",
+        SKILL_DIR / "references" / "visual-styles",
+    ),
+    (
+        "colors",
+        "image_rendering",
+        "image_rendering_references",
+        SKILL_DIR / "references" / "image-renderings",
+    ),
+)
+
 _MARKDOWN_H2_RE = re.compile(r"^##[ \t]+(.+?)[ \t]*$", re.MULTILINE)
 _MARKDOWN_SUBHEADING_RE = re.compile(r"^#{3,6}[ \t]+(.+?)[ \t]*$", re.MULTILINE)
 _MARKDOWN_DATA_LINE_RE = re.compile(
@@ -58,18 +74,6 @@ _SCHEMA_MARKER_RE = re.compile(
     r"^<!--[ \t]+ppt-master-schema:[ \t]*([a-z0-9-]+/v[1-9][0-9]*)[ \t]+-->$",
     re.IGNORECASE,
 )
-
-# Confirmed `image_usage` source id → acceptable `## images` acquisition tokens.
-# Mirrors the strategist.md §h mapping (ai→ai, web→web, provided→user,
-# placeholder→placeholder); a confirmed `ai` plan may legitimately enter the
-# lock only as sliced sheet elements, so `slice` also satisfies `ai`.
-_CONFIRMED_IMAGE_SOURCE_TOKENS = {
-    "ai": ("ai", "slice"),
-    "web": ("web",),
-    "provided": ("user",),
-    "placeholder": ("placeholder",),
-}
-
 
 def _normalize_schema_value(value: str) -> str:
     """Normalize a Markdown scalar before enum, pattern, and catalog checks."""
@@ -693,40 +697,6 @@ def _validate_strict_data_surface(
     return errors
 
 
-def _confirmed_image_sources(project_dir: Path) -> list[str]:
-    """Return confirmed non-`none` image sources from the final Confirm UI state.
-
-    Reads ``confirm_ui/result.json`` only when it records a final confirmed
-    stage; a chat-delegated or superseded confirmation without that file keeps
-    the coverage check silent. Malformed payloads are treated as absent —
-    the Confirm UI owns result integrity, not this validator.
-    """
-    result_path = project_dir / "confirm_ui" / "result.json"
-    if not result_path.is_file():
-        return []
-    try:
-        payload = json.loads(result_path.read_text(encoding="utf-8-sig"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        return []
-    if not isinstance(payload, dict):
-        return []
-    if payload.get("status") != "confirmed" or payload.get("stage") != "final":
-        return []
-    raw_usage = payload.get("image_usage")
-    if isinstance(raw_usage, str):
-        raw_usage = [raw_usage]
-    if not isinstance(raw_usage, list):
-        return []
-    sources: list[str] = []
-    for item in raw_usage:
-        if not isinstance(item, str):
-            continue
-        token = item.strip().casefold()
-        if token and token != "none" and token not in sources:
-            sources.append(token)
-    return sources
-
-
 def _validate_spec_lock_relations(
     markdown_path: Path,
     matched: Mapping[str, dict[str, object] | None],
@@ -742,6 +712,44 @@ def _validate_spec_lock_relations(
         raw_fields = section["fields"]
         assert isinstance(raw_fields, dict)
         return {str(key): str(value) for key, value in raw_fields.items()}
+
+    for section_id, selector_field, references_field, catalog_dir in (
+        _CUSTOM_REFERENCE_CATALOGS
+    ):
+        section_fields = fields(section_id)
+        is_custom = (
+            _normalize_schema_value(section_fields.get(selector_field, "")) == "custom"
+        )
+        raw_references = _normalize_schema_value(
+            section_fields.get(references_field, "")
+        )
+        if not is_custom:
+            if raw_references:
+                errors.append(
+                    f"{markdown_name} schema: field '{references_field}' is valid "
+                    f"only when '{selector_field}' is custom"
+                )
+            continue
+        if not raw_references:
+            continue
+        references = [item.strip() for item in raw_references.split(",")]
+        duplicates = sorted(
+            reference
+            for reference in set(references)
+            if references.count(reference) > 1
+        )
+        if duplicates:
+            errors.append(
+                f"{markdown_name} schema: field '{references_field}' repeats "
+                f"catalog id(s) {', '.join(duplicates)}"
+            )
+        for reference in references:
+            catalog_file = catalog_dir / f"{reference}.md"
+            if reference == "custom" or not catalog_file.is_file():
+                errors.append(
+                    f"{markdown_name} schema: field '{references_field}' references "
+                    f"unknown catalog id '{reference}'"
+                )
 
     rhythm = fields("page_rhythm")
     layouts = fields("pptx_layouts")
@@ -796,26 +804,6 @@ def _validate_spec_lock_relations(
             f"{markdown_name} schema: page_charts has unknown pages "
             f"{', '.join(unknown_chart_pages)}"
         )
-
-    confirmed_sources = _confirmed_image_sources(markdown_path.parent)
-    if confirmed_sources:
-        # Row values are free-form beyond the leading acquisition source;
-        # both `ai | ...` and `ai, ...` delimiter styles occur in practice.
-        image_tokens = {
-            _normalize_schema_value(re.split(r"[|,]", value, maxsplit=1)[0]).casefold()
-            for value in fields("images").values()
-        }
-        for source in confirmed_sources:
-            accepted = _CONFIRMED_IMAGE_SOURCE_TOKENS.get(source)
-            if accepted is None or not image_tokens.isdisjoint(accepted):
-                continue
-            expected = " or ".join(f"'{token}'" for token in accepted)
-            errors.append(
-                f"{markdown_name} schema: confirmed image source '{source}' "
-                f"(confirm_ui/result.json image_usage) has no '## images' row "
-                f"with acquisition {expected}; repair design_spec.md §VIII "
-                "from the final confirmation, then re-project the lock"
-            )
 
     info = get_project_info_common(str(markdown_path.parent))
     format_key = str(info.get("format", "unknown"))

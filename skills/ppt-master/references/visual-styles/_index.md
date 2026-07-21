@@ -2,7 +2,7 @@
 
 A **visual style** is how the deck **looks** — shape language, decoration density, whitespace rhythm, typographic character, texture / elevation. Lock **one per deck**; it anchors the aesthetic of the SVG layout itself (cards, dividers, spacing, corner radius, shadow use).
 
-> **Styles carry NO HEX and lock no palette.** Color truth and role behavior live in `design_spec.colors` / `spec_lock.colors` (confirmation `e`). A visual style only describes how those existing colors are used in SVG composition—never which colors to substitute. Generated images follow the same single source of truth: their rendering comes from [`image-renderings/`](../image-renderings/), while their exact colors inherit the deck roles directly. [`image-palettes/`](../image-palettes/) is legacy compatibility material only.
+> **Styles carry NO fixed HEX and lock no palette.** Core color identity and recurring role behavior live in `design_spec.colors` / `spec_lock.colors` (confirmation `e`). A visual style describes how those anchors behave in SVG composition and may call for contextual tints, gradients, effects, or material transitions; it does not substitute an unrelated palette. Generated images follow the same anchor model through [`image-renderings/`](../image-renderings/). [`image-palettes/`](../image-palettes/) is legacy compatibility material only.
 >
 > A visual style is *not* a mode. **Visual style = how it looks; mode = how you argue** (see [`modes/_index.md`](../modes/_index.md)). Locked independently — any style pairs with any mode.
 
@@ -10,7 +10,7 @@ A **visual style** is how the deck **looks** — shape language, decoration dens
 
 ## 1. Catalog
 
-Each style has its own file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. **Read only the file for the style you lock** — never glob the directory. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
+Each style has its own file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. A preset lock reads that one file. A catalog-based `custom` reads every preset named in `visual_style_references`; a novel `custom` may omit references. Never glob the directory. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
 
 > The **`visual_style` value is only ever a first-column `id`** (`swiss-minimal`, `editorial`, …). The "Paired rendering" column lists **§h image-rendering** names (`flat`, `minimalist-swiss`, `digital-dashboard`, …) — never lock one of those as the `visual_style`; they belong to confirmation h.
 >
@@ -94,6 +94,8 @@ Each style has its own file with: shape & decoration, typography character, colo
 
 Stage 2 always authors one visible, non-empty AI custom proposal beside the preset spectrum. Its paragraph names shape language, composition geometry (page-scale moves), decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. The proposal is initially unselected and remains recommendation-only unless the user chooses it; a template-backed proposal must stay inside the inherited identity and confirmed application plan. When selected, record the edited aesthetic in the Design Spec first, then project `- visual_style: custom` plus `- visual_style_behavior:` to `spec_lock.md`. The candidate is mandatory; selecting `custom` remains a tail-case, not the default.
 
+**Mandatory — read every catalog source actually used**: If a custom proposal combines or borrows existing styles, name their exact ids in the visible proposal and read each corresponding file before synthesizing its shape, composition, typography, whitespace, and texture rules. Persist those ids as `visual_style_references`. Do not attach references merely because they are adjacent in the catalog. A genuinely new aesthetic with no catalog source omits `visual_style_references` and proceeds from its standalone behavior.
+
 ---
 
 ## 4. How to use
@@ -101,6 +103,6 @@ Stage 2 always authors one visible, non-empty AI custom proposal beside the pres
 1. Strategist reads this index at confirmation `d. Layer 2`.
 2. Preselect one style from the auto-selection table + the deck's vibe; separately author the visible AI custom proposal from §3.
 3. Record the confirmed style and rationale in `design_spec.md`, then project `- visual_style: <name>` into `spec_lock.md`.
-4. Executor reads **only** `visual-styles/<locked-style>.md` at generation entry — never globs this directory.
+4. Executor reads `visual-styles/<locked-style>.md` for a preset. For `custom`, it reads every file listed in `visual_style_references` before applying `visual_style_behavior`; with no references, it applies the novel behavior directly. Never glob this directory.
 
 **Lock scope**: deck-wide (one style per deck). It anchors taste as a **reference**, not a whitelist — pages may deviate with reason.
