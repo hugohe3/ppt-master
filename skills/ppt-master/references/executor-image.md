@@ -23,7 +23,7 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
 
-**Selected pattern, flexible realization**: Preserve the row's primary/modifier ids and semantic composition. Adapt geometry, ratio, placement, spacing, and hierarchy for the actual page; never replace the pattern, role, file/source, must-use, or crop policy downstream. If another pattern is needed, return upstream to update the Design Spec. Only explicit user/template preservation locks exact geometry. Avoid generic left/right repetition.
+**Mandatory — selected pattern, flexible realization**: Read [`image-layout-patterns.md`](./image-layout-patterns.md) once when this branch loads, then resolve every primary/modifier id in each active §VIII/lock row to its exact catalog entry. Preserve the selected semantic composition. Adapt geometry, ratio, placement, spacing, and hierarchy for the actual page; never replace the pattern, role, file/source, must-use, or crop policy downstream. If another pattern is needed, return upstream to update the Design Spec. Only explicit user/template preservation locks exact geometry. Avoid generic left/right repetition.
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 

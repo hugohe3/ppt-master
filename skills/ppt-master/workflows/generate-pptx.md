@@ -335,6 +335,8 @@ Workflow:
 
 **Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
 
+**Exact page content**: render each §IX `Title` / `Core message` / `Content` field as the approved final wording. Read sources only to resolve or verify evidence already requested by that block; never use execution to enrich or rewrite an incomplete outline. Return an incomplete block to Step 4 for Design Spec repair.
+
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
 Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
@@ -353,7 +355,7 @@ Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visu
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
 | Any data chart/table, including mini or inset charts and sparklines | `executor-chart.md` |
 | Preset pattern or supported native chart/table | `native-data-interface.md` before drawing |
-| `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
+| `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-patterns.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
 | A page calls for a literal PowerPoint stock shape | `native-shape-authoring.md` before selecting or emitting that shape |
