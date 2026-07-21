@@ -41,6 +41,10 @@ python3 skills/ppt-master/scripts/project_manager.py page-context <project_path>
 
 `global` deliberately repeats the sub-1000-token cross-page anchor set; `lock_source.sha256` binds its version. These anchors preserve identity and recurring semantics but do not enumerate every legal color or font. `page_context` is the current §IX/resource/template/chart delta. For every `reference_set` entry—project/template Design Spec or selected prototype/chart SVG—reuse an in-context path + SHA; read it once only when absent or changed.
 
+**Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
+
+**Hard rule — selection vs realization**: use Strategist-selected content, resources/paths, chart/layout keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never selection, except sparse local font/color garnish allowed below. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Selection changes require upstream repair.
+
 Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. The delta overrides neither facts nor constraints. After an approved change, rerun the command and reload only changed references. Deprecated `--bundle` is a compatibility no-op.
 
 **Source facts**: The page delta carries page intent and routing facts, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
@@ -72,8 +76,8 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 **Execution anchors and contextual values**:
 
 - Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
-- Core color roles in `colors` retain their confirmed meaning. Use them directly for recurring semantic roles. Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off illustration colors may be chosen from context when they preserve the deck's visual identity, contrast, and semantic color behavior.
-- Structural title/body typography uses its declared role override (`title_family` / `body_family` / `emphasis_family` / `code_family`) or `font_family` fallback. A page-local display treatment may use another installed/export-safe family when the content and locked visual style justify it; promote it to a named `*_family` role only when it recurs.
+- Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
+- Use declared role families or `font_family`. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
 - Font sizes follow a ramp anchored on `typography.body`. Structural roles use their locked size deck-wide; recurring feature roles such as lead, pull quote, or hero number need their own lock slot. Never resize one role page by page or inherit a template placeholder size.
 - **Core message ≥ `body`**: map the page's primary claim to locked `lead` / `subtitle`, never below body. Footnotes, page numbers, and credits use locked `footnote` / `annotation`; do not invent smaller sizes.
 - **Write locked px verbatim, with at most two decimals.** Do not substitute familiar pt-style numbers or emit long precision tails.
@@ -81,7 +85,7 @@ The §IX wording and sourced facts remain authoritative. Do not rewrite, drop, o
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-When an intentional value becomes deck-wide or gains a recurring semantic role, extend `spec_lock.md` **before the next affected page**, regenerate that page's context, and use the named role thereafter. A genuinely page-local color, gradient/effect paint, or export-safe display family stays in the SVG and does not require a lock edit. Never expand the lock merely to silence the checker's informational anchor comparison. Icons, images, structural font roles, and recurring type sizes keep their explicit inventory/role rules.
+Return upstream before any derived/accent value becomes recurring or structural, then regenerate context. Local garnish needs no lock row. Never expand the lock to silence a comparison. Icons, images, structural fonts/sizes, and resources keep their inventory/role rules.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
@@ -176,7 +180,7 @@ Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.s
 
 Strategist chooses the library and inventory; Executor only implements. Library details and one-library rule: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
 
-> **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. **Custom icons**: drop an `.svg` into `<project_path>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any other. Reference only icons in the `spec_lock.md` inventory.
+> **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. Custom SVGs must already exist in the prepared project inventory under `<project_path>/icons/<lib>/`. Reference only icons in `spec_lock.md icons.inventory`.
 
 > **Icon identifiers are case-sensitive filenames.** For bundled libraries, copy the verified lowercase basename exactly (`tabler-outline/award`, never `tabler-outline/Award`) into `spec_lock.md` and every `data-icon` value. Custom icon identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 
@@ -211,49 +215,20 @@ Strategist chooses the library and inventory; Executor only implements. Library 
 >
 > Icons are auto-embedded by `finalize_svg.py` — no need to run `embed_icons.py` manually.
 
-**Searching for icons** — use terminal, zero token cost:
+**Locked-id verification only**: verify the exact project-local file already named in `icons.inventory`:
 ```bash
-ls skills/ppt-master/templates/icons/chunk-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
-ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
-ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
-ls skills/ppt-master/templates/icons/simple-icons/ | grep github
+test -f "<project_path>/icons/<lib>/<name>.svg"
 ```
 
-**Abstract concept → icon name** (names for `chunk-filled`; tabler libraries use their own equivalents — verify with `ls | grep`):
+**Missing locked icon** → return to Strategist's inventory / `icon_sync.py` gate. Do not search the global library, select an alternative, copy a candidate, or edit the lock in Executor.
 
-| Concept | chunk-filled | tabler-filled / tabler-outline |
-|---------|-------|-------------------------------|
-| Growth / Increase | `arrow-trend-up` | same |
-| Decline / Decrease | `arrow-trend-down` | same |
-| Success / Complete | `circle-checkmark` | `circle-check` |
-| Warning / Risk | `triangle-exclamation` | `alert-triangle` |
-| Innovation / Idea | `lightbulb` | `bulb` |
-| Strategy / Goal | `target` | same |
-| Efficiency / Speed | `bolt` | same |
-| Collaboration / Team | `users` | same |
-| Settings / Config | `cog` | `settings` |
-| Security / Trust | `shield` | same |
-| Money / Finance | `dollar` | `currency-dollar` |
-| Time / Deadline | `clock` | same |
-| Location / Region | `map-pin` | same |
-| Communication | `comment` | `message` |
-| Analysis / Data | `chart-bar` | same |
-| Process / Flow | `arrows-rotate-clockwise` | `refresh` |
-| Global / World | `globe` | `world` |
-| Excellence / Award | `star` | same |
-| Expand / Scale | `maximize` | same |
-| Problem / Issue | `bug` | same |
-
-> For self-evident names (home, user, file, search, arrow, etc.) — just `grep chunk-filled/` directly without consulting the table.
-
-> ⚠️ **Icon validation**: only use icons from the Design Spec's approved inventory. Verify each via `ls | grep` before use. Mixing libraries within one deck is FORBIDDEN.
+**Hard rule — icon inventory**: use only the Design Spec's approved inventory. Mixing stylistic libraries within one deck is FORBIDDEN.
 
 ---
 
 ## 5. Font Usage
 
-Structural typography anchors come from `spec_lock.md typography`. Use `font_family` as default; override recurring roles with `title_family` / `body_family` / `emphasis_family` / `code_family` if declared. Contextual one-off display type remains allowed under §2.1 when export-safe. LaTeX formulas that Strategist rendered are PNG images, not a `code_family` text role.
+Structural typography anchors come from `spec_lock.md typography`. Use `font_family` by default and declared role overrides when present. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 

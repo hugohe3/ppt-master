@@ -113,13 +113,14 @@ Chart SVGs referenced in **VII. Visualization Reference List** are loaded once t
 **Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply the active Design Spec and `spec_lock.md`; preserve the visualization type and data semantics.
 
 **Adaptation rules**:
-- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, data encoding, structural grouping, and capacity
+- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, data encoding, and every content obligation in the active Design Spec
+- **Selected key, flexible realization**: keep the Strategist-selected chart key/type; its preview grouping, frame count, item count, capacity, and geometry are adaptable to the actual authored content
 - **Carry forward**: every planned label, value, unit, status, source, and explanatory block; never shorten or drop content to imitate a lighter catalog preview
 - **Adapt**: project data and labels, dimensions, axes, legend, and spacing as the authored content requires
 - **Project-owned**: palette, typography, container treatment, effects, background, and page chrome; catalog preview values are fallbacks, never defaults
 - **Bound final body modules**: add or revise root-coordinate `data-pptx-bounds` on every visible direct root `<g>` copied into the final page; nested groups need none, chart geometry and local references are not content-boundary inputs, and catalog reference warnings never waive the final-page contract
-- **Adjust with fidelity**: composition, axis ranges, and grid may change within the project contract only when no content, relationship, hierarchy, or capacity is lost
-- **Forbidden**: changing visualization type without spec justification; omitting data points or structural elements from the outline
+- **Adjust with fidelity**: composition, axis ranges, grouping, and grid may change when the actual content, relationships, hierarchy, and data encoding remain complete
+- **Forbidden**: changing visualization type without spec justification; omitting planned data points, labels, relationships, or explanatory content to fit the catalog preview
 
 > Templates: `templates/charts/`. The Strategist's selected key is already locked in `page_charts`; execution opens only that key's SVG.
 

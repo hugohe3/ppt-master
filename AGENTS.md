@@ -27,6 +27,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 ## Required Conventions
 
 - **Repo-wide style rules** — when editing prompt files under [`skills/ppt-master/references/`](skills/ppt-master/references/), Python under [`skills/ppt-master/scripts/`](skills/ppt-master/scripts/), or any other code/prose in the repo, follow the matching style rule in [`docs/rules/`](docs/rules/).
+- **Prompt decision ownership** — follow [`docs/rules/prompt-style.md`](docs/rules/prompt-style.md) §4.1: Strategist readies every selected resource; Executor uses only that inventory and owns realization. Never move acquisition or reselection downstream.
 - **Markdown language consistency** — Markdown files under `skills/ppt-master/workflows/`, `skills/ppt-master/references/`, and `docs/` are currently single-language per directory. New files mirror the language of their siblings; do not mix English scaffolding with Chinese paragraphs (or vice versa) inside one file. Chat replies are unaffected.
 
 ## Compatibility Boundary

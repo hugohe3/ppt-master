@@ -377,7 +377,7 @@ The Strategist phase produces two artifacts that look redundant but serve differ
 - `design_spec.md` — human-readable narrative; the "why" of the deck (communication intent, audience outcome, narrative / template / visual rationale, page outline)
 - `spec_lock.md` — machine-readable execution contract; the compact `audience` / `objective` / `core_message` communication anchors plus stable identity/reuse roles and routing values (core HEX/font roles, icon library, image resources, and structure mappings)
 
-Why both? `design_spec.md` preserves the complete confirmed solution and rationale; `spec_lock.md` names the subset that must remain stable or routable across pages. It is authored from that Design Spec plus the page/resource/template context, not copied field by field from `result.json`. [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) rebuilds a read-only `page-context` view before every page. The projector emits the stable anchors and current-page routing facts needed for authoring. Contextual tints, gradient/effect paints, and one-off export-safe display families remain page decisions; they need a lock row only after becoming a recurring semantic role.
+Why both? `design_spec.md` preserves the complete confirmed solution and rationale; `spec_lock.md` names the subset that must remain stable or routable across pages. It is authored from that Design Spec plus the page/resource/template context, not copied field by field from `result.json`. [Generate PPTX Step 6](../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) rebuilds a read-only `page-context` view before every page. The projector emits the stable anchors and current-page routing facts needed for authoring. Contextual tints, gradient/effect paints, and sparse non-structural display-font accents remain page decisions; recurrence or a stable semantic role requires an upstream lock role.
 
 The view omits universal SVG/icon prohibitions already owned by the always-loaded Executor core and retains only project-specific forbidden rows. It selects images from the current page brief, explicit image-resource page assignments, and mirror prototype references. Images assigned elsewhere are excluded; any unresolved legacy image remains in a compatibility subset, and `confirmed-none` appears only when every locked image has a deterministic assignment elsewhere.
 
@@ -390,6 +390,28 @@ The lock is also the per-page routing table. Beyond global colors and typography
 `update_spec.py` propagates an intentional deck-wide anchor change in two coordinated steps: write the new value to `spec_lock.md`, then literal-replace it across every `svg_output/*.svg`. The tool's scope is deliberately narrow — only `colors.*` (HEX values, case-insensitive replacement) and `typography.font_family` (attribute-scoped). Other fields (font sizes, icons, images, canvas) are intentionally **not supported** because their replacements would need attribute-scoped or semantic awareness whose risk/benefit doesn't justify bulk propagation. This reverse lock update is also valid when repeated contextual use is deliberately promoted into a named semantic role; it must not be used merely to empty an informational checker comparison. For unsupported fields, edit the owning artifact and re-author the affected pages.
 
 The tool refuses to back up: it relies on git for revert. Adding a backup mechanism would just duplicate git's job and create stale snapshots.
+
+---
+
+## Materials → Plan → Realization: the Kitchen Contract
+
+The cooking analogy is the canonical ownership model for generation, not just explanatory prose:
+
+| Restaurant | PPT Master | Authority |
+|---|---|---|
+| Customer and initial ingredients | User confirmation and supplied sources/assets | Defines facts, intent, exclusions, acquisition permissions, and how specific the requested outcome is |
+| Menu planner and preparation lead | Strategist, `design_spec.md`, `spec_lock.md`, and Strategist-owned acquisition stages | Assesses sufficiency; fills permitted factual gaps; selects the content, resources, page roster, chart/layout keys, fonts, palette anchors, icons, and crop boundaries; readies the complete project-local inventory before execution |
+| Cook | Executor | Uses only the prepared inventory and realizes the plan through geometry, composition, hierarchy, spacing, and treatment without changing the selected “dish” or acquiring/substituting ingredients |
+
+**Preparation has two clocks.** Topic Research, when triggered, may precede final confirmation because its facts are planning input. AI / web / slice image acquisition runs only after final confirmation and the completed `design_spec.md §VIII` / `spec_lock.md`, then reaches a terminal status before Executor starts. Strategist also resolves, syncs, and validates the icon inventory while authoring the final plan. Image_Generator, Image_Searcher, and icon-sync tooling are preparation mechanisms under Strategist ownership, not independent decision owners.
+
+**Prepared inventory is the boundary.** A resource is available to Executor only when Strategist has selected it, recorded it in the planning artifacts, and made its project path resolvable or explicitly `Needs-Manual`. Merely existing elsewhere on disk does not authorize its use. Missing material returns upstream; Executor never searches, generates, downloads, syncs, or substitutes it.
+
+**Specificity controls freedom.** “Make Mapo tofu” fixes the result's identity: technique and presentation may vary, but tomato-and-eggs or tofu soup is a substitution. “Make a tofu dish” leaves an in-class choice. Strategist may resolve that choice; if the Design Spec deliberately leaves a dimension broad, Executor may realize it within that envelope. Once the Design Spec names a concrete choice, execution cannot reopen it.
+
+**Garnish remains local.** Sparse page-local font or color accents may add hierarchy, differentiation, or atmosphere without becoming a second visual system. Structural/recurring fonts, palette roles, resources, or patterns remain Strategist decisions and require an upstream Design Spec/lock update before reuse.
+
+**Prompt-refactor invariant.** Compression must preserve initial materials, user confirmation, Strategist-owned preparation, planning ownership, and execution freedom as separate layers. Moving acquisition into Executor, turning permission into quota, flexible realization into reselection, or an exact plan into an approximate target is a semantic regression. Runtime authority lives in [`strategist.md`](../skills/ppt-master/references/strategist.md) and [`executor-base.md`](../skills/ppt-master/references/executor-base.md); prompt-writing governance lives in [`prompt-style.md`](./rules/prompt-style.md).
 
 ---
 
@@ -424,7 +446,7 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why the layers are physically separated, not just tagged.** Patterns are reorganized so all Primary structures appear first, then all Modifiers — a Strategist or Executor reading the file once internalizes the two-layer mental model from the table of contents alone. Numbers are stable identifiers (`#38` is still image-as-canvas + annotation cards regardless of where it sits in the file), so existing references across `spec_lock.md`, `design_spec.md §VIII`, executor logs, and historical examples all keep resolving.
 
-**Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
+**Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so Strategist selects the semantic composition before SVG generation and that decision survives session re-entry. Executor owns its realization, not its selection: it may resize, reflow, reposition, and rebalance the chosen pattern for the real asset ratio and content hierarchy while preserving the selected ids, source, asset, role, and crop boundary. Replacing the pattern requires a Design Spec update.
 
 **Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live in the authority set routed by [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points to that router rather than restating the contract, so each rule still has one owning module and no stale duplicate in the pattern catalog.
 

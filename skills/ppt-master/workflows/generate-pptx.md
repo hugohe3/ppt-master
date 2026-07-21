@@ -200,7 +200,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
 
-⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as a user-owned Design Spec requirement. The Strategist may autonomously elaborate only unconfirmed implementation details; it must not omit, delete, substitute, narrow, weaken, reinterpret, or re-recommend a confirmed value. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, every confirmed image source, and explicit `image_notes` role. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, choose reusable execution anchors and routing values, and do not enumerate page-local paint or font choices. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If one confirmed value cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
+⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as user-owned input and consume it at the semantic type defined by [`strategist.md`](../references/strategist.md) §1 and its field owner. Do not omit or substitute a value, and do not silently strengthen or weaken its type; accepting a recommendation does not turn a Reference or Permission into a Literal requirement. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, the confirmed image-source boundary, and explicit `image_notes` obligations. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, choose reusable execution anchors and routing values, and do not enumerate page-local paint or font choices. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If a confirmed requirement cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
 
 **Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
@@ -251,7 +251,7 @@ After filling the lock, compare its identity anchors and routing values against 
 - [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
 - [x] Design Specification & Content Outline generated
-- [x] Gate 1 passed: Design Spec preserves every confirmed value
+- [x] Gate 1 passed: Design Spec preserves every confirmed value at its owner-defined semantic type
 - [x] Execution lock (`spec_lock.md`) authored from the completed Design Spec + current context as stable anchors/routing, not an exhaustive value whitelist
 - [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
@@ -263,7 +263,7 @@ After filling the lock, compare its identity anchors and routing values against 
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. If the completed Design Spec records `ai` or `web` acquisition intent without a matching §VIII resource row, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
@@ -327,6 +327,8 @@ Workflow:
 ### Step 6: Executor Phase
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
+
+**Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
 
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
@@ -419,7 +421,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - [x] Live preview started before the first SVG and kept available at the reported URL
 - [x] P01 gate passed; remaining pages authored without checker calls
 - [x] Each failing checker run was reviewed as one complete issue set and followed by one consolidated edit pass; checker output was not filtered
-- [x] All SVGs generated to svg_output/
+- [x] `svg_output/` matches the ordered §IX roster exactly, one SVG per planned page
 - [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
