@@ -6,7 +6,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 > Load only after [`routing.md`](./routing.md) selects Generate PPTX. This file owns the route's Step 1–7 sequence, gates, role switching, and mandatory commands.
 
-**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist Structured Plan → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
+**Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → [Template] → Strategist Structured Plan → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 **Generate-specific execution discipline**:
 
@@ -42,9 +42,9 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 ### Step 1: Source Content Processing
 
-🚧 **GATE**: User has provided source material (PDF / DOCX / EPUB / URL / Markdown file / text description / conversation content — any form is acceptable).
+🚧 **GATE**: The user has provided a topic / desired outcome and any available initial material.
 
-> **No source content?** When the user supplies only a topic name or requirements without any file or substantive description, run the [`topic-research`](stages/topic-research.md) intake stage first, then return here with its products as input.
+> **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately, then use its factual supplement as source content.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -64,6 +64,16 @@ Use `-o` only when a specific output file/directory is required; with multiple
 inputs or directory inputs, `-o` is an output directory. Backend converter details are documented in
 [`scripts/docs/conversion.md`](../scripts/docs/conversion.md).
 
+After reading direct and converted content, assess factual sufficiency:
+
+| Material state | Action |
+|---|---|
+| Requested outcome is supported | Continue Step 2 |
+| Required externally verifiable claims remain unsupported | Run [`topic-research`](stages/topic-research.md) for those gaps only |
+| Closed corpus / source-only / no external enrichment | Stay within supplied material |
+
+**Sufficiency test**: research only to avoid inventing, omitting, or leaving unsupported a factual claim the requested outcome requires; file presence or length is irrelevant. It gathers facts only. Step 5 acquires Strategist-selected images after final confirmation.
+
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
 > Source conversion extracts embedded Office vector images (.emf/.wmf)
 > alongside bitmap images when the source format exposes them. After `import-sources`, these land in `images/`
@@ -78,7 +88,7 @@ inputs or directory inputs, `-o` is an output directory. Backend converter detai
 > Browser-based live preview cannot render EMF (will show blank) — this is expected;
 > the PPTX output is the source of truth.
 
-**✅ Checkpoint — Confirm source content is ready, proceed to Step 2.**
+**✅ Checkpoint — Confirm source content and any factual supplement are ready, proceed to Step 2.**
 
 ---
 

@@ -120,7 +120,7 @@ Use this table before reasoning about implementation details. Most failed runs s
 
 | Request shape | Route | Boundary |
 |---|---|---|
-| Topic only, no source file or substantive source text | Generate PPTX + `topic-research` stage | web/source collection is a pre-pipeline stage |
+| Topic only, or supplied material lacks facts required by the requested outcome | Generate PPTX + `topic-research` inside Step 1 | topic-only research starts immediately; source-backed research follows conversion/read and fills only identified factual gaps |
 | Source files or conversation text, deck structure may be rethought | Generate PPTX | Strategist may split, merge, drop, reorder, and redesign |
 | PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
@@ -403,7 +403,7 @@ The cooking analogy is the canonical ownership model for generation, not just ex
 | Menu planner and preparation lead | Strategist, `design_spec.md`, `spec_lock.md`, and Strategist-owned acquisition stages | Assesses sufficiency; fills permitted factual gaps; selects the content, resources, page roster, chart/layout keys, fonts, palette anchors, icons, and crop boundaries; readies the complete project-local inventory before execution |
 | Cook | Executor | Uses only the prepared inventory and realizes the plan through geometry, composition, hierarchy, spacing, and treatment without changing the selected “dish” or acquiring/substituting ingredients |
 
-**Preparation has two clocks.** Topic Research, when triggered, may precede final confirmation because its facts are planning input. AI / web / slice image acquisition runs only after final confirmation and the completed `design_spec.md §VIII` / `spec_lock.md`, then reaches a terminal status before Executor starts. Strategist also resolves, syncs, and validates the icon inventory while authoring the final plan. Image_Generator, Image_Searcher, and icon-sync tooling are preparation mechanisms under Strategist ownership, not independent decision owners.
+**Preparation has two clocks.** Topic Research supplies facts before final confirmation: it starts immediately for topic-only input, or after supplied material is converted/read when planning-critical factual gaps remain. It supplements only those gaps and acquires no images. AI / web / slice image acquisition runs only after final confirmation and the completed `design_spec.md §VIII` / `spec_lock.md`, then reaches a terminal status before Executor starts. Strategist also resolves, syncs, and validates the icon inventory while authoring the final plan. Image_Generator, Image_Searcher, and icon-sync tooling are preparation mechanisms under Strategist ownership, not independent decision owners.
 
 **Prepared inventory is the boundary.** A resource is available to Executor only when Strategist has selected it, recorded it in the planning artifacts, and made its project path resolvable or explicitly `Needs-Manual`. Merely existing elsewhere on disk does not authorize its use. Missing material returns upstream; Executor never searches, generates, downloads, syncs, or substitutes it.
 

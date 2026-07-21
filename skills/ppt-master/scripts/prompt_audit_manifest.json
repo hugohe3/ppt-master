@@ -534,7 +534,7 @@
       "max_tokens": 56500
     },
     "stage.generate.topic-research": {
-      "description": "Topic-only intake stage.",
+      "description": "Gap-targeted factual intake stage.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/stages/topic-research.md"
