@@ -4135,8 +4135,10 @@ class SVGQualityChecker:
                 samples += ', ...'
             message = (
                 f'{len(ungrouped)} ungrouped top-level Slide-local element(s) '
-                f'in svg_output ({samples}); wrap each logical content unit '
-                'in a top-level <g id="...">'
+                f'in svg_output ({samples}); group only logical content units '
+                'in a top-level <g id="...">. Keep genuine static page framing '
+                'as a root primitive and declare a supported data-pptx-role such '
+                'as "background" or "decoration"'
             )
             prototype_root = self._active_prototype_root()
             prototype_ungrouped = (

@@ -77,7 +77,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 57200
+      "max_tokens": 57250
     },
     "route.create-template.layout": {
       "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
@@ -306,7 +306,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 80200
+      "max_tokens": 80350
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -319,7 +319,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 120400
+      "max_tokens": 120550
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -331,7 +331,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 93700
+      "max_tokens": 93850
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -344,7 +344,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 101000
+      "max_tokens": 101100
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -364,7 +364,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 87050
+      "max_tokens": 87200
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -377,7 +377,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 104000
+      "max_tokens": 104150
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -389,7 +389,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 87250
+      "max_tokens": 87400
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -401,7 +401,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 97200
+      "max_tokens": 97350
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -413,7 +413,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 97650
+      "max_tokens": 97800
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -423,7 +423,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 81600
+      "max_tokens": 81750
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -533,7 +533,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 57800
+      "max_tokens": 57950
     },
     "stage.generate.topic-research": {
       "description": "Gap-targeted factual intake stage.",
