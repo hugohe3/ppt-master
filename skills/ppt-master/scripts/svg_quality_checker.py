@@ -885,9 +885,9 @@ PPT_SAFE_FONTS = {
     'impact',
 }
 
-# Cheap numeric envelope for font-size role review. Semantic role assignment is
-# prompt-owned; Checker only verifies that a used value is close to at least one
-# declared size anchor.
+# Cheap numeric envelope for font-size role enforcement. Semantic role assignment
+# is prompt-owned; Checker only verifies that a used value is close to at least
+# one declared size anchor.
 FONT_SIZE_ANCHOR_TOLERANCE_PX = 2.0
 
 # Oversampling alone does not imply distortion and is often harmless for small
@@ -1370,9 +1370,10 @@ class SVGQualityChecker:
                 self._check_semantic_markers(root, svg_path, result)
 
                 # 9. Compare values with spec_lock anchors. Additional colors
-                #    and fonts are informational; type-size role drift warns.
-                #    Templates do not ship a spec_lock.md, so skip in template
-                #    mode to avoid noise.
+                #    and fonts are informational. Generated-page type sizes
+                #    outside every role band are errors; other spec-backed SVG
+                #    locations retain advisory review. Templates do not ship a
+                #    spec_lock.md, so skip in template mode to avoid noise.
                 if not self.template_mode:
                     self._check_spec_lock_alignment(
                         content,
@@ -4780,7 +4781,9 @@ class SVGQualityChecker:
         metadata), font-family, and font-size.
         Additional colors and font families are valid contextual authoring and
         are recorded as information. Font sizes outside every declared role
-        anchor's ±2px band remain warnings. Exact values are accumulated in
+        anchor's ±2px band are errors in generated ``svg_output`` pages and
+        warnings in other spec-backed SVG locations. Exact mirror-prototype
+        values remain inherited information. Exact values are accumulated in
         self._anchor_value_summary for the end-of-run aggregation. When
         spec_lock.md is missing, silently skip this local comparison; the
         Generate route's required-artifact gate owns whether execution may begin.
@@ -4944,7 +4947,8 @@ class SVGQualityChecker:
             size_drifts.add(val)
 
         # Record in run-wide aggregation. Colors/fonts beyond the anchor set are
-        # contextual values, not release issues. Sizes retain role-anchor review.
+        # contextual values, not release issues. Generated-page sizes enforce
+        # role-anchor ownership; other spec-backed locations retain review.
         fname = svg_path.name
         for v in color_drifts:
             self._anchor_value_summary['colors'][v].add(fname)
@@ -4962,11 +4966,22 @@ class SVGQualityChecker:
             result['info']['contextual_values'] = contextual_values
 
         if size_drifts:
-            result['warnings'].append(
-                f"spec_lock typography-size review: {len(size_drifts)} "
-                "font-size value(s) fall outside ±2px of every declared "
-                "role anchor (see anchor comparison summary)"
+            size_issue = (
+                f"{len(size_drifts)} font-size value(s) fall outside ±2px of "
+                "every declared spec_lock role anchor (see anchor comparison "
+                "summary)"
             )
+            if svg_path.parent.name == 'svg_output':
+                result['errors'].append(
+                    "spec_lock typography-size violation: "
+                    f"{size_issue}. Reflow within a declared role band or repair "
+                    "the Design Spec and spec_lock with a justified named role; "
+                    "do not add a role only to silence the checker."
+                )
+            else:
+                result['warnings'].append(
+                    f"spec_lock typography-size review: {size_issue}"
+                )
         inherited_parts = []
         if inherited_colors:
             inherited_parts.append(f"{len(inherited_colors)} color(s)")
@@ -6705,8 +6720,8 @@ class SVGQualityChecker:
             self._anchor_value_summary[category]
             for category in ('colors', 'fonts')
         )
-        has_size_review = bool(self._anchor_value_summary['sizes'])
-        if not has_contextual and not has_size_review:
+        has_size_issues = bool(self._anchor_value_summary['sizes'])
+        if not has_contextual and not has_size_issues:
             print(
                 "\n[OK] spec_lock anchor comparison: no additional contextual "
                 "colors/fonts or out-of-band font sizes"
@@ -6737,10 +6752,10 @@ class SVGQualityChecker:
                 "recurring named semantic role."
             )
 
-        if has_size_review:
+        if has_size_issues:
             print(
                 "\nTypography sizes outside every declared role anchor ±2px "
-                "(review warnings):"
+                "(blocking in generated svg_output; advisory elsewhere):"
             )
             entries = sorted(
                 self._anchor_value_summary['sizes'].items(),
@@ -6859,8 +6874,8 @@ class SVGQualityChecker:
                     introduced.append(item)
 
         # Keep the legacy `drift` JSON field for report compatibility. Its
-        # colors/fonts entries are informational anchor comparisons; only size
-        # entries produce checker warnings.
+        # colors/fonts entries are informational anchor comparisons; size
+        # entries produce errors for generated pages and warnings elsewhere.
         drift = {
             category: {
                 value: sorted(files)
