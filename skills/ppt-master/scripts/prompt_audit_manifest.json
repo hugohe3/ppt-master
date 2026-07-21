@@ -17,7 +17,7 @@
   "file_budgets": {
     "AGENTS.md": 2300,
     "skills/ppt-master/SKILL.md": 800,
-    "skills/ppt-master/references/executor-base.md": 7050,
+    "skills/ppt-master/references/executor-base.md": 7060,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
     "skills/ppt-master/references/executor-image.md": 900,
@@ -364,7 +364,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 88100
+      "max_tokens": 88110
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
