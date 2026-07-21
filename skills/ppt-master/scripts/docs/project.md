@@ -83,10 +83,14 @@ The output deliberately repeats the bounded `global` anchor set on every
 page as a cross-page anchor set, not a color/font allowlist. `lock_source` binds that projection to the current
 `spec_lock.md` SHA. `page_context` contains the current §IX brief, rhythm,
 resources, and conditional template/chart assignment. `reference_set` contains
-only `kind`, scoped path, SHA, and `once-per-execution-context` policy for the
-project/template Design Specs and selected prototype/chart SVGs. A model reads
-a referenced file only when that exact path + SHA is absent from its active
-context or has changed, then reuses the retained understanding on later pages.
+`kind`, scoped path, SHA, and `once-per-execution-context` policy for the
+project/template Design Specs and selected prototype/chart SVGs. The project
+Design Spec additionally carries
+`same_context_edit_policy: targeted-readback-and-rebind`: when the current main
+agent makes a bounded repair that preserves roster/order/identity/communication,
+it reads back only the exact changed fragments,
+validates, reruns `page-context`, and binds the verified delta to the new SHA.
+Fresh, external, unknown, or mismatched changes still require a complete read.
 
 The deprecated `--bundle` flag remains accepted as a compatibility no-op. It
 never appends a Design Spec, prototype SVG, chart SVG, manifest, or text-slot
