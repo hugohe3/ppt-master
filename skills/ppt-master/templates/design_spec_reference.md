@@ -170,7 +170,7 @@ In §VIII, author every planned or explicitly required resource from the confirm
 
 ### 2.4 Complete page roster and notes
 
-Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is final wording, not an Executor writing prompt.
+Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is a complete page brief, not a skeleton.
 
 ```markdown
 ## IX. Content Outline
@@ -181,9 +181,9 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 
 - **Audience move**: <audience state before → after>
 - **Layout**: <composition; include the chosen prototype when template-active>
-- **Title**: <final title>
+- **Title**: <preferred page title>
 - **Core message**: <one governing assertion>
-- **Content**: <complete final on-slide wording and hierarchy>
+- **Content**: <complete intended on-slide content and hierarchy>
 
 ## X. Speaker Notes Requirements
 

@@ -335,7 +335,7 @@ Workflow:
 
 **Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
 
-**Exact page content**: render each §IX `Title` / `Core message` / `Content` field as the approved final wording. Read sources only to resolve or verify evidence already requested by that block; never use execution to enrich or rewrite an incomplete outline. Return an incomplete block to Step 4 for Design Spec repair.
+**Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
 
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
