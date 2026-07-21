@@ -7,7 +7,7 @@
 | --- | --- |
 | Project Name | {{PROJECT_NAME}} |
 | Canvas Format | {{CANVAS_NAME}} ({{CANVAS_DIMENSIONS}}) |
-| Page Count | [fill] |
+| Page Count | [fill exact final count matching §IX] |
 | Target Audience | [fill] |
 | Communication Intent | [fill] |
 | Desired Audience Outcome | [fill] |

@@ -10,7 +10,7 @@ For one planned page, provide 3-8 English semantic content-shape tags, then insp
 
 ## Authoring contract
 
-[`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) owns readable standalone SVG, semantic and structural fidelity, root-group bounds, data encoding, and neutral previews. The active Design Spec and `spec_lock.md` own final palette, typography, containers, effects, and chrome. Preview styling is adaptable, but visible content and frames that express real grouping, hierarchy, or capacity remain authoritative until the template is fully migrated and reviewed.
+[`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) owns readable standalone SVG, semantic and structural fidelity, root-group bounds, data encoding, and neutral previews. The active Design Spec and `spec_lock.md` own final palette, typography, containers, effects, and chrome. The reference preserves visualization semantics; its preview styling, example frames, grouping implementation, item count, and capacity are adaptable to the actual authored content.
 
 ## Visualization output model
 

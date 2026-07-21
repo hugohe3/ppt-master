@@ -94,6 +94,24 @@ Boundary cases go by this test, not by how strong the verb feels: "never split a
 
 > Note: only a MUST with a concrete objective trigger may become a `svg_quality_checker.py` rule. SHOULD is at most a `warning`; MAY is never checked — encoding taste as a check turns the checker into a de-facto spec.
 
+### 4.1 Ownership Contract: Ingredients → Plan + Preparation → Realization
+
+Constraint strength and decision ownership are independent. Preserve this chain whenever writing, compressing, or reviewing multi-role prompts:
+
+| Layer | Owns |
+|---|---|
+| User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
+| Strategist / plan + preparation | Assess material sufficiency; trigger permitted fact research; decide the approved content, resources, keys, identity anchors, and exact page roster; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution |
+| Executor / realization | Use only the prepared inventory and realize the approved selections through geometry, composition, hierarchy, and treatment; sparse local font/color garnish is allowed only while non-structural and non-recurring |
+
+**Preparation timing**: Fact research required for planning may run before final confirmation. AI / web / slice acquisition runs only from the completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling execute Strategist-owned preparation; they are not independent decision owners.
+
+**Hard rule**: downstream freedom exists only in dimensions left open upstream. A named outcome retains identity; a broad semantic request permits in-class choice. Once the plan resolves that choice, execution cannot reopen or substitute it. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
+
+> Mnemonic — restaurant contract: the customer supplies initial ingredients and the desired dish; Strategist plans the dish and prepares the complete mise en place; Executor cooks from that prepared inventory. “Mapo tofu” cannot become tomato-and-eggs or tofu soup, while “a tofu dish” leaves deliberate in-class freedom.
+
+**Review gate**: treat any prompt refactor that erases this ownership chain, moves acquisition into Executor, turns a permission into a quota, or turns flexible realization into silent reselection as a semantic regression even when the compressed wording is shorter.
+
 ---
 
 ## 5. Tables First

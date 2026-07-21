@@ -28,7 +28,7 @@ The command refuses to shadow any recognized existing design-spec artifact, incl
 | VI. Icon Usage Specification | Approved icon inventory | Empty table when no icons are used |
 | VII. Visualization Reference List | Selected candidates or an empty table | Only pages with visualization work |
 | VIII. Image Resource List | Image acquisition and placement rows or an empty table | AI-only columns apply to `ai` rows |
-| IX. Content Outline | Ordered Slide blocks; each has `Audience move` | Page-specific facts, charts, images, and template mappings |
+| IX. Content Outline | Complete ordered execution roster; one Slide block per final page, matching the exact Page Count; each has `Audience move` | Page-specific facts, charts, images, and template mappings |
 | X. Speaker Notes Requirements | Filename and content policy | — |
 
 **Hard rule**: Keep all ten `##` headings, even when §VII or §VIII contains no rows. Do not add a second schema description inside the project artifact.
