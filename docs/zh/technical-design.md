@@ -121,7 +121,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 | 请求形态 | 路线 | 边界 |
 |---|---|---|
-| 只有主题，没有源文件或足够源文本 | Generate PPTX + `topic-research` 阶段 | 网络 / 来源收集是前置阶段 |
+| 只有主题，或现有材料缺少实现用户目标所需的事实 | Generate PPTX Step 1 内运行 `topic-research` | 只有主题时立即研究；有材料时先转换 / 阅读，只补已识别的事实缺口 |
 | 有源文件或对话文本，deck 结构可以重想 | Generate PPTX | Strategist 可以拆分、合并、删除、重排和重设计 |
 | PPTX 作为源材料，用户允许重构故事和页结构 | Generate PPTX，经 `ppt_to_md` + `pptx_intake` | PPTX 身份和几何是事实与候选，不是复刻约束 |
 | 原生 PPTX 模板 + 新材料 / 新主题 | Fill Native PPTX（`template-fill-pptx`） | 克隆并填充原生页面；不生成 SVG |
@@ -399,7 +399,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 | 菜单策划与备料负责人 | Strategist、`design_spec.md`、`spec_lock.md` 及其负责的材料获取阶段 | 判断材料是否充分；补齐获准补充的事实；选定内容、资源、页面清单、图表/版式 key、字体、色板锚点、图标和裁剪边界；在执行前备齐项目级材料清单 |
 | 厨师 | Executor | 只使用已备材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料 |
 
-**备料有两个时点。** Topic Research 被触发时可以早于最终确认，因为其中的事实是策略规划的输入。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。
+**备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。
 
 **已备材料清单就是边界。** 只有被 Strategist 选定、写入规划产物，并且项目路径可解析或已明确标为 `Needs-Manual` 的资源，才对 Executor 可用。文件仅仅存在于其他目录并不构成使用许可。缺料必须返回上游；Executor 不得搜索、生成、下载、同步或替换资源。
 
