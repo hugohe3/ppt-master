@@ -20,7 +20,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Strategist Confirmation Stage
 
-🚧 **GATE — artifact structure**: Generate Step 4 creates both versioned scaffolds before authoring. Fill those files in place and run `project_manager.py validate`; the machine schemas, not remembered headings, own their grammar.
+🚧 **GATE — whole-document authoring**: Generate Step 4 reads `templates/design_spec_reference.md`, writes the complete Design Spec from scratch, passes Gate 1, then reads `templates/spec_lock_reference.md` and writes the complete lock projection. For a new project, create each finished artifact once; do not instantiate or patch a placeholder scaffold. Run `project_manager.py validate`; the machine schemas, not remembered headings, own grammar validation.
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the confirmation fields below and wait for explicit user confirmation.
 
@@ -386,12 +386,12 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 
 ### 6.2 Planning Artifact Content
 
-Generate Step 4 owns both artifact scaffolds. `design_spec.md` is the Strategist's complete human-readable design decision; `spec_lock.md` is the context-selected execution subset and routing contract. Author them in that order. `result.json` is read once into the active final-confirmation state and consumed completely while writing the Design Spec. Never reopen it to author the lock, and never treat the two planning files as parallel interpretations of the confirmation.
+Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Strategist's complete human-readable design decision; `spec_lock.md` is the context-selected execution subset and routing contract. `result.json` is read once into the active final-confirmation state and consumed completely while writing the Design Spec. Never reopen it to author the lock, and never treat the two planning files as parallel interpretations of the confirmation.
 
-1. Use the retained complete final-confirmation state already read once by Generate Step 4.
-2. Write `design_spec.md` from that state, source analysis, and project context; record production mechanics in §I. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, final wording, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1, roster ids/count/order and content are authoritative; layout, cover/closing composition, and image/chart patterns remain References unless promoted.
-3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before creating `spec_lock.md`.
-4. Author `spec_lock.md` from the completed Design Spec plus the current execution context: retain confirmed identity anchors, select stable cross-page roles and routing values, and omit page-local values that need no reusable name. This is implementation judgment, not a second user-facing recommendation.
+1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
+2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, final wording, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1, roster ids/count/order and content are authoritative; layout, cover/closing composition, and image/chart patterns remain References unless promoted.
+3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before authoring `spec_lock.md`.
+4. After Gate 1, read `templates/spec_lock_reference.md`. Compose the whole lock in active context from the completed Design Spec plus current execution context, then create `spec_lock.md` once. Retain confirmed identity anchors, select stable cross-page roles and routing values, omit page-local values that need no reusable name, and do not reopen final evidence. This is implementation judgment, not a second user-facing recommendation.
 
 **Final confirmation → Design Spec consumption map**:
 
@@ -431,7 +431,7 @@ Generate Step 4 owns both artifact scaffolds. `design_spec.md` is the Strategist
 
 ## 7. Project Boundary
 
-The Generate route owns project initialization and supplies `<project_path>`. Strategist writes only the two scaffolded planning artifacts at that root plus the explicitly triggered resource manifests; it does not choose or create another project path.
+The Generate route owns project initialization and supplies `<project_path>`. Strategist writes only the two complete planning artifacts at that root plus the explicitly triggered resource manifests; it does not choose or create another project path.
 
 ---
 

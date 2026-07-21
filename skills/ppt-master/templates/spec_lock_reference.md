@@ -1,16 +1,14 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. After confirmation fidelity passes, start from [`scaffolds/spec_lock.md`](./scaffolds/spec_lock.md); [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns its grammar.
+`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. This file owns normal authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns machine grammar.
 
-## 1. Create the artifact
+## 1. Author the complete artifact
 
-After Generate Step 4 Gate 1, run once and author the execution anchors from the Design Spec plus current page/resource/template context:
+After Generate Step 4 Gate 1, read the completed Design Spec and current page/resource/template context, compose the entire lock in active context, then create `<project_path>/spec_lock.md` once.
 
-```bash
-python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>
-```
+**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: spec-lock/v1 -->`, followed by `# Execution Lock`. Write only final sections and values; do not create a blank lock, copy inactive optional sections, or patch scaffold placeholders. Do not reopen final confirmation or interpret it independently.
 
-The command refuses to overwrite an existing `spec_lock.md`. Re-running it with the same project metadata produces the same bytes.
+`project_manager.py scaffold-lock` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. When a credible completed Design Spec/lock pair needs correction, repair only the affected projection after auditing the Design Spec. When the Design Spec was missing and an orphan lock survived, discard that lock as authority and re-author the complete lock from the recovered, audited Design Spec plus current context.
 
 **Hard rule**: A project lock contains only `##` sections and `- key: value` data lines, except `## forbidden`, whose list items are literal rules. Do not copy guidance paragraphs into the lock.
 
@@ -32,6 +30,15 @@ The command refuses to overwrite an existing `spec_lock.md`. Re-running it with 
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
 Optional data sections: `images`, `page_charts`.
+
+The required universal block is:
+
+```markdown
+## forbidden
+- Mixing icon libraries
+- `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
+- HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
+```
 
 ---
 

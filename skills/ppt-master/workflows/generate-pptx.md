@@ -162,7 +162,7 @@ Read references/strategist.md
 
 The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory artifact gates**: scaffold the human-readable `design_spec.md` first; after it passes confirmation fidelity, scaffold the machine-readable `spec_lock.md` and project from the Design Spec. Do not reconstruct either grammar from memory. The design schema keeps the brief readable and page-projectable; the lock schema keeps its execution projection machine-readable. Cross-file textual equality is not required, but semantic projection fidelity is. Reference indexes are for troubleshooting, not normal generation load.
+> ⚠️ **Mandatory artifact gates**: after final confirmation, read `templates/design_spec_reference.md` and author the complete `design_spec.md` from scratch; after Gate 1, read `templates/spec_lock_reference.md` and author the complete `spec_lock.md` from the Design Spec plus current context. For a new project, create each finished artifact once—do not materialize a placeholder scaffold and fill it piecemeal. The references own authoring structure, the schemas own machine validation, and semantic projection fidelity remains mandatory. `scaffold-spec` / `scaffold-lock` are optional manual conveniences, not normal Generate steps.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -238,19 +238,14 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
 - `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor consumes its current-page projection from `page-context`
 
-For a new project, scaffold the Design Spec after final confirmation; the command refuses to overwrite an existing artifact:
+For a new project, use the reference-first whole-document sequence:
 
-```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-spec <project_path>
-```
+1. Read `templates/design_spec_reference.md`. Compose the complete I–X document in active context from the retained final confirmation, source analysis, and project context; then create `<project_path>/design_spec.md` once with no `[fill]` placeholders or example rows. This is the only normal consumption of the final result.
+2. Audit the finished Design Spec field by field against that retained confirmation. Gate 1 must pass before lock authoring.
+3. Read `templates/spec_lock_reference.md`. Compose the complete execution projection from the audited Design Spec plus current page/resource/template context; then create `<project_path>/spec_lock.md` once. Do not reopen `result.json` or make an independent design choice.
+4. Compare the lock's identity anchors and routing values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
 
-Fill and audit `design_spec.md` against the retained complete final confirmation. This is the only normal consumption of the final result. Only after that audit passes, scaffold and author the machine lock from the completed Design Spec plus current execution context:
-
-```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py scaffold-lock <project_path>
-```
-
-After filling the lock, compare its identity anchors and routing values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`. A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume path edits existing files in the same order and never re-scaffolds them.
+A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume or refine path edits existing completed files in the same order; it does not replace them with scaffolds.
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown

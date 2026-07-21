@@ -75,10 +75,11 @@ readable; directory shape alone does not indicate legacy Master/Layout semantics
 
 ## Design specification references
 
-[`schemas/design_spec.schema.json`](./schemas/design_spec.schema.json) and
-[`scaffolds/design_spec.md`](./scaffolds/design_spec.md) own the machine
-structure and starting artifact; [`design_spec_reference.md`](./design_spec_reference.md)
-is their compact authoring index. Reusable template `design_spec.md` files are
+[`design_spec_reference.md`](./design_spec_reference.md) and
+[`spec_lock_reference.md`](./spec_lock_reference.md) own normal whole-document
+authoring; their schemas own machine validation. Files under `scaffolds/` are
+optional overwrite-safe CLI conveniences, not Generate-route starting artifacts.
+Reusable template `design_spec.md` files are
 deliberately smaller: they contain portable metadata and only the identity,
 structure, or application rules owned by that package. General SVG rules live
 in [`shared-standards-core.md`](../references/shared-standards-core.md), with
