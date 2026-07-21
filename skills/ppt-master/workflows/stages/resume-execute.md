@@ -60,9 +60,9 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-**Source materials**: the execution session is fresh; `<project_path>/sources/<file>.md` is NOT in context. The Executor SHOULD read the relevant `sources/` files when crafting per-page content — they hold the concrete facts, quotes, names, and details that turn skeleton outlines into substantive slides. `design_spec.md §IX` only carries the per-page intent; the source materials carry the texture.
+**Source verification**: the execution session is fresh, but `design_spec.md §IX` already owns the complete approved page wording. Read only the relevant `sources/` passages needed to resolve explicit `Fact IDs` / source references or verify exact facts, quotes, names, and data already required by the current §IX block. Never turn §IX back into a skeleton, add new claims or details, or independently rewrite its content. If §IX lacks executable wording or evidence, stop and return to Generate Step 4 for Design Spec repair.
 
-> Note: this stage does NOT duplicate Step 6 / Step 7 content. `generate-pptx.md` is the authoritative procedure; resume-execute only adds the resumption entry, sanity check, and source-materials guidance.
+> Note: this stage does NOT duplicate Step 6 / Step 7 content. `generate-pptx.md` is the authoritative procedure; resume-execute only adds the resumption entry, sanity check, and source-verification guidance.
 
 ---
 

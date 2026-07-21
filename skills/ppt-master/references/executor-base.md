@@ -9,7 +9,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | `pptx_structure.mode: structured` | [`executor-structured.md`](./executor-structured.md) |
 | Any data chart, chart catalog selection, or text-grid table | [`executor-chart.md`](./executor-chart.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
-| Any image or formula resource, including template-bundled images | [`executor-image.md`](./executor-image.md) |
+| Any image or formula resource, including template-bundled images | [`executor-image.md`](./executor-image.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) |
 | Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Speaker notes generation after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
@@ -63,7 +63,7 @@ python3 skills/ppt-master/scripts/project_manager.py page-context <project_path>
 
 Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. The delta overrides neither facts nor constraints. After an approved change, rerun the command and reload only changed references. Deprecated `--bundle` is a compatibility no-op.
 
-**Source facts**: The page delta carries page intent and routing facts, not the complete source corpus. Read the relevant `sources/` content and resolve listed `Fact IDs` from `sources/*.facts.json` when the page needs concrete claims, quotes, names, or data.
+**Source verification**: `design_spec.md §IX` owns the final page wording; the page delta does not carry the complete source corpus. Read relevant `sources/` content only to resolve listed `Fact IDs` or verify exact claims, quotes, names, or data already required by the current §IX block. Do not enrich, expand, or substitute the authored content. An underspecified §IX block is an upstream defect; return for Design Spec repair.
 
 **Per-page communication trace**: Read `communication.objective`, `communication.core_message`, and the current §IX `Core message` + `Audience move` before choosing composition. The page must advance the compact objective and move the audience as authored in §IX; the global core message remains the deck-wide north star. A page that cannot state this movement is an upstream outline defect — surface `warning: P<NN> has no communication move` instead of compensating with decorative layout. Do not invent a new purpose, ask, or outcome at execution time. Structural pages may advance the contract by establishing relevance / tension / decision frame or by completing the final commitment; they are not exempt from having a reason to exist.
 
