@@ -8,7 +8,7 @@ Strategist reads the complete final confirmation once, writes this artifact from
 
 After final confirmation, compose the entire document in active context from the retained final state, source analysis, and project context. Then create `<project_path>/design_spec.md` once, from the first line through §X.
 
-**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, followed by `# <Project Name> - Design Spec`. Write all ten sections with final values and the complete page roster. Do not create a placeholder-bearing project file, copy example rows, or patch a scaffold field by field.
+**Mandatory — new-project write**: The first non-empty line is exactly `<!-- ppt-master-schema: design-spec/v1 -->`, followed by `# <Project Name> - Design Spec`. Write every required section with final values and the complete page roster; include conditional §VII only when a real catalog reference is selected. Do not create a placeholder-bearing project file, copy example rows, or patch a scaffold field by field.
 
 `project_manager.py scaffold-spec` remains an optional manual convenience and overwrite-safe troubleshooting tool. It is not part of normal Generate authoring. Resume and refine paths edit an existing completed Design Spec rather than replacing it with a scaffold.
 
@@ -16,7 +16,7 @@ After final confirmation, compose the entire document in active context from the
 
 ## 2. Exact document contract
 
-Angle-bracketed text below is authoring notation, not project content. Resolve every universal value before writing the file; omit only rows explicitly marked conditional. Keep all ten `##` headings even when §VII or §VIII has no data rows. Do not copy examples, notation tokens, or a second schema description into the project artifact.
+Angle-bracketed text below is authoring notation, not project content. Resolve every universal value before writing the file; omit only rows explicitly marked conditional. Keep every required `##` heading; omit §VII when no real catalog reference is selected, while §VIII remains present even with no data rows. Do not copy examples, notation tokens, or a second schema description into the project artifact.
 
 ### 2.1 Header and project contract
 
@@ -148,13 +148,13 @@ For a selected custom rendering, also add `Image Rendering Behavior`; add `Image
 
 ### 2.3 Visualization and image resources
 
-Use these exact combined tables; an inactive section keeps its header row and no data rows:
+Use the §VII table only when at least one real catalog reference is selected. Always keep the §VIII table, including when it has no data rows:
 
 ```markdown
 ## VII. Visualization Reference List
 
-| Page | Template | Path | Summary-quote (verbatim) | Native-ready | Usage |
-| --- | --- | --- | --- | --- | --- |
+| Page | Template | Path | Summary-quote (verbatim) | Usage |
+| --- | --- | --- | --- | --- |
 
 ## VIII. Image Resource List
 
@@ -162,7 +162,9 @@ Use these exact combined tables; an inactive section keeps its header row and no
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
-In §VII, use `yes`, `no`, or `n/a` for `Native-ready`; record `no-template-match` plus the fallback and reason when recall finds no fit. After the table, list real runners-up as `- <returned_key> | rejected for P<NN>: <page-specific reason>` when candidates were compared. Incidental sparklines, KPI trends, and insets stay in the relevant §IX page rather than becoming independent §VII rows.
+§VII is a positive reference inventory. Every row uses a returned catalog key, its real `templates/charts/<key>.svg` path, and its verbatim summary. Never emit an empty §VII, a `no-template-match` / `n/a` placeholder row, or prose explaining that no reference exists. When recall finds no fit, omit that page from §VII and describe the custom fallback in the page's §IX `Visualization` / `Layout`. List real runners-up only for pages with a selected §VII reference, as `- <returned_key> | rejected for P<NN>: <page-specific reason>`.
+
+For every independent data chart or pure text-grid table, add `- **Native-ready**: yes|no` to its §IX Slide block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise use `no`. Conceptual visualizations and incidental sparklines, KPI trends, or insets omit this field and remain ordinary SVG.
 
 In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Copy the selected `Layout pattern` id/name and modifiers verbatim; set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `formula`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them.
 
@@ -192,7 +194,7 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
 ```
 
-Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local microvisual. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
+Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
 
 ---
 

@@ -87,7 +87,7 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 
 | `<stem>.slide_library.json` field | Use |
 |---|---|
-| `slides[].charts[]` (`chart_type` / `categories` / `series[].values`) | regenerate as a native SVG chart via the `§VII` `templates/charts/` path |
+| `slides[].charts[]` (`chart_type` / `categories` / `series[].values`) | regenerate as a native SVG chart; use the §VII `templates/charts/` path only when recall selects a real reference, otherwise plan the custom chart in §IX |
 | `slides[].tables[]` (`row_count` / `column_count` / cell text) | regenerate as a native SVG table |
 
 **Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the inherited style, never spliced in byte-for-byte. This keeps the deck style-consistent and natively editable. **Data values are frozen** (categories / series / cell text / numbers unchanged); only their rendering is the deck's own. Pictures (`ppt_to_md`-extracted files) are reused but re-laid-out — position / crop / size follow the new layout, not the source slot. A user who wants an original element verbatim copies it across themselves.
@@ -208,7 +208,7 @@ python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
 
 After the final wait returns, read `<project_path>/confirm_ui/result.json` exactly once and retain the complete confirmed object through Design Spec authoring. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and retain the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
 
-On confirmation, enter [`generate-pptx`](../generate-pptx.md) Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Write the retained confirmed object completely into `design_spec.md` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. Do not reopen `result.json` afterward. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
+On confirmation, enter [`generate-pptx`](../generate-pptx.md) Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Write the retained confirmed object completely into `design_spec.md` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. Do not reopen `result.json` afterward. §VII contains only selected `templates/charts/` references; unmatched chart/table plans stay in their §IX page blocks. §VIII contains source pictures for re-layout.
 
 **Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Complete and audit `design_spec.md` first, then author `spec_lock.md` from that Design Spec plus the source/page/template context per `strategist.md` §6 before handing off to the Executor.
 

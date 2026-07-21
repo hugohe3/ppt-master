@@ -17,7 +17,7 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
 
 `--limit` accepts 3-8 and defaults to 6. It is a maximum, not a padding target: the deterministic JSON contains only positive-scoring candidates, up to the requested limit. `low` / `none` results also contain `semantic_fallback.catalog`, allowing the Strategist to compare the page meaning against every live `Pick` / `Skip` rule without requiring lexical overlap.
 
-When medium/high candidates all conflict with the page, rerun the same command with `--semantic-fallback`. Review the returned catalog semantically, then select one exact key or retain `no-template-match`; do not open or maintain a second keyword/category index.
+When medium/high candidates all conflict with the page, rerun the same command with `--semantic-fallback`. Review the returned catalog semantically, then select one exact key or retain `no-template-match`; do not open or maintain a second keyword/category index. `no-template-match` is an internal recall result, not a Design Spec §VII row.
 
 | Field | Contract |
 |---|---|
@@ -38,11 +38,13 @@ Validate every selected template key before writing `design_spec.md §VII` or `s
 python3 skills/ppt-master/scripts/chart_recall.py validate line_chart quadrant_text_bullets
 ```
 
-The command is read-only. It exits `0` when every key exists and `1` when any key is absent. A page recorded as `no-template-match` is not a key and must not appear in `page_charts`.
+The command is read-only. It exits `0` when every key exists and `1` when any key is absent. A `no-template-match` page appears in neither §VII nor `page_charts`; record its chosen fallback in the page's §IX `Visualization` / `Layout` instead.
 
 ## Selection boundary
 
 - Preserve the two-lens review: numeric/data pages and structural-information pages.
 - Record the selected candidate's returned `summary` verbatim as the Section VII `summary-quote`.
-- Record real returned runners-up and page-specific rejection reasons.
+- Keep §VII as a positive inventory: every row has a real key/path, and the whole section is omitted when no candidate is selected.
+- Never serialize `no-template-match`, an empty table, or a no-reference explanation into §VII.
+- Record real returned runners-up and page-specific rejection reasons only for pages with a selected reference.
 - Open only the selected `<key>.svg` before authoring that visualization; do not load unrelated catalog SVGs.
