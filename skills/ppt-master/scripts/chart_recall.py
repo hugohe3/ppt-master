@@ -208,20 +208,16 @@ def recall_candidates(
             "allowed": True,
             "key": "no-template-match",
             "instruction": (
-                "Use only when no catalog rule fits after the applicable lexical and "
-                "semantic review. Keep this result out of Design Spec Section VII and "
-                "describe the chosen fallback in the page's Section IX block."
+                "Use when none of the bounded candidates fits the page structure. If the "
+                "shortlist may have missed a relevant catalog rule, rerun with "
+                "--semantic-fallback first. Keep this result out of Design Spec Section "
+                "VII and describe the chosen fallback in the page's Section IX block."
             ),
         },
     }
-    if confidence in {"low", "none"} or force_semantic_fallback:
-        reason = (
-            "requested-after-candidate-conflict"
-            if force_semantic_fallback
-            else f"lexical-confidence-{confidence}"
-        )
+    if force_semantic_fallback:
         result["semantic_fallback"] = {
-            "reason": reason,
+            "reason": "requested-after-bounded-review",
             "instruction": (
                 "Semantically compare the page tags with every returned selection rule. "
                 "Choose one exact catalog key or keep no-template-match; lexical overlap "
@@ -313,7 +309,7 @@ def build_parser() -> argparse.ArgumentParser:
     recall.add_argument(
         "--semantic-fallback",
         action="store_true",
-        help="Include the full catalog for AI semantic review after candidate conflict.",
+        help="Include the full catalog when bounded recall may have missed a semantic match.",
     )
     recall.set_defaults(handler=_run_recall)
 
