@@ -126,10 +126,4 @@ Executor does NOT invoke `image_gen.py` / `image_search.py` / `slice_images.py`.
 
 ## 10. Task Completion Checkpoint
 
-```markdown
-## ✅ Image Acquisition Phase Complete
-- [x] {N} rows processed (`ai`: {a} / `web`: {b} / `slice`: {s})
-- [x] {a} `Generated`, {b} `Sourced`, {s} sliced `Generated`, {c} `Needs-Manual`
-- [x] image_prompts.json / image_sources.json written
-- [ ] **Next**: Auto-proceed to Executor phase
-```
+Verify internally that every row was processed, all triggered manifests/sidecars were written, and each result is `Generated`, `Sourced`, or `Needs-Manual`. Do not print a checklist. On success, auto-proceed to Executor and emit at most one compact status line when useful; on failure, report only the blocking rows and required recovery.
