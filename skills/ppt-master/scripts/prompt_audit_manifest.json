@@ -45,7 +45,7 @@
         "skills/ppt-master/SKILL.md",
         "skills/ppt-master/workflows/routing.md"
       ],
-      "max_tokens": 5250
+      "max_tokens": 5350
     },
     "route.create-template.brand": {
       "description": "Create Brand path; it authors no SVG and does not activate Template_Designer or SVG modules.",
@@ -77,7 +77,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 57300
+      "max_tokens": 57400
     },
     "route.create-template.layout": {
       "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
@@ -95,7 +95,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 57500
+      "max_tokens": 57600
     },
     "route.enhance-native-pptx": {
       "description": "Finished-PPTX native enhancement route.",
@@ -106,7 +106,7 @@
       "files": [
         "skills/ppt-master/workflows/native-enhance-pptx.md"
       ],
-      "max_tokens": 8200
+      "max_tokens": 8300
     },
     "route.fill-native-pptx": {
       "description": "Raw-PPTX native fill route.",
@@ -117,7 +117,7 @@
       "files": [
         "skills/ppt-master/workflows/template-fill-pptx.md"
       ],
-      "max_tokens": 10900
+      "max_tokens": 11000
     },
     "route.generate.planning": {
       "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring and representative multi-source custom mode/style synthesis; schemas and optional scaffolds are tool-consumed.",
@@ -319,7 +319,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 122200
+      "max_tokens": 122300
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -331,7 +331,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 95500
+      "max_tokens": 95600
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -344,7 +344,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 102800
+      "max_tokens": 102850
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -354,7 +354,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 11000
+      "max_tokens": 11050
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -364,7 +364,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 88900
+      "max_tokens": 88950
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -389,7 +389,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 89100
+      "max_tokens": 89150
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -401,7 +401,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 99000
+      "max_tokens": 99050
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -413,7 +413,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 99400
+      "max_tokens": 99500
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -533,7 +533,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 58600
+      "max_tokens": 58700
     },
     "stage.generate.topic-research": {
       "description": "Gap-targeted factual intake stage.",
@@ -671,7 +671,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 72000
+      "max_tokens": 72100
     },
     "stage.generate.executor.chart": {
       "description": "Conditional chart/table page execution rules.",

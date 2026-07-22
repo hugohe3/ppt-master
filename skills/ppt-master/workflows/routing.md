@@ -120,4 +120,12 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 | Bare template/brand name or style label | Do not resolve it to a local path; treat it as a style brief |
 | “What templates exist?” | List indexed workspace paths as Q&A; do not advance a route |
 
+For that Q&A only, read the matching discovery indexes:
+
+| Kind | Discovery index |
+|---|---|
+| Brand | [`brands_index.json`](../templates/brands/brands_index.json) |
+| Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
+| Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
+
 **Forbidden — fuzzy resolution**: Never resolve a bare name to a local template directory on the user's behalf. The explicit workspace root is the only Step 3 template trigger, except the exact validated workspace handed off by Create Template in the current conversation.
