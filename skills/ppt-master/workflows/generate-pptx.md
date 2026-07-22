@@ -230,7 +230,7 @@ If the user provided images or formula PNGs were rendered, run analysis **before
 python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```
 
-> 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the image-source recommendation (see [strategist.md](../references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
+> 🔁 **Image facts are regenerated on change, never maintained as a second store.** `images/` is the live working folder and single source of truth; `analysis/image_analysis.csv` is its regenerated view. Run `analyze_images.py` before the first inventory read, then reuse that CSV while `images/` is unchanged. Re-run after import/acquisition or any user addition, removal, or replacement; if the folder becomes empty, treat the inventory as empty and ignore a stale CSV.
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
 
@@ -268,7 +268,7 @@ A retained final state → Design Spec mismatch or Design Spec/context → lock 
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. A prepared-user-only plan contains `user / Existing` rows and skips this entire step; `formula` and `placeholder` rows also do not trigger acquisition. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
@@ -378,7 +378,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 **Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for `templates/charts/<key>.svg`. Both reuse unchanged `reference_set` path + SHA fingerprints; flat routes skip template reads. Summaries and sidecars never replace full SVGs.
 
-> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
+> Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
 **Per-page context load (Mandatory)**: before **each** SVG page, run:
 
