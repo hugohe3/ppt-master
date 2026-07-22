@@ -12,17 +12,17 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 | Context | Load policy |
 |---|---|
-| `templates/design_spec.md` | Strategist reads once; continuous Executor reuses it, fresh Executor reads it once |
-| Current page delta | Run [`executor-base.md`](./executor-base.md) §2.1 immediately before that page |
-| Selected prototype SVG | Read once on an absent/changed `reference_set` path + SHA; otherwise reuse it |
+| `templates/design_spec.md` | Reuse it in a valid active context; after context invalidation, read it once with the project planning artifacts |
+| Current page mapping | Read the retained `spec_lock.md page_layouts` row; a page change does not require another file load |
+| Selected prototype SVG | Read the complete `templates/<basename>.svg` once per valid context and reuse it until a known change or context invalidation |
 
-**Hard rule**: Page-context carries no prototype payload. `reference_set` identifies the authoritative complete SVG; never author from a roster, manifest, sidecar, filename, or summary alone.
+**Hard rule**: The complete prototype SVG is authoritative. An on-demand page-context result may fingerprint it but carries no prototype payload; never author from a roster, manifest, sidecar, filename, or summary alone.
 
 Manifest/text-slot files are derived tool metadata, not model inputs. Missing metadata neither invalidates a legacy workspace nor permits text-topology changes.
 
-**Mapping change**: stop and return to Strategist to update the owning plan; regenerate that page's delta before resuming, then load only a new/changed prototype fingerprint.
+**Mapping change**: stop and return to Strategist to update the owning plan, read back and validate the affected planning fragments, then load the new prototype before resuming.
 
-Resolve the per-page template SVG from `page_context.template.prototype`; the owning `spec_lock.md page_layouts` row remains authoritative. There is no filename/page-type fallback.
+Resolve the per-page template SVG directly from the owning `spec_lock.md page_layouts` row. There is no filename/page-type fallback.
 
 **Resolution order (per page):**
 
@@ -58,7 +58,7 @@ When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Execu
 6. **Visible text editing** — mirror SVGs may keep literal source text rather than `{{...}}` authoring markers. Edit values in place while retaining imported semantic `data-pptx-placeholder` identity and exact text topology.
 7. **Output filename** — follow the standard project SVG naming convention (`<NN>_<page_name>.svg` where `<NN>` matches the project page index, not the mirror source index). The mirror filename is the *reference*, not the *output*.
 
-**Detecting mirror mode**: read `page_context.template.reuse_scope` from the current page delta. `replication_mode: mirror` in the installed template only determines whether that derived scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
+**Detecting mirror mode**: read `template_reuse_scope` from the retained lock. `replication_mode: mirror` in the installed template only determines whether that scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
 
 **Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
 
@@ -126,7 +126,7 @@ The exporter writes these solid fills as real Master/Layout/Slide `p:bg`, not se
 
 **Per-page template lookup — `page_layouts` section (`mirror` / `layout` only)**:
 
-Before drawing each page, use `page_context.template.prototype` to identify the inherited basename. Its matching `reference_set` entry supplies the complete SVG's path and SHA; §1.0 owns whether that file must be read or can be reused from the active context:
+Before drawing each page, use its retained `spec_lock.md page_layouts` row to identify the inherited basename. Resolve the complete SVG from the selected template directory; §1.0 owns whether that file must be read or can be reused from the active context. An on-demand `reference_set` fingerprint may diagnose an uncertain path/SHA but is not required for normal lookup:
 
 - Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding full SVG. The basename **must match** an actual file in the chosen template directory. If it does not, stop before drawing and report the invalid mapping; neither `strict` nor `adaptive` may fall back to free design inside a structured template deck.
 - No entry for this page with `template_reuse_scope: mirror|layout` → stop before drawing and report the missing Strategist mapping. Adaptive mode still requires one selected complete template SVG; flexibility applies to the post-design output Layout, not to whether an input prototype exists.
@@ -142,7 +142,7 @@ Do **not** invent a prototype entry, and do **not** assume a structured template
 - Read the current page assignment as `P<NN>: <layout_key>`. Resolve the assigned Layout key in `pptx_layouts`, then resolve its Master key in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
 - On strict template use, the row and SVG contract match the selected prototype exactly.
-- On adaptive template use, retain the prototype Master and realize the Layout key/name already declared for this page. If construction proves that fixed Layout atoms or slot topology/bounds must change, stop before completing the page and return to Strategist to declare the revised definition and assignment; regenerate the current page context before resuming.
+- On adaptive template use, retain the prototype Master and realize the Layout key/name already declared for this page. If construction proves that fixed Layout atoms or slot topology/bounds must change, stop before completing the page and return to Strategist to declare, read back, and validate the revised definition and assignment before resuming.
 - A Layout key may repeat across non-adjacent pages only when its fixed atoms and slot contracts are identical.
 
 **Structured template-page scaffold**:

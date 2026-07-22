@@ -45,27 +45,27 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 Before the first SVG page, output a confirmation listing: the compact communication objective, canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents purpose/spec/execution drift.
 
-### 2.1 Per-page execution context (Mandatory)
+### 2.1 Execution context validity (Mandatory)
 
-Before the first SVG, retain `design_spec.md`: continuous execution reuses planning context; fresh/resumed execution reads it once.
+- **Valid**: if the exact complete Design Spec and lock remain in the unchanged, uncompacted active context, reuse both for every page. Do not reread or poll them.
+- **Invalid**: fresh/resumed/restarted execution, compaction/summary-only recovery, or an external/unknown change requires one complete read of `design_spec.md`, then `spec_lock.md`, plus triggered references/template inputs. Mid-deck recovery also reads the latest completed SVG and, when images are used, current image metadata.
+- **Uncertain**: consult the retained lock first, then only the owning Design Spec fragment; use sources only for facts. Design Spec remains upstream on conflict.
 
-**Hard rule**: Before generating **each** SVG page, load its canonical current-page delta and record its model-facing size:
+**On-demand page-context diagnostic**: only for explicit telemetry/debugging or an unresolved page/template/chart path-SHA question; never as a pre-page gate:
 
 ```bash
-python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage
+python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> [--record-usage]
 ```
 
-**Hard rule — direct context consumption**: Run every load as a standalone command and consume stdout directly; repair/rebind does not replace the final pre-page load. Never batch, loop, pipe through another parser, or merge stderr into stdout. Stop on a non-zero exit.
+Consume stdout directly; stop on non-zero exit. The projection is derived, not authoritative. Use `--record-usage` only for measurement.
 
-`global` deliberately repeats the sub-1000-token cross-page anchor set; `lock_source.sha256` binds its version. These anchors preserve identity and recurring semantics but do not enumerate every legal color or font. `page_context` is the current §IX/resource/template/chart delta. For every `reference_set` entry—project/template Design Spec or selected prototype/chart SVG—reuse an in-context path + SHA; read it once only when absent or changed.
-
-**Hard rule — known same-context Design Spec repair**: When the current main agent returns to Strategist and authors an exact project `design_spec.md` repair from its retained state, the `design-spec` reference's `same_context_edit_policy: targeted-readback-and-rebind` avoids a full reread. This applies only to bounded repairs that keep the page roster, narrative order, confirmed identity, and communication contract unchanged. Repair the owning Design Spec headings/page blocks first, re-author only affected lock rows, read back those changed fragments, run `project_manager.py validate`, then rerun `page-context` for every affected page. If each projected brief/global view matches the intended repair, bind the retained whole-document understanding plus verified delta to the new Design Spec SHA. A fresh context, an external/unknown edit, a roster/global-contract change, an unexpected diff, failed validation, or mismatched projection requires one full Design Spec read before continuing.
+**Same-context repair**: in a valid uncompacted context, a bounded repair that preserves roster/order/identity/communication needs only affected Design Spec/lock fragment readback plus `project_manager.py validate`. Any broader or invalid-context repair requires the complete reads above.
 
 **Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
 
 **Hard rule — selection vs realization**: use Strategist-selected content, resources/paths, chart/layout keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never selection, except sparse local font/color garnish allowed below. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Selection changes require upstream repair.
 
-Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. The delta overrides neither facts nor constraints. After an approved change, rerun the command; reload changed references except the verified same-context Design Spec repair above. Deprecated `--bundle` is a compatibility no-op.
+Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. A page-context delta overrides neither facts nor constraints. Deprecated `page-context --bundle` is a compatibility no-op.
 
 **Source verification**: §IX owns the complete page brief; the page delta does not carry the source corpus. Read sources only to resolve listed `Fact IDs` or verify required claims, quotes, names, or data. Do not add facts, claims, or selected content. Return underspecified blocks for Design Spec repair.
 
@@ -89,7 +89,7 @@ Use named lock roles literally when that role applies, and use optional `Templat
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
 
-**Missing `spec_lock.md` or `design_spec.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not bypass a failed page-context command or silently downgrade.
+**Missing `spec_lock.md` or `design_spec.md`** → stop before drawing and report the missing gate artifact. Recover through [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §3; do not silently downgrade. A failed on-demand `page-context` diagnostic is also not evidence that a required planning artifact may be bypassed.
 
 **Missing field in an existing lock**: follow [`failure-recovery.md`](../workflows/governance/failure-recovery.md) §2.
 
@@ -101,12 +101,12 @@ Use named lock roles literally when that role applies, and use optional `Templat
 - Font sizes use the named `typography` role values as deck-wide anchors. Map every structural text item to a declared role before drawing; never inherit a template placeholder size. Start from the anchor, then use composition and content fit to adjust that occurrence by at most `±2`px. Keep same-page peers consistent and preserve the role hierarchy; bounded adjustment does not create a new role.
 - **Core message ≥ `body`**: map the page's primary claim to declared `lead` / `subtitle`, never below the current body treatment. Footnotes, page numbers, and credits use declared `footnote` / `annotation`; do not invent a smaller role.
 - **Write unitless px, with at most two decimals.** Structural and mapped-role text uses only its anchor or a value within its `±2`px band; the sparse display-size exception is defined separately below. Do not substitute familiar pt-style numbers or emit long precision tails.
-- **Sparse display-size exception**: a short non-structural Hero/Display element may use one undeclared size outside all anchor bands at most twice across the deck without a lock row. The third occurrence makes that size recurring: stop and return to Strategist to name the role in the Design Spec and `spec_lock.md`, then regenerate page-context. This exception never applies to titles, body copy, subtitles, annotations, footnotes, captions, data labels, or card copy, and nearby sizes must not be introduced to imitate one recurring treatment.
+- **Sparse display-size exception**: a short non-structural Hero/Display element may use one undeclared size outside all anchor bands at most twice across the deck without a lock row. The third occurrence makes that size recurring: stop and return to Strategist to name the role in the Design Spec and `spec_lock.md`, then read back and validate the affected fragments before reuse. This exception never applies to titles, body copy, subtitles, annotations, footnotes, captions, data labels, or card copy, and nearby sizes must not be introduced to imitate one recurring treatment.
 - **Outside-band recovery**: for structural text, reflow geometry and use the declared role band locally. For a sparse display occurrence, keep the unitless value and verify that its deck-wide count remains at most two. Never flatten a justified distinction or add a role merely to silence the checker. Mirror pages preserve exact source typography as inherited input.
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-Return upstream before any derived/accent identity becomes recurring or structural, or when an undeclared display size reaches its third occurrence, then regenerate context. Local garnish, same-role `±2`px adjustments, and at most two sparse display-size occurrences need no lock row. Never expand the lock to silence a comparison. New icon acquisition, images, structural fonts, role anchors, and resources keep their preparation/role rules.
+Return upstream before any derived/accent identity becomes recurring or structural, or when an undeclared display size reaches its third occurrence, then update the retained context under §2.1. Local garnish, same-role `±2`px adjustments, and at most two sparse display-size occurrences need no lock row. Never expand the lock to silence a comparison. New icon acquisition, images, structural fonts, role anchors, and resources keep their preparation/role rules.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
@@ -118,7 +118,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 | `dense` | Information-heavy. Card grids, multi-column layouts, KPI dashboards, tables, and charts are all permitted. This is the baseline behavior. |
 | `breathing` | Low-density impact page. Avoid **multi-card grid layouts** — do not organize content as multiple parallel rounded containers (3-card row, 4-card KPI grid, 2×2 matrix rendered as cards). Use naked text blocks, dividers, whitespace, or full-bleed imagery as the content structure. Single rounded visual elements (hero image corners, callouts, tags, one emphasis block) are fine — the rule is about grid structure, not about the `rx` attribute. Proportions follow information weight (not a preset ratio). Typical forms: hero quote, single large number with one-line interpretation, full-bleed image with floating caption, section transition. |
 
-> Without rhythm variation, every page defaults to card grids (the "AI-generated" look). `page_rhythm` is the only narrative lever that survives context compression.
+> Without rhythm variation, every page defaults to card grids (the "AI-generated" look). Context recovery follows §2.1.
 
 **Missing or empty `page_rhythm` section — fixed compatibility default** → emit `warning: spec_lock.md missing/empty page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
 
