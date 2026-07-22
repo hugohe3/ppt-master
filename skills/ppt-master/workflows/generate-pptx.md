@@ -402,6 +402,22 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first
 ```
 Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
 
+**Mandatory — read P01 as a method sample, then emit the classification before editing**: the gate validates how the remaining pages will be authored, not only this page.
+
+| Signal | Reading |
+|---|---|
+| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is `svg_to_pptx.drawingml.elements.estimate_single_line_text_frame_width(runs)`, with `skills/ppt-master/scripts` on `sys.path` and every run key present — `text`, `font_size`, `font_family`, `font_weight`, `letter_spacing` — since omissions under-measure |
+| One isolated issue tied to this page's structure | Page-local — fix and continue |
+| A recurring element appears for the first time (page furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
+
+Emit one line before the consolidated edit:
+
+```
+gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
+```
+
+`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic; P02 through the final page run without further tool calls.
+
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
@@ -421,7 +437,8 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 ```markdown
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
-- [x] P01 gate passed; remaining pages authored without checker calls
+- [x] P01 gate passed and its `gate-signal` line emitted; any method-level finding was resolved to its authoritative rule before P02
+- [x] Remaining pages authored without checker calls
 - [x] Each failing checker run was reviewed as one complete issue set and followed by one consolidated edit pass; checker output was not filtered
 - [x] `svg_output/` matches the ordered §IX roster exactly, one SVG per planned page
 - [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
