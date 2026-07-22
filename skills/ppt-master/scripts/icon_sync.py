@@ -6,8 +6,9 @@ Copy chosen library icons into `<project>/icons/<lib>/` when selected. Missing
 names exit non-zero before export. Known basenames need no separate existence
 check; search the chosen library only for unresolved concepts.
 
-Project-local custom icons count as satisfied. `simple-icons` may accompany one
-stylistic library only for real brand marks.
+Project-local custom icons count as satisfied. In one Strategist selection
+batch, `simple-icons` may accompany one of the four stylistic libraries for
+real brand marks.
 
 Usage:
     python3 scripts/icon_sync.py <project_path> <lib/name> [<lib/name> ...]
@@ -104,7 +105,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             file=sys.stderr,
         )
         print(
-            "Choose one stylistic library per deck; simple-icons may coexist for real brand marks.",
+            "Choose one of the four stylistic libraries per selection batch; "
+            "simple-icons may coexist for real brand marks.",
             file=sys.stderr,
         )
         return 1

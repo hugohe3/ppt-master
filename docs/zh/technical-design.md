@@ -166,17 +166,14 @@ analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spe
 analysis/image_analysis.csv ────┘
 
 design_spec.md + spec_lock.md + images/ + icons/ + templates/
-    └─> project_manager.py page-context <project> P<NN>
-          + [有界重复的执行锚点集]
-          + [当前页 delta]
-          + [Design Spec / 原型 / 图表的路径与 SHA 指纹]
-        ├─> Executor -> svg_output/
-        │     ├─> 未变化的大型引用保留在当前上下文中
-        │     ├─> svg_quality_checker.py -> validation/svg_quality_report.json
-        │     ├─> finalize_svg.py -> svg_final/
-        │     └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
-        │                             backup/<ts>/svg_output/
-        └─> --record-usage -> analysis/page-context/P<NN>.usage.json
+    └─> Executor -> svg_output/
+          ├─> 规划产物与引用保留在有效的当前上下文中
+          ├─> project_manager.py page-context <project> P<NN> [按需]
+          │     └─> --record-usage -> analysis/page-context/P<NN>.usage.json
+          ├─> svg_quality_checker.py -> validation/svg_quality_report.json
+          ├─> finalize_svg.py -> svg_final/
+          └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx + validation/<output_stem>.report.json
+                                       backup/<ts>/svg_output/
 
 直接 OOXML 路由：
 analysis/<stem>.slide_library.json + 源 PPTX + fill_plan.json
@@ -277,14 +274,15 @@ CLI 支持 `--move`、`--copy` 和自动默认，但共享同一条固定的所�
 |---|---|
 | `sources/` 内容型文件是主流水线内容契约 | 主 SVG 路线中的文本、表格和图表数值来自 `sources/` 内容型文件（Markdown 为主，`.txt` / `.csv` / `.json` / `.yaml` 等同样计入）；已知 sidecar（`*.conversion_profile.json`、`*_files/image_manifest.json`）排除在外 |
 | `analysis/` 存机器事实，不存设计契约 | `source_profile.json` 和 intake artifact 辅助 Strategist；除非工作流明确规定，否则不锁定页数 / 页序 |
-| `design_spec.md` 解释设计；`spec_lock.md` 执行设计 | 逐页视图从各自权威 artifact 派生叙事和锁定值，而不是从叙述记忆里取 |
-| 每页生成前重建 `page-context` | 只读视图包含当前全局 lock、页面 brief、节奏、图表/图片选择和按路线选出的模板输入 |
+| `design_spec.md` 解释设计；`spec_lock.md` 执行设计 | 两者始终是权威产物；按需投影不会取代它们 |
+| 规划上下文有效时持续复用 | 连续执行直接使用完整 Design Spec、lock 与已触发引用；fresh/resumed/restarted 或压缩后才重新读取一次 |
+| `page-context` 按需调用 | 只读投影器用于诊断、确定性路由检查和可选的用量统计，不是逐页门禁 |
 | `svg_output/` 是唯一手写 SVG 目录 | 质量检查、手工编辑、重导出和 `update_spec.py` 都面向作者源 |
 | `svg_final/` 是派生产物 | 它必须能从 `svg_output/` 重建，只负责自包含视觉预览，不应成为 native 导出的事实源 |
 | native PPTX 标准导出读取 `svg_output/` | 唯一受支持的可编辑形状路线由项目转换器执行；它要在 finalize 重写前保留图标、`preserveAspectRatio`、圆角矩形和原生图片裁剪语义 |
 | PowerPoint 手工“转换为形状”不属于兼容性契约 | `svg_final/` 可以作为 SVG 图片插入，但转换后的结构与视觉结果不做保证，也不反向约束 SVG 允许能力 |
 | 直接 OOXML 路由不进入 SVG 流水线 | 保留型工作流直接 patch 原生 PPTX parts |
-| 图片事实来自重算元数据 | `analysis/image_analysis.csv` 从实时 `images/` 目录重算；agent 不直接看图片像素 |
+| 图片事实来自重算元数据 | `analysis/image_analysis.csv` 从实时 `images/` 目录重算；Strategist 先用源文上下文，只在图片语义或安全放置仍无法确定时查看那一张具体图片；Executor 不重新读取源图像素 |
 | 原生 PPTX 模板不是 Step 3 模板 | Step 3 只消费可复用模板目录 |
 
 ---
@@ -348,9 +346,9 @@ PPT Master 用的是**单主代理内的角色切换**，不是并行子代理�
 
 **策略师确认阶段是唯一的阻塞 gate。** Strategist 阶段以一个按依赖排序的三阶段 gate 作为核心决策点。第一阶段确认开放式沟通契约与画布。其中的文本框承载可编辑推荐，但没有任何一项要求非空：确认时按当前文本原样保存，清空后的值保持为空，不会回退到推荐内容。第二阶段只从该契约计算一次并确认完整 PPT 方案：阅读模式、叙事 mode、页数、成套视觉系统、图片来源和生成图渲染。存在模板时，Strategist 还会根据真实工作区和当前内容推导页面/原型应用计划，并以可编辑的自然语言文本展示；只有内部复用/遵循模式保持隐藏。阅读模式决定信息由页面、视觉、讲者和备注如何共同承担，其选项卡不展示 px 数值。浏览器可以在本地执行确定性的「阅读模式 → 正文基准 → 未锁定角色字号」联动；手动编辑字号即锁定可见值，不会重新计算第二阶段。第三阶段也只计算一次，并且只处理生产机制：条件式 AI 图片获取路径、公式策略、生成模式与规范精修。JSON 为兼容保留 `delivery_purpose` 键，但用户侧统一称为阅读模式。生成图直接继承已选 PPT 色彩锚点，不再单设图片调色选择。最终等待结束后，流程只读取一次 `confirm_ui/result.json` 的完整最终状态，并把全部确认值（含生产机制）写入 `design_spec.md`；正常的 lock 编写与下游执行不再回读它。项目校验要求 `spec_lock.md ## communication` 下存在紧凑的 `audience` / `objective` / `core_message` 锚点，并要求 §IX 每个 Slide block 都有 `Audience move`。
 
-**图片分析走重算元数据，不读像素。** 当项目里存在图片时，Strategist 和 Executor 使用 `analyze_images.py` 的输出（`analysis/image_analysis.csv`），而不是直接打开图片文件。这个 CSV 是基于当前 `images/` 目录重算出来的视图，不是持久缓存。每次做图片敏感决策前重跑分析，就是它的防陈旧策略：用户图、抽取图、网络图、AI 图、公式图和切片图最终都会汇入同一张可度量事实表。
+**图片分析以重算元数据为先，Strategist 只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。用户图、抽取图、网络图、AI 图、公式图和切片图仍统一汇入同一张可度量事实表。
 
-**逐页上下文投影** 是长 deck 的抗漂移机制——完整理由见下面的 § 设计规范的传播。
+**保留的规划上下文**负责跨页连续性；按需逐页投影只承担下文所述的诊断用途。
 
 ---
 
@@ -373,15 +371,15 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 - `design_spec.md` —— 人类可读叙述；deck 的「为什么」（沟通意图、受众变化、叙事 / 模板 / 视觉理由、页面大纲）
 - `spec_lock.md` —— 机器可读执行契约；包含紧凑的 `audience` / `objective` / `core_message` 沟通锚点，以及跨页稳定的身份/复用角色和路由值（核心 HEX/字体角色、图标库、图片资源与结构映射）
 
-为什么两份都要？`design_spec.md` 保存完整的确认方案与理由；`spec_lock.md` 只命名必须跨页稳定或参与路由的子集。它根据 Design Spec 与页面/资源/模板上下文编写，不再逐字段复制 `result.json`。[Generate PPTX Step 6](../../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) 会在每页生成前重建只读 `page-context` 视图，只输出稳定锚点与逐页路由事实。局部色阶、渐变/效果色与零星的非结构性展示字体属于页面判断；一旦重复出现或形成稳定语义，就必须先提升为上游 lock 角色。
+为什么两份都要？`design_spec.md` 保存完整的确认方案与理由；`spec_lock.md` 只命名必须跨页稳定或参与路由的子集。它根据 Design Spec 与页面/资源/模板上下文编写，不再逐字段复制 `result.json`。[Generate PPTX Step 6](../../skills/ppt-master/workflows/generate-pptx.md#step-6-executor-phase) 在有效执行上下文中只保留并复用这两份产物。fresh/resumed/restarted、上下文压缩或只剩摘要时重新完整读取一次；未变化的连续上下文不重复读取。局部色阶、渐变/效果色与零星的非结构性展示字体属于页面判断；一旦重复出现或形成稳定语义，就必须先提升为上游 lock 角色。
 
 该视图省略 Executor core 已经恒定加载的通用 SVG/图标禁令，只保留项目专属 forbidden 行。图片从当前页 brief、图片资源表中的显式页分配和 mirror 原型引用中选择；已分配给其他页面的图片会被排除，仍无法归属的 legacy 图片保留在兼容子集中，只有所有锁定图片都能确定归属到其他页面时才记录 `confirmed-none`。
 
-这份 lock 同时也是逐页路由表。除了全局配色和字体，它还承载 `page_rhythm`（`anchor` / `dense` / `breathing`）、`page_charts`（某页应适配哪个图表模板）、带放置/裁剪契约的图片行，以及决定加载哪些执行规则文件的 `mode` / `visual_style`。选定 custom 方向时，lock 还承载已消解的 `mode_behavior` / `visual_style_behavior`；当它确实综合或借鉴已有目录项时，再用可选的 `mode_references` / `visual_style_references` / `image_rendering_references` 记录全部精确 id，执行阶段会先读取每个对应文件再综合。真正全新的 custom 不写参考字段。page-context 会把这些字段投影给 Executor，而不是只留下字面上的 `custom` id。`template_reuse_scope: mirror|layout` 项目额外承载 `page_layouts`（每页继承哪个输入模板 SVG）、唯一的 `pptx_masters` / `pptx_layouts` 定义，以及 `page_pptx_layouts` 页面分配；`template_reuse_scope: style`、自由设计和 brand-only 项目使用 `pptx_structure.mode: flat`，那些段整段省略，而不是写成空值。其余字段的空值本身仍是信号：没有图表、没有图片，很多时候是设计选择，而不是漏填。
+这份 lock 同时也是逐页路由表。除了全局配色和字体，它还承载 `page_rhythm`（`anchor` / `dense` / `breathing`）、`page_charts`（某页应适配哪个图表模板）、带放置/裁剪契约的图片行，以及决定加载哪些执行规则文件的 `mode` / `visual_style`。选定 custom 方向时，lock 还承载已消解的 `mode_behavior` / `visual_style_behavior`；当它确实综合或借鉴已有目录项时，再用可选的 `mode_references` / `visual_style_references` / `image_rendering_references` 记录全部精确 id，执行阶段会先读取每个对应文件再综合。真正全新的 custom 不写参考字段。`template_reuse_scope: mirror|layout` 项目的 lock 还承载 `page_layouts`（每页继承哪个输入模板 SVG）、唯一的 `pptx_masters` / `pptx_layouts` 定义，以及 `page_pptx_layouts` 页面分配；`template_reuse_scope: style`、自由设计和 brand-only 项目使用 `pptx_structure.mode: flat`，那些段整段省略，而不是写成空值。其余字段的空值本身仍是信号：没有图表、没有图片，很多时候是设计选择，而不是漏填。
 
-`page-context v2` 把有界的连续性状态与大型引用分开。它有意在每页重复紧凑的全局锚点集，并用 `lock_source.sha256` 绑定版本；这个集合不是颜色/字体白名单。当前 §IX brief、节奏、图片选择和模板/图表分配构成逐页 delta。项目/模板 Design Spec、选中的原型，以及 `templates/charts/<key>.svg` 只以带 scope 的路径/SHA 指纹出现。只有该指纹不在当前执行上下文中或 SHA 已变化时，Executor 才读取文件一次；后续页面直接复用已有理解。项目 Design Spec 的指纹还会声明 `same_context_edit_policy: targeted-readback-and-rebind`：当前主代理基于已保留内容做有界精确回修，且页清单、叙事顺序、确认身份与沟通契约均未改变时，只回读修改片段、执行校验并重建 page-context，然后把既有整体理解和已验证 delta 绑定到新 SHA，无需重新加载整份文档。fresh、外部、来源不明、结构性或投影不符的修改仍必须完整读取一次。flat 页面没有原型引用；structured 页面引用权威的完整 SVG。manifest 与 text-slot sidecar 只保留为派生工具诊断，不注入页面创作上下文。
+`page-context v2` 保留为按需投影器。每次调用都会输出绑定 `lock_source.sha256` 的紧凑全局锚点、当前 §IX/资源/路由 delta，以及大型引用的带 scope 路径/SHA 指纹；该投影既不是颜色/字体白名单，也不是替代权威。只有明确的诊断/统计需求，或页面/模板/图表的路径-SHA 问题仍未解决时才调用。有效且未压缩的上下文中做有界精确回修，可以只回读修改片段并校验；fresh、已压缩、外部、来源不明、结构性或投影不符的修改必须完整读取 Design Spec 与 lock。flat 页面没有原型引用；structured 页面使用权威完整 SVG。manifest 与 text-slot sidecar 只保留为派生工具诊断，不注入页面创作上下文。
 
-`--record-usage` 在 `analysis/page-context/` 下写入当前页的派生快照，记录输入 hash 和紧凑 stdout 的实测大小。token 计数按需加载 `o200k_base`；没有安装 `tiktoken` 时写入 `tokens: null`，但不阻塞执行。`page-context-report` 排除过期快照，汇总紧凑 page-context，并列出唯一引用指纹；一次加载的大型引用 payload 与其他会话上下文有意不纳入统计。
+`--record-usage` 在 `analysis/page-context/` 下为实际调用的页面写入派生快照，记录输入 hash 和紧凑 stdout 的实测大小。token 计数按需加载 `o200k_base`；没有安装 `tiktoken` 时写入 `tokens: null`，但不阻塞执行。`page-context-report` 排除过期快照，汇总已有快照并列出唯一引用指纹；统计可以只覆盖部分页面。一次加载的大型引用 payload 与其他会话上下文有意不纳入统计。
 
 `update_spec.py` 用两个协调步骤传播一次有意的 deck 级锚点修改：把新值写入 `spec_lock.md`，然后字面替换到每一份 `svg_output/*.svg`。工具的范围**故意收得很窄**——只支持 `colors.*`（HEX 值，大小写不敏感替换）和 `typography.font_family`（属性级）。其他字段（字号、图标、图片、画布）**有意不支持**——它们的替换需要属性级或语义级理解，风险/收益不值得做批量传播。当重复出现的上下文值被明确提升为具名语义角色时，反向回写 lock 同样合理；但不能只为了清空 checker 的信息提示而扩充 lock。其他字段应修改其权威产物并重做受影响页面。
 
@@ -397,11 +395,11 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 |---|---|---|
 | 顾客与初始食材 | 用户确认与用户提供的原材料/素材 | 决定事实、意图、排除项、材料补充许可，以及要求具体到什么程度 |
 | 菜单策划与备料负责人 | Strategist、`design_spec.md`、`spec_lock.md` 及其负责的材料获取阶段 | 判断材料是否充分；补齐获准补充的事实；选定内容、资源、页面清单、图表/版式 key、字体、色板锚点、图标和裁剪边界；在执行前备齐项目级材料清单 |
-| 厨师 | Executor | 只使用已备材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料 |
+| 厨师 | Executor | 只使用项目中已备好的材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料 |
 
 **备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。
 
-**已备材料清单就是边界。** 只有被 Strategist 选定、写入规划产物，并且项目路径可解析或已明确标为 `Needs-Manual` 的资源，才对 Executor 可用。文件仅仅存在于其他目录并不构成使用许可。缺料必须返回上游；Executor 不得搜索、生成、下载、同步或替换资源。
+**项目中已备好的材料就是边界。** 图片和其他声明型资源，仍须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 记录 Strategist 计划选用的内置图标，但不是穷尽式执行白名单。其他目录中的文件不构成使用许可。缺料必须返回上游；Executor 不得搜索、生成、下载、同步或替换资源。
 
 **具体程度决定自由度。** “做麻婆豆腐”锁定成品身份：火候、口感和摆盘可以发挥，但不能换成番茄炒蛋或豆腐汤。“做一道豆腐菜”则保留了品类内选择空间。Strategist 可以把这个开放要求收敛成具体方案；如果 Design Spec 有意保留某个维度的开放性，Executor 可以在该范围内实现。一旦 Design Spec 已经选定具体结果，执行阶段不得重新打开选择。
 
@@ -564,7 +562,7 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集，因此主编译路�
 
 **为什么可复用 bounds 是设计区域，不是量出来的文本框。** bounds 来自安全区、分栏、面板内框或图片框，而不是字形宽度、行数或当前内容紧包围盒。当前 Slide 保留自己的 carrier 几何，因此只要语义构图相同，4:6、3:7、5:5 的实例都可复用同一 Layout。文本长度不会意外拆分或改变可复用合同。
 
-**为什么内部应用计划保留两个字段。** Strategist 推导 `template_reuse_scope`，记录字面镜像复用、结构化版式复用或 flat 风格参考；structured 计划再推导 `template_adherence: strict|adaptive`。`page_layouts` 记录完整创作原型，`pptx_masters` / `pptx_layouts` 记录唯一可复用定义，`page_pptx_layouts` 记录页面分配。strict 保持声明的原型合同；adaptive 保持原型 Master，只有固定 Layout 原子或槽位 topology/bounds 改变时，Strategist 才可声明新 Layout。若制作过程暴露出这一需求，执行必须退回上游，待 Strategist 更新定义与分配并重新生成页面上下文后才能继续；导出器不会事后推断。这些是导出器内部值，不是用户确认选项。模板定义即使暂时没有页面使用，也能注册进最终文件。layout 的皮肤由项目控制；mirror 还要保持字面视觉与文字节点拓扑。`style` 不带 adherence 或结构 mapping。
+**为什么内部应用计划保留两个字段。** Strategist 推导 `template_reuse_scope`，记录字面镜像复用、结构化版式复用或 flat 风格参考；structured 计划再推导 `template_adherence: strict|adaptive`。`page_layouts` 记录完整创作原型，`pptx_masters` / `pptx_layouts` 记录唯一可复用定义，`page_pptx_layouts` 记录页面分配。strict 保持声明的原型合同；adaptive 保持原型 Master，只有固定 Layout 原子或槽位 topology/bounds 改变时，Strategist 才可声明新 Layout。若制作过程暴露出这一需求，执行必须退回上游，待 Strategist 更新、回读并校验定义与分配后才能继续；导出器不会事后推断。这些是导出器内部值，不是用户确认选项。模板定义即使暂时没有页面使用，也能注册进最终文件。layout 的皮肤由项目控制；mirror 还要保持字面视觉与文字节点拓扑。`style` 不带 adherence 或结构 mapping。
 
 **为什么显式版式把文字默认值分在 Master 与 Layout 两层。** Flat 与 structured 导出都会把锁定的 title 字号和确定性的九级 body 层级写入 Master 文本默认值，同时保留原有缩进与项目符号设置；在 structured 路线上，每个 Layout 文字槽位还会把 carrier 首个 run 的字号写入一级默认值，同时保留提示文字的直接字号。这样，插入或重置 placeholder 时仍能继承 Layout 特定尺度，而生成 Slide 上的直接 run 不变。
 

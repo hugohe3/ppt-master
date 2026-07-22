@@ -140,21 +140,21 @@
         "pattern": "^typography$",
         "required": true,
         "required_fields": ["font_family", "body", "title"],
-        "field_patterns": {
-          "font_family": "^\\S(?:.*\\S)?$",
-          "title_family": "^\\S(?:.*\\S)?$",
-          "body_family": "^\\S(?:.*\\S)?$",
-          "subtitle_family": "^\\S(?:.*\\S)?$",
-          "annotation_family": "^\\S(?:.*\\S)?$",
-          "footer_family": "^\\S(?:.*\\S)?$",
-          "footnote_family": "^\\S(?:.*\\S)?$",
-          "data_family": "^\\S(?:.*\\S)?$",
-          "emphasis_family": "^\\S(?:.*\\S)?$",
-          "quote_family": "^\\S(?:.*\\S)?$",
-          "code_family": "^\\S(?:.*\\S)?$",
-          "body": "^[0-9]+(?:\\.[0-9]+)?$",
-          "title": "^[0-9]+(?:\\.[0-9]+)?$"
-        }
+        "entry_key_pattern": "^[a-z][a-z0-9_]*$",
+        "field_value_rules": [
+          {
+            "key_pattern": "^(?:font_family|[a-z][a-z0-9_]*_family)$",
+            "value_pattern": "^\\S(?:.*\\S)?$",
+            "requirement": "be a non-empty font-family stack"
+          },
+          {
+            "key_pattern": "^(?!font_family$)(?![a-z][a-z0-9_]*_family$)[a-z][a-z0-9_]*$",
+            "value_pattern": "^(?=.*[1-9])(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)$",
+            "normalize": false,
+            "numeric": "positive_finite",
+            "requirement": "be a positive finite unitless px number"
+          }
+        ]
       },
       {
         "id": "icons",

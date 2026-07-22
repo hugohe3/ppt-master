@@ -46,6 +46,7 @@ route selection. After selection, the route authority owns execution.
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
 | Explicit current brand/layout/deck workspace root | Enter [`generate-pptx`](./generate-pptx.md) Step 3 and conditionally load [`apply-template-workspace`](./stages/apply-template-workspace.md); consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
+| Existing generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Strategist confirmation |
 | Data charts exist | Run [`verify-charts`](./stages/verify-charts.md) before export |
 | User explicitly requests visual review | Run [`visual-review`](./stages/visual-review.md) before post-processing |
@@ -118,5 +119,13 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 | Explicit current workspace root containing `templates/design_spec.md` | Enter [`generate-pptx`](./generate-pptx.md) Step 3 |
 | Bare template/brand name or style label | Do not resolve it to a local path; treat it as a style brief |
 | “What templates exist?” | List indexed workspace paths as Q&A; do not advance a route |
+
+For that Q&A only, read the matching discovery indexes:
+
+| Kind | Discovery index |
+|---|---|
+| Brand | [`brands_index.json`](../templates/brands/brands_index.json) |
+| Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
+| Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
 
 **Forbidden — fuzzy resolution**: Never resolve a bare name to a local template directory on the user's behalf. The explicit workspace root is the only Step 3 template trigger, except the exact validated workspace handed off by Create Template in the current conversation.

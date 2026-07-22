@@ -12,8 +12,8 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
-- Before each page, load compact page-context; its repeated global values are continuity anchors, while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
+- Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
 ### SVG Page-Design Boundary
 
@@ -212,16 +212,16 @@ If the user opted out of the page but did not delegate confirmation, skip launch
 
 ⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as user-owned input and consume it at the semantic type defined by [`strategist.md`](../references/strategist.md) §1 and its field owner. Do not omit or substitute a value, and do not silently strengthen or weaken its type; accepting a recommendation does not turn a Reference or Permission into a Literal requirement. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, the complete recurring typography-role system, the confirmed image-source boundary, and explicit `image_notes` obligations. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, project every declared recurring typography family and size-anchor role without collapsing it into one default stack, choose reusable execution anchors and routing values, project each placed image's source/pattern/crop policy without reselection, and do not enumerate page-local paint or font-family garnish. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If a confirmed requirement cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
 
-**Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
+**Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
 | Signal read | Line content |
 |---|---|
 | Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](stages/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
-| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](stages/resume-execute.md). |
+| Explicit `split` selection | Confirm that planning will stop after Step 5 and give the `继续生成 projects/<project_name>` handoff command. |
 
-This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page generation-mode toggle and is captured in `result.json` (`generation_mode`); the chat-summary fallback still prints this line.
+For the normal/default `continuous` path, print no split-mode reminder and proceed automatically. Confirm UI still exposes the generation-mode toggle and records it in `result.json`; a chat fallback captures the same choice in its confirmation summary without adding a separate reminder.
 
-**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
+**Mandatory — spec-refinement note** (not a separate confirmation): after the confirmation details and any conditional split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This opt-in line remains required output every run; whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
 
 **Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
 
@@ -230,13 +230,13 @@ If the user provided images or formula PNGs were rendered, run analysis **before
 uvx ppt-master analyze-images <project_path>/images
 ```
 
-> 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the image-source recommendation (see [strategist.md](../references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
+> 🔁 **Image facts are regenerated on change, never maintained as a second store.** `images/` is the live working folder and single source of truth; `analysis/image_analysis.csv` is its regenerated view. Run `analyze_images.py` before the first inventory read, then reuse that CSV while `images/` is unchanged. Re-run after import/acquisition or any user addition, removal, or replacement; if the folder becomes empty, treat the inventory as empty and ignore a stale CSV.
 
-> ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
+> ⚠️ **Image understanding**: Do not bulk-open images. Strategist uses source context, captions / alt / titles, filenames, user notes, existing resource records, and `image_analysis.csv` first; only a specifically ambiguous asset may be inspected under [`strategist-image.md`](../references/strategist-image.md). Record the result in §VIII. Executor never reopens source images for semantic discovery or reselection.
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
-- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor consumes its current-page projection from `page-context`
+- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor retains it in the active execution context and may inspect an on-demand current-page projection for diagnostics
 
 For a new project, use the reference-first whole-document sequence:
 
@@ -247,20 +247,7 @@ For a new project, use the reference-first whole-document sequence:
 
 A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume or refine path edits existing completed files in the same order; it does not replace them with scaffolds.
 
-**✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
-```markdown
-## ✅ Strategist Phase Complete
-- [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
-- [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
-- [x] Final confirmation read once and retained through Design Spec authoring/audit; `result.json` not reopened in the normal path
-- [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
-- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
-- [x] Design Specification & Content Outline generated
-- [x] Gate 1 passed: Design Spec preserves every confirmed value at its owner-defined semantic type
-- [x] Execution lock (`spec_lock.md`) authored from the completed Design Spec + current context as stable anchors/routing, not an exhaustive value whitelist
-- [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
-- [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
-```
+**✅ Internal checkpoint — Phase deliverables complete**: verify that analysis facts were read before confirmation; final confirmation was consumed once; applicable split/refinement handling is resolved; the complete Design Spec passed Gate 1; the lock was authored from it; and communication plus every §IX `Audience move` were validated. Do not print this checklist. On success, auto-proceed to Image_Generator / Executor under the compact status rule above.
 
 ---
 
@@ -268,7 +255,7 @@ A retained final state → Design Spec mismatch or Design Spec/context → lock 
 
 🚧 **GATE**: Step 4 complete; `<project_path>/design_spec.md` and `<project_path>/spec_lock.md` both exist. If either required artifact is missing, stop before any acquisition or generation and follow [`failure-recovery.md`](governance/failure-recovery.md) §3. Formula rows already have `Acquire Via: formula` and status `Rendered` or `Needs-Manual`.
 
-> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai`, `web`, and/or `slice`. A prepared-user-only plan contains `user / Existing` rows and skips this entire step; `formula` and `placeholder` rows also do not trigger acquisition. A permitted but unused image source creates no row and does not trigger acquisition. If §VIII omits a source, asset, or page role that `image_notes` explicitly requires, the Design Spec is incomplete; return to Step 4 Gate 1, repair it from the retained final state, and re-author the affected lock anchors from context. Do not reopen `result.json` during this check.
 
 **Failure recovery**: stop/continue behavior for AI/web/slice/image-readiness failures is defined in [`workflows/governance/failure-recovery.md`](governance/failure-recovery.md). This Step keeps the acquisition procedure.
 
@@ -305,16 +292,7 @@ Workflow:
 3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. On `auto`, follow the owning fallback chain. On an explicitly confirmed `api` or `host-native` path, retry only that path; if it still fails, mark the row `Needs-Manual` without switching to another automated provider.
 4. Re-derive image facts now that web / AI / sliced files are in the folder — `uvx ppt-master analyze-images <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
-**✅ Checkpoint — Confirm acquisition attempted for every row**:
-```markdown
-## ✅ Image Acquisition Phase Complete
-- [x] image_prompts.json created (when any ai rows processed)
-- [x] image_prompts.md sidecar rendered (when any ai rows processed)
-- [x] image_sources.json created (when any web rows processed)
-- [x] Spot-illustration sheets sliced (when any `slice` rows exist); every element file present in `images/` and listed in `spec_lock.md images`
-- [x] Each row: status is `Generated` / `Sourced` / `Needs-Manual` (no `Pending` or `Failed` remaining)
-- [x] analyze_images.py re-run so image_analysis.csv covers the acquired web / AI / sliced images
-```
+**✅ Internal checkpoint — acquisition complete**: verify conditional AI/web sidecars, all required slice outputs, terminal status for every resource row, and a refreshed `image_analysis.csv`. Do not print this checklist. On success, auto-proceed under the compact status rule above.
 
 **Default — auto-proceed to Step 6.** Only when `design_spec.md §I` records `generation_mode: split`, output the planning-session handoff below and stop this conversation:
 
@@ -336,6 +314,8 @@ Workflow:
 **Exact page roster**: render `design_spec.md §IX` one-for-one, in order. Any add/drop/merge/split/reorder requires Spec repair/refinement first.
 
 **Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
+
+**Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
 
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
@@ -376,26 +356,20 @@ uvx ppt-master confirm-ui <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for `templates/charts/<key>.svg`. Both reuse unchanged `reference_set` path + SHA fingerprints; flat routes skip template reads. Summaries and sidecars never replace full SVGs.
+**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for chart SVGs. Read each selected full reference once per valid context; reread only after a known change or context invalidation. Flat routes skip template reads. Summaries and sidecars never replace full SVGs.
 
-> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `uvx ppt-master analyze-images <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
+> Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `uvx ppt-master analyze-images <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
-**Per-page context load (Mandatory)**: before **each** SVG page, run:
-
-```bash
-uvx ppt-master project page-context <project_path> P<NN> --bundle --record-usage
-```
-
-Use `global` as the compact cross-page anchor set, `page_context` as the page delta, and `reference_set` under the Executor load policy. Anchors are defaults and reusable semantic roles, not a color/font allowlist. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
+**Page-context**: use the read-only projector only for the diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
-> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
+> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate. After context invalidation, reload under §2.1 before continuing; do not insert batches or mid-run checker calls.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
-`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, regenerate the page context, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
+`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
 `template_reuse_scope: style`, free-design, and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 
@@ -406,6 +380,22 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 uvx ppt-master svg-quality-check <project_path> --stage first-page --json
 ```
 Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
+
+**Mandatory — read P01 as a method sample, then emit the classification before editing**: the gate validates how the remaining pages will be authored, not only this page.
+
+| Signal | Reading |
+|---|---|
+| Two or more issues share a category and direction | Method-level bias — resolve it to the authoritative rule before P02; a correction fitted to the observed offset only patches this sample. For text extents that rule is `svg_to_pptx.drawingml.elements.estimate_single_line_text_frame_width(runs)`, with `skills/ppt-master/scripts` on `sys.path` and every run key present — `text`, `font_size`, `font_family`, `font_weight`, `letter_spacing` — since omissions under-measure |
+| One isolated issue tied to this page's structure | Page-local — fix and continue |
+| A recurring element appears for the first time (page furniture, caption format, section numbering, accent discipline) | It will be copied to every later page — confirm its semantics now |
+
+Emit one line before the consolidated edit:
+
+```
+gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercised=<list>
+```
+
+`not-exercised` names what P01 could not test — a cover typically omits multi-line text, columns, charts, image captions, and data objects. Carry every resolved rule forward as arithmetic; P02 through the final page run without further tool calls.
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
@@ -422,17 +412,7 @@ uvx ppt-master svg-quality-check <project_path> --stage final --json
 
 **Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md) and generate speaker notes → `<project_path>/notes/total.md`
 
-**✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Run the applicable conditional gates below, then proceed to Step 7**:
-```markdown
-## ✅ Executor Phase Complete
-- [x] Live preview started before the first SVG and kept available at the reported URL
-- [x] P01 gate passed; remaining pages authored without checker calls
-- [x] Each failing checker run was reviewed as one complete issue set and followed by one consolidated edit pass; checker output was not filtered
-- [x] `svg_output/` matches the ordered §IX roster exactly, one SVG per planned page
-- [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
-- [x] svg_quality_checker.py passed (0 errors)
-- [x] Speaker notes generated at notes/total.md
-```
+**✅ Internal checkpoint — execution complete**: verify live preview timing, the P01 method gate, uninterrupted remaining-page generation, consolidated repair of any complete failure set, exact §IX roster coverage, one-frame prose wrapping, a final checker result of 0 errors, and `notes/total.md`. Do not print this checklist. Run the applicable conditional gates below, then proceed to Step 7 under the compact status rule above.
 
 > **Chart pages?** If this deck contains data charts, run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. Skip if no chart pages.
 

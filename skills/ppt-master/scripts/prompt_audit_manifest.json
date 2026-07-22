@@ -15,9 +15,9 @@
     "max_tokens": 365000
   },
   "file_budgets": {
-    "AGENTS.md": 2300,
-    "skills/ppt-master/SKILL.md": 800,
-    "skills/ppt-master/references/executor-base.md": 7060,
+    "AGENTS.md": 2350,
+    "skills/ppt-master/SKILL.md": 850,
+    "skills/ppt-master/references/executor-base.md": 7250,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
     "skills/ppt-master/references/executor-image.md": 900,
@@ -28,12 +28,12 @@
     "skills/ppt-master/references/svg-effects.md": 11600,
     "skills/ppt-master/references/native-data-interface.md": 6200,
     "skills/ppt-master/references/pptx-structure-interface.md": 4300,
-    "skills/ppt-master/references/strategist.md": 13350,
-    "skills/ppt-master/references/strategist-image.md": 2100,
+    "skills/ppt-master/references/strategist.md": 13450,
+    "skills/ppt-master/references/strategist-image.md": 2250,
     "skills/ppt-master/references/strategist-template.md": 2100,
-    "skills/ppt-master/templates/design_spec_reference.md": 2650,
-    "skills/ppt-master/templates/spec_lock_reference.md": 2100,
-    "skills/ppt-master/workflows/generate-pptx.md": 12450,
+    "skills/ppt-master/templates/design_spec_reference.md": 2850,
+    "skills/ppt-master/templates/spec_lock_reference.md": 2350,
+    "skills/ppt-master/workflows/generate-pptx.md": 12700,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
   },
   "load_sets": {
@@ -45,7 +45,23 @@
         "skills/ppt-master/SKILL.md",
         "skills/ppt-master/workflows/routing.md"
       ],
-      "max_tokens": 5200
+      "max_tokens": 5425
+    },
+    "support.sponsor-recommendation.en": {
+      "description": "English sponsor context for explicit user requests for model, AI image model, API/provider, or hosted-service recommendations.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/SPONSORS.md"
+      ],
+      "max_tokens": 1250
+    },
+    "support.sponsor-recommendation.zh": {
+      "description": "Chinese sponsor context for explicit user requests for model, AI image model, API/provider, or hosted-service recommendations.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/SPONSORS_CN.md"
+      ],
+      "max_tokens": 1250
     },
     "route.create-template.brand": {
       "description": "Create Brand path; it authors no SVG and does not activate Template_Designer or SVG modules.",
@@ -77,7 +93,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 57250
+      "max_tokens": 57475
     },
     "route.create-template.layout": {
       "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
@@ -95,7 +111,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 57400
+      "max_tokens": 57675
     },
     "route.enhance-native-pptx": {
       "description": "Finished-PPTX native enhancement route.",
@@ -106,7 +122,7 @@
       "files": [
         "skills/ppt-master/workflows/native-enhance-pptx.md"
       ],
-      "max_tokens": 8200
+      "max_tokens": 8375
     },
     "route.fill-native-pptx": {
       "description": "Raw-PPTX native fill route.",
@@ -117,7 +133,7 @@
       "files": [
         "skills/ppt-master/workflows/template-fill-pptx.md"
       ],
-      "max_tokens": 10800
+      "max_tokens": 11075
     },
     "route.generate.planning": {
       "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring and representative multi-source custom mode/style synthesis; schemas and optional scaffolds are tool-consumed.",
@@ -306,7 +322,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 81250
+      "max_tokens": 82475
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -319,7 +335,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 121450
+      "max_tokens": 123000
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -331,7 +347,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 94750
+      "max_tokens": 96300
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -344,7 +360,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 102000
+      "max_tokens": 103575
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -354,7 +370,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 11000
+      "max_tokens": 11125
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -364,7 +380,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 88110
+      "max_tokens": 89325
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -377,7 +393,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 105250
+      "max_tokens": 106550
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -389,7 +405,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 88300
+      "max_tokens": 89500
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -401,7 +417,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 98100
+      "max_tokens": 99425
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -413,7 +429,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 98550
+      "max_tokens": 99875
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -423,7 +439,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 82650
+      "max_tokens": 83875
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -533,7 +549,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 58350
+      "max_tokens": 59100
     },
     "stage.generate.topic-research": {
       "description": "Gap-targeted factual intake stage.",
@@ -565,7 +581,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/verify-charts.md"
       ],
-      "max_tokens": 6200
+      "max_tokens": 6250
     },
     "stage.generate.chart-authoring": {
       "description": "Conditional visualization-library authoring guidance.",
@@ -661,7 +677,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 59200
+      "max_tokens": 60250
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
@@ -671,7 +687,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 71400
+      "max_tokens": 72700
     },
     "stage.generate.executor.chart": {
       "description": "Conditional chart/table page execution rules.",
@@ -687,7 +703,7 @@
       "files": [
         "skills/ppt-master/references/strategist-image.md"
       ],
-      "max_tokens": 1950
+      "max_tokens": 2250
     },
     "stage.generate.strategist.image-layout": {
       "description": "Non-formula image planning plus the image-layout pattern catalog required for Section VIII rows.",
@@ -698,7 +714,7 @@
       "files": [
         "skills/ppt-master/references/image-layout-patterns.md"
       ],
-      "max_tokens": 8000
+      "max_tokens": 8250
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
@@ -725,7 +741,7 @@
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 11600
+      "max_tokens": 11625
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",
@@ -736,7 +752,7 @@
       "files": [
         "skills/ppt-master/references/executor-web-image.md"
       ],
-      "max_tokens": 12000
+      "max_tokens": 12050
     },
     "stage.generate.executor.notes": {
       "description": "Post-SVG speaker-notes generation rules.",

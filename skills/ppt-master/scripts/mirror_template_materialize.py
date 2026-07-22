@@ -278,11 +278,12 @@ def _template_execution_manifest_files(
         "text_slots_schema": TEMPLATE_TEXT_SLOTS_SCHEMA,
         "execution_policy": (
             "This manifest and its text_slots_path records are derived tool "
-            "metadata, not page-authoring inputs. Before each page, run "
-            "project_manager.py page-context <project> P<NN> --record-usage. "
-            "Read the selected complete prototype only when its path and SHA "
-            "are absent from the active execution context or changed, then "
-            "reuse it. Choose semantic replacements and edit only existing "
+            "metadata, not page-authoring inputs. Retain the complete project "
+            "Design Spec and lock once per valid uncompacted execution context; "
+            "use page-context only for on-demand diagnostics or telemetry. "
+            "Read the selected complete prototype once per valid context and "
+            "again only after a known change or context invalidation. Choose "
+            "semantic replacements and edit only existing "
             "visible text values; structured export validates text/tspan "
             "topology and attributes against the prototype."
         ),

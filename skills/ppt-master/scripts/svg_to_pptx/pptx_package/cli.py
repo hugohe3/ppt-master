@@ -80,7 +80,7 @@ _PPTX_STRUCTURE_SECTION_RE = re.compile(
     r"(?ms)^##[ \t]+pptx_structure[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)"
 )
 _PPTX_STRUCTURE_MODE_RE = re.compile(
-    r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^\s#]+)[ \t]*(?:#.*)?$"
+    r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^#\r\n]*?)[ \t]*(?:#.*)?$"
 )
 _LEGACY_PPTX_STRUCTURE_MODES = frozenset({
     'baseline',
@@ -466,7 +466,7 @@ def _print_postflight_receipt(receipt: _PostflightReceipt) -> None:
 
 
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
-    """Return the explicitly locked SVG export mode, without legacy fallback."""
+    """Return the explicitly locked SVG export mode, if the lock declares one."""
     lock_path = project_path / 'spec_lock.md'
     try:
         content = lock_path.read_text(encoding='utf-8')
@@ -493,22 +493,40 @@ def _declared_canvas_viewbox(project_path: Path) -> str | None:
     return value.strip() if isinstance(value, str) and value.strip() else None
 
 
-def _print_structure_contract_error(mode: str | None) -> None:
-    """Explain how to replace a legacy or absent SVG structure contract."""
-    label = repr(mode) if mode else 'missing (legacy implicit baseline)'
+def _print_structure_contract_error(
+    mode: str | None,
+    *,
+    requested_mode: str | None = None,
+) -> None:
+    """Explain an unsupported mode or a structured-export lock mismatch."""
+    label = repr(mode) if mode is not None else 'missing'
+    if requested_mode == 'structured':
+        print(
+            "Error: --pptx-structure structured requires an explicit "
+            "spec_lock.md pptx_structure.mode: structured contract; found "
+            + label + ".",
+            file=sys.stderr,
+        )
+        print(
+            "  A legacy lock without pptx_structure.mode defaults only to flat. "
+            "Mirror/layout reuse must first create a current template workspace "
+            "through skills/ppt-master/workflows/create-template.md, then generate "
+            "new structured SVG pages.",
+            file=sys.stderr,
+        )
+        return
     print(
-        "Error: release SVG export requires an explicit spec_lock.md "
-        "pptx_structure.mode: flat (style reference / free design / brand-only) "
-        "or structured (mirror/layout reuse); found " + label + ".",
+        "Error: unsupported spec_lock.md pptx_structure.mode " + label + ". "
+        "Current release modes are flat (style reference / free design / "
+        "brand-only) and structured (mirror/layout reuse).",
         file=sys.stderr,
     )
     print(
-        "  Style-reference, free-design, and brand-only projects must write a "
-        "new mode: flat lock and regenerate project-canonical flat SVG pages. "
-        "Mirror/layout reuse must first create a current template workspace "
+        "  A legacy lock with no pptx_structure.mode defaults to flat. "
+        "Explicit legacy or unknown values are not inferred. Mirror/layout reuse "
+        "must first create a current template workspace "
         "through skills/ppt-master/workflows/create-template.md, then generate "
-        "new structured SVG pages. Existing PPTX/SVG files are not upgraded "
-        "in place.",
+        "new structured SVG pages.",
         file=sys.stderr,
     )
 
@@ -735,8 +753,8 @@ Recorded narration:
         default=None,
         help=(
             'PPTX structure strategy for native export. Omitting this flag reads '
-            'spec_lock.md: flat is the style-reference/free-design/brand-only '
-            'release mode and '
+            'spec_lock.md; a legacy lock without pptx_structure.mode defaults to '
+            'flat. Flat is the style-reference/free-design/brand-only release mode and '
             'builds one clean project-owned Master plus Blank Layout while keeping '
             'all SVG objects slide-local; structured is the mirror/layout reuse '
             'mode and requires complete explicit metadata. baseline, template, '
@@ -837,17 +855,38 @@ Recorded narration:
     structure_lock = None
     native_structure_contract = None
     pptx_structure = args.pptx_structure
+    lock_path = project_path / 'spec_lock.md'
+    if not lock_path.is_file():
+        print(
+            "Error: spec_lock.md is required for release SVG export",
+            file=sys.stderr,
+        )
+        return 1
     declared_structure_mode = _declared_pptx_structure_mode(project_path)
     if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
         _print_structure_contract_error(pptx_structure)
         return 1
-    if pptx_structure is None:
-        if declared_structure_mode not in _RELEASE_PPTX_STRUCTURE_MODES:
-            _print_structure_contract_error(declared_structure_mode)
-            return 1
-        pptx_structure = declared_structure_mode
-    elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
+    if (
+        declared_structure_mode is not None
+        and declared_structure_mode not in _RELEASE_PPTX_STRUCTURE_MODES
+    ):
         _print_structure_contract_error(declared_structure_mode)
+        return 1
+    if pptx_structure is None:
+        if declared_structure_mode is None:
+            pptx_structure = 'flat'
+            print(
+                "Warning: spec_lock.md has no pptx_structure.mode; using flat "
+                "compatibility mode.",
+                file=sys.stderr,
+            )
+        else:
+            pptx_structure = declared_structure_mode
+    elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
+        _print_structure_contract_error(
+            declared_structure_mode,
+            requested_mode='structured',
+        )
         return 1
 
     if (

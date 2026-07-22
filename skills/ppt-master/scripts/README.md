@@ -82,13 +82,15 @@ uvx ppt-master project page-context <project_path> P07 --bundle --record-usage
 uvx ppt-master project page-context-report <project_path>
 ```
 
-`page-context` prints a read-only compact current-page projection. Its global
-lock projection repeats per page as a continuity anchor set, not a color/font allowlist; large Design Specs,
+`page-context` is an on-demand read-only current-page projection for diagnostics,
+routing checks, or context measurement; normal generation retains the complete
+Design Spec and lock once per valid execution context. Each invocation includes
+the global lock projection as a continuity anchor set, not a color/font allowlist; large Design Specs,
 prototype, and `templates/charts/` references are emitted only as scoped
 path/SHA fingerprints and are read once per execution context. `--bundle` is a
 deprecated compatibility no-op. `--record-usage` writes one derived snapshot
 under `analysis/page-context/`; exact `o200k_base` token counts are optional and
-degrade to `tokens: null` when `tiktoken` is absent.
+degrade to `tokens: null` when `tiktoken` is absent. Telemetry may be partial.
 
 Chart candidate recall:
 
