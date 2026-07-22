@@ -12,9 +12,9 @@ For each selected `templates/charts/<key>.svg`, use its Skill-relative `referenc
 
 **Per-page chart reference — `page_charts` section**:
 
-Before drawing each page, look up its entry in `page_charts` to decide which chart structure applies (the SVG itself was loaded in §1):
+Before drawing each page, look up whether `page_charts` supplies a page-local reference:
 
-- Entry present (e.g., `P09: timeline_horizontal`) → adapt the corresponding chart SVG already in context under §3; do not copy it verbatim. Use the selected §VII row and SVG; do not load the full chart catalog during execution.
+- Entry present (e.g., `P09: timeline_horizontal`) → read `templates/charts/<key>.svg` for that page only, then realize §IX with or without its exact chart type; do not copy it verbatim or load the catalog.
 - No entry for this page → no catalog reference was selected. Follow the current §IX `Visualization` / `Layout`; design any declared custom visualization from scratch without inventing a §VII reference.
 - Whole section absent → no catalog references were selected; §IX may still contain custom data charts or tables.
 
@@ -108,21 +108,22 @@ rg -n 'data-pptx-replace-with="(chart|table)"|<metadata type="application/json">
 
 ## 3. Visualization Reference
 
-Chart SVGs referenced in **VII. Visualization Reference List** are loaded once through §1. This section governs adaptation only.
+§1 loads the SVG selected by `page_charts`; this section governs adaptation. For legacy wider §VII tables, bind by `Page | Template` and ignore extra fields.
 
-**Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply the active Design Spec and `spec_lock.md`; preserve the visualization type and data semantics.
+**Hard rule**: treat the loaded SVG as a page-local reference, not a required base. §IX and source data own the final information structure; never replicate the preview verbatim.
 
 **Adaptation rules**:
-- **Preserve**: visualization type (bar/line/pie/timeline/process/framework…), information relationships, data encoding, and every content obligation in the active Design Spec
-- **Selected key, flexible realization**: keep the Strategist-selected chart key/type; its preview grouping, frame count, item count, capacity, and geometry are adaptable to the actual authored content
+- **Preserve**: planned information relationships, data encoding, and every content obligation in the active Design Spec
+- **Page-local only**: a reference row applies only to its mapped page; never spread it across the deck
+- **Flexible realization**: borrow, recombine, or depart from the preview's type and geometry when the current page is better served another way
 - **Carry forward**: every planned label, value, unit, status, source, and explanatory block; never shorten or drop content to imitate a lighter catalog preview
 - **Adapt**: project data and labels, dimensions, axes, legend, and spacing as the authored content requires
 - **Project-owned**: palette, typography, container treatment, effects, background, and page chrome; catalog preview values are fallbacks, never defaults
 - **Bound final body modules**: add or revise root-coordinate `data-pptx-bounds` on every visible direct root `<g>` copied into the final page; nested groups need none, chart geometry and local references are not content-boundary inputs, and catalog reference warnings never waive the final-page contract
 - **Adjust with fidelity**: composition, axis ranges, grouping, and grid may change when the actual content, relationships, hierarchy, and data encoding remain complete
-- **Forbidden**: changing visualization type without spec justification; omitting planned data points, labels, relationships, or explanatory content to fit the catalog preview
+- **Forbidden**: treating preview structure as the page specification; omitting planned data points, labels, relationships, or explanatory content to fit it
 
-> Templates: `templates/charts/`. The Strategist's selected key is already locked in `page_charts`; execution opens only that key's SVG.
+> Templates: `templates/charts/`. `page_charts` maps one optional reference to one page; execution opens only that SVG.
 
 ### 3.1 Chart Coordinate Calibration
 

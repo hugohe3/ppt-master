@@ -43,8 +43,8 @@ The command is read-only. It exits `0` when every key exists and `1` when any ke
 ## Selection boundary
 
 - Preserve the two-lens review: numeric/data pages and structural-information pages.
-- Record the selected candidate's returned `summary` verbatim as the Section VII `summary-quote`.
-- Keep §VII as a positive inventory: every row has a real key/path, and the whole section is omitted when no candidate is selected.
+- Keep §VII as a positive selection list: record only `Page | Template` for each selected returned key, and omit the whole section when no candidate is selected.
+- Derive `templates/charts/<key>.svg` from the selected key; keep page-specific use and adaptation in §IX rather than duplicating them in §VII.
 - Never serialize `no-template-match`, an empty table, or a no-reference explanation into §VII.
-- Record real returned runners-up and page-specific rejection reasons only for pages with a selected reference.
-- Open only the selected `<key>.svg` before authoring that visualization; do not load unrelated catalog SVGs.
+- Do not serialize returned summaries, paths, usage prose, or runners-up into new §VII tables. Legacy wider tables remain readable.
+- Open the selected `<key>.svg` only as a reference for its mapped page; it does not lock type or geometry. Do not load unrelated catalog SVGs.

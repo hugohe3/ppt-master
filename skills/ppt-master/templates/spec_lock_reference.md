@@ -70,7 +70,7 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-`page_charts` values must exist as keys in `charts/charts_index.json`; a `no-template-match` result stays out of both Design Spec §VII and `page_charts`, while its custom fallback remains in the page's §IX block.
+Each new Design Spec §VII `Page | Template` row projects one-to-one into `page_charts` as a page-local reference lookup, not a type or geometry lock. Values must exist as keys in `charts/charts_index.json`; `no-template-match` stays out of both sections while its fallback remains in §IX.
 
 Typography projection is role-for-role, not a lossy summary:
 
