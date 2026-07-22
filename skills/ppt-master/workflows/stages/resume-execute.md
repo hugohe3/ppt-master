@@ -28,8 +28,8 @@ Verify the project's planning-session artifacts before doing anything else:
 
 | File / Directory | Required when | Reason |
 |---|---|---|
-| `<project_path>/spec_lock.md` | Always | Strategist's execution contract; `page-context` projects its current-page values |
-| `<project_path>/design_spec.md` | Always | Section IX page outline; `page-context` projects the current page block |
+| `<project_path>/spec_lock.md` | Always | Strategist's execution anchors and routing contract; read it completely once in this fresh execution context |
+| `<project_path>/design_spec.md` | Always | Complete approved design narrative and Section IX page outline; read it completely once in this fresh execution context |
 | `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
 | `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout / mirror prototypes required by execution |
 | `skills/ppt-master/templates/charts/` | `spec_lock page_charts` references any | Shared chart SVGs selected by key |
@@ -50,10 +50,12 @@ Read skills/ppt-master/workflows/generate-pptx.md
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
+- Read the complete project Design Spec, then the complete `spec_lock.md`, once to establish the fresh execution context
+- If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
 - Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked preset mode / visual-style files); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
 - Design Parameter Confirmation
-- Read the project Design Spec and, when structured, the template Design Spec once; retain both in the fresh execution context. A later repair authored by this same main agent follows [`executor-base.md`](../../references/executor-base.md) §2.1 targeted readback/rebind instead of loading the project Design Spec a second time
-- Per-page `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage` load + sequential page generation; the stable anchor projection repeats intentionally without becoming a color/font allowlist, while each prototype/chart SVG is loaded only before its first use or after its SHA changes
+- When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
+- Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load
 - Quality Check Gate
 - Speaker notes generation
 - Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)

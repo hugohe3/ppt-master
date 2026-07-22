@@ -70,26 +70,29 @@ Notes:
   Multi-deck per project: several PPTX imports each get their own `<stem>.*`
   artifacts and a `decks[]` entry; re-importing the same stem replaces its entry.
 
-### Per-page execution view
+### On-demand page execution view
 
 `page-context` projects `design_spec.md` and `spec_lock.md` into one compact
 current-page view on stdout. The default command is read-only; `--pretty`
 changes JSON formatting only. Before projection it revalidates the machine lock
 and selected template-root identities; design-brief values are not treated as
-a second lock. Slide headings at H3–H6 remain readable by the projector.
+a second lock. Slide headings at H3–H6 remain readable by the projector. Normal
+generation retains the complete planning artifacts once per valid execution
+context and does not invoke this command before every page; use it only for an
+explicit diagnostic, routing check, or context-usage measurement.
 
-The output deliberately repeats the bounded `global` anchor set on every
-page as a cross-page anchor set, not a color/font allowlist. `lock_source` binds that projection to the current
+Each invocation deliberately includes the bounded `global` anchor set as a
+cross-page continuity view, not a color/font allowlist. `lock_source` binds that projection to the current
 `spec_lock.md` SHA. `page_context` contains the current §IX brief, rhythm,
 resources, and conditional template/chart assignment. `reference_set` contains
 `kind`, scoped path, SHA, and `once-per-execution-context` policy for the
 project/template Design Specs and selected prototype/chart SVGs. The project
 Design Spec additionally carries
 `same_context_edit_policy: targeted-readback-and-rebind`: when the current main
-agent makes a bounded repair that preserves roster/order/identity/communication,
-it reads back only the exact changed fragments,
-validates, reruns `page-context`, and binds the verified delta to the new SHA.
-Fresh, external, unknown, or mismatched changes still require a complete read.
+agent makes a bounded repair in a valid uncompacted context that preserves
+roster/order/identity/communication, it reads back only the exact changed
+fragments and validates them before continuing. Fresh, compacted, external,
+unknown, or mismatched changes require one complete Design Spec and lock read.
 
 The deprecated `--bundle` flag remains accepted as a compatibility no-op. It
 never appends a Design Spec, prototype SVG, chart SVG, manifest, or text-slot
@@ -115,9 +118,9 @@ exact compact stdout, and records the reference fingerprints. `tiktoken` is
 loaded lazily with `o200k_base`; when unavailable, the command still succeeds
 and records bytes, characters, hashes, and `tokens: null`.
 `page-context-report` summarizes only fresh snapshots and identifies stale or
-token-unavailable pages plus unique referenced files. The telemetry does not
-measure the once-loaded reference payloads, source-material reads, or other
-session-level prompt references.
+token-unavailable pages plus unique referenced files. Telemetry may be partial;
+it does not measure once-loaded references, source reads, or other session
+context.
 
 Common formats:
 - `ppt169`

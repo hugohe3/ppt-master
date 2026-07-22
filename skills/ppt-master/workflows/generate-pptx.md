@@ -12,7 +12,6 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
-- Before each page, load compact page-context; its repeated global values are continuity anchors, while unchanged large references stay in context.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
 
 ### SVG Page-Design Boundary
@@ -236,7 +235,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
-- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor consumes its current-page projection from `page-context`
+- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor retains it in the active execution context and may inspect an on-demand current-page projection for diagnostics
 
 For a new project, use the reference-first whole-document sequence:
 
@@ -337,6 +336,8 @@ Workflow:
 
 **Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
 
+**Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
+
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
 Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
@@ -376,26 +377,20 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for `templates/charts/<key>.svg`. Both reuse unchanged `reference_set` path + SHA fingerprints; flat routes skip template reads. Summaries and sidecars never replace full SVGs.
+**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for chart SVGs. Read each selected full reference once per valid context; reread only after a known change or context invalidation. Flat routes skip template reads. Summaries and sidecars never replace full SVGs.
 
 > Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
-**Per-page context load (Mandatory)**: before **each** SVG page, run:
-
-```bash
-python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage
-```
-
-Use `global` as the compact cross-page anchor set, `page_context` as the page delta, and `reference_set` under the Executor load policy. Anchors are defaults and reusable semantic roles, not a color/font allowlist. The retained Design Spec owns optional `Template Application`. This replaces neither gate artifacts nor source facts. See [`executor-base.md`](../references/executor-base.md) §2.1.
+**Page-context**: use the read-only projector only for the diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
-> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
+> ⚠️ **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate. After context invalidation, reload under §2.1 before continuing; do not insert batches or mid-run checker calls.
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
-`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, regenerate the page context, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
+`template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
 `template_reuse_scope: style`, free-design, and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 

@@ -74,8 +74,7 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 
 ✅ Good (from `executor-base.md`):
 ```
-**Hard rule**: Before generating **each** SVG page, run:
-`python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage`.
+**Hard rule**: Reuse the complete Design Spec and lock while the active context remains valid. After compaction or fresh/resumed execution, read both once before continuing.
 
 **Forbidden — unresolved asset references**:
 - Icons MUST resolve to prepared project-local assets
