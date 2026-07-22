@@ -302,14 +302,14 @@ python3 skills/ppt-master/scripts/chart_recall.py validate <key> [<key> ...]
 
 A failed validation must be corrected with a recalled key. `no-template-match` is not a key and never appears in `page_charts`.
 
-**Section VII selection list**: §VII is an optional inventory of page-local catalog references. Include it only when at least one candidate is selected, and record only the page plus the exact returned template key. The path is deterministically `templates/charts/<key>.svg`; §IX remains authoritative for the page's intent and information structure. Do not copy summaries, paths, usage prose, runners-up, `no-template-match`, `n/a`, or no-reference explanations into §VII.
+**Section VII selection list**: when a reference is selected, write `Page | Template | Usage`; Usage is one short page-local purpose, not geometry. Omit §VII when none is selected, and never add path, summary, runners-up, `no-template-match`, or `n/a`. §IX remains authoritative.
 
 **Native-ready boundary**: For every independent data chart or pure text-grid table, add `Native-ready: yes|no` to its §IX page block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Conceptual rows and incidental sparklines, KPI trends, or insets omit the field; Executor never promotes them.
 
 ```markdown
-| Page | Template |
-| --- | --- |
-| P03 | line_chart |
+| Page | Template | Usage |
+| --- | --- | --- |
+| P03 | line_chart | Compare the source metrics over time |
 ```
 
 **Flag native-preset candidates**: In the affected page's §IX `Layout` / `Visualization`, note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch; this note never creates a §VII row by itself.
@@ -425,7 +425,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
-   - **page_charts (write only for pages with a selected catalog reference)**: Project every `Page | Template` row in `design_spec.md §VII` one-to-one as `P<NN>: <template_key>`. This is a page-local reference lookup, not a type or geometry lock. No-match pages never appear here; if no reference is selected, omit the section even when §IX contains custom visualizations.
+   - **page_charts**: project each §VII row's `Page` and `Template` as `P<NN>: <template_key>`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Omit no-match pages and the empty section.
 
 ---
 
