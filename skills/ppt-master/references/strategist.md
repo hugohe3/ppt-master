@@ -210,7 +210,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Family selection**:
 
-- User or active template typography is authoritative. Otherwise present two coherent choices: one concord (safe) and one contrast (more tension). Do not pair title/body families that are merely near-duplicates.
+- User or active template typography is authoritative. Otherwise ≥3 Stage-2 directions include concord (safe) and contrast (tension); never add a separate font-choice round or pair near-duplicate title/body families.
 - Every Stage-2 direction carries `heading` / `body` `cjk`, `latin`, `css`, and positive `body_size`; repeat user/template-fixed stacks.
 - Exported faces must resolve to fonts available in PowerPoint. Safe anchors are CJK `Microsoft YaHei` / `SimHei` / `SimSun` / `FangSong` / `KaiTi`; Latin sans `Arial` / `Calibri` / `Segoe UI`; Latin serif `Times New Roman` / `Georgia` / `Cambria`; mono `Consolas`; display `Impact` / `Arial Black`. Executor may sparsely use another export-safe family on short non-structural display/ornament; never on title/body/data/annotation roles. Recurrence requires upstream selection.
 - Keep each stack to four families or fewer. A non-installed brand or web face is legal only when the Design Spec explicitly records the install / embed requirement and a safe substitute.
