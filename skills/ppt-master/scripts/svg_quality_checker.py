@@ -889,6 +889,7 @@ PPT_SAFE_FONTS = {
 # is prompt-owned; Checker only verifies that a used value is close to at least
 # one declared size anchor.
 FONT_SIZE_ANCHOR_TOLERANCE_PX = 2.0
+SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES = 2
 
 # Oversampling alone does not imply distortion and is often harmless for small
 # logos. Warn about downscaling only when the source also has material on-disk
@@ -1160,6 +1161,8 @@ class SVGQualityChecker:
             'fonts': defaultdict(set),
             'sizes': defaultdict(set),
         }
+        self._undeclared_size_occurrences: Counter[str] = Counter()
+        self._undeclared_size_counts_ready = False
         self._lock_seen = False  # True once we locate at least one spec_lock.md
         self._source_manifest_cache: Dict[Path, Dict] = {}
         # Template-mode aggregation (populated by check_directory when
@@ -1370,10 +1373,10 @@ class SVGQualityChecker:
                 self._check_semantic_markers(root, svg_path, result)
 
                 # 9. Compare values with spec_lock anchors. Additional colors
-                #    and fonts are informational. Generated-page type sizes
-                #    outside every role band are errors; other spec-backed SVG
-                #    locations retain advisory review. Templates do not ship a
-                #    spec_lock.md, so skip in template mode to avoid noise.
+                #    and fonts are informational. Generated-page type sizes may
+                #    stay sparse twice; the third occurrence is an error. Other
+                #    spec-backed SVG locations retain advisory review. Templates
+                #    do not ship a spec_lock.md, so skip in template mode.
                 if not self.template_mode:
                     self._check_spec_lock_alignment(
                         content,
@@ -4779,7 +4782,8 @@ class SVGQualityChecker:
         self,
     ) -> Tuple[set[str], set[str], set[str]]:
         """Return color/font/size values owned by the selected mirror page."""
-        if self._active_prototype_root() is None:
+        prototype_root = self._active_prototype_root()
+        if prototype_root is None:
             return set(), set(), set()
         try:
             content = self._active_prototype_path.read_text(encoding='utf-8')
@@ -4805,12 +4809,179 @@ class SVGQualityChecker:
             for value in self._font_family_values(content)
             if self._normalize_font_stack(value)
         }
-        sizes = {
-            self._normalize_size(value)
-            for value in self._svg_property_values(content, 'font-size')
-            if self._normalize_size(value)
-        }
+        sizes = set(self._effective_text_size_counts(prototype_root))
         return colors, fonts, sizes
+
+    def _declared_typography_size_anchors(
+        self,
+        lock: Dict,
+    ) -> Tuple[Dict, set[str], List[float], List[str]]:
+        """Return valid declared size anchors and malformed lock rows."""
+        typography = lock.get('typography', {})
+        positive_numeric_re = re.compile(
+            r'^(?=.*[1-9])(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)$'
+        )
+        locked_sizes: set[str] = set()
+        anchor_sizes: List[float] = []
+        invalid_sizes: List[str] = []
+        for key, raw_value in typography.items():
+            if key == 'font_family' or key.endswith('_family'):
+                continue
+            value = raw_value.strip()
+            if positive_numeric_re.fullmatch(value) is None:
+                invalid_sizes.append(f"{key}: {raw_value}")
+                continue
+            try:
+                anchor = float(value)
+            except (TypeError, ValueError):
+                invalid_sizes.append(f"{key}: {raw_value}")
+                continue
+            if not math.isfinite(anchor) or anchor <= 0:
+                invalid_sizes.append(f"{key}: {raw_value}")
+                continue
+            locked_sizes.add(self._canonical_font_size_key(anchor))
+            anchor_sizes.append(anchor)
+        return typography, locked_sizes, anchor_sizes, invalid_sizes
+
+    def _count_undeclared_size_occurrences(
+        self,
+        root: ET.Element,
+        *,
+        locked_sizes: set[str],
+        anchor_sizes: List[float],
+        prototype_sizes: set[str],
+    ) -> Counter[str]:
+        """Count text objects using valid sizes outside all declared bands."""
+        counts: Counter[str] = Counter()
+        if not locked_sizes:
+            return counts
+        for value, occurrence_count in self._effective_text_size_counts(root).items():
+            if value in prototype_sizes and value not in locked_sizes:
+                continue
+            if value in locked_sizes:
+                continue
+            try:
+                used_px = float(value)
+            except (TypeError, ValueError):
+                continue
+            if not math.isfinite(used_px) or used_px < 0:
+                continue
+            if any(
+                abs(used_px - anchor_px) <= FONT_SIZE_ANCHOR_TOLERANCE_PX
+                for anchor_px in anchor_sizes
+            ):
+                continue
+            counts[value] += occurrence_count
+        return counts
+
+    def _effective_text_size_counts(self, root: ET.Element) -> Counter[str]:
+        """Count each effective size once per non-empty SVG text object."""
+        counts: Counter[str] = Counter()
+        if _resolve_project_font_sizes is None:
+            return counts
+        working_root = root
+        if (
+            _expand_local_use_references is not None
+            and _UseExpansionError is not None
+        ):
+            expanded_root = copy.deepcopy(root)
+            try:
+                _expand_local_use_references(expanded_root)
+            except _UseExpansionError:
+                pass
+            else:
+                working_root = expanded_root
+        try:
+            effective_sizes = _resolve_project_font_sizes(working_root)
+        except ValueError:
+            return counts
+
+        def collect_text_object_sizes(element: ET.Element) -> set[str]:
+            values: set[str] = set()
+
+            def visit(node: ET.Element) -> None:
+                if (node.text or '').strip():
+                    values.add(
+                        self._canonical_font_size_key(effective_sizes[id(node)])
+                    )
+                for child in node:
+                    visit(child)
+                    if (child.tail or '').strip():
+                        values.add(
+                            self._canonical_font_size_key(
+                                effective_sizes[id(node)]
+                            )
+                        )
+
+            visit(element)
+            return values
+
+        definition_containers = {
+            'clippath',
+            'defs',
+            'marker',
+            'mask',
+            'pattern',
+            'symbol',
+        }
+
+        def visit_visible(element: ET.Element) -> None:
+            local_name = _local_name(element).casefold()
+            if local_name in definition_containers:
+                return
+            if local_name == 'text':
+                counts.update(collect_text_object_sizes(element))
+                return
+            for child in element:
+                visit_visible(child)
+
+        visit_visible(working_root)
+        return counts
+
+    @staticmethod
+    def _canonical_font_size_key(value: float) -> str:
+        """Canonicalize equivalent numeric spellings for deck-wide counting."""
+        return format(value, '.12g')
+
+    def _prepare_undeclared_size_occurrences(
+        self,
+        svg_files: List[Path],
+    ) -> None:
+        """Pre-count sparse undeclared sizes before per-file diagnostics."""
+        previous_prototype = self._active_prototype_path
+        try:
+            for svg_path in svg_files:
+                lock = self._get_spec_lock(svg_path)
+                if lock is None:
+                    continue
+                _typography, locked_sizes, anchor_sizes, _invalid = (
+                    self._declared_typography_size_anchors(lock)
+                )
+                self._active_prototype_path = self._prototype_by_output.get(
+                    svg_path.resolve()
+                )
+                _colors, _fonts, prototype_sizes = (
+                    self._prototype_drift_allowances()
+                )
+                try:
+                    content = svg_path.read_text(encoding='utf-8')
+                except OSError:
+                    continue
+                try:
+                    root = ET.fromstring(content)
+                except ET.ParseError:
+                    continue
+                self._undeclared_size_occurrences.update(
+                    self._count_undeclared_size_occurrences(
+                        root,
+                        locked_sizes=locked_sizes,
+                        anchor_sizes=anchor_sizes,
+                        prototype_sizes=prototype_sizes,
+                    )
+                )
+        finally:
+            self._active_prototype_path = previous_prototype
+            self._undeclared_size_counts_ready = True
 
     def _check_spec_lock_alignment(
         self,
@@ -4825,12 +4996,13 @@ class SVGQualityChecker:
         Covers colors (fill / stroke / stop-color / flood-color / pattern
         metadata), font-family, and font-size.
         Additional colors and font families are valid contextual authoring and
-        are recorded as information. Font sizes outside every declared role
-        anchor's ±2px band are errors in generated ``svg_output`` pages and
-        warnings in other spec-backed SVG locations. Exact mirror-prototype
-        values remain inherited information. Exact values are accumulated in
-        self._anchor_value_summary for the end-of-run aggregation. When
-        spec_lock.md is missing, silently skip this local comparison; the
+        are recorded as information. A valid undeclared display size may occur
+        at most twice across generated pages; its third occurrence makes it a
+        recurring role and blocks ``svg_output`` until the role is declared.
+        Structural text still maps to declared role bands. Exact mirror-
+        prototype values remain inherited information. Exact values are
+        accumulated in self._anchor_value_summary for end-of-run aggregation.
+        When spec_lock.md is missing, silently skip this local comparison; the
         Generate route's required-artifact gate owns whether execution may begin.
         """
         lock = self._get_spec_lock(svg_path)
@@ -4879,20 +5051,15 @@ class SVGQualityChecker:
         locked_colors = set(allowed_colors)
         allowed_colors.update(prototype_colors)
 
-        typo = lock.get('typography', {})
-        numeric_size_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
-        invalid_lock_sizes = []
-        for k, v in typo.items():
-            if k == 'font_family' or k.endswith('_family'):
-                continue
-            if not numeric_size_re.fullmatch(v.strip()):
-                invalid_lock_sizes.append(f"{k}: {v}")
+        typo, locked_sizes, anchor_sizes, invalid_lock_sizes = (
+            self._declared_typography_size_anchors(lock)
+        )
         if invalid_lock_sizes:
             shown = ', '.join(invalid_lock_sizes[:5])
             more = len(invalid_lock_sizes) - 5
             suffix = f" (+{more} more)" if more > 0 else ""
             result['errors'].append(
-                f"spec_lock typography sizes must be unitless numeric px values; "
+                f"spec_lock typography sizes must be positive finite unitless px values; "
                 f"found {shown}{suffix}."
             )
 
@@ -4919,20 +5086,6 @@ class SVGQualityChecker:
         # Sizes: declared slots are anchors. Checker cannot infer which role a
         # text node carries, so it uses the union of their ±2px bands as a cheap
         # numeric safety net; prompt rules own semantic role mapping.
-        allowed_sizes = set()
-        anchor_sizes = []
-        for k, v in typo.items():
-            if k == 'font_family' or k.endswith('_family'):
-                continue
-            normalized_size = self._normalize_size(v)
-            allowed_sizes.add(normalized_size)
-            try:
-                anchor_sizes.append(float(normalized_size))
-            except (ValueError, TypeError):
-                pass
-        locked_sizes = set(allowed_sizes)
-        allowed_sizes.update(prototype_sizes)
-
         # Scan SVG for used values
         color_drifts = set()
         inherited_colors = set()
@@ -4970,26 +5123,17 @@ class SVGQualityChecker:
             ):
                 inherited_fonts.add(val)
 
-        size_drifts = set()
+        size_drift_counts = self._count_undeclared_size_occurrences(
+            root,
+            locked_sizes=locked_sizes,
+            anchor_sizes=anchor_sizes,
+            prototype_sizes=prototype_sizes,
+        )
+        size_drifts = set(size_drift_counts)
         inherited_sizes = set()
-        for raw_value in self._svg_property_values(content, 'font-size'):
-            val = self._normalize_size(raw_value)
+        for val in self._effective_text_size_counts(root):
             if val in prototype_sizes and val not in locked_sizes:
                 inherited_sizes.add(val)
-                continue
-            if not allowed_sizes or val in allowed_sizes:
-                continue
-            try:
-                used_px = float(val)
-            except (TypeError, ValueError):
-                size_drifts.add(val)
-                continue
-            if any(
-                abs(used_px - anchor_px) <= FONT_SIZE_ANCHOR_TOLERANCE_PX
-                for anchor_px in anchor_sizes
-            ):
-                continue
-            size_drifts.add(val)
 
         # Record in run-wide aggregation. Colors/fonts beyond the anchor set are
         # contextual values, not release issues. Generated-page sizes enforce
@@ -5010,22 +5154,45 @@ class SVGQualityChecker:
         if contextual_values:
             result['info']['contextual_values'] = contextual_values
 
-        if size_drifts:
+        sparse_sizes = {}
+        recurring_sizes = {}
+        for value, local_count in size_drift_counts.items():
+            total_count = (
+                self._undeclared_size_occurrences.get(value, local_count)
+                if self._undeclared_size_counts_ready
+                else local_count
+            )
+            target = (
+                sparse_sizes
+                if total_count <= SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES
+                else recurring_sizes
+            )
+            target[value] = total_count
+
+        if sparse_sizes:
+            result['info']['sparse_typography_sizes'] = {
+                value: count for value, count in sorted(sparse_sizes.items())
+            }
+
+        if recurring_sizes:
+            shown = ', '.join(
+                f"{value} ({count} occurrences)"
+                for value, count in sorted(recurring_sizes.items())
+            )
             size_issue = (
-                f"{len(size_drifts)} font-size value(s) fall outside ±2px of "
-                "every declared spec_lock role anchor (see anchor comparison "
-                "summary)"
+                f"undeclared font-size {shown} exceeds the sparse-display limit "
+                f"of {SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES} occurrences"
             )
             if svg_path.parent.name == 'svg_output':
                 result['errors'].append(
-                    "spec_lock typography-size violation: "
-                    f"{size_issue}. Reflow within a declared role band or repair "
-                    "the Design Spec and spec_lock with a justified named role; "
-                    "do not add a role only to silence the checker."
+                    "spec_lock typography-size recurrence: "
+                    f"{size_issue}. Structural text must return to its declared "
+                    "role band; a genuinely recurring display treatment needs a "
+                    "justified named role in the Design Spec and spec_lock."
                 )
             else:
                 result['warnings'].append(
-                    f"spec_lock typography-size review: {size_issue}"
+                    f"spec_lock typography-size recurrence review: {size_issue}"
                 )
         inherited_parts = []
         if inherited_colors:
@@ -5223,6 +5390,8 @@ class SVGQualityChecker:
         """
         dir_path = Path(directory)
         self._has_incomplete_page_roster = False
+        self._undeclared_size_occurrences = Counter()
+        self._undeclared_size_counts_ready = False
 
         if not dir_path.exists():
             print(f"[ERROR] Directory does not exist: {directory}")
@@ -5294,6 +5463,8 @@ class SVGQualityChecker:
             return []
 
         self._configure_prototype_context(dir_path, svg_files)
+        if not self.template_mode:
+            self._prepare_undeclared_size_occurrences(svg_files)
 
         directory_expected_viewbox: str | None = None
         directory_expected_label = "the first SVG canvas"
@@ -6765,8 +6936,8 @@ class SVGQualityChecker:
             self._anchor_value_summary[category]
             for category in ('colors', 'fonts')
         )
-        has_size_issues = bool(self._anchor_value_summary['sizes'])
-        if not has_contextual and not has_size_issues:
+        has_undeclared_sizes = bool(self._anchor_value_summary['sizes'])
+        if not has_contextual and not has_undeclared_sizes:
             print(
                 "\n[OK] spec_lock anchor comparison: no additional contextual "
                 "colors/fonts or out-of-band font sizes"
@@ -6797,19 +6968,31 @@ class SVGQualityChecker:
                 "recurring named semantic role."
             )
 
-        if has_size_issues:
+        if has_undeclared_sizes:
             print(
                 "\nTypography sizes outside every declared role anchor ±2px "
-                "(blocking in generated svg_output; advisory elsewhere):"
+                "(up to 2 occurrences are sparse; the 3rd is recurring):"
             )
             entries = sorted(
                 self._anchor_value_summary['sizes'].items(),
                 key=lambda item: (-len(item[1]), item[0]),
             )
             for val, files in entries:
-                count = len(files)
-                suffix = "file" if count == 1 else "files"
-                print(f"  {val}  ({count} {suffix})")
+                occurrences = self._undeclared_size_occurrences.get(
+                    val,
+                    len(files),
+                )
+                file_count = len(files)
+                file_suffix = "file" if file_count == 1 else "files"
+                policy = (
+                    "sparse"
+                    if occurrences <= SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES
+                    else "recurring — declare a role"
+                )
+                print(
+                    f"  {val}  ({occurrences} occurrences in {file_count} "
+                    f"{file_suffix}; {policy})"
+                )
 
     def _percentage(self, count: int) -> int:
         """Calculate percentage"""
@@ -6919,8 +7102,8 @@ class SVGQualityChecker:
                     introduced.append(item)
 
         # Keep the legacy `drift` JSON field for report compatibility. Its
-        # colors/fonts entries are informational anchor comparisons; size
-        # entries produce errors for generated pages and warnings elsewhere.
+        # colors/fonts entries are informational anchor comparisons; sparse
+        # size entries are informational until their third occurrence.
         drift = {
             category: {
                 value: sorted(files)

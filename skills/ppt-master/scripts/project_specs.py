@@ -19,6 +19,7 @@ Dependencies:
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Mapping
@@ -425,6 +426,38 @@ def _validate_section(
                     f"{markdown_name} schema: section '{section_id}' field "
                     f"'{field_name}' does not match '{pattern}'"
                 )
+
+    field_value_rules = definition.get("field_value_rules", [])
+    if isinstance(field_value_rules, list):
+        for rule in field_value_rules:
+            if not isinstance(rule, dict):
+                continue
+            key_pattern = rule.get("key_pattern")
+            value_pattern = rule.get("value_pattern")
+            if not isinstance(key_pattern, str) or not isinstance(
+                value_pattern, str
+            ):
+                continue
+            requirement = str(rule.get("requirement", "match its value grammar"))
+            for field_name, raw_value in fields.items():
+                if re.fullmatch(key_pattern, str(field_name)) is None:
+                    continue
+                value = str(raw_value).strip()
+                if bool(rule.get("normalize", True)):
+                    value = _normalize_schema_value(value)
+                value_matches = re.fullmatch(value_pattern, value) is not None
+                if value_matches and rule.get("numeric") == "positive_finite":
+                    try:
+                        number = float(value)
+                    except ValueError:
+                        value_matches = False
+                    else:
+                        value_matches = math.isfinite(number) and number > 0
+                if not value_matches:
+                    errors.append(
+                        f"{markdown_name} schema: section '{section_id}' field "
+                        f"'{field_name}' must {requirement}; found '{value}'"
+                    )
 
     minimum = definition.get("min_entries")
     if isinstance(minimum, int) and len(fields) < minimum:
