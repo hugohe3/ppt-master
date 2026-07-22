@@ -45,7 +45,7 @@
         "skills/ppt-master/SKILL.md",
         "skills/ppt-master/workflows/routing.md"
       ],
-      "max_tokens": 5200
+      "max_tokens": 5250
     },
     "route.create-template.brand": {
       "description": "Create Brand path; it authors no SVG and does not activate Template_Designer or SVG modules.",
@@ -77,7 +77,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/decks/README.md"
       ],
-      "max_tokens": 57250
+      "max_tokens": 57300
     },
     "route.create-template.layout": {
       "description": "Create Layout path through Template_Designer, SVG core, and the structured PPTX interface.",
@@ -95,7 +95,7 @@
         "skills/ppt-master/templates/README.md",
         "skills/ppt-master/templates/layouts/README.md"
       ],
-      "max_tokens": 57450
+      "max_tokens": 57500
     },
     "route.enhance-native-pptx": {
       "description": "Finished-PPTX native enhancement route.",
@@ -117,7 +117,7 @@
       "files": [
         "skills/ppt-master/workflows/template-fill-pptx.md"
       ],
-      "max_tokens": 10850
+      "max_tokens": 10900
     },
     "route.generate.planning": {
       "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring and representative multi-source custom mode/style synthesis; schemas and optional scaffolds are tool-consumed.",
@@ -306,7 +306,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 82000
+      "max_tokens": 82100
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -344,7 +344,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 102700
+      "max_tokens": 102800
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -377,7 +377,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 106000
+      "max_tokens": 106100
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -389,7 +389,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 89000
+      "max_tokens": 89100
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -401,7 +401,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 98900
+      "max_tokens": 99000
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -423,7 +423,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 83400
+      "max_tokens": 83500
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -661,7 +661,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 59800
+      "max_tokens": 59900
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
