@@ -182,13 +182,14 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >
 > **At the Strategist confirmation stage — decide the library and stroke only; resolve and sync filenames after approval.**
 >
-> 1. **Pick exactly one stylistic library** — read the source material, then choose the library whose visual character best serves the deck:
+> 1. **Pick at most one primary stylistic library from the four bundled choices** — when generic icons are needed, read the source material and choose the one whose visual character best serves the deck:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
 >    - **`tabler-filled`** — fill, bezier curves and arcs (C/A); smooth, rounded, organic; medium weight, approachable
 >    - **`tabler-outline`** — stroke (line art); airy, refined, lightweight; best for screen-only (thin strokes may be hard to read in print)
 >    - **`phosphor-duotone`** — duotone; main shape + 20% opacity backplate; medium weight, layered, contemporary
->    - ⚠️ **One presentation = one stylistic library** for generic icons (home, chart, users, etc.). Mixing `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` is FORBIDDEN. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
->    - **Brand-logo exception**: `simple-icons` is NOT a stylistic library. Add it to the deck's icon inventory **only when** the deck genuinely contains real company / product / service brand marks (customer logos, tech-stack icons, social handles). Never substitute it for a missing generic icon.
+>    - During bundled-library selection, do not select generic icons from more than one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
+>    - **`simple-icons` may be selected alone or alongside the primary library**: it is a brand-logo library, not one of the four stylistic choices. Add it only for real company / product / service marks (customer logos, tech-stack icons, social handles), never as a substitute for a missing generic icon.
+>    - This restriction governs Strategist selection from the bundled catalog, not the prepared project asset pool. User-provided, template-carried, imported, custom, and previously prepared files under `<project_path>/icons/` remain valid material regardless of namespace or visual style.
 > 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`). For heavier presence, switch library instead of going above `3`.
 >
 > **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, then materialize the icon inventory:
@@ -197,9 +198,9 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 > 4. Put known basenames in the final batch. For an uncertain one, search the chosen style library — or `simple-icons` for a real brand mark — with `rg --files "skills/ppt-master/templates/icons/<library>" -g '*<keyword>*.svg'`; do not enumerate broad keyword families.
 > 5. **Copy and validate in one batch** — run `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This both validates and materializes `<project>/icons/<lib>/`; skip per-file prechecks.
 > 6. Keep each successful, case-sensitive `lib/name`: bundled basenames are lowercase (`tabler-outline/award`, never `tabler-outline/Award`); custom icons retain exact case.
-> 7. Record the successful inventory, library, and stroke-library `stroke_width` in `design_spec.md` §VI and `spec_lock.md icons`. Executor may use only this list.
+> 7. Record the successful bundled selection, its primary stylistic library, and any stroke-library `stroke_width` in `design_spec.md` §VI and `spec_lock.md icons`. Keep selected `simple-icons/*` ids in the same inventory without treating them as a second stylistic library. The inventory records the plan; it does not revoke other prepared project-local icons.
 >
-> 🚧 **GATE — missing icon = re-pick now**: on non-zero exit, search only the missing concept in the chosen library, re-pick, and rerun the final batch until clean. Never carry a missing icon forward or switch stylistic libraries to fill the gap.
+> 🚧 **GATE — missing icon = re-pick now**: on non-zero exit, search a missing generic concept only in the chosen stylistic library, or a missing real brand mark in `simple-icons`; re-pick and rerun the final batch until clean. Never carry a missing icon forward or switch among the four stylistic libraries to fill the gap.
 >
 > **Default — targeted lookup only**: do not load or rebuild a full index; search only unresolved concepts.
 

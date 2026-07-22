@@ -93,7 +93,7 @@ Use named lock roles literally when that role applies, and use optional `Templat
 
 **Execution anchors and contextual values**:
 
-- Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
+- Icons may use any SVG already prepared under `<project_path>/icons/`. `icons.library` records the Strategist's primary bundled style choice and `icons.inventory` records its planned selection; neither is an execution whitelist over project-local assets.
 - Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
 - Resolve structural families by role: exact `<role>_family` first, then `title_family` for title roles or `body_family` for other unoverridden roles, then legacy `font_family`. Never flatten declared role overrides. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
 - Font sizes use the named `typography` role values as deck-wide anchors. Map every structural or feature text item to a declared role before drawing; never inherit a template placeholder size. Start from the anchor, then use composition and content fit to adjust that occurrence by at most `±2`px. Keep same-page peers consistent and preserve the role hierarchy; bounded adjustment does not create a new role.
@@ -103,7 +103,7 @@ Use named lock roles literally when that role applies, and use optional `Templat
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
-Return upstream before any derived/accent identity becomes recurring or structural, or before typography needs a new semantic role or an outside-band size, then regenerate context. Local garnish and same-role `±2`px adjustments need no lock row. Never expand the lock to silence a comparison. Icons, images, structural fonts, role anchors, and resources keep their inventory/role rules.
+Return upstream before any derived/accent identity becomes recurring or structural, or before typography needs a new semantic role or an outside-band size, then regenerate context. Local garnish and same-role `±2`px adjustments need no lock row. Never expand the lock to silence a comparison. New icon acquisition, images, structural fonts, role anchors, and resources keep their preparation/role rules.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
@@ -196,11 +196,11 @@ Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.s
 
 ## 4. Icon Usage
 
-Strategist chooses the library and inventory; Executor only implements. Library details and one-library rule: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
+Strategist chooses at most one primary bundled stylistic library and may select `simple-icons` alone or alongside it; Executor implements from the complete prepared project-local pool. Library details and selection rules: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
 
-> **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. Custom SVGs must already exist in the prepared project inventory under `<project_path>/icons/<lib>/`. Reference only icons in `spec_lock.md icons.inventory`.
+> **Prepared-project boundary.** Any SVG already under `<project_path>/icons/<lib>/` is valid execution material, whether selected from a bundled library or supplied by the user, a template, or an import workflow. New authoring must resolve there. The global fallback in `finalize_svg.py embed-icons` is legacy compatibility, not permission for Executor to discover or use an unprepared global icon.
 
-> **Icon identifiers are case-sensitive filenames.** For bundled libraries, copy the verified lowercase basename exactly (`tabler-outline/award`, never `tabler-outline/Award`) into `spec_lock.md` and every `data-icon` value. Custom icon identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
+> **Icon identifiers are case-sensitive filenames.** Every `data-icon` value must use the exact project-local relative basename (`tabler-outline/award`, never `tabler-outline/Award`). Strategist records its planned bundled choices in `spec_lock.md`; Executor need not add other already-prepared project-local icons to that inventory. Custom identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 
 **Built-in icons — Placeholder method (recommended)**:
 
@@ -233,14 +233,14 @@ Strategist chooses the library and inventory; Executor only implements. Library 
 >
 > Icons are auto-embedded by `finalize_svg.py` — no need to run `embed_icons.py` manually.
 
-**Locked-id verification only**: verify the exact project-local file already named in `icons.inventory`:
+**Project-local verification**: verify the exact prepared file before use:
 ```bash
 test -f "<project_path>/icons/<lib>/<name>.svg"
 ```
 
-**Missing locked icon** → return to Strategist's inventory / `icon_sync.py` gate. Do not search the global library, select an alternative, copy a candidate, or edit the lock in Executor.
+**Missing project-local icon** → return to Strategist's preparation / `icon_sync.py` gate. Do not search the global library, select an alternative, or copy a candidate in Executor.
 
-**Hard rule — icon inventory**: use only the Design Spec's approved inventory. Mixing stylistic libraries within one deck is FORBIDDEN.
+**Hard rule — prepared assets**: Executor may freely combine project-local icons, regardless of namespace or style. It may not acquire a new icon or treat a globally resolvable file as prepared material.
 
 ---
 
