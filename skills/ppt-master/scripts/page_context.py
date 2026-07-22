@@ -29,6 +29,7 @@ from typing import Callable, Iterable
 from project_specs import (
     default_spec_lock_forbidden,
     parse_markdown_artifact,
+    parse_spec_lock_artifact,
     validate_project_artifacts,
 )
 from svg_to_pptx.pptx_package.template_structure import (
@@ -460,7 +461,7 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
             f"{preview}{suffix}"
         )
     try:
-        lock_sections_raw = parse_markdown_artifact(
+        lock_sections_raw = parse_spec_lock_artifact(
             lock_path,
             report_duplicate_fields=True,
         )

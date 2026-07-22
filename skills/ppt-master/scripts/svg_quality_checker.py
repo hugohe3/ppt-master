@@ -52,7 +52,7 @@ from svg_to_pptx.canvas_contract import (
 )
 
 try:
-    from update_spec import parse_lock as _parse_spec_lock
+    from project_specs import parse_spec_lock as _parse_spec_lock
 except ImportError:
     _parse_spec_lock = None  # spec_lock anchor comparison will be skipped
 
