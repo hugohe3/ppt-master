@@ -232,7 +232,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 > 🔁 **Image facts are regenerated on change, never maintained as a second store.** `images/` is the live working folder and single source of truth; `analysis/image_analysis.csv` is its regenerated view. Run `analyze_images.py` before the first inventory read, then reuse that CSV while `images/` is unchanged. Re-run after import/acquisition or any user addition, removal, or replacement; if the folder becomes empty, treat the inventory as empty and ignore a stale CSV.
 
-> ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output (`analysis/image_analysis.csv`) or the Design Spec's Image Resource List.
+> ⚠️ **Image understanding**: Do not bulk-open images. Strategist uses source context, captions / alt / titles, filenames, user notes, existing resource records, and `image_analysis.csv` first; only a specifically ambiguous asset may be inspected under [`strategist-image.md`](../references/strategist-image.md). Record the result in §VIII. Executor never reopens source images for semantic discovery or reselection.
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state

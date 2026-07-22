@@ -25,6 +25,8 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Mandatory — selected pattern, flexible realization**: Read [`image-layout-patterns.md`](./image-layout-patterns.md) once when this branch loads, then resolve every primary/modifier id in each active §VIII/lock row to its exact catalog entry. Preserve the selected semantic composition. Adapt geometry, ratio, placement, spacing, and hierarchy for the actual page; never replace the pattern, role, file/source, must-use, or crop policy downstream. If another pattern is needed, return upstream to update the Design Spec. Only explicit user/template preservation locks exact geometry. Avoid generic left/right repetition.
 
+**No semantic re-reading**: §VIII owns image identity, purpose, and focus / crop constraints. Executor uses its `Reference` plus regenerated dimensions; it never opens source images to rediscover subjects, substitute assets, or invent focus. For `adaptive` without reliable focus, use `meet`; missing or contradictory required constraints return upstream.
+
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
 **Crop policy**: read the §VIII row and matching lock projection. `crop=no-crop` (or a legacy trailing `| no-crop`) requires a native-ratio container and `preserveAspectRatio="xMidYMid meet"`. `crop=adaptive` permits but never requires cropping; choose `meet` or focal-safe `slice` from purpose, ratio, focus, and container. A missing or conflicting projection returns upstream instead of being inferred during execution.
