@@ -14,7 +14,7 @@ For each selected `templates/charts/<key>.svg`, use its Skill-relative `referenc
 
 Before drawing each page, look up whether `page_charts` supplies a page-local reference:
 
-- Entry present (e.g., `P09: timeline_horizontal`) → read `templates/charts/<key>.svg` for that page only, then realize §IX with or without its exact chart type; do not copy it verbatim or load the catalog.
+- Entry present (e.g., `P09: timeline_horizontal`) → read its §VII Usage and SVG for that page only; realize §IX without copying it or loading the catalog.
 - No entry for this page → no catalog reference was selected. Follow the current §IX `Visualization` / `Layout`; design any declared custom visualization from scratch without inventing a §VII reference.
 - Whole section absent → no catalog references were selected; §IX may still contain custom data charts or tables.
 
@@ -108,7 +108,7 @@ rg -n 'data-pptx-replace-with="(chart|table)"|<metadata type="application/json">
 
 ## 3. Visualization Reference
 
-§1 loads the SVG selected by `page_charts`; this section governs adaptation. For legacy wider §VII tables, bind by `Page | Template` and ignore extra fields.
+§1 loads the `page_charts` SVG. Usage gives page-local intent; §IX remains authoritative. Legacy wider rows keep Usage and ignore path/summary fields.
 
 **Hard rule**: treat the loaded SVG as a page-local reference, not a required base. §IX and source data own the final information structure; never replicate the preview verbatim.
 

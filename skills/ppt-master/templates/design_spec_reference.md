@@ -154,8 +154,8 @@ Use the §VII table only when at least one real catalog reference is selected. A
 ```markdown
 ## VII. Visualization Reference List
 
-| Page | Template |
-| --- | --- |
+| Page | Template | Usage |
+| --- | --- | --- |
 
 ## VIII. Image Resource List
 
@@ -163,7 +163,7 @@ Use the §VII table only when at least one real catalog reference is selected. A
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
-§VII records one optional reference for a specific page, not an execution instruction or deck-wide style. Every row contains one page and one returned catalog key. The Executor derives `templates/charts/<key>.svg`; §IX remains authoritative and may be realized without preserving the preview's type or geometry. Never emit an empty §VII, extra path / summary / usage / runners-up fields, a `no-template-match` / `n/a` row, or no-reference prose. When recall finds no fit, omit that page from §VII and describe the fallback in §IX. Legacy wider rows remain readable; new specs use this two-column form.
+§VII is an optional page-local reference list. Each row records the page, catalog key, and a short semantic Usage—not geometry. The key derives `templates/charts/<key>.svg`; §IX remains authoritative over final type and realization. Omit an empty §VII and never add path, summary, runners-up, `no-template-match`, or `n/a`. Put unmatched fallbacks in §IX. Legacy wider rows remain readable; new specs use these three columns.
 
 For every independent data chart or pure text-grid table, add `- **Native-ready**: yes|no` to its §IX Slide block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise use `no`. Conceptual visualizations and incidental sparklines, KPI trends, or insets omit this field and remain ordinary SVG.
 

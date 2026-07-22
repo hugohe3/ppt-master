@@ -70,7 +70,7 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-Each new Design Spec §VII `Page | Template` row projects one-to-one into `page_charts` as a page-local reference lookup, not a type or geometry lock. Values must exist as keys in `charts/charts_index.json`; `no-template-match` stays out of both sections while its fallback remains in §IX.
+Project each §VII `Page | Template | Usage` row's first two fields into `page_charts`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Keys must exist in `charts/charts_index.json`; no-match stays in §IX.
 
 Typography projection is role-for-role, not a lossy summary:
 
