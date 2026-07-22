@@ -125,7 +125,7 @@ The deck's **narrative + persuasion skeleton** — how the argument is organized
 
 **Source**:
 - User supplied their own outline / structure → preserve its facts and intended relationships, then apply the confirmed `content_divergence`. Treat an ordinary source outline as a Reference: regroup, reorder, or retitle when the communication contract benefits. Treat it as authoritative only when the user presents it as the final page plan or explicitly asks to preserve page order, titles, or wording; record that promoted boundary in `design_spec.md`. Still lock a mode for register, voice, and any permitted reshaping. `briefing` imposes the least if no particular "讲法" is intended.
-- Beautify / re-layout profile ([`beautify-pptx.md`](../workflows/profiles/beautify-pptx.md)) → the extracted source content is authoritative and **verbatim**, one step stricter than the user-outline case above. Each source slide becomes exactly one `§IX` page in source order; transcribe every content block word-for-word — never reshape / re-primary / condense / merge / split / reword. Lock `mode: briefing`; color (e) and typography (g) are whatever the user confirmed in the beautify plan — the source identity (theme or observed) by default, or a content / brand-aware alternative the beautify plan offered and the user picked — locked as truth (the beautify plan already ran the recommendation through the confirm UI, so do not re-recommend here). Charts / tables / images are regenerated from their extracted data in the inherited style (route chart/table data to §VII, pictures to §VIII) — data values stay frozen, the rendering is the deck's own; never carried over verbatim. Layout, hierarchy, rhythm, and visual rendering are what gets redesigned.
+- Beautify / re-layout profile ([`beautify-pptx.md`](../workflows/profiles/beautify-pptx.md)) → the extracted source content is authoritative and **verbatim**, one step stricter than the user-outline case above. Each source slide becomes exactly one `§IX` page in source order; transcribe every content block word-for-word — never reshape / re-primary / condense / merge / split / reword. Lock `mode: briefing`; color (e) and typography (g) are whatever the user confirmed in the beautify plan — the source identity (theme or observed) by default, or a content / brand-aware alternative the beautify plan offered and the user picked — locked as truth (the beautify plan already ran the recommendation through the confirm UI, so do not re-recommend here). Charts / tables / images are regenerated from their extracted data in the inherited style: record only selected catalog references in §VII, keep unmatched chart/table plans in their §IX page blocks, and route pictures to §VIII. Data values stay frozen and the rendering is the deck's own; visuals are never carried over verbatim. Layout, hierarchy, rhythm, and visual rendering are what gets redesigned.
 - A bespoke direction the five don't give — a nameable cadence (dialectic 正反合, myth-vs-reality, countdown, Socratic), a multi-act fusion of modes, or the user's own feel (confrontational here, detached there). Either the user asks, **or you recommend it** when a fusion / bespoke direction genuinely serves the deck better than a single preset (a recommendation the user confirms, like every lock). The *kind* doesn't matter → `mode: custom` + a `mode_behavior:` paragraph that **crystallizes the intent** (act sequence or posture shifts, title voice, page rhythm, register) concretely enough for the Executor to follow per page; it reads only `spec_lock.md`, never the chat. If the direction uses existing modes, read every corresponding `modes/<id>.md` before synthesis and retain those exact ids as its catalog basis; if it is genuinely new, do not invent a basis. One deck locks **one** value — a fusion is one `custom` describing the acts, never several modes. Avoid only the *dodge*: don't default to `custom` when a preset genuinely fits, and prefer a dominant mode + page-level variation when one mode leads.
 - No user structure or cadence → recommend from the confirmed `communication_intent`, `audience_outcome`, source texture, and delivery context using the index's auto-selection table. Composite intent does not automatically require `custom`: choose the dominant spine of the body pages when one exists; use a concrete `custom` act sequence only when no single spine can serve the stated priority / sequence. Present as a recommendation; the user may override.
 
@@ -292,7 +292,7 @@ The command returns a bounded shortlist plus `no-template-match`. Read it unfilt
 
 **Selection**:
 
-1. Choose the most specific valid structure from the bounded candidates or an explicitly requested semantic fallback; keep one primary visualization per page and adapt its treatment rather than mimicking it.
+1. Choose the most relevant candidate as a reference for that page. It does not lock the final visualization type or geometry and never applies to another page without its own row.
 2. After the fallback gate above, retain `no-template-match` when no reference fits: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the fallback only in the page's §IX `Visualization` / `Layout`; never serialize it into §VII.
 3. Validate all selected keys before writing the lock:
 
@@ -302,17 +302,14 @@ python3 skills/ppt-master/scripts/chart_recall.py validate <key> [<key> ...]
 
 A failed validation must be corrected with a recalled key. `no-template-match` is not a key and never appears in `page_charts`.
 
-**Section VII audit**: §VII is a positive reference inventory. Include it only when at least one catalog candidate is selected. Every row copies the selected candidate's returned `summary` verbatim into `Summary-quote` and records its real path plus page-specific usage. List real returned runners-up only for pages with a selected reference. Never write an empty §VII, a `no-template-match` / `n/a` row, or prose saying no reference exists; a no-match page is described only in its §IX block.
+**Section VII selection list**: §VII is an optional inventory of page-local catalog references. Include it only when at least one candidate is selected, and record only the page plus the exact returned template key. The path is deterministically `templates/charts/<key>.svg`; §IX remains authoritative for the page's intent and information structure. Do not copy summaries, paths, usage prose, runners-up, `no-template-match`, `n/a`, or no-reference explanations into §VII.
 
 **Native-ready boundary**: For every independent data chart or pure text-grid table, add `Native-ready: yes|no` to its §IX page block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise keep the designed SVG with `no`. Conceptual rows and incidental sparklines, KPI trends, or insets omit the field; Executor never promotes them.
 
-```
-| Page | Template | Path | Summary-quote (verbatim) | Usage |
-|---|---|---|---|---|
-| P03 | line_chart | templates/charts/line_chart.svg | "<returned summary>" | <intent> |
-
-Runners-up considered:
-- <returned_key> | rejected for P03: <page-specific reason>
+```markdown
+| Page | Template |
+| --- | --- |
+| P03 | line_chart |
 ```
 
 **Flag native-preset candidates**: In the affected page's §IX `Layout` / `Visualization`, note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch; this note never creates a §VII row by itself.
@@ -428,7 +425,7 @@ Generate Step 4 owns this reference-first sequence. `design_spec.md` is the Stra
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
-   - **page_charts (write only for pages with a selected catalog reference)**: For each page in `design_spec.md §VII` whose path points to `templates/charts/<name>.svg`, add `P<NN>: <chart_name>`. No-match pages never appear here because §VII omits them and Executor would otherwise look for a non-existent reference. If no catalog reference is selected, omit the section even when §IX contains custom data visualizations.
+   - **page_charts (write only for pages with a selected catalog reference)**: Project every `Page | Template` row in `design_spec.md §VII` one-to-one as `P<NN>: <template_key>`. This is a page-local reference lookup, not a type or geometry lock. No-match pages never appear here; if no reference is selected, omit the section even when §IX contains custom visualizations.
 
 ---
 

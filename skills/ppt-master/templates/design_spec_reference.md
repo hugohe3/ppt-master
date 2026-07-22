@@ -154,8 +154,8 @@ Use the §VII table only when at least one real catalog reference is selected. A
 ```markdown
 ## VII. Visualization Reference List
 
-| Page | Template | Path | Summary-quote (verbatim) | Usage |
-| --- | --- | --- | --- | --- |
+| Page | Template |
+| --- | --- |
 
 ## VIII. Image Resource List
 
@@ -163,7 +163,7 @@ Use the §VII table only when at least one real catalog reference is selected. A
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
-§VII is a positive reference inventory. Every row uses a returned catalog key, its real `templates/charts/<key>.svg` path, and its verbatim summary. Never emit an empty §VII, a `no-template-match` / `n/a` placeholder row, or prose explaining that no reference exists. When recall finds no fit, omit that page from §VII and describe the custom fallback in the page's §IX `Visualization` / `Layout`. List real runners-up only for pages with a selected §VII reference, as `- <returned_key> | rejected for P<NN>: <page-specific reason>`.
+§VII records one optional reference for a specific page, not an execution instruction or deck-wide style. Every row contains one page and one returned catalog key. The Executor derives `templates/charts/<key>.svg`; §IX remains authoritative and may be realized without preserving the preview's type or geometry. Never emit an empty §VII, extra path / summary / usage / runners-up fields, a `no-template-match` / `n/a` row, or no-reference prose. When recall finds no fit, omit that page from §VII and describe the fallback in §IX. Legacy wider rows remain readable; new specs use this two-column form.
 
 For every independent data chart or pure text-grid table, add `- **Native-ready**: yes|no` to its §IX Slide block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise use `no`. Conceptual visualizations and incidental sparklines, KPI trends, or insets omit this field and remain ordinary SVG.
 
@@ -195,7 +195,7 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
 ```
 
-Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
+Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Image patterns preserve their selected semantic composition; chart rows only offer page-local references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
 
 For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
 
