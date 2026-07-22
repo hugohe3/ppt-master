@@ -72,6 +72,7 @@ _MARKDOWN_DATA_LINE_RE = re.compile(
 _IMAGE_PATH_SUFFIXES = frozenset(
     {".bmp", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".tif", ".tiff", ".webp"}
 )
+_LEGACY_SPEC_LOCK_FORBIDDEN = frozenset({"Mixing icon libraries"})
 _SCAFFOLD_TOKEN_RE = re.compile(r"\{\{[A-Z_]+\}\}")
 _SCHEMA_MARKER_RE = re.compile(
     r"^<!--[ \t]+ppt-master-schema:[ \t]*([a-z0-9-]+/v[1-9][0-9]*)[ \t]+-->$",
@@ -265,11 +266,12 @@ def default_spec_lock_forbidden() -> frozenset[str]:
     )
     if section is None:
         raise ValueError("spec-lock scaffold has no forbidden section")
-    return frozenset(
+    current = frozenset(
         re.sub(r"^-[ \t]+", "", line.strip())
         for line in str(section.get("body", "")).splitlines()
         if line.strip()
     )
+    return current | _LEGACY_SPEC_LOCK_FORBIDDEN
 
 
 def _load_markdown_schema(schema_path: Path) -> dict[str, object]:

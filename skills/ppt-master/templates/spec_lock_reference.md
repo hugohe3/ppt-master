@@ -24,7 +24,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
 | `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; size anchors are unitless px numbers |
-| `icons` | `library`, `inventory` | `stroke_width` is conditional |
+| `icons` | `library`, `inventory` | `library` is the Strategist's primary bundled style choice or `none`; `simple-icons/*` may be selected alone or accompany it; `inventory` records the planned bundled selection rather than all usable project-local icons; `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
@@ -35,7 +35,6 @@ The required universal block is:
 
 ```markdown
 ## forbidden
-- Mixing icon libraries
 - `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
 - HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
 ```
@@ -90,6 +89,7 @@ New locks always write `title_family` and `body_family`, even when their values 
 
 - `font_family`, `title_family`, `body_family`, and every optional `<role>_family` use one non-empty PPT-safe exported family stack. `font_family` is the body/default compatibility stack, not permission to erase role differences.
 - Every non-family `typography` value is a positive unitless px anchor. Intermediate values need no lock row when they stay within the mapped role's anchor `±2px`; a new semantic role or an outside-band size requires Design Spec repair and a new anchor.
+- `icons.library` records the primary stylistic library selected from `chunk-filled`, `tabler-filled`, `tabler-outline`, or `phosphor-duotone`, or `none` when no generic bundled icons are selected. Selected `simple-icons/*` brand marks may appear alone or alongside it in `inventory` without becoming a stylistic library. The inventory records planned bundled choices, while every SVG already under `<project_path>/icons/` remains valid prepared execution material.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
 - `images`: `- <key>: <path> | source=<via> | pattern=<layout> | crop=<adaptive|no-crop>`; e.g. `- p04: images/a.png | source=user | pattern=#2 Left image | crop=no-crop`. Omit unplaced sheets.

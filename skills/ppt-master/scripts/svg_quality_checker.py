@@ -3703,6 +3703,12 @@ class SVGQualityChecker:
             return
 
         icons_dir, fallback_dir = _icon_search_dirs_for_svg(svg_path)
+        require_project_local = self._requires_project_local_icons(svg_path)
+        project_icons_dir = (
+            _project_root_for_svg_path(svg_path) / 'icons'
+            if _project_root_for_svg_path is not None
+            else None
+        )
         seen = set()
         for elem in placeholders:
             icon_name = (elem.get('data-icon') or '').strip()
@@ -3712,6 +3718,20 @@ class SVGQualityChecker:
             if icon_name in seen:
                 continue
             seen.add(icon_name)
+
+            if require_project_local and project_icons_dir is not None:
+                local_path, _ = _resolve_icon_path(
+                    icon_name,
+                    project_icons_dir,
+                    None,
+                )
+                if not local_path.exists():
+                    result['errors'].append(
+                        f"Icon is not prepared in the project: {icon_name} "
+                        f"(expected under {project_icons_dir}); return to "
+                        "Strategist preparation instead of using the global fallback"
+                    )
+                    continue
 
             icon_path, _ = _resolve_icon_path(icon_name, icons_dir, fallback_dir)
             if not icon_path.exists():
@@ -3741,6 +3761,31 @@ class SVGQualityChecker:
                 result['info']['native_icon_payload_refs'] = (
                     result['info'].get('native_icon_payload_refs', 0) + hydrated
                 )
+
+    @staticmethod
+    def _requires_project_local_icons(svg_path: Path) -> bool:
+        """Return whether a generated page belongs to a versioned project."""
+        if svg_path.parent.name != 'svg_output' or _project_root_for_svg_path is None:
+            return False
+        lock_path = _project_root_for_svg_path(svg_path) / 'spec_lock.md'
+        try:
+            first_line = next(
+                (
+                    line.strip()
+                    for line in lock_path.read_text(encoding='utf-8-sig').splitlines()
+                    if line.strip()
+                ),
+                '',
+            )
+        except OSError:
+            return False
+        return bool(
+            re.fullmatch(
+                r'<!--[ \t]+ppt-master-schema:[ \t]*spec-lock/v[1-9][0-9]*[ \t]+-->',
+                first_line,
+                re.IGNORECASE,
+            )
+        )
 
     def _check_unsupported_visual_elements(
         self,

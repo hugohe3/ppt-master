@@ -78,7 +78,7 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 `python3 skills/ppt-master/scripts/project_manager.py page-context <project_path> P<NN> --record-usage`.
 
 **Forbidden — unresolved asset references**:
-- Icons MUST come from `icons.inventory`
+- Icons MUST resolve to prepared project-local assets
 - Images MUST resolve to declared project assets
 ```
 
@@ -104,7 +104,7 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 |---|---|
 | User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
 | Strategist / plan + preparation | Assess material sufficiency; trigger permitted fact research; decide the approved content, resources, keys, identity anchors, and exact page roster; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution |
-| Executor / realization | Use only the prepared inventory and realize the approved selections through geometry, composition, hierarchy, and treatment; sparse local font/color garnish is allowed only while non-structural and non-recurring |
+| Executor / realization | Use only prepared project-local assets and realize the approved selections through geometry, composition, hierarchy, and treatment; for icons, the complete `<project>/icons/` pool is prepared material and `icons.inventory` is not a whitelist; sparse local font/color garnish is allowed only while non-structural and non-recurring |
 
 **Preparation timing**: Fact research required for planning may run before final confirmation. AI / web / slice acquisition runs only from the completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling execute Strategist-owned preparation; they are not independent decision owners.
 
