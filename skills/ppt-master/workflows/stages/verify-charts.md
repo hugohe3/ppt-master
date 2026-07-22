@@ -20,9 +20,9 @@ The calculator has direct CLI models for simple bars, lines/scatter, pie/donut, 
 
 ## Step 1: Build the page list from the design spec
 
-Read `<project_path>/design_spec.md` §VII Visualization Reference List (authoritative deck plan; cross-check against §IX page outline) and include every page whose SVG geometry is driven by data values. Classify each included page into exactly one mode:
+Read `<project_path>/design_spec.md` §IX Content Outline as the authoritative page roster and include every page whose `Visualization` explicitly declares SVG geometry driven by data values. Cross-check §VII when present to resolve a selected catalog key; absence from §VII means only that no reusable reference was selected. For legacy specs, a real §VII data-chart row may enumerate the page when its §IX block predates the explicit data-driven declaration. Classify each included page into exactly one mode:
 
-Incidental microvisuals outside §VII are not inferred into this list. If one requires coordinate verification, repair §VII first so the Strategist-owned plan remains authoritative.
+Incidental microvisuals not promoted in the §IX page plan are not inferred into this list. If one requires coordinate verification, repair that page's §IX `Visualization` first so the Strategist-owned plan remains authoritative.
 
 | Mode | `charts_index.json` keys | Notes |
 |------|--------------------------|-------|
@@ -50,7 +50,7 @@ P11 11_share_split.svg   type=pie        mode=direct-calc
 P15 15_pareto.svg        type=pareto     mode=decomposable-calc
 ```
 
-If §VII is absent (legacy project / free-structure deck), skip this stage and report: "design_spec.md has no §VII — chart pages cannot be enumerated authoritatively, verify-charts skipped". Do NOT fall back to guessing from SVG content; that reintroduces the silent-skip failure this stage was built to eliminate.
+If §VII is absent, continue from §IX; this is the normal state when all chart pages use custom structures. Do NOT guess from SVG content when §IX declares no data-driven page—that reintroduces the silent-skip failure this stage was built to eliminate.
 
 If the filtered list is empty, output `verify-charts: spec declares no data-driven chart geometry, nothing to verify` and stop.
 

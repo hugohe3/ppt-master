@@ -1,6 +1,6 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the compact execution contract authored from an audited `design_spec.md` and the current project context. It keeps stable cross-page anchors and routing values; it is not an exhaustive allowlist of every color, gradient stop, effect paint, or typeface that a page may use. This file owns normal authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns machine grammar.
+`spec_lock.md` is the compact execution contract from audited `design_spec.md` plus current context. It keeps stable cross-page anchors and routes, not every page-local paint or typeface. This file owns authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns grammar.
 
 ## 1. Author the complete artifact
 
@@ -23,7 +23,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
-| `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; sizes are unitless numbers |
+| `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; size anchors are unitless px numbers |
 | `icons` | `library`, `inventory` | `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
@@ -71,26 +71,28 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-`page_charts` values must exist as keys in `charts/charts_index.json`; pages using the explicit `no-template-match` result do not appear there.
+`page_charts` values must exist as keys in `charts/charts_index.json`; a `no-template-match` result stays out of both Design Spec §VII and `page_charts`, while its custom fallback remains in the page's §IX block.
 
 Typography projection is role-for-role, not a lossy summary:
 
-| Design Spec §IV role | `spec_lock.md` field |
+| Design Spec §IV declaration | `spec_lock.md` field |
 | --- | --- |
-| Title | `title_family` |
-| Body | `body_family` and compatibility/default `font_family` |
-| Any additional recurring role `<role>` | `<role>_family` |
+| Title font stack | `title_family` |
+| Body font stack | `body_family` and compatibility/default `font_family` |
+| Any additional recurring font role `<role>` | `<role>_family` |
+| Every Font Size Hierarchy role `<role>` | lowercase `<role>` with its numeric anchor |
 
-New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row in the Design Spec must appear under the same lowercase snake_case role; omit only roles that inherit without an explicit override. Existing locks without role fields remain readable through `font_family` fallback.
+New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row and every size-anchor row in the Design Spec must appear under the same lowercase snake_case role; omit only family roles that inherit without an explicit override. Existing locks without family-role fields remain readable through `font_family` fallback. Executor may choose the anchor or a value within that role's `±2px` band; the lock does not enumerate intermediate values.
 
 ---
 
 ## 4. Field Grammar Index
 
 - `font_family`, `title_family`, `body_family`, and every optional `<role>_family` use one non-empty PPT-safe exported family stack. `font_family` is the body/default compatibility stack, not permission to erase role differences.
+- Every non-family `typography` value is a positive unitless px anchor. Intermediate values need no lock row when they stay within the mapped role's anchor `±2px`; a new semantic role or an outside-band size requires Design Spec repair and a new anchor.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
-- `images`: `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; omit unplaced Illustration Sheets.
+- `images`: `- <key>: <path> | source=<via> | pattern=<layout> | crop=<adaptive|no-crop>`; e.g. `- p04: images/a.png | source=user | pattern=#2 Left image | crop=no-crop`. Omit unplaced sheets.
 - Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
@@ -123,7 +125,8 @@ Field meaning and selection logic stay in the owning Strategist modules. Executo
 
 ## 6. Anchor and extension semantics
 
-- Confirmed core palette roles and every declared structural/recurring typography family remain stable cross-page anchors.
+- Confirmed core palette roles and every declared typography family/size role remain stable cross-page anchors.
 - Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off export-safe display families may be authored from context without adding a lock row.
-- When a contextual value becomes a recurring semantic role, add one descriptive `colors` or `*_family` row and regenerate page-context before later pages use that role.
+- Executor may adjust one occurrence within its declared size role's anchor `±2px` while preserving hierarchy and readability; intermediate values are realization choices, not new lock rows.
+- When a contextual value becomes a recurring semantic role, or typography needs a value outside every applicable anchor band, add the descriptive color/family/size role and regenerate page-context before later pages use it.
 - Do not expand the lock merely to make an informational checker comparison empty. A lock edit should express reuse or identity, not enumerate incidental literals.

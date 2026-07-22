@@ -60,7 +60,7 @@ uvx ppt-master project init "<project_name>" --format ppt169
 uvx ppt-master project import-sources "<project_dir>" "<source.pptx>" "<material...>"
 ```
 
-**Source import rule**: `project_manager.py import-sources` copies files from outside the repository and moves repo-local files by default, unless `--copy` / `--move` is explicitly supplied. Keep this shared behavior; do not create a separate template-fill import path.
+**Source import rule**: `project_manager.py import-sources` moves only sources under repository `projects/` and copies all others. `--copy` preserves a projects-local input; `--move` never widens that scope. Reuse this path.
 
 Use this fixed layout:
 

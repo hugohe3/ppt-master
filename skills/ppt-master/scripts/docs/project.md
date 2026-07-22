@@ -1,8 +1,8 @@
 # Project Tools
 
-> **Import boundary**: copy out-of-repository sources by default to protect user
-> files; move in-repository sources by default to avoid leaving accidental
-> commit artifacts. Explicit `--copy` / `--move` flags override the default.
+> **Import boundary**: move only sources already under the repository's
+> `projects/` tree. Copy every other local path, even when `--move` is supplied.
+> Use `--copy` to preserve a projects-local source.
 
 Project tools create, validate, and inspect the standard PPT Master workspace.
 
@@ -22,18 +22,17 @@ uvx ppt-master project page-context-report <project_path>
 ```
 
 Notes:
-- Files outside the repo are copied into `sources/` by default
-- With `--move`, files outside the repo are moved into `sources/`
+- Files outside `projects/` are always copied into `sources/`
+- `--move` applies only to sources under the repository's `projects/` tree
 - Directory inputs are expanded non-recursively. After Step 1 conversion,
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
   the original source path/directory and the Markdown output path/directory.
-- Under move semantics, a supplied source directory left strictly empty after
-  import (or empty from the start) is removed; a directory that still holds any
-  file or subdirectory is left untouched. `--copy` never removes directories.
-- Files already inside the repo are moved into `sources/` by default (with a stderr
-  note), to avoid leaving unintended artifacts that could be committed by mistake.
-  Pass `--copy` to force a copy for in-repo sources instead.
+- A projects-local supplied source directory left strictly empty after import
+  (or empty from the start) is removed; every directory outside `projects/`
+  remains untouched. `--copy` never removes directories.
+- Files already under `projects/` move into `sources/` by default. Pass `--copy`
+  to preserve them in place.
 - `--move` and `--copy` are mutually exclusive.
 - Normal Generate authoring reads `templates/design_spec_reference.md`, writes
   the complete `design_spec.md` from scratch, then reads
@@ -83,10 +82,14 @@ The output deliberately repeats the bounded `global` anchor set on every
 page as a cross-page anchor set, not a color/font allowlist. `lock_source` binds that projection to the current
 `spec_lock.md` SHA. `page_context` contains the current §IX brief, rhythm,
 resources, and conditional template/chart assignment. `reference_set` contains
-only `kind`, scoped path, SHA, and `once-per-execution-context` policy for the
-project/template Design Specs and selected prototype/chart SVGs. A model reads
-a referenced file only when that exact path + SHA is absent from its active
-context or has changed, then reuses the retained understanding on later pages.
+`kind`, scoped path, SHA, and `once-per-execution-context` policy for the
+project/template Design Specs and selected prototype/chart SVGs. The project
+Design Spec additionally carries
+`same_context_edit_policy: targeted-readback-and-rebind`: when the current main
+agent makes a bounded repair that preserves roster/order/identity/communication,
+it reads back only the exact changed fragments,
+validates, reruns `page-context`, and binds the verified delta to the new SHA.
+Fresh, external, unknown, or mismatched changes still require a complete read.
 
 The deprecated `--bundle` flag remains accepted as a compatibility no-op. It
 never appends a Design Spec, prototype SVG, chart SVG, manifest, or text-slot

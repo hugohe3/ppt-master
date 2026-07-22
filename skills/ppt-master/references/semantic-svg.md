@@ -111,6 +111,11 @@ Use `data-pptx-role` only when no specialized marker owns the behavior:
 | `header`, `footer`, `logo`, `watermark`, `chrome` | Identify Slide-local static framing without claiming Master/Layout ownership. |
 | `page-number` | Identify a Slide-local number when no `slide-number` placeholder exists. |
 
+On flat pages, a direct root background image or full-canvas scrim/decoration
+rectangle may carry the matching role and remain a primitive. Give the marked
+element a stable unique `id`; do not add a `<g>` solely to avoid an
+ungrouped-element advisory.
+
 Do not add structural roles to ordinary titles, body copy, cards, KPIs, diagrams, charts, icons, or images.
 
 ---
