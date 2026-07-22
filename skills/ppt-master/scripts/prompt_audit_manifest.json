@@ -335,7 +335,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 122425
+      "max_tokens": 122550
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -347,7 +347,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 95725
+      "max_tokens": 95850
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -360,7 +360,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 103025
+      "max_tokens": 103100
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -703,7 +703,7 @@
       "files": [
         "skills/ppt-master/references/strategist-image.md"
       ],
-      "max_tokens": 1950
+      "max_tokens": 2100
     },
     "stage.generate.strategist.image-layout": {
       "description": "Non-formula image planning plus the image-layout pattern catalog required for Section VIII rows.",
@@ -714,7 +714,7 @@
       "files": [
         "skills/ppt-master/references/image-layout-patterns.md"
       ],
-      "max_tokens": 8000
+      "max_tokens": 8100
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
