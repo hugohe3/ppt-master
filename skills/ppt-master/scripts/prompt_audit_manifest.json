@@ -31,7 +31,7 @@
     "skills/ppt-master/references/strategist.md": 13450,
     "skills/ppt-master/references/strategist-image.md": 2100,
     "skills/ppt-master/references/strategist-template.md": 2100,
-    "skills/ppt-master/templates/design_spec_reference.md": 2750,
+    "skills/ppt-master/templates/design_spec_reference.md": 2850,
     "skills/ppt-master/templates/spec_lock_reference.md": 2350,
     "skills/ppt-master/workflows/generate-pptx.md": 12450,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
@@ -306,7 +306,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 82100
+      "max_tokens": 82200
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -319,7 +319,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 122300
+      "max_tokens": 122350
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -331,7 +331,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 95600
+      "max_tokens": 95650
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -344,7 +344,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 102850
+      "max_tokens": 102950
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -364,7 +364,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 88950
+      "max_tokens": 89050
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -377,7 +377,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 106100
+      "max_tokens": 106200
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -389,7 +389,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 89150
+      "max_tokens": 89200
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -401,7 +401,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 99050
+      "max_tokens": 99100
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -413,7 +413,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 99500
+      "max_tokens": 99600
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -423,7 +423,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 83500
+      "max_tokens": 83600
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -565,7 +565,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/verify-charts.md"
       ],
-      "max_tokens": 6200
+      "max_tokens": 6250
     },
     "stage.generate.chart-authoring": {
       "description": "Conditional visualization-library authoring guidance.",
@@ -661,7 +661,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 59900
+      "max_tokens": 60000
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
@@ -671,7 +671,7 @@
         "route.generate.planning-ai"
       ],
       "files": [],
-      "max_tokens": 72100
+      "max_tokens": 72200
     },
     "stage.generate.executor.chart": {
       "description": "Conditional chart/table page execution rules.",

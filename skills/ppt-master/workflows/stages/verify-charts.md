@@ -65,7 +65,7 @@ For each page in the Step 1 list:
    - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-chart.md §2.1](../../references/executor-chart.md)). Read coordinates directly.
    - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
 3. Read the data series from the SVG's `<text>` label/value elements.
-4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
+4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Use the attached `--*-range=min,max` form, which also keeps a negative minimum from being parsed as another option. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
 
    **Local vs absolute coordinates.** Many chart templates wrap chart content in `<g transform="translate(cx, cy)">` or similar, so child `<circle>`/`<polygon>`/`<rect>` coords are relative to that origin (e.g. radar polygon at `0,-198`, donut paths starting from `0,0` inside a translated `<g>`, dumbbell circles at `cy="0"` inside a per-row translated `<g>`). The calculator outputs **absolute** SVG coordinates. Before comparing, either add the wrapping translate's offset to the SVG coords or subtract it from the calculator's output — pick one direction and apply it consistently.
 5. Run the matching calculator command:
@@ -75,11 +75,11 @@ For each page in the Step 1 list:
    # IMPORTANT: always pass --value-range from axis tick labels (step 4)
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
      --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" \
-     --bar-width 120 --value-range "0,axis_max"
+     --bar-width 120 --value-range=0,axis_max
 
    # line_chart / area_chart / scatter_chart — area uses line output as the top boundary, then closes to y_max
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
-     --data "x1:y1,x2:y2,..." --area "x_min,y_min,x_max,y_max" --y-range "0,max"
+     --data "x1:y1,x2:y2,..." --area "x_min,y_min,x_max,y_max" --y-range=0,max
 
    # pie_chart — default start angle is -90 (12 o'clock); pass --start-angle only if the SVG starts elsewhere
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc pie \
@@ -121,11 +121,11 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 # Run 1 — bottom segment (origin = baseline)
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
   --data "Q1:30,Q2:..." --area "x_min,100,x_max,500" \
-  --bar-width 80 --value-range "0,axis_max"
+  --bar-width 80 --value-range=0,axis_max
 # Run 2 — top segment (origin shifted up by bottom segment's height in pixels)
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
   --data "Q1:20,Q2:..." --area "x_min,100,x_max,<500 - bottom_height_px>" \
-  --bar-width 80 --value-range "0,axis_max"
+  --bar-width 80 --value-range=0,axis_max
 ```
 
 **Stacked area** — for N stacked series, run `calc line` N times on **cumulative** y-values (series 1 raw; series 2 = series1+series2; …). Each call yields the top boundary of one band. Each band's SVG path closes to the **previous** band's top boundary (not to `y_max`).
@@ -140,7 +140,7 @@ Use these recipes for `decomposable-calc` and `partial-calc` pages. Each recipe 
 
 **Dumbbell chart** — for before/after or two-state values across categories. The two endpoints are **points**, not bar ends — `calc bar --horizontal` always anchors at `x_min`, which only matches the right endpoint. Use `calc line` × 2 instead, treating category index as the y axis:
 
-1. Number categories `0.5, 1.5, …, N-0.5` so each row's y lands on its band center; set `--y-range "0,N"`. The same convention applies to vertical dumbbells with the axes swapped.
+1. Number categories `0.5, 1.5, …, N-0.5` so each row's y lands on its band center; set `--y-range=0,N`. The same convention applies to vertical dumbbells with the axes swapped.
 2. Set `--x-range` to the shared value-axis range read from ticks.
 3. Run `calc line` once per endpoint series with identical `--area`, `--x-range`, `--y-range`. Each output `(SVG_X, SVG_Y)` is the matching endpoint circle's `(cx, cy)`.
 4. Compare both endpoint circles and the connector line (`x1=cx_left, x2=cx_right, y1=y2=cy`) against the two calculated point sets.
@@ -150,17 +150,17 @@ Use these recipes for `decomposable-calc` and `partial-calc` pages. Each recipe 
 # Encode category index as the y value: row 1 → 0.5, row 2 → 1.5, row 3 → 2.5.
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
   --data "42:0.5,55:1.5,37:2.5" --area "100,100,700,460" \
-  --x-range "0,100" --y-range "0,3"
+  --x-range=0,100 --y-range=0,3
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
   --data "68:0.5,71:1.5,49:2.5" --area "100,100,700,460" \
-  --x-range "0,100" --y-range "0,3"
+  --x-range=0,100 --y-range=0,3
 ```
 
 **Pareto chart** — split into descending bars plus cumulative line:
 
 1. Run `calc bar` on the descending category values with the bar axis range from ticks.
 2. Precompute cumulative percentages in category order.
-3. Run `calc line` on `0.5:cum1,1.5:cum2,...,N-0.5:cumN` with `--x-range "0,N"`, the right-side percentage axis as `--y-range` (usually `0,100`), and the same `--area` as the bars. The `n - 0.5` offset puts each cumulative point on the matching bar's center; using `1,2,…,N` shifts the polyline left by half a bar width.
+3. Run `calc line` on `0.5:cum1,1.5:cum2,...,N-0.5:cumN` with `--x-range=0,N`, the right-side percentage axis as `--y-range` (usually `--y-range=0,100`), and the same `--area` as the bars. The `n - 0.5` offset puts each cumulative point on the matching bar's center; using `1,2,…,N` shifts the polyline left by half a bar width.
 4. Compare bar rects, cumulative line path, and cumulative markers separately.
 
 **Dual-axis line chart** — split by axis:

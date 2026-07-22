@@ -197,6 +197,8 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 
 Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
 
+For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
+
 ---
 
 ## 3. Machine validation
