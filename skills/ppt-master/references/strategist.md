@@ -288,12 +288,12 @@ python3 skills/ppt-master/scripts/chart_recall.py recall \
   --limit 6
 ```
 
-The command returns a bounded shortlist plus `no-template-match`. Read it unfiltered: `--limit` already bounds output, while `tail` / `head` / `grep` can hide higher-ranked candidates. `confidence` is diagnostic only. Semantically review the candidates; if terminology or structural ambiguity suggests a missed catalog structure, rerun with `--semantic-fallback` and compare its rules. This is optional, not a routine no-match gate. Do not open a second index.
+The command returns a bounded shortlist plus `no-template-match`. Read it unfiltered; `tail` / `head` / `grep` can hide ranked candidates. `confidence` is lexical only. At `high` / `medium`, keep no-match after candidate review. At `low` / `none`, use a fitting candidate directly; otherwise rerun once with `--semantic-fallback` before no-match. Do not open a second index.
 
 **Selection**:
 
 1. Choose the most specific valid structure from the bounded candidates or an explicitly requested semantic fallback; keep one primary visualization per page and adapt its treatment rather than mimicking it.
-2. When no recalled reference fits, retain `no-template-match` by Strategist judgment: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the chosen fallback only in the affected page's §IX `Visualization` / `Layout`; do not serialize the negative result into §VII.
+2. After the fallback gate above, retain `no-template-match` when no reference fits: data content falls back to a table, permitted conceptual content to an AI image, and structural content to a custom layout. Record the fallback only in the page's §IX `Visualization` / `Layout`; never serialize it into §VII.
 3. Validate all selected keys before writing the lock:
 
 ```bash

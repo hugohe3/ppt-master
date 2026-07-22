@@ -199,20 +199,33 @@ def recall_candidates(
     else:
         confidence = "none"
 
+    fallback_required_before_no_match = (
+        confidence in {"low", "none"} and not force_semantic_fallback
+    )
+    if fallback_required_before_no_match:
+        no_match_instruction = (
+            f"Lexical confidence is {confidence}. Select a bounded candidate when one "
+            "fits; otherwise rerun the same recall with --semantic-fallback before "
+            "keeping no-template-match. Keep the final negative result out of Design "
+            "Spec Section VII and describe the chosen fallback in the page's Section "
+            "IX block."
+        )
+    else:
+        no_match_instruction = (
+            "Use when none of the reviewed candidates fits the page structure. Keep "
+            "this result out of Design Spec Section VII and describe the chosen fallback "
+            "in the page's Section IX block."
+        )
+
     result: dict[str, object] = {
         "page": page,
         "semantic_tags": tags,
         "confidence": confidence,
         "candidates": candidates,
         "no_template_match": {
-            "allowed": True,
+            "allowed": not fallback_required_before_no_match,
             "key": "no-template-match",
-            "instruction": (
-                "Use when none of the bounded candidates fits the page structure. If the "
-                "shortlist may have missed a relevant catalog rule, rerun with "
-                "--semantic-fallback first. Keep this result out of Design Spec Section "
-                "VII and describe the chosen fallback in the page's Section IX block."
-            ),
+            "instruction": no_match_instruction,
         },
     }
     if force_semantic_fallback:
