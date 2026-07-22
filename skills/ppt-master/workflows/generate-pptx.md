@@ -13,6 +13,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 - The current main agent hand-writes every SVG page; never delegate page generation or run a Python, Node, or shell generator over `svg_output/`.
 - Initial SVG cadence: P01 → first-page gate → uninterrupted remaining pages → final gate. Grouped batches and mid-run checker calls are forbidden.
 - `preset_shape_svg.py` may provide one stdout fragment only after the main agent chooses its semantic role, frame, and paint; it cannot choose layout or write a page.
+- Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
 ### SVG Page-Design Boundary
 
@@ -211,16 +212,16 @@ If the user opted out of the page but did not delegate confirmation, skip launch
 
 ⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as user-owned input and consume it at the semantic type defined by [`strategist.md`](../references/strategist.md) §1 and its field owner. Do not omit or substitute a value, and do not silently strengthen or weaken its type; accepting a recommendation does not turn a Reference or Permission into a Literal requirement. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, the complete recurring typography-role system, the confirmed image-source boundary, and explicit `image_notes` obligations. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, project every declared recurring typography family and size-anchor role without collapsing it into one default stack, choose reusable execution anchors and routing values, project each placed image's source/pattern/crop policy without reselection, and do not enumerate page-local paint or font-family garnish. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If a confirmed requirement cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
 
-**Mandatory — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of upstream-load signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
+**Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
 | Signal read | Line content |
 |---|---|
 | Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](stages/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter the execution session (SVG generation + export); no response or "continue" = default continuous mode. |
-| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](stages/resume-execute.md). |
+| Explicit `split` selection | Confirm that planning will stop after Step 5 and give the `继续生成 projects/<project_name>` handoff command. |
 
-This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page generation-mode toggle and is captured in `result.json` (`generation_mode`); the chat-summary fallback still prints this line.
+For the normal/default `continuous` path, print no split-mode reminder and proceed automatically. Confirm UI still exposes the generation-mode toggle and records it in `result.json`; a chat fallback captures the same choice in its confirmation summary without adding a separate reminder.
 
-**Mandatory — spec-refinement note** (not a separate confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
+**Mandatory — spec-refinement note** (not a separate confirmation): after the confirmation details and any conditional split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This opt-in line remains required output every run; whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
 
 **Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
 
@@ -246,20 +247,7 @@ For a new project, use the reference-first whole-document sequence:
 
 A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume or refine path edits existing completed files in the same order; it does not replace them with scaffolds.
 
-**✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
-```markdown
-## ✅ Strategist Phase Complete
-- [x] Read the auto-extracted facts already in `analysis/` (e.g. `source_profile.json`) before the Strategist confirmation stage
-- [x] Strategist confirmation stage completed (user confirmed via Confirm UI `result.json` or chat fallback)
-- [x] Final confirmation read once and retained through Design Spec authoring/audit; `result.json` not reopened in the normal path
-- [x] Split-mode note appended below the confirmation fields (heavy or normal variant)
-- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec stage)
-- [x] Design Specification & Content Outline generated
-- [x] Gate 1 passed: Design Spec preserves every confirmed value at its owner-defined semantic type
-- [x] Execution lock (`spec_lock.md`) authored from the completed Design Spec + current context as stable anchors/routing, not an exhaustive value whitelist
-- [x] Communication trace validated: Design Spec retains the contract; the lock has compact `audience` / `objective` / `core_message` fields (plus PPT `consumption_mode`); every §IX Slide has an `Audience move`
-- [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
-```
+**✅ Internal checkpoint — Phase deliverables complete**: verify that analysis facts were read before confirmation; final confirmation was consumed once; applicable split/refinement handling is resolved; the complete Design Spec passed Gate 1; the lock was authored from it; and communication plus every §IX `Audience move` were validated. Do not print this checklist. On success, auto-proceed to Image_Generator / Executor under the compact status rule above.
 
 ---
 
@@ -304,16 +292,7 @@ Workflow:
 3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. On `auto`, follow the owning fallback chain. On an explicitly confirmed `api` or `host-native` path, retry only that path; if it still fails, mark the row `Needs-Manual` without switching to another automated provider.
 4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
-**✅ Checkpoint — Confirm acquisition attempted for every row**:
-```markdown
-## ✅ Image Acquisition Phase Complete
-- [x] image_prompts.json created (when any ai rows processed)
-- [x] image_prompts.md sidecar rendered (when any ai rows processed)
-- [x] image_sources.json created (when any web rows processed)
-- [x] Spot-illustration sheets sliced (when any `slice` rows exist); every element file present in `images/` and listed in `spec_lock.md images`
-- [x] Each row: status is `Generated` / `Sourced` / `Needs-Manual` (no `Pending` or `Failed` remaining)
-- [x] analyze_images.py re-run so image_analysis.csv covers the acquired web / AI / sliced images
-```
+**✅ Internal checkpoint — acquisition complete**: verify conditional AI/web sidecars, all required slice outputs, terminal status for every resource row, and a refreshed `image_analysis.csv`. Do not print this checklist. On success, auto-proceed under the compact status rule above.
 
 **Default — auto-proceed to Step 6.** Only when `design_spec.md §I` records `generation_mode: split`, output the planning-session handoff below and stop this conversation:
 
@@ -433,18 +412,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 
 **Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md) and generate speaker notes → `<project_path>/notes/total.md`
 
-**✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Run the applicable conditional gates below, then proceed to Step 7**:
-```markdown
-## ✅ Executor Phase Complete
-- [x] Live preview started before the first SVG and kept available at the reported URL
-- [x] P01 gate passed and its `gate-signal` line emitted; any method-level finding was resolved to its authoritative rule before P02
-- [x] Remaining pages authored without checker calls
-- [x] Each failing checker run was reviewed as one complete issue set and followed by one consolidated edit pass; checker output was not filtered
-- [x] `svg_output/` matches the ordered §IX roster exactly, one SVG per planned page
-- [x] Every wrapped prose paragraph uses one `<text>` frame with `<tspan>` line breaks
-- [x] svg_quality_checker.py passed (0 errors)
-- [x] Speaker notes generated at notes/total.md
-```
+**✅ Internal checkpoint — execution complete**: verify live preview timing, the P01 method gate, uninterrupted remaining-page generation, consolidated repair of any complete failure set, exact §IX roster coverage, one-frame prose wrapping, a final checker result of 0 errors, and `notes/total.md`. Do not print this checklist. Run the applicable conditional gates below, then proceed to Step 7 under the compact status rule above.
 
 > **Chart pages?** If this deck contains data charts, run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. Skip if no chart pages.
 
