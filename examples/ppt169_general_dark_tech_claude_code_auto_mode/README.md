@@ -10,5 +10,5 @@
 - `svg_final/`: finalized SVG output
 - `images/`: presentation assets
 - `notes/`: speaker notes
-- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added when exported with `--svg-snapshot`
+- `exports/`: native editable PPTX exports (timestamped)
 - `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)

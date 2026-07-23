@@ -97,7 +97,6 @@ Use these exact subsections and field shapes:
 
 - **Title stack**: <complete ordered stack>
 - **Body stack**: <complete ordered stack>
-- **Role rationale**: <why the confirmed Title/Body system fits the content; name justified recurring family overrides, or state that none is needed>
 
 ### Font Size Hierarchy
 
@@ -126,13 +125,14 @@ Use these exact subsections and field shapes:
 
 ## VI. Icon Usage Specification
 
-- **Library**: <confirmed library, custom, or none>
+- **Primary bundled library**: <one of chunk-filled / tabler-filled / tabler-outline / phosphor-duotone, or none>
+- **Brand-logo library**: <simple-icons when selected for real brand marks; omit otherwise>
 
 | Purpose | Icon Path | Page |
 | --- | --- | --- |
 ```
 
-Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. `Role rationale` records the decision but does not itself become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Treat every Font Size Hierarchy value as a role anchor: Executor may adjust one occurrence within anchor `±2px`, but a new semantic role or any planned feature outside that band needs its own row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. Leave the §VI table empty when no icons are used.
+Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. Add one compact `Role rationale` only when at least one such override is declared; otherwise omit it. The rationale does not become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Treat every Font Size Hierarchy value as a role anchor: Executor may adjust one occurrence within anchor `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when real brand marks were selected. The icon table records planned usage, but user-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that stylistic selection. Leave the §VI table empty when no icons are used.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 
@@ -153,8 +153,8 @@ Use the §VII table only when at least one real catalog reference is selected. A
 ```markdown
 ## VII. Visualization Reference List
 
-| Page | Template | Path | Summary-quote (verbatim) | Usage |
-| --- | --- | --- | --- | --- |
+| Page | Template | Usage |
+| --- | --- | --- |
 
 ## VIII. Image Resource List
 
@@ -162,7 +162,7 @@ Use the §VII table only when at least one real catalog reference is selected. A
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
-§VII is a positive reference inventory. Every row uses a returned catalog key, its real `templates/charts/<key>.svg` path, and its verbatim summary. Never emit an empty §VII, a `no-template-match` / `n/a` placeholder row, or prose explaining that no reference exists. When recall finds no fit, omit that page from §VII and describe the custom fallback in the page's §IX `Visualization` / `Layout`. List real runners-up only for pages with a selected §VII reference, as `- <returned_key> | rejected for P<NN>: <page-specific reason>`.
+§VII is an optional page-local reference list. Each row records the page, catalog key, and a short semantic Usage—not geometry. The key derives `templates/charts/<key>.svg`; §IX remains authoritative over final type and realization. Omit an empty §VII and never add path, summary, runners-up, `no-template-match`, or `n/a`. Put unmatched fallbacks in §IX. Legacy wider rows remain readable; new specs use these three columns.
 
 For every independent data chart or pure text-grid table, add `- **Native-ready**: yes|no` to its §IX Slide block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise use `no`. Conceptual visualizations and incidental sparklines, KPI trends, or insets omit this field and remain ordinary SVG.
 
@@ -194,7 +194,9 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
 ```
 
-Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Layout, cover/closing composition, and image/chart patterns are References whose selected semantics remain fixed while Executor realizes their geometry, hierarchy, treatment, and sparse local garnish.
+Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Image patterns preserve their selected semantic composition; chart rows only offer page-local references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
+
+For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
 
 ---
 

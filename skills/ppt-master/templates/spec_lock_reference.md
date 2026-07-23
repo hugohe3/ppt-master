@@ -24,7 +24,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |
 | `typography` | `font_family`, `body`, `title` | Core family/size anchors; new locks also write explicit `title_family` and `body_family`; size anchors are unitless px numbers |
-| `icons` | `library`, `inventory` | `stroke_width` is conditional |
+| `icons` | `library`, `inventory` | `library` is the Strategist's primary bundled style choice or `none`; `simple-icons/*` may be selected alone or accompany it; `inventory` records the planned bundled selection rather than all usable project-local icons; `stroke_width` is conditional |
 | `page_rhythm` | One `P<NN>` row per page | Values: `anchor`, `dense`, `breathing` |
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
@@ -35,7 +35,6 @@ The required universal block is:
 
 ```markdown
 ## forbidden
-- Mixing icon libraries
 - `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
 - HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
 ```
@@ -71,7 +70,7 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-`page_charts` values must exist as keys in `charts/charts_index.json`; a `no-template-match` result stays out of both Design Spec §VII and `page_charts`, while its custom fallback remains in the page's §IX block.
+Project each §VII `Page | Template | Usage` row's first two fields into `page_charts`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Keys must exist in `charts/charts_index.json`; no-match stays in §IX.
 
 Typography projection is role-for-role, not a lossy summary:
 
@@ -82,14 +81,15 @@ Typography projection is role-for-role, not a lossy summary:
 | Any additional recurring font role `<role>` | `<role>_family` |
 | Every Font Size Hierarchy role `<role>` | lowercase `<role>` with its numeric anchor |
 
-New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row and every size-anchor row in the Design Spec must appear under the same lowercase snake_case role; omit only family roles that inherit without an explicit override. Existing locks without family-role fields remain readable through `font_family` fallback. Executor may choose the anchor or a value within that role's `±2px` band; the lock does not enumerate intermediate values.
+New locks always write `title_family` and `body_family`, even when their values happen to match. Every additional recurring family row and every size-anchor row in the Design Spec must appear under the same lowercase snake_case role; omit only family roles that inherit without an explicit override. Existing locks without family-role fields remain readable through `font_family` fallback. Executor may choose the anchor or a value within that role's `±2px` band; the lock does not enumerate intermediate values. A short non-structural Hero/Display size may remain absent only while the same undeclared value appears at most twice across the deck; its third occurrence requires a named role.
 
 ---
 
 ## 4. Field Grammar Index
 
 - `font_family`, `title_family`, `body_family`, and every optional `<role>_family` use one non-empty PPT-safe exported family stack. `font_family` is the body/default compatibility stack, not permission to erase role differences.
-- Every non-family `typography` value is a positive unitless px anchor. Intermediate values need no lock row when they stay within the mapped role's anchor `±2px`; a new semantic role or an outside-band size requires Design Spec repair and a new anchor.
+- Every non-family `typography` value is a positive finite unitless px anchor. Intermediate values need no lock row when they stay within the mapped role's anchor `±2px`. At most two occurrences of one undeclared short non-structural Hero/Display size may remain sparse; a third occurrence or any structural use requires Design Spec repair and a named anchor.
+- `icons.library` records the primary stylistic library selected from `chunk-filled`, `tabler-filled`, `tabler-outline`, or `phosphor-duotone`, or `none` when no generic bundled icons are selected. Selected `simple-icons/*` brand marks may appear alone or alongside it in `inventory` without becoming a stylistic library. The inventory records planned bundled choices, while every SVG already under `<project_path>/icons/` remains valid prepared execution material.
 - `objective` grammar: one concise sentence preserving the deck goal and audience success condition.
 - `image_rendering` grammar: one catalog id, or `custom` with `image_rendering_behavior`.
 - `images`: `- <key>: <path> | source=<via> | pattern=<layout> | crop=<adaptive|no-crop>`; e.g. `- p04: images/a.png | source=user | pattern=#2 Left image | crop=no-crop`. Omit unplaced sheets.
@@ -128,5 +128,5 @@ Field meaning and selection logic stay in the owning Strategist modules. Executo
 - Confirmed core palette roles and every declared typography family/size role remain stable cross-page anchors.
 - Page-local tints, gradient stops, shadow/glow paints, transparency composites, and one-off export-safe display families may be authored from context without adding a lock row.
 - Executor may adjust one occurrence within its declared size role's anchor `±2px` while preserving hierarchy and readability; intermediate values are realization choices, not new lock rows.
-- When a contextual value becomes a recurring semantic role, or typography needs a value outside every applicable anchor band, add the descriptive color/family/size role and regenerate page-context before later pages use it.
+- When a contextual value becomes a recurring semantic role, or one undeclared display size reaches its third occurrence, add the descriptive role, read back and validate affected planning fragments, then reuse it. Structural typography outside its applicable anchor band returns upstream immediately.
 - Do not expand the lock merely to make an informational checker comparison empty. A lock edit should express reuse or identity, not enumerate incidental literals.

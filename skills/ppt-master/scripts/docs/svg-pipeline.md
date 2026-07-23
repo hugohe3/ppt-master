@@ -296,6 +296,12 @@ uvx ppt-master svg-to-pptx <project_path> --no-merge   # strict line-fidelity mo
 uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio
 ```
 
+The normal command reads `pptx_structure.mode` from `spec_lock.md`. For legacy
+projects whose lock exists but predates that field, export emits one compatibility
+warning and uses `flat`; no SVG regeneration is required. A missing `spec_lock.md`,
+an explicit legacy/unknown mode, or a requested `structured` export without an
+explicit current structured contract remains blocking.
+
 For generated-project narration, follow the
 [`generate-audio`](../../workflows/stages/generate-audio.md) stage. It owns voice
 selection, audio generation, and the narrated re-export workflow.

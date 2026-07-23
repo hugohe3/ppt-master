@@ -19,6 +19,7 @@ Dependencies:
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Mapping
@@ -69,6 +70,10 @@ _MARKDOWN_DATA_LINE_RE = re.compile(
     r"^[ \t]*-[ \t]+(?:\*\*)?([^:\n*]+?)(?:\*\*)?[ \t]*:[ \t]*(.*)$",
     re.MULTILINE,
 )
+_IMAGE_PATH_SUFFIXES = frozenset(
+    {".bmp", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".tif", ".tiff", ".webp"}
+)
+_LEGACY_SPEC_LOCK_FORBIDDEN = frozenset({"Mixing icon libraries"})
 _SCAFFOLD_TOKEN_RE = re.compile(r"\{\{[A-Z_]+\}\}")
 _SCHEMA_MARKER_RE = re.compile(
     r"^<!--[ \t]+ppt-master-schema:[ \t]*([a-z0-9-]+/v[1-9][0-9]*)[ \t]+-->$",
@@ -165,6 +170,90 @@ def parse_markdown_artifact(
     return sections
 
 
+def _looks_like_image_path(raw: str) -> bool:
+    """Return whether one lock token looks like a project image path."""
+    token = raw.strip().strip("`'\"").replace("\\", "/")
+    return bool(token) and Path(token).suffix.casefold() in _IMAGE_PATH_SUFFIXES
+
+
+def parse_spec_lock_artifact(
+    lock_path: Path,
+    *,
+    report_duplicate_fields: bool = False,
+    compatibility_warnings: list[str] | None = None,
+) -> list[dict[str, object]]:
+    """Parse one execution lock and normalize supported legacy image rows.
+
+    New locks use ``- <key>: <path> | source=... | pattern=... | crop=...``.
+    Some versioned projects instead placed the image path before the colon.
+    Preserve those projects by projecting the key path back into the value so
+    every consumer sees the same path-first image value.
+    """
+    sections = parse_markdown_artifact(
+        lock_path,
+        report_duplicate_fields=report_duplicate_fields,
+    )
+    normalized_sections: list[dict[str, object]] = []
+    compatibility_keys: list[str] = []
+
+    for section in sections:
+        if str(section.get("heading", "")).strip().casefold() != "images":
+            normalized_sections.append(section)
+            continue
+        raw_fields = section.get("fields")
+        if not isinstance(raw_fields, dict):
+            normalized_sections.append(section)
+            continue
+
+        fields: dict[str, str] = {}
+        for raw_key, raw_value in raw_fields.items():
+            key = str(raw_key)
+            value = str(raw_value).strip()
+            value_path = value.split("|", 1)[0].strip()
+            if _looks_like_image_path(key) and not _looks_like_image_path(value_path):
+                value = f"{key} | {value}" if value else key
+                compatibility_keys.append(key)
+            fields[key] = value
+
+        normalized_section = dict(section)
+        normalized_section["fields"] = fields
+        normalized_sections.append(normalized_section)
+
+    if compatibility_warnings is not None and compatibility_keys:
+        sample = ", ".join(compatibility_keys[:3])
+        suffix = "" if len(compatibility_keys) <= 3 else ", ..."
+        compatibility_warnings.append(
+            f"{lock_path.name} images: normalized {len(compatibility_keys)} legacy "
+            "path-as-key row(s); new locks should use '- <key>: <path> | "
+            "source=... | pattern=... | crop=...' "
+            f"(found: {sample}{suffix})"
+        )
+    return normalized_sections
+
+
+def parse_spec_lock(
+    lock_path: Path,
+    *,
+    report_duplicate_fields: bool = False,
+    compatibility_warnings: list[str] | None = None,
+) -> dict[str, dict[str, str]]:
+    """Return one execution lock as ``{section: {key: value}}`."""
+    sections = parse_spec_lock_artifact(
+        lock_path,
+        report_duplicate_fields=report_duplicate_fields,
+        compatibility_warnings=compatibility_warnings,
+    )
+    parsed: dict[str, dict[str, str]] = {}
+    for section in sections:
+        raw_fields = section.get("fields")
+        if not isinstance(raw_fields, dict):
+            continue
+        parsed[str(section.get("heading", "")).strip()] = {
+            str(key): str(value) for key, value in raw_fields.items()
+        }
+    return parsed
+
+
 def default_spec_lock_forbidden() -> frozenset[str]:
     """Return the versioned scaffold's universal forbidden-item defaults."""
     sections = parse_markdown_artifact(SCAFFOLD_DIR / "spec_lock.md")
@@ -178,11 +267,12 @@ def default_spec_lock_forbidden() -> frozenset[str]:
     )
     if section is None:
         raise ValueError("spec-lock scaffold has no forbidden section")
-    return frozenset(
+    current = frozenset(
         re.sub(r"^-[ \t]+", "", line.strip())
         for line in str(section.get("body", "")).splitlines()
         if line.strip()
     )
+    return current | _LEGACY_SPEC_LOCK_FORBIDDEN
 
 
 def _load_markdown_schema(schema_path: Path) -> dict[str, object]:
@@ -336,6 +426,38 @@ def _validate_section(
                     f"{markdown_name} schema: section '{section_id}' field "
                     f"'{field_name}' does not match '{pattern}'"
                 )
+
+    field_value_rules = definition.get("field_value_rules", [])
+    if isinstance(field_value_rules, list):
+        for rule in field_value_rules:
+            if not isinstance(rule, dict):
+                continue
+            key_pattern = rule.get("key_pattern")
+            value_pattern = rule.get("value_pattern")
+            if not isinstance(key_pattern, str) or not isinstance(
+                value_pattern, str
+            ):
+                continue
+            requirement = str(rule.get("requirement", "match its value grammar"))
+            for field_name, raw_value in fields.items():
+                if re.fullmatch(key_pattern, str(field_name)) is None:
+                    continue
+                value = str(raw_value).strip()
+                if bool(rule.get("normalize", True)):
+                    value = _normalize_schema_value(value)
+                value_matches = re.fullmatch(value_pattern, value) is not None
+                if value_matches and rule.get("numeric") == "positive_finite":
+                    try:
+                        number = float(value)
+                    except ValueError:
+                        value_matches = False
+                    else:
+                        value_matches = math.isfinite(number) and number > 0
+                if not value_matches:
+                    errors.append(
+                        f"{markdown_name} schema: section '{section_id}' field "
+                        f"'{field_name}' must {requirement}; found '{value}'"
+                    )
 
     minimum = definition.get("min_entries")
     if isinstance(minimum, int) and len(fields) < minimum:
@@ -1022,6 +1144,14 @@ def validate_project_artifacts(
         artifact_errors = validate_markdown_schema(artifact_path, schema_path)
         errors.extend(artifact_errors)
         if artifact_kind == "lock" and not artifact_errors:
+            try:
+                parse_spec_lock_artifact(
+                    artifact_path,
+                    compatibility_warnings=warnings,
+                )
+            except (OSError, UnicodeError, ValueError) as exc:
+                errors.append(f"spec_lock.md compatibility parse failed: {exc}")
+                continue
             versioned_lock_valid = True
     if versioned_lock_valid:
         try:
