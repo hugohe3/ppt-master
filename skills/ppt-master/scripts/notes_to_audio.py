@@ -2,7 +2,8 @@
 """Generate per-slide narration audio from PPT Master notes.
 
 This script uses provider backends for the same per-slide output contract on
-macOS, Linux, and Windows. `edge-tts` remains the default no-key backend.
+macOS, Linux, and Windows. `edge-tts` remains the default no-key backend and
+also writes one compact, word-timed SRT file per slide from the same TTS stream.
 
 Usage:
     python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
@@ -106,6 +107,12 @@ def main() -> int:
         "--rate",
         default="+0%",
         help='edge-tts speaking rate, e.g. "+0%%", "-10%%", "+15%%" (default: +0%%). Ignored by cloud providers.',
+    )
+    parser.add_argument(
+        "--subtitle-max-chars",
+        type=int,
+        default=backend_edge.DEFAULT_SUBTITLE_MAX_CHARS,
+        help="maximum visible characters per Edge subtitle cue (default: 20)",
     )
     parser.add_argument(
         "--elevenlabs-api-key-env",
@@ -245,6 +252,10 @@ def main() -> int:
         parser.error(f"--voice-id is required for --provider {args.provider}")
         raise AssertionError("unreachable")
 
+    if args.subtitle_max_chars < 1:
+        parser.error("--subtitle-max-chars must be at least 1")
+        raise AssertionError("unreachable")
+
     if args.provider == "elevenlabs":
         if not voice_id:
             parser.error("--voice-id is required for --provider elevenlabs")
@@ -291,6 +302,9 @@ def main() -> int:
     notes_dir = project / "notes"
     output_dir = args.output or (project / "audio")
     output_dir.mkdir(parents=True, exist_ok=True)
+    subtitle_dir = notes_dir / "subtitles"
+    if backend.provider == "edge":
+        subtitle_dir.mkdir(parents=True, exist_ok=True)
 
     note_files = [
         path for path in sorted(notes_dir.glob("*.md"))
@@ -367,14 +381,32 @@ def main() -> int:
                     base_url=args.cosyvoice_base_url,
                 )
             else:
-                asyncio.run(backend_edge.generate(text, output_path, voice=args.voice, rate=args.rate))
+                subtitle_path = subtitle_dir / f"{note_path.stem}.srt"
+                asyncio.run(
+                    backend_edge.generate(
+                        text,
+                        output_path,
+                        voice=args.voice,
+                        rate=args.rate,
+                        subtitle_path=subtitle_path,
+                        subtitle_max_chars=args.subtitle_max_chars,
+                    )
+                )
         except Exception as exc:
             print(f"error: failed to generate {output_path}: {exc}", file=sys.stderr)
             return 1
         generated += 1
         print(f"[OK] {output_path}")
+        if backend.provider == "edge":
+            print(f"     {subtitle_path}")
 
-    print(f"[Done] Generated {generated}/{len(note_files)} audio file(s): {output_dir}")
+    if backend.provider == "edge":
+        print(
+            f"[Done] Generated {generated}/{len(note_files)} audio/SRT pair(s): "
+            f"{output_dir} + {subtitle_dir}"
+        )
+    else:
+        print(f"[Done] Generated {generated}/{len(note_files)} audio file(s): {output_dir}")
     return 0
 
 
