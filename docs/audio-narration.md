@@ -10,7 +10,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 
 - One audio file per slide under `<project_path>/audio/`, named to match the SVG (`01_cover.mp3`, `02_market_landscape.mp3`, …).
 - With edge, one matching subtitle file per slide under `<project_path>/notes/subtitles/` (`01_cover.srt`, `02_market_landscape.srt`, …). Each file uses a page-local timeline with a `00:00:00,000` origin and edge's word-boundary timing.
-- With an SVG-to-SRT timing plan, a rebuilt `animations.json` whose click-free entrance animations wait for the relevant subtitle cue, plus a deck-wide `<project_path>/notes/subtitles/total.srt` aligned to the final PowerPoint timeline.
+- With an SVG-to-SRT timing plan, a rebuilt `animations.json` whose click-free entrance animations wait for the relevant subtitle cue, plus a deck-wide `<project_path>/notes/subtitles/total.srt` aligned to the final PPTX timeline. After PowerPoint exports a video, the same command can calibrate the page starts against its audio track for frame-accurate sidecar subtitles.
 - Optional re-export: a new PPTX in `exports/` with each `m4a` / `mp3` / `wav` file embedded into the matching slide and slide auto-advance timings set to the audio length, so kiosk/auto-play and video export work without manual timing.
 - The original speaker notes are preserved.
 
@@ -19,7 +19,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "steady male voice for financial reporting"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
-4. **Generation runs.** With edge, the script writes each page's MP3 and SRT from the same stream to `audio/` and `notes/subtitles/`; cloud providers currently write audio only. For Generate PPTX, the AI maps current SVG content groups to numbered SRT cues, rebuilds click-free animations, and re-exports the deck with audio attached. It then merges the local SRT files using timing values read from that final PPTX. Long-audio import and automatic long-audio splitting are not supported.
+4. **Generation runs.** With edge, the script writes each page's MP3 and SRT from the same stream to `audio/` and `notes/subtitles/`; cloud providers currently write audio only. For Generate PPTX, the AI maps current SVG content groups to numbered SRT cues, rebuilds click-free animations, and re-exports the deck with audio attached. It then merges the local SRT files using timing values read from that final PPTX. If a PowerPoint-exported video is available, an optional final pass measures each page narration in the video audio and corrects only the page offsets. Long-audio import and automatic long-audio splitting are not supported.
 
 Subtitles remain external artifacts: PPT Master does not embed them into the PPTX or export MP4 directly. Use PowerPoint's native video export with the generated `total.srt`.
 
@@ -112,13 +112,21 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 # 6. Merge page-local SRT using the final PowerPoint timings
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
+
+# 7. Optional after PowerPoint creates the video: calibrate page starts against
+#    the exported audio track and write a same-stem sidecar SRT
+python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
+  --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
+  -o exports/<powerpoint_exported_video_stem>.srt --force
 ```
 
 For edge, `--voice` is required. Use `--list-voices --locale <locale>` to see what's available.
 
 The edge command creates `audio/<stem>.mp3` and `notes/subtitles/<stem>.srt` from the same streaming request. Sentence-ending punctuation closes a cue. A cue over 20 visible characters first splits at commas, semicolons, or colons, then at the nearest word boundary only if it is still too long. Use `--subtitle-max-chars` to change the limit. Each SRT uses a page-local timebase with a zero origin and preserves edge's `WordBoundary` timing, including any leading silence before the first cue. The cloud-provider commands currently create audio only.
 
-`narration_timing.json` is deliberately separate from `animations.json`. It records the ordered SRT-set SHA-256, narration padding, ordered SVG group IDs, and optional 1-based cue numbers. `narration_sync.py animations` rejects a stale fingerprint, validates the group IDs against the current SVGs, and replaces the animation sidecar with only supported PowerPoint fields. `narration_sync.py subtitles` reads the final PPTX's actual presentation order plus millisecond slide-advance and transition values, so `total.srt` follows the same timeline PowerPoint uses when creating a video. A relative `--pptx` path is resolved under `<project_path>`.
+`narration_timing.json` is deliberately separate from `animations.json`. It records the ordered SRT-set SHA-256, narration padding, ordered SVG group IDs, and optional 1-based cue numbers. `narration_sync.py animations` rejects a stale fingerprint, validates the group IDs against the current SVGs, and replaces the animation sidecar with only supported PowerPoint fields. `narration_sync.py subtitles` reads the final PPTX's actual presentation order plus millisecond slide-advance and transition values, so `total.srt` follows the native PPTX timeline. A relative `--pptx` path is resolved under `<project_path>`.
+
+PowerPoint's video encoder can quantize each slide/media segment to its output frame clock. Those small per-page differences may accumulate even when the PPTX timing values are correct. Passing the finished `.mp4` / `.wmv` / `.mov` with `--video` uses normalized audio correlation to locate each original page narration in the exported audio track. It changes only the page-level offsets: edge's cue text and page-local `WordBoundary` timing remain untouched. This is a post-export subtitle calibration step; PPT Master still does not create or rewrite the video.
 
 Use `--no-merge` for the final narrated SVG export. Keeping each SVG line in its own text frame preserves the authored coordinates; paragraph merging lets PowerPoint recalculate multiline text geometry and can introduce visible offsets.
 
@@ -211,6 +219,7 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 2. **File → Export → Create a Video**.
 3. Pick a quality (4K / Full HD / HD / Standard) and "Use Recorded Timings and Narrations" — PPT Master has already set both for you.
 4. **Create Video** → save as `.mp4` (or `.wmv` on Windows).
+5. For the closest external-subtitle sync, run the optional `narration_sync.py subtitles --video ...` command above and use its same-stem SRT beside the exported video.
 
 **Keynote (Mac)**: open the deck → **File → Export To → Movie…** — Keynote also honors embedded audio and per-slide timings, output `.m4v` / `.mov`.
 
