@@ -2,20 +2,21 @@
 """
 PPT Master - Narration Sync Tool
 
-Rebuild click-free object timing from page-local SRT cues, then merge those
-subtitles against timing values read from the final narrated PPTX.
+Derive click-free narration timing from the canonical animation config and
+page-local SRT cues, then merge those subtitles against timing values read
+from the final narrated PPTX.
 See workflows/stages/generate-audio.md for the owning stage.
 
 Usage:
     python3 scripts/narration_sync.py fingerprint <project_path>
-    python3 scripts/narration_sync.py animations <project_path> --force
+    python3 scripts/narration_sync.py animations <project_path>
     python3 scripts/narration_sync.py subtitles <project_path> --pptx <pptx> --force
     python3 scripts/narration_sync.py subtitles <project_path> --pptx <pptx> \
         --video <powerpoint_video> --force
 
 Examples:
     python3 scripts/narration_sync.py fingerprint projects/demo
-    python3 scripts/narration_sync.py animations projects/demo --force
+    python3 scripts/narration_sync.py animations projects/demo
     python3 scripts/narration_sync.py subtitles projects/demo --pptx exports/demo.pptx --force
     python3 scripts/narration_sync.py subtitles projects/demo \
         --pptx exports/demo.pptx --video exports/demo.mp4 --force
@@ -28,6 +29,7 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -49,8 +51,17 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from pptx_animations import (  # noqa: E402
+    animation_seconds_to_milliseconds,
+    normalize_animation_effect,
+)
 from pptx_transitions import read_slide_transition_xml  # noqa: E402
-from svg_to_pptx.animation_config import scan_project_targets  # noqa: E402
+from svg_to_pptx.animation_config import (  # noqa: E402
+    scan_project_targets,
+    scan_svg_targets,
+    validate_animation_config_errors,
+    validate_transition_config,
+)
 from svg_to_pptx.pptx_package.narration import (  # noqa: E402
     NARRATION_EXTENSIONS,
     probe_audio_duration,
@@ -68,29 +79,6 @@ _TIMING_RE = re.compile(
     r"^(?P<start>\d+:\d{2}:\d{2},\d{3})\s+-->\s+"
     r"(?P<end>\d+:\d{2}:\d{2},\d{3})(?:\s+.*)?$"
 )
-_RHYTHM_RE = re.compile(r"^-\s*P(?P<page>\d+)\s*:\s*(?P<rhythm>[a-z-]+)\s*$")
-_RHYTHM_PROFILES = {
-    "dense": {
-        "transition_duration": 0.3,
-        "animation_duration": 0.35,
-        "stagger": 0.18,
-    },
-    "anchor": {
-        "transition_duration": 0.5,
-        "animation_duration": 0.5,
-        "stagger": 0.3,
-    },
-    "breathing": {
-        "transition_duration": 0.5,
-        "animation_duration": 0.6,
-        "stagger": 0.3,
-    },
-}
-_DEFAULT_PROFILE = {
-    "transition_duration": 0.4,
-    "animation_duration": 0.4,
-    "stagger": 0.25,
-}
 _ALIGNMENT_SAMPLE_RATE = 8000
 _ALIGNMENT_FINE_HZ = 1000
 _ALIGNMENT_COARSE_FACTOR = 10
@@ -112,10 +100,44 @@ class SubtitleCue:
 
 @dataclass(frozen=True)
 class TimingPlanEntry:
-    """One ordered SVG animation target and its optional SRT cue anchor."""
+    """One ordered animation target and its optional SRT cue anchor."""
 
     group_id: str
     cue_number: int | None
+
+
+@dataclass(frozen=True)
+class AnimationGroupState:
+    """One effective canonical animation row before narration timing."""
+
+    group_id: str
+    order: int
+    source_index: int
+    duration_ms: int
+    original_delay_ms: int
+
+
+@dataclass(frozen=True)
+class SlideAnimationSettings:
+    """Effective animation settings inherited by one slide."""
+
+    effect: str | None
+    duration_ms: int
+    stagger_ms: int
+    trigger: str
+
+
+@dataclass(frozen=True)
+class AnimationBuildResult:
+    """Summary of one narration animation derivation."""
+
+    slide_count: int
+    group_count: int
+    anchored_count: int
+    fallback_count: int
+    ignored_cue_count: int
+    svg_fallback_slide_count: int
+    timing_plan_written: bool
 
 
 @dataclass(frozen=True)
@@ -328,9 +350,9 @@ def _load_timing_plan(
                 f'Narration timing plan slide "{slide_name}" must contain only "groups"'
             )
         groups = slide_raw["groups"]
-        if not isinstance(groups, list) or not groups:
+        if not isinstance(groups, list):
             raise ValueError(
-                f'Narration timing plan slide "{slide_name}" groups must be a non-empty list'
+                f'Narration timing plan slide "{slide_name}" groups must be a list'
             )
 
         entries: list[TimingPlanEntry] = []
@@ -373,39 +395,341 @@ def _load_timing_plan(
     return srt_sha256, float(narration_padding), result
 
 
-def _load_page_rhythms(path: Path) -> dict[int, str]:
-    if not path.exists():
-        return {}
-    rhythms: dict[int, str] = {}
-    in_section = False
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if line.startswith("## "):
-            in_section = line.strip() == "## page_rhythm"
-            continue
-        if not in_section:
-            continue
-        match = _RHYTHM_RE.match(line.strip())
-        if match is None:
-            continue
-        rhythms[int(match.group("page"))] = match.group("rhythm")
-    return rhythms
+def _load_canonical_animation_config(path: Path) -> dict[str, Any]:
+    """Load and field-validate the read-only canonical animation sidecar."""
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Canonical animation config is missing: {path}. "
+            "Complete the customize-animations stage first; narration sync "
+            "does not create or replace animations.json."
+        )
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise ValueError(f"Canonical animation config must be a JSON object: {path}")
+    if raw.get("version", 1) != 1:
+        raise ValueError(
+            f"Unsupported canonical animation config version: {raw.get('version')!r}"
+        )
+    errors = list(
+        dict.fromkeys(
+            [
+                *validate_transition_config(raw),
+                *validate_animation_config_errors(raw),
+            ]
+        )
+    )
+    if errors:
+        details = "\n".join(f"- {error}" for error in errors)
+        raise ValueError(
+            f"Canonical animation config is invalid: {path}\n{details}"
+        )
+    return raw
 
 
-def _profile_for_slide(
-    slide_index: int,
-    slide_count: int,
-    rhythms: dict[int, str],
-) -> dict[str, float]:
-    profile = dict(_RHYTHM_PROFILES.get(rhythms.get(slide_index), _DEFAULT_PROFILE))
-    if slide_index == 1:
-        profile["transition_duration"] = 0.6
-        profile["animation_duration"] = max(profile["animation_duration"], 0.55)
-        profile["stagger"] = max(profile["stagger"], 0.3)
-    if slide_index == slide_count:
-        profile["transition_duration"] = 0.6
-        profile["animation_duration"] = max(profile["animation_duration"], 0.65)
-        profile["stagger"] = max(profile["stagger"], 0.35)
-    return profile
+def _page_subtitle_names(subtitle_dir: Path) -> list[str]:
+    """Return ordered page-local SRT stems, excluding the merged sidecar."""
+    if not subtitle_dir.is_dir():
+        raise FileNotFoundError(f"Page-local SRT directory not found: {subtitle_dir}")
+    names = [
+        path.stem
+        for path in sorted(subtitle_dir.glob("*.srt"))
+        if path.stem != "total"
+    ]
+    if not names:
+        raise FileNotFoundError(f"No page-local SRT files found under: {subtitle_dir}")
+    return names
+
+
+def _animation_slide_names(
+    project_path: Path,
+    config: dict[str, Any],
+    subtitle_dir: Path,
+) -> list[str]:
+    """Resolve the page roster without parsing SVG unless a slide is missing."""
+    slides = config.get("slides", {})
+    if not isinstance(slides, dict):
+        raise ValueError('Canonical animations.json field "slides" must be an object')
+    canonical_names = list(slides)
+    subtitle_names = _page_subtitle_names(subtitle_dir)
+    subtitle_set = set(subtitle_names)
+
+    missing_subtitles = [
+        slide_name for slide_name in canonical_names if slide_name not in subtitle_set
+    ]
+    if missing_subtitles:
+        raise FileNotFoundError(
+            "Missing page-local SRT for canonical animation slide(s): "
+            + ", ".join(missing_subtitles)
+        )
+
+    canonical_set = set(canonical_names)
+    extra_subtitles = [
+        slide_name for slide_name in subtitle_names if slide_name not in canonical_set
+    ]
+    unexpected = [
+        slide_name
+        for slide_name in extra_subtitles
+        if not (project_path / "svg_output" / f"{slide_name}.svg").is_file()
+    ]
+    if unexpected:
+        raise ValueError(
+            "Page-local SRT has no matching canonical animation slide or SVG: "
+            + ", ".join(unexpected)
+        )
+    if not extra_subtitles:
+        return canonical_names
+    return subtitle_names
+
+
+def _animation_scope(
+    scope: dict[str, Any],
+    *,
+    label: str,
+) -> dict[str, Any]:
+    value = scope.get("animation", {})
+    if not isinstance(value, dict):
+        raise ValueError(f'{label} field "animation" must be an object')
+    return value
+
+
+def _effective_slide_animation(
+    config: dict[str, Any],
+    slide_cfg: dict[str, Any],
+) -> SlideAnimationSettings:
+    defaults = config.get("defaults", {})
+    if not isinstance(defaults, dict):
+        raise ValueError('Canonical animations.json field "defaults" must be an object')
+    default_animation = _animation_scope(
+        defaults,
+        label="Canonical animations.json defaults",
+    )
+    slide_animation = _animation_scope(
+        slide_cfg,
+        label="Canonical animations.json slide",
+    )
+    effect = normalize_animation_effect(
+        slide_animation.get(
+            "effect",
+            default_animation.get("effect", "none"),
+        )
+    )
+    duration_ms = animation_seconds_to_milliseconds(
+        slide_animation.get(
+            "duration",
+            default_animation.get("duration", 0.4),
+        ),
+        "canonical animation duration",
+        allow_zero=False,
+    )
+    stagger_ms = animation_seconds_to_milliseconds(
+        slide_animation.get(
+            "stagger",
+            default_animation.get("stagger", 0.5),
+        ),
+        "canonical animation stagger",
+        allow_zero=True,
+    )
+    trigger = slide_animation.get(
+        "trigger",
+        default_animation.get("trigger", "after-previous"),
+    )
+    if not isinstance(trigger, str):
+        raise ValueError(f"Canonical animation trigger must be a string: {trigger!r}")
+    return SlideAnimationSettings(
+        effect=effect,
+        duration_ms=duration_ms,
+        stagger_ms=stagger_ms,
+        trigger=trigger,
+    )
+
+
+def _group_is_animated(
+    group_cfg: dict[str, Any],
+    slide_effect: str | None,
+) -> bool:
+    if "effect" not in group_cfg:
+        return slide_effect is not None
+    return normalize_animation_effect(group_cfg["effect"]) is not None
+
+
+def _needs_svg_group_resolution(
+    settings: SlideAnimationSettings,
+    groups_cfg: dict[str, Any],
+    plan_entries: list[TimingPlanEntry] | None,
+) -> bool:
+    """Return whether JSON alone cannot prove the effective group sequence."""
+    active_explicit = [
+        group_id
+        for group_id, group_cfg in groups_cfg.items()
+        if isinstance(group_cfg, dict)
+        and _group_is_animated(group_cfg, settings.effect)
+    ]
+    if plan_entries is None:
+        if settings.effect is not None:
+            return True
+        return (
+            len(active_explicit) > 1
+            and any("order" not in groups_cfg[group_id] for group_id in active_explicit)
+        )
+
+    candidate_ids = list(
+        dict.fromkeys(
+            [
+                *(entry.group_id for entry in plan_entries),
+                *active_explicit,
+            ]
+        )
+    )
+    active_candidates = [
+        group_id
+        for group_id in candidate_ids
+        if group_id in groups_cfg
+        and isinstance(groups_cfg[group_id], dict)
+        and _group_is_animated(groups_cfg[group_id], settings.effect)
+    ]
+    if len(active_candidates) <= 1:
+        return False
+    return any("order" not in groups_cfg[group_id] for group_id in active_candidates)
+
+
+def _resolve_animation_groups(
+    project_path: Path,
+    slide_name: str,
+    slide_cfg: dict[str, Any],
+    settings: SlideAnimationSettings,
+    plan_entries: list[TimingPlanEntry] | None,
+) -> tuple[list[AnimationGroupState], bool]:
+    """Resolve one effective sequence, parsing only an ambiguous page SVG."""
+    groups_value = slide_cfg.get("groups", {})
+    if not isinstance(groups_value, dict):
+        raise ValueError(
+            f'Canonical animations.json slide "{slide_name}" groups must be an object'
+        )
+    groups_cfg: dict[str, dict[str, Any]] = {}
+    for group_id, group_cfg in groups_value.items():
+        if not isinstance(group_cfg, dict):
+            raise ValueError(
+                f'Canonical animations.json group "{slide_name}/{group_id}" '
+                "must be an object"
+            )
+        groups_cfg[group_id] = group_cfg
+
+    use_svg = _needs_svg_group_resolution(settings, groups_cfg, plan_entries)
+    candidate_ids: list[str]
+    if use_svg:
+        svg_path = project_path / "svg_output" / f"{slide_name}.svg"
+        if not svg_path.is_file():
+            raise FileNotFoundError(
+                f"Animation group mapping is ambiguous and requires the page SVG: "
+                f"{svg_path}"
+            )
+        targets, anonymous_groups = scan_svg_targets(svg_path)
+        duplicate_ids = sorted(
+            group_id
+            for group_id in {target.group_id for target in targets}
+            if sum(target.group_id == group_id for target in targets) > 1
+        )
+        if duplicate_ids:
+            raise ValueError(
+                f'SVG slide "{slide_name}" has duplicate top-level group id(s): '
+                + ", ".join(duplicate_ids)
+            )
+        for item in anonymous_groups:
+            print(
+                f"Warning: {item} has no id and cannot participate in narration timing",
+                file=sys.stderr,
+            )
+
+        targets_by_id = {target.group_id: target for target in targets}
+        referenced_ids = set(groups_cfg)
+        if plan_entries is not None:
+            referenced_ids.update(entry.group_id for entry in plan_entries)
+        missing_ids = sorted(referenced_ids - set(targets_by_id))
+        if missing_ids:
+            raise ValueError(
+                f'Animation mapping for slide "{slide_name}" references missing '
+                f"top-level group(s): {', '.join(missing_ids)}"
+            )
+        structural_ids = sorted(
+            group_id
+            for group_id in referenced_ids
+            if targets_by_id[group_id].structurally_static
+            and (
+                group_id not in groups_cfg
+                or _group_is_animated(groups_cfg[group_id], settings.effect)
+            )
+        )
+        if structural_ids:
+            raise ValueError(
+                f'Animation mapping for slide "{slide_name}" targets structural '
+                f"group(s): {', '.join(structural_ids)}"
+            )
+
+        candidate_ids = []
+        for target in targets:
+            if target.structurally_static:
+                continue
+            group_cfg = groups_cfg.get(target.group_id, {})
+            explicitly_animated = (
+                target.group_id in groups_cfg
+                and _group_is_animated(group_cfg, settings.effect)
+            )
+            if target.chrome and not explicitly_animated:
+                continue
+            candidate_ids.append(target.group_id)
+    elif plan_entries is not None:
+        candidate_ids = list(
+            dict.fromkeys(
+                [
+                    *(entry.group_id for entry in plan_entries),
+                    *groups_cfg,
+                ]
+            )
+        )
+    else:
+        candidate_ids = list(groups_cfg)
+
+    preliminaries: list[tuple[int, int, str, dict[str, Any]]] = []
+    for source_index, group_id in enumerate(candidate_ids):
+        group_cfg = groups_cfg.get(group_id, {})
+        if not _group_is_animated(group_cfg, settings.effect):
+            continue
+        order = group_cfg.get("order", source_index + 1)
+        if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
+            raise ValueError(
+                f'Canonical animation order for "{slide_name}/{group_id}" '
+                f"must be a positive integer: {order!r}"
+            )
+        preliminaries.append((order, source_index, group_id, group_cfg))
+    preliminaries.sort(key=lambda item: (item[0], item[1]))
+
+    states: list[AnimationGroupState] = []
+    for sequence_index, (order, source_index, group_id, group_cfg) in enumerate(
+        preliminaries
+    ):
+        duration_ms = animation_seconds_to_milliseconds(
+            group_cfg.get("duration", settings.duration_ms / 1000),
+            f'canonical animation duration for "{slide_name}/{group_id}"',
+            allow_zero=False,
+        )
+        original_delay_ms = animation_seconds_to_milliseconds(
+            group_cfg.get(
+                "delay",
+                0 if sequence_index == 0 else settings.stagger_ms / 1000,
+            ),
+            f'canonical animation delay for "{slide_name}/{group_id}"',
+            allow_zero=True,
+        )
+        states.append(
+            AnimationGroupState(
+                group_id=group_id,
+                order=order,
+                source_index=source_index,
+                duration_ms=duration_ms,
+                original_delay_ms=original_delay_ms,
+            )
+        )
+    return states, use_svg
 
 
 def _find_audio(audio_dir: Path, slide_name: str) -> Path:
@@ -431,98 +755,75 @@ def _seconds_from_ms(value: int) -> float:
 def rebuild_animations(
     project_path: Path,
     *,
+    canonical_path: Path,
     plan_path: Path,
     subtitle_dir: Path,
     audio_dir: Path,
     output_path: Path,
     narration_padding: float,
     force: bool,
-) -> tuple[int, int, int, int]:
-    """Replace ``animations.json`` from the current SVG/SRT timing plan."""
+) -> AnimationBuildResult:
+    """Derive narration timing without modifying the canonical animation file."""
     if not math.isfinite(narration_padding) or narration_padding < 0:
         raise ValueError("Narration padding must be finite and non-negative")
     _reject_output_alias(
         output_path,
-        [plan_path],
-        label="Animation config",
+        [canonical_path, plan_path],
+        label="Narration animation config",
     )
-
-    targets_by_slide, anonymous_groups = scan_project_targets(project_path)
-    if anonymous_groups:
-        details = "\n".join(f"- {item}" for item in anonymous_groups)
-        raise ValueError(
-            "Every top-level animation group must have an id before narration sync:\n"
-            f"{details}"
-        )
-    slide_names = list(targets_by_slide)
-    if not slide_names:
-        raise ValueError(f"No SVG slides found under: {project_path / 'svg_output'}")
-
-    for slide_name, targets in targets_by_slide.items():
-        group_ids = [target.group_id for target in targets]
-        duplicate_ids = sorted(
-            group_id
-            for group_id in set(group_ids)
-            if group_ids.count(group_id) > 1
-        )
-        if duplicate_ids:
-            raise ValueError(
-                f'SVG slide "{slide_name}" has duplicate top-level group id(s): '
-                f"{', '.join(duplicate_ids)}"
-            )
-
-    (
-        expected_srt_sha256,
-        planned_narration_padding,
-        timing_plan,
-    ) = _load_timing_plan(plan_path)
-    if not math.isclose(
-        narration_padding,
-        planned_narration_padding,
-        rel_tol=0,
-        abs_tol=1e-9,
-    ):
-        raise ValueError(
-            "Narration padding differs from the timing plan: "
-            f"plan={planned_narration_padding}, command={narration_padding}"
-        )
-    subtitle_paths = [
-        subtitle_dir / f"{slide_name}.srt"
-        for slide_name in slide_names
-    ]
+    canonical = _load_canonical_animation_config(canonical_path)
+    slide_names = _animation_slide_names(project_path, canonical, subtitle_dir)
+    subtitle_paths = [subtitle_dir / f"{slide_name}.srt" for slide_name in slide_names]
     _reject_output_alias(
         output_path,
         subtitle_paths,
-        label="Animation config",
+        label="Narration animation config",
     )
-    current_srt_sha256 = _subtitle_fingerprint(slide_names, subtitle_dir)
-    if current_srt_sha256 != expected_srt_sha256:
-        raise ValueError(
-            "Narration timing plan was authored for a different SRT set: "
-            f"plan={expected_srt_sha256}, current={current_srt_sha256}; "
-            "rebuild the cue mapping before regenerating animations"
+
+    timing_plan: dict[str, list[TimingPlanEntry]] | None = None
+    if plan_path.is_file():
+        expected_srt_sha256, planned_padding, loaded_plan = _load_timing_plan(
+            plan_path
         )
+        if not math.isclose(
+            narration_padding,
+            planned_padding,
+            rel_tol=0,
+            abs_tol=1e-9,
+        ):
+            raise ValueError(
+                "Narration padding differs from the timing plan: "
+                f"plan={planned_padding}, command={narration_padding}"
+            )
+        current_srt_sha256 = _subtitle_fingerprint(slide_names, subtitle_dir)
+        if current_srt_sha256 != expected_srt_sha256:
+            raise ValueError(
+                "Narration timing plan was authored for a different SRT set: "
+                f"plan={expected_srt_sha256}, current={current_srt_sha256}"
+            )
+        if set(loaded_plan) != set(slide_names):
+            raise ValueError(
+                "Narration timing plan slides do not match animations.json"
+            )
+        timing_plan = loaded_plan
 
-    expected_slides = set(slide_names)
-    planned_slides = set(timing_plan)
-    if expected_slides != planned_slides:
-        missing = sorted(expected_slides - planned_slides)
-        extra = sorted(planned_slides - expected_slides)
-        details = []
-        if missing:
-            details.append(f"missing slide(s): {', '.join(missing)}")
-        if extra:
-            details.append(f"unknown slide(s): {', '.join(extra)}")
-        raise ValueError("Narration timing plan does not match current SVGs: " + "; ".join(details))
+    derived = copy.deepcopy(canonical)
+    canonical_slides = canonical.get("slides", {})
+    derived_slides = derived.setdefault("slides", {})
+    if not isinstance(canonical_slides, dict) or not isinstance(
+        derived_slides,
+        dict,
+    ):
+        raise ValueError('Canonical animations.json field "slides" must be an object')
 
-    rhythms = _load_page_rhythms(project_path / "spec_lock.md")
-    slides_config: dict[str, Any] = {}
     anchored_count = 0
     fallback_count = 0
+    ignored_cue_count = 0
+    svg_fallback_slide_count = 0
     drift_warnings: list[str] = []
     audio_paths: list[Path] = []
 
-    for slide_index, slide_name in enumerate(slide_names, 1):
+    for slide_name in slide_names:
         cues = _parse_srt(subtitle_dir / f"{slide_name}.srt")
         audio_path = _find_audio(audio_dir, slide_name)
         audio_paths.append(audio_path)
@@ -532,86 +833,99 @@ def rebuild_animations(
                 f"Unable to read narration duration with ffprobe: {audio_path}"
             )
 
-        all_targets = {target.group_id: target for target in targets_by_slide[slide_name]}
-        required_groups = {
-            target.group_id
-            for target in targets_by_slide[slide_name]
-            if not target.chrome
-        }
-        entries = timing_plan[slide_name]
-        planned_groups = {entry.group_id for entry in entries}
-        missing_groups = sorted(required_groups - planned_groups)
-        if missing_groups:
+        canonical_slide = canonical_slides.get(slide_name, {})
+        if not isinstance(canonical_slide, dict):
             raise ValueError(
-                f'Narration timing plan slide "{slide_name}" omits content group(s): '
-                f"{', '.join(missing_groups)}"
+                f'Canonical animations.json slide "{slide_name}" must be an object'
+            )
+        derived_slide = derived_slides.setdefault(
+            slide_name,
+            copy.deepcopy(canonical_slide),
+        )
+        if not isinstance(derived_slide, dict):
+            raise ValueError(
+                f'Derived animation slide "{slide_name}" must be an object'
+            )
+        settings = _effective_slide_animation(canonical, canonical_slide)
+        plan_entries = timing_plan.get(slide_name) if timing_plan else None
+        states, used_svg = _resolve_animation_groups(
+            project_path,
+            slide_name,
+            canonical_slide,
+            settings,
+            plan_entries,
+        )
+        if used_svg:
+            svg_fallback_slide_count += 1
+
+        state_ids = {state.group_id for state in states}
+        cue_by_group: dict[str, int | None] = {}
+        if plan_entries is not None:
+            for entry in plan_entries:
+                if entry.group_id not in state_ids:
+                    raise ValueError(
+                        f'Narration timing plan references a non-animated group: '
+                        f"{slide_name}/{entry.group_id}"
+                    )
+                if entry.cue_number is not None and entry.cue_number > len(cues):
+                    raise ValueError(
+                        f'Narration timing plan "{slide_name}/{entry.group_id}" '
+                        f"references cue {entry.cue_number}, but the SRT has "
+                        f"{len(cues)} cues"
+                    )
+                cue_by_group[entry.group_id] = entry.cue_number
+        else:
+            cue_by_group = {
+                state.group_id: index + 1 if index < len(cues) else None
+                for index, state in enumerate(states)
+            }
+
+        animation_value = derived_slide.setdefault("animation", {})
+        if not isinstance(animation_value, dict):
+            raise ValueError(
+                f'Derived animation slide "{slide_name}" animation must be an object'
+            )
+        animation_value["trigger"] = "after-previous"
+        groups_value = derived_slide.setdefault("groups", {})
+        if not isinstance(groups_value, dict):
+            raise ValueError(
+                f'Derived animation slide "{slide_name}" groups must be an object'
             )
 
-        for entry in entries:
-            target = all_targets.get(entry.group_id)
-            if target is None:
-                raise ValueError(
-                    f'Narration timing plan references missing group: '
-                    f"{slide_name}/{entry.group_id}"
-                )
-            if target.structurally_static:
-                raise ValueError(
-                    f"Narration timing plan cannot animate structural group: "
-                    f"{slide_name}/{entry.group_id}"
-                )
-            if entry.cue_number is not None and entry.cue_number > len(cues):
-                raise ValueError(
-                    f'Narration timing plan "{slide_name}/{entry.group_id}" '
-                    f"references cue {entry.cue_number}, but the SRT has {len(cues)} cues"
-                )
-
-        profile = _profile_for_slide(slide_index, len(slide_names), rhythms)
-        animation_duration_ms = int(profile["animation_duration"] * 1000)
-        stagger_ms = int(profile["stagger"] * 1000)
         previous_end_ms = 0
-        groups_config: dict[str, Any] = {}
-
-        for order, entry in enumerate(entries, 1):
-            next_entry = entries[order] if order < len(entries) else None
-            effective_duration_ms = animation_duration_ms
-            if (
-                entry.cue_number is not None
-                and next_entry is not None
-                and next_entry.cue_number == entry.cue_number
-            ):
-                effective_duration_ms = min(animation_duration_ms, 250)
-
-            if entry.cue_number is None:
+        referenced_cues: set[int] = set()
+        for state in states:
+            cue_number = cue_by_group.get(state.group_id)
+            if cue_number is None:
                 fallback_count += 1
-                if order == 1:
-                    desired_start_ms = cues[0].start_ms
-                    actual_start_ms = max(desired_start_ms, previous_end_ms)
-                    delay_ms = actual_start_ms - previous_end_ms
-                else:
-                    delay_ms = stagger_ms
-                    actual_start_ms = previous_end_ms + delay_ms
+                delay_ms = state.original_delay_ms
+                actual_start_ms = previous_end_ms + delay_ms
             else:
                 anchored_count += 1
-                desired_start_ms = cues[entry.cue_number - 1].start_ms
+                referenced_cues.add(cue_number)
+                desired_start_ms = cues[cue_number - 1].start_ms
                 actual_start_ms = max(desired_start_ms, previous_end_ms)
                 delay_ms = actual_start_ms - previous_end_ms
                 drift_ms = actual_start_ms - desired_start_ms
                 if drift_ms > 500:
                     drift_warnings.append(
-                        f"{slide_name}/{entry.group_id}: cue {entry.cue_number} "
+                        f"{slide_name}/{state.group_id}: cue {cue_number} "
                         f"starts at {_seconds_from_ms(desired_start_ms):.3f}s, "
                         f"animation starts at {_seconds_from_ms(actual_start_ms):.3f}s "
                         f"(after-previous drift {_seconds_from_ms(drift_ms):.3f}s)"
                     )
 
-            group_config = {
-                "order": order,
-                "delay": _seconds_from_ms(delay_ms),
-            }
-            if effective_duration_ms != animation_duration_ms:
-                group_config["duration"] = _seconds_from_ms(effective_duration_ms)
-            groups_config[entry.group_id] = group_config
-            previous_end_ms = actual_start_ms + effective_duration_ms
+            group_value = groups_value.setdefault(state.group_id, {})
+            if not isinstance(group_value, dict):
+                raise ValueError(
+                    f'Derived animation group "{slide_name}/{state.group_id}" '
+                    "must be an object"
+                )
+            group_value["order"] = state.order
+            group_value["delay"] = _seconds_from_ms(delay_ms)
+            previous_end_ms = actual_start_ms + state.duration_ms
+
+        ignored_cue_count += len(cues) - len(referenced_cues)
 
         advance_ms = int((audio_duration + narration_padding) * 1000)
         if previous_end_ms > advance_ms:
@@ -621,47 +935,39 @@ def rebuild_animations(
                 f"slide advance at {_seconds_from_ms(advance_ms):.3f}s"
             )
 
-        slides_config[slide_name] = {
-            "transition": {
-                "effect": "fade",
-                "duration": profile["transition_duration"],
-            },
-            "animation": {
-                "effect": "auto",
-                "duration": profile["animation_duration"],
-                "stagger": profile["stagger"],
-                "trigger": "after-previous",
-            },
-            "groups": groups_config,
-        }
-
     _reject_output_alias(
         output_path,
         audio_paths,
-        label="Animation config",
+        label="Narration animation config",
     )
     _require_replaceable(output_path, force)
-    config = {
-        "version": 1,
-        "defaults": {
-            "transition": {"effect": "fade", "duration": 0.4},
-            "animation": {
-                "effect": "auto",
-                "duration": 0.4,
-                "stagger": 0.25,
-                "trigger": "after-previous",
-            },
-        },
-        "slides": slides_config,
-    }
+    derived_errors = list(
+        dict.fromkeys(
+            [
+                *validate_transition_config(derived),
+                *validate_animation_config_errors(derived),
+            ]
+        )
+    )
+    if derived_errors:
+        details = "\n".join(f"- {error}" for error in derived_errors)
+        raise ValueError(f"Derived narration animation config is invalid:\n{details}")
     _atomic_write_text(
         output_path,
-        json.dumps(config, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(derived, ensure_ascii=False, indent=2) + "\n",
     )
 
     for warning in drift_warnings:
         print(f"Warning: {warning}", file=sys.stderr)
-    return len(slide_names), anchored_count + fallback_count, anchored_count, fallback_count
+    return AnimationBuildResult(
+        slide_count=len(slide_names),
+        group_count=anchored_count + fallback_count,
+        anchored_count=anchored_count,
+        fallback_count=fallback_count,
+        ignored_cue_count=ignored_cue_count,
+        svg_fallback_slide_count=svg_fallback_slide_count,
+        timing_plan_written=False,
+    )
 
 
 def _presentation_slide_members(package: zipfile.ZipFile) -> list[str]:
@@ -1140,7 +1446,7 @@ def merge_subtitles_to_video(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Rebuild narrated object animation timings and merge page-local "
+            "Derive narrated object animation timings and merge page-local "
             "SRT files on PowerPoint's final timeline."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -1160,9 +1466,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     animations = subparsers.add_parser(
         "animations",
-        help="replace animations.json from narration_timing.json and page-local SRT",
+        help="derive narration_animations.json from animations.json and page-local SRT",
     )
     animations.add_argument("project_path", help="Project directory")
+    animations.add_argument(
+        "--animation-config",
+        default=None,
+        help="Read-only canonical config; default: <project>/animations.json",
+    )
     animations.add_argument(
         "--plan",
         default=None,
@@ -1182,7 +1493,10 @@ def build_parser() -> argparse.ArgumentParser:
         "-o",
         "--output",
         default=None,
-        help="Animation config output; default: <project>/animations.json",
+        help=(
+            "Narration animation output; "
+            "default: <project>/narration_animations.json"
+        ),
     )
     animations.add_argument(
         "--narration-padding",
@@ -1193,7 +1507,7 @@ def build_parser() -> argparse.ArgumentParser:
     animations.add_argument(
         "--force",
         action="store_true",
-        help="Replace an existing animations.json",
+        help="Replace an existing narration_animations.json",
     )
 
     subtitles = subparsers.add_parser(
@@ -1258,18 +1572,18 @@ def main(argv: list[str] | None = None) -> int:
                 args.subtitle_dir,
                 Path("notes/subtitles"),
             )
-            targets_by_slide, _anonymous_groups = scan_project_targets(project_path)
-            slide_names = list(targets_by_slide)
-            if not slide_names:
-                raise ValueError(
-                    f"No SVG slides found under: {project_path / 'svg_output'}"
-                )
+            slide_names = _page_subtitle_names(subtitle_dir)
             for slide_name in slide_names:
                 _parse_srt(subtitle_dir / f"{slide_name}.srt")
             print(_subtitle_fingerprint(slide_names, subtitle_dir))
             return 0
 
         if args.command == "animations":
+            canonical_path = _project_path(
+                project_path,
+                args.animation_config,
+                Path("animations.json"),
+            )
             plan_path = _project_path(
                 project_path,
                 args.plan,
@@ -1288,10 +1602,11 @@ def main(argv: list[str] | None = None) -> int:
             output_path = _project_path(
                 project_path,
                 args.output,
-                Path("animations.json"),
+                Path("narration_animations.json"),
             )
-            slide_count, group_count, anchored_count, fallback_count = rebuild_animations(
+            result = rebuild_animations(
                 project_path,
+                canonical_path=canonical_path,
                 plan_path=plan_path,
                 subtitle_dir=subtitle_dir,
                 audio_dir=audio_dir,
@@ -1299,10 +1614,13 @@ def main(argv: list[str] | None = None) -> int:
                 narration_padding=args.narration_padding,
                 force=args.force,
             )
-            print(f"Animation config rebuilt: {output_path}")
+            print(f"Narration animation config written: {output_path}")
             print(
-                f"Slides: {slide_count}; groups: {group_count}; "
-                f"SRT-anchored: {anchored_count}; sequential fallback: {fallback_count}"
+                f"Slides: {result.slide_count}; groups: {result.group_count}; "
+                f"SRT-anchored: {result.anchored_count}; "
+                f"canonical-delay fallback: {result.fallback_count}; "
+                f"SVG fallback slides: {result.svg_fallback_slide_count}; "
+                f"unused cues: {result.ignored_cue_count}"
             )
             return 0
 

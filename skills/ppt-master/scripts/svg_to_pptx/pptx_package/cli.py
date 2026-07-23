@@ -689,6 +689,9 @@ Recorded narration:
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
     - Requires one m4a/mp3/wav file per slide
+    - Uses narration_animations.json by default
+    - Use --animation-config animations.json for the canonical animation
+    - Use --no-animations for narration and timings without animation motion
     - Embeds per-slide audio matched by SVG filename / slide number
     - Sets slide auto-advance from audio duration so video export can use
       "recorded timings and narrations"
@@ -819,9 +822,25 @@ Recorded narration:
     parser.add_argument('--animation-stagger', type=non_negative_float, default=None,
                         help='Delay between elements in --animation-trigger=after-previous '
                              '(seconds, default 0.5). Ignored in other modes.')
-    parser.add_argument('--animation-config', type=str, default=None,
-                        help='Optional per-slide/per-object animation config. '
-                             'Default: <project>/animations.json when present.')
+    animation_source = parser.add_mutually_exclusive_group()
+    animation_source.add_argument(
+        '--animation-config',
+        type=str,
+        default=None,
+        help=(
+            'Per-slide/per-object animation config. Recorded narration defaults '
+            'to <project>/narration_animations.json; other exports default to '
+            '<project>/animations.json when present.'
+        ),
+    )
+    animation_source.add_argument(
+        '--no-animations',
+        action='store_true',
+        help=(
+            'Export without object animations or page-transition motion. '
+            'Narration audio and slide advance timings are preserved.'
+        ),
+    )
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
@@ -1147,18 +1166,65 @@ Recorded narration:
                     "unmatched slides will export without audio."
                 )
 
-    if args.animation_config:
-        config_path = Path(args.animation_config)
+    if args.no_animations and any(
+        value is not None
+        for value in (
+            args.transition,
+            args.transition_duration,
+            args.animation,
+            args.animation_duration,
+            args.animation_trigger,
+            args.animation_stagger,
+        )
+    ):
+        print(
+            "Error: --no-animations cannot be combined with transition or "
+            "object-animation overrides.",
+            file=sys.stderr,
+        )
+        return 1
+
+    effective_animation_config = args.animation_config
+    if (
+        effective_animation_config is None
+        and args.recorded_narration
+        and not args.no_animations
+    ):
+        effective_animation_config = 'narration_animations.json'
+
+    if effective_animation_config:
+        config_path = Path(effective_animation_config)
         if not config_path.is_absolute():
             config_path = project_path / config_path
         if not config_path.exists():
-            print(f"Error: Animation config does not exist: {config_path}")
+            print(
+                f"Error: Animation config does not exist: {config_path}",
+                file=sys.stderr,
+            )
+            if (
+                args.recorded_narration
+                and args.animation_config is None
+                and config_path.name == 'narration_animations.json'
+            ):
+                print(
+                    "Generate it with narration_sync.py animations, select the "
+                    "canonical config with --animation-config animations.json, "
+                    "or disable animations with --no-animations.",
+                    file=sys.stderr,
+                )
             return 1
 
     try:
-        animation_config = load_animation_config(project_path, args.animation_config)
+        animation_config = (
+            None
+            if args.no_animations
+            else load_animation_config(
+                project_path,
+                effective_animation_config,
+            )
+        )
     except Exception as exc:
-        print(f"Error: Failed to load animation config: {exc}")
+        print(f"Error: Failed to load animation config: {exc}", file=sys.stderr)
         return 1
     config_errors: list[str] = []
     if animation_config:
@@ -1187,10 +1253,15 @@ Recorded narration:
             return 1
 
     if animation_config and verbose:
-        config_label = args.animation_config or str(project_path / 'animations.json')
+        config_label = (
+            effective_animation_config
+            or str(project_path / 'animations.json')
+        )
         print(f"  Animation config: {config_label}")
         for warning in config_warnings:
             print(f"  [warn] {warning}")
+    elif args.no_animations and verbose:
+        print("  Animations: disabled")
 
     defaults = animation_config.get('defaults', {}) if animation_config else {}
     transition_defaults = _as_dict(defaults.get('transition')) if isinstance(defaults, dict) else {}
@@ -1198,9 +1269,13 @@ Recorded narration:
 
     transition_arg = args.transition
     transition_effect = (
-        transition_arg
-        if transition_arg is not None
-        else transition_defaults.get('effect', 'fade')
+        'none'
+        if args.no_animations
+        else (
+            transition_arg
+            if transition_arg is not None
+            else transition_defaults.get('effect', 'fade')
+        )
     )
     transition = None if transition_effect == 'none' else transition_effect
     try:
@@ -1230,12 +1305,16 @@ Recorded narration:
 
     try:
         animation_effect = (
-            args.animation
-            if args.animation is not None
-            # Per-element entrance is opt-in by default: auto-firing element builds
-            # read as the "AI deck" tell and were unsolicited. Page transitions stay
-            # on (see transition default above). Re-enable with -a auto / animations.json.
-            else animation_defaults.get('effect', 'none')
+            'none'
+            if args.no_animations
+            else (
+                args.animation
+                if args.animation is not None
+                # Per-element entrance is opt-in by default: auto-firing element builds
+                # read as the "AI deck" tell and were unsolicited. Page transitions stay
+                # on (see transition default above). Re-enable with -a auto / animations.json.
+                else animation_defaults.get('effect', 'none')
+            )
         )
         animation = normalize_animation_effect(animation_effect)
         animation_duration = validate_seconds(

@@ -148,9 +148,10 @@ Flags:
 - `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
 - `--animation-duration` — per-element entrance seconds, default `0.4`.
 - `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.
-- `--animation-config` — sidecar path. Default: `<project>/animations.json` when present.
+- `--animation-config` — explicit sidecar path. Narrated export defaults to `<project>/narration_animations.json`; other export defaults to `<project>/animations.json` when present.
+- `--no-animations` — ignore animation sidecars and disable both object animations and page-transition motion. Narration audio and recorded slide-advance timing remain active.
 
-> Note: `--recorded-narration` rejects `on-click`; use `after-previous` or `with-previous` for video-ready narrated decks.
+> Note: `--recorded-narration` rejects `on-click`; use its default `narration_animations.json`, pass `--animation-config animations.json` for the canonical presentation animation, or pass `--no-animations`.
 
 ---
 
@@ -199,6 +200,9 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 | Slower transition | `--transition-duration 0.8` |
 | Auto-play | `--auto-advance 5` |
 | Disable element animation | `-a none` |
+| Narrated export with synchronized animation | `--recorded-narration audio` |
+| Narrated export with canonical animation | `--recorded-narration audio --animation-config animations.json` |
+| Narrated export without animation motion | `--recorded-narration audio --no-animations` |
 | Switch to on-click trigger | `-a auto --animation-trigger on-click` |
 | Use a single effect instead of auto | `--animation fade` |
 | All groups animate together | `-a auto --animation-trigger with-previous` |
