@@ -15,21 +15,38 @@
     --warning: #f5c542;
     --radius: 10px;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
+    --ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
 
 html { height: 100%; }
 
+html:lang(ja) {
+    --ui-font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI",
+        "Yu Gothic", "Meiryo UI", Meiryo, "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
+}
+
+html:lang(zh) {
+    --ui-font-family: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei",
+        "Noto Sans CJK SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+}
+
 body {
     margin: 0;
     height: 100%;
     background: #1a1a2e;
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
-        "PingFang SC", "Hiragino Sans GB", sans-serif;
+    font-family: var(--ui-font-family);
     line-height: 1.5;
     overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 /* ---- fullscreen shell ---- */
