@@ -205,7 +205,7 @@ Cloud TTS providers do not require extra Python packages; they use HTTPS directl
 
 ## Tips
 
-- **Pacing**: PPT Master's default speaker-notes are 2–5 sentences per slide; `+0%` rate sounds natural. If a deck is very dense (long technical paragraphs), try `-5%`.
+- **Pacing**: On the Generate PPTX route, speaker notes scale with the independent information groups in the final SVG; 2–5 sentences is a typical rhythm, not a cap. Start with `+0%`; for a dense, deliberately detailed script, try `-5%`.
 - **Mid-deck regeneration**: change a single slide's `notes/<page>.md`, re-run `notes_to_audio.py` (it overwrites all MP3s, so re-run for the whole deck — the cost is small).
 - **Mixed-language decks** (Chinese with English technical terms etc.): `edge-tts` neural voices handle the embedded foreign words reasonably well in most locales — pick the dominant language voice and try one slide first.
 

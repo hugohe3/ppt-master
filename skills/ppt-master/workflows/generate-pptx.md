@@ -410,7 +410,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - The JSON report is written to `validation/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 - **Hard rule — token-safe report handling**: On a successful checker run, use the exit status and terminal summary as gate evidence. Do not open, `cat`, or otherwise load the complete JSON report into model context. Read it only for failure investigation, an explicit audit request, or a field absent from stdout; extract only the required field(s).
 
-**Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md) and generate speaker notes → `<project_path>/notes/total.md`
+**Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md), ground each page's narration in all information-bearing content in its final SVG, and generate speaker notes → `<project_path>/notes/total.md`
 
 **✅ Internal checkpoint — execution complete**: verify live preview timing, the P01 method gate, uninterrupted remaining-page generation, consolidated repair of any complete failure set, exact §IX roster coverage, one-frame prose wrapping, a final checker result of 0 errors, and `notes/total.md`. Do not print this checklist. Run the applicable conditional gates below, then proceed to Step 7 under the compact status rule above.
 
