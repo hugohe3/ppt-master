@@ -193,7 +193,7 @@ The edge command writes each MP3 and its internal page SRT from the same `edge-t
 Get the exact fingerprint value with:
 
 ```bash
-python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
+uvx ppt-master narration-sync fingerprint <project_path>
 ```
 
 ```json
