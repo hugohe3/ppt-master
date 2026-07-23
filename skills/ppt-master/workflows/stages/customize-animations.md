@@ -88,6 +88,8 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 **Per-page motion brief**: for each slide, decide transition effect, transition duration, object reveal sequence, object effects, and timing. Use `design_spec.md` for slide role, `spec_lock.md` for rhythm, speaker notes for narration order, and SVG group ids for target validity.
 
+**Title reveal decision**: when present, treat the page title as a first-class object in the per-page reveal plan, never an afterthought. Consciously choose one of — static (`effect: none`), immediate entrance, delayed entrance, entrance after the page's hero visual, synchronous with related content, or, when narration is part of the workflow, narration-cued — driven by the user's request, slide role, transition, and narration order. This stage uses the effect (§3.2), order, duration, and timing fields already defined below; narration-cued timing is realized later by the audio stage. It does not preset which choice a title uses. A real title must not drop out of the plan merely because its id resembles a legacy chrome name: use the documented sidecar override (§2 / §4) when animation is intended. Explicit structural or static markers remain authoritative; if they incorrectly mark a title that should animate, repair the SVG semantics before continuing.
+
 **Hard rule**: a custom animation pass must not only edit group effects. It must also decide whether each slide should inherit the default transition or need a slide-specific `transition` override.
 
 **Timing guidance**: prefer content-aware durations when the deck has varied slide rhythm or object importance. Uniform timing is acceptable when it matches the user's requested style or the deck's pacing.
