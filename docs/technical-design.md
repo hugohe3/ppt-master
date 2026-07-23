@@ -53,7 +53,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     └── Content-type files in sources/ become the content contract
     ↓
 [Template / Brand / Layout (optional)] — default: skip, proceed with free design
-    Trigger only on an explicit current-contract Brand/Layout/Deck workspace root
+    Trigger only on an explicit current-contract Brand/Layout/Deck workspace-root path: either a global-library entry root or a project workspace root
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md

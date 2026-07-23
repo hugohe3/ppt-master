@@ -53,7 +53,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     └── sources/ 内容型文件成为内容契约
     ↓
 [模板 / 品牌 / 布局（可选）] — 默认跳过，直接自由设计
-    仅在用户提供符合当前合同的明确 Brand/Layout/Deck 工作区根目录时触发
+    仅在用户明确提供符合当前合同的 Brand/Layout/Deck 工作区根路径时触发：可以是全局模板库条目根，也可以是项目工作区根
     原生 PPTX 模板请求进入 template-fill；可复用 SVG 模板需先通过 create-template 创建
     ↓
 [Strategist] 策略师 - 三阶段策略师确认与设计规范 → design_spec.md + spec_lock.md
