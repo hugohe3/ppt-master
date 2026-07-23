@@ -294,6 +294,8 @@ python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
 python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
 python3 scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
+python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --animation-config animations.json
+python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --no-animations
 ```
 
 The normal command reads `pptx_structure.mode` from `spec_lock.md`. For legacy
@@ -357,6 +359,8 @@ Behavior:
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
   - `--recorded-narration audio` prepares PowerPoint's "recorded timings and narrations": every slide must have matching `m4a` / `mp3` / `wav` audio, `ffprobe` must read every duration, and `--animation-trigger on-click` is rejected
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
+  - Narrated export defaults to `<project>/narration_animations.json`; pass `--animation-config animations.json` for the canonical presentation animation, or `--no-animations` to remove object animations and page-transition motion while retaining narration and slide timings
+  - Non-narrated export keeps the existing optional `<project>/animations.json` default
   - Narration timing is merged into the existing slide timing DOM; object entrance rows and the resolved page transition are preserved rather than regenerated
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
   - Either narration flag names the default-flow export `<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports in the same directory

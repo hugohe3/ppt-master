@@ -143,7 +143,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2A. Generate PPTX caller with Edge SRT: rebuild click-free object timings
+# 2A. Derive click-free narration timings from the existing custom animation
 python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
   --narration-padding 0.5 --force
 
@@ -151,22 +151,35 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --no-merge --recorded-narration audio --narration-padding 0.5
 
+# Optional: use the canonical presentation animation instead
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --animation-config animations.json
+
+# Optional: export narration with no object or page-transition animation
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --no-animations
+
 # 2C. Merge page-local SRT against timing values read from the final PPTX
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
-# 2D. Optional after PowerPoint exports the video: calibrate page starts against
-# the actual video audio and write a same-stem sidecar SRT
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
-  --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
-  -o exports/<powerpoint_exported_video_stem>.srt --force
+# 2D. After PowerPoint exports the video, align the frozen narration text
+# against the finished video's actual audio track
+python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
+  --video <powerpoint_exported_video> --language <language> --force
 ```
 
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
 
-The edge command writes each MP3 and its SRT from the same `edge-tts` stream. SRT cues use the stream's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary only when still too long. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Override the limit with `--subtitle-max-chars`. Cloud-provider commands currently write audio only.
+The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. Every cue is the service's native `SentenceBoundary` text, offset, and duration; the audio stage does not re-segment it or edit the notes. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Cloud-provider commands currently write audio only.
 
-**Generate PPTX narration timing plan**: before `narration_sync.py animations`, compare every current SVG content group with that page's SRT and write `<project_path>/narration_timing.json`. Pin the plan to the ordered page-local SRT set with `srt_sha256`, and record the same `narration_padding` that the later PPTX export will use. Each slide contains one ordered `groups` list. Set `cue` to the matching 1-based SRT cue number; omit `cue` when the group has no spoken counterpart. The list must cover every non-static content group exactly once. The sync command rejects a stale SRT fingerprint, then rebuilds `animations.json` from scratch with `after-previous` timing; it does not migrate legacy narration fields. Matched groups wait for their cue, while unmatched groups follow the preceding animation with the page rhythm's normal stagger.
+**Narration animation ownership**: `animations.json` must already exist and remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. It first resolves the sequence from `animations.json` and page SRT. When a sparse sidecar cannot identify every effective group, it reads only the affected SVG page as a read-only fallback; it never edits SVG, notes, or `animations.json`. Without a timing plan, ordered animated groups map to ordered sentence cues and unmatched groups keep their canonical relative delay.
+
+**Narrated export animation selection**: `--recorded-narration` defaults to `<project_path>/narration_animations.json` and fails with a repair hint when that file is missing. Pass `--animation-config animations.json` to keep the canonical presentation animation, or `--no-animations` to disable both object animations and page-transition motion while preserving narration audio and recorded slide-advance timings. Non-narrated export keeps its existing optional `<project_path>/animations.json` default.
+
+An existing `<project_path>/narration_timing.json` remains an optional explicit mapping for ambiguous pages. It is fingerprinted to the ordered SRT set; `cue` is the 1-based sentence cue, and omitted `cue` keeps that group's canonical relative delay.
 
 Get the exact fingerprint value with:
 
@@ -190,9 +203,9 @@ python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
 }
 ```
 
-After the narrated PPTX is exported, `narration_sync.py subtitles` reads the actual presentation relationship order plus integer `advTm` and transition duration from every slide, then writes `<project_path>/notes/subtitles/total.srt`. Relative `--pptx` paths are project-relative. This produces the deck-wide SRT on the native PPTX timeline, including page transitions and narration padding.
+`narration_sync.py subtitles` may still write `<project_path>/notes/subtitles/total.srt` as a PPTX-timeline diagnostic. It is not the delivery subtitle for a finished video.
 
-PowerPoint video export may quantize each slide/media segment to the video frame clock, creating small page-boundary differences that accumulate across a long deck. When the finished video exists, pass it with `--video`. The command correlates each original page narration with the exported audio track and replaces only the theoretical page offsets; it preserves every page-local cue and rejects weak matches. This optional post-export calibration does not create or rewrite MP4.
+After PowerPoint exports the video, `video_subtitles.py` takes the exact narration text frozen in the page SRT set and force-aligns it against the finished video's actual audio track with `stable-ts`. Long delivery cues may be split for display at this final stage. This writes a same-stem external SRT without changing the MP4, notes, page SRT, or animation files.
 
 This stage keeps subtitles as external SRT files. It does not embed subtitles into PPTX or export MP4 directly.
 
@@ -200,7 +213,7 @@ This stage keeps subtitles as external SRT files. It does not embed subtitles in
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With Edge SRT, rebuild animations, export with `--recorded-narration audio`, then merge `total.srt` from the final PPTX. If PowerPoint later exports a video, optionally rerun the merge with `--video` for exact sidecar alignment. |
+| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`, export with `--recorded-narration audio` (derived animation by default; canonical or no-animation modes remain explicit), and generate the delivery SRT only after PowerPoint exports the video. |
 | Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export |
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
@@ -215,8 +228,8 @@ Output one summary block listing:
 
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - For edge, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
-- For Generate PPTX with Edge SRT, rebuilt animation group count and merged SRT path (`<project_path>/notes/subtitles/total.srt`).
-- When `--video` was used, the calibrated sidecar SRT path, page-offset adjustment range, and minimum audio-correlation score.
+- For Generate PPTX with Edge SRT, derived narration animation group count and `narration_animations.json` path.
+- When a finished video was supplied, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
 - The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
 - For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
