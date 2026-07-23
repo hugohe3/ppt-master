@@ -6,49 +6,35 @@ Conditional late-stage authority for generating the complete speaker-notes docum
 
 **Trigger**: load only after all SVG pages pass the final quality check.
 
-## 1. Speaker Notes Generation Framework
+## 1. Complete Speaker-notes Document
 
-### 1.1 Generate Complete Speaker Notes Document
+Write the complete deck to `notes/total.md` in one batch for coherent transitions. Use `# <number>_<page_title>` per page and `---` between pages; only the heading is stripped before TTS.
 
-After all SVG pages are finalized, enter Logic Construction Phase and write the full notes to `notes/total.md`. Batch-writing (not per-page) lets transitions plan coherently.
+**Pure spoken narration**: `notes_to_audio.py` reads the body verbatim. Write prose only; never add Markdown list/bullet markup, stage markers, key-point labels, duration lines, or other metadata.
 
-**Pure spoken narration**: notes are read aloud verbatim by `notes_to_audio.py` (TTS). Write only what should be spoken. No visible markers, no labeled meta-lines, no enumerated key-point lists, no duration annotations — anything you write outside the heading will be vocalized.
+**Length follows content**: size natural sentences to semantic burden. Two to five is typical, not a cap; anchor pages may use less and dense pages more. Honor `design_spec.md` style, detail, and source rules. Duration is pacing guidance only: never pad, repeat, compress, or omit meaning to hit it.
 
-**Per-page structure**: `# <number>_<page_title>` heading (the `#` heading line is the only thing stripped before TTS), pages separated by `---`. Body is 2–5 natural sentences carrying the page's core message. Page-to-page transitions live inside the opening sentence as natural prose ("接下来……" / "Having framed X, let's turn to Y") — no bracketed `[过渡]` / `[Transition]` tags.
+## 2. Final-SVG Grounding and Coverage
 
-**Reading-mode note burden**:
+**Hard rule — the final SVG is the visible page authority**: read every finalized `svg_output/<slide>.svg` in slide order. Use the locked plan and approved sources for context; never write from the outline or core message alone.
+
+Before drafting, internally inventory the visible title/subtitle and every information-bearing direct-root `<g id>`; structured placeholder content still counts. Coverage requires its unique claim, evidence, example, relationship, qualifier, or implication—not merely its label—to enter the narration.
+
+- Text blocks, comparisons, and processes retain every independent fact or relationship; combine related short groups causally or comparatively.
+- Charts, tables, and KPIs state the takeaway, decisive values or trend, comparison basis, implication, and material uncertainty—not every axis, row, or cell.
+- Quotes retain the decisive clause, material attribution, and relevance. Explain semantic images or text-free diagrams only from the SVG plus locked plan/source; never infer facts from appearance.
+- Speak a source or page-local footer only when attribution, uncertainty, or qualification changes the argument. Omit backgrounds, decoration, repeated chrome, page numbers, and fixed Master/Layout atoms.
+
+Form one coherent argument in intended reading/reveal order: proposition → evidence or mechanism → implication or bridge. DOM order need not be speaking order. A sentence may cover related groups and a complex group may need several sentences, but no independent group may disappear to meet a sentence count. Keep the inventory internal: never vocalize IDs, positions, colors, icons, repetitive "this card shows" descriptions, or coverage markers.
+
+## 3. Reading Mode and TTS
 
 | `consumption_mode` | Notes emphasis |
 |---|---|
-| `text` | Add interpretation or transition without reading the already self-contained page aloud. |
-| `balanced` | Connect the visible claim and evidence, explain the trade-off, and bridge to the next page. |
-| `presentation` | Carry the reasoning, context, and supporting detail intentionally omitted from the sparse projected surface. |
+| `text` | Interpret and connect a self-contained page; synthesize every independent SVG information group rather than omitting it. |
+| `balanced` | Connect visible claim and evidence, explain the trade-off, and bridge forward. |
+| `presentation` | Carry reasoning, context, and supporting detail intentionally omitted from the sparse page. |
 
-**Concrete examples** — same shape applies to any language; just write naturally in that language.
+Put transitions naturally in the opening sentence when useful; never label them. Keep one language. Spell out digits or symbols when literal TTS would sound wrong (for example, Chinese "百分之六十八" rather than "68%").
 
-中文 deck：
-
-```
-# 02_市场格局
-
-在明确了行业背景之后，我们来看具体的市场格局。当前线上零售集中度持续上升，前三大平台合计份额已经达到百分之六十八，腰部玩家正在被快速挤压，留给新进入者的窗口期不超过十八个月。这意味着我们的策略必须聚焦，而不是铺开。
-```
-
-英文 deck：
-
-```
-# 02_market_landscape
-
-Having framed the industry backdrop, let's look at the actual market landscape. Online retail concentration keeps rising — the top three platforms now hold sixty-eight percent of combined share, mid-tier players are being squeezed fast, and the window for new entrants is under eighteen months. This means our strategy has to focus, not spread.
-```
-
-> 日本語 / 한국어 / 其他语言：照搬同样的结构，用对应语言自然书写即可。
-
-**Number readability**: TTS reads digits and symbols literally. Prefer fully-spelled forms in the language being spoken when literal pronunciation would be awkward (e.g. Chinese "百分之六十八" reads better than "68%"; "1-2分钟" reads as "一减二分钟"). Plain integers and percentages in English are fine as-is.
-
-**Common mistakes to avoid**:
-- Leaving any bracketed stage marker (`[过渡]` / `[Transition]` / `[Pause]` / `[Data]` / `[Scan Room]` / `[Interactive]` / `[Benchmark]` etc.) in the text — they will be read aloud literally.
-- Adding `要点：① …` / `Key points: (1) …` / `时长：2分钟` / `Duration: 2 minutes` / `Flex: …` lines — TTS will speak "要点 一 …".
-- Mixing languages within one deck's notes.
-
-After `notes/total.md` is complete, return to Generate Step 7.1. The route authority owns the serial split command and its success criterion.
+After `notes/total.md` is complete, return to Generate Step 7.1; the route authority owns splitting and its success criterion.
