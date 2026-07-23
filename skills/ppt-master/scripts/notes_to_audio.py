@@ -3,7 +3,7 @@
 
 This script uses provider backends for the same per-slide output contract on
 macOS, Linux, and Windows. `edge-tts` remains the default no-key backend and
-also writes one sentence-timed SRT file per slide from the same TTS stream.
+also writes one compact, word-timed SRT file per slide from the same TTS stream.
 
 Usage:
     python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
@@ -112,10 +112,7 @@ def main() -> int:
         "--subtitle-max-chars",
         type=int,
         default=backend_edge.DEFAULT_SUBTITLE_MAX_CHARS,
-        help=(
-            "deprecated compatibility option; ignored because Edge SentenceBoundary "
-            "cues are preserved unchanged"
-        ),
+        help="maximum visible characters per Edge subtitle cue (default: 20)",
     )
     parser.add_argument(
         "--elevenlabs-api-key-env",
@@ -253,6 +250,10 @@ def main() -> int:
 
     if args.provider != "edge" and not voice_id:
         parser.error(f"--voice-id is required for --provider {args.provider}")
+        raise AssertionError("unreachable")
+
+    if args.subtitle_max_chars < 1:
+        parser.error("--subtitle-max-chars must be at least 1")
         raise AssertionError("unreachable")
 
     if args.provider == "elevenlabs":
