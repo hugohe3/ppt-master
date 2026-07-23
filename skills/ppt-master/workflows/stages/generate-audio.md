@@ -143,7 +143,10 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2A. Derive click-free narration timings from the existing custom animation
+# 2A. Before derivation, author or refresh narration_timing.json by matching
+#     SVG group semantics to SRT topics while preserving animations.json behavior.
+#     Reuse current SVG group/content semantics already present in context;
+#     otherwise read only the missing or stale svg_output pages.
 python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
   --narration-padding 0.5 --force
 
@@ -175,11 +178,13 @@ If `notes_to_audio.py` errors with a missing dependency or missing provider API 
 
 The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. Every cue is the service's native `SentenceBoundary` text, offset, and duration; the audio stage does not re-segment it or edit the notes. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Cloud-provider commands currently write audio only.
 
-**Narration animation ownership**: `animations.json` must already exist and remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. It first resolves the sequence from `animations.json` and page SRT. When a sparse sidecar cannot identify every effective group, it reads only the affected SVG page as a read-only fallback; it never edits SVG, notes, or `animations.json`. Without a timing plan, ordered animated groups map to ordered sentence cues and unmatched groups keep their canonical relative delay.
+**Mandatory — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
+
+**Narration animation ownership**: `animations.json` must already exist and remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group to the SRT cue that speaks about that content. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
 
 **Narrated export animation selection**: `--recorded-narration` defaults to `<project_path>/narration_animations.json` and fails with a repair hint when that file is missing. Pass `--animation-config animations.json` to keep the canonical presentation animation, or `--no-animations` to disable both object animations and page-transition motion while preserving narration audio and recorded slide-advance timings. Non-narrated export keeps its existing optional `<project_path>/animations.json` default.
 
-An existing `<project_path>/narration_timing.json` remains an optional explicit mapping for ambiguous pages. It is fingerprinted to the ordered SRT set; `cue` is the 1-based sentence cue, and omitted `cue` keeps that group's canonical relative delay.
+`<project_path>/narration_timing.json` is the explicit semantic mapping for narrated object animation. It is fingerprinted to the ordered SRT set; `cue` is the 1-based sentence cue, and omitted `cue` keeps that group's canonical relative delay. Reuse a complete current mapping when its fingerprint and SVG group semantics remain valid; rebuild only affected pages when either input changed.
 
 Get the exact fingerprint value with:
 
@@ -228,6 +233,7 @@ Output one summary block listing:
 
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - For edge, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
+- For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
 - For Generate PPTX with Edge SRT, derived narration animation group count and `narration_animations.json` path.
 - When a finished video was supplied, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
