@@ -821,6 +821,7 @@ def rebuild_animations(
     ignored_cue_count = 0
     svg_fallback_slide_count = 0
     drift_warnings: list[str] = []
+    positional_slides: list[tuple[str, int, int]] = []
     audio_paths: list[Path] = []
 
     for slide_name in slide_names:
@@ -857,6 +858,8 @@ def rebuild_animations(
         )
         if used_svg:
             svg_fallback_slide_count += 1
+        if timing_plan is None and states:
+            positional_slides.append((slide_name, len(states), len(cues)))
 
         state_ids = {state.group_id for state in states}
         cue_by_group: dict[str, int | None] = {}
@@ -959,6 +962,27 @@ def rebuild_animations(
 
     for warning in drift_warnings:
         print(f"Warning: {warning}", file=sys.stderr)
+    if positional_slides:
+        print(
+            "Warning: no narration_timing.json found — object reveals were mapped "
+            "positionally (group N -> subtitle cue N). This mistimes any page whose "
+            "narration is longer than its object count: later objects reveal early, "
+            "while the narrator is still on an earlier point. Author "
+            f"{plan_path} mapping each SVG group to the subtitle cue that speaks "
+            "about it (omit a group's cue to keep its canonical delay), then re-run.",
+            file=sys.stderr,
+        )
+        risky = [
+            (name, group_count, cue_count)
+            for name, group_count, cue_count in positional_slides
+            if group_count > 1 and cue_count > group_count + 1
+        ]
+        for name, group_count, cue_count in risky:
+            print(
+                f"Warning:   {name}: {group_count} object(s) but {cue_count} "
+                "subtitle cue(s) — later objects likely reveal too early",
+                file=sys.stderr,
+            )
     return AnimationBuildResult(
         slide_count=len(slide_names),
         group_count=anchored_count + fallback_count,
