@@ -106,6 +106,24 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 **Duration guidance**: use shorter timing for repeated scan content, longer timing for conceptual pivots, section transitions, hero diagrams, and final takeaways.
 
+**Choreography guidance**: prefer a restrained modern palette (`fade`,
+`dissolve`, `zoom`, directional `fly_*`, directional `wipe_*`, and occasional
+`expand`) over merely maximizing effect variety. Motion should explain the
+layout:
+
+| Page structure | Recommended choreography |
+|---|---|
+| Left/right comparison | Pair `fly_left` with `fly_right`; reveal the shared conclusion afterward |
+| Vertical sequence or timeline | Reveal the track with `wipe_down`, then cascade items with `fly_left` or `fade` |
+| Hero image plus takeaway | Bring the visual in with `dissolve` or `zoom`, then use a slower `fade` for the message |
+| Dense repeated cards | Use one consistent directional effect with short stagger; do not assign a different novelty effect to every card |
+| Quote or reflective breathing page | Prefer one long `fade`/`zoom` followed by a quiet note; avoid patterned effects |
+
+Use direction only when it agrees with the object's position or reading flow.
+Do not use `mixed`, `random`, blinds, checkerboard, random bars, wheel, wedge,
+or swivel merely to make a deck feel “more animated”; reserve them for an
+explicit visual concept or user request.
+
 ### 3.1 Supported Page Transitions
 
 | Effect | Behavior |
@@ -135,9 +153,16 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `appear` | Visibility flip without motion |
 | `fade` | Neutral entrance |
 | `fly` | Fly in from bottom |
+| `fly_left` | Fly in from left |
+| `fly_right` | Fly in from right |
+| `fly_top` | Fly in from top |
 | `cut` | Legacy compatibility key; preserve its registered tuple exactly |
 | `zoom` | Scale/zoom entrance |
-| `wipe` | Wipe entrance |
+| `wipe` | Legacy wipe tuple; keep for compatibility |
+| `wipe_left` | Left wipe entrance |
+| `wipe_right` | Right wipe entrance |
+| `wipe_up` | Upward wipe entrance |
+| `wipe_down` | Downward wipe entrance |
 | `split` | Split/barn entrance |
 | `blinds` | Horizontal blinds |
 | `checkerboard` | Checkerboard reveal |
@@ -282,6 +307,27 @@ Generated export performs semantic read-back per slide, comparing row order, tri
 
 Direct-PPTX routes are preserve-only for object animation: they compare the source object-animation fingerprint before and after allowed edits, run structural package validation, and do not write, normalize, or claim ownership of effects. See [`pptx-animations.md`](../../scripts/docs/pptx-animations.md) for the exact compatibility and OOXML contract.
 
+### 5.1 Optional Video Motion Handoff
+
+When a downstream video renderer will enhance the deck, export with
+`--conversion-trace` and derive its motion plan from that resolved trace:
+
+```bash
+python3 skills/ppt-master/scripts/video_motion_plan.py \
+  <output>.pptx.trace.json \
+  -o <project_path>/validation/video_motion_plan.json \
+  --style adaptive \
+  --force
+```
+
+For narrated output, the source trace must come from the final
+`--recorded-narration` export. The video plan inherits object identity, source
+effect, semantic direction, order, duration, native bounds, and final timing
+anchors. Video-only optimization may refine easing, travel distance, opacity,
+scale, mask feather, blur, motion blur, and overshoot; it must not replace the
+source effect or reduce the choreography to delay values. See
+[`video-motion-plan.md`](../../scripts/docs/video-motion-plan.md).
+
 ---
 
 ## ✅ Customize Animations Complete
@@ -295,3 +341,4 @@ Direct-PPTX routes are preserve-only for object animation: they compare the sour
 - [x] `animation_config.py validate` passed
 - [x] PPTX re-export completed with custom animation overrides
 - [x] Generated animation semantic read-back and package validation passed
+- [x] If video enhancement was requested, its motion plan was derived from the final resolved conversion trace

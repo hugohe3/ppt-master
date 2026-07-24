@@ -132,9 +132,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous
 ```
 
-22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
+29 single effects: `appear`, `fade`, `fly`, `fly_left`, `fly_right`, `fly_top`, `cut`, `zoom`, `wipe`, `wipe_left`, `wipe_right`, `wipe_up`, `wipe_down`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
 
-These names preserve the established filter / `presetID` / `presetSubtype` tuples documented in [`pptx-animations.md`](../scripts/docs/pptx-animations.md#3-compatibility-contract). `cut` is a legacy public key; compatibility promises its existing tuple, not a semantic interpretation inferred from an external preset-id table.
+These names preserve the established filter / `presetID` / `presetSubtype` tuples documented in [`pptx-animations.md`](../scripts/docs/pptx-animations.md#3-compatibility-contract). `fly` remains the bottom-up variant. `wipe` preserves its historical tuple; use `wipe_left`, `wipe_right`, `wipe_up`, or `wipe_down` when motion should follow the layout explicitly. `cut` is a legacy public key; compatibility promises its existing tuple, not a semantic interpretation inferred from an external preset-id table.
 
 - `auto` (recommended when enabling) — map effect from the group's SVG id. Information-dense elements get a single stable effect: `chart` / `table` / `legend` / `timeline` / `track` → `wipe`; `card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` / `tier-*` / `principle-*` → `fly`; `title` / `chapter-*` / `section-*` / `cover-*` / `tagline` / `subtitle` → `fade`; `takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` → `fade`. Image-like ids `hero` / `figure-*` / `image` / `img-*` / `kpi` instead cycle a richer visual pool (`zoom` / `dissolve` / `circle` / `box` / `diamond` / `wheel`) so multiple images vary across the deck. Unmatched ids cycle through `fade` / `wipe` / `fly` / `zoom`.
 - `mixed` (legacy) — deterministic. The first animated group on each slide uses `fade`; later groups cycle through a 16-effect pool (`blinds` / `checkerboard` / `dissolve` / `fly` / `cut` / `random_bars` / `box` / `split` / `strips` / `wedge` / `wheel` / `wipe` / `expand` / `fade` / `swivel` / `zoom`) across the deck. Kept for backward compatibility.
@@ -182,7 +182,23 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 
 ---
 
-## 7. Limitations
+## 7. Video Adaptation Contract
+
+Custom animation remains the semantic source for video motion. A downstream
+video renderer must consume a resolved conversion trace through
+`video_motion_plan.py`, not infer motion from delay values or read an unresolved
+sidecar directly.
+
+The plan locks object identity, object order, source effect, semantic direction,
+and timing anchors. Video-only adaptation may refine easing, travel distance,
+opacity, scale, mask feather, blur, motion blur, and overshoot. Unsupported
+effect families must fail visibly rather than silently becoming generic fades.
+See [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md) for the schema
+and renderer contract.
+
+---
+
+## 8. Limitations
 
 - **Native DrawingML output only.** Page transitions and per-element animations are authored on the PPTX produced by the project converter from `svg_output/`. `svg_final/` remains a static SVG visual preview, not an animated or alternate PPTX route.
 - **PowerPoint OOXML scope.** Effects preserve their established filter / `presetID` / `presetSubtype` tuples and are validated against the serialized PowerPoint package. Rendering in Keynote, LibreOffice, WPS, or other applications is outside the unconditional compatibility guarantee.
@@ -191,7 +207,7 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 
 ---
 
-## 8. Quick Reference
+## 9. Quick Reference
 
 | Goal | Command |
 |---|---|
@@ -208,9 +224,11 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 | All groups animate together | `-a auto --animation-trigger with-previous` |
 | Slower per-element reveal | `-a auto --animation-duration 0.5` |
 | Wider gap in after-previous | `-a auto --animation-stagger 0.7` |
+| Derive effect-aware video motion | `video_motion_plan.py <output>.pptx.trace.json --force` |
 
 See also:
 
 - [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
 - [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md) for the shared OOXML writer, MCE preservation, and read-back contract.
 - [`pptx-animations.md`](../scripts/docs/pptx-animations.md) for the exact effect tuples, timing-tree rules, and animation package validator.
+- [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md) for the resolved animation-to-video enhancement contract.
