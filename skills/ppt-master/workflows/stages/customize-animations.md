@@ -19,7 +19,7 @@ description: Optional post-processing stage for per-slide and per-object animati
 | User only wants the default deck (page transitions, no element builds) | Do not run; normal `svg_to_pptx.py` export is enough |
 | User only wants deck-wide page transitions, auto-advance, or per-element entrance animation | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
-| This stage is triggered and `animations.json` is present | Validate and edit it; do not overwrite unless the user asks |
+| `animations.json` exists | Resolve regeneration versus modification through the §1 intent gate before changing it |
 
 ---
 
@@ -52,7 +52,15 @@ python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>
 
 Scaffold output also excludes chrome and includes a `defaults` stub.
 
-If it already exists:
+**Existing sidecar intent gate**:
+
+| User intent | Action |
+|---|---|
+| Explicit regeneration / rewrite / replacement | Read the current semantic context and real group ids, then replace `animations.json`; the previous choreography is not a constraint |
+| Explicit adjustment / tuning / repair | Validate first, then preserve and edit the existing choreography |
+| Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
+
+When the existing sidecar will be modified:
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
