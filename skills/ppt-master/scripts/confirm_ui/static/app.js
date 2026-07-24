@@ -17,7 +17,7 @@
             stage_design: "Stage 2 · Deck direction & visual system",
             stage_images: "Stage 3 · Resources & production",
             loading: "Loading…",
-            load_error: "Could not load recommendations.json. The AI must write it before launch.",
+            load_error: "Could not load the current recommendation stage. The AI must write it before launch.",
             btn_confirm: "Confirm",
             btn_confirm_contract: "Confirm contract & continue →",
             btn_confirm_solution: "Confirm solution & continue →",
@@ -155,7 +155,7 @@
             stage_design: "ステージ 2 · 全体方針とビジュアルシステム",
             stage_images: "ステージ 3 · リソースと制作",
             loading: "読み込み中…",
-            load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
+            load_error: "現在の推奨ステージを読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
             btn_confirm_contract: "契約内容を確定して次へ →",
             btn_confirm_solution: "全体方針を確定して次へ →",
@@ -548,7 +548,7 @@
 
     // ---- state -----------------------------------------------------------
     var CAT = null;     // catalogs.json — finite option universe
-    var REC = null;     // recommendations.json — AI picks + candidates
+    var REC = null;     // current recommendation stage — AI picks + candidates
     var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
     var STATE = {};
     var REC_ALIASES = {
@@ -2407,7 +2407,7 @@
     // Stage of the staged confirm flow:
     // 1 = communication contract, 2 = complete deck direction,
     // 3 = resources + production execution,
-    // "all" = legacy single-pass (recommendations.json carried no stage).
+    // "all" = legacy single-pass (the recommendation payload carried no stage).
     var STAGE = 1;
 
     function stageNumber(data) {
@@ -2550,8 +2550,8 @@
     }
 
     // Stage-2 fields are (re-)read from the recommendations. At boot they come from
-    // whatever recommendations.json carried; after a stage-1 confirm enterStage()
-    // calls this again with the newly authored candidates. Stage-1 STATE is preserved
+    // the active stage file; after a stage-1 confirm enterStage() calls this again
+    // with the newly authored candidates. Stage-1 STATE is preserved
     // across the single-session transition — this never resets the contract.
     function initStage2State() {
         resetTypographySizeOverrides();
@@ -2809,9 +2809,9 @@
         l.style.display = "block";
     }
 
-    // Poll session state first. It is derived from recommendations.json and
-    // result.json, so a recovered server can tell the existing page exactly when
-    // the next once-authored stage is ready.
+    // Poll session state first. It is derived from recommendation stage files
+    // and result.json, so a recovered server can tell the existing page exactly when
+    // the next stage is ready.
     function pollForStage(nextStage) {
         fetchJson("/api/session", "session")
             .then(function (session) {
