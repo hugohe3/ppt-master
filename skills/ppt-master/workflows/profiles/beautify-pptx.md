@@ -165,7 +165,7 @@ This step has two halves:
 
 **Visual re-confirm — full confirm UI seeded from the source**:
 
-Write `<project_path>/confirm_ui/recommendations.json` and launch the same confirm server [`generate-pptx`](../generate-pptx.md) Step 4 uses. Do **not** hide fields: seed **every** targeted-confirmation field with the inherited / source-derived default so the user sees the recommendation and keeps the place to change it. Schema → [`scripts/docs/confirm_ui.md`](../../scripts/docs/confirm_ui.md).
+Use the three `<project_path>/confirm_ui/recommendations.stageN.json` files at the same staged handoffs as [`generate-pptx`](../generate-pptx.md) Step 4 and launch the same confirm server. The active, unconfirmed stage may be overwritten for a requested regeneration; normal progression leaves confirmed earlier stages intact. Do **not** hide fields: seed **every** targeted-confirmation field with the inherited / source-derived default so the user sees the recommendation and keeps the place to change it. Schema → [`scripts/docs/confirm_ui.md`](../../scripts/docs/confirm_ui.md).
 
 ```json
 {
