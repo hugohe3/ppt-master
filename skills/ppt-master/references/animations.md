@@ -17,12 +17,22 @@ To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the
 
 ## 2. Custom Object-Level Animation
 
-Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains static visual source; the sidecar only controls PPTX export behavior.
+Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains the visual source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to create better semantic anchors without changing visible output, while the sidecar controls PPTX animation behavior.
 
 Run the [`customize-animations`](../workflows/stages/customize-animations.md) post-processing stage when the user asks to tune animation order, effects, timing, or object-level reveals.
 
+**Hard rule — semantic anchors before sidecar**: for custom object-level
+animation, do not scaffold or choreograph directly from the SVG's pre-existing
+`<g>` list. First derive reveal units from page meaning and narration, audit
+every page, and rewrite coarse or fragmented ordinary Slide-local groups
+without changing visible output. Only the post-regroup top-level ids are valid
+custom-animation anchors.
+
 ```bash
-# Build an editable scaffold from real top-level <g id> anchors
+# Inspect the real anchors after the semantic regrouping pass
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
+
+# Build an editable scaffold from the post-regroup anchors when useful
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
 
 # Validate references before export
@@ -159,7 +169,14 @@ Flags:
 
 Per-element animations are anchored on **top-level `<g id="...">` content groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). IDs must be unique within the page. One group produces one animation-pane entrance row; whether that row needs a click depends on the selected Start mode. Nested implementation groups may remain anonymous because the sidecar does not target them.
 
-Use one content group per logical page unit. This is also the granularity PowerPoint uses for group-select / group-move, so semantic grouping improves editing ergonomics regardless of animation; do not split or merge units to hit a target count.
+**Hard rule — existing groups are not custom-animation intent**: the
+pre-existing SVG hierarchy is implementation evidence, not an authoritative
+reveal plan. During the custom-animation stage, derive one group per logical
+page unit from claims, comparisons, sequence, causality, and narration beats;
+split coarse wrappers and merge fragmented atoms when needed, then use
+`list-groups` only after that rewrite. This is also the granularity PowerPoint
+uses for group-select / group-move. Do not split or merge units to hit a target
+count.
 
 **Chrome groups skip the cascade automatically.** Explicit SVG role and placeholder semantics are authoritative. A group with `data-pptx-layer` or an explicit static role/placeholder marker can never animate. For marker-free legacy SVGs only, top-level groups whose id tokens look like page chrome (background, header/footer, decorations, watermark, page number, nav, logo, dividing rule) are excluded and appear with the slide. An explicit `animations.json` group entry may override this id-name heuristic, but never an explicit structural marker. Examples that auto-skip by legacy id: `<g id="background">`, `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="watermark">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">`. Examples that still animate: `<g id="card-1">`, `<g id="cover-title">`, `<g id="step-discover">`, `<g id="timeline-track">`. Do not strip the `<g>` wrapper to avoid animation — keep it for PowerPoint group selection and use `effect: none` when the content should remain static.
 
