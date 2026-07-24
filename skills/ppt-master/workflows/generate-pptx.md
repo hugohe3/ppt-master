@@ -458,6 +458,7 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 
 - `exports/<project_name>_<timestamp>.pptx`
 - `validation/<project_name>_<timestamp>.report.json` with `passed` or `passed-with-warnings` package/resource postflight status
+- `validation/<project_name>_<timestamp>.trace.json` when bare `--conversion-trace` is enabled; an explicit `--conversion-trace <path>` uses that destination instead
 
 The command prints a compact `[POSTFLIGHT]` receipt containing `status`, `quality_gate`, Slide count, warning-category counts, and the PPTX/report paths. Use that receipt as completion evidence and disclose its material warnings to the user. Do not open or `cat` the complete report on routine success; use targeted field extraction only for failure investigation, an explicit audit request, or information absent from the receipt. A failed report or missing PPTX is not success.
 

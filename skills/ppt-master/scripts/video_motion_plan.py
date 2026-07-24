@@ -10,8 +10,8 @@ Usage:
     python3 scripts/video_motion_plan.py <conversion_trace.json> [options]
 
 Examples:
-    python3 scripts/video_motion_plan.py exports/deck.pptx.trace.json --force
-    python3 scripts/video_motion_plan.py exports/deck.pptx.trace.json \
+    python3 scripts/video_motion_plan.py validation/deck.trace.json --force
+    python3 scripts/video_motion_plan.py validation/deck.trace.json \
         --style dynamic -o validation/video_motion_plan.json --force
 
 Dependencies:
@@ -568,7 +568,10 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("trace", help="Path to <output>.pptx.trace.json")
+    parser.add_argument(
+        "trace",
+        help="Path to validation/<output_stem>.trace.json",
+    )
     parser.add_argument(
         "-o",
         "--output",

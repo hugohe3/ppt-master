@@ -314,7 +314,7 @@ When a downstream video renderer will enhance the deck, export with
 
 ```bash
 python3 skills/ppt-master/scripts/video_motion_plan.py \
-  <output>.pptx.trace.json \
+  <project_path>/validation/<output_stem>.trace.json \
   -o <project_path>/validation/video_motion_plan.json \
   --style adaptive \
   --force
