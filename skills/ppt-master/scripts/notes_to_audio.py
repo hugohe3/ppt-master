@@ -43,6 +43,8 @@ from tts_backends import (
 
 configure_utf8_stdio()
 
+DEFAULT_EDGE_CONCURRENCY = 3
+
 
 @dataclass(frozen=True)
 class AudioBackend:
@@ -50,6 +52,13 @@ class AudioBackend:
     extension: str
     api_key: str = ""
     voice_id: str = ""
+
+
+@dataclass(frozen=True)
+class AudioJob:
+    note_path: Path
+    text: str
+    output_path: Path
 
 
 def _load_tts_env_file() -> None:
@@ -76,6 +85,59 @@ def spoken_text(markdown: str) -> str:
             continue
         lines.append(line)
     return "\n".join(lines).strip()
+
+
+def _prepare_audio_jobs(
+    note_files: list[Path],
+    output_dir: Path,
+    extension: str,
+) -> list[AudioJob]:
+    """Read non-empty per-slide notes into ordered audio jobs."""
+    jobs: list[AudioJob] = []
+    for note_path in note_files:
+        text = spoken_text(note_path.read_text(encoding="utf-8"))
+        if not text:
+            print(f"[skip] {note_path.name}: empty spoken text")
+            continue
+        jobs.append(AudioJob(
+            note_path=note_path,
+            text=text,
+            output_path=output_dir / f"{note_path.stem}{extension}",
+        ))
+    return jobs
+
+
+async def _generate_edge_jobs(
+    jobs: list[AudioJob],
+    subtitle_dir: Path,
+    *,
+    voice: str,
+    rate: str,
+    subtitle_max_chars: int,
+    concurrency: int,
+) -> list[BaseException | None]:
+    """Generate ordered Edge jobs with bounded slide-level concurrency."""
+    semaphore = asyncio.Semaphore(concurrency)
+
+    async def generate_job(job: AudioJob) -> None:
+        async with semaphore:
+            await backend_edge.generate(
+                job.text,
+                job.output_path,
+                voice=voice,
+                rate=rate,
+                subtitle_path=subtitle_dir / f"{job.note_path.stem}.srt",
+                subtitle_max_chars=subtitle_max_chars,
+            )
+
+    raw_results = await asyncio.gather(
+        *(generate_job(job) for job in jobs),
+        return_exceptions=True,
+    )
+    return [
+        result if isinstance(result, BaseException) else None
+        for result in raw_results
+    ]
 
 
 def main() -> int:
@@ -107,6 +169,12 @@ def main() -> int:
         "--rate",
         default="+0%",
         help='edge-tts speaking rate, e.g. "+0%%", "-10%%", "+15%%" (default: +0%%). Ignored by cloud providers.',
+    )
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=DEFAULT_EDGE_CONCURRENCY,
+        help="maximum concurrent Edge slide requests (default: 3; ignored by cloud providers)",
     )
     parser.add_argument(
         "--subtitle-max-chars",
@@ -256,6 +324,10 @@ def main() -> int:
         parser.error("--subtitle-max-chars must be at least 1")
         raise AssertionError("unreachable")
 
+    if args.concurrency < 1:
+        parser.error("--concurrency must be at least 1")
+        raise AssertionError("unreachable")
+
     if args.provider == "elevenlabs":
         if not voice_id:
             parser.error("--voice-id is required for --provider elevenlabs")
@@ -314,91 +386,109 @@ def main() -> int:
         print(f"error: no per-slide notes found in {notes_dir}", file=sys.stderr)
         return 2
 
+    jobs = _prepare_audio_jobs(note_files, output_dir, backend.extension)
     generated = 0
-    for note_path in note_files:
-        text = spoken_text(note_path.read_text(encoding="utf-8"))
-        if not text:
-            print(f"[skip] {note_path.name}: empty spoken text")
-            continue
-        output_path = output_dir / f"{note_path.stem}{backend.extension}"
+    if backend.provider == "edge":
+        print(
+            f"[Edge] Generating {len(jobs)} audio/SRT pair(s) "
+            f"with concurrency={args.concurrency}"
+        )
         try:
-            if backend.provider == "elevenlabs":
-                backend_elevenlabs.generate(
-                    text,
-                    output_path,
-                    api_key=backend.api_key,
-                    voice_id=backend.voice_id,
-                    model=args.elevenlabs_model,
-                    output_format=args.elevenlabs_output_format,
-                    stability=args.elevenlabs_stability,
-                    similarity_boost=args.elevenlabs_similarity_boost,
-                    style=args.elevenlabs_style,
-                    speaker_boost=args.elevenlabs_speaker_boost,
+            results = asyncio.run(_generate_edge_jobs(
+                jobs,
+                subtitle_dir,
+                voice=args.voice,
+                rate=args.rate,
+                subtitle_max_chars=args.subtitle_max_chars,
+                concurrency=args.concurrency,
+            ))
+        except Exception as exc:
+            print(f"error: Edge audio generation failed: {exc}", file=sys.stderr)
+            return 1
+
+        failed = False
+        for job, result in zip(jobs, results):
+            subtitle_path = subtitle_dir / f"{job.note_path.stem}.srt"
+            if result is not None:
+                print(
+                    f"error: failed to generate {job.output_path}: {result}",
+                    file=sys.stderr,
                 )
-            elif backend.provider == "minimax":
-                backend_minimax.generate(
-                    text,
-                    output_path,
-                    api_key=backend.api_key,
-                    voice_id=backend.voice_id,
-                    model=args.minimax_model,
-                    audio_format=args.minimax_output_format,
-                    sample_rate=args.minimax_sample_rate,
-                    bitrate=args.minimax_bitrate,
-                    channel=args.minimax_channel,
-                    speed=args.minimax_speed,
-                    volume=args.minimax_volume,
-                    pitch=args.minimax_pitch,
-                    language_boost=args.minimax_language_boost,
-                    base_url=args.minimax_base_url,
-                )
-            elif backend.provider == "qwen":
-                backend_qwen.generate(
-                    text,
-                    output_path,
-                    api_key=backend.api_key,
-                    voice_id=backend.voice_id,
-                    model=args.qwen_model,
-                    language_type=args.qwen_language_type,
-                    instructions=args.qwen_instructions,
-                    optimize_instructions=args.qwen_optimize_instructions,
-                    base_url=args.qwen_base_url,
-                )
-            elif backend.provider == "cosyvoice":
-                backend_cosyvoice.generate(
-                    text,
-                    output_path,
-                    api_key=backend.api_key,
-                    voice_id=backend.voice_id,
-                    model=args.cosyvoice_model,
-                    audio_format=args.cosyvoice_output_format,
-                    sample_rate=args.cosyvoice_sample_rate,
-                    volume=args.cosyvoice_volume,
-                    rate=args.cosyvoice_rate,
-                    pitch=args.cosyvoice_pitch,
-                    instruction=args.cosyvoice_instruction,
-                    language_hint=args.cosyvoice_language_hint,
-                    base_url=args.cosyvoice_base_url,
-                )
-            else:
-                subtitle_path = subtitle_dir / f"{note_path.stem}.srt"
-                asyncio.run(
-                    backend_edge.generate(
+                failed = True
+                continue
+            generated += 1
+            print(f"[OK] {job.output_path}")
+            print(f"     {subtitle_path}")
+        if failed:
+            return 1
+    else:
+        for job in jobs:
+            output_path = job.output_path
+            text = job.text
+            try:
+                if backend.provider == "elevenlabs":
+                    backend_elevenlabs.generate(
                         text,
                         output_path,
-                        voice=args.voice,
-                        rate=args.rate,
-                        subtitle_path=subtitle_path,
-                        subtitle_max_chars=args.subtitle_max_chars,
+                        api_key=backend.api_key,
+                        voice_id=backend.voice_id,
+                        model=args.elevenlabs_model,
+                        output_format=args.elevenlabs_output_format,
+                        stability=args.elevenlabs_stability,
+                        similarity_boost=args.elevenlabs_similarity_boost,
+                        style=args.elevenlabs_style,
+                        speaker_boost=args.elevenlabs_speaker_boost,
                     )
-                )
-        except Exception as exc:
-            print(f"error: failed to generate {output_path}: {exc}", file=sys.stderr)
-            return 1
-        generated += 1
-        print(f"[OK] {output_path}")
-        if backend.provider == "edge":
-            print(f"     {subtitle_path}")
+                elif backend.provider == "minimax":
+                    backend_minimax.generate(
+                        text,
+                        output_path,
+                        api_key=backend.api_key,
+                        voice_id=backend.voice_id,
+                        model=args.minimax_model,
+                        audio_format=args.minimax_output_format,
+                        sample_rate=args.minimax_sample_rate,
+                        bitrate=args.minimax_bitrate,
+                        channel=args.minimax_channel,
+                        speed=args.minimax_speed,
+                        volume=args.minimax_volume,
+                        pitch=args.minimax_pitch,
+                        language_boost=args.minimax_language_boost,
+                        base_url=args.minimax_base_url,
+                    )
+                elif backend.provider == "qwen":
+                    backend_qwen.generate(
+                        text,
+                        output_path,
+                        api_key=backend.api_key,
+                        voice_id=backend.voice_id,
+                        model=args.qwen_model,
+                        language_type=args.qwen_language_type,
+                        instructions=args.qwen_instructions,
+                        optimize_instructions=args.qwen_optimize_instructions,
+                        base_url=args.qwen_base_url,
+                    )
+                elif backend.provider == "cosyvoice":
+                    backend_cosyvoice.generate(
+                        text,
+                        output_path,
+                        api_key=backend.api_key,
+                        voice_id=backend.voice_id,
+                        model=args.cosyvoice_model,
+                        audio_format=args.cosyvoice_output_format,
+                        sample_rate=args.cosyvoice_sample_rate,
+                        volume=args.cosyvoice_volume,
+                        rate=args.cosyvoice_rate,
+                        pitch=args.cosyvoice_pitch,
+                        instruction=args.cosyvoice_instruction,
+                        language_hint=args.cosyvoice_language_hint,
+                        base_url=args.cosyvoice_base_url,
+                    )
+            except Exception as exc:
+                print(f"error: failed to generate {output_path}: {exc}", file=sys.stderr)
+                return 1
+            generated += 1
+            print(f"[OK] {output_path}")
 
     if backend.provider == "edge":
         print(

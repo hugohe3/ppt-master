@@ -121,6 +121,9 @@ python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
 ```
 
 For edge, `--voice` is required. Use `--list-voices --locale <locale>` to see what's available.
+Edge generates up to three slide-level audio/SRT pairs concurrently by default.
+Use `--concurrency <N>` to tune it or `--concurrency 1` for serial
+troubleshooting. Cloud providers remain serial.
 
 The edge command creates `audio/<stem>.mp3` and `notes/subtitles/<stem>.srt` from the same streaming request. Sentence-ending punctuation closes a cue. A cue over 20 visible characters first splits at commas, semicolons, or colons, then at the nearest word boundary only if it is still too long. Use `--subtitle-max-chars` to change the limit. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails. Each SRT uses a page-local timebase with a zero origin and preserves edge's `WordBoundary` timing, including any leading silence before the first cue. The cloud-provider commands currently create audio only.
 

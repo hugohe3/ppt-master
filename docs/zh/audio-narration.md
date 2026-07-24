@@ -120,6 +120,8 @@ python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
 ```
 
 edge 模式下 `--voice` 是必填项，可用 `--list-voices --locale <locale>` 查看音色。
+Edge 默认同时生成最多 3 页音频/SRT。可用 `--concurrency <N>` 调整；
+排查连接问题时可设为 `--concurrency 1`。云端 provider 仍保持串行。
 
 Edge 命令会从同一次流式请求中生成 `audio/<stem>.mp3` 与 `notes/subtitles/<stem>.srt`。句末标点必定结束一条字幕；单条超过默认 20 个可见字符时，优先在逗号、分号或冒号处拆分，仍然过长才在最近的词边界拆分。可用 `--subtitle-max-chars` 调整上限。相邻字幕最多允许 100 毫秒的计时重叠：后一句起点会移到前一句终点；超过该范围则报错。每页 SRT 使用从零计时的页内时间基准，并保留 Edge `WordBoundary` 的实际时间（包括首条字幕前的静音）；云端 provider 命令目前只生成音频。
 
