@@ -28,7 +28,7 @@ Then build the motion plan:
 
 ```bash
 python3 skills/ppt-master/scripts/video_motion_plan.py \
-  <project_path>/validation/video_motion_source.pptx.trace.json \
+  <project_path>/validation/video_motion_source.trace.json \
   -o <project_path>/validation/video_motion_plan.json \
   --style adaptive \
   --force

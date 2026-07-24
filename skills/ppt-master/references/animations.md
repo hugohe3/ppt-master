@@ -224,7 +224,7 @@ and renderer contract.
 | All groups animate together | `-a auto --animation-trigger with-previous` |
 | Slower per-element reveal | `-a auto --animation-duration 0.5` |
 | Wider gap in after-previous | `-a auto --animation-stagger 0.7` |
-| Derive effect-aware video motion | `video_motion_plan.py <output>.pptx.trace.json --force` |
+| Derive effect-aware video motion | `video_motion_plan.py <project>/validation/<output_stem>.trace.json --force` |
 
 See also:
 
