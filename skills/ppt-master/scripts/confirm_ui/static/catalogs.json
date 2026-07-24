@@ -1,5 +1,5 @@
 {
-  "_comment": "Enumerable (finite) option universe for the confirm page. Served by Flask static at /static/catalogs.json; the front-end prefers /api/catalogs when the server provides it. These fields list ALL options and the AI marks one as recommended via recommendations.json `recommend`. Open/generative fields (color, typography, generated-image style) are NOT here — the AI authors >=3 candidates each for those (creative recommendations always offer real choice). 'canvas' mirrors scripts/config.py CANVAS_FORMATS — keep in sync. User-facing catalog text supports label_zh/label_en/label_ja, desc_zh/desc_en/desc_ja, group_zh/group_en/group_ja.",
+  "_comment": "Enumerable (finite) option universe for the confirm page. Served by Flask static at /static/catalogs.json; the front-end prefers /api/catalogs when the server provides it. These fields list ALL options and the AI marks one as recommended via the active recommendation stage's `recommend` object. Open/generative fields (color, typography, generated-image style) are NOT here — the AI authors >=3 candidates each for those (creative recommendations always offer real choice). 'canvas' mirrors scripts/config.py CANVAS_FORMATS — keep in sync. User-facing catalog text supports label_zh/label_en/label_ja, desc_zh/desc_en/desc_ja, group_zh/group_en/group_ja.",
   "canvas": [
     {
       "id": "ppt169",

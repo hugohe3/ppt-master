@@ -176,25 +176,27 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 **Confirmation ownership and surface**: Only the user confirms. Default Stage 1 is `--daemon --wait`; use chat only by explicit chat-only/delegation or after launch failure/timeout plus a `result.json` re-check. Chat tools do not replace launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
 
-| Stage | Strategist writes | Completion evidence |
+| Stage file (the active unconfirmed stage may be overwritten) | Strategist writes | Completion evidence |
 |---|---|---|
-| `stage1` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
-| `stage2` | Complete deck solution from the confirmed contract; never skip for a template | `status: stage2-confirmed` |
-| `stage3` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec | `stage: final`, `status: confirmed` |
+| `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
+| `confirm_ui/recommendations.stage2.json` | Complete deck solution from the confirmed contract; never skip for a template | `status: stage2-confirmed` |
+| `confirm_ui/recommendations.stage3.json` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec | `stage: final`, `status: confirmed` |
 
-1. Write Stage 1 `confirm_ui/recommendations.json` per the Confirm UI contract, then launch and wait:
+If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
+
+1. Create `confirm_ui/recommendations.stage1.json` per the Confirm UI contract, then launch and wait:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
    ```
 
-2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Overwrite the recommendations with Stage 2, then wait:
+2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
    ```
 
-3. Read the Stage 2 result, overwrite recommendations with Stage 3, then perform the final blocking wait:
+3. Read the Stage 2 result, create `confirm_ui/recommendations.stage3.json` without changing either earlier stage, then perform the final blocking wait:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
