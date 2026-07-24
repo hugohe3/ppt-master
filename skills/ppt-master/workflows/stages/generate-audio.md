@@ -174,6 +174,11 @@ python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
   --video <powerpoint_exported_video> --language <language> --force
 ```
 
+**Default — bounded Edge concurrency (may override)**: Generate up to three
+slide-level audio/SRT pairs concurrently. Use `--concurrency <N>` to tune the
+Edge path or `--concurrency 1` for serial troubleshooting. Cloud providers
+remain serial.
+
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
 
 The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. SRT cues use the service's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-visible-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary. Override the limit with `--subtitle-max-chars`. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails instead of silently distorting timing. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Cloud-provider commands currently write audio only.
