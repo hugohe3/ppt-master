@@ -2,12 +2,12 @@
 """
 PPT Master - Strategist confirmation stage UI Server (Step 4)
 
-Lightweight Flask backend for the interactive, visual Strategist confirmation stage page.
-Strategist writes its recommendations to
-``<project>/confirm_ui/recommendations.json``; this server renders them as a
-clickable page (color swatches, live font previews, candidate picks). On
-submit it writes the user's final choices to
-``<project>/confirm_ui/result.json`` for the AI to read back.
+Lightweight Flask backend for the interactive, visual Strategist confirmation
+stage page. Strategist writes each stage to
+``<project>/confirm_ui/recommendations.stageN.json``; this server selects the
+current stage from ``result.json`` and renders it as a clickable page (color
+swatches, live font previews, candidate picks). On submit it writes the user's
+choices to ``<project>/confirm_ui/result.json`` for the AI to read back.
 
 This is the default confirmation surface. The chat fallback is used only when
 the user explicitly requests chat-only confirmation or the browser launch
@@ -76,7 +76,12 @@ LOCK_FILE_NAME = '.confirm_ui.lock'
 
 # Round-trip/session files, all under <project_path>/confirm_ui/.
 CONFIRM_DIR_NAME = 'confirm_ui'
-RECOMMENDATIONS_NAME = 'recommendations.json'
+LEGACY_RECOMMENDATIONS_NAME = 'recommendations.json'
+RECOMMENDATION_STAGE_NAMES = {
+    1: 'recommendations.stage1.json',
+    2: 'recommendations.stage2.json',
+    3: 'recommendations.stage3.json',
+}
 RESULT_NAME = 'result.json'
 SESSION_NAME = 'session.json'
 
@@ -263,6 +268,7 @@ def _wait_for_result(
     proc: subprocess.Popen,
     started_at: float,
     timeout: int,
+    expected_stage: str,
 ) -> int:
     """Wait until this launch writes a fresh result file or the server exits."""
     logger.info('waiting for browser confirmation...')
@@ -272,7 +278,6 @@ def _wait_for_result(
             try:
                 if result_file.stat().st_mtime >= started_at:
                     actual_stage = _result_stage(result_file)
-                    expected_stage = _expected_result_stage(result_file.parent)
                     if actual_stage != expected_stage:
                         logger.error(
                             'confirmation stage mismatch: expected %s, found %s',
@@ -335,7 +340,7 @@ def _stage_key(value: object) -> Optional[str]:
 
 
 def _recommendation_stage(data: dict) -> int:
-    """Return recommendations.json stage number, with legacy tier fallback."""
+    """Return a recommendation payload's stage, with legacy tier fallback."""
     stage = _stage_key(data.get('stage'))
     if not stage and 'tier' in data:
         stage = _stage_key(data.get('tier'))
@@ -370,6 +375,68 @@ def _result_stage_number(stage: Optional[str]) -> int:
     return 0
 
 
+def _expected_recommendation_stage(result_stage: Optional[str]) -> int:
+    """Return the recommendation stage that follows the current result."""
+    if result_stage == 'stage1':
+        return 2
+    if result_stage in {'stage2', 'final'}:
+        return 3
+    return 1
+
+
+def _stage_recommendations_path(confirm_dir: Path, stage_number: int) -> Path:
+    """Return the stage-specific recommendation path for one handoff."""
+    return confirm_dir / RECOMMENDATION_STAGE_NAMES[stage_number]
+
+
+def _active_recommendations_path(confirm_dir: Path) -> Path:
+    """Resolve the recommendation file for the current confirmation stage.
+
+    Once any stage-specific file exists, the legacy single-file input is ignored.
+    If the expected stage is missing but a later stage exists, return that later
+    file so the existing stage-skip guard can report the ordering error.
+    """
+    result_stage = _result_stage(confirm_dir / RESULT_NAME)
+    expected_stage = _expected_recommendation_stage(result_stage)
+    expected_file = _stage_recommendations_path(confirm_dir, expected_stage)
+    staged_files = {
+        stage_number: _stage_recommendations_path(confirm_dir, stage_number)
+        for stage_number in RECOMMENDATION_STAGE_NAMES
+    }
+    if any(path.exists() for path in staged_files.values()):
+        if expected_file.exists():
+            return expected_file
+        for stage_number in range(expected_stage + 1, 4):
+            candidate = staged_files[stage_number]
+            if candidate.exists():
+                return candidate
+        return expected_file
+
+    legacy_file = confirm_dir / LEGACY_RECOMMENDATIONS_NAME
+    return legacy_file if legacy_file.exists() else expected_file
+
+
+def _read_active_recommendations(
+    confirm_dir: Path,
+    *,
+    retries: int = 2,
+) -> tuple[Path, dict]:
+    """Read and validate the recommendation payload active for this stage."""
+    rec_file = _active_recommendations_path(confirm_dir)
+    data = _read_json_object(rec_file, retries=retries)
+    for stage_number, filename in RECOMMENDATION_STAGE_NAMES.items():
+        if rec_file.name != filename:
+            continue
+        actual_stage = _recommendation_stage(data)
+        if actual_stage != stage_number:
+            raise ValueError(
+                f'{filename} must declare stage={_stage_name(stage_number)}, '
+                f'found {_stage_name(actual_stage) or "absent"}'
+            )
+        break
+    return rec_file, data
+
+
 def _stage_skip(rec_stage_number: int, result_stage: Optional[str]) -> bool:
     """Detect a staged recommendation running ahead of the confirmed progression.
 
@@ -386,9 +453,9 @@ def _stage_skip(rec_stage_number: int, result_stage: Optional[str]) -> bool:
 
 
 def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
-    """Return a directive error when recommendations.json skips a stage."""
+    """Return a directive error when the active recommendation skips a stage."""
     try:
-        rec_data = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+        rec_file, rec_data = _read_active_recommendations(confirm_dir)
     except (OSError, json.JSONDecodeError, ValueError):
         return None
     rec_stage_number = _recommendation_stage(rec_data)
@@ -400,11 +467,14 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
         '--daemon --wait' if expected == 'stage1'
         else '--wait-only --wait-stage stage2'
     )
+    expected_file = RECOMMENDATION_STAGE_NAMES[
+        _expected_recommendation_stage(result_stage)
+    ]
     return (
-        f'stage skip detected: recommendations.json is {_stage_name(rec_stage_number)} but the last '
+        f'stage skip detected: {rec_file.name} is {_stage_name(rec_stage_number)} but the last '
         f'confirmed result is {result_stage or "absent"} — the page will not render a skipped stage. '
         f'Stages confirm in order and an active template does not exempt stage2 (generate-pptx Step 4). '
-        f'Overwrite recommendations.json with the {expected} recommendations, then re-run with {reattach}.'
+        f'Write the missing {expected_file} recommendations, then re-run with {reattach}.'
     )
 
 
@@ -612,9 +682,9 @@ def _submission_stage_error(
 ) -> Optional[str]:
     """Reject a confirmation that does not match the staged recommendation."""
     try:
-        recommendations = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+        rec_file, recommendations = _read_active_recommendations(confirm_dir)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        return f'cannot confirm without valid recommendations.json: {exc}'
+        return f'cannot confirm without valid current recommendations: {exc}'
 
     rec_stage_number = _recommendation_stage(recommendations)
     template_required = _template_confirmation_required(
@@ -653,7 +723,7 @@ def _submission_stage_error(
     if submitted_stage not in allowed_submissions[rec_stage_number]:
         expected = 'final' if rec_stage_number == 3 else _stage_name(rec_stage_number)
         return (
-            f'confirmation stage mismatch: recommendations.json is '
+            f'confirmation stage mismatch: {rec_file.name} is '
             f'{_stage_name(rec_stage_number)}, so the submitted stage must be '
             f'{expected}'
         )
@@ -747,7 +817,7 @@ def _normalize_custom_selections(result: dict) -> None:
 def _expected_result_stage(confirm_dir: Path) -> str:
     """Return the result stage expected from the current recommendations."""
     try:
-        recommendations = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+        _, recommendations = _read_active_recommendations(confirm_dir)
     except (OSError, json.JSONDecodeError, ValueError):
         return 'final'
     return {
@@ -784,7 +854,7 @@ def _build_session_state(
 ) -> dict:
     """Derive the resumable Confirm UI state from disk artifacts."""
     previous = _read_session(confirm_dir)
-    rec_file = confirm_dir / RECOMMENDATIONS_NAME
+    rec_file = _active_recommendations_path(confirm_dir)
     result_file = confirm_dir / RESULT_NAME
 
     rec_stage_number = 0
@@ -792,7 +862,7 @@ def _build_session_state(
     rec_error = None
     if rec_file.exists():
         try:
-            rec_data = _read_json_object(rec_file)
+            rec_file, rec_data = _read_active_recommendations(confirm_dir)
             rec_stage_number = _recommendation_stage(rec_data)
             rec_stage = _stage_name(rec_stage_number)
         except (OSError, json.JSONDecodeError, ValueError) as exc:
@@ -803,7 +873,7 @@ def _build_session_state(
     stage_skip = _stage_skip(rec_stage_number, result_stage)
 
     # A skipped stage is never presented: the page keeps its "deriving…" state
-    # (waiting_agent) until the AI rewrites recommendations.json in order.
+    # (waiting_agent) until the AI creates the missing stage file.
     if result_stage == 'final':
         expected_stage_number = None
         status = 'done'
@@ -832,6 +902,7 @@ def _build_session_state(
         'expected_stage_number': expected_stage_number,
         'recommendation_stage': rec_stage,
         'recommendation_stage_number': rec_stage_number,
+        'recommendation_file': rec_file.name,
         'recommendation_version': _file_version(rec_file),
         'recommendation_error': rec_error,
         'result_stage': result_stage,
@@ -1259,12 +1330,15 @@ def create_app(
     @app.route('/api/health')
     def health():
         """Expose a cheap readiness probe for the daemon launcher."""
-        rec_file = confirm_dir / RECOMMENDATIONS_NAME
+        rec_file = _active_recommendations_path(confirm_dir)
         rec_ok = False
         stage = None
         if rec_file.exists():
             try:
-                rec_data = _read_json_object(rec_file, retries=0)
+                rec_file, rec_data = _read_active_recommendations(
+                    confirm_dir,
+                    retries=0,
+                )
                 rec_ok = True
                 stage = _recommendation_stage(rec_data)
             except (OSError, json.JSONDecodeError, ValueError):
@@ -1334,15 +1408,24 @@ def create_app(
     @app.route('/api/recommendations')
     def get_recommendations():
         """Serve the Strategist-authored recommendations for this project."""
-        rec_file = confirm_dir / RECOMMENDATIONS_NAME
+        rec_file = _active_recommendations_path(confirm_dir)
         if not rec_file.exists():
-            return jsonify({'error': 'recommendations not found'}), 404
+            return jsonify({'error': f'{rec_file.name} not found'}), 404
         try:
-            data = _read_json_object(rec_file)
+            rec_file, data = _read_active_recommendations(confirm_dir)
         except (OSError, json.JSONDecodeError, ValueError) as exc:
-            return jsonify({'error': f'invalid recommendations.json: {exc}'}), 400
+            return jsonify({
+                'error': f'invalid current recommendation file: {exc}',
+            }), 400
         # Report whether a result already exists (re-open after confirm).
         result_file = confirm_dir / RESULT_NAME
+        if _stage_skip(
+            _recommendation_stage(data),
+            _result_stage(result_file),
+        ):
+            return jsonify({
+                'error': _stage_skip_error(confirm_dir),
+            }), 409
         data['_already_confirmed'] = result_file.exists()
         # Later stages render only downstream sections, so fold earlier confirmed
         # choices from result.json back in. A refresh / reopen then re-inits from
@@ -1375,9 +1458,8 @@ def create_app(
             recommend.pop('template_adherence', None)
         data.pop('template_reuse_scope', None)
         data.pop('template_adherence', None)
-        # The page polls this endpoint after a stage-1 confirm until the AI
-        # overwrites the file with the once-authored stage-2 recommendations, so it
-        # must never be served from a cache.
+        # The page polls this endpoint after each confirmation until the AI
+        # creates the next stage file, so it must never be cached.
         resp = jsonify(data)
         resp.headers['Cache-Control'] = 'no-store'
         return resp
@@ -1406,10 +1488,11 @@ def create_app(
         if custom_error:
             return jsonify({'error': custom_error}), 400
         try:
-            current_recommendations = _read_json_object(
-                confirm_dir / RECOMMENDATIONS_NAME,
+            rec_file, current_recommendations = _read_active_recommendations(
+                confirm_dir,
             )
         except (OSError, json.JSONDecodeError, ValueError):
+            rec_file = _active_recommendations_path(confirm_dir)
             current_recommendations = {}
         if stage == 'stage2' or _recommendation_stage(current_recommendations) == 3:
             solution_error = _stage2_solution_error(result)
@@ -1418,7 +1501,7 @@ def create_app(
         _normalize_custom_selections(result)
         locked_values = _apply_locked_recommendations(
             result,
-            confirm_dir / RECOMMENDATIONS_NAME,
+            rec_file,
             result_file,
         )
         result.pop('template_reuse_scope', None)
@@ -1516,7 +1599,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 2
 
     # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
-    # recommendations.json (the page may never have been confirmed).
+    # recommendation files (the page may never have been confirmed).
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
@@ -1525,10 +1608,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.wait_only:
         lock_file = project_path / LOCK_FILE_NAME
         if not _live_lock(lock_file):
-            if not (project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME).exists():
+            confirm_dir = project_path / CONFIRM_DIR_NAME
+            rec_file = _active_recommendations_path(confirm_dir)
+            if not rec_file.exists():
                 logger.error(
                     '%s not found — cannot recover confirm UI before wait-only',
-                    project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME,
+                    rec_file,
                 )
                 return 1
             recovery_port = _preferred_recovery_port(lock_file, args.port)
@@ -1555,10 +1640,11 @@ def main(argv: Optional[list[str]] = None) -> int:
             wait_stage,
         )
 
-    rec_file = project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME
+    confirm_dir = project_path / CONFIRM_DIR_NAME
+    rec_file = _active_recommendations_path(confirm_dir)
     if not rec_file.exists():
         logger.error(
-            '%s not found — Strategist must write recommendations.json before launch',
+            '%s not found — Strategist must write the current recommendation stage before launch',
             rec_file,
         )
         return 1
@@ -1578,6 +1664,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
         confirm_dir = project_path / CONFIRM_DIR_NAME
         result_file = confirm_dir / RESULT_NAME
+        expected_stage = _expected_result_stage(confirm_dir)
         started_at = time.time()
         try:
             proc, port, _ = _launch_background_server(
@@ -1590,7 +1677,13 @@ def main(argv: Optional[list[str]] = None) -> int:
             logger.error('%s', exc)
             return 1
         if args.wait:
-            return _wait_for_result(result_file, proc, started_at, args.wait_timeout)
+            return _wait_for_result(
+                result_file,
+                proc,
+                started_at,
+                args.wait_timeout,
+                expected_stage,
+            )
         return 0
 
     # Per-project mutual exclusion: refuse duplicate launches. Stale locks

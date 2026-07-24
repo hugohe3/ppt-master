@@ -1946,15 +1946,14 @@ _TEXTBOX_PADDING_MIN_PX = 0.5
 _TEXTBOX_PADDING_MAX_PX = 2.0
 _TEXTBOX_PADDING_RATIO = 0.04
 # Single-line auto-fit headroom interpolates between a low-caps base and an
-# all-caps ceiling by the fraction of cased letters that are uppercase. The
-# crude per-char width estimate undercounts capitals most, so all-caps lines
-# need the ceiling to keep wrap-ignoring renderers (LibreOffice) from folding;
-# mixed-case titles only need the base, so they no longer inherit the worst-
-# case width. Values are calibrated against LibreOffice renders of all-caps
-# bold lines (the case the per-char estimate undercounts most) with bases left
-# above the mixed-case and CJK render ratios; exact ratios shift with the
-# renderer's font substitution, so these carry deliberate margin rather than
-# tracking one environment's numbers.
+# all-caps ceiling for each run. The crude per-char width estimate undercounts
+# capitals most, so all-caps runs need the ceiling to keep wrap-ignoring
+# renderers (LibreOffice) from folding. Applying headroom per run also prevents
+# a short serif label from forcing a conservative serif multiplier onto an
+# otherwise sans-serif line. Values are calibrated against LibreOffice renders
+# of all-caps bold lines, with bases left above mixed-case and CJK render
+# ratios; exact ratios shift with font substitution, so these carry deliberate
+# margin rather than tracking one environment's numbers.
 _TEXT_WIDTH_HEADROOM_BASE = 1.06
 _TEXT_WIDTH_HEADROOM_CAPS = 1.12
 _SERIF_TEXT_WIDTH_HEADROOM_BASE = 1.12
@@ -2081,21 +2080,28 @@ def _estimate_text_runs_width(
 
     ``include_headroom`` is useful for single-line auto-fit boxes where a
     renderer that measures text slightly wider would otherwise wrap. The
-    headroom scales with the line's uppercase fraction: all-caps lines (whose
-    width the per-char estimate undercounts most) get the full ceiling, while
-    mixed-case titles take a small base instead of inheriting the worst case.
-    Paragraph boxes use this value as a wrapping constraint, so adding headroom
-    there stretches the merged text frame beyond the author's source line width.
+    headroom scales independently with each run's family and uppercase
+    fraction. This keeps mixed-font lines from inheriting the most conservative
+    run's multiplier. Paragraph boxes use this value as a wrapping constraint,
+    so adding headroom there stretches the merged text frame beyond the
+    author's source line width.
     """
-    width = sum(_estimate_run_text_width(run) for run in runs)
     if not include_headroom:
-        return width
-    caps = _uppercase_fraction(runs)
-    if any(_is_serif_run(run) for run in runs):
-        base, ceiling = _SERIF_TEXT_WIDTH_HEADROOM_BASE, _SERIF_TEXT_WIDTH_HEADROOM_CAPS
-    else:
-        base, ceiling = _TEXT_WIDTH_HEADROOM_BASE, _TEXT_WIDTH_HEADROOM_CAPS
-    return width * (base + (ceiling - base) * caps)
+        return sum(_estimate_run_text_width(run) for run in runs)
+
+    width = 0.0
+    for run in runs:
+        if _is_serif_run(run):
+            base = _SERIF_TEXT_WIDTH_HEADROOM_BASE
+            ceiling = _SERIF_TEXT_WIDTH_HEADROOM_CAPS
+        else:
+            base = _TEXT_WIDTH_HEADROOM_BASE
+            ceiling = _TEXT_WIDTH_HEADROOM_CAPS
+        caps = _uppercase_fraction([run])
+        width += _estimate_run_text_width(run) * (
+            base + (ceiling - base) * caps
+        )
+    return width
 
 
 def estimate_single_line_text_frame_width(
