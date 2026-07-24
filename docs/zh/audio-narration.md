@@ -12,16 +12,17 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 - 使用 Edge 时，每页还有一个同名字幕文件，存放于 `<project_path>/notes/subtitles/`（`01_cover.srt`、`02_market_landscape.srt` …）。每个文件使用以 `00:00:00,000` 为原点的页内时间轴，时间来自 Edge 的词边界。
 - 提供 SVG 到 SRT 的计时计划后，还会重建 `animations.json`：无点击入场动画会等待相关字幕 cue；同时生成与最终 PPTX 时间轴一致的 `<project_path>/notes/subtitles/total.srt`。PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
 - 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
+- Windows 下可选原生视频导出：`powerpoint_video.py` 把最终带旁白 PPTX 交给 PowerPoint 2016+，并等待其原生 MP4 编码成功或失败。
 - 演讲者备注原样保留。
 
 ## 它是怎么做到的
 
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
 2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速/风格也会基于 notes 信息密度给出推荐值。
-3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——生成模式、音色、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
-4. **执行**。使用 Edge 时，脚本从同一次流中把每页 MP3 和 SRT 分别写到 `audio/` 与 `notes/subtitles/`；云端 provider 目前仍只写音频。对于 Generate PPTX，AI 将当前 SVG 内容组映射到编号后的 SRT cue，重建无点击动画，再导出带音频的 PPTX；最后从该 PPTX 读回实际计时并合并逐页 SRT。如果已有 PowerPoint 导出的视频，可再根据视频音轨测出每页旁白的真实起点，只修正分页偏移。不支持长音频导入或自动拆分。
+3. **一次问完，一次回答**。AI 在一条消息里同时确认 provider、音色、语速、是否嵌入 PPTX，以及是否继续导出视频；每项都标推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
+4. **执行**。使用 Edge 时，脚本从同一次流中把每页 MP3 和 SRT 分别写到 `audio/` 与 `notes/subtitles/`；云端 provider 目前仍只写音频。对于 Generate PPTX，AI 将当前 SVG 内容组映射到编号后的 SRT cue，重建无点击动画，再导出带音频的 PPTX；最后从该 PPTX 读回实际计时并合并逐页 SRT。若用户选择自动视频导出且本机 Windows PowerPoint 兼容，则继续调用 PowerPoint 原生编码器，等 MP4 完成后再校准交付字幕。不支持长音频导入或自动拆分。
 
-字幕保持为外部 SRT 文件：PPT Master 不把字幕嵌入 PPTX，也不直接导出 MP4。请使用 PowerPoint 原生视频导出，并配套使用生成的 `total.srt`。
+字幕保持为外部 SRT 文件：PPT Master 不把字幕嵌入 PPTX，也不烧录进 MP4。自动视频导出委托给本机 Windows PowerPoint，并不是另一套渲染器。
 
 共享阶段见 [`workflows/stages/generate-audio.md`](../../skills/ppt-master/workflows/stages/generate-audio.md)。
 
@@ -112,8 +113,12 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
-# 7. 可选：PowerPoint 创建视频后，根据导出音轨校准每页起点，
-#    生成与视频同名的外挂 SRT
+# 7. Windows 可选：通过 PowerPoint 导出视频并等待完成
+python3 skills/ppt-master/scripts/powerpoint_video.py --check
+python3 skills/ppt-master/scripts/powerpoint_video.py \
+  <final_narrated_pptx> -o exports/<final_video>.mp4
+
+# 8. 根据导出音轨校准每页起点，生成与视频同名的外挂 SRT
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
   -o exports/<powerpoint_exported_video_stem>.srt --force
@@ -127,7 +132,7 @@ Edge 命令会从同一次流式请求中生成 `audio/<stem>.mp3` 与 `notes/su
 
 `narration_timing.json` 与 `animations.json` 刻意分离：前者记录整套有序 SRT 的 SHA-256、旁白 padding、有序 SVG 组 ID 和可选的 1-based cue 编号。`narration_sync.py animations` 会拒绝过期的 SRT 指纹，用当前 SVG 校验组 ID，并用 PowerPoint 支持的字段完整替换动画 sidecar。`narration_sync.py subtitles` 从最终 PPTX 读取真实页面关系顺序、毫秒级页面推进与转场时间，因此 `total.srt` 使用原生 PPTX 时间轴。相对 `--pptx` 路径按 `<project_path>` 解析。
 
-PowerPoint 的视频编码器可能把每个页面 / 媒体段落量化到输出帧时钟；即使 PPTX 计时值正确，这些很小的分页误差仍可能逐页累积。把最终 `.mp4` / `.wmv` / `.mov` 通过 `--video` 传入后，脚本会用归一化音频相关性在视频音轨中定位每页原始旁白。它只改页级偏移，Edge 的字幕文本和页内 `WordBoundary` 时间保持不变。这是视频导出后的字幕校准步骤；PPT Master 仍不创建或改写视频。
+PowerPoint 的视频编码器可能把每个页面 / 媒体段落量化到输出帧时钟；即使 PPTX 计时值正确，这些很小的分页误差仍可能逐页累积。把最终 `.mp4` / `.wmv` / `.mov` 通过 `--video` 传入后，脚本会用归一化音频相关性在视频音轨中定位每页原始旁白。它只改页级偏移，Edge 的字幕文本和页内 `WordBoundary` 时间保持不变；这是视频导出后的字幕校准步骤，不会改写视频。
 
 最终带旁白的 SVG 导出固定使用 `--no-merge`。让每条 SVG 文本行保持独立文本框，可以保留作者坐标；合并段落会让 PowerPoint 重新计算多行文本几何，可能造成肉眼可见的偏移。
 
@@ -202,6 +207,8 @@ python3 -m pip install edge-tts
 
 已写入 `skills/ppt-master/requirements.txt`。`edge-tts` 调用微软的在线 TTS 服务，**生成时**需要联网；生成后的音频是本地文件，PowerPoint 播放和视频导出都不依赖网络。云端 TTS provider 不需要额外 Python 包，直接通过 HTTPS 调用；按 `.env.example` 配置对应 API Key 即可。
 
+自动 MP4 导出不增加 Python 依赖，但要求 Windows PowerPoint 2016+ 与 Windows PowerShell；macOS 或没有兼容 PowerPoint 的机器保留带旁白 PPTX，改用手动导出。
+
 ## 经验值
 
 - **语速**：在 Generate PPTX 路线上，PPT Master 会根据最终 SVG 中的独立信息组调整讲稿长度；每页 2–5 句只是常见节奏，并非上限。可先使用 `+0%`，较密且刻意保留细节的讲稿可尝试 `-5%`。
@@ -212,21 +219,30 @@ python3 -m pip install edge-tts
 
 ## 导出为视频
 
-带旁白的 PPTX 在 `exports/` 里就绪后，PowerPoint 自带"创建视频"功能可以直接把它导出成 MP4——不需要任何第三方工具。嵌入的音频会作为每页旁白播放；页间切换时间已经由 PPT Master 在嵌入时按音频长度自动设好（用 `--recorded-narration audio` 重新导出时），所以视频节奏和旁白完全同步。`--recorded-narration` 会拒绝 `on-click` 对象动画，因为 PPT Master 不生成对象级点击计时。
+带旁白的 PPTX 在 `exports/` 里就绪后，Windows PowerPoint 2016+ 可通过下面的接口自动导出：
 
-**PowerPoint（Windows / Mac，Office 2016+）**：
+```bash
+python3 skills/ppt-master/scripts/powerpoint_video.py \
+  <final_narrated_pptx> -o <final_video.mp4>
+```
+
+命令使用录制的计时和旁白，默认输出 1080p/30fps，并在 PowerPoint 明确成功或失败后才返回。嵌入音频作为逐页旁白播放，页面自动推进时间控制视频节奏。`--recorded-narration` 会拒绝 `on-click` 对象动画，因为 PPT Master 不生成对象级点击计时。
+
+**PowerPoint 手动回退（Windows / Mac，Office 2016+）**：
 
 1. 打开 `exports/` 里那份带旁白的 `.pptx`。
 2. **文件 → 导出 → 创建视频**。
-3. 选清晰度（4K / 全高清 / 高清 / 标准）以及"使用录制的计时和旁白"——PPT Master 已经替你录好了。
+3. 选清晰度以及"使用录制的计时和旁白"。
 4. **创建视频** → 保存为 `.mp4`（Windows 也支持 `.wmv`）。
 5. 若要让外挂字幕最贴合最终视频，再执行上面的 `narration_sync.py subtitles --video ...`，把生成的同名 SRT 与视频放在一起。
+
+PowerPoint for Mac 可以手动导出 MP4/MOV，但微软明确说明其影片导出不会播放动画效果。需要动画保真时，应使用 Windows 自动导出路径。
 
 **Keynote（Mac）**：打开 deck → **文件 → 导出到 → 影片…** ——Keynote 同样会读取嵌入的音频和分页计时，输出 `.m4v` / `.mov`。
 
 **经验值**：
 
 - **不需要麦克风、不需要录制环节**——音频是合成的，重跑可重现。
-- **动画保留**：PPT Master 的页间转场和无点击页内元素入场动画是真正的 OOXML 动画，导出视频后正常播放。详见 [转场与动画](./animations.md)。
+- **Windows 动画保真**：PowerPoint 的 Windows 视频导出会保留 PPT Master 的原生页间转场和无点击对象动画；Mac 影片导出存在上面的限制。详见 [转场与动画](./animations.md)。
 - **单页改音频**：改对应 `notes/<page>.md`，再跑一遍 `notes_to_audio.py` + 嵌入步骤，再重新导出视频——单页迭代通常不到一分钟。
 - **文件大小**：20 页全高清 deck 通常是 30–80 MB，取决于图片量。需要小文件分享时降到高清就行。
