@@ -83,6 +83,25 @@ The registry preserves these established 22 tuples exactly:
 `cut` is a legacy public key. Compatibility promises the tuple above; it does
 not infer a different semantic name from external preset-id tables.
 
+Seven directional variants extend the registry without changing any established
+tuple:
+
+| Key | `p:animEffect@filter` | `presetID` | `presetSubtype` |
+|---|---|---:|---:|
+| `fly_left` | `slide(fromLeft)` | 2 | 8 |
+| `fly_right` | `slide(fromRight)` | 2 | 2 |
+| `fly_top` | `slide(fromTop)` | 2 | 1 |
+| `wipe_left` | `wipe(left)` | 22 | 8 |
+| `wipe_right` | `wipe(right)` | 22 | 2 |
+| `wipe_up` | `wipe(up)` | 22 | 1 |
+| `wipe_down` | `wipe(down)` | 22 | 4 |
+
+The existing `fly` key remains fly-in from bottom. The existing `wipe` key
+keeps its historical `wipe(left)` / subtype `1` tuple; use `wipe_left` for
+PowerPoint's native left-direction subtype `8`. Directional keys are explicit
+effect names rather than a new configuration field, so version-1 sidecars and
+the read-back model remain unchanged.
+
 **Hard rule — no downgrade**:
 
 - Keep the 22 established tuples byte-for-byte equivalent in meaning.
@@ -175,6 +194,13 @@ targets. Template fill and native enhancement fingerprint the source
 object-animation tree before and after their allowed edits; any semantic change
 fails. These routes have no object-animation write ownership.
 
+The conversion trace is also the authoritative input for downstream video
+motion. `video_motion_plan.py` preserves the resolved effect tuple, direction,
+row order, duration, absolute offset, object bounds, and narration-derived slide
+advance while adding only renderer-specific enhancement parameters. Video
+renderers must not bypass this read-back result and infer motion from sidecar
+delay values alone.
+
 ---
 
 ## 7. Compatibility Scope
@@ -192,3 +218,5 @@ Official references:
 
 See [`pptx-transitions.md`](./pptx-transitions.md) for the symmetric page-motion
 core, MCE handling, and slide-advance contract.
+See [`video-motion-plan.md`](./video-motion-plan.md) for the downstream
+animation-to-video contract.
