@@ -86,11 +86,11 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | Page animation defaults | `defaults.animation` or `slides.<slide>.animation` | Control the default entrance behavior for animated groups on a slide |
 | Object overrides | `slides.<slide>.groups.<group_id>` | Control order, effect, delay, or duration for a real SVG group |
 
-**Per-page motion brief**: for each slide, decide transition effect, transition duration, object reveal sequence, object effects, and timing. Use `design_spec.md` for slide role, `spec_lock.md` for rhythm, speaker notes for narration order, and SVG group ids for target validity.
+**Per-page motion brief**: for each slide, first decide what communication job motion should perform—or that it should perform none—then decide transition effect, transition duration, object reveal sequence, object effects, and timing. Use `design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style, speaker notes for narration order, and SVG group ids for target validity.
 
 **Title reveal decision**: when present, treat the page title as a first-class object in the per-page reveal plan, never an afterthought. Consciously choose one of — static (`effect: none`), immediate entrance, delayed entrance, entrance after the page's hero visual, synchronous with related content, or, when narration is part of the workflow, narration-cued — driven by the user's request, slide role, transition, and narration order. This stage uses the effect (§3.2), order, duration, and timing fields already defined below; narration-cued timing is realized later by the audio stage. It does not preset which choice a title uses. A real title must not drop out of the plan merely because its id resembles a legacy chrome name: use the documented sidecar override (§2 / §4) when animation is intended. Explicit structural or static markers remain authoritative; if they incorrectly mark a title that should animate, repair the SVG semantics before continuing.
 
-**Hard rule**: a custom animation pass must not only edit group effects. It must also decide whether each slide should inherit the default transition or need a slide-specific `transition` override.
+**Hard rule**: a custom animation pass must not only edit group effects. It must also decide whether each slide should inherit the default transition or need a slide-specific `transition` override. Inheritance is a complete decision; do not create slide-specific transitions to satisfy a variation quota.
 
 **Timing guidance**: prefer content-aware durations when the deck has varied slide rhythm or object importance. Uniform timing is acceptable when it matches the user's requested style or the deck's pacing.
 
@@ -106,23 +106,24 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 **Duration guidance**: use shorter timing for repeated scan content, longer timing for conceptual pivots, section transitions, hero diagrams, and final takeaways.
 
-**Choreography guidance**: prefer a restrained modern palette (`fade`,
-`dissolve`, `zoom`, directional `fly_*`, directional `wipe_*`, and occasional
-`expand`) over merely maximizing effect variety. Motion should explain the
-layout:
+**Reference — not a constraint: motion judgment.** Supported effects are a
+vocabulary, not assignments. Decide from content and narration before using
+layout geometry:
 
-| Page structure | Recommended choreography |
+| Decision question | Evidence to consider |
 |---|---|
-| Left/right comparison | Pair `fly_left` with `fly_right`; reveal the shared conclusion afterward |
-| Vertical sequence or timeline | Reveal the track with `wipe_down`, then cascade items with `fly_left` or `fade` |
-| Hero image plus takeaway | Bring the visual in with `dissolve` or `zoom`, then use a slower `fade` for the message |
-| Dense repeated cards | Use one consistent directional effect with short stagger; do not assign a different novelty effect to every card |
-| Quote or reflective breathing page | Prefer one long `fade`/`zoom` followed by a quiet note; avoid patterned effects |
+| What communication job exists? | Reveal, sequence, causality, transition, contrast, emphasis, atmosphere, or none |
+| What tone should motion preserve? | Communication objective, consumption mode, visual style, page role, and emotional register |
+| What should the audience encounter first? | Audience move, speaker-note order, focal claim, and dependency between objects |
+| Does direction carry meaning? | Reading flow and spatial position may refine a direction only after the content relationship justifies motion |
+| What should remain coherent across the deck? | Reuse can support recurring semantic roles; variation is optional and follows a real change in content or tone |
 
-Use direction only when it agrees with the object's position or reading flow.
-Do not use `mixed`, `random`, blinds, checkerboard, random bars, wheel, wedge,
-or swivel merely to make a deck feel “more animated”; reserve them for an
-explicit visual concept or user request.
+If motion adds no clarity or intended feeling, inherit the page default or
+choose `none`, `appear`, or `fade`. A left/right layout, vertical stack, hero
+image, or quote does not by itself require a directional, zoom, dissolve, or
+other special effect. `auto`, `mixed`, `random`, directional, and patterned
+effects remain available when the user request or the AI's content judgment
+supports them; never use them to satisfy an effect-variety quota.
 
 ### 3.1 Supported Page Transitions
 
