@@ -523,6 +523,7 @@ The post-processing and export stages keep authoring, validation, preview, deliv
 | `validation/<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
 | `exports/<name>_<ts>_native_charts_tables.pptx` (opt-in via `--native-charts-and-tables`) | when `data-pptx-replace-with` markers should replace SVG-derived, shape-based charts/tables with PowerPoint-native Chart/Table objects | data-backed objects with chart/table-specific controls; the default DrawingML shapes remain independently editable |
 | `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration` or `--narration-audio-dir`) | embeds matched narration audio; complete recorded mode directly supports auto-play and PowerPoint video export | `--recorded-narration` requires matching audio for every slide and writes duration-plus-padding auto-advance; low-level `--narration-audio-dir` permits partial or zero coverage and writes auto-advance only with `--use-narration-timings` |
+| `exports/<narrated_stem>.mp4` (optional via `powerpoint_video.py`) | animation-faithful narrated video on Windows PowerPoint 2016+ | delegates to PowerPoint's native encoder and waits for completion; it is a post-PPTX integration, not a second deck renderer |
 | `backup/<ts>/svg_output/` (default output path only; copy is best-effort after directory creation) | re-export from frozen SVG sources without rerunning the LLM | after successful conversion the exporter creates the backup directory and attempts the copy; explicit `-o` creates none, copy failure does not block export, prints a warning outside quiet mode, and leaves postflight `backup_path` empty, while directory-creation failure remains fatal |
 
 Validation JSON files are cold audit artifacts, not routine model inputs. The exporter reads the SVG quality report programmatically and, in the default non-quiet flow, prints a compact `[POSTFLIGHT]` receipt with the status, quality-gate result, Slide count, warning-category counts, and artifact paths. Successful agents consume that receipt instead of loading either complete JSON; only failure investigation or an explicit audit extracts targeted report fields.
@@ -619,6 +620,12 @@ The interesting design choice is the animation **anchor**, not the effect list.
 **Why recorded narration drives auto-advance from clip duration.** Recorded-narration mode targets video export, where no presenter clicks through the deck. It probes each clip's real duration and sets slide auto-advance to `audio duration + --narration-padding`; padding defaults to 0.5 seconds so the tail is not cut off. It does not use estimated reading speed or a fixed per-slide duration.
 
 **Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. Decks exported with `--recorded-narration` must therefore use click-free object entrances (`after-previous` or `with-previous`).
+
+**Why native video export is a separate command.** Audio synthesis and PPTX
+packaging are cross-platform project operations; PowerPoint video encoding is a
+Windows desktop integration. `powerpoint_video.py` therefore accepts the final
+narrated PPTX, invokes `CreateVideo`, and polls `CreateVideoStatus` to present a
+synchronous CLI result without coupling Office automation to the TTS backends.
 
 ---
 

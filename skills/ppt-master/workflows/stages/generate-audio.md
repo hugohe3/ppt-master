@@ -1,5 +1,5 @@
 ---
-description: Shared post-processing stage for per-slide narration audio and optional embedding.
+description: Shared post-processing stage for narration audio, PPTX embedding, and optional native video export.
 ---
 
 # Generate Audio Stage
@@ -15,7 +15,13 @@ This stage is **context-independent**: it reads `notes/*.md` and queries the sel
 - The stage is page-level only: with edge, one notes file becomes `audio/<stem>.mp3` plus `notes/subtitles/<stem>.srt`; with a cloud provider, it becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
 - PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
-- Optional post-export video calibration requires `ffmpeg` plus `numpy`; it runs only when the caller supplies the finished PowerPoint video.
+- Optional automatic video export requires Windows PowerPoint 2016+ and runs
+  through `powerpoint_video.py`; the command waits for PowerPoint's native
+  encoder to finish before returning.
+- macOS PowerPoint may export MP4/MOV manually, but it has no equivalent
+  `CreateVideo` automation contract and its movie export does not preserve
+  animation effects. Do not replace the missing API with UI scripting.
+- Optional post-export video calibration requires `ffmpeg` plus `numpy`; it runs only after a finished PowerPoint video is supplied or created.
 - High-quality cloud mode: provider API key is set before use:
   - ElevenLabs: `ELEVENLABS_API_KEY`
   - MiniMax: `MINIMAX_API_KEY`
@@ -81,9 +87,9 @@ For each candidate, write a **one-line Chinese description** covering: 性别 ·
 
 ## Step 3: One-shot user interaction (mandatory)
 
-Send a single message to the user that asks all three questions at once and provides a recommended value for each. Do NOT split into multiple rounds.
+Send a single message to the user that resolves all five configuration decisions at once and provides a recommended value for each. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
 
-**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the provider to whichever the user named (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`), pin the `voice_id` they gave you, and only confirm rate + embed-or-not.
+**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the provider to whichever the user named (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`), pin the `voice_id` they gave you, and only confirm rate + embed + video.
 
 **Message template** (Chinese; translate to user's chat language if different). “Embed” means caller-specific integration: SVG re-export for Generate PPTX, or native OOXML application for Enhance Native PPTX.
 
@@ -103,6 +109,8 @@ Send a single message to the user that asks all three questions at once and prov
 >
 > **生成完是否重新导出嵌入音频的 PPTX**：⭐ 推荐 **是**（一次到位，自动按音频时长设页面停留）。
 >
+> **带音频 PPTX 完成后是否继续导出视频**：⭐ 推荐 **是**（仅在本机 Windows PowerPoint 2016+ 可用时；将等待原生视频导出完成）。
+>
 > 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"或"用 MiniMax 的 voice_id xxx"）。
 
 **Recommended-value rules**:
@@ -110,6 +118,7 @@ Send a single message to the user that asks all three questions at once and prov
 - 音色：从 Step 2 候选里挑最贴合 deck 调性的那一个。
 - 语速：edge 默认 `+0%`；notes 字数密集（页均 >4 句长句）建议 `-5%`；notes 简短紧凑建议 `+5%`；超出此范围需说明理由。Cloud providers 默认用 provider defaults，除非用户明确要调速或改风格。
 - 嵌入：默认推荐"是"；除非用户已有定制 PPTX 不希望覆盖。
+- 视频：`powerpoint_video.py --check` 成功时默认推荐"是"；不可用时说明只能交付带音频 PPTX，不自动改用第三方渲染器。
 
 ---
 
@@ -168,10 +177,13 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
-# 2D. After PowerPoint exports the video, align the frozen narration text
-# against the finished video's actual audio track
+# 2D. Optional: export through installed Windows PowerPoint and wait for completion
+python3 skills/ppt-master/scripts/powerpoint_video.py \
+  <final_narrated_pptx> -o <final_video.mp4>
+
+# 2E. Align the frozen narration text against the finished video's audio track
 python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
-  --video <powerpoint_exported_video> --language <language> --force
+  --video <final_video.mp4> --language <language> --force
 ```
 
 **Default — bounded Edge concurrency (may override)**: Generate up to three
@@ -219,16 +231,22 @@ python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
 
 `narration_sync.py subtitles` may still write `<project_path>/notes/subtitles/total.srt` as a PPTX-timeline diagnostic. It is not the delivery subtitle for a finished video.
 
-After PowerPoint exports the video, `video_subtitles.py` takes the exact narration text frozen in the page SRT set and force-aligns it against the finished video's actual audio track with `stable-ts`. Long delivery cues may be split for display at this final stage. This writes a same-stem external SRT without changing the MP4, notes, page SRT, or animation files.
+When video export was selected, `powerpoint_video.py` opens the final narrated PPTX through local Windows PowerPoint, requests its native video encoder with recorded timings and narrations enabled, and polls `CreateVideoStatus` until the MP4 succeeds, fails, or times out. The interface is synchronous to its caller even though PowerPoint performs encoding asynchronously. It preserves PowerPoint's own animation and media behavior rather than re-rendering the deck.
 
-This stage keeps subtitles as external SRT files. It does not embed subtitles into PPTX or export MP4 directly.
+If native video export fails, keep the narrated PPTX as a successful upstream
+artifact and report the video failure separately. Do not regenerate audio or
+the PPTX unless their own validation failed.
+
+After the MP4 exists, `video_subtitles.py` takes the exact narration text frozen in the page SRT set and force-aligns it against the finished video's actual audio track with `stable-ts`. Long delivery cues may be split for display at this final stage. This writes a same-stem external SRT without changing the MP4, notes, page SRT, or animation files.
+
+This stage keeps subtitles as external SRT files. It does not burn subtitles into the video. Automatic MP4 export is an optional Windows PowerPoint integration, not an independent renderer; when PowerPoint automation is unavailable, stop after the narrated PPTX instead of claiming a downgraded video.
 
 **Caller integration**:
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`, export with `--recorded-narration audio` (derived animation by default; canonical or no-animation modes remain explicit), and generate the delivery SRT only after PowerPoint exports the video. |
-| Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export |
+| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`, export with `--recorded-narration audio` (derived animation by default; canonical or no-animation modes remain explicit), optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
+| Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export. If video was selected, pass that final PPTX to `powerpoint_video.py`. |
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
 
@@ -244,7 +262,8 @@ Output one summary block listing:
 - For edge, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
 - For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
 - For Generate PPTX with Edge SRT, derived narration animation group count and `narration_animations.json` path.
-- When a finished video was supplied, the final aligned sidecar SRT path.
+- When video export was selected, the final MP4 path and native PowerPoint export status.
+- When a finished video exists, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
 - The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
 - For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
