@@ -28,7 +28,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 | Stage | Items | Role |
 |---|---|---|
-| **1 — communication contract** | `c` audience · open-ended communication intent · audience outcome · core message / delivery context / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas | confirmed first |
+| **1 — communication contract** | `c` audience · open-ended communication intent · audience outcome · core message / delivery context (primary + optional secondary) / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas | confirmed first |
 | **2 — complete deck solution** (authored once from the user's *actual* Stage 1) | reading mode (`delivery_purpose`, PPT only) · `d` mode + visual style · `b` page count · `e` color · `f` icon · `g` typography · `h` image source + generated-image rendering · conditional natural-language template application | derived from the confirmed contract; internal template exporter modes remain hidden |
 | **3 — resources / production** (authored once from the user's *actual* Stage 1 + Stage 2) | formula policy · conditional AI-image acquisition path · generation mode · refine-spec toggle | derived from the confirmed solution |
 
@@ -74,8 +74,10 @@ Seed the following as open-prose recommendations when the source and user reques
 | `communication_intent` | What must the presentation accomplish? It may combine several purposes and state priority or sequence. |
 | `audience_outcome` | What observable change means the communication succeeded — what will the audience know, understand, believe, decide, or do? |
 | `core_message` | Which claim(s), decision ask(s), or action(s) must land even if little else is remembered? |
-| `delivery_context` | How will it be consumed — presenter-led, reader-led, hybrid, recorded — and in what occasion / time constraint? |
+| `delivery_context` | What is primary—presenter-led, reader-led, hybrid, or recorded/self-running? For hybrid, which mode leads; what secondary use, occasion, and time constraint remain? |
 | `artifact_afterlife` | What must the file support afterward — review, approval, audit, archive, hand-off, reuse, or no planned afterlife? |
+
+**Delivery-context distinction**: Keep one open-prose field. Recommend a primary context and optional secondary use: presenter-led has a live presenter; reader-led must stand alone; hybrid names which one leads and what secondary use remains; recorded/self-running has no live presenter and relies on narration, timing, transitions, and playback. The user may clear it; do not replace it with an enum or add another field.
 
 **Communication intent is open-ended.** Use *inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off* only as prompts that help the user articulate an answer. Never render them as a checkbox list, radio group, or required single `primary_job`. When several purposes coexist, preserve their relationship in the prose (for example, “report progress and expose risk first; then obtain a decision on the next investment”). Do not silently collapse a composite answer into one label.
 
