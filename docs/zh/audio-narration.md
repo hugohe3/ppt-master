@@ -114,12 +114,12 @@ uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
 # 7. Windows 可选：通过 PowerPoint 导出视频并等待完成
-python3 skills/ppt-master/scripts/powerpoint_video.py --check
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video --check
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o exports/<final_video>.mp4
 
 # 8. 根据导出音轨校准每页起点，生成与视频同名的外挂 SRT
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
+uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
   -o exports/<powerpoint_exported_video_stem>.srt --force
 ```
@@ -222,7 +222,7 @@ uv pip install edge-tts
 带旁白的 PPTX 在 `exports/` 里就绪后，Windows PowerPoint 2016+ 可通过下面的接口自动导出：
 
 ```bash
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o <final_video.mp4>
 ```
 

@@ -30,10 +30,10 @@ custom-animation anchors.
 
 ```bash
 # Inspect the real anchors after the semantic regrouping pass
-python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
+uvx ppt-master animation-config list-groups <project>
 
 # Build an editable scaffold from the post-regroup anchors when useful
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
+uvx ppt-master animation-config scaffold <project>
 
 # Validate references before export
 uvx ppt-master animation-config validate <project>

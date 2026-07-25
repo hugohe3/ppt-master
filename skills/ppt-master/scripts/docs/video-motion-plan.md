@@ -18,7 +18,7 @@ For a narrated deck, generate the trace from the narrated export so its offsets
 and slide advances include the final audio timing:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio \
   --conversion-trace \
   -o <project_path>/validation/video_motion_source.pptx
@@ -27,7 +27,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 Then build the motion plan:
 
 ```bash
-python3 skills/ppt-master/scripts/video_motion_plan.py \
+uvx ppt-master video-motion-plan \
   <project_path>/validation/video_motion_source.trace.json \
   -o <project_path>/validation/video_motion_plan.json \
   --style adaptive \

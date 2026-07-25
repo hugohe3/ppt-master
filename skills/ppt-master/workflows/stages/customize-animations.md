@@ -44,7 +44,7 @@ description: Optional post-processing stage for per-slide and per-object animati
 When the existing sidecar will be modified:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
+uvx ppt-master animation-config validate <project_path>
 ```
 
 **Hard rule**: semantic files determine both animation intent and animation
@@ -103,13 +103,13 @@ After any regrouping, rerun the final SVG quality gate because `svg_output/`
 changed:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --stage final --json
+uvx ppt-master svg-quality-check <project_path> --stage final --json
 ```
 
 Then list the **post-regroup** anchors:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py list-groups <project_path>
+uvx ppt-master animation-config list-groups <project_path>
 ```
 
 Output is one line per slide: `<slide_basename>: id1, id2, id3`. Default chrome
@@ -125,7 +125,7 @@ If `animations.json` does not exist and a starting file is useful, scaffold
 only after semantic regrouping:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>
+uvx ppt-master animation-config scaffold <project_path>
 ```
 
 Do not read the full scaffold unless it is needed as an editing starting point.
@@ -348,11 +348,11 @@ uvx ppt-master animation-config validate <project_path>
 ```
 
 ```bash
-python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
+uvx ppt-master finalize-svg <project_path>
 ```
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 **Validation**: the exported native PPTX must reflect the per-slide and
@@ -375,7 +375,7 @@ When a downstream video renderer will enhance the deck, export with
 `--conversion-trace` and derive its motion plan from that resolved trace:
 
 ```bash
-python3 skills/ppt-master/scripts/video_motion_plan.py \
+uvx ppt-master video-motion-plan \
   <project_path>/validation/<output_stem>.trace.json \
   -o <project_path>/validation/video_motion_plan.json \
   --style adaptive \

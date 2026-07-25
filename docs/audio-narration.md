@@ -115,13 +115,13 @@ uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
 # 7. Optional on Windows: export through PowerPoint and wait for completion
-python3 skills/ppt-master/scripts/powerpoint_video.py --check
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video --check
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o exports/<final_video>.mp4
 
 # 8. Calibrate page starts against the exported audio track and write a
 #    same-stem sidecar SRT
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
+uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
   -o exports/<powerpoint_exported_video_stem>.srt --force
 ```
@@ -225,7 +225,7 @@ Automatic MP4 export adds no Python package. It requires Windows PowerPoint 2016
 Once the narrated PPTX is in `exports/`, Windows PowerPoint 2016+ can export it automatically through:
 
 ```bash
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o <final_video.mp4>
 ```
 

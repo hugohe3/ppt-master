@@ -87,7 +87,7 @@ For each candidate, write a **one-line Chinese description** covering: 性别 ·
 
 ## Step 3: One-shot user interaction (mandatory)
 
-Send a single message to the user that resolves all five configuration decisions at once and provides a recommended value for each. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
+Send a single message to the user that resolves all five configuration decisions at once and provides a recommended value for each. Before offering automatic video export, run `uvx ppt-master powerpoint-video --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
 
 **Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the provider to whichever the user named (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`), pin the `voice_id` they gave you, and only confirm rate + embed + video.
 
@@ -178,11 +178,11 @@ uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
 # 2D. Optional: export through installed Windows PowerPoint and wait for completion
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o <final_video.mp4>
 
 # 2E. Align the frozen narration text against the finished video's audio track
-python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
+uvx ppt-master video-subtitles <project_path> \
   --video <final_video.mp4> --language <language> --force
 ```
 
