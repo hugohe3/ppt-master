@@ -162,7 +162,7 @@ Read references/strategist.md
 
 The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory artifact gates**: after final confirmation, read `templates/design_spec_reference.md` and author the complete `design_spec.md` from scratch; after Gate 1, read `templates/spec_lock_reference.md` and author the complete `spec_lock.md` from the Design Spec plus current context. For a new project, create each finished artifact once—do not materialize a placeholder scaffold and fill it piecemeal. The references own authoring structure, the schemas own machine validation, and semantic projection fidelity remains mandatory. `scaffold-spec` / `scaffold-lock` are optional manual conveniences, not normal Generate steps.
+> ⚠️ **Mandatory artifact gates**: after final confirmation, author the complete `design_spec.md` from `templates/design_spec_reference.md`. After Gate 1, run enabled refinement and wait for approval; then author `spec_lock.md` from its reference, the approved Design Spec, and context. Create each new artifact once—no placeholder scaffold; `scaffold-*` commands remain manual-only. Schemas validate structure; semantic fidelity remains mandatory.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -172,7 +172,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single user gate. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
+⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
 **Confirmation ownership and surface**: Only the user confirms. Default Stage 1 is `--daemon --wait`; use chat only by explicit chat-only/delegation or after launch failure/timeout plus a `result.json` re-check. Chat tools do not replace launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
 
@@ -212,7 +212,11 @@ If the user rejects the current recommendation before confirming it, regenerate 
 
 If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
 
-⛔ **GATE — consume the final state once into the Design Spec, then author the lock from context.** Treat every explicitly present final value as user-owned input and consume it at the semantic type defined by [`strategist.md`](../references/strategist.md) §1 and its field owner. Do not omit or substitute a value, and do not silently strengthen or weaken its type; accepting a recommendation does not turn a Reference or Permission into a Literal requirement. First author and audit the complete `design_spec.md` through [`strategist.md`](../references/strategist.md) §6.2 from the retained final object, including production mechanics, the complete recurring typography-role system, the confirmed image-source boundary, and explicit `image_notes` obligations. Do not reopen `result.json` afterward. Only after that audit passes, author `spec_lock.md` from the completed Design Spec and current project/page/template context: preserve confirmed identity, project every declared recurring typography family and size-anchor role without collapsing it into one default stack, choose reusable execution anchors and routing values, project each placed image's source/pattern/crop policy without reselection, and do not enumerate page-local paint or font-family garnish. Apply `strategist-template.md` §3 for an active template, and never write a separate image palette. If a confirmed requirement cannot be honored, follow [`failure-recovery.md`](governance/failure-recovery.md) instead of silently changing it.
+⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
+
+With `refine_spec: true`, run [`refine-spec`](stages/refine-spec.md) after Gate 1: review that same file in chat, accept arbitrary revisions, touch no lock, and stop until explicit approval. Revisions supersede only affected decisions. Otherwise skip the stop.
+
+After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/pattern/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
 
 **Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
@@ -223,7 +227,7 @@ If the user opted out of the page but did not delegate confirmation, skip launch
 
 For the normal/default `continuous` path, print no split-mode reminder and proceed automatically. Confirm UI still exposes the generation-mode toggle and records it in `result.json`; a chat fallback captures the same choice in its confirmation summary without adding a separate reminder.
 
-**Mandatory — spec-refinement note** (not a separate confirmation): after the confirmation details and any conditional split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](stages/refine-spec.md) stage. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks in chat (e.g. "refine the spec first") or confirms `refine_spec: true` through Confirm UI does the [refine-spec](stages/refine-spec.md) stage take over after the Strategist confirmation stage. This opt-in line remains required output every run; whether to act on it is the user's call. When the Confirm UI is used, this choice also appears as the in-page refine-spec toggle and is captured in `result.json` (`refine_spec`); the chat-summary fallback still prints this line.
+**Mandatory — spec-refinement note** (not another Confirm UI stage): after confirmation details and any split-mode line, append one localized 💡 line offering review of the complete Design Spec before the lock; any part may be revised in chat until explicit approval. Default OFF; only explicit chat opt-in or `refine_spec: true` runs [`refine-spec`](stages/refine-spec.md) after Gate 1. Confirm UI records the toggle; chat fallback prints the same line.
 
 **Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
 
@@ -238,18 +242,19 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
-- `<project_path>/spec_lock.md` — machine-readable communication + stable execution anchors/routing contract; Executor retains it in the active execution context and may inspect an on-demand current-page projection for diagnostics
+- `<project_path>/spec_lock.md` — machine-readable stable execution anchors/routing, authored after conditional review approval
 
 For a new project, use the reference-first whole-document sequence:
 
-1. Read `templates/design_spec_reference.md`. Compose the complete I–X document in active context from the retained final confirmation, source analysis, and project context; then create `<project_path>/design_spec.md` once with no `[fill]` placeholders or example rows. This is the only normal consumption of the final result.
-2. Audit the finished Design Spec field by field against that retained confirmation. Gate 1 must pass before lock authoring.
-3. Read `templates/spec_lock_reference.md`. Compose the complete execution projection from the audited Design Spec plus current page/resource/template context; then create `<project_path>/spec_lock.md` once. Do not reopen `result.json` or make an independent design choice.
-4. Compare the lock's identity anchors and routing values against the completed Design Spec, then run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
+1. Read `templates/design_spec_reference.md`; compose I–X from retained confirmation, analysis, and context; create `<project_path>/design_spec.md` once without placeholders/examples.
+2. Audit it field by field against retained confirmation; Gate 1 must pass.
+3. If enabled, run [`refine-spec`](stages/refine-spec.md) on that file until explicit approval; touch no lock.
+4. From `templates/spec_lock_reference.md`, the approved Design Spec, and context, create the new lock once or resynchronize stale derived state. Do not reopen `result.json` or make a new design choice.
+5. Compare lock anchors/routing to the Design Spec; run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
 
-A retained final state → Design Spec mismatch or Design Spec/context → lock mismatch is blocking even when the standalone Markdown schemas pass. `validate` reads the planning artifacts only; it does not reopen `confirm_ui/result.json` or prove semantic fidelity. Repair the Design Spec from the retained final state; only a fresh recovery turn with no retained state reads persisted final evidence once. Then re-author the affected lock rows from the corrected Design Spec and current context. A resume or refine path edits existing completed files in the same order; it does not replace them with scaffolds.
+Final state → initial Design Spec mismatch, approved Design Spec/context → lock mismatch, or an unapplied revision blocks despite schema validity. `validate` does not prove fidelity. Repair from retained confirmation before refinement; during it, preserve unaffected values and apply explicit revisions. After approval, derive the lock from that Design Spec/context. Resume/refine edits existing files, never scaffolds. Fresh recovery alone may reread persisted final evidence once.
 
-**✅ Internal checkpoint — Phase deliverables complete**: verify that analysis facts were read before confirmation; final confirmation was consumed once; applicable split/refinement handling is resolved; the complete Design Spec passed Gate 1; the lock was authored from it; and communication plus every §IX `Audience move` were validated. Do not print this checklist. On success, auto-proceed to Image_Generator / Executor under the compact status rule above.
+**✅ Internal checkpoint — Phase deliverables complete**: facts read; confirmation consumed once; Design Spec passed Gate 1; enabled refinement approved; lock derived from it; split handling resolved; communication and every §IX `Audience move` validated. Do not print this checklist; auto-proceed.
 
 ---
 
