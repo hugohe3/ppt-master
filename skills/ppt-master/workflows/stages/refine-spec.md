@@ -1,10 +1,10 @@
 ---
-description: Optional main-pipeline stage for reviewing and revising the complete spec before generation.
+description: Optional main-pipeline stage for reviewing and revising the complete Design Spec before lock authoring and generation.
 ---
 
 # Refine Spec Stage
 
-> **Opt-in Generate-PPTX stage** for spec review. The default pipeline writes `design_spec.md` + `spec_lock.md` and auto-proceeds. When the user explicitly asks to refine the spec, the Strategist produces the full spec first, then **stops** — the user reviews and revises any part of it (outline, color, typography, layout, image strategy, page rhythm, …) before any image generation or SVG work begins.
+> **Opt-in Generate-PPTX stage**. Default writes `design_spec.md` + `spec_lock.md` and proceeds. With explicit refinement, produce and audit the complete Design Spec, then **stop before the lock** for unrestricted user review/revision.
 
 This stage is **conditional**, same shape as the split-mode choice: it never fires on its own and the default path is unchanged. The Strategist confirmation stage settles design directions up front as abstract recommendations; this pass lets the user revise the **concrete spec** the Strategist produced from them. It is most valuable for a zero-background user, who can judge a finished spec far better than the up-front recommendations — and the spec's content outline (`§IX`) is usually what they most want to adjust.
 
@@ -24,17 +24,19 @@ The user **explicitly asks** to refine / review / revise the spec before generat
 
 ---
 
-## Step 1: Produce the full spec
+## Step 1: Produce the complete Design Spec
 
-Run the default Strategist output exactly as [`generate-pptx`](../generate-pptx.md) Step 4 specifies: consume the retained final confirmation once into `design_spec.md` (§I–X), pass the confirmation-fidelity gate, then author `spec_lock.md` from the completed Design Spec plus current context as stable anchors/routing rather than an exhaustive value list. Read the relevant `sources/` files so the content outline (`§IX`) carries real facts, not skeleton points. Nothing special here — this is the normal spec, just produced under the knowledge that the user is about to review it.
+Run [`generate-pptx`](../generate-pptx.md) Step 4 through the complete `design_spec.md` (§I–X) and initial Gate 1 audit. Read relevant `sources/` so §IX carries facts, not skeleton points.
+
+**Hard rule — no lock before approval**: Do not create, update, use, or validate `spec_lock.md` during review. On a resumed project, any prior lock is stale derived state until Gate 2 resynchronizes it after approval.
 
 ---
 
 ## Step 2: ⛔ HARD STOP — present, discuss, and revise
 
-Present the produced spec to the user and **wait for explicit revision or approval before doing anything else**. This is a conditional BLOCKING point that exists only on this opt-in path; the default pipeline keeps its "auto-proceed after the Strategist confirmation stage" discipline untouched.
+Present the Design Spec and **wait for explicit revision or approval before anything else**. Review the one project `design_spec.md` in chat; do not create a second draft, parallel summary, or fixed-field questionnaire.
 
-The user may revise **any part of the spec**, not just the outline — content outline, color, typography, layout, icon plan, image strategy, page rhythm. Discuss in **prose**; do not emit a scored rubric or per-axis grades (mechanical scorecards are against project convention). When useful, point out things worth a second look — but let the user drive.
+The user may revise **any part of the spec** and request any number of changes per round. Discuss in **prose**; do not emit scores or force field-by-field confirmation. Let the user drive.
 
 **Reference — review lenses, not a checklist or score**: raise these in plain language to surface what is worth discussing. They name a *direction*, never a number — never convert any into HEX values, px sizes, ratios, page quotas, or grades.
 
@@ -47,14 +49,14 @@ The user may revise **any part of the spec**, not just the outline — content o
 
 These overlap with what the confirmed `mode`, visual style, and §6.1 already shape — treat them as discussion angles to surface what is worth talking about, not permission for the Strategist to redo a decision without the user's explicit revision.
 
-**Revise the Design Spec first, then re-author affected lock anchors in context.** An explicit revision the user approves becomes the latest authority for the affected decision and supersedes its earlier confirmation value. Apply it to `design_spec.md` first, then update only the reusable anchors and routing values that the revised Design Spec plus current project/page/template context justify; lock authoring never decides or overrides the revision and never enumerates every legal page-local value. On divergence, repair the lock from the approved Design Spec (see [`strategist.md`](../../references/strategist.md) §6.2). Iterate as many rounds as the user wants. The loop ends only when the user explicitly approves the spec.
+**Revise one Design Spec only**: Apply each user-requested round incrementally to `design_spec.md`; affected decisions supersede earlier values, while unaffected confirmed decisions and cross-section coherence remain intact. Do not regenerate the document for a local change or touch lock anchors. Iterate until explicit approval.
 
-**Re-run the route/template preflight after reuse revisions.** If the user changes `template_reuse_scope`, `template_adherence`, `page_layouts`, the Master/Layout definition roster, or any `page_pptx_layouts` assignment, repeat the preflight in [`strategist-template.md`](../../references/strategist-template.md) before approval and hand-back. Switching to `style` rewrites the route to `pptx_structure.mode: flat` and removes all structure mappings/adherence; switching to `mirror` / `layout` restores a complete structured contract. Every newly selected structured prototype must declare root Master/Layout identity, direct atomic Master/Layout visuals, and valid top-level slot groups with positive bounds plus one compatible carrier or explicit composite `object` proxy. A zero-slot Layout is valid. Update the human-facing prototype decisions in the Design Spec first, then author the required `pptx_masters`, unique `pptx_layouts` definitions, and complete `page_pptx_layouts` assignments in the lock from the revised template context. A legacy prototype is not selectable; create a current workspace through [`create-template`](../create-template.md) before refinement.
+**Re-run the route/template preflight after reuse revisions.** For changed reuse/prototype decisions, repeat [`strategist-template.md`](../../references/strategist-template.md) preflight before approval. `style` later locks flat; `mirror` / `layout` require a complete structured contract. Update only human-facing Design Spec decisions during review; Gate 2 derives structure mappings. Legacy prototypes remain unselectable.
 
 ---
 
-## Step 3: Hand back
+## Step 3: Approve and author the lock
 
-Once the user approves, `design_spec.md` and `spec_lock.md` both reflect the final, revised state. Return to [`generate-pptx`](../generate-pptx.md): Step 5 when any `ai` / `web` rows require acquisition, otherwise Step 6.
+After explicit approval, return to [`generate-pptx`](../generate-pptx.md) Step 4 Gate 2. Author or resynchronize `spec_lock.md` once from the approved Design Spec plus current context, validate, then continue to Step 5 or Step 6. Do not reopen `result.json`.
 
-> Note: this stage does NOT duplicate Strategist content. It only inserts a review-and-revise checkpoint between spec production and the rest of the pipeline. [`strategist.md`](../../references/strategist.md) and [`generate-pptx`](../generate-pptx.md) remain authoritative for spec content and route sequencing.
+> Note: this stage does NOT duplicate Strategist content. It inserts a review-and-revise checkpoint between Design Spec Gate 1 and lock Gate 2. [`strategist.md`](../../references/strategist.md) and [`generate-pptx`](../generate-pptx.md) remain authoritative for artifact content and route sequencing.
