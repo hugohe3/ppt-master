@@ -720,10 +720,16 @@ Recorded narration:
                              help='Disable paragraph merging. Every dy-stacked line becomes '
                                   'its own text frame for strict SVG line-layout fidelity.')
     parser.set_defaults(merge_paragraphs=True)
-    parser.add_argument('--conversion-trace', action='store_true', default=False,
-                        help='Write a JSON diagnostics report next to the native PPTX '
-                             '(<output>.trace.json). Records per-slide SVG element '
-                             'conversion decisions for debugging.')
+    parser.add_argument(
+        '--conversion-trace',
+        nargs='?',
+        const='',
+        default=None,
+        metavar='PATH',
+        help='Write per-slide SVG conversion diagnostics. Without PATH, write '
+             '<project>/validation/<output_stem>.trace.json; relative PATHs '
+             'are resolved from the project root.',
+    )
     parser.add_argument(
         '--native-charts-and-tables',
         dest='native_objects',
@@ -1452,10 +1458,19 @@ Recorded narration:
         print(f"  Output file: {native_path}")
         print()
 
-    conversion_trace_path = (
-        native_path.with_name(native_path.name + '.trace.json')
-        if args.conversion_trace else None
-    )
+    conversion_trace_path: Path | None = None
+    if args.conversion_trace is not None:
+        if args.conversion_trace:
+            requested_trace_path = Path(args.conversion_trace).expanduser()
+            conversion_trace_path = (
+                requested_trace_path
+                if requested_trace_path.is_absolute()
+                else project_path / requested_trace_path
+            )
+        else:
+            conversion_trace_path = (
+                project_path / 'validation' / f'{native_path.stem}.trace.json'
+            )
     try:
         success = create_pptx_with_native_svg(
             output_path=native_path,

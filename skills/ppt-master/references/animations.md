@@ -17,13 +17,23 @@ To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the
 
 ## 2. Custom Object-Level Animation
 
-Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains static visual source; the sidecar only controls PPTX export behavior.
+Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains the visual source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to create better semantic anchors without changing visible output, while the sidecar controls PPTX animation behavior.
 
 Run the [`customize-animations`](../workflows/stages/customize-animations.md) post-processing stage when the user asks to tune animation order, effects, timing, or object-level reveals.
 
+**Hard rule — semantic anchors before sidecar**: for custom object-level
+animation, do not scaffold or choreograph directly from the SVG's pre-existing
+`<g>` list. First derive reveal units from page meaning and narration, audit
+every page, and rewrite coarse or fragmented ordinary Slide-local groups
+without changing visible output. Only the post-regroup top-level ids are valid
+custom-animation anchors.
+
 ```bash
-# Build an editable scaffold from real top-level <g id> anchors
-uvx ppt-master animation-config scaffold <project>
+# Inspect the real anchors after the semantic regrouping pass
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
+
+# Build an editable scaffold from the post-regroup anchors when useful
+python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
 
 # Validate references before export
 uvx ppt-master animation-config validate <project>
@@ -132,9 +142,9 @@ uvx ppt-master svg-to-pptx <project> --animation mixed \
 uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger with-previous
 ```
 
-22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
+29 single effects: `appear`, `fade`, `fly`, `fly_left`, `fly_right`, `fly_top`, `cut`, `zoom`, `wipe`, `wipe_left`, `wipe_right`, `wipe_up`, `wipe_down`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
 
-These names preserve the established filter / `presetID` / `presetSubtype` tuples documented in [`pptx-animations.md`](../scripts/docs/pptx-animations.md#3-compatibility-contract). `cut` is a legacy public key; compatibility promises its existing tuple, not a semantic interpretation inferred from an external preset-id table.
+These names preserve the established filter / `presetID` / `presetSubtype` tuples documented in [`pptx-animations.md`](../scripts/docs/pptx-animations.md#3-compatibility-contract). `fly` remains the bottom-up variant. `wipe` preserves its historical tuple; use `wipe_left`, `wipe_right`, `wipe_up`, or `wipe_down` when motion should follow the layout explicitly. `cut` is a legacy public key; compatibility promises its existing tuple, not a semantic interpretation inferred from an external preset-id table.
 
 - `auto` (recommended when enabling) — map effect from the group's SVG id. Information-dense elements get a single stable effect: `chart` / `table` / `legend` / `timeline` / `track` → `wipe`; `card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` / `tier-*` / `principle-*` → `fly`; `title` / `chapter-*` / `section-*` / `cover-*` / `tagline` / `subtitle` → `fade`; `takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` → `fade`. Image-like ids `hero` / `figure-*` / `image` / `img-*` / `kpi` instead cycle a richer visual pool (`zoom` / `dissolve` / `circle` / `box` / `diamond` / `wheel`) so multiple images vary across the deck. Unmatched ids cycle through `fade` / `wipe` / `fly` / `zoom`.
 - `mixed` (legacy) — deterministic. The first animated group on each slide uses `fade`; later groups cycle through a 16-effect pool (`blinds` / `checkerboard` / `dissolve` / `fly` / `cut` / `random_bars` / `box` / `split` / `strips` / `wedge` / `wheel` / `wipe` / `expand` / `fade` / `swivel` / `zoom`) across the deck. Kept for backward compatibility.
@@ -159,7 +169,14 @@ Flags:
 
 Per-element animations are anchored on **top-level `<g id="...">` content groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). IDs must be unique within the page. One group produces one animation-pane entrance row; whether that row needs a click depends on the selected Start mode. Nested implementation groups may remain anonymous because the sidecar does not target them.
 
-Use one content group per logical page unit. This is also the granularity PowerPoint uses for group-select / group-move, so semantic grouping improves editing ergonomics regardless of animation; do not split or merge units to hit a target count.
+**Hard rule — existing groups are not custom-animation intent**: the
+pre-existing SVG hierarchy is implementation evidence, not an authoritative
+reveal plan. During the custom-animation stage, derive one group per logical
+page unit from claims, comparisons, sequence, causality, and narration beats;
+split coarse wrappers and merge fragmented atoms when needed, then use
+`list-groups` only after that rewrite. This is also the granularity PowerPoint
+uses for group-select / group-move. Do not split or merge units to hit a target
+count.
 
 **Chrome groups skip the cascade automatically.** Explicit SVG role and placeholder semantics are authoritative. A group with `data-pptx-layer` or an explicit static role/placeholder marker can never animate. For marker-free legacy SVGs only, top-level groups whose id tokens look like page chrome (background, header/footer, decorations, watermark, page number, nav, logo, dividing rule) are excluded and appear with the slide. An explicit `animations.json` group entry may override this id-name heuristic, but never an explicit structural marker. Examples that auto-skip by legacy id: `<g id="background">`, `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="watermark">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">`. Examples that still animate: `<g id="card-1">`, `<g id="cover-title">`, `<g id="step-discover">`, `<g id="timeline-track">`. Do not strip the `<g>` wrapper to avoid animation — keep it for PowerPoint group selection and use `effect: none` when the content should remain static.
 
@@ -182,7 +199,23 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 
 ---
 
-## 7. Limitations
+## 7. Video Adaptation Contract
+
+Custom animation remains the semantic source for video motion. A downstream
+video renderer must consume a resolved conversion trace through
+`video_motion_plan.py`, not infer motion from delay values or read an unresolved
+sidecar directly.
+
+The plan locks object identity, object order, source effect, semantic direction,
+and timing anchors. Video-only adaptation may refine easing, travel distance,
+opacity, scale, mask feather, blur, motion blur, and overshoot. Unsupported
+effect families must fail visibly rather than silently becoming generic fades.
+See [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md) for the schema
+and renderer contract.
+
+---
+
+## 8. Limitations
 
 - **Native DrawingML output only.** Page transitions and per-element animations are authored on the PPTX produced by the project converter from `svg_output/`. `svg_final/` remains a static SVG visual preview, not an animated or alternate PPTX route.
 - **PowerPoint OOXML scope.** Effects preserve their established filter / `presetID` / `presetSubtype` tuples and are validated against the serialized PowerPoint package. Rendering in Keynote, LibreOffice, WPS, or other applications is outside the unconditional compatibility guarantee.
@@ -191,7 +224,7 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 
 ---
 
-## 8. Quick Reference
+## 9. Quick Reference
 
 | Goal | Command |
 |---|---|
@@ -208,9 +241,11 @@ Narration injection merges audio timing into an existing direct `p:sld/p:timing`
 | All groups animate together | `-a auto --animation-trigger with-previous` |
 | Slower per-element reveal | `-a auto --animation-duration 0.5` |
 | Wider gap in after-previous | `-a auto --animation-stagger 0.7` |
+| Derive effect-aware video motion | `video_motion_plan.py <project>/validation/<output_stem>.trace.json --force` |
 
 See also:
 
 - [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
 - [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md) for the shared OOXML writer, MCE preservation, and read-back contract.
 - [`pptx-animations.md`](../scripts/docs/pptx-animations.md) for the exact effect tuples, timing-tree rules, and animation package validator.
+- [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md) for the resolved animation-to-video enhancement contract.

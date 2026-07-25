@@ -14,9 +14,10 @@ Supported transition effects:
     - random: Random
 
 Supported entrance animations (per-element):
-    appear, fade, fly, cut, zoom, wipe, split, blinds, checkerboard,
-    dissolve, random_bars, peek, wheel, box, circle, diamond, plus,
-    strips, wedge, stretch, expand, swivel
+    appear, fade, fly, fly_left, fly_right, fly_top, cut, zoom, wipe,
+    wipe_left, wipe_right, wipe_up, wipe_down, split, blinds, checkerboard,
+    dissolve, random_bars, peek, wheel, box, circle, diamond, plus, strips,
+    wedge, stretch, expand, swivel
 
 Animation modes used by the builder:
     - single effect name (one of the above) — apply to every element
@@ -82,9 +83,16 @@ ANIMATIONS: dict[str, dict[str, Any]] = {
     'appear':   {'name': 'Appear',   'filter': None, 'presetID': 1, 'presetSubtype': 0},
     'fade':     {'name': 'Fade',     'filter': 'fade', 'presetID': 10, 'presetSubtype': 0},
     'fly':      {'name': 'Fly In',   'filter': 'slide(fromBottom)', 'presetID': 2, 'presetSubtype': 4},
+    'fly_left': {'name': 'Fly In from Left', 'filter': 'slide(fromLeft)', 'presetID': 2, 'presetSubtype': 8},
+    'fly_right': {'name': 'Fly In from Right', 'filter': 'slide(fromRight)', 'presetID': 2, 'presetSubtype': 2},
+    'fly_top':  {'name': 'Fly In from Top', 'filter': 'slide(fromTop)', 'presetID': 2, 'presetSubtype': 1},
     'cut':      {'name': 'Cut In',   'filter': 'slide(fromLeft)', 'presetID': 42, 'presetSubtype': 8},
     'zoom':     {'name': 'Zoom',     'filter': 'image', 'presetID': 23, 'presetSubtype': 0},
     'wipe':     {'name': 'Wipe',     'filter': 'wipe(left)', 'presetID': 22, 'presetSubtype': 1},
+    'wipe_left': {'name': 'Wipe Left', 'filter': 'wipe(left)', 'presetID': 22, 'presetSubtype': 8},
+    'wipe_right': {'name': 'Wipe Right', 'filter': 'wipe(right)', 'presetID': 22, 'presetSubtype': 2},
+    'wipe_up':  {'name': 'Wipe Up',  'filter': 'wipe(up)', 'presetID': 22, 'presetSubtype': 1},
+    'wipe_down': {'name': 'Wipe Down', 'filter': 'wipe(down)', 'presetID': 22, 'presetSubtype': 4},
     'split':    {'name': 'Split',    'filter': 'barn(inVertical)', 'presetID': 16, 'presetSubtype': 21},
     'blinds':   {'name': 'Blinds',   'filter': 'blinds(horizontal)', 'presetID': 3, 'presetSubtype': 10},
     'checkerboard': {'name': 'Checkerboard', 'filter': 'checkerboard(across)', 'presetID': 5, 'presetSubtype': 6},
