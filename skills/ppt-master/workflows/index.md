@@ -26,7 +26,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 | `create-deck` | Template child workflow | [`create-template/create-deck.md`](./create-template/create-deck.md) | Create Template |
 | `topic-research` | Factual-preparation stage | [`stages/topic-research.md`](./stages/topic-research.md) | Inside Generate Step 1 |
 | `resume-execute` | Control stage | [`stages/resume-execute.md`](./stages/resume-execute.md) | Generate Step 6 resume |
-| `refine-spec` | Planning stage | [`stages/refine-spec.md`](./stages/refine-spec.md) | After Generate confirmation |
+| `refine-spec` | Planning stage | [`stages/refine-spec.md`](./stages/refine-spec.md) | After Design Spec Gate 1, before lock Gate 2 |
 | `verify-charts` | Quality gate | [`stages/verify-charts.md`](./stages/verify-charts.md) | Before Generate Step 7 |
 | `visual-review` | Quality gate | [`stages/visual-review.md`](./stages/visual-review.md) | Before Generate Step 7 |
 | `live-preview` | Editor stage | [`stages/live-preview.md`](./stages/live-preview.md) | Generate preview / post-export |

@@ -1,6 +1,6 @@
 [project]
 name = "ppt-master"
-version = "0.1.60"
+version = "0.1.61"
 description = "AI-driven multi-format SVG content generation system"
 requires-python = ">=3.12"
 dependencies = [

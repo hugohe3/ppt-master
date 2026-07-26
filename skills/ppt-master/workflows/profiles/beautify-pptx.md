@@ -181,7 +181,7 @@ Use the three `<project_path>/confirm_ui/recommendations.stageN.json` files at t
   "communication_intent": { "value": "<open prose inferred from the deck; preserve multiple purposes and their relationship>" },
   "audience_outcome": { "value": "<what the audience should know, understand, decide, or do>" },
   "core_message": { "value": "<the deck-wide claim / ask / action already present in the source>" },
-  "delivery_context": { "value": "<presenter-led / reader-led / hybrid / recorded, plus occasion if inferable>" },
+  "delivery_context": { "value": "<primary presenter-led / reader-led / hybrid / recorded; hybrid names its lead and secondary use; occasion if inferable>" },
   "artifact_afterlife": { "value": "<review / approval / archive / hand-off / reuse / none planned>" },
   "content_divergence": { "value": "keep source wording and page structure verbatim", "locked": true },
   "color": { "selected": 0, "candidates": [
