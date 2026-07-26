@@ -5,6 +5,8 @@ description: >
   reusable Brand/Layout/Deck workspaces, filling native PPTX templates, and
   enhancing finished PPTX files. Use when the user asks to create, regenerate,
   template, fill, or enhance a presentation, or mentions ppt-master.
+metadata:
+  version: "4.2.0"
 ---
 
 # PPT Master Skill
