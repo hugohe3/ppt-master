@@ -61,6 +61,8 @@ Yes. The full repository is large (Git history plus bundled example decks and th
 
 Either way, run `pip install -r requirements.txt` from the installed location so the post-processing scripts work.
 
+Neither path carries a `.git` directory, so `git describe` cannot report the version. The installed release is recorded in the `metadata.version` field of the skill's own `SKILL.md` frontmatter.
+
 ## Q: Can I use AI-generated images in my presentation?
 
 Yes. PPT Master includes a built-in image generation script that supports multiple providers (Gemini, OpenAI, FLUX, Qwen, Zhipu, etc.). During the Strategist phase, if you choose "AI generation" for the image approach, the pipeline will automatically generate images based on your content. You can also provide your own images — just place them in the project's `images/` folder.

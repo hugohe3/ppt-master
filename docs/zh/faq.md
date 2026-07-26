@@ -61,6 +61,8 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 两种方式装好后，都要在安装目录跑 `pip install -r requirements.txt`，后处理脚本才能工作。
 
+这两条路径都不带 `.git` 目录，`git describe` 查不到版本。已安装的版本记录在 skill 自身 `SKILL.md` frontmatter 的 `metadata.version` 字段里。
+
 中国大陆地区访问 GitHub 下载不便的话，完整仓库在 [AtomGit](https://atomgit.com/hugohe3/ppt-master) 也有镜像（clone 或下载 ZIP）；1 GB 出头的体积在中国大陆地区网络下载一般没问题。
 
 ## Q: 能用 AI 生成配图吗？
