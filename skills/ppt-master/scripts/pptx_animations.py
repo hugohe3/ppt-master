@@ -5,13 +5,10 @@ PPT Master - PPTX Animation Module
 Provides one strict entrance-animation registry plus OOXML read/write helpers.
 
 Supported transition effects:
-    - fade: Fade in/out
-    - push: Push
-    - wipe: Wipe
-    - split: Split
-    - strips: Strips (diagonal wipe)
-    - cover: Cover
-    - random: Random
+    - Complete current PowerPoint gallery: Subtle, Exciting, Dynamic Content
+    - Compatibility aliases: strips, circle, diamond, newsflash, plus, pull,
+      wedge, wheel
+    - none: no visual transition (handled by the shared transition core)
 
 Supported entrance animations (per-element):
     appear, fade, fly, fly_left, fly_right, fly_top, cut, zoom, wipe,

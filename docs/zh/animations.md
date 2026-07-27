@@ -29,7 +29,25 @@ PPT Master 会把**页间转场**和可选的**元素入场动画**写成真正�
 | 所有元素同时入场 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | 放慢逐步揭示节奏 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-页间转场可选 `fade`、`push`、`wipe`、`split`、`strips`、`cover`、`random`。`-t none` 只关闭视觉效果，不会移除显式设置的自动翻页计时。
+页间转场已经覆盖当前 PowerPoint 效果库的三个完整分组：
+
+- 细微：平滑 `morph`、淡入/淡出 `fade`、推入 `push`、擦除 `wipe`、
+  分割 `split`、显示 `reveal`、切入 `cut`、随机线条 `random_bars`、
+  形状 `shape`、揭开 `uncover`、覆盖 `cover`、闪光 `flash`。
+- 华丽：跌落 `fall_over`、悬挂 `drape`、帘式 `curtains`、风 `wind`、
+  上拉帷幕 `prestige`、折断 `fracture`、压碎 `crush`、剥离 `peel_off`、
+  页面卷曲 `page_curl`、飞机 `airplane`、日式折纸 `origami`、溶解
+  `dissolve`、棋盘 `checkerboard`、百叶窗 `blinds`、时钟 `clock`、
+  涟漪 `ripple`、蜂巢 `honeycomb`、闪耀 `glitter`、涡流 `vortex`、
+  碎片 `shred`、切换 `switch`、翻转 `flip`、库 `gallery`、立方体
+  `cube`、门 `doors`、框 `box`、梳理 `comb`、缩放 `zoom`、随机
+  `random`。
+- 动态内容：平移 `pan`、摩天轮 `ferris_wheel`、传送带 `conveyor`、
+  旋转 `rotate`、窗口 `window`、轨道 `orbit`、飞过 `fly_through`。
+
+兼容标识 `strips`、`circle`、`diamond`、`newsflash`、`plus`、`pull`、
+`wedge`、`wheel` 仍然有效。`-t none` 只关闭视觉效果，不会移除显式设置的
+自动翻页计时。
 
 ## 选择 Start 模式
 

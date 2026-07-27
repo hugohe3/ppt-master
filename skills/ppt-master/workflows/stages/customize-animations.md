@@ -183,16 +183,11 @@ supports them; never use them to satisfy an effect-variety quota.
 
 ### 3.1 Supported Page Transitions
 
-| Effect | Behavior |
-|---|---|
-| `none` | Remove visual page transition; timed advance may remain |
-| `fade` | Neutral default for technical decks |
-| `push` | Directional slide entry |
-| `wipe` | Directional reveal |
-| `split` | Split-open transition |
-| `strips` | Diagonal strips transition |
-| `cover` | Cover from the side |
-| `random` | PowerPoint random transition |
+Use any effect from the complete shared registry in
+[`animations.md`](../../references/animations.md) §3. It covers all current
+PowerPoint Subtle, Exciting, and Dynamic Content gallery effects, plus retained
+compatibility aliases. Use the documented identifier exactly; `none` removes
+the visual page transition while allowing timed advance to remain.
 
 **Transition fields**:
 

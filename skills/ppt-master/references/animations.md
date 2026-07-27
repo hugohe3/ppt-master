@@ -101,7 +101,24 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advance 5
 ```
 
-Available effects: `fade`, `push`, `wipe`, `split`, `strips`, `cover`, `random`.
+The named effects cover the complete current PowerPoint transition gallery:
+
+- Subtle: `morph`, `fade`, `push`, `wipe`, `split`, `reveal`, `cut`,
+  `random_bars`, `shape`, `uncover`, `cover`, `flash`.
+- Exciting: `fall_over`, `drape`, `curtains`, `wind`, `prestige`, `fracture`,
+  `crush`, `peel_off`, `page_curl`, `airplane`, `origami`, `dissolve`,
+  `checkerboard`, `blinds`, `clock`, `ripple`, `honeycomb`, `glitter`,
+  `vortex`, `shred`, `switch`, `flip`, `gallery`, `cube`, `doors`, `box`,
+  `comb`, `zoom`, `random`.
+- Dynamic Content: `pan`, `ferris_wheel`, `conveyor`, `rotate`, `window`,
+  `orbit`, `fly_through`.
+
+Established low-level aliases remain available for compatibility: `strips`,
+`circle`, `diamond`, `newsflash`, `plus`, `pull`, `wedge`, and `wheel`.
+`none` removes the visual effect. Effects that require newer Office namespaces
+carry a real PowerPoint effect in `mc:Choice` and a `fade` fallback for older
+consumers; validation requires the requested primary effect and never accepts
+the fallback as a silent substitute.
 
 Flags:
 
