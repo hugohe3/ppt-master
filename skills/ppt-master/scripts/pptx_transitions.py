@@ -38,6 +38,8 @@ except ImportError:
 
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+P15_NS = "http://schemas.microsoft.com/office/powerpoint/2012/main"
+P159_NS = "http://schemas.microsoft.com/office/powerpoint/2015/09/main"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 CONTENT_TYPES_NS = "http://schemas.openxmlformats.org/package/2006/content-types"
@@ -61,6 +63,7 @@ MAX_OOXML_UNSIGNED_INT = MAX_OOXML_MILLISECONDS
 
 
 TRANSITIONS: dict[str, dict[str, Any]] = {
+    # Keep the original seven entries first for stable CLI/help ordering.
     "fade": {
         "name": "Fade",
         "element": "fade",
@@ -96,10 +99,331 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "element": "random",
         "attrs": {},
     },
+    "blinds": {
+        "name": "Blinds",
+        "element": "blinds",
+        "attrs": {"dir": "vert"},
+    },
+    "checkerboard": {
+        "name": "Checkerboard",
+        "element": "checker",
+        "attrs": {"dir": "horz"},
+    },
+    "circle": {
+        "name": "Circle",
+        "element": "circle",
+        "attrs": {},
+    },
+    "comb": {
+        "name": "Comb",
+        "element": "comb",
+        "attrs": {"dir": "horz"},
+    },
+    "cut": {
+        "name": "Cut",
+        "element": "cut",
+        "attrs": {"thruBlk": "0"},
+    },
+    "diamond": {
+        "name": "Diamond",
+        "element": "diamond",
+        "attrs": {},
+    },
+    "dissolve": {
+        "name": "Dissolve",
+        "element": "dissolve",
+        "attrs": {},
+    },
+    "newsflash": {
+        "name": "Newsflash",
+        "element": "newsflash",
+        "attrs": {},
+    },
+    "plus": {
+        "name": "Plus",
+        "element": "plus",
+        "attrs": {},
+    },
+    "pull": {
+        "name": "Pull",
+        "element": "pull",
+        "attrs": {"dir": "r"},
+    },
+    "random_bars": {
+        "name": "Random Bars",
+        "element": "randomBar",
+        "attrs": {"dir": "vert"},
+    },
+    "wedge": {
+        "name": "Wedge",
+        "element": "wedge",
+        "attrs": {},
+    },
+    "wheel": {
+        "name": "Wheel",
+        "element": "wheel",
+        "attrs": {"spokes": "1"},
+    },
+    "zoom": {
+        "name": "Zoom",
+        "prefix": "p14",
+        "element": "warp",
+        "attrs": {"dir": "in"},
+        "fallback": "fade",
+    },
+    # Current PowerPoint transition gallery: Subtle.
+    "morph": {
+        "name": "Morph",
+        "prefix": "p159",
+        "element": "morph",
+        "attrs": {"option": "byObject"},
+        "fallback": "fade",
+    },
+    "reveal": {
+        "name": "Reveal",
+        "prefix": "p14",
+        "element": "reveal",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "shape": {
+        "name": "Shape",
+        "element": "circle",
+        "attrs": {},
+    },
+    "uncover": {
+        "name": "Uncover",
+        "element": "pull",
+        "attrs": {"dir": "r"},
+    },
+    "flash": {
+        "name": "Flash",
+        "prefix": "p14",
+        "element": "flash",
+        "attrs": {},
+        "fallback": "fade",
+    },
+    # Current PowerPoint transition gallery: Exciting.
+    "fall_over": {
+        "name": "Fall Over",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "fallOver", "invX": "1"},
+        "fallback": "fade",
+    },
+    "drape": {
+        "name": "Drape",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "drape", "invX": "1"},
+        "fallback": "fade",
+    },
+    "curtains": {
+        "name": "Curtains",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "curtains"},
+        "fallback": "fade",
+    },
+    "wind": {
+        "name": "Wind",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "wind"},
+        "fallback": "fade",
+    },
+    "prestige": {
+        "name": "Prestige",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "prestige"},
+        "fallback": "fade",
+    },
+    "fracture": {
+        "name": "Fracture",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "fracture"},
+        "fallback": "fade",
+    },
+    "crush": {
+        "name": "Crush",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "crush"},
+        "fallback": "fade",
+    },
+    "peel_off": {
+        "name": "Peel Off",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "peelOff", "invX": "1"},
+        "fallback": "fade",
+    },
+    "page_curl": {
+        "name": "Page Curl",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "pageCurlSingle", "invX": "1"},
+        "fallback": "fade",
+    },
+    "airplane": {
+        "name": "Airplane",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "airplane"},
+        "fallback": "fade",
+    },
+    "origami": {
+        "name": "Origami",
+        "prefix": "p15",
+        "element": "prstTrans",
+        "attrs": {"prst": "origami"},
+        "fallback": "fade",
+    },
+    "clock": {
+        "name": "Clock",
+        "element": "wheel",
+        "attrs": {"spokes": "1"},
+    },
+    "ripple": {
+        "name": "Ripple",
+        "prefix": "p14",
+        "element": "ripple",
+        "attrs": {},
+        "fallback": "fade",
+    },
+    "honeycomb": {
+        "name": "Honeycomb",
+        "prefix": "p14",
+        "element": "honeycomb",
+        "attrs": {},
+        "fallback": "fade",
+    },
+    "glitter": {
+        "name": "Glitter",
+        "prefix": "p14",
+        "element": "glitter",
+        "attrs": {},
+        "fallback": "fade",
+    },
+    "vortex": {
+        "name": "Vortex",
+        "prefix": "p14",
+        "element": "vortex",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "shred": {
+        "name": "Shred",
+        "prefix": "p14",
+        "element": "shred",
+        "attrs": {"dir": "out"},
+        "fallback": "fade",
+    },
+    "switch": {
+        "name": "Switch",
+        "prefix": "p14",
+        "element": "switch",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "flip": {
+        "name": "Flip",
+        "prefix": "p14",
+        "element": "flip",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "gallery": {
+        "name": "Gallery",
+        "prefix": "p14",
+        "element": "gallery",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "cube": {
+        "name": "Cube",
+        "prefix": "p14",
+        "element": "prism",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "doors": {
+        "name": "Doors",
+        "prefix": "p14",
+        "element": "doors",
+        "attrs": {"dir": "vert"},
+        "fallback": "fade",
+    },
+    "box": {
+        "name": "Box",
+        "element": "zoom",
+        "attrs": {},
+    },
+    # Current PowerPoint transition gallery: Dynamic Content.
+    "pan": {
+        "name": "Pan",
+        "prefix": "p14",
+        "element": "pan",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "ferris_wheel": {
+        "name": "Ferris Wheel",
+        "prefix": "p14",
+        "element": "ferris",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "conveyor": {
+        "name": "Conveyor",
+        "prefix": "p14",
+        "element": "conveyor",
+        "attrs": {"dir": "r"},
+        "fallback": "fade",
+    },
+    "rotate": {
+        "name": "Rotate",
+        "prefix": "p14",
+        "element": "prism",
+        "attrs": {"dir": "r", "isContent": "1"},
+        "fallback": "fade",
+    },
+    "window": {
+        "name": "Window",
+        "prefix": "p14",
+        "element": "window",
+        "attrs": {},
+        "fallback": "fade",
+    },
+    "orbit": {
+        "name": "Orbit",
+        "prefix": "p14",
+        "element": "prism",
+        "attrs": {"dir": "r", "isContent": "1", "isInverted": "1"},
+        "fallback": "fade",
+    },
+    "fly_through": {
+        "name": "Fly Through",
+        "prefix": "p14",
+        "element": "flythrough",
+        "attrs": {},
+        "fallback": "fade",
+    },
 }
 
+TRANSITION_NAMESPACES = {
+    "p": PML_NS,
+    "p14": P14_NS,
+    "p15": P15_NS,
+    "p159": P159_NS,
+}
 
-for _prefix, _uri in (("p", PML_NS), ("p14", P14_NS), ("mc", MC_NS)):
+for _prefix, _uri in (
+    *TRANSITION_NAMESPACES.items(),
+    ("mc", MC_NS),
+):
     try:
         ET.register_namespace(_prefix, _uri)
     except (AttributeError, ValueError):
@@ -216,14 +540,43 @@ def _seconds_to_ms(value: object, field: str, *, allow_zero: bool) -> int:
     return milliseconds if allow_zero else max(1, milliseconds)
 
 
-def _effect_xml(effect: str) -> tuple[str, str]:
+def _effect_spec(effect: str) -> tuple[str, str, str, dict[str, Any], str | None]:
     info = TRANSITIONS[effect]
+    prefix = str(info.get("prefix", "p"))
+    namespace = TRANSITION_NAMESPACES[prefix]
+    element = str(info["element"])
+    attrs = dict(info.get("attrs", {}))
+    fallback = info.get("fallback")
+    return prefix, namespace, element, attrs, str(fallback) if fallback else None
+
+
+def _effect_xml(effect: str) -> tuple[str, str, str]:
+    prefix, _namespace, element, effect_attrs, _fallback = _effect_spec(effect)
     attrs = " ".join(
         f'{key}="{value}"'
-        for key, value in info.get("attrs", {}).items()
+        for key, value in effect_attrs.items()
     )
     suffix = f" {attrs}" if attrs else ""
-    return str(info["element"]), suffix
+    return prefix, element, suffix
+
+
+def _transition_attributes(
+    *,
+    duration_ms: int | None,
+    advance_after_ms: int | None,
+    advance_on_click: bool | None,
+    declare_p14: bool,
+) -> str:
+    attrs: list[str] = []
+    if duration_ms is not None:
+        attrs.append(f'p14:dur="{duration_ms}"')
+    if declare_p14:
+        attrs.append(f'xmlns:p14="{P14_NS}"')
+    if advance_on_click is not None:
+        attrs.append(f'advClick="{1 if advance_on_click else 0}"')
+    if advance_after_ms is not None:
+        attrs.append(f'advTm="{advance_after_ms}"')
+    return " " + " ".join(attrs) if attrs else ""
 
 
 def create_transition_xml(
@@ -232,44 +585,77 @@ def create_transition_xml(
     advance_after: float | None = None,
     advance_on_click: bool | None = None,
 ) -> str:
-    """Build a legacy-compatible direct p:transition XML fragment."""
+    """Build a direct or MCE-backed p:transition XML fragment."""
     normalized_effect = normalize_transition_effect(effect)
-    attrs: list[str] = []
+    duration_ms = None
     if normalized_effect is not None:
         duration_ms = _seconds_to_ms(
             duration,
             "transition duration",
             allow_zero=False,
         )
-        attrs.extend((
-            f'p14:dur="{duration_ms}"',
-            f'xmlns:p14="{P14_NS}"',
-        ))
     if advance_on_click is not None:
         if not isinstance(advance_on_click, bool):
             raise ValueError(
                 "transition advance_on_click must be a boolean or None"
             )
-        attrs.append(f'advClick="{1 if advance_on_click else 0}"')
+    advance_ms = None
     if advance_after is not None:
         advance_ms = _seconds_to_ms(
             advance_after,
             "transition advance_after",
             allow_zero=True,
         )
-        attrs.append(f'advTm="{advance_ms}"')
 
-    if normalized_effect is None and not attrs:
+    if (
+        normalized_effect is None
+        and advance_ms is None
+        and advance_on_click is None
+    ):
         return ""
 
-    attr_text = " " + " ".join(attrs) if attrs else ""
+    attr_text = _transition_attributes(
+        duration_ms=duration_ms,
+        advance_after_ms=advance_ms,
+        advance_on_click=advance_on_click,
+        declare_p14=normalized_effect is not None,
+    )
     if normalized_effect is None:
         return f"  <p:transition{attr_text}/>"
 
-    element_name, effect_attrs = _effect_xml(normalized_effect)
+    prefix, element_name, effect_attrs = _effect_xml(normalized_effect)
+    if prefix != "p":
+        _effect_prefix, _namespace, _element, _attrs, fallback = _effect_spec(
+            normalized_effect
+        )
+        fallback_effect = fallback or "fade"
+        fallback_prefix, fallback_name, fallback_attrs = _effect_xml(
+            fallback_effect
+        )
+        fallback_attr_text = _transition_attributes(
+            duration_ms=None,
+            advance_after_ms=advance_ms,
+            advance_on_click=advance_on_click,
+            declare_p14=False,
+        )
+        return (
+            f'  <mc:AlternateContent xmlns:mc="{MC_NS}">\n'
+            f'    <mc:Choice xmlns:{prefix}="{TRANSITION_NAMESPACES[prefix]}" '
+            f'Requires="{prefix}">\n'
+            f"      <p:transition{attr_text}>\n"
+            f"        <{prefix}:{element_name}{effect_attrs}/>\n"
+            "      </p:transition>\n"
+            "    </mc:Choice>\n"
+            "    <mc:Fallback>\n"
+            f"      <p:transition{fallback_attr_text}>\n"
+            f"        <{fallback_prefix}:{fallback_name}{fallback_attrs}/>\n"
+            "      </p:transition>\n"
+            "    </mc:Fallback>\n"
+            "  </mc:AlternateContent>"
+        )
     return (
         f"  <p:transition{attr_text}>\n"
-        f"    <p:{element_name}{effect_attrs}/>\n"
+        f"    <{prefix}:{element_name}{effect_attrs}/>\n"
         "  </p:transition>"
     )
 
@@ -305,47 +691,86 @@ def _build_transition_element(
     ):
         return None
 
-    nsmap = {"p": PML_NS}
-    if normalized_effect is not None:
-        nsmap["p14"] = P14_NS
-    transition = _new_element(
-        context,
-        _qn(PML_NS, "transition"),
-        nsmap=nsmap,
-    )
-
-    if normalized_effect is not None:
-        duration_ms = _seconds_to_ms(
-            duration,
-            "transition duration",
-            allow_zero=False,
-        )
-        transition.set(_qn(P14_NS, "dur"), str(duration_ms))
     if advance_on_click is not None:
         if not isinstance(advance_on_click, bool):
             raise ValueError(
                 "transition advance_on_click must be a boolean or None"
             )
-        transition.set("advClick", "1" if advance_on_click else "0")
-    if advance_after is not None:
-        transition.set(
-            "advTm",
-            str(
-                _seconds_to_ms(
-                    advance_after,
-                    "transition advance_after",
-                    allow_zero=True,
-                )
-            ),
+    duration_ms = (
+        _seconds_to_ms(
+            duration,
+            "transition duration",
+            allow_zero=False,
         )
+        if normalized_effect is not None
+        else None
+    )
+    advance_ms = (
+        _seconds_to_ms(
+            advance_after,
+            "transition advance_after",
+            allow_zero=True,
+        )
+        if advance_after is not None
+        else None
+    )
 
-    if normalized_effect is not None:
-        info = TRANSITIONS[normalized_effect]
-        child = _new_element(context, _qn(PML_NS, str(info["element"])))
-        for key, value in info.get("attrs", {}).items():
-            child.set(key, str(value))
-        transition.append(child)
-    return transition
+    def build_transition(
+        effect_name: str | None,
+        *,
+        include_duration: bool,
+    ) -> Any:
+        nsmap = {"p": PML_NS}
+        if include_duration:
+            nsmap["p14"] = P14_NS
+        transition = _new_element(
+            context,
+            _qn(PML_NS, "transition"),
+            nsmap=nsmap,
+        )
+        if include_duration and duration_ms is not None:
+            transition.set(_qn(P14_NS, "dur"), str(duration_ms))
+        if advance_on_click is not None:
+            transition.set("advClick", "1" if advance_on_click else "0")
+        if advance_ms is not None:
+            transition.set("advTm", str(advance_ms))
+        if effect_name is not None:
+            _prefix, namespace, element_name, effect_attrs, _fallback = (
+                _effect_spec(effect_name)
+            )
+            child = _new_element(context, _qn(namespace, element_name))
+            for key, value in effect_attrs.items():
+                child.set(key, str(value))
+            transition.append(child)
+        return transition
+
+    if normalized_effect is None:
+        return build_transition(None, include_duration=False)
+
+    prefix, _namespace, _element, _attrs, fallback = _effect_spec(
+        normalized_effect
+    )
+    if prefix == "p":
+        return build_transition(normalized_effect, include_duration=True)
+
+    carrier = _new_element(
+        context,
+        _qn(MC_NS, "AlternateContent"),
+        nsmap={"mc": MC_NS},
+    )
+    choice = _new_element(
+        context,
+        _qn(MC_NS, "Choice"),
+        nsmap={prefix: TRANSITION_NAMESPACES[prefix]},
+    )
+    choice.set("Requires", prefix)
+    choice.append(build_transition(normalized_effect, include_duration=True))
+    fallback_node = _new_element(context, _qn(MC_NS, "Fallback"))
+    fallback_node.append(
+        build_transition(fallback or "fade", include_duration=False)
+    )
+    carrier.extend((choice, fallback_node))
+    return carrier
 
 
 def _transition_elements(carrier: Any) -> list[Any]:
@@ -645,6 +1070,31 @@ def _visual_identity(summary: TransitionSummary) -> tuple[Any, ...]:
     )
 
 
+def _expected_visual_identity(
+    effect: str,
+) -> tuple[str, str, str, str | None, str | None, dict[str, Any]]:
+    prefix, namespace, element, attrs, fallback = _effect_spec(effect)
+    carrier = "direct" if prefix == "p" else "alternate-content"
+    fallback_element = None
+    fallback_namespace = None
+    if carrier == "alternate-content":
+        (
+            _fallback_prefix,
+            fallback_namespace,
+            fallback_element,
+            _fallback_attrs,
+            _nested_fallback,
+        ) = _effect_spec(fallback or "fade")
+    return (
+        carrier,
+        element,
+        namespace,
+        fallback_element,
+        fallback_namespace,
+        attrs,
+    )
+
+
 def _validate_applied_motion(
     slide_root: Any,
     *,
@@ -667,12 +1117,21 @@ def _validate_applied_motion(
             "transition duration",
             allow_zero=False,
         )
+        (
+            expected_carrier,
+            expected_effect,
+            expected_namespace,
+            expected_fallback,
+            expected_fallback_namespace,
+            expected_attrs,
+        ) = _expected_visual_identity(effect)
         if (
-            after.carrier != "direct"
+            after.carrier != expected_carrier
             or after.logical_count != 1
-            or after.effect != TRANSITIONS[effect]["element"]
-            or after.effect_namespace != PML_NS
-            or after.fallback_effect is not None
+            or after.effect != expected_effect
+            or after.effect_namespace != expected_namespace
+            or after.fallback_effect != expected_fallback
+            or after.fallback_effect_namespace != expected_fallback_namespace
             or after.duration_ms != expected_duration
         ):
             errors.append(
@@ -688,7 +1147,7 @@ def _validate_applied_motion(
             ]
             if effect_children:
                 actual_attrs = effect_children[0].attrib
-                for name, value in TRANSITIONS[effect].get("attrs", {}).items():
+                for name, value in expected_attrs.items():
                     if actual_attrs.get(name) != str(value):
                         errors.append(
                             f"replace policy wrote invalid {effect} {name} attribute"
@@ -885,6 +1344,12 @@ def serialize_source_xml(root: ET.Element, source_xml: str | bytes) -> bytes:
     )
     bindings = register_source_namespaces(source)
     prefixes = _required_mce_prefixes(root)
+    for prefix in prefixes:
+        namespace = TRANSITION_NAMESPACES.get(prefix)
+        if namespace is None:
+            continue
+        bindings[prefix] = namespace
+        ET.register_namespace(prefix, namespace)
     serialized = ET.tostring(root, encoding="utf-8", xml_declaration=True)
     serialized = _inject_root_namespace_declarations(
         serialized,
@@ -963,7 +1428,7 @@ def validate_generated_transition_xml(
     advance_on_click: bool | None,
     advance_after: object | None,
 ) -> TransitionSummary:
-    """Validate a generated direct transition against its resolved settings."""
+    """Validate a generated transition against its resolved settings."""
     data = slide_xml.encode("utf-8") if isinstance(slide_xml, str) else slide_xml
     root = LET.fromstring(data) if LET is not None else parse_source_xml(data)
     errors = validate_slide_transition_structure(root) + validate_mce_prefixes(data)
@@ -1000,16 +1465,28 @@ def validate_generated_transition_xml(
             if normalized_effect is not None
             else None
         )
-        expected_effect = (
-            str(TRANSITIONS[normalized_effect]["element"])
-            if normalized_effect is not None
-            else None
-        )
+        expected_carrier = "direct"
+        expected_effect = None
+        expected_namespace = None
+        expected_fallback = None
+        expected_fallback_namespace = None
+        expected_attrs: dict[str, Any] = {}
+        if normalized_effect is not None:
+            (
+                expected_carrier,
+                expected_effect,
+                expected_namespace,
+                expected_fallback,
+                expected_fallback_namespace,
+                expected_attrs,
+            ) = _expected_visual_identity(normalized_effect)
         if (
-            summary.carrier != "direct"
+            summary.carrier != expected_carrier
             or summary.logical_count != 1
             or summary.effect != expected_effect
-            or summary.fallback_effect is not None
+            or summary.effect_namespace != expected_namespace
+            or summary.fallback_effect != expected_fallback
+            or summary.fallback_effect_namespace != expected_fallback_namespace
             or summary.duration_ms != expected_duration_ms
             or summary.advance_on_click != expected_click
             or summary.advance_after_ms != expected_after_ms
@@ -1024,7 +1501,6 @@ def validate_generated_transition_xml(
                     for child in (list(primary) if primary is not None else [])
                     if child.tag != _qn(PML_NS, "sndAc")
                 ]
-                expected_attrs = TRANSITIONS[normalized_effect].get("attrs", {})
                 if not effect_children:
                     errors.append("generated transition has no visual effect child")
                 else:

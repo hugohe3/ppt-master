@@ -916,7 +916,11 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--name", default=None, help="ASCII project name slug")
     init.add_argument("--project-dir", default=None, help="explicit project directory")
     init.add_argument("--projects-root", default="projects", help="projects root (default: projects)")
-    init.add_argument("--transition", default="fade", choices=sorted(TRANSITIONS.keys()))
+    init.add_argument(
+        "--transition",
+        default="fade",
+        choices=sorted(TRANSITIONS.keys()) + ["none"],
+    )
     init.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
     init.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
     init.add_argument(
