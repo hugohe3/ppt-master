@@ -905,7 +905,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     )
 
     # Record top-level semantic groups (e.g. <g id="p02-title">) so the
-    # PPTX builder can emit per-element entrance timing. Only the outermost
+    # PPTX builder can emit per-element object timing. Only the outermost
     # multi-child wrapper qualifies — flattened single-child groups have no
     # <p:grpSp> to anchor a timing target on, and nested groups are
     # ignored to keep the animation budget at ~per-section granularity.
@@ -1398,7 +1398,7 @@ def convert_svg_to_slide_shapes(
         - rel_entries: List of relationship entries to add.
         - anim_targets: List of (shape_id, svg_id) tuples for top-level
           semantic groups, in z-order; consumed by the builder's optional
-          per-element entrance timing emitter.
+          per-element object-animation timing emitter.
         - package_files: Dict of {pptx internal path: bytes} for non-media
           OOXML parts such as native chart XML and embedded workbooks.
         - content_type_overrides: Dict of {pptx internal path: content type}

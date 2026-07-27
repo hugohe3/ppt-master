@@ -2,8 +2,9 @@
 """
 PPT Master - PPTX Transition Core
 
-Provide one strict transition registry plus shared OOXML read/write helpers for
-generated slides, template-filled PPTX files, and native PPTX enhancement.
+Provide one strict PowerPoint-native transition registry, a compatibility input
+map, and shared OOXML read/write helpers for generated slides, template-filled
+PPTX files, and native PPTX enhancement.
 See references/animations.md for the public workflow and
 scripts/docs/pptx-transitions.md for the OOXML contract.
 
@@ -24,9 +25,9 @@ import math
 import posixpath
 import re
 import zipfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, MutableMapping
+from typing import Any, Mapping, MutableMapping
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
@@ -62,8 +63,8 @@ MAX_OOXML_MILLISECONDS = 4_294_967_295
 MAX_OOXML_UNSIGNED_INT = MAX_OOXML_MILLISECONDS
 
 
-TRANSITIONS: dict[str, dict[str, Any]] = {
-    # Keep the original seven entries first for stable CLI/help ordering.
+_TRANSITION_SPECS: dict[str, dict[str, Any]] = {
+    # PowerPoint-native public ordering is assembled by gallery category below.
     "fade": {
         "name": "Fade",
         "element": "fade",
@@ -83,11 +84,6 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "name": "Split",
         "element": "split",
         "attrs": {"orient": "horz", "dir": "out"},
-    },
-    "strips": {
-        "name": "Strips",
-        "element": "strips",
-        "attrs": {"dir": "rd"},
     },
     "cover": {
         "name": "Cover",
@@ -109,11 +105,6 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "element": "checker",
         "attrs": {"dir": "horz"},
     },
-    "circle": {
-        "name": "Circle",
-        "element": "circle",
-        "attrs": {},
-    },
     "comb": {
         "name": "Comb",
         "element": "comb",
@@ -124,45 +115,15 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "element": "cut",
         "attrs": {"thruBlk": "0"},
     },
-    "diamond": {
-        "name": "Diamond",
-        "element": "diamond",
-        "attrs": {},
-    },
     "dissolve": {
         "name": "Dissolve",
         "element": "dissolve",
         "attrs": {},
     },
-    "newsflash": {
-        "name": "Newsflash",
-        "element": "newsflash",
-        "attrs": {},
-    },
-    "plus": {
-        "name": "Plus",
-        "element": "plus",
-        "attrs": {},
-    },
-    "pull": {
-        "name": "Pull",
-        "element": "pull",
-        "attrs": {"dir": "r"},
-    },
     "random_bars": {
         "name": "Random Bars",
         "element": "randomBar",
         "attrs": {"dir": "vert"},
-    },
-    "wedge": {
-        "name": "Wedge",
-        "element": "wedge",
-        "attrs": {},
-    },
-    "wheel": {
-        "name": "Wheel",
-        "element": "wheel",
-        "attrs": {"spokes": "1"},
     },
     "zoom": {
         "name": "Zoom",
@@ -413,6 +374,504 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
     },
 }
 
+TRANSITION_CATEGORIES = ("subtle", "exciting", "dynamic_content")
+_TRANSITION_KEYS_BY_CATEGORY = {
+    "subtle": (
+        "morph",
+        "fade",
+        "push",
+        "wipe",
+        "split",
+        "reveal",
+        "cut",
+        "random_bars",
+        "shape",
+        "uncover",
+        "cover",
+        "flash",
+    ),
+    "exciting": (
+        "fall_over",
+        "drape",
+        "curtains",
+        "wind",
+        "prestige",
+        "fracture",
+        "crush",
+        "peel_off",
+        "page_curl",
+        "airplane",
+        "origami",
+        "dissolve",
+        "checkerboard",
+        "blinds",
+        "clock",
+        "ripple",
+        "honeycomb",
+        "glitter",
+        "vortex",
+        "shred",
+        "switch",
+        "flip",
+        "gallery",
+        "cube",
+        "doors",
+        "box",
+        "comb",
+        "zoom",
+        "random",
+    ),
+    "dynamic_content": (
+        "pan",
+        "ferris_wheel",
+        "conveyor",
+        "rotate",
+        "window",
+        "orbit",
+        "fly_through",
+    ),
+}
+
+TRANSITION_EFFECT_OPTION_FIELDS = (
+    "direction",
+    "orientation",
+    "style",
+    "shape",
+    "pattern",
+    "origin",
+    "pages",
+    "morph_by",
+    "through_black",
+    "bounce",
+)
+
+
+def _enum_option(
+    default: str,
+    values: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "type": "enum",
+        "default": default,
+        "values": dict(values),
+    }
+
+
+def _attribute_enum(
+    default: str,
+    attribute: str,
+    values: Mapping[str, str | None],
+) -> dict[str, Any]:
+    overrides: dict[str, dict[str, Any]] = {}
+    for name, value in values.items():
+        if value is None:
+            overrides[name] = {"remove_attrs": (attribute,)}
+        else:
+            overrides[name] = {"attrs": {attribute: value}}
+    return _enum_option(default, overrides)
+
+
+def _boolean_option(
+    default: bool,
+    attribute: str,
+) -> dict[str, Any]:
+    return {
+        "type": "boolean",
+        "default": default,
+        "values": {
+            False: {"remove_attrs": (attribute,)},
+            True: {"attrs": {attribute: "1"}},
+        },
+    }
+
+
+_CARDINAL_DIRECTIONS = {
+    "left": None,
+    "right": "r",
+    "up": "u",
+    "down": "d",
+}
+_CORNER_DIRECTIONS = {
+    **_CARDINAL_DIRECTIONS,
+    "up_left": "lu",
+    "up_right": "ru",
+    "down_left": "ld",
+    "down_right": "rd",
+}
+_TRANSITION_EFFECT_OPTIONS: dict[str, dict[str, dict[str, Any]]] = {
+    "morph": {
+        "morph_by": _attribute_enum(
+            "object",
+            "option",
+            {
+                "object": "byObject",
+                "word": "byWord",
+                "character": "byChar",
+            },
+        ),
+    },
+    "fade": {
+        "style": _attribute_enum(
+            "smoothly",
+            "thruBlk",
+            {"smoothly": None, "through_black": "1"},
+        ),
+    },
+    "push": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "wipe": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "split": {
+        "orientation": _attribute_enum(
+            "horizontal",
+            "orient",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+        "direction": _attribute_enum(
+            "out",
+            "dir",
+            {"in": "in", "out": None},
+        ),
+    },
+    "reveal": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": None, "right": "r"},
+        ),
+        "through_black": _boolean_option(False, "thruBlk"),
+    },
+    "cut": {
+        "through_black": {
+            "type": "boolean",
+            "default": False,
+            "values": {
+                False: {"remove_attrs": ("thruBlk",)},
+                True: {"attrs": {"thruBlk": "1"}},
+            },
+        },
+    },
+    "random_bars": {
+        "orientation": _attribute_enum(
+            "vertical",
+            "dir",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+    },
+    "shape": {
+        "shape": _enum_option(
+            "circle",
+            {
+                "circle": {"element": "circle"},
+                "diamond": {"element": "diamond"},
+                "plus": {"element": "plus"},
+            },
+        ),
+    },
+    "uncover": {
+        "direction": _attribute_enum("right", "dir", _CORNER_DIRECTIONS),
+    },
+    "cover": {
+        "direction": _attribute_enum("right", "dir", _CORNER_DIRECTIONS),
+    },
+    "fall_over": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": None, "right": "1"},
+        ),
+    },
+    "drape": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": None, "right": "1"},
+        ),
+    },
+    "wind": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": "1", "right": None},
+        ),
+    },
+    "peel_off": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": None, "right": "1"},
+        ),
+    },
+    "page_curl": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": None, "right": "1"},
+        ),
+        "pages": _attribute_enum(
+            "single",
+            "prst",
+            {"single": "pageCurlSingle", "double": "pageCurlDouble"},
+        ),
+    },
+    "airplane": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": "1", "right": None},
+        ),
+    },
+    "origami": {
+        "direction": _attribute_enum(
+            "right",
+            "invX",
+            {"left": "1", "right": None},
+        ),
+    },
+    "checkerboard": {
+        "direction": _attribute_enum(
+            "across",
+            "dir",
+            {"across": None, "down": "vert"},
+        ),
+    },
+    "blinds": {
+        "orientation": _attribute_enum(
+            "vertical",
+            "dir",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+    },
+    "clock": {
+        "style": _enum_option(
+            "clockwise",
+            {
+                "clockwise": {
+                    "element": "wheel",
+                    "attrs": {"spokes": "1"},
+                },
+                "counterclockwise": {
+                    "prefix": "p14",
+                    "element": "wheelReverse",
+                    "attrs": {"spokes": "1"},
+                    "fallback": "fade",
+                },
+                "wedge": {
+                    "element": "wedge",
+                    "remove_attrs": ("spokes",),
+                },
+            },
+        ),
+    },
+    "ripple": {
+        "origin": _attribute_enum(
+            "center",
+            "dir",
+            {
+                "center": None,
+                "up_left": "lu",
+                "up_right": "ru",
+                "down_left": "ld",
+                "down_right": "rd",
+            },
+        ),
+    },
+    "glitter": {
+        "shape": _attribute_enum(
+            "diamond",
+            "pattern",
+            {"diamond": None, "hexagon": "hexagon"},
+        ),
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {
+                "left": "r",
+                "right": None,
+                "up": "d",
+                "down": "u",
+            },
+        ),
+    },
+    "vortex": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "shred": {
+        "pattern": _attribute_enum(
+            "strips",
+            "pattern",
+            {"strips": None, "rectangle": "rectangle"},
+        ),
+        "direction": _attribute_enum(
+            "out",
+            "dir",
+            {"in": None, "out": "out"},
+        ),
+    },
+    "switch": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": "l", "right": "r"},
+        ),
+    },
+    "flip": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": "l", "right": "r"},
+        ),
+    },
+    "gallery": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": "l", "right": "r"},
+        ),
+    },
+    "cube": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "doors": {
+        "orientation": _attribute_enum(
+            "vertical",
+            "dir",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+    },
+    "box": {
+        "direction": _attribute_enum(
+            "out",
+            "dir",
+            {"in": "in", "out": None},
+        ),
+    },
+    "comb": {
+        "orientation": _attribute_enum(
+            "horizontal",
+            "dir",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+    },
+    "zoom": {
+        "direction": _attribute_enum(
+            "in",
+            "dir",
+            {"in": "in", "out": None},
+        ),
+    },
+    "pan": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "ferris_wheel": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": "l", "right": "r"},
+        ),
+    },
+    "conveyor": {
+        "direction": _attribute_enum(
+            "right",
+            "dir",
+            {"left": "l", "right": "r"},
+        ),
+    },
+    "rotate": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "window": {
+        "orientation": _attribute_enum(
+            "horizontal",
+            "dir",
+            {"horizontal": None, "vertical": "vert"},
+        ),
+    },
+    "orbit": {
+        "direction": _attribute_enum("right", "dir", _CARDINAL_DIRECTIONS),
+    },
+    "fly_through": {
+        "direction": _attribute_enum(
+            "in",
+            "dir",
+            {"in": None, "out": "out"},
+        ),
+        "bounce": _boolean_option(False, "hasBounce"),
+    },
+}
+
+NATIVE_TRANSITIONS: dict[str, dict[str, Any]] = {}
+for _category in TRANSITION_CATEGORIES:
+    for _key in _TRANSITION_KEYS_BY_CATEGORY[_category]:
+        if _key in NATIVE_TRANSITIONS:
+            raise RuntimeError(f"duplicate native transition key: {_key}")
+        _spec = dict(_TRANSITION_SPECS[_key])
+        _spec["category"] = _category
+        _spec["effectOptions"] = _TRANSITION_EFFECT_OPTIONS.get(_key, {})
+        NATIVE_TRANSITIONS[_key] = _spec
+if set(NATIVE_TRANSITIONS) != set(_TRANSITION_SPECS):
+    raise RuntimeError("native transition gallery categories are incomplete")
+if len(NATIVE_TRANSITIONS) != 48:
+    raise RuntimeError(
+        f"native transition gallery count changed: {len(NATIVE_TRANSITIONS)}"
+    )
+for _key, _spec in NATIVE_TRANSITIONS.items():
+    _options = _spec["effectOptions"]
+    _unknown_options = set(_options) - set(TRANSITION_EFFECT_OPTION_FIELDS)
+    if _unknown_options:
+        raise RuntimeError(
+            f"native transition {_key!r} has unknown effect option(s): "
+            + ", ".join(sorted(_unknown_options))
+        )
+    for _option_name, _option_spec in _options.items():
+        if _option_spec.get("type") not in {"enum", "boolean"}:
+            raise RuntimeError(
+                f"native transition {_key!r} option {_option_name!r} "
+                "must be enum or boolean"
+            )
+        _values = _option_spec.get("values")
+        if not isinstance(_values, dict) or not _values:
+            raise RuntimeError(
+                f"native transition {_key!r} option {_option_name!r} "
+                "must define values"
+            )
+        if _option_spec.get("default") not in _values:
+            raise RuntimeError(
+                f"native transition {_key!r} option {_option_name!r} "
+                "has an unknown default"
+            )
+
+NATIVE_TRANSITION_KEYS = tuple(NATIVE_TRANSITIONS)
+# Retained as a module-level compatibility name for existing imports. New code
+# should use ``NATIVE_TRANSITIONS`` to distinguish the native registry from
+# accepted legacy input names.
+CANONICAL_TRANSITIONS = NATIVE_TRANSITIONS
+
+TRANSITION_ALIASES: dict[str, str] = {
+    "strips": "wipe",
+    "circle": "shape",
+    "diamond": "shape",
+    "newsflash": "flash",
+    "plus": "shape",
+    "pull": "uncover",
+    "wedge": "clock",
+    "wheel": "clock",
+}
+LEGACY_TRANSITION_KEYS = tuple(TRANSITION_ALIASES)
+TRANSITION_ALIAS_OPTIONS: dict[str, dict[str, object]] = {
+    "strips": {"direction": "right"},
+    "circle": {"shape": "circle"},
+    "diamond": {"shape": "diamond"},
+    "plus": {"shape": "plus"},
+    "wedge": {"style": "wedge"},
+    "wheel": {"style": "clockwise"},
+}
+TRANSITIONS: dict[str, dict[str, Any]] = dict(NATIVE_TRANSITIONS)
+for _alias, _canonical_key in TRANSITION_ALIASES.items():
+    TRANSITIONS[_alias] = NATIVE_TRANSITIONS[_canonical_key]
+
 TRANSITION_NAMESPACES = {
     "p": PML_NS,
     "p14": P14_NS,
@@ -437,6 +896,7 @@ class EnterUpdate:
     policy: str = "replace"
     effect: str | None = DEFAULT_TRANSITION
     duration: float = DEFAULT_TRANSITION_DURATION
+    effect_options: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -461,6 +921,9 @@ class TransitionSummary:
     speed: str | None = None
     advance_on_click: bool | None = None
     advance_after_ms: int | None = None
+    effect_attributes: Mapping[str, str] = field(default_factory=dict)
+    canonical_effect: str | None = None
+    effect_options: Mapping[str, object] = field(default_factory=dict)
 
 
 def _qn(namespace: str, tag: str) -> str:
@@ -511,19 +974,145 @@ def validate_seconds(
 
 
 def normalize_transition_effect(effect: object, *, allow_none: bool = True) -> str | None:
-    """Return a known transition effect without silently changing it."""
+    """Return one canonical PowerPoint transition or explicit no-effect."""
     if effect is None or effect == "none":
         if allow_none:
             return None
         raise ValueError("transition effect is required")
     if not isinstance(effect, str):
         raise ValueError(f"transition effect must be a string: {effect!r}")
-    if effect not in TRANSITIONS:
-        valid = ", ".join(sorted(TRANSITIONS))
+    if effect in TRANSITION_ALIASES:
+        return TRANSITION_ALIASES[effect]
+    if effect in NATIVE_TRANSITIONS:
+        return effect
+    valid = ", ".join((*NATIVE_TRANSITION_KEYS, *LEGACY_TRANSITION_KEYS))
+    raise ValueError(
+        f"unknown transition effect {effect!r}; valid effects: {valid}, none"
+    )
+
+
+def normalize_transition_effect_options(
+    effect: str,
+    options: object = None,
+) -> dict[str, object]:
+    """Validate PowerPoint Effect Options for one native transition."""
+    if effect not in NATIVE_TRANSITIONS:
+        if options in (None, {}):
+            return {}
         raise ValueError(
-            f"unknown transition effect {effect!r}; valid effects: {valid}, none"
+            "transition effect_options require one explicit native effect; "
+            f"found {effect!r}"
         )
-    return effect
+    if options is None:
+        options = {}
+    if not isinstance(options, Mapping):
+        raise ValueError(
+            f"transition effect_options must be an object: {options!r}"
+        )
+
+    option_specs = NATIVE_TRANSITIONS[effect]["effectOptions"]
+    unknown = set(options) - set(option_specs)
+    if unknown:
+        unsupported = ", ".join(sorted(unknown))
+        supported = ", ".join(option_specs) or "(none)"
+        raise ValueError(
+            f"transition effect {effect!r} does not support effect option(s): "
+            f"{unsupported}; supported options: {supported}"
+        )
+
+    normalized: dict[str, object] = {}
+    for name, value in options.items():
+        spec = option_specs[name]
+        field = f"transition effect_options.{name}"
+        if spec["type"] == "enum":
+            if not isinstance(value, str) or value not in spec["values"]:
+                valid = ", ".join(spec["values"])
+                raise ValueError(
+                    f"{field} for {effect!r} must be one of {valid}: {value!r}"
+                )
+            normalized[name] = value
+        elif spec["type"] == "boolean":
+            if not isinstance(value, bool):
+                raise ValueError(f"{field} must be a boolean: {value!r}")
+            normalized[name] = value
+        else:
+            raise AssertionError(
+                f"unhandled transition option type: {spec['type']!r}"
+            )
+    return normalized
+
+
+def normalize_transition_effect_request(
+    effect: object,
+    options: object = None,
+    *,
+    allow_none: bool = True,
+) -> tuple[str | None, dict[str, object]]:
+    """Normalize one native effect plus options and legacy semantic aliases."""
+    raw_effect = effect
+    canonical = normalize_transition_effect(effect, allow_none=allow_none)
+    alias_options = (
+        TRANSITION_ALIAS_OPTIONS.get(raw_effect, {})
+        if isinstance(raw_effect, str)
+        else {}
+    )
+    explicit_options: Mapping[str, object]
+    if options is None:
+        explicit_options = {}
+    elif isinstance(options, Mapping):
+        explicit_options = options
+    else:
+        raise ValueError(
+            f"transition effect_options must be an object: {options!r}"
+        )
+    for name, alias_value in alias_options.items():
+        if name in explicit_options and explicit_options[name] != alias_value:
+            raise ValueError(
+                f"legacy transition effect {raw_effect!r} implies "
+                f"effect_options.{name}={alias_value!r}, which conflicts with "
+                f"{explicit_options[name]!r}"
+            )
+    merged = {**alias_options, **explicit_options}
+    if canonical is None:
+        if merged:
+            raise ValueError(
+                "transition effect_options require one explicit native effect; "
+                "found 'none'"
+            )
+        return None, {}
+    return canonical, normalize_transition_effect_options(canonical, merged)
+
+
+def describe_transition_effect(effect: object) -> dict[str, Any]:
+    """Return the author-facing parameter contract for one transition."""
+    canonical, implied_options = normalize_transition_effect_request(
+        effect,
+        allow_none=False,
+    )
+    option_contract: dict[str, Any] = {}
+    for name, raw_spec in NATIVE_TRANSITIONS[canonical]["effectOptions"].items():
+        option_contract[name] = {
+            "type": raw_spec["type"],
+            "default": raw_spec["default"],
+            "values": list(raw_spec["values"]),
+        }
+    return {
+        "input": effect,
+        "effect": canonical,
+        "name": NATIVE_TRANSITIONS[canonical]["name"],
+        "category": NATIVE_TRANSITIONS[canonical]["category"],
+        "compatibility_alias": (
+            effect
+            if isinstance(effect, str) and effect in TRANSITION_ALIASES
+            else None
+        ),
+        "implied_effect_options": implied_options,
+        "effect_options": option_contract,
+        "timing": {
+            "duration": "positive seconds",
+            "auto_advance": "non-negative seconds",
+        },
+    }
 
 
 def _seconds_to_ms(value: object, field: str, *, allow_zero: bool) -> int:
@@ -540,18 +1129,52 @@ def _seconds_to_ms(value: object, field: str, *, allow_zero: bool) -> int:
     return milliseconds if allow_zero else max(1, milliseconds)
 
 
-def _effect_spec(effect: str) -> tuple[str, str, str, dict[str, Any], str | None]:
-    info = TRANSITIONS[effect]
+def _effect_spec(
+    effect: str,
+    effect_options: object = None,
+) -> tuple[str, str, str, dict[str, Any], str | None]:
+    info = NATIVE_TRANSITIONS[effect]
     prefix = str(info.get("prefix", "p"))
     namespace = TRANSITION_NAMESPACES[prefix]
     element = str(info["element"])
     attrs = dict(info.get("attrs", {}))
     fallback = info.get("fallback")
+    options = {
+        name: option_spec["default"]
+        for name, option_spec in info["effectOptions"].items()
+    }
+    options.update(
+        normalize_transition_effect_options(effect, effect_options)
+    )
+    option_specs = info["effectOptions"]
+    for name, value in options.items():
+        override = option_specs[name]["values"][value]
+        if "prefix" in override:
+            prefix = str(override["prefix"])
+            namespace = TRANSITION_NAMESPACES[prefix]
+        if "element" in override:
+            element = str(override["element"])
+        for attribute in override.get("remove_attrs", ()):
+            attrs.pop(str(attribute), None)
+        attrs.update(
+            {
+                str(attribute): str(attribute_value)
+                for attribute, attribute_value in override.get("attrs", {}).items()
+            }
+        )
+        if "fallback" in override:
+            fallback = override["fallback"]
     return prefix, namespace, element, attrs, str(fallback) if fallback else None
 
 
-def _effect_xml(effect: str) -> tuple[str, str, str]:
-    prefix, _namespace, element, effect_attrs, _fallback = _effect_spec(effect)
+def _effect_xml(
+    effect: str,
+    effect_options: object = None,
+) -> tuple[str, str, str]:
+    prefix, _namespace, element, effect_attrs, _fallback = _effect_spec(
+        effect,
+        effect_options,
+    )
     attrs = " ".join(
         f'{key}="{value}"'
         for key, value in effect_attrs.items()
@@ -584,9 +1207,13 @@ def create_transition_xml(
     duration: float = 0.5,
     advance_after: float | None = None,
     advance_on_click: bool | None = None,
+    effect_options: Mapping[str, object] | None = None,
 ) -> str:
     """Build a direct or MCE-backed p:transition XML fragment."""
-    normalized_effect = normalize_transition_effect(effect)
+    normalized_effect, normalized_options = normalize_transition_effect_request(
+        effect,
+        effect_options,
+    )
     duration_ms = None
     if normalized_effect is not None:
         duration_ms = _seconds_to_ms(
@@ -623,10 +1250,14 @@ def create_transition_xml(
     if normalized_effect is None:
         return f"  <p:transition{attr_text}/>"
 
-    prefix, element_name, effect_attrs = _effect_xml(normalized_effect)
+    prefix, element_name, effect_attrs = _effect_xml(
+        normalized_effect,
+        normalized_options,
+    )
     if prefix != "p":
         _effect_prefix, _namespace, _element, _attrs, fallback = _effect_spec(
-            normalized_effect
+            normalized_effect,
+            normalized_options,
         )
         fallback_effect = fallback or "fade"
         fallback_prefix, fallback_name, fallback_attrs = _effect_xml(
@@ -682,8 +1313,12 @@ def _build_transition_element(
     duration: float,
     advance_after: float | None,
     advance_on_click: bool | None,
+    effect_options: Mapping[str, object] | None = None,
 ) -> Any | None:
-    normalized_effect = normalize_transition_effect(effect)
+    normalized_effect, normalized_options = normalize_transition_effect_request(
+        effect,
+        effect_options,
+    )
     if (
         normalized_effect is None
         and advance_after is None
@@ -719,6 +1354,7 @@ def _build_transition_element(
         effect_name: str | None,
         *,
         include_duration: bool,
+        options: Mapping[str, object] | None = None,
     ) -> Any:
         nsmap = {"p": PML_NS}
         if include_duration:
@@ -736,7 +1372,7 @@ def _build_transition_element(
             transition.set("advTm", str(advance_ms))
         if effect_name is not None:
             _prefix, namespace, element_name, effect_attrs, _fallback = (
-                _effect_spec(effect_name)
+                _effect_spec(effect_name, options)
             )
             child = _new_element(context, _qn(namespace, element_name))
             for key, value in effect_attrs.items():
@@ -748,10 +1384,15 @@ def _build_transition_element(
         return build_transition(None, include_duration=False)
 
     prefix, _namespace, _element, _attrs, fallback = _effect_spec(
-        normalized_effect
+        normalized_effect,
+        normalized_options,
     )
     if prefix == "p":
-        return build_transition(normalized_effect, include_duration=True)
+        return build_transition(
+            normalized_effect,
+            include_duration=True,
+            options=normalized_options,
+        )
 
     carrier = _new_element(
         context,
@@ -764,7 +1405,13 @@ def _build_transition_element(
         nsmap={prefix: TRANSITION_NAMESPACES[prefix]},
     )
     choice.set("Requires", prefix)
-    choice.append(build_transition(normalized_effect, include_duration=True))
+    choice.append(
+        build_transition(
+            normalized_effect,
+            include_duration=True,
+            options=normalized_options,
+        )
+    )
     fallback_node = _new_element(context, _qn(MC_NS, "Fallback"))
     fallback_node.append(
         build_transition(fallback or "fade", include_duration=False)
@@ -817,14 +1464,67 @@ def _primary_and_fallback(carrier: Any) -> tuple[Any | None, Any | None]:
     return primary, fallback
 
 
-def _effect_identity(transition: Any | None) -> tuple[str | None, str | None]:
+def _effect_identity(
+    transition: Any | None,
+) -> tuple[str | None, str | None, dict[str, str]]:
     if transition is None:
-        return None, None
+        return None, None, {}
     for child in list(transition):
         if child.tag == _qn(PML_NS, "sndAc"):
             continue
-        return _local_name(child.tag), _namespace_name(child.tag)
-    return None, None
+        return (
+            _local_name(child.tag),
+            _namespace_name(child.tag),
+            {str(name): str(value) for name, value in child.attrib.items()},
+        )
+    return None, None, {}
+
+
+def _effective_transition_options(
+    effect: str,
+    options: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    effective = {
+        name: spec["default"]
+        for name, spec in NATIVE_TRANSITIONS[effect]["effectOptions"].items()
+    }
+    effective.update(normalize_transition_effect_options(effect, options))
+    return effective
+
+
+def _transition_option_combinations(effect: str) -> list[dict[str, object]]:
+    combinations: list[dict[str, object]] = [{}]
+    for name, spec in NATIVE_TRANSITIONS[effect]["effectOptions"].items():
+        combinations = [
+            {**combination, name: value}
+            for combination in combinations
+            for value in spec["values"]
+        ]
+    return combinations
+
+
+def _identify_native_transition(
+    element: str | None,
+    namespace: str | None,
+    attributes: Mapping[str, str],
+) -> tuple[str | None, dict[str, object]]:
+    if element is None or namespace is None:
+        return None, {}
+    for effect in NATIVE_TRANSITION_KEYS:
+        for options in _transition_option_combinations(effect):
+            _prefix, expected_namespace, expected_element, expected_attrs, _fallback = (
+                _effect_spec(effect, options)
+            )
+            if (
+                namespace == expected_namespace
+                and element == expected_element
+                and dict(attributes) == {
+                    str(name): str(value)
+                    for name, value in expected_attrs.items()
+                }
+            ):
+                return effect, options
+    return None, {}
 
 
 def _int_attribute(element: Any | None, *names: str) -> int | None:
@@ -856,8 +1556,15 @@ def read_slide_transition(slide_root: Any) -> TransitionSummary:
 
     carrier = carriers[0]
     primary, fallback = _primary_and_fallback(carrier)
-    effect, effect_namespace = _effect_identity(primary)
-    fallback_effect, fallback_namespace = _effect_identity(fallback)
+    effect, effect_namespace, effect_attributes = _effect_identity(primary)
+    fallback_effect, fallback_namespace, _fallback_attributes = _effect_identity(
+        fallback
+    )
+    canonical_effect, effect_options = _identify_native_transition(
+        effect,
+        effect_namespace,
+        effect_attributes,
+    )
     carrier_name = (
         "alternate-content"
         if carrier.tag == _qn(MC_NS, "AlternateContent")
@@ -874,6 +1581,9 @@ def read_slide_transition(slide_root: Any) -> TransitionSummary:
         logical_count=len(carriers),
         effect=effect,
         effect_namespace=effect_namespace,
+        effect_attributes=effect_attributes,
+        canonical_effect=canonical_effect,
+        effect_options=effect_options,
         fallback_effect=fallback_effect,
         fallback_effect_namespace=fallback_namespace,
         duration_ms=duration_ms,
@@ -989,6 +1699,13 @@ def _apply_slide_motion_unchecked(
             f"unknown transition enter policy {enter.policy!r}; "
             f"valid policies: {', '.join(sorted(valid_policies))}"
         )
+    if (
+        enter.policy != "replace"
+        and enter.effect_options not in (None, {})
+    ):
+        raise ValueError(
+            "transition effect_options require enter policy 'replace'"
+        )
 
     carriers = transition_carriers(slide_root)
     if len(carriers) > 1:
@@ -1026,15 +1743,20 @@ def _apply_slide_motion_unchecked(
             duration=enter.duration,
             advance_after=advance_after,
             advance_on_click=advance_on_click,
+            effect_options=None,
         )
         if transition is not None:
             _insert_transition_carrier(slide_root, transition)
         return advance_after is not None
 
-    effect = (
-        normalize_transition_effect(enter.effect, allow_none=False)
+    effect, effect_options = (
+        normalize_transition_effect_request(
+            enter.effect,
+            enter.effect_options,
+            allow_none=False,
+        )
         if enter.policy == "replace"
-        else None
+        else (None, {})
     )
     duration = validate_seconds(
         enter.duration,
@@ -1051,6 +1773,7 @@ def _apply_slide_motion_unchecked(
         duration=duration,
         advance_after=advance_after,
         advance_on_click=advance_on_click,
+        effect_options=effect_options,
     )
     if transition is not None:
         _insert_transition_carrier(slide_root, transition)
@@ -1063,6 +1786,9 @@ def _visual_identity(summary: TransitionSummary) -> tuple[Any, ...]:
         summary.logical_count,
         summary.effect,
         summary.effect_namespace,
+        tuple(sorted(summary.effect_attributes.items())),
+        summary.canonical_effect,
+        tuple(sorted(summary.effect_options.items())),
         summary.fallback_effect,
         summary.fallback_effect_namespace,
         summary.duration_ms,
@@ -1072,8 +1798,12 @@ def _visual_identity(summary: TransitionSummary) -> tuple[Any, ...]:
 
 def _expected_visual_identity(
     effect: str,
+    effect_options: Mapping[str, object] | None = None,
 ) -> tuple[str, str, str, str | None, str | None, dict[str, Any]]:
-    prefix, namespace, element, attrs, fallback = _effect_spec(effect)
+    prefix, namespace, element, attrs, fallback = _effect_spec(
+        effect,
+        effect_options,
+    )
     carrier = "direct" if prefix == "p" else "alternate-content"
     fallback_element = None
     fallback_namespace = None
@@ -1111,7 +1841,15 @@ def _validate_applied_motion(
         elif not before.logical_count and after.effect is not None:
             errors.append("preserve policy added a visual transition")
     elif enter.policy == "replace":
-        effect = normalize_transition_effect(enter.effect, allow_none=False)
+        effect, effect_options = normalize_transition_effect_request(
+            enter.effect,
+            enter.effect_options,
+            allow_none=False,
+        )
+        expected_effect_options = _effective_transition_options(
+            effect,
+            effect_options,
+        )
         expected_duration = _seconds_to_ms(
             enter.duration,
             "transition duration",
@@ -1124,12 +1862,14 @@ def _validate_applied_motion(
             expected_fallback,
             expected_fallback_namespace,
             expected_attrs,
-        ) = _expected_visual_identity(effect)
+        ) = _expected_visual_identity(effect, effect_options)
         if (
             after.carrier != expected_carrier
             or after.logical_count != 1
             or after.effect != expected_effect
             or after.effect_namespace != expected_namespace
+            or after.canonical_effect != effect
+            or dict(after.effect_options) != expected_effect_options
             or after.fallback_effect != expected_fallback
             or after.fallback_effect_namespace != expected_fallback_namespace
             or after.duration_ms != expected_duration
@@ -1427,13 +2167,17 @@ def validate_generated_transition_xml(
     duration: object,
     advance_on_click: bool | None,
     advance_after: object | None,
+    effect_options: Mapping[str, object] | None = None,
 ) -> TransitionSummary:
     """Validate a generated transition against its resolved settings."""
     data = slide_xml.encode("utf-8") if isinstance(slide_xml, str) else slide_xml
     root = LET.fromstring(data) if LET is not None else parse_source_xml(data)
     errors = validate_slide_transition_structure(root) + validate_mce_prefixes(data)
     summary = read_slide_transition(root)
-    normalized_effect = normalize_transition_effect(effect)
+    normalized_effect, normalized_options = normalize_transition_effect_request(
+        effect,
+        effect_options,
+    )
     expected_click = True if advance_on_click is None else advance_on_click
     if not isinstance(expected_click, bool):
         errors.append("transition advance_on_click must be a boolean or None")
@@ -1479,12 +2223,23 @@ def validate_generated_transition_xml(
                 expected_fallback,
                 expected_fallback_namespace,
                 expected_attrs,
-            ) = _expected_visual_identity(normalized_effect)
+            ) = _expected_visual_identity(
+                normalized_effect,
+                normalized_options,
+            )
+            expected_effect_options = _effective_transition_options(
+                normalized_effect,
+                normalized_options,
+            )
+        else:
+            expected_effect_options = {}
         if (
             summary.carrier != expected_carrier
             or summary.logical_count != 1
             or summary.effect != expected_effect
             or summary.effect_namespace != expected_namespace
+            or summary.canonical_effect != normalized_effect
+            or dict(summary.effect_options) != expected_effect_options
             or summary.fallback_effect != expected_fallback
             or summary.fallback_effect_namespace != expected_fallback_namespace
             or summary.duration_ms != expected_duration_ms

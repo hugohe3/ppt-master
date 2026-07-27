@@ -68,7 +68,7 @@ class ConvertContext:
     # Recursion depth — only the depth==0 (root) context records anim targets.
     depth: int = 0
     # Top-level <g id="..."> groups, recorded as (shape_id, svg_id) in z-order.
-    # Used by the PPTX builder to emit per-element entrance timing.
+    # Used by the PPTX builder to emit per-element object-animation timing.
     anim_targets: list = field(default_factory=list)
     # Explicit sidecar group ids may override the legacy chrome-name heuristic.
     # Explicit structural layer/role/placeholder markers remain non-animatable.

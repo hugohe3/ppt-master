@@ -1,11 +1,12 @@
 > See [`shared-standards-core.md`](./shared-standards-core.md) §§1.4–1.5 for the native-shape metadata and validation contracts.
 
-# Native Preset Shape Authoring Reference
+# Native Shape Authoring Reference
 
 Use this reference during Executor SVG construction or project-owned canonical
 template maintenance when one standard PowerPoint shape can express one
-complete geometric object. The helper does not create the preset shape's own
-`p:txBody`; keep visible text outside the atomic fragment.
+complete object or multiple closed shapes require a PowerPoint-style Boolean
+result. Neither helper writes a page. The preset helper does not create the
+shape's own `p:txBody`; keep visible text outside the atomic fragment.
 
 ## 1. Selection Gate
 
@@ -20,6 +21,7 @@ Apply this decision order before drawing a stock geometric object.
 |---|---|
 | Plain rectangle, symmetric rounded rectangle, circle, or ellipse | Write the ordinary SVG primitive; the exporter already emits an editable native shape. |
 | One DrawingML preset exactly expresses the intended object | Run `preset_shape_svg.py render`, then insert its complete stdout fragment into the hand-authored page or canonical template. |
+| Two or more closed authored shapes require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
 | The visual meaning or contour exceeds one stock shape | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
 | The shape only resembles a preset | Keep ordinary SVG; never infer a preset from contour similarity. |
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
@@ -190,3 +192,120 @@ and paint. The exporter performs the same validation, then expands the compact
 group only in memory to reuse the lossless native-shape conversion path.
 Compatible expanded authored input remains under its separate carrier/preview
 freshness contract.
+
+---
+
+## 6. Shape Boolean Materialization
+
+**Trigger**: The authored design explicitly requires a PowerPoint-style Union,
+Combine, Fragment, Intersect, or Subtract operation over two or more closed
+vector shapes.
+
+```bash
+uvx ppt-master shape-boolean-svg render <svg-file> \
+  --operation subtract \
+  --source body \
+  --source cutout \
+  --id result
+```
+
+| Concern | Contract |
+|---|---|
+| Sources | Closed `path`, `polygon`, `rect`, `circle`, `ellipse`, or one validated compact authored shape preset. Open ordinary geometry, connectors, ordinary groups, text, images, definitions, and nested SVG viewports fail closed. |
+| Primary shape | The first `--source` supplies result paint. For `subtract`, all later operands are removed from that primary geometry. Explicit paint flags override only their named channels. |
+| Coordinates | Ancestor and local transforms are baked into SVG-root coordinates. Insert stdout at the root in the primary operand's z-order; never reinsert it under an original transformed ancestor. |
+| Result | `union`, `combine`, `intersect`, and `subtract` emit one ordinary `<path>`. `fragment` emits stable sibling paths named `<id>-1`, `<id>-2`, ... in top/left/bottom/right/area order. |
+| Winding | Results use explicit nonzero contour direction and never emit `fill-rule`, `clip-rule`, `clip-path`, `mask`, or Merge Shapes metadata. Operands that depend on even-odd fill, clipping, or masking fail closed. |
+| Preservation | This helper authors new geometry only. Never use it to merge or split mirror/preserve source structure. |
+
+Operation semantics match PowerPoint's visible Merge Shapes result: `union`
+keeps every covered region, `combine` keeps the symmetric difference,
+`intersect` keeps only common coverage, `subtract` removes every later source
+from the primary, and `fragment` returns each atomic filled region. The PPTX
+stores the materialized freeform geometry, not replayable operation history.
+
+**Hard rule — stdout-only replacement**: The helper never writes the source
+page. In one normal `apply_patch` edit, remove every selected operand and insert
+every returned path at the SVG root in the primary operand's z-order. Fragment
+paths remain separate shapes; do not wrap them to claim one structural atom.
+
+---
+
+## 7. Shape-Only Modelling Techniques
+
+Applies to any page built from shapes, **with or without images** — a text-only,
+data-only, or icon-only deck reaches these the same way. Each technique below is
+plain geometry plus gradient paint, so all of it survives native export.
+
+### 7.1 Alternating light/dark gradient = dimensional form
+
+The single highest-yield shape technique. A cylinder, metallic band, dimensional
+numeral, or curved panel is produced by one gradient whose stops **alternate
+light and dark** across the shape — light · dark · light for a three-stop ramp,
+or light · dark · light · dark · light for a five-stop one. The alternation
+imitates a curved surface catching light twice; a plain two-stop ramp always
+reads flat no matter how strong the contrast.
+
+Keep every stop on one hue and vary only lightness, hold one light direction for
+the whole page, and remove strokes so adjacent facets meet cleanly. For a
+cylinder, apply the alternating ramp across the body and cap it with an ellipse
+carrying its own shallower ramp. This is the shape-level twin of
+[`image-layout-patterns.md`](./image-layout-patterns.md) `#91`, which applies the
+same idea across separate facets of a folded form.
+
+### 7.2 Reflection without a reflection effect
+
+Native reflection is `Bake-required` ([`svg-effects.md`](./svg-effects.md) §6.12),
+so build it from geometry instead:
+
+1. Duplicate the object and flip it with `transform="translate(0, 2·y_bottom) scale(1, -1)"`.
+2. Keep only the top **10–25 %** of the flipped copy — that is all a reflection
+   ever shows.
+3. Lay a rectangle over it filled with a gradient running from fully transparent
+   at the object's base to the page background color at the cut line, so the
+   copy dissolves into the page.
+4. Drop the whole reflection to roughly **60–70 %** opacity.
+
+Seat rows of certificates, product shots, logo tiles, and cylinders this way. Do
+not add a blur — it will not survive export, and a short gradient fade already
+reads correctly at slide scale.
+
+### 7.3 Fragment as a modelling tool, not just a boolean
+
+`fragment` (§6) is the fastest way to build layered diagrams from one silhouette:
+lay evenly distributed bars across a triangle and fragment it into pyramid tiers;
+cross a circle with two bars for a quadrant wheel; slice an annulus radially for
+ring segments. Every piece inherits the parent contour, so the assembly stays
+perfectly registered — impossible to achieve by drawing the tiers separately.
+
+Distribute the cutting bars with a constant step before fragmenting; uneven tiers
+read as a mistake rather than a hierarchy. Paint the resulting pieces with one
+gradient family per §7.1 so the stack reads as a single solid.
+
+### 7.4 Soft edges without the soft-edge effect
+
+Feathered edges are `Bake-required` ([`svg-effects.md`](./svg-effects.md) §6.12),
+but the four jobs they normally do are all reachable with gradients:
+
+| Intent | Build instead |
+|---|---|
+| Contact shadow under an object | Ellipse filled with a `radialGradient` from dark-transparent at the centre to fully transparent at the rim |
+| Spotlight / stage pool | Cone or ellipse filled with a gradient fading to transparent at its far end, at low opacity over the scene |
+| Object dissolving into the page | Overlay a rectangle whose gradient runs from transparent to the exact page background hex |
+| Hiding an object while keeping it live | Full transparency, or a background-registered fill ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`) |
+
+A radial or linear alpha ramp reads the same as a feathered edge at slide scale
+and, unlike a filter, exports intact. Never approximate a soft edge with a stack
+of stroked outlines — the banding is visible on projection.
+
+### 7.5 Ground plane and staging
+
+An object floating in empty canvas looks pasted on. Give it a surface: a wide
+shallow ellipse or trapezoid beneath it, filled with a gradient that fades to the
+background at its edges, optionally with a soft dark ellipse directly under the
+object as contact shadow. A trapezoid narrowing away from the viewer reads as a
+receding floor; a cylinder or slab reads as a pedestal.
+
+Keep the plane low-contrast — it is staging, not content. This is what makes
+certificate rows, product hero shots, and trophy/award pages look composed
+rather than floating, and it costs two shapes.

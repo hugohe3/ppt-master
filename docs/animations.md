@@ -4,14 +4,19 @@
 
 ---
 
-PPT Master writes **page transitions** and optional **element entrance animations** as real PowerPoint OOXML, not embedded video. This guide covers the choices and commands users need; exact effect mappings, the complete sidecar schema, anchor rules, and package validation live in the [animation execution reference](../skills/ppt-master/references/animations.md).
+PPT Master writes **page transitions** and optional **element object
+animations** as real PowerPoint OOXML, not embedded video. Object animation
+includes entrance, emphasis, motion-path, and exit effects. This guide covers
+the choices and commands users need; exact effect mappings, the complete
+sidecar schema, anchor rules, and package validation live in the
+[animation execution reference](../skills/ppt-master/references/animations.md).
 
 ## Default Behavior
 
 | Layer | Default | What it means |
 |---|---|---|
 | Page transition | `fade`, 0.4 seconds | Slides change with a restrained visual transition |
-| Element entrance animation | **`none` (off)** | Each slide appears as a complete page; opt in only when a reveal sequence helps the presentation |
+| Element object animation | **`none` (off)** | Each slide appears as a complete page; opt in only when motion helps the presentation |
 
 Changing animation settings does not require regenerating the slides. Rerun `svg_to_pptx.py` against the same `svg_output/`.
 
@@ -24,13 +29,16 @@ Changing animation settings does not require regenerating the slides. Rerun `svg
 | Remove the visual transition | `uvx ppt-master svg-to-pptx <project> -t none` |
 | Auto-advance every 5 seconds | `uvx ppt-master svg-to-pptx <project> --auto-advance 5` |
 | Enable automatic element reveals | `uvx ppt-master svg-to-pptx <project> -a auto` |
-| Use one entrance effect throughout | `uvx ppt-master svg-to-pptx <project> --animation fade` |
+| Use one entrance effect throughout | `uvx ppt-master svg-to-pptx <project> --animation entrance_fade` |
+| Use one native emphasis effect | `uvx ppt-master svg-to-pptx <project> --animation emphasis_spin` |
+| Use one native motion path | `uvx ppt-master svg-to-pptx <project> --animation path_circle` |
+| Use one native exit effect | `uvx ppt-master svg-to-pptx <project> --animation exit_fade` |
 | Reveal elements on click | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click` |
 | Animate all elements together | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger with-previous` |
 | Slow the reveal sequence | `uvx ppt-master svg-to-pptx <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-The transition vocabulary covers all three sections in the current PowerPoint
-gallery:
+The 48 canonical transition keys cover all three sections in the current
+PowerPoint gallery:
 
 - Subtle: `morph`, `fade`, `push`, `wipe`, `split`, `reveal`, `cut`,
   `random_bars`, `shape`, `uncover`, `cover`, `flash`.
@@ -42,9 +50,20 @@ gallery:
 - Dynamic Content: `pan`, `ferris_wheel`, `conveyor`, `rotate`, `window`,
   `orbit`, `fly_through`.
 
-Compatibility aliases `strips`, `circle`, `diamond`, `newsflash`, `plus`,
-`pull`, `wedge`, and `wheel` also remain valid. `-t none` removes the visual
-effect but does not remove an explicitly configured auto-advance timer.
+The old names `strips`, `circle`, `diamond`, `newsflash`, `plus`, `pull`,
+`wedge`, and `wheel` remain accepted only as compatibility inputs. New
+sidecars, plans, traces, and output use canonical keys. Compatibility inputs
+desugar into a native effect plus its Effect Options—for example, `diamond`
+becomes `shape` with `shape: diamond`, and `wedge` becomes `clock` with
+`style: wedge`.
+
+Set effect-specific PowerPoint options in
+`transition.effect_options`. Direction, shape, pattern, Morph scope, black
+screen, page count, and bounce are validated against the selected effect.
+Run
+`uvx ppt-master pptx-animations --describe-transition <effect>`
+for the exact values. `-t none` removes the visual effect but does not remove
+an explicitly configured auto-advance timer.
 
 ## Choose a Start Mode
 
@@ -61,12 +80,26 @@ effect but does not remove an explicitly configured auto-advance timer.
 | Choice | Use it when |
 |---|---|
 | `auto` | You want PPT Master to choose suitable effects from each content group's role; this is the recommended opt-in |
-| A named effect such as `fade`, `wipe`, `fly`, or `zoom` | You want one consistent entrance style across the deck |
-| `mixed` | You need the legacy deterministic effect rotation |
-| `random` | You want deterministic variation from the supported legacy pool |
+| A native `entrance_*` key | You want one of PowerPoint's 53 native entrance presets |
+| A native `emphasis_*` key | An already visible object should draw attention or change appearance |
+| A native `path_*` key | An object should follow one of PowerPoint's 64 motion paths |
+| A native `exit_*` key | An object should leave the slide during the sequence |
+| `mixed` | You need the compatible deterministic mode over canonical PowerPoint presets |
+| `random` | You want deterministic variation from the same canonical preset pool |
 | `none` | You want to disable element animation |
 
-The complete supported effect list and its exact PowerPoint mapping belong to the [animation execution reference](../skills/ppt-master/references/animations.md), so the user guide does not duplicate that contract.
+The canonical registry contains 203 PowerPoint-native keys: 53 entrance, 33
+emphasis, 64 motion path, and 53 exit presets. New selections, sidecars,
+automatic choices, traces, and examples use these category-qualified keys.
+The 29 established short names remain accepted only as compatibility inputs;
+they normalize before writing and do not retain a second behavior engine.
+Old Fly direction names all normalize to `entrance_fly`, and old Wipe
+direction names all normalize to `entrance_wipe`; their direction is preserved
+as an option rather than another canonical preset. Legacy `wheel` keeps four
+spokes. Run
+`uvx ppt-master pptx-animations --list` for the complete
+categorized list. The four media playback commands are handled by the
+audio/video workflows because they require media or bookmark targets.
 
 ## Customize Specific Objects
 
@@ -82,10 +115,23 @@ The generated sidecar targets stable top-level `<g id="...">` content groups. Co
 
 | Field | Purpose |
 |---|---|
-| `effect` | Override the entrance effect; use `none` to keep that object static |
+| `effect` | Override the object effect; use `none` to keep that object static |
 | `order` | Change reveal order without changing slide layer order |
-| `delay` | Add a pause before the object in `after-previous` mode |
-| `duration` | Override that object's scheduled entrance duration |
+| `delay` | Add a pause in `after-previous`, or after clicking `trigger_shape` |
+| `duration` | Override that object's scheduled animation duration |
+| `effect_options` | Set effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` |
+| `trigger_shape` | Trigger this row when another top-level group is clicked (PowerPoint **On Click of**) |
+| Timing modifiers | `repeat_count`/`repeat_duration`, `auto_reverse`, `rewind`, `accelerate`, `decelerate`, `bounce_end`, and `restart` |
+| Completion | `after_effect` (dim/hide) and a `.m4a`/`.mp3`/`.wav` `sound` path |
+
+Use `uvx ppt-master pptx-animations --describe
+<canonical_effect>` to see exactly which options that effect accepts. Speed is
+controlled by `duration`; smooth start/end are controlled by
+`accelerate`/`decelerate`.
+
+`trigger_shape` is group-only and points to a different group id on the same
+slide. It affects only that row; the slide Start mode still controls all other
+rows. Recorded narration rejects interactive trigger-shape animations.
 
 When a user asks the AI to tune individual objects, use the [`customize-animations`](../skills/ppt-master/workflows/stages/customize-animations.md) stage. The full sidecar schema and target-validation rules remain in the [animation execution reference](../skills/ppt-master/references/animations.md).
 
