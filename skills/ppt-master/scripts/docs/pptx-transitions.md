@@ -52,17 +52,84 @@ a timing-only p:transition with no visual-effect child.
 
 ## 3. Compatibility Contract
 
-The Phase 1 registry preserves the established seven effects:
+The registry covers the complete current PowerPoint transition gallery:
+12 Subtle effects, 29 Exciting effects, and 7 Dynamic Content effects.
+It also retains eight established low-level aliases that remain valid public
+inputs.
 
-| Effect | Required child and attributes |
+Standard PresentationML effects use a direct `p:transition` carrier:
+
+| Effect | Required primary child and attributes |
 |---|---|
 | fade | p:fade |
 | push | p:push dir=r |
 | wipe | p:wipe dir=r |
 | split | p:split orient=horz dir=out |
-| strips | p:strips dir=rd |
+| cut | p:cut thruBlk=0 |
+| random_bars | p:randomBar dir=vert |
+| shape | p:circle |
+| uncover | p:pull dir=r |
 | cover | p:cover dir=r |
+| dissolve | p:dissolve |
+| checkerboard | p:checker dir=horz |
+| blinds | p:blinds dir=vert |
+| clock | p:wheel spokes=1 |
 | random | p:random |
+| box | p:zoom |
+| comb | p:comb dir=horz |
+| strips | p:strips dir=rd |
+| circle | p:circle |
+| diamond | p:diamond |
+| newsflash | p:newsflash |
+| plus | p:plus |
+| pull | p:pull dir=r |
+| wedge | p:wedge |
+| wheel | p:wheel spokes=1 |
+
+Office 2010 effects use a `p14` Choice with a `p:fade` Fallback:
+
+| Effect | Required primary child and attributes |
+|---|---|
+| reveal | p14:reveal dir=r |
+| flash | p14:flash |
+| ripple | p14:ripple |
+| honeycomb | p14:honeycomb |
+| glitter | p14:glitter |
+| vortex | p14:vortex dir=r |
+| shred | p14:shred dir=out |
+| switch | p14:switch dir=r |
+| flip | p14:flip dir=r |
+| gallery | p14:gallery dir=r |
+| cube | p14:prism dir=r |
+| doors | p14:doors dir=vert |
+| zoom | p14:warp dir=in |
+| pan | p14:pan dir=r |
+| ferris_wheel | p14:ferris dir=r |
+| conveyor | p14:conveyor dir=r |
+| rotate | p14:prism dir=r isContent=1 |
+| window | p14:window |
+| orbit | p14:prism dir=r isContent=1 isInverted=1 |
+| fly_through | p14:flythrough |
+
+Office 2012 effects use a `p15` Choice with a `p:fade` Fallback:
+
+| Effect | Required primary child and attributes |
+|---|---|
+| fall_over | p15:prstTrans prst=fallOver invX=1 |
+| drape | p15:prstTrans prst=drape invX=1 |
+| curtains | p15:prstTrans prst=curtains |
+| wind | p15:prstTrans prst=wind |
+| prestige | p15:prstTrans prst=prestige |
+| fracture | p15:prstTrans prst=fracture |
+| crush | p15:prstTrans prst=crush |
+| peel_off | p15:prstTrans prst=peelOff invX=1 |
+| page_curl | p15:prstTrans prst=pageCurlSingle invX=1 |
+| airplane | p15:prstTrans prst=airplane |
+| origami | p15:prstTrans prst=origami |
+
+`morph` uses `p159:morph option=byObject` in an Office 2015 Choice with a
+`p:fade` Fallback. `none` is the explicit no-visual-effect input and therefore
+is not a registry entry.
 
 **Hard rule — no downgrade**:
 
@@ -70,8 +137,8 @@ The Phase 1 registry preserves the established seven effects:
 - Never omit its established direction or split attributes.
 - Reject an unknown requested effect; never substitute fade.
 - Preserve an unknown source effect when the route selects preserve.
-- A future PowerPoint extension counts as successful only when the primary
-  Choice contains the requested effect. A fallback alone is not success.
+- An extension counts as successful only when the primary Choice contains the
+  requested effect. A fallback alone is not success.
 
 ---
 
@@ -84,7 +151,7 @@ The Phase 1 registry preserves the established seven effects:
 | Template Fill v1 | fade, 0.5s | click | keep preserves source; legacy advance_after maps to both |
 | Native Enhance v1 | Confirmed plan effect | Confirmed timing module | Disabled transitions preserve unless the v1 plan explicitly selected none |
 
-Template Fill and Native Enhance keep their v1 route defaults in Phase 1.
+Template Fill and Native Enhance keep their v1 route defaults.
 The public `create_pptx_with_native_svg` Python API also retains its legacy
 0.5s default; the CLI explicitly passes 0.4s. Changing a default policy is a
 separate migration decision.

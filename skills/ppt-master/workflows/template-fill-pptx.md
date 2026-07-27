@@ -196,7 +196,7 @@ The plan structure:
 | `layout_rationale` | Human review aid for page selection. Include `layout_pattern`, `why_fit`, and `risk`; it is not a mechanical checker gate. |
 | `accepted_warnings` | Optional audit trail for warnings the user or agent explicitly accepts. `check-plan` warnings remain non-blocking; errors must be fixed. |
 | `notes` | Optional spoken speaker notes for the filled slide — see **Speaker notes** below; write prose, not a copy of the on-slide text |
-| `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts an effect name (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`), `none` to remove the visual effect, `keep` to preserve the source, or an object such as `{ "effect": "push", "duration": 0.6, "advance_after": 5 }` |
+| `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts any gallery effect or compatibility alias from [`animations.md`](../references/animations.md) §3, `none` to remove the visual effect, `keep` to preserve the source, or an object such as `{ "effect": "push", "duration": 0.6, "advance_after": 5 }` |
 | `replacements` | Target by `slot_id` whenever possible; `shape_id` and `shape_name` are fallback selectors |
 | `table_edits` | Optional native table cell edits; target by `table_id` whenever possible and use zero-based `row` / `col` |
 | `chart_edits` | Optional native chart data edits; target by `chart_id`, set `categories`, and provide one or more `series` |
@@ -272,7 +272,7 @@ Run:
 python3 skills/ppt-master/scripts/template_fill_pptx.py apply "<project_dir>/sources/<source.pptx>" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/exports/<output.pptx>"
 ```
 
-By default `apply` gives every cloned slide a `fade` transition (`0.5s`), preserving the v1 route contract. Override it with `--transition <effect>` (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`) and `--transition-duration <seconds>`; pass `--transition none` for no visual motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field overrides the CLI. `advance_after` keeps click advance enabled and adds timed advance; it also works with `none` (timing-only transition) and `keep` (source effect preserved, Choice/Fallback timing updated together).
+By default `apply` gives every cloned slide a `fade` transition (`0.5s`), preserving the v1 route contract. Override it with `--transition <effect>` using any gallery effect or compatibility alias from [`animations.md`](../references/animations.md) §3 and `--transition-duration <seconds>`; pass `--transition none` for no visual motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field overrides the CLI. `advance_after` keeps click advance enabled and adds timed advance; it also works with `none` (timing-only transition) and `keep` (source effect preserved, Choice/Fallback timing updated together).
 
 `apply` appends a timestamp automatically. For example, `-o "<project_dir>/exports/demo.pptx"` writes `demo_YYYYMMDD_HHMMSS.pptx`. If the filename already ends with `_YYYYMMDD_HHMMSS`, it is left unchanged.
 

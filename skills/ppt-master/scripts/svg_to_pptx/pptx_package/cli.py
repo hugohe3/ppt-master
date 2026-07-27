@@ -631,10 +631,7 @@ def _recorded_narration_on_click_slides(
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
-    transition_choices = (
-        ['none'] + (list(TRANSITIONS.keys()) if TRANSITIONS
-                    else ['fade', 'push', 'wipe', 'split', 'strips', 'cover', 'random'])
-    )
+    transition_choices = ['none', *TRANSITIONS]
 
     animation_choices = ['none', *ANIMATIONS, 'auto', 'mixed', 'random']
 

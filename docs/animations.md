@@ -29,7 +29,22 @@ Changing animation settings does not require regenerating the slides. Rerun `svg
 | Animate all elements together | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | Slow the reveal sequence | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-Available page-transition effects are `fade`, `push`, `wipe`, `split`, `strips`, `cover`, and `random`. `-t none` removes the visual effect but does not remove an explicitly configured auto-advance timer.
+The transition vocabulary covers all three sections in the current PowerPoint
+gallery:
+
+- Subtle: `morph`, `fade`, `push`, `wipe`, `split`, `reveal`, `cut`,
+  `random_bars`, `shape`, `uncover`, `cover`, `flash`.
+- Exciting: `fall_over`, `drape`, `curtains`, `wind`, `prestige`, `fracture`,
+  `crush`, `peel_off`, `page_curl`, `airplane`, `origami`, `dissolve`,
+  `checkerboard`, `blinds`, `clock`, `ripple`, `honeycomb`, `glitter`,
+  `vortex`, `shred`, `switch`, `flip`, `gallery`, `cube`, `doors`, `box`,
+  `comb`, `zoom`, `random`.
+- Dynamic Content: `pan`, `ferris_wheel`, `conveyor`, `rotate`, `window`,
+  `orbit`, `fly_through`.
+
+Compatibility aliases `strips`, `circle`, `diamond`, `newsflash`, `plus`,
+`pull`, `wedge`, and `wheel` also remain valid. `-t none` removes the visual
+effect but does not remove an explicitly configured auto-advance timer.
 
 ## Choose a Start Mode
 
