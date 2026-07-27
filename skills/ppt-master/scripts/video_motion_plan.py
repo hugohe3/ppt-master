@@ -47,6 +47,30 @@ _STYLE_MULTIPLIERS = {
     "restrained": 0.72,
     "dynamic": 1.28,
 }
+_VIDEO_EFFECT_ALIASES = {
+    "entrance_appear": "appear",
+    "entrance_fade": "fade",
+    "entrance_fly": "fly",
+    "entrance_zoom": "zoom",
+    "entrance_wipe": "wipe_down",
+    "entrance_split": "split",
+    "entrance_blinds": "blinds",
+    "entrance_checkerboard": "checkerboard",
+    "entrance_dissolve": "dissolve",
+    "entrance_random_bars": "random_bars",
+    "entrance_peek": "wipe_up",
+    "entrance_wheel": "wheel",
+    "entrance_box": "box",
+    "entrance_circle": "circle",
+    "entrance_diamond": "diamond",
+    "entrance_plus": "plus",
+    "entrance_strips": "strips",
+    "entrance_wedge": "wedge",
+    "entrance_stretch": "stretch",
+    "entrance_expand": "expand",
+    "entrance_swivel": "swivel",
+    "entrance_ascend": "fly_top",
+}
 _SVG_NS = "http://www.w3.org/2000/svg"
 _EMU_PER_PX = 9525
 _NUMBER_RE = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
@@ -156,6 +180,7 @@ def _shape_events(slide: dict[str, Any]) -> dict[int, dict[str, Any]]:
 
 
 def _direction_for_effect(effect: str, filter_name: object) -> str | None:
+    effect = _VIDEO_EFFECT_ALIASES.get(effect, effect)
     explicit = {
         "fly": "down",
         "fly_left": "left",
@@ -168,19 +193,30 @@ def _direction_for_effect(effect: str, filter_name: object) -> str | None:
         "wipe_up": "up",
         "wipe_down": "down",
         "peek": "down",
-        "strips": "down-right",
     }
     if effect in explicit:
         return explicit[effect]
     if isinstance(filter_name, str):
         match = re.search(
-            r"\((?:from)?(Top|Bottom|Left|Right|Up|Down)\)",
+            r"\((?:from)?(TopLeft|TopRight|BottomLeft|BottomRight|"
+            r"UpLeft|UpRight|DownLeft|DownRight|Top|Bottom|Left|Right|Up|Down)\)",
             filter_name,
             re.IGNORECASE,
         )
         if match:
             value = match.group(1).lower()
-            return {"top": "up", "bottom": "down"}.get(value, value)
+            return {
+                "top": "up",
+                "bottom": "down",
+                "topleft": "up-left",
+                "topright": "up-right",
+                "bottomleft": "down-left",
+                "bottomright": "down-right",
+                "upleft": "up-left",
+                "upright": "up-right",
+                "downleft": "down-left",
+                "downright": "down-right",
+            }.get(value, value)
     return None
 
 
@@ -218,6 +254,9 @@ def _travel_vector(direction: str | None, magnitude: float) -> list[float]:
         "right": [magnitude, 0.0],
         "up": [0.0, -magnitude],
         "down": [0.0, magnitude],
+        "up-left": [-magnitude * 0.72, -magnitude * 0.72],
+        "up-right": [magnitude * 0.72, -magnitude * 0.72],
+        "down-left": [-magnitude * 0.72, magnitude * 0.72],
         "down-right": [magnitude * 0.72, magnitude * 0.72],
     }
     return [round(value, 4) for value in vectors.get(direction, [0.0, 0.0])]
@@ -228,6 +267,7 @@ def _video_effect(
     direction: str | None,
     multiplier: float,
 ) -> dict[str, Any]:
+    effect = _VIDEO_EFFECT_ALIASES.get(effect, effect)
     common: dict[str, Any] = {
         "easing": "ease_out_cubic",
         "opacity_from": 0.0,
