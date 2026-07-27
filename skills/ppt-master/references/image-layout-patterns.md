@@ -4,7 +4,7 @@ A vocabulary registry of ways images can be placed on a slide. The point of this
 
 Every entry has a name plus a short technical hint. Common techniques get a single line. Less obvious or easily forgotten techniques get a short paragraph — not a full tutorial, but enough that a model unfamiliar with the project can implement it without guessing. This is a registry, not a teaching document; no use-case prescriptions, no decision tables.
 
-> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly.
+> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88, #92–#94) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91, #95–#99). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly.
 
 ---
 
@@ -43,6 +43,18 @@ Pick one or more of these as the page's bones. Cross-primary combinations are en
 8. **Z-pattern serpentine** — three rows, image on the left in rows 1 and 3, on the right in row 2 (or alternating). Each row roughly 1/3 canvas height; visual flow zigzags down the page.
 
 9. **3×3 grid with central image** — nine cells; center cell holds the image, the other 8 hold text blocks, color swatches, or small data widgets.
+
+93. **Containers arrayed along a curve (fan, arc, ring)** — N image containers distributed along an arc or wave, each rotated to sit square to the curve at its own position. Reads as motion and hierarchy at once, and it is the backbone of fan spreads, ring layouts, dial/roulette pages, and arched photo rows.
+
+    **Geometry** — place container `i` of `n` on a circle of radius `r` about `(cx, cy)`:
+    ```
+    θᵢ = θ_start + i × (θ_span / (n − 1))
+    xᵢ = cx + r·cos(θᵢ)      yᵢ = cy + r·sin(θᵢ)
+    rotationᵢ = θᵢ + 90°          (tangent-aligned; drop this for upright containers)
+    ```
+    Use `transform="rotate(rotationᵢ xᵢ yᵢ)"` on each container group. A `θ_span` of 60–120° reads as a fan; 360° with `θ_start = -90°` gives an evenly spaced ring. For a wave instead of an arc, sample the wave's own path and use its local tangent as the rotation.
+
+    **Two things to get right**: keep radius and angular step *constant* — an eyeballed fan reads as a mistake, not a flourish; and when containers are tangent-aligned, images inside must not inherit the rotation blindly (a sideways face is the failure mode). Counter-rotate the image inside its container, or keep the containers upright and let only their positions follow the curve.
 
 10. **Centered image with radial callouts pointing outward** — image (often circular via `clipPath`) at canvas center; multiple `<line>` leader lines + small `<circle>` endpoints + offset text labels in surrounding space.
 
@@ -88,6 +100,12 @@ This is the family that opens up the largest design space and the one AI is most
 
 ## Multi-Image Compositions
 
+94. **Embracing arc row (2D substitute for a 3D perspective wall)** — a row of images or cards where the centre element is largest and each step outward shrinks and drops, so the tops trace an arc and the row appears to curve toward the viewer. This is what PowerPoint decks build with 3D rotation (perspective left / right, X-axis 330° / 30°) for logo walls, certificate rows, and photo shelves — and it is reproducible in 2D, which matters because 3D transforms are outside the SVG contract ([`svg-effects.md`](./svg-effects.md) §6.8).
+
+    **Construction**: for element `k` steps from the centre, apply `scale = 0.88ᵏ` and offset `y` downward so every element's *top* edge lands on one shallow arc; keep the horizontal step constant. Mirror the sequence left and right of the centre. Add a soft ground shadow or a reflection fading downward to seat the row. Bottom-aligning instead of top-arcing gives the flatter "shelf" variant.
+
+    The depth cue is entirely **scale + vertical offset + consistent light**; do not reach for skew or a fake 3D tilt, which fail closed on export. Three to seven elements is the working range — beyond that the outermost ones shrink into illegibility.
+
 47. **Small multiples — 3–6 same-kind images in an evenly spaced row** — identical containers, identical caption blocks (title + one line). Not a generic grid: the identical framing *is* the message, because readers compare across panels only when the structure is constant.
 
 48. **Side-by-side comparison (before/after, A/B, then/now)** — two `<image>` of equal size in 50/50 split with thin divider `<line>` and "before" / "after" labels.
@@ -97,6 +115,19 @@ This is the family that opens up the largest design space and the one AI is most
 50. **Tiled grid (2×2, 2×3, 3×3) with equal cells** — `cell_size = (canvas - total_gap) / cols`; consistent `gap=2–20px`.
 
 51. **Mosaic** — irregular tile sizes packed together with or without thin gaps; each image clipped to its tile's rect.
+
+92. **Split tiling — one parent shape cut into interlocking cells** — the most-used construction in real image-heavy decks, and the counterpart to #82. Take one parent shape (circle, annulus, rounded rect, trapezoid, wave band), lay cutting lines across it (long bars, evenly distributed or fanned at different angles), and split it into cells. Each cell then holds a *different* image. Because every cell comes from one parent, the edges interlock exactly — no gaps, no overlaps, and the group still reads as one object.
+
+    | Parent + cutters | Result |
+    |---|---|
+    | Circle + 2 crossed bars | Quadrant wheel |
+    | Annulus + radial bars | Ring segments |
+    | Wave band + vertical bars | Rhythmic strip |
+    | Trapezoid + slanted bars | Perspective row |
+
+    **Authoring**: compute each cell's contour and write it as its own `<path>` clip — the geometry is deterministic, so derive the cells rather than eyeballing them. `shape_boolean_svg.py fragment` returns exactly these interlocking regions as separately addressable paths. Give every cell the same stroke (2px, background color) so the cuts read as designed seams.
+
+    **Choosing between #92 and #82**: same construction, opposite content rule. One image across all cells (#82) says "these fragments are one thing"; a different image per cell (#92) says "these are peers, cut from one frame". Mixing them destroys both readings. Distinct from #50 / #51, where cells are independent rectangles that never shared a parent.
 
 52–53. **Filmstrip / stack** — a sequence of `<image>` with thin consistent gaps: horizontal, equal height and varying widths (**#52**), or vertical, aligned by width with shared annotations down one side (**#53**).
 
@@ -182,11 +213,44 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 30–31. **Flat overlay wash** — one `<rect fill-opacity>` over the image: neutral `#000` / `#fff` around 0.4 for uniform darkening or lightening, the simplest scrim there is (**#30**), or a deck color at 0.15–0.25 to pull a foreign-looking photo toward the palette without regenerating it (**#31**).
 
+> **Sample the scrim color from the photo itself.** For any gradient scrim over an image (#27, #29, #31, #32, #90), take the solid end's hex from a dominant color *in that image* rather than defaulting to black or a deck color, and slide the gradient stop until the seam between scrim and photo disappears. A black scrim over a warm photo announces itself as a rectangle; a scrim in the photo's own shadow tone reads as part of the picture. This one substitution is the difference between a page that looks masked and one that looks composed.
+
+98. **Grid scrim with per-cell opacity** — instead of one flat or gradient scrim, cover the image with a grid of adjacent rectangles and give each cell a *slightly different* opacity (say 10–40 %, varied irregularly). The photo shows through unevenly, so the overlay reads as texture — panelled glass, a pixel field, a contact sheet — rather than as a sheet of paint. Text sits on the denser cells.
+
+    Keep the variation small and non-repeating: a regular light/dark alternation reads as a checkerboard, and a wide spread reads as broken rendering. Butt the cells exactly (no gaps, no strokes) so the grid is felt rather than drawn. Distinct from #50 / #88, where every cell holds its own image; here one image lies beneath one grid of glass.
+
+99. **Selective desaturation — colour only where it matters** — the whole image is muted while one subject stays in full colour, which fixes the focus of a busy photo without cropping it. Two registered copies: a desaturated (and usually darkened) version filling the frame, and the colour original clipped to just the subject region, sitting exactly on top.
+
+    **Both copies are baked assets** — there is no runtime colour filter on the native route ([`svg-effects.md`](./svg-effects.md) §6.12), so produce the desaturated file with a one-line Pillow `ImageEnhance.Color(img).enhance(0)` pass rather than reaching for `feColorMatrix`. Clip the colour copy along a real edge in the picture (the subject's own contour, per #96) — a rectangular colour patch over a desaturated field reads as an accident.
+
 32. **Multi-stop scrim with hue shift** — three-or-more-stop `<linearGradient>` where stops are different colors (e.g. dark navy → transparent → warm orange). This re-grades the image's color world without regenerating — particularly useful when an AI image came back with the right composition but wrong color temperature.
 
-90. **Full-canvas scrim with a shape cut out of it (chapter-page formula)** — a full-slide `<path>` whose outer contour is the canvas and whose inner subpath is a wave, arc, ribbon, or oversized numeral, cut using the opposite-winding rule from #83. Fill the scrim with a gradient whose stops vary `stop-opacity` (e.g. `1 → 0.8 → 0`) rather than color, so the underlying image emerges progressively across the page instead of showing through one hard hole. Add a 1–2px light stroke on the cut edge to keep the boundary crisp. This is the most reliable chapter/divider formula in the catalog: one image, one scrim, one numeral.
+90. **Full-canvas scrim with shapes cut out of it (the cover / divider formula)** — the single highest-yield formula in this catalog, and the one real decks reuse most: a full-slide `<path>` whose outer contour is the canvas and whose inner subpath(s) are cut out using the opposite-winding rule from #83, laid over a full-bleed image. The scrim mutes the photo everywhere except through the cuts, so one ordinary image becomes a designed page. Three elements total: image, scrim, title.
 
-    **Numeral / lettering caveat**: cutting *text* out of the scrim requires the glyph as a `<path>` outline, which is not something to author by hand — least of all for CJK. For a chapter number, either set the numeral as ordinary `<text>` on top of the scrim (nearly as strong, fully editable), or pre-render the knocked-out numeral as an RGBA PNG (#68). Do not attempt to approximate glyph outlines.
+    **The cut contour** — any of these, all authored as reversed inner subpaths in the same `<path>`:
+
+    | Contour | Reads as |
+    |---|---|
+    | Wave, arc, ribbon (one soft curve across the page) | Editorial banner / horizon |
+    | Freehand closed curve (irregular, hand-drawn) | Organic torn-paper window |
+    | An array of hexagons / trapezoids / circles | Rhythmic screen, a window wall |
+    | Oversized numeral or letterform | Chapter marker (see caveat) |
+
+    An array of cuts is just several reversed subpaths in the same `d` — the same construction as #82, except here the image shows *through* the holes rather than being clipped *into* the shapes.
+
+    **Paint the scrim** with either a flat light fill at 0.15–0.25 opacity (white over a photo is the reliable default) or, for a directional reveal, a gradient that varies `stop-opacity` rather than color (`1 → 0.8 → 0`), so the image emerges progressively instead of through one hard boundary. Add a 1–2px stroke in the same light color on the cut edge to keep it crisp.
+
+    **Edge thickness**: to make the cut read as a physical opening, apply `feDropShadow` with `dx="0" dy="0"` and a small `stdDeviation` to the scrim path. Per [`svg-effects.md`](./svg-effects.md) §6.4 a zero-offset shadow is classified and exported as a **glow**, not a shadow — so use an accent or light color; black will read as diffuse haze rather than an edge. Never apply it to the `<image>` itself (#36).
+
+    **Numeral / lettering caveat**: cutting *text* out of the scrim needs the glyph as a `<path>` outline, which is not something to author by hand — least of all for CJK. Set the numeral as ordinary `<text>` over the scrim (nearly as strong, fully editable), or pre-render a knocked-out numeral as an RGBA PNG (#68). Do not approximate glyph outlines.
+
+    **Motion pairing**: the scrim stays fixed while the image beneath drifts slowly (a 4–10s linear path, left, starting with the previous animation) — the cuts then behave like windows onto a moving world. That is an animation-stage decision, not page design; see [`animations.md`](./animations.md). It pairs with this pattern more often than with any other.
+
+97. **Frosted-glass panel over the photo** — a legibility panel that is neither a flat scrim (#30) nor a full blur: a region of the image itself, blurred and lightened, sitting under the text while the rest of the photo stays sharp. It keeps the photo's color and composition visible through the panel, which a solid scrim destroys.
+
+    **Build it from a baked asset** — runtime blur does not survive native export ([#34](#), [`svg-effects.md`](./svg-effects.md) §6.12). Produce a blurred copy of the source (a Pillow `GaussianBlur` at a large radius, plus a brightness lift), then place that copy clipped to the panel contour and registered to the same position as the base image, so the blur lines up exactly with what is behind it. Add a thin light stroke and, if the style wants it, a slight lightening overlay.
+
+    The panel must stay in register with the base photo; a frosted panel showing a *different* part of the scene is the classic tell. Pair with #95 when the panel should also carry a floating edge.
 
 33. **Spotlight mask — clear region surrounded by darkness** — cover the canvas with `<rect>` filled by a `<radialGradient>` whose inner stop is fully transparent and outer stop is opaque dark. Reads as a flashlight beam on the focal area. Use sparingly — it kills everything outside the spotlight.
 
@@ -229,6 +293,23 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 70–71. **Frames** — a single `<rect fill="none" stroke="#color" stroke-width="2–6"/>` at the image edge (**#70**), or several nested outlines at slightly different sizes for a photo-print look (**#71**). When the image was cut to a non-rectangular contour, use #86 instead so the frame follows the cut.
 
 72. **Image-to-image transition / merge** — two `<image>` elements with overlapping regions, one or both with gradient masks (from group C) creating a soft blend between them.
+
+95. **Shape filled with the page background itself** — the most-used trick in real decks and the one that has no obvious SVG name. A shape is painted not with a color but with *the page's own background, sampled at the shape's own position*, so it becomes invisible against the page while still being a real object that can be moved, animated, or given an edge.
+
+    **SVG form**: give the shape the same `<image>` as the page background, positioned in root coordinates exactly as the background is, and clip it to the shape contour (§1.2). Because the fill stays registered to the page rather than to the shape, the object reads as a hole in whatever is above it.
+
+    Three things it buys you, all of which otherwise require a second asset:
+    - **A cut that keeps the scene continuous** — the shape "removes" a foreground panel and shows the background through it, with no seam even over a photo or gradient.
+    - **Invisible objects that still animate** — a background-filled bar can wipe, slide, or morph across the page to reveal or conceal content, while never being visible itself.
+    - **Edge-only forms** — the shape disappears but its stroke, glow, or shadow remains, giving a floating outline that appears cut into the page.
+
+    Distinct from #83 (a panel with a real hole) and #90 (a scrim with cuts): those remove paint, this one *impersonates* the background. Reach for it when the thing above must stay a solid object.
+
+96. **Cutout subject re-laid over its own photo** — the mechanism behind every "subject escapes the frame" page (#85), and worth stating on its own because it is a two-asset technique: keep the original photo as the background layer, and place a background-removed PNG of its subject on top, in perfect register.
+
+    Once the subject exists as a free-floating layer, it can overlap anything drawn between the two copies: a title the subject stands in front of, a color panel it steps out of, a shape frame it breaks through, a grid line it crosses. The base photo can be tinted, desaturated, blurred (baked), or scrimmed as hard as the layout needs, because the sharp subject on top is what the eye reads.
+
+    Register is everything — the cutout must sit exactly where the subject sits in the base image; a few px of drift reads as a printing error. Keep the cutout's own edge clean rather than adding a stroke, unless the design calls for the sticker look of #63.
 
 89. **Same image twice — sharp cutout over a receded full-bleed copy** — the single best answer to "the photo is too narrow / too short for this canvas, and stretching distorts the subject". Reference the same file twice: the bottom copy fills the whole canvas (or panel) and is pushed back; the top copy is clipped to a shape (#82, #24, a slanted band, a folded contour) at native proportions and stays sharp. The subject reads at full fidelity while the background extends the frame to any aspect ratio — no stretching, no letterbox bars, no second asset.
 
@@ -278,6 +359,8 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 **The boolean-geometry family (#82–#91)** is where a deck stops looking like slides and starts looking designed. Nearly all of them are one `<image>` plus geometry — no extra assets, no generation cost — and they are the SVG equivalents of what PowerPoint users reach for under Merge Shapes. Their shared discipline is registration: the image stays anchored to the *union* of the containers so the scene reads as continuous (#82, #85, #87, #89), and the one pattern that deliberately breaks registration (#84) only works because the others establish the expectation. Reach here before adding another photo to the page.
 
 **When the supplied image does not fit the canvas**, the answer is #89, not stretching and not letterboxing: the same file placed twice, receded behind and sharp in front. This is the single most common image problem in real decks and it has a purely geometric solution.
+
+**When one ordinary photo has to carry a cover or divider**, reach for #90 before anything else. A full-canvas scrim with shapes cut out of it turns any stock image into a designed page using three elements, and its cut contour (curve, freehand shape, tessellated array, numeral) is where the page's character comes from. It is the most reused formula in real image-led decks.
 
 **Skip-detection signal** — if every page's `Layout pattern` column resolves to bare #2 / #3 / #5 / #6 with no Modifier ids, the catalog was not consulted. Re-read and reconsider.
 
