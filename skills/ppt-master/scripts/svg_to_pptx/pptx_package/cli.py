@@ -27,7 +27,12 @@ from pptx_animations import (  # noqa: E402
     normalize_animation_effect,
     normalize_animation_trigger,
 )
-from pptx_transitions import validate_seconds  # noqa: E402
+from pptx_transitions import (  # noqa: E402
+    LEGACY_TRANSITION_KEYS,
+    NATIVE_TRANSITION_KEYS,
+    normalize_transition_effect_request,
+    validate_seconds,
+)
 
 configure_utf8_stdio()
 
@@ -55,7 +60,6 @@ from ..drawingml.theme_fonts import (
     load_theme_font_spec,
 )
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
-from .slide_xml import TRANSITIONS
 from .template_structure import (
     TemplateStructureError,
     load_pptx_structure_lock,
@@ -647,7 +651,11 @@ def _recorded_narration_on_click_slides(
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
-    transition_choices = ['none', *TRANSITIONS]
+    transition_choices = [
+        'none',
+        *NATIVE_TRANSITION_KEYS,
+        *LEGACY_TRANSITION_KEYS,
+    ]
 
     animation_choices = ['none', *ANIMATIONS, 'auto', 'mixed', 'random']
 
@@ -670,7 +678,10 @@ SVG source directory (-s):
     Omit -s to use the default: native export reads svg_output.
 
 Transition effects (-t/--transition):
-    {', '.join(transition_choices)}
+    New selections use the 48 PowerPoint-native gallery keys. The 8 old
+    names remain accepted only as compatibility inputs. Run
+    scripts/pptx_animations.py --list for the categorized registry and
+    --describe-transition <effect> for its Effect Options.
 
 Per-element object animation (-a/--animation, native shapes mode):
     Use PowerPoint-native entrance_*, emphasis_*, path_*, and exit_* keys for
@@ -1306,8 +1317,17 @@ Recorded narration:
             else transition_defaults.get('effect', 'fade')
         )
     )
-    transition = None if transition_effect == 'none' else transition_effect
     try:
+        transition, transition_effect_options = (
+            normalize_transition_effect_request(
+                transition_effect,
+                (
+                    None
+                    if transition_arg is not None or args.no_animations
+                    else transition_defaults.get('effect_options')
+                ),
+            )
+        )
         transition_duration = validate_seconds(
             (
                 args.transition_duration
@@ -1451,6 +1471,7 @@ Recorded narration:
         structure_name=structure_name,
         verbose=verbose,
         transition=transition,
+        transition_effect_options=transition_effect_options,
         transition_duration=transition_duration,
         auto_advance=auto_advance,
         notes=notes,

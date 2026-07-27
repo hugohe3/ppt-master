@@ -133,15 +133,22 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advance 5
 ```
 
-The named effects cover the complete current PowerPoint transition gallery:
+The native registry covers PowerPoint's complete Subtle, Exciting, and Dynamic
+Content gallery: 48 canonical keys. New selection, sidecars, plans, conversion
+traces, and writers use only those keys. Run `pptx_animations.py --list` for
+the categorized identifiers.
 
-The registry covers PowerPoint's complete Subtle, Exciting, and Dynamic Content
-gallery. Run `pptx_animations.py --list` for exact identifiers.
+Eight old low-level names remain accepted only as compatibility inputs. They
+desugar to a native key plus native `effect_options`: for example, `diamond`
+becomes `shape` with `shape: diamond`, and `wedge` becomes `clock` with
+`style: wedge`. They are never selected for new output.
 
-Established low-level aliases remain accepted for compatibility and normalize
-to current gallery effects: `strips` → `wipe`; `circle` / `diamond` / `plus`
-→ `shape`; `newsflash` → `flash`; `pull` → `uncover`; and `wedge` / `wheel`
-→ `clock`.
+Effects expose their real PowerPoint Effect Options through
+`transition.effect_options`. Common examples include Push/Wipe direction,
+Morph by object/word/character, Reveal through black, Shape geometry, Page
+Curl direction/pages, Glitter pattern/direction, and Fly Through bounce. Run
+`pptx_animations.py --describe-transition <effect>` for the exact
+effect-specific contract; unknown or inapplicable options fail validation.
 `none` removes the visual effect. Effects that require newer Office namespaces
 carry a real PowerPoint effect in `mc:Choice` and a `fade` fallback for older
 consumers; validation requires the requested primary effect and never accepts
@@ -149,11 +156,11 @@ the fallback as a silent substitute.
 
 Flags:
 
-- `-t/--transition` — effect name, or `none` for no visual transition. Default: `fade`. `none` does not remove an explicitly configured automatic advance.
+- `-t/--transition` — native effect name, compatibility input, or `none` for no visual transition. Default: `fade`. `none` does not remove an explicitly configured automatic advance.
 - `--transition-duration` — seconds, default `0.4`.
 - `--auto-advance` — seconds; click remains enabled, so the slide advances on click or when the timer expires. Omit for presenter-controlled advance.
 
-**Hard rule — no silent downgrade**: an unknown transition effect or invalid/non-finite duration fails export. It is never replaced by `fade`. Recorded narration keeps the resolved visual transition; `-t none --recorded-narration ...` writes narration-driven advance timing without restoring a visual effect.
+**Hard rule — no silent downgrade**: an unknown transition effect, unsupported Effect Option, or invalid/non-finite duration fails export. It is never replaced by `fade`. Recorded narration keeps the resolved visual transition; `-t none --recorded-narration ...` writes narration-driven advance timing without restoring a visual effect.
 
 ---
 

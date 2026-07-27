@@ -29,9 +29,9 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from pptx_transitions import (
-    TRANSITIONS,
+    NATIVE_TRANSITIONS,
     create_transition_xml,
-    normalize_transition_effect,
+    normalize_transition_effect_request,
     set_directory_use_timings,
     validate_generated_transition_xml,
     validate_pptx_transition_package,
@@ -3909,21 +3909,32 @@ def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dic
 def _slide_transition_settings(
     slide_cfg: dict[str, Any],
     transition: str | None,
+    transition_effect_options: dict[str, object] | None,
     duration: float,
     auto_advance: float | None,
     cli_overrides: dict[str, bool],
-) -> tuple[str | None, float, float | None]:
+) -> tuple[str | None, dict[str, object], float, float | None]:
     trans_value = slide_cfg.get('transition', {})
     if not isinstance(trans_value, dict):
         raise ValueError('animations.json slide transition must be an object')
     trans_cfg = trans_value
-    effect = transition
-    if not cli_overrides.get('transition') and 'effect' in trans_cfg:
-        raw_effect = trans_cfg['effect']
-        if not isinstance(raw_effect, str):
-            raise ValueError('animations.json transition effect must be a string')
-        cfg_effect = normalize_transition_effect(raw_effect)
-        effect = cfg_effect
+    effect, effect_options = normalize_transition_effect_request(
+        transition,
+        transition_effect_options,
+    )
+    if not cli_overrides.get('transition'):
+        if 'effect' in trans_cfg:
+            raw_effect = trans_cfg['effect']
+            raw_options = trans_cfg.get('effect_options')
+            effect, effect_options = normalize_transition_effect_request(
+                raw_effect,
+                raw_options,
+            )
+        elif 'effect_options' in trans_cfg:
+            raise ValueError(
+                'animations.json transition effect_options requires '
+                'an explicit effect'
+            )
     if not cli_overrides.get('transition_duration'):
         if 'duration' in trans_cfg:
             duration = validate_seconds(
@@ -3937,7 +3948,7 @@ def _slide_transition_settings(
             "transition auto_advance",
             allow_zero=True,
         )
-    return effect, duration, auto_advance
+    return effect, effect_options, duration, auto_advance
 
 
 def _slide_animation_settings(
@@ -4651,6 +4662,7 @@ def create_pptx_with_native_svg(
     layout_definition_files: list[Path] | None = None,
     expected_viewbox: str | None = None,
     animation_resource_root: Path | None = None,
+    transition_effect_options: dict[str, object] | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
@@ -4667,6 +4679,8 @@ def create_pptx_with_native_svg(
             paths. Defaults to the parent of the SVG source directory.
         verbose: Whether to output detailed information.
         transition: Transition effect name.
+        transition_effect_options: PowerPoint Effect Options for the selected
+            native page transition.
         transition_duration: Transition duration in seconds.
         auto_advance: Auto-advance interval in seconds.
         use_compat_mode: Retained for API compatibility; ignored in native mode.
@@ -4892,7 +4906,20 @@ def create_pptx_with_native_svg(
         else:
             print(f"  Compatibility mode: Disabled (pure SVG)")
         if transition:
-            trans_name = TRANSITIONS.get(transition, {}).get('name', transition) if TRANSITIONS else transition
+            canonical_transition, _transition_options = (
+                normalize_transition_effect_request(
+                    transition,
+                    transition_effect_options,
+                )
+            )
+            trans_name = (
+                NATIVE_TRANSITIONS.get(canonical_transition, {}).get(
+                    'name',
+                    canonical_transition,
+                )
+                if canonical_transition
+                else transition
+            )
             print(f"  Transition effect: {trans_name}")
         if enable_notes and notes:
             print(f"  Speaker notes: {len(notes)} page(s)")
@@ -5035,6 +5062,7 @@ def create_pptx_with_native_svg(
                     )
                     if is_layout_definition:
                         slide_transition = None
+                        slide_transition_effect_options = {}
                         slide_transition_duration = transition_duration
                         slide_auto_advance = None
                         slide_animation = None
@@ -5045,11 +5073,13 @@ def create_pptx_with_native_svg(
                     else:
                         (
                             slide_transition,
+                            slide_transition_effect_options,
                             slide_transition_duration,
                             slide_auto_advance,
                         ) = _slide_transition_settings(
                             slide_cfg,
                             transition,
+                            transition_effect_options,
                             transition_duration,
                             auto_advance,
                             animation_cli_overrides,
@@ -5133,6 +5163,7 @@ def create_pptx_with_native_svg(
                             effect=slide_transition,
                             duration=slide_transition_duration,
                             advance_after=slide_auto_advance,
+                            effect_options=slide_transition_effect_options,
                         )
                         if transition_fragment:
                             slide_xml = slide_xml.replace(
@@ -5273,10 +5304,16 @@ def create_pptx_with_native_svg(
                 # ---- Legacy SVG embedding mode ----
                 else:
                     slide_cfg = _slide_config(animation_config, svg_path.stem)
-                    slide_transition, slide_transition_duration, slide_auto_advance = (
+                    (
+                        slide_transition,
+                        slide_transition_effect_options,
+                        slide_transition_duration,
+                        slide_auto_advance,
+                    ) = (
                         _slide_transition_settings(
                             slide_cfg,
                             transition,
+                            transition_effect_options,
                             transition_duration,
                             auto_advance,
                             animation_cli_overrides,
@@ -5317,6 +5354,7 @@ def create_pptx_with_native_svg(
                         png_rid=png_rid, svg_rid=svg_rid,
                         width_emu=width_emu, height_emu=height_emu,
                         transition=slide_transition,
+                        transition_effect_options=slide_transition_effect_options,
                         transition_duration=slide_transition_duration,
                         auto_advance=slide_auto_advance,
                         use_compat_mode=(use_compat_mode and slide_has_png),
@@ -5443,6 +5481,7 @@ def create_pptx_with_native_svg(
                     resolved_motion = validate_generated_transition_xml(
                         final_slide_xml,
                         effect=slide_transition,
+                        effect_options=slide_transition_effect_options,
                         duration=slide_transition_duration,
                         advance_on_click=resolved_advance_on_click,
                         advance_after=resolved_advance_after,

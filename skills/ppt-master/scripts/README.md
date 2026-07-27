@@ -174,7 +174,7 @@ python3 scripts/template_fill_pptx.py apply <project_path>/sources/<source.pptx>
 python3 scripts/template_fill_pptx.py validate <project_path>
 ```
 
-`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It applies a `fade` page transition by default; `--transition <effect>` accepts any effect in the shared gallery registry documented by [`docs/pptx-transitions.md`](docs/pptx-transitions.md), and `--transition-duration <seconds>` changes its duration. `--transition none` removes the visual effect, `--transition keep` preserves the source transitions, and a per-slide `transition` field in the plan overrides whatever the CLI selects.
+`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It applies a `fade` page transition by default; `--transition <effect>` accepts a canonical effect in the shared native gallery registry documented by [`docs/pptx-transitions.md`](docs/pptx-transitions.md), while old names remain accepted only as compatibility inputs, and `--transition-duration <seconds>` changes its duration. `--transition none` removes the visual effect, `--transition keep` preserves the source transitions, and a per-slide `transition` field in the plan overrides whatever the CLI selects. The object form accepts effect-specific native `effect_options`.
 
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
