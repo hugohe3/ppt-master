@@ -24,7 +24,7 @@ Editable is already table stakes — exporting each slide as an editable `.pptx`
 - **Native shapes** — preset geometry with working adjustment handles (block arrows, chevrons, callouts, flowchart nodes…), connectors, and freeform paths, not just rectangles
 - **Native charts & tables, on demand** — data-backed chart and table objects with an Edit-Data workbook when you want them (trade-off note below)
 - **The full text, picture, fill, and effect model** — run/paragraph formatting, picture crop and shape-clip, gradients, patterns, outer shadow, glow
-- **Transitions, entrance animation, and speaker notes → voice narration** — real OOXML timing and package parts, not baked-in video
+- **Transitions, entrance / emphasis / path / exit animation, and speaker notes → voice narration** — real OOXML timing and package parts, not baked-in video
 - **Template distillation on top** — hand it an existing deck and it extracts a reusable brand / layout / deck template; a layer of reuse built *above* the native primitives
 
 And this depth is a **direction of travel, not a fixed list.** The project's north star is to keep converging with PowerPoint itself — an ongoing effort to build and integrate more of its native capabilities, release after release, narrowing the gap between what an AI can generate for you and what you could build by hand in PowerPoint.
@@ -108,4 +108,4 @@ Being honest about limitations:
 
 **If you want zero-setup, instant slides in a browser** — a hosted SaaS tool is a better fit.
 
-**If you want deep native PowerPoint output — masters and layouts, native shapes and connectors, data-backed charts and tables, gradients / patterns / shadows / glow, vector icons, transitions and entrance animation, speaker notes turned into voice narration and video, and template distillation on top — with predictable cost, local data, and no lock-in** — that's what PPT Master is built for.
+**If you want deep native PowerPoint output — masters and layouts, native shapes and connectors, data-backed charts and tables, gradients / patterns / shadows / glow, vector icons, transitions and full object animation, speaker notes turned into voice narration and video, and template distillation on top — with predictable cost, local data, and no lock-in** — that's what PPT Master is built for.

@@ -138,13 +138,19 @@ If your workflow specifically requires Excel-driven data editing or PowerPoint's
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. Page transitions are on by default (`fade` 0.4s); per-element entrance animation is **off by default** — a page appears as a whole instead of having elements auto-cascade in one by one (that unsolicited cascade is the strongest "AI deck" tell). Both are controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Turn element animation on explicitly when you want it:
+Yes. Page transitions are on by default (`fade` 0.4s); per-element object
+animation is **off by default**—a page appears as a whole instead of having
+elements auto-cascade in one by one. Both are controlled by `svg_to_pptx.py`
+flags: `-t/--transition` for page-level and `-a/--animation` for element-level.
+The object registry includes entrance, emphasis, motion-path, and exit effects.
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto       # enable per-element entrance (effect mapped from group id)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # enable with a single effect
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade # enable with one canonical effect
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation emphasis_spin # native emphasis
+python3 skills/ppt-master/scripts/pptx_animations.py --list             # complete categorized effect list
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click   # presenter-paced reveals
 ```
 

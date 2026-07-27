@@ -210,7 +210,7 @@ These capabilities belong to PPTX package semantics. Their absence from page SVG
 |---|---|---|---|---|
 | Speaker notes | `notes/<slide>.md` sidecar | Notes Slide part and relationship | `Sidecar/package` | Notes are not SVG text and do not affect page geometry |
 | Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package` | Unknown effects or invalid durations fail; no silent `fade` fallback |
-| Object entrance animation | `animations.json` targeting stable top-level SVG group IDs | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the target anchor | Static structural layers and placeholders cannot be animated |
+| Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the target anchor | Static structural layers and placeholders cannot be animated |
 | Narration audio | `audio/` asset plus recorded-narration export option | Media relationship, audio carrier, and timing | `Sidecar/package` | Asset, slide association, and timing must validate |
 | Automatic slide advance | Explicit transition timing or narration-derived duration | `advTm`/advance behavior | `Sidecar/package` | Click-driven animation is incompatible with recorded narration |
 | Hyperlink or action | No main SVG compiler mapping | Not created by page SVG | `Direct preservation` where a native route retains source OOXML | An action-button preset supplies visual geometry only |

@@ -344,7 +344,7 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 | Preserve original visual design | Supported by cloning slide parts directly |
 | Page-to-page transitions | Supported via `apply --transition` or per-slide `transition` |
 | Replace images | Not in v1 |
-| Object-level entrance animations | Not in v1; preserved from source only, set as a separate task |
+| Object-level animations | Not authored in v1; entrance, emphasis, motion-path, and exit effects are preserved from source only and handled as a separate task |
 | Edit chart formatting / axes / legend layout | Not in v1 |
 | Edit or generate native SmartArt | Not supported; regenerated visual routes use ordinary editable shapes |
 | Automatic visual overflow detection | Not in v1; use text-capacity judgment from the library slots |

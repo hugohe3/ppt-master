@@ -205,7 +205,7 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 |---|---|---|---|---|
 | 演讲者备注 | `notes/<slide>.md` sidecar | Notes Slide part 与 relationship | `Sidecar/package` | 备注不是 SVG 文本，不影响页面几何 |
 | 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package` | 未知效果或非法时长失败；不默默 fallback 到 `fade` |
-| 对象进入动画 | `animations.json`，目标为稳定的顶层 SVG group ID | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为目标锚点 | 静态结构层与占位符不可动画 |
+| 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为目标锚点 | 静态结构层与占位符不可动画 |
 | 旁白音频 | `audio/` 资产加 recorded-narration 导出选项 | media relationship、audio carrier 与 timing | `Sidecar/package` | 必须校验资产、Slide 关联与时序 |
 | 幻灯片自动换页 | 显式 transition timing 或旁白派生时长 | `advTm`/换页行为 | `Sidecar/package` | 单击驱动动画与录制旁白不兼容 |
 | 超链接或动作 | 无主 SVG 编译器映射 | 不由页面 SVG 创建 | 原生路线保留源 OOXML 时为 `Direct preservation` | action-button preset 只提供可见几何 |

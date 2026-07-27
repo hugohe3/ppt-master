@@ -54,8 +54,16 @@ a timing-only p:transition with no visual-effect child.
 
 The registry covers the complete current PowerPoint transition gallery:
 12 Subtle effects, 29 Exciting effects, and 7 Dynamic Content effects.
-It also retains eight established low-level aliases that remain valid public
-inputs.
+Eight established low-level names remain valid compatibility inputs, but they
+normalize to current gallery effects before XML writing and read-back:
+
+| Compatibility input | Canonical gallery effect |
+|---|---|
+| `strips` | `wipe` |
+| `circle`, `diamond`, `plus` | `shape` |
+| `newsflash` | `flash` |
+| `pull` | `uncover` |
+| `wedge`, `wheel` | `clock` |
 
 Standard PresentationML effects use a direct `p:transition` carrier:
 
@@ -77,14 +85,6 @@ Standard PresentationML effects use a direct `p:transition` carrier:
 | random | p:random |
 | box | p:zoom |
 | comb | p:comb dir=horz |
-| strips | p:strips dir=rd |
-| circle | p:circle |
-| diamond | p:diamond |
-| newsflash | p:newsflash |
-| plus | p:plus |
-| pull | p:pull dir=r |
-| wedge | p:wedge |
-| wheel | p:wheel spokes=1 |
 
 Office 2010 effects use a `p14` Choice with a `p:fade` Fallback:
 

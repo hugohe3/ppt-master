@@ -621,6 +621,14 @@
       ],
       "max_tokens": 21300
     },
+    "stage.generate.video-motion-plan": {
+      "description": "Conditional resolved animation-to-video handoff contract.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/scripts/docs/video-motion-plan.md"
+      ],
+      "max_tokens": 1000
+    },
     "stage.generate.animation-options": {
       "description": "Conditional deck-wide transition, auto-advance, and entrance-animation options.",
       "scope": "incremental",

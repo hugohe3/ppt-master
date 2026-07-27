@@ -4,14 +4,19 @@
 
 ---
 
-PPT Master writes **page transitions** and optional **element entrance animations** as real PowerPoint OOXML, not embedded video. This guide covers the choices and commands users need; exact effect mappings, the complete sidecar schema, anchor rules, and package validation live in the [animation execution reference](../skills/ppt-master/references/animations.md).
+PPT Master writes **page transitions** and optional **element object
+animations** as real PowerPoint OOXML, not embedded video. Object animation
+includes entrance, emphasis, motion-path, and exit effects. This guide covers
+the choices and commands users need; exact effect mappings, the complete
+sidecar schema, anchor rules, and package validation live in the
+[animation execution reference](../skills/ppt-master/references/animations.md).
 
 ## Default Behavior
 
 | Layer | Default | What it means |
 |---|---|---|
 | Page transition | `fade`, 0.4 seconds | Slides change with a restrained visual transition |
-| Element entrance animation | **`none` (off)** | Each slide appears as a complete page; opt in only when a reveal sequence helps the presentation |
+| Element object animation | **`none` (off)** | Each slide appears as a complete page; opt in only when motion helps the presentation |
 
 Changing animation settings does not require regenerating the slides. Rerun `svg_to_pptx.py` against the same `svg_output/`.
 
@@ -24,7 +29,10 @@ Changing animation settings does not require regenerating the slides. Rerun `svg
 | Remove the visual transition | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none` |
 | Auto-advance every 5 seconds | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5` |
 | Enable automatic element reveals | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto` |
-| Use one entrance effect throughout | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade` |
+| Use one entrance effect throughout | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade` |
+| Use one native emphasis effect | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation emphasis_spin` |
+| Use one native motion path | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation path_circle` |
+| Use one native exit effect | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation exit_fade` |
 | Reveal elements on click | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click` |
 | Animate all elements together | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | Slow the reveal sequence | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
@@ -43,8 +51,11 @@ gallery:
   `orbit`, `fly_through`.
 
 Compatibility aliases `strips`, `circle`, `diamond`, `newsflash`, `plus`,
-`pull`, `wedge`, and `wheel` also remain valid. `-t none` removes the visual
-effect but does not remove an explicitly configured auto-advance timer.
+`pull`, `wedge`, and `wheel` also remain valid. They normalize to current
+gallery effects before writing: `strips` → `wipe`; `circle` / `diamond` /
+`plus` → `shape`; `newsflash` → `flash`; `pull` → `uncover`; and `wedge` /
+`wheel` → `clock`. `-t none` removes the visual effect but does not remove an
+explicitly configured auto-advance timer.
 
 ## Choose a Start Mode
 
@@ -61,12 +72,25 @@ effect but does not remove an explicitly configured auto-advance timer.
 | Choice | Use it when |
 |---|---|
 | `auto` | You want PPT Master to choose suitable effects from each content group's role; this is the recommended opt-in |
-| A named effect such as `fade`, `wipe`, `fly`, or `zoom` | You want one consistent entrance style across the deck |
-| `mixed` | You need the legacy deterministic effect rotation |
-| `random` | You want deterministic variation from the supported legacy pool |
+| A native `entrance_*` key | You want one of PowerPoint's 53 native entrance presets |
+| A native `emphasis_*` key | An already visible object should draw attention or change appearance |
+| A native `path_*` key | An object should follow one of PowerPoint's 64 motion paths |
+| A native `exit_*` key | An object should leave the slide during the sequence |
+| `mixed` | You need the compatible deterministic mode over canonical PowerPoint presets |
+| `random` | You want deterministic variation from the same canonical preset pool |
 | `none` | You want to disable element animation |
 
-The complete supported effect list and its exact PowerPoint mapping belong to the [animation execution reference](../skills/ppt-master/references/animations.md), so the user guide does not duplicate that contract.
+The canonical registry contains 203 PowerPoint-native keys: 53 entrance, 33
+emphasis, 64 motion path, and 53 exit presets. New selections, sidecars,
+automatic choices, traces, and examples use these category-qualified keys.
+The 29 established short names remain accepted only as compatibility inputs;
+they normalize before writing and do not retain a second behavior engine.
+Old Fly direction names all normalize to `entrance_fly`, and old Wipe
+direction names all normalize to `entrance_wipe`; their suffix does not create
+another canonical preset. Run
+`python3 skills/ppt-master/scripts/pptx_animations.py --list` for the complete
+categorized list. The four media playback commands are handled by the
+audio/video workflows because they require media or bookmark targets.
 
 ## Customize Specific Objects
 
@@ -82,10 +106,10 @@ The generated sidecar targets stable top-level `<g id="...">` content groups. Co
 
 | Field | Purpose |
 |---|---|
-| `effect` | Override the entrance effect; use `none` to keep that object static |
+| `effect` | Override the object effect; use `none` to keep that object static |
 | `order` | Change reveal order without changing slide layer order |
 | `delay` | Add a pause before the object in `after-previous` mode |
-| `duration` | Override that object's scheduled entrance duration |
+| `duration` | Override that object's scheduled animation duration |
 
 When a user asks the AI to tune individual objects, use the [`customize-animations`](../skills/ppt-master/workflows/stages/customize-animations.md) stage. The full sidecar schema and target-validation rules remain in the [animation execution reference](../skills/ppt-master/references/animations.md).
 

@@ -140,13 +140,18 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 ## Q: 页面切换和元素动画可以调吗？
 
-可以。页间转场默认开（`fade` 0.4s），页内元素入场动画**默认关**——翻到一页时整页一次性呈现，不会有元素一个个自动级联出来（那种没人要的自动连播正是「AI 味」最重的地方）。两者都通过 `svg_to_pptx.py` 的参数控制——`-t/--transition` 控制页级，`-a/--animation` 控制元素级。想要页内动画时显式开启即可：
+可以。页间转场默认开（`fade` 0.4s），页内元素对象动画**默认关**——翻到
+一页时整页一次性呈现，不会自动逐个级联。两者都通过 `svg_to_pptx.py` 的
+参数控制：`-t/--transition` 控制页级，`-a/--animation` 控制元素级。对象
+注册表已经包含进入、强调、动作路径和退出效果。
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # 换转场效果
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # 关闭转场
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto       # 开启页内元素入场（按 group id 自动映射效果）
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # 开启并改用单一效果
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade # 开启并改用单一规范效果
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation emphasis_spin # 原生强调效果
+python3 skills/ppt-master/scripts/pptx_animations.py --list             # 完整分类效果清单
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click   # 单击触发，演讲者控制节奏
 ```
 

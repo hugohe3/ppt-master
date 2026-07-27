@@ -605,7 +605,11 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 
 值得讲的设计选择是动画**锚点**，不是效果列表。
 
-**为什么把入场动画锚在顶层 `<g>` group。** PowerPoint 的动画时序基于形状 ID——每个被动画的对象需要稳定的 shape ID。给单个原语做动画会产出每页 30+ 个分别飞入的原子（动感泛滥），只给整页做动画又损失视觉叙事。顶层 group 是自然粒度：Executor 本来就被强制要求用 `<g id="...">` 标记逻辑内容块，而这些块正是观众读作「一个东西到达」的单位——动画对齐了已有的逻辑结构，而不是另立门户。
+**为什么把对象动画锚在顶层 `<g>` group。** PowerPoint 的动画时序基于
+形状 ID——每个被动画的对象都需要稳定的 shape ID。给单个原语做动画会产出
+每页 30+ 个分别运动的原子，只给整页做动画又会损失视觉叙事。顶层 group
+本来就是 Executor 标记逻辑内容块的自然粒度，因此进入、强调、动作路径和退出
+可以共用同一套语义单元。
 
 **为什么页面结构自动跳过。** 顶层 group 只要带有 `data-pptx-layer`，就被视为不可动画的结构层；当前实现也把任何显式 `data-pptx-placeholder` 视为静态页框，`background` / `header` / `footer` / `decoration` / `watermark` / `page-number` 等 role 再补齐其余页面 chrome。ID token 回退不是按整份 SVG 启停，而是仅对同时缺少 layer、role 和 placeholder 的单个顶层 group 生效，因此新旧标记混合的 SVG 仍可能只在未标记 group 上使用 legacy ID 判断。另有一个有界的原语兼容回退：只有整页没有顶层 group、尚未找到任何动画目标且根原语候选为 1–8 个时，才把这些根原语作为锚点。这是当前扫描器的真实作用域；动画 reference 中“仅 marker-free legacy SVG”这一整页口径仍需另行与实现对齐。
 
@@ -613,7 +617,11 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 
 **为什么录制旁白让自动推进时长跟着片段时长走。** 录制旁白模式面向视频导出，视频里没有演讲者去点击。该模式会逐页探测音频实际时长，并把自动推进设置为“音频时长 + `--narration-padding`”；padding 默认是 0.5 秒，用于避免音频尾部被切断。它不使用估算朗读速度或固定每页时长。
 
-**为什么录制旁白拒绝 on-click 对象动画。** PowerPoint 可以在真实排练时记录点击计时，但 PPT Master 不合成对象级点击事件。录制旁白路径只写页面级音频和页面自动推进计时，所以单击触发的对象入场会让导出依赖额外的 PowerPoint 人工排练。使用 `--recorded-narration` 导出的 deck 必须采用无点击入场（`after-previous` 或 `with-previous`）。
+**为什么录制旁白拒绝 on-click 对象动画。** PowerPoint 可以在真实排练时记录
+点击计时，但 PPT Master 不合成对象级点击事件。录制旁白路径只写页面级音频和
+页面自动推进计时，所以单击触发的对象效果会让导出依赖额外的 PowerPoint 人工
+排练。使用 `--recorded-narration` 导出的 deck 必须采用无点击对象动画
+（`after-previous` 或 `with-previous`）。
 
 **为什么原生视频导出保持独立命令。** 音频合成和 PPTX 打包属于跨平台项目操作；PowerPoint 视频编码则是 Windows 桌面集成。`powerpoint_video.py` 接收最终带旁白 PPTX，调用 `CreateVideo` 并轮询 `CreateVideoStatus`，对调用方呈现同步结果，同时避免把 Office 自动化耦合进 TTS backend。
 
@@ -632,7 +640,7 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 | 不要把 `image_analysis.csv` 当持久缓存 | `images/` 是实时工作目录；事实必须按需重算 |
 | 不要让 `svg_final/` 成为 native PPTX 默认输入 | `svg_final/` 为视觉预览而重写资源，native 转换需要 `svg_output/` 的高保真语义 |
 | 不要把 `svg_final/` 当作可还原形状或无外部依赖的交换格式 | 它服务视觉预览和 SVG 图片插入，但 EMF/WMF 保留外链例外；PowerPoint 手工“转换为形状”不在支持范围 |
-| 不要默认开启对象级入场动画 | 页面转场是默认；对象 build 是显式导出策略 |
+| 不要默认开启对象级动画 | 页面转场是默认；对象动效是显式导出策略 |
 | 不要把 visual review、旁白、图表校准或动画定制默认塞进每次运行 | 这些工作流触发范围窄，且有额外依赖 |
 | 不要用文件复制替代 `finalize_svg.py` | finalize 会嵌入图标 / 图片、展开特殊文本并准备预览产物 |
 | 不要在主流水线里把 `analysis/<stem>.slide_library.json` 当作第二份图表数值来源 | Markdown 拥有内容数值；除非直接 PPTX 工作流接管，否则 intake 图表 / 表格条目只是结构摘要 |
