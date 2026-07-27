@@ -27,7 +27,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 1. Effect Capability Discovery
 
-**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. After selecting one, load [`svg-effects.md`](./svg-effects.md) before authoring it.
+**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. After selecting one, load [`svg-effects.md`](./svg-effects.md) before authoring it — except the cross-page motion row, which loads [`animations.md`](./animations.md) §3.1.
 
 | Visual need | Available construction |
 |---|---|
@@ -36,8 +36,11 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Image integration | scrim, vignette, brand wash, clipping, faux glass |
 | Line / type | dash/cap/join, markers, gradient stroke; tracking, outline, alpha/gradient text |
 | Space / constructed style | transform/reuse, curves/arcs, hand-drawn, ink/Riso, halftone, isometric, paper cut |
+| Continuous action across pages | Paired pages that differ in one property, exported with morph |
 
 **Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
+
+**Default — resolve cross-page motion here, while pages are still being authored (may override when the deck has no continuous action to express)**: object animation and page transitions are post-processing decisions, but morph is not. It tweens only objects it can match across consecutive slides — same image filename, same group `id`, unchanged container dimensions — so a sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as paired pages in `svg_output/` now. A deck that reaches export without them cannot gain the motion by adding a flag; it degrades silently to a cross-fade. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
 
 ---
 

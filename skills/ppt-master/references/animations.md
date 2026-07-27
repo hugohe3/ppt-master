@@ -4,6 +4,35 @@ Execution contract for generated-PPTX **page transitions** and **per-element
 object animations**. This file owns defaults, sidecar semantics, anchor
 selection, validation, and package read-back.
 
+## Capability Menu — Open Here
+
+Motion here is several separate capabilities, not one dial. Two of them are
+decided **upstream, while pages are still being authored** — read this menu
+before the page plan is frozen, not only when a deck is already exported.
+
+| What the deck needs | Reach for | Decided at |
+|---|---|---|
+| Reveal content in step with the narration | Per-element object animation — `-a auto` deck-wide, or an `animations.json` sidecar for specific order, effects, timing, and triggers | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
+| A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages plus `-t morph`.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6)** — §3.1 |
+| A static full-bleed page that should stop looking frozen | One slow `path_*` motion on the background group only, `with-previous`, 4–10 s | Post-processing; §4.1, one sidecar entry |
+| Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
+| Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
+| Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
+
+**Hard rule — morph is an authoring decision, not an export flag**: `-t morph`
+tweens only objects it can match across consecutive slides, and matching is by
+object identity — same image filename, same group `id`, unchanged container
+dimensions. A deck that reaches export without paired pages cannot gain morph
+motion by adding the flag; it degrades silently to a cross-fade. Resolve this
+while `svg_output/` is still being authored, or accept that the sequence stays
+static.
+
+**Reference — not a constraint**: per-element animation stays off by default
+(§1). Auto-firing element builds on every page are an unsolicited "AI deck"
+tell; each capability above earns its place per page, not per deck.
+
+---
+
 ## 1. Defaults
 
 | Layer | Default | Why |
@@ -176,7 +205,7 @@ Morph tweens objects it can match across consecutive slides. That makes it a gen
 
 Chain three or more pages to build a sequence — extend, hold, retract — where each page is still an ordinary editable slide.
 
-**Matching is by object identity, and it is strict**: keep the same image filename, the same group `id`, and container dimensions that do not change between the pages. Rename the file or resize the frame and morph silently degrades to a cross-fade with none of the motion. This is the most common reason a morph sequence "does nothing".
+**Hard rule — matching is by object identity**: keep the same image filename, the same group `id`, and container dimensions that do not change between the pages. Rename the file or resize the frame and morph silently degrades to a cross-fade with none of the motion. This is the most common reason a morph sequence "does nothing".
 
 **Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix, used in essentially every morph-driven deck: place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages with the same identity.
 
