@@ -1,10 +1,10 @@
 # Image-Text Layout Patterns
 
-A vocabulary registry of ways images can be placed on a slide. The point of this file is to **expand the mental list of options** so that when you reach for an image layout, you do not default to the same three patterns (left/right, top/bottom, full-bleed cover).
+A vocabulary registry of ways images can be placed on a slide. The point of this file is to **expand the mental list of options** so that when you reach for an image layout, you do not default to the same three patterns (left/right, top/bottom, full-bleed cover). Start at **High-Yield Patterns** below: it routes the common page situations to the constructions that most visibly raise a deck's quality, at no asset cost.
 
 Every entry has a name plus a short technical hint. Common techniques get a single line. Less obvious or easily forgotten techniques get a short paragraph — not a full tutorial, but enough that a model unfamiliar with the project can implement it without guessing. This is a registry, not a teaching document; no use-case prescriptions, no decision tables.
 
-> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88, #92–#94) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91, #95–#99). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly.
+> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88, #92–#94) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91, #95–#99). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly. **High-Yield Patterns** below is a router over those same numbers, not a third part — read it first, then jump to the entry it names.
 
 ---
 
@@ -17,6 +17,35 @@ Almost every pattern below is an instance of one underlying split:
 This is the single most underused move in image-heavy decks. The default reflex is to place image and text in adjacent rectangles. The far more powerful move — especially for content-rich pages — is to let the image **be the canvas** (often full-bleed) and draw native vector elements (annotation cards, flow nodes, KPI tiles, leader lines, network diagrams, dashboards) directly on top.
 
 Anything that must be editable, numerically accurate, contain Chinese, or be styled to the deck's exact palette belongs in the SVG layer regardless of what the image looks like underneath.
+
+---
+
+## High-Yield Patterns — Open Here
+
+The patterns below are what separate a deck that looks designed from a deck that looks assembled. Nearly all of them are **one `<image>` plus geometry** — no extra asset, no generation cost, no second render — and they are the SVG equivalents of what PowerPoint users reach for under Merge Shapes. They sit late in the file only because the numbering is historical; they are the first place to look, not the last.
+
+**Default — resolve each page against this table before falling back to the plain structures in Part 1 (may override when the content genuinely wants a plain split, an equal grid, or bare whitespace):**
+
+| Page situation | Reach for | Produces |
+|---|---|---|
+| One ordinary photo must carry a cover or a chapter divider | `#90` scrim with shapes cut out + `#86` contour echo | Three elements turn a stock image into a designed page; the cut contour is where the page's character comes from |
+| The supplied image does not fit the canvas | `#89` same image twice — sharp cutout over a receded copy | Subject at full fidelity in any aspect ratio; no stretching, no letterbox bars, no second asset |
+| Several peer images belong to one frame | `#92` split tiling — one parent cut into interlocking cells | Edges interlock exactly; the group still reads as one object |
+| One image should appear inside several detached containers | `#82` one image shattered across separated shapes | Merge-Shapes look; the photo runs continuously behind the gaps |
+| A panel needs a real opening onto what is behind it | `#83` panel with a hole punched through it | True subtraction — survives a gradient, a texture, or a second image behind the panel |
+| A photo row needs depth without 3D | `#94` embracing arc row, or `#93` containers arrayed along a curve | A perspective wall reproduced in 2D from scale + vertical offset alone |
+| A flat scrim reads as a sheet of paint over the photo | `#98` grid scrim with per-cell opacity | The overlay reads as panelled glass or a contact sheet, felt rather than drawn |
+| A busy photo has no clear focus | `#99` selective desaturation, or `#96` cutout subject re-laid over its own photo | Focus without cropping; the subject can then overlap a title, a panel, or a grid line |
+| Text needs legibility but a solid scrim would kill the photo | `#97` frosted-glass panel | The photo's colour and composition stay visible through the panel |
+| An image grid looks like a stock template | `#88` non-rectangular tessellation with 1–3 cells left empty | The empty cells are where the title and body copy live |
+| A subject should escape its container | `#85` subject breaking out + `#96` | Depth with no shadow at all |
+| One place should be recognized across consecutive pages | `#87` one image panned across pages | The deck reads as one continuous scene; with `-t morph` the flip becomes a camera pan |
+
+**Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, and `#97`, the image stays anchored to the *union* of its containers, or the two copies stay in exact register. A few pixels of drift reads as a printing error, and giving each container its own image collapses the page into an ordinary tile grid. `#84` is the one pattern that breaks registration on purpose, and it only reads as a decision because the others establish the expectation.
+
+**Skip-detection signal** — if every page's `Layout pattern` resolves to a bare `#2` / `#3` / `#5` / `#6` with no Modifier id, this table was not consulted. Re-open it before finalizing `design_spec.md §VIII`.
+
+Each entry above is specified in full at its own number below; the table routes, it does not restate.
 
 ---
 
@@ -356,13 +385,7 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 | Benefits with one dominant proof image | `#80` |
 | Light promotional page without photos | `#81` |
 
-**The boolean-geometry family (#82–#91)** is where a deck stops looking like slides and starts looking designed. Nearly all of them are one `<image>` plus geometry — no extra assets, no generation cost — and they are the SVG equivalents of what PowerPoint users reach for under Merge Shapes. Their shared discipline is registration: the image stays anchored to the *union* of the containers so the scene reads as continuous (#82, #85, #87, #89), and the one pattern that deliberately breaks registration (#84) only works because the others establish the expectation. Reach here before adding another photo to the page.
-
-**When the supplied image does not fit the canvas**, the answer is #89, not stretching and not letterboxing: the same file placed twice, receded behind and sharp in front. This is the single most common image problem in real decks and it has a purely geometric solution.
-
-**When one ordinary photo has to carry a cover or divider**, reach for #90 before anything else. A full-canvas scrim with shapes cut out of it turns any stock image into a designed page using three elements, and its cut contour (curve, freehand shape, tessellated array, numeral) is where the page's character comes from. It is the most reused formula in real image-led decks.
-
-**Skip-detection signal** — if every page's `Layout pattern` column resolves to bare #2 / #3 / #5 / #6 with no Modifier ids, the catalog was not consulted. Re-read and reconsider.
+**Reach for the boolean-geometry family (#82–#99) before adding another photo to the page.** Routing, the registration invariant, and the skip-detection signal are in **High-Yield Patterns** at the top of this file.
 
 **Cross-page through-line (recurring motif).** The patterns above are per-page, but a deck reads as *designed* when one illustration motif family recurs across pages—a cover anchor, section dividers repeating the motif (`#75`), and small `#63` spots threaded through the body. Keep one family (shared rendering / locked deck colors / subject world), vary scale and placement, and never turn recurrence into a quota.
 
