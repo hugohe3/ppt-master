@@ -199,7 +199,9 @@ The 29 old short names remain readable only as compatibility inputs; do not use
 them in new plans or sidecars. All Fly direction names normalize to
 `entrance_fly`, all Wipe direction names normalize to `entrance_wipe`, and the
 other old names normalize to their matching `entrance_*` preset. `cut`
-normalizes to `entrance_appear`.
+normalizes to `entrance_appear`. Compatibility Fly/Wipe aliases preserve their
+direction as `effect_options.direction`; legacy `wheel` preserves its historical
+four-spoke amount.
 
 `auto`, `mixed`, and `random` never choose emphasis, motion-path, or exit
 effects implicitly. Select an explicit canonical key when the plan calls for
@@ -254,8 +256,24 @@ the deck-wide values copied into every complete new slide block.
 | `animation.trigger` | Slide-specific start mode |
 | `groups.<id>.effect` | Object-specific canonical native effect, `auto`, `mixed`, `random`, or `none`; old names are read-only compatibility inputs |
 | `order` | Animation order only; does not change SVG layer order |
-| `delay` | Extra seconds before this group starts in `after-previous` mode |
+| `delay` | Extra seconds in `after-previous`, or after clicking `trigger_shape` |
 | `duration` | Per-group schedule duration in seconds; scalable native behavior trees keep their internal timing ratios, while `entrance_appear` and instantaneous native presets retain their PowerPoint-authored duration and use this value for subsequent `after-previous` spacing |
+| `effect_options` | Effect-specific PowerPoint parameters; requires an explicit canonical `effect` in the same block |
+| `trigger_shape` | Different top-level group id for native **On Click of**; group-only and not inherited |
+| `repeat_count` / `repeat_duration` | Repeat count or total repeat span; mutually exclusive |
+| `auto_reverse`, `rewind` | Reverse each cycle and/or restore the pre-animation state |
+| `accelerate`, `decelerate`, `bounce_end` | `0..1` timing ratios; acceleration plus deceleration must not exceed `1`; bounce requires an interpolated effect and cannot combine with deceleration |
+| `restart` | `always`, `when-not-active`, or `never` |
+| `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
+| `sound` | Project-relative or absolute `.m4a`, `.mp3`, or `.wav` path |
+
+`effect_options` may contain `direction`, `amount`, `color`, `font_name`,
+`relative`, or `size`, but validation permits only fields supported by the
+selected effect. Before writing a parameterized effect, run
+`python3 skills/ppt-master/scripts/pptx_animations.py --describe
+<canonical_effect>` and use the returned values exactly. `duration` owns
+PowerPoint Speed; `accelerate`/`decelerate` own smooth start/end, so do not
+invent duplicate fields.
 
 **Canonical example — every slide carries explicit transition + animation;
 groups appear only when they diverge**:
@@ -276,8 +294,8 @@ groups appear only when they diverge**:
       "transition": { "effect": "wipe", "duration": 0.35 },
       "animation": { "effect": "entrance_fade", "duration": 0.4, "stagger": 0.25, "trigger": "after-previous" },
       "groups": {
-        "chart": { "effect": "entrance_wipe", "order": 2, "duration": 0.6 },
-        "insight": { "effect": "entrance_fly", "order": 3, "delay": 0.2 }
+        "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },
+        "insight": { "effect": "entrance_fly", "effect_options": { "direction": "up_right" }, "order": 3, "delay": 0.2, "trigger_shape": "chart" }
       }
     }
   }
@@ -306,11 +324,11 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 per-object overrides, and `svg_final/` must reflect any semantic regrouping
 performed in §2. `--animation none` still disables all per-element animation
 and overrides `animations.json`. Unknown animation
-effects/modes/triggers; boolean, NaN, or Infinity numeric values; non-positive
-durations; negative delay/stagger; invalid order; missing slides/groups; and
-structural-layer targets fail validation. Transition validation remains strict
-as well. None of these failures substitutes a fallback effect or silently drops
-a requested target.
+effects/modes/triggers; unsupported effect options; incompatible, boolean,
+non-finite, or out-of-range timing parameters; non-positive durations; negative
+delay/stagger; invalid order; missing slides/groups; and structural-layer
+targets fail validation. Transition validation remains strict. None of these
+failures substitutes a fallback effect or silently drops a requested target.
 
 Generated export reads back row order, trigger, target, resolved effect,
 duration, offset, timing placement, IDs, and shape references. Narration

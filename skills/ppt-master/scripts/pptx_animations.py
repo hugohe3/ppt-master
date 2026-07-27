@@ -55,12 +55,15 @@ Dependencies: None (standard-library XML generation and validation)
 Usage:
     python3 scripts/pptx_animations.py --demo
     python3 scripts/pptx_animations.py --list
+    python3 scripts/pptx_animations.py --describe entrance_fly
 """
 
 import argparse
+import copy
 import hashlib
 import json
 import math
+import posixpath
 import random
 import re
 import zipfile
@@ -131,8 +134,52 @@ _PRESET_CLASS_BY_CATEGORY = {
     'exit': 'exit',
 }
 _DML_NS = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+_REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+_PACKAGE_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships'
+_AUDIO_REL_TYPE = (
+    'http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio'
+)
+_P14_NS = 'http://schemas.microsoft.com/office/powerpoint/2010/main'
+_MC_NS = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
 ET.register_namespace('p', PML_NS)
 ET.register_namespace('a', _DML_NS)
+ET.register_namespace('r', _REL_NS)
+ET.register_namespace('p14', _P14_NS)
+
+ANIMATION_EFFECT_OPTION_FIELDS = (
+    'direction',
+    'amount',
+    'color',
+    'font_name',
+    'relative',
+    'size',
+)
+ANIMATION_TIMING_OPTION_FIELDS = (
+    'repeat_count',
+    'repeat_duration',
+    'auto_reverse',
+    'rewind',
+    'accelerate',
+    'decelerate',
+    'bounce_end',
+    'restart',
+)
+ANIMATION_RESTARTS = ('always', 'when-not-active', 'never')
+ANIMATION_AFTER_EFFECTS = ('none', 'dim', 'hide', 'hide-on-next-click')
+
+# Legacy directional names retain their historical semantics by desugaring
+# into one canonical effect plus the matching PowerPoint EffectParameters
+# value. New plans never select these aliases.
+ANIMATION_ALIAS_OPTIONS: dict[str, dict[str, object]] = {
+    'fly_left': {'direction': 'left'},
+    'fly_right': {'direction': 'right'},
+    'fly_top': {'direction': 'up'},
+    'wipe_left': {'direction': 'left'},
+    'wipe_right': {'direction': 'right'},
+    'wipe_up': {'direction': 'up'},
+    'wipe_down': {'direction': 'down'},
+    'wheel': {'amount': 4},
+}
 
 
 def _load_native_animations() -> dict[str, dict[str, Any]]:
@@ -144,7 +191,7 @@ def _load_native_animations() -> dict[str, dict[str, Any]]:
         raise RuntimeError(
             f'unable to load native animation presets from {manifest_path}: {exc}'
         ) from exc
-    if manifest.get('version') != 1:
+    if manifest.get('version') != 2:
         raise RuntimeError(
             f'unsupported native animation preset version: {manifest.get("version")!r}'
         )
@@ -190,6 +237,7 @@ def _load_native_animations() -> dict[str, dict[str, Any]]:
             'defaultDurationMs': raw.get('default_duration_ms'),
             'durationScalable': bool(raw.get('duration_scalable')),
             'rowXml': row_xml,
+            'effectOptions': raw.get('effect_options', {}),
         }
         if row.get('presetClass') != spec['presetClass']:
             raise RuntimeError(f'native animation preset {key!r} changed presetClass')
@@ -197,6 +245,74 @@ def _load_native_animations() -> dict[str, dict[str, Any]]:
             raise RuntimeError(f'native animation preset {key!r} changed presetID')
         if int(row.get('presetSubtype', '-1')) != spec['presetSubtype']:
             raise RuntimeError(f'native animation preset {key!r} changed presetSubtype')
+        effect_options = spec['effectOptions']
+        if not isinstance(effect_options, dict):
+            raise RuntimeError(
+                f'native animation preset {key!r} effect_options must be an object'
+            )
+        unknown_options = set(effect_options) - set(ANIMATION_EFFECT_OPTION_FIELDS)
+        if unknown_options:
+            raise RuntimeError(
+                f'native animation preset {key!r} has unknown effect option(s): '
+                + ', '.join(sorted(unknown_options))
+            )
+        for option_name, option_spec in effect_options.items():
+            if not isinstance(option_spec, dict):
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'must be an object'
+                )
+            option_type = option_spec.get('type')
+            if option_type == 'enum':
+                values = option_spec.get('values')
+                if not isinstance(values, dict) or not values:
+                    raise RuntimeError(
+                        f'native animation preset {key!r} enum option '
+                        f'{option_name!r} must define values'
+                    )
+                default = str(option_spec.get('default'))
+                if default not in values:
+                    raise RuntimeError(
+                        f'native animation preset {key!r} enum option '
+                        f'{option_name!r} has an unknown default'
+                    )
+                for option_value, variant_xml in values.items():
+                    if not isinstance(option_value, str) or not isinstance(
+                        variant_xml,
+                        str,
+                    ):
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r} contains an invalid variant'
+                        )
+                    try:
+                        variant = ET.fromstring(variant_xml)
+                    except ET.ParseError as exc:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} contains invalid XML: '
+                            f'{exc}'
+                        ) from exc
+                    if variant.tag != f'{{{PML_NS}}}cTn':
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} is not a p:cTn row'
+                        )
+                    if variant.get('presetClass') != spec['presetClass']:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} changed presetClass'
+                        )
+                    if int(variant.get('presetID', '-1')) != spec['presetID']:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} changed presetID'
+                        )
+            elif option_type not in {'number', 'string', 'boolean', 'color'}:
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    f'has unknown type: {option_type!r}'
+                )
         native[key] = spec
         category_counts[category] += 1
 
@@ -240,6 +356,30 @@ class AnimationTarget:
     delay_ms: int
     effect: str
     duration_ms: int
+    effect_options: Mapping[str, object]
+    trigger_shape_id: int | None = None
+    repeat_count: float | None = None
+    repeat_duration_ms: int | None = None
+    auto_reverse: bool | None = None
+    rewind: bool | None = None
+    accelerate: float | None = None
+    decelerate: float | None = None
+    bounce_end: float | None = None
+    restart: str | None = None
+    after_effect: str = 'none'
+    after_effect_color: str | None = None
+    sound_relationship_id: str | None = None
+    sound_name: str | None = None
+
+    @property
+    def playback_duration_ms(self) -> int:
+        """Return the wall-clock duration used by after-previous scheduling."""
+        one_play = self.duration_ms * (2 if self.auto_reverse else 1)
+        if self.repeat_duration_ms is not None:
+            return self.repeat_duration_ms
+        if self.repeat_count is not None:
+            return max(1, round(one_play * self.repeat_count))
+        return one_play
 
 
 @dataclass(frozen=True)
@@ -256,6 +396,21 @@ class AnimationRowSummary:
     preset_id: int
     preset_subtype: int
     filter_name: str | None
+    effect_options: Mapping[str, object]
+    trigger_shape_id: int | None
+    repeat_count: float | None
+    repeat_duration_ms: int | None
+    auto_reverse: bool
+    rewind: bool
+    accelerate: float
+    decelerate: float
+    bounce_end: float
+    restart: str
+    after_effect: str
+    after_effect_color: str | None
+    sound_relationship_id: str | None
+    sound_name: str | None
+    playback_duration_ms: int | None
 
 
 @dataclass(frozen=True)
@@ -303,6 +458,151 @@ def normalize_animation_effect(
     raise ValueError(
         f'unknown animation effect {effect!r}; valid effects: {", ".join(valid)}'
     )
+
+
+def _finite_number(value: object, field: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'{field} must be a finite number: {value!r}')
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError(f'{field} must be a finite number: {value!r}')
+    return number
+
+
+def _normalize_animation_color(value: object, field: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(
+            f'{field} must be #RRGGBB or theme:<scheme-color>: {value!r}'
+        )
+    if re.fullmatch(r'#[0-9A-Fa-f]{6}', value):
+        return value.upper()
+    if re.fullmatch(
+        r'theme:(?:dk1|lt1|dk2|lt2|tx1|tx2|bg1|bg2|accent[1-6]|'
+        r'hlink|folHlink)',
+        value,
+    ):
+        return value
+    raise ValueError(
+        f'{field} must be #RRGGBB or theme:<scheme-color>: {value!r}'
+    )
+
+
+def normalize_animation_effect_options(
+    effect: str,
+    options: object = None,
+) -> dict[str, object]:
+    """Validate effect-specific PowerPoint EffectParameters values."""
+    if effect not in NATIVE_ANIMATIONS:
+        if options in (None, {}):
+            return {}
+        raise ValueError(
+            'animation effect_options require one explicit canonical effect; '
+            f'found {effect!r}'
+        )
+    if options is None:
+        options = {}
+    if not isinstance(options, Mapping):
+        raise ValueError(f'animation effect_options must be an object: {options!r}')
+
+    option_specs = NATIVE_ANIMATIONS[effect]['effectOptions']
+    unknown = set(options) - set(option_specs)
+    if unknown:
+        unsupported = ', '.join(sorted(unknown))
+        supported = ', '.join(option_specs) or '(none)'
+        raise ValueError(
+            f'animation effect {effect!r} does not support effect option(s): '
+            f'{unsupported}; supported options: {supported}'
+        )
+
+    normalized: dict[str, object] = {}
+    for name, value in options.items():
+        spec = option_specs[name]
+        option_type = spec['type']
+        field = f'animation effect_options.{name}'
+        if option_type == 'enum':
+            key = str(value)
+            if isinstance(value, bool) or key not in spec['values']:
+                valid = ', '.join(spec['values'])
+                raise ValueError(
+                    f'{field} for {effect!r} must be one of {valid}: {value!r}'
+                )
+            normalized[name] = (
+                int(key)
+                if name == 'amount' and re.fullmatch(r'\d+', key)
+                else key
+            )
+        elif option_type == 'number':
+            number = _finite_number(value, field)
+            minimum = spec.get('minimum')
+            maximum = spec.get('maximum')
+            if minimum is not None and number < float(minimum):
+                raise ValueError(
+                    f'{field} for {effect!r} must be at least {minimum}: {value!r}'
+                )
+            if maximum is not None and number > float(maximum):
+                raise ValueError(
+                    f'{field} for {effect!r} must be at most {maximum}: {value!r}'
+                )
+            normalized[name] = number
+        elif option_type == 'string':
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f'{field} must be a non-empty string: {value!r}')
+            if len(value) > 255:
+                raise ValueError(f'{field} exceeds 255 characters')
+            normalized[name] = value
+        elif option_type == 'boolean':
+            if not isinstance(value, bool):
+                raise ValueError(f'{field} must be a boolean: {value!r}')
+            normalized[name] = value
+        elif option_type == 'color':
+            normalized[name] = _normalize_animation_color(value, field)
+        else:
+            raise AssertionError(f'unhandled animation effect option type: {option_type}')
+    return normalized
+
+
+def normalize_animation_effect_request(
+    effect: object,
+    options: object = None,
+    *,
+    allow_none: bool = True,
+    allow_modes: bool = True,
+) -> tuple[str | None, dict[str, object]]:
+    """Normalize one effect plus options, including legacy semantic aliases."""
+    raw_effect = effect
+    canonical = normalize_animation_effect(
+        effect,
+        allow_none=allow_none,
+        allow_modes=allow_modes,
+    )
+    alias_options = (
+        ANIMATION_ALIAS_OPTIONS.get(raw_effect, {})
+        if isinstance(raw_effect, str)
+        else {}
+    )
+    explicit_options: Mapping[str, object]
+    if options is None:
+        explicit_options = {}
+    elif isinstance(options, Mapping):
+        explicit_options = options
+    else:
+        raise ValueError(f'animation effect_options must be an object: {options!r}')
+    for name, alias_value in alias_options.items():
+        if name in explicit_options and explicit_options[name] != alias_value:
+            raise ValueError(
+                f'legacy animation effect {raw_effect!r} implies '
+                f'effect_options.{name}={alias_value!r}, which conflicts with '
+                f'{explicit_options[name]!r}'
+            )
+    merged = {**alias_options, **explicit_options}
+    if canonical is None or canonical in ANIMATION_MODES:
+        if merged:
+            raise ValueError(
+                'animation effect_options require one explicit canonical effect; '
+                f'found {canonical or "none"!r}'
+            )
+        return canonical, {}
+    return canonical, normalize_animation_effect_options(canonical, merged)
 
 
 def normalize_animation_trigger(trigger: object) -> str:
@@ -369,14 +669,249 @@ def _non_negative_milliseconds(value: object, field: str) -> int:
     return milliseconds
 
 
-def _normalize_target(target: Sequence[object], default_duration_ms: int) -> AnimationTarget:
+def _optional_bool(value: object, field: str) -> bool:
+    if not isinstance(value, bool):
+        raise ValueError(f'{field} must be a boolean: {value!r}')
+    return value
+
+
+def _optional_ratio(value: object, field: str) -> float:
+    ratio = _finite_number(value, field)
+    if ratio < 0 or ratio > 1:
+        raise ValueError(f'{field} must be between 0 and 1: {value!r}')
+    return ratio
+
+
+def _normalize_repeat_count(value: object) -> float:
+    count = _finite_number(value, 'animation repeat_count')
+    if count <= 0 or count * 1000 > MAX_OOXML_UNSIGNED_INT:
+        raise ValueError(
+            'animation repeat_count must be positive and fit the OOXML range: '
+            f'{value!r}'
+        )
+    return count
+
+
+def _normalize_after_effect(value: object) -> tuple[str, str | None]:
+    if value is None:
+        return 'none', None
+    if isinstance(value, str):
+        effect_type = value
+        color = None
+    elif isinstance(value, Mapping):
+        unknown = set(value) - {'type', 'color'}
+        if unknown:
+            raise ValueError(
+                'animation after_effect has unknown field(s): '
+                + ', '.join(sorted(unknown))
+            )
+        effect_type = value.get('type', 'none')
+        color = value.get('color')
+    else:
+        raise ValueError(
+            f'animation after_effect must be a string or object: {value!r}'
+        )
+    if effect_type not in ANIMATION_AFTER_EFFECTS:
+        raise ValueError(
+            f'animation after_effect.type must be one of '
+            f'{", ".join(ANIMATION_AFTER_EFFECTS)}: {effect_type!r}'
+        )
+    if effect_type == 'dim':
+        if color is None:
+            raise ValueError('animation dim after_effect requires color')
+        return effect_type, _normalize_animation_color(
+            color,
+            'animation after_effect.color',
+        )
+    if color is not None:
+        raise ValueError(
+            f'animation after_effect.color is valid only with type "dim": {color!r}'
+        )
+    return effect_type, None
+
+
+def _normalize_sound(value: object) -> tuple[str | None, str | None]:
+    if value is None:
+        return None, None
+    if not isinstance(value, Mapping):
+        raise ValueError(
+            'low-level animation sound must be an object with '
+            'relationship_id and name'
+        )
+    unknown = set(value) - {'relationship_id', 'name'}
+    if unknown:
+        raise ValueError(
+            'low-level animation sound has unknown field(s): '
+            + ', '.join(sorted(unknown))
+        )
+    relationship_id = value.get('relationship_id')
+    name = value.get('name')
+    if not isinstance(relationship_id, str) or not re.fullmatch(
+        r'rId[1-9]\d*',
+        relationship_id,
+    ):
+        raise ValueError(
+            'low-level animation sound relationship_id must match rIdN: '
+            f'{relationship_id!r}'
+        )
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError(
+            f'low-level animation sound name must be non-empty: {name!r}'
+        )
+    return relationship_id, name
+
+
+def _normalize_target_mapping(
+    target: Mapping[str, object],
+    default_duration_ms: int,
+) -> AnimationTarget:
+    allowed = {
+        'shape_id',
+        'delay_ms',
+        'effect',
+        'duration',
+        'effect_options',
+        'trigger_shape_id',
+        *ANIMATION_TIMING_OPTION_FIELDS,
+        'after_effect',
+        'sound',
+    }
+    unknown = set(target) - allowed
+    if unknown:
+        raise ValueError(
+            'animation target has unknown field(s): ' + ', '.join(sorted(unknown))
+        )
+    shape_id = _positive_shape_id(target.get('shape_id'))
+    delay_ms = _non_negative_milliseconds(
+        target.get('delay_ms', 0),
+        'animation target delay_ms',
+    )
+    effect, effect_options = normalize_animation_effect_request(
+        target.get('effect'),
+        target.get('effect_options'),
+        allow_none=False,
+        allow_modes=False,
+    )
+    duration_ms = default_duration_ms
+    if target.get('duration') is not None:
+        duration_ms = _seconds_to_ms(
+            target.get('duration'),
+            'animation target duration',
+            allow_zero=False,
+        )
+    trigger_shape_id = (
+        _positive_shape_id(
+            target['trigger_shape_id'],
+            'animation target trigger_shape_id',
+        )
+        if 'trigger_shape_id' in target
+        else None
+    )
+    if trigger_shape_id == shape_id:
+        raise ValueError(
+            'animation trigger_shape_id must target a different shape'
+        )
+    repeat_count = (
+        _normalize_repeat_count(target['repeat_count'])
+        if 'repeat_count' in target
+        else None
+    )
+    repeat_duration_ms = (
+        _seconds_to_ms(
+            target['repeat_duration'],
+            'animation repeat_duration',
+            allow_zero=False,
+        )
+        if 'repeat_duration' in target
+        else None
+    )
+    if repeat_count is not None and repeat_duration_ms is not None:
+        raise ValueError(
+            'animation repeat_count and repeat_duration are mutually exclusive'
+        )
+    auto_reverse = (
+        _optional_bool(target['auto_reverse'], 'animation auto_reverse')
+        if 'auto_reverse' in target
+        else None
+    )
+    rewind = (
+        _optional_bool(target['rewind'], 'animation rewind')
+        if 'rewind' in target
+        else None
+    )
+    accelerate = (
+        _optional_ratio(target['accelerate'], 'animation accelerate')
+        if 'accelerate' in target
+        else None
+    )
+    decelerate = (
+        _optional_ratio(target['decelerate'], 'animation decelerate')
+        if 'decelerate' in target
+        else None
+    )
+    if (
+        accelerate is not None
+        and decelerate is not None
+        and accelerate + decelerate > 1
+    ):
+        raise ValueError(
+            'animation accelerate + decelerate must not exceed 1'
+        )
+    bounce_end = (
+        _optional_ratio(target['bounce_end'], 'animation bounce_end')
+        if 'bounce_end' in target
+        else None
+    )
+    if bounce_end and decelerate:
+        raise ValueError(
+            'animation bounce_end and decelerate are mutually exclusive '
+            'in PowerPoint'
+        )
+    restart = target.get('restart')
+    if restart is not None and restart not in ANIMATION_RESTARTS:
+        raise ValueError(
+            f'animation restart must be one of '
+            f'{", ".join(ANIMATION_RESTARTS)}: {restart!r}'
+        )
+    after_effect, after_effect_color = _normalize_after_effect(
+        target.get('after_effect')
+    )
+    sound_relationship_id, sound_name = _normalize_sound(target.get('sound'))
+    return AnimationTarget(
+        shape_id=shape_id,
+        delay_ms=delay_ms,
+        effect=effect,
+        duration_ms=duration_ms,
+        effect_options=effect_options,
+        trigger_shape_id=trigger_shape_id,
+        repeat_count=repeat_count,
+        repeat_duration_ms=repeat_duration_ms,
+        auto_reverse=auto_reverse,
+        rewind=rewind,
+        accelerate=accelerate,
+        decelerate=decelerate,
+        bounce_end=bounce_end,
+        restart=restart,
+        after_effect=after_effect,
+        after_effect_color=after_effect_color,
+        sound_relationship_id=sound_relationship_id,
+        sound_name=sound_name,
+    )
+
+
+def _normalize_target(
+    target: Sequence[object] | Mapping[str, object],
+    default_duration_ms: int,
+) -> AnimationTarget:
+    if isinstance(target, Mapping):
+        return _normalize_target_mapping(target, default_duration_ms)
     if isinstance(target, (str, bytes)) or not isinstance(target, Sequence):
         raise ValueError(f'animation target must be a 3- or 4-item sequence: {target!r}')
     if len(target) not in (3, 4):
         raise ValueError(f'animation target must contain 3 or 4 items: {target!r}')
     shape_id = _positive_shape_id(target[0])
     delay_ms = _non_negative_milliseconds(target[1], 'animation target delay_ms')
-    effect = normalize_animation_effect(
+    effect, effect_options = normalize_animation_effect_request(
         target[2],
         allow_none=False,
         allow_modes=False,
@@ -393,6 +928,7 @@ def _normalize_target(target: Sequence[object], default_duration_ms: int) -> Ani
         delay_ms=delay_ms,
         effect=effect,
         duration_ms=duration_ms,
+        effect_options=effect_options,
     )
 
 # Pool used by 'mixed' / 'random' modes. Every entry is a canonical
@@ -697,17 +1233,351 @@ def _animation_spec_matches_row(row: ET.Element, spec: Mapping[str, Any]) -> boo
     return True
 
 
-def _instantiate_animation_row(
+def _format_decimal(value: float) -> str:
+    """Format one finite decimal without exponent notation or negative zero."""
+    rendered = f'{value:.9f}'.rstrip('0').rstrip('.')
+    return '0' if rendered in {'', '-0'} else rendered
+
+
+def _color_element(value: str) -> ET.Element:
+    if value.startswith('#'):
+        return ET.Element(_qn(_DML_NS, 'srgbClr'), {'val': value[1:]})
+    return ET.Element(_qn(_DML_NS, 'schemeClr'), {'val': value.split(':', 1)[1]})
+
+
+def _replace_animation_colors(row: ET.Element, value: str) -> None:
+    parent_map = {
+        child: parent
+        for parent in row.iter()
+        for child in list(parent)
+    }
+    color_tags = {
+        _qn(_DML_NS, 'srgbClr'),
+        _qn(_DML_NS, 'schemeClr'),
+        _qn(_DML_NS, 'hslClr'),
+        _qn(_DML_NS, 'scrgbClr'),
+        _qn(_DML_NS, 'sysClr'),
+        _qn(_DML_NS, 'prstClr'),
+    }
+    colors = [element for element in row.iter() if element.tag in color_tags]
+    if not colors:
+        raise RuntimeError('color-capable animation preset lost its color node')
+    for color in colors:
+        parent = parent_map[color]
+        index = list(parent).index(color)
+        parent.remove(color)
+        parent.insert(index, _color_element(value))
+
+
+def _set_effect_option_value(
+    row: ET.Element,
     animation: str,
-    shape_id: int,
-    duration_ms: int,
+    name: str,
+    value: object,
+) -> None:
+    if name == 'amount' and animation == 'emphasis_spin':
+        rotations = list(row.iter(_qn(PML_NS, 'animRot')))
+        if len(rotations) != 1:
+            raise RuntimeError('emphasis_spin preset lost its p:animRot node')
+        rotations[0].set('by', str(round(float(value) * 60000)))
+        return
+    if name == 'amount' and animation == 'emphasis_transparency':
+        matched = False
+        for node in row.iter(_qn(PML_NS, 'set')):
+            attributes = {
+                (attribute.text or '').strip()
+                for attribute in node.iter(_qn(PML_NS, 'attrName'))
+            }
+            if 'style.opacity' not in attributes:
+                continue
+            values = list(node.iter(_qn(PML_NS, 'strVal')))
+            if len(values) != 1:
+                raise RuntimeError(
+                    'emphasis_transparency preset lost its opacity value'
+                )
+            values[0].set('val', _format_decimal(1 - float(value)))
+            matched = True
+        if not matched:
+            raise RuntimeError(
+                'emphasis_transparency preset lost its opacity behavior'
+            )
+        return
+    if name == 'color':
+        _replace_animation_colors(row, str(value))
+        return
+    if name == 'font_name':
+        matched = False
+        for node in row.iter(_qn(PML_NS, 'set')):
+            attributes = {
+                (attribute.text or '').strip()
+                for attribute in node.iter(_qn(PML_NS, 'attrName'))
+            }
+            if 'style.fontFamily' not in attributes:
+                continue
+            values = list(node.iter(_qn(PML_NS, 'strVal')))
+            if len(values) != 1:
+                raise RuntimeError(
+                    'emphasis_change_font preset lost its font value'
+                )
+            values[0].set('val', str(value))
+            matched = True
+        if not matched:
+            raise RuntimeError(
+                'emphasis_change_font preset lost its font behavior'
+            )
+        return
+    if name == 'relative':
+        motions = list(row.iter(_qn(PML_NS, 'animMotion')))
+        if len(motions) != 1:
+            raise RuntimeError('motion-path preset lost its p:animMotion node')
+        motions[0].set('pathEditMode', 'relative' if value else 'fixed')
+        return
+    if name == 'size':
+        scales = list(row.iter(_qn(PML_NS, 'animScale')))
+        if len(scales) != 1:
+            raise RuntimeError(
+                'emphasis_grow_shrink preset lost its p:animScale node'
+        )
+        amount = str(round(float(value) * 1000))
+        targets = scales[0].findall(_qn(PML_NS, 'to'))
+        if len(targets) > 1:
+            raise RuntimeError(
+                'emphasis_grow_shrink preset lost its scale value'
+            )
+        target = (
+            targets[0]
+            if targets
+            else ET.SubElement(scales[0], _qn(PML_NS, 'to'))
+        )
+        target.set('x', amount)
+        target.set('y', amount)
+        return
+    raise AssertionError(f'unhandled continuous animation option: {name}')
+
+
+def _animation_row_for_options(
+    animation: str,
+    effect_options: Mapping[str, object],
+) -> ET.Element:
+    """Return the authored variant row with continuous options applied."""
+    spec = NATIVE_ANIMATIONS[animation]
+    option_specs = spec['effectOptions']
+    row_xml = spec['rowXml']
+    for name, value in effect_options.items():
+        option_spec = option_specs[name]
+        if option_spec['type'] != 'enum':
+            continue
+        key = str(value)
+        row_xml = option_spec['values'][key]
+    row = ET.fromstring(row_xml)
+    for name, value in effect_options.items():
+        if option_specs[name]['type'] == 'enum':
+            continue
+        _set_effect_option_value(row, animation, name, value)
+    return row
+
+
+def _apply_timing_options(row: ET.Element, target: AnimationTarget) -> None:
+    if target.repeat_count is not None:
+        row.set('repeatCount', str(round(target.repeat_count * 1000)))
+        row.attrib.pop('repeatDur', None)
+    if target.repeat_duration_ms is not None:
+        row.set('repeatDur', str(target.repeat_duration_ms))
+        row.attrib.pop('repeatCount', None)
+    if target.auto_reverse is not None:
+        if target.auto_reverse:
+            row.set('autoRev', '1')
+        else:
+            row.attrib.pop('autoRev', None)
+    if target.rewind is not None:
+        row.set('fill', 'remove' if target.rewind else 'hold')
+    if target.accelerate is not None:
+        if target.accelerate:
+            row.set('accel', str(round(target.accelerate * 100000)))
+        else:
+            row.attrib.pop('accel', None)
+    if target.decelerate is not None:
+        if target.decelerate:
+            row.set('decel', str(round(target.decelerate * 100000)))
+        else:
+            row.attrib.pop('decel', None)
+    if target.bounce_end is not None:
+        bounce_nodes = [
+            node
+            for node in row.iter()
+            if _local_name(node.tag) in {
+                'anim',
+                'animClr',
+                'animEffect',
+                'animMotion',
+                'animRot',
+                'animScale',
+            }
+        ]
+        if target.bounce_end and not bounce_nodes:
+            raise ValueError(
+                f'animation effect {target.effect!r} has no behavior that '
+                'supports bounce_end'
+            )
+        if target.bounce_end:
+            row.set(
+                _qn(_P14_NS, 'presetBounceEnd'),
+                str(round(target.bounce_end * 100000)),
+            )
+        else:
+            row.attrib.pop(_qn(_P14_NS, 'presetBounceEnd'), None)
+        for node in bounce_nodes:
+            if target.bounce_end:
+                node.set(
+                    _qn(_P14_NS, 'bounceEnd'),
+                    str(round(target.bounce_end * 100000)),
+                )
+            else:
+                node.attrib.pop(_qn(_P14_NS, 'bounceEnd'), None)
+    if target.restart is not None:
+        row.set(
+            'restart',
+            {
+                'always': 'always',
+                'when-not-active': 'whenNotActive',
+                'never': 'never',
+            }[target.restart],
+        )
+
+
+def _append_after_effect(
+    row: ET.Element,
+    target: AnimationTarget,
+    row_id: int,
+) -> None:
+    if target.after_effect == 'none':
+        return
+    sub_timing = row.find(_qn(PML_NS, 'subTnLst'))
+    if sub_timing is None:
+        sub_timing = ET.SubElement(row, _qn(PML_NS, 'subTnLst'))
+    if target.after_effect == 'dim':
+        animation = ET.SubElement(
+            sub_timing,
+            _qn(PML_NS, 'animClr'),
+            {'clrSpc': 'rgb', 'dir': 'cw'},
+        )
+        behavior = ET.SubElement(
+            animation,
+            _qn(PML_NS, 'cBhvr'),
+            {'override': 'childStyle'},
+        )
+        ET.SubElement(
+            behavior,
+            _qn(PML_NS, 'cTn'),
+            {
+                'dur': '1',
+                'fill': 'hold',
+                'display': '0',
+                'masterRel': 'nextClick',
+                'afterEffect': '1',
+            },
+        )
+        target_element = ET.SubElement(behavior, _qn(PML_NS, 'tgtEl'))
+        ET.SubElement(
+            target_element,
+            _qn(PML_NS, 'spTgt'),
+            {'spid': str(target.shape_id)},
+        )
+        names = ET.SubElement(behavior, _qn(PML_NS, 'attrNameLst'))
+        ET.SubElement(names, _qn(PML_NS, 'attrName')).text = 'ppt_c'
+        destination = ET.SubElement(animation, _qn(PML_NS, 'to'))
+        destination.append(_color_element(str(target.after_effect_color)))
+        return
+
+    setting = ET.SubElement(sub_timing, _qn(PML_NS, 'set'))
+    behavior = ET.SubElement(
+        setting,
+        _qn(PML_NS, 'cBhvr'),
+        {'override': 'childStyle'},
+    )
+    ctn_attributes = {
+        'dur': '1',
+        'fill': 'hold',
+        'display': '0',
+        'masterRel': (
+            'sameClick'
+            if target.after_effect == 'hide'
+            else 'nextClick'
+        ),
+        'afterEffect': '1',
+    }
+    ctn = ET.SubElement(behavior, _qn(PML_NS, 'cTn'), ctn_attributes)
+    if target.after_effect == 'hide':
+        conditions = ET.SubElement(ctn, _qn(PML_NS, 'stCondLst'))
+        condition = ET.SubElement(
+            conditions,
+            _qn(PML_NS, 'cond'),
+            {'evt': 'end', 'delay': '0'},
+        )
+        ET.SubElement(condition, _qn(PML_NS, 'tn'), {'val': str(row_id)})
+    target_element = ET.SubElement(behavior, _qn(PML_NS, 'tgtEl'))
+    ET.SubElement(
+        target_element,
+        _qn(PML_NS, 'spTgt'),
+        {'spid': str(target.shape_id)},
+    )
+    names = ET.SubElement(behavior, _qn(PML_NS, 'attrNameLst'))
+    ET.SubElement(names, _qn(PML_NS, 'attrName')).text = 'style.visibility'
+    destination = ET.SubElement(setting, _qn(PML_NS, 'to'))
+    ET.SubElement(destination, _qn(PML_NS, 'strVal'), {'val': 'hidden'})
+
+
+def _append_animation_sound(row: ET.Element, target: AnimationTarget) -> None:
+    if target.sound_relationship_id is None:
+        return
+    sub_timing = row.find(_qn(PML_NS, 'subTnLst'))
+    if sub_timing is None:
+        sub_timing = ET.SubElement(row, _qn(PML_NS, 'subTnLst'))
+    audio = ET.SubElement(sub_timing, _qn(PML_NS, 'audio'))
+    media = ET.SubElement(audio, _qn(PML_NS, 'cMediaNode'))
+    ctn = ET.SubElement(
+        media,
+        _qn(PML_NS, 'cTn'),
+        {'display': '0', 'masterRel': 'sameClick'},
+    )
+    conditions = ET.SubElement(ctn, _qn(PML_NS, 'stCondLst'))
+    condition = ET.SubElement(
+        conditions,
+        _qn(PML_NS, 'cond'),
+        {'evt': 'begin', 'delay': '0'},
+    )
+    ET.SubElement(condition, _qn(PML_NS, 'tn'), {'val': str(row.get('id'))})
+    end_conditions = ET.SubElement(ctn, _qn(PML_NS, 'endCondLst'))
+    end_condition = ET.SubElement(
+        end_conditions,
+        _qn(PML_NS, 'cond'),
+        {'evt': 'onStopAudio', 'delay': '0'},
+    )
+    target_element = ET.SubElement(end_condition, _qn(PML_NS, 'tgtEl'))
+    ET.SubElement(target_element, _qn(PML_NS, 'sldTgt'))
+    target_element = ET.SubElement(media, _qn(PML_NS, 'tgtEl'))
+    ET.SubElement(
+        target_element,
+        _qn(PML_NS, 'sndTgt'),
+        {
+            _qn(_REL_NS, 'embed'): str(target.sound_relationship_id),
+            'name': str(target.sound_name),
+        },
+    )
+
+
+def _instantiate_animation_row(
+    target: AnimationTarget,
     node_type: str,
     row_id: int,
     first_behavior_id: int,
 ) -> tuple[str, int]:
     """Instantiate one PowerPoint-authored preset row for a generated shape."""
+    animation = target.effect
+    shape_id = target.shape_id
+    duration_ms = target.duration_ms
     spec = NATIVE_ANIMATIONS[animation]
-    row = ET.fromstring(spec['rowXml'])
+    row = _animation_row_for_options(animation, target.effect_options)
     row.set('id', str(row_id))
     row.set('nodeType', node_type)
     conditions = row.find(_qn(PML_NS, 'stCondLst'))
@@ -719,7 +1589,20 @@ def _instantiate_animation_row(
             f'animation preset {animation!r} must have one start condition'
         )
     direct_conditions[0].attrib.clear()
-    direct_conditions[0].set('delay', '0')
+    direct_conditions[0].set(
+        'delay',
+        str(
+            target.delay_ms
+            if (
+                node_type == 'afterEffect'
+                or (
+                    node_type == 'clickEffect'
+                    and target.trigger_shape_id is not None
+                )
+            )
+            else 0
+        ),
+    )
 
     if spec['durationScalable']:
         base_duration_ms = int(spec['defaultDurationMs'])
@@ -728,6 +1611,10 @@ def _instantiate_animation_row(
             base_duration_ms=base_duration_ms,
             requested_duration_ms=duration_ms,
         )
+
+    _apply_timing_options(row, target)
+    _append_after_effect(row, target, row_id)
+    _append_animation_sound(row, target)
 
     next_id = first_behavior_id
     for ctn in row.iter(_qn(PML_NS, 'cTn')):
@@ -741,9 +1628,7 @@ def _instantiate_animation_row(
 
 
 def _build_animation_row_xml(
-    animation: str,
-    shape_id: int,
-    duration_ms: int,
+    target: AnimationTarget,
     trigger: str,
     row_id: int,
     first_behavior_id: int,
@@ -751,9 +1636,7 @@ def _build_animation_row_xml(
     """Build one canonical PowerPoint-authored animation-pane row."""
     node_type = _TRIGGER_NODE_TYPES[trigger]
     return _instantiate_animation_row(
-        animation,
-        shape_id,
-        duration_ms,
+        target,
         node_type,
         row_id,
         first_behavior_id,
@@ -771,9 +1654,9 @@ def create_sequence_timing_xml(
         targets: list of (shape_id, delay_ms, animation_name) or
             (shape_id, delay_ms, animation_name, duration_seconds) tuples, in
             the order they should play. ``delay_ms`` is the gap before
-            this element starts, measured from when the previous element
-            triggers (only used in ``after-previous`` mode; ignored in
-            the other two).
+            this element starts in ``after-previous`` mode. For a mapping
+            target with ``trigger_shape_id``, it is the delay after that
+            shape is clicked; otherwise the other Start modes ignore it.
         duration: per-element animation duration in seconds. Instantaneous
             native presets retain their PowerPoint-authored duration.
         trigger: PowerPoint-standard Start mode for each element.
@@ -806,6 +1689,16 @@ def create_sequence_timing_xml(
     if len(shape_ids) != len(set(shape_ids)):
         raise ValueError('animation targets must not contain duplicate shape ids')
     next_id = 3
+    main_targets = [
+        target
+        for target in normalized_targets
+        if target.trigger_shape_id is None
+    ]
+    interactive_targets = [
+        target
+        for target in normalized_targets
+        if target.trigger_shape_id is not None
+    ]
 
     if trigger == 'on-click':
         # Each element is an independent click-driven par directly under
@@ -813,17 +1706,12 @@ def create_sequence_timing_xml(
         # the click via delay="indefinite", innermost cTn owns the
         # clickEffect + animation children. Each click advances the seq.
         steps = []
-        for target in normalized_targets:
-            shape_id = target.shape_id
-            animation = target.effect
-            item_dur_ms = target.duration_ms
+        for target in main_targets:
             wrapper_id = next_id
             inner_id = next_id + 1
             leaf_id = next_id + 2
             row_xml, next_id = _build_animation_row_xml(
-                animation,
-                shape_id,
-                item_dur_ms,
+                target,
                 trigger,
                 leaf_id,
                 next_id + 3,
@@ -850,11 +1738,9 @@ def create_sequence_timing_xml(
         # with-previous / after-previous: wrap the entire cascade in ONE
         # par so the sequence has a real trigger anchor under mainSeq.
         #
-        # Native PowerPoint after-previous export uses two timing layers for
-        # each animation row: an outer wrapper owns the timeline offset, while
-        # the inner effect cTn stays nodeType="afterEffect" with delay="0".
-        # This keeps the animation pane editable as standard "After Previous"
-        # rows instead of exposing synthetic per-effect cumulative delays.
+        # Native PowerPoint after-previous export uses two timing layers:
+        # each row owns its TriggerDelayTime, while its wrapper owns the
+        # previous row's absolute end. Their sum is the absolute start offset.
         outer_id = next_id
         next_id += 1
         inner_steps = []
@@ -863,19 +1749,11 @@ def create_sequence_timing_xml(
             with_wrapper_id = next_id
             next_id += 1
         elapsed_ms = 0
-        prev_duration_ms = 0
-        for i, target in enumerate(normalized_targets):
-            shape_id = target.shape_id
-            delay_ms = target.delay_ms
-            animation = target.effect
-            item_dur_ms = target.duration_ms
-
+        for target_index, target in enumerate(main_targets, 1):
             if trigger == 'with-previous':
                 leaf_id = next_id
                 row_xml, next_id = _build_animation_row_xml(
-                    animation,
-                    shape_id,
-                    item_dur_ms,
+                    target,
                     trigger,
                     leaf_id,
                     next_id + 1,
@@ -884,21 +1762,15 @@ def create_sequence_timing_xml(
                   {row_xml}
                 </p:par>''')
             else:
-                if i == 0:
-                    elapsed_ms = int(delay_ms)
-                else:
-                    elapsed_ms += prev_duration_ms + int(delay_ms)
                 if elapsed_ms > MAX_OOXML_MILLISECONDS:
                     raise ValueError(
                         'animation sequence offset exceeds the OOXML '
-                        f'millisecond limit at target {i + 1}: {elapsed_ms}'
+                        f'millisecond limit at target {target_index}: {elapsed_ms}'
                     )
                 wrapper_id = next_id
                 leaf_id = next_id + 1
                 row_xml, next_id = _build_animation_row_xml(
-                    animation,
-                    shape_id,
-                    item_dur_ms,
+                    target,
                     trigger,
                     leaf_id,
                     next_id + 2,
@@ -913,7 +1785,7 @@ def create_sequence_timing_xml(
                     </p:childTnLst>
                   </p:cTn>
                 </p:par>''')
-                prev_duration_ms = item_dur_ms
+                elapsed_ms += target.delay_ms + target.playback_duration_ms
 
         inner_xml = '\n                '.join(inner_steps)
         if trigger == 'with-previous':
@@ -946,12 +1818,8 @@ def create_sequence_timing_xml(
                 </p:cTn>
               </p:par>'''
 
-    return f'''  <p:timing>
-    <p:tnLst>
-      <p:par>
-        <p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot">
-          <p:childTnLst>
-            <p:seq concurrent="1" nextAc="seek">
+    if main_targets:
+        main_sequence_xml = f'''<p:seq concurrent="1" nextAc="seek">
               <p:cTn id="2" dur="indefinite" nodeType="mainSeq">
                 <p:childTnLst>
               {all_steps}
@@ -959,12 +1827,88 @@ def create_sequence_timing_xml(
               </p:cTn>
               <p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst>
               <p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst>
-            </p:seq>
+            </p:seq>'''
+    else:
+        main_sequence_xml = ''
+        next_id = 2
+
+    interactive_sequences: list[str] = []
+    for target in interactive_targets:
+        sequence_id = next_id
+        wrapper_id = next_id + 1
+        inner_id = next_id + 2
+        row_id = next_id + 3
+        row_xml, next_id = _build_animation_row_xml(
+            target,
+            'on-click',
+            row_id,
+            next_id + 4,
+        )
+        trigger_shape_id = target.trigger_shape_id
+        interactive_sequences.append(f'''<p:seq concurrent="1" nextAc="seek">
+              <p:cTn id="{sequence_id}" restart="whenNotActive" fill="hold" evtFilter="cancelBubble" nodeType="interactiveSeq">
+                <p:stCondLst><p:cond evt="onClick" delay="0"><p:tgtEl><p:spTgt spid="{trigger_shape_id}"/></p:tgtEl></p:cond></p:stCondLst>
+                <p:endSync evt="end" delay="0"><p:rtn val="all"/></p:endSync>
+                <p:childTnLst>
+                  <p:par>
+                    <p:cTn id="{wrapper_id}" fill="hold">
+                      <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                      <p:childTnLst>
+                        <p:par>
+                          <p:cTn id="{inner_id}" fill="hold">
+                            <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                            <p:childTnLst><p:par>{row_xml}</p:par></p:childTnLst>
+                          </p:cTn>
+                        </p:par>
+                      </p:childTnLst>
+                    </p:cTn>
+                  </p:par>
+                </p:childTnLst>
+              </p:cTn>
+              <p:nextCondLst><p:cond evt="onClick" delay="0"><p:tgtEl><p:spTgt spid="{trigger_shape_id}"/></p:tgtEl></p:cond></p:nextCondLst>
+            </p:seq>''')
+    sequence_xml = '\n            '.join(
+        [
+            value
+            for value in (
+                main_sequence_xml,
+                *interactive_sequences,
+            )
+            if value
+        ]
+    )
+
+    timing_xml = f'''  <p:timing>
+    <p:tnLst>
+      <p:par>
+        <p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot">
+          <p:childTnLst>
+            {sequence_xml}
           </p:childTnLst>
         </p:cTn>
       </p:par>
     </p:tnLst>
   </p:timing>'''
+    if not any(target.bounce_end for target in normalized_targets):
+        return timing_xml
+
+    fallback_xml = re.sub(
+        r'\s+p14:(?:presetBounceEnd|bounceEnd)="\d+"',
+        '',
+        timing_xml,
+    )
+    fallback_xml = fallback_xml.replace(
+        f' xmlns:p14="{_P14_NS}"',
+        '',
+    )
+    return f'''  <mc:AlternateContent xmlns:mc="{_MC_NS}">
+    <mc:Choice xmlns:p14="{_P14_NS}" Requires="p14">
+      {timing_xml}
+    </mc:Choice>
+    <mc:Fallback>
+      {fallback_xml}
+    </mc:Fallback>
+  </mc:AlternateContent>'''
 
 
 def pick_animation_effect(
@@ -1174,9 +2118,6 @@ def _resolve_row_effect(
         for key, info in NATIVE_ANIMATIONS.items()
         if info['presetClass'] == preset_class
         if int(info['presetID']) == preset_id
-        and int(info['presetSubtype']) == preset_subtype
-        and info['filter'] == filter_name
-        and _animation_spec_matches_row(row, info)
     ]
     return tuple(matches), preset_class, preset_id, preset_subtype
 
@@ -1194,16 +2135,388 @@ def _behavior_duration_ms(
     return duration
 
 
+def _read_animation_color(
+    row: ET.Element,
+    errors: list[str],
+    label: str,
+) -> str | None:
+    colors = [
+        element
+        for element in row.iter()
+        if element.tag in {
+            _qn(_DML_NS, 'srgbClr'),
+            _qn(_DML_NS, 'schemeClr'),
+        }
+    ]
+    if not colors:
+        errors.append(f'{label} is missing its color value')
+        return None
+    rendered = []
+    for color in colors:
+        if color.tag == _qn(_DML_NS, 'srgbClr'):
+            value = color.get('val')
+            rendered.append(f'#{value.upper()}' if value else '')
+        else:
+            value = color.get('val')
+            rendered.append(f'theme:{value}' if value else '')
+    unique = tuple(dict.fromkeys(value for value in rendered if value))
+    if len(unique) != 1:
+        errors.append(f'{label} contains inconsistent color values: {unique!r}')
+        return None
+    return unique[0] if unique else None
+
+
+def _read_effect_options(
+    row: ET.Element,
+    effect: str | None,
+    filter_name: str | None,
+    errors: list[str],
+) -> dict[str, object]:
+    if effect is None:
+        return {}
+    option_specs = NATIVE_ANIMATIONS[effect]['effectOptions']
+    values: dict[str, object] = {}
+    for name, spec in option_specs.items():
+        option_type = spec['type']
+        if option_type == 'enum':
+            matches = []
+            for value, variant_xml in spec['values'].items():
+                variant = ET.fromstring(variant_xml)
+                variant_filter = _row_filter(variant, variant.get('presetClass', ''), [])
+                if variant.get('presetSubtype') != row.get('presetSubtype'):
+                    continue
+                if variant_filter != filter_name:
+                    continue
+                matches.append(value)
+            if len(matches) != 1:
+                errors.append(
+                    f'animation effect {effect!r} option {name!r} could not be '
+                    f'read from presetSubtype={row.get("presetSubtype")!r}, '
+                    f'filter={filter_name!r}'
+                )
+                continue
+            value: object = matches[0]
+            if name == 'amount' and re.fullmatch(r'\d+', str(value)):
+                value = int(str(value))
+            values[name] = value
+        elif name == 'amount' and effect == 'emphasis_spin':
+            rotations = list(row.iter(_qn(PML_NS, 'animRot')))
+            raw = rotations[0].get('by') if len(rotations) == 1 else None
+            if raw is None or not re.fullmatch(r'-?\d+', raw):
+                errors.append('emphasis_spin row has an invalid rotation amount')
+            else:
+                values[name] = int(raw) / 60000
+        elif name == 'amount' and effect == 'emphasis_transparency':
+            opacity_values = []
+            for node in row.iter(_qn(PML_NS, 'set')):
+                attributes = {
+                    (attribute.text or '').strip()
+                    for attribute in node.iter(_qn(PML_NS, 'attrName'))
+                }
+                if 'style.opacity' in attributes:
+                    opacity_values.extend(
+                        value.get('val')
+                        for value in node.iter(_qn(PML_NS, 'strVal'))
+                    )
+            if len(opacity_values) != 1:
+                errors.append('emphasis_transparency row has an invalid opacity')
+            else:
+                try:
+                    values[name] = 1 - float(str(opacity_values[0]))
+                except ValueError:
+                    errors.append(
+                        'emphasis_transparency row has a non-numeric opacity'
+                    )
+        elif name == 'color':
+            color = _read_animation_color(
+                row,
+                errors,
+                f'animation effect {effect!r} color option',
+            )
+            if color is not None:
+                values[name] = color
+        elif name == 'font_name':
+            fonts = []
+            for node in row.iter(_qn(PML_NS, 'set')):
+                attributes = {
+                    (attribute.text or '').strip()
+                    for attribute in node.iter(_qn(PML_NS, 'attrName'))
+                }
+                if 'style.fontFamily' in attributes:
+                    fonts.extend(
+                        value.get('val')
+                        for value in node.iter(_qn(PML_NS, 'strVal'))
+                    )
+            if len(fonts) != 1 or not fonts[0]:
+                errors.append('emphasis_change_font row has an invalid font name')
+            else:
+                values[name] = fonts[0]
+        elif name == 'relative':
+            motions = list(row.iter(_qn(PML_NS, 'animMotion')))
+            if len(motions) != 1:
+                errors.append(f'motion-path effect {effect!r} has no single path')
+            else:
+                values[name] = motions[0].get('pathEditMode') != 'fixed'
+        elif name == 'size':
+            scales = list(row.iter(_qn(PML_NS, 'animScale')))
+            targets = (
+                scales[0].findall(_qn(PML_NS, 'to'))
+                if len(scales) == 1
+                else []
+            )
+            raw = (
+                targets[0].get('x')
+                if len(targets) == 1
+                else '100000' if not targets and len(scales) == 1 else None
+            )
+            if raw is None or not re.fullmatch(r'\d+', raw):
+                errors.append('emphasis_grow_shrink row has an invalid size')
+            else:
+                values[name] = int(raw) / 1000
+        else:
+            errors.append(
+                f'animation effect {effect!r} option {name!r} has no reader'
+            )
+    return values
+
+
+def _timing_summary(
+    row: ET.Element,
+    duration_ms: int | None,
+    errors: list[str],
+) -> tuple[
+    float | None,
+    int | None,
+    bool,
+    bool,
+    float,
+    float,
+    float,
+    str,
+    int | None,
+]:
+    raw_repeat_count = row.get('repeatCount')
+    repeat_count = None
+    if raw_repeat_count is not None:
+        if not re.fullmatch(r'\d+', raw_repeat_count):
+            errors.append(
+                f'object-animation repeatCount must be numeric; found '
+                f'{raw_repeat_count!r}'
+            )
+        else:
+            repeat_count = int(raw_repeat_count) / 1000
+    raw_repeat_duration = row.get('repeatDur')
+    repeat_duration_ms = None
+    if raw_repeat_duration is not None:
+        if not re.fullmatch(r'\d+', raw_repeat_duration):
+            errors.append(
+                f'object-animation repeatDur must be numeric; found '
+                f'{raw_repeat_duration!r}'
+            )
+        else:
+            repeat_duration_ms = int(raw_repeat_duration)
+    if repeat_count is not None and repeat_duration_ms is not None:
+        errors.append('object-animation row sets both repeatCount and repeatDur')
+
+    def ratio(attribute: str) -> float:
+        raw = row.get(attribute)
+        if raw is None:
+            return 0.0
+        if not re.fullmatch(r'\d+', raw):
+            errors.append(
+                f'object-animation {attribute} must be numeric; found {raw!r}'
+            )
+            return 0.0
+        number = int(raw)
+        if number > 100000:
+            errors.append(
+                f'object-animation {attribute} exceeds 100000; found {number}'
+            )
+        return number / 100000
+
+    accelerate = ratio('accel')
+    decelerate = ratio('decel')
+    if accelerate + decelerate > 1:
+        errors.append('object-animation accel + decel exceeds 100000')
+    raw_bounce_values = {
+        node.get(_qn(_P14_NS, 'bounceEnd'))
+        for node in row.iter()
+        if node.get(_qn(_P14_NS, 'bounceEnd')) is not None
+    }
+    preset_bounce = row.get(_qn(_P14_NS, 'presetBounceEnd'))
+    if preset_bounce is not None:
+        raw_bounce_values.add(preset_bounce)
+    bounce_end = 0.0
+    if len(raw_bounce_values) > 1:
+        errors.append(
+            'object-animation behaviors disagree on p14:bounceEnd'
+        )
+    elif raw_bounce_values:
+        raw_bounce = next(iter(raw_bounce_values))
+        if raw_bounce is None or not re.fullmatch(r'\d+', raw_bounce):
+            errors.append(
+                f'object-animation p14:bounceEnd must be numeric; '
+                f'found {raw_bounce!r}'
+            )
+        else:
+            bounce_value = int(raw_bounce)
+            if bounce_value > 100000:
+                errors.append(
+                    'object-animation p14:bounceEnd exceeds 100000; '
+                    f'found {bounce_value}'
+                )
+            bounce_end = bounce_value / 100000
+    auto_reverse = row.get('autoRev') == '1'
+    rewind = row.get('fill') == 'remove'
+    restart = {
+        None: 'never',
+        'always': 'always',
+        'whenNotActive': 'when-not-active',
+        'never': 'never',
+    }.get(row.get('restart'))
+    if restart is None:
+        errors.append(
+            f'object-animation restart has unknown value: {row.get("restart")!r}'
+        )
+        restart = 'never'
+
+    playback_duration_ms = None
+    if duration_ms is not None:
+        one_play = duration_ms * (2 if auto_reverse else 1)
+        if repeat_duration_ms is not None:
+            playback_duration_ms = repeat_duration_ms
+        elif repeat_count is not None:
+            playback_duration_ms = max(1, round(one_play * repeat_count))
+        else:
+            playback_duration_ms = one_play
+    return (
+        repeat_count,
+        repeat_duration_ms,
+        auto_reverse,
+        rewind,
+        accelerate,
+        decelerate,
+        bounce_end,
+        restart,
+        playback_duration_ms,
+    )
+
+
+def _after_effect_summary(
+    row: ET.Element,
+    errors: list[str],
+) -> tuple[str, str | None]:
+    sub_timing = row.find(_qn(PML_NS, 'subTnLst'))
+    if sub_timing is None:
+        return 'none', None
+    after_nodes = [
+        node
+        for node in list(sub_timing)
+        if any(
+            ctn.get('afterEffect') == '1'
+            for ctn in node.iter(_qn(PML_NS, 'cTn'))
+        )
+    ]
+    if not after_nodes:
+        return 'none', None
+    if len(after_nodes) != 1:
+        errors.append(
+            f'object-animation row contains {len(after_nodes)} after effects'
+        )
+        return 'none', None
+    node = after_nodes[0]
+    if node.tag == _qn(PML_NS, 'animClr'):
+        return (
+            'dim',
+            _read_animation_color(node, errors, 'animation dim after effect'),
+        )
+    if node.tag == _qn(PML_NS, 'set'):
+        ctns = list(node.iter(_qn(PML_NS, 'cTn')))
+        master_relation = ctns[0].get('masterRel') if ctns else None
+        if master_relation == 'sameClick':
+            return 'hide', None
+        if master_relation == 'nextClick':
+            return 'hide-on-next-click', None
+    errors.append('object-animation row contains an unknown after effect')
+    return 'none', None
+
+
+def _sound_summary(
+    row: ET.Element,
+    errors: list[str],
+) -> tuple[str | None, str | None]:
+    sounds = list(row.iter(_qn(PML_NS, 'sndTgt')))
+    if not sounds:
+        return None, None
+    if len(sounds) != 1:
+        errors.append(f'object-animation row contains {len(sounds)} sounds')
+        return None, None
+    relationship_id = sounds[0].get(_qn(_REL_NS, 'embed'))
+    name = sounds[0].get('name')
+    if relationship_id is None or name is None:
+        errors.append('object-animation sound is missing relationship id or name')
+    return relationship_id, name
+
+
+def _row_trigger_shape_id(
+    row: ET.Element,
+    parent_map: Mapping[ET.Element, ET.Element],
+    errors: list[str],
+) -> int | None:
+    current = parent_map.get(row)
+    while current is not None:
+        if (
+            current.tag == _qn(PML_NS, 'cTn')
+            and current.get('nodeType') == 'interactiveSeq'
+        ):
+            shape_targets = [
+                target
+                for condition in _direct_conditions(current)
+                if condition.get('evt') == 'onClick'
+                for target in condition.iter(_qn(PML_NS, 'spTgt'))
+            ]
+            if len(shape_targets) != 1:
+                errors.append(
+                    'interactive animation sequence must have one trigger shape'
+                )
+                return None
+            return _int_attribute(
+                shape_targets[0],
+                'spid',
+                'interactive animation trigger shape id',
+                errors,
+                minimum=1,
+                maximum=MAX_OOXML_UNSIGNED_INT,
+            )
+        current = parent_map.get(current)
+    return None
+
+
 def _row_offset_ms(
     row: ET.Element,
     trigger: str,
+    trigger_shape_id: int | None,
     parent_map: Mapping[ET.Element, ET.Element],
     errors: list[str],
 ) -> int:
     leaf_conditions = _direct_conditions(row)
-    if len(leaf_conditions) != 1 or leaf_conditions[0].get('delay') != '0':
+    leaf_delay = None
+    if (
+        len(leaf_conditions) == 1
+        and re.fullmatch(r'\d+', leaf_conditions[0].get('delay') or '')
+    ):
+        leaf_delay = int(leaf_conditions[0].get('delay', '0'))
+    else:
         errors.append(
-            'object-animation row must have one leaf start condition with delay="0"'
+            'object-animation row must have one numeric leaf start condition'
+        )
+    if (
+        trigger != 'after-previous'
+        and trigger_shape_id is None
+        and leaf_delay not in {None, 0}
+    ):
+        errors.append(
+            f'{trigger} object-animation row must have leaf delay="0"'
         )
 
     current = parent_map.get(row)
@@ -1241,7 +2554,11 @@ def _row_offset_ms(
                         )
         current = parent_map.get(current)
 
-    if trigger == 'on-click' and not saw_indefinite:
+    if (
+        trigger == 'on-click'
+        and trigger_shape_id is None
+        and not saw_indefinite
+    ):
         errors.append(
             'on-click object-animation row is missing an indefinite click wrapper'
         )
@@ -1254,7 +2571,15 @@ def _row_offset_ms(
             'after-previous object-animation row is missing its numeric offset wrapper'
         )
     if trigger == 'after-previous':
-        return numeric_offset or 0
+        absolute_offset = (numeric_offset or 0) + (leaf_delay or 0)
+        if absolute_offset > MAX_OOXML_MILLISECONDS:
+            errors.append(
+                'animation row absolute offset exceeds the OOXML '
+                f'millisecond limit: {absolute_offset}'
+            )
+        return absolute_offset
+    if trigger_shape_id is not None:
+        return leaf_delay or 0
     return 0
 
 
@@ -1290,7 +2615,34 @@ def _animation_rows(
         )
         )
         duration_ms = _behavior_duration_ms(row, errors)
-        offset_ms = _row_offset_ms(row, trigger, parent_map, errors)
+        trigger_shape_id = _row_trigger_shape_id(row, parent_map, errors)
+        offset_ms = _row_offset_ms(
+            row,
+            trigger,
+            trigger_shape_id,
+            parent_map,
+            errors,
+        )
+        resolved_effect = supported_effects[0] if supported_effects else None
+        effect_options = _read_effect_options(
+            row,
+            resolved_effect,
+            filter_name,
+            errors,
+        )
+        (
+            repeat_count,
+            repeat_duration_ms,
+            auto_reverse,
+            rewind,
+            accelerate,
+            decelerate,
+            bounce_end,
+            restart,
+            playback_duration_ms,
+        ) = _timing_summary(row, duration_ms, errors)
+        after_effect, after_effect_color = _after_effect_summary(row, errors)
+        sound_relationship_id, sound_name = _sound_summary(row, errors)
         if (
             shape_id is None
             or resolved_class is None
@@ -1301,7 +2653,7 @@ def _animation_rows(
         rows.append(
             AnimationRowSummary(
                 shape_id=shape_id,
-                effect=supported_effects[0] if supported_effects else None,
+                effect=resolved_effect,
                 supported_effects=supported_effects,
                 preset_class=resolved_class,
                 trigger=trigger,
@@ -1310,9 +2662,59 @@ def _animation_rows(
                 preset_id=preset_id,
                 preset_subtype=preset_subtype,
                 filter_name=filter_name,
+                effect_options=effect_options,
+                trigger_shape_id=trigger_shape_id,
+                repeat_count=repeat_count,
+                repeat_duration_ms=repeat_duration_ms,
+                auto_reverse=auto_reverse,
+                rewind=rewind,
+                accelerate=accelerate,
+                decelerate=decelerate,
+                bounce_end=bounce_end,
+                restart=restart,
+                after_effect=after_effect,
+                after_effect_color=after_effect_color,
+                sound_relationship_id=sound_relationship_id,
+                sound_name=sound_name,
+                playback_duration_ms=playback_duration_ms,
             )
         )
     return rows
+
+
+def _select_supported_timing_branch(slide_root: ET.Element) -> ET.Element:
+    """Project p14 AlternateContent timing onto one effective slide tree."""
+    projected = copy.deepcopy(slide_root)
+    alternate_tag = _qn(_MC_NS, 'AlternateContent')
+    choice_tag = _qn(_MC_NS, 'Choice')
+    fallback_tag = _qn(_MC_NS, 'Fallback')
+    for index, child in list(enumerate(list(projected))):
+        if child.tag != alternate_tag:
+            continue
+        branches = [
+            branch
+            for branch in list(child)
+            if branch.tag in {choice_tag, fallback_tag}
+        ]
+        selected_timing = None
+        for branch in branches:
+            if (
+                branch.tag == choice_tag
+                and 'p14' in (branch.get('Requires') or '').split()
+            ):
+                selected_timing = branch.find(_qn(PML_NS, 'timing'))
+                if selected_timing is not None:
+                    break
+        if selected_timing is None:
+            for branch in branches:
+                selected_timing = branch.find(_qn(PML_NS, 'timing'))
+                if selected_timing is not None:
+                    break
+        if selected_timing is None:
+            continue
+        projected.remove(child)
+        projected.insert(index, copy.deepcopy(selected_timing))
+    return projected
 
 
 def validate_slide_animation_structure(
@@ -1324,6 +2726,7 @@ def validate_slide_animation_structure(
     errors: list[str] = []
     if slide_root.tag != _qn(PML_NS, 'sld'):
         return ['animation validation requires a PresentationML p:sld root']
+    slide_root = _select_supported_timing_branch(slide_root)
 
     direct_timings = [
         child for child in list(slide_root)
@@ -1372,8 +2775,24 @@ def validate_slide_animation_structure(
         if timing_name_order.index('bldLst') < timing_name_order.index('tnLst'):
             errors.append('p:tnLst must precede p:bldLst')
 
+    parent_map = {
+        child: parent
+        for parent in timing.iter()
+        for child in list(parent)
+    }
     ctn_ids: list[int] = []
     for ctn in timing.iter(_qn(PML_NS, 'cTn')):
+        if ctn.get('id') is None:
+            ancestor = parent_map.get(ctn)
+            while ancestor is not None and ancestor is not timing:
+                if ancestor.tag == _qn(PML_NS, 'subTnLst'):
+                    break
+                ancestor = parent_map.get(ancestor)
+            if (
+                ancestor is not None
+                and ancestor.tag == _qn(PML_NS, 'subTnLst')
+            ):
+                continue
         value = _int_attribute(
             ctn,
             'id',
@@ -1449,16 +2868,6 @@ def validate_slide_animation_structure(
         node for node in timing.iter(_qn(PML_NS, 'cTn'))
         if node.get('presetClass') in set(_PRESET_CLASS_BY_CATEGORY.values())
     ]
-    if animation_nodes and require_supported_effects:
-        main_sequences = [
-            node for node in timing.iter(_qn(PML_NS, 'cTn'))
-            if node.get('nodeType') == 'mainSeq'
-        ]
-        if len(main_sequences) != 1:
-            errors.append(
-                'slides with object-animation rows must contain exactly one '
-                'mainSeq time node'
-            )
     if require_supported_effects:
         rows = _animation_rows(slide_root, errors)
         if not rows and animation_nodes:
@@ -1466,16 +2875,56 @@ def validate_slide_animation_structure(
     else:
         rows = []
     if rows:
-        triggers = {row.trigger for row in rows}
-        if len(triggers) != 1:
+        regular_rows = [
+            row for row in rows if row.trigger_shape_id is None
+        ]
+        interactive_rows = [
+            row for row in rows if row.trigger_shape_id is not None
+        ]
+        main_sequences = [
+            node for node in timing.iter(_qn(PML_NS, 'cTn'))
+            if node.get('nodeType') == 'mainSeq'
+        ]
+        expected_main_sequences = 1 if regular_rows else 0
+        if len(main_sequences) != expected_main_sequences:
             errors.append(
-                'one generated object-animation sequence must use one Start mode; found '
-                + ', '.join(sorted(triggers))
+                'generated object-animation rows require '
+                f'{expected_main_sequences} mainSeq time node(s); found '
+                f'{len(main_sequences)}'
+            )
+        interactive_sequences = [
+            node for node in timing.iter(_qn(PML_NS, 'cTn'))
+            if node.get('nodeType') == 'interactiveSeq'
+        ]
+        if len(interactive_sequences) != len(interactive_rows):
+            errors.append(
+                'each generated trigger-shape animation must have one '
+                'interactiveSeq time node'
+            )
+        regular_triggers = {row.trigger for row in regular_rows}
+        if len(regular_triggers) > 1:
+            errors.append(
+                'one generated main object-animation sequence must use one '
+                'Start mode; found '
+                + ', '.join(sorted(regular_triggers))
             )
         row_shape_ids = [row.shape_id for row in rows]
         if len(row_shape_ids) != len(set(row_shape_ids)):
             errors.append('generated object-animation sequence repeats a shape target')
         for row in rows:
+            if (
+                row.trigger_shape_id is not None
+                and row.trigger != 'on-click'
+            ):
+                errors.append(
+                    'trigger-shape animation must use the on-click Start mode '
+                    f'for shape {row.shape_id}'
+                )
+            if row.trigger_shape_id == row.shape_id:
+                errors.append(
+                    'animation target and trigger shape must differ for shape '
+                    f'{row.shape_id}'
+                )
             if not row.supported_effects:
                 errors.append(
                     'unsupported object-animation effect tuple for shape '
@@ -1498,6 +2947,7 @@ def read_slide_animation_sequence(
         root = ET.fromstring(data)
     except ET.ParseError as exc:
         raise ValueError(f'invalid slide XML: {exc}') from exc
+    root = _select_supported_timing_branch(root)
     errors = validate_slide_animation_structure(
         root,
         require_supported_effects=require_supported_effects,
@@ -1519,7 +2969,14 @@ def read_slide_animation_sequence(
             value = target.get('spid')
             if value and value.isdigit():
                 audio_targets.append(int(value))
-    trigger = rows[0].trigger if rows else None
+    regular_triggers = {
+        row.trigger for row in rows if row.trigger_shape_id is None
+    }
+    trigger = (
+        next(iter(regular_triggers))
+        if len(regular_triggers) == 1
+        else ('on-click' if rows and not regular_triggers else None)
+    )
     return AnimationSequenceSummary(
         timing_count=len(direct_timings),
         trigger=trigger,
@@ -1530,7 +2987,7 @@ def read_slide_animation_sequence(
 
 def validate_generated_animation_xml(
     slide_xml: str | bytes,
-    targets: Sequence[Sequence[object]],
+    targets: Sequence[Sequence[object] | Mapping[str, object]],
     *,
     duration: float = 0.3,
     trigger: str = 'after-previous',
@@ -1542,9 +2999,21 @@ def validate_generated_animation_xml(
         'animation duration',
         allow_zero=False,
     )
-    expected = tuple(
+    normalized_expected = tuple(
         _normalize_target(target, default_duration_ms)
         for target in targets
+    )
+    # PowerPoint stores ordinary rows in mainSeq and shape-triggered rows in
+    # separate interactiveSeq containers. Their relative cross-sequence order
+    # has no playback meaning, so read-back follows the native container order.
+    expected = tuple(
+        target
+        for target in normalized_expected
+        if target.trigger_shape_id is None
+    ) + tuple(
+        target
+        for target in normalized_expected
+        if target.trigger_shape_id is not None
     )
     summary = read_slide_animation_sequence(
         slide_xml,
@@ -1556,17 +3025,27 @@ def validate_generated_animation_xml(
             f'animation read-back row count is {len(summary.rows)}; '
             f'expected {len(expected)}'
         )
-    if expected and summary.trigger != trigger:
+    expected_main_targets = tuple(
+        target for target in expected if target.trigger_shape_id is None
+    )
+    expected_sequence_trigger = (
+        trigger if expected_main_targets else ('on-click' if expected else None)
+    )
+    if expected and summary.trigger != expected_sequence_trigger:
         errors.append(
-            f'animation read-back trigger is {summary.trigger!r}; expected {trigger!r}'
+            f'animation read-back trigger is {summary.trigger!r}; '
+            f'expected {expected_sequence_trigger!r}'
         )
 
     expected_offsets: list[int] = []
     elapsed_ms = 0
     previous_duration_ms = 0
+    main_index = 0
     for index, target in enumerate(expected):
-        if trigger == 'after-previous':
-            if index == 0:
+        if target.trigger_shape_id is not None:
+            expected_offsets.append(target.delay_ms)
+        elif trigger == 'after-previous':
+            if main_index == 0:
                 elapsed_ms = target.delay_ms
             else:
                 elapsed_ms += previous_duration_ms + target.delay_ms
@@ -1576,16 +3055,78 @@ def validate_generated_animation_xml(
                     f'millisecond limit at row {index + 1}: {elapsed_ms}'
                 )
             expected_offsets.append(elapsed_ms)
-            previous_duration_ms = target.duration_ms
+            previous_duration_ms = target.playback_duration_ms
+            main_index += 1
         else:
             expected_offsets.append(0)
 
     for index, (actual, target) in enumerate(zip(summary.rows, expected), 1):
         spec = NATIVE_ANIMATIONS[target.effect]
+        expected_row = _animation_row_for_options(
+            target.effect,
+            target.effect_options,
+        )
+        if spec['durationScalable']:
+            _scale_animation_row_duration(
+                expected_row,
+                base_duration_ms=int(spec['defaultDurationMs']),
+                requested_duration_ms=target.duration_ms,
+            )
+        _apply_timing_options(expected_row, target)
+        option_errors: list[str] = []
+        expected_filter = _row_filter(
+            expected_row,
+            str(spec['presetClass']),
+            option_errors,
+        )
+        expected_options = _read_effect_options(
+            expected_row,
+            target.effect,
+            expected_filter,
+            option_errors,
+        )
+        (
+            expected_repeat_count,
+            expected_repeat_duration_ms,
+            expected_auto_reverse,
+            expected_rewind,
+            expected_accelerate,
+            expected_decelerate,
+            expected_bounce_end,
+            expected_restart,
+            expected_playback_duration_ms,
+        ) = _timing_summary(
+            expected_row,
+            (
+                target.duration_ms
+                if spec['durationScalable']
+                else spec['defaultDurationMs']
+            ),
+            option_errors,
+        )
+        if option_errors:
+            errors.append(
+                f'animation row {index} expected-option model failed: '
+                + '; '.join(option_errors)
+            )
         if actual.shape_id != target.shape_id:
             errors.append(
                 f'animation row {index} targets shape {actual.shape_id}; '
                 f'expected {target.shape_id}'
+            )
+        expected_row_trigger = (
+            'on-click' if target.trigger_shape_id is not None else trigger
+        )
+        if actual.trigger != expected_row_trigger:
+            errors.append(
+                f'animation row {index} trigger is {actual.trigger!r}; '
+                f'expected {expected_row_trigger!r}'
+            )
+        if actual.trigger_shape_id != target.trigger_shape_id:
+            errors.append(
+                f'animation row {index} trigger shape is '
+                f'{actual.trigger_shape_id!r}; expected '
+                f'{target.trigger_shape_id!r}'
             )
         if target.effect not in actual.supported_effects:
             errors.append(
@@ -1596,10 +3137,15 @@ def validate_generated_animation_xml(
             errors.append(f'animation row {index} presetClass changed')
         if actual.preset_id != int(spec['presetID']):
             errors.append(f'animation row {index} presetID changed')
-        if actual.preset_subtype != int(spec['presetSubtype']):
+        if actual.preset_subtype != int(expected_row.get('presetSubtype', '-1')):
             errors.append(f'animation row {index} presetSubtype changed')
-        if actual.filter_name != spec['filter']:
+        if actual.filter_name != expected_filter:
             errors.append(f'animation row {index} filter changed')
+        if dict(actual.effect_options) != expected_options:
+            errors.append(
+                f'animation row {index} effect_options are '
+                f'{dict(actual.effect_options)!r}; expected {expected_options!r}'
+            )
         expected_duration = (
             target.duration_ms
             if spec['durationScalable']
@@ -1614,6 +3160,53 @@ def validate_generated_animation_xml(
             errors.append(
                 f'animation row {index} offset is {actual.offset_ms}ms; '
                 f'expected {expected_offsets[index - 1]}ms'
+            )
+        timing_pairs = (
+            ('repeat_count', actual.repeat_count, expected_repeat_count),
+            (
+                'repeat_duration_ms',
+                actual.repeat_duration_ms,
+                expected_repeat_duration_ms,
+            ),
+            ('auto_reverse', actual.auto_reverse, expected_auto_reverse),
+            ('rewind', actual.rewind, expected_rewind),
+            ('accelerate', actual.accelerate, expected_accelerate),
+            ('decelerate', actual.decelerate, expected_decelerate),
+            ('bounce_end', actual.bounce_end, expected_bounce_end),
+            ('restart', actual.restart, expected_restart),
+            (
+                'playback_duration_ms',
+                actual.playback_duration_ms,
+                expected_playback_duration_ms,
+            ),
+        )
+        for field, actual_value, expected_value in timing_pairs:
+            if actual_value != expected_value:
+                errors.append(
+                    f'animation row {index} {field} is {actual_value!r}; '
+                    f'expected {expected_value!r}'
+                )
+        if actual.after_effect != target.after_effect:
+            errors.append(
+                f'animation row {index} after_effect is '
+                f'{actual.after_effect!r}; expected {target.after_effect!r}'
+            )
+        if actual.after_effect_color != target.after_effect_color:
+            errors.append(
+                f'animation row {index} after_effect_color is '
+                f'{actual.after_effect_color!r}; '
+                f'expected {target.after_effect_color!r}'
+            )
+        if actual.sound_relationship_id != target.sound_relationship_id:
+            errors.append(
+                f'animation row {index} sound relationship is '
+                f'{actual.sound_relationship_id!r}; '
+                f'expected {target.sound_relationship_id!r}'
+            )
+        if actual.sound_name != target.sound_name:
+            errors.append(
+                f'animation row {index} sound name is '
+                f'{actual.sound_name!r}; expected {target.sound_name!r}'
             )
     if errors:
         raise ValueError('; '.join(errors))
@@ -1640,8 +3233,9 @@ def validate_pptx_animation_package(
                 if re.fullmatch(r'ppt/slides/slide\d+\.xml', name)
             )
             for name in names:
+                slide_data = package.read(name)
                 try:
-                    root = ET.fromstring(package.read(name))
+                    root = ET.fromstring(slide_data)
                 except ET.ParseError as exc:
                     errors.append(f'{name}: invalid XML: {exc}')
                     continue
@@ -1650,6 +3244,66 @@ def validate_pptx_animation_package(
                     require_supported_effects=require_supported_effects,
                 ):
                     errors.append(f'{name}: {error}')
+                try:
+                    summary = read_slide_animation_sequence(slide_data)
+                except ValueError:
+                    continue
+                sound_ids = {
+                    row.sound_relationship_id
+                    for row in summary.rows
+                    if row.sound_relationship_id is not None
+                }
+                if not sound_ids:
+                    continue
+                slide_leaf = posixpath.basename(name)
+                rels_name = (
+                    f'ppt/slides/_rels/{slide_leaf}.rels'
+                )
+                if rels_name not in package.namelist():
+                    errors.append(
+                        f'{name}: animation sound relationships are missing'
+                    )
+                    continue
+                try:
+                    relationships = ET.fromstring(package.read(rels_name))
+                except ET.ParseError as exc:
+                    errors.append(f'{rels_name}: invalid XML: {exc}')
+                    continue
+                by_id = {
+                    rel.get('Id'): rel
+                    for rel in relationships.findall(
+                        _qn(_PACKAGE_REL_NS, 'Relationship')
+                    )
+                }
+                for relationship_id in sorted(sound_ids):
+                    relationship = by_id.get(relationship_id)
+                    if relationship is None:
+                        errors.append(
+                            f'{name}: animation sound relationship '
+                            f'{relationship_id} is missing'
+                        )
+                        continue
+                    if relationship.get('Type') != _AUDIO_REL_TYPE:
+                        errors.append(
+                            f'{name}: animation sound relationship '
+                            f'{relationship_id} is not an audio relationship'
+                        )
+                        continue
+                    target = relationship.get('Target')
+                    if not target:
+                        errors.append(
+                            f'{name}: animation sound relationship '
+                            f'{relationship_id} has no target'
+                        )
+                        continue
+                    target_part = posixpath.normpath(
+                        posixpath.join(posixpath.dirname(name), target)
+                    )
+                    if target_part not in package.namelist():
+                        errors.append(
+                            f'{name}: animation sound target is missing: '
+                            f'{target_part}'
+                        )
     except (OSError, zipfile.BadZipFile) as exc:
         raise ValueError(f'unable to read PPTX package {path}: {exc}') from exc
     if errors:
@@ -1668,6 +3322,7 @@ def object_animation_fingerprint(slide_xml: str | bytes) -> str | None:
         root = ET.fromstring(data)
     except ET.ParseError as exc:
         raise ValueError(f'invalid slide XML: {exc}') from exc
+    root = _select_supported_timing_branch(root)
     timings = [
         child for child in list(root)
         if child.tag == _qn(PML_NS, 'timing')
@@ -1759,11 +3414,73 @@ def get_animation_help() -> str:
     lines.append('  Legacy compatibility inputs (never selected for new output):')
     for key in LEGACY_ANIMATION_KEYS:
         canonical = ANIMATION_ALIASES[key]
+        implied = ANIMATION_ALIAS_OPTIONS.get(key)
+        option_suffix = (
+            f', implies {implied}'
+            if implied
+            else ''
+        )
         lines.append(
             f"    {key}: compatibility alias for {canonical} "
-            f"({NATIVE_ANIMATIONS[canonical]['name']})"
+            f"({NATIVE_ANIMATIONS[canonical]['name']}{option_suffix})"
         )
     return '\n'.join(lines)
+
+
+def describe_animation_effect(effect: object) -> dict[str, Any]:
+    """Return the author-facing option contract for one animation effect."""
+    canonical, implied_options = normalize_animation_effect_request(
+        effect,
+        allow_none=False,
+        allow_modes=False,
+    )
+    option_contract: dict[str, Any] = {}
+    for name, raw_spec in NATIVE_ANIMATIONS[canonical]['effectOptions'].items():
+        spec = {
+            key: value
+            for key, value in raw_spec.items()
+            if key != 'values'
+        }
+        if raw_spec.get('type') == 'enum':
+            spec['values'] = list(raw_spec['values'])
+        option_contract[name] = spec
+    return {
+        'input': effect,
+        'effect': canonical,
+        'compatibility_alias': (
+            effect if isinstance(effect, str) and effect in ANIMATION_ALIASES else None
+        ),
+        'implied_effect_options': implied_options,
+        'effect_options': option_contract,
+        'timing': {
+            'duration': 'positive seconds',
+            'delay': 'non-negative seconds; group scope only',
+            'stagger': 'non-negative seconds; animation scope only',
+            'trigger': list(ANIMATION_TRIGGERS),
+            'trigger_shape': (
+                'other top-level SVG group id; group scope only; maps to '
+                'PowerPoint "On Click of"'
+            ),
+            'repeat_count': 'positive number; mutually exclusive with repeat_duration',
+            'repeat_duration': 'positive seconds; mutually exclusive with repeat_count',
+            'auto_reverse': 'boolean',
+            'rewind': 'boolean',
+            'accelerate': 'number from 0 to 1',
+            'decelerate': 'number from 0 to 1',
+            'bounce_end': (
+                'number from 0 to 1; requires an interpolated behavior and '
+                'is mutually exclusive with decelerate'
+            ),
+            'restart': list(ANIMATION_RESTARTS),
+        },
+        'after_effect': list(ANIMATION_AFTER_EFFECTS),
+        'sound': 'project-relative or absolute .m4a, .mp3, or .wav path',
+        'derived_not_configured': {
+            'speed': 'derived from duration',
+            'smooth_start': 'derived from accelerate',
+            'smooth_end': 'derived from decelerate',
+        },
+    }
 
 
 def main() -> None:
@@ -1782,7 +3499,25 @@ def main() -> None:
         action='store_true',
         help='list available transitions and object animations',
     )
+    parser.add_argument(
+        '--describe',
+        metavar='EFFECT',
+        help='print the complete parameter contract for one object animation',
+    )
     args = parser.parse_args()
+
+    if args.describe:
+        try:
+            print(
+                json.dumps(
+                    describe_animation_effect(args.describe),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        return
 
     if args.list:
         print(get_transition_help())

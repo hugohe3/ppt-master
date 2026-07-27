@@ -21,12 +21,9 @@ Per-element animation is off by default. To enable it deck-wide, pass `-a auto` 
 
 Run the [`customize-animations`](../workflows/stages/customize-animations.md) post-processing stage when the user asks to tune animation order, effects, timing, or object-level reveals.
 
-**Hard rule — semantic anchors before sidecar**: for custom object-level
-animation, do not scaffold or choreograph directly from the SVG's pre-existing
-`<g>` list. First derive reveal units from page meaning and narration, audit
-every page, and rewrite coarse or fragmented ordinary Slide-local groups
-without changing visible output. Only the post-regroup top-level ids are valid
-custom-animation anchors.
+**Hard rule — semantic anchors before sidecar**: derive reveal units from page
+meaning and narration, then regroup coarse/fragmented Slide-local content
+without changing its appearance. Only post-regroup top-level ids are valid.
 
 ```bash
 # Inspect the real anchors after the semantic regrouping pass
@@ -57,8 +54,9 @@ Single-slide sidecar excerpt (repeat the complete slide block for every SVG in `
       "animation": { "effect": "auto", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" },
       "groups": {
         "title": { "effect": "entrance_fade", "order": 1 },
-        "chart": { "effect": "entrance_wipe", "order": 2, "duration": 0.6 },
-        "insight": { "effect": "entrance_fly", "order": 3, "delay": 0.2 }
+        "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },
+        "details-button": { "effect": "none" },
+        "insight": { "effect": "entrance_fly", "effect_options": { "direction": "up_right" }, "order": 3, "delay": 0.2, "trigger_shape": "details-button" }
       }
     }
   }
@@ -72,19 +70,50 @@ Rules:
 - `effect: none` removes that group from the object-animation sequence.
 - `order` changes animation order only; it does not change slide layering.
 - `delay` is seconds before that group starts in `after-previous` mode.
+- `trigger_shape` is a group-only reference to another unique, triggerable
+  top-level group. It maps to PowerPoint **Trigger → On Click of**, makes only
+  that row interactive, and uses `delay` as `TriggerDelayTime`.
 - `duration` overrides the per-group schedule duration. `entrance_appear`
   remains a 1ms visibility flip, and instantaneous native emphasis presets
   retain their PowerPoint-authored duration; the configured value still spaces
   the next `after-previous` row.
+- `effect_options` requires an explicit canonical `effect` in the same block
+  and accepts only parameters PowerPoint exposes for that effect:
+
+  | Option | Applies to |
+  |---|---|
+  | `direction` | Directional Fly/Crawl/Wipe/Peek/Strips/Split/Stretch/Zoom and related entrance/exit effects |
+  | `amount` | Wheel spokes (`1`, `2`, `3`, `4`, `8`), emphasis Spin degrees, or Transparency ratio |
+  | `color` | Color-capable emphasis effects; `#RRGGBB` or `theme:<scheme-color>` |
+  | `font_name`, `size` | Change Font and Grow/Shrink |
+  | `relative` | Motion paths (`true` = shape-relative, `false` = fixed slide path) |
+- Any animation/group block may set `repeat_count` or `repeat_duration`
+  (mutually exclusive), `auto_reverse`, `rewind`, `accelerate`, `decelerate`,
+  `bounce_end`, `restart`, `after_effect`, and `sound`. Ratios are `0..1`;
+  `bounce_end` requires an interpolated behavior and cannot combine with
+  `decelerate`; `restart` is `always`, `when-not-active`, or `never`;
+  `after_effect` is `none`, `dim` (with `color`), `hide`, or
+  `hide-on-next-click`; `sound` is a project-relative or absolute `.m4a`,
+  `.mp3`, or `.wav` path.
+- `Speed` and smooth start/end are not duplicate sidecar fields: they are
+  derived from `duration` and `accelerate`/`decelerate`.
+- This is the complete parameter surface for the generated top-level-group
+  target model. PowerPoint paragraph/text-range build fields are intentionally
+  absent because grouped SVG content is not emitted as paragraph builds; media
+  play/pause/stop commands remain in the audio/video workflows.
+- Run `python3 skills/ppt-master/scripts/pptx_animations.py --describe
+  <canonical_effect>` for that effect's exact option values and full parameter
+  contract.
 - `--animation none` overrides the sidecar and disables all per-element animation.
 - An explicit sidecar group may override the legacy chrome-name heuristic, but it cannot override `data-pptx-layer` or an explicit static role/placeholder marker.
 - Unknown effects, modes, or triggers and invalid numeric/order fields fail validation; no fallback effect is substituted.
 
-**Declared inheritance for omitted sidecar fields**:
-
-- The whole `animations.json` artifact is optional. When absent, normal exporter CLI resolution applies.
-- In any existing sparse sidecar, an omitted slide transition/animation property inherits the matching `defaults.transition` / `defaults.animation` property; when that defaults property is also absent, normal exporter CLI resolution applies. Explicit CLI overrides still win. Current authoring writes each slide's complete transition and animation blocks.
-- A group override inherits `effect` and `duration` from its resolved slide animation; omitted `order` and `delay` use the exporter's sidecar resolution.
+**Inheritance**: the sidecar is optional. Sparse legacy slides inherit
+`defaults.transition` / `defaults.animation`, then CLI resolution; explicit CLI
+flags win. Groups inherit the resolved slide duration, timing modifiers,
+after-effect, and sound. `effect_options` remains coupled to an explicit effect;
+`trigger_shape` is never inherited; omitted `order`/`delay` use exporter
+defaults. New authoring writes complete slide blocks.
 
 ---
 
@@ -106,15 +135,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advanc
 
 The named effects cover the complete current PowerPoint transition gallery:
 
-- Subtle: `morph`, `fade`, `push`, `wipe`, `split`, `reveal`, `cut`,
-  `random_bars`, `shape`, `uncover`, `cover`, `flash`.
-- Exciting: `fall_over`, `drape`, `curtains`, `wind`, `prestige`, `fracture`,
-  `crush`, `peel_off`, `page_curl`, `airplane`, `origami`, `dissolve`,
-  `checkerboard`, `blinds`, `clock`, `ripple`, `honeycomb`, `glitter`,
-  `vortex`, `shred`, `switch`, `flip`, `gallery`, `cube`, `doors`, `box`,
-  `comb`, `zoom`, `random`.
-- Dynamic Content: `pan`, `ferris_wheel`, `conveyor`, `rotate`, `window`,
-  `orbit`, `fly_through`.
+The registry covers PowerPoint's complete Subtle, Exciting, and Dynamic Content
+gallery. Run `pptx_animations.py --list` for exact identifiers.
 
 Established low-level aliases remain accepted for compatibility and normalize
 to current gallery effects: `strips` → `wipe`; `circle` / `diamond` / `plus`
@@ -143,26 +165,13 @@ Off by default — enable deck-wide with `-a auto` (or another effect). Once ena
 - **`with-previous`** — all groups start together on slide entry, playing their object animation in parallel. Stagger ignored.
 - **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
 
-```bash
-# Default behavior (no flags): page transitions only, no per-element builds
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+Enable with `-a auto`, select a canonical effect with
+`--animation entrance_fade`, and choose Start behavior with
+`--animation-trigger on-click|with-previous|after-previous`.
 
-# Enable per-element animation deck-wide (auto effect + after-previous cascade)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto
-
-# Enable with a single canonical effect (cascades via after-previous)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade
-
-# Enable and switch to on-click for live presentations (presenter controls pacing)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click
-
-# Custom pacing
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
-        --animation-stagger 0.7 --animation-duration 0.5
-
-# All groups animate in unison on slide entry
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous
-```
+PowerPoint's separate **Trigger → On Click of** behavior uses group-only
+`trigger_shape`. It links that row to another top-level group while unlinked
+rows keep the slide Start mode; it is not a fourth deck-wide Start mode.
 
 The registry exposes two layers:
 
@@ -171,11 +180,8 @@ The registry exposes two layers:
   Examples include `entrance_bounce`, `emphasis_spin`, `path_circle`, and
   `exit_faded_zoom`. Each native key carries the complete PowerPoint-authored
   behavior tree, not a generic filter approximation.
-- **29 legacy compatibility inputs**: `appear`, `fade`, `fly`, `fly_left`,
-  `fly_right`, `fly_top`, `cut`, `zoom`, `wipe`, `wipe_left`, `wipe_right`,
-  `wipe_up`, `wipe_down`, `split`, `blinds`, `checkerboard`, `dissolve`,
-  `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`,
-  `strips`, `wedge`, `stretch`, `expand`, `swivel`.
+- **29 legacy compatibility inputs**, listed by `--list`; new output never
+  selects them.
 
 Run the registry command for the exact categorized key list:
 
@@ -187,7 +193,9 @@ Compatibility names normalize before selection and writing: for example,
 `fade` resolves to `entrance_fade`; every old Fly direction name resolves to
 `entrance_fly`; every old Wipe direction name resolves to `entrance_wipe`; and
 `cut` resolves to `entrance_appear` because current PowerPoint has no separate
-Cut object effect. These names are accepted only as compatibility inputs.
+Cut object effect. Directional aliases preserve their old direction through
+`effect_options`; legacy `wheel` maps to `entrance_wheel` with four spokes.
+These names are accepted only as compatibility inputs.
 Automatic selection, new sidecars, conversion traces, and writers use
 canonical keys.
 
@@ -195,17 +203,10 @@ The native keys mirror the object-capable `MsoAnimEffect` surface. The four
 media commands—play, pause, stop, and play from bookmark—are not object effects
 for SVG groups and remain owned by the audio/video workflows.
 
-- `auto` (recommended when enabling automatic entrances) — map a canonical
-  PowerPoint entrance preset from the group's SVG id. Information-dense elements get a
-  single stable effect: `chart` / `table` / `legend` / `timeline` / `track` →
-  `entrance_wipe`; `card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` /
-  `tier-*` / `principle-*` → `entrance_fly`; `title` / `chapter-*` /
-  `section-*` / `cover-*` / `tagline` / `subtitle` → `entrance_fade`;
-  `takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` →
-  `entrance_fade`. Image-like ids `hero` / `figure-*` / `image` / `img-*` /
-  `kpi` instead cycle a richer canonical entrance pool so multiple images vary
-  across the deck. Unmatched ids cycle through `entrance_fade` /
-  `entrance_wipe` / `entrance_fly` / `entrance_zoom`.
+- `auto` maps semantic ids to canonical entrances: charts/tables/timelines use
+  `entrance_wipe`; cards/steps use `entrance_fly`; titles/takeaways use
+  `entrance_fade`; image-like ids cycle a richer pool; unmatched ids cycle
+  fade/wipe/fly/zoom.
 - `mixed` (legacy mode name) — deterministic. The first animated group on each
   slide uses `entrance_fade`; later groups cycle through a 16-effect canonical
   PowerPoint entrance pool across the deck. The mode name remains compatible;
@@ -218,20 +219,12 @@ for SVG groups and remain owned by the audio/video workflows.
 `entrance_appear` is excluded from every variation pool because it has no
 visible motion.
 
-Flags:
+Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start;
+`--animation-duration` and `--animation-stagger` control base timing;
+`--animation-config` selects a sidecar; `--no-animations` disables page/object
+motion but preserves narration audio and recorded advance timing.
 
-- `-a/--animation` — compatibility alias, native `entrance_*` / `emphasis_*`
-  / `path_*` / `exit_*` effect, `auto`, `mixed`, `random`, or `none`. Default:
-  `none` (per-element animation off; pass `auto` to enable automatic entrances).
-- `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
-- `--animation-duration` — per-element schedule duration in seconds, default
-  `0.4`. Scalable native behavior trees preserve their internal timing ratios;
-  instantaneous presets retain their authored duration.
-- `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.
-- `--animation-config` — explicit sidecar path. Narrated export defaults to `<project>/narration_animations.json`; other export defaults to `<project>/animations.json` when present.
-- `--no-animations` — ignore animation sidecars and disable both object animations and page-transition motion. Narration audio and recorded slide-advance timing remain active.
-
-> Note: `--recorded-narration` rejects `on-click`; use its default `narration_animations.json`, pass `--animation-config animations.json` for the canonical presentation animation, or pass `--no-animations`.
+> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`; use its default `narration_animations.json`, pass `--animation-config animations.json` for the canonical presentation animation, or pass `--no-animations`.
 
 ---
 
@@ -248,7 +241,11 @@ split coarse wrappers and merge fragmented atoms when needed, then use
 uses for group-select / group-move. Do not split or merge units to hit a target
 count.
 
-**Chrome groups skip the cascade automatically.** Explicit SVG role and placeholder semantics are authoritative. A group with `data-pptx-layer` or an explicit static role/placeholder marker can never animate. For marker-free legacy SVGs only, top-level groups whose id tokens look like page chrome (background, header/footer, decorations, watermark, page number, nav, logo, dividing rule) are excluded and appear with the slide. An explicit `animations.json` group entry may override this id-name heuristic, but never an explicit structural marker. Examples that auto-skip by legacy id: `<g id="background">`, `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="watermark">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">`. Examples that still animate: `<g id="card-1">`, `<g id="cover-title">`, `<g id="step-discover">`, `<g id="timeline-track">`. Do not strip the `<g>` wrapper to avoid animation — keep it for PowerPoint group selection and use `effect: none` when the content should remain static.
+**Chrome stays static.** `data-pptx-layer` and explicit static
+role/placeholder markers are absolute. For marker-free legacy SVGs, chrome-like
+ids (background, header/footer, decor, watermark, page number, nav, logo, rule)
+are skipped; an explicit sidecar entry may override only this name heuristic.
+Keep wrappers and use `effect: none` for static content.
 
 **Fallback for flat SVGs** (no top-level `<g>` wrappers, only raw `<rect>` / `<text>` / `<path>` at the root):
 
@@ -261,20 +258,22 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 
 ## 6. Validation and Read-Back
 
-Animation configuration is strict. Export fails on an unknown effect, mode, or trigger; a boolean or non-finite duration/delay/stagger; a non-positive duration; a negative delay/stagger; a non-positive or non-integer order; a missing slide/group reference; or any attempt to animate a structural layer. These errors never downgrade to another effect or silently omit a requested target.
+Animation configuration is strict. Export fails on an unknown effect, mode, or
+trigger; invalid timing/order values; a missing slide/group/`trigger_shape`
+reference; a self-trigger; or any attempt to animate or trigger from a
+structural layer. These errors never downgrade or silently omit a target.
 
 Generated export reads each slide's timing tree back and checks row count/order,
-trigger, shape target, preset class, resolved effect tuple, native behavior
+trigger, trigger shape, shape target, preset class, resolved effect tuple, native behavior
 signature, duration, and timeline offset. Package validation then checks root
 timing placement, unique and valid `p:cTn` ids, and every `p:spTgt` reference.
 The writer does not emit `p:bldP` for groups or pictures. Direct-PPTX preserve
 mode tolerates unchanged legacy group/picture `p:bldP` rows from earlier PPT
 Master exports; new generated packages remain strict.
 
-Narration injection merges audio timing into an existing direct `p:sld/p:timing`
-DOM and preserves object-animation rows. A source timing tree nested in
-`mc:AlternateContent` or another non-root container fails safely instead of
-being rewritten or duplicated. Direct-PPTX routes fingerprint source
+Narration injection preserves animation and updates both p14 Choice/Fallback
+when bounce timing is present; unsupported nested timing fails safely.
+Direct-PPTX routes fingerprint source
 object-animation timing before and after their allowed edits, then run
 structural package validation; they do not author or normalize animation
 effects.

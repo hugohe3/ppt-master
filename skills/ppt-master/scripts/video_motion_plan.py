@@ -179,7 +179,15 @@ def _shape_events(slide: dict[str, Any]) -> dict[int, dict[str, Any]]:
     return selected
 
 
-def _direction_for_effect(effect: str, filter_name: object) -> str | None:
+def _direction_for_effect(
+    effect: str,
+    filter_name: object,
+    effect_options: object,
+) -> str | None:
+    if isinstance(effect_options, dict):
+        raw_direction = effect_options.get("direction")
+        if isinstance(raw_direction, str) and raw_direction:
+            return raw_direction.replace("_", "-")
     effect = _VIDEO_EFFECT_ALIASES.get(effect, effect)
     explicit = {
         "fly": "down",
@@ -473,6 +481,14 @@ def build_video_motion_plan(
                 raw_row.get("duration_ms"),
                 f"slide {slide_num} animation duration_ms",
             )
+            playback_duration_ms = raw_row.get(
+                "playback_duration_ms",
+                duration_ms,
+            )
+            playback_duration_ms = _positive_int(
+                playback_duration_ms,
+                f"slide {slide_num} animation playback_duration_ms",
+            )
             event = event_index.get(shape_id)
             if event is None:
                 raise ValueError(
@@ -490,6 +506,7 @@ def build_video_motion_plan(
             direction = _direction_for_effect(
                 effect,
                 raw_row.get("filter_name"),
+                raw_row.get("effect_options"),
             )
             video = _video_effect(effect, direction, multiplier)
             video["duration_ms"] = duration_ms
@@ -505,6 +522,11 @@ def build_video_motion_plan(
                 "trigger": trigger,
                 "start_ms": start_ms,
                 "duration_ms": duration_ms,
+                "playback_duration_ms": playback_duration_ms,
+                "effect_options": raw_row.get("effect_options", {}),
+                "repeat_count": raw_row.get("repeat_count"),
+                "repeat_duration_ms": raw_row.get("repeat_duration_ms"),
+                "auto_reverse": raw_row.get("auto_reverse"),
                 "bounds_emu": bounds,
                 "area_ratio": round(area_ratio, 6),
                 "video": video,
@@ -521,7 +543,7 @@ def build_video_motion_plan(
         )
         content_end_ms = max(
             (
-                item["start_ms"] + item["duration_ms"]
+                item["start_ms"] + item["playback_duration_ms"]
                 for item in objects
             ),
             default=0,
