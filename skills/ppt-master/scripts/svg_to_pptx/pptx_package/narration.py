@@ -25,6 +25,9 @@ from pptx_transitions import (
 
 DRAWINGML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 RELATIONSHIPS_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+MARKUP_COMPATIBILITY_NS = (
+    "http://schemas.openxmlformats.org/markup-compatibility/2006"
+)
 
 MEDIA_REL_TYPE = "http://schemas.microsoft.com/office/2007/relationships/media"
 AUDIO_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
@@ -395,6 +398,50 @@ def _insert_root_timing(slide: ET.Element, timing: ET.Element) -> None:
     slide.insert(insert_at, timing)
 
 
+def _animation_timing_branches(
+    slide: ET.Element,
+) -> tuple[ET.Element | None, list[ET.Element]]:
+    """Return the root timing anchor and every active/fallback timing branch."""
+    direct = [
+        child for child in slide
+        if child.tag == _qn(PML_NS, "timing")
+    ]
+    alternates: list[tuple[ET.Element, list[ET.Element]]] = []
+    for child in slide:
+        if child.tag != _qn(MARKUP_COMPATIBILITY_NS, "AlternateContent"):
+            continue
+        timings = [
+            timing
+            for branch in list(child)
+            for timing in list(branch)
+            if timing.tag == _qn(PML_NS, "timing")
+        ]
+        if timings:
+            alternates.append((child, timings))
+    if direct and alternates:
+        raise ValueError(
+            "narration source contains both direct and AlternateContent timing"
+        )
+    if len(direct) > 1 or len(alternates) > 1:
+        raise ValueError("narration source has multiple root animation timings")
+    if direct:
+        return direct[0], direct
+    if alternates:
+        anchor, timings = alternates[0]
+        if len(timings) != 2:
+            raise ValueError(
+                "narration source animation AlternateContent must contain "
+                "one Choice and one Fallback timing"
+            )
+        return anchor, timings
+    nested = list(slide.iter(_qn(PML_NS, "timing")))
+    if nested:
+        raise ValueError(
+            "narration source contains unsupported non-root p:timing"
+        )
+    return None, []
+
+
 def inject_narration(
     slide_xml: str,
     *,
@@ -430,23 +477,21 @@ def inject_narration(
     )
     if shape_id in shape_ids:
         raise ValueError(f"narration shape id already exists on slide: {shape_id}")
-    timing_ids = _numeric_ids(root.iter(_qn(PML_NS, "cTn")), "timing node")
+    timing_anchor, timing_branches = _animation_timing_branches(root)
+    timing_id_sets = [
+        _numeric_ids(timing.iter(_qn(PML_NS, "cTn")), "timing node")
+        for timing in timing_branches
+    ]
+    timing_ids = [
+        timing_id
+        for timing_set in timing_id_sets
+        for timing_id in timing_set
+    ]
     next_timing_id = max(timing_ids, default=0) + 1
     if next_timing_id > MAX_OOXML_UNSIGNED_INT:
         raise ValueError("narration source has no available timing node identifiers")
 
-    root_timings = [child for child in root if child.tag == _qn(PML_NS, "timing")]
-    all_timings = list(root.iter(_qn(PML_NS, "timing")))
-    if len(all_timings) != len(root_timings):
-        raise ValueError(
-            "narration source contains non-root p:timing; only direct p:sld/p:timing "
-            "can be merged safely"
-        )
-    if len(root_timings) > 1:
-        raise ValueError(
-            f"narration source has multiple root p:timing elements: {len(root_timings)}"
-        )
-    if not root_timings and next_timing_id + 1 > MAX_OOXML_UNSIGNED_INT:
+    if not timing_branches and next_timing_id + 1 > MAX_OOXML_UNSIGNED_INT:
         raise ValueError(
             "narration source has no identifiers available for a new timing root"
         )
@@ -460,15 +505,20 @@ def inject_narration(
     )
     shape_tree.append(audio_picture)
 
-    if root_timings:
-        _validate_root_timing_position(root, root_timings[0])
-        timing_root = _existing_timing_root(root_timings[0])
-        child_nodes = _direct_child(
-            timing_root,
-            _qn(PML_NS, "childTnLst"),
-            "tmRoot/p:childTnLst",
-        )
-        child_nodes.append(_create_audio_timing_element(shape_id, next_timing_id))
+    if timing_branches:
+        if timing_anchor is None:
+            raise AssertionError("timing branches lost their root anchor")
+        _validate_root_timing_position(root, timing_anchor)
+        for timing in timing_branches:
+            timing_root = _existing_timing_root(timing)
+            child_nodes = _direct_child(
+                timing_root,
+                _qn(PML_NS, "childTnLst"),
+                "tmRoot/p:childTnLst",
+            )
+            child_nodes.append(
+                _create_audio_timing_element(shape_id, next_timing_id)
+            )
     else:
         audio_timing = _create_audio_timing_element(shape_id, next_timing_id + 1)
         _insert_root_timing(root, _new_timing(audio_timing, next_timing_id))

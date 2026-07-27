@@ -52,6 +52,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from pptx_animations import (  # noqa: E402
+    ANIMATION_TIMING_OPTION_FIELDS,
     animation_seconds_to_milliseconds,
     normalize_animation_effect,
 )
@@ -125,6 +126,7 @@ class SlideAnimationSettings:
     duration_ms: int
     stagger_ms: int
     trigger: str
+    timing_options: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -535,12 +537,49 @@ def _effective_slide_animation(
     )
     if not isinstance(trigger, str):
         raise ValueError(f"Canonical animation trigger must be a string: {trigger!r}")
+    timing_options = {
+        field: (
+            slide_animation[field]
+            if field in slide_animation
+            else default_animation[field]
+        )
+        for field in ANIMATION_TIMING_OPTION_FIELDS
+        if field in slide_animation or field in default_animation
+    }
     return SlideAnimationSettings(
         effect=effect,
         duration_ms=duration_ms,
         stagger_ms=stagger_ms,
         trigger=trigger,
+        timing_options=timing_options,
     )
+
+
+def _animation_playback_duration_ms(
+    duration_ms: int,
+    timing_options: dict[str, Any],
+    *,
+    label: str,
+) -> int:
+    """Return schedule duration after repeat and auto-reverse parameters."""
+    if 'repeat_duration' in timing_options:
+        return animation_seconds_to_milliseconds(
+            timing_options['repeat_duration'],
+            f'{label} repeat_duration',
+            allow_zero=False,
+        )
+    one_play = duration_ms * (
+        2 if timing_options.get('auto_reverse') is True else 1
+    )
+    repeat_count = timing_options.get('repeat_count', 1)
+    if (
+        isinstance(repeat_count, bool)
+        or not isinstance(repeat_count, (int, float))
+        or not math.isfinite(float(repeat_count))
+        or float(repeat_count) <= 0
+    ):
+        raise ValueError(f'{label} repeat_count must be a positive number')
+    return max(1, round(one_play * float(repeat_count)))
 
 
 def _group_is_animated(
@@ -613,6 +652,17 @@ def _resolve_animation_groups(
                 "must be an object"
             )
         groups_cfg[group_id] = group_cfg
+    interactive_ids = sorted(
+        group_id
+        for group_id, group_cfg in groups_cfg.items()
+        if group_cfg.get("trigger_shape") is not None
+        and _group_is_animated(group_cfg, settings.effect)
+    )
+    if interactive_ids:
+        raise ValueError(
+            f'Recorded narration cannot synchronize trigger-shape animations '
+            f'on slide "{slide_name}": {", ".join(interactive_ids)}'
+        )
 
     use_svg = _needs_svg_group_resolution(settings, groups_cfg, plan_entries)
     candidate_ids: list[str]
@@ -712,6 +762,19 @@ def _resolve_animation_groups(
             f'canonical animation duration for "{slide_name}/{group_id}"',
             allow_zero=False,
         )
+        timing_options = dict(settings.timing_options)
+        timing_options.update(
+            {
+                field: group_cfg[field]
+                for field in ANIMATION_TIMING_OPTION_FIELDS
+                if field in group_cfg
+            }
+        )
+        playback_duration_ms = _animation_playback_duration_ms(
+            duration_ms,
+            timing_options,
+            label=f'canonical animation for "{slide_name}/{group_id}"',
+        )
         original_delay_ms = animation_seconds_to_milliseconds(
             group_cfg.get(
                 "delay",
@@ -725,7 +788,7 @@ def _resolve_animation_groups(
                 group_id=group_id,
                 order=order,
                 source_index=source_index,
-                duration_ms=duration_ms,
+                duration_ms=playback_duration_ms,
                 original_delay_ms=original_delay_ms,
             )
         )

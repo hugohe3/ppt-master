@@ -86,8 +86,9 @@ automatic choices, traces, and examples use these category-qualified keys.
 The 29 established short names remain accepted only as compatibility inputs;
 they normalize before writing and do not retain a second behavior engine.
 Old Fly direction names all normalize to `entrance_fly`, and old Wipe
-direction names all normalize to `entrance_wipe`; their suffix does not create
-another canonical preset. Run
+direction names all normalize to `entrance_wipe`; their direction is preserved
+as an option rather than another canonical preset. Legacy `wheel` keeps four
+spokes. Run
 `python3 skills/ppt-master/scripts/pptx_animations.py --list` for the complete
 categorized list. The four media playback commands are handled by the
 audio/video workflows because they require media or bookmark targets.
@@ -108,8 +109,21 @@ The generated sidecar targets stable top-level `<g id="...">` content groups. Co
 |---|---|
 | `effect` | Override the object effect; use `none` to keep that object static |
 | `order` | Change reveal order without changing slide layer order |
-| `delay` | Add a pause before the object in `after-previous` mode |
+| `delay` | Add a pause in `after-previous`, or after clicking `trigger_shape` |
 | `duration` | Override that object's scheduled animation duration |
+| `effect_options` | Set effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` |
+| `trigger_shape` | Trigger this row when another top-level group is clicked (PowerPoint **On Click of**) |
+| Timing modifiers | `repeat_count`/`repeat_duration`, `auto_reverse`, `rewind`, `accelerate`, `decelerate`, `bounce_end`, and `restart` |
+| Completion | `after_effect` (dim/hide) and a `.m4a`/`.mp3`/`.wav` `sound` path |
+
+Use `python3 skills/ppt-master/scripts/pptx_animations.py --describe
+<canonical_effect>` to see exactly which options that effect accepts. Speed is
+controlled by `duration`; smooth start/end are controlled by
+`accelerate`/`decelerate`.
+
+`trigger_shape` is group-only and points to a different group id on the same
+slide. It affects only that row; the slide Start mode still controls all other
+rows. Recorded narration rejects interactive trigger-shape animations.
 
 When a user asks the AI to tune individual objects, use the [`customize-animations`](../skills/ppt-master/workflows/stages/customize-animations.md) stage. The full sidecar schema and target-validation rules remain in the [animation execution reference](../skills/ppt-master/references/animations.md).
 

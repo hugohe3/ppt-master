@@ -84,7 +84,8 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 动作路径、53 个退出。现在新选择、sidecar、自动决策、转换轨迹和示例都只使用
 带类别前缀的规范名称。29 个旧短名称只保留为兼容输入，写入前会归一化，不再
 维护第二套动画行为。旧 Fly 方向名统一映射到 `entrance_fly`，旧 Wipe 方向名
-统一映射到 `entrance_wipe`，方向后缀不会形成新的规范预设。运行
+统一映射到 `entrance_wipe`；方向会保留为参数，而不会形成新的规范预设。旧
+`wheel` 保留四辐语义。运行
 `python3 skills/ppt-master/scripts/pptx_animations.py --list` 可查看完整分类清单。
 4 个媒体播放命令需要媒体或书签目标，仍由音视频工作流负责。
 
@@ -104,8 +105,19 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 |---|---|
 | `effect` | 覆盖对象动画效果；设为 `none` 可让该对象保持静态 |
 | `order` | 调整揭示顺序，不改变页面图层顺序 |
-| `delay` | 在 `after-previous` 模式下增加开始前等待时间 |
+| `delay` | 在 `after-previous` 中或单击 `trigger_shape` 后增加等待时间 |
 | `duration` | 覆盖该对象的动画排程时长 |
+| `effect_options` | 设置效果适用的 `direction`、`amount`、`color`、`font_name`、`relative` 或 `size` |
+| `trigger_shape` | 单击另一个顶层内容组时触发本行（PowerPoint“单击下列对象时”） |
+| 计时修饰 | `repeat_count`/`repeat_duration`、`auto_reverse`、`rewind`、`accelerate`、`decelerate`、`bounce_end` 与 `restart` |
+| 播放完成 | `after_effect`（变暗/隐藏）和 `.m4a`/`.mp3`/`.wav` `sound` 路径 |
+
+运行 `python3 skills/ppt-master/scripts/pptx_animations.py --describe
+<canonical_effect>` 可查看该效果实际接受的完整参数。速度由 `duration` 控制，
+平滑开始/结束由 `accelerate`/`decelerate` 控制。
+
+`trigger_shape` 只能写在对象组上，并指向同一页另一个分组 id。它只让当前动画行
+变为交互触发，其他行仍遵循页面 Start 模式；录制旁白不接受这种交互动画。
 
 当用户要求 AI 调整具体对象时，使用 [`customize-animations`](../../skills/ppt-master/workflows/stages/customize-animations.md) 阶段。完整 sidecar schema 与目标校验规则仍由[动画执行规范](../../skills/ppt-master/references/animations.md)维护。
 

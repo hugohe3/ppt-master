@@ -620,6 +620,22 @@ def _recorded_narration_on_click_slides(
         )
         if slide_animation is None and not has_explicit_animation:
             continue
+        has_interactive_animation = any(
+            isinstance(group_cfg, dict)
+            and isinstance(group_cfg.get('trigger_shape'), str)
+            and bool(group_cfg['trigger_shape'].strip())
+            and (
+                (
+                    'effect' in group_cfg
+                    and normalize_animation_effect(group_cfg.get('effect')) is not None
+                )
+                or ('effect' not in group_cfg and slide_animation is not None)
+            )
+            for group_cfg in groups_cfg.values()
+        )
+        if has_interactive_animation:
+            blocked.append(svg_path.stem)
+            continue
 
         slide_trigger = animation_trigger
         if not animation_cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
@@ -1329,7 +1345,15 @@ Recorded narration:
                 else animation_defaults.get('effect', 'none')
             )
         )
-        animation = normalize_animation_effect(animation_effect)
+        normalized_animation = normalize_animation_effect(animation_effect)
+        # Keep the raw request for the builder so legacy directional aliases
+        # can desugar into canonical effect_options instead of losing their
+        # direction during early CLI normalization.
+        animation = (
+            None
+            if normalized_animation is None
+            else str(animation_effect)
+        )
         animation_duration = validate_seconds(
             (
                 args.animation_duration
@@ -1436,6 +1460,7 @@ Recorded narration:
         animation_stagger=animation_stagger,
         animation_trigger=animation_trigger,
         animation_config=animation_config,
+        animation_resource_root=project_path,
         animation_cli_overrides=animation_cli_overrides,
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
