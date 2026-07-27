@@ -88,7 +88,14 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 
 ## 转场与动画
 
-导出的 deck 用真正的 OOXML 保存**页间转场**和可选的**页内元素入场动画**，不是嵌入视频。默认保留 `fade` 页间转场，页内动画为 `none`；只有显式使用 `-a auto`、其它效果或 `animations.json` 才会启用对象入场。未知效果、Start 模式、非法时序值或缺失对象引用会直接阻断导出，候选 PPTX 还会在发布前回读动画目标、效果和 timing 结构。Microsoft PowerPoint 是动效行为的主要验证目标；Keynote、WPS、LibreOffice 可能重新映射个别效果。
+导出的 deck 用真正的 OOXML 保存**页间转场**和可选的**页内元素对象动画**，
+不是嵌入视频。默认保留 `fade` 页间转场，页内动画为 `none`；只有显式使用
+`-a auto`、203 个原生 `entrance_*` / `emphasis_*` / `path_*` / `exit_*`
+预设之一，或 `animations.json` 才会启用对象动画。29 个旧短名称只保留为兼容
+输入；新的动画选择统一使用带前缀的规范名称。未知效果、Start
+模式、非法时序值或缺失对象引用会直接阻断导出，候选 PPTX 还会在发布前回读
+动画目标、效果和 timing 结构。Microsoft PowerPoint 是动效行为的主要验证
+目标；Keynote、WPS、LibreOffice 可能重新映射个别效果。
 
 完整说明 → [转场与动画](./animations.md)
 

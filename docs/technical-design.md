@@ -611,7 +611,13 @@ ChartEx import is deliberately closed to seven validated data models: `treemap`,
 
 The interesting design choice is the animation **anchor**, not the effect list.
 
-**Why anchor entrance animations on top-level `<g>` groups.** PowerPoint's animation timeline is shape-keyed — each animated object needs a stable shape ID. Animating individual primitives would produce 30+ separately-flying-in atoms per slide (a kinetic mess), while animating only the slide as a whole loses visual storytelling. Top-level groups are the natural granularity: Executor is required to use `<g id="...">` to mark logical content blocks, and these blocks are exactly the units a viewer reads as "one thing arriving" — animation matches the existing logical structure rather than imposing a new one.
+**Why anchor object animations on top-level `<g>` groups.** PowerPoint's
+animation timeline is shape-keyed—each animated object needs a stable shape ID.
+Animating individual primitives would produce 30+ separately moving atoms per
+slide, while animating only the slide as a whole loses visual storytelling.
+Top-level groups are the natural granularity: Executor already uses
+`<g id="...">` to mark logical content blocks, so entrance, emphasis, path,
+and exit effects share the same semantic units.
 
 **Why page structure is auto-skipped.** Any top-level group with `data-pptx-layer` is static structure, and the current scanner also treats every explicit `data-pptx-placeholder` as static page framing; `background` / `header` / `footer` / `decoration` / `watermark` / `page-number` roles cover the remaining chrome. The ID-token fallback is not enabled or disabled per SVG: it applies to each top-level group that lacks layer, role, and placeholder markers, so a mixed new/legacy SVG may still use the legacy ID heuristic on only its unmarked groups. Separately, when an SVG has no top-level groups, no animation target has been found, and only one to eight root primitives qualify, those primitives form a bounded compatibility fallback. This is the scanner's actual scope; the animation reference's whole-page “marker-free legacy SVG” wording still needs separate alignment with the implementation.
 
@@ -619,7 +625,13 @@ The interesting design choice is the animation **anchor**, not the effect list.
 
 **Why recorded narration drives auto-advance from clip duration.** Recorded-narration mode targets video export, where no presenter clicks through the deck. It probes each clip's real duration and sets slide auto-advance to `audio duration + --narration-padding`; padding defaults to 0.5 seconds so the tail is not cut off. It does not use estimated reading speed or a fixed per-slide duration.
 
-**Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. Decks exported with `--recorded-narration` must therefore use click-free object entrances (`after-previous` or `with-previous`).
+**Why recorded narration rejects on-click object animation.** PowerPoint can
+record click timings during a real rehearsal, but PPT Master does not synthesize
+object-level click events. The recorded narration path writes page-level audio
+and slide auto-advance timings only, so click-driven object effects would leave
+the export dependent on extra manual PowerPoint rehearsal. Decks exported with
+`--recorded-narration` must therefore use click-free object animations
+(`after-previous` or `with-previous`).
 
 **Why native video export is a separate command.** Audio synthesis and PPTX
 packaging are cross-platform project operations; PowerPoint video encoding is a
@@ -642,7 +654,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 | Do not make `image_analysis.csv` a durable cache | `images/` is a live folder; facts must be regenerated on use |
 | Do not make `svg_final/` the default native PPTX input | `svg_final/` rewrites resources for visual preview, while native conversion needs high-fidelity `svg_output/` semantics |
 | Do not treat `svg_final/` as a shape-recoverable or no-external-dependency interchange format | it serves visual preview and SVG-picture insertion, but EMF/WMF retain external-reference exceptions; PowerPoint Convert to Shape is unsupported |
-| Do not auto-enable object-level entrance animations | page transitions are default; object builds are an explicit export policy |
+| Do not auto-enable object-level animations | page transitions are default; object motion is an explicit export policy |
 | Do not default visual review, narration, chart verification, or animation customization into every run | these workflows have narrow triggers and extra dependencies |
 | Do not replace `finalize_svg.py` with a file copy | finalization embeds icons/images, flattens special text, and prepares preview artifacts |
 | Do not use `analysis/<stem>.slide_library.json` as a second source of chart values in the main pipeline | Markdown owns content values; intake chart/table entries are structural digests unless a direct-PPTX workflow owns them |

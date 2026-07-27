@@ -10,7 +10,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 
 - 每页一个音频文件，存放于 `<project_path>/audio/`，文件名与 SVG 对齐（`01_cover.mp3`、`02_market_landscape.mp3` …）。
 - 使用 Edge 时，每页还有一个同名字幕文件，存放于 `<project_path>/notes/subtitles/`（`01_cover.srt`、`02_market_landscape.srt` …）。每个文件使用以 `00:00:00,000` 为原点的页内时间轴，时间来自 Edge 的词边界。
-- 提供 SVG 到 SRT 的计时计划后，还会重建 `animations.json`：无点击入场动画会等待相关字幕 cue；同时生成与最终 PPTX 时间轴一致的 `<project_path>/notes/subtitles/total.srt`。PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
+- 提供 SVG 到 SRT 的计时计划后，还会重建 `animations.json`：无点击对象动画会等待相关字幕 cue；同时生成与最终 PPTX 时间轴一致的 `<project_path>/notes/subtitles/total.srt`。PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
 - 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
 - Windows 下可选原生视频导出：`powerpoint_video.py` 把最终带旁白 PPTX 交给 PowerPoint 2016+，并等待其原生 MP4 编码成功或失败。
 - 演讲者备注原样保留。

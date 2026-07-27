@@ -68,20 +68,21 @@ Each object keeps `source_effect` and receives a compatible video family:
 
 | Source effect | Video family |
 |---|---|
-| `appear` | `hard_reveal` |
-| `fade` | `soft_fade` |
-| `dissolve` | `grain_dissolve` |
-| `fly*`, `cut` | `directional_slide` |
-| `wipe*`, `peek` | `soft_mask_reveal` |
-| `zoom`, `expand`, `stretch` | `focus_scale` |
-| `split` | `split_mask` |
-| `box`, `circle`, `diamond`, `plus` | `shape_mask` |
-| `blinds`, `checkerboard`, `random_bars`, `strips`, `wedge`, `wheel` | `pattern_reveal` |
-| `swivel` | `soft_swivel` |
+| `entrance_appear` | `hard_reveal` |
+| `entrance_fade` | `soft_fade` |
+| `entrance_dissolve` | `grain_dissolve` |
+| `entrance_fly`, `entrance_ascend` | `directional_slide` |
+| `entrance_wipe`, `entrance_peek` | `soft_mask_reveal` |
+| `entrance_zoom`, `entrance_expand`, `entrance_stretch` | `focus_scale` |
+| `entrance_split` | `split_mask` |
+| `entrance_box`, `entrance_circle`, `entrance_diamond`, `entrance_plus` | `shape_mask` |
+| `entrance_blinds`, `entrance_checkerboard`, `entrance_random_bars`, `entrance_strips`, `entrance_wedge`, `entrance_wheel` | `pattern_reveal` |
+| `entrance_swivel` | `soft_swivel` |
 
 This mapping is an enhancement contract, not permission to substitute an
 unrelated effect. A directional slide remains directional; a wipe remains a
-mask reveal.
+mask reveal. The retired short effect names remain readable in older
+conversion traces, but new traces record canonical PowerPoint keys.
 
 ---
 
