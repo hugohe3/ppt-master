@@ -469,6 +469,30 @@ def _print_postflight_receipt(receipt: _PostflightReceipt) -> None:
     print(f'  [REPORT] {receipt.report_path}')
 
 
+def _validate_quick_test_output(
+    output_path: Path,
+    *,
+    expected_slide_count: int,
+) -> dict[str, object]:
+    """Validate a quick-test PPTX without writing a report sidecar."""
+    try:
+        package = _package_part_counts(output_path)
+    except (OSError, zipfile.BadZipFile) as exc:
+        raise PptxPostflightValidationError(
+            f"quick-test PPTX is not a readable ZIP package: {exc}"
+        ) from exc
+    if package['zip_integrity'] != 'passed':
+        raise PptxPostflightValidationError(
+            f"quick-test PPTX ZIP integrity failed at {package['corrupt_member']}"
+        )
+    if package['slides'] != expected_slide_count:
+        raise PptxPostflightValidationError(
+            "Quick-test Slide count does not match authored SVG count: "
+            f"{package['slides']} != {expected_slide_count}"
+        )
+    return package
+
+
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
     """Return the explicitly locked SVG export mode, if the lock declares one."""
     lock_path = project_path / 'spec_lock.md'
@@ -666,6 +690,7 @@ def main(argv: list[str] | None = None) -> int:
 Examples:
     %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
+    %(prog)s projects/_smoke_quick --quick-test           # Test-only: svg_output/ -> PPTX, no sidecars
 
     # Disable transition / change transition effect
     %(prog)s examples/ppt169_demo -t none
@@ -740,6 +765,17 @@ Recorded narration:
                         choices=list(CANVAS_FORMATS.keys()), default=None,
                         help='Require SVG canvases to match this registered format')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
+    parser.add_argument(
+        '--quick-test',
+        action='store_true',
+        help=(
+            'Test-only direct export of a small fixed SVG roster from '
+            'svg_output/. Infer one consistent canvas from the SVGs, use a flat '
+            'package with converter defaults, and skip spec_lock.md, notes, '
+            'animations, backup, conversion trace, and validation report '
+            'artifacts.'
+        ),
+    )
 
     merge_group = parser.add_mutually_exclusive_group()
     merge_group.add_argument('--merge-paragraphs', action='store_true', dest='merge_paragraphs',
@@ -906,6 +942,49 @@ Recorded narration:
             file=sys.stderr,
         )
 
+    if args.quick_test:
+        conflicts: list[str] = []
+        if args.source not in {None, 'output'}:
+            conflicts.append('--source must be omitted or output')
+        if args.pptx_structure not in {None, 'flat'}:
+            conflicts.append('--pptx-structure must be omitted or flat')
+        if args.conversion_trace is not None:
+            conflicts.append('--conversion-trace')
+        if args.native_objects:
+            conflicts.append('--native-charts-and-tables')
+        if args.animation_config:
+            conflicts.append('--animation-config')
+        if args.recorded_narration:
+            conflicts.append('--recorded-narration')
+        if args.narration_audio_dir:
+            conflicts.append('--narration-audio-dir')
+        if args.use_narration_timings:
+            conflicts.append('--use-narration-timings')
+        if args.auto_advance is not None:
+            conflicts.append('--auto-advance')
+        if args.transition is not None or args.transition_duration is not None:
+            conflicts.append('transition overrides')
+        if any(
+            value is not None
+            for value in (
+                args.animation,
+                args.animation_duration,
+                args.animation_trigger,
+                args.animation_stagger,
+            )
+        ):
+            conflicts.append('animation overrides')
+        if conflicts:
+            print(
+                "Error: --quick-test cannot be combined with: "
+                + ", ".join(conflicts),
+                file=sys.stderr,
+            )
+            return 1
+        args.no_notes = True
+        args.no_animations = True
+        args.pptx_structure = 'flat'
+
     project_path = Path(args.project_path)
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
@@ -915,13 +994,17 @@ Recorded narration:
     native_structure_contract = None
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
-    if not lock_path.is_file():
+    if not args.quick_test and not lock_path.is_file():
         print(
             "Error: spec_lock.md is required for release SVG export",
             file=sys.stderr,
         )
         return 1
-    declared_structure_mode = _declared_pptx_structure_mode(project_path)
+    declared_structure_mode = (
+        None
+        if args.quick_test
+        else _declared_pptx_structure_mode(project_path)
+    )
     if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
         _print_structure_contract_error(pptx_structure)
         return 1
@@ -968,7 +1051,7 @@ Recorded narration:
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure in {'flat', 'structured'}:
+    if pptx_structure in {'flat', 'structured'} and not args.quick_test:
         try:
             theme_font_spec = load_theme_font_spec(project_path)
             master_text_style_spec = load_master_text_style_spec(project_path)
@@ -1008,8 +1091,12 @@ Recorded narration:
         project_name = project_path.name
 
     canvas_format = args.format
-    expected_viewbox = _declared_canvas_viewbox(project_path)
-    if expected_viewbox is None:
+    expected_viewbox = (
+        None
+        if args.quick_test
+        else _declared_canvas_viewbox(project_path)
+    )
+    if expected_viewbox is None and not args.quick_test:
         print(
             "Error: spec_lock.md must contain canvas.viewBox for release export",
             file=sys.stderr,
@@ -1140,7 +1227,8 @@ Recorded narration:
         narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
         native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}.pptx"
         # Preserve the authored svg_output/ beside every default-flow export.
-        backup_dir = project_path / "backup" / timestamp
+        if not args.quick_test:
+            backup_dir = project_path / "backup" / timestamp
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -1445,7 +1533,7 @@ Recorded narration:
     # are still stamped at export; only the authored fields stay blank.
     doc_metadata = None
     metadata_path = project_path / 'metadata.json'
-    if metadata_path.is_file():
+    if metadata_path.is_file() and not args.quick_test:
         try:
             loaded = json.loads(metadata_path.read_text(encoding='utf-8'))
         except (json.JSONDecodeError, OSError) as exc:
@@ -1569,6 +1657,31 @@ Recorded narration:
             print(f"  [info] svg_output/ not found, backup skipped")
 
     if success:
+        if args.quick_test:
+            try:
+                package = _validate_quick_test_output(
+                    native_path,
+                    expected_slide_count=len(native_files),
+                )
+            except PptxPostflightValidationError as exc:
+                print(
+                    "Error: quick-test PPTX failed in-memory validation and "
+                    f"must not be used: {exc}",
+                    file=sys.stderr,
+                )
+                print(
+                    f"  Invalid output remains at: {native_path}",
+                    file=sys.stderr,
+                )
+                return 1
+            if verbose:
+                print(
+                    "  [QUICK-TEST] "
+                    f"status=passed slides={package['slides']} "
+                    "sidecars=none"
+                )
+                print(f"  [PPTX] {native_path}")
+            return 0
         try:
             receipt = _write_postflight_report(
                 output_path=native_path,

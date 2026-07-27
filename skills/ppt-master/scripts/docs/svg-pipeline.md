@@ -304,18 +304,33 @@ warning and uses `flat`; no SVG regeneration is required. A missing `spec_lock.m
 an explicit legacy/unknown mode, or a requested `structured` export without an
 explicit current structured contract remains blocking.
 
+Disposable few-page converter/layout tests may use the explicit
+[`quick-test`](../../workflows/profiles/quick-test.md) profile:
+
+```bash
+python3 scripts/svg_to_pptx.py <project_path> --quick-test
+```
+
+This test-only flag reads `svg_output/` directly, infers one consistent canvas,
+uses flat converter-default package scaffolding, disables notes and motion, and
+does not read or require `spec_lock.md`. It writes the PPTX only: no
+`backup/`, conversion trace, or `validation/` report. ZIP integrity and Slide
+count are checked in memory and reported through
+`[QUICK-TEST] status=passed`. The flag rejects options that would add native
+data objects, motion, narration, alternate SVG sources, or diagnostic sidecars.
+
 For generated-project narration, follow the
 [`generate-audio`](../../workflows/stages/generate-audio.md) stage. It owns voice
 selection, audio generation, and the narrated re-export workflow.
 
 Behavior:
-- Default output (default-flow mode, no `-o`):
+- Default output (normal flow, no `-o`):
   - `exports/<project_name>_<timestamp>.pptx` — native editable pptx (canonical output)
   - `validation/<project_name>_<timestamp>.report.json` — package postflight, quality-gate linkage, unresolved resource audit, and published part counts
   - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, always written so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
 - `exports/` contains only final PPTX deliverables; machine-readable quality and postflight reports belong in `validation/`.
-- `finalize_svg.py` always creates `svg_final/` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX.
-- Explicit `-o/--output` changes the native PPTX destination and skips `backup/`; its postflight report still uses the output stem under the project `validation/` directory.
+- Normal flow always runs `finalize_svg.py` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX. Quick-test deliberately skips it.
+- In normal flow, explicit `-o/--output` changes the native PPTX destination and skips `backup/`; its postflight report still uses the output stem under the project `validation/` directory. Quick-test writes no report.
 - Postflight reruns ZIP integrity and published Slide count. Internal relationships,
   structured-package validation, transitions, and animations are enforced before the
   builder publishes the PPTX and are reported as `enforced-at-build`, not as repeated
@@ -350,11 +365,11 @@ Behavior:
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.
 - `--conversion-trace` without a path writes `validation/<output_stem>.trace.json`. `--conversion-trace <path>` respects the explicit destination; relative paths are resolved from the project root, so `exports/<name>.trace.json` remains available when intentionally requested.
-- After publication, native export writes `validation/<output_stem>.report.json`. The report distinguishes authored Slides from internal Layout definitions, reruns ZIP integrity and published Slide-count checks, records slide/layout/master/notes part counts, labels relationship/structured/transition/animation validation as enforced at build time, links the final SVG quality report only when its SHA-256 source fingerprint matches the exact export inputs, and surfaces stale/unverified gates, unresolved template tokens, generic-only font stacks, and external image references. A matching final quality report with introduced warnings yields `passed-with-warnings` and a `quality_introduced_warnings=<N>` receipt instead of a clean `passed` claim.
+- After normal-flow publication, native export writes `validation/<output_stem>.report.json`. The report distinguishes authored Slides from internal Layout definitions, reruns ZIP integrity and published Slide-count checks, records slide/layout/master/notes part counts, labels relationship/structured/transition/animation validation as enforced at build time, links the final SVG quality report only when its SHA-256 source fingerprint matches the exact export inputs, and surfaces stale/unverified gates, unresolved template tokens, generic-only font stacks, and external image references. A matching final quality report with introduced warnings yields `passed-with-warnings` and a `quality_introduced_warnings=<N>` receipt instead of a clean `passed` claim.
 - By default, a successful command also prints a compact receipt instead of requiring a report read: `[POSTFLIGHT] status=<...> quality_gate=<...> slides=<N> warning_categories=<N>`, followed by one compact line per warning category and the `[PPTX]` / `[REPORT]` paths. Resource-warning lines carry counts; a non-passing quality gate carries its status. Routine agents use this receipt and do not load either complete validation JSON into model context. Full reports remain cold audit artifacts; failure investigation and explicit audits extract only the required fields. `--quiet` keeps suppressing successful-run output.
 - Before publishing structured template output, export reopens the temporary PPTX and validates the Slide → Layout → Master graph and registrations, Layout identity, placeholder identity, reusable bounds, and prompt/level-one sizes. A mismatch aborts publication. Flat release instead validates its single referenced Master/Layout shell and exact date/footer/slide-number hook roster before packaging.
 - SVG clip paths are still restricted for authored SVGs, but nested crop wrappers generated by PPTX import are mapped back to native picture crop / geometry when possible.
-- Speaker notes are embedded automatically unless `--no-notes` is used
+- Normal flow embeds speaker notes automatically unless `--no-notes` is used; quick-test always disables them
 - Recorded narration is opt-in:
   - `notes_to_audio.py` uses `edge-tts` by default, or a configured cloud TTS provider (`elevenlabs`, `minimax`, `qwen`, `cosyvoice`), and generates one audio file per slide into `audio/`
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes

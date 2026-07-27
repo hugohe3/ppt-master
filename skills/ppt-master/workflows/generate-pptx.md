@@ -6,7 +6,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 > Load only after [`routing.md`](./routing.md) selects Generate PPTX. This file owns the route's Step 1–7 sequence, gates, role switching, and mandatory commands.
 
-**Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → [Template] → Strategist Structured Plan → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
+**Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → [Template] → Strategist Structured Plan → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 **Generate-specific execution discipline**:
 
@@ -15,6 +15,18 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 - `preset_shape_svg.py` and `shape_boolean_svg.py` may provide only their documented stdout fragment(s) after the main agent chooses the object's role, operands, paint, and z-order; neither helper chooses layout or writes a page.
 - Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
+### Quick Test Profile Short Circuit
+
+When the user explicitly requests quick/fast mode for a disposable test with a
+small fixed roster of self-contained slides, load and follow
+[`quick-test.md`](./profiles/quick-test.md). That profile owns the complete
+test-only sequence and skips this route's Steps 1–7.
+
+**Hard rule — no implicit downgrade**: page count alone never selects quick
+test. Normal delivery, source conversion, factual research, template use,
+external assets, native data objects, notes, animation, narration, and reusable
+output remain on the default pipeline below.
+
 ### SVG Page-Design Boundary
 
 | Scope | Contract |
@@ -22,7 +34,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 | Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
 | Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
-| `svg_final/` | Mandatory derived, self-contained SVG visual preview. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. |
+| `svg_final/` | Mandatory derived, self-contained SVG visual preview in the default pipeline. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. Quick-test skips it. |
 | SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It compiles only the selected route's explicit structure contract: `flat` keeps represented content Slide-local, while `structured` may place explicitly scoped content in Master/Layout/Slide parts. It MUST NOT infer structure, upgrade `flat`, or invent new visible page content. |
 | Native PPTX routes and presentation-behavior stages | Remain outside SVG page-design closure. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
@@ -146,7 +158,7 @@ Bare names, style descriptions, brand mentions, vague template intent, and silen
 
 ---
 
-### Step 4: Strategist Phase (MANDATORY — cannot be skipped)
+### Step 4: Strategist Phase (MANDATORY in the default pipeline)
 
 🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied or confirmed in place in the project.
 

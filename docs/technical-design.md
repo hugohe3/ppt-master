@@ -253,7 +253,7 @@ Two converter design choices still shape the system:
 
 ## Project Structure & Lifecycle
 
-`project_manager.py init` creates the fixed project working directories; a later default export creates a timestamped backup directory and then attempts to copy a `backup/` snapshot. The complete lifecycle is:
+`project_manager.py init` creates the fixed project working directories; a later default export creates a timestamped backup directory and then attempts to copy a `backup/` snapshot. The explicit test-only [`quick-test`](../skills/ppt-master/workflows/profiles/quick-test.md) profile bypasses that lifecycle and creates only `svg_output/` plus the PPTX destination. The normal delivery lifecycle is:
 
 | Directory | Role |
 |---|---|
@@ -263,7 +263,7 @@ Two converter design choices still shape the system:
 | `icons/` | project-local icon set copied by `icon_sync.py`; global library fallback at export exists only for legacy compatibility |
 | `templates/` | copied template specs / SVG references / non-image template assets |
 | `svg_output/` | the only hand-authored SVG source directory |
-| `svg_final/` | mandatory derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
+| `svg_final/` | mandatory normal-flow derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
 | `live_preview/` | preview server state, edit history, and annotation logs |
 | `notes/` | `total.md` and split per-slide speaker notes |
 | `validation/` | SVG quality reports and PPTX postflight audit reports |
@@ -288,7 +288,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 | Planning context is retained until invalidated | continuous execution reuses the complete Design Spec, lock, and triggered references; fresh/resumed/restarted or compacted execution reloads them once |
 | `page-context` is on demand | the read-only projector supports diagnostics, deterministic routing checks, and optional usage telemetry; it is not a pre-page gate |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
-| `svg_final/` is mandatory but derived | it is regenerated from `svg_output/` for visual preview or manual insertion as an SVG picture; supported resources are inlined when possible while EMF/WMF retain an external-reference exception, and it never becomes the native export source of truth |
+| `svg_final/` is mandatory but derived in normal delivery | it is regenerated from `svg_output/` for visual preview or manual insertion as an SVG picture; supported resources are inlined when possible while EMF/WMF retain an external-reference exception, and it never becomes the native export source of truth; quick-test skips this artifact |
 | Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
 | PowerPoint Convert to Shape is outside the compatibility contract | `svg_final/` may be inserted as an SVG picture, but the converted structure and visual result are not guaranteed and do not constrain the supported SVG feature set |
 | Direct OOXML routes do not enter the SVG pipeline | preservation workflows patch native PPTX parts directly |
@@ -532,7 +532,7 @@ Validation JSON files are cold audit artifacts, not routine model inputs. The ex
 
 This is easy to miss when reading the code. Shared cleanup modules, the local-reference expander, and the inline-geometry materializer are used both to write `svg_final/` and in memory during native conversion. The checker, editor, and structure parser also share parts of the geometry interpretation, but they are not artifact consumers in this section.
 
-**Disk consumer** — `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. This mandatory output feeds IDE/browser preview and may be inserted manually as an SVG picture; it is not converted into a separate PPTX artifact.
+**Disk consumer** — in normal delivery, `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. This mandatory normal-flow output feeds IDE/browser preview and may be inserted manually as an SVG picture; it is not converted into a separate PPTX artifact. Quick-test skips the disk consumer.
 
 **Memory consumer** — native pptx generation reads `svg_output/` directly (no disk hop). It materializes author SVG inline geometry, expands project icon placeholders, materializes geometry injected by those icons, expands qualified local `<use>` references, and finally processes positional text runs:
 
