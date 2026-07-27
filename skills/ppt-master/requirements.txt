@@ -16,6 +16,8 @@
 # 将受支持的 SVG 元素转换为可编辑的原生 DrawingML 形状
 python-pptx>=0.6.21
 XlsxWriter>=3.0.0
+# PowerPoint-style Merge Shapes materialization / PowerPoint 风格合并形状物化
+skia-pathops>=0.9.2
 
 # Recorded narration / 录制计时和旁白
 # notes_to_audio.py generates per-slide narration audio on macOS/Linux/Windows.

@@ -95,6 +95,7 @@ PowerPoint 意图
 | 带箭头的线 | 带已登记 triangle、stealth、arrow、diamond 或 oval 起点/终点 marker 的 `<line>` 或受支持 path | 原生 DrawingML 线首/线尾 | `Native-normalized`；marker 大小为近似 | marker 定义必须遵循条件 marker 合同 |
 | 原生连接符 | 带 connector metadata 和直接可见 path 的项目创作 compact preset 组 | `p:cxnSp` | 导入 connector 保留源拓扑往返所需的 expanded 证据 | 已登记 preset/connector schema 内为 `Native-stable` |
 | 任意多边形 | `<path>` | 带 `a:custGeom` 的 `p:sp` | 导入自定义几何重建为 path | `Native-normalized`；SVG arc 转为三次曲线段 |
+| 已物化的合并形状结果 | `shape_boolean_svg.py` 输出的普通 `<path>`；“拆分”返回多个同级 path | 每个返回 path 对应一个带 `a:custGeom` 的 `p:sp` | `Native-normalized`；回导为最终自由形状几何，不保留可重放的操作历史 | 仅接受受支持的闭合 operands；第一个 source 决定样式与顺序，且不输出 clip、mask 或显式 fill rule |
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
 | 折线 | `<polyline>` | 开放自定义几何 | `Native-normalized` | points 使用与其他生成几何相同的有限、已登记语法 |
 | PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，由该组承载 preset 意图与基础 paint，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 质检与导出动态重渲染 registry；规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
