@@ -62,8 +62,9 @@ MAX_OOXML_MILLISECONDS = 4_294_967_295
 MAX_OOXML_UNSIGNED_INT = MAX_OOXML_MILLISECONDS
 
 
-TRANSITIONS: dict[str, dict[str, Any]] = {
-    # Keep the original seven entries first for stable CLI/help ordering.
+CANONICAL_TRANSITIONS: dict[str, dict[str, Any]] = {
+    # Public ordering is assembled below so the original seven input names
+    # remain stable even though compatibility aliases normalize immediately.
     "fade": {
         "name": "Fade",
         "element": "fade",
@@ -83,11 +84,6 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "name": "Split",
         "element": "split",
         "attrs": {"orient": "horz", "dir": "out"},
-    },
-    "strips": {
-        "name": "Strips",
-        "element": "strips",
-        "attrs": {"dir": "rd"},
     },
     "cover": {
         "name": "Cover",
@@ -109,11 +105,6 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "element": "checker",
         "attrs": {"dir": "horz"},
     },
-    "circle": {
-        "name": "Circle",
-        "element": "circle",
-        "attrs": {},
-    },
     "comb": {
         "name": "Comb",
         "element": "comb",
@@ -124,45 +115,15 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
         "element": "cut",
         "attrs": {"thruBlk": "0"},
     },
-    "diamond": {
-        "name": "Diamond",
-        "element": "diamond",
-        "attrs": {},
-    },
     "dissolve": {
         "name": "Dissolve",
         "element": "dissolve",
         "attrs": {},
     },
-    "newsflash": {
-        "name": "Newsflash",
-        "element": "newsflash",
-        "attrs": {},
-    },
-    "plus": {
-        "name": "Plus",
-        "element": "plus",
-        "attrs": {},
-    },
-    "pull": {
-        "name": "Pull",
-        "element": "pull",
-        "attrs": {"dir": "r"},
-    },
     "random_bars": {
         "name": "Random Bars",
         "element": "randomBar",
         "attrs": {"dir": "vert"},
-    },
-    "wedge": {
-        "name": "Wedge",
-        "element": "wedge",
-        "attrs": {},
-    },
-    "wheel": {
-        "name": "Wheel",
-        "element": "wheel",
-        "attrs": {"spokes": "1"},
     },
     "zoom": {
         "name": "Zoom",
@@ -413,6 +374,20 @@ TRANSITIONS: dict[str, dict[str, Any]] = {
     },
 }
 
+TRANSITION_ALIASES: dict[str, str] = {
+    "strips": "wipe",
+    "circle": "shape",
+    "diamond": "shape",
+    "newsflash": "flash",
+    "plus": "shape",
+    "pull": "uncover",
+    "wedge": "clock",
+    "wheel": "clock",
+}
+TRANSITIONS: dict[str, dict[str, Any]] = dict(CANONICAL_TRANSITIONS)
+for _alias, _canonical_key in TRANSITION_ALIASES.items():
+    TRANSITIONS[_alias] = CANONICAL_TRANSITIONS[_canonical_key]
+
 TRANSITION_NAMESPACES = {
     "p": PML_NS,
     "p14": P14_NS,
@@ -523,7 +498,7 @@ def normalize_transition_effect(effect: object, *, allow_none: bool = True) -> s
         raise ValueError(
             f"unknown transition effect {effect!r}; valid effects: {valid}, none"
         )
-    return effect
+    return TRANSITION_ALIASES.get(effect, effect)
 
 
 def _seconds_to_ms(value: object, field: str, *, allow_zero: bool) -> int:
@@ -541,7 +516,7 @@ def _seconds_to_ms(value: object, field: str, *, allow_zero: bool) -> int:
 
 
 def _effect_spec(effect: str) -> tuple[str, str, str, dict[str, Any], str | None]:
-    info = TRANSITIONS[effect]
+    info = CANONICAL_TRANSITIONS[effect]
     prefix = str(info.get("prefix", "p"))
     namespace = TRANSITION_NAMESPACES[prefix]
     element = str(info["element"])

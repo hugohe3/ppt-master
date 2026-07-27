@@ -656,22 +656,27 @@ SVG source directory (-s):
 Transition effects (-t/--transition):
     {', '.join(transition_choices)}
 
-Per-element entrance animation (-a/--animation, native shapes mode):
-    {', '.join(animation_choices)}
+Per-element object animation (-a/--animation, native shapes mode):
+    Use PowerPoint-native entrance_*, emphasis_*, path_*, and exit_* keys for
+    new animation choices. The 29 old short names remain accepted only as
+    compatibility inputs. Run scripts/pptx_animations.py --list for the
+    complete categorized 232-key input registry.
     Notes: applied to top-level <g id="..."> SVG groups in z-order. Default is
            "none" (no auto element builds; page transitions still apply). Use
-           "-a auto" to map effects from group id: chart→wipe,
-           card-/step-/pillar-→fly, title/takeaway→fade; image-like ids
-           hero/figure-/image/img-/kpi cycle zoom/dissolve/circle/box/diamond/
-           wheel so multiple images vary across the deck; unmatched ids cycle
-           fade/wipe/fly/zoom. Start mode set by --animation-trigger, matching
+           "-a auto" to map effects from group id: chart→entrance_wipe,
+           card-/step-/pillar-→entrance_fly,
+           title/takeaway→entrance_fade; image-like ids
+           hero/figure-/image/img-/kpi cycle canonical entrance presets;
+           unmatched ids cycle entrance_fade/entrance_wipe/entrance_fly/
+           entrance_zoom. Start mode set by --animation-trigger, matching
            PowerPoint's Start dropdown:
              on-click              one presenter click per group
              with-previous         all groups start together on slide entry
              after-previous (default)  cascade on slide entry;
                                        gap = --animation-stagger seconds
-           mixed (legacy) cycles a larger 16-effect pool by group order;
-           random samples from the same legacy pool. Use "-a none" to disable
+           mixed (compatible mode name) cycles a larger 16-preset canonical
+           PowerPoint pool by group order; random samples from the same pool.
+           Use "-a none" to disable
            element builds explicitly.
 
 Speaker notes (enabled by default):
@@ -806,15 +811,20 @@ Recorded narration:
 
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
                         default=None,
-                        help='Per-element entrance animation (native shapes mode '
+                        help='Per-element object animation (native shapes mode '
                              'only). Default "none" (no auto element builds; page '
-                             'transitions still apply). Pick a single effect, "auto" '
+                             'transitions still apply). Pick a native entrance_*/'
+                             'emphasis_*/path_*/exit_* key or "auto" '
                              '(map effect from group id — image-like ids cycle a '
-                             'richer pool for visual variation, fallback cycles fade/'
-                             'wipe/fly/zoom), "mixed" (legacy 16-effect pool), or '
-                             '"random".')
+                             'richer canonical pool for visual variation, fallback '
+                             'cycles entrance_fade/entrance_wipe/entrance_fly/'
+                             'entrance_zoom), "mixed" (canonical 16-preset pool), or '
+                             '"random". Legacy short names remain accepted only for '
+                             'compatibility.')
     parser.add_argument('--animation-duration', type=positive_float, default=None,
-                        help='Per-element entrance duration in seconds (default: 0.4)')
+                        help='Per-element object-animation duration in seconds '
+                             '(default: 0.4; instantaneous native presets keep their '
+                             'PowerPoint-authored duration)')
     parser.add_argument('--animation-trigger', type=str,
                         choices=['on-click', 'with-previous', 'after-previous'],
                         default=None,
@@ -1313,9 +1323,9 @@ Recorded narration:
             else (
                 args.animation
                 if args.animation is not None
-                # Per-element entrance is opt-in by default: auto-firing element builds
-                # read as the "AI deck" tell and were unsolicited. Page transitions stay
-                # on (see transition default above). Re-enable with -a auto / animations.json.
+                # Per-element object motion is opt-in by default: unsolicited
+                # auto-firing builds read as the "AI deck" tell. Page transitions
+                # stay on; enable objects with -a or animations.json.
                 else animation_defaults.get('effect', 'none')
             )
         )

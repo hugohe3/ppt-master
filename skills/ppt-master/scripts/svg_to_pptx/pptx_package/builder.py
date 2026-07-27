@@ -4078,7 +4078,8 @@ def _build_sequence_targets(
     elif animation == 'auto':
         # 'auto' accumulates a cross-slide offset so the image pool and the
         # unmatched-id fallback rotate as the deck advances. Single-effect
-        # semantic matches (title→fade, chart→wipe etc.) are unaffected
+        # semantic matches (title→entrance_fade, chart→entrance_wipe, etc.)
+        # are unaffected
         # because they ignore the offset.
         mixed_count = len(seq_targets)
     else:
@@ -4491,9 +4492,13 @@ def create_pptx_with_native_svg(
         notes: Notes dict, key is SVG stem, value is notes content.
         enable_notes: Whether to enable notes embedding.
         use_native_shapes: Must remain true; SVG-image PPTX export is unsupported.
-        animation: Per-element entrance animation mode (single effect name,
-            'mixed', 'random', or None to disable). Native shapes mode only.
-        animation_duration: Per-element entrance duration in seconds.
+        animation: Per-element object-animation mode (compatibility alias,
+            PowerPoint-native ``entrance_*``/``emphasis_*``/``path_*``/
+            ``exit_*`` effect, ``'mixed'``, ``'random'``, or None to disable).
+            Native shapes mode only.
+        animation_duration: Per-element animation duration in seconds.
+            Instantaneous native presets retain their PowerPoint-authored
+            duration.
         animation_stagger: Delay between elements in ``after-previous``
             trigger mode (seconds). Ignored otherwise.
         animation_trigger: PowerPoint Start mode — ``'after-previous'`` (default),
