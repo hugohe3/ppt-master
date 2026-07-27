@@ -37,8 +37,8 @@ Changing animation settings does not require regenerating the slides. Rerun `svg
 | Animate all elements together | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | Slow the reveal sequence | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-The transition vocabulary covers all three sections in the current PowerPoint
-gallery:
+The 48 canonical transition keys cover all three sections in the current
+PowerPoint gallery:
 
 - Subtle: `morph`, `fade`, `push`, `wipe`, `split`, `reveal`, `cut`,
   `random_bars`, `shape`, `uncover`, `cover`, `flash`.
@@ -50,12 +50,20 @@ gallery:
 - Dynamic Content: `pan`, `ferris_wheel`, `conveyor`, `rotate`, `window`,
   `orbit`, `fly_through`.
 
-Compatibility aliases `strips`, `circle`, `diamond`, `newsflash`, `plus`,
-`pull`, `wedge`, and `wheel` also remain valid. They normalize to current
-gallery effects before writing: `strips` → `wipe`; `circle` / `diamond` /
-`plus` → `shape`; `newsflash` → `flash`; `pull` → `uncover`; and `wedge` /
-`wheel` → `clock`. `-t none` removes the visual effect but does not remove an
-explicitly configured auto-advance timer.
+The old names `strips`, `circle`, `diamond`, `newsflash`, `plus`, `pull`,
+`wedge`, and `wheel` remain accepted only as compatibility inputs. New
+sidecars, plans, traces, and output use canonical keys. Compatibility inputs
+desugar into a native effect plus its Effect Options—for example, `diamond`
+becomes `shape` with `shape: diamond`, and `wedge` becomes `clock` with
+`style: wedge`.
+
+Set effect-specific PowerPoint options in
+`transition.effect_options`. Direction, shape, pattern, Morph scope, black
+screen, page count, and bounce are validated against the selected effect.
+Run
+`python3 skills/ppt-master/scripts/pptx_animations.py --describe-transition <effect>`
+for the exact values. `-t none` removes the visual effect but does not remove
+an explicitly configured auto-advance timer.
 
 ## Choose a Start Mode
 

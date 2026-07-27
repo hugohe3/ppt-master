@@ -50,8 +50,10 @@ from pptx_animations import (  # noqa: E402
 from pptx_transitions import (  # noqa: E402
     AdvanceUpdate,
     EnterUpdate,
-    TRANSITIONS,
+    LEGACY_TRANSITION_KEYS,
+    NATIVE_TRANSITION_KEYS,
     apply_slide_motion_xml,
+    normalize_transition_effect_request,
     set_directory_use_timings,
     validate_pptx_transition_package,
     validate_seconds,
@@ -448,30 +450,61 @@ def _resolve_enter_update(
     *,
     cli_effect: str | None,
     configured_effect: object,
+    configured_effect_options: object = None,
     transitions_enabled: bool,
     duration: float,
 ) -> EnterUpdate:
     if cli_effect is None and not transitions_enabled:
         if configured_effect == "none":
+            normalize_transition_effect_request(
+                configured_effect,
+                configured_effect_options,
+            )
             return EnterUpdate(policy="none", effect=None, duration=duration)
         return EnterUpdate(policy="preserve", duration=duration)
 
     effect = cli_effect if cli_effect is not None else configured_effect
-    if not isinstance(effect, str):
-        raise ValueError(f"transition effect must be a string: {effect!r}")
     if effect == "none":
-        return EnterUpdate(policy="none", effect=None, duration=duration)
-    if effect not in TRANSITIONS:
-        valid = ", ".join(sorted(TRANSITIONS))
-        raise ValueError(
-            f"unknown transition effect {effect!r}; valid effects: {valid}, none"
+        normalize_transition_effect_request(
+            effect,
+            None if cli_effect is not None else configured_effect_options,
         )
+        return EnterUpdate(policy="none", effect=None, duration=duration)
+    effect, effect_options = normalize_transition_effect_request(
+        effect,
+        None if cli_effect is not None else configured_effect_options,
+        allow_none=False,
+    )
 
-    return EnterUpdate(policy="replace", effect=effect, duration=duration)
+    return EnterUpdate(
+        policy="replace",
+        effect=effect,
+        duration=duration,
+        effect_options=effect_options,
+    )
 
 
 def _plan_confirmed(plan: dict) -> bool:
     return plan.get("status") == "confirmed"
+
+
+def _native_transition_config(
+    transition: str,
+    duration: float,
+) -> dict[str, object]:
+    if transition == "none":
+        return {"effect": "none", "duration": duration}
+    effect, effect_options = normalize_transition_effect_request(
+        transition,
+        allow_none=False,
+    )
+    config: dict[str, object] = {
+        "effect": effect,
+        "duration": duration,
+    }
+    if effect_options:
+        config["effect_options"] = effect_options
+    return config
 
 
 def _build_enhancement_plan(
@@ -485,6 +518,10 @@ def _build_enhancement_plan(
     narration_padding: float,
     apply_transition_without_audio: bool,
 ) -> dict:
+    transition_config = _native_transition_config(
+        transition,
+        transition_duration,
+    )
     return {
         "schema": "native_pptx_enhancement_plan.v1",
         "status": "draft",
@@ -514,8 +551,7 @@ def _build_enhancement_plan(
                 "enabled": transition != "none",
                 "requires_confirmation": True,
                 "status": "ready",
-                "effect": transition,
-                "duration": transition_duration,
+                **transition_config,
                 "apply_without_audio": apply_transition_without_audio,
             },
         },
@@ -601,10 +637,10 @@ def init_project(args: argparse.Namespace) -> int:
         "notes_dir": "notes",
         "audio_dir": "audio",
         "exports_dir": "exports",
-        "transition": {
-            "effect": args.transition,
-            "duration": args.transition_duration,
-        },
+        "transition": _native_transition_config(
+            args.transition,
+            args.transition_duration,
+        ),
         "audio": {
             "provider": "",
             "voice": "",
@@ -698,12 +734,26 @@ def apply_project(args: argparse.Namespace) -> int:
     if not isinstance(timings_cfg, dict):
         timings_cfg = {}
 
+    transition_options_without_effect = (
+        (
+            "effect_options" in transitions_cfg
+            and "effect" not in transitions_cfg
+        )
+        or (
+            "effect_options" in transition_cfg
+            and "effect" not in transition_cfg
+            and "effect" not in transitions_cfg
+        )
+    )
     if "effect" in transitions_cfg:
         configured_effect = transitions_cfg["effect"]
+        configured_effect_options = transitions_cfg.get("effect_options")
     elif "effect" in transition_cfg:
         configured_effect = transition_cfg["effect"]
+        configured_effect_options = transition_cfg.get("effect_options")
     else:
         configured_effect = "fade"
+        configured_effect_options = None
 
     if args.transition_duration is not None:
         raw_transition_duration = args.transition_duration
@@ -722,6 +772,10 @@ def apply_project(args: argparse.Namespace) -> int:
         raw_narration_padding = 0.4
 
     try:
+        if args.transition is None and transition_options_without_effect:
+            raise ValueError(
+                "transition effect_options requires an explicit effect"
+            )
         if args.transition is not None or "transitions" in modules:
             transition_duration = validate_seconds(
                 raw_transition_duration,
@@ -741,6 +795,7 @@ def apply_project(args: argparse.Namespace) -> int:
         enter_update = _resolve_enter_update(
             cli_effect=args.transition,
             configured_effect=configured_effect,
+            configured_effect_options=configured_effect_options,
             transitions_enabled="transitions" in modules,
             duration=transition_duration,
         )
@@ -919,7 +974,8 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument(
         "--transition",
         default="fade",
-        choices=sorted(TRANSITIONS.keys()) + ["none"],
+        choices=[*NATIVE_TRANSITION_KEYS, *LEGACY_TRANSITION_KEYS, "none"],
+        help="PowerPoint-native effect; old names are compatibility inputs",
     )
     init.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
     init.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
@@ -932,7 +988,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     plan = subparsers.add_parser("plan", help="draft an enhancement module plan")
     plan.add_argument("project_path", help="native enhancement project directory")
-    plan.add_argument("--transition", default="fade", choices=sorted(TRANSITIONS.keys()) + ["none"])
+    plan.add_argument(
+        "--transition",
+        default="fade",
+        choices=[*NATIVE_TRANSITION_KEYS, *LEGACY_TRANSITION_KEYS, "none"],
+        help="PowerPoint-native effect; old names are compatibility inputs",
+    )
     plan.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
     plan.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
     plan.add_argument(
@@ -946,7 +1007,12 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument("project_path", help="native enhancement project directory")
     apply.add_argument("-o", "--output", default=None, help="output .pptx path")
     apply.add_argument("--overwrite", action="store_true", help="overwrite output if it exists")
-    apply.add_argument("--transition", default=None, choices=sorted(TRANSITIONS.keys()) + ["none"])
+    apply.add_argument(
+        "--transition",
+        default=None,
+        choices=[*NATIVE_TRANSITION_KEYS, *LEGACY_TRANSITION_KEYS, "none"],
+        help="PowerPoint-native effect; old names are compatibility inputs",
+    )
     apply.add_argument("--transition-duration", type=_positive_seconds_arg, default=None)
     apply.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=None)
     apply.add_argument("--force", action="store_true", help="apply without a confirmed enhancement plan")

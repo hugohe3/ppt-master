@@ -13,6 +13,10 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from pptx_transitions import (  # noqa: E402
+    LEGACY_TRANSITION_KEYS,
+    NATIVE_TRANSITION_KEYS,
+)
 
 configure_utf8_stdio()
 
@@ -39,7 +43,6 @@ from .transitions import (
     DEFAULT_TRANSITION,
     DEFAULT_TRANSITION_DURATION,
     KEEP_TRANSITION,
-    TRANSITIONS,
 )
 from .validator import print_validate_report, validate_project
 
@@ -116,11 +119,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     apply.add_argument(
         "--transition",
-        choices=sorted(TRANSITIONS) + ["none", KEEP_TRANSITION],
+        choices=[
+            *NATIVE_TRANSITION_KEYS,
+            *LEGACY_TRANSITION_KEYS,
+            "none",
+            KEEP_TRANSITION,
+        ],
         default=DEFAULT_TRANSITION,
         help=(
             "Page-to-page transition applied to every cloned slide "
             "(per-slide 'transition' in the plan overrides this). "
+            "Use a PowerPoint-native key; old names are compatibility inputs. "
             f"Default: {DEFAULT_TRANSITION}. Use 'none' for no motion, "
             "or 'keep' to preserve each source slide's existing transition."
         ),

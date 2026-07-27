@@ -164,20 +164,27 @@ special motion; variation follows a real content/tone change, never a quota.
 
 ### 3.1 Supported Page Transitions
 
-Use any effect from the complete shared registry in
+Use one of the 48 canonical native effects from the complete shared registry in
 [`animations.md`](../../references/animations.md) §3. It covers all current
-PowerPoint Subtle, Exciting, and Dynamic Content gallery effects, plus retained
-compatibility aliases. The aliases normalize to current gallery effects before
-writing. Use the documented identifier exactly; `none` removes the visual page
-transition while allowing timed advance to remain.
+PowerPoint Subtle, Exciting, and Dynamic Content gallery effects. The eight old
+names are readable only as compatibility inputs; do not write them in new
+plans or sidecars. They normalize to a canonical effect plus native
+`effect_options` before writing. `none` removes the visual page transition
+while allowing timed advance to remain.
 
 **Transition fields**:
 
 | Field | Behavior |
 |---|---|
 | `effect` | One supported page transition effect; `none` removes only the visual effect |
+| `effect_options` | Optional object containing only the selected native effect's PowerPoint Effect Options; requires an explicit `effect` |
 | `duration` | Finite transition duration in seconds; must be greater than zero |
 | `auto_advance` | Optional finite non-negative seconds before automatic slide advance; click remains enabled, and this field is valid with `effect: none` |
+
+Run
+`python3 skills/ppt-master/scripts/pptx_animations.py --describe-transition <effect>`
+before authoring Effect Options. Never infer that one effect accepts another
+effect's direction, shape, pattern, or boolean fields.
 
 ### 3.2 Supported In-Slide Animations
 
@@ -249,6 +256,7 @@ the deck-wide values copied into every complete new slide block.
 | Field | Behavior |
 |---|---|
 | `transition.effect` | Slide-specific page transition effect |
+| `transition.effect_options` | Effect-specific native PowerPoint options; requires an explicit slide-specific `transition.effect` |
 | `transition.duration` | Slide-specific page transition duration |
 | `animation.effect` | Slide-specific default object animation effect |
 | `animation.duration` | Slide-specific default object schedule duration |
@@ -291,7 +299,11 @@ groups appear only when they diverge**:
       "animation": { "effect": "entrance_fade", "duration": 0.5, "stagger": 0.4, "trigger": "after-previous" }
     },
     "03_market": {
-      "transition": { "effect": "wipe", "duration": 0.35 },
+      "transition": {
+        "effect": "wipe",
+        "effect_options": { "direction": "left" },
+        "duration": 0.35
+      },
       "animation": { "effect": "entrance_fade", "duration": 0.4, "stagger": 0.25, "trigger": "after-previous" },
       "groups": {
         "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },

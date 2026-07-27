@@ -130,7 +130,7 @@ Present the plan to the user before generating notes or audio:
 | `notes` | Enabled | Add/replace speaker notes generated from slide content? |
 | `audio` | Enabled when user wants narration/video/autoplay | Generate one narration audio file per slide? |
 | `timings` | Enabled with audio | Set slide auto-advance from audio duration? |
-| `transitions` | Enabled, `fade` 0.5s | Add page transitions? Which effect/duration? |
+| `transitions` | Enabled, `fade` 0.5s | Add page transitions? Which canonical native effect, Effect Options, and duration? |
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation. Do not generate notes, generate audio, or patch the PPTX until the user confirms the module plan.
 
@@ -144,7 +144,13 @@ Present the plan to the user before generating notes or audio:
 | Timings enabled with audio | Keep the resolved enter policy | Use audio duration plus narration padding; click disabled |
 | Timings disabled | Apply the confirmed enter policy only | Do not run `ffprobe`; do not add/change `advTm` or `useTimings` |
 
-**Hard rule — no silent downgrade**: a requested supported effect must be written with its established direction/variant attributes. Unknown requested effects fail; unknown source effects are preserved when the transition module is disabled.
+The confirmed `modules.transitions` object may include `effect_options` beside
+an explicit canonical `effect`. Use
+`pptx_animations.py --describe-transition <effect>` for its exact fields.
+Old names remain accepted only when reading compatibility input; a newly
+written plan stores the canonical effect and any implied options.
+
+**Hard rule — no silent downgrade**: a requested native effect must be written with its complete validated Effect Options. Unknown effects or inapplicable options fail; unknown source effects are preserved when the transition module is disabled.
 
 After confirmation, update `<project>/analysis/enhancement_plan.json`:
 

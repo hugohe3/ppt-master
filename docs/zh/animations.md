@@ -35,7 +35,7 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 | 所有元素同时入场 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | 放慢逐步揭示节奏 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-页间转场已经覆盖当前 PowerPoint 效果库的三个完整分组：
+48 个规范页间切换标识已经覆盖当前 PowerPoint 效果库的三个完整分组：
 
 - 细微：平滑 `morph`、淡入/淡出 `fade`、推入 `push`、擦除 `wipe`、
   分割 `split`、显示 `reveal`、切入 `cut`、随机线条 `random_bars`、
@@ -51,11 +51,15 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 - 动态内容：平移 `pan`、摩天轮 `ferris_wheel`、传送带 `conveyor`、
   旋转 `rotate`、窗口 `window`、轨道 `orbit`、飞过 `fly_through`。
 
-兼容标识 `strips`、`circle`、`diamond`、`newsflash`、`plus`、`pull`、
-`wedge`、`wheel` 仍然有效，但会先归一化为当前 PowerPoint 效果库中的规范
-效果再写入：`strips` → `wipe`；`circle` / `diamond` / `plus` → `shape`；
-`newsflash` → `flash`；`pull` → `uncover`；`wedge` / `wheel` → `clock`。
-`-t none` 只关闭视觉效果，不会移除显式设置的自动翻页计时。
+旧标识 `strips`、`circle`、`diamond`、`newsflash`、`plus`、`pull`、
+`wedge`、`wheel` 只保留为兼容输入；新 sidecar、计划、轨迹和输出只使用规范
+标识。兼容输入会反糖化为一个原生效果及其效果选项，例如 `diamond` 会变成
+`shape` 加 `shape: diamond`，`wedge` 会变成 `clock` 加 `style: wedge`。
+
+原生 PowerPoint 效果选项写在 `transition.effect_options` 中。方向、形状、
+图案、Morph 范围、黑场、卷页数量和弹跳等参数都会按所选效果严格校验。运行
+`python3 skills/ppt-master/scripts/pptx_animations.py --describe-transition <effect>`
+可查看精确取值。`-t none` 只关闭视觉效果，不会移除显式设置的自动翻页计时。
 
 ## 选择 Start 模式
 

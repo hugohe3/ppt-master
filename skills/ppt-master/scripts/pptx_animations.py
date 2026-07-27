@@ -74,12 +74,17 @@ from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
 from pptx_transitions import (
+    LEGACY_TRANSITION_KEYS,
     MAX_OOXML_MILLISECONDS,
     MAX_OOXML_UNSIGNED_INT,
+    NATIVE_TRANSITION_KEYS,
+    NATIVE_TRANSITIONS,
     PML_NS,
+    TRANSITION_ALIAS_OPTIONS,
     TRANSITION_ALIASES,
-    TRANSITIONS,
+    TRANSITION_CATEGORIES,
     create_transition_xml,
+    describe_transition_effect,
     validate_seconds,
 )
 
@@ -3383,8 +3388,8 @@ def entrance_animation_fingerprint(slide_xml: str | bytes) -> str | None:
 
 
 def get_available_transitions() -> list:
-    """Get a list of all available transition effects"""
-    return list(TRANSITIONS.keys())
+    """Get native transition keys followed by compatibility inputs."""
+    return [*NATIVE_TRANSITION_KEYS, *LEGACY_TRANSITION_KEYS]
 
 
 def get_available_animations() -> list:
@@ -3393,12 +3398,23 @@ def get_available_animations() -> list:
 
 
 def get_transition_help() -> str:
-    """Get help text for transition effects"""
+    """Get categorized native transitions plus legacy compatibility inputs."""
     lines = ["Available transition effects:"]
-    for key, info in TRANSITIONS.items():
-        alias = TRANSITION_ALIASES.get(key)
-        suffix = f" (compatibility alias for {alias})" if alias else ""
-        lines.append(f"  {key}: {info['name']}{suffix}")
+    for category in TRANSITION_CATEGORIES:
+        lines.append(f"  PowerPoint-native {category} effects:")
+        for key in NATIVE_TRANSITION_KEYS:
+            info = NATIVE_TRANSITIONS[key]
+            if info["category"] == category:
+                lines.append(f"    {key}: {info['name']}")
+    lines.append("  Legacy compatibility inputs (never selected for new output):")
+    for key in LEGACY_TRANSITION_KEYS:
+        canonical = TRANSITION_ALIASES[key]
+        implied = TRANSITION_ALIAS_OPTIONS.get(key)
+        option_suffix = f", implies {implied}" if implied else ""
+        lines.append(
+            f"    {key}: compatibility alias for {canonical} "
+            f"({NATIVE_TRANSITIONS[canonical]['name']}{option_suffix})"
+        )
     return '\n'.join(lines)
 
 
@@ -3504,6 +3520,11 @@ def main() -> None:
         metavar='EFFECT',
         help='print the complete parameter contract for one object animation',
     )
+    parser.add_argument(
+        '--describe-transition',
+        metavar='EFFECT',
+        help='print the PowerPoint Effect Options for one page transition',
+    )
     args = parser.parse_args()
 
     if args.describe:
@@ -3511,6 +3532,19 @@ def main() -> None:
             print(
                 json.dumps(
                     describe_animation_effect(args.describe),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        return
+
+    if args.describe_transition:
+        try:
+            print(
+                json.dumps(
+                    describe_transition_effect(args.describe_transition),
                     ensure_ascii=False,
                     indent=2,
                 )

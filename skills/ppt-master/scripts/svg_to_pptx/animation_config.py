@@ -23,7 +23,11 @@ from pptx_animations import (
     normalize_animation_effect_request,
     normalize_animation_trigger,
 )
-from pptx_transitions import TRANSITIONS, validate_seconds
+from pptx_transitions import (
+    normalize_transition_effect,
+    normalize_transition_effect_request,
+    validate_seconds,
+)
 
 from .drawingml.utils import SVG_NS
 from .semantic_markers import is_static_page_frame
@@ -184,7 +188,11 @@ def load_animation_config(project_path: Path, config_path: str | None = None) ->
 
 
 def _valid_transition_effect(effect: str) -> bool:
-    return effect == 'none' or effect in TRANSITIONS
+    try:
+        normalize_transition_effect(effect)
+    except ValueError:
+        return False
+    return True
 
 
 def _animation_effect_error(effect: object, label: str) -> str | None:
@@ -435,20 +443,27 @@ def _transition_scope_errors(
 
     errors = _unknown_field_errors(
         transition,
-        frozenset({'effect', 'duration', 'auto_advance'}),
+        frozenset({'effect', 'effect_options', 'duration', 'auto_advance'}),
         f'{label} transition',
     )
-    if 'effect' in transition:
-        effect = transition['effect']
-        if not isinstance(effect, str):
-            errors.append(
-                f'animations.json {label} transition effect must be a string'
-            )
-        elif not _valid_transition_effect(effect):
-            errors.append(
-                f'animations.json {label} has unknown transition effect: {effect}'
-            )
-    duration_allows_zero = transition.get('effect', inherited_effect) == 'none'
+    effect = transition.get('effect', inherited_effect)
+    effect_options = transition.get('effect_options')
+    if effect_options is not None and 'effect' not in transition:
+        errors.append(
+            f'animations.json {label} transition effect_options requires '
+            'an explicit effect'
+        )
+    else:
+        try:
+            normalize_transition_effect_request(effect, effect_options)
+        except ValueError as exc:
+            errors.append(f'animations.json {label} transition: {exc}')
+    try:
+        duration_allows_zero = (
+            normalize_transition_effect(effect) is None
+        )
+    except ValueError:
+        duration_allows_zero = False
     for field, allow_zero in (
         ('duration', duration_allows_zero),
         ('auto_advance', True),
