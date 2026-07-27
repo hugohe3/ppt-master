@@ -114,7 +114,8 @@ Rules:
   | `direction` | Directional Fly/Crawl/Wipe/Peek/Strips/Split/Stretch/Zoom and related entrance/exit effects |
   | `amount` | Wheel spokes (`1`, `2`, `3`, `4`, `8`), emphasis Spin degrees, or Transparency ratio |
   | `color` | Color-capable emphasis effects; `#RRGGBB` or `theme:<scheme-color>` |
-  | `font_name`, `size` | Change Font and Grow/Shrink |
+  | `font_name` | Change Font; required for `emphasis_change_font` |
+  | `size` | Grow/Shrink |
   | `relative` | Motion paths (`true` = shape-relative, `false` = fixed slide path) |
 - Any animation/group block may set `repeat_count` or `repeat_duration`
   (mutually exclusive), `auto_reverse`, `rewind`, `accelerate`, `decelerate`,

@@ -267,6 +267,17 @@ def _load_native_animations() -> dict[str, dict[str, Any]]:
                     f'native animation preset {key!r} option {option_name!r} '
                     'must be an object'
                 )
+            required = option_spec.get('required', False)
+            if not isinstance(required, bool):
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'required must be a boolean'
+                )
+            if required and 'default' in option_spec:
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'cannot define both required and default'
+                )
             option_type = option_spec.get('type')
             if option_type == 'enum':
                 values = option_spec.get('values')
@@ -517,6 +528,18 @@ def normalize_animation_effect_options(
         raise ValueError(
             f'animation effect {effect!r} does not support effect option(s): '
             f'{unsupported}; supported options: {supported}'
+        )
+    missing_required = sorted(
+        name
+        for name, spec in option_specs.items()
+        if spec.get('required') and name not in options
+    )
+    if missing_required:
+        required_fields = ', '.join(
+            f'effect_options.{name}' for name in missing_required
+        )
+        raise ValueError(
+            f'animation effect {effect!r} requires {required_fields}'
         )
 
     normalized: dict[str, object] = {}
@@ -3445,10 +3468,16 @@ def get_animation_help() -> str:
 
 def describe_animation_effect(effect: object) -> dict[str, Any]:
     """Return the author-facing option contract for one animation effect."""
-    canonical, implied_options = normalize_animation_effect_request(
+    canonical = normalize_animation_effect(
         effect,
         allow_none=False,
         allow_modes=False,
+    )
+    assert canonical is not None
+    implied_options = (
+        dict(ANIMATION_ALIAS_OPTIONS.get(effect, {}))
+        if isinstance(effect, str)
+        else {}
     )
     option_contract: dict[str, Any] = {}
     for name, raw_spec in NATIVE_ANIMATIONS[canonical]['effectOptions'].items():
