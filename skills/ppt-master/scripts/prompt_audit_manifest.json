@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 365000
+    "max_tokens": 365400
   },
   "file_budgets": {
     "AGENTS.md": 2350,
@@ -670,12 +670,12 @@
       "max_tokens": 800
     },
     "stage.create-template.authored-preset": {
-      "description": "Conditional native-preset authoring reference for Create Layout/Create Deck.",
+      "description": "Conditional native preset and Boolean shape authoring reference for Create Layout/Create Deck.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 2600
+      "max_tokens": 3100
     },
     "route.generate.planning-template": {
       "description": "Generate-PPTX planning context after an explicit template workspace is installed.",
@@ -771,12 +771,12 @@
       "max_tokens": 900
     },
     "stage.generate.executor.native-shape": {
-      "description": "Conditional stock PowerPoint shape selection and fragment contract.",
+      "description": "Conditional stock PowerPoint shape selection and Boolean materialization contract.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 2600
+      "max_tokens": 3100
     },
     "stage.shared.svg-effects": {
       "description": "Conditional advanced SVG paint, effects, transforms, and geometry for Generate Executor or Create Template.",

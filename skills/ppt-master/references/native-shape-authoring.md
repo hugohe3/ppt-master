@@ -1,11 +1,12 @@
 > See [`shared-standards-core.md`](./shared-standards-core.md) §§1.4–1.5 for the native-shape metadata and validation contracts.
 
-# Native Preset Shape Authoring Reference
+# Native Shape Authoring Reference
 
 Use this reference during Executor SVG construction or project-owned canonical
 template maintenance when one standard PowerPoint shape can express one
-complete geometric object. The helper does not create the preset shape's own
-`p:txBody`; keep visible text outside the atomic fragment.
+complete object or multiple closed shapes require a PowerPoint-style Boolean
+result. Neither helper writes a page. The preset helper does not create the
+shape's own `p:txBody`; keep visible text outside the atomic fragment.
 
 ## 1. Selection Gate
 
@@ -20,6 +21,7 @@ Apply this decision order before drawing a stock geometric object.
 |---|---|
 | Plain rectangle, symmetric rounded rectangle, circle, or ellipse | Write the ordinary SVG primitive; the exporter already emits an editable native shape. |
 | One DrawingML preset exactly expresses the intended object | Run `preset_shape_svg.py render`, then insert its complete stdout fragment into the hand-authored page or canonical template. |
+| Two or more closed authored shapes require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
 | The visual meaning or contour exceeds one stock shape | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
 | The shape only resembles a preset | Keep ordinary SVG; never infer a preset from contour similarity. |
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
@@ -190,3 +192,39 @@ and paint. The exporter performs the same validation, then expands the compact
 group only in memory to reuse the lossless native-shape conversion path.
 Compatible expanded authored input remains under its separate carrier/preview
 freshness contract.
+
+---
+
+## 6. Shape Boolean Materialization
+
+**Trigger**: The authored design explicitly requires a PowerPoint-style Union,
+Combine, Fragment, Intersect, or Subtract operation over two or more closed
+vector shapes.
+
+```bash
+python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
+  --operation subtract \
+  --source body \
+  --source cutout \
+  --id result
+```
+
+| Concern | Contract |
+|---|---|
+| Sources | Closed `path`, `polygon`, `rect`, `circle`, `ellipse`, or one validated compact authored shape preset. Open ordinary geometry, connectors, ordinary groups, text, images, definitions, and nested SVG viewports fail closed. |
+| Primary shape | The first `--source` supplies result paint. For `subtract`, all later operands are removed from that primary geometry. Explicit paint flags override only their named channels. |
+| Coordinates | Ancestor and local transforms are baked into SVG-root coordinates. Insert stdout at the root in the primary operand's z-order; never reinsert it under an original transformed ancestor. |
+| Result | `union`, `combine`, `intersect`, and `subtract` emit one ordinary `<path>`. `fragment` emits stable sibling paths named `<id>-1`, `<id>-2`, ... in top/left/bottom/right/area order. |
+| Winding | Results use explicit nonzero contour direction and never emit `fill-rule`, `clip-rule`, `clip-path`, `mask`, or Merge Shapes metadata. Operands that depend on even-odd fill, clipping, or masking fail closed. |
+| Preservation | This helper authors new geometry only. Never use it to merge or split mirror/preserve source structure. |
+
+Operation semantics match PowerPoint's visible Merge Shapes result: `union`
+keeps every covered region, `combine` keeps the symmetric difference,
+`intersect` keeps only common coverage, `subtract` removes every later source
+from the primary, and `fragment` returns each atomic filled region. The PPTX
+stores the materialized freeform geometry, not replayable operation history.
+
+**Hard rule — stdout-only replacement**: The helper never writes the source
+page. In one normal `apply_patch` edit, remove every selected operand and insert
+every returned path at the SVG root in the primary operand's z-order. Fragment
+paths remain separate shapes; do not wrap them to claim one structural atom.

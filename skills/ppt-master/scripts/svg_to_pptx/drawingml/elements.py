@@ -70,6 +70,7 @@ from .styles import (
 from .paths import (
     PathCommand, parse_svg_path, parse_svg_points, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
+    transform_path_commands,
 )
 
 
@@ -681,27 +682,6 @@ def _shape_xfrm_from_svg_rect(
     ext_cx = px_to_emu(resolved_w)
     ext_cy = px_to_emu(resolved_h)
     return '', off_x, off_y, ext_cx, ext_cy, (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
-
-
-def _transform_path_commands(
-    commands: list[PathCommand],
-    matrix: tuple[float, float, float, float, float, float],
-) -> list[PathCommand]:
-    """Apply an affine transform to normalized M/L/C/Z path commands."""
-    transformed: list[PathCommand] = []
-    for cmd in commands:
-        if cmd.cmd in ('M', 'L'):
-            x, y = transform_point(matrix, cmd.args[0], cmd.args[1])
-            transformed.append(PathCommand(cmd.cmd, [x, y]))
-        elif cmd.cmd == 'C':
-            args: list[float] = []
-            for i in range(0, 6, 2):
-                x, y = transform_point(matrix, cmd.args[i], cmd.args[i + 1])
-                args.extend([x, y])
-            transformed.append(PathCommand(cmd.cmd, args))
-        else:
-            transformed.append(cmd)
-    return transformed
 
 
 # ---------------------------------------------------------------------------
@@ -1714,7 +1694,7 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     transform = elem.get('transform')
     if _uses_full_transform(ctx, transform):
-        commands = _transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
+        commands = transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
         path_xml, min_x, min_y, width, height = path_commands_to_drawingml(
             commands, 0, 0, 1.0, 1.0,
         )
@@ -1797,7 +1777,7 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 
     transform = elem.get('transform')
     if _uses_full_transform(ctx, transform):
-        commands = _transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
+        commands = transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
         path_xml, min_x, min_y, width, height = path_commands_to_drawingml(
             commands, 0, 0, 1.0, 1.0,
         )
@@ -1865,7 +1845,7 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | Non
 
     transform = elem.get('transform')
     if _uses_full_transform(ctx, transform):
-        commands = _transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
+        commands = transform_path_commands(commands, _combined_transform_matrix(ctx, transform))
         path_xml, min_x, min_y, width, height = path_commands_to_drawingml(
             commands, 0, 0, 1.0, 1.0,
         )
