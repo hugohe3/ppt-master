@@ -162,6 +162,30 @@ Flags:
 
 **Hard rule — no silent downgrade**: an unknown transition effect, unsupported Effect Option, or invalid/non-finite duration fails export. It is never replaced by `fade`. Recorded narration keeps the resolved visual transition; `-t none --recorded-narration ...` writes narration-driven advance timing without restoring a visual effect.
 
+### 3.1 Morph — author an action as the difference between two pages
+
+Morph tweens objects it can match across consecutive slides. That makes it a general mechanism, not just a transition: **any continuous action can be authored as two static pages plus `-t morph`**, with no keyframe timeline anywhere. Duplicate the page, change one property on one object, and PowerPoint interpolates the rest.
+
+| Change between the two pages | Reads as |
+|---|---|
+| Object sits off-canvas, then on-canvas | Slide-in, drawer pull, card extending |
+| Object rotates | Flip, turn, hinge |
+| Image container scales up | Camera push-in |
+| Scrim opacity drops, or a cut contour grows | Progressive reveal |
+| Same wide image at two `x` offsets | Camera pan (see image-layout-patterns `#87`) |
+
+Chain three or more pages to build a sequence — extend, hold, retract — where each page is still an ordinary editable slide.
+
+**Matching is by object identity, and it is strict**: keep the same image filename, the same group `id`, and container dimensions that do not change between the pages. Rename the file or resize the frame and morph silently degrades to a cross-fade with none of the motion. This is the most common reason a morph sequence "does nothing".
+
+**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix, used in essentially every morph-driven deck: place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages with the same identity.
+
+**When morph refuses to match**: PowerPoint pairs objects of the same kind first, so two different shape types, or a shape and a picture, will cross-fade instead of tweening. Authored decks force the pairing by giving both objects an identical custom shape name. The exporter does read a per-object name — `data-pptx-shape-name` on the wrapper — but that attribute is currently specified as **importer metadata** for mirror/preserve packages ([`svg-effects.md`](./svg-effects.md) §6.6), not as an authoring control for generated pages. Until that contract is widened, keep morph pairs the same object kind with matching geometry and `id`, and do not introduce the attribute on generated pages to force a match.
+
+**Not supported — Slide Zoom / Summary Zoom.** Click-to-jump navigation built on PowerPoint's Zoom objects (the "click a portrait, zoom into that section" pattern) has no exporter path. Build click-driven navigation with `trigger_shape` on ordinary object animations instead, or with plain hyperlinks.
+
+**No 3D**: perspective rotation, extrusion, and shear are outside the SVG contract — `skewX` / `skewY` and shear matrices fail closed ([`svg-effects.md`](./svg-effects.md) §6.8). Build the same impression with 2D means — offset, scale, overlap, and per-facet lightness (image-layout-patterns `#91`) — rather than attempting a 3D tilt.
+
 ---
 
 ## 4. Per-Element Animations
@@ -232,6 +256,29 @@ Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start
 motion but preserves narration audio and recorded advance timing.
 
 > Note: `--recorded-narration` rejects `on-click` and `trigger_shape`; use its default `narration_animations.json`, pass `--animation-config animations.json` for the canonical presentation animation, or pass `--no-animations`.
+
+### 4.1 Slow ambient motion — the page that breathes
+
+Most object animation exists to reveal content on click. There is a second, quieter use: **one long, slow motion on the background that never waits for a click**, so a static page stops looking frozen. It is the highest-impact-per-effort motion available and it costs one sidecar entry.
+
+The recipe: a `path_left` (or `path_right`) motion on the **background image group only**, `with-previous` so it starts unprompted, and a duration of **4–10 s** — an order of magnitude longer than the reveal default. Set the travel distance so the image is still fully covering the canvas at both ends; a background that drifts past its own edge exposes the slide beneath it.
+
+It pairs naturally with a fixed foreground: with image-layout-patterns `#90`, the scrim and its cut contour stay locked while the world moves behind the cuts, which reads as looking through windows rather than as a sliding photo. The same logic applies to `#82` and `#12`.
+
+**Restraint is the whole technique**: one moving object per page, background only, never body copy or data. Two ambient motions on one page cancel each other out and the page reads as unstable.
+
+### 4.2 Recurring recipes
+
+Four combinations that recur constantly in authored decks. Each is built from
+mechanisms already defined above — none needs a new capability.
+
+**Carousel** (morph, §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Morph then slides the images between frames and the row appears to scroll. Requires identical frame geometry and `id`s on every page; only the image assignments change. Scales to any number of images with one page each.
+
+**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window: a masked opening, or a background-filled rectangle above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. Give each digit column a 0.1 s stagger so they settle in sequence rather than in lockstep.
+
+**Parallax depth** (morph) — move a background layer a *short* distance and a foreground layer a longer one between two pages. The differing travel is read as depth. Keep both layers' z-order identical on both pages; a layer that changes stacking between pages breaks the tween and the transition jumps.
+
+**Flip-card / click-to-reveal** (`trigger_shape`, §4) — pair a face group and a back group at the same position, give the face an exit and the back an entrance, and set the back's `trigger_shape` to the face's id. Clicking the face plays both. This is the supported route for click-driven interaction; PowerPoint's Zoom objects are not (§3.1).
 
 ---
 
