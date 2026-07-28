@@ -238,9 +238,10 @@ page_count: <N>
 - HEX values with role labels (primary / accent / background / text / etc.)
 - Brand-specific application rules when present (e.g. "KPI cards rotate blue→green→red→yellow")
 
-## III. Typography (omit when using the default `Arial, "Microsoft YaHei", sans-serif` stack)
-- Per-role font stacks ONLY when the template intentionally diverges (display serif title, brand typeface, etc.)
-- Font-install or embedding requirement when a non-preinstalled font leads any stack
+## III. Typography (omit without template-owned typeface identity)
+- Per-role stacks for identity (display serif, brand face, etc.)
+- A non-preinstalled face may lead only after user-confirmed target installation/approved install; no auto-embedding
+- Otherwise export a safe face; unavailable proprietary faces stay references. CSS tails aid preview, not deterministic PowerPoint fallback
 - Body baseline px (informational; `spec_lock.md` owns the actual values per project)
 
 ## IV. Signature Design Elements

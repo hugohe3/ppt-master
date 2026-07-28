@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 387100
+    "max_tokens": 387200
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -578,7 +578,7 @@
       "files": [
         "skills/ppt-master/workflows/profiles/beautify-pptx.md"
       ],
-      "max_tokens": 6900
+      "max_tokens": 6950
     },
     "stage.generate.refine-spec": {
       "description": "Explicit post-confirmation spec refinement runbook.",
@@ -632,7 +632,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 28700
+      "max_tokens": 28725
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",

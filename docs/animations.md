@@ -127,7 +127,8 @@ The generated sidecar targets stable top-level `<g id="...">` content groups. Co
 Use `python3 skills/ppt-master/scripts/pptx_animations.py --describe
 <canonical_effect>` to see exactly which options that effect accepts. Speed is
 controlled by `duration`; smooth start/end are controlled by
-`accelerate`/`decelerate`.
+`accelerate`/`decelerate`. Change Font's `font_name` is one concrete
+target-installed PowerPoint face, never a CSS font stack.
 
 `trigger_shape` is group-only and points to a different group id on the same
 slide. It affects only that row; the slide Start mode still controls all other

@@ -36,7 +36,7 @@ One resolved animation-pane row contains these fields:
 | Duration | Finite positive schedule duration; scalable native behavior trees preserve their internal timing ratios |
 | Delay | Finite non-negative offset used by `after-previous` or as trigger-shape `TriggerDelayTime` |
 | Order | Positive integer sidecar order; ties retain stable SVG order |
-| Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (required for Change Font), `relative`, or `size` values from PowerPoint `EffectParameters` |
+| Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters` |
 | Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
 | Completion | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
 

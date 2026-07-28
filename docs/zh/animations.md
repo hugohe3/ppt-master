@@ -118,7 +118,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 
 运行 `python3 skills/ppt-master/scripts/pptx_animations.py --describe
 <canonical_effect>` 可查看该效果实际接受的完整参数。速度由 `duration` 控制，
-平滑开始/结束由 `accelerate`/`decelerate` 控制。
+平滑开始/结束由 `accelerate`/`decelerate` 控制。Change Font 的 `font_name`
+必须是目标环境已安装的一个具体 PowerPoint 字体名，不能写 CSS 字体列表。
 
 `trigger_shape` 只能写在对象组上，并指向同一页另一个分组 id。它只让当前动画行
 变为交互触发，其他行仍遵循页面 Start 模式；录制旁白不接受这种交互动画。
