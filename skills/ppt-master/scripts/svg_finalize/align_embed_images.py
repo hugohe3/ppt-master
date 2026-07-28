@@ -51,7 +51,6 @@ import re
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -59,6 +58,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from resource_paths import resolve_external_image_reference  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -119,14 +119,7 @@ def _resolve_image_path(href: str, svg_dir: Path) -> Path | None:
     """
     if not href:
         return None
-    decoded = unquote(href)
-    if decoded.startswith(('http://', 'https://', 'file://')):
-        return None
-    if os.path.isabs(decoded):
-        candidate = Path(decoded)
-    else:
-        candidate = (svg_dir / decoded).resolve()
-    return candidate if candidate.exists() else None
+    return resolve_external_image_reference(svg_dir, href)
 
 
 def _is_svg_image(img_path: Path, raw_bytes: bytes) -> bool:
@@ -156,6 +149,29 @@ def _load_pil_image(img_path: Path) -> 'PILImage' | None:
         return None
 
 
+def _prepare_raster_for_geometry(img: 'PILImage') -> 'PILImage':
+    """Apply EXIF orientation and materialize palette/tRNS transparency."""
+    from PIL import ImageOps
+
+    prepared = ImageOps.exif_transpose(img)
+    if prepared.mode == 'P':
+        prepared = prepared.convert('RGBA' if _has_alpha(prepared) else 'RGB')
+    elif (
+        'transparency' in getattr(prepared, 'info', {})
+        and prepared.mode not in {'RGBA', 'LA'}
+    ):
+        prepared = prepared.convert('RGBA')
+    return prepared
+
+
+def _has_exif_geometry_transform(img: 'PILImage') -> bool:
+    """Return whether EXIF requires a physical mirror or rotation."""
+    try:
+        return int(img.getexif().get(274, 1)) in range(2, 9)
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+
 def _normalize_for_save(img: 'PILImage', mime_type: str) -> 'PILImage':
     """Coerce a PIL image into a mode that the target format can save.
 
@@ -166,15 +182,17 @@ def _normalize_for_save(img: 'PILImage', mime_type: str) -> 'PILImage':
         if img.mode in ('RGBA', 'LA'):
             from PIL import Image
             background = Image.new('RGB', img.size, (255, 255, 255))
-            alpha = img.getchannel('A') if img.mode == 'RGBA' else None
+            alpha = img.getchannel('A')
             background.paste(img.convert('RGB'), mask=alpha)
             return background
         if img.mode != 'RGB':
             return img.convert('RGB')
         return img
-    # PNG / GIF / WEBP — preserve alpha if present
+    # Lossless output — preserve alpha if present.
     if img.mode == 'P':
-        return img.convert('RGBA' if 'A' in img.getbands() else 'RGB')
+        return img.convert('RGBA' if _has_alpha(img) else 'RGB')
+    if img.mode not in {'1', 'L', 'LA', 'I', 'I;16', 'RGB', 'RGBA'}:
+        return img.convert('RGBA' if _has_alpha(img) else 'RGB')
     return img
 
 
@@ -182,9 +200,7 @@ def _has_alpha(img: 'PILImage') -> bool:
     """Return whether a PIL image has transparency."""
     if img.mode in ('RGBA', 'LA'):
         return True
-    if img.mode == 'P':
-        return 'transparency' in getattr(img, 'info', {})
-    return False
+    return 'transparency' in getattr(img, 'info', {})
 
 
 def _target_size(
@@ -231,9 +247,11 @@ def _encode_pil_to_data_uri(
     bytes for that path.
     """
     original_mime_type = get_mime_type(src_path.name, fallback_bytes)
-    mime_type = original_mime_type
-    if compress and mime_type == 'image/png' and not _has_alpha(img):
-        mime_type = 'image/jpeg'
+    # Match native export: only original JPEG assets stay lossy. PNG remains
+    # PNG, while BMP/TIFF and other static raster formats become lossless PNG.
+    mime_type = (
+        'image/jpeg' if original_mime_type == 'image/jpeg' else 'image/png'
+    )
     pil_format = _PIL_FORMAT_BY_MIME.get(mime_type, 'PNG')
 
     # Encode current PIL image
@@ -251,16 +269,19 @@ def _encode_pil_to_data_uri(
     except (OSError, ValueError):
         return None
 
-    # If caller passed the original bytes and they're smaller (because PIL
-    # round-tripping an asset that was already well-compressed inflates it),
-    # fall back to those.
-    chosen = encoded_bytes
-    if fallback_bytes and mime_type == original_mime_type and len(fallback_bytes) < len(encoded_bytes):
-        chosen = fallback_bytes
-
-    chosen = _optimize_image_bytes(
-        chosen, mime_type, compress=compress, max_dimension=max_dimension,
+    optimized_bytes = _optimize_image_bytes(
+        encoded_bytes, mime_type, compress=compress, max_dimension=max_dimension,
     )
+
+    # If the original represents the same uncropped pixels and is smaller,
+    # retain it instead of inflating an already efficient PNG/JPEG.
+    chosen = optimized_bytes
+    if (
+        fallback_bytes
+        and mime_type == original_mime_type
+        and len(fallback_bytes) < len(optimized_bytes)
+    ):
+        chosen = fallback_bytes
 
     b64 = base64.b64encode(chosen).decode('ascii')
     return f'data:{mime_type};base64,{b64}', len(chosen)
@@ -352,6 +373,8 @@ def _process_one_image(
             print(f'   [OK] {img_path.name} (animated, embedded as-is)')
         return True, None
 
+    geometry_normalized = _has_exif_geometry_transform(img)
+    img = _prepare_raster_for_geometry(img)
     box_x = _parse_float(image.get('x'))
     box_y = _parse_float(image.get('y'))
     box_w = _parse_float(image.get('width'))
@@ -367,7 +390,7 @@ def _process_one_image(
     # ------------------------------------------------------------------
     final_img: 'PILImage' = img
     new_x, new_y, new_w, new_h = box_x, box_y, box_w, box_h
-    transformed = False  # True iff bitmap content changed (crop happened)
+    transformed = geometry_normalized
     target_box_w, target_box_h = box_w, box_h
 
     if not par_attr:
@@ -383,9 +406,10 @@ def _process_one_image(
             pass
         elif mode == 'slice':
             x_anchor, y_anchor = get_crop_anchor(align)
-            cropped = crop_image_to_size(img, int(box_w), int(box_h),
-                                         x_anchor, y_anchor)
-            final_img = cropped
+            cropped_img = crop_image_to_size(
+                img, int(box_w), int(box_h), x_anchor, y_anchor
+            )
+            final_img = cropped_img
             transformed = True
         else:  # meet (or any other mode → treat as meet)
             new_w_calc, new_h_calc, off_x, off_y = calculate_fitted_dimensions(

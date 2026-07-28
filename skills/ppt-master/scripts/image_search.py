@@ -271,12 +271,16 @@ def _validate_downloaded_quality(path: Path) -> bool:
     written to disk and rejects thumbnails / previews.
     """
     try:
-        from PIL import Image  # type: ignore
+        from PIL import Image, ImageOps  # type: ignore
     except ImportError:
         return True  # can't check without Pillow; assume OK
     try:
         with Image.open(path) as im:
-            w, h = im.size
+            oriented = ImageOps.exif_transpose(im)
+            oriented.load()
+            w, h = oriented.size
+            if oriented is not im:
+                oriented.close()
             if w * h < _MIN_DOWNLOAD_PIXELS:
                 print(
                     f"    rejected: downloaded image too small "
@@ -285,8 +289,12 @@ def _validate_downloaded_quality(path: Path) -> bool:
                 )
                 return False
             return True
-    except (OSError, ValueError):
-        return True  # unreadable image; let downstream handle it
+    except (OSError, SyntaxError, ValueError) as exc:
+        print(
+            f"    rejected: downloaded file is not a readable image ({exc})",
+            file=sys.stderr,
+        )
+        return False
 
 
 def _write_review_copy(
@@ -300,16 +308,20 @@ def _write_review_copy(
     returns None (non-fatal) if Pillow or the source is unavailable.
     """
     try:
-        from PIL import Image  # type: ignore
+        from PIL import Image, ImageOps  # type: ignore
     except ImportError:
         return None
     try:
         dest_dir.mkdir(parents=True, exist_ok=True)
         review_path = dest_dir / f"{Path(name).stem}.jpg"
         with Image.open(src) as im:
-            im = im.convert("RGB")
-            im.thumbnail((max_side, max_side))
-            im.save(review_path, "JPEG", quality=85)
+            oriented = ImageOps.exif_transpose(im)
+            review = oriented.convert("RGB")
+            review.thumbnail((max_side, max_side))
+            review.save(review_path, "JPEG", quality=85)
+            review.close()
+            if oriented is not im:
+                oriented.close()
         return review_path
     except (OSError, ValueError):
         return None
@@ -481,6 +493,22 @@ def default_manifest_path(output_dir: str) -> Path:
     return Path(output_dir) / "image_sources.json"
 
 
+def _validate_bare_filename(value: str, *, field_name: str = "filename") -> str:
+    """Require a bare filename with no absolute or parent path components."""
+    if (
+        not value.strip()
+        or value in {".", ".."}
+        or "/" in value
+        or "\\" in value
+        or ":" in value
+        or Path(value).is_absolute()
+    ):
+        raise ValueError(
+            f"{field_name} must be a bare filename without path components: {value!r}"
+        )
+    return value
+
+
 def _measure_actual_image(path: Path) -> Optional[tuple[int, int]]:
     """Return ``(width, height)`` of the file actually saved at ``path``.
 
@@ -494,12 +522,17 @@ def _measure_actual_image(path: Path) -> Optional[tuple[int, int]]:
     Returns ``None`` if Pillow is unavailable or the file is unreadable.
     """
     try:
-        from PIL import Image  # type: ignore
+        from PIL import Image, ImageOps  # type: ignore
     except ImportError:
         return None
     try:
         with Image.open(path) as im:
-            return int(im.width), int(im.height)
+            oriented = ImageOps.exif_transpose(im)
+            try:
+                return int(oriented.width), int(oriented.height)
+            finally:
+                if oriented is not im:
+                    oriented.close()
     except (OSError, ValueError):
         return None
 
@@ -572,20 +605,72 @@ def _read_existing_manifest(path: Path) -> dict:
     if not path.exists():
         return {}
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        print(
-            f"  warning: existing manifest at {path} is unreadable, "
-            f"starting fresh ({exc})",
-            file=sys.stderr,
+        raise RuntimeError(
+            f"existing image sources manifest is unreadable: {path} ({exc}); "
+            "repair or restore it before continuing"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(
+            f"existing image sources manifest must be a JSON object: {path}"
         )
-        return {}
+    items = payload.get("items")
+    if not isinstance(items, list):
+        raise RuntimeError(
+            f"existing image sources manifest must contain an 'items' array: {path}"
+        )
+    if any(not isinstance(item, dict) for item in items):
+        raise RuntimeError(
+            f"existing image sources manifest contains a non-object item: {path}"
+        )
+    seen_filenames: set[str] = set()
+    for index, item in enumerate(items):
+        filename = item.get("filename")
+        if not isinstance(filename, str):
+            raise RuntimeError(
+                f"existing image sources manifest items[{index}].filename "
+                f"must be a non-empty bare filename: {path}"
+            )
+        try:
+            _validate_bare_filename(filename)
+        except ValueError as exc:
+            raise RuntimeError(
+                f"existing image sources manifest items[{index}]: {exc}: {path}"
+            ) from exc
+        if filename in seen_filenames:
+            raise RuntimeError(
+                f"existing image sources manifest contains duplicate filename "
+                f"{filename!r}: {path}"
+            )
+        seen_filenames.add(filename)
+    return payload
+
+
+def _write_json_atomic(path: str | Path, payload: dict) -> Path:
+    """Write JSON through a same-directory temporary file and atomic rename."""
+    target = ensure_json_parent(path)
+    fd, tmp_path = tempfile.mkstemp(
+        prefix=target.stem + ".", suffix=".tmp", dir=str(target.parent)
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+        os.replace(tmp_path, target)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+    return target
 
 
 def write_sources_manifest(path: Path, item: dict) -> Path:
     """Append ``item`` to the manifest at ``path``, replacing any prior
     entry that targets the same filename."""
-    manifest_path = ensure_json_parent(path)
+    manifest_path = Path(path)
     payload = _read_existing_manifest(manifest_path)
 
     items: list[dict] = list(payload.get("items") or [])
@@ -599,11 +684,7 @@ def write_sources_manifest(path: Path, item: dict) -> Path:
         "provider metadata used; manual review recommended for external delivery",
     )
 
-    manifest_path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    return manifest_path
+    return _write_json_atomic(manifest_path, payload)
 
 
 # ---------------------------------------------------------------------------
@@ -625,6 +706,19 @@ def promote_candidate(
         3. Update ``image_sources.json`` with the candidate's metadata
     """
     import shutil
+
+    target_filename = _validate_bare_filename(
+        target_filename, field_name="target filename"
+    )
+    candidate_filename = _validate_bare_filename(
+        candidate_filename, field_name="candidate filename"
+    )
+    mpath = manifest_path or default_manifest_path(str(output_dir))
+    try:
+        manifest = _read_existing_manifest(mpath)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     stem = Path(target_filename).stem
     cand_dir = output_dir / "candidates" / stem
@@ -660,17 +754,13 @@ def promote_candidate(
 
     # Update candidates.json
     meta["selected"] = candidate_filename
-    cand_meta_path.write_text(
-        json.dumps(meta, indent=2, ensure_ascii=False) + "\n", encoding="utf-8",
-    )
+    _write_json_atomic(cand_meta_path, meta)
 
     # Update image_sources.json
-    mpath = manifest_path or default_manifest_path(str(output_dir))
     actual_dim = _measure_actual_image(dst_path)
     w = actual_dim[0] if actual_dim else entry.get("width", 0)
     h = actual_dim[1] if actual_dim else entry.get("height", 0)
 
-    manifest = _read_existing_manifest(mpath)
     items: list[dict] = list(manifest.get("items") or [])
     for item in items:
         if item.get("filename") == target_filename:
@@ -707,9 +797,7 @@ def promote_candidate(
             break
     manifest["items"] = items
     manifest["generated_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    mpath.write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8",
-    )
+    _write_json_atomic(mpath, manifest)
     print(f"  manifest updated: {mpath}", file=sys.stderr)
     return 0
 
@@ -739,6 +827,24 @@ def fetch_url_replace(
     for an arbitrary URL, so the manifest marks it ``manual`` and notes that
     verifying usage rights is the user's responsibility.
     """
+    target_filename = _validate_bare_filename(
+        target_filename, field_name="target filename"
+    )
+    mpath = manifest_path or default_manifest_path(str(output_dir))
+    try:
+        existing_manifest = _read_existing_manifest(mpath)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    prior = next(
+        (
+            item
+            for item in existing_manifest.get("items", [])
+            if item.get("filename") == target_filename
+        ),
+        {},
+    )
+
     output_dir.mkdir(parents=True, exist_ok=True)
     dst_path = output_dir / target_filename
     try:
@@ -756,15 +862,9 @@ def fetch_url_replace(
         print(f"  review copy: {review}", file=sys.stderr)
 
     actual_dim = _measure_actual_image(dst_path)
-    mpath = manifest_path or default_manifest_path(str(output_dir))
     # Inherit page context (which slide / purpose / query this image serves)
     # from the entry being replaced; override only source / license / size /
     # status so the audit trail survives a manual swap.
-    prior = next(
-        (i for i in _read_existing_manifest(mpath).get("items", [])
-         if i.get("filename") == target_filename),
-        {},
-    )
     item = {
         "filename": target_filename,
         "slide": prior.get("slide") or slide,
@@ -848,6 +948,10 @@ def load_search_manifest(path: str) -> dict:
             except ValueError as exc:
                 raise ValueError(f"{prefix} {exc}") from exc
         fname = item["filename"]
+        try:
+            _validate_bare_filename(fname)
+        except ValueError as exc:
+            raise ValueError(f"{prefix} {exc}") from exc
         if fname in seen_filenames:
             raise ValueError(f"{prefix} duplicate filename '{fname}'")
         seen_filenames.add(fname)
@@ -857,21 +961,7 @@ def load_search_manifest(path: str) -> dict:
 
 def save_search_manifest(path: str, data: dict) -> None:
     """Atomically write the batch manifest back (tmp file + rename)."""
-    target = Path(path)
-    fd, tmp_path = tempfile.mkstemp(
-        prefix=target.stem + ".", suffix=".tmp", dir=str(target.parent)
-    )
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-            f.write("\n")
-        os.replace(tmp_path, target)
-    except Exception:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
-        raise
+    _write_json_atomic(path, data)
 
 
 def _resolve_search_concurrency(cli_value: Optional[int]) -> int:
@@ -900,6 +990,7 @@ def _search_one_item(
     Returns ``(manifest_item, error)``. Only the network/disk work happens
     here; all manifest writes are serialized by the caller.
     """
+    filename = _validate_bare_filename(item["filename"])
     orientation = item.get("orientation", "any") or "any"
     strict = bool(item.get("strict_no_attribution", default_strict))
     required_terms = _parse_required_terms(item.get("required_terms"))
@@ -908,7 +999,7 @@ def _search_one_item(
         query=item["query"],
         purpose=item.get("purpose", ""),
         orientation="" if orientation == "any" else orientation,
-        filename=item["filename"],
+        filename=filename,
         slide=item.get("slide", ""),
         min_width=int(item.get("min_width", default_min_width)),
         min_height=int(item.get("min_height", default_min_height)),
@@ -917,7 +1008,7 @@ def _search_one_item(
 
     pinned = item.get("provider") or default_provider
     providers = [pinned] if pinned else _default_provider_chain()
-    output_path = output_dir / item["filename"]
+    output_path = output_dir / filename
 
     candidate, provider_name, stage = search_and_download(
         providers,
@@ -932,7 +1023,7 @@ def _search_one_item(
 
     actual_dimensions = _measure_actual_image(output_path)
     item_args = argparse.Namespace(
-        filename=item["filename"],
+        filename=filename,
         slide=item.get("slide", ""),
         purpose=item.get("purpose", ""),
         query=item["query"],
@@ -971,6 +1062,7 @@ def run_search_manifest(
     (terminal). Status is written back after each completion, so an interrupt
     preserves finished rows. Returns ``(sourced, needs_manual, skipped)``.
     """
+    _read_existing_manifest(sources_manifest_path)
     items = manifest["items"]
     pending_idx = [
         i for i, it in enumerate(items)
@@ -1056,7 +1148,7 @@ def build_parser() -> argparse.ArgumentParser:
         "query",
         nargs="?",
         default=None,
-        help="Search query (2-5 keywords work best). Omit in --batch mode.",
+        help="Search query (1-4 concrete keywords work best). Omit in --batch mode.",
     )
     parser.add_argument(
         "--filename",
@@ -1212,6 +1304,16 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    try:
+        if args.filename:
+            args.filename = _validate_bare_filename(args.filename)
+        if args.promote:
+            args.promote = _validate_bare_filename(
+                args.promote, field_name="--promote candidate filename"
+            )
+    except ValueError as exc:
+        parser.error(str(exc))
+
     output_dir = Path(args.output)
 
     # --- Promote mode ---
@@ -1276,6 +1378,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         except KeyboardInterrupt:
             print("\n\nInterrupted by user. Partial progress preserved in manifest.")
             return 130
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
         # Mirror image_gen.py: a non-zero code flags rows that need manual
         # attention. It is a signal, not a halt — the workflow (image-base.md
         # §6) surfaces Needs-Manual rows and continues regardless.
@@ -1300,6 +1405,15 @@ def main(argv: Optional[list[str]] = None) -> int:
     _warn_weak_required_terms(request.required_terms)
 
     providers = [args.provider] if args.provider else _default_provider_chain()
+
+    manifest_path = (
+        Path(args.manifest) if args.manifest else default_manifest_path(args.output)
+    )
+    try:
+        _read_existing_manifest(manifest_path)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / args.filename
@@ -1357,8 +1471,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         stage=stage,
         actual_dimensions=actual_dimensions,
     )
-    manifest_path = Path(args.manifest) if args.manifest else default_manifest_path(args.output)
-    write_sources_manifest(manifest_path, item)
+    try:
+        write_sources_manifest(manifest_path, item)
+    except RuntimeError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
     print(f"  manifest: {manifest_path}", file=sys.stderr)
 
     if candidate.license_tier == "attribution-required":
