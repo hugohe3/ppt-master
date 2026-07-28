@@ -4,7 +4,7 @@ A vocabulary registry of ways images can be placed on a slide. The point of this
 
 Every entry has a name plus a short technical hint. Common techniques get a single line. Less obvious or easily forgotten techniques get a short paragraph — not a full tutorial, but enough that a model unfamiliar with the project can implement it without guessing. This is a registry, not a teaching document; no use-case prescriptions, no decision tables.
 
-> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88, #92–#94) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91, #95–#99). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly. **High-Yield Patterns** below is a router over those same numbers, not a third part — read it first, then jump to the entry it names.
+> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81, #88, #92–#94) and **Part 2 — Modifier Layers** (#20–#37, #57–#72, #82–#87, #89–#91, #95–#100). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly. **High-Yield Patterns** below is a router over those same numbers, not a third part — read it first, then jump to the entry it names.
 
 ---
 
@@ -31,7 +31,8 @@ The patterns below are what separate a deck that looks designed from a deck that
 | One ordinary photo must carry a cover or a chapter divider | `#90` scrim with shapes cut out + `#86` contour echo | Three elements turn a stock image into a designed page; the cut contour is where the page's character comes from |
 | The supplied image does not fit the canvas | `#89` same image twice — sharp cutout over a receded copy | Subject at full fidelity in any aspect ratio; no stretching, no letterbox bars, no second asset |
 | Several peer images belong to one frame | `#92` split tiling — one parent cut into interlocking cells | Edges interlock exactly; the group still reads as one object |
-| One image should appear inside several detached containers | `#82` one image shattered across separated shapes | Merge-Shapes look; the photo runs continuously behind the gaps |
+| One image should span detached containers as one edit object | `#82` one image shattered across separated shapes | Merge-Shapes look; the photo runs continuously behind the gaps |
+| Those same-source containers must remain independently editable or animated | `#100` same-source addressable crops | Several native picture objects share one source coordinate system without slice assets |
 | A panel needs a real opening onto what is behind it | `#83` panel with a hole punched through it | True subtraction — survives a gradient, a texture, or a second image behind the panel |
 | A photo row needs depth without 3D | `#94` embracing arc row, or `#93` containers arrayed along a curve | A perspective wall reproduced in 2D from scale + vertical offset alone |
 | A flat scrim reads as a sheet of paint over the photo | `#98` grid scrim with per-cell opacity | The overlay reads as panelled glass or a contact sheet, felt rather than drawn |
@@ -43,7 +44,7 @@ The patterns below are what separate a deck that looks designed from a deck that
 
 **Mandatory**: Pair a modifier-only router result with a content-appropriate Part 1 Primary as the page bones before §VIII. The pairing makes the recommendation complete; it does not lock Executor geometry or create a usage quota.
 
-**Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, and `#97`, the image stays anchored to the *union* of its containers, or the two copies stay in exact register. A few pixels of drift reads as a printing error, and giving each container its own image collapses the page into an ordinary tile grid. `#84` is the one pattern that breaks registration on purpose, and it only reads as a decision because the others establish the expectation.
+**Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, `#97`, and `#100`, the image stays anchored to the *union* of its containers, or the copies share one source coordinate system. A few pixels of drift reads as a printing error. `#84` alone breaks registration on purpose.
 
 **Prepared-asset gate**: select `#96` only when a registered cutout PNG already exists, `#97` only when its blurred crop exists, and `#99` only when its desaturated copy exists. If not, keep the original asset and fall back to a native-shape treatment such as `#30` / `#29`; do not invent an image-processing step during execution.
 
@@ -160,7 +161,9 @@ This is the family that opens up the largest design space and the one AI is most
 
     **Authoring**: compute each cell's contour and write it as its own `<path>` clip — the geometry is deterministic, so derive the cells rather than eyeballing them. `shape_boolean_svg.py render <svg-file> --operation fragment --source <id> --source <id> --id <result-id>` returns exactly these interlocking regions as separately addressable paths. Give every cell the same stroke (2px, background color) so the cuts read as designed seams.
 
-    **Choosing between #92 and #82**: same construction, opposite content rule. One image across all cells (#82) says "these fragments are one thing"; a different image per cell (#92) says "these are peers, cut from one frame". Mixing them destroys both readings. Distinct from #50 / #51, where cells are independent rectangles that never shared a parent.
+    **Choosing between #92 and #82 / #100**: different images per cell (#92)
+    are peers. One registered source means one edit object (#82) or independent
+    same-source objects (#100).
 
 52–53. **Filmstrip / stack** — a sequence of `<image>` with thin consistent gaps: horizontal, equal height and varying widths (**#52**), or vertical, aligned by width with shared annotations down one side (**#53**).
 
@@ -210,13 +213,31 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 25. **Layered paper-cut stack** — clip each image layer under the image-only contract in [`shared-standards-core.md`](./shared-standards-core.md) §1.2; draw vector layers directly in their final geometry. A small conditional shadow on each layer can create physical separation.
 
-82. **One image shattered across separated shapes (Merge Shapes look)** — a *single* `<image>` clipped by **one `<path>` whose `d` contains several disjoint subpaths** (`M … Z M … Z`), so one photo appears inside several detached containers — staggered rounded slices, a gapped 2×2 grid, a rotated cross. This is the SVG equivalent of PowerPoint's Merge Shapes 结合 → 相交, and export maps it to one picture with `custGeom`.
+82. **One image shattered across separated shapes (Merge Shapes look)** — clip
+one `<image>` with one `<path>` containing disjoint closed subpaths. Size the
+image over their union so the scene remains continuous; export yields one
+picture with `custGeom`. Use `shape_boolean_svg.py render` `union` / `combine`
+for non-trivial contours and obey
+[`shared-standards-core.md`](./shared-standards-core.md) §1.2. Distinct from
+#24 (one contour), #47–#56 (different sources), and #100 (several pictures).
 
-    **Geometry**: write each container as its own subpath in one `d`. A rounded rect is `M x+r,y H x+w-r A r,r 0 0 1 x+w,y+r V y+h-r A r,r 0 0 1 x+w-r,y+h H x+r A r,r 0 0 1 x,y+h-r V y+r A r,r 0 0 1 x+r,y Z`; repeat per container, all in the same `<path>`. Keep the subpaths disjoint so no winding rule is ever needed.
+100. **Same-source addressable crops** — repeat one exact `href` in independent
+nested crop wrappers with different source-unit `viewBox` values. They export
+as separate native picture objects for editing and Morph while assembling one
+registered scene without slice assets. Follow
+[`executor-image.md`](./executor-image.md) §1. Unlike #82 this yields several
+pictures; unlike #84 registration remains exact.
 
-    **The one thing that makes or breaks it — registration**: place the `<image>` over the *union bounding box* of every subpath (not one image per shape), sized with `preserveAspectRatio="xMidYMid slice"`. The photo then runs continuously *behind* the containers and the gaps read as cuts through one scene. Give each container a different image and it instantly collapses into an ordinary tile grid (#50 / #51) — the continuity is the entire design, not the shapes.
-
-    Distinct from #24 (one connected contour) and #47–#56 (every cell its own image). For non-trivial contours take the `d` from the `union` or `combine` operation of `shape_boolean_svg.py render` (see [`native-shape-authoring.md`](./native-shape-authoring.md) §6) instead of deriving it by hand. Clip-shape constraints — one direct shape child, no `fill-rule` / `clip-rule`, `<image>` targets only — are owned by [`shared-standards-core.md`](./shared-standards-core.md) §1.2.
+    **Registration construction**: choose one visible container union
+    `U = (ux, uy, uw, uh)` and one source region
+    `S = (sx, sy, sw, sh)`. For a container
+    `F = (x, y, w, h)`, derive its source-unit crop as
+    `Sx = sx + (x-ux)/uw × sw`, `Sy = sy + (y-uy)/uh × sh`,
+    `Sw = w/uw × sw`, and `Sh = h/uh × sh`. Use that result as the nested
+    wrapper `viewBox`; do not choose each crop by eye and do not apply
+    independent `cover`. This makes irregular heights and gaps behave like
+    windows cut from one continuous image while keeping every window a native
+    picture object.
 
 83. **Panel with a real hole punched through it (Subtract window)** — a solid or tinted panel with a shape-cut opening that reveals the image below, PowerPoint's Merge Shapes 剪除.
 
@@ -398,7 +419,7 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 | Benefits with one dominant proof image | `#80` |
 | Light promotional page without photos | `#81` |
 
-**Reach for the boolean-geometry family (#82–#99) before adding another photo to the page.** Routing, the registration invariant, and the skip-detection signal are in **High-Yield Patterns** at the top of this file.
+**Reach for the boolean-geometry family (#82–#100) before adding another photo to the page.** Routing, the registration invariant, and the skip-detection signal are in **High-Yield Patterns** at the top of this file.
 
 **Cross-page through-line (recurring motif).** The patterns above are per-page, but a deck reads as *designed* when one illustration motif family recurs across pages—a cover anchor, section dividers repeating the motif (`#75`), and small `#63` spots threaded through the body. Keep one family (shared rendering / locked deck colors / subject world), vary scale and placement, and never turn recurrence into a quota.
 

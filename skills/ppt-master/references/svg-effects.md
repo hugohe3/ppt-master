@@ -278,34 +278,23 @@ unresolved only during template checking; export requires the resolved image.
 Missing, ambiguous, corrupt, mislabeled, or unsupported sources are errors and
 must never be dropped or packaged as invalid zero-byte media.
 
-**Hard rule — nested SVG is an imported crop transport, not a general
-viewport**: every non-root `<svg>` must be the exact picture-crop wrapper emitted
-by `pptx_to_svg`. The outer element has explicit registered project-geometry
-`x`, `y`, positive `width`/`height`, a unit-coordinate `viewBox` made of four
-ordinary decimal values, and
-`preserveAspectRatio="none"`; it contains exactly one direct, empty `<image>`
-with exactly one non-empty `href` or `xlink:href`, `x="0"`, `y="0"`, `width="1"`,
-`height="1"`, and `preserveAspectRatio="none"`. Its ancestor chain contains
-only the root SVG and ordinary visual `<g>` wrappers; definitions, text,
-render-only geometry details, and other non-visual containers cannot own this
-transport. The outer wrapper may additionally carry `id`, a supported
-`transform`, registered structure metadata (`data-pptx-layer` or
-`data-pptx-carrier`), and the importer metadata
-`data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`,
-`data-pptx-shape-name`, and `data-pptx-shape-scope`. A shape clip is present
-only when exact `data-pptx-crop="1"` and a registered image-only `clip-path`
-occur together and the local clip definition resolves. The inner image may
-add only registered `opacity`. The `viewBox` must quantize without clamping to
-a DrawingML `srcRect` with a positive visible region: each signed crop value
-must fit the OOXML percentage integer range `-2147483648..2147483647`, while
-`l + r < 100000` and
-`t + b < 100000` preserve a positive visible region. Negative crop values and
-crop windows extending outside the source unit rectangle are retained exactly,
-not clamped. `0 0 1 1` is redundant and must be written as a plain `<image>`.
-Extra visual children, indirect images, character data, unknown attributes,
-malformed or unrepresentable crop coordinates, and generalized nested
-viewports are errors. Checker and the converter share this parser so a nested
-subtree cannot pass validation and then silently disappear during export.
+**Hard rule — nested SVG is picture-crop transport, not a general viewport**:
+every non-root `<svg>` is the exact wrapper accepted by the shared crop parser:
+
+| Part | Required form |
+|---|---|
+| Outer | Registered `x`, `y`, positive `width`/`height`; four ordinary-decimal unit coordinates in `viewBox`; `preserveAspectRatio="none"`; `overflow="hidden"` |
+| Child | Exactly one direct empty `<image>` with one non-empty `href`/`xlink:href`, `x="0" y="0" width="1" height="1" preserveAspectRatio="none"` |
+| Context | Only root SVG / ordinary visual `<g>` ancestors; outer may add `id`, supported `transform`, registered layer/carrier metadata, and `data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`, `data-pptx-shape-name`, `data-pptx-shape-scope` |
+| Shape crop | Exact outer `data-pptx-crop="1"`; authored wrappers put the registered, locally resolving image-only clip on the inner image, using `userSpaceOnUse` geometry matching the visible `viewBox`; legacy imported outer clips remain compatible |
+
+The inner image may add only registered `opacity` and that clip. Quantize the
+`viewBox` without clamping: every signed crop fits
+`-2147483648..2147483647`, with `l + r < 100000` and `t + b < 100000`.
+Retain negative/outside-source crops exactly; write redundant `0 0 1 1` as a
+plain `<image>`. Extra, indirect, or character content; unknown attributes;
+malformed or unrepresentable crops; and general nested viewports fail. Checker
+and converter share this parser.
 
 | Overlay | Construction | Typical stops / alpha |
 |---|---|---|

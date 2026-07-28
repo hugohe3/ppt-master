@@ -23,9 +23,9 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
 
-**Reference — preferred pattern, flexible realization**: Read [`image-layout-patterns.md`](./image-layout-patterns.md) once when this branch loads, then resolve every primary/modifier id in each active §VIII/lock row so the Strategist's recommendation is understood. Use it as a strong starting point, but adapt its geometry or choose another catalog/ordinary composition when the actual page can communicate better. Preserve the resource role, file/source, must-use status, crop policy, content, and explicit user/template constraints; a pattern-only change needs no upstream rewrite. Avoid generic left/right repetition.
+**Reference — preferred pattern, flexible realization**: Read [`image-layout-patterns.md`](./image-layout-patterns.md) once and resolve every active §VIII/lock pattern id. Adapt its geometry or composition when the page communicates better, while preserving resource role, source, must-use status, crop policy, content, and explicit user/template constraints. Pattern-only changes need no upstream rewrite. Avoid generic left/right repetition.
 
-**Reference — motion-ready image layering, not a constraint**: When the Executor adopts a §IX `Motion suggestion`, or an explicit user requirement calls for focus, comparison, evidence, reveal order, or cross-page continuation, decide during main SVG authoring whether the fully revealed composition benefits from separate visible semantic units. Useful splits include a stable image field plus annotation/hotspot groups, base and comparison images, a full view plus same-source crop/lens, atmosphere plus evidence, or a static field plus cutout foreground. For ordinary Slide-local content, keep stable framing/background static and wrap each independently revealable or cross-page continuing unit in a descriptive direct-root `<g id>`. Structured atoms/slots keep their declared boundaries and may serve as units only as-is. If existing legal units or a page transition already carry the communication job, add nothing. Effects, pairing, order, and timing belong to the later motion stage.
+**Reference — motion-ready image layering, not a constraint**: For adopted §IX or an explicit focus, comparison, evidence, reveal-order, or cross-page requirement, decide during SVG authoring whether the final composition needs separate visible units. Keep ordinary stable framing/background static and wrap each independently revealed or continuing Slide-local unit in a descriptive direct-root `<g id>`; structured atoms/slots retain their boundaries. Existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.
 
 **Hard rule — visible-layer timing**: Any crop, lens, scrim, comparison, evidence, or annotation layer required by an adopted motion plan MUST already exist in the final SVG without violating structural contracts. The later stage may regroup ordinary Slide-local content visual-equivalently, but cannot invent or modify missing visible content. If no legal existing unit can serve a non-binding suggestion, simplify it to available units, a page transition, or `none`; an explicit requirement that cannot be represented follows failure recovery.
 
@@ -34,5 +34,20 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
 **Crop policy**: read the §VIII row and matching lock projection. On every slide that uses a `crop=no-crop` source (or a legacy trailing `| no-crop`), retain one visible complete instance using one of the nine legal anchors with `meet`, never `none`, and no `clip-path`, `mask`, clipping overflow, or nested `<svg>` crop viewport. An auxiliary same-slide detail or lens may crop the same source only while that complete instance remains visible. `crop=adaptive` permits but never requires cropping; choose `meet` or focal-safe `slice` from purpose, ratio, focus, and container. A missing or conflicting `source` / `pattern` / `crop` projection returns upstream instead of being inferred during execution; the accurately projected `pattern` remains a preferred expression that may be adapted without rewriting the lock.
+
+**Hard rule — same-source addressable crops**: for binding use or pattern
+`#100`, reuse one exact `href` without slice assets. Give every
+independent/Morph object a stable
+page-unique id and a distinct nested crop wrapper under
+[`svg-effects.md`](./svg-effects.md) §6.5. Plain rectangles need no crop marker;
+shaped frames put `data-pptx-crop="1"` on the wrapper and a matching
+`userSpaceOnUse` clip on its inner `<image>`, never the wrapper. Repeated crops
+or SVG/PPT visual drift fail. Derive every wrapper `viewBox` from one shared
+source-to-page transform over the union of the visible containers. Never run
+`cover` / focal cropping independently per container: different container
+positions and heights must change the source-unit `x`, `y`, `width`, and
+`height` by the same union-relative mapping, so the gaps remove pixels without
+rescaling the scene. A compound clip on one `<image>` is pattern `#82`, not a
+substitute when the objects must remain independently editable or Morphable.
 
 **Formula images — declared-inference fallback for a missing `no-crop` flag**: rows with `Acquire Via: formula` or `Type: Latex Formula` MUST be treated as no-crop. For a rendered file, use dimensions in this order: current `analysis/image_analysis.csv`, `design_spec.md §VIII`, then `images/formula_manifest.json`. For a `Needs-Manual` row, size the dashed placeholder from the planned dimensions in §VIII, then the manifest; the Step 7 readiness gate re-analyzes the supplied file and reconciles the container before export. Do not normalize all formulas to one height unless the spec explicitly states that layout choice.
