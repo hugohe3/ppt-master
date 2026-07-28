@@ -449,7 +449,7 @@ Several architectural decisions shape this phase:
 
 ## Image-Text Layout: Primary Structures + Modifier Layers
 
-The catalog of *how an image is placed on a slide* (full vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md)) splits 81 stable-id techniques into two layers that compose freely:
+The catalog of *how an image is placed on a slide* (full vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md)) splits 99 stable-id techniques into two layers that compose freely:
 
 - **Primary Structures** (container layouts / image-as-canvas + native overlay / multi-image compositions) — the page's bones. One or more per page; cross-Primary combinations like *side-by-side comparison + image-as-canvas annotation* are legitimate.
 - **Modifier Layers** (non-rectangular clips / overlays & masks / texture / special techniques) — finish. Any number per page, stacked on top of the Primary.

@@ -892,6 +892,8 @@ def _clip_blip_image(image_xml: str, geom: GeomResult | None,
     """Clip image fills to the owning shape geometry when it is not a plain rect."""
     if geom is None or geom.tag == "line":
         return image_xml
+    if geom.attrs.get("data-pptx-prst") == "rect":
+        return image_xml
     if geom.tag == "rect" and not geom.attrs.get("rx") and not geom.attrs.get("ry"):
         return image_xml
 
@@ -919,6 +921,8 @@ def _inject_clip_path(image_xml: str, clip_id: str) -> str:
 # ---------------------------------------------------------------------------
 
 def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
+    sp_pr = node.xml.find("p:spPr", NS)
+    geom = _resolve_geometry(node, sp_pr)
     result = convert_picture(
         node.xml, node.xfrm, ctx.slide_part, ctx.pkg,
         media_subdir=ctx.media_subdir,
@@ -929,12 +933,13 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
         return ""
     ctx.media.update(result.media)
     effect_metadata = unsupported_target_effect_metadata(
-        node.xml.find("p:spPr", NS),
+        sp_pr,
         "picture",
     )
     _diagnose_unsupported_effect(ctx, effect_metadata)
+    clipped_svg = _clip_blip_image(result.svg, geom, ctx)
     picture_svg = _inject_root_svg_attrs(
-        result.svg,
+        clipped_svg,
         {**_object_metadata(node, ctx), **effect_metadata},
     )
     return _wrap_shape_group(

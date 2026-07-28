@@ -428,6 +428,7 @@ def load_manifest(path: str) -> dict:
         raise ValueError(f"{path}: 'items' must be a non-empty array")
 
     seen_filenames: set[str] = set()
+    seen_stems: set[str] = set()
     for i, item in enumerate(items):
         prefix = f"{path}: items[{i}]"
         if not isinstance(item, dict):
@@ -445,9 +446,30 @@ def load_manifest(path: str) -> dict:
                 f"Valid: {sorted(VALID_STATUSES)}"
             )
         fname = item["filename"]
+        filename_path = Path(fname)
+        if (
+            filename_path.is_absolute()
+            or filename_path.name != fname
+            or "/" in fname
+            or "\\" in fname
+            or fname in {".", ".."}
+        ):
+            raise ValueError(
+                f"{prefix} field 'filename' must be one basename, got '{fname}'"
+            )
+        if not filename_path.suffix:
+            raise ValueError(
+                f"{prefix} field 'filename' must include an extension, got '{fname}'"
+            )
         if fname in seen_filenames:
             raise ValueError(f"{prefix} duplicate filename '{fname}'")
         seen_filenames.add(fname)
+        stem = filename_path.stem
+        if stem in seen_stems:
+            raise ValueError(
+                f"{prefix} duplicate filename stem '{stem}' would reuse backend output"
+            )
+        seen_stems.add(stem)
 
     return data
 
@@ -471,6 +493,29 @@ def save_manifest(path: str, data: dict) -> None:
         except OSError:
             pass
         raise
+
+
+def _materialize_manifest_image(saved_path: str, target_path: Path) -> str:
+    """Validate backend output and place it at the manifest's exact target path."""
+    from image_backends.backend_common import (
+        save_image_bytes,
+        validate_image_file,
+    )
+
+    source_path = Path(saved_path)
+    validate_image_file(str(source_path))
+
+    if source_path.resolve() != target_path.resolve():
+        try:
+            image_bytes = source_path.read_bytes()
+        except OSError as exc:
+            raise RuntimeError(
+                f"Could not read image output {source_path}: {exc}"
+            ) from exc
+        save_image_bytes(image_bytes, str(target_path))
+
+    validate_image_file(str(target_path))
+    return str(target_path)
 
 
 def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
@@ -531,6 +576,10 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                 output_dir=output_dir,
                 filename=Path(item["filename"]).stem,
                 model=item.get("model", model),
+            )
+            saved_path = _materialize_manifest_image(
+                saved_path,
+                Path(output_dir) / item["filename"],
             )
             return idx, saved_path, None
         except Exception as exc:  # noqa: BLE001 — backend raises arbitrary types

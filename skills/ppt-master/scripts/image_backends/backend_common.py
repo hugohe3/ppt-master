@@ -152,6 +152,27 @@ def save_image_bytes(image_bytes: bytes, path: str, content_type: str = None) ->
     return path
 
 
+def validate_image_file(path: str) -> str:
+    """Require an existing regular file that Pillow can read as an image."""
+    image_path = Path(path)
+    if not image_path.exists():
+        raise RuntimeError(f"Image output path does not exist: {path}")
+    if not image_path.is_file():
+        raise RuntimeError(f"Image output path is not a file: {path}")
+    if not HAS_PIL:
+        raise RuntimeError(
+            "Pillow is required to verify generated images. "
+            "Install it with: pip install Pillow"
+        )
+
+    try:
+        with PILImage.open(image_path) as image:
+            image.verify()
+    except (OSError, ValueError, SyntaxError) as exc:
+        raise RuntimeError(f"Image output is not readable: {path}: {exc}") from exc
+    return str(image_path)
+
+
 def report_resolution(path: str) -> None:
     """Try to report image resolution using PIL."""
     if HAS_PIL:

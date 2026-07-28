@@ -101,8 +101,6 @@ try:
         matrix_multiply as _matrix_multiply,
         noncanonical_stroke_dash_numbers as _noncanonical_stroke_dash_numbers,
         noncanonical_transform_numbers as _noncanonical_transform_numbers,
-        parse_transform_matrix as _parse_transform_matrix,
-        parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
         parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
@@ -112,6 +110,7 @@ try:
         parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
+        parse_transform_matrix as _parse_transform_matrix,
         project_definition_errors as _project_definition_errors,
         project_filter_errors as _project_filter_errors,
         project_gradient_errors as _project_gradient_errors,
@@ -124,6 +123,7 @@ try:
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         transform_point as _transform_point,
+        unsafe_exported_font_faces as _unsafe_exported_font_faces,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
 except ImportError:
@@ -150,8 +150,6 @@ except ImportError:
     _matrix_multiply = None
     _noncanonical_stroke_dash_numbers = None
     _noncanonical_transform_numbers = None
-    _parse_transform_matrix = None
-    _parse_export_font_family = None
     _parse_inline_style = None
     _parse_project_geometry_length = None
     _parse_project_image_aspect_ratio = None
@@ -161,6 +159,7 @@ except ImportError:
     _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
+    _parse_transform_matrix = None
     _project_definition_errors = None
     _project_filter_errors = None
     _project_gradient_errors = None
@@ -173,6 +172,7 @@ except ImportError:
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
     _transform_point = None
+    _unsafe_exported_font_faces = None
     _validate_dml_shape_matrix = None
 
 try:
@@ -869,21 +869,6 @@ def _normalize_hex_rgb(value: str) -> str | None:
         color = ''.join(channel * 2 for channel in color)
     return color[:6].upper()
 
-
-# Fonts that survive direct PPTX typeface assignment on a typical Windows /
-# macOS viewer without requiring a custom install. Keep this aligned with
-# strategist.md §g and drawingml/utils.py FONT_FALLBACK_WIN.
-PPT_SAFE_FONTS = {
-    'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
-    'dengxian', 'microsoft jhenghei',
-    'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
-    'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
-    'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
-    'times new roman', 'times', 'georgia', 'cambria', 'palatino',
-    'garamond', 'book antiqua',
-    'consolas', 'courier new', 'menlo', 'monaco',
-    'impact',
-}
 
 # Cheap numeric envelope for font-size role enforcement. Semantic role assignment
 # is prompt-owned; Checker only verifies that a used value is close to at least
@@ -2454,18 +2439,16 @@ class SVGQualityChecker:
             return
 
         result['info']['fonts'] = sorted(set(font_matches))
-        if _parse_export_font_family is None:
+        if _unsafe_exported_font_faces is None:
             result['warnings'].append(
                 "Unable to import svg_to_pptx font resolver; skipped exported-font safety check"
             )
             return
 
         for font_family in font_matches:
-            exported = _parse_export_font_family(font_family)
             unsafe = [
                 f"{role}={family}"
-                for role, family in exported.items()
-                if family.strip().lower() not in PPT_SAFE_FONTS
+                for role, family in _unsafe_exported_font_faces(font_family).items()
             ]
             if unsafe:
                 result['warnings'].append(
