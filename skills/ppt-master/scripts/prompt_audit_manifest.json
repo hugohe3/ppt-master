@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 387200
+    "max_tokens": 388200
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -122,7 +122,7 @@
       "files": [
         "skills/ppt-master/workflows/native-enhance-pptx.md"
       ],
-      "max_tokens": 8725
+      "max_tokens": 9600
     },
     "route.fill-native-pptx": {
       "description": "Raw-PPTX native fill route.",
@@ -383,7 +383,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 13650
+      "max_tokens": 14500
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -632,7 +632,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 28725
+      "max_tokens": 28750
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",

@@ -557,9 +557,9 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 `template_fill_pptx.py` 是 `scripts/template_fill_pptx/` 包的薄 CLI 入口。analyzer 抽取带文本槽位、表格、图表和几何信息的 slide library；fill plan 选择源页面并确认替换内容；applier 克隆幻灯片并直接 patch XML parts。这条路线故意绕开 SVG：用户提供 PowerPoint 模板时，通常期望原生母版、占位符、表格和图表继续保持 PowerPoint-native。
 
-`native_enhance_pptx.py` 是已完成 deck 原生增强的稳定入口。它委托 `native_enhance_pptx_core.py`，在项目归档副本上直接 patch PPTX package：讲稿、页面转场、录制旁白媒体、页面计时和相关元数据。旧名称 `native_narration_pptx.py` 仅保留为精简的 CLI 兼容包装器。它的契约是保留：已有内容、布局和格式不重新生成。
+`native_enhance_pptx.py` 是已完成 deck 原生增强的稳定入口。它委托 `native_enhance_pptx_core.py`，在项目归档副本上直接 patch PPTX package：讲稿、全局或按页转场、录制旁白媒体、页面计时和相关元数据。intake 会记录来源 hash 与有序 slide-part roster；validate/apply 会拒绝来源漂移或缺少已请求素材。只读 delivery check 会在 intake/preflight 盘点包完整性、字体、媒体、隐藏页、体积与已有 motion，并在原子发布前审计候选文件。旧名称 `native_narration_pptx.py` 仅保留为精简的 CLI 兼容包装器。它的契约是保留：已有内容、布局和格式不重新生成。
 
-这些直接路线会和主流水线共享部分分析原语，但复用深度不同：Template Fill 消费标准 PPTX intake 的 slide library；Native Enhance 只用 `ppt_to_md.py` 理解内容，并从归档 package 生成自己的轻量 `slide_index.json`。两者都不共享 SVG 作者阶段和后处理阶段。这个分离是有意的：SVG 生成是设计合成路径；直接 OOXML 编辑是保留路径。
+这些直接路线会和主流水线共享部分分析原语，但复用深度不同：Template Fill 消费标准 PPTX intake 的 slide library；Native Enhance 用 `ppt_to_md.py` 理解内容，从归档 package 生成自己的轻量 `slide_index.json`，并把机器 delivery report 放在 `validation/`。两者都不共享 SVG 作者阶段和后处理阶段。这个分离是有意的：SVG 生成是设计合成路径；直接 OOXML 编辑是保留路径。
 
 ---
 
