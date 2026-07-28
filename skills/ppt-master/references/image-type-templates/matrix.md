@@ -41,7 +41,7 @@ Sample fragment:
 
 ### 3.2 `text_policy: embedded`
 
-When the matrix's identity comes from its in-image lettering — a stylized SWOT poster with the four letters as visuals, a designer-matrix where axis labels are typeset into the artwork. Keep labels to single English words ("HIGH", "LOW", "GROW", "HOLD"). Specify the font family in the prompt to echo the deck's body typography.
+When the matrix's identity comes from its in-image lettering — a stylized SWOT poster with the four letters as visuals, or a designer matrix whose axis labels are part of the artwork. Keep labels concise and stable in the required script. Specify a font family that echoes the deck's body typography; move exact/editable labels to SVG instead.
 
 ---
 

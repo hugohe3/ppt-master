@@ -16,7 +16,7 @@ Almost every pattern below is an instance of one underlying split:
 
 This is the single most underused move in image-heavy decks. The default reflex is to place image and text in adjacent rectangles. The far more powerful move — especially for content-rich pages — is to let the image **be the canvas** (often full-bleed) and draw native vector elements (annotation cards, flow nodes, KPI tiles, leader lines, network diagrams, dashboards) directly on top.
 
-Anything that must be editable, numerically accurate, contain Chinese, or be styled to the deck's exact palette belongs in the SVG layer regardless of what the image looks like underneath.
+Anything that must remain editable, numerically or semantically exact, or styled to the deck's exact typography belongs in the SVG layer regardless of what the image looks like underneath. Script alone never decides ownership.
 
 ---
 
@@ -42,6 +42,8 @@ The patterns below are what separate a deck that looks designed from a deck that
 | One place should be recognized across consecutive pages | `#87` one image panned across pages | The deck reads as one continuous scene; with `-t morph` the flip becomes a camera pan |
 
 **Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, and `#97`, the image stays anchored to the *union* of its containers, or the two copies stay in exact register. A few pixels of drift reads as a printing error, and giving each container its own image collapses the page into an ordinary tile grid. `#84` is the one pattern that breaks registration on purpose, and it only reads as a decision because the others establish the expectation.
+
+**Prepared-asset gate**: select `#96` only when a registered cutout PNG already exists, `#97` only when its blurred crop exists, and `#99` only when its desaturated copy exists. If not, keep the original asset and fall back to a native-shape treatment such as `#30` / `#29`; do not invent an image-processing step during execution.
 
 **Skip-detection signal** — if every page's `Layout pattern` resolves to a bare `#2` / `#3` / `#5` / `#6` with no Modifier id, this table was not consulted. Re-open it before finalizing `design_spec.md §VIII`.
 
@@ -400,7 +402,7 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 
 ## Hard Constraints
 
-- Long body copy, data points, numeric labels, and Chinese text always go in the SVG layer — never baked into the image.
+- Page chrome, body copy, captions, and data values that must remain exact or editable stay in SVG. Stable figure-internal identifiers, axis/unit labels, panel markers, or lettering that is deliberately part of the artwork may be image-owned under `text_policy: embedded`, regardless of script or length.
 - Project-wide SVG compatibility rules start at [`shared-standards-core.md`](./shared-standards-core.md),
   whose routing table names each conditional owner. This catalog neither
   restates nor relaxes that contract; each pattern records only its
