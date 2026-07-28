@@ -675,7 +675,7 @@
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 3250
+      "max_tokens": 4500
     },
     "route.generate.planning-template": {
       "description": "Generate-PPTX planning context after an explicit template workspace is installed.",
@@ -776,7 +776,7 @@
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 3250
+      "max_tokens": 4500
     },
     "stage.shared.svg-effects": {
       "description": "Conditional advanced SVG paint, effects, transforms, and geometry for Generate Executor or Create Template.",

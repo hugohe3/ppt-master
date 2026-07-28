@@ -2,10 +2,10 @@
 """
 PPT Master - Shape Boolean Core
 
-Resolve closed SVG operands into root-coordinate paths and apply
+Resolve closed SVG operands into SVG-root-coordinate paths and apply
 PowerPoint-compatible merge-shapes operations without mutating the source SVG.
-Callers insert returned paths at the SVG root in the primary operand's z-order;
-reinserting them below an original transformed ancestor would transform twice.
+Callers insert returned paths at the original z-order under the final semantic
+or structured parent, never under the old transformed ancestor.
 
 Usage:
     Import render_boolean_svg_fragments from svg_to_pptx.shape_boolean.
@@ -49,10 +49,13 @@ from .drawingml.paths import (
     transform_path_commands,
 )
 from .drawingml.utils import (
+    format_project_geometry_length,
     matrix_multiply,
     parse_inline_style,
     parse_opacity,
     parse_project_geometry_length,
+    parse_project_stroke_dasharray,
+    parse_project_stroke_enum,
     parse_transform_matrix,
 )
 
@@ -75,7 +78,7 @@ _DEFINITION_TAGS = frozenset({
     "symbol",
 })
 _ID_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_.:-]*")
-_PRESENTATION_ATTRS = (
+_STYLE_OVERRIDE_ATTRS = (
     "fill",
     "fill-opacity",
     "opacity",
@@ -85,6 +88,10 @@ _PRESENTATION_ATTRS = (
     "stroke-opacity",
     "stroke-linecap",
     "stroke-linejoin",
+)
+_PRESENTATION_ATTRS = (
+    *_STYLE_OVERRIDE_ATTRS,
+    "vector-effect",
 )
 _ROUNDTRIP_TRANSPORT_ATTRS = frozenset({
     "data-pptx-custgeom",
@@ -115,8 +122,9 @@ def render_boolean_svg_fragments(
 
     The first source is the primary shape: subtract removes all later sources
     from it, and every result inherits its effective presentation attributes.
-    All transforms are baked into root SVG coordinates, so callers must insert
-    the result at the root in the primary operand's z-order. Fragment returns
+    All transforms are baked into SVG-root coordinates, so callers insert the
+    result at the original z-order under the final semantic or structured
+    parent, never under the old transformed ancestor. Fragment returns
     top-to-bottom, left-to-right sibling paths named ``<output_id>-1`` onward;
     every other operation returns one path named exactly ``output_id``.
     """
@@ -167,7 +175,10 @@ def render_boolean_svg_fragments(
         _element_to_pathops(element, parents, pathops)
         for element in selected
     ]
-    inherited_style = _effective_style(selected[0], parents)
+    inherited_style = _materialize_baked_stroke_style(
+        _effective_style(selected[0], parents),
+        _combined_transform(_element_chain(selected[0], parents)),
+    )
     inherited_style.update(style_overrides)
 
     if normalized_operation == "fragment":
@@ -227,14 +238,14 @@ def _validate_style_overrides(
 ) -> dict[str, str]:
     if style is None:
         return {}
-    unknown = sorted(set(style) - set(_PRESENTATION_ATTRS))
+    unknown = sorted(set(style) - set(_STYLE_OVERRIDE_ATTRS))
     if unknown:
         raise ValueError(
             "Unsupported shape Boolean style override(s): "
             + ", ".join(unknown)
         )
     normalized: dict[str, str] = {}
-    for name in _PRESENTATION_ATTRS:
+    for name in _STYLE_OVERRIDE_ATTRS:
         if name not in style:
             continue
         value = style[name]
@@ -443,6 +454,16 @@ def _validate_geometry_presentation(
                 f"Shape Boolean source {_element_label(element)} uses filter; "
                 "reapply the effect after materializing the result"
             )
+        raw_dash_offset = inline.get(
+            "stroke-dashoffset",
+            current.get("stroke-dashoffset"),
+        )
+        if raw_dash_offset is not None:
+            raise ValueError(
+                f"Shape Boolean source {_element_label(element)} uses "
+                "stroke-dashoffset; dashed-arc phase cannot be materialized "
+                "as filled Boolean geometry"
+            )
         raw_fill_rule = inline.get("fill-rule", current.get("fill-rule"))
         if (
             raw_fill_rule is not None
@@ -466,6 +487,74 @@ def _combined_transform(chain: Sequence[ET.Element]) -> AffineMatrix:
                 parse_transform_matrix(transform),
             )
     return matrix
+
+
+def _materialize_baked_stroke_style(
+    style: Mapping[str, str],
+    matrix: AffineMatrix,
+) -> dict[str, str]:
+    """Keep stroke metrics visually stable after baking a geometry transform."""
+    materialized = dict(style)
+    raw_vector_effect = materialized.get("vector-effect")
+    vector_effect = None
+    if raw_vector_effect is not None:
+        try:
+            vector_effect = parse_project_stroke_enum(
+                "vector-effect",
+                raw_vector_effect,
+            )
+        except ValueError as exc:
+            raise ValueError(
+                f"Shape Boolean primary vector-effect "
+                f"{raw_vector_effect!r} {exc}"
+            ) from exc
+        materialized["vector-effect"] = vector_effect
+
+    stroke = materialized.get("stroke")
+    if not stroke or stroke.strip().lower() in {"none", "transparent"}:
+        return materialized
+    if vector_effect == "non-scaling-stroke":
+        return materialized
+
+    a, b, c, d, _e, _f = matrix
+    scale = math.sqrt(abs(a * d - b * c))
+    if not math.isfinite(scale):
+        raise ValueError(
+            "Shape Boolean primary transform produces a non-finite stroke scale"
+        )
+    if scale == 1.0:
+        return materialized
+
+    raw_width = materialized.get("stroke-width", "1")
+    try:
+        source_width = parse_project_geometry_length(
+            raw_width,
+            "stroke-width",
+        )
+    except ValueError as exc:
+        raise ValueError(
+            f"Shape Boolean primary stroke-width {raw_width!r} {exc}"
+        ) from exc
+    materialized["stroke-width"] = format_project_geometry_length(
+        source_width * scale
+    )
+
+    raw_dasharray = materialized.get("stroke-dasharray")
+    if raw_dasharray is None or raw_dasharray.strip().lower() == "none":
+        return materialized
+    try:
+        parsed_dasharray = parse_project_stroke_dasharray(raw_dasharray)
+    except ValueError as exc:
+        raise ValueError(
+            f"Shape Boolean primary stroke-dasharray {raw_dasharray!r} {exc}"
+        ) from exc
+    if parsed_dasharray is not None:
+        _preset, values = parsed_dasharray
+        materialized["stroke-dasharray"] = " ".join(
+            format_project_geometry_length(value * scale)
+            for value in values
+        )
+    return materialized
 
 
 def _shape_commands(element: ET.Element) -> list[PathCommand]:
