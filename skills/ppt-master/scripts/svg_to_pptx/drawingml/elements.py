@@ -3281,9 +3281,118 @@ def _clip_preset_geometry_error(
     )
 
 
+def _nested_crop_clip_preset_geometry_error(
+    wrapper: ET.Element,
+    shape: ET.Element,
+    clip_units: str,
+) -> str | None:
+    """Validate an inner-image clip against the crop wrapper's viewBox."""
+    if clip_units != 'userSpaceOnUse':
+        return (
+            'inner <image> clip on a nested crop must use '
+            'clipPathUnits="userSpaceOnUse" so browser and PowerPoint '
+            'evaluate the visible viewBox region identically'
+        )
+    try:
+        crop = parse_project_nested_svg_crop(wrapper)
+    except ValueError as exc:
+        return f'cannot validate nested crop geometry: {exc}'
+
+    shape_tag = shape.tag.rsplit('}', 1)[-1].lower()
+    if shape_tag not in {'circle', 'ellipse', 'rect'}:
+        return None
+    expected_x = crop.view_box_x
+    expected_y = crop.view_box_y
+    expected_w = crop.view_box_width
+    expected_h = crop.view_box_height
+
+    def close(actual: float, expected: float) -> bool:
+        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-6)
+
+    try:
+        if shape_tag == 'circle':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            radius = _effective_clip_geometry_length(shape, 'r', default=0.0)
+            fits = (
+                close(expected_w, expected_h)
+                and close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(radius, expected_w / 2.0)
+            )
+        elif shape_tag == 'ellipse':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            rx = _effective_clip_geometry_length(shape, 'rx', default=0.0)
+            ry = _effective_clip_geometry_length(shape, 'ry', default=0.0)
+            fits = (
+                close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(rx, expected_w / 2.0)
+                and close(ry, expected_h / 2.0)
+            )
+        else:
+            rect_x = _effective_clip_geometry_length(shape, 'x', default=0.0)
+            rect_y = _effective_clip_geometry_length(shape, 'y', default=0.0)
+            rect_w = _effective_clip_geometry_length(shape, 'width', default=0.0)
+            rect_h = _effective_clip_geometry_length(shape, 'height', default=0.0)
+            fits = (
+                close(rect_x, expected_x)
+                and close(rect_y, expected_y)
+                and close(rect_w, expected_w)
+                and close(rect_h, expected_h)
+            )
+            if fits:
+                rx_raw = (
+                    parse_inline_style(shape.get('style')).get('rx')
+                    or shape.get('rx')
+                )
+                ry_raw = (
+                    parse_inline_style(shape.get('style')).get('ry')
+                    or shape.get('ry')
+                )
+                rx = (
+                    parse_project_geometry_length(rx_raw, 'rx')
+                    if rx_raw is not None else None
+                )
+                ry = (
+                    parse_project_geometry_length(ry_raw, 'ry')
+                    if ry_raw is not None else None
+                )
+                if rx is None and ry is not None:
+                    rx = ry
+                elif ry is None and rx is not None:
+                    ry = rx
+                rx = rx or 0.0
+                ry = ry or 0.0
+                if rx > 0 or ry > 0:
+                    physical_rx = rx * crop.width / expected_w
+                    physical_ry = ry * crop.height / expected_h
+                    fits = math.isclose(
+                        physical_rx,
+                        physical_ry,
+                        rel_tol=1e-9,
+                        abs_tol=1e-3,
+                    )
+    except ValueError as exc:
+        return f'{shape_tag} geometry for nested crop is invalid: {exc}'
+
+    if fits:
+        return None
+    return (
+        f'{shape_tag} geometry must cover the nested crop viewBox and use '
+        'equal physical corner radii after viewport scaling'
+    )
+
+
 def project_clip_path_errors(root: ET.Element) -> list[str]:
     """Return clip-path errors that would otherwise degrade picture geometry."""
     definitions, duplicates = project_definition_index(root)
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
     errors: set[str] = set()
     for elem in root.iter():
         raw_ref = elem.get('clip-path')
@@ -3291,6 +3400,14 @@ def project_clip_path_errors(root: ET.Element) -> list[str]:
             continue
         label = _element_contract_label(elem)
         is_svg_image = elem.tag == f'{{{SVG_NS}}}image'
+        parent = parent_by_id.get(id(elem))
+        is_nested_crop_image = (
+            is_svg_image
+            and parent is not None
+            and parent.tag == f'{{{SVG_NS}}}svg'
+            and parent is not root
+            and parent.get('data-pptx-crop') == '1'
+        )
         is_imported_crop = (
             elem.tag == f'{{{SVG_NS}}}svg'
             and elem.get('data-pptx-crop') == '1'
@@ -3367,11 +3484,18 @@ def project_clip_path_errors(root: ET.Element) -> list[str]:
             )
             continue
         if clip_units in {'userSpaceOnUse', 'objectBoundingBox'}:
-            geometry_error = _clip_preset_geometry_error(
-                elem,
-                shape,
-                clip_units,
-            )
+            if is_nested_crop_image:
+                geometry_error = _nested_crop_clip_preset_geometry_error(
+                    parent,
+                    shape,
+                    clip_units,
+                )
+            else:
+                geometry_error = _clip_preset_geometry_error(
+                    elem,
+                    shape,
+                    clip_units,
+                )
             if geometry_error is not None:
                 errors.add(f'{clip_label} {geometry_error}')
     return sorted(errors)
@@ -4335,6 +4459,10 @@ class NestedSvgCropSpec:
     y: float
     width: float
     height: float
+    view_box_x: float
+    view_box_y: float
+    view_box_width: float
+    view_box_height: float
     src_l: int
     src_t: int
     src_r: int
@@ -4356,6 +4484,7 @@ _NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
     'data-pptx-shape-name',
     'data-pptx-shape-scope',
     'id',
+    'overflow',
     'preserveAspectRatio',
     'transform',
     'viewBox',
@@ -4365,6 +4494,7 @@ _NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
     'height',
 })
 _NESTED_CROP_IMAGE_ATTRIBUTES = frozenset({
+    'clip-path',
     'href',
     f'{{{XLINK_NS}}}href',
     'opacity',
@@ -4405,19 +4535,10 @@ def parse_project_nested_svg_crop(elem: ET.Element) -> NestedSvgCropSpec:
             + ', '.join(unsupported)
         )
     crop_marker = elem.get('data-pptx-crop')
-    clip_path = elem.get('clip-path')
-    if crop_marker is not None and crop_marker != '1':
-        raise ValueError('nested crop data-pptx-crop must be exactly "1"')
-    if clip_path is None:
-        if crop_marker is not None:
-            raise ValueError(
-                'nested crop data-pptx-crop="1" requires clip-path'
-            )
-    elif clip_path.strip().lower() == 'none':
-        raise ValueError('nested crop clip-path cannot be "none"')
-    elif crop_marker != '1':
+    overflow = elem.get('overflow')
+    if overflow is not None and overflow != 'hidden':
         raise ValueError(
-            'nested crop clip-path requires data-pptx-crop="1"'
+            'nested crop overflow must be exactly "hidden" when present'
         )
     if elem.text and elem.text.strip():
         raise ValueError(
@@ -4449,6 +4570,33 @@ def parse_project_nested_svg_crop(elem: ET.Element) -> NestedSvgCropSpec:
         raise ValueError(
             'nested crop <image> has unsupported attribute(s): '
             + ', '.join(unsupported)
+        )
+
+    outer_clip_path = elem.get('clip-path')
+    inner_clip_path = image_elem.get('clip-path')
+    if outer_clip_path is not None and inner_clip_path is not None:
+        raise ValueError(
+            'nested crop clip-path must occur on either the outer <svg> or '
+            'the inner <image>, not both'
+        )
+    clip_path = inner_clip_path or outer_clip_path
+    if crop_marker is not None and crop_marker != '1':
+        raise ValueError('nested crop data-pptx-crop must be exactly "1"')
+    if clip_path is None:
+        if crop_marker is not None:
+            raise ValueError(
+                'nested crop data-pptx-crop="1" requires clip-path'
+            )
+    elif clip_path.strip().lower() == 'none':
+        raise ValueError('nested crop clip-path cannot be "none"')
+    elif crop_marker != '1':
+        raise ValueError(
+            'nested crop clip-path requires data-pptx-crop="1"'
+        )
+    if inner_clip_path is not None and overflow != 'hidden':
+        raise ValueError(
+            'nested crop with inner <image> clip-path requires '
+            'overflow="hidden" on the outer <svg>'
         )
 
     try:
@@ -4557,6 +4705,10 @@ def parse_project_nested_svg_crop(elem: ET.Element) -> NestedSvgCropSpec:
         y=frame_values['y'],
         width=frame_values['width'],
         height=frame_values['height'],
+        view_box_x=vb_x,
+        view_box_y=vb_y,
+        view_box_width=vb_w,
+        view_box_height=vb_h,
         src_l=src_l,
         src_t=src_t,
         src_r=src_r,
@@ -4598,6 +4750,85 @@ def project_nested_svg_crop_errors(root: ET.Element) -> list[str]:
         except ValueError as exc:
             errors.append(f'{label} invalid imported crop wrapper: {exc}')
     return sorted(errors)
+
+
+def _resolve_nested_svg_clip_geometry(
+    crop: NestedSvgCropSpec,
+    image_elem: ET.Element,
+    ctx: ConvertContext,
+) -> str:
+    """Resolve a preview-safe inner-image clip into picture geometry."""
+    default = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+    clip_id = resolve_url_id(image_elem.get('clip-path', ''))
+    if not clip_id or clip_id not in ctx.defs:
+        return default
+    clip_elem = ctx.defs[clip_id]
+    shape = next(
+        (
+            child
+            for child in clip_elem
+            if child.tag.rsplit('}', 1)[-1]
+            in {'circle', 'ellipse', 'rect', 'path', 'polygon'}
+        ),
+        None,
+    )
+    if shape is None:
+        return default
+    if (
+        clip_elem.get('clipPathUnits', 'userSpaceOnUse')
+        != 'userSpaceOnUse'
+    ):
+        return _resolve_clip_geometry(
+            image_elem,
+            ctx,
+            crop.x,
+            crop.y,
+            crop.width,
+            crop.height,
+        )
+
+    shape_tag = shape.tag.rsplit('}', 1)[-1]
+    if shape_tag == 'rect':
+        style_values = parse_inline_style(shape.get('style'))
+        rx_raw = style_values.get('rx') or shape.get('rx')
+        ry_raw = style_values.get('ry') or shape.get('ry')
+        rx = (
+            parse_project_geometry_length(rx_raw, 'rx')
+            if rx_raw is not None else None
+        )
+        ry = (
+            parse_project_geometry_length(ry_raw, 'ry')
+            if ry_raw is not None else None
+        )
+        if rx is None and ry is not None:
+            rx = ry
+        elif ry is None and rx is not None:
+            ry = rx
+        rx = rx or 0.0
+        ry = ry or 0.0
+        if rx <= 0 and ry <= 0:
+            return default
+        physical_rx = rx * crop.width / crop.view_box_width
+        physical_ry = ry * crop.height / crop.view_box_height
+        radius = (physical_rx + physical_ry) / 2.0
+        shorter = min(crop.width, crop.height)
+        if shorter <= 0:
+            return default
+        adj = int(min(radius / (shorter / 2.0), 1.0) * 50000)
+        return (
+            f'<a:prstGeom prst="roundRect"><a:avLst>'
+            f'<a:gd name="adj" fmla="val {adj}"/>'
+            f'</a:avLst></a:prstGeom>'
+        )
+
+    return _resolve_clip_geometry(
+        image_elem,
+        ctx,
+        crop.view_box_x,
+        crop.view_box_y,
+        crop.view_box_width,
+        crop.view_box_height,
+    )
 
 
 def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
@@ -4689,7 +4920,17 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
         h,
         transform,
     )
-    clip_geom = _resolve_clip_geometry(elem, ctx, svg_x, svg_y, svg_w, svg_h)
+    if image_elem.get('clip-path') is not None:
+        clip_geom = _resolve_nested_svg_clip_geometry(crop, image_elem, ctx)
+    else:
+        clip_geom = _resolve_clip_geometry(
+            elem,
+            ctx,
+            svg_x,
+            svg_y,
+            svg_w,
+            svg_h,
+        )
     blip_xml = _build_image_blip_xml(
         r_id,
         get_element_opacity(image_elem, ctx),
