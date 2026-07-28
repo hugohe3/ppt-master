@@ -147,13 +147,17 @@ _SERIF_LATIN = {
     'Book Antiqua', 'Cambria', 'SimSun', 'Liberation Serif', 'DejaVu Serif',
 }
 
-# Fonts that survive direct PPTX typeface assignment on a typical Windows /
-# macOS viewer without requiring a custom install. Keep this aligned with
-# strategist.md §g and FONT_FALLBACK_WIN above.
+# Common Office/OS faces accepted without a custom-font warning on their
+# corresponding target locale. Actual playback availability remains
+# target-specific; keep these examples aligned with strategist.md §g.
 PPT_SAFE_FONTS = frozenset({
     'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
     'dengxian', 'microsoft jhenghei',
     'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
+    'yu gothic', 'yu gothic ui', 'yu mincho',
+    'meiryo', 'meiryo ui',
+    'ms gothic', 'ms mincho', 'ms pgothic', 'ms pmincho', 'ms ui gothic',
+    'malgun gothic', 'gulim', 'dotum', 'batang',
     'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
     'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
     'times new roman', 'times', 'georgia', 'cambria', 'palatino',
@@ -2936,18 +2940,85 @@ def unsafe_exported_font_faces(font_family_str: str) -> dict[str, str]:
     }
 
 
-def is_cjk_char(ch: str) -> bool:
-    """Check if a character is CJK (Chinese/Japanese/Korean)."""
+def _is_han_char(ch: str) -> bool:
+    """Return whether one character belongs to a Han ideograph block."""
     cp = ord(ch)
-    return (0x4E00 <= cp <= 0x9FFF or 0x3400 <= cp <= 0x4DBF or
-            0x2E80 <= cp <= 0x2EFF or 0x3000 <= cp <= 0x303F or
-            0xFF00 <= cp <= 0xFFEF or 0xF900 <= cp <= 0xFAFF or
-            0x20000 <= cp <= 0x2A6DF)
+    return (
+        0x3400 <= cp <= 0x4DBF
+        or 0x4E00 <= cp <= 0x9FFF
+        or 0xF900 <= cp <= 0xFAFF
+        or 0x20000 <= cp <= 0x2EE5F
+        or 0x30000 <= cp <= 0x323AF
+    )
+
+
+def _is_hiragana_char(ch: str) -> bool:
+    cp = ord(ch)
+    return (
+        0x3040 <= cp <= 0x309F
+        or 0x1B001 <= cp <= 0x1B11F
+    )
+
+
+def _is_katakana_char(ch: str) -> bool:
+    cp = ord(ch)
+    return (
+        0x30A0 <= cp <= 0x30FF
+        or 0x31F0 <= cp <= 0x31FF
+        or 0xFF65 <= cp <= 0xFF9F
+        or 0x1AFF0 <= cp <= 0x1AFFF
+        or cp == 0x1B000
+        or 0x1B120 <= cp <= 0x1B16F
+    )
+
+
+def _is_hangul_char(ch: str) -> bool:
+    cp = ord(ch)
+    return (
+        0x1100 <= cp <= 0x11FF
+        or 0x3130 <= cp <= 0x318F
+        or 0xA960 <= cp <= 0xA97F
+        or 0xAC00 <= cp <= 0xD7AF
+        or 0xD7B0 <= cp <= 0xD7FF
+        or 0xFFA0 <= cp <= 0xFFDC
+    )
+
+
+def is_cjk_char(ch: str) -> bool:
+    """Return whether one character uses the project East Asian width model."""
+    cp = ord(ch)
+    return (
+        _is_han_char(ch)
+        or _is_hiragana_char(ch)
+        or _is_katakana_char(ch)
+        or _is_hangul_char(ch)
+        or 0x2E80 <= cp <= 0x2FFF
+        or 0x3000 <= cp <= 0x303F
+        or 0x3100 <= cp <= 0x312F
+        or 0x31A0 <= cp <= 0x31BF
+        or 0x31C0 <= cp <= 0x31EF
+        or 0xFF00 <= cp <= 0xFFEF
+    )
 
 
 def detect_text_lang(text: str) -> str:
     """Return a DrawingML language tag for a text run."""
-    return 'zh-CN' if any(is_cjk_char(ch) for ch in text) else 'en-US'
+    has_hangul = False
+    has_kana = False
+    has_east_asian_text = False
+    for ch in text:
+        has_hangul = has_hangul or _is_hangul_char(ch)
+        has_kana = (
+            has_kana
+            or _is_hiragana_char(ch)
+            or _is_katakana_char(ch)
+        )
+        has_east_asian_text = has_east_asian_text or is_cjk_char(ch)
+    if has_hangul:
+        return 'ko-KR'
+    if has_kana:
+        return 'ja-JP'
+    return 'zh-CN' if has_east_asian_text else 'en-US'
 
 
 def _is_grapheme_extend(ch: str) -> bool:
@@ -3070,7 +3141,7 @@ def split_project_text_clusters(text: str) -> list[str]:
 def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
     """Return DrawingML latin/ea/cs typefaces for one text run."""
     latin = fonts['latin']
-    if detect_text_lang(text) == 'zh-CN':
+    if detect_text_lang(text) != 'en-US':
         ea = fonts['ea']
     else:
         ea = latin

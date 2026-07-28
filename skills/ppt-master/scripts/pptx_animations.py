@@ -171,6 +171,27 @@ ANIMATION_TIMING_OPTION_FIELDS = (
 )
 ANIMATION_RESTARTS = ('always', 'when-not-active', 'never')
 ANIMATION_AFTER_EFFECTS = ('none', 'dim', 'hide', 'hide-on-next-click')
+_NON_CONCRETE_FONT_NAMES = frozenset({
+    '-apple-system',
+    'blinkmacsystemfont',
+    'cursive',
+    'emoji',
+    'fantasy',
+    'inherit',
+    'initial',
+    'math',
+    'monospace',
+    'revert',
+    'revert-layer',
+    'sans-serif',
+    'serif',
+    'system-ui',
+    'ui-monospace',
+    'ui-rounded',
+    'ui-sans-serif',
+    'ui-serif',
+    'unset',
+})
 
 # Legacy directional names retain their historical semantics by desugaring
 # into one canonical effect plus the matching PowerPoint EffectParameters
@@ -503,6 +524,28 @@ def _normalize_animation_color(value: object, field: str) -> str:
     )
 
 
+def _normalize_powerpoint_font_name(value: object, field: str) -> str:
+    """Return one concrete PowerPoint font name without checking installation."""
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name: {value!r}'
+        )
+    normalized = value.strip()
+    if len(normalized) > 255:
+        raise ValueError(f'{field} exceeds 255 characters')
+    if ',' in normalized:
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name, '
+            f'not a CSS font stack: {value!r}'
+        )
+    if normalized.casefold() in _NON_CONCRETE_FONT_NAMES:
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name, '
+            f'not a generic family or CSS-wide keyword: {value!r}'
+        )
+    return normalized
+
+
 def normalize_animation_effect_options(
     effect: str,
     options: object = None,
@@ -573,11 +616,17 @@ def normalize_animation_effect_options(
                 )
             normalized[name] = number
         elif option_type == 'string':
-            if not isinstance(value, str) or not value.strip():
-                raise ValueError(f'{field} must be a non-empty string: {value!r}')
-            if len(value) > 255:
-                raise ValueError(f'{field} exceeds 255 characters')
-            normalized[name] = value
+            if name == 'font_name':
+                normalized[name] = _normalize_powerpoint_font_name(value, field)
+            else:
+                if not isinstance(value, str) or not value.strip():
+                    raise ValueError(
+                        f'{field} must be a non-empty string: {value!r}'
+                    )
+                normalized_value = value.strip()
+                if len(normalized_value) > 255:
+                    raise ValueError(f'{field} exceeds 255 characters')
+                normalized[name] = normalized_value
         elif option_type == 'boolean':
             if not isinstance(value, bool):
                 raise ValueError(f'{field} must be a boolean: {value!r}')
@@ -2275,10 +2324,18 @@ def _read_effect_options(
                         value.get('val')
                         for value in node.iter(_qn(PML_NS, 'strVal'))
                     )
-            if len(fonts) != 1 or not fonts[0]:
-                errors.append('emphasis_change_font row has an invalid font name')
-            else:
-                values[name] = fonts[0]
+            if len(fonts) != 1:
+                errors.append(
+                    'emphasis_change_font row must contain one font name'
+                )
+                continue
+            try:
+                values[name] = _normalize_powerpoint_font_name(
+                    fonts[0],
+                    'emphasis_change_font row font name',
+                )
+            except ValueError as exc:
+                errors.append(str(exc))
         elif name == 'relative':
             motions = list(row.iter(_qn(PML_NS, 'animMotion')))
             if len(motions) != 1:

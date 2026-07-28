@@ -31,6 +31,9 @@ from .ooxml_loader import (
 from .slide_to_svg import assemble_part_solo, assemble_slide
 
 
+_CJK_THEME_SCRIPTS = frozenset({"Hans", "Hant", "Jpan", "Hang"})
+
+
 def _extract_theme_info(
     theme: PartRef,
     palette: ColorPalette,
@@ -77,6 +80,11 @@ def _extract_theme_info(
             cs = fnt.find("a:cs", NS)
             if cs is not None and cs.attrib.get("typeface"):
                 fonts[f"{role_prefix}ComplexScript"] = cs.attrib["typeface"]
+            for supplemental in fnt.findall("a:font", NS):
+                script = supplemental.attrib.get("script", "")
+                typeface = supplemental.attrib.get("typeface", "")
+                if script in _CJK_THEME_SCRIPTS and typeface:
+                    fonts[f"{role_prefix}Script{script}"] = typeface
 
     return colors, fonts
 
