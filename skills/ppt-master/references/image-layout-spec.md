@@ -218,12 +218,12 @@ Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 ## Automation Tool
 
 ```bash
-python3 scripts/analyze_images.py <project_path>/images                    # Default: PPT 16:9
+python3 scripts/analyze_images.py <project_path>/images                    # Infer project canvas; fallback PPT 16:9
 python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
 python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 ```
 
-`--canvas` selects target format (default `ppt169`). The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as planning input; record the composition actually selected for the page.
+`--canvas` explicitly overrides the project-derived format; `ppt169` is only the fallback. The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as planning input; record the composition actually selected for the page.
 
 ---
 

@@ -39,7 +39,7 @@ Sample fragment:
 
 ### 3.2 `text_policy: embedded`
 
-Self-contained cycle diagram with step names typeset into the artwork. Keep step names to single English words ("PLAN", "DO", "CHECK", "ACT") in a font family echoing the deck's body typography.
+Self-contained cycle diagram with step names typeset into the artwork. Keep each name concise and stable, use the wording and script required by the content, and echo the deck's body typography.
 
 ---
 

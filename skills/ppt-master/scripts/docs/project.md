@@ -24,6 +24,8 @@ python3 scripts/project_manager.py page-context-report <project_path>
 Notes:
 - Files outside `projects/` are always copied into `sources/`
 - `--move` applies only to sources under the repository's `projects/` tree
+- A directly supplied supported bitmap is also copied into `images/` with a
+  collision-safe basename while its original remains archived in `sources/`
 - Directory inputs are expanded non-recursively. After Step 1 conversion,
   pass the source file/directory once when generated Markdown lives beside the
   original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
