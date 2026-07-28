@@ -78,14 +78,15 @@ author motion merely to expose a capability.
 
 ---
 
-## 2. Rebuild Semantic Animation Groups When Needed, Then List IDs
+## 2. Rebuild Semantic Motion Groups When Needed, Then List IDs
 
-**Mandatory when object animation is in scope — content-first grouping audit**:
+**Mandatory when object-targeted motion is in scope — content-first grouping audit**:
 inspect every slide's visible content against its communication job and speaker
 flow before treating any top-level `<g>` as an animation anchor. Existing
 groups are implementation evidence only. Keep a current group unchanged only
 after confirming that it already represents exactly one audience-facing reveal
-unit. A transition-only plan skips regrouping and group listing.
+unit or one continuing Morph object. Only a page-transition plan without
+explicit Morph pairs skips regrouping and group listing.
 
 | Content condition | Required grouping action |
 |---|---|
@@ -93,6 +94,7 @@ unit. A transition-only plan skips regrouping and group listing.
 | One reveal unit is scattered across groups or root primitives | Merge or wrap its background, icon, label, value, and supporting text into one direct-root group |
 | A connector or arrow explains entry into a node or stage | Reveal it with the relationship or target unit that makes the connection intelligible |
 | A hero visual, overview graphic, takeaway, or warning has its own communication role | Give it its own semantic group |
+| The same semantic object continues across adjacent Morph pages | Isolate each endpoint as one direct-root group and keep both endpoints as compatible object kinds |
 | Several atoms express one inseparable idea | Keep them together; do not animate the atoms separately |
 | Page chrome, structural layers, or static framing | Preserve their structure and exclude them from ordinary animation targets |
 
@@ -162,6 +164,7 @@ Do not read the full scaffold unless it is needed as an editing starting point.
 | Layer | Config path | Use |
 |---|---|---|
 | Page transition | `defaults.transition` or `slides.<slide>.transition` | Control how one slide enters from the previous slide |
+| Deterministic Morph pair | `slides.<destination>.morph` | Bind one real source group to one real destination group when semantic identity continues across adjacent slides |
 | Page animation defaults | `defaults.animation` or `slides.<slide>.animation` | Control the default object-animation behavior for animated groups on a slide |
 | Object overrides | `slides.<slide>.groups.<group_id>` | Control order, effect, delay, or duration for a real SVG group |
 
@@ -208,6 +211,13 @@ Run
 `python3 skills/ppt-master/scripts/pptx_animations.py --describe-transition <effect>`
 before authoring Effect Options. Never infer that one effect accepts another
 effect's direction, shape, pattern, or boolean fields.
+
+For a cross-slide object continuation that must not depend on PowerPoint's
+automatic matching, put one explicit `morph` block on the destination slide.
+Its `from` slide must be the immediately preceding exported SVG; each stable
+pair key binds one source direct-root group id to one destination direct-root
+group id. The exporter supplies PowerPoint's `!!` prefix. Use Morph by object;
+word/character Morph does not accept this object-pair contract.
 
 ### 3.2 Supported In-Slide Animations
 
@@ -284,6 +294,8 @@ the deck-wide values copied into every complete new slide block.
 | `transition.effect` | Slide-specific page transition effect |
 | `transition.effect_options` | Effect-specific native PowerPoint options; requires an explicit slide-specific `transition.effect` |
 | `transition.duration` | Slide-specific page transition duration |
+| `morph.from` | Immediately preceding SVG stem for an explicit deterministic Morph transition |
+| `morph.pairs.<key>.from` / `.to` | Unique source/destination direct-root group ids that receive the shared PowerPoint name `!!<key>` |
 | `animation.effect` | Slide-specific default object animation effect |
 | `animation.duration` | Slide-specific default object schedule duration |
 | `animation.stagger` | Slide-specific delay between object animation rows |
@@ -344,6 +356,10 @@ groups appear only when they diverge**:
 the defaults. `03_market` lists only divergent groups. Structural chrome stays
 omitted unless a marker-free legacy name needs an explicitly reviewed override.
 
+Use the complete two-slide deterministic Morph example in
+[`animations.md`](../../references/animations.md) §2.1; do not copy the source
+group into the destination slide's `groups` block merely to establish identity.
+
 **Forbidden — SVG pollution**: do not add `data-*` animation attributes to SVG files. Animation customization belongs in `animations.json`.
 
 ---
@@ -372,6 +388,10 @@ non-finite, or out-of-range timing parameters; non-positive durations; negative
 delay/stagger; invalid order; missing slides/groups; and structural-layer
 targets fail validation. Transition validation remains strict. None of these
 failures substitutes a fallback effect or silently drops a requested target.
+Deterministic Morph also rejects non-adjacent source slides, missing or
+ambiguous direct-root groups, conflicting or undeclared shared keys, non-object
+Morph, and any target that does not remain one compatible Slide-local object
+after structure processing.
 
 Generate Step 7 export reads back row order, trigger, target, resolved effect,
 duration, offset, timing placement, IDs, and shape references. Narration
