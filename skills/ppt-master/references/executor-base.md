@@ -281,7 +281,9 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Structural typography anchors come from `spec_lock.md typography`. Use an exact `<role>_family` when declared; title roles otherwise use `title_family`, and body/support roles otherwise use `body_family`. `font_family` is the legacy/default fallback, not a reason to erase role differences. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
+Typography comes from `spec_lock.md`: `<role>_family` wins; otherwise titles use `title_family`, body/support `body_family`, then legacy `font_family`. Sparse accents follow §2.1. LaTeX renders stay PNG, not `code_family`.
+
+**Default — font-family inheritance (may override where needed)**: Put the common stack on root `<svg>`; matching descendants omit it. Override at the nearest clear `<g>`, `<text>`, or `<tspan>`. Change placement, never lock selection.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 
