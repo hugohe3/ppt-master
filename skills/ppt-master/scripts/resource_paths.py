@@ -70,20 +70,30 @@ def external_image_reference_candidates(svg_dir: Path, href: str) -> list[Path]:
         else href.split('?', 1)[0].split('#', 1)[0]
     )
     svg_dir = Path(svg_dir)
-    project_root = project_root_for_svg_path(svg_dir)
-    return [
+    project_root = project_root_for_svg_path(svg_dir).resolve()
+    candidates = [
         svg_dir / decoded,
         project_root / decoded,
         project_root / 'images' / decoded,
         project_root / 'templates' / decoded,
     ]
+    safe_candidates: list[Path] = []
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        try:
+            resolved.relative_to(project_root)
+        except ValueError:
+            continue
+        if resolved not in safe_candidates:
+            safe_candidates.append(resolved)
+    return safe_candidates
 
 
 def resolve_external_image_reference(svg_dir: Path, href: str) -> Path | None:
     """Resolve an SVG image href to an existing file, or return None."""
     for candidate in external_image_reference_candidates(svg_dir, href):
-        if candidate.exists():
-            return candidate.resolve()
+        if candidate.is_file():
+            return candidate
     return None
 
 

@@ -446,6 +446,11 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
     """
     if not candidate.license_tier:
         return float("-inf")
+    if (
+        candidate.license_tier == LICENSE_TIER_ATTRIBUTION_REQUIRED
+        and not candidate.author.strip()
+    ):
+        return float("-inf")
 
     required_misses = missing_required_terms(candidate, request.required_terms)
     if required_misses:

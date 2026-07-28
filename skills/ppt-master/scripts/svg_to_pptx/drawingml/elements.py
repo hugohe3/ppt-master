@@ -3505,12 +3505,17 @@ def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
     legacy stretch behaviour.
     """
     try:
-        from PIL import Image, UnidentifiedImageError  # type: ignore
+        from PIL import Image, ImageOps, UnidentifiedImageError  # type: ignore
     except ImportError:
         return (None, None)
     try:
         with Image.open(io.BytesIO(data)) as img:
-            return img.size
+            oriented = ImageOps.exif_transpose(img)
+            try:
+                return oriented.size
+            finally:
+                if oriented is not img:
+                    oriented.close()
     except (
         UnidentifiedImageError,
         OSError,
@@ -3525,9 +3530,35 @@ def _image_has_alpha(img: Any) -> bool:
     """Return whether a PIL image carries useful transparency."""
     if img.mode in ('RGBA', 'LA'):
         return True
-    if img.mode == 'P':
-        return 'transparency' in getattr(img, 'info', {})
-    return False
+    return 'transparency' in getattr(img, 'info', {})
+
+
+def _prepare_raster_for_geometry(img: Any) -> Any:
+    """Apply EXIF orientation and materialize palette/tRNS transparency."""
+    try:
+        from PIL import ImageOps  # type: ignore
+    except ImportError:
+        return img
+
+    prepared = ImageOps.exif_transpose(img)
+    if prepared.mode == 'P':
+        prepared = prepared.convert(
+            'RGBA' if _image_has_alpha(prepared) else 'RGB'
+        )
+    elif (
+        'transparency' in getattr(prepared, 'info', {})
+        and prepared.mode not in {'RGBA', 'LA'}
+    ):
+        prepared = prepared.convert('RGBA')
+    return prepared
+
+
+def _has_exif_geometry_transform(img: Any) -> bool:
+    """Return whether EXIF requires a physical mirror or rotation."""
+    try:
+        return int(img.getexif().get(274, 1)) in range(2, 9)
+    except (AttributeError, TypeError, ValueError):
+        return False
 
 
 def _image_target_size(
@@ -3632,6 +3663,8 @@ def _encode_optimized_image(img: Any, *, prefer_jpeg: bool, quality: int) -> tup
             return buf.getvalue(), 'jpg'
         if img.mode == 'P':
             img = img.convert('RGBA' if _image_has_alpha(img) else 'RGB')
+        elif img.mode not in {'1', 'L', 'LA', 'I', 'I;16', 'RGB', 'RGBA'}:
+            img = img.convert('RGBA' if _image_has_alpha(img) else 'RGB')
         img.save(buf, format='PNG', optimize=True)
         return buf.getvalue(), 'png'
     except (OSError, ValueError):
@@ -3671,6 +3704,8 @@ def _optimize_image_for_pptx(
     if getattr(img, 'is_animated', False):
         return img_data, img_format
 
+    geometry_normalized = _has_exif_geometry_transform(img)
+    img = _prepare_raster_for_geometry(img)
     align, mode = parse_project_image_aspect_ratio(
         elem.get('preserveAspectRatio')
     )
@@ -3689,13 +3724,19 @@ def _optimize_image_for_pptx(
     original_size = img.size
     img = _resize_for_target(img, target_w, target_h)
     resized = img.size != original_size
-    prefer_jpeg = img_format.lower() in {'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff'}
+    # Preserve source semantics: only an original JPEG stays lossy. PNG and
+    # other static raster formats use lossless PNG after any resize.
+    prefer_jpeg = img_format.lower() in {'jpg', 'jpeg'}
     encoded = _encode_optimized_image(img, prefer_jpeg=prefer_jpeg, quality=ctx.image_quality)
     if encoded is None:
         return img_data, img_format
 
     optimized_data, optimized_format = encoded
-    if not resized and len(optimized_data) >= len(img_data):
+    if (
+        not geometry_normalized
+        and not resized
+        and len(optimized_data) >= len(img_data)
+    ):
         return img_data, img_format
 
     return optimized_data, optimized_format

@@ -44,11 +44,12 @@ Usage:
   python3 image_gen.py --list-backends
 """
 
+import argparse
 import concurrent.futures
 import json
 import os
+import re
 import sys
-import argparse
 import tempfile
 import threading
 import time
@@ -344,32 +345,73 @@ def _resolve_backend() -> tuple[object, str]:
     sys.exit(1)
 
 
-def _confirmed_image_ai_path_for_manifest(manifest_path: str) -> str | None:
-    """Return confirmed image_ai_path for a project manifest, if present."""
+_AI_IMAGE_PATH_ROW_RE = re.compile(
+    r"^\s*\|\s*AI Image Acquisition Path\s*\|\s*([^|]+?)\s*\|\s*$",
+    re.MULTILINE,
+)
+VALID_AI_IMAGE_ACQUISITION_PATHS = {
+    "api",
+    "auto",
+    "host-native",
+    "manual",
+}
+
+
+def _project_design_spec_for_manifest(manifest_path: str) -> Path | None:
+    """Return a project Design Spec for an images/ manifest, when present."""
     path = Path(manifest_path).resolve()
     if path.parent.name != "images":
         return None
-    result_file = path.parent.parent / "confirm_ui" / "result.json"
-    if not result_file.exists():
+    design_spec = path.parent.parent / "design_spec.md"
+    return design_spec if design_spec.is_file() else None
+
+
+def _confirmed_image_acquisition_path_for_manifest(
+    manifest_path: str,
+) -> str | None:
+    """Return the Design Spec's AI Image Acquisition Path, if present."""
+    design_spec = _project_design_spec_for_manifest(manifest_path)
+    if design_spec is None:
         return None
     try:
-        data = json.loads(result_file.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        text = design_spec.read_text(encoding="utf-8")
+    except OSError:
         return None
-    value = data.get("image_ai_path")
-    if not isinstance(value, str):
+    match = _AI_IMAGE_PATH_ROW_RE.search(text)
+    if not match:
         return None
-    return value.strip().lower().replace("_", "-")
+    value = match.group(1).strip().lstrip("`*_ ").strip()
+    token_match = re.match(
+        r"^(host[\s_-]*native|api|auto|manual)(?![A-Za-z0-9_-])",
+        value,
+        re.IGNORECASE,
+    )
+    selected = token_match.group(1) if token_match else value
+    return re.sub(r"[\s_]+", "-", selected.strip().lower())
 
 
 def _guard_confirmed_non_api_path(manifest_path: str) -> None:
-    """Prevent accidental Path A execution after host-native/manual was confirmed."""
-    image_ai_path = _confirmed_image_ai_path_for_manifest(manifest_path)
-    if image_ai_path not in {"host-native", "manual"}:
+    """Allow project Path A only when its Design Spec explicitly permits it."""
+    design_spec = _project_design_spec_for_manifest(manifest_path)
+    if design_spec is None:
         return
-    if image_ai_path == "host-native":
+    acquisition_path = _confirmed_image_acquisition_path_for_manifest(manifest_path)
+    if acquisition_path not in VALID_AI_IMAGE_ACQUISITION_PATHS:
+        shown = acquisition_path or "(missing)"
+        valid = ", ".join(sorted(VALID_AI_IMAGE_ACQUISITION_PATHS))
         print(
-            "Error: confirmed image_ai_path is 'host-native'.\n"
+            "Error: project manifest mode requires a valid "
+            "AI Image Acquisition Path in design_spec.md §I.\n"
+            f"Found: {shown!r}. Valid values: {valid}.\n"
+            "Return to Generate Step 4 recovery and record the durable "
+            "selection before running Path A."
+        )
+        sys.exit(1)
+    if acquisition_path in {"api", "auto"}:
+        return
+    if acquisition_path == "host-native":
+        print(
+            "Error: Design Spec confirms AI Image Acquisition Path as 'host-native'.\n"
             "\n"
             "Do NOT run image_gen.py --manifest for this project. That command is Path A\n"
             "and may use the configured API/proxy backend. Use the host's native image\n"
@@ -379,7 +421,7 @@ def _guard_confirmed_non_api_path(manifest_path: str) -> None:
         )
     else:
         print(
-            "Error: confirmed image_ai_path is 'manual'.\n"
+            "Error: Design Spec confirms AI Image Acquisition Path as 'manual'.\n"
             "\n"
             "Do NOT run image_gen.py --manifest for this project. Render the Markdown\n"
             "sidecar and hand images/image_prompts.md to the user for external generation:\n"
@@ -389,6 +431,7 @@ def _guard_confirmed_non_api_path(manifest_path: str) -> None:
 
 
 DEFAULT_MANIFEST_CONCURRENCY = 3
+MAX_MANIFEST_RATE_LIMIT_ATTEMPTS = 3
 
 STATUS_PENDING = "Pending"
 STATUS_GENERATED = "Generated"
@@ -397,18 +440,42 @@ STATUS_NEEDS_MANUAL = "Needs-Manual"
 VALID_STATUSES = {STATUS_PENDING, STATUS_GENERATED, STATUS_FAILED, STATUS_NEEDS_MANUAL}
 RETRYABLE_STATUSES = {STATUS_PENDING, STATUS_FAILED}
 REQUIRED_ITEM_FIELDS = ("filename", "prompt", "aspect_ratio", "status")
+VALID_PAGE_ROLES = {"local", "hero_page", "full_page"}
+VALID_TEXT_POLICIES = {"none", "embedded"}
+STRUCTURAL_IMAGE_TYPES = {
+    "infographic",
+    "flowchart",
+    "framework",
+    "matrix",
+    "cycle",
+    "funnel",
+    "pyramid",
+    "comparison",
+    "timeline",
+    "map",
+    "scene",
+}
+LEGACY_IMAGE_TYPES = {"background", "hero", "portrait", "typography"}
+EARLY_LEGACY_IMAGE_TYPES = {"illustration", "photography"}
+VALID_IMAGE_TYPES = (
+    STRUCTURAL_IMAGE_TYPES
+    | LEGACY_IMAGE_TYPES
+    | EARLY_LEGACY_IMAGE_TYPES
+)
 
 
 def load_manifest(path: str) -> dict:
     """Load and validate an `image_prompts.json` manifest.
 
     Schema (top level): {"items": [ ... ]}, optionally with
-    `deck_style_anchor`, `color_scheme`, `generated_at`.
+    `deck_rendering`, `color_scheme`, `generated_at`.
 
     Each item requires: `filename`, `prompt`, `aspect_ratio`, `status`.
     Optional: `image_size`, `model`, `alt_text`, `purpose`, `type`,
-    `last_error`.
+    `page_role`, `text_policy`, `slice_grid`, `slice_names`, `last_error`.
     """
+    from image_backends.backend_common import normalize_image_size
+
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -423,12 +490,51 @@ def load_manifest(path: str) -> dict:
             f"got {type(data).__name__}"
         )
 
+    for field in ("project", "generated_at", "deck_rendering"):
+        if field not in data:
+            continue
+        if not isinstance(data[field], str) or not data[field].strip():
+            raise ValueError(
+                f"{path}: field '{field}' must be a non-empty string when present"
+            )
+    if "deck_style_anchor" in data:
+        legacy_anchor = data["deck_style_anchor"]
+        if not (
+            isinstance(legacy_anchor, str)
+            and legacy_anchor.strip()
+            or isinstance(legacy_anchor, dict)
+            and legacy_anchor
+        ):
+            raise ValueError(
+                f"{path}: legacy field 'deck_style_anchor' must be a "
+                "non-empty string or object when present"
+            )
+
+    if "color_scheme" in data:
+        color_scheme = data["color_scheme"]
+        if not isinstance(color_scheme, dict) or not color_scheme:
+            raise ValueError(
+                f"{path}: field 'color_scheme' must be a non-empty object when present"
+            )
+        for key, value in color_scheme.items():
+            if (
+                not isinstance(key, str)
+                or not key.strip()
+                or not isinstance(value, str)
+                or not value.strip()
+            ):
+                raise ValueError(
+                    f"{path}: color_scheme keys and values must be non-empty strings"
+                )
+
     items = data.get("items")
     if not isinstance(items, list) or not items:
         raise ValueError(f"{path}: 'items' must be a non-empty array")
 
     seen_filenames: set[str] = set()
     seen_stems: set[str] = set()
+    missing_page_role = 0
+    missing_text_policy = 0
     for i, item in enumerate(items):
         prefix = f"{path}: items[{i}]"
         if not isinstance(item, dict):
@@ -445,6 +551,131 @@ def load_manifest(path: str) -> dict:
                 f"{prefix} status '{item['status']}' is invalid. "
                 f"Valid: {sorted(VALID_STATUSES)}"
             )
+        if item["aspect_ratio"] not in ALL_ASPECT_RATIOS:
+            raise ValueError(
+                f"{prefix} aspect_ratio '{item['aspect_ratio']}' is invalid. "
+                f"Valid: {ALL_ASPECT_RATIOS}"
+            )
+        if "image_size" in item:
+            image_size = item["image_size"]
+            if not isinstance(image_size, str) or not image_size.strip():
+                raise ValueError(
+                    f"{prefix} field 'image_size' must be a non-empty string"
+                )
+            normalized_size = normalize_image_size(image_size)
+            if normalized_size not in ALL_IMAGE_SIZES:
+                raise ValueError(
+                    f"{prefix} image_size '{image_size}' is invalid. "
+                    f"Valid: {ALL_IMAGE_SIZES}"
+                )
+
+        page_role = item.get("page_role")
+        if page_role is None:
+            missing_page_role += 1
+        elif not isinstance(page_role, str) or page_role not in VALID_PAGE_ROLES:
+            raise ValueError(
+                f"{prefix} page_role '{page_role}' is invalid. "
+                f"Valid: {sorted(VALID_PAGE_ROLES)}"
+            )
+
+        text_policy = item.get("text_policy")
+        if text_policy is None:
+            missing_text_policy += 1
+        elif (
+            not isinstance(text_policy, str)
+            or text_policy not in VALID_TEXT_POLICIES
+        ):
+            raise ValueError(
+                f"{prefix} text_policy '{text_policy}' is invalid. "
+                f"Valid: {sorted(VALID_TEXT_POLICIES)}"
+            )
+
+        image_type = item.get("type")
+        if image_type is not None:
+            normalized_type = (
+                image_type.strip().lower()
+                if isinstance(image_type, str)
+                else ""
+            )
+            if normalized_type not in VALID_IMAGE_TYPES:
+                raise ValueError(
+                    f"{prefix} type '{image_type}' is invalid. "
+                    f"Valid current/legacy values: {sorted(VALID_IMAGE_TYPES)}"
+                )
+
+        for field in ("model", "alt_text", "purpose"):
+            if field in item and (
+                not isinstance(item[field], str) or not item[field].strip()
+            ):
+                raise ValueError(
+                    f"{prefix} field '{field}' must be a non-empty string when present"
+                )
+        if "last_error" in item and not isinstance(item["last_error"], str):
+            raise ValueError(f"{prefix} field 'last_error' must be a string")
+        has_slice_grid = "slice_grid" in item
+        has_slice_names = "slice_names" in item
+        if has_slice_grid != has_slice_names:
+            raise ValueError(
+                f"{prefix} fields 'slice_grid' and 'slice_names' must appear together"
+            )
+        if has_slice_grid:
+            slice_grid = item["slice_grid"]
+            grid_match = (
+                re.fullmatch(r"([1-9]\d*)[xX]([1-9]\d*)", slice_grid.strip())
+                if isinstance(slice_grid, str)
+                else None
+            )
+            if grid_match is None:
+                raise ValueError(
+                    f"{prefix} field 'slice_grid' must use positive RxC notation"
+                )
+            slice_names = item["slice_names"]
+            if not isinstance(slice_names, str) or not slice_names.strip():
+                raise ValueError(
+                    f"{prefix} field 'slice_names' must be a non-empty string"
+                )
+            names = [name.strip() for name in slice_names.split(",")]
+            if any(not name for name in names):
+                raise ValueError(
+                    f"{prefix} field 'slice_names' contains an empty name"
+                )
+            rows, cols = map(int, grid_match.groups())
+            if len(names) != rows * cols:
+                raise ValueError(
+                    f"{prefix} field 'slice_names' has {len(names)} names but "
+                    f"slice_grid {rows}x{cols} requires {rows * cols}"
+                )
+            normalized_outputs: set[str] = set()
+            for name in names:
+                name_path = Path(name)
+                if (
+                    name in {".", ".."}
+                    or ".." in name
+                    or "/" in name
+                    or "\\" in name
+                    or ":" in name
+                    or name_path.is_absolute()
+                    or name_path.name != name
+                ):
+                    raise ValueError(
+                        f"{prefix} slice output name {name!r} must be a safe "
+                        "bare filename"
+                    )
+                if name_path.suffix and name_path.suffix.lower() != ".png":
+                    raise ValueError(
+                        f"{prefix} slice output name {name!r} must omit its "
+                        "extension or use .png"
+                    )
+                output_name = (
+                    name if name_path.suffix else f"{name}.png"
+                ).casefold()
+                if output_name in normalized_outputs:
+                    raise ValueError(
+                        f"{prefix} field 'slice_names' repeats output "
+                        f"{output_name!r}"
+                    )
+                normalized_outputs.add(output_name)
+
         fname = item["filename"]
         filename_path = Path(fname)
         if (
@@ -470,6 +701,22 @@ def load_manifest(path: str) -> dict:
                 f"{prefix} duplicate filename stem '{stem}' would reuse backend output"
             )
         seen_stems.add(stem)
+
+    legacy_parts = []
+    if missing_page_role:
+        legacy_parts.append(
+            f"{missing_page_role} item(s) missing page_role (resolved as local)"
+        )
+    if missing_text_policy:
+        legacy_parts.append(
+            f"{missing_text_policy} item(s) missing text_policy (resolved as none)"
+        )
+    if legacy_parts:
+        print(
+            f"Warning: {path}: legacy manifest compatibility: "
+            + "; ".join(legacy_parts),
+            file=sys.stderr,
+        )
 
     return data
 
@@ -526,9 +773,14 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     """Run Pending/Failed items through the backend with adaptive concurrency.
 
     Strategy:
+      - Verify every `Generated` item's target before treating it as done;
+        missing or unreadable output returns to `Failed` for this run.
       - Start at `initial_concurrency` workers per batch.
       - On any rate-limit error in a batch, halve concurrency (min 1) and
-        requeue the rate-limited items.
+        requeue the rate-limited items within a fixed attempt budget.
+      - A rate limit at concurrency 1 or after the budget is exhausted is
+        recorded as `status: Failed` + `last_error`; the current run then stops
+        without switching providers.
       - Per-item failures are recorded as `status: Failed` + `last_error`
         and not retried within this run. `Failed` remains retryable and
         non-terminal; the Step 5 gate must resolve it by rerunning this
@@ -539,9 +791,32 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
 
     Returns (ok_count, failed_count, skipped_count).
     """
-    from image_backends.backend_common import is_rate_limit_error
+    from image_backends.backend_common import (
+        is_rate_limit_error,
+        validate_image_file,
+    )
 
     items = manifest["items"]
+    repaired_generated = False
+    for item in items:
+        if item["status"] != STATUS_GENERATED:
+            continue
+        target_path = Path(output_dir) / item["filename"]
+        try:
+            validate_image_file(str(target_path))
+        except RuntimeError as exc:
+            item["status"] = STATUS_FAILED
+            item["last_error"] = (
+                f"Generated file validation failed: {exc}"
+            )[:500]
+            repaired_generated = True
+            print(
+                f"  [RETRY] {item['filename']} was marked Generated but its "
+                f"target is invalid: {exc}"
+            )
+    if repaired_generated:
+        save_manifest(manifest_path, manifest)
+
     pending_idx = [
         i for i, it in enumerate(items) if it["status"] in RETRYABLE_STATUSES
     ]
@@ -565,6 +840,8 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
     fail_count = 0
     current = max(1, initial_concurrency)
     state_lock = threading.Lock()
+    rate_limit_attempts: dict[int, int] = {}
+    stopped_for_rate_limit = False
 
     def _one(idx: int):
         item = items[idx]
@@ -609,8 +886,35 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         print(f"  [OK]   {item['filename']}")
                     elif is_rate_limit_error(exc):
                         rate_limited = True
-                        queue.append(idx)
-                        print(f"  [RATE] {item['filename']} — requeued")
+                        attempts = rate_limit_attempts.get(idx, 0) + 1
+                        rate_limit_attempts[idx] = attempts
+                        if (
+                            current == 1
+                            or attempts >= MAX_MANIFEST_RATE_LIMIT_ATTEMPTS
+                        ):
+                            boundary = (
+                                "serial concurrency reached"
+                                if current == 1
+                                else "rate-limit attempt budget exhausted"
+                            )
+                            item["status"] = STATUS_FAILED
+                            item["last_error"] = (
+                                f"Rate limit persisted ({boundary}; "
+                                f"attempt {attempts}): {exc}"
+                            )[:500]
+                            fail_count += 1
+                            stopped_for_rate_limit = True
+                            print(
+                                f"  [FAIL] {item['filename']}: {exc} "
+                                f"({boundary}; status=Failed)"
+                            )
+                        else:
+                            queue.append(idx)
+                            print(
+                                f"  [RATE] {item['filename']} — requeued "
+                                f"(attempt {attempts}/"
+                                f"{MAX_MANIFEST_RATE_LIMIT_ATTEMPTS})"
+                            )
                     else:
                         item["status"] = STATUS_FAILED
                         item["last_error"] = str(exc)[:500]
@@ -621,7 +925,13 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         )
                     save_manifest(manifest_path, manifest)
 
-        if rate_limited and current > 1:
+        if stopped_for_rate_limit:
+            print(
+                "\n  Persistent rate limit reached the run boundary. "
+                "Stopping without switching providers; untouched items remain retryable.\n"
+            )
+            break
+        if rate_limited and current > 1 and queue:
             new_current = max(1, current // 2)
             print(
                 f"\n  ⚠ Rate-limit hit — concurrency {current} → {new_current}, "
@@ -632,9 +942,17 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         elif queue:
             time.sleep(2)
 
+    run_state = "Stopped" if stopped_for_rate_limit else "Done"
+    remaining_note = ""
+    if stopped_for_rate_limit:
+        remaining = sum(
+            1 for item in items if item["status"] in RETRYABLE_STATUSES
+        )
+        remaining_note = f"; {remaining} item(s) remain retryable"
     print(
-        f"\n[Manifest] Done: {ok_count} ok / {fail_count} failed "
-        f"({skipped} pre-skipped). Manifest written to {manifest_path}"
+        f"\n[Manifest] {run_state}: {ok_count} ok / {fail_count} failed "
+        f"({skipped} pre-skipped{remaining_note}). "
+        f"Manifest written to {manifest_path}"
     )
     if fail_count:
         print(
@@ -672,7 +990,16 @@ def render_manifest_md(manifest: dict) -> str:
     project = manifest.get("project")
     generated_at = manifest.get("generated_at")
     color_scheme = manifest.get("color_scheme") or {}
-    anchor = manifest.get("deck_style_anchor")
+    deck_rendering = manifest.get("deck_rendering")
+    if not deck_rendering:
+        legacy_anchor = manifest.get("deck_style_anchor")
+        if isinstance(legacy_anchor, dict):
+            deck_rendering = (
+                legacy_anchor.get("visual_style")
+                or json.dumps(legacy_anchor, ensure_ascii=False, sort_keys=True)
+            )
+        else:
+            deck_rendering = legacy_anchor
 
     if project:
         lines.append(f"> Project: {project}")
@@ -683,8 +1010,8 @@ def render_manifest_md(manifest: dict) -> str:
             f"{k.capitalize()} {v}" for k, v in color_scheme.items()
         )
         lines.append(f"> Color scheme: {cs}")
-    if anchor:
-        lines.append(f"> Deck Style Anchor: {anchor}")
+    if deck_rendering:
+        lines.append(f"> Deck Rendering: {deck_rendering}")
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -697,11 +1024,20 @@ def render_manifest_md(manifest: dict) -> str:
         for label, key in (
             ("Purpose", "purpose"),
             ("Type", "type"),
+            ("Page role", "page_role"),
+            ("Text policy", "text_policy"),
             ("Aspect ratio", "aspect_ratio"),
             ("Image size", "image_size"),
+            ("Model", "model"),
+            ("Slice grid", "slice_grid"),
+            ("Slice names", "slice_names"),
             ("Status", "status"),
         ):
             value = item.get(key)
+            if not value and key == "page_role":
+                value = "local (legacy default)"
+            elif not value and key == "text_policy":
+                value = "none (legacy default)"
             if value:
                 lines.append(f"| {label} | {value} |")
         if item.get("last_error"):

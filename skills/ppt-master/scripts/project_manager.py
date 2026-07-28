@@ -75,8 +75,10 @@ from _dispatcher import (  # noqa: E402
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 TABLE_TEXT_SUFFIXES = {".csv", ".tsv"}
-IMAGE_ASSET_SUFFIXES = {
+BITMAP_IMAGE_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
+}
+IMAGE_ASSET_SUFFIXES = BITMAP_IMAGE_SUFFIXES | {
     ".emf", ".wmf", ".svg",
 }
 
@@ -640,6 +642,7 @@ class ProjectManager:
             "archived": [],
             "markdown": [],
             "assets": [],
+            "images": [],
             "analysis": [],
             "notes": [],
             "skipped": [],
@@ -760,7 +763,18 @@ class ProjectManager:
             )
             summary["archived"].append(str(archived_path))
 
-            if suffix in PDF_SUFFIXES:
+            if suffix in BITMAP_IMAGE_SUFFIXES:
+                images_dir = project_dir / "images"
+                images_dir.mkdir(parents=True, exist_ok=True)
+                image_path = self._ensure_unique_path(images_dir / archived_path.name)
+                shutil.copy2(archived_path, image_path)
+                summary["images"].append(str(image_path))
+                if image_path.name != archived_path.name:
+                    summary["notes"].append(
+                        f"{item}: copied runtime image as {image_path.name} "
+                        "to avoid a filename collision"
+                    )
+            elif suffix in PDF_SUFFIXES:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 if archived_path.stem in explicit_markdown_stems:
                     summary["notes"].append(
@@ -1049,6 +1063,10 @@ def main(argv: list[str] | None = None) -> int:
             if summary["assets"]:
                 print("\nImported asset directories:")
                 for item in summary["assets"]:
+                    print(f"  - {item}")
+            if summary["images"]:
+                print("\nRuntime image copies:")
+                for item in summary["images"]:
                     print(f"  - {item}")
             if summary["analysis"]:
                 print("\nAnalysis artifacts:")
