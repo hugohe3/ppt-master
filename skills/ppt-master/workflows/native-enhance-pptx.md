@@ -1,10 +1,10 @@
 ---
-description: Native enhancement platform for existing PPTX files, starting with notes/audio/timings/transitions without SVG conversion
+description: Native enhancement platform for existing PPTX files, with delivery checks and scoped OOXML updates without SVG conversion
 ---
 
 # Enhance Native PPTX Route
 
-> Top-level route for enhancing an existing PowerPoint deck without regenerating it. V1 implements the `narration` module: speaker notes, narration audio, slide auto-advance timings, and page transitions.
+> Top-level route for enhancing an existing PowerPoint deck without regenerating it. The current write scope is speaker notes, narration audio, slide auto-advance timings, and global or per-slide page transitions; read-only delivery checks always run.
 
 This route treats a `.pptx` as the artifact to preserve. It archives the source file into a lightweight project, uses `ppt_to_md.py` only to understand slide content, then patches the archived PPTX package directly through OOXML zip operations.
 
@@ -52,15 +52,15 @@ source.pptx
 | `narration.audio` | Enabled | Embed one audio file per slide |
 | `narration.timings` | Enabled | Set narrated slides to auto-advance by audio duration |
 | `narration.transitions` | Enabled | Add page-level transitions for narrated/selected slides |
-| `delivery.check` | Planned | Font/media/hidden-slide/file-size validation |
+| `delivery.check` | Enabled | Read-only package/font/media/hidden-slide/file-size and existing-motion audit |
 | `media` | Planned | Background music, video, media compression |
 | `presenter` | Planned | Q&A notes, speaker cues, rehearsal artifacts |
 | `animation` | Planned | Explicit object-level animation only |
 | `visible-stamp` | Planned | Watermark/footer/logo; requires explicit confirmation |
 
-**Default — V1 only**: Do not implement planned modules inside this route yet. Keep V1 focused on the narration module.
+**Default — current write scope only**: Do not implement planned write modules inside this route yet. Keep mutations limited to notes, narration audio, timings, and page transitions.
 
-**Object animation boundary**: Object-level animation is not part of V1. If the user asks for it, treat it as a future module or a separate explicitly confirmed task.
+**Object animation boundary**: `delivery.check` reports existing object-animation presence, and apply proves its fingerprint is unchanged. It does not author or edit object animations. The shared animation writer builds a complete timing tree for generated slides and is not safe to append to an arbitrary native slide.
 
 ---
 
@@ -97,9 +97,11 @@ Project layout:
 | `<project>/notes/` | Per-slide spoken notes, named `001.md`, `002.md`, ... |
 | `<project>/audio/` | Per-slide narration media, named `001.mp3`, `002.mp3`, ... |
 | `<project>/exports/` | Enhanced PPTX copies |
-| `<project>/validation/` | Coverage reports and read-back artifacts |
+| `<project>/validation/` | Delivery checks, readiness reports, and read-back artifacts |
 
-**Validation**: `project.json` contains `schema: native_pptx_enhancement_project.v1`, `kind: native_pptx_enhancement`, and `modules` containing `notes`, `audio`, `timings`, `transitions`.
+**Validation**: `project.json` contains `schema: native_pptx_enhancement_project.v1`, `kind: native_pptx_enhancement`, and `modules` containing `notes`, `audio`, `timings`, `transitions`, and `delivery.check`.
+
+`init` records the archived source SHA-256 and ordered slide-part roster, then writes the intake audit to `<project>/validation/report.json`. Package-integrity, OPC part/content-type/relationship, XML, slide-inventory, transition, or object-animation errors stop before a project-local source is moved. The only retained historical structural baseline is the narrowly recognized legacy notes-slide relationship to a missing notes master; it remains visible in the report and apply may not add any new structural error.
 
 **Source import rule**: When `<source.pptx>` is inside the repo's `projects/` tree, `init` moves it into `<project>/sources/`. When it is outside `projects/`, `init` copies it into `<project>/sources/`. The mode is recorded in `project.json` as `source_import.mode`.
 
@@ -123,6 +125,8 @@ If the project already existed or notes/audio coverage changed, refresh the draf
 python3 skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
 ```
 
+Refresh preserves user-owned module enablement, timing padding, global transition settings, and `transitions.slides`; it recomputes file presence/coverage, resets the plan to `draft`, and requires confirmation again. Audio coverage in the plan is explicitly `decodability: unchecked`; `validate` owns the ffprobe gate. CLI flags override only fields explicitly supplied.
+
 Present the plan to the user before generating notes or audio:
 
 | Module | Recommended default | Confirmation question |
@@ -131,6 +135,7 @@ Present the plan to the user before generating notes or audio:
 | `audio` | Enabled when user wants narration/video/autoplay | Generate one narration audio file per slide? |
 | `timings` | Enabled with audio | Set slide auto-advance from audio duration? |
 | `transitions` | Enabled, `fade` 0.5s | Add page transitions? Which canonical native effect, Effect Options, and duration? |
+| `delivery.check` | Always on, read-only | No confirmation required; review errors and advisories |
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation. Do not generate notes, generate audio, or patch the PPTX until the user confirms the module plan.
 
@@ -142,13 +147,52 @@ Present the plan to the user before generating notes or audio:
 | Transitions disabled with a non-`none` configured effect | Preserve the source effect, including unknown `AlternateContent` | Preserve unless timings is enabled |
 | Explicit `none` | Remove the visual effect | Preserve, or write timing-only advance when timings is enabled |
 | Timings enabled with audio | Keep the resolved enter policy | Use audio duration plus narration padding; click disabled |
-| Timings disabled | Apply the confirmed enter policy only | Do not run `ffprobe`; do not add/change `advTm` or `useTimings` |
+| Timings disabled | Apply the confirmed enter policy only | Audio readiness may probe decodability; do not use duration or add/change `advTm` or `useTimings` |
 
 The confirmed `modules.transitions` object may include `effect_options` beside
 an explicit canonical `effect`. Use
 `pptx_animations.py --describe-transition <effect>` for its exact fields.
 Old names remain accepted only when reading compatibility input; a newly
 written plan stores the canonical effect and any implied options.
+
+For explicit page selection or page-specific settings, add `slides` keyed by
+the 1-based `index` in `analysis/slide_index.json`:
+
+```json
+{
+  "modules": {
+    "transitions": {
+      "enabled": false,
+      "effect": "fade",
+      "duration": 0.5,
+      "apply_without_audio": false,
+      "slides": {
+        "2": {},
+        "3": {"duration": 0.8},
+        "4": {
+          "effect": "push",
+          "effect_options": {"direction": "left"}
+        },
+        "5": {"effect": "none"},
+        "6": {"effect": "preserve"}
+      }
+    }
+  }
+}
+```
+
+| Per-slide entry | Behavior |
+|---|---|
+| `{}` | Select the page and inherit the global effect/options/duration |
+| Partial object | Inherit omitted global fields; a new explicit effect uses its own default options |
+| `effect: none` | Remove the visual transition; timings remain independently owned |
+| `effect: preserve` | Preserve the source visual transition; narration timing may still update advance |
+
+An explicit `slides` entry selects a page even when it has no audio and
+`apply_without_audio` is false. With `transitions.enabled: false`, only listed
+pages opt in; unlisted pages preserve their source transition. Morph uses
+PowerPoint's automatic matching only—this route does not rename native objects
+to create deterministic pairs.
 
 **Hard rule — no silent downgrade**: a requested native effect must be written with its complete validated Effect Options. Unknown effects or inapplicable options fail; unknown source effects are preserved when the transition module is disabled.
 
@@ -200,7 +244,7 @@ Run coverage check:
 python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
 ```
 
-> Note: before audio generation, missing audio returns exit code `2` only when `audio.enabled` is true. Missing notes are not acceptable once this step is complete.
+> Note: missing, empty, unreadable, or undecodable requested material returns exit code `2`. Package, source-drift, plan/module, or duplicate native-enhance narration-carrier errors return `1`.
 
 ---
 
@@ -263,7 +307,20 @@ python3 skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
 
 Without `--apply-transition-without-audio` (or the matching confirmed-plan
 field), the resolved enter policy is applied while processing slides with
-audio; slides without audio keep their source transition.
+audio; slides without audio keep their source transition unless explicitly
+listed in `modules.transitions.slides`.
+
+`apply` reruns the same source/readiness/plan checks as `validate`. Enabling
+audio always requires every selected file to be decodable by ffprobe; enabling
+timings additionally consumes that duration for `advTm`. It refuses
+partial requested material, a changed source hash/slide roster, or a source
+that already contains a `native_enhance_audio_*` carrier. New audio/poster
+parts use collision-free names; an existing poster is reused only when its
+bytes match the tool marker exactly. Output must be a new `.pptx` under
+`exports/` or an external location; apply never overwrites either source or
+writes into project control directories. Every apply attempt invalidates the
+previous validation receipt, and a failed preflight records its current errors
+instead of leaving stale passed evidence.
 
 Patch scope:
 
@@ -278,6 +335,13 @@ Patch scope:
 | `[Content_Types].xml` | Required content types |
 
 **Hard rule**: Do not modify existing slide shapes, text bodies, images, chart data, master/layout parts, or existing non-target relationships.
+
+Before publishing the candidate, apply validates transitions, timing/object
+animation structure, ZIP integrity, unique parts, internal relationships,
+slide count, and hidden-slide state. The narrowly allowed legacy missing
+notes-master finding may remain exactly equivalent, but the candidate must not
+introduce any structural error. Apply then writes both audits and the
+introduced-error delta to `<project>/validation/report.json`.
 
 ---
 
@@ -302,13 +366,15 @@ Check:
 | Auto-play | Narrated slides advance by audio duration |
 | Transition | Requested effect remains exact; preserved `AlternateContent` keeps its primary and fallback branches |
 | Timings disabled | Source `advTm` and package `useTimings` are not changed |
+| Delivery check | No newly introduced structural errors; source baseline and font/media/hidden-slide advisories reviewed |
 
 ```markdown
 ## ✅ Native PPTX Enhancement V1 Complete
 
 - [x] Project initialized at `<project>`
 - [x] Source PPTX archived into `<project>/sources/`
-- [x] V1 narration module applied
+- [x] Confirmed native enhancement modules applied
 - [x] Enhanced PPTX exported to `<project>/exports/<file>.pptx`
+- [x] Delivery postflight written to `<project>/validation/report.json`
 - [x] Read-back validation written to `<project>/validation/readback.md`
 ```
