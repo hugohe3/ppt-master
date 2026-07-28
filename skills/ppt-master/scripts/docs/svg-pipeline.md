@@ -67,6 +67,231 @@ is owned by [`shared-standards-core.md`](../../references/shared-standards-core.
 authoring guidance in
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md).
 
+## Shape Boolean maintenance smoke
+
+Run this manual smoke from the repository root after changing
+`shape_boolean_svg.py`, preset geometry, path conversion, or custom-geometry
+import/export. It uses only a gitignored `projects/_smoke_*` workspace and the
+inline-smoke convention from [`code-style.md`](../../../../docs/rules/code-style.md)
+§11; do not turn it into a test file or example deck.
+
+```bash
+python3 - <<'PY'
+import re
+import subprocess
+import sys
+import tempfile
+import zipfile
+from pathlib import Path
+from xml.etree import ElementTree as ET
+
+import pathops
+
+project = Path(tempfile.mkdtemp(prefix="_smoke_shape_boolean_", dir="projects"))
+scripts = Path("skills/ppt-master/scripts")
+svg_output = project / "svg_output"
+svg_output.mkdir()
+(project / "spec_lock.md").write_text(
+    """<!-- ppt-master-schema: spec-lock/v1 -->
+# Execution Lock
+
+## canvas
+- viewBox: 0 0 1280 720
+- format: ppt169
+## communication
+- audience:
+- objective:
+- core_message:
+## mode
+- mode: briefing
+## visual_style
+- visual_style: Boolean maintenance smoke
+## colors
+- bg: #FFFFFF
+- primary: #2563EB
+- accent: #F97316
+- text: #0F172A
+## typography
+- font_family: Arial, sans-serif
+- title_family: Arial, sans-serif
+- body_family: Arial, sans-serif
+- title: 36
+- body: 20
+## icons
+- library: none
+- inventory: none
+## page_rhythm
+- P01: dense
+## pptx_structure
+- mode: flat
+## forbidden
+- Unsupported SVG constructs
+""",
+    encoding="utf-8",
+)
+
+
+def run_tool(script, *args):
+    result = subprocess.run(
+        [sys.executable, str(scripts / script), *map(str, args)],
+        capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr or result.stdout
+    return result.stdout.strip()
+
+preset = run_tool(
+    "preset_shape_svg.py", "render", "rightArrow",
+    "--id", "preset-source", "--frame", "500", "120", "240", "120",
+    "--fill", "#2563EB", "--stroke", "none",
+)
+source = project / "operands.svg"
+source.write_text(
+    f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs><clipPath id="clip"><rect width="80" height="80"/></clipPath></defs>
+  <g transform="translate(100 80) scale(1.2)">
+    <rect id="body" x="40" y="40" width="400" height="240" rx="20"
+      fill="#2563EB" stroke="#0F172A" stroke-width="5"
+      stroke-dasharray="10 4"/>
+    <circle id="cutout" cx="240" cy="160" r="70" fill="#F97316"/>
+    <path id="open" d="M 40 320 L 260 320 L 260 420" fill="#2563EB"/>
+    <rect id="clipped" x="40" y="320" width="160" height="100"
+      clip-path="url(#clip)" fill="#2563EB"/>
+    <path id="imported" d="M 240 320 H 400 V 420 H 240 Z"
+      data-pptx-geometry-kind="custom" fill="#2563EB"/>
+    <rect id="dashoffset" x="440" y="320" width="120" height="100"
+      fill="#2563EB" stroke="#0F172A" stroke-dashoffset="2"/>
+    <rect id="non-scaling" x="500" y="40" width="150" height="120"
+      fill="#2563EB" stroke="#0F172A" stroke-width="5"
+      stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
+    <circle id="non-scaling-cut" cx="625" cy="100" r="45" fill="#F97316"/>
+    <rect id="far" x="800" y="320" width="100" height="80" fill="#2563EB"/>
+  </g>
+  {preset}
+  <circle id="preset-cut" cx="690" cy="180" r="52" fill="#F97316"/>
+</svg>
+""",
+    encoding="utf-8",
+)
+
+operations = [
+    ("union", "preset-source", "preset-cut"),
+    ("combine", "body", "cutout"),
+    ("fragment", "body", "cutout"),
+    ("intersect", "body", "cutout"),
+    ("subtract", "body", "cutout"),
+]
+expected_custom_shapes = 0
+for index, (operation, first, second) in enumerate(operations, start=1):
+    fragment = run_tool(
+        "shape_boolean_svg.py", "render", source, "--operation", operation,
+        "--source", first, "--source", second, "--id", f"result-{operation}",
+    )
+    paths = list(
+        ET.fromstring(
+            f'<svg xmlns="http://www.w3.org/2000/svg">{fragment}</svg>'
+        )
+    )
+    assert paths and all(path.tag.endswith("}path") for path in paths)
+    assert all(
+        token not in fragment
+        for token in ("clip-path=", "fill-rule=", "mask=", "transform=")
+    )
+    if operation == "fragment":
+        assert len(paths) > 1
+        assert [path.get("id") for path in paths] == [
+            f"result-fragment-{piece}"
+            for piece in range(1, len(paths) + 1)
+        ]
+    else:
+        assert len(paths) == 1
+        assert paths[0].get("id") == f"result-{operation}"
+    if operation == "combine":
+        assert all(path.get("stroke-width") == "6" for path in paths)
+        assert all(path.get("stroke-dasharray") == "12 4.8" for path in paths)
+    if operation == "subtract":
+        assert (paths[0].get("d") or "").count("M ") >= 2
+
+    expected_custom_shapes += len(paths)
+    (svg_output / f"{index:02d}_{operation}.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+        'data-pptx-page-role="content">'
+        '<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>'
+        f"{fragment}</svg>\n",
+        encoding="utf-8",
+    )
+
+non_scaling = ET.fromstring(
+    run_tool(
+        "shape_boolean_svg.py", "render", source, "--operation", "union",
+        "--source", "non-scaling", "--source", "non-scaling-cut",
+        "--id", "result-non-scaling",
+    )
+)
+assert non_scaling.get("stroke-width") == "5"
+assert non_scaling.get("stroke-dasharray") == "10 4"
+assert non_scaling.get("vector-effect") == "non-scaling-stroke"
+
+rejections = [
+    ("union", "body", "open", "open subpath"),
+    ("union", "body", "clipped", "uses clip-path"),
+    ("union", "body", "imported", "PPTX import/round-trip metadata"),
+    ("union", "body", "dashoffset", "stroke-dashoffset"),
+    ("intersect", "body", "far", "produced no filled area"),
+]
+for operation, first, second, expected_error in rejections:
+    rejected = subprocess.run(
+        [
+            sys.executable,
+            str(scripts / "shape_boolean_svg.py"),
+            "render", str(source), "--operation", operation,
+            "--source", first, "--source", second,
+            "--id", f"reject-{second}",
+        ],
+        capture_output=True, text=True,
+    )
+    assert rejected.returncode != 0
+    assert expected_error in rejected.stderr, rejected.stderr
+
+run_tool("svg_quality_checker.py", svg_output, "--format", "ppt169")
+pptx = project / "boolean-smoke.pptx"
+run_tool("svg_to_pptx.py", project, "--quick-test", "-o", pptx)
+with zipfile.ZipFile(pptx) as archive:
+    slides = [
+        name
+        for name in archive.namelist()
+        if re.fullmatch(r"ppt/slides/slide\d+\.xml", name)
+    ]
+    custom_shapes = sum(
+        archive.read(name).count(b"<a:custGeom>")
+        for name in slides
+    )
+assert len(slides) == 5, slides
+assert custom_shapes == expected_custom_shapes
+
+readback = project / "readback"
+run_tool(
+    "pptx_to_svg.py", pptx, "-o", readback,
+    "--inheritance-mode", "flat", "--strict",
+)
+slides = sorted((readback / "svg").glob("slide_*.svg"))
+readback_custom_shapes = sum(
+    slide.read_text(encoding="utf-8").count('data-pptx-custgeom="')
+    for slide in slides
+)
+assert len(slides) == 5, slides
+assert readback_custom_shapes == expected_custom_shapes
+print(
+    f"Shape Boolean smoke: passed "
+    f"({expected_custom_shapes} custom shapes; {project})"
+)
+PY
+```
+
+The five inline negative cases must return nonzero and match their expected
+errors; every other command must pass. Open the printed
+`boolean-smoke.pptx` path in PowerPoint: the Subtract result must have a real
+hole, and every Fragment sibling must remain separately selectable.
+
 ## `compact_svg_coordinates.py`
 
 Compact safe model-facing page-space coordinates without rewriting unrelated

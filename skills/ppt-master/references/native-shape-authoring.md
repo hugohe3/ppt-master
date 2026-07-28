@@ -201,9 +201,11 @@ freshness contract.
 
 ## 6. Shape Boolean Materialization
 
-**Trigger**: The authored design explicitly requires a PowerPoint-style Union,
-Combine, Fragment, Intersect, or Subtract operation over two or more closed
-vector shapes.
+**Trigger**: Current page construction has two or more closed vector operands
+whose faithful result calls for PowerPoint-style Union, Combine, Fragment,
+Intersect, or Subtract. A §IX `Native shape suggestion` is a semantic candidate,
+not a prerequisite or tool command; Executor may adopt, adapt, or decline it
+from the actual content and explicit user/template constraints.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
@@ -217,7 +219,9 @@ python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
 |---|---|
 | Sources | Closed `path`, `polygon`, `rect`, `circle`, `ellipse`, or one validated compact authored shape preset. Open ordinary geometry, connectors, ordinary groups, text, images, definitions, and nested SVG viewports fail closed. |
 | Primary shape | The first `--source` supplies result paint. For `subtract`, all later operands are removed from that primary geometry. Explicit paint flags override only their named channels. |
-| Coordinates | Ancestor and local transforms are baked into SVG-root coordinates. Insert stdout at the root in the primary operand's z-order; never reinsert it under an original transformed ancestor. |
+| Coordinates | Ancestor and local transforms are baked into SVG-root coordinate space. Place stdout in the primary operand's z-order with no additional transform; never reinsert it under an original transformed ancestor. Root-coordinate space does not require each result path to be a direct `<svg>` child. |
+| Placement | Ordinary Slide-local results belong in the applicable untransformed direct-root semantic `<g>` with its normal `id` / `data-pptx-bounds`. Master/Layout results remain direct-root path atoms and redeclare `data-pptx-layer`. One non-fragment result may be the direct `data-pptx-carrier="true"` child of an `object` slot. |
+| Fragment roles | Fragment paths may share one ordinary Slide-local semantic group, but remain separate shapes and cannot collectively claim one carrier or one Master/Layout atom. Helper output inherits no structural role metadata from its operands; redeclare only the final layer/carrier/role contract. |
 | Result | `union`, `combine`, `intersect`, and `subtract` emit one ordinary `<path>`. `fragment` emits stable sibling paths named `<id>-1`, `<id>-2`, ... in top/left/bottom/right/area order. |
 | Winding | Results use explicit nonzero contour direction and never emit `fill-rule`, `clip-rule`, `clip-path`, `mask`, or Merge Shapes metadata. Operands that depend on even-odd fill, clipping, or masking fail closed. |
 | Preservation | This helper authors new geometry only. Never use it to merge or split mirror/preserve source structure. |
@@ -230,8 +234,9 @@ stores the materialized freeform geometry, not replayable operation history.
 
 **Hard rule — stdout-only replacement**: The helper never writes the source
 page. In one normal `apply_patch` edit, remove every selected operand and insert
-every returned path at the SVG root in the primary operand's z-order. Fragment
-paths remain separate shapes; do not wrap them to claim one structural atom.
+every returned path in root coordinate space at the primary operand's z-order,
+using the placement contract above. Fragment paths remain separate shapes; an
+ordinary semantic group does not turn them into one structural atom.
 
 ---
 

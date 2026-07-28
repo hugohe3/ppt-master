@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """PPT Master - Repository Updater
 
-Pull the latest Git checkout and sync Python dependencies when requirements
-change.
+Pull the latest Git checkout and sync Python dependencies when the effective
+requirements include tree changes.
 
 Usage:
     python3 skills/ppt-master/scripts/update_repo.py
@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import shlex
 import shutil
 import subprocess
 import sys
@@ -59,14 +60,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Pull the latest repository changes and sync Python dependencies "
-            "only when requirements.txt changes."
+            "only when the requirements include tree changes."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--skip-pip",
         action="store_true",
-        help="Skip Python dependency sync even if requirements.txt changed.",
+        help="Skip Python dependency sync even if the requirements include tree changed.",
     )
     return parser.parse_args(argv)
 
@@ -88,14 +89,75 @@ def run_command(args: list[str], *, check: bool = True) -> subprocess.CompletedP
     )
 
 
-def file_digest(path: Path) -> str | None:
+def _requirement_includes(path: Path, content: str) -> list[Path]:
+    """Resolve local -r/--requirement includes relative to their owning file."""
+    includes: list[Path] = []
+    for raw_line in content.splitlines():
+        try:
+            tokens = shlex.split(raw_line, comments=True, posix=True)
+        except ValueError:
+            continue
+        if not tokens:
+            continue
+
+        option = tokens[0]
+        include_value: str | None = None
+        if option in {"-r", "--requirement"}:
+            if len(tokens) >= 2:
+                include_value = tokens[1]
+        elif option.startswith("--requirement="):
+            include_value = option.partition("=")[2]
+        elif option.startswith("-r") and len(option) > 2:
+            include_value = option[2:].lstrip("=")
+
+        if not include_value:
+            continue
+        include_path = Path(include_value)
+        if not include_path.is_absolute():
+            include_path = path.parent / include_path
+        includes.append(include_path)
+    return includes
+
+
+def requirements_digest(path: Path) -> str | None:
+    """Hash one requirements file and its recursive local include closure."""
     if not path.exists():
         return None
 
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(8192), b""):
-            digest.update(chunk)
+    visited: set[Path] = set()
+
+    def visit(current: Path) -> None:
+        try:
+            resolved = current.resolve()
+        except OSError as exc:
+            raise RuntimeError(
+                f"Unable to resolve requirements file {current}: {exc}"
+            ) from exc
+        if resolved in visited:
+            digest.update(b"repeat\0")
+            return
+        visited.add(resolved)
+
+        if not resolved.is_file():
+            digest.update(b"missing\0")
+            return
+        try:
+            content = resolved.read_bytes()
+        except OSError as exc:
+            raise RuntimeError(
+                f"Unable to read requirements file {resolved}: {exc}"
+            ) from exc
+        digest.update(b"file\0")
+        digest.update(len(content).to_bytes(8, "big"))
+        digest.update(content)
+        for included in _requirement_includes(
+            resolved,
+            content.decode("utf-8", errors="replace"),
+        ):
+            visit(included)
+
+    visit(path)
     return digest.hexdigest()
 
 
@@ -131,7 +193,7 @@ def sync_python_dependencies() -> None:
         print_status("requirements.txt not found; skipping Python dependency sync.")
         return
 
-    print_status("requirements.txt changed. Syncing Python dependencies...")
+    print_status("Requirements include tree changed. Syncing Python dependencies...")
     result = run_command([sys.executable, "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)])
     if result.stdout.strip():
         print_status(result.stdout.strip())
@@ -148,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
         ensure_clean_tracked_worktree()
 
         before_head = get_head_revision()
-        before_requirements = file_digest(REQUIREMENTS_FILE)
+        before_requirements = requirements_digest(REQUIREMENTS_FILE)
 
         print_status(f"Repository: {REPO_ROOT}")
         pull_result = run_command(["git", "pull", "--ff-only"])
@@ -158,7 +220,7 @@ def main(argv: list[str] | None = None) -> int:
             print_status(pull_result.stderr.strip())
 
         after_head = get_head_revision()
-        after_requirements = file_digest(REQUIREMENTS_FILE)
+        after_requirements = requirements_digest(REQUIREMENTS_FILE)
 
         if before_head == after_head:
             print_status("Repository is already up to date.")
@@ -170,7 +232,9 @@ def main(argv: list[str] | None = None) -> int:
         elif before_requirements != after_requirements:
             sync_python_dependencies()
         else:
-            print_status("requirements.txt unchanged. Skipping Python dependency sync.")
+            print_status(
+                "Requirements include tree unchanged. Skipping Python dependency sync."
+            )
 
         print_status(
             "Note: system dependencies such as Node.js and Pandoc still need "
