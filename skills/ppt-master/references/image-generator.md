@@ -24,7 +24,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 | `text_policy` | Use |
 |---|---|
 | `none` | No text inside the image |
-| `embedded` | Image contains text as part of the artwork — decorative lettering, designed title, hand-lettered keywords, infographic labels, anything the page needs |
+| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered keywords, or figure-internal labels |
 
 **Hard rule — only what's actually hard**:
 
@@ -149,7 +149,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Deck color behavior — state the core anchors and any context-justified tonal treatment, e.g. "secondary background #F8F9FA provides the breathing field, primary #1E3A5F carries main forms, accent #D4AF37 marks one emphasis; subtle lighter/darker material transitions remain in the same visual family"].
 [Composition — from the chosen type file or §4.1 no-type prose].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
-[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid **only** when `page_role: hero_page` (SVG sits on top of the image). For `page_role: local`, the image sits inside a region block and the SVG layer never overlays its interior — never reserve overlay space in a local prompt].
+[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid when `page_role: hero_page`, or when §VIII `Reference` / §IX `Layout` explicitly plans native labels, hotspots, lenses, or other SVG overlays inside a `local` image region. Otherwise a `local` image is a self-contained region block and reserves no interior overlay space].
 [Hard rules — see §5].
 ```
 
@@ -171,7 +171,7 @@ Use these when no structural type applies. A/B can describe either a hero image 
 
 > One dominant subject occupying 60-70% of the canvas, positioned with intent (centered, rule-of-thirds offset, or slight left/right). Supporting context <30% of canvas weight. Generous negative space — at least 15% padding on the subject's "open" side. No second-place subject competing.
 
-Use for: product reveal, concept introduction, chapter title visual, brand statement, or a local single-object region.
+Use for: product reveal, concept introduction, chapter-opener visual, brand statement, or a local single-object region.
 
 **Primitive B — single human subject (portrait)**
 
@@ -189,7 +189,7 @@ Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part
 
 > Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
 
-**Applies to `page_role: hero_page` only.** The "calm center for SVG overlay" contract is the defining feature of this primitive — and it only holds when SVG actually sits on top of the image. `page_role: local` images live inside a region block; the SVG layer never overlays their interior, so Primitive D is not a valid choice for local. Local schematic / scene / chart images use the §3 type templates instead.
+**Applies to `page_role: hero_page` only.** The "calm center for SVG overlay" contract defines this primitive. A `local` image uses §3 type templates or §4.1 A/B instead; when §VIII / §IX explicitly plans native overlays inside that region, its prompt may reserve only the named focal/quiet area without turning the whole asset into Primitive D.
 
 Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
 
@@ -328,8 +328,8 @@ Every AI-image page carries text in two layers:
 
 | Layer | Owned by | Examples |
 |---|---|---|
-| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; hero typographic or decorative lettering that *is* the visual |
-| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | page-level chrome (title, navigation, footer, body bullets, conclusion callout); readable copy, captions |
+| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; stable artistic lettering that *is* the visual |
+| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | authoritative deck/page/chapter titles; navigation, footer, body bullets, conclusion callout; readable copy, captions |
 
 `text_policy` controls only Layer 1. AI judges per image; no global default bias.
 
@@ -348,9 +348,9 @@ Defaulting an entire `ai` resource list to `none` because "SVG can always overla
 | `text_policy` | Prompt cue |
 |---|---|
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
-| `embedded` | Describe the Layer 1 text directly inside the visual scene: the word(s), how they're rendered, and the artistic treatment. |
+| `embedded` | Describe the stable Layer 1 lettering directly inside the visual scene: the exact character(s), how they are rendered, and the artistic treatment. |
 
-**Hard rule — cross-cutting**: Layer 2 chrome stays SVG regardless of `text_policy`. Never bake the deck title, navigation, footer, body bullets, or conclusion callout into the image, even when `embedded`.
+**Hard rule — cross-cutting**: Authoritative titles and Layer 2 chrome stay SVG regardless of `text_policy`. Bake title-like wording only when the approved plan explicitly treats those exact characters as stable artistic lettering that is part of the artwork rather than editable deck/page/chapter copy. Navigation, footer, body bullets, captions, and conclusion callouts always stay SVG.
 
 **Forbidden — text that may be reworded**: any word that may later change belongs in Layer 2, not Layer 1. Layer 1 is for stable visual identifiers and designed lettering that is part of the image itself.
 
@@ -358,7 +358,7 @@ Defaulting an entire `ai` resource list to `none` because "SVG can always overla
 
 The font for in-image text is a free natural-language description, not an enum. Pick whatever serves the image: blackletter for a heritage cover, hand-brushed for a manifesto poster, retro chrome 3D for Y2K, art-deco display for a luxury hero, ribbon script for a bookstore zine — any artistic treatment the image earns.
 
-The table below is **a reference for the one case where you want the in-image lettering to read as the same typographic family as the SVG body** (e.g. a clean editorial deck where the cover title in the image should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
+The table below is **a reference for the one case where stable in-image lettering should read as the same typographic family as the SVG body** (e.g. an artistic cover wordmark should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
 
 | `spec_lock typography.font_family` contains | Optional descriptor if you want to echo the SVG body |
 |---|---|
@@ -371,11 +371,11 @@ The table below is **a reference for the one case where you want the in-image le
 **When to ignore the table**:
 
 - Decorative / background lettering, posters, large mood words → describe the artistic treatment freely
-- Cover hero title that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
+- Stable artistic cover lettering that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
 - Sketch-notes / ink-notes / hand-drawn renderings where the lettering is part of the rendering itself → describe freely
 - Any case where rendering already implies a font character (e.g. `vintage-poster` implies period display lettering) → trust the rendering, no need to echo SVG body
 
-**When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
+**When to use the table**: stable artistic lettering on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
 **In-image text vs SVG text — decide by editability, not by model capability**
 
@@ -383,8 +383,8 @@ Layer 1 text is rasterized into the artwork — once generated it cannot be edit
 
 | Text | Layer |
 |---|---|
-| Part of the artwork and stable — decorative lettering, designed title, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
-| Page chrome, body copy, captions, data values — anything that must stay exact, searchable, or may be reworded | Layer 2 (SVG) |
+| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Authoritative titles, page chrome, body copy, captions, data values — anything that must stay exact, searchable, editable, or may be reworded | Layer 2 (SVG) |
 
 Generation is non-deterministic on every backend, but **do not pre-judge by script or length** — never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a particular script or a long string "won't render". Decide where text lives by the editability rule above, not by guessed rendering ability. Name the exact characters to bake literally in the prompt; do not re-read the generated image to verify them.
 
@@ -451,7 +451,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
 | `items[].type` | conditional | Step 3 per-image | One of 11 internal-composition types for a local structural infographic. Omit it for `hero_page`, an Illustration Sheet, and a local single-subject / portrait composition authored with §4.1 A/B prose. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
-| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains decorative lettering, designed title, hand-lettered keywords, or stable visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
+| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains stable artistic lettering, hand-lettered keywords, or visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
@@ -623,7 +623,7 @@ When an existing AI Resource List row omits `Reference` or contains a blank `Ref
 | Purpose | A reasonable starting point |
 |---------|-----------------------------|
 | Cover | `page_role: hero_page` + §4.1 Primitive A (single-subject) or D (atmospheric); choose `text_policy` by what the cover should communicate |
-| Chapter divider | `page_role: hero_page` + Primitive D (atmospheric) or A (single-subject); often `text_policy: embedded` with a designed chapter title |
+| Chapter divider | `page_role: hero_page` + Primitive D (atmospheric) or A (single-subject); keep the authoritative chapter title in SVG, with `embedded` reserved for separate stable artistic lettering |
 | Methodology / framework illustration | `type: framework`, `page_role: local` |
 | Process / workflow illustration | `type: flowchart`, `page_role: local` |
 | Before/After or two-option page | `type: comparison`, `page_role: local` |
