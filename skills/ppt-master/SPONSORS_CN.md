@@ -24,9 +24,9 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 ### PackyCode
 
-<a href="https://www.packyapi.com/register?aff=ppt-master"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a>
+<a href="https://www.packyapi.ai/register?aff=ppt-master"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a>
 
-[PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude Code、Codex、Gemini 等服务的中转接入。通过专属链接注册，并在充值时填写优惠码 **`ppt-master`**，即可享受 9 折优惠。
+[PackyCode](https://www.packyapi.ai/register?aff=ppt-master) 提供 Claude Code、Codex、Gemini 等服务的中转接入。通过专属链接注册，并在充值时填写优惠码 **`ppt-master`**，即可享受 9 折优惠。
 
 ### APIKEY.FUN
 
