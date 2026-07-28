@@ -857,9 +857,11 @@ Recorded narration:
     parser.add_argument('--no-image-optimize', action='store_true',
                         help='Disable native PPTX raster image optimization; embeds original image bytes.')
     parser.add_argument('--image-max-dimension', type=int, default=2560,
-                        help='Maximum optimized raster image dimension in pixels (default: 2560).')
+                        help='Preferred optimized raster cap in pixels; cap mode may retain more '
+                             'for cropped/stretched effective resolution (default: 2560).')
     parser.add_argument('--image-sizing', choices=['cap', 'display'], default='cap',
-                        help='Raster sizing mode: cap only limits source dimensions; '
+                        help='Raster sizing mode: cap limits source dimensions without '
+                             'undersupplying cropped/stretched visible pixels; '
                              'display sizes from the SVG rendered box (default: cap).')
     parser.add_argument('--image-scale', type=float, default=2.0,
                         help='Target optimized image pixels per SVG display pixel '
