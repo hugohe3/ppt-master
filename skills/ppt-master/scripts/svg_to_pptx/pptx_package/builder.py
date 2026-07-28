@@ -29,11 +29,13 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from pptx_transitions import (
+    MorphPairExpectation,
     NATIVE_TRANSITIONS,
     create_transition_xml,
     normalize_transition_effect_request,
     set_directory_use_timings,
     validate_generated_transition_xml,
+    validate_pptx_morph_pairs,
     validate_pptx_transition_package,
     validate_seconds,
 )
@@ -49,6 +51,7 @@ from pptx_animations import (
     validate_pptx_animation_package,
 )
 
+from ..animation_config import MorphPair, resolve_morph_pairs
 from ..drawingml.converter import convert_svg_to_slide_shapes
 from ..drawingml.theme_colors import (
     ThemeColorSpec,
@@ -495,6 +498,79 @@ def _set_shape_name(elem: ET.Element, name: str) -> None:
     raise TemplateStructureError(
         f"Cannot name structured shape {name!r}: p:cNvPr is missing"
     )
+
+
+def _apply_morph_shape_names(
+    extract_dir: Path,
+    pairs: tuple[MorphPair, ...],
+    slide_numbers: dict[str, int],
+    shape_ids: dict[tuple[str, str], int],
+) -> dict[int, dict[str, str]]:
+    """Write forced-Morph names after all structure transformations finish."""
+    assignments: dict[int, dict[str, tuple[str, str]]] = {}
+    names_by_slide: dict[int, dict[str, str]] = {}
+    for pair in pairs:
+        for slide_name, group_id in (
+            (pair.source_slide, pair.source_group_id),
+            (pair.destination_slide, pair.destination_group_id),
+        ):
+            slide_number = slide_numbers[slide_name]
+            shape_id = str(shape_ids[(slide_name, group_id)])
+            slide_assignments = assignments.setdefault(slide_number, {})
+            previous = slide_assignments.setdefault(
+                shape_id,
+                (pair.shape_name, group_id),
+            )
+            if previous[0] != pair.shape_name:
+                raise RuntimeError(
+                    f'Morph target "{slide_name}/{group_id}" resolves to shape '
+                    f'{shape_id} with conflicting names "{previous[0]}" and '
+                    f'"{pair.shape_name}"'
+                )
+            slide_names = names_by_slide.setdefault(slide_number, {})
+            previous_group = slide_names.setdefault(pair.shape_name, group_id)
+            if previous_group != group_id:
+                raise RuntimeError(
+                    f'Morph name "{pair.shape_name}" maps to multiple objects '
+                    f'on slide "{slide_name}"'
+                )
+
+    trace_names: dict[int, dict[str, str]] = {}
+    for slide_number, slide_assignments in sorted(assignments.items()):
+        slide_path = (
+            extract_dir / "ppt" / "slides" / f"slide{slide_number}.xml"
+        )
+        tree = ET.parse(slide_path)
+        root = tree.getroot()
+        top_level_shapes = _top_level_shapes_by_id(root)
+        desired_names = {
+            shape_name
+            for shape_name, _group_id in slide_assignments.values()
+        }
+        for shape_id, shape in top_level_shapes.items():
+            if shape_id in slide_assignments:
+                continue
+            c_nv_pr = next(shape.iter(f"{{{PML_NS}}}cNvPr"), None)
+            existing_name = (
+                c_nv_pr.get("name") if c_nv_pr is not None else None
+            )
+            if existing_name in desired_names:
+                raise RuntimeError(
+                    f'Morph name "{existing_name}" already belongs to an '
+                    f'unmapped object on slide {slide_number}'
+                )
+
+        for shape_id, (shape_name, group_id) in slide_assignments.items():
+            shape = top_level_shapes.get(shape_id)
+            if shape is None:
+                raise RuntimeError(
+                    f'Morph target "{group_id}" no longer resolves to a '
+                    f'Slide-local shape on slide {slide_number}'
+                )
+            _set_shape_name(shape, shape_name)
+            trace_names.setdefault(slide_number, {})[group_id] = shape_name
+        _write_xml_tree(slide_path, tree)
+    return trace_names
 
 
 def _top_level_shape_name_roster(root: ET.Element) -> tuple[str, ...]:
@@ -4743,6 +4819,41 @@ def create_pptx_with_native_svg(
     """
     public_svg_files = list(svg_files)
     definition_svg_files = list(layout_definition_files or [])
+    public_slide_names = [path.stem for path in public_svg_files]
+    morph_pairs = resolve_morph_pairs(
+        public_slide_names,
+        animation_config,
+    )
+    public_slide_numbers = {
+        slide_name: slide_number
+        for slide_number, slide_name in enumerate(public_slide_names, 1)
+    }
+    morph_expectations = tuple(
+        MorphPairExpectation(
+            source_slide_number=public_slide_numbers[pair.source_slide],
+            destination_slide_number=public_slide_numbers[
+                pair.destination_slide
+            ],
+            key=pair.key,
+        )
+        for pair in morph_pairs
+    )
+    morph_pairs_by_destination: dict[str, list[MorphPair]] = {}
+    morph_group_overrides_by_slide: dict[str, set[str]] = {}
+    for pair in morph_pairs:
+        morph_pairs_by_destination.setdefault(
+            pair.destination_slide,
+            [],
+        ).append(pair)
+        morph_group_overrides_by_slide.setdefault(
+            pair.source_slide,
+            set(),
+        ).add(pair.source_group_id)
+        morph_group_overrides_by_slide.setdefault(
+            pair.destination_slide,
+            set(),
+        ).add(pair.destination_group_id)
+    morph_shape_ids: dict[tuple[str, str], int] = {}
     if definition_svg_files and pptx_structure != "structured":
         raise ValueError(
             "layout_definition_files requires pptx_structure='structured'"
@@ -5099,6 +5210,20 @@ def create_pptx_with_native_svg(
                             animation_trigger,
                             animation_cli_overrides,
                         )
+                        if morph_pairs_by_destination.get(svg_path.stem):
+                            if (
+                                slide_transition != "morph"
+                                or slide_transition_effect_options.get(
+                                    "morph_by",
+                                    "object",
+                                )
+                                != "object"
+                            ):
+                                raise ValueError(
+                                    f'animations.json slide "{svg_path.stem}" '
+                                    'declares deterministic Morph pairs, but '
+                                    'the resolved transition is not Morph by object'
+                                )
                     groups_value = slide_cfg.get('groups', {})
                     if not isinstance(groups_value, dict):
                         raise ValueError(
@@ -5128,6 +5253,15 @@ def create_pptx_with_native_svg(
                         if not animation_hard_disabled
                         else frozenset()
                     )
+                    converter_group_overrides = (
+                        explicit_animation_groups
+                        | frozenset(
+                            morph_group_overrides_by_slide.get(
+                                svg_path.stem,
+                                set(),
+                            )
+                        )
+                    )
                     (
                         slide_xml,
                         media_files_dict,
@@ -5145,7 +5279,7 @@ def create_pptx_with_native_svg(
                             image_scale=image_scale,
                             image_quality=image_quality,
                             native_objects=native_objects,
-                            animation_group_overrides=explicit_animation_groups,
+                            animation_group_overrides=converter_group_overrides,
                             theme_font_spec=active_theme_font_spec,
                             theme_color_spec=active_theme_color_spec,
                             promote_background=pptx_structure != "structured",
@@ -5154,6 +5288,31 @@ def create_pptx_with_native_svg(
                             else structure_trace,
                         )
                     )
+                    morph_group_ids = morph_group_overrides_by_slide.get(
+                        svg_path.stem,
+                        set(),
+                    )
+                    if morph_group_ids:
+                        target_ids_by_group: dict[str, list[int]] = {}
+                        for shape_id, group_id in anim_targets:
+                            target_ids_by_group.setdefault(
+                                str(group_id),
+                                [],
+                            ).append(int(shape_id))
+                        for group_id in sorted(morph_group_ids):
+                            resolved_shape_ids = target_ids_by_group.get(
+                                group_id,
+                                [],
+                            )
+                            if len(resolved_shape_ids) != 1:
+                                raise ValueError(
+                                    f'Morph target "{svg_path.stem}/{group_id}" '
+                                    'must resolve to exactly one Slide-local '
+                                    'PowerPoint shape'
+                                )
+                            morph_shape_ids[
+                                (svg_path.stem, group_id)
+                            ] = resolved_shape_ids[0]
                     # Order matters: OOXML schema requires <p:transition>
                     # to precede <p:timing> inside <p:sld>. Both use the same
                     # </p:sld> string-replace anchor, so transition must be
@@ -5694,6 +5853,27 @@ def create_pptx_with_native_svg(
                     f"{pruned_payload_parts} orphan payload part(s)"
                 )
 
+        morph_trace_names = _apply_morph_shape_names(
+            extract_dir,
+            morph_pairs,
+            public_slide_numbers,
+            morph_shape_ids,
+        )
+        if template_shape_roster_expectations is not None:
+            for slide_number in morph_trace_names:
+                slide_part = f"ppt/slides/slide{slide_number}.xml"
+                template_shape_roster_expectations[
+                    slide_part
+                ] = _top_level_shape_name_roster(
+                    ET.parse(extract_dir / slide_part).getroot()
+                )
+        if conversion_trace is not None:
+            for trace_entry in conversion_trace:
+                slide_number = int(trace_entry.get("slide_num", 0))
+                names = morph_trace_names.get(slide_number)
+                if names:
+                    trace_entry["morph_names"] = dict(sorted(names.items()))
+
         # Update [Content_Types].xml
         content_types_path = extract_dir / '[Content_Types].xml'
         with open(content_types_path, 'r', encoding='utf-8') as f:
@@ -5818,6 +5998,15 @@ def create_pptx_with_native_svg(
         except ValueError as exc:
             raise RuntimeError(
                 f'PPTX transition package validation failed: {exc}'
+            ) from exc
+        try:
+            validate_pptx_morph_pairs(
+                temp_output_path,
+                morph_expectations,
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                f'PPTX Morph package validation failed: {exc}'
             ) from exc
         try:
             validate_pptx_animation_package(
