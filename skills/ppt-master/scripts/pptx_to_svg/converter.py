@@ -14,10 +14,15 @@ loads the package and reports basic per-slide structure to verify wiring.
 from __future__ import annotations
 
 import json
+import os
 import re
+import shutil
+import tempfile
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from html import unescape
 from pathlib import Path, PurePosixPath
+from urllib.parse import unquote, urlsplit
 
 from .color_resolver import ColorPalette
 from .emu_units import NS
@@ -32,6 +37,37 @@ from .slide_to_svg import assemble_part_solo, assemble_slide
 
 
 _CJK_THEME_SCRIPTS = frozenset({"Hans", "Hant", "Jpan", "Hang"})
+_MANAGED_PRIMARY_SVG_RE = re.compile(
+    r"(?:slide_\d+|master_\d+_[A-Za-z0-9_-]+|layout_\d+_[A-Za-z0-9_-]+)\.svg"
+)
+_MANAGED_FLAT_SVG_RE = re.compile(r"slide_\d+\.svg")
+_SVG_HREF_RE = re.compile(
+    r"\b(?:href|xlink:href)\s*=\s*[\"']([^\"']+)[\"']"
+)
+
+
+def _validate_media_subdir(value: str) -> None:
+    """Reject media output paths that can escape the conversion workspace."""
+    path = Path(value)
+    if path.drive or path.anchor or path.is_absolute() or ".." in path.parts:
+        raise ValueError(
+            f"media_subdir must stay within the output workspace: {value!r}"
+        )
+
+
+def _validate_media_filename(filename: str) -> None:
+    """Require one media basename so asset maps cannot redirect writes."""
+    path = Path(filename)
+    if (
+        not filename
+        or filename in {".", ".."}
+        or path.drive
+        or path.anchor
+        or path.name != filename
+        or "/" in filename
+        or "\\" in filename
+    ):
+        raise ValueError(f"Media filename must be a basename: {filename!r}")
 
 
 def _extract_theme_info(
@@ -241,6 +277,8 @@ def convert_pptx_to_svg(
             f"inheritance_mode must be 'flat', 'layered', or 'both', "
             f"got {options.inheritance_mode!r}"
         )
+    if not options.embed_images:
+        _validate_media_subdir(options.media_subdir)
     emit_layered = options.inheritance_mode in {"layered", "both"}
     emit_flat = options.inheritance_mode in {"flat", "both"}
     result = ConvertResult(
@@ -485,9 +523,269 @@ def _render_part(
     )
 
 
-def _write_artifacts(output_dir: Path, result: ConvertResult,
-                     options: ConvertOptions) -> None:
-    """Write SVG + media files to output_dir.
+def _path_lexists(path: Path) -> bool:
+    """Return whether a path or symlink exists without following the symlink."""
+    return path.exists() or path.is_symlink()
+
+
+def _managed_svg_paths(output_dir: Path) -> list[Path]:
+    """Return converter-owned SVG files without traversing user directories."""
+    managed: list[Path] = []
+    for dirname, filename_re in (
+        ("svg", _MANAGED_PRIMARY_SVG_RE),
+        ("svg-flat", _MANAGED_FLAT_SVG_RE),
+    ):
+        svg_dir = output_dir / dirname
+        if svg_dir.is_symlink():
+            managed.append(svg_dir)
+            continue
+        if not svg_dir.is_dir():
+            continue
+        managed.extend(
+            path
+            for path in svg_dir.iterdir()
+            if filename_re.fullmatch(path.name)
+            and (path.is_file() or path.is_symlink())
+        )
+        inheritance = svg_dir / "inheritance.json"
+        if dirname == "svg" and _path_lexists(inheritance):
+            managed.append(inheritance)
+    return managed
+
+
+def _referenced_local_paths(
+    output_dir: Path,
+    svg_paths: list[Path],
+) -> set[Path]:
+    """Resolve local media referenced by converter-owned SVGs."""
+    referenced: set[Path] = set()
+    output_abs = output_dir.absolute()
+    for svg_path in svg_paths:
+        if svg_path.is_symlink() or not svg_path.is_file():
+            continue
+        try:
+            svg_text = svg_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            continue
+        for raw_href in _SVG_HREF_RE.findall(svg_text):
+            href = unescape(raw_href)
+            parsed = urlsplit(href)
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            href_path = unquote(parsed.path)
+            if Path(href_path).is_absolute():
+                continue
+            target = Path(os.path.normpath(str(svg_path.parent / href_path)))
+            try:
+                relative = target.absolute().relative_to(output_abs)
+            except ValueError:
+                continue
+            if relative.parts:
+                referenced.add(relative)
+    return referenced
+
+
+def _validated_relative_paths(paths: set[str | Path]) -> set[Path]:
+    """Normalize caller-supplied managed paths and reject output escapes."""
+    normalized: set[Path] = set()
+    for value in paths:
+        path = Path(value)
+        if (
+            path.drive
+            or path.anchor
+            or path.is_absolute()
+            or not path.parts
+            or ".." in path.parts
+        ):
+            raise ValueError(f"Managed artifact path must stay relative: {value}")
+        normalized.add(path)
+    return normalized
+
+
+def _reject_symlink_ancestors(
+    root: Path,
+    relative_paths: set[Path],
+) -> None:
+    """Reject managed paths that would traverse a preserved user symlink."""
+    for relative in relative_paths:
+        current = root
+        for component in relative.parts[:-1]:
+            current /= component
+            if current.is_symlink():
+                raise RuntimeError(
+                    "Managed artifact path crosses an unmanaged symlink: "
+                    f"{relative}"
+                )
+
+
+def _remove_managed_paths(candidate_dir: Path, relative_paths: set[Path]) -> None:
+    """Remove only the previous converter roster from a candidate workspace."""
+    _reject_symlink_ancestors(candidate_dir, relative_paths)
+    parents: set[Path] = set()
+    for relative in sorted(
+        relative_paths,
+        key=lambda item: len(item.parts),
+        reverse=True,
+    ):
+        target = candidate_dir / relative
+        if target.is_symlink() or target.is_file():
+            target.unlink()
+        elif target.is_dir():
+            raise RuntimeError(
+                "Managed artifact path collides with a preserved directory: "
+                f"{relative}"
+            )
+        parent = target.parent
+        while parent != candidate_dir:
+            parents.add(parent)
+            parent = parent.parent
+
+    for parent in sorted(parents, key=lambda item: len(item.parts), reverse=True):
+        if parent.is_symlink() or not parent.is_dir():
+            continue
+        try:
+            parent.rmdir()
+        except OSError:
+            pass
+
+
+def _overlay_staged_tree(staged_dir: Path, candidate_dir: Path) -> None:
+    """Overlay generated artifacts without overwriting unmanaged user files."""
+    for source in sorted(staged_dir.rglob("*")):
+        relative = source.relative_to(staged_dir)
+        target = candidate_dir / relative
+        _reject_symlink_ancestors(candidate_dir, {relative})
+        if source.is_symlink():
+            raise RuntimeError(
+                f"Generated artifact must not be a symlink: {relative}"
+            )
+        if source.is_dir():
+            if (
+                target.is_symlink()
+                or (_path_lexists(target) and not target.is_dir())
+            ):
+                raise RuntimeError(
+                    f"Generated artifact collides with unmanaged path: {relative}"
+                )
+            target.mkdir(parents=True, exist_ok=True)
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if _path_lexists(target):
+            if target.is_dir() or target.is_symlink():
+                raise RuntimeError(
+                    f"Generated artifact collides with unmanaged path: {relative}"
+                )
+            if target.read_bytes() != source.read_bytes():
+                raise RuntimeError(
+                    f"Generated artifact collides with unmanaged file: {relative}"
+                )
+        shutil.copy2(source, target)
+
+
+def publish_staged_workspace(
+    output_dir: Path,
+    staged_dir: Path,
+    *,
+    managed_root_files: set[str | Path] | None = None,
+    managed_relative_paths: set[str | Path] | None = None,
+) -> None:
+    """Atomically publish generated artifacts while preserving user files.
+
+    Converter-owned SVGs, their local media references, and the named managed
+    artifacts are replaced as one roster. Everything else already present in
+    the output directory is copied into the candidate unchanged.
+    """
+    output_dir = output_dir.absolute()
+    staged_dir = staged_dir.absolute()
+    if (
+        output_dir == staged_dir
+        or output_dir in staged_dir.parents
+        or staged_dir in output_dir.parents
+    ):
+        raise ValueError(
+            "Staged and output workspaces must not contain one another"
+        )
+    output_resolved = output_dir.resolve(strict=False)
+    try:
+        Path.cwd().resolve().relative_to(output_resolved)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError(
+            "Output workspace must not contain the current working directory"
+        )
+    if not staged_dir.is_dir():
+        raise ValueError(f"Staged workspace does not exist: {staged_dir}")
+    if (
+        output_dir.is_symlink()
+        or (_path_lexists(output_dir) and not output_dir.is_dir())
+    ):
+        raise RuntimeError(f"Output path must be a real directory: {output_dir}")
+
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    transaction_dir = Path(tempfile.mkdtemp(
+        prefix=f".{output_dir.name}.publish-",
+        dir=output_dir.parent,
+    ))
+    candidate_dir = transaction_dir / "candidate"
+    backup_dir = transaction_dir / "previous"
+    preserve_backup = False
+
+    try:
+        if output_dir.is_dir():
+            shutil.copytree(output_dir, candidate_dir, symlinks=True)
+        else:
+            candidate_dir.mkdir()
+
+        managed_svg = _managed_svg_paths(output_dir)
+        relative_paths = {
+            path.relative_to(output_dir)
+            for path in managed_svg
+        }
+        relative_paths.update(_referenced_local_paths(output_dir, managed_svg))
+        relative_paths.add(Path("conversion-report.json"))
+        relative_paths.update(_validated_relative_paths(managed_root_files or set()))
+        relative_paths.update(_validated_relative_paths(managed_relative_paths or set()))
+        _remove_managed_paths(candidate_dir, relative_paths)
+        _overlay_staged_tree(staged_dir, candidate_dir)
+
+        if output_dir.is_dir():
+            try:
+                os.replace(output_dir, backup_dir)
+                os.replace(candidate_dir, output_dir)
+            except BaseException as publish_error:
+                try:
+                    if _path_lexists(backup_dir):
+                        if _path_lexists(output_dir):
+                            failed_output = transaction_dir / "failed-publish"
+                            os.replace(output_dir, failed_output)
+                        os.replace(backup_dir, output_dir)
+                except BaseException as restore_error:
+                    if (
+                        not _path_lexists(backup_dir)
+                        and _path_lexists(output_dir)
+                    ):
+                        raise publish_error
+                    preserve_backup = _path_lexists(backup_dir)
+                    raise RuntimeError(
+                        "Failed to publish the new workspace and restore the "
+                        "previous workspace; recovery directory: "
+                        f"{transaction_dir}"
+                    ) from restore_error
+                raise
+        else:
+            os.replace(candidate_dir, output_dir)
+    finally:
+        if not preserve_backup:
+            shutil.rmtree(transaction_dir, ignore_errors=True)
+
+
+def _write_artifact_tree(
+    output_dir: Path,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Write a complete converter roster into an empty staging directory.
 
     Layout:
       - ``svg/``        primary view (layered when emitted, otherwise flat)
@@ -498,34 +796,32 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
     svg_dir = output_dir / "svg"
     svg_dir.mkdir(exist_ok=True)
     media_dir = output_dir / options.media_subdir
-    media_written: set[str] = set()
+    media_written: dict[str, bytes] = {}
 
-    def _write_media(media: dict[str, bytes]) -> None:
+    def _collect_media(media: dict[str, bytes]) -> None:
         for filename, blob in media.items():
+            _validate_media_filename(filename)
             if filename in media_written:
+                if media_written[filename] != blob:
+                    raise RuntimeError(
+                        f"Asset filename collision with different bytes: {filename}"
+                    )
                 continue
-            media_dir.mkdir(parents=True, exist_ok=True)
-            target = media_dir / filename
-            if target.exists():
-                if target.read_bytes() != blob:
-                    raise RuntimeError(f"Asset filename collision with different bytes: {filename}")
-            else:
-                target.write_bytes(blob)
-            media_written.add(filename)
+            media_written[filename] = blob
 
     # Layered mode: write masters and layouts first so they sort ahead of slides.
     for art in result.masters:
         (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
-        _write_media(art.media_files)
+        _collect_media(art.media_files)
     for art in result.layouts:
         (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
-        _write_media(art.media_files)
+        _collect_media(art.media_files)
 
     # Slides (primary view).
     for art in result.slides:
         target = svg_dir / f"slide_{art.index:02d}.svg"
         target.write_text(art.svg, encoding="utf-8")
-        _write_media(art.media_files)
+        _collect_media(art.media_files)
 
     # Inheritance graph alongside the layered SVGs (only meaningful when we
     # actually emitted a layered view).
@@ -539,9 +835,44 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
         for art in result.flat_slides:
             target = flat_dir / f"slide_{art.index:02d}.svg"
             target.write_text(art.svg, encoding="utf-8")
-            _write_media(art.media_files)
+            _collect_media(art.media_files)
 
     _write_conversion_report(output_dir, result)
+    if media_written:
+        media_dir.mkdir(parents=True, exist_ok=True)
+    for filename, blob in media_written.items():
+        target = media_dir / filename
+        if _path_lexists(target):
+            if (
+                target.is_symlink()
+                or not target.is_file()
+                or target.read_bytes() != blob
+            ):
+                raise RuntimeError(
+                    f"Asset filename collision with different bytes: {filename}"
+                )
+            continue
+        target.write_bytes(blob)
+
+
+def _write_artifacts(
+    output_dir: Path,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Stage a complete conversion, then atomically publish its exact roster."""
+    output_dir = output_dir.absolute()
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    staging_root = Path(tempfile.mkdtemp(
+        prefix=f".{output_dir.name}.convert-",
+        dir=output_dir.parent,
+    ))
+    staged_dir = staging_root / "generated"
+    try:
+        _write_artifact_tree(staged_dir, result, options)
+        publish_staged_workspace(output_dir, staged_dir)
+    finally:
+        shutil.rmtree(staging_root, ignore_errors=True)
 
 
 def _write_conversion_report(output_dir: Path, result: ConvertResult) -> None:

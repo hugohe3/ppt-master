@@ -1101,6 +1101,22 @@ def _is_unit_axis_reflection(
     operations: tuple[tuple[str, tuple[float, ...]], ...],
 ) -> bool:
     """Return whether a transform is translation plus an unscaled axis flip."""
+    has_explicit_flip = any(
+        (
+            name == 'scale'
+            and (
+                args[0] < 0
+                or (len(args) > 1 and args[1] < 0)
+            )
+        )
+        or (
+            name == 'matrix'
+            and (args[0] < 0 or args[3] < 0)
+        )
+        for name, args in operations
+    )
+    if not has_explicit_flip:
+        return False
     matrix = _transform_operations_matrix(operations)
     a, b, c, d, _e, _f = matrix
     return (
