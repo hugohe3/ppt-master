@@ -376,7 +376,7 @@ uvx ppt-master animation-config validate <project_path>
 uvx ppt-master finalize-svg <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 =======
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
+uvx ppt-master animation-config validate <project_path>
 >>>>>>> upstream/main
 ```
 

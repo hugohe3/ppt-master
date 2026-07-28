@@ -58,10 +58,10 @@ uvx ppt-master image-gen "Concept car" -o projects/demo/images
 uvx ppt-master image-gen "Beautiful landscape" -n "low quality, blurry, watermark"
 uvx ppt-master image-gen --list-backends
 =======
-python3 scripts/image_gen.py "A modern futuristic workspace"
-python3 scripts/image_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
-python3 scripts/image_gen.py "Concept car" -o projects/demo/images
-python3 scripts/image_gen.py --list-backends
+uvx ppt-master image-gen "A modern futuristic workspace"
+uvx ppt-master image-gen "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
+uvx ppt-master image-gen "Concept car" -o projects/demo/images
+uvx ppt-master image-gen --list-backends
 >>>>>>> upstream/main
 ```
 
@@ -172,8 +172,8 @@ Analyze images in a project directory before writing the design spec or composin
 <<<<<<< HEAD
 uvx ppt-master analyze-images <project_path>/images
 =======
-python3 scripts/analyze_images.py <project_path>/images
-python3 scripts/analyze_images.py <project_path>/images --canvas ppt43
+uvx ppt-master analyze-images <project_path>/images
+uvx ppt-master analyze-images <project_path>/images --canvas ppt43
 >>>>>>> upstream/main
 ```
 

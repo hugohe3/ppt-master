@@ -37,7 +37,7 @@ uvx ppt-master update-spec projects/acme_ppt169_20260301 colors.accent=#FF6B35
 uvx ppt-master update-spec projects/acme_ppt169_20260301 \
   'typography.font_family="Inter", Arial, sans-serif'
 =======
-python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
+uvx ppt-master update-spec projects/acme_ppt169_20260301 \
   'typography.font_family=Arial, "Microsoft YaHei", sans-serif'
 >>>>>>> upstream/main
 ```

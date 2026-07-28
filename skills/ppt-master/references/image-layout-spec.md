@@ -225,9 +225,9 @@ uvx ppt-master analyze-images <project_path>/images                    # Default
 uvx ppt-master analyze-images <project_path>/images --canvas ppt43     # PPT 4:3
 uvx ppt-master analyze-images <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 =======
-python3 scripts/analyze_images.py <project_path>/images                    # Infer project canvas; fallback PPT 16:9
-python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
-python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
+uvx ppt-master analyze-images <project_path>/images                    # Infer project canvas; fallback PPT 16:9
+uvx ppt-master analyze-images <project_path>/images --canvas ppt43     # PPT 4:3
+uvx ppt-master analyze-images <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 >>>>>>> upstream/main
 ```
 

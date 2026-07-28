@@ -187,11 +187,11 @@ uvx ppt-master native-enhance-pptx plan <project_path>
 uvx ppt-master native-enhance-pptx validate <project_path>
 uvx ppt-master native-enhance-pptx apply <project_path>
 =======
-python3 scripts/native_enhance_pptx.py init <source.pptx> --name <project_slug>
-python3 scripts/native_enhance_pptx.py plan <project_path>
-python3 scripts/native_enhance_pptx.py validate <project_path>
-python3 scripts/native_enhance_pptx.py apply <project_path>
-python3 scripts/pptx_delivery_check.py <finished.pptx>
+uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
+uvx ppt-master native-enhance-pptx plan <project_path>
+uvx ppt-master native-enhance-pptx validate <project_path>
+uvx ppt-master native-enhance-pptx apply <project_path>
+uvx ppt-master pptx-delivery-check <finished.pptx>
 >>>>>>> upstream/main
 ```
 
