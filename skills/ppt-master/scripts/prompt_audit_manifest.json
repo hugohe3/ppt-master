@@ -934,7 +934,7 @@
       "name": "image-layout-patterns",
       "kind": "numbered_markdown",
       "source": "skills/ppt-master/references/image-layout-patterns.md",
-      "entry_pattern": "^(?P<id>\\d+)\\.\\s+\\*\\*",
+      "entry_pattern": "^(?P<ids>\\d+(?:\\s*(?:[-–]|·)\\s*\\d+)*)\\.\\s+\\*\\*",
       "reference_terms": [
         "image-layout-patterns",
         "image-text layout patterns"

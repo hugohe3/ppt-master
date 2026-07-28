@@ -991,6 +991,21 @@ def audit_authority_graph(
     return normalized, cycles, findings
 
 
+def _parse_numbered_markdown_ids(raw_ids: str) -> list[int]:
+    """Expand one numbered-Markdown heading expression into its stable ids."""
+    ids: list[int] = []
+    for part in re.split(r"\s*·\s*", raw_ids):
+        match = re.fullmatch(r"(\d+)(?:\s*[-–]\s*(\d+))?", part)
+        if match is None:
+            raise AuditError(f"Invalid numbered Markdown id expression: {raw_ids!r}")
+        start = int(match.group(1))
+        end = int(match.group(2) or start)
+        if end < start:
+            raise AuditError(f"Descending numbered Markdown id range: {raw_ids!r}")
+        ids.extend(range(start, end + 1))
+    return ids
+
+
 def _registry_ids(root: Path, config: dict[str, Any]) -> tuple[set[Any], str, list[Any]]:
     kind = config.get("kind")
     source = config.get("source")
@@ -1005,9 +1020,15 @@ def _registry_ids(root: Path, config: dict[str, Any]) -> tuple[set[Any], str, li
             regex = re.compile(pattern, re.MULTILINE)
         except re.error as exc:
             raise AuditError(f"Invalid registry entry_pattern: {exc}") from exc
+        id_group = "ids" if "ids" in regex.groupindex else "id"
+        if id_group not in regex.groupindex:
+            raise AuditError(
+                f"Registry {config.get('name')} entry_pattern needs an id or ids group"
+            )
         matched_ids = [
-            int(match.group("id"))
+            item
             for match in regex.finditer(_read_utf8(root / source))
+            for item in _parse_numbered_markdown_ids(match.group(id_group))
         ]
         duplicates = sorted(
             item for item, count in Counter(matched_ids).items() if count > 1
@@ -1062,6 +1083,20 @@ def _registry_count_claims(paragraph: Paragraph, nouns: list[str]) -> list[int]:
         matches = re.finditer(pattern, paragraph.normalized, re.I)
         claims.extend(int(match.group(1)) for match in matches)
     return claims
+
+
+def _is_comprehensive_registry_reference(paragraph: Paragraph, nouns: list[str]) -> bool:
+    """Return whether a block claims complete registry coverage."""
+    scope_nouns = sorted(set(nouns + ["catalog", "registry", "file"]))
+    scope_pattern = "|".join(re.escape(noun) for noun in scope_nouns)
+    return re.search(
+        rf"\b(?:all|every|entire|full)\b(?:\W+\w+){{0,4}}\W+"
+        rf"(?:{scope_pattern})\b|"
+        rf"\b(?:{scope_pattern})\b(?:\W+\w+){{0,4}}\W+"
+        rf"\b(?:all|every|entire|full)\b|"
+        r"\bfile is split\b",
+        paragraph.normalized,
+    ) is not None
 
 
 def audit_registries(
@@ -1216,33 +1251,25 @@ def audit_registries(
                         )
                     )
 
-            ranges = sorted(
+            ranges = [
                 tuple(sorted((int(match.group(1)), int(match.group(2)))))
                 for match in range_pattern.finditer(paragraph.text)
-            )
-            comprehensive = re.search(
-                r"\b(all|every|entire|full|file is split)\b",
-                paragraph.normalized,
-            )
+            ]
+            comprehensive = _is_comprehensive_registry_reference(paragraph, nouns)
             if ranges and comprehensive:
-                merged: list[list[int]] = []
+                declared_ids = {
+                    int(match.group(1))
+                    for match in id_pattern.finditer(paragraph.text)
+                }
                 for start, end in ranges:
-                    if not merged or start > merged[-1][1] + 1:
-                        merged.append([start, end])
-                    else:
-                        merged[-1][1] = max(merged[-1][1], end)
-                declared_count = sum(end - start + 1 for start, end in merged)
-                covers_ids = all(
-                    any(start <= item <= end for start, end in merged)
-                    for item in numeric_ids
-                )
-                if declared_count != len(numeric_ids) or not covers_ids:
+                    declared_ids.update(range(start, end + 1))
+                if declared_ids != numeric_ids:
                     findings.append(
                         Finding(
                             severity="error",
                             code="REGISTRY_RANGE_MISMATCH",
                             message=(
-                                f"{name} comprehensive ranges cover {declared_count} ids; "
+                                f"{name} comprehensive ranges cover {len(declared_ids)} ids; "
                                 f"registry contains {len(numeric_ids)}"
                             ),
                             path=paragraph.path,

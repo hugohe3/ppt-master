@@ -443,7 +443,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 ## 图文版式：Primary 主结构 + Modifier 修饰层
 
-「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 81 条稳定编号技法拆成两层、自由组合：
+「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 99 条稳定编号技法拆成两层、自由组合：
 
 - **Primary 主结构**（容器布局 / 图作画布 + 原生覆盖 / 多图组合）—— 页面的骨架。一页可一个也可多个；跨 Primary 的组合，如「侧边对比 + 图作画布的注解卡」，是合规的。
 - **Modifier 修饰层**（非矩形裁剪 / 遮罩与叠加 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。

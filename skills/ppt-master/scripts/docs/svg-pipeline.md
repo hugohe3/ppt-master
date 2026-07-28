@@ -335,8 +335,9 @@ Behavior:
   structured-package validation, transitions, and animations are enforced before the
   builder publishes the PPTX and are reported as `enforced-at-build`, not as repeated
   postflight checks.
-- `font_portability` warns only when a complete font stack contains generic CSS families
-  and no concrete family name. A recommended stack such as
+- `font_portability` warns when a complete font stack has no concrete family or when
+  the converter resolves its Latin / East Asian role to a typeface that normally
+  requires a custom installation. A recommended stack such as
   `"Microsoft YaHei", Arial, sans-serif` does not warn merely because it ends with a
   generic fallback.
 - Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:

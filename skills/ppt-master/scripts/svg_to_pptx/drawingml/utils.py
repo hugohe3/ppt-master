@@ -147,6 +147,21 @@ _SERIF_LATIN = {
     'Book Antiqua', 'Cambria', 'SimSun', 'Liberation Serif', 'DejaVu Serif',
 }
 
+# Fonts that survive direct PPTX typeface assignment on a typical Windows /
+# macOS viewer without requiring a custom install. Keep this aligned with
+# strategist.md §g and FONT_FALLBACK_WIN above.
+PPT_SAFE_FONTS = frozenset({
+    'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
+    'dengxian', 'microsoft jhenghei',
+    'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
+    'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
+    'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
+    'times new roman', 'times', 'georgia', 'cambria', 'palatino',
+    'garamond', 'book antiqua',
+    'consolas', 'courier new', 'menlo', 'monaco',
+    'impact',
+})
+
 # Parsed SVG stroke-dasharray values -> DrawingML prstDash
 DASH_PRESETS = {
     (4.0, 4.0): 'dash',
@@ -2808,6 +2823,15 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
         ea_font = 'SimSun' if final_latin in _SERIF_LATIN else 'Microsoft YaHei'
 
     return {'latin': final_latin, 'ea': ea_font}
+
+
+def unsafe_exported_font_faces(font_family_str: str) -> dict[str, str]:
+    """Return resolved PPTX typefaces that require a custom installation."""
+    return {
+        role: family
+        for role, family in parse_font_family(font_family_str).items()
+        if family.strip().lower() not in PPT_SAFE_FONTS
+    }
 
 
 def is_cjk_char(ch: str) -> bool:
