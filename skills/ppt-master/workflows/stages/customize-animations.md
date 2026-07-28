@@ -68,6 +68,8 @@ mandatory. Executor maps an adopted suggestion to the native registry, may
 adjust its effect/order/timing or choose `none` when motion would reduce
 clarity, and never changes page content merely to justify animation.
 
+**Hard rule — existing visible-layer boundary**: This stage may regroup existing content only under §2 visual equivalence; it MUST NOT create or modify a crop, comparison layer, scrim, lens, hotspot, annotation, or other visible image state to satisfy motion intent. When a required state is missing and ordinary Slide-local authoring can supply it, return to Generate Step 6, rerun the final SVG gate and notes, then resume here. If a structural boundary prevents that repair, simplify a non-binding suggestion to legal existing units, a page transition, or `none`; an explicit requirement follows failure recovery instead of changing structure.
+
 **No-op is complete**: Evaluate suggestions before regrouping SVG content. If
 no `animations.json` exists, every page should retain the normal `fade`
 transition and no object builds, and no explicit user requirement remains
@@ -234,6 +236,8 @@ four-spoke amount.
 `auto`, `mixed`, and `random` never choose emphasis, motion-path, or exit
 effects implicitly. Select an explicit canonical key when the plan calls for
 one.
+
+**Hard rule — explicit semantic choreography**: When an adopted image-led plan depends on a specific reveal relationship or order, target its real groups with explicit canonical effects and order; do not delegate those material decisions to `auto`, `mixed`, or `random`. Those modes remain valid when generic entrance treatment is sufficient.
 
 **Start modes**:
 

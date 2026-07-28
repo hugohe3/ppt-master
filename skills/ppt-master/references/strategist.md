@@ -283,10 +283,10 @@ and intent; explicit user/template requirements remain binding.
 
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
-| Image composition | Image-as-canvas plus native overlay, editorial crop, collage, cutout, or another image-led composition carries the page better than an adjacent rectangle | Propose a permitted image source; when selected, load [`strategist-image.md`](./strategist-image.md) and record an exact catalog §VIII `Layout pattern` as the preferred composition |
+| Image composition | Image-as-canvas plus native overlay, editorial crop, collage, cutout, or independently meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted image source; when selected, load [`strategist-image.md`](./strategist-image.md), record each resource's exact catalog §VIII `Layout pattern`, and describe the page-level image/overlay relationship in §IX `Layout` / `Images` |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
 | Page transition | A section/state change, spatial continuity, or recorded/self-running flow benefits from motion between pages | Add an optional §IX `Motion suggestion` describing the communication job; leave effect and timing to Executor |
-| Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, or narration order | Add an optional §IX `Motion suggestion` describing reveal units/order; leave group ids, effect, and timing to Executor |
+| Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` describing semantic units/order and any visible image-state relationship; leave group ids, effect, and timing to Executor |
 
 Review planned pages through two lenses:
 

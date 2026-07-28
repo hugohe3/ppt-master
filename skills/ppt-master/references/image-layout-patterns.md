@@ -362,6 +362,8 @@ A page is built by layering. Pick one or more **Primary Structures** (Part 1) as
 
 **Cross-primary combinations are encouraged.** A side-by-side comparison (#48) where each side is annotated with Shape-first leader cards (#38) is one page, not a violation. A 3×3 grid (#9) whose center cell is upgraded to an image-as-canvas with KPI overlay (#40) reads as one composition. The old reflex "one primary per page" tends to under-use the catalog — combine when the page asks for it.
 
+**Reference — motion-aware layer vocabulary, not a constraint**: When focus, comparison, evidence, or reveal order serves the page, the Image-as-Canvas + Native Overlay and Multi-Image Compositions families may expose independently meaningful visible units. `#62` can separate full view from same-source detail; `#63` can isolate a cutout foreground; `#74` / `#77` / `#78` / `#80` can separate image-led navigation or evidence units. These are composition layers, not effect assignments, and no pattern owes animation. `#72` is a static image blend in the fully revealed page, not a PowerPoint page transition.
+
 **Modifier stacking pattern that works in practice** — observed on real content pages combining one Primary with four Modifiers:
 
 - one Primary from Part 1 (e.g. #48 side-by-side comparison)
