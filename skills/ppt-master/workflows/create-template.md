@@ -549,7 +549,11 @@ expresses one complete object, they use the compact canonical
 paint comes from the confirmed brief and template `design_spec.md`. After
 inserting the complete helper group, add only the registered structural
 attributes required by its Master/Layout or object-slot role; geometry and
-paint changes require a new helper render. `mirror` preserves the expanded
+paint changes require a new helper render. When actual `standard` / `fidelity`
+construction needs a Boolean result over closed shapes, Template_Designer
+decides whether to use `shape_boolean_svg.py` under
+[`native-shape-authoring.md`](../references/native-shape-authoring.md) §6; a
+brief/reference suggestion does not lock the operation. `mirror` preserves the expanded
 lossless source contract in a new workspace and may only normalize transport details required by
 the current compiler. Mirror never performs commonality
 extraction, semantic synthesis, merge/split, promotion/demotion, renaming, or

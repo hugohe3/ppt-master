@@ -270,7 +270,23 @@ Formula policy and formula-asset planning are conditional. If the source contain
 
 The module owns formula policy, AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
-### Visualization Candidate Recall (Non-blocking — Strategist recommends, no user confirmation needed)
+### Presentation Capability & Visualization Recall (Non-blocking — Strategist recommends, no user confirmation needed)
+
+**Per-page capability recall**: Before finalizing §IX, consider the short menu
+below. Select only capabilities that strengthen the page's communication or
+visual expression; no page or deck owes a usage quota. Record semantic intent
+in existing Design Spec fields, never commands, coordinates, group ids, or
+effect parameters. Omit unused recommendation lines instead of writing `none`.
+Executor owns realization under the receiving capability contract and may adapt
+or decline the two non-literal §IX suggestion lines while preserving content
+and intent; explicit user/template requirements remain binding.
+
+| Capability | Opportunity signal | Design Spec handoff |
+|---|---|---|
+| Image composition | Image-as-canvas plus native overlay, editorial crop, collage, cutout, or another image-led composition carries the page better than an adjacent rectangle | Propose a permitted image source; when selected, load [`strategist-image.md`](./strategist-image.md) and record an exact catalog §VIII `Layout pattern` as the preferred composition |
+| Native preset / Merge Shapes | A literal Office symbol or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset or Boolean operation/operands |
+| Page transition | A section/state change, spatial continuity, or recorded/self-running flow benefits from motion between pages | Add an optional §IX `Motion suggestion` describing the communication job; leave effect and timing to Executor |
+| Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, or narration order | Add an optional §IX `Motion suggestion` describing reveal units/order; leave group ids, effect, and timing to Executor |
 
 Review planned pages through two lenses:
 
@@ -314,7 +330,14 @@ A failed validation must be corrected with a recalled key. `no-template-match` i
 | P03 | line_chart | Compare the source metrics over time |
 ```
 
-**Flag native-preset candidates**: In the affected page's §IX `Layout` / `Visualization`, note when the content calls for a literal stock PowerPoint chevron, block arrow, standard flowchart node, callout, banner, or star. Executor still decides the exact preset under its native-shape branch; this note never creates a §VII row by itself.
+**Native-geometry candidate detail**: Add `Native shape suggestion` to the
+affected §IX page when the content calls for a literal stock PowerPoint
+chevron, block arrow, standard flowchart node, callout, banner, or star. For a
+compound silhouette, cutout, common region, or meaningful fragmentation, name
+the candidate Union / Combine / Fragment / Intersect / Subtract operation,
+semantic operands, and intended result. Executor still decides the exact preset,
+Boolean construction, or ordinary SVG under its native-shape branch; the
+recommendation never creates a §VII row or lock field.
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 
@@ -391,7 +414,7 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 Generate Step 4 owns this sequence. `design_spec.md` is the complete human-readable decision; `spec_lock.md` is its context-selected execution subset/routing contract. Consume `result.json` once into the initial Design Spec and never reopen it for the lock. Refinement edits that same Design Spec; affected user revisions become the latest authority. Never treat the planning files as parallel interpretations.
 
 1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
-2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, and image/chart patterns remain References unless promoted.
+2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
 3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before entering an enabled refine-spec review or authoring `spec_lock.md`.
 4. If enabled, run [`refine-spec`](../workflows/stages/refine-spec.md) after Gate 1; edit only that Design Spec and create no lock before explicit approval.
 5. Read `templates/spec_lock_reference.md`. From the approved Design Spec plus context, create the lock once or resynchronize stale derived state. Retain identity/refinements, select stable roles/routing, omit unnamed page-local values, and do not reopen evidence. This is implementation judgment, not another recommendation.
@@ -413,9 +436,9 @@ Generate Step 4 owns this sequence. `design_spec.md` is the complete human-reada
 
 ⛔ **GATE 2 — lock context fidelity.** After Gate 1 closes, author machine-relevant anchors/routing into `spec_lock.md`. The lock may normalize syntax and add justified recurring roles, but must not change identity, discard a refinement, introduce a direction, or become a field copy/allowlist. On contradiction, return to Gate 1 using retained confirmation by default or the approved revised Design Spec after refinement; fresh recovery reads persisted final evidence once only when active state is absent.
 
-**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography role; a planned short non-structural Hero/Display size may stay omitted only while the same value appears at most twice, and its third occurrence requires a named role. Never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, pattern, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor context policy lives in [executor-base.md](executor-base.md) §2.1. Repair from Gate 2's active decision authority, then re-author affected lock rows.
+**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, chart choices, and route-specific PowerPoint structure. Name every recurring typography role; a planned short non-structural Hero/Display size may stay omitted only while the same value appears at most twice, and its third occurrence requires a named role. Never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, preferred-pattern reference, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor context policy lives in [executor-base.md](executor-base.md) §2.1. Repair from Gate 2's active decision authority, then re-author affected lock rows.
 
-**Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or patterns require upstream repair; Executor never reverse-projects a choice as fact. Promote garnish upstream before reuse, read back and validate the affected planning fragments, and never add values to silence a comparison.
+**Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or recurring cross-page identity patterns require upstream repair; a page-local §VIII preferred image pattern follows [`executor-image.md`](./executor-image.md) and may change during realization. Executor never reverse-projects a local choice as planning fact. Promote recurring garnish upstream before reuse, read back and validate the affected planning fragments, and never add values to silence a comparison.
 
    - **Communication trace is mandatory**: Keep the full confirmed communication contract in `design_spec.md §I`, then project only `audience`, `objective`, `core_message`, and canonical `consumption_mode` into `spec_lock.md communication`. Write `objective` as one concise execution sentence that preserves both the confirmed `communication_intent` and the success condition in `audience_outcome`; do not copy `delivery_context`, `artifact_afterlife`, dates, provenance, or conflict-resolution commentary into the lock. Before finalizing §IX, check that every named purpose has at least one outline obligation and **every Slide block**, including cover / divider / closing pages, has an `Audience move` that advances the global outcome. A page that advances no purpose or outcome should be merged, rewritten, or cut. `project_manager.py validate` and `svg_quality_checker.py` enforce the compact lock fields and per-page move presence, not their subjective quality.
    - **Custom behavior is concise and executable**: For confirmed `custom` mode or visual style, project one resolved `mode_behavior` / `visual_style_behavior` sentence or short paragraph. When the direction actually combines or borrows catalog entries, also project the exact, comma-separated `mode_references` / `visual_style_references`; omit the field for a genuinely novel direction and never fabricate a nearby reference. Preserve the confirmed direction, reference locked role names such as `colors.primary` when needed, and omit selection history, contradictions, precedence explanations, or other Design Spec provenance. Executor reads these fields from the retained lock and loads every referenced catalog entry once per valid context.

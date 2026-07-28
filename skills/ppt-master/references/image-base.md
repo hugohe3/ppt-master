@@ -23,7 +23,7 @@ Defined in `design_spec.md §VIII`. Status enum: see [`svg-image-embedding.md`](
 
 | Filename | Dimensions | Purpose / Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
 |---|---|---|---|---|---|---|---|
-| `<planned file>` | `<planned size>` | `<planned role>` | `<Strategist selection>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
+| `<planned file>` | `<planned size>` | `<planned role>` | `<Strategist recommendation>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
 
 **Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row and every newly authored `ai` row. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
 

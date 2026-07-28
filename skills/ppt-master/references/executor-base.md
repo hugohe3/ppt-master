@@ -66,7 +66,7 @@ Consume stdout directly; stop on non-zero exit. The projection is derived, not a
 
 **Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
 
-**Hard rule — selection vs realization**: use Strategist-selected semantic content, resources/paths, chart/layout keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never selection, except sparse local font/color garnish allowed below. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Selection changes require upstream repair.
+**Hard rule — binding selection vs realization**: use Strategist-selected semantic content, resources/paths, chart keys, template/layout routing keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never those binding selections, except sparse local font/color garnish allowed below. A §VIII preferred image pattern is not a template/layout routing key; [`executor-image.md`](./executor-image.md) owns its realization freedom. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Binding selection changes require upstream repair.
 
 **Hard rule — content vs expression**: `design_spec.md §IX` owns each page's semantic content and supplies complete preferred wording and block texture; those expression choices are not verbatim requirements unless explicitly literal. Executor may paraphrase, condense repetition, regroup or reorder material within the same page, and switch among prose, bullets, keywords, labels, or visual annotation when fit or readability benefits. The result must remain information-equivalent: preserve the `Core message`, `Audience move`, and every substantive claim, fact, data value, proper name, qualifier or caveat, relationship, key argument or evidence, and literal requirement. Never add a claim, move content across pages, or drop information to make the layout fit; return an unfit or underspecified block for Design Spec repair.
 
@@ -152,7 +152,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
   2. **Quality Check Gate**: only after every planned SVG exists, run `python3 scripts/svg_quality_checker.py <project_path> --stage final --json` on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
-### 3.0 Native Preset Shape Selection
+### 3.0 Native Shape Selection
 
 **Reach for a native preset whenever one expresses a complete object — this is
 the default, not the exception.** Block arrows, chevrons, banners / ribbons,
@@ -164,22 +164,29 @@ one of these, use the preset. Apply the decision gate in
 [`native-shape-authoring.md`](./native-shape-authoring.md) to pick the right
 shape and to keep only the exceptions below as ordinary SVG.
 
+§IX `Native shape suggestion` records a semantic opportunity, not a literal
+tool command. Decide from the actual page construction whether a preset,
+Boolean result, or ordinary SVG best realizes it; a different implementation
+is valid when it preserves the intended object and content.
+
 | Decision | Action |
 |---|---|
 | Plain rect / symmetric round rect / circle / ellipse | Keep the ordinary SVG primitive; it is already natively editable. |
 | Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
+| Two or more closed operands whose final semantic object depends on union, cutout, overlap-only coverage, symmetric difference, or fragmentation | Evaluate `shape_boolean_svg.py` at draw time and use it when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
-| Page-specific, compound, organic, branded, icon, or data geometry | Keep ordinary SVG path/polygon geometry. |
+| Page-specific freeform, organic, branded, icon, data geometry, or overlaps that remain separate objects | Keep ordinary SVG path/polygon geometry. |
 | Similar-looking contour only | Never guess; keep ordinary SVG. |
 
-This automatic decision applies only before drawing a new object. Do not scan
-existing SVG, classify path contours, or upgrade ordinary SVG during export.
+This decision applies only while drawing a new object. A suggestion never
+triggers retrospective scanning, contour classification, or automatic
+upgrading of ordinary SVG during export.
 
 **Hard rule**: do not hand-write `data-pptx-authoring`, `data-pptx-prst`,
-`data-pptx-frame`, adjustment metadata, or registry paths. The helper generates
-one compact atomic `<g>` from the shared 187-shape registry, with semantic
-metadata and base paint written once. Rerun the helper when geometry or paint
-changes; never edit one of its direct paths.
+`data-pptx-frame`, adjustment metadata, or registry paths. The preset helper
+generates one compact atomic `<g>` from the shared 187-shape registry, with
+semantic metadata and base paint written once. Rerun that helper when geometry
+or paint changes; never edit one of its direct paths.
 
 For chart-template and diagram authoring, thin relationships use ordinary
 `<line>` / supported open `<path>` geometry with registered arrow markers;
@@ -190,10 +197,10 @@ remain available only for an explicit request for a standalone unconnected
 `p:cxnSp`; imported Connector topology stays under the preserve/mirror contract.
 `actionButton*` presets provide visual geometry only, not actions or hyperlinks.
 
-**Hard rule — narrow helper scope**: the helper prints one shape fragment to
-stdout. It does not write a page or choose layout. Read the fragment and insert
-it through the normal `apply_patch` page edit; never redirect, loop, or batch it
-into `svg_output/`.
+**Hard rule — narrow helper scope**: Both helpers print only their documented
+stdout fragment(s); neither writes a page or chooses layout. Read every returned
+fragment and insert it through the normal `apply_patch` page edit; never
+redirect, loop, or batch helper output into `svg_output/`.
 
 
 ### SVG File Naming Convention
