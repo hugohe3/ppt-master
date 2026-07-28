@@ -218,6 +218,17 @@ class ProjectManager:
     ) -> str:
         base_path = Path(base_dir) if base_dir else self.base_dir
 
+        if (
+            not project_name
+            or project_name in {".", ".."}
+            or Path(project_name).is_absolute()
+            or "/" in project_name
+            or "\\" in project_name
+        ):
+            raise ValueError(
+                "Project name must be a single, non-absolute path component"
+            )
+
         normalized_format = normalize_canvas_format(canvas_format)
         if normalized_format not in self.CANVAS_FORMATS:
             available = ", ".join(sorted(self.CANVAS_FORMATS.keys()))
@@ -236,6 +247,10 @@ class ProjectManager:
             project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
         project_path = base_path / project_dir_name
 
+        if not is_within_path(project_path, base_path):
+            raise ValueError(
+                f"Project directory must stay within the base directory: {base_path}"
+            )
         if project_path.exists():
             raise FileExistsError(f"Project directory already exists: {project_path}")
 
