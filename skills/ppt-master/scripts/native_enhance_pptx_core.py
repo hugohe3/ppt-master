@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 import re
 import shutil
 import subprocess
@@ -96,6 +97,9 @@ CONTENT_TYPE_NOTES_MASTER = (
     "application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"
 )
 CONTENT_TYPE_THEME = "application/vnd.openxmlformats-officedocument.theme+xml"
+_NOTES_SLIDE_PART_RE = re.compile(
+    r"^ppt/notesSlides/notesSlide([1-9]\d*)\.xml$"
+)
 
 
 @dataclass(frozen=True)
@@ -171,18 +175,6 @@ def _ensure_rels_file(path: Path) -> None:
     )
 
 
-def _remove_relationships_by_type(rels_path: Path, rel_type: str) -> None:
-    if not rels_path.exists():
-        return
-    content = rels_path.read_text(encoding="utf-8")
-    content = re.sub(
-        rf'\s*<Relationship\b[^>]*\bType="{re.escape(rel_type)}"[^>]*/>',
-        "",
-        content,
-    )
-    rels_path.write_text(content, encoding="utf-8")
-
-
 def _target_to_part(target: str) -> str:
     target = target.lstrip("/")
     if target.startswith("ppt/"):
@@ -195,6 +187,118 @@ def _slide_number_from_part(part_name: str) -> int:
     if not match:
         raise ValueError(f"Unsupported slide part name: {part_name}")
     return int(match.group(1))
+
+
+def _resolve_relationship_part(source_part: str, target: str) -> str:
+    """Resolve an internal relationship target to a package part name."""
+    target_path = target.split("#", 1)[0]
+    if target_path.startswith("/"):
+        return posixpath.normpath(target_path.lstrip("/"))
+    return posixpath.normpath(
+        posixpath.join(posixpath.dirname(source_part), target_path)
+    )
+
+
+def _notes_slide_index(part_name: str) -> int | None:
+    match = _NOTES_SLIDE_PART_RE.fullmatch(part_name)
+    return int(match.group(1)) if match else None
+
+
+def _is_notes_slide_part(part_name: str) -> bool:
+    """Return whether a relationship target stays in the notesSlides folder."""
+    return (
+        posixpath.dirname(part_name) == "ppt/notesSlides"
+        and posixpath.basename(part_name).endswith(".xml")
+        and posixpath.basename(part_name) != ".xml"
+    )
+
+
+def _notes_slide_part_for_slide(
+    extract_dir: Path,
+    slide: SlidePart,
+) -> str | None:
+    """Return the notes part currently related to a slide, if present."""
+    slide_rels = _relationship_file_for_part(extract_dir, slide.part_name)
+    if not slide_rels.exists():
+        return None
+
+    related_parts: list[str] = []
+    for rel in ET.parse(slide_rels).getroot():
+        if rel.attrib.get("Type") != NOTES_REL_TYPE:
+            continue
+        if rel.attrib.get("TargetMode", "").lower() == "external":
+            raise RuntimeError(
+                f"Slide {slide.index} has an external notesSlide relationship"
+            )
+        target = rel.attrib.get("Target")
+        if not target:
+            raise RuntimeError(
+                f"Slide {slide.index} notesSlide relationship has no Target"
+            )
+        part_name = _resolve_relationship_part(slide.part_name, target)
+        if not _is_notes_slide_part(part_name):
+            raise RuntimeError(
+                f"Slide {slide.index} has an unsupported notesSlide target: {target}"
+            )
+        related_parts.append(part_name)
+
+    if len(related_parts) > 1:
+        raise RuntimeError(
+            f"Slide {slide.index} has multiple notesSlide relationships"
+        )
+    return related_parts[0] if related_parts else None
+
+
+def _used_notes_slide_indices(extract_dir: Path) -> set[int]:
+    """Collect every notesSlide number already reserved in the package."""
+    used: set[int] = set()
+    notes_dir = extract_dir / "ppt" / "notesSlides"
+    for path in notes_dir.glob("notesSlide*.xml"):
+        index = _notes_slide_index(f"ppt/notesSlides/{path.name}")
+        if index is not None:
+            used.add(index)
+    for path in (notes_dir / "_rels").glob("notesSlide*.xml.rels"):
+        index = _notes_slide_index(
+            f"ppt/notesSlides/{path.name.removesuffix('.rels')}"
+        )
+        if index is not None:
+            used.add(index)
+
+    content_types_path = extract_dir / "[Content_Types].xml"
+    if content_types_path.exists():
+        content_types = content_types_path.read_text(encoding="utf-8")
+        for match in re.finditer(
+            r'PartName="/(ppt/notesSlides/notesSlide[1-9]\d*\.xml)"',
+            content_types,
+        ):
+            index = _notes_slide_index(match.group(1))
+            if index is not None:
+                used.add(index)
+
+    slides_rels_dir = extract_dir / "ppt" / "slides" / "_rels"
+    for rels_path in slides_rels_dir.glob("slide*.xml.rels"):
+        source_part = f"ppt/slides/{rels_path.name.removesuffix('.rels')}"
+        for rel in ET.parse(rels_path).getroot():
+            if (
+                rel.attrib.get("Type") != NOTES_REL_TYPE
+                or rel.attrib.get("TargetMode", "").lower() == "external"
+            ):
+                continue
+            target = rel.attrib.get("Target")
+            if not target:
+                continue
+            index = _notes_slide_index(
+                _resolve_relationship_part(source_part, target)
+            )
+            if index is not None:
+                used.add(index)
+    return used
+
+
+def _allocate_notes_slide_part(extract_dir: Path) -> str:
+    used = _used_notes_slide_indices(extract_dir)
+    index = max(used, default=0) + 1
+    return f"ppt/notesSlides/notesSlide{index}.xml"
 
 
 def read_slide_parts(extract_dir: Path) -> list[SlidePart]:
@@ -288,52 +392,57 @@ def _add_override(content_types: str, part_name: str, content_type: str) -> str:
     return content_types.replace("</Types>", override + "\n</Types>")
 
 
-def _add_notes_content_types(content_types: str, note_indices: set[int]) -> str:
+def _add_notes_content_types(content_types: str, note_parts: set[str]) -> str:
     content_types = _add_override(content_types, "ppt/theme/theme2.xml", CONTENT_TYPE_THEME)
     content_types = _add_override(
         content_types,
         "ppt/notesMasters/notesMaster1.xml",
         CONTENT_TYPE_NOTES_MASTER,
     )
-    for index in sorted(note_indices):
+    for part_name in sorted(note_parts):
         content_types = _add_override(
             content_types,
-            f"ppt/notesSlides/notesSlide{index}.xml",
+            part_name,
             CONTENT_TYPE_NOTES_SLIDE,
         )
     return content_types
 
 
-def _apply_notes(extract_dir: Path, slide: SlidePart, note_md: Path) -> None:
+def _apply_notes(
+    extract_dir: Path,
+    slide: SlidePart,
+    note_md: Path,
+) -> str | None:
     notes_text = markdown_to_plain_text(note_md.read_text(encoding="utf-8"))
     if not notes_text:
-        return
+        return None
 
     _ensure_notes_master(extract_dir)
-    notes_dir = extract_dir / "ppt" / "notesSlides"
-    notes_dir.mkdir(parents=True, exist_ok=True)
-    notes_xml_path = notes_dir / f"notesSlide{slide.index}.xml"
+    slide_rels = _relationship_file_for_part(extract_dir, slide.part_name)
+    _ensure_rels_file(slide_rels)
+    notes_part = _notes_slide_part_for_slide(extract_dir, slide)
+    if notes_part is None:
+        notes_part = _allocate_notes_slide_part(extract_dir)
+        target = posixpath.relpath(
+            notes_part,
+            start=posixpath.dirname(slide.part_name),
+        )
+        _append_relationship(slide_rels, NOTES_REL_TYPE, target)
+
+    notes_xml_path = extract_dir / notes_part
+    notes_xml_path.parent.mkdir(parents=True, exist_ok=True)
     notes_xml_path.write_text(
         create_notes_slide_xml(slide.slide_number, notes_text),
         encoding="utf-8",
     )
 
-    notes_rels_dir = notes_dir / "_rels"
-    notes_rels_dir.mkdir(parents=True, exist_ok=True)
-    notes_rels_path = notes_rels_dir / f"notesSlide{slide.index}.xml.rels"
+    notes_rels_path = _relationship_file_for_part(extract_dir, notes_part)
+    notes_rels_path.parent.mkdir(parents=True, exist_ok=True)
     notes_rels_path.write_text(
         create_notes_slide_rels_xml(slide.slide_number),
         encoding="utf-8",
     )
-
-    slide_rels = _relationship_file_for_part(extract_dir, slide.part_name)
-    _ensure_rels_file(slide_rels)
-    _remove_relationships_by_type(slide_rels, NOTES_REL_TYPE)
-    _append_relationship(
-        slide_rels,
-        NOTES_REL_TYPE,
-        f"../notesSlides/notesSlide{slide.index}.xml",
-    )
+    return notes_part
 
 
 def _apply_audio(
@@ -401,11 +510,15 @@ def _apply_audio(
     return timings_enabled and wrote_advance
 
 
-def _update_content_types(extract_dir: Path, note_indices: set[int], audio_exts: set[str]) -> None:
+def _update_content_types(
+    extract_dir: Path,
+    note_parts: set[str],
+    audio_exts: set[str],
+) -> None:
     content_types_path = extract_dir / "[Content_Types].xml"
     content_types = content_types_path.read_text(encoding="utf-8")
-    if note_indices:
-        content_types = _add_notes_content_types(content_types, note_indices)
+    if note_parts:
+        content_types = _add_notes_content_types(content_types, note_parts)
     for ext in sorted(audio_exts):
         content_type = AUDIO_CONTENT_TYPES.get(ext)
         if content_type:
@@ -822,7 +935,7 @@ def apply_project(args: argparse.Namespace) -> int:
         _extract_pptx(source_pptx, extract_dir)
         slides = read_slide_parts(extract_dir)
 
-        note_indices: set[int] = set()
+        note_parts: set[str] = set()
         audio_exts: set[str] = set()
         audio_count = 0
         transition_only_count = 0
@@ -830,8 +943,9 @@ def apply_project(args: argparse.Namespace) -> int:
         for slide in slides:
             note = _note_path(notes_dir, slide.index)
             if "notes" in modules and note:
-                _apply_notes(extract_dir, slide, note)
-                note_indices.add(slide.index)
+                notes_part = _apply_notes(extract_dir, slide, note)
+                if notes_part is not None:
+                    note_parts.add(notes_part)
 
             audio = _audio_path(audio_dir, slide.index)
             if "audio" in modules and audio:
@@ -875,7 +989,7 @@ def apply_project(args: argparse.Namespace) -> int:
                 )
                 transition_only_count += 1
 
-        _update_content_types(extract_dir, note_indices, audio_exts)
+        _update_content_types(extract_dir, note_parts, audio_exts)
         if wrote_auto_advance:
             set_directory_use_timings(extract_dir)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -906,7 +1020,7 @@ def apply_project(args: argparse.Namespace) -> int:
             candidate_path.replace(output_path)
 
     print(f"Output: {output_path}", file=sys.stderr)
-    print(f"Notes applied: {len(note_indices)}", file=sys.stderr)
+    print(f"Notes applied: {len(note_parts)}", file=sys.stderr)
     print(f"Audio embedded: {audio_count}", file=sys.stderr)
     if transition_only_count:
         print(f"Transition-only slides: {transition_only_count}", file=sys.stderr)

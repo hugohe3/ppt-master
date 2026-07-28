@@ -64,7 +64,7 @@ from .ooxml_loader import (
     SlideRef,
     inherited_shape_visibility,
 )
-from .pic_to_svg import convert_blip_fill, convert_picture
+from .pic_to_svg import MediaResolutionError, convert_blip_fill, convert_picture
 from .prstgeom_to_svg import GeomResult, convert_prst_geom
 from .preset_svg_markup import serialize_preset_layers
 from .shape_walker import (
@@ -214,7 +214,7 @@ def assemble_slide(
                 ctx, canvas_w, canvas_h,
             )
         )
-    except ValueError as exc:
+    except (ValueError, MediaResolutionError) as exc:
         if strict:
             raise
         ctx.diagnose(
@@ -340,7 +340,7 @@ def assemble_part_solo(
     )
     try:
         bg_xml = _emit_part_background(fake_slide, ctx, canvas_w, canvas_h)
-    except ValueError as exc:
+    except (ValueError, MediaResolutionError) as exc:
         if strict:
             raise
         ctx.diagnose(
@@ -458,7 +458,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                 embed_inline=ctx.embed_images,
                 asset_name_map=ctx.asset_name_map,
             )
-        except ValueError as exc:
+        except (ValueError, MediaResolutionError) as exc:
             if ctx.strict:
                 raise
             ctx.diagnose(
@@ -923,12 +923,22 @@ def _inject_clip_path(image_xml: str, clip_id: str) -> str:
 def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     sp_pr = node.xml.find("p:spPr", NS)
     geom = _resolve_geometry(node, sp_pr)
-    result = convert_picture(
-        node.xml, node.xfrm, ctx.slide_part, ctx.pkg,
-        media_subdir=ctx.media_subdir,
-        embed_inline=ctx.embed_images,
-        asset_name_map=ctx.asset_name_map,
-    )
+    try:
+        result = convert_picture(
+            node.xml, node.xfrm, ctx.slide_part, ctx.pkg,
+            media_subdir=ctx.media_subdir,
+            embed_inline=ctx.embed_images,
+            asset_name_map=ctx.asset_name_map,
+        )
+    except MediaResolutionError as exc:
+        if ctx.strict:
+            raise
+        ctx.diagnose(
+            "object-replaced",
+            str(exc),
+            "replace only this picture with a visible placeholder",
+        )
+        return _fallback_node_svg(node, ctx, top_level=top_level)
     if not result.svg:
         return ""
     ctx.media.update(result.media)
@@ -1046,11 +1056,30 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 extra_attrs=replacement_attrs,
             )
 
+    preview_svg = ""
+    if ctx.render_graphic_previews:
+        try:
+            preview_svg = _render_graphic_preview(node, ctx)
+        except MediaResolutionError as exc:
+            if ctx.strict:
+                raise
+            ctx.diagnose(
+                "preview-omitted",
+                str(exc),
+                "omit the missing baked preview and retain the native, "
+                "normalized, or placeholder fallback",
+            )
+
     chart_replacement_attrs: list[str] = []
     chart_payload_metadata = ""
     if uri in {CHART_URI, CHARTEX_URI}:
         rendered, chart_replacement_attrs, chart_payload_metadata = (
-            _render_graphic_chart(node, ctx, graphic_data)
+            _render_graphic_chart(
+                node,
+                ctx,
+                graphic_data,
+                preview_svg,
+            )
         )
         if rendered:
             inner = (
@@ -1066,17 +1095,25 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 extra_attrs=chart_replacement_attrs,
             )
 
-    if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole" and ctx.render_graphic_previews:
-        rendered = _render_graphic_preview(node, ctx)
-        if rendered:
-            labelled = rendered + "\n" + _graphic_preview_label(node, "ole preview")
+    if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole":
+        if preview_svg:
+            labelled = (
+                preview_svg
+                + "\n"
+                + _graphic_preview_label(node, "ole preview")
+            )
             return _wrap_shape_group(labelled, node, ctx, top_level=top_level)
 
-    if ctx.render_graphic_previews:
-        rendered = _render_graphic_preview(node, ctx)
-        if rendered:
-            labelled = rendered + "\n" + _graphic_preview_label(node, f"{uri.rsplit('/', 1)[-1]} preview")
-            return _wrap_shape_group(labelled, node, ctx, top_level=top_level)
+    if preview_svg:
+        labelled = (
+            preview_svg
+            + "\n"
+            + _graphic_preview_label(
+                node,
+                f"{uri.rsplit('/', 1)[-1]} preview",
+            )
+        )
+        return _wrap_shape_group(labelled, node, ctx, top_level=top_level)
 
     label = uri.rsplit("/", 1)[-1]
     placeholder = (
@@ -1170,6 +1207,7 @@ def _render_graphic_chart(
     node: ShapeNode,
     ctx: AssemblyContext,
     graphic_data: ET.Element | None,
+    preview_svg: str,
 ) -> tuple[str, list[str], str]:
     """Return a chart fallback plus native Chart replacement metadata."""
     result = extract_native_chart_payload(
@@ -1192,9 +1230,7 @@ def _render_graphic_chart(
             f'{_xml_escape(result.native_status)}"'
         )
 
-    rendered = ""
-    if ctx.render_graphic_previews:
-        rendered = _render_graphic_preview(node, ctx)
+    rendered = preview_svg
     if rendered:
         replacement_attrs.append('data-pptx-fallback-kind="source-preview"')
     elif result.normalized_svg:

@@ -2584,6 +2584,16 @@ def _coalesce_text_runs(
     return merged
 
 
+def _text_axis_transform(ctx: ConvertContext) -> tuple[bool, bool, bool]:
+    """Return whether text can consume the context matrix and its axis flips."""
+    if not ctx.use_transform_matrix:
+        return False, False, False
+    a, b, c, d, _e, _f = ctx.transform_matrix
+    if abs(b) > 1e-9 or abs(c) > 1e-9:
+        return False, False, False
+    return True, a < 0, d < 0
+
+
 def _build_run_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
@@ -2608,8 +2618,14 @@ def _build_run_xml(
 
 def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
-    x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
-    y = ctx_y(svg_length_y(elem.get('y'), ctx), ctx)
+    raw_x = svg_length_x(elem.get('x'), ctx)
+    raw_y = svg_length_y(elem.get('y'), ctx)
+    use_axis_transform, reflect_x, reflect_y = _text_axis_transform(ctx)
+    if use_axis_transform:
+        x, y = transform_point(ctx.transform_matrix, raw_x, raw_y)
+    else:
+        x = ctx_x(raw_x, ctx)
+        y = ctx_y(raw_y, ctx)
     resolved_font_size = ctx.text_font_sizes.get(id(elem))
     font_size = (
         resolved_font_size * ctx.scale_y
@@ -2627,6 +2643,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     text_anchor = parse_project_text_anchor(
         _get_attr(elem, 'text-anchor', ctx) or 'start'
     ).canonical
+    if reflect_x:
+        text_anchor = {
+            'start': 'end',
+            'end': 'start',
+        }.get(text_anchor, text_anchor)
     fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
@@ -2813,6 +2834,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     box_y = y - font_size * 0.85
     box_w = text_width + padding * 2
     box_h = text_height + padding
+    if reflect_y:
+        box_y = 2 * y - box_y - box_h
 
     visual_box_x = box_x
     visual_box_y = box_y
@@ -2823,10 +2846,22 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         if exact_text_frame is None:
             raise ValueError('data-pptx-frame did not resolve to a text frame')
         raw_frame_x, raw_frame_y, raw_frame_w, raw_frame_h = exact_text_frame
-        frame_x_1 = ctx_x(raw_frame_x, ctx)
-        frame_x_2 = ctx_x(raw_frame_x + raw_frame_w, ctx)
-        frame_y_1 = ctx_y(raw_frame_y, ctx)
-        frame_y_2 = ctx_y(raw_frame_y + raw_frame_h, ctx)
+        if use_axis_transform:
+            frame_x_1, frame_y_1 = transform_point(
+                ctx.transform_matrix,
+                raw_frame_x,
+                raw_frame_y,
+            )
+            frame_x_2, frame_y_2 = transform_point(
+                ctx.transform_matrix,
+                raw_frame_x + raw_frame_w,
+                raw_frame_y + raw_frame_h,
+            )
+        else:
+            frame_x_1 = ctx_x(raw_frame_x, ctx)
+            frame_x_2 = ctx_x(raw_frame_x + raw_frame_w, ctx)
+            frame_y_1 = ctx_y(raw_frame_y, ctx)
+            frame_y_2 = ctx_y(raw_frame_y + raw_frame_h, ctx)
         box_x = min(frame_x_1, frame_x_2)
         box_y = min(frame_y_1, frame_y_2)
         box_w = abs(frame_x_2 - frame_x_1)
@@ -2875,6 +2910,13 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             raw_box_y = (box_y - ctx.translate_y) / sy
             box_x = ctx.translate_x + sx * (a * raw_box_x + e)
             box_y = ctx.translate_y + sy * (d * raw_box_y + f)
+    elif translate_only and use_axis_transform:
+        _a, _b, _c, _d, e, f = parse_transform_matrix(text_transform)
+        matrix_a, matrix_b, matrix_c, matrix_d, _matrix_e, _matrix_f = (
+            ctx.transform_matrix
+        )
+        box_x += matrix_a * e + matrix_c * f
+        box_y += matrix_b * e + matrix_d * f
 
     # Text rotation. SVG's rotate(angle [cx cy]) rotates around (cx, cy), but
     # DrawingML's <a:xfrm rot="..."> rotates the shape around its own center.
@@ -2885,10 +2927,19 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if rotate_only:
         rotate_args = text_operations[0][1]
         angle_deg = rotate_args[0]
+        if reflect_x != reflect_y:
+            angle_deg = -angle_deg
         text_rot = int(angle_deg * ANGLE_UNIT)
         if len(rotate_args) == 3:
-            pivot_x = ctx_x(rotate_args[1], ctx)
-            pivot_y = ctx_y(rotate_args[2], ctx)
+            if use_axis_transform:
+                pivot_x, pivot_y = transform_point(
+                    ctx.transform_matrix,
+                    rotate_args[1],
+                    rotate_args[2],
+                )
+            else:
+                pivot_x = ctx_x(rotate_args[1], ctx)
+                pivot_y = ctx_y(rotate_args[2], ctx)
             cx_box = box_x + box_w / 2
             cy_box = box_y + box_h / 2
             rad = math.radians(angle_deg)
