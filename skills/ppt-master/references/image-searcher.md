@@ -111,13 +111,14 @@ python3 scripts/image_search.py "<query>" \
 | `--slide` | no | `""` | Slide ID from resource list (recorded in manifest) |
 | `--purpose` | no | `""` | `background` / `hero` / `side` / `accent` |
 | `--orientation` | no | `any` | `any` / `landscape` / `portrait` / `square` |
+| `--min-width / --min-height` | no | `1200 / 800` | Actual downloaded-pixel floors; `--from-url` honors explicit lower overrides |
 | `--provider` | no | (chain) | Pin one provider |
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
 | `--require-terms` | no | — | Entity-safety gate for exact subjects. Repeatable; comma separates required groups; `A|B` means aliases within one group. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"` |
 | `--manifest` | no | (default) | Override manifest path |
 | `--save-candidates` | no | off | Escalation only: also keep a review pool in `candidates/<stem>/`. Default downloads just the best match (+ a review copy) |
 | `--max-candidates` | no | `4` | Pool size when `--save-candidates` is set |
-| `--promote` | no | — | Promote a reviewed candidate to the target filename, e.g. `--promote candidate_03.jpg --filename team.jpg -o <dir>` |
+| `--promote` | no | — | Human-selected candidate override; low resolution warns but does not block promotion |
 | `--from-url` | no | — | Manual replace: download a user-supplied image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
 
 ### Batch mode (≥ 2 web rows) — preferred
@@ -153,7 +154,7 @@ Use `required_terms` for **exact-entity images**: landmarks, people, companies, 
 
 For less-covered local attractions, keep the strict identity gate rather than progressively deleting location anchors or replacing proper names with category words. If strict metadata cannot prove the entity, mark the row `Needs-Manual` and use the manual URL path when the user supplies a confirmed source.
 
-The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
+The runner first revalidates every `Sourced` row against its readable file, requested dimensions, and `image_sources.json` entry; drift returns that row to `Failed`. It then searches all `Pending` / `Failed` rows concurrently, appends each success to the provenance manifest, and writes status back into `image_queries.json`: `Sourced` on success, retryable `Failed` on provider/download errors, and terminal `Needs-Manual` only after a clean provider/stage exhaustion. Status is saved after each completion. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
 
@@ -315,9 +316,10 @@ Extends [`image-base.md`](./image-base.md) §6.
 | No candidates from any provider in either stage | Mark row `Needs-Manual`. Suggest: shorter query, drop `--strict-no-attribution`, or set keyed provider's API key. |
 | Single candidate fails to download (HTTP 403/404) | Dispatcher auto-falls through to the next ranked candidate. No user action. |
 | All candidates from one provider fail | Dispatcher moves to the next provider in the chain. |
+| Provider/network failure remains after dispatch | Mark row `Failed`; a later batch run retries it. |
 | Keyed provider has no API key | Silently skipped. Not an error. |
 
-CLI exit: `0` on success, `1` only when no acceptable image was found across the entire dispatch matrix.
+CLI exit: `0` when all attempted rows resolve; `1` while any row remains `Failed` or `Needs-Manual`.
 
 ---
 

@@ -39,7 +39,7 @@ The patterns below are what separate a deck that looks designed from a deck that
 | Text needs legibility but a solid scrim would kill the photo | `#97` frosted-glass panel | The photo's colour and composition stay visible through the panel |
 | An image grid looks like a stock template | `#88` non-rectangular tessellation with 1–3 cells left empty | The empty cells are where the title and body copy live |
 | A subject should escape its container | `#85` subject breaking out + `#96` | Depth with no shadow at all |
-| One place should be recognized across consecutive pages | `#87` one image panned across pages | The deck reads as one continuous scene; with `-t morph` the flip becomes a camera pan |
+| One place should be recognized across consecutive pages | `#87` one image panned across pages | The deck reads as one continuous scene; `-t morph` uses heuristic matching, while explicit `morph.pairs` makes the camera pan deterministic |
 
 **Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, and `#97`, the image stays anchored to the *union* of its containers, or the two copies stay in exact register. A few pixels of drift reads as a printing error, and giving each container its own image collapses the page into an ordinary tile grid. `#84` is the one pattern that breaks registration on purpose, and it only reads as a decision because the others establish the expectation.
 
@@ -314,7 +314,7 @@ scrim/overlay shapes, a real cutout path, or a baked-alpha asset; never emit
 
     Never box a cutout in a rectangle — that throws away the only thing it offers. Combine with #4 (bleed off the edge), #58 (corner fragment), #66 (fade into background), #69 (slight rotation), or #49 (asymmetric collage).
 
-64. **Image with embedded text rendered by the AI** — text becomes part of the artwork: decorative lettering, designed title, hand-lettered keyword. Prompt with explicit text content — name the exact characters literally. Use for text that is part of the artwork and will not change. Anything that must be correct or editable goes in the SVG `<text>` layer (#65).
+64. **Image with embedded text rendered by the AI** — text becomes part of the artwork: decorative lettering, artistic wordmark, hand-lettered keyword. Prompt with explicit text content — name the exact characters literally. Use for text that is part of the artwork and will not change. Authoritative titles and anything that must stay correct or editable go in the SVG `<text>` layer (#65).
 
 65. **Image with NO text — labels added as native SVG** — generate the image with explicit "no text, no letters, no numbers, no signs" instruction (`text_policy: none`), then place all labels as `<text>` overlays. The right call when labels will be reworded, must stay exact, or carry data that must stay editable — pair with `#64` when stable visual identifiers (axis labels, subplot letters, unit symbols) belong inside the image instead.
 
@@ -361,7 +361,7 @@ scrim/overlay shapes, a real cutout path, or a baked-alpha asset; never emit
 
 87. **One image panned across consecutive pages** — a single wide image referenced by 2–4 consecutive slides, each showing a different horizontal segment (same `<image>` file and container geometry per page, only `x` shifts). Static on its own, it makes the deck read as one continuous scene; the audience recognizes the place before reading a word.
 
-    **To make it actually move, the pages must be morph-compatible**: keep the same image file, the same container size, and the same group `id` on every participating page, then export with `-t morph` ([`animations.md`](./animations.md)). Morph then treats it as one object and slides it — the flip becomes a camera pan. Change the filename or the container dimensions between pages and morph stops matching the object, silently degrading to a cross-fade with none of the effect. Nothing else in the deck needs to know about this; it is a page-authoring decision plus one export flag.
+    **Motion contract**: keep the same image file and compatible direct-root group/container geometry on every participating page. Exporting with `-t morph` alone leaves object matching to PowerPoint's heuristic; stable ids and compatible geometry improve the chance of a camera pan but do not prove it. When the pan must be deterministic, run the custom motion stage and declare the adjacent objects in `animations.json` `morph.pairs` ([`animations.md`](./animations.md) §2.1); the pair may bind different source/destination ids while preserving compatible object kinds. Changing the file or endpoint geometry still changes the visual action and may reduce an unpaired Morph to a cross-fade.
 
 ---
 

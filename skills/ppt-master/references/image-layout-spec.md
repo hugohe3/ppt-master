@@ -191,7 +191,7 @@ This spec only defines layout calculation. Write computed fields into the Image 
 | `Layout pattern` | Strategist-recommended catalog pattern; preferred composition, Executor-owned realization |
 | `Crop Policy` | `no-crop` protects complete pixels; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
-| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>` |
+| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves its ordered catalog ids (or normalized custom prose) as a recommendation, not a geometry/realization lock |
 
 For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
@@ -204,6 +204,8 @@ Complete display (`no-crop` assets such as data charts):
        x="60" y="80" width="780" height="446"
        preserveAspectRatio="xMidYMid meet"/>
 ```
+
+**Hard rule — no-crop placement**: every rendered instance uses `xMidYMid meet` without `clip-path`, `mask`, clipping overflow, or a nested `<svg>` viewport. Definitions and hidden nodes are not placements; an image materialized through a visible local `<use>` is.
 
 Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 
