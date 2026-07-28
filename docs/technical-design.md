@@ -253,7 +253,7 @@ Two converter design choices still shape the system:
 
 ## Project Structure & Lifecycle
 
-`project_manager.py init` creates the fixed project working directories; a later default export creates a timestamped backup directory and then attempts to copy a `backup/` snapshot. The complete lifecycle is:
+`project_manager.py init` creates the fixed project working directories; a later default export creates a timestamped backup directory and then attempts to copy a `backup/` snapshot. The explicit test-only [`quick-test`](../skills/ppt-master/workflows/profiles/quick-test.md) profile bypasses that lifecycle and creates only `svg_output/` plus the PPTX destination. The normal delivery lifecycle is:
 
 | Directory | Role |
 |---|---|
@@ -263,7 +263,7 @@ Two converter design choices still shape the system:
 | `icons/` | project-local icon set copied by `icon_sync.py`; global library fallback at export exists only for legacy compatibility |
 | `templates/` | copied template specs / SVG references / non-image template assets |
 | `svg_output/` | the only hand-authored SVG source directory |
-| `svg_final/` | mandatory derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
+| `svg_final/` | mandatory normal-flow derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
 | `live_preview/` | preview server state, edit history, and annotation logs |
 | `notes/` | `total.md` and split per-slide speaker notes |
 | `validation/` | SVG quality reports and PPTX postflight audit reports |
@@ -288,7 +288,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 | Planning context is retained until invalidated | continuous execution reuses the complete Design Spec, lock, and triggered references; fresh/resumed/restarted or compacted execution reloads them once |
 | `page-context` is on demand | the read-only projector supports diagnostics, deterministic routing checks, and optional usage telemetry; it is not a pre-page gate |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
-| `svg_final/` is mandatory but derived | it is regenerated from `svg_output/` for visual preview or manual insertion as an SVG picture; supported resources are inlined when possible while EMF/WMF retain an external-reference exception, and it never becomes the native export source of truth |
+| `svg_final/` is mandatory but derived in normal delivery | it is regenerated from `svg_output/` for visual preview or manual insertion as an SVG picture; supported resources are inlined when possible while EMF/WMF retain an external-reference exception, and it never becomes the native export source of truth; quick-test skips this artifact |
 | Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
 | PowerPoint Convert to Shape is outside the compatibility contract | `svg_final/` may be inserted as an SVG picture, but the converted structure and visual result are not guaranteed and do not constrain the supported SVG feature set |
 | Direct OOXML routes do not enter the SVG pipeline | preservation workflows patch native PPTX parts directly |
@@ -532,7 +532,7 @@ Validation JSON files are cold audit artifacts, not routine model inputs. The ex
 
 This is easy to miss when reading the code. Shared cleanup modules, the local-reference expander, and the inline-geometry materializer are used both to write `svg_final/` and in memory during native conversion. The checker, editor, and structure parser also share parts of the geometry interpretation, but they are not artifact consumers in this section.
 
-**Disk consumer** — `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. This mandatory output feeds IDE/browser preview and may be inserted manually as an SVG picture; it is not converted into a separate PPTX artifact.
+**Disk consumer** — in normal delivery, `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. This mandatory normal-flow output feeds IDE/browser preview and may be inserted manually as an SVG picture; it is not converted into a separate PPTX artifact. Quick-test skips the disk consumer.
 
 **Memory consumer** — native pptx generation reads `svg_output/` directly (no disk hop). It materializes author SVG inline geometry, expands project icon placeholders, materializes geometry injected by those icons, expands qualified local `<use>` references, and finally processes positional text runs:
 
@@ -611,7 +611,13 @@ ChartEx import is deliberately closed to seven validated data models: `treemap`,
 
 The interesting design choice is the animation **anchor**, not the effect list.
 
-**Why anchor entrance animations on top-level `<g>` groups.** PowerPoint's animation timeline is shape-keyed — each animated object needs a stable shape ID. Animating individual primitives would produce 30+ separately-flying-in atoms per slide (a kinetic mess), while animating only the slide as a whole loses visual storytelling. Top-level groups are the natural granularity: Executor is required to use `<g id="...">` to mark logical content blocks, and these blocks are exactly the units a viewer reads as "one thing arriving" — animation matches the existing logical structure rather than imposing a new one.
+**Why anchor object animations on top-level `<g>` groups.** PowerPoint's
+animation timeline is shape-keyed—each animated object needs a stable shape ID.
+Animating individual primitives would produce 30+ separately moving atoms per
+slide, while animating only the slide as a whole loses visual storytelling.
+Top-level groups are the natural granularity: Executor already uses
+`<g id="...">` to mark logical content blocks, so entrance, emphasis, path,
+and exit effects share the same semantic units.
 
 **Why page structure is auto-skipped.** Any top-level group with `data-pptx-layer` is static structure, and the current scanner also treats every explicit `data-pptx-placeholder` as static page framing; `background` / `header` / `footer` / `decoration` / `watermark` / `page-number` roles cover the remaining chrome. The ID-token fallback is not enabled or disabled per SVG: it applies to each top-level group that lacks layer, role, and placeholder markers, so a mixed new/legacy SVG may still use the legacy ID heuristic on only its unmarked groups. Separately, when an SVG has no top-level groups, no animation target has been found, and only one to eight root primitives qualify, those primitives form a bounded compatibility fallback. This is the scanner's actual scope; the animation reference's whole-page “marker-free legacy SVG” wording still needs separate alignment with the implementation.
 
@@ -619,7 +625,13 @@ The interesting design choice is the animation **anchor**, not the effect list.
 
 **Why recorded narration drives auto-advance from clip duration.** Recorded-narration mode targets video export, where no presenter clicks through the deck. It probes each clip's real duration and sets slide auto-advance to `audio duration + --narration-padding`; padding defaults to 0.5 seconds so the tail is not cut off. It does not use estimated reading speed or a fixed per-slide duration.
 
-**Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. Decks exported with `--recorded-narration` must therefore use click-free object entrances (`after-previous` or `with-previous`).
+**Why recorded narration rejects on-click object animation.** PowerPoint can
+record click timings during a real rehearsal, but PPT Master does not synthesize
+object-level click events. The recorded narration path writes page-level audio
+and slide auto-advance timings only, so click-driven object effects would leave
+the export dependent on extra manual PowerPoint rehearsal. Decks exported with
+`--recorded-narration` must therefore use click-free object animations
+(`after-previous` or `with-previous`).
 
 **Why native video export is a separate command.** Audio synthesis and PPTX
 packaging are cross-platform project operations; PowerPoint video encoding is a
@@ -642,7 +654,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 | Do not make `image_analysis.csv` a durable cache | `images/` is a live folder; facts must be regenerated on use |
 | Do not make `svg_final/` the default native PPTX input | `svg_final/` rewrites resources for visual preview, while native conversion needs high-fidelity `svg_output/` semantics |
 | Do not treat `svg_final/` as a shape-recoverable or no-external-dependency interchange format | it serves visual preview and SVG-picture insertion, but EMF/WMF retain external-reference exceptions; PowerPoint Convert to Shape is unsupported |
-| Do not auto-enable object-level entrance animations | page transitions are default; object builds are an explicit export policy |
+| Do not auto-enable object-level animations | page transitions are default; object motion is an explicit export policy |
 | Do not default visual review, narration, chart verification, or animation customization into every run | these workflows have narrow triggers and extra dependencies |
 | Do not replace `finalize_svg.py` with a file copy | finalization embeds icons/images, flattens special text, and prepares preview artifacts |
 | Do not use `analysis/<stem>.slide_library.json` as a second source of chart values in the main pipeline | Markdown owns content values; intake chart/table entries are structural digests unless a direct-PPTX workflow owns them |

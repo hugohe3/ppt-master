@@ -47,6 +47,30 @@ _STYLE_MULTIPLIERS = {
     "restrained": 0.72,
     "dynamic": 1.28,
 }
+_VIDEO_EFFECT_ALIASES = {
+    "entrance_appear": "appear",
+    "entrance_fade": "fade",
+    "entrance_fly": "fly",
+    "entrance_zoom": "zoom",
+    "entrance_wipe": "wipe_down",
+    "entrance_split": "split",
+    "entrance_blinds": "blinds",
+    "entrance_checkerboard": "checkerboard",
+    "entrance_dissolve": "dissolve",
+    "entrance_random_bars": "random_bars",
+    "entrance_peek": "wipe_up",
+    "entrance_wheel": "wheel",
+    "entrance_box": "box",
+    "entrance_circle": "circle",
+    "entrance_diamond": "diamond",
+    "entrance_plus": "plus",
+    "entrance_strips": "strips",
+    "entrance_wedge": "wedge",
+    "entrance_stretch": "stretch",
+    "entrance_expand": "expand",
+    "entrance_swivel": "swivel",
+    "entrance_ascend": "fly_top",
+}
 _SVG_NS = "http://www.w3.org/2000/svg"
 _EMU_PER_PX = 9525
 _NUMBER_RE = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
@@ -155,7 +179,16 @@ def _shape_events(slide: dict[str, Any]) -> dict[int, dict[str, Any]]:
     return selected
 
 
-def _direction_for_effect(effect: str, filter_name: object) -> str | None:
+def _direction_for_effect(
+    effect: str,
+    filter_name: object,
+    effect_options: object,
+) -> str | None:
+    if isinstance(effect_options, dict):
+        raw_direction = effect_options.get("direction")
+        if isinstance(raw_direction, str) and raw_direction:
+            return raw_direction.replace("_", "-")
+    effect = _VIDEO_EFFECT_ALIASES.get(effect, effect)
     explicit = {
         "fly": "down",
         "fly_left": "left",
@@ -168,19 +201,30 @@ def _direction_for_effect(effect: str, filter_name: object) -> str | None:
         "wipe_up": "up",
         "wipe_down": "down",
         "peek": "down",
-        "strips": "down-right",
     }
     if effect in explicit:
         return explicit[effect]
     if isinstance(filter_name, str):
         match = re.search(
-            r"\((?:from)?(Top|Bottom|Left|Right|Up|Down)\)",
+            r"\((?:from)?(TopLeft|TopRight|BottomLeft|BottomRight|"
+            r"UpLeft|UpRight|DownLeft|DownRight|Top|Bottom|Left|Right|Up|Down)\)",
             filter_name,
             re.IGNORECASE,
         )
         if match:
             value = match.group(1).lower()
-            return {"top": "up", "bottom": "down"}.get(value, value)
+            return {
+                "top": "up",
+                "bottom": "down",
+                "topleft": "up-left",
+                "topright": "up-right",
+                "bottomleft": "down-left",
+                "bottomright": "down-right",
+                "upleft": "up-left",
+                "upright": "up-right",
+                "downleft": "down-left",
+                "downright": "down-right",
+            }.get(value, value)
     return None
 
 
@@ -218,6 +262,9 @@ def _travel_vector(direction: str | None, magnitude: float) -> list[float]:
         "right": [magnitude, 0.0],
         "up": [0.0, -magnitude],
         "down": [0.0, magnitude],
+        "up-left": [-magnitude * 0.72, -magnitude * 0.72],
+        "up-right": [magnitude * 0.72, -magnitude * 0.72],
+        "down-left": [-magnitude * 0.72, magnitude * 0.72],
         "down-right": [magnitude * 0.72, magnitude * 0.72],
     }
     return [round(value, 4) for value in vectors.get(direction, [0.0, 0.0])]
@@ -228,6 +275,7 @@ def _video_effect(
     direction: str | None,
     multiplier: float,
 ) -> dict[str, Any]:
+    effect = _VIDEO_EFFECT_ALIASES.get(effect, effect)
     common: dict[str, Any] = {
         "easing": "ease_out_cubic",
         "opacity_from": 0.0,
@@ -433,6 +481,14 @@ def build_video_motion_plan(
                 raw_row.get("duration_ms"),
                 f"slide {slide_num} animation duration_ms",
             )
+            playback_duration_ms = raw_row.get(
+                "playback_duration_ms",
+                duration_ms,
+            )
+            playback_duration_ms = _positive_int(
+                playback_duration_ms,
+                f"slide {slide_num} animation playback_duration_ms",
+            )
             event = event_index.get(shape_id)
             if event is None:
                 raise ValueError(
@@ -450,6 +506,7 @@ def build_video_motion_plan(
             direction = _direction_for_effect(
                 effect,
                 raw_row.get("filter_name"),
+                raw_row.get("effect_options"),
             )
             video = _video_effect(effect, direction, multiplier)
             video["duration_ms"] = duration_ms
@@ -465,6 +522,11 @@ def build_video_motion_plan(
                 "trigger": trigger,
                 "start_ms": start_ms,
                 "duration_ms": duration_ms,
+                "playback_duration_ms": playback_duration_ms,
+                "effect_options": raw_row.get("effect_options", {}),
+                "repeat_count": raw_row.get("repeat_count"),
+                "repeat_duration_ms": raw_row.get("repeat_duration_ms"),
+                "auto_reverse": raw_row.get("auto_reverse"),
                 "bounds_emu": bounds,
                 "area_ratio": round(area_ratio, 6),
                 "video": video,
@@ -481,7 +543,7 @@ def build_video_motion_plan(
         )
         content_end_ms = max(
             (
-                item["start_ms"] + item["duration_ms"]
+                item["start_ms"] + item["playback_duration_ms"]
                 for item in objects
             ),
             default=0,

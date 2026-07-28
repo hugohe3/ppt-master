@@ -1103,17 +1103,9 @@ def _wait_only_for_result(
     logger.info('waiting for browser confirmation stage=%s...', target_stage)
     deadline = None if timeout <= 0 else time.time() + timeout
     while True:
-        current_stage = _result_stage(result_file)
-        if current_stage == target_stage:
-            logger.info('confirmation stage=%s received: %s', target_stage, result_file)
-            return 0
-        if _result_stage_number(current_stage) > _result_stage_number(target_stage):
-            logger.error(
-                'confirmation skipped expected stage=%s and advanced to %s',
-                target_stage,
-                current_stage,
-            )
-            return 2
+        result_status = _wait_result_status(result_file, target_stage)
+        if result_status is not None:
+            return result_status
 
         skip_error = _stage_skip_error(result_file.parent)
         if skip_error:
@@ -1134,6 +1126,25 @@ def _wait_only_for_result(
             return 124
 
         time.sleep(0.5)
+
+
+def _wait_result_status(
+    result_file: Path,
+    target_stage: str,
+) -> Optional[int]:
+    """Return a terminal wait status when the persisted result resolves the target."""
+    current_stage = _result_stage(result_file)
+    if current_stage == target_stage:
+        logger.info('confirmation stage=%s received: %s', target_stage, result_file)
+        return 0
+    if _result_stage_number(current_stage) > _result_stage_number(target_stage):
+        logger.error(
+            'confirmation skipped expected stage=%s and advanced to %s',
+            target_stage,
+            current_stage,
+        )
+        return 2
+    return None
 
 
 def _shutdown_existing(lock_file: Path) -> int:
@@ -1553,8 +1564,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--wait-only', action='store_true',
         help='Attach to the confirm server for this project and wait for an '
-             'already-open page to write result.json. If the server died, '
-             'recover it on the recorded/default port so browser polling can resume.',
+             'already-open page to write result.json. If the target result is '
+             'already persisted, return without recovery; otherwise recover a '
+             'dead server on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
         '--wait-stage', default='final', metavar='{stage2,final}',
@@ -1607,8 +1619,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     # until the page writes the requested intermediate or final result.json.
     if args.wait_only:
         lock_file = project_path / LOCK_FILE_NAME
+        result_file = project_path / CONFIRM_DIR_NAME / RESULT_NAME
         if not _live_lock(lock_file):
             confirm_dir = project_path / CONFIRM_DIR_NAME
+            result_status = _wait_result_status(result_file, wait_stage)
+            if result_status is not None:
+                return result_status
             rec_file = _active_recommendations_path(confirm_dir)
             if not rec_file.exists():
                 logger.error(
@@ -1634,7 +1650,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 _server_url(actual_port),
             )
         return _wait_only_for_result(
-            project_path / CONFIRM_DIR_NAME / RESULT_NAME,
+            result_file,
             lock_file,
             args.wait_timeout,
             wait_stage,

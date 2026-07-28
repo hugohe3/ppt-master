@@ -121,7 +121,12 @@ def apply_plan(
             source_slide=source_slide,
             table_edits=table_edits,
         )
-        slide_effect, slide_duration, slide_advance = _resolve_slide_transition(
+        (
+            slide_effect,
+            slide_effect_options,
+            slide_duration,
+            slide_advance,
+        ) = _resolve_slide_transition(
             item,
             default_effect=transition,
             default_duration=transition_duration,
@@ -129,6 +134,7 @@ def apply_plan(
         slide_has_auto_advance = _set_slide_transition(
             slide_root,
             effect=slide_effect,
+            effect_options=slide_effect_options,
             duration=slide_duration,
             advance_after=slide_advance,
         )

@@ -88,7 +88,12 @@ Full guide → [Live Preview Stage](../skills/ppt-master/workflows/stages/live-p
 
 ## Animations & transitions
 
-Exported decks carry page transitions and optional per-element entrance animations as real OOXML — not embedded video. The default is a `fade` page transition with **no element animation**; opt in with `-a auto`, a named effect, or an `animations.json` sidecar when you want a reveal sequence.
+Exported decks carry page transitions and optional per-element object animations
+as real OOXML—not embedded video. The default is a `fade` page transition with
+**no element animation**; opt in with `-a auto`, one of the 203 native
+`entrance_*` / `emphasis_*` / `path_*` / `exit_*` presets, or an
+`animations.json` sidecar. The 29 former short names remain accepted only as
+compatibility inputs; new animation choices use canonical prefixed names.
 
 Animation settings are strict: unknown effects or Start modes, invalid timing values, and missing sidecar targets fail instead of silently becoming another effect. Before the result replaces an existing output, PPT Master reads the candidate package back and checks timing placement, IDs, shape targets, effects, durations, and Start modes. Microsoft PowerPoint is the primary motion-validation target; other presentation apps can open the PPTX but may map individual animation effects differently.
 

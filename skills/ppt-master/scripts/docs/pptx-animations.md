@@ -1,6 +1,6 @@
 # PPTX Animation Core
 
-The shared animation core owns the entrance-effect vocabulary, trigger
+The shared animation core owns the object-effect vocabulary, trigger
 semantics, OOXML timing writer, semantic read-back, and package validation for
 PowerPoint OOXML. Per-element animation remains opt-in: generated PPTX export
 defaults to `none`, exactly as before this validation upgrade.
@@ -17,7 +17,7 @@ defaults to `none`, exactly as before this validation upgrade.
 | Public authoring contract | `references/animations.md` |
 | Customization stage | `workflows/stages/customize-animations.md` |
 
-**Hard rule**: only the generated SVG-to-PPTX route writes object entrance
+**Hard rule**: only the generated SVG-to-PPTX route writes object
 animations. Direct-PPTX routes preserve source animations and run structural
 package validation; they do not resolve or author animation effects.
 
@@ -30,20 +30,24 @@ One resolved animation-pane row contains these fields:
 | Field | Meaning |
 |---|---|
 | Target | Positive PowerPoint shape id written to `p:spTgt@spid` |
-| Effect | One exact registry tuple: filter, `presetID`, and `presetSubtype` |
+| Effect | One canonical PowerPoint-authored preset class / id / subtype / behavior-tree signature |
 | Trigger | `on-click`, `with-previous`, or `after-previous` |
-| Duration | Finite positive schedule duration; filter effects serialize it as behavior duration |
-| Delay | Finite non-negative offset used by `after-previous` |
+| Trigger shape | Optional different top-level group; maps to PowerPoint `On Click of` |
+| Duration | Finite positive schedule duration; scalable native behavior trees preserve their internal timing ratios |
+| Delay | Finite non-negative offset used by `after-previous` or as trigger-shape `TriggerDelayTime` |
 | Order | Positive integer sidecar order; ties retain stable SVG order |
+| Effect options | Effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` values from PowerPoint `EffectParameters` |
+| Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
+| Completion | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
 
 Modes resolve before XML writing:
 
 | Mode | Resolution |
 |---|---|
 | `auto` | Deterministic semantic mapping from the SVG group id |
-| `mixed` | Deterministic legacy cycle |
-| `random` | Stable seeded choice from the legacy pool |
-| `none` | No entrance sequence |
+| `mixed` | Deterministic cycle over canonical PowerPoint entrance presets |
+| `random` | Stable seeded choice from the same canonical preset pool |
+| `none` | No object-animation sequence |
 
 The same effective input produces the same `random` choices. When enabled,
 `--conversion-trace` records each resolved row and effect, so a generated deck
@@ -51,60 +55,64 @@ can be audited without replaying the resolver.
 
 ---
 
-## 3. Compatibility Contract
+## 3. Canonical Registry and Compatibility Inputs
 
-The registry preserves these established 22 tuples exactly:
+The canonical registry contains 203 PowerPoint-authored presets:
 
-| Key | `p:animEffect@filter` | `presetID` | `presetSubtype` |
-|---|---|---:|---:|
-| `appear` | none | 1 | 0 |
-| `fade` | `fade` | 10 | 0 |
-| `fly` | `slide(fromBottom)` | 2 | 4 |
-| `cut` | `slide(fromLeft)` | 42 | 8 |
-| `zoom` | `image` | 23 | 0 |
-| `wipe` | `wipe(left)` | 22 | 1 |
-| `split` | `barn(inVertical)` | 16 | 21 |
-| `blinds` | `blinds(horizontal)` | 3 | 10 |
-| `checkerboard` | `checkerboard(across)` | 5 | 6 |
-| `dissolve` | `dissolve` | 9 | 0 |
-| `random_bars` | `randombar(horizontal)` | 14 | 10 |
-| `peek` | `wipe(down)` | 12 | 4 |
-| `wheel` | `wheel(4)` | 21 | 0 |
-| `box` | `box(in)` | 4 | 0 |
-| `circle` | `circle(in)` | 6 | 0 |
-| `diamond` | `diamond(in)` | 8 | 0 |
-| `plus` | `plus(in)` | 13 | 0 |
-| `strips` | `strips(downRight)` | 18 | 12 |
-| `wedge` | `wedge` | 20 | 0 |
-| `stretch` | `stretch(across)` | 17 | 0 |
-| `expand` | `stretch(across)` | 50 | 0 |
-| `swivel` | `wheel(1)` | 19 | 0 |
+| Category | Key prefix | Count | Example |
+|---|---|---:|---|
+| Entrance | `entrance_*` | 53 | `entrance_bounce` |
+| Emphasis | `emphasis_*` | 33 | `emphasis_spin` |
+| Motion path | `path_*` | 64 | `path_circle` |
+| Exit | `exit_*` | 53 | `exit_faded_zoom` |
 
-`cut` is a legacy public key. Compatibility promises the tuple above; it does
-not infer a different semantic name from external preset-id tables.
+The 29 established short names remain valid only as compatibility inputs.
+Normalization resolves them to canonical PowerPoint-authored presets before
+selection, XML writing, read-back, tracing, or validation.
 
-Seven directional variants extend the registry without changing any established
-tuple:
+| Compatibility input | Canonical preset |
+|---|---|
+| `appear`, `cut` | `entrance_appear` |
+| `fade` | `entrance_fade` |
+| `fly`, `fly_left`, `fly_right`, `fly_top` | `entrance_fly` |
+| `zoom` | `entrance_zoom` |
+| `wipe`, `wipe_left`, `wipe_right`, `wipe_up`, `wipe_down` | `entrance_wipe` |
+| `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek` | matching `entrance_*` preset |
+| `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel` | matching `entrance_*` preset |
 
-| Key | `p:animEffect@filter` | `presetID` | `presetSubtype` |
-|---|---|---:|---:|
-| `fly_left` | `slide(fromLeft)` | 2 | 8 |
-| `fly_right` | `slide(fromRight)` | 2 | 2 |
-| `fly_top` | `slide(fromTop)` | 2 | 1 |
-| `wipe_left` | `wipe(left)` | 22 | 8 |
-| `wipe_right` | `wipe(right)` | 22 | 2 |
-| `wipe_up` | `wipe(up)` | 22 | 1 |
-| `wipe_down` | `wipe(down)` | 22 | 4 |
+`cut` maps to `entrance_appear` because current PowerPoint exposes no separate
+Cut object-animation preset. Old Fly/Wipe names desugar to the canonical effect
+plus `effect_options.direction`; legacy `wheel` desugars to
+`entrance_wheel` plus `amount: 4`. New output never writes those aliases.
 
-The existing `fly` key remains fly-in from bottom. The existing `wipe` key
-keeps its historical `wipe(left)` / subtype `1` tuple; use `wipe_left` for
-PowerPoint's native left-direction subtype `8`. Directional keys are explicit
-effect names rather than a new configuration field, so version-1 sidecars and
-the read-back model remain unchanged.
+Together with the 29 accepted compatibility names, the public input surface
+contains 232 keys. New selections, generated sidecars, conversion traces,
+writers, and documentation examples use canonical keys; short names exist only
+at compatibility input boundaries.
+
+The shipped `pptx_animation_presets.json` contains the PowerPoint-authored
+`p:cTn` row for every native effect. Complex effects use combinations of
+`p:set`, `p:anim`, `p:animClr`, `p:animEffect`, `p:animMotion`, `p:animRot`,
+and `p:animScale`; reducing them to one filter would silently change the
+effect. `pptx_animations.py --list` prints the full categorized public
+registry; `pptx_animations.py --describe <effect>` prints that effect's exact
+option values and shared timing/completion contract.
+
+Native presets map to the object-capable `MsoAnimEffect` values. Media play,
+pause, stop, and play-from-bookmark are excluded because they require a
+media/bookmark target rather than an SVG-derived shape. Exit effects use the
+same entrance-capable `MsoAnimEffect` identity with PowerPoint's exit flag and
+serialize as `presetClass="exit"`.
+
+Paragraph/text-range build controls are likewise outside this writer: generated
+targets are top-level SVG groups, not paragraph ranges. For that target model,
+the public contract covers all PowerPoint effect parameters, timing modifiers,
+completion controls, sound, and object-trigger linkage; Speed and smooth
+start/end remain derived rather than duplicated.
 
 **Hard rule — no downgrade**:
 
-- Keep the 22 established tuples byte-for-byte equivalent in meaning.
+- Keep all 29 established short names accepted as compatibility inputs.
 - Reject an unknown effect, mode, or trigger; never substitute another value.
 - Reject booleans and non-finite, out-of-range, or invalidly ordered values.
 - Reject a missing slide, missing group, or structural-layer target.
@@ -134,17 +142,25 @@ content.
 
 ## 5. OOXML Rules
 
-The writer emits one root-level `p:timing` after `p:transition` and before
-`p:extLst`. Its animation tree contains a `tmRoot`, one `mainSeq`, unique
-`p:cTn@id` values, and `p:spTgt` references to shapes on the same slide.
+The writer emits animation timing after `p:transition` and before `p:extLst`.
+Normally this is one root `p:timing`; nonzero `bounce_end` uses PowerPoint's
+native `mc:AlternateContent` with a p14 Choice and non-bounce Fallback. Each
+branch contains a `tmRoot`, a `mainSeq` when ordinary Start rows exist, one
+`interactiveSeq` per trigger-shape row, unique branch-local `p:cTn@id` values,
+and same-slide `p:spTgt` references.
 
 Trigger mapping:
 
-| Public trigger | Entrance `p:cTn@nodeType` |
+| Public trigger | Object row `p:cTn@nodeType` |
 |---|---|
 | `on-click` | `clickEffect` |
 | `with-previous` | `withEffect` |
 | `after-previous` | `afterEffect` |
+
+A group-level `trigger_shape` resolves to a different shape id and writes
+PowerPoint's native `interactiveSeq` with `onClick` shape conditions. Its row
+remains `clickEffect`; group `delay` becomes `TriggerDelayTime`. Ordinary rows
+remain in `mainSeq` and keep the slide Start mode.
 
 The writer does not emit `p:bldP` for grouped content or pictures. Microsoft
 defines `p:bldP@spid` for a text-bearing `p:sp`; using it for `p:grpSp` or
@@ -157,10 +173,18 @@ the direct routes fingerprint and preserve it instead of blocking those decks.
 New generated output never writes it, and generated-package validation remains
 strict.
 
-`appear` is the visibility-flip exception: its `p:set` behavior is always 1ms.
-The configured positive duration remains the row's scheduling span used when
-computing the next `after-previous` offset; read-back verifies the 1ms behavior
-and the resulting timeline offset separately.
+`entrance_appear` is the visibility-flip exception: its `p:set` behavior is
+always 1ms. The configured positive duration remains the row's scheduling span
+used when computing the next `after-previous` offset; read-back verifies the
+1ms behavior and the resulting timeline offset separately. The compatibility
+inputs `appear` and `cut` normalize to this canonical preset.
+
+Other native presets with a
+finite duration scale every finite behavior duration and start delay
+proportionally, preserving multi-step timing such as bounce and teeter.
+PowerPoint-authored instantaneous emphasis presets keep their `indefinite`
+behavior duration; their configured duration remains the scheduling span for
+the next `after-previous` row.
 
 ---
 
@@ -170,10 +194,13 @@ Generated export reads every slide back before packaging and compares each
 requested row with the serialized result:
 
 - row count and row order;
-- trigger and shape target;
-- resolved effect key, filter, `presetID`, and `presetSubtype`;
-- serialized behavior duration and computed timeline offset (`appear` uses the
-  1ms exception above).
+- trigger, optional trigger shape, and shape target;
+- resolved effect key, preset class, filter, `presetID`, and `presetSubtype`;
+- exact effect options, repeat/reverse/rewind/acceleration/bounce/restart
+  semantics, completion behavior, sound relationship, and playback span;
+- native behavior-tree signature, serialized behavior duration, and computed
+  timeline offset (`entrance_appear` and instantaneous native presets use the
+  exceptions above).
 
 After packaging, validation scans every slide part for root timing placement,
 duplicate or malformed `p:cTn` ids, missing `p:spTgt` shapes, invalid build
@@ -181,11 +208,9 @@ targets, and unsupported generated effect tuples. A mismatch fails export
 before the requested output file replaces an existing deck.
 
 Narration injection parses and merges the slide DOM. It adds audio timing under
-the existing `tmRoot` child list, allocates fresh time-node ids, and preserves
-the object entrance sequence. It does not replace an existing `p:timing` tree.
-The merge accepts only a direct `p:sld/p:timing` source tree; a timing tree
-wrapped in `mc:AlternateContent` or another non-root container fails safely
-instead of being rewritten or duplicated.
+the existing `tmRoot`, allocates fresh ids, and preserves object animation.
+For bounce timing it updates both p14 Choice and Fallback; unsupported nested
+timing containers still fail safely instead of being duplicated.
 
 Direct-PPTX routes run the structural package validator with generated-effect
 enforcement disabled. This permits preservation of source/extension effects and
@@ -195,9 +220,9 @@ object-animation tree before and after their allowed edits; any semantic change
 fails. These routes have no object-animation write ownership.
 
 The conversion trace is also the authoritative input for downstream video
-motion. `video_motion_plan.py` preserves the resolved effect tuple, direction,
-row order, duration, absolute offset, object bounds, and narration-derived slide
-advance while adding only renderer-specific enhancement parameters. Video
+motion. `video_motion_plan.py` preserves the resolved effect/options, direction,
+row order, base and repeat-aware playback duration, absolute offset, object
+bounds, and narration-derived slide advance while adding only renderer-specific enhancement parameters. Video
 renderers must not bypass this read-back result and infer motion from sidecar
 delay values alone.
 
@@ -211,6 +236,9 @@ differently; the exporter does not make an unconditional Keynote guarantee.
 
 Official references:
 
+- [Microsoft `MsoAnimEffect` enumeration](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.msoanimeffect)
+- [Microsoft `Sequence.AddEffect`](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.sequence.addeffect)
+- [Microsoft `Effect.Exit`](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.effect.exit)
 - [Microsoft animation-filter implementation notes](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-oe376/a96dab70-2e72-4319-928d-0eb4b275ce58)
 - [Microsoft `p:bldP` implementation restrictions](https://learn.microsoft.com/en-us/openspecs/office_standards/ms-oe376/40d17b6d-30c0-4c10-b042-b2597824a820)
 - [Open XML SDK time-node values](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.timenodevalues?view=openxml-3.0.1)

@@ -12,6 +12,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
+from .context import AffineMatrix
 from .utils import (
     SVG_NS,
     parse_inline_style,
@@ -19,6 +20,7 @@ from .utils import (
     project_definition_index,
     px_to_emu,
     resolve_url_id,
+    transform_point,
 )
 
 
@@ -748,6 +750,35 @@ def normalize_path_commands(commands: list[PathCommand]) -> list[PathCommand]:
         last_cmd = cmd.cmd
 
     return result
+
+
+def transform_path_commands(
+    commands: list[PathCommand],
+    matrix: AffineMatrix,
+) -> list[PathCommand]:
+    """Apply an affine transform to normalized M/L/C/Z path commands."""
+    transformed: list[PathCommand] = []
+    for command in commands:
+        if command.cmd in {'M', 'L'}:
+            x, y = transform_point(
+                matrix,
+                command.args[0],
+                command.args[1],
+            )
+            transformed.append(PathCommand(command.cmd, [x, y]))
+        elif command.cmd == 'C':
+            args: list[float] = []
+            for index in range(0, 6, 2):
+                x, y = transform_point(
+                    matrix,
+                    command.args[index],
+                    command.args[index + 1],
+                )
+                args.extend([x, y])
+            transformed.append(PathCommand(command.cmd, args))
+        else:
+            transformed.append(command)
+    return transformed
 
 
 def path_commands_to_drawingml(

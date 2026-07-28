@@ -4,14 +4,17 @@
 
 ---
 
-PPT Master 会把**页间转场**和可选的**元素入场动画**写成真正的 PowerPoint OOXML，而不是嵌入视频。本文只说明用户需要做的选择和常用命令；精确效果映射、完整 sidecar schema、锚点规则与封包校验统一由[动画执行规范](../../skills/ppt-master/references/animations.md)维护。
+PPT Master 会把**页间转场**和可选的**元素对象动画**写成真正的 PowerPoint
+OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径和退出。本文只说明
+用户需要做的选择和常用命令；精确效果映射、完整 sidecar schema、锚点规则与
+封包校验统一由[动画执行规范](../../skills/ppt-master/references/animations.md)维护。
 
 ## 默认行为
 
 | 层级 | 默认 | 含义 |
 |---|---|---|
 | 页间转场 | `fade`，0.4 秒 | 页面之间使用克制的视觉过渡 |
-| 元素入场动画 | **`none`（关闭）** | 每页一次性完整出现；只有当逐步揭示确实有助于表达时才开启 |
+| 元素对象动画 | **`none`（关闭）** | 每页一次性完整出现；只有当动效确实有助于表达时才开启 |
 
 修改动画设置不需要重新生成页面，只需对同一份 `svg_output/` 重跑 `svg_to_pptx.py`。
 
@@ -24,12 +27,15 @@ PPT Master 会把**页间转场**和可选的**元素入场动画**写成真正�
 | 关闭视觉转场 | `uvx ppt-master svg-to-pptx <project> -t none` |
 | 每 5 秒自动翻页 | `uvx ppt-master svg-to-pptx <project> --auto-advance 5` |
 | 开启自动元素入场 | `uvx ppt-master svg-to-pptx <project> -a auto` |
-| 全部使用同一种入场效果 | `uvx ppt-master svg-to-pptx <project> --animation fade` |
+| 全部使用同一种入场效果 | `uvx ppt-master svg-to-pptx <project> --animation entrance_fade` |
+| 全部使用同一种原生强调效果 | `uvx ppt-master svg-to-pptx <project> --animation emphasis_spin` |
+| 全部使用同一种原生动作路径 | `uvx ppt-master svg-to-pptx <project> --animation path_circle` |
+| 全部使用同一种原生退出效果 | `uvx ppt-master svg-to-pptx <project> --animation exit_fade` |
 | 单击逐个揭示元素 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click` |
 | 所有元素同时入场 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger with-previous` |
 | 放慢逐步揭示节奏 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
 
-页间转场已经覆盖当前 PowerPoint 效果库的三个完整分组：
+48 个规范页间切换标识已经覆盖当前 PowerPoint 效果库的三个完整分组：
 
 - 细微：平滑 `morph`、淡入/淡出 `fade`、推入 `push`、擦除 `wipe`、
   分割 `split`、显示 `reveal`、切入 `cut`、随机线条 `random_bars`、
@@ -45,9 +51,15 @@ PPT Master 会把**页间转场**和可选的**元素入场动画**写成真正�
 - 动态内容：平移 `pan`、摩天轮 `ferris_wheel`、传送带 `conveyor`、
   旋转 `rotate`、窗口 `window`、轨道 `orbit`、飞过 `fly_through`。
 
-兼容标识 `strips`、`circle`、`diamond`、`newsflash`、`plus`、`pull`、
-`wedge`、`wheel` 仍然有效。`-t none` 只关闭视觉效果，不会移除显式设置的
-自动翻页计时。
+旧标识 `strips`、`circle`、`diamond`、`newsflash`、`plus`、`pull`、
+`wedge`、`wheel` 只保留为兼容输入；新 sidecar、计划、轨迹和输出只使用规范
+标识。兼容输入会反糖化为一个原生效果及其效果选项，例如 `diamond` 会变成
+`shape` 加 `shape: diamond`，`wedge` 会变成 `clock` 加 `style: wedge`。
+
+原生 PowerPoint 效果选项写在 `transition.effect_options` 中。方向、形状、
+图案、Morph 范围、黑场、卷页数量和弹跳等参数都会按所选效果严格校验。运行
+`uvx ppt-master pptx-animations --describe-transition <effect>`
+可查看精确取值。`-t none` 只关闭视觉效果，不会移除显式设置的自动翻页计时。
 
 ## 选择 Start 模式
 
@@ -64,12 +76,22 @@ PPT Master 会把**页间转场**和可选的**元素入场动画**写成真正�
 | 选择 | 适用场景 |
 |---|---|
 | `auto` | 让 PPT Master 根据内容组角色选择合适效果；这是开启元素动画时的推荐选项 |
-| `fade`、`wipe`、`fly`、`zoom` 等单一效果 | 整份 deck 需要统一的入场风格 |
-| `mixed` | 需要兼容旧版的确定性效果轮换 |
-| `random` | 需要从旧效果池中稳定地生成变化 |
+| 原生 `entrance_*` | 使用 PowerPoint 的 53 个原生进入预设之一 |
+| 原生 `emphasis_*` | 让已显示对象获得关注或改变外观 |
+| 原生 `path_*` | 让对象沿 PowerPoint 的 64 条动作路径之一移动 |
+| 原生 `exit_*` | 让对象在动画序列中退出页面 |
+| `mixed` | 使用兼容模式名，在规范 PowerPoint 预设中确定性轮换 |
+| `random` | 从同一规范预设池中稳定地生成变化 |
 | `none` | 关闭元素动画 |
 
-完整效果清单及其精确 PowerPoint 映射属于[动画执行规范](../../skills/ppt-master/references/animations.md)，不在用户指南中重复维护。
+规范注册表包含 203 个 PowerPoint 原生标识：53 个进入、33 个强调、64 条
+动作路径、53 个退出。现在新选择、sidecar、自动决策、转换轨迹和示例都只使用
+带类别前缀的规范名称。29 个旧短名称只保留为兼容输入，写入前会归一化，不再
+维护第二套动画行为。旧 Fly 方向名统一映射到 `entrance_fly`，旧 Wipe 方向名
+统一映射到 `entrance_wipe`；方向会保留为参数，而不会形成新的规范预设。旧
+`wheel` 保留四辐语义。运行
+`uvx ppt-master pptx-animations --list` 可查看完整分类清单。
+4 个媒体播放命令需要媒体或书签目标，仍由音视频工作流负责。
 
 ## 自定义具体对象
 
@@ -85,10 +107,21 @@ uvx ppt-master svg-to-pptx <project>
 
 | 字段 | 用途 |
 |---|---|
-| `effect` | 覆盖入场效果；设为 `none` 可让该对象保持静态 |
+| `effect` | 覆盖对象动画效果；设为 `none` 可让该对象保持静态 |
 | `order` | 调整揭示顺序，不改变页面图层顺序 |
-| `delay` | 在 `after-previous` 模式下增加开始前等待时间 |
-| `duration` | 覆盖该对象的入场排程时长 |
+| `delay` | 在 `after-previous` 中或单击 `trigger_shape` 后增加等待时间 |
+| `duration` | 覆盖该对象的动画排程时长 |
+| `effect_options` | 设置效果适用的 `direction`、`amount`、`color`、`font_name`、`relative` 或 `size` |
+| `trigger_shape` | 单击另一个顶层内容组时触发本行（PowerPoint“单击下列对象时”） |
+| 计时修饰 | `repeat_count`/`repeat_duration`、`auto_reverse`、`rewind`、`accelerate`、`decelerate`、`bounce_end` 与 `restart` |
+| 播放完成 | `after_effect`（变暗/隐藏）和 `.m4a`/`.mp3`/`.wav` `sound` 路径 |
+
+运行 `uvx ppt-master pptx-animations --describe
+<canonical_effect>` 可查看该效果实际接受的完整参数。速度由 `duration` 控制，
+平滑开始/结束由 `accelerate`/`decelerate` 控制。
+
+`trigger_shape` 只能写在对象组上，并指向同一页另一个分组 id。它只让当前动画行
+变为交互触发，其他行仍遵循页面 Start 模式；录制旁白不接受这种交互动画。
 
 当用户要求 AI 调整具体对象时，使用 [`customize-animations`](../../skills/ppt-master/workflows/stages/customize-animations.md) 阶段。完整 sidecar schema 与目标校验规则仍由[动画执行规范](../../skills/ppt-master/references/animations.md)维护。
 
