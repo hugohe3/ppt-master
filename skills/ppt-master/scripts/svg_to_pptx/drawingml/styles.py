@@ -16,7 +16,7 @@ from .utils import (
     classify_project_marker_shape,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
     parse_project_filter_params, project_filter_drawingml_coordinates,
-    parse_project_gradient_ratio,
+    parse_project_gradient_ratio, parse_project_linear_gradient_coordinate,
     parse_project_stroke_dasharray, parse_project_stroke_enum,
     quantize_ooxml_alpha, quantize_ooxml_unit_ratio,
 )
@@ -96,17 +96,18 @@ def build_gradient_fill(
     gs_list = '\n'.join(stops_xml)
 
     if tag == 'linearGradient':
-        def parse_grad_coord(val_str: str, default: float = 0.0) -> float:
-            val_str = val_str.strip()
-            if val_str.endswith('%'):
-                return float(val_str.rstrip('%')) / 100.0
-            v = float(val_str)
-            return v / 100.0 if v > 1.0 else v
-
-        x1 = parse_grad_coord(grad_elem.get('x1', '0'))
-        y1 = parse_grad_coord(grad_elem.get('y1', '0'))
-        x2 = parse_grad_coord(grad_elem.get('x2', '1'))
-        y2 = parse_grad_coord(grad_elem.get('y2', '1'))
+        x1 = parse_project_linear_gradient_coordinate(
+            grad_elem.get('x1', '0')
+        )
+        y1 = parse_project_linear_gradient_coordinate(
+            grad_elem.get('y1', '0')
+        )
+        x2 = parse_project_linear_gradient_coordinate(
+            grad_elem.get('x2', '1')
+        )
+        y2 = parse_project_linear_gradient_coordinate(
+            grad_elem.get('y2', '0')
+        )
 
         angle_rad = math.atan2(y2 - y1, x2 - x1)
         angle_deg = math.degrees(angle_rad)

@@ -103,8 +103,8 @@ closed parser checks. See
 |---|---|
 | Definition | Direct `<linearGradient>` / `<radialGradient>` child of `<defs>` with unique `id` |
 | Reference | Exact local `url(#id)` |
-| Stops | Direct `<stop>` children; explicit color; finite offset `0..1` or `0%..100%`; optional stop alpha |
-| Coordinates | Normalized values / percentages; do not depend on `gradientUnits` user-space geometry |
+| Stops | ≥2 direct `<stop>` children; explicit color; finite non-decreasing offset in `0..1` or `0%..100%` (ties form hard edges); optional alpha |
+| Coordinates | `objectBoundingBox` only. Generated values: `0..1`; omitted linear axis = `(0,0) → (1,0)`. Only import-normalized linear projections may reach `-0.105..1.105`; radial values stay in `0..1` |
 | Forbidden | External/quoted refs, `href` inheritance, `gradientTransform`, `spreadMethod`, CSS gradients |
 
 | Target | Contract and fidelity |
@@ -114,16 +114,14 @@ closed parser checks. See
 | `<text>` / non-positional `<tspan>` | Gradient fill only; no gradient text outline |
 | `<image>` | No gradient paint; use §6.5 overlays |
 
-Linear export preserves stops/alpha/direction but reduces coordinates to an
-angle. Radial export becomes a centered circular gradient and does not preserve
-`cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
-retain only the first stop. Stop alpha and element opacity multiply.
-PPTX import normalizes compatible gradients and records any property-level
-degradation without aborting the deck; `--strict` keeps the closed parser
-contract. See
+Linear export preserves stops/alpha and reduces direction to an angle;
+coincident endpoints are invalid. Radial export centers a circular
+approximation, dropping `cx/cy/r/fx/fy`. Gradient strokes stay editable;
+reverse import may keep the first stop only. Stop alpha multiplies element opacity.
+PPTX import normalizes gradients and reports degradation;
+`--strict` keeps the closed parser contract. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
-The quality checker and exporter preflight both validate definition location,
-references, gradient structure, and paint context from the same closed contract.
+Checker/exporter preflight share this validation.
 Gradient-stop colors are contextual paint values. Keep them coherent with the
 deck anchors and page intent; they are not required to duplicate existing
 `spec_lock.colors` literals.

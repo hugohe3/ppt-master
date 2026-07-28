@@ -170,6 +170,8 @@ In §VIII, author every planned or explicitly required resource from the confirm
 
 §VIII `Layout pattern` is a per-resource preference. When a page uses several images, repeats one image in multiple views, or combines an image with native overlays, describe the page-level relationship and participating resources in §IX `Layout` / `Images`; do not duplicate an unchanged resource row merely to encode animation sequencing.
 
+Put native paint/overlay intent in §IX `Layout` plus `Images` for imagery—not a new field; state semantic job/layering, while Executor chooses type, stops, opacity, and geometry.
+
 ### 2.4 Complete page roster and notes
 
 Write one ordered Slide block per page. Slide count and order must equal §I `Page Count`; `Content` is a complete page brief, not a skeleton.

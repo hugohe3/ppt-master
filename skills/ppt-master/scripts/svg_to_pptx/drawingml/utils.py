@@ -216,6 +216,9 @@ PROJECT_DEFINITION_TAGS = frozenset({
     'radialGradient',
 })
 PROJECT_GRADIENT_TAGS = frozenset({'linearGradient', 'radialGradient'})
+# PPTX angle projection can overshoot a unit box by at most ~0.1036.
+PROJECT_LINEAR_GRADIENT_COORDINATE_MIN = -0.105
+PROJECT_LINEAR_GRADIENT_COORDINATE_MAX = 1.105
 PROJECT_FILTER_PRIMITIVES = frozenset({
     'feDropShadow',
     'feGaussianBlur',
@@ -2217,6 +2220,36 @@ def project_paint_reference_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def project_mask_errors(root: ET.Element) -> list[str]:
+    """Reject SVG masks that native PPTX conversion cannot preserve."""
+    errors: set[str] = set()
+    for elem in root.iter():
+        label = _transform_element_label(elem)
+        if _svg_element_tag(elem) == 'mask':
+            errors.add(
+                f'{label} is an unsupported SVG mask definition; replace it '
+                'with editable overlay or Boolean/cutout shapes, an image '
+                'clip-path, or pre-rendered alpha imagery'
+            )
+
+        sources: list[str] = []
+        if any(
+            name.rsplit('}', 1)[-1].lower() == 'mask'
+            for name in elem.attrib
+        ):
+            sources.append('mask attribute')
+        if 'mask' in parse_inline_style(elem.get('style')):
+            sources.append('inline style mask property')
+        if sources:
+            errors.add(
+                f'{label} uses unsupported SVG mask presentation via '
+                f'{", ".join(sources)}; native PPTX export would drop the '
+                'effect. Use editable overlay or Boolean/cutout shapes, an '
+                'image clip-path, or pre-rendered alpha imagery'
+            )
+    return sorted(errors)
+
+
 def parse_project_gradient_ratio(raw: str) -> float:
     """Parse one normalized gradient coordinate or stop offset."""
     number, unit = _parse_svg_length_parts(raw)
@@ -2226,6 +2259,24 @@ def parse_project_gradient_ratio(raw: str) -> float:
         raise ValueError('must be unitless or a percentage')
     if not 0.0 <= number <= 1.0:
         raise ValueError('must be within 0..1 or 0%..100%')
+    return number
+
+
+def parse_project_linear_gradient_coordinate(raw: str) -> float:
+    """Parse one objectBoundingBox linear-gradient projection coordinate."""
+    number, unit = _parse_svg_length_parts(raw)
+    if unit == '%':
+        number /= 100.0
+    elif unit:
+        raise ValueError('must be unitless or a percentage')
+    if not (
+        PROJECT_LINEAR_GRADIENT_COORDINATE_MIN
+        <= number
+        <= PROJECT_LINEAR_GRADIENT_COORDINATE_MAX
+    ):
+        raise ValueError(
+            'must be within -0.105..1.105 or -10.5%..110.5%'
+        )
     return number
 
 
@@ -2258,25 +2309,61 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                 'use normalized objectBoundingBox coordinates'
             )
 
-        coordinate_names = (
-            ('x1', 'y1', 'x2', 'y2')
-            if tag == 'linearGradient'
-            else ('cx', 'cy', 'r', 'fx', 'fy')
-        )
-        for coordinate_name in coordinate_names:
-            raw_coordinate = gradient.get(coordinate_name)
-            if raw_coordinate is None:
-                continue
-            try:
-                coordinate = parse_project_gradient_ratio(raw_coordinate)
-            except ValueError:
-                errors.add(
-                    f'{label} {coordinate_name} must be a normalized finite '
-                    f'value from 0 to 1 or 0% to 100%; got {raw_coordinate!r}'
+        if tag == 'linearGradient':
+            coordinate_defaults = {
+                'x1': '0',
+                'y1': '0',
+                'x2': '1',
+                'y2': '0',
+            }
+            coordinates: dict[str, float] = {}
+            for coordinate_name, default in coordinate_defaults.items():
+                raw_coordinate = gradient.get(coordinate_name, default)
+                try:
+                    coordinates[coordinate_name] = (
+                        parse_project_linear_gradient_coordinate(raw_coordinate)
+                    )
+                except ValueError:
+                    errors.add(
+                        f'{label} {coordinate_name} must be a finite '
+                        'objectBoundingBox projection coordinate within '
+                        '-0.105..1.105 or -10.5%..110.5%; '
+                        f'got {raw_coordinate!r}'
+                    )
+            if len(coordinates) == 4 and (
+                math.isclose(
+                    coordinates['x1'],
+                    coordinates['x2'],
+                    rel_tol=0.0,
+                    abs_tol=1e-12,
                 )
-                continue
-            if coordinate_name == 'r' and coordinate <= 0:
-                errors.add(f'{label} r must be greater than 0')
+                and math.isclose(
+                    coordinates['y1'],
+                    coordinates['y2'],
+                    rel_tol=0.0,
+                    abs_tol=1e-12,
+                )
+            ):
+                errors.add(
+                    f'{label} linear gradient axis must not collapse to one '
+                    'point; use different x1/y1 and x2/y2 coordinates'
+                )
+        else:
+            for coordinate_name in ('cx', 'cy', 'r', 'fx', 'fy'):
+                raw_coordinate = gradient.get(coordinate_name)
+                if raw_coordinate is None:
+                    continue
+                try:
+                    coordinate = parse_project_gradient_ratio(raw_coordinate)
+                except ValueError:
+                    errors.add(
+                        f'{label} {coordinate_name} must be a normalized finite '
+                        'value from 0 to 1 or 0% to 100%; '
+                        f'got {raw_coordinate!r}'
+                    )
+                    continue
+                if coordinate_name == 'r' and coordinate <= 0:
+                    errors.add(f'{label} r must be greater than 0')
 
         stops: list[ET.Element] = []
         for child in list(gradient):
@@ -2290,20 +2377,35 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                 )
                 continue
             stops.append(child)
-        if not stops:
-            errors.add(f'{label} requires at least one direct <stop> child')
+        if len(stops) < 2:
+            errors.add(
+                f'{label} requires at least two direct <stop> children for '
+                'native PPTX gradient interpolation'
+            )
+        previous_offset: float | None = None
         for index, stop in enumerate(stops, start=1):
             stop_label = f'{label} stop #{index}'
             raw_offset = stop.get('offset')
             try:
                 if raw_offset is None:
                     raise ValueError
-                parse_project_gradient_ratio(raw_offset)
+                offset = parse_project_gradient_ratio(raw_offset)
             except ValueError:
                 errors.add(
                     f'{stop_label} offset must be explicit and within 0..1 '
                     f'or 0%..100%; got {raw_offset!r}'
                 )
+            else:
+                if (
+                    previous_offset is not None
+                    and offset < previous_offset
+                ):
+                    errors.add(
+                        f'{label} stop offsets must be non-decreasing; '
+                        f'stop #{index} offset {raw_offset!r} precedes a '
+                        f'larger offset at stop #{index - 1}'
+                    )
+                previous_offset = offset
             style_values = parse_inline_style(stop.get('style'))
             if not (style_values.get('stop-color') or stop.get('stop-color')):
                 errors.add(f'{stop_label} requires an explicit stop-color')
