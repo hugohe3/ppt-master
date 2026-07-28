@@ -5,9 +5,11 @@ description: Optional post-processing stage for per-slide and per-object animati
 # Customize Animations Stage
 
 > Optional Generate-PPTX post-processing stage for per-slide or per-object
-> animation control. Run when the user asks to customize slide-specific motion,
-> object order, effects, timing, or reveals. Deck-wide transitions,
-> auto-advance, and deck-wide per-element object settings use
+> animation control. Run when Design Spec §IX contains at least one
+> `Motion suggestion`, when `<project_path>/animations.json` already exists, or
+> when the user asks to customize slide-specific motion, object order, effects,
+> timing, or reveals. Deck-wide transitions, auto-advance, and deck-wide
+> per-element settings without page-specific motion or an existing sidecar use
 > [`animations.md`](../../references/animations.md) directly and do not activate
 > this stage.
 
@@ -15,11 +17,12 @@ description: Optional post-processing stage for per-slide and per-object animati
 
 | Condition | Action |
 |---|---|
+| Design Spec §IX contains at least one `Motion suggestion` | Run this stage after notes exist and before Generate Step 7 |
 | User asks for per-slide or per-object animation, reveal order, timing, or effect changes | Run this stage |
-| User only wants the default deck (page transitions, no element builds) | Do not run; normal `svg_to_pptx.py` export is enough |
-| User only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
+| `<project_path>/animations.json` already exists | Run this stage to validate it and resolve preserve/adjust/replace intent before export |
+| No suggestion, motion request, or existing sidecar; user only wants the default deck | Do not run; normal export keeps page transitions and no element builds |
+| No existing sidecar; user only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
-| `animations.json` exists | Resolve regeneration versus modification through the §1 intent gate before changing it |
 
 ---
 
@@ -39,9 +42,12 @@ description: Optional post-processing stage for per-slide and per-object animati
 |---|---|
 | Explicit regeneration / rewrite / replacement | Rebuild the semantic grouping plan and replace `animations.json`; the previous choreography is not a constraint |
 | Explicit adjustment / tuning / repair | Validate first, preserve the existing choreography where its semantic units remain valid, and migrate affected group references after any required regrouping |
+| Stage activated by new §IX suggestions without a user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
+| Existing sidecar with no new motion instruction | Validate and preserve it unchanged; if invalid, repair the owning sidecar/group reference before export |
 | Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
 
-When the existing sidecar will be modified:
+Whenever an existing sidecar is present, validate it before deciding to
+preserve or modify it:
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
@@ -54,15 +60,30 @@ the animation plan merely because it already exists.
 
 **Optional-context fallback**: these semantic files inform this supporting stage but are not its gate artifacts. If any are absent, state what is missing and proceed with every remaining file plus visible SVG content. If all three context inputs are absent, use only explicit user instructions, visible SVG content, and the resolution rules in [`animations.md`](../../references/animations.md); do not infer detailed choreography beyond what the page itself expresses.
 
+**Decision ownership — advice versus requirement**: A §IX
+`Motion suggestion` expresses the Strategist's recommended communication job or
+reveal relationship; it does not lock an effect, Effect Options, timing,
+trigger, group id, or coverage. Explicit user motion requirements remain
+mandatory. Executor maps an adopted suggestion to the native registry, may
+adjust its effect/order/timing or choose `none` when motion would reduce
+clarity, and never changes page content merely to justify animation.
+
+**No-op is complete**: Evaluate suggestions before regrouping SVG content. If
+no `animations.json` exists, every page should retain the normal `fade`
+transition and no object builds, and no explicit user requirement remains
+unmet, change no SVG, create no sidecar, and return to Generate Step 7. Never
+author motion merely to expose a capability.
+
 ---
 
-## 2. Rebuild Semantic Animation Groups, Then List IDs
+## 2. Rebuild Semantic Animation Groups When Needed, Then List IDs
 
-**Mandatory — content-first grouping audit**: inspect every slide's visible
-content against its communication job and speaker flow before treating any
-top-level `<g>` as an animation anchor. Existing groups are implementation
-evidence only. Keep a current group unchanged only after confirming that it
-already represents exactly one audience-facing reveal unit.
+**Mandatory when object animation is in scope — content-first grouping audit**:
+inspect every slide's visible content against its communication job and speaker
+flow before treating any top-level `<g>` as an animation anchor. Existing
+groups are implementation evidence only. Keep a current group unchanged only
+after confirming that it already represents exactly one audience-facing reveal
+unit. A transition-only plan skips regrouping and group listing.
 
 | Content condition | Required grouping action |
 |---|---|
@@ -226,8 +247,9 @@ one.
 
 ## 4. Edit `animations.json`
 
-**Hard rule — write every slide explicitly; let groups inherit**. Each
-slide under `slides.<slide>` MUST carry its own complete `transition` and
+**Hard rule — when this stage writes `animations.json`, write every slide
+explicitly; let groups inherit**. Each slide under `slides.<slide>` MUST carry
+its own complete `transition` and
 `animation` block (effect + duration + stagger + trigger where applicable),
 even when the values match `defaults`. This makes per-page rhythm visible
 at a glance without mentally merging the inheritance chain. Group-level
@@ -322,27 +344,32 @@ omitted unless a marker-free legacy name needs an explicitly reviewed override.
 
 ---
 
-## 5. Validate, Refresh Derived SVGs, and Export
+## 5. Validate and Return to Generate Export
 
-Run sequentially:
+When `animations.json` was newly created or changed after the §1 validation,
+run:
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
-python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 ```
 
-**Validation**: the exported native PPTX must reflect the per-slide and
-per-object overrides, and `svg_final/` must reflect any semantic regrouping
-performed in §2. `--animation none` still disables all per-element animation
-and overrides `animations.json`. Unknown animation
+After validation succeeds, return to
+[`generate-pptx.md`](../generate-pptx.md) Step 7.1. Generate owns note
+splitting, `finalize_svg.py`, native export, and the published postflight
+receipt; Step 7.3 reads `<project_path>/animations.json` automatically. If §2
+changed `svg_output/`, complete its required final SVG quality rerun before
+returning. Do not finalize or export independently from this stage.
+
+**Validation**: The later native export must reflect the per-slide and
+per-object overrides. `--animation none` still disables all per-element
+animation and overrides `animations.json`. Unknown animation
 effects/modes/triggers; unsupported effect options; incompatible, boolean,
 non-finite, or out-of-range timing parameters; non-positive durations; negative
 delay/stagger; invalid order; missing slides/groups; and structural-layer
 targets fail validation. Transition validation remains strict. None of these
 failures substitutes a fallback effect or silently drops a requested target.
 
-Generated export reads back row order, trigger, target, resolved effect,
+Generate Step 7 export reads back row order, trigger, target, resolved effect,
 duration, offset, timing placement, IDs, and shape references. Narration
 preserves these rows. Direct-PPTX routes fingerprint and preserve source object
 animation; they never author it. See
@@ -350,8 +377,9 @@ animation; they never author it. See
 
 ### 5.1 Optional Video Motion Handoff
 
-When a downstream video renderer will enhance the deck, export with
-`--conversion-trace` and derive its motion plan from that resolved trace:
+When a downstream video renderer will enhance the deck, have Generate Step 7.3
+append `--conversion-trace`. After that final export succeeds, derive the motion
+plan from its resolved trace:
 
 ```bash
 python3 skills/ppt-master/scripts/video_motion_plan.py \
@@ -370,10 +398,9 @@ renderer parameters but cannot replace the source effect. See
 
 ## ✅ Customize Animations Complete
 
-- [x] Semantic context and every slide's visible content were reviewed
-- [x] Each target is one post-regroup semantic unit with a real SVG id
-- [x] Regrouped SVG passed the final quality gate and refreshed `svg_final/`
-- [x] Every slide has explicit motion blocks; only divergent groups are listed
-- [x] Page and object motion were planned together with intentional timing
-- [x] Sidecar validation, re-export, semantic read-back, and package validation passed
-- [x] Any video plan came from the final resolved conversion trace
+- [x] Applicable semantic context and motion intent were resolved
+- [x] Adopted object targets use real post-regroup SVG ids when object motion is in scope
+- [x] `animations.json` is complete and validated when present; a no-op path creates none
+- [x] Any regrouped SVG passed the final quality gate
+- [x] Control returned to Generate Step 7 for preview, export, read-back, and package validation
+- [x] Any requested video plan waits for the final resolved conversion trace

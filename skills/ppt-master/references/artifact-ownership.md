@@ -43,7 +43,7 @@ Global artifact ownership rules for PPT Master projects.
 | `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Step 7.3 writes after the PPTX passes package validation and emits a compact `[POSTFLIGHT]` receipt. Agents use the receipt on routine success and keep the full JSON cold unless targeted failure/audit evidence is required. |
 | `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Step 7.3 writes only final deliverables from `svg_output/`. |
 | `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
-| `animations.json` | Optional animation config | Object-level animation sidecar | Created only by explicit animation workflow/request |
+| `animations.json` | Optional animation config | Page-transition and object-animation sidecar | Created only when the conditional animation workflow activates; normal export never creates it |
 
 ---
 

@@ -48,11 +48,15 @@ To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the
 
 Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains the visual source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to create better semantic anchors without changing visible output, while the sidecar controls PPTX animation behavior.
 
-Run the [`customize-animations`](../workflows/stages/customize-animations.md) post-processing stage when the user asks to tune animation order, effects, timing, or object-level reveals.
+Run the [`customize-animations`](../workflows/stages/customize-animations.md)
+post-processing stage when Design Spec §IX contains `Motion suggestion`, or
+when the project already carries `animations.json`, or when the user asks to
+tune animation order, effects, timing, or object-level reveals.
 
-**Hard rule — semantic anchors before sidecar**: derive reveal units from page
-meaning and narration, then regroup coarse/fragmented Slide-local content
-without changing its appearance. Only post-regroup top-level ids are valid.
+**Hard rule — semantic anchors before object-targeted sidecar entries**: when
+object animation is in scope, derive reveal units from page meaning and
+narration, then regroup coarse/fragmented Slide-local content without changing
+its appearance. Only post-regroup top-level ids are valid object targets.
 
 ```bash
 # Inspect the real anchors after the semantic regrouping pass
@@ -139,11 +143,13 @@ Rules:
 - Unknown effects, modes, or triggers and invalid numeric/order fields fail validation; no fallback effect is substituted.
 
 **Inheritance**: the sidecar is optional. Sparse legacy slides inherit
-`defaults.transition` / `defaults.animation`, then CLI resolution; explicit CLI
-flags win. Groups inherit the resolved slide duration, timing modifiers,
-after-effect, and sound. `effect_options` remains coupled to an explicit effect;
-`trigger_shape` is never inherited; omitted `order`/`delay` use exporter
-defaults. New authoring writes complete slide blocks.
+`defaults.transition` / `defaults.animation`, then CLI resolution. Explicit CLI
+flags override the corresponding sidecar default/slide fields; explicit group
+overrides remain unless `-a none` hard-disables all object motion. Groups
+inherit the resolved slide duration, timing modifiers, after-effect, and sound.
+`effect_options` remains coupled to an explicit effect; `trigger_shape` is
+never inherited; omitted `order`/`delay` use exporter defaults. New authoring
+writes complete slide blocks.
 
 ---
 

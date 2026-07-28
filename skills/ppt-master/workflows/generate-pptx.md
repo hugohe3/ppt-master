@@ -228,7 +228,7 @@ If the user opted out of the page but did not delegate confirmation, skip launch
 
 With `refine_spec: true`, run [`refine-spec`](stages/refine-spec.md) after Gate 1: review that same file in chat, accept arbitrary revisions, touch no lock, and stop until explicit approval. Revisions supersede only affected decisions. Otherwise skip the stop.
 
-After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/pattern/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
+After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/preferred-pattern reference/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
 
 **Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
@@ -357,7 +357,7 @@ Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visu
 | `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-patterns.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
-| A page calls for a literal PowerPoint stock shape, an explicit Merge Shapes operation, or shape-built dimensional form (cylinder/pedestal, layered diagram, reflection, ground plane) | `native-shape-authoring.md` before selecting or materializing that geometry. This trigger is image-independent: a text-only, data-only, or icon-only page reaches it the same way |
+| §IX contains `Native shape suggestion`, or a page calls for a literal PowerPoint stock shape, an explicit Merge Shapes operation, or shape-built dimensional form (cylinder/pedestal, layered diagram, reflection, ground plane) | `native-shape-authoring.md` before selecting or materializing that geometry. This trigger is image-independent: a text-only, data-only, or icon-only page reaches it the same way |
 | All SVG pages and SVG quality gates are complete | `executor-notes.md` before generating speaker notes |
 
 No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §VII/§VIII, the selected style, and the current page plan.
@@ -386,7 +386,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. When a page actually needs a literal stock shape or an explicit Merge Shapes operation, load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before drawing or materializing it. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
+Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Treat §IX `Native shape suggestion` as a candidate, not a command: inspect the actual page construction, then choose the precise preset/Boolean result or ordinary SVG. Load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before materializing an adopted native treatment. Diagram relationships remain Shape-first; do not infer a preset from contour similarity.
 
 `template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
@@ -437,6 +437,20 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 
 > **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the [`visual-review`](stages/visual-review.md) quality-gate stage before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
 
+> **Motion capability (conditional)?** After `notes/total.md` exists, inspect §IX
+> `Motion suggestion` rows, explicit user motion requirements, and an existing
+> `<project_path>/animations.json`. With none of the three, keep the exporter
+> defaults (`fade` page transition, per-element animation `none`) and load no
+> motion reference. An existing sidecar always runs
+> [`customize-animations`](stages/customize-animations.md) to validate and
+> resolve preserve/adjust/replace intent before export. With no sidecar, a
+> deck-wide request loads [`animations.md`](../references/animations.md) and
+> resolves Step 7.3 flags; any `Motion suggestion` or per-slide/per-object
+> request runs the custom stage. Strategist owns the communication purpose;
+> Executor owns exact native effects, options, order, timing, and whether a
+> non-literal suggestion should simplify to `none`. Never add motion for
+> coverage or variation.
+
 ---
 
 ### Step 7: Post-processing & Export
@@ -470,6 +484,15 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 ```
+
+For deck-wide motion settings, append the resolved flags from
+[`animations.md`](../references/animations.md). When the conditional custom
+stage preserves or produces `<project_path>/animations.json`, keep the base command above:
+the exporter reads the sidecar automatically. Explicit motion flags override
+the corresponding sidecar default/slide fields, while group overrides remain
+unless `-a none` hard-disables all object motion; do not mix deck-wide flags
+with a custom sidecar in the normal workflow. With no adopted motion input or
+existing sidecar, preserve the normal `fade` / `none` defaults.
 
 **Success criterion**: The command exits successfully and produces:
 
