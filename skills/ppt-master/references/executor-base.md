@@ -285,7 +285,7 @@ Structural typography anchors come from `spec_lock.md typography`. Use an exact 
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 
-**Hard rule**: every SVG `font-family` stack MUST resolve to a pre-installed exported Latin / EA typeface; use the Strategist §g safe set for locked roles and §2.1 for sparse display exceptions. PPTX has no runtime fallback — missing fonts degrade to Calibri.
+**Hard rule**: every SVG `font-family` stack MUST resolve to target-installed/approved Latin and EA faces. PPTX writes one face per script; CSS tails affect preview only, and fonts are not embedded. Missing-face substitution is viewer-selected—not guaranteed Calibri or a later stack entry.
 
 ---
 

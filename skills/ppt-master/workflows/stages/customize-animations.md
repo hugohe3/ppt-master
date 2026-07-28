@@ -319,7 +319,8 @@ selected effect. Before writing a parameterized effect, run
 `python3 skills/ppt-master/scripts/pptx_animations.py --describe
 <canonical_effect>` and use the returned values exactly. `duration` owns
 PowerPoint Speed; `accelerate`/`decelerate` own smooth start/end, so do not
-invent duplicate fields.
+invent duplicate fields. Change Font's `font_name` is one concrete
+target-installed PowerPoint face, never a CSS font stack.
 
 **Canonical example — every slide carries explicit transition + animation;
 groups appear only when they diverge**:

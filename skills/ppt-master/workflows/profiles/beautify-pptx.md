@@ -73,7 +73,7 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 | Field | Use |
 |---|---|
 | `theme.palette.background` / `text` / `primary` / `accent1..6` | the deck's *declared* colors |
-| `theme.fonts.title` / `body` (`ea` = CJK, `latin`) | the deck's *declared* fonts |
+| `theme.fonts.title` / `body` (`latin` / `ea` / `cs`; `scripts` maps `Hans` / `Hant` / `Jpan` / `Hang` supplemental faces) | the deck's *declared* fonts; use the matching script when `ea` is empty |
 | `theme.sizes.title` / `body` (pt) | the deck's *declared* placeholder sizes (master `txStyles`) — the size a run inherits when it sets no explicit `sz`; `body` is the **level-1** default (coarsest, commonly over-reads) |
 | `theme.sizes.body_levels` (pt list) | the full master `bodyStyle` ramp (lvl1..lvl9, e.g. `[32, 28, 24, 20, …]`) — **reference context** so you can read a deeper level than the over-reading level-1, not an auto-seed |
 | `observed.colors` / `observed.fonts` (`latin` / `ea`, frequency-ranked) | a usage **sample / frequency hint** — run-level fonts + explicit `srgbClr` fills across slides |

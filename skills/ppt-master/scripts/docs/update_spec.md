@@ -1,8 +1,9 @@
 # update_spec.py
 
 > **Scope boundary**: this tool updates only deterministic global color and font
-> substitutions, writes the authoritative `spec_lock.md` first, and relies on
-> version control for rollback instead of creating parallel backups.
+> substitutions, writes the authoritative `spec_lock.md` only after the SVG
+> updates succeed, and relies on version control for rollback instead of
+> creating parallel backups.
 
 Propagate a `spec_lock.md` value change to both the lock file and every `svg_output/*.svg`. The single edit surface for bulk style tweaks after generation.
 
@@ -17,8 +18,9 @@ Bare `<key>=<value>` (no dot) is treated as `colors.<key>=<value>` for backward 
 One invocation = one change. The tool:
 
 1. Reads the old value from `<project_path>/spec_lock.md`
-2. Writes the new value into `spec_lock.md`
-3. Propagates the change into every `.svg` under `svg_output/`
+2. Plans and propagates the change into every `.svg` under `svg_output/`
+3. Writes the new value into `spec_lock.md`; a global font replacement updates
+   every existing `typography.*_family` row together
 4. Prints the list of files touched
 
 ## Examples
@@ -32,14 +34,16 @@ python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 c
 
 # change the deck-wide font family
 python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
-  'typography.font_family="Inter", Arial, sans-serif'
+  'typography.font_family=Arial, "Microsoft YaHei", sans-serif'
 ```
 
 ## v2 scope
 
 - **Supported**:
   - `colors.*` — HEX value replacement across `svg_output/*.svg` (case-insensitive).
-  - `typography.font_family` — replaces the inner value of every `font-family="..."` / `font-family='...'` attribute.
+  - `typography.font_family` — replaces the inner value of every
+    `font-family="..."` / `font-family='...'` attribute and sets all existing
+    `typography.*_family` lock rows to that universal family.
 - **Not supported**: typography sizes, icons, images, canvas, forbidden — these involve attribute-scoped or semantic replacements whose risk/benefit does not warrant bulk propagation. Edit `spec_lock.md` and the affected SVGs by hand, or re-author the pages.
 
 ## When to use
@@ -53,6 +57,8 @@ python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
 
 - HEX values (e.g. `#005587`) are unique enough in SVG content that literal replacement is safe
 - `font-family` substitution is scoped to the attribute; the outer quote character is preserved, and switched automatically if the new value contains the same quote
+- a global font substitution rewrites all existing family-role lock rows in one
+  file write, so the universal SVG result cannot leave stale title/body roles
 - The tool refuses non-HEX inputs, unknown keys, and unsupported sections
 - No backups are created — the project folder should be under git so you can diff / revert
 
