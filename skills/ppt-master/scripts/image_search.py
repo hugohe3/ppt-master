@@ -280,13 +280,22 @@ def _try_provider(
     name: str,
     request: ImageSearchRequest,
     license_tier_filter: str,
+    *,
+    provider_is_explicit: bool = False,
 ) -> tuple[Optional[list[AssetCandidate]], Optional[str]]:
-    """Run one provider while preserving whether it errored or returned no rows."""
+    """Run one provider while preserving whether it errored or returned no rows.
+
+    An explicitly selected provider is required; a missing key is retryable
+    instead of an optional-provider skip.
+    """
     try:
         module = _load_provider(name)
         return module.search(request, license_tier_filter=license_tier_filter), None
     except RuntimeError as exc:
-        if _is_keyed_provider_unconfigured(name, exc):
+        if (
+            not provider_is_explicit
+            and _is_keyed_provider_unconfigured(name, exc)
+        ):
             print(
                 f"  [{name}] skipped: {exc}",
                 file=sys.stderr,
@@ -611,6 +620,7 @@ def search_and_download(
     strict_no_attribution: bool,
     save_candidates: bool = False,
     max_candidates: int = 4,
+    provider_is_explicit: bool = False,
 ) -> SearchDownloadResult:
     """Find a candidate AND successfully download it.
 
@@ -621,6 +631,8 @@ def search_and_download(
 
     Returns a structured result so batch mode can keep transient/provider
     failures retryable while treating a complete no-match as terminal.
+    ``provider_is_explicit`` distinguishes a required provider from an optional
+    member of the default fallback chain.
     """
     license_filters: list[str] = (
         ["no-attribution-only"] if strict_no_attribution else ["all"]
@@ -634,7 +646,12 @@ def search_and_download(
         ranked: list[tuple[float, str, AssetCandidate]] = []
         for provider_name in providers:
             print(f"  -> trying {provider_name} ({stage}) ...", file=sys.stderr)
-            candidates, provider_error = _try_provider(provider_name, request, stage)
+            candidates, provider_error = _try_provider(
+                provider_name,
+                request,
+                stage,
+                provider_is_explicit=provider_is_explicit,
+            )
             if provider_error:
                 provider_errors.append(provider_error)
             if not candidates:
@@ -1469,6 +1486,7 @@ def _search_one_item(
         strict_no_attribution=strict,
         save_candidates=save_candidates,
         max_candidates=max_candidates,
+        provider_is_explicit=bool(pinned),
     )
     if result.candidate is None:
         return (
@@ -2044,6 +2062,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         strict_no_attribution=args.strict_no_attribution,
         save_candidates=args.save_candidates,
         max_candidates=args.max_candidates,
+        provider_is_explicit=bool(args.provider),
     )
 
     if result.candidate is None:

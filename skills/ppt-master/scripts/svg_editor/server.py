@@ -597,8 +597,10 @@ def create_app(
                     logger.warning('slide parse failed: %s: %s', svg_file.name, exc)
                 _cache_put(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime, disk_count)
 
-            mem_count = len(annotations.get(svg_file.name, {}))
-            annotation_count = max(disk_count, mem_count)
+            if svg_file.name in annotations:
+                annotation_count = len(annotations[svg_file.name])
+            else:
+                annotation_count = disk_count
 
             slides.append({
                 'name': svg_file.name,
@@ -614,15 +616,42 @@ def create_app(
     def _safe_svg_path(name: str):
         """Validate slide name and return safe path. Returns None if invalid.
 
-        The early string checks reject obvious bad inputs; the resolve()+startswith()
+        The early string checks reject obvious bad inputs; the resolve()+relative_to()
         check is the authoritative path traversal guard.
         """
         if '/' in name or '\\' in name or '..' in name:
             return None
         svg_file = (svg_dir / name).resolve()
-        if not str(svg_file).startswith(str(svg_dir.resolve())):
+        try:
+            svg_file.relative_to(svg_dir.resolve())
+        except ValueError:
             return None
         return svg_file
+
+    def _get_annotation_snapshot(name: str):
+        """Return the page's complete staged annotation state, loading it once."""
+        annotations = app.config['ANNOTATIONS']
+        if name in annotations:
+            return annotations[name], None
+
+        svg_file = _safe_svg_path(name)
+        if svg_file is None:
+            return None, (jsonify({'error': 'Invalid slide name'}), 400)
+        if not svg_file.exists():
+            return None, (jsonify({'error': 'Slide not found'}), 404)
+
+        try:
+            root = ET.parse(str(svg_file)).getroot()
+        except ET.ParseError as exc:
+            logger.warning('slide parse failed: %s: %s', name, exc)
+            return None, (jsonify({'error': f'Failed to parse SVG: {exc}'}), 500)
+
+        assign_temp_ids(root)
+        annotations[name] = {
+            item['element_id']: item['annotation']
+            for item in parse_annotations(root)
+        }
+        return annotations[name], None
 
     @app.route('/api/slide/<name>')
     def get_slide(name: str):
@@ -686,11 +715,13 @@ def create_app(
                     (content, warnings, disk_annotations, id_to_tag),
                 )
 
-        mem_annotations = app.config['ANNOTATIONS'].get(name, {})
-        merged: dict[str, str] = {}
-        for ann in disk_annotations:
-            merged[ann['element_id']] = ann['annotation']
-        merged.update(mem_annotations)
+        if name in app.config['ANNOTATIONS']:
+            merged = dict(app.config['ANNOTATIONS'][name])
+        else:
+            merged = {
+                ann['element_id']: ann['annotation']
+                for ann in disk_annotations
+            }
 
         annotations_list = [
             {
@@ -728,29 +759,28 @@ def create_app(
         if len(annotation) > 10000:
             return jsonify({'error': 'Annotation too long (max 10000 chars)'}), 400
 
-        if name not in app.config['ANNOTATIONS']:
-            app.config['ANNOTATIONS'][name] = {}
+        annotations, error = _get_annotation_snapshot(name)
+        if error is not None:
+            return error
 
-        app.config['ANNOTATIONS'][name][element_id] = annotation
+        annotations[element_id] = annotation
 
         return jsonify({
             'status': 'ok',
-            'annotations_count': len(app.config['ANNOTATIONS'][name]),
+            'annotations_count': len(annotations),
         })
 
     @app.route('/api/slide/<name>/annotate/<element_id>', methods=['DELETE'])
     def delete_annotate(name: str, element_id: str):
-        annotations = app.config['ANNOTATIONS']
-        # Ensure the file key exists so save-all knows to rewrite this file
-        # even if no new annotations were added (pure delete path).
-        if name not in annotations:
-            annotations[name] = {}
-        if element_id in annotations[name]:
-            del annotations[name][element_id]
+        annotations, error = _get_annotation_snapshot(name)
+        if error is not None:
+            return error
+        if element_id in annotations:
+            del annotations[element_id]
 
         return jsonify({
             'status': 'ok',
-            'annotations_count': len(annotations.get(name, {})),
+            'annotations_count': len(annotations),
         })
 
     @app.route('/api/slide/<name>/edit', methods=['POST'])
@@ -896,6 +926,7 @@ def create_app(
 
         filenames = sorted(set(annotations.keys()) | set(pending_edits.keys()))
         for filename in filenames:
+            has_staged_annotations = filename in annotations
             anns = annotations.get(filename, {})
             edits = pending_edits.get(filename, [])
             # anns may be empty when the user deleted all annotations — still
@@ -921,6 +952,8 @@ def create_app(
                 item['element_id']: item['annotation']
                 for item in parse_annotations(root)
             }
+            if not has_staged_annotations:
+                anns = old_annotations
 
             # Clear all existing annotations from the file before writing current state
             for elem in root.iter():

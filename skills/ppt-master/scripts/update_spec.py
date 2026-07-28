@@ -97,7 +97,10 @@ def replace_color_in_svgs(
     """
     if not HEX_RE.match(old_hex) or not HEX_RE.match(new_hex):
         raise ValueError(f"not a HEX color: old={old_hex!r} new={new_hex!r}")
-    pattern = re.compile(re.escape(old_hex), re.IGNORECASE)
+    pattern = re.compile(
+        rf"{re.escape(old_hex)}(?![0-9A-Fa-f])",
+        re.IGNORECASE,
+    )
     planned: list[tuple[Path, str, int]] = []
     for svg in sorted(svg_dir.glob("*.svg")):
         text = svg.read_text(encoding="utf-8")
