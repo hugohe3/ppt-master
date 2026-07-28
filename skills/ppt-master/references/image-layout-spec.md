@@ -4,7 +4,7 @@
 
 Sizing reference for side-by-side or multi-image pages. Use after Strategist proposes a preferred composition; this file never locks layout or crop policy.
 
-**Preferred pattern, Executor-owned realization**: Let original aspect ratio inform the container. A `no-crop` asset displays completely; an `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
+**Preferred pattern, Executor-owned realization**: Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
 
 > **Scope**: The ratio tables and formulas are calculation aids for a selected side-by-side or multi-image plan. Hero, background, accent, and other compositions stay outside this file. Layout never overrides the `no-crop` boundary owned by [`strategist-image.md`](./strategist-image.md) and [`executor-image.md`](./executor-image.md).
 
@@ -166,7 +166,7 @@ Image positions:
   (60, 390)  570x290    (650, 390) 570x290
 ```
 
-> Multi-image slides: decide `meet` or focal-safe `slice` per asset. Keep `no-crop` images complete; do not force every image into the same scaling mode merely for grid uniformity.
+> Multi-image slides: decide `meet` or focal-safe `slice` per asset. On every slide using a `no-crop` source, keep one complete instance; a same-slide same-source detail crop may supplement it. Do not force every image into the same scaling mode merely for grid uniformity.
 
 ---
 
@@ -176,7 +176,7 @@ Image positions:
 |-----------|-----------------|
 | Proportion does not reflect information weight | Rebalance image and text rectangles |
 | Container conflicts with the native ratio | Change the container, choose `meet`, or use a focal-safe crop |
-| Required pixels, labels, identity, or evidence would be cropped | Use `preserveAspectRatio="xMidYMid meet"` and recompose around the complete image |
+| Required pixels, labels, identity, or evidence would be cropped | Use a legal anchor with `meet` and recompose around the complete image |
 | Text area cannot carry the planned copy legibly | Increase its area or choose another composition while preserving binding constraints |
 
 ---
@@ -189,7 +189,7 @@ This spec only defines layout calculation. Write computed fields into the Image 
 |-------|---------|
 | `Ratio` | Original image width / height |
 | `Layout pattern` | Strategist-recommended catalog pattern; preferred composition, Executor-owned realization |
-| `Crop Policy` | `no-crop` protects complete pixels; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
+| `Crop Policy` | `no-crop` requires one complete instance; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
 | `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves its ordered catalog ids (or normalized custom prose) as a recommendation, not a geometry/realization lock |
 
@@ -205,7 +205,7 @@ Complete display (`no-crop` assets such as data charts):
        preserveAspectRatio="xMidYMid meet"/>
 ```
 
-**Hard rule — no-crop placement**: every rendered instance uses `xMidYMid meet` without `clip-path`, `mask`, clipping overflow, or a nested `<svg>` viewport. Definitions and hidden nodes are not placements; an image materialized through a visible local `<use>` is.
+**Hard rule — no-crop placement**: On every slide using the source, retain one visible complete instance with one of the nine legal anchors plus `meet`, never `none`, and no `clip-path`, `mask`, clipping overflow, or nested `<svg>` viewport. An auxiliary same-slide detail or lens may crop the same source only while the complete instance remains visible. Definitions and hidden nodes are not placements; an image materialized through a visible local `<use>` is.
 
 Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 
