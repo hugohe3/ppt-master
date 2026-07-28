@@ -35,7 +35,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Elevation | shadow, glow, explicit highlights |
 | Image integration | scrim, vignette, brand wash, clipping, faux glass |
 | Line / type | dash/cap/join, markers, gradient stroke; tracking, outline, alpha/gradient text |
-| Space / constructed style | transform/reuse, curves/arcs, hand-drawn, ink/Riso, halftone, isometric, paper cut |
+| Space / constructed style | transform/reuse, hand-drawn, ink/Riso, halftone, isometric, paper cut; custom curves/arcs only when meaning or the locked style requires them |
 | Continuous action across pages | Paired pages that differ in one property, exported with morph |
 
 **Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
@@ -145,7 +145,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; state the attribution naturally in speaker notes. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and state naturally in notes that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
 - **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Before defaulting to stacked rounded-rect cards or uniform equal columns, pick one page-scale move from the locked visual style's §1 `Composition geometry` (a bleed shape, diagonal split, oversized numeral, orbit rings, …) to stage the page's primary zone. Card grids are one option among many, not the house layout.
 - **Containers are structural**: cards and grids express grouping, hierarchy, or capacity, not a house style. Preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Chart-catalog adaptation is owned by [`executor-chart.md`](./executor-chart.md); preview effects never override project styling or structural roles.
-- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, consider one page-specific polygon/path that expresses the relationship before stacking generic arrows. This does not override §3.0 when one literal stock shape is the semantic object.
+- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first seek a basic primitive, one exact preset, or a clear Boolean result. Only when none can faithfully express the relationship should one page-specific polygon/path replace a stack of generic arrows.
 - **Reference — create depth with restraint**: use rhythm, spacing, typography, accent bars, and subtle tints before shadows. Reserve lift for a few genuinely floating elements; keep peer grids, dividers, and body containers flat.
 - **Phased generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per [`executor-chart.md`](./executor-chart.md) §2.1 on every §IX-planned data-chart page — coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)) that depends on these markers — and **native object metadata** per [`executor-chart.md`](./executor-chart.md) §2.2 on every planned native-ready object. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG). **First-page gate (Mandatory)**: after completing the first page, run `python3 scripts/svg_quality_checker.py <project_path> --stage first-page --json` without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
@@ -154,29 +154,42 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 ### 3.0 Native Shape Selection
 
-**Reach for a native preset whenever one expresses a complete object — this is
-the default, not the exception.** Block arrows, chevrons, banners / ribbons,
-callouts, flowchart nodes, stars, and other Office symbols should be **authored
-as presets** via `preset_shape_svg.py`, not drawn as plain `<path>`s or faked
-with rectangles: presets are what give the slide real PowerPoint shapes with
-adjustment handles and the designed, non-flat-card look. When a page calls for
-one of these, use the preset. Apply the decision gate in
-[`native-shape-authoring.md`](./native-shape-authoring.md) to pick the right
-shape and to keep only the exceptions below as ordinary SVG.
+**Use the highest-level native construction that faithfully expresses the
+object.** Basic primitives already export as editable PowerPoint shapes. For
+anything beyond them, an exact Office preset is the default; when no single
+preset suffices but closed operands can express the result, materialize a
+Merge Shapes Boolean result. Hand-authored freeform geometry is the final
+fallback, not the first drawing convenience. Block arrows, chevrons, banners /
+ribbons, callouts, flowchart nodes, stars, and other Office symbols should be
+**authored as presets** via `preset_shape_svg.py`, not redrawn as plain
+`<path>`s or faked with rectangles. Apply the decision gate in
+[`native-shape-authoring.md`](./native-shape-authoring.md) before drawing the
+object.
 
 §IX `Native shape suggestion` records a semantic opportunity, not a literal
-tool command. Decide from the actual page construction whether a preset,
-Boolean result, or ordinary SVG best realizes it; a different implementation
-is valid when it preserves the intended object and content.
+tool command. Decide from the actual page construction whether a basic
+primitive, preset, Boolean result, or necessary freeform best realizes it; a
+different implementation is valid when it preserves the intended object and
+content.
 
 | Decision | Action |
 |---|---|
 | Plain rect / symmetric round rect / circle / ellipse | Keep the ordinary SVG primitive; it is already natively editable. |
+| Straight relationship / divider / leader | Use `<line>`; add a registered marker only when direction is meaningful. |
 | Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
+| Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
 | Two or more closed operands whose final semantic object depends on union, cutout, overlap-only coverage, symmetric difference, or fragmentation | Evaluate `shape_boolean_svg.py` at draw time and use it when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
-| Page-specific freeform, organic, branded, icon, data geometry, or overlaps that remain separate objects | Keep ordinary SVG path/polygon geometry. |
-| Similar-looking contour only | Never guess; keep ordinary SVG. |
+| Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, one preset, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
+| Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
+
+**Hard rule — freeform is the last construction tier**: before hand-authoring a
+stock-looking `<path>` / `<polygon>`, complete the primitive → exact preset →
+Boolean-result decision order above. A freeform is permitted only when those
+tiers cannot faithfully express the object; avoiding a helper or drawing the
+browser-visible contour faster is not a valid exception. Data-defined geometry
+and a genuinely locked organic / hand-drawn contour satisfy the exception by
+semantics, not by convenience.
 
 This decision applies only while drawing a new object. A suggestion never
 triggers retrospective scanning, contour classification, or automatic
@@ -188,14 +201,19 @@ generates one compact atomic `<g>` from the shared 187-shape registry, with
 semantic metadata and base paint written once. Rerun that helper when geometry
 or paint changes; never edit one of its direct paths.
 
-For chart-template and diagram authoring, thin relationships use ordinary
-`<line>` / supported open `<path>` geometry with registered arrow markers;
-solid directional blocks use ordinary `shape` presets such as `rightArrow` or
-`chevron`. Do not select a connector-family preset merely because two nodes are
-related, and never hand-add endpoint/site metadata. Connector-family presets
-remain available only for an explicit request for a standalone unconnected
-`p:cxnSp`; imported Connector topology stays under the preserve/mirror contract.
-`actionButton*` presets provide visual geometry only, not actions or hyperlinks.
+**Default — relationship geometry**: use `<line>` for a straight relationship.
+When a relationship genuinely needs a bend or curve and a stock Connector
+contour fits, prefer the matching `bentConnector*` / `curvedConnector*` preset
+over a hand-authored SVG Bézier. Use an open freeform path only when a straight
+line and the native Connector families cannot faithfully express the required
+route, data geometry, or locked hand-drawn / organic style. A directional solid
+object remains an ordinary `shape` preset such as `rightArrow` or `chevron`.
+
+Authored Connector presets export as unconnected `p:cxnSp` objects: they do not
+bind to node sites or follow moved nodes. Never hand-add endpoint/site metadata
+or claim attachment semantics. Imported Connector topology stays under the
+preserve/mirror contract. `actionButton*` presets provide visual geometry only,
+not actions or hyperlinks.
 
 **Hard rule — narrow helper scope**: Both helpers print only their documented
 stdout fragment(s); neither writes a page or chooses layout. Read every returned

@@ -564,12 +564,19 @@ least two.
 bounds reuse its normalized commands rather than a second path grammar.
 
 Command identity, relative coordinates, shorthand, arc parameters, and original
-handles are not retained. Geometry needs non-zero bounds. Use a closed cubic
-path for organic silhouettes, polygon/closed path for ribbons/facets, open path
-for curved connectors, multi-`M` path for exact linework, and a [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip
-for organic pictures. Filled silhouettes end with `Z`; open paths use
-`fill="none"`. Do not depend on `fill-rule="evenodd"`; build explicit visible
-geometry or bake an essential knockout.
+handles are not retained. Geometry needs non-zero bounds. Before authoring a
+freeform, apply [`native-shape-authoring.md`](./native-shape-authoring.md):
+prefer an editable basic primitive, one exact Office preset, or a Boolean
+materialization. Use a closed cubic path only for an organic silhouette those
+cannot express, polygon/closed path for unmatched ribbons/facets, and an open
+path only for a required data curve, custom route, or locked hand-drawn /
+organic style. Straight relationships use `<line>`; exact stock bends/curves
+use an authored native Connector preset. Multi-`M` paths remain available for
+exact linework, and a [`shared-standards-core.md`](./shared-standards-core.md)
+§1.2 path clip for unmatched organic pictures. Filled silhouettes end with
+`Z`; open paths use `fill="none"`. Do not depend on
+`fill-rule="evenodd"`; build explicit visible geometry or bake an essential
+knockout.
 For a fixed background, a background-colored overlay is also valid.
 
 | Rounded rect input | Result |
@@ -657,6 +664,8 @@ filled `Native-normalized` arrowhead. Example:
 browser-filter permissions.
 
 **Reference — not a constraint**: use them only when they match the locked style.
+Their curve recipes are explicit exceptions to the Shape-first default above;
+they do not authorize decorative freeforms in another style.
 
 | Intent | Construction | Boundary / fidelity |
 |---|---|---|
@@ -744,9 +753,9 @@ subsection; this table only routes scenarios.
 | Hand/print | Annotation → highlighter/curve; ink wash → layered alpha paths; Riso → offset duplicate | §6.11; no turbulence, true bleed, or blend mode |
 | Pixel/halftone | Pixel accent → integer rect grid; sparse screen → circles | §6.11; dense screen → §6.12 |
 | Faceted/layered | Pseudo-3D → 2D facets; paper cut → direct shadow per layer | §6.11; no 3D transform/group composite shadow |
-| Data/freeform | Series depth → area first + line above; organic card → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
+| Data/freeform | Series depth → area first + line above; unmatched organic silhouette → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
 | Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
-| Arrow | Manual diagonal arrowhead → calculated triangle; ordinary connector → marker | §6.10 / §1.1 |
+| Arrow | Straight relationship → `<line>` + marker; stock bend/curve → native Connector; unmatched custom route → separate calculated arrowhead if needed | §6.10 / §1.1 / native-shape authoring |
 | Unsupported | Dense grain, complex composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
 
 ---

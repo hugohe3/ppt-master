@@ -209,9 +209,11 @@
 | 对象 | 模板表达 |
 |---|---|
 | 基础节点/容器 | `<rect>`、`<circle>`、`<ellipse>` |
-| 细关系线 | `<line>` 或少量开放 `<path>` |
+| 直线关系/分隔/引线 | `<line>` |
+| 预设可精确表达的弯折/曲线关系 | 完整 compact authored `bentConnector*` / `curvedConnector*` `<g>`；端点不附着 |
 | 标准块箭头/流程节点 | 仅在 preset 精确匹配时使用完整 compact authored-preset `<g>` |
-| 自定义数据几何 | `<path>`、`<polygon>`、`<polyline>` |
+| 单一预设不能表达、但封闭形状可组合的对象 | 优先用 `shape_boolean_svg.py` 物化 Merge Shapes 结果 |
+| 图元、预设、Boolean 都不能表达的数据/语义/锁定风格几何 | `<path>`、`<polygon>`、`<polyline>` |
 | 数据图表 | 默认 Shape fallback；符合条件时附带 native replacement marker |
 
 **Forbidden — inferred native semantics**: 概念图、流程图和框架图不添加 `data-pptx-replace-with="chart"`；普通关系线不添加 Connector attachment metadata。
@@ -440,7 +442,7 @@ python3 skills/ppt-master/scripts/compact_svg_coordinates.py \
 
 **Reference — not a constraint**: 半圆标签只在“标签从属于当前信息块”是结构信息时使用。颜色、圆角和高度由项目适配；它不是卡片的默认装饰。
 
-**Forbidden — cover hack**: 不用“全圆角矩形 + 同色覆盖矩形”拼接单侧圆角；需要时直接使用一个可编辑 path。
+**Forbidden — cover hack**: 不把“全圆角矩形 + 同色覆盖矩形”作为两个未合并对象叠放来伪造单侧圆角。需要时优先以封闭的圆角矩形和矩形为 operands，通过 `shape_boolean_svg.py` 物化 Union 结果；只有 Boolean 仍不能忠实表达时才手写可编辑 path。
 
 ### 11.2 Nested Card Border
 

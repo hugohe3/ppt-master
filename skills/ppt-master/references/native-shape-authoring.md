@@ -3,27 +3,30 @@
 # Native Shape Authoring Reference
 
 Use this reference during Executor SVG construction or project-owned canonical
-template maintenance when one standard PowerPoint shape can express one
-complete object or multiple closed shapes require a PowerPoint-style Boolean
-result. Neither helper writes a page. The preset helper does not create the
-shape's own `p:txBody`; keep visible text outside the atomic fragment.
+template maintenance when basic primitives, one standard PowerPoint shape, or
+multiple closed shapes can express the intended object. Prefer, in order:
+editable basic primitives, one exact Office preset, then a PowerPoint-style
+Boolean result. Hand-authored freeform geometry is allowed only when those
+constructions cannot faithfully express the object. Neither helper writes a
+page. The preset helper does not create the shape's own `p:txBody`; keep visible
+text outside the atomic fragment.
 
 ## 1. Selection Gate
 
-Apply this decision order before drawing a stock geometric object.
+Apply this decision order before drawing any new geometric contour.
 
-> This gate is for picking the **right** native shape, not for avoiding presets.
-> When a page needs an arrow, chevron, callout, banner, flowchart node, or a
-> literal Office symbol, authoring it as a preset is the **default** — the
-> ordinary-SVG rows below are deliberate exceptions, not the norm.
+> This gate is for picking the **highest-level faithful native construction**.
+> Do not hand-author a freeform merely because an SVG path is convenient.
 
 | Condition | Action |
 |---|---|
 | Plain rectangle, symmetric rounded rectangle, circle, or ellipse | Write the ordinary SVG primitive; the exporter already emits an editable native shape. |
+| Straight relationship, divider, or leader | Write `<line>`; use a registered marker only when direction is meaningful. |
 | One DrawingML preset exactly expresses the intended object | Run `preset_shape_svg.py render`, then insert its complete stdout fragment into the hand-authored page or canonical template. |
+| A stock `bentConnector*` / `curvedConnector*` contour exactly expresses a bent or curved relationship and endpoint attachment is not required | Run `preset_shape_svg.py render --object-kind connector`; the result is an unconnected native Connector shape. |
 | Two or more closed authored shapes require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
-| The visual meaning or contour exceeds one stock shape | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
-| The shape only resembles a preset | Keep ordinary SVG; never infer a preset from contour similarity. |
+| Basic primitives, one preset, and Boolean materialization cannot faithfully express the visual meaning or contour | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
+| The shape only resembles a preset | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
 
 **Hard rule**: `preset_shape_svg.py` is the only authoring entry for
@@ -46,10 +49,10 @@ paths or contours, or upgrade ordinary SVG during export.
 | Visual intent | Candidate presets | Boundary |
 |---|---|---|
 | Literal geometric body | `triangle`, `diamond`, `pentagon`, `hexagon`, `octagon`, `star5` | Use only when the named geometry itself is the intent. |
-| Solid block direction | `rightArrow`, `leftArrow`, `upArrow`, `downArrow`, `leftRightArrow`, `upDownArrow`, `chevron` | Thin relationship geometry remains an ordinary SVG `<line>` / `<path>` with no attachment semantics. |
+| Solid block direction | `rightArrow`, `leftArrow`, `upArrow`, `downArrow`, `leftRightArrow`, `upDownArrow`, `chevron` | Use `<line>` for a thin straight relationship; do not fake a solid directional object with a stroked path. |
 | Standard flowchart node | `flowChartProcess`, `flowChartDecision`, `flowChartInputOutput`, `flowChartTerminator`, `flowChartDocument` | Use only for an actual flowchart; ordinary content cards remain cards. |
-| Explicit standalone connector | `straightConnector1`, `bentConnector*`, `curvedConnector*` | Use only when the user explicitly requests a PowerPoint Connector object. Diagram relationships otherwise stay ordinary SVG line/path shapes with no attachment semantics. |
-| Stock callout | `wedgeRectCallout`, `wedgeRoundRectCallout`, `wedgeEllipseCallout`, `cloudCallout` | Brand-specific or custom-tail callouts remain free SVG. |
+| Stock bent / curved relationship contour | `bentConnector*`, `curvedConnector*` | Prefer when the contour fits and endpoint attachment is not required. The authored object is an unconnected native Connector, so moving nodes does not reroute it. |
+| Stock callout | `wedgeRectCallout`, `wedgeRoundRectCallout`, `wedgeEllipseCallout`, `cloudCallout` | For a brand-specific or custom tail, continue through the Boolean gate; use freeform only if the result still cannot be expressed faithfully. |
 | Stock ribbon or scroll | `ribbon*`, `ellipseRibbon*`, `verticalScroll`, `horizontalScroll` | Select only when the stock contour is visually acceptable. |
 | Standalone math symbol | `mathPlus`, `mathMinus`, `mathMultiply`, `mathDivide`, `mathEqual`, `mathNotEqual` | Inline formulas and prose symbols remain text/formula assets. |
 | Literal Office symbol | `heart`, `sun`, `moon`, `lightningBolt`, `gear6`, `gear9` | Never replace an icon required by `spec_lock.icons`. |
@@ -61,13 +64,14 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --search arrow
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py describe rightArrow
 ```
 
-**Shape-first diagram rule**: chart-template adaptations use ordinary line/path
-shapes for thin relationships and ordinary `shape` presets for solid block
-directions. Connector-family presets are reserved for an explicit request for
-a standalone PowerPoint Connector; they are not the default for architecture,
-process, hierarchy, or framework diagrams and do not gain attachment semantics.
-Existing Connector topology imported from a source PPTX remains owned by the
-preserve/mirror round-trip contract.
+**Shape-first diagram rule**: use `<line>` for straight thin relationships;
+use an exact connector-family preset for a stock bent or curved contour; use a
+block-arrow / chevron preset for a solid direction. Resort to an open freeform
+path only when those native constructions cannot faithfully express the
+relationship, data geometry, or locked hand-drawn / organic style. Newly
+authored connector-family presets remain unconnected and do not gain attachment
+semantics. Existing Connector topology imported from a source PPTX remains
+owned by the preserve/mirror round-trip contract.
 
 **Forbidden — false native semantics**:
 
@@ -95,7 +99,7 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
   --adjust "adj1=val 50000"
 ```
 
-For an explicitly requested standalone native connector only:
+For a stock bent / curved contour that does not require endpoint attachment:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render bentConnector3 \
