@@ -171,9 +171,9 @@ diagnostic behavior are indexed in
 
 ### 1.2 Image Clipping (Conditional Contract)
 
-`clip-path` has a native picture-geometry mapping only on SVG-namespace
-`<image>` elements (plus the exact imported crop wrapper defined under Images)
-and only under this contract:
+`clip-path` maps natively only on SVG `<image>` (including an exact crop
+wrapper's inner image) under this contract. Legacy imported crops may retain
+an outer-wrapper clip as compatible input:
 
 | Concern | Required form |
 |---|---|
@@ -181,7 +181,7 @@ and only under this contract:
 | Contains exactly one direct SVG-namespace supported shape child | Multiple shapes are not composited |
 | Shape is one of: `<circle>`, `<ellipse>`, `<rect>` (optional rx/ry), `<path>`, `<polygon>` | These map to DrawingML geometry (preset or custom) |
 | No `clip-rule` or `fill-rule`, whether direct or in inline `style` | DrawingML picture geometry has no equivalent winding-rule control |
-| Used only on `<image>` or an exact imported crop wrapper | Shapes, groups, text, and generalized nested SVG targets are **forbidden** |
+| Used only on `<image>` or a compatible legacy imported crop wrapper | Shapes, groups, text, and generalized nested SVG targets are **forbidden** |
 
 | SVG clip shape | DrawingML output |
 |---|---|
