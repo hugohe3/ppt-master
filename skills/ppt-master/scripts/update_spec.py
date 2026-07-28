@@ -4,21 +4,23 @@
 Examples:
     python3 update_spec.py <project_path> primary=#0066AA
     python3 update_spec.py <project_path> colors.text=#111111
-    python3 update_spec.py <project_path> typography.font_family='"PingFang SC", "Microsoft YaHei", sans-serif'
+    python3 update_spec.py <project_path> \\
+        typography.font_family='Arial, "Microsoft YaHei", sans-serif'
 
 v2 scope:
 - `colors.*` — HEX value replacement across svg_output/*.svg (case-insensitive match).
 - `typography.font_family` — replaces the inner value of every `font-family="..."`
   / `font-family='...'` attribute in svg_output/*.svg. This is a global replace:
-  every text element becomes the new family, regardless of role.
+  every text element becomes the new family, regardless of role, and every
+  existing `typography.*_family` lock row is updated to the same value.
 
 Bare `key=value` (no dot) is treated as `colors.key=value` for backward compat.
 
-Other keys (typography sizes, per-role `typography.*_family` overrides, icons,
-images, canvas, forbidden) are intentionally NOT supported — they involve
-attribute-scoped or semantic replacements whose risk/benefit does not warrant
-bulk propagation. For per-role family changes, edit spec_lock.md and re-author
-the affected pages.
+Other keys as independent targets (typography sizes, per-role
+`typography.*_family` overrides, icons, images, canvas, forbidden) are
+intentionally NOT supported — they involve attribute-scoped or semantic
+replacements whose risk/benefit does not warrant bulk propagation. For
+per-role family changes, edit spec_lock.md and re-author the affected pages.
 """
 from __future__ import annotations
 
@@ -36,23 +38,42 @@ HEX_RE = re.compile(r"^#(?:[0-9A-Fa-f]{3,4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
 FONT_FAMILY_RE = re.compile(r"""(font-family\s*=\s*)(["'])(.*?)\2""")
 
 
-def rewrite_lock(lock_path: Path, section: str, key: str, new_value: str) -> None:
-    """Rewrite the single `- key: old_value` line under `## section`."""
+def plan_lock_values(
+    lock_path: Path, section: str, updates: dict[str, str]
+) -> str:
+    """Return a lock rewrite only after every target row validates."""
     lines = lock_path.read_text(encoding="utf-8").splitlines(keepends=True)
     in_section = False
+    found: set[str] = set()
     for i, raw in enumerate(lines):
-        stripped = raw.rstrip("\n")
+        stripped = raw.rstrip("\r\n")
+        line_ending = raw[len(stripped) :]
         if stripped.startswith("## "):
             in_section = stripped[3:].strip() == section
             continue
         if not in_section:
             continue
         m = re.match(r"^(-\s+)([A-Za-z0-9_]+)(\s*:\s*)(.+?)(\s*)$", stripped)
-        if m and m.group(2) == key:
-            lines[i] = f"{m.group(1)}{m.group(2)}{m.group(3)}{new_value}{m.group(5)}\n"
-            lock_path.write_text("".join(lines), encoding="utf-8")
-            return
-    raise KeyError(f"key {key!r} not found under section {section!r} in {lock_path}")
+        if not m or m.group(2) not in updates:
+            continue
+        key = m.group(2)
+        if key in found:
+            raise ValueError(
+                f"duplicate key {key!r} under section {section!r} in {lock_path}"
+            )
+        found.add(key)
+        lines[i] = (
+            f"{m.group(1)}{key}{m.group(3)}{updates[key]}{m.group(5)}"
+            f"{line_ending}"
+        )
+
+    missing = set(updates) - found
+    if missing:
+        missing_list = ", ".join(sorted(missing))
+        raise KeyError(
+            f"key(s) {missing_list} not found under section {section!r} in {lock_path}"
+        )
+    return "".join(lines)
 
 
 def replace_color_in_svgs(
@@ -136,8 +157,11 @@ def main() -> int:
     ap.add_argument("project_path", type=Path, help="project folder containing spec_lock.md and svg_output/")
     ap.add_argument(
         "assignment",
-        help="section.key=value (e.g. colors.primary=#0066AA, typography.font_family='\"Inter\", Arial, sans-serif'). "
-        "Bare key=value is treated as colors.key=value.",
+        help=(
+            "section.key=value (e.g. colors.primary=#0066AA, "
+            "typography.font_family='Arial, \"Microsoft YaHei\", sans-serif'). "
+            "Bare key=value is treated as colors.key=value."
+        ),
     )
     ap.add_argument(
         "--dry-run",
@@ -183,6 +207,7 @@ def main() -> int:
         return 2
 
     old_value = section_map[key]
+    lock_changes: list[tuple[str, str, str]] = []
 
     if section == "colors":
         if not HEX_RE.match(new_value):
@@ -195,20 +220,41 @@ def main() -> int:
         # avoids a state where lock claims new_value but SVGs still hold
         # old_value — that state silences re-runs (parse_lock would then
         # see new_value == old_value and exit early).
+        try:
+            planned_lock = plan_lock_values(lock, "colors", {key: new_value})
+        except (KeyError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
         changed = replace_color_in_svgs(svg_dir, old_value, new_value, dry_run=args.dry_run)
+        lock_changes = [(key, old_value, new_value)]
         if not args.dry_run:
-            rewrite_lock(lock, "colors", key, new_value)
+            lock.write_text(planned_lock, encoding="utf-8")
     elif section == "typography" and key == "font_family":
-        if old_value == new_value:
-            print(f"no change: typography.font_family already = {new_value}")
+        family_keys = [
+            name
+            for name in section_map
+            if name == "font_family" or name.endswith("_family")
+        ]
+        lock_changes = [
+            (name, section_map[name], new_value)
+            for name in family_keys
+            if section_map[name] != new_value
+        ]
+        if not lock_changes:
+            print(f"no change: all typography.*_family rows already = {new_value}")
             return 0
         try:
+            planned_lock = plan_lock_values(
+                lock,
+                "typography",
+                {name: new_value for name in family_keys},
+            )
             changed = replace_font_family_in_svgs(svg_dir, new_value, dry_run=args.dry_run)
-        except ValueError as e:
+        except (KeyError, ValueError) as e:
             print(f"error: {e}", file=sys.stderr)
             return 2
         if not args.dry_run:
-            rewrite_lock(lock, "typography", key, new_value)
+            lock.write_text(planned_lock, encoding="utf-8")
     else:
         print(
             f"error: {section}.{key} is not supported by update_spec.py.\n"
@@ -219,10 +265,17 @@ def main() -> int:
         return 2
 
     if args.dry_run:
-        print(f"[dry-run] spec_lock.md: {section}.{key}  {old_value} → {new_value}")
+        for lock_key, previous, replacement in lock_changes:
+            print(
+                f"[dry-run] spec_lock.md: "
+                f"{section}.{lock_key}  {previous} → {replacement}"
+            )
         print(f"[dry-run] svg_output/:  {len(changed)} file(s) would be updated")
     else:
-        print(f"spec_lock.md: {section}.{key}  {old_value} → {new_value}")
+        for lock_key, previous, replacement in lock_changes:
+            print(
+                f"spec_lock.md: {section}.{lock_key}  {previous} → {replacement}"
+            )
         print(f"svg_output/:  {len(changed)} file(s) updated")
     for p, n in changed:
         suffix = "replacement" if n == 1 else "replacements"
