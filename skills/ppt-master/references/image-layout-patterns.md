@@ -41,6 +41,8 @@ The patterns below are what separate a deck that looks designed from a deck that
 | A subject should escape its container | `#85` subject breaking out + `#96` | Depth with no shadow at all |
 | One place should be recognized across consecutive pages | `#87` one image panned across pages | The deck reads as one continuous scene; `-t morph` uses heuristic matching, while explicit `morph.pairs` makes the camera pan deterministic |
 
+**Mandatory**: Pair a modifier-only router result with a content-appropriate Part 1 Primary as the page bones before §VIII. The pairing makes the recommendation complete; it does not lock Executor geometry or create a usage quota.
+
 **Hard rule — registration is what makes this family work**: in `#82`, `#85`, `#87`, `#89`, `#96`, and `#97`, the image stays anchored to the *union* of its containers, or the two copies stay in exact register. A few pixels of drift reads as a printing error, and giving each container its own image collapses the page into an ordinary tile grid. `#84` is the one pattern that breaks registration on purpose, and it only reads as a decision because the others establish the expectation.
 
 **Prepared-asset gate**: select `#96` only when a registered cutout PNG already exists, `#97` only when its blurred crop exists, and `#99` only when its desaturated copy exists. If not, keep the original asset and fall back to a native-shape treatment such as `#30` / `#29`; do not invent an image-processing step during execution.
