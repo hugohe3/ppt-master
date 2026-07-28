@@ -6303,7 +6303,6 @@ class SVGQualityChecker:
             project_path
         )
         lock_images = set(lock_entries)
-        svg_texts = self._load_project_svg_texts(project_path)
         svg_references, inline_image_counts, image_placements = (
             self._load_project_svg_image_references(project_path)
         )
@@ -6322,12 +6321,6 @@ class SVGQualityChecker:
             if self._row_type(row).lower() == 'illustration sheet'
         ]
         slice_rows = [row for row in rows if self._row_acquire(row) == 'slice']
-        image_rows = [
-            row for row in rows
-            if self._row_acquire(row) in {'ai', 'web', 'user', 'placeholder', 'slice'}
-            and self._row_type(row).lower() not in {'latex formula', 'illustration sheet'}
-        ]
-
         for row in sheet_rows:
             filename = self._row_filename(row)
             if not filename:
@@ -6388,9 +6381,6 @@ class SVGQualityChecker:
                         f"{filename} is a Generated slice row but "
                         f"images/{filename} does not exist.",
                     ))
-
-        for row in image_rows:
-            self._check_decorative_image_row(row, project_path, svg_texts)
 
     @staticmethod
     def _resolve_project_path(dir_path: Path) -> Path:
@@ -6552,20 +6542,6 @@ class SVGQualityChecker:
         """Return filenames listed under spec_lock.md images."""
         entries, _error = self._load_project_lock_image_entries(project_path)
         return set(entries)
-
-    @staticmethod
-    def _load_project_svg_texts(project_path: Path) -> Dict[Path, str]:
-        """Read project SVG output files for project-level cross-checks."""
-        svg_dir = project_path / 'svg_output'
-        if not svg_dir.exists():
-            return {}
-        out: Dict[Path, str] = {}
-        for svg_path in sorted(svg_dir.glob('*.svg')):
-            try:
-                out[svg_path] = svg_path.read_text(encoding='utf-8')
-            except OSError:
-                continue
-        return out
 
     @classmethod
     def _load_project_svg_image_references(
@@ -7037,37 +7013,85 @@ class SVGQualityChecker:
                 or any(entry.get('crop') == 'no-crop' for entry in entries)
             )
             if effective_no_crop:
+                placements_by_svg: Dict[
+                    Path,
+                    List[Tuple[str, Tuple[str, ...]]],
+                ] = defaultdict(list)
                 for svg_path, raw_aspect, mechanisms in image_placements.get(
                     filename,
                     [],
                 ):
-                    try:
-                        align, mode = (
-                            _parse_project_image_aspect_ratio(raw_aspect or None)
-                            if _parse_project_image_aspect_ratio is not None
-                            else ('', '')
-                        )
-                    except ValueError:
-                        # The per-SVG aspect-ratio validator owns malformed syntax.
-                        continue
-                    if align != 'xMidYMid' or mode != 'meet':
+                    placements_by_svg[svg_path].append((
+                        raw_aspect,
+                        mechanisms,
+                    ))
+
+                for svg_path, placements in placements_by_svg.items():
+                    parsed_placements = []
+                    for raw_aspect, mechanisms in placements:
+                        try:
+                            align, mode = (
+                                _parse_project_image_aspect_ratio(raw_aspect or None)
+                                if _parse_project_image_aspect_ratio is not None
+                                else ('', '')
+                            )
+                        except ValueError:
+                            # The per-SVG aspect-ratio validator owns malformed syntax.
+                            continue
+                        parsed_placements.append((
+                            raw_aspect,
+                            mechanisms,
+                            align,
+                            mode,
+                        ))
+
+                    has_complete_placement = any(
+                        align != 'none'
+                        and mode == 'meet'
+                        and not mechanisms
+                        for _raw_aspect, mechanisms, align, mode
+                        in parsed_placements
+                    )
+
+                    for raw_aspect, _mechanisms, align, _mode in parsed_placements:
+                        if align != 'none':
+                            continue
                         actual = raw_aspect or '(implicit xMidYMid meet)'
                         self._illustration_issues.append((
                             'error',
                             'no_crop_image_fit_mismatch',
                             f"{svg_path.name}: {filename} is no-crop but its "
                             f"rendered placement uses "
-                            f"preserveAspectRatio={actual!r}; use xMidYMid meet.",
+                            f"preserveAspectRatio={actual!r}; stretching is not "
+                            "a detail crop and remains forbidden.",
                         ))
-                    if mechanisms:
-                        self._illustration_issues.append((
-                            'error',
-                            'no_crop_image_clipped',
-                            f"{svg_path.name}: {filename} is no-crop but its "
-                            "rendered placement is affected by "
-                            f"{', '.join(mechanisms)}; remove clipping so every "
-                            "source pixel remains visible.",
-                        ))
+
+                    if has_complete_placement:
+                        continue
+
+                    for raw_aspect, mechanisms, align, mode in parsed_placements:
+                        if align != 'none' and mode != 'meet':
+                            actual = raw_aspect or '(implicit xMidYMid meet)'
+                            self._illustration_issues.append((
+                                'error',
+                                'no_crop_image_fit_mismatch',
+                                f"{svg_path.name}: {filename} is no-crop but "
+                                "this page has no complete placement and uses "
+                                f"preserveAspectRatio={actual!r}; keep at least "
+                                "one unclipped placement with a legal alignment "
+                                "anchor and meet.",
+                            ))
+                        if mechanisms:
+                            self._illustration_issues.append((
+                                'error',
+                                'no_crop_image_clipped',
+                                f"{svg_path.name}: {filename} is no-crop but "
+                                "this page has no complete placement; its "
+                                "rendered placement is affected by "
+                                f"{', '.join(mechanisms)}. Keep at least one "
+                                "unclipped meet placement so every source pixel "
+                                "remains visible.",
+                            ))
 
         self._check_sourced_image_provenance(
             rows_by_filename,
@@ -7157,168 +7181,6 @@ class SVGQualityChecker:
                     f"{filename} requires attribution but has no author in "
                     "images/image_sources.json.",
                 ))
-
-    def _check_decorative_image_row(
-        self,
-        row: Dict[str, str],
-        project_path: Path,
-        svg_texts: Dict[Path, str],
-    ) -> None:
-        """Warn when decorative image patterns lack obvious SVG/file evidence."""
-        filename = self._row_filename(row)
-        if not filename:
-            return
-        layout = self._row_layout(row)
-        ids = {int(match.group(1)) for match in re.finditer(r'#(\d+)\b', layout)}
-        decorative_ids = ids & {4, 58, 63, 66, 69}
-        if not decorative_ids:
-            return
-        if self._row_type(row).lower() == 'illustration sheet':
-            return
-
-        referenced_tags: List[Tuple[Path, str]] = []
-        for svg_path, content in svg_texts.items():
-            for tag in re.findall(r'<image\b[^>]*>', content, re.IGNORECASE):
-                if filename in tag:
-                    referenced_tags.append((svg_path, tag))
-
-        if 63 in decorative_ids:
-            if Path(filename).suffix.lower() != '.png':
-                self._illustration_issues.append((
-                    'warning',
-                    'sticker_not_png',
-                    f"{filename} uses #63 transparent sticker / cutout but is not a PNG.",
-                ))
-            elif not self._png_has_alpha(project_path / 'images' / filename):
-                self._illustration_issues.append((
-                    'warning',
-                    'sticker_no_alpha',
-                    f"{filename} uses #63 transparent sticker / cutout but the PNG "
-                    "does not appear to have an alpha channel.",
-                ))
-
-        if not referenced_tags:
-            return
-
-        if 69 in decorative_ids and not any('rotate(' in tag for _path, tag in referenced_tags):
-            self._illustration_issues.append((
-                'warning',
-                'rotation_missing',
-                f"{filename} declares #69 slight rotation but no referenced <image> "
-                "tag contains rotate(...).",
-            ))
-
-        if 4 in decorative_ids and not self._has_off_canvas_reference(referenced_tags):
-            self._illustration_issues.append((
-                'warning',
-                'edge_bleed_missing',
-                f"{filename} declares #4 edge bleed but no referenced <image> appears "
-                "to extend past the canvas edge.",
-            ))
-
-        if 58 in decorative_ids and not self._has_corner_fragment_reference(referenced_tags):
-            self._illustration_issues.append((
-                'warning',
-                'corner_fragment_missing',
-                f"{filename} declares #58 decorative corner fragment but no referenced "
-                "<image> appears near a canvas corner.",
-            ))
-
-        if 66 in decorative_ids:
-            content_scope = "\n".join(svg_texts.get(path, '') for path, _tag in referenced_tags)
-            if '<linearGradient' not in content_scope and 'opacity' not in content_scope:
-                self._illustration_issues.append((
-                    'warning',
-                    'fade_missing',
-                    f"{filename} declares #66 fade into background but the referencing "
-                    "SVG has no obvious gradient or opacity treatment.",
-                ))
-
-    @staticmethod
-    def _png_has_alpha(path: Path) -> bool:
-        """Return True when a PNG appears to carry transparent pixels."""
-        if not path.exists():
-            return False
-        try:
-            from PIL import Image as PILImage
-            with PILImage.open(path) as img:
-                if img.mode in {'RGBA', 'LA'}:
-                    alpha = img.getchannel('A')
-                    return alpha.getextrema()[0] < 255
-                return 'transparency' in img.info
-        except (ImportError, OSError, ValueError):
-            return False
-
-    @staticmethod
-    def _parse_image_geometry(tag: str) -> Tuple[float, float, float, float] | None:
-        """Extract x/y/width/height from an <image> tag."""
-        values = {}
-        for attr in ('x', 'y', 'width', 'height'):
-            match = re.search(rf'\b{attr}\s*=\s*["\']([^"\']+)["\']', tag)
-            if not match:
-                return None
-            try:
-                values[attr] = float(match.group(1))
-            except ValueError:
-                return None
-        return values['x'], values['y'], values['width'], values['height']
-
-    @staticmethod
-    def _parse_svg_viewbox(content: str) -> Tuple[float, float] | None:
-        """Return root viewBox width/height from SVG content."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return None
-        viewbox = root.get('viewBox')
-        if not viewbox:
-            return None
-        values = _parse_viewbox_values(viewbox)
-        if values is None:
-            return None
-        return values[2], values[3]
-
-    @classmethod
-    def _has_off_canvas_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
-        for svg_path, tag in refs:
-            geometry = cls._parse_image_geometry(tag)
-            if geometry is None:
-                continue
-            x, y, width, height = geometry
-            try:
-                content = svg_path.read_text(encoding='utf-8')
-            except OSError:
-                continue
-            viewbox = cls._parse_svg_viewbox(content)
-            if viewbox is None:
-                continue
-            vb_width, vb_height = viewbox
-            if x < 0 or y < 0 or x + width > vb_width or y + height > vb_height:
-                return True
-        return False
-
-    @classmethod
-    def _has_corner_fragment_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
-        for svg_path, tag in refs:
-            geometry = cls._parse_image_geometry(tag)
-            if geometry is None:
-                continue
-            x, y, width, height = geometry
-            try:
-                content = svg_path.read_text(encoding='utf-8')
-            except OSError:
-                continue
-            viewbox = cls._parse_svg_viewbox(content)
-            if viewbox is None:
-                continue
-            vb_width, vb_height = viewbox
-            near_left = x <= 40
-            near_top = y <= 40
-            near_right = x + width >= vb_width - 40
-            near_bottom = y + height >= vb_height - 40
-            if (near_left or near_right) and (near_top or near_bottom):
-                return True
-        return False
 
     def _check_animation_config_contract(self, dir_path: Path) -> None:
         """Project-level animations.json reference checks."""
