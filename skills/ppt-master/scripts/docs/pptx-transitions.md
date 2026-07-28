@@ -202,6 +202,30 @@ failure rather than a silent downgrade.
 - An extension counts as successful only when the primary Choice contains the
   requested effect. A fallback alone is not success.
 
+### 3.2 Deterministic Morph Identity
+
+The generated route may add an explicit `slides.<destination>.morph` block to
+bind direct-root SVG groups across adjacent slides. The sidecar stable key is
+lowered to the same top-level `p:cNvPr@name="!!<key>"` on both final
+Slide-local objects. This does not create an Animation Pane row and does not
+change either object's numeric shape id.
+
+The full plan is resolved before any SVG conversion so a source group named by
+the following slide remains a stable top-level target. Names are written only
+after flat/structured/preserve processing has finished; structured slide-shape
+roster expectations are then refreshed. Package read-back requires:
+
+- the declared source to be the immediately preceding public slide;
+- exactly one `!!<key>` object on each side;
+- the same OOXML object container type on both sides;
+- Morph by object on the destination; and
+- no structural target, same-slide name collision, group/key conflict, or
+  undeclared shared `!!` name on a Morph edge.
+
+Morph without an explicit pair block retains PowerPoint's automatic matching
+behavior. Explicit pairing is generated-route authoring; direct-PPTX routes
+continue to preserve existing object names and transition XML.
+
 ---
 
 ## 4. Route Mapping
@@ -270,6 +294,8 @@ Reject:
 - booleans passed as numeric API values;
 - multiple logical transition carriers;
 - unresolved MCE Requires or Ignorable prefixes.
+- invalid forced-Morph adjacency, identity uniqueness, object type, or
+  destination effect.
 
 Read-back must report the canonical native effect and complete effective
 options, while keeping the primary Choice child separate from the fallback. It
