@@ -46,6 +46,7 @@ from __future__ import annotations
 
 import base64
 import io
+import math
 import os
 import re
 import sys
@@ -58,7 +59,11 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
-from resource_paths import resolve_external_image_reference  # noqa: E402
+from resource_paths import (  # noqa: E402
+    resolve_external_image_reference,
+    svg_data_uri_payload_error,
+    svg_image_payload_error,
+)
 
 configure_utf8_stdio()
 
@@ -223,6 +228,8 @@ def _target_size(
 def _downscale_to_target(img: 'PILImage', target_w: int, target_h: int) -> tuple['PILImage', bool]:
     """Downscale without upsampling."""
     width, height = img.size
+    if width <= 0 or height <= 0:
+        return img, False
     ratio = min(target_w / width, target_h / height, 1.0)
     if ratio >= 1.0:
         return img, False
@@ -327,7 +334,10 @@ def _process_one_image(
     href = _get_href(image)
     if not href:
         return False, None
-    if href.startswith('data:'):
+    if href.lower().startswith('data:'):
+        payload_error = svg_data_uri_payload_error(href)
+        if payload_error is not None:
+            return False, payload_error
         return False, None  # already inline
 
     img_path = _resolve_image_path(href, svg_dir)
@@ -346,6 +356,9 @@ def _process_one_image(
         return False, None
 
     if _is_svg_image(img_path, raw_bytes):
+        payload_error = svg_image_payload_error(raw_bytes)
+        if payload_error is not None:
+            return False, f'{img_path.name}: {payload_error}'
         _embed_raw_image(image, img_path, raw_bytes)
         if verbose:
             print(f'   [OK] {img_path.name} (svg, embedded as-is)')
@@ -379,7 +392,12 @@ def _process_one_image(
     box_y = _parse_float(image.get('y'))
     box_w = _parse_float(image.get('width'))
     box_h = _parse_float(image.get('height'))
-    if box_w <= 0 or box_h <= 0:
+    if (
+        not math.isfinite(box_w)
+        or not math.isfinite(box_h)
+        or box_w <= 0
+        or box_h <= 0
+    ):
         return False, 'zero-sized box'
 
     par_attr = image.get('preserveAspectRatio') or ''
@@ -392,6 +410,8 @@ def _process_one_image(
     new_x, new_y, new_w, new_h = box_x, box_y, box_w, box_h
     transformed = geometry_normalized
     target_box_w, target_box_h = box_w, box_h
+    preserve_stretch = False
+    preserve_slice = False
 
     if not par_attr:
         # No preserveAspectRatio at all. The previous pipeline's fix-aspect
@@ -403,14 +423,20 @@ def _process_one_image(
         align, mode = parse_preserve_aspect_ratio(par_attr)
         if align == 'none':
             # Author wants stretch-to-box; preserve geometry, embed bytes.
-            pass
+            preserve_stretch = True
         elif mode == 'slice':
             x_anchor, y_anchor = get_crop_anchor(align)
             cropped_img = crop_image_to_size(
-                img, int(box_w), int(box_h), x_anchor, y_anchor
+                img, box_w, box_h, x_anchor, y_anchor
             )
             final_img = cropped_img
             transformed = True
+            preserve_slice = not math.isclose(
+                cropped_img.size[0] / cropped_img.size[1],
+                box_w / box_h,
+                rel_tol=1e-6,
+                abs_tol=1e-9,
+            )
         else:  # meet (or any other mode → treat as meet)
             new_w_calc, new_h_calc, off_x, off_y = calculate_fitted_dimensions(
                 img.size[0], img.size[1], box_w, box_h, mode='meet',
@@ -449,7 +475,11 @@ def _process_one_image(
     image.set('y', _format_number(new_y))
     image.set('width', _format_number(new_w))
     image.set('height', _format_number(new_h))
-    if 'preserveAspectRatio' in image.attrib:
+    if preserve_stretch:
+        image.set('preserveAspectRatio', 'none')
+    elif preserve_slice:
+        image.set('preserveAspectRatio', par_attr)
+    elif 'preserveAspectRatio' in image.attrib:
         del image.attrib['preserveAspectRatio']
 
     if verbose:
@@ -505,8 +535,10 @@ def align_and_embed_images_in_svg(
     try:
         tree = ET.parse(svg_path)
     except ET.ParseError as exc:
-        if verbose:
-            print(f'  [ERROR] {svg_path.name}: parse failed ({exc})')
+        print(
+            f'  [ERROR] {svg_path.name}: parse failed ({exc})',
+            file=sys.stderr,
+        )
         return (0, 1)
     root = tree.getroot()
 
@@ -535,10 +567,9 @@ def align_and_embed_images_in_svg(
             processed += 1
         elif err:
             errors += 1
-            if verbose:
-                print(f'   [WARN] {svg_path.name}: {err}')
+            print(f'   [ERROR] {svg_path.name}: {err}', file=sys.stderr)
 
-    if processed > 0 and not dry_run:
+    if processed > 0 and errors == 0 and not dry_run:
         tree.write(svg_path, encoding='utf-8', xml_declaration=False)
 
     return (processed, errors)

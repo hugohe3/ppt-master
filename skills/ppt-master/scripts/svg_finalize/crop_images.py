@@ -86,8 +86,8 @@ def get_crop_anchor(align: str) -> tuple[float, float]:
 
 def crop_image_to_size(
     img: Image.Image,
-    target_width: int,
-    target_height: int,
+    target_width: float,
+    target_height: float,
     x_anchor: float = 0.5,
     y_anchor: float = 0.5,
 ) -> Image.Image:
@@ -108,6 +108,10 @@ def crop_image_to_size(
         Cropped PIL Image object (preserving original resolution)
     """
     img_width, img_height = img.size
+    if img_width <= 0 or img_height <= 0:
+        raise ValueError('source image dimensions must be positive')
+    if target_width <= 0 or target_height <= 0:
+        raise ValueError('target image dimensions must be positive')
     
     # Calculate target aspect ratio
     target_ratio = target_width / target_height
@@ -117,11 +121,11 @@ def crop_image_to_size(
     if img_ratio > target_ratio:
         # Original image is wider; crop left and right sides
         crop_height = img_height
-        crop_width = int(img_height * target_ratio)
+        crop_width = max(1, min(img_width, int(round(img_height * target_ratio))))
     else:
         # Original image is taller; crop top and bottom sides
         crop_width = img_width
-        crop_height = int(img_width / target_ratio)
+        crop_height = max(1, min(img_height, int(round(img_width / target_ratio))))
     
     # Calculate crop position based on anchor point
     extra_width = img_width - crop_width

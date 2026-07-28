@@ -464,6 +464,34 @@ VALID_IMAGE_TYPES = (
 )
 
 
+def _validate_bare_output_name(
+    value: str,
+    *,
+    field_name: str,
+    require_extension: bool = False,
+    reject_parent_marker: bool = False,
+) -> Path:
+    """Require one cross-platform-safe basename, optionally with an extension."""
+    value_path = Path(value)
+    if (
+        not value.strip()
+        or value in {".", ".."}
+        or reject_parent_marker and ".." in value
+        or "/" in value
+        or "\\" in value
+        or ":" in value
+        or value_path.is_absolute()
+        or value_path.name != value
+    ):
+        raise ValueError(
+            f"{field_name} must be a bare filename without path components, "
+            f"got {value!r}"
+        )
+    if require_extension and not value_path.suffix:
+        raise ValueError(f"{field_name} must include an extension, got {value!r}")
+    return value_path
+
+
 def load_manifest(path: str) -> dict:
     """Load and validate an `image_prompts.json` manifest.
 
@@ -531,7 +559,7 @@ def load_manifest(path: str) -> dict:
     if not isinstance(items, list) or not items:
         raise ValueError(f"{path}: 'items' must be a non-empty array")
 
-    seen_filenames: set[str] = set()
+    claimed_outputs: dict[str, str] = {}
     seen_stems: set[str] = set()
     missing_page_role = 0
     missing_text_policy = 0
@@ -614,6 +642,7 @@ def load_manifest(path: str) -> dict:
             raise ValueError(f"{prefix} field 'last_error' must be a string")
         has_slice_grid = "slice_grid" in item
         has_slice_names = "slice_names" in item
+        slice_outputs: list[str] = []
         if has_slice_grid != has_slice_names:
             raise ValueError(
                 f"{prefix} fields 'slice_grid' and 'slice_names' must appear together"
@@ -647,20 +676,11 @@ def load_manifest(path: str) -> dict:
                 )
             normalized_outputs: set[str] = set()
             for name in names:
-                name_path = Path(name)
-                if (
-                    name in {".", ".."}
-                    or ".." in name
-                    or "/" in name
-                    or "\\" in name
-                    or ":" in name
-                    or name_path.is_absolute()
-                    or name_path.name != name
-                ):
-                    raise ValueError(
-                        f"{prefix} slice output name {name!r} must be a safe "
-                        "bare filename"
-                    )
+                name_path = _validate_bare_output_name(
+                    name,
+                    field_name=f"{prefix} slice output name",
+                    reject_parent_marker=True,
+                )
                 if name_path.suffix and name_path.suffix.lower() != ".png":
                     raise ValueError(
                         f"{prefix} slice output name {name!r} must omit its "
@@ -675,32 +695,39 @@ def load_manifest(path: str) -> dict:
                         f"{output_name!r}"
                     )
                 normalized_outputs.add(output_name)
+                slice_outputs.append(output_name)
 
         fname = item["filename"]
-        filename_path = Path(fname)
-        if (
-            filename_path.is_absolute()
-            or filename_path.name != fname
-            or "/" in fname
-            or "\\" in fname
-            or fname in {".", ".."}
-        ):
+        filename_path = _validate_bare_output_name(
+            fname,
+            field_name=f"{prefix} field 'filename'",
+            require_extension=True,
+        )
+        normalized_filename = fname.casefold()
+        if normalized_filename in claimed_outputs:
             raise ValueError(
-                f"{prefix} field 'filename' must be one basename, got '{fname}'"
+                f"{prefix} output filename {fname!r} conflicts with "
+                f"{claimed_outputs[normalized_filename]} (case-insensitive)"
             )
-        if not filename_path.suffix:
-            raise ValueError(
-                f"{prefix} field 'filename' must include an extension, got '{fname}'"
-            )
-        if fname in seen_filenames:
-            raise ValueError(f"{prefix} duplicate filename '{fname}'")
-        seen_filenames.add(fname)
-        stem = filename_path.stem
+        claimed_outputs[normalized_filename] = f"manifest output {fname!r}"
+
+        stem = filename_path.stem.casefold()
         if stem in seen_stems:
             raise ValueError(
-                f"{prefix} duplicate filename stem '{stem}' would reuse backend output"
+                f"{prefix} duplicate filename stem '{filename_path.stem}' "
+                "would reuse backend output"
             )
         seen_stems.add(stem)
+
+        for output_name in slice_outputs:
+            if output_name in claimed_outputs:
+                raise ValueError(
+                    f"{prefix} slice output {output_name!r} conflicts with "
+                    f"{claimed_outputs[output_name]} (case-insensitive)"
+                )
+            claimed_outputs[output_name] = (
+                f"slice output {output_name!r} from items[{i}]"
+            )
 
     legacy_parts = []
     if missing_page_role:
@@ -791,6 +818,14 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
 
     Returns (ok_count, failed_count, skipped_count).
     """
+    manifest_output_dir = Path(manifest_path).resolve().parent
+    if Path(output_dir).resolve() != manifest_output_dir:
+        raise ValueError(
+            "Manifest outputs must stay beside image_prompts.json: "
+            f"expected {manifest_output_dir}, got {Path(output_dir).resolve()}"
+        )
+    output_dir = str(manifest_output_dir)
+
     from image_backends.backend_common import (
         is_rate_limit_error,
         validate_image_file,
@@ -1144,6 +1179,15 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    if args.filename is not None:
+        try:
+            _validate_bare_output_name(
+                args.filename,
+                field_name="--filename",
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+
     if args.reference_image is not None:
         # Reference editing is a single-image-only enhancement; keep it out of
         # the manifest / sidecar / list surfaces entirely.
@@ -1185,8 +1229,25 @@ def main() -> None:
         print(f"Rendered Markdown sidecar: {md_path}")
         return
 
+    manifest = None
+    manifest_output_dir = None
     if args.manifest:
+        if not os.path.isfile(args.manifest):
+            print(f"Error: manifest file not found: {args.manifest}")
+            sys.exit(1)
         _guard_confirmed_non_api_path(args.manifest)
+        try:
+            manifest = load_manifest(args.manifest)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        manifest_output_dir = Path(args.manifest).resolve().parent
+        if args.output and Path(args.output).resolve() != manifest_output_dir:
+            print(
+                "Error: --output cannot redirect manifest items outside the "
+                f"manifest directory ({manifest_output_dir})"
+            )
+            sys.exit(1)
 
     try:
         _load_image_env_file()
@@ -1203,22 +1264,13 @@ def main() -> None:
     print(f"Using backend: {backend_name}\n")
 
     if args.manifest:
-        if not os.path.isfile(args.manifest):
-            print(f"Error: manifest file not found: {args.manifest}")
-            sys.exit(1)
-        try:
-            manifest = load_manifest(args.manifest)
-        except ValueError as e:
-            print(f"Error: {e}")
-            sys.exit(1)
-
         concurrency = _resolve_concurrency(args.concurrency)
         try:
             _, failed, _ = _run_manifest(
                 manifest, args.manifest, backend,
                 initial_concurrency=concurrency,
                 image_size=args.image_size,
-                output_dir=args.output or str(Path(args.manifest).parent),
+                output_dir=str(manifest_output_dir),
                 model=args.model,
             )
         except KeyboardInterrupt:

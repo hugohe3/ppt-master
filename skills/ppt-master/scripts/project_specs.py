@@ -71,7 +71,30 @@ _MARKDOWN_DATA_LINE_RE = re.compile(
     re.MULTILINE,
 )
 _IMAGE_PATH_SUFFIXES = frozenset(
-    {".bmp", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".tif", ".tiff", ".webp"}
+    {
+        ".bmp",
+        ".emf",
+        ".gif",
+        ".jpeg",
+        ".jpg",
+        ".png",
+        ".svg",
+        ".tif",
+        ".tiff",
+        ".webp",
+        ".wmf",
+    }
+)
+_IMAGE_ACQUISITION_SOURCES = frozenset(
+    {"ai", "web", "user", "formula", "placeholder", "slice"}
+)
+_IMAGE_CROP_POLICIES = frozenset({"adaptive", "no-crop"})
+_LEGACY_IMAGE_METADATA_KEYS = frozenset(
+    {
+        "image_rendering",
+        "image_rendering_behavior",
+        "image_rendering_references",
+    }
 )
 _LEGACY_SPEC_LOCK_FORBIDDEN = frozenset({"Mixing icon libraries"})
 _SCAFFOLD_TOKEN_RE = re.compile(r"\{\{[A-Z_]+\}\}")
@@ -174,6 +197,109 @@ def _looks_like_image_path(raw: str) -> bool:
     """Return whether one lock token looks like a project image path."""
     token = raw.strip().strip("`'\"").replace("\\", "/")
     return bool(token) and Path(token).suffix.casefold() in _IMAGE_PATH_SUFFIXES
+
+
+def parse_spec_lock_image_value(key: str, value: str) -> dict[str, str]:
+    """Parse one image-lock row while preserving supported legacy rows.
+
+    Current rows use ``<path> | source=... | pattern=... | crop=...``. Legacy
+    rows remain readable, but any row that starts using named metadata must
+    provide the complete current contract.
+    """
+    normalized_key = str(key).strip()
+    normalized_value = str(value).strip()
+    parts = [part.strip() for part in normalized_value.split("|")]
+    path_part = parts[0] if parts else ""
+
+    if _looks_like_image_path(normalized_key) and not _looks_like_image_path(path_part):
+        parts.insert(0, normalized_key)
+        path_part = normalized_key
+    elif (
+        len(parts) >= 2
+        and parts[0].casefold() in _IMAGE_ACQUISITION_SOURCES
+        and _looks_like_image_path(parts[1])
+    ):
+        path_part = parts[1]
+
+    metadata_parts = [part for part in parts[1:] if "=" in part]
+    if not metadata_parts:
+        legacy_crop = (
+            "no-crop"
+            if any(
+                re.search(r"(?<![a-z])no-crop(?![a-z])", part, re.IGNORECASE)
+                for part in parts[1:]
+            )
+            else ""
+        )
+        return {
+            "path": path_part,
+            "source": "",
+            "pattern": "",
+            "crop": legacy_crop,
+            "legacy": "true",
+        }
+
+    metadata: dict[str, str] = {}
+    unsupported_parts: list[str] = []
+    for part in parts[1:]:
+        field, separator, raw = part.partition("=")
+        if not separator:
+            unsupported_parts.append(part)
+            continue
+        field = field.strip().casefold()
+        if field in metadata:
+            raise ValueError(f"repeats metadata field {field!r}")
+        metadata[field] = raw.strip()
+
+    expected_fields = {"source", "pattern", "crop"}
+    unknown_fields = sorted(set(metadata) - expected_fields)
+    missing_fields = sorted(expected_fields - set(metadata))
+    if unsupported_parts:
+        shown = ", ".join(repr(part) for part in unsupported_parts)
+        raise ValueError(f"has unsupported metadata token(s) {shown}")
+    if unknown_fields:
+        raise ValueError(
+            f"has unknown metadata field(s) {', '.join(unknown_fields)}"
+        )
+    if missing_fields:
+        raise ValueError(
+            f"misses metadata field(s) {', '.join(missing_fields)}"
+        )
+    if not _looks_like_image_path(path_part):
+        raise ValueError(f"has invalid image path {path_part!r}")
+
+    normalized_path = path_part.replace("\\", "/")
+    path = Path(normalized_path)
+    if (
+        path.is_absolute()
+        or len(path.parts) != 2
+        or path.parts[0] != "images"
+        or path.name in {"", ".", ".."}
+        or ":" in path.name
+        or normalized_path != f"images/{path.name}"
+    ):
+        raise ValueError(
+            f"must use canonical project path images/<filename>, got {path_part!r}"
+        )
+
+    source = metadata["source"].casefold()
+    if source not in _IMAGE_ACQUISITION_SOURCES:
+        allowed = ", ".join(sorted(_IMAGE_ACQUISITION_SOURCES))
+        raise ValueError(f"source must be one of {allowed}, got {metadata['source']!r}")
+    if not metadata["pattern"]:
+        raise ValueError("pattern must be non-empty")
+    crop = metadata["crop"].casefold()
+    if crop not in _IMAGE_CROP_POLICIES:
+        allowed = ", ".join(sorted(_IMAGE_CROP_POLICIES))
+        raise ValueError(f"crop must be one of {allowed}, got {metadata['crop']!r}")
+
+    return {
+        "path": normalized_path,
+        "source": source,
+        "pattern": metadata["pattern"],
+        "crop": crop,
+        "legacy": "false",
+    }
 
 
 def parse_spec_lock_artifact(
@@ -872,6 +998,16 @@ def _validate_spec_lock_relations(
                     f"{markdown_name} schema: field '{references_field}' references "
                     f"unknown catalog id '{reference}'"
                 )
+
+    for key, value in fields("images").items():
+        if key.strip().casefold() in _LEGACY_IMAGE_METADATA_KEYS:
+            continue
+        try:
+            parse_spec_lock_image_value(key, value)
+        except ValueError as exc:
+            errors.append(
+                f"{markdown_name} schema: images row {key!r} {exc}"
+            )
 
     rhythm = fields("page_rhythm")
     layouts = fields("pptx_layouts")

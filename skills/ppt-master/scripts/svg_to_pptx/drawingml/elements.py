@@ -25,7 +25,10 @@ from pptx_shapes import (
 )
 from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
 from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
-from resource_paths import resolve_external_image_reference
+from resource_paths import (
+    resolve_external_image_reference,
+    svg_image_payload_error,
+)
 
 from .context import ConvertContext, ShapeResult
 from .theme_colors import color_node_xml
@@ -259,11 +262,7 @@ def _valid_project_image_payload(img_format: str, img_data: bytes) -> bool:
     if not img_data:
         return False
     if img_format == 'svg':
-        try:
-            root = ET.fromstring(img_data)
-        except ET.ParseError:
-            return False
-        return root.tag == f'{{{SVG_NS}}}svg'
+        return svg_image_payload_error(img_data) is None
     if img_format == 'emf':
         return _valid_emf_payload(img_data)
     if img_format == 'wmf':
@@ -3494,16 +3493,94 @@ def _picture_xfrm_from_svg_rect(
     return _picture_xfrm_from_rect(ctx, resolved_x, resolved_y, resolved_w, resolved_h)
 
 
-def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
+def _picture_rendered_frame_size(
+    ctx: ConvertContext,
+    raw_x: float,
+    raw_y: float,
+    raw_w: float,
+    raw_h: float,
+    resolved_x: float,
+    resolved_y: float,
+    resolved_w: float,
+    resolved_h: float,
+    transform: str | None,
+) -> tuple[float, float]:
+    """Return final DrawingML picture-axis lengths in rendered SVG pixels."""
+    _attr, _x, _y, ext_cx, ext_cy, _bounds = _picture_xfrm_from_svg_rect(
+        ctx,
+        raw_x,
+        raw_y,
+        raw_w,
+        raw_h,
+        resolved_x,
+        resolved_y,
+        resolved_w,
+        resolved_h,
+        transform,
+    )
+    emu_per_px = px_to_emu(1.0)
+    return ext_cx / emu_per_px, ext_cy / emu_per_px
+
+
+def _read_svg_image_size(data: bytes) -> tuple[float, float] | None:
+    """Read an SVG image's viewport ratio from root dimensions or viewBox."""
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError:
+        return None
+    if root.tag != f'{{{SVG_NS}}}svg':
+        return None
+
+    try:
+        width = parse_svg_length(root.get('width'))
+        height = parse_svg_length(root.get('height'))
+    except ValueError:
+        width = 0.0
+        height = 0.0
+    if (
+        width > 0
+        and height > 0
+        and math.isfinite(width)
+        and math.isfinite(height)
+    ):
+        return width, height
+
+    view_box = root.get('viewBox')
+    if view_box:
+        parts = [
+            part for part in re.split(r'[\s,]+', view_box.strip())
+            if part
+        ]
+        try:
+            values = [float(part) for part in parts]
+        except ValueError:
+            values = []
+        if (
+            len(values) == 4
+            and all(math.isfinite(value) for value in values)
+            and values[2] > 0
+            and values[3] > 0
+        ):
+            return values[2], values[3]
+    return None
+
+
+def _read_image_size(data: bytes) -> tuple[float | None, float | None]:
     """Read intrinsic image dimensions (width, height) from raw bytes.
 
     Used by ``convert_image`` to translate SVG ``preserveAspectRatio`` into
     DrawingML ``<a:srcRect>`` so the original image is preserved and remains
     croppable inside PowerPoint.
 
-    Returns ``(None, None)`` on any failure — callers fall back to the
-    legacy stretch behaviour.
+    SVG images use valid root ``width`` / ``height`` as the viewport ratio and
+    fall back to ``viewBox`` when either dimension is unavailable. Raster
+    images use EXIF-normalized pixel dimensions. Returns ``(None, None)`` on
+    any failure.
     """
+    svg_size = _read_svg_image_size(data)
+    if svg_size is not None:
+        return svg_size
+
     try:
         from PIL import Image, ImageOps, UnidentifiedImageError  # type: ignore
     except ImportError:
@@ -3578,58 +3655,119 @@ def _image_target_size(
     return target_w, target_h
 
 
+def _visible_source_scale_floor(
+    img_w: int,
+    img_h: int,
+    display_w: float,
+    display_h: float,
+    visible_source_fraction: tuple[float, float],
+) -> float:
+    """Keep each rendered axis at or below its visible source pixels."""
+    fraction_w, fraction_h = visible_source_fraction
+    visible_w = img_w * fraction_w
+    visible_h = img_h * fraction_h
+    if visible_w <= 0 or visible_h <= 0:
+        return 1.0
+    return min(1.0, max(display_w / visible_w, display_h / visible_h))
+
+
 def _fit_full_image_target(
     img_w: int,
     img_h: int,
-    box_w: float,
-    box_h: float,
-    align: str,
-    mode: str,
+    display_w: float,
+    display_h: float,
     *,
     sizing: str,
     max_dimension: int | None,
     scale: float,
+    visible_source_fraction: tuple[float, float] | None = None,
 ) -> tuple[int, int]:
     """Size the full source image; never crop pixels.
 
-    ``cap`` mode only limits oversized source images by maximum dimension.
-    ``display`` mode sizes to the rendered SVG box budget.
+    ``cap`` mode limits oversized sources unless that would leave a cropped
+    or stretched picture with fewer visible source pixels than its final
+    rendered frame. ``display`` mode targets the configured rendered-frame
+    scale while retaining the same one-source-pixel-per-display-pixel floor.
     """
     if img_w <= 0 or img_h <= 0:
         return (1, 1)
 
+    enforce_visible_floor = visible_source_fraction is not None
+    if enforce_visible_floor and (
+        any(
+            not math.isfinite(fraction) or fraction <= 0
+            for fraction in visible_source_fraction
+        )
+    ):
+        return (img_w, img_h)
+
     if sizing == 'cap':
-        target_w, target_h = img_w, img_h
-        if max_dimension and max(target_w, target_h) > max_dimension:
-            ratio = max_dimension / max(target_w, target_h)
-            target_w = max(1, int(round(target_w * ratio)))
-            target_h = max(1, int(round(target_h * ratio)))
+        ratio = 1.0
+        if max_dimension and max(img_w, img_h) > max_dimension:
+            ratio = max_dimension / max(img_w, img_h)
+        if enforce_visible_floor:
+            ratio = max(
+                ratio,
+                _visible_source_scale_floor(
+                    img_w,
+                    img_h,
+                    display_w,
+                    display_h,
+                    visible_source_fraction,
+                ),
+            )
+        ratio = min(1.0, ratio)
+        target_w = max(1, int(math.ceil(img_w * ratio)))
+        target_h = max(1, int(math.ceil(img_h * ratio)))
         return target_w, target_h
 
-    target_box_w, target_box_h = _image_target_size(
-        box_w,
-        box_h,
+    target_display_w, target_display_h = _image_target_size(
+        display_w,
+        display_h,
         max_dimension=None,
         scale=scale,
     )
-    img_ratio = img_w / img_h
-    box_ratio = box_w / box_h if box_h else img_ratio
 
-    if align != 'none' and mode == 'slice':
-        if box_ratio >= img_ratio:
-            target_w = target_box_w
-            target_h = int(round(target_w / img_ratio))
-        else:
-            target_h = target_box_h
-            target_w = int(round(target_h * img_ratio))
+    if enforce_visible_floor:
+        fraction_w, fraction_h = visible_source_fraction
+        preferred_scale = min(
+            1.0,
+            max(
+                target_display_w / (img_w * fraction_w),
+                target_display_h / (img_h * fraction_h),
+            ),
+        )
+        visible_floor = _visible_source_scale_floor(
+            img_w,
+            img_h,
+            display_w,
+            display_h,
+            visible_source_fraction,
+        )
+        resize_scale = preferred_scale
+        if max_dimension and max(img_w, img_h) * resize_scale > max_dimension:
+            resize_scale = max(
+                visible_floor,
+                max_dimension / max(img_w, img_h),
+            )
+        target_w = int(math.ceil(img_w * resize_scale))
+        target_h = int(math.ceil(img_h * resize_scale))
     else:
-        ratio = min(target_box_w / img_w, target_box_h / img_h, 1.0)
+        ratio = min(
+            target_display_w / img_w,
+            target_display_h / img_h,
+            1.0,
+        )
         target_w = int(round(img_w * ratio))
         target_h = int(round(img_h * ratio))
 
     target_w = max(1, target_w)
     target_h = max(1, target_h)
-    if max_dimension and max(target_w, target_h) > max_dimension:
+    if (
+        not enforce_visible_floor
+        and max_dimension
+        and max(target_w, target_h) > max_dimension
+    ):
         ratio = max_dimension / max(target_w, target_h)
         target_w = max(1, int(round(target_w * ratio)))
         target_h = max(1, int(round(target_h * ratio)))
@@ -3648,7 +3786,10 @@ def _resize_for_target(img: Any, target_w: int, target_h: int) -> Any:
         from PIL import Image  # type: ignore
     except ImportError:
         return img
-    new_size = (max(1, int(round(width * ratio))), max(1, int(round(height * ratio))))
+    new_size = (
+        max(1, int(math.ceil(width * ratio))),
+        max(1, int(math.ceil(height * ratio))),
+    )
     return img.resize(new_size, Image.Resampling.LANCZOS)
 
 
@@ -3672,12 +3813,13 @@ def _encode_optimized_image(img: Any, *, prefer_jpeg: bool, quality: int) -> tup
 
 
 def _optimize_image_for_pptx(
-    elem: ET.Element,
     ctx: ConvertContext,
     img_data: bytes,
     img_format: str,
-    box_w: float,
-    box_h: float,
+    display_w: float,
+    display_h: float,
+    *,
+    visible_source_fraction: tuple[float, float] | None = None,
 ) -> tuple[bytes, str]:
     """Optimize full raster image bytes for native PPTX embedding."""
     if not ctx.image_optimize:
@@ -3706,19 +3848,15 @@ def _optimize_image_for_pptx(
 
     geometry_normalized = _has_exif_geometry_transform(img)
     img = _prepare_raster_for_geometry(img)
-    align, mode = parse_project_image_aspect_ratio(
-        elem.get('preserveAspectRatio')
-    )
     target_w, target_h = _fit_full_image_target(
         img.size[0],
         img.size[1],
-        box_w,
-        box_h,
-        align,
-        mode,
+        display_w,
+        display_h,
         sizing=ctx.image_sizing,
         max_dimension=ctx.image_max_dimension,
         scale=ctx.image_scale,
+        visible_source_fraction=visible_source_fraction,
     )
 
     original_size = img.size
@@ -3766,35 +3904,37 @@ def _compute_slice_src_rect(
     visible_w = box_w / scale  # ≤ img_w
     visible_h = box_h / scale  # ≤ img_h
 
-    if abs(visible_w - img_w) < 0.5 and abs(visible_h - img_h) < 0.5:
+    if (
+        math.isclose(visible_w, img_w, rel_tol=1e-9, abs_tol=1e-9)
+        and math.isclose(visible_h, img_h, rel_tol=1e-9, abs_tol=1e-9)
+    ):
         return None  # No crop needed
 
-    crop_w_total = max(0.0, img_w - visible_w)
-    crop_h_total = max(0.0, img_h - visible_h)
-
     x_anchor, y_anchor = PROJECT_IMAGE_ASPECT_RATIO_ANCHORS[align]
-
-    crop_l = crop_w_total * x_anchor
-    crop_r = crop_w_total - crop_l
-    crop_t = crop_h_total * y_anchor
-    crop_b = crop_h_total - crop_t
-
-    l = max(0, min(100000, int(round(crop_l / img_w * 100000))))
-    t = max(0, min(100000, int(round(crop_t / img_h * 100000))))
-    r = max(0, min(100000, int(round(crop_r / img_w * 100000))))
-    b = max(0, min(100000, int(round(crop_b / img_h * 100000))))
+    crop_w_total = max(
+        0,
+        min(99999, int(round((1.0 - visible_w / img_w) * 100000))),
+    )
+    crop_h_total = max(
+        0,
+        min(99999, int(round((1.0 - visible_h / img_h) * 100000))),
+    )
+    l = max(0, min(crop_w_total, int(round(crop_w_total * x_anchor))))
+    t = max(0, min(crop_h_total, int(round(crop_h_total * y_anchor))))
+    r = crop_w_total - l
+    b = crop_h_total - t
+    if not any((l, t, r, b)):
+        return None
 
     return (l, t, r, b)
 
 
-def _resolve_image_src_rect(
+def _resolve_image_src_rect_values(
     elem: ET.Element,
     img_data: bytes,
     box_w: float, box_h: float,
-) -> str:
-    """Build ``<a:srcRect .../>`` XML for an SVG <image> based on its
-    preserveAspectRatio. Returns an empty string when no srcRect is needed
-    (meet mode, none mode, or already-aligned content).
+) -> tuple[int, int, int, int] | None:
+    """Resolve DrawingML source-crop values for an SVG slice image.
 
     Slice mode is resolved into a srcRect so the original image is embedded
     intact and PowerPoint's crop tool / "Reset Picture" continue to work.
@@ -3807,16 +3947,25 @@ def _resolve_image_src_rect(
     )
 
     if align == 'none' or mode != 'slice':
-        return ''  # meet handled by frame fit; none → stretch is correct per SVG spec
+        return None
 
     img_w, img_h = _read_image_size(img_data)
     if img_w is None or img_h is None:
-        return ''
+        return None
 
-    rect = _compute_slice_src_rect(float(img_w), float(img_h), box_w, box_h, align)
+    return _compute_slice_src_rect(
+        float(img_w),
+        float(img_h),
+        box_w,
+        box_h,
+        align,
+    )
+
+
+def _src_rect_xml(rect: tuple[int, int, int, int] | None) -> str:
+    """Serialize an optional DrawingML source crop."""
     if rect is None:
         return ''
-
     l, t, r, b = rect
     return f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
 
@@ -3914,8 +4063,47 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     img_format = source.img_format
     img_data = source.img_data
 
+    transform = elem.get('transform')
+    rendered_w, rendered_h = _picture_rendered_frame_size(
+        ctx,
+        raw_x,
+        raw_y,
+        raw_w,
+        raw_h,
+        x,
+        y,
+        w,
+        h,
+        transform,
+    )
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
+    src_rect = _resolve_image_src_rect_values(
+        elem,
+        img_data,
+        raw_w,
+        raw_h,
+    )
+    visible_source_fraction = None
+    if align == 'none':
+        visible_source_fraction = (1.0, 1.0)
+    elif mode == 'slice':
+        if src_rect is None:
+            visible_source_fraction = (1.0, 1.0)
+        else:
+            src_l, src_t, src_r, src_b = src_rect
+            visible_source_fraction = (
+                1.0 - (src_l + src_r) / 100000.0,
+                1.0 - (src_t + src_b) / 100000.0,
+            )
     img_data, img_format = _optimize_image_for_pptx(
-        elem, ctx, img_data, img_format, w, h,
+        ctx,
+        img_data,
+        img_format,
+        rendered_w,
+        rendered_h,
+        visible_source_fraction=visible_source_fraction,
     )
 
     img_idx = len(ctx.media_files) + 1
@@ -3929,15 +4117,13 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'target': f'../media/{img_filename}',
     })
 
-    transform = elem.get('transform')
-
     # Resolve clip-path → DrawingML geometry
     clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
 
     # Resolve preserveAspectRatio="<align> slice" as DrawingML crop metadata.
     # Image optimization only downscales the full source image; it never crops
     # pixels out of the embedded media.
-    src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
+    src_rect_xml = _src_rect_xml(src_rect)
     blip_xml = _build_image_blip_xml(r_id, get_element_opacity(elem, ctx))
 
     # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
@@ -4403,8 +4589,29 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
     img_format = source.img_format
     img_data = source.img_data
 
+    transform = elem.get('transform')
+    rendered_w, rendered_h = _picture_rendered_frame_size(
+        ctx,
+        svg_x,
+        svg_y,
+        svg_w,
+        svg_h,
+        x,
+        y,
+        w,
+        h,
+        transform,
+    )
     img_data, img_format = _optimize_image_for_pptx(
-        image_elem, ctx, img_data, img_format, w, h,
+        ctx,
+        img_data,
+        img_format,
+        rendered_w,
+        rendered_h,
+        visible_source_fraction=(
+            1.0 - (crop.src_l + crop.src_r) / 100000.0,
+            1.0 - (crop.src_t + crop.src_b) / 100000.0,
+        ),
     )
 
     img_idx = len(ctx.media_files) + 1
@@ -4417,8 +4624,6 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
         'type': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
         'target': f'../media/{img_filename}',
     })
-
-    transform = elem.get('transform')
 
     shape_id = _claim_element_shape_id(elem, ctx)
     xfrm_attr, off_x, off_y, ext_cx, ext_cy, bounds_emu = _picture_xfrm_from_svg_rect(
