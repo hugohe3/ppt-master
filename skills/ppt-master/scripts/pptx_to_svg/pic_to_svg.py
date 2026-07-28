@@ -24,7 +24,8 @@ Strategy:
   preserveAspectRatio="none".
 - With srcRect, or with a single oversized tile that covers the frame -> wrap
   the <image> in a nested <svg viewBox> in the unit rectangle [0,1] x [0,1],
-  so cropping is expressed as the visible viewBox region.
+  with overflow hidden so cropping is expressed identically in browsers and
+  PowerPoint.
 - Repeating tile fills still use the legacy plain-image fallback; a repeated
   pattern cannot be represented by the project's native picture-crop subset.
 - Image bytes are written through the result; the slide assembler decides
@@ -160,7 +161,7 @@ def convert_blip_fill(
             f'width="{fmt_num(xfrm.w)}" height="{fmt_num(xfrm.h)}" '
             f'viewBox="{fmt_num(vb_l, 5)} {fmt_num(vb_t, 5)} '
             f'{fmt_num(vb_w, 5)} {fmt_num(vb_h, 5)}" '
-            f'preserveAspectRatio="none">'
+            f'preserveAspectRatio="none" overflow="hidden">'
             f'<image href="{href}" x="0" y="0" width="1" height="1" '
             f'preserveAspectRatio="none"{opacity_attr}/>'
             f"</svg>"
