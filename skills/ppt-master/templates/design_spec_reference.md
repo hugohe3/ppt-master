@@ -166,7 +166,11 @@ Use the §VII table only when at least one real catalog reference is selected. A
 
 For every independent data chart or pure text-grid table, add `- **Native-ready**: yes|no` to its §IX Slide block. Choose `yes` only when the confirmed requirement or artifact afterlife benefits from an editable native data object; otherwise use `no`. Conceptual visualizations and incidental sparklines, KPI trends, or insets omit this field and remain ordinary SVG.
 
-In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Copy the selected `Layout pattern` id/name and modifiers verbatim; set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `formula`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them.
+In §VIII, author every planned or explicitly required resource from the confirmed source boundary. Copy the recommended `Layout pattern` id/name and modifiers verbatim as a preferred composition; set `Crop Policy` to `adaptive` or `no-crop`; set `Acquire Via` to `ai`, `web`, `user`, `formula`, `placeholder`, or `slice`. Preserve unresolved required assets as `Pending` or `Needs-Manual` instead of dropping or reclassifying them.
+
+§VIII `Layout pattern` is a per-resource preference. When a page uses several images, repeats one image in multiple views, or combines an image with native overlays, describe the page-level relationship and participating resources in §IX `Layout` / `Images`; do not duplicate an unchanged resource row merely to encode animation sequencing.
+
+Put native paint/overlay intent in §IX `Layout` plus `Images` for imagery—not a new field; state semantic job/layering, while Executor chooses type, stops, opacity, and geometry.
 
 ### 2.4 Complete page roster and notes
 
@@ -194,7 +198,15 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 - **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
 ```
 
-Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. Image patterns preserve their selected semantic composition; chart rows only offer page-local references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
+Append either or both optional lines only when the capability earns a place;
+never write an empty or `none` placeholder:
+
+```markdown
+- **Native shape suggestion**: <semantic object/result plus candidate preset/Connector family or Boolean operation/operand roles>
+- **Motion suggestion**: <communication job plus desired page-entry or reveal relationship/order>
+```
+
+Add `Visualization` and `Images` to a Slide block when it consumes §VII/§VIII rows or uses a page-local visualization. State whether `Visualization` is data-driven when source values determine geometry; this page-level declaration remains authoritative even when no catalog reference fits. Add `Native shape suggestion` only when a literal PowerPoint preset, a stock bent/curved Connector contour, or a compound silhouette/cutout/intersection/fragment may strengthen the page; describe the semantic object/result and candidate family or Boolean operation/operands, not coordinates, paths, exact preset keys, endpoint/site metadata, or attachment promises. Executor chooses the actual basic primitive, preset, Boolean construction, or necessary freeform. Add `Motion suggestion` only when a page transition or progressive reveal would strengthen communication; describe its purpose and semantic order/relationship in natural language, not registry keys, Effect Options, durations, group ids, or coverage. When it depends on visible image states, describe those fully revealed units in the same page's `Layout` / `Images`; the suggestion does not create missing visual content. It remains a recommendation: Executor owns the exact native behavior and may simplify it or choose no motion unless that would violate an explicit user requirement. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables. Add `Fact IDs` for sourced claims and `Data class: scenario` for invented demo values. Add `Cover impact` to P01 except on preservation paths; add `Closing impact` only when the final page genuinely resolves the deck. Roster ids/count/order and final content are authoritative. §VIII image patterns are preferred composition references; chart rows only offer page-local references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
 
 For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
 

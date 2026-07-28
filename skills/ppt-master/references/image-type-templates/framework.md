@@ -65,7 +65,7 @@ Sample fragment to add to the prompt:
 
 ### `text_policy: embedded`
 
-A short keyword (1-2 English words) appears inside or beside each satellite / cell / layer.
+A concise, stable keyword in the required script appears inside or beside each satellite / cell / layer.
 
 Sample fragment:
 

@@ -3,10 +3,10 @@
 PPT Master - Shape Boolean SVG Fragment Tool
 
 Combine closed SVG shapes and print the resulting canonical SVG path fragment
-to stdout. Result geometry is baked into SVG root coordinates: replace the
-operands at the SVG root while preserving the primary operand's z-order, and
-never reinsert the result into an original transformed ancestor. The source
-SVG is read-only; this tool never rewrites the page.
+to stdout. Result geometry is in SVG-root coordinate space: replace the
+operands at their original z-order under the final semantic or structured
+parent, never under the old transformed ancestor. The source SVG is read-only;
+this tool never rewrites the page.
 
 Usage:
     python3 scripts/shape_boolean_svg.py render SVG_FILE \
@@ -41,9 +41,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Print the Boolean result of closed SVG shapes as canonical SVG "
-            "path fragments in SVG root coordinates. Insert the result at the "
-            "SVG root in the primary operand's z-order, not under an original "
-            "transformed ancestor. The source file is never modified."
+            "path fragments in SVG-root coordinate space. Insert the result at "
+            "the original z-order under the final semantic or structured "
+            "parent, never under the old transformed ancestor. The source file "
+            "is never modified."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -51,7 +52,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     render_parser = subparsers.add_parser(
         "render",
-        help="Print root-coordinate Boolean-result SVG paths to stdout.",
+        help="Print SVG-root-coordinate Boolean-result paths to stdout.",
     )
     render_parser.add_argument(
         "svg_file",

@@ -40,7 +40,7 @@ Sample fragment:
 
 ### 3.2 `text_policy: embedded`
 
-Self-contained funnel diagram where band names are typeset into the artwork. Keep band names to single English words ("AWARE", "LIKE", "BUY", "REFER") in a font family echoing the deck's body typography. High failure risk on 5+ band funnels — stay at 3-4 bands when going embedded.
+Self-contained funnel diagram where band names are typeset into the artwork. Keep each name concise and stable in the required script and echo the deck's body typography. When exact/editable labels or narrow bands cannot preserve legibility, move those labels to SVG; otherwise embedded lettering remains valid after visual review.
 
 ---
 

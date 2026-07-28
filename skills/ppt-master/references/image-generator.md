@@ -24,7 +24,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 | `text_policy` | Use |
 |---|---|
 | `none` | No text inside the image |
-| `embedded` | Image contains text as part of the artwork — decorative lettering, designed title, hand-lettered keywords, infographic labels, anything the page needs |
+| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered keywords, or figure-internal labels |
 
 **Hard rule — only what's actually hard**:
 
@@ -46,7 +46,7 @@ Every AI image uses one deck-wide rendering, the deck's stable color anchors/sem
 |---|---|---|
 | **Rendering** | Visual style family (vector / sketch-notes / 3d-isometric / corporate-photo / …) | Once per deck — every AI image in the deck shares one rendering |
 | **Deck colors** | Core background / primary / accent / secondary-accent / text anchors from `spec_lock.md colors`, interpreted with the Design Spec and per-image context; these are not reconfirmed | Anchored after Stage 2 |
-| **Type** | What the image's internal composition skeleton looks like — geometric layout of a local infographic block (infographic / flowchart / framework / matrix / cycle / funnel / pyramid / comparison / timeline / map / scene). Only applies to `page_role: local`; for `page_role: hero_page`, describe composition with §4.1 primitives instead of picking a type. | Per image |
+| **Type** | What a local structural infographic's internal skeleton looks like (infographic / flowchart / framework / matrix / cycle / funnel / pyramid / comparison / timeline / map / scene). A local single-subject or portrait image may omit type and use §4.1 A/B prose; `hero_page` always omits type. | Per image |
 
 > Rendering decides *how the image is drawn* (line quality, texture, depth). Color instructions begin from the deck roles: background / secondary background usually dominate, primary carries main forms, and accents stay scarce. Adjust proportions and derive coherent lighting/material/tint transitions for the image context; do not replace the deck's identity with an unrelated image-only palette.
 
@@ -122,12 +122,12 @@ For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
 1. **Determine `page_role`** — Strategist's explicit value wins; a blank or omitted value resolves to `local`. `hero_page` must be explicit.
 2. **Determine `text_policy`** — Strategist's value wins when set. **Declared-inference fallback for a blank or omitted value**: pick `none` or `embedded` from the row's `Purpose`, `Reference`, and page intent based on whether in-image text serves the page. Long body / data / lists stay in SVG.
-3. **Determine type** — only when the resolved `page_role` is `local` (the image sits as a region block on an SVG page). Match the row's `Purpose` against the `_index.md` auto-selection table (methodology visualization → `framework`; process steps → `flowchart`; SWOT/Eisenhower → `matrix`; PDCA / flywheel → `cycle`; etc.). `Purpose` is authoritative for picking among the 11 internal-composition types. **When the resolved `page_role` is `hero_page`, skip type selection** and describe composition directly using §4.1 primitives (single-subject / portrait / typographic / atmospheric).
-4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
+3. **Determine type or free composition** — an Illustration Sheet omits manifest `type` and follows §4.3's grid composition. For another local structural infographic, match `Purpose` against the `_index.md` table and choose one of the 11 types. For a local single-subject / portrait image, omit type and describe §4.1 A/B inside its actual region. For `hero_page`, omit type and use §4.1 A/B/C/D/E.
+4. `read_file references/image-type-templates/<type>.md` only when a type was selected (and only if not already read).
 5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
    - Color-role instructions anchored by the deck HEX values and refined for the image context (from Step 2)
-   - The type's structural layout (from Step 3)
+   - The selected type's structural layout, or the no-type composition prose (from Step 3)
    - The image's specific `Reference` intent (from `design_spec.md §VIII`)
    - The container sizing guidance from the type file (so the model knows it's painting a local block, not a full canvas)
    - The hard rules from §5 below (HEX-not-as-text, simplified figures, text policy)
@@ -147,9 +147,9 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 ```
 [Rendering style paragraph — 80-120 words from the chosen rendering file].
 [Deck color behavior — state the core anchors and any context-justified tonal treatment, e.g. "secondary background #F8F9FA provides the breathing field, primary #1E3A5F carries main forms, accent #D4AF37 marks one emphasis; subtle lighter/darker material transitions remain in the same visual family"].
-[Type-specific composition — from the chosen type file, e.g. "central hub node with four radiating satellite nodes connected by clean lines"].
+[Composition — from the chosen type file or §4.1 no-type prose].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
-[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid **only** when `page_role: hero_page` (SVG sits on top of the image). For `page_role: local`, the image sits inside a region block and the SVG layer never overlays its interior — never reserve overlay space in a local prompt].
+[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid when `page_role: hero_page`, or when §VIII `Reference` / §IX `Layout` explicitly plans native labels, hotspots, lenses, or other SVG overlays inside a `local` image region. Otherwise a `local` image is a self-contained region block and reserves no interior overlay space].
 [Hard rules — see §5].
 ```
 
@@ -163,33 +163,33 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 
 This produces generic, model-average output. The model is not weighting your tags — write **one coherent visual scene** instead.
 
-### 4.1 Hero-page composition primitives
+### 4.1 No-type composition primitives
 
-When `page_role: hero_page` (the image is the page's main voice — cover, chapter divider, mood transition, signature stat, closing quote), the image's internal composition does not need its own structural `type` (matrix / cycle / framework etc. are for *local* infographic blocks). Instead, describe the composition directly in the prompt using one of the four primitives below.
+Use these when no structural type applies. A/B can describe either a hero image or a local single-subject / portrait region; scale their framing to the actual container. C/D are hero-page compositions, and E is the explicit escape hatch. Local structural infographics still use the 11 type templates.
 
 **Primitive A — single dominant subject (product / object / concept hero)**
 
-> One dominant subject occupying 60-70% of the canvas, positioned with intent (centered, rule-of-thirds offset, or slight left/right). Supporting context <30% of canvas weight. Generous negative space — at least 15% padding on the subject's "open" side. No second-place subject competing.
+> Start with one dominant subject as the clear focal point, positioned with intent (centered, rule-of-thirds offset, or slight left/right). Scale it to command the container while keeping supporting context subordinate. Leave a deliberate open side when the page composition needs breathing room or an overlay; no fixed padding is implied. No second-place subject competing.
 
-Use for: product reveal, concept introduction, chapter title visual, brand statement.
+Use for: product reveal, concept introduction, chapter-opener visual, brand statement, or a local single-object region.
 
 **Primitive B — single human subject (portrait)**
 
-> One person, frontal or three-quarter turn, head + upper body. Subject occupies 50-65% of canvas height, centered or rule-of-thirds offset. Eyes at the upper-third horizontal line. Background neutral, minimal, or softly blurred. No competing foreground objects. At least 15% padding above the crown.
+> One person, frontal or three-quarter turn, head + upper body. Start with the face as the clear focal point, centered or rule-of-thirds offset, with eyes near the upper-third horizontal line. Background neutral, minimal, or softly blurred. Keep comfortable headroom and no competing foreground objects; adjust framing to the container rather than enforcing fixed padding.
 
-Use for: founder profile, speaker bio, testimonial page, executive intro. Pair with `rendering: corporate-photo` for photographic realism; otherwise the §5.2 simplified-figures rule applies.
+Use for: founder profile, speaker bio, testimonial page, or executive intro, including a local bio region. Pair with `rendering: corporate-photo` for photographic realism; otherwise the §5.2 simplified-figures rule applies.
 
 **Primitive C — typographic hero (the text *is* the image)**
 
-> The image's central content is one large text element — a short headline, big number, or single word — rendered as art, occupying 40-60% of canvas height. Minimal supporting visual (small icon, geometric anchor, accent line) at <25% weight. At least 20% padding around the text.
+> The image's central content is one large text element — a short headline, big number, or single word — rendered as art and carrying dominant visual weight. Keep any supporting visual (small icon, geometric anchor, accent line) clearly subordinate. Give the letterforms enough breathing room for readability, adjusting scale and spacing to the actual text and container.
 
 Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D).
 
 **Primitive D — atmospheric backdrop (no subject)**
 
-> Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
+> Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. A small geometric anchor may sit in a corner or along an edge. Arrange visual activity around the SVG overlay region named by the page plan so that region stays calm enough for its title or text; its position and extent follow the composition rather than a fixed percentage.
 
-**Applies to `page_role: hero_page` only.** The "calm center for SVG overlay" contract is the defining feature of this primitive — and it only holds when SVG actually sits on top of the image. `page_role: local` images live inside a region block; the SVG layer never overlays their interior, so Primitive D is not a valid choice for local. Local schematic / scene / chart images use the §3 type templates instead.
+**Applies to `page_role: hero_page` only.** The "calm center for SVG overlay" contract defines this primitive. A `local` image uses §3 type templates or §4.1 A/B instead; when §VIII / §IX explicitly plans native overlays inside that region, its prompt may reserve only the named focal/quiet area without turning the whole asset into Primitive D.
 
 Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
 
@@ -211,21 +211,21 @@ Example opening for a triptych hero:
 
 **Fewshot examples per primitive** (one each, deck-context placeholders intact):
 
-> **A — 3d-isometric + tech-neon product reveal, text_policy: none, 600×600**
+> **A — 3d-isometric + deck-color product reveal, text_policy: none, 600×600**
 >
-> 3D isometric illustration in true 30°/30°/30° projection. One dominant product-form subject — a stylized device or sleek tech object — occupies the center of the canvas at roughly 65% of the area. The subject is rendered in primary electric blue `#0EA5E9` on its lit faces, with 15% darker tonal shift on shadowed faces. A subtle 8%-opacity outer glow halo surrounds the subject. Small supporting context: three thin connecting lines in accent vivid cyan `#06B6D4` arcing from the subject toward the canvas edges (suggesting connectivity), and a soft 8% drop shadow grounding the subject. Background is deep secondary navy `#0A0E27` (about 30% of canvas, including shadowed plane). The subject is clearly the singular focal element. Composed as a 600×600 hero block with 15% padding around the subject. NO text, letters, numbers, or labels anywhere. Color values are rendering guidance only.
+> 3D isometric illustration in true 30°/30°/30° projection. One dominant product-form subject — a stylized device or sleek tech object — commands the center of the canvas. The subject is rendered in primary electric blue `#0EA5E9` on its lit faces, with 15% darker tonal shift on shadowed faces. A subtle 8%-opacity outer glow halo surrounds the subject. Small supporting context: three thin connecting lines in accent vivid cyan `#06B6D4` arcing from the subject toward the canvas edges (suggesting connectivity), and a soft 8% drop shadow grounding the subject. Background is deep secondary navy `#0A0E27`, including the shadowed plane. The subject is clearly the singular focal element, with deliberate breathing room around it. Composed as a 600×600 hero block. NO text, letters, numbers, or labels anywhere. Color values are rendering guidance only.
 
-> **B — corporate-photo + cool-corporate executive headshot, text_policy: none, 600×800**
+> **B — corporate-photo + deck-color executive headshot, text_policy: none, 600×800**
 >
-> Editorial corporate portrait photograph of one professional executive. The person is centered slightly left of canvas center, photographed from chest-up at eye level, looking confidently toward the camera with a relaxed natural expression — not posed-stiff, not over-smiling. Professionally attired in a contemporary business setting (a tailored blazer, neutral palette clothing). Soft natural light from the upper left, gentle shadow on the right side of the face. Diverse, professionally attired subject, photorealistically rendered, contemporary styling. Background is a softly out-of-focus office context — secondary light gray `#F8F9FA` wall with a subtle hint of primary deep navy `#1E3A5F` in a blurred architectural element. Color grading is cool-corporate — restrained, professional. Shallow depth of field — subject sharp, background gently blurred. Subject's eyes positioned at the upper-third horizontal line. Composed as a 600×800 bio portrait with 10% padding. NO text, name tags, or captions in the image. Color values are rendering guidance only.
+> Editorial corporate portrait photograph of one professional executive. The person is centered slightly left of canvas center, photographed from chest-up at eye level, looking confidently toward the camera with a relaxed natural expression — not posed-stiff, not over-smiling. Professionally attired in a contemporary business setting (a tailored blazer, neutral palette clothing). Soft natural light from the upper left, gentle shadow on the right side of the face. Diverse, professionally attired subject, photorealistically rendered, contemporary styling. Background is a softly out-of-focus office context — secondary light gray `#F8F9FA` wall with a subtle hint of primary deep navy `#1E3A5F` in a blurred architectural element. Color grading is restrained and professional. Shallow depth of field — subject sharp, background gently blurred. Subject's eyes positioned near the upper-third horizontal line, with comfortable headroom. Composed as a 600×800 bio portrait. NO text, name tags, or captions in the image. Color values are rendering guidance only.
 
-> **C — ink-notes + mono-ink big-number stat, text_policy: embedded, 800×500**
+> **C — ink-notes + deck-color big-number stat, text_policy: embedded, 800×500**
 >
-> Professional hand-drawn visual-note style on pure white background. The image's central content is the hand-lettered number "100x" — rendered in bold confident ink strokes occupying about 50% of the canvas height, centered with deliberate slight wobble characteristic of hand-lettering. Text is in English/Latin characters only. Beneath the number, a thin hand-drawn underline in ink. To the side of the number, one small hand-drawn doodle decoration — a star or upward arrow — adds visual rhythm. Accent coral `#E8655A` (from the deck's accent) appears only as a tiny emphasis dot, totaling under 4% of canvas. Background is pure white `#FFFFFF`. Composed as an 800×500 typographic hero block with 20% padding around the number. No other text or labels in the image — just the "100x" headline and the small doodle.
+> Professional hand-drawn visual-note style on pure white background. The image's central content is the hand-lettered number "100x" — rendered in bold confident ink strokes as the dominant element, centered with deliberate slight wobble characteristic of hand-lettering. Beneath the number, a thin hand-drawn underline in ink. To the side of the number, one small hand-drawn doodle decoration — a star or upward arrow — adds visual rhythm. Accent coral `#E8655A` (from the deck's accent) appears only as a tiny emphasis dot, totaling under 4% of the canvas. Background is pure white `#FFFFFF`. Composed as an 800×500 typographic hero block with enough breathing room for the letterforms to read clearly. No other text or labels in the image — just the "100x" headline and the small doodle.
 
-> **D — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
+> **D — vector-illustration + deck-color cover background, text_policy: none, 1280×720**
 >
-> Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the center calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left third; secondary light gray `#F8F9FA` occupies the upper two-thirds as breathing space; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner (under 5% of canvas). Crisp 2px outlines, no gradients, single 8% soft drop shadow under the navy block. The central 60% of the canvas is deliberately calm and unbusy — designed to receive a slide title overlaid in SVG. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
+> Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the planned central title field calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left area; secondary light gray `#F8F9FA` provides the breathing field; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner, under 5% of the canvas. Crisp 2px outlines, no gradients, a single 8% soft drop shadow under the navy block. The intended SVG title region is deliberately calm and unbusy. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
 
 ### 4.2 Prompt depth — expand for subject-domain accuracy
 
@@ -279,9 +279,9 @@ If one deck needs mixed shapes, create separate sheets per shape family unless o
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists as a resource the Executor is allowed to reference (`spec_lock.md images`). So §VIII carries two row kinds (planning authority: [`strategist-image.md`](./strategist-image.md)):
 
 - **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: landscape footer-vignette spot set`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
-- **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in `spec_lock.md images`, normally with `crop=no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (Step 5 re-runs `analyze_images.py`). Each row must already carry a Strategist-selected decorative-cutout Layout pattern, never a boxed container — see Placement below.
+- **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in `spec_lock.md images`, normally with `crop=no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (Step 5 re-runs `analyze_images.py`). Each row must already carry a Strategist-recommended decorative-cutout Layout pattern rather than a boxed-container recommendation; Executor owns the actual placement — see Placement below.
 
-For traceability, add optional `slice_grid` and `slice_names` fields to the sheet item in `image_prompts.json` after choosing the geometry. `image_gen.py` ignores unknown item fields but preserves them in the manifest, so these fields document the exact command that must be used for slicing.
+For traceability, add optional `slice_grid` and `slice_names` fields to the sheet item in `image_prompts.json` after choosing the geometry. `image_gen.py` validates, preserves, and displays these metadata fields; it does not run the separate slicing command.
 
 **Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`. With `--alpha` they are **transparent cutout stickers** (image-layout-patterns `#63`), not rectangular content images. Recommended flags: `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop each cell so imprecise placement inside a cell doesn't leave lopsided margins), `--alpha` (knock the flat background out to transparency so an element drops onto any slide color):
 
@@ -296,7 +296,7 @@ uvx ppt-master slice-images <project>/images/illus_sheet.png --grid 2x3 \
 2. **Clean grid, or it cuts ugly.** The model will not place every element perfectly; force a clear grid with gutters, and generate **a few sheets** (re-roll the same prompt) to pick the cleanest-laid-out one before slicing. State the exact row/column structure and cell shape so the model does not invent a square matrix. `--trim` absorbs the rest.
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
-**Placement — these are decorative accessories, not boxed pictures.** Strategist selects each element row's pattern from the decorative-cutout family in [`image-layout-patterns.md`](./image-layout-patterns.md): `#63` sticker/cutout, `#4` bleed off the canvas edge, `#58` corner fragment, `#66` fade into the background, `#69` slight editorial rotation, or `#49` asymmetric cluster. Executor realizes that choice through margin position, off-edge treatment, overlap, scale, and angle rather than reserving a tidy tile. Anchor most pages on one primary element and let the rest stay small ([primary-per-page](./strategist-image.md)).
+**Placement — these are decorative accessories, not boxed pictures.** Strategist recommends each element row's pattern from the decorative-cutout family in [`image-layout-patterns.md`](./image-layout-patterns.md): `#63` sticker/cutout, `#4` bleed off the canvas edge, `#58` corner fragment, `#66` fade into the background, `#69` slight editorial rotation, or `#49` asymmetric cluster. Executor uses that recall to choose the actual unboxed composition through margin position, off-edge treatment, overlap, scale, angle, or another suitable decorative placement while preserving the resource role and crop/content constraints. Anchor most pages on one primary element and let the rest stay small ([primary-per-page](./strategist-image.md)).
 
 **Through-line — one family, many roles.** A spot sheet pays off more when the same motif family also drives the cover and section dividers. A large cover / divider anchor is not a giant sheet cell—generate it as its own `hero_page` image sharing the sheet's `deck_rendering`, `color_scheme`, and subject world. Plan this only when the deck leans into illustration, never as a quota.
 
@@ -328,12 +328,12 @@ Every AI-image page carries text in two layers:
 
 | Layer | Owned by | Examples |
 |---|---|---|
-| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; hero typographic or decorative lettering that *is* the visual |
-| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | page-level chrome (title, navigation, footer, body bullets, conclusion callout); readable copy, captions |
+| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; stable artistic lettering that *is* the visual |
+| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | authoritative deck/page/chapter titles; navigation, footer, body bullets, conclusion callout; readable copy, captions |
 
 `text_policy` controls only Layer 1. AI judges per image; no global default bias.
 
-**When `embedded` is the right call — positive triggers** (any one match flips the row from a `none` starting point to `embedded`; the editability rule at the tail of §5.3 still has final say):
+**When `embedded` is the right call — positive triggers** (any one match supports `embedded`; the editability rule at the tail of §5.3 still has final say):
 
 | Trigger | Typical Layer 1 text |
 |---|---|
@@ -348,9 +348,9 @@ Defaulting an entire `ai` resource list to `none` because "SVG can always overla
 | `text_policy` | Prompt cue |
 |---|---|
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
-| `embedded` | Describe the Layer 1 text directly inside the visual scene: the word(s), how they're rendered, and the artistic treatment. |
+| `embedded` | Describe the stable Layer 1 lettering directly inside the visual scene: the exact character(s), how they are rendered, and the artistic treatment. |
 
-**Hard rule — cross-cutting**: Layer 2 chrome stays SVG regardless of `text_policy`. Never bake the deck title, navigation, footer, body bullets, or conclusion callout into the image, even when `embedded`.
+**Hard rule — cross-cutting**: Authoritative titles and Layer 2 chrome stay SVG regardless of `text_policy`. Bake title-like wording only when the approved plan explicitly treats those exact characters as stable artistic lettering that is part of the artwork rather than editable deck/page/chapter copy. Navigation, footer, body bullets, captions, and conclusion callouts always stay SVG.
 
 **Forbidden — text that may be reworded**: any word that may later change belongs in Layer 2, not Layer 1. Layer 1 is for stable visual identifiers and designed lettering that is part of the image itself.
 
@@ -358,7 +358,7 @@ Defaulting an entire `ai` resource list to `none` because "SVG can always overla
 
 The font for in-image text is a free natural-language description, not an enum. Pick whatever serves the image: blackletter for a heritage cover, hand-brushed for a manifesto poster, retro chrome 3D for Y2K, art-deco display for a luxury hero, ribbon script for a bookstore zine — any artistic treatment the image earns.
 
-The table below is **a reference for the one case where you want the in-image lettering to read as the same typographic family as the SVG body** (e.g. a clean editorial deck where the cover title in the image should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
+The table below is **a reference for the one case where stable in-image lettering should read as the same typographic family as the SVG body** (e.g. an artistic cover wordmark should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
 
 | `spec_lock typography.font_family` contains | Optional descriptor if you want to echo the SVG body |
 |---|---|
@@ -371,11 +371,11 @@ The table below is **a reference for the one case where you want the in-image le
 **When to ignore the table**:
 
 - Decorative / background lettering, posters, large mood words → describe the artistic treatment freely
-- Cover hero title that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
+- Stable artistic cover lettering that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
 - Sketch-notes / ink-notes / hand-drawn renderings where the lettering is part of the rendering itself → describe freely
 - Any case where rendering already implies a font character (e.g. `vintage-poster` implies period display lettering) → trust the rendering, no need to echo SVG body
 
-**When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
+**When to use the table**: stable artistic lettering on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
 **In-image text vs SVG text — decide by editability, not by model capability**
 
@@ -383,8 +383,8 @@ Layer 1 text is rasterized into the artwork — once generated it cannot be edit
 
 | Text | Layer |
 |---|---|
-| Part of the artwork and stable — decorative lettering, designed title, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
-| Page chrome, body copy, captions, data values — anything that must stay exact, searchable, or may be reworded | Layer 2 (SVG) |
+| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Authoritative titles, page chrome, body copy, captions, data values — anything that must stay exact, searchable, editable, or may be reworded | Layer 2 (SVG) |
 
 Generation is non-deterministic on every backend, but **do not pre-judge by script or length** — never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a particular script or a long string "won't render". Decide where text lives by the editability rule above, not by guessed rendering ability. Name the exact characters to bake literally in the prompt; do not re-read the generated image to verify them.
 
@@ -449,23 +449,25 @@ Write `project/images/image_prompts.json` with this shape:
 | `deck_rendering` | yes | Step 2 lock | Single rendering name shared by all items in this deck |
 | `color_scheme` | yes | `spec_lock.md colors` | Core deck color anchors shared by every item; prompts may add contextual tonal behavior, but no separate image palette |
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
-| `items[].type` | conditional | Step 3 per-image (only when `page_role: local`) | One of 11 internal-composition types: `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene`. **Omit `type` entirely when `page_role: hero_page`** — the composition comes from §4.1 primitives written directly into the prompt, not from a type file. |
+| `items[].type` | conditional | Step 3 per-image | One of 11 internal-composition types for a local structural infographic. Omit it for `hero_page`, an Illustration Sheet, and a local single-subject / portrait composition authored with §4.1 A/B prose. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
-| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains decorative lettering, designed title, hand-lettered keywords, or stable visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
+| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains stable artistic lettering, hand-lettered keywords, or visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
+| `items[].model` | no | Per-item execution override | Backend model for this item; otherwise the CLI/backend default wins |
 | `items[].alt_text` | no | Accessibility | Short caption |
-| `items[].slice_grid` | no | §4.3 sheet geometry | Illustration sheet only; exact `RxC` grid to pass to `slice_images.py --grid` |
-| `items[].slice_names` | no | §4.3 sheet geometry | Illustration sheet only; semantic filenames to pass to `slice_images.py --names` |
+| `items[].slice_grid` | paired optional | §4.3 sheet geometry | Illustration sheet only; exact `RxC` grid to pass to `slice_images.py --grid`; requires `slice_names` |
+| `items[].slice_names` | paired optional | §4.3 sheet geometry | Illustration sheet only; comma-separated safe PNG basenames to pass to `slice_images.py --names`; requires exactly `rows*cols` unique outputs |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
 
-> **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
+> **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests omit `type` for hero pages and local single-subject / portrait prose.
 >
 > **Existing manifest compatibility**:
 >
 > - **Fixed compatibility defaults**: a missing `page_role` resolves to `local`; a missing `text_policy` resolves to `none`. Emit one aggregate legacy-compatibility warning per manifest.
-> - **Declared replay procedure**: an existing manifest may lack `deck_rendering`, or an existing local item may lack `type`, because `items[].prompt` is already assembled. Leave that metadata absent, execute the existing prompt verbatim, and do not reconstruct either value. This exception applies only to replaying an existing manifest; new manifests must satisfy the field table above. A `hero_page` item still omits `type` intentionally.
+> - **Declared replay procedure**: an existing manifest may lack `deck_rendering`, or an existing local item may lack `type`, because `items[].prompt` is already assembled. Leave that metadata absent, execute the existing prompt verbatim, and do not reconstruct either value. New manifests follow the field table; hero pages and local single-subject / portrait prose omit `type` intentionally.
+> - A legacy non-empty `deck_style_anchor` string or object remains readable for replay and sidecar display but never overrides a current `deck_rendering`.
 > - A legacy `deck_palette` field may remain but cannot override `color_scheme`. Read legacy `page_role: full_page` as `hero_page`.
 
 ---
@@ -484,13 +486,13 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
-**Selection logic — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path — the effective choice is `auto` (explicitly confirmed or defaulted) or absent — use the automatic A → B → C chain:
+**Selection logic — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path, Generate Step 4 records the effective choice as `auto`; that explicit durable value uses the automatic A → B → C chain. A missing/blank/unknown project value is not an implicit API authorization:
 
 0. **Confirmed override (wins)** — honor `AI Image Acquisition Path` from `design_spec.md §I`. Generate Step 4 already consumed the final confirmation into that durable artifact; do not reopen `result.json` here. If the recorded choice is set and not `auto`, honor it directly, **even when it contradicts `IMAGE_BACKEND`**:
    - `api` → **Path A** (`image_gen.py --manifest`).
    - `host-native` → **Path B** (host's native image tool) — skip A and do **not** run `image_gen.py --manifest`, *even if `IMAGE_BACKEND` is configured*.
    - `manual` → **Offline Manual** (write prompts, render the Markdown sidecar, hand off; do **not** run `image_gen.py --manifest`).
-   If an explicitly chosen path is unavailable or still fails after its retry, mark the affected row `Needs-Manual`; do not switch to another automated provider. Only when the Design Spec records `auto` or no specific path applies does the automatic chain decide. A legacy project missing this Design Spec row returns to Step 4 recovery to consume persisted confirmation once and record it; Image_Generator does not inspect the confirmation channel itself.
+   If an explicitly chosen path is unavailable or still fails after its retry, mark the affected row `Needs-Manual`; do not switch to another automated provider. Only when the Design Spec records `auto` does the automatic chain decide. A legacy project missing this Design Spec row returns to Step 4 recovery to consume persisted confirmation once and record it; Image_Generator does not inspect the confirmation channel itself.
 1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
 2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
 3. **Fall to C (Offline Manual)** — if B is also unavailable (no host-native tool) or fails, write prompts to `images/image_prompts.json` and hand off to the user.
@@ -507,7 +509,7 @@ uvx ppt-master image-gen \
   --output project/images
 ```
 
-The CLI iterates `items[]` with adaptive concurrency, writes `status` back per item, and is **idempotent**: re-running only re-processes entries whose status is `Pending` or `Failed`.
+The CLI validates the file behind every `Generated` row before skipping it, iterates retryable rows with bounded adaptive concurrency, and atomically writes each status. A missing/corrupt generated file returns to `Failed`; persistent rate limits finish this run as retryable `Failed` instead of looping forever.
 
 **Parameters**:
 
@@ -621,7 +623,7 @@ When an existing AI Resource List row omits `Reference` or contains a blank `Ref
 | Purpose | A reasonable starting point |
 |---------|-----------------------------|
 | Cover | `page_role: hero_page` + §4.1 Primitive A (single-subject) or D (atmospheric); choose `text_policy` by what the cover should communicate |
-| Chapter divider | `page_role: hero_page` + Primitive D (atmospheric) or A (single-subject); often `text_policy: embedded` with a designed chapter title |
+| Chapter divider | `page_role: hero_page` + Primitive D (atmospheric) or A (single-subject); keep the authoritative chapter title in SVG, with `embedded` reserved for separate stable artistic lettering |
 | Methodology / framework illustration | `type: framework`, `page_role: local` |
 | Process / workflow illustration | `type: flowchart`, `page_role: local` |
 | Before/After or two-option page | `type: comparison`, `page_role: local` |

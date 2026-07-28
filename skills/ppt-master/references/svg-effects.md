@@ -103,8 +103,8 @@ closed parser checks. See
 |---|---|
 | Definition | Direct `<linearGradient>` / `<radialGradient>` child of `<defs>` with unique `id` |
 | Reference | Exact local `url(#id)` |
-| Stops | Direct `<stop>` children; explicit color; finite offset `0..1` or `0%..100%`; optional stop alpha |
-| Coordinates | Normalized values / percentages; do not depend on `gradientUnits` user-space geometry |
+| Stops | ≥2 direct `<stop>` children; explicit color; finite non-decreasing offset in `0..1` or `0%..100%` (ties form hard edges); optional alpha |
+| Coordinates | `objectBoundingBox` only. Generated values: `0..1`; omitted linear axis = `(0,0) → (1,0)`. Only import-normalized linear projections may reach `-0.105..1.105`; radial values stay in `0..1` |
 | Forbidden | External/quoted refs, `href` inheritance, `gradientTransform`, `spreadMethod`, CSS gradients |
 
 | Target | Contract and fidelity |
@@ -114,16 +114,14 @@ closed parser checks. See
 | `<text>` / non-positional `<tspan>` | Gradient fill only; no gradient text outline |
 | `<image>` | No gradient paint; use §6.5 overlays |
 
-Linear export preserves stops/alpha/direction but reduces coordinates to an
-angle. Radial export becomes a centered circular gradient and does not preserve
-`cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
-retain only the first stop. Stop alpha and element opacity multiply.
-PPTX import normalizes compatible gradients and records any property-level
-degradation without aborting the deck; `--strict` keeps the closed parser
-contract. See
+Linear export preserves stops/alpha and reduces direction to an angle;
+coincident endpoints are invalid. Radial export centers a circular
+approximation, dropping `cx/cy/r/fx/fy`. Gradient strokes stay editable;
+reverse import may keep the first stop only. Stop alpha multiplies element opacity.
+PPTX import normalizes gradients and reports degradation;
+`--strict` keeps the closed parser contract. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary).
-The quality checker and exporter preflight both validate definition location,
-references, gradient structure, and paint context from the same closed contract.
+Checker/exporter preflight share this validation.
 Gradient-stop colors are contextual paint values. Keep them coherent with the
 deck anchors and page intent; they are not required to duplicate existing
 `spec_lock.colors` literals.
@@ -280,34 +278,23 @@ unresolved only during template checking; export requires the resolved image.
 Missing, ambiguous, corrupt, mislabeled, or unsupported sources are errors and
 must never be dropped or packaged as invalid zero-byte media.
 
-**Hard rule — nested SVG is an imported crop transport, not a general
-viewport**: every non-root `<svg>` must be the exact picture-crop wrapper emitted
-by `pptx_to_svg`. The outer element has explicit registered project-geometry
-`x`, `y`, positive `width`/`height`, a unit-coordinate `viewBox` made of four
-ordinary decimal values, and
-`preserveAspectRatio="none"`; it contains exactly one direct, empty `<image>`
-with exactly one non-empty `href` or `xlink:href`, `x="0"`, `y="0"`, `width="1"`,
-`height="1"`, and `preserveAspectRatio="none"`. Its ancestor chain contains
-only the root SVG and ordinary visual `<g>` wrappers; definitions, text,
-render-only geometry details, and other non-visual containers cannot own this
-transport. The outer wrapper may additionally carry `id`, a supported
-`transform`, registered structure metadata (`data-pptx-layer` or
-`data-pptx-carrier`), and the importer metadata
-`data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`,
-`data-pptx-shape-name`, and `data-pptx-shape-scope`. A shape clip is present
-only when exact `data-pptx-crop="1"` and a registered image-only `clip-path`
-occur together and the local clip definition resolves. The inner image may
-add only registered `opacity`. The `viewBox` must quantize without clamping to
-a DrawingML `srcRect` with a positive visible region: each signed crop value
-must fit the OOXML percentage integer range `-2147483648..2147483647`, while
-`l + r < 100000` and
-`t + b < 100000` preserve a positive visible region. Negative crop values and
-crop windows extending outside the source unit rectangle are retained exactly,
-not clamped. `0 0 1 1` is redundant and must be written as a plain `<image>`.
-Extra visual children, indirect images, character data, unknown attributes,
-malformed or unrepresentable crop coordinates, and generalized nested
-viewports are errors. Checker and the converter share this parser so a nested
-subtree cannot pass validation and then silently disappear during export.
+**Hard rule — nested SVG is picture-crop transport, not a general viewport**:
+every non-root `<svg>` is the exact wrapper accepted by the shared crop parser:
+
+| Part | Required form |
+|---|---|
+| Outer | Registered `x`, `y`, positive `width`/`height`; four ordinary-decimal unit coordinates in `viewBox`; `preserveAspectRatio="none"`; `overflow="hidden"` |
+| Child | Exactly one direct empty `<image>` with one non-empty `href`/`xlink:href`, `x="0" y="0" width="1" height="1" preserveAspectRatio="none"` |
+| Context | Only root SVG / ordinary visual `<g>` ancestors; outer may add `id`, supported `transform`, registered layer/carrier metadata, and `data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`, `data-pptx-shape-name`, `data-pptx-shape-scope` |
+| Shape crop | Exact outer `data-pptx-crop="1"`; authored wrappers put the registered, locally resolving image-only clip on the inner image, using `userSpaceOnUse` geometry matching the visible `viewBox`; legacy imported outer clips remain compatible |
+
+The inner image may add only registered `opacity` and that clip. Quantize the
+`viewBox` without clamping: every signed crop fits
+`-2147483648..2147483647`, with `l + r < 100000` and `t + b < 100000`.
+Retain negative/outside-source crops exactly; write redundant `0 0 1 1` as a
+plain `<image>`. Extra, indirect, or character content; unknown attributes;
+malformed or unrepresentable crops; and general nested viewports fail. Checker
+and converter share this parser.
 
 | Overlay | Construction | Typical stops / alpha |
 |---|---|---|
@@ -564,12 +551,19 @@ least two.
 bounds reuse its normalized commands rather than a second path grammar.
 
 Command identity, relative coordinates, shorthand, arc parameters, and original
-handles are not retained. Geometry needs non-zero bounds. Use a closed cubic
-path for organic silhouettes, polygon/closed path for ribbons/facets, open path
-for curved connectors, multi-`M` path for exact linework, and a [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip
-for organic pictures. Filled silhouettes end with `Z`; open paths use
-`fill="none"`. Do not depend on `fill-rule="evenodd"`; build explicit visible
-geometry or bake an essential knockout.
+handles are not retained. Geometry needs non-zero bounds. Before authoring a
+freeform, apply [`native-shape-authoring.md`](./native-shape-authoring.md):
+prefer an editable basic primitive, one exact Office preset, or a Boolean
+materialization. Use a closed cubic path only for an organic silhouette those
+cannot express, polygon/closed path for unmatched ribbons/facets, and an open
+path only for a required data curve, custom route, or locked hand-drawn /
+organic style. Straight relationships use `<line>`; exact stock bends/curves
+use an authored native Connector preset. Multi-`M` paths remain available for
+exact linework, and a [`shared-standards-core.md`](./shared-standards-core.md)
+§1.2 path clip for unmatched organic pictures. Filled silhouettes end with
+`Z`; open paths use `fill="none"`. Do not depend on
+`fill-rule="evenodd"`; build explicit visible geometry or bake an essential
+knockout.
 For a fixed background, a background-colored overlay is also valid.
 
 | Rounded rect input | Result |
@@ -657,6 +651,8 @@ filled `Native-normalized` arrowhead. Example:
 browser-filter permissions.
 
 **Reference — not a constraint**: use them only when they match the locked style.
+Their curve recipes are explicit exceptions to the Shape-first default above;
+they do not authorize decorative freeforms in another style.
 
 | Intent | Construction | Boundary / fidelity |
 |---|---|---|
@@ -744,9 +740,9 @@ subsection; this table only routes scenarios.
 | Hand/print | Annotation → highlighter/curve; ink wash → layered alpha paths; Riso → offset duplicate | §6.11; no turbulence, true bleed, or blend mode |
 | Pixel/halftone | Pixel accent → integer rect grid; sparse screen → circles | §6.11; dense screen → §6.12 |
 | Faceted/layered | Pseudo-3D → 2D facets; paper cut → direct shadow per layer | §6.11; no 3D transform/group composite shadow |
-| Data/freeform | Series depth → area first + line above; organic card → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
+| Data/freeform | Series depth → area first + line above; unmatched organic silhouette → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
 | Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
-| Arrow | Manual diagonal arrowhead → calculated triangle; ordinary connector → marker | §6.10 / §1.1 |
+| Arrow | Straight relationship → `<line>` + marker; stock bend/curve → native Connector; unmatched custom route → separate calculated arrowhead if needed | §6.10 / §1.1 / native-shape authoring |
 | Unsupported | Dense grain, complex composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
 
 ---

@@ -38,6 +38,7 @@ import sys
 import shutil
 import argparse
 from pathlib import Path
+from typing import TextIO
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
@@ -62,10 +63,11 @@ from svg_to_pptx.use_expander import (
 )
 
 
-def safe_print(text: str) -> None:
+def safe_print(text: str, *, file: TextIO | None = None) -> None:
     """Print text while tolerating Windows terminal encoding limits."""
+    stream = file or sys.stdout
     try:
-        print(text)
+        print(text, file=stream)
     except UnicodeEncodeError:
         replacements = {
             chr(0x23F3): "[..]",
@@ -78,7 +80,7 @@ def safe_print(text: str) -> None:
         }
         for source, target in replacements.items():
             text = text.replace(source, target)
-        print(text)
+        print(text, file=stream)
 
 
 def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
@@ -257,11 +259,17 @@ def finalize_project(
             )
             img_count += count
             img_errors += errs
+        if img_errors:
+            safe_print(
+                f"[ERROR] Image alignment/embedding failed for "
+                f"{img_errors} image(s); svg_final was not published",
+                file=sys.stderr,
+            )
+            shutil.rmtree(svg_final, ignore_errors=True)
+            return False
         if not quiet:
             if img_count > 0:
                 msg = f"      {img_count} image(s) aligned + embedded"
-                if img_errors:
-                    msg += f"  ({img_errors} error(s))"
                 safe_print(msg)
                 if office_vector_count:
                     safe_print(

@@ -9,10 +9,10 @@ A **type** describes the **internal geometric composition skeleton** of a local 
 **Type *is not***:
 
 - *not* "what this image is for in the PPT page" — that's `page_role` (`local` vs `hero_page`, see [`image-generator.md`](../image-generator.md) §1)
-- *not* "what subject occupies the image" — single subject, single person, big number, no subject: these are all expressible through §4.1 hero-page primitives or natural-language prompt description, not through types
+- *not* "what subject occupies the image" — single subject, single person, big number, no subject: these are all expressible through §4.1 no-type primitives or natural-language prompt description, not through types
 - *not* a high-level asset category — the row's `Purpose` + `Reference` columns in `design_spec.md §VIII` already carry that, no separate vocabulary needed
 
-**When to skip type entirely** — when `page_role: hero_page` (the image is the page's main voice: cover, chapter divider, mood transition, signature stat, closing quote), do **not** pick a type. Instead describe the composition directly using the four primitives in [`image-generator.md`](../image-generator.md) §4.1 (single-subject / portrait / typographic / atmospheric). The 11 types below are for local infographic blocks only.
+**When to skip type entirely** — every `hero_page` omits type and uses the prose primitives in [`image-generator.md`](../image-generator.md) §4.1. A local single-subject or single-person region also omits type and uses Primitive A/B sized to that region. The 11 types below are for local structural infographic blocks only.
 
 ---
 
@@ -53,7 +53,8 @@ For each row in `design_spec.md §VIII Image Resource List` where `page_role: lo
 | History / evolution / roadmap / timeline | `timeline` |
 | Offices / market presence / regions / supply chain / geography | `map` |
 | Team / lifestyle / story / scenario / case (group, with environment) | `scene` |
-| Cover / chapter divider / mood transition / big number / hero quote / single-subject hero / single-person headshot | **No type — use `page_role: hero_page` + [`image-generator.md`](../image-generator.md) §4.1 primitives** |
+| Cover / chapter divider / mood transition / big number / hero quote / single-subject hero | **No type — use `page_role: hero_page` + [`image-generator.md`](../image-generator.md) §4.1 primitives** |
+| Local single object / single-person headshot / bio portrait | **No type — keep `page_role: local`; use §4.1 Primitive A/B for the region** |
 
 `text_policy` and `page_role` are decided per image — see each type file's variants section and the page's communication goal.
 
@@ -83,8 +84,8 @@ For `page_role: hero_page` images, default container is the slide canvas (e.g. 1
 
 ## 4. How to use
 
-1. For each `page_role: local` row in the Image Resource List, pick the type using the auto-selection table above.
-2. For each `page_role: hero_page` row, **skip type selection** — go straight to [`image-generator.md`](../image-generator.md) §4.1 primitives.
+1. For each local structural infographic row, pick the type using the table above.
+2. For each `hero_page` or local single-subject / portrait row, skip type selection and use the applicable [`image-generator.md`](../image-generator.md) §4.1 prose.
 3. `read_file image-type-templates/<type>.md` — only the types actually used in this deck. Most decks use 2-4 types; load each at most once.
 4. Apply the type's composition skeleton alongside the locked deck-wide rendering and deck color roles.
 

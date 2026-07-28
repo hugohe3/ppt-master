@@ -27,7 +27,7 @@ import re
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, MutableMapping
+from typing import Any, Iterable, Mapping, MutableMapping
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
@@ -924,6 +924,19 @@ class TransitionSummary:
     effect_attributes: Mapping[str, str] = field(default_factory=dict)
     canonical_effect: str | None = None
     effect_options: Mapping[str, object] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class MorphPairExpectation:
+    """One forced-Morph name expected on two adjacent generated slides."""
+
+    source_slide_number: int
+    destination_slide_number: int
+    key: str
+
+    @property
+    def shape_name(self) -> str:
+        return f"!!{self.key}"
 
 
 def _qn(namespace: str, tag: str) -> str:
@@ -2321,6 +2334,172 @@ def validate_pptx_transition_package(
     if errors:
         raise ValueError("; ".join(errors))
     return summaries
+
+
+def _top_level_shape_types_by_name(
+    slide_xml: bytes,
+) -> dict[str, list[str]]:
+    """Return top-level Selection Pane names and their OOXML container types."""
+    root = LET.fromstring(slide_xml) if LET is not None else parse_source_xml(slide_xml)
+    sp_tree = root.find(f".//{{{PML_NS}}}cSld/{{{PML_NS}}}spTree")
+    if sp_tree is None:
+        raise ValueError("slide has no p:cSld/p:spTree")
+    shapes: dict[str, list[str]] = {}
+    for child in sp_tree:
+        c_nv_pr = next(child.iter(_qn(PML_NS, "cNvPr")), None)
+        name = c_nv_pr.get("name") if c_nv_pr is not None else None
+        if not name:
+            continue
+        shapes.setdefault(name, []).append(_local_name(child.tag))
+    return shapes
+
+
+def validate_pptx_morph_pairs(
+    pptx_path: Path,
+    expectations: Iterable[MorphPairExpectation],
+) -> None:
+    """Prove that every requested forced-Morph pair survives final packaging."""
+    expected_pairs = tuple(expectations)
+    if not expected_pairs:
+        return
+
+    errors: list[str] = []
+    slide_shapes: dict[int, dict[str, list[str]]] = {}
+    slide_transitions: dict[int, TransitionSummary] = {}
+    involved_slides = {
+        slide_number
+        for pair in expected_pairs
+        for slide_number in (
+            pair.source_slide_number,
+            pair.destination_slide_number,
+        )
+    }
+    try:
+        with zipfile.ZipFile(pptx_path, "r") as package:
+            names = set(package.namelist())
+            for slide_number in sorted(involved_slides):
+                part = f"ppt/slides/slide{slide_number}.xml"
+                if part not in names:
+                    errors.append(f"{part}: Morph slide part is missing")
+                    continue
+                slide_xml = package.read(part)
+                try:
+                    slide_shapes[slide_number] = _top_level_shape_types_by_name(
+                        slide_xml
+                    )
+                    slide_transitions[slide_number] = read_slide_transition_xml(
+                        slide_xml
+                    )
+                except Exception as exc:
+                    errors.append(f"{part}: Morph read-back failed: {exc}")
+    except (OSError, zipfile.BadZipFile, KeyError, ET.ParseError) as exc:
+        errors.append(f"unable to read PPTX Morph package: {exc}")
+
+    for slide_number, names_to_types in slide_shapes.items():
+        duplicate_names = sorted(
+            name
+            for name, types in names_to_types.items()
+            if name.startswith("!!") and len(types) != 1
+        )
+        if duplicate_names:
+            errors.append(
+                f"ppt/slides/slide{slide_number}.xml: duplicate forced-Morph "
+                f"name(s): {', '.join(duplicate_names)}"
+            )
+
+    for pair in expected_pairs:
+        if pair.destination_slide_number != pair.source_slide_number + 1:
+            errors.append(
+                f'Morph pair "{pair.key}" must connect adjacent generated slides'
+            )
+            continue
+        source_shapes = slide_shapes.get(pair.source_slide_number)
+        destination_shapes = slide_shapes.get(pair.destination_slide_number)
+        if source_shapes is None or destination_shapes is None:
+            continue
+
+        shape_name = pair.shape_name
+        source_types = source_shapes.get(shape_name, [])
+        destination_types = destination_shapes.get(shape_name, [])
+        if len(source_types) != 1:
+            errors.append(
+                f'Morph pair "{pair.key}" expected exactly one source object '
+                f'named "{shape_name}" on slide {pair.source_slide_number}'
+            )
+        if len(destination_types) != 1:
+            errors.append(
+                f'Morph pair "{pair.key}" expected exactly one destination '
+                f'object named "{shape_name}" on slide '
+                f'{pair.destination_slide_number}'
+            )
+        if (
+            len(source_types) == 1
+            and len(destination_types) == 1
+            and source_types[0] != destination_types[0]
+        ):
+            errors.append(
+                f'Morph pair "{pair.key}" changes OOXML object type from '
+                f'{source_types[0]} to {destination_types[0]}'
+            )
+
+        transition = slide_transitions.get(pair.destination_slide_number)
+        if (
+            transition is not None
+            and (
+                transition.canonical_effect != "morph"
+                or transition.effect_options.get("morph_by") != "object"
+            )
+        ):
+            errors.append(
+                f'Morph pair "{pair.key}" destination slide '
+                f'{pair.destination_slide_number} does not use Morph by object'
+            )
+
+    declared_names_by_edge: dict[tuple[int, int], set[str]] = {}
+    for pair in expected_pairs:
+        declared_names_by_edge.setdefault(
+            (
+                pair.source_slide_number,
+                pair.destination_slide_number,
+            ),
+            set(),
+        ).add(pair.shape_name)
+    for source_slide_number in sorted(slide_shapes):
+        destination_slide_number = source_slide_number + 1
+        if destination_slide_number not in slide_shapes:
+            continue
+        transition = slide_transitions.get(destination_slide_number)
+        if (
+            transition is None
+            or transition.canonical_effect != "morph"
+        ):
+            continue
+        source_names = {
+            name
+            for name in slide_shapes[source_slide_number]
+            if name.startswith("!!")
+        }
+        destination_names = {
+            name
+            for name in slide_shapes[destination_slide_number]
+            if name.startswith("!!")
+        }
+        declared_names = declared_names_by_edge.get(
+            (source_slide_number, destination_slide_number),
+            set(),
+        )
+        unexpected_names = sorted(
+            (source_names & destination_names) - declared_names
+        )
+        if unexpected_names:
+            errors.append(
+                f"Morph edge {source_slide_number}->{destination_slide_number} "
+                "contains undeclared forced name(s): "
+                + ", ".join(unexpected_names)
+            )
+
+    if errors:
+        raise ValueError("; ".join(dict.fromkeys(errors)))
 
 
 def _validate_package_use_timings(

@@ -22,6 +22,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -68,13 +69,91 @@ from _dispatcher import (  # noqa: E402
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 TABLE_TEXT_SUFFIXES = {".csv", ".tsv"}
-IMAGE_ASSET_SUFFIXES = {
+BITMAP_IMAGE_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
+}
+IMAGE_ASSET_SUFFIXES = BITMAP_IMAGE_SUFFIXES | {
     ".emf", ".wmf", ".svg",
 }
 
 
 configure_utf8_stdio()
+
+
+def _validate_image_manifest(
+    payload: object,
+    path: Path,
+) -> list[dict]:
+    """Require a safe, case-insensitively unique image manifest payload."""
+    if not isinstance(payload, list):
+        raise RuntimeError(
+            f"Image manifest must be a JSON array: {path}"
+        )
+
+    seen_filenames: dict[str, str] = {}
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            raise RuntimeError(
+                f"Existing image manifest item {index} must be an object: {path}"
+            )
+        filename = item.get("filename")
+        if (
+            not isinstance(filename, str)
+            or not filename.strip()
+            or filename in {".", ".."}
+            or "/" in filename
+            or "\\" in filename
+            or ":" in filename
+            or Path(filename).is_absolute()
+            or Path(filename).name != filename
+        ):
+            raise RuntimeError(
+                f"Image manifest item {index} has no safe bare filename: {path}"
+            )
+        normalized_filename = filename.casefold()
+        if normalized_filename in seen_filenames:
+            raise RuntimeError(
+                f"Image manifest filename {filename!r} conflicts with "
+                f"{seen_filenames[normalized_filename]!r} (case-insensitive): {path}"
+            )
+        seen_filenames[normalized_filename] = filename
+    return payload
+
+
+def _read_existing_image_manifest(path: Path) -> list[dict]:
+    """Load an existing project image manifest or fail closed on corruption."""
+    if not path.exists():
+        return []
+    if not path.is_file():
+        raise RuntimeError(f"Existing image manifest is not a regular file: {path}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"Existing image manifest is unreadable: {path} ({exc}); "
+            "repair or restore it before importing more assets"
+        ) from exc
+    return _validate_image_manifest(payload, path)
+
+
+def _write_json_atomic(path: Path, payload: object) -> None:
+    """Write JSON through a same-directory temporary file and atomic rename."""
+    fd, temp_name = tempfile.mkstemp(
+        prefix=f"{path.stem}.",
+        suffix=".tmp",
+        dir=str(path.parent),
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+        os.replace(temp_name, path)
+    except Exception:
+        try:
+            os.unlink(temp_name)
+        except OSError:
+            pass
+        raise
 
 
 def is_url(value: str) -> bool:
@@ -128,6 +207,17 @@ class ProjectManager:
     ) -> str:
         base_path = Path(base_dir) if base_dir else self.base_dir
 
+        if (
+            not project_name
+            or project_name in {".", ".."}
+            or Path(project_name).is_absolute()
+            or "/" in project_name
+            or "\\" in project_name
+        ):
+            raise ValueError(
+                "Project name must be a single, non-absolute path component"
+            )
+
         normalized_format = normalize_canvas_format(canvas_format)
         if normalized_format not in self.CANVAS_FORMATS:
             available = ", ".join(sorted(self.CANVAS_FORMATS.keys()))
@@ -146,6 +236,10 @@ class ProjectManager:
             project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
         project_path = base_path / project_dir_name
 
+        if not is_within_path(project_path, base_path):
+            raise ValueError(
+                f"Project directory must stay within the base directory: {base_path}"
+            )
         if project_path.exists():
             raise FileExistsError(f"Project directory already exists: {project_path}")
 
@@ -392,16 +486,8 @@ class ProjectManager:
 
     def _merge_image_manifest(self, source_items: list[dict], destination_manifest: Path) -> None:
         """Merge per-source manifest items into the project-level manifest, keyed by filename."""
-        existing_data: list[object] = []
-        if destination_manifest.is_file():
-            try:
-                loaded = json.loads(destination_manifest.read_text(encoding="utf-8"))
-                if isinstance(loaded, list):
-                    existing_data = loaded
-                else:
-                    print(f"[WARN] Replacing non-list image manifest: {destination_manifest}")
-            except (OSError, json.JSONDecodeError) as exc:
-                print(f"[WARN] Replacing unreadable image manifest {destination_manifest}: {exc}")
+        _validate_image_manifest(source_items, destination_manifest)
+        existing_data = _read_existing_image_manifest(destination_manifest)
 
         new_by_filename: dict[str, dict] = {}
         new_order: list[str] = []
@@ -409,9 +495,10 @@ class ProjectManager:
             filename = item.get("filename")
             if not isinstance(filename, str):
                 continue
-            if filename not in new_by_filename:
-                new_order.append(filename)
-            new_by_filename[filename] = item
+            normalized_filename = filename.casefold()
+            if normalized_filename not in new_by_filename:
+                new_order.append(normalized_filename)
+            new_by_filename[normalized_filename] = item
 
         merged: list[dict] = []
         seen: set[str] = set()
@@ -421,20 +508,19 @@ class ProjectManager:
             filename = item.get("filename")
             if not isinstance(filename, str):
                 continue
-            if filename in new_by_filename:
-                merged.append(new_by_filename[filename])
+            normalized_filename = filename.casefold()
+            if normalized_filename in new_by_filename:
+                merged.append(new_by_filename[normalized_filename])
             else:
                 merged.append(item)
-            seen.add(filename)
+            seen.add(normalized_filename)
 
-        for filename in new_order:
-            if filename not in seen:
-                merged.append(new_by_filename[filename])
+        for normalized_filename in new_order:
+            if normalized_filename not in seen:
+                merged.append(new_by_filename[normalized_filename])
 
-        destination_manifest.write_text(
-            json.dumps(merged, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        _validate_image_manifest(merged, destination_manifest)
+        _write_json_atomic(destination_manifest, merged)
 
     @staticmethod
     def _namespace_from_asset_dir(asset_dir: Path) -> str:
@@ -449,10 +535,11 @@ class ProjectManager:
         source_file: Path,
         namespace: str,
         existing_manifest: dict[str, dict],
+        occupied_names: set[str],
     ) -> str:
         """Return a short unique image filename for the runtime image pool."""
         candidate = images_dir / source_file.name
-        if not candidate.exists():
+        if candidate.name.casefold() not in occupied_names:
             return source_file.name
         try:
             meta = existing_manifest.get(candidate.name, {})
@@ -470,7 +557,7 @@ class ProjectManager:
         counter = 2
         while True:
             candidate = images_dir / f"{stem}_{counter}{suffix}"
-            if not candidate.exists():
+            if candidate.name.casefold() not in occupied_names:
                 return candidate.name
             try:
                 meta = existing_manifest.get(candidate.name, {})
@@ -496,31 +583,31 @@ class ProjectManager:
             return
 
         try:
-            source_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+            source_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             print(f"[WARN] Cannot read image manifest {manifest_path}: {exc}")
             return
-        if not isinstance(source_data, list):
-            print(f"[WARN] Ignoring non-list image manifest: {manifest_path}")
+        try:
+            source_data = _validate_image_manifest(source_payload, manifest_path)
+        except RuntimeError as exc:
+            print(f"[WARN] {exc}")
             return
 
         images_dir = project_dir / "images"
+        namespace = self._namespace_from_asset_dir(asset_dir)
+        destination_manifest = images_dir / "image_manifest.json"
+        existing_data = _read_existing_image_manifest(destination_manifest)
         images_dir.mkdir(parents=True, exist_ok=True)
 
-        namespace = self._namespace_from_asset_dir(asset_dir)
-        existing_manifest: dict[str, dict] = {}
-        destination_manifest = images_dir / "image_manifest.json"
-        if destination_manifest.is_file():
-            try:
-                data = json.loads(destination_manifest.read_text(encoding="utf-8"))
-                if isinstance(data, list):
-                    existing_manifest = {
-                        item["filename"]: item
-                        for item in data
-                        if isinstance(item, dict) and isinstance(item.get("filename"), str)
-                    }
-            except (OSError, json.JSONDecodeError):
-                existing_manifest = {}
+        existing_manifest = {
+            item["filename"]: item
+            for item in existing_data
+        }
+        occupied_names = {
+            path.name.casefold()
+            for path in images_dir.iterdir()
+            if path.is_file()
+        }
         rename_map: dict[str, str] = {}
 
         copied_count = 0
@@ -534,10 +621,12 @@ class ProjectManager:
                 source_file,
                 namespace,
                 existing_manifest,
+                occupied_names,
             )
             destination = images_dir / new_name
             if source_file.resolve() != destination.resolve():
                 shutil.copy2(source_file, destination)
+            occupied_names.add(new_name.casefold())
             rename_map[source_file.name] = new_name
             copied_count += 1
 
@@ -627,6 +716,7 @@ class ProjectManager:
             "archived": [],
             "markdown": [],
             "assets": [],
+            "images": [],
             "analysis": [],
             "notes": [],
             "skipped": [],
@@ -747,7 +837,18 @@ class ProjectManager:
             )
             summary["archived"].append(str(archived_path))
 
-            if suffix in PDF_SUFFIXES:
+            if suffix in BITMAP_IMAGE_SUFFIXES:
+                images_dir = project_dir / "images"
+                images_dir.mkdir(parents=True, exist_ok=True)
+                image_path = self._ensure_unique_path(images_dir / archived_path.name)
+                shutil.copy2(archived_path, image_path)
+                summary["images"].append(str(image_path))
+                if image_path.name != archived_path.name:
+                    summary["notes"].append(
+                        f"{item}: copied runtime image as {image_path.name} "
+                        "to avoid a filename collision"
+                    )
+            elif suffix in PDF_SUFFIXES:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 if archived_path.stem in explicit_markdown_stems:
                     summary["notes"].append(
@@ -1011,6 +1112,10 @@ def main(argv: list[str] | None = None) -> int:
             if summary["assets"]:
                 print("\nImported asset directories:")
                 for item in summary["assets"]:
+                    print(f"  - {item}")
+            if summary["images"]:
+                print("\nRuntime image copies:")
+                for item in summary["images"]:
                     print(f"  - {item}")
             if summary["analysis"]:
                 print("\nAnalysis artifacts:")

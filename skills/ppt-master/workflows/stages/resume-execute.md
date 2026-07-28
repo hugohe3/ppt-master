@@ -62,7 +62,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-**Source verification**: the execution session is fresh, but `design_spec.md §IX` already owns the complete approved page wording. Read only the relevant `sources/` passages needed to resolve explicit `Fact IDs` / source references or verify exact facts, quotes, names, and data already required by the current §IX block. Never turn §IX back into a skeleton, add new claims or details, or independently rewrite its content. If §IX lacks executable wording or evidence, stop and return to Generate Step 4 for Design Spec repair.
+**Source verification**: the execution session is fresh. Read only the relevant `sources/` passages needed to resolve explicit `Fact IDs` / source references or verify facts, quotes, names, and data required by the current §IX block. Follow [`executor-base.md`](../../references/executor-base.md) §2.1's content-vs-expression contract; source verification never authorizes a second outline. If §IX lacks executable content or evidence, stop and return to Generate Step 4 for Design Spec repair.
 
 > Note: this stage does NOT duplicate Step 6 / Step 7 content. `generate-pptx.md` is the authoritative procedure; resume-execute only adds the resumption entry, sanity check, and source-verification guidance.
 

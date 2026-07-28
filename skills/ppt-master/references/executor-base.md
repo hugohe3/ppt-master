@@ -35,12 +35,12 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Elevation | shadow, glow, explicit highlights |
 | Image integration | scrim, vignette, brand wash, clipping, faux glass |
 | Line / type | dash/cap/join, markers, gradient stroke; tracking, outline, alpha/gradient text |
-| Space / constructed style | transform/reuse, curves/arcs, hand-drawn, ink/Riso, halftone, isometric, paper cut |
+| Space / constructed style | transform/reuse, hand-drawn, ink/Riso, halftone, isometric, paper cut; custom curves/arcs only when meaning or the locked style requires them |
 | Continuous action across pages | Paired pages that differ in one property, exported with morph |
 
 **Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
 
-**Default — resolve cross-page motion here, while pages are still being authored (may override when the deck has no continuous action to express)**: object animation and page transitions are post-processing decisions, but morph is not. It tweens only objects it can match across consecutive slides — same image filename, same group `id`, unchanged container dimensions — so a sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as paired pages in `svg_output/` now. A deck that reaches export without them cannot gain the motion by adding a flag; it degrades silently to a cross-fade. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
+**Default — resolve cross-page geometry here, while pages are still being authored (may override when the deck has no continuous action to express)**: object effects, page transitions, and Morph pair keys are post-processing decisions, but the two visible endpoint states are not. A sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as consecutive pages in `svg_output/` now. Give each continuing endpoint a compatible direct-root group; source and destination ids or geometry may differ because the later motion stage can bind them explicitly through `animations.json`. A deck that reaches export without both states cannot gain the motion by adding a flag. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
 
 ---
 
@@ -66,7 +66,9 @@ Consume stdout directly; stop on non-zero exit. The projection is derived, not a
 
 **Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
 
-**Hard rule — selection vs realization**: use Strategist-selected content, resources/paths, chart/layout keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never selection, except sparse local font/color garnish allowed below. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Selection changes require upstream repair.
+**Hard rule — binding selection vs realization**: use Strategist-selected semantic content, resources/paths, chart keys, template/layout routing keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never those binding selections, except sparse local font/color garnish allowed below. A §VIII preferred image pattern is not a template/layout routing key; [`executor-image.md`](./executor-image.md) owns its realization freedom. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Binding selection changes require upstream repair.
+
+**Hard rule — content vs expression**: `design_spec.md §IX` owns each page's semantic content and supplies complete preferred wording and block texture; those expression choices are not verbatim requirements unless explicitly literal. Executor may paraphrase, condense repetition, regroup or reorder material within the same page, and switch among prose, bullets, keywords, labels, or visual annotation when fit or readability benefits. The result must remain information-equivalent: preserve the `Core message`, `Audience move`, and every substantive claim, fact, data value, proper name, qualifier or caveat, relationship, key argument or evidence, and literal requirement. Never add a claim, move content across pages, or drop information to make the layout fit; return an unfit or underspecified block for Design Spec repair.
 
 Use named lock roles literally when that role applies, and use optional `Template Application` from the retained Design Spec. Choose contextual page-local values from the Design Spec, style, content, and current composition rather than forcing every object into a lock row. A page-context delta overrides neither facts nor constraints. Deprecated `page-context --bundle` is a compatibility no-op.
 
@@ -82,12 +84,12 @@ Use named lock roles literally when that role applies, and use optional `Templat
 | `balanced` | Keep the primary claim and its evidence on the page; let notes add interpretation and transitions. Mix prose, structured evidence, and necessary lists according to their semantic relationship. |
 | `presentation` | Make one claim and one dominant visual expression legible at projection distance. Keep visible copy concise; put explanation and transitions in notes instead of creating paragraph dumps or compressed bullet prose. |
 
-§IX and sourced facts remain authoritative. Use its wording when it works; adapt it when presentation benefits while preserving intent, necessary content, and explicit literal requirements. Never drop or invent facts to force a mode. When the authored texture materially conflicts with the lock, render the least-destructive faithful composition and surface `warning: P<NN> content texture conflicts with consumption_mode <value>` as an upstream outline issue; do not encode this subjective judgment in the checker.
+Apply the content-vs-expression contract above within the selected reading mode. Never drop or invent facts to force a mode. When the authored texture materially conflicts with the lock, render the least-destructive faithful composition and surface `warning: P<NN> content texture conflicts with consumption_mode <value>` as an upstream outline issue; do not encode this subjective judgment in the checker.
 
-**Per-block expression**: render each `design_spec.md §IX Content` block in its written texture — a full-sentence block as wrapped prose, a fragment/label block as bullets/keywords. **Never split a full-sentence block into a bullet list** — splitting loses the information that the block was continuous reasoning, not a set of parallel points; not because a bullet lays out easier, and not because an inherited template slot is shaped as a list. If a block carries no clear texture, infer the mode from its wording and the page layout.
+**Default — authored texture (may override when information-equivalent)**: start from each `design_spec.md §IX Content` block's written texture because it is the Strategist's recommended expression. Keep prose when its continuity carries causal, argumentative, narrative, qualification, or emphasis relationships; use bullets or keywords when the material is genuinely parallel or ordered, or another information-equivalent structure is clearer. Never convert solely because a list is easier to lay out or an inherited template exposes a list slot.
 
 - **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never one sibling `<text>` per visual line. Keep the first line as direct text; each later wrap is a direct `<tspan>` that repeats the parent `x`, keeps its effective font size, and uses one positive relative `dy`. An all-`<tspan>` form may start with `dy="0"`. Choose consistent positive line spacing from the typeface, size, density, and reading distance; no fixed ratio overrides legibility or the selected style.
-- **Template precedence**: when an inherited template slot is a bullet list but the §IX block is prose, the prose wins — widen or reflow the container to hold the paragraph, or drop that card; do not pour the sentence back into the list slot.
+- **Template precedence**: an inherited slot never overrides the content relationship. If faithful expression needs prose, widen or reflow the container, or drop that card; never convert solely to fill a list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
@@ -143,55 +145,80 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; state the attribution naturally in speaker notes. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and state naturally in notes that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
 - **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Before defaulting to stacked rounded-rect cards or uniform equal columns, pick one page-scale move from the locked visual style's §1 `Composition geometry` (a bleed shape, diagonal split, oversized numeral, orbit rings, …) to stage the page's primary zone. Card grids are one option among many, not the house layout.
 - **Containers are structural**: cards and grids express grouping, hierarchy, or capacity, not a house style. Preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Chart-catalog adaptation is owned by [`executor-chart.md`](./executor-chart.md); preview effects never override project styling or structural roles.
-- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, consider one page-specific polygon/path that expresses the relationship before stacking generic arrows. This does not override §3.0 when one literal stock shape is the semantic object.
+- **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first seek a basic primitive, one exact preset, or a clear Boolean result. Only when none can faithfully express the relationship should one page-specific polygon/path replace a stack of generic arrows.
 - **Reference — create depth with restraint**: use rhythm, spacing, typography, accent bars, and subtle tints before shadows. Reserve lift for a few genuinely floating elements; keep peer grids, dividers, and body containers flat.
 - **Phased generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per [`executor-chart.md`](./executor-chart.md) §2.1 on every §IX-planned data-chart page — coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)) that depends on these markers — and **native object metadata** per [`executor-chart.md`](./executor-chart.md) §2.2 on every planned native-ready object. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG). **First-page gate (Mandatory)**: after completing the first page, run `uvx ppt-master svg-quality-check <project_path> --stage first-page --json` without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
   2. **Quality Check Gate**: only after every planned SVG exists, run `uvx ppt-master svg-quality-check <project_path> --stage final --json` on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
-### 3.0 Native Preset Shape Selection
+### 3.0 Native Shape Selection
 
-**Reach for a native preset whenever one expresses a complete object — this is
-the default, not the exception.** Block arrows, chevrons, banners / ribbons,
-callouts, flowchart nodes, stars, and other Office symbols should be **authored
-as presets** via `preset_shape_svg.py`, not drawn as plain `<path>`s or faked
-with rectangles: presets are what give the slide real PowerPoint shapes with
-adjustment handles and the designed, non-flat-card look. When a page calls for
-one of these, use the preset. Apply the decision gate in
-[`native-shape-authoring.md`](./native-shape-authoring.md) to pick the right
-shape and to keep only the exceptions below as ordinary SVG.
+**Use the highest-level native construction that faithfully expresses the
+object.** Basic primitives already export as editable PowerPoint shapes. For
+anything beyond them, an exact Office preset is the default; when no single
+preset suffices but closed operands can express the result, materialize a
+Merge Shapes Boolean result. Hand-authored freeform geometry is the final
+fallback, not the first drawing convenience. Block arrows, chevrons, banners /
+ribbons, callouts, flowchart nodes, stars, and other Office symbols should be
+**authored as presets** via `preset_shape_svg.py`, not redrawn as plain
+`<path>`s or faked with rectangles. Apply the decision gate in
+[`native-shape-authoring.md`](./native-shape-authoring.md) before drawing the
+object.
+
+§IX `Native shape suggestion` records a semantic opportunity, not a literal
+tool command. Decide from the actual page construction whether a basic
+primitive, preset, Boolean result, or necessary freeform best realizes it; a
+different implementation is valid when it preserves the intended object and
+content.
 
 | Decision | Action |
 |---|---|
 | Plain rect / symmetric round rect / circle / ellipse | Keep the ordinary SVG primitive; it is already natively editable. |
+| Straight relationship / divider / leader | Use `<line>`; add a registered marker only when direction is meaningful. |
 | Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
+| Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
+| Two or more closed operands whose final semantic object depends on union, cutout, overlap-only coverage, symmetric difference, or fragmentation | Evaluate `shape_boolean_svg.py` at draw time and use it when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
-| Page-specific, compound, organic, branded, icon, or data geometry | Keep ordinary SVG path/polygon geometry. |
-| Similar-looking contour only | Never guess; keep ordinary SVG. |
+| Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, one preset, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
+| Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 
-This automatic decision applies only before drawing a new object. Do not scan
-existing SVG, classify path contours, or upgrade ordinary SVG during export.
+**Hard rule — freeform is the last construction tier**: before hand-authoring a
+stock-looking `<path>` / `<polygon>`, complete the primitive → exact preset →
+Boolean-result decision order above. A freeform is permitted only when those
+tiers cannot faithfully express the object; avoiding a helper or drawing the
+browser-visible contour faster is not a valid exception. Data-defined geometry
+and a genuinely locked organic / hand-drawn contour satisfy the exception by
+semantics, not by convenience.
+
+This decision applies only while drawing a new object. A suggestion never
+triggers retrospective scanning, contour classification, or automatic
+upgrading of ordinary SVG during export.
 
 **Hard rule**: do not hand-write `data-pptx-authoring`, `data-pptx-prst`,
-`data-pptx-frame`, adjustment metadata, or registry paths. The helper generates
-one compact atomic `<g>` from the shared 187-shape registry, with semantic
-metadata and base paint written once. Rerun the helper when geometry or paint
-changes; never edit one of its direct paths.
+`data-pptx-frame`, adjustment metadata, or registry paths. The preset helper
+generates one compact atomic `<g>` from the shared 187-shape registry, with
+semantic metadata and base paint written once. Rerun that helper when geometry
+or paint changes; never edit one of its direct paths.
 
-For chart-template and diagram authoring, thin relationships use ordinary
-`<line>` / supported open `<path>` geometry with registered arrow markers;
-solid directional blocks use ordinary `shape` presets such as `rightArrow` or
-`chevron`. Do not select a connector-family preset merely because two nodes are
-related, and never hand-add endpoint/site metadata. Connector-family presets
-remain available only for an explicit request for a standalone unconnected
-`p:cxnSp`; imported Connector topology stays under the preserve/mirror contract.
-`actionButton*` presets provide visual geometry only, not actions or hyperlinks.
+**Default — relationship geometry**: use `<line>` for a straight relationship.
+When a relationship genuinely needs a bend or curve and a stock Connector
+contour fits, prefer the matching `bentConnector*` / `curvedConnector*` preset
+over a hand-authored SVG Bézier. Use an open freeform path only when a straight
+line and the native Connector families cannot faithfully express the required
+route, data geometry, or locked hand-drawn / organic style. A directional solid
+object remains an ordinary `shape` preset such as `rightArrow` or `chevron`.
 
-**Hard rule — narrow helper scope**: the helper prints one shape fragment to
-stdout. It does not write a page or choose layout. Read the fragment and insert
-it through the normal `apply_patch` page edit; never redirect, loop, or batch it
-into `svg_output/`.
+Authored Connector presets export as unconnected `p:cxnSp` objects: they do not
+bind to node sites or follow moved nodes. Never hand-add endpoint/site metadata
+or claim attachment semantics. Imported Connector topology stays under the
+preserve/mirror contract. `actionButton*` presets provide visual geometry only,
+not actions or hyperlinks.
+
+**Hard rule — narrow helper scope**: Both helpers print only their documented
+stdout fragment(s); neither writes a page or chooses layout. Read every returned
+fragment and insert it through the normal `apply_patch` page edit; never
+redirect, loop, or batch helper output into `svg_output/`.
 
 
 ### SVG File Naming Convention
@@ -254,11 +281,13 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Structural typography anchors come from `spec_lock.md typography`. Use an exact `<role>_family` when declared; title roles otherwise use `title_family`, and body/support roles otherwise use `body_family`. `font_family` is the legacy/default fallback, not a reason to erase role differences. Sparse accent families follow §2.1; all structural text uses selected families. LaTeX formulas rendered by Strategist are PNG images, not a `code_family` role.
+Typography comes from `spec_lock.md`: `<role>_family` wins; otherwise titles use `title_family`, body/support `body_family`, then legacy `font_family`. Sparse accents follow §2.1. LaTeX renders stay PNG, not `code_family`.
+
+**Default — font-family inheritance (may override where needed)**: Put the common stack on root `<svg>`; matching descendants omit it. Override at the nearest clear `<g>`, `<text>`, or `<tspan>`. Change placement, never lock selection.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 
-**Hard rule**: every SVG `font-family` stack MUST resolve to a pre-installed exported Latin / EA typeface; use the Strategist §g safe set for locked roles and §2.1 for sparse display exceptions. PPTX has no runtime fallback — missing fonts degrade to Calibri.
+**Hard rule**: every SVG `font-family` stack MUST resolve to target-installed/approved Latin and EA faces. PPTX writes one face per script; CSS tails affect preview only, and fonts are not embedded. Missing-face substitution is viewer-selected—not guaranteed Calibri or a later stack entry.
 
 ---
 

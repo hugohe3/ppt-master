@@ -102,16 +102,16 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 | Layer | Owns |
 |---|---|
 | User / initial materials | Supplied facts/assets, desired outcome, exclusions, and permission boundaries remain authoritative |
-| Strategist / plan + preparation | Assess material sufficiency; trigger permitted fact research; decide the approved content, resources, keys, identity anchors, and exact page roster; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution |
-| Executor / realization | Use only prepared project-local assets and realize the approved selections through geometry, composition, hierarchy, and treatment; for icons, the complete `<project>/icons/` pool is prepared material and `icons.inventory` is not a whitelist; sparse local font/color garnish is allowed only while non-structural and non-recurring |
+| Strategist / plan + preparation | Assess material sufficiency; trigger permitted fact research; decide the approved content, resources, keys, identity anchors, and exact page roster; record optional capability/expression recommendations; materialize the planned project-local inventory or record an explicit `Needs-Manual` dependency before execution |
+| Executor / realization | Use only prepared project-local assets; preserve approved content, resources, and identity anchors; realize them through geometry, composition, hierarchy, and treatment. Fields explicitly labeled `suggestion` or Reference are preferred expression rather than binding selections: Executor may adapt or decline them when content and explicit constraints remain intact. For icons, the complete `<project>/icons/` pool is prepared material and `icons.inventory` is not a whitelist; sparse local font/color garnish is allowed only while non-structural and non-recurring |
 
 **Preparation timing**: Fact research required for planning may run before final confirmation. AI / web / slice acquisition runs only from the completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling execute Strategist-owned preparation; they are not independent decision owners.
 
-**Hard rule**: downstream freedom exists only in dimensions left open upstream. A named outcome retains identity; a broad semantic request permits in-class choice. Once the plan resolves that choice, execution cannot reopen or substitute it. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
+**Hard rule**: downstream freedom exists only in dimensions left open upstream, including fields explicitly labeled `suggestion` or Reference. A named binding outcome retains identity; a broad semantic request or expression recommendation permits in-class choice. Once the plan resolves a binding choice, execution cannot reopen or substitute it. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
 
 > Mnemonic — restaurant contract: the customer supplies initial ingredients and the desired dish; Strategist plans the dish and prepares the complete mise en place; Executor cooks from that prepared inventory. “Mapo tofu” cannot become tomato-and-eggs or tofu soup, while “a tofu dish” leaves deliberate in-class freedom.
 
-**Review gate**: treat any prompt refactor that erases this ownership chain, moves acquisition into Executor, turns a permission into a quota, or turns flexible realization into silent reselection as a semantic regression even when the compressed wording is shorter.
+**Review gate**: treat any prompt refactor that erases this ownership chain, moves acquisition into Executor, turns a permission into a quota, or turns flexible realization into silent resource/identity reselection as a semantic regression even when the compressed wording is shorter.
 
 ---
 

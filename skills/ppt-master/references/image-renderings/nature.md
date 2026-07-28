@@ -20,13 +20,13 @@ Organic earthy illustration with botanical and natural motifs. Soft curves, orga
 
 ## 3. Using the deck's HEX values
 
-nature has a strong tendency toward **earth-toned natural palette**. When the deck's HEX aligns (warm-earth, nature-organic palette), use directly:
+nature has a strong tendency toward earth-toned material cues, but the deck's locked color roles remain authoritative:
 
 - Primary HEX: dominant nature color (deep green, deep earth brown)
 - Secondary HEX: light atmospheric tone (cream, soft sky)
 - Accent HEX: a small natural pop (a flower, a fruit, a leaf vein)
 
-If the deck's HEX is cool / corporate, nature may be the wrong rendering — consult the compatibility matrix.
+If the deck's anchors are cool or corporate, keep their semantic roles and translate the organic material/lighting into that family. If this destroys the intended natural character, choose a different rendering during planning; never invent an image-only palette or alter the deck colors during execution.
 
 ---
 

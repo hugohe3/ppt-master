@@ -59,6 +59,7 @@ from ..drawingml.theme_fonts import (
     load_master_text_style_spec,
     load_theme_font_spec,
 )
+from ..drawingml.utils import unsafe_exported_font_faces
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .template_structure import (
     TemplateStructureError,
@@ -211,11 +212,21 @@ def _source_resource_audit(svg_files: list[Path]) -> dict[str, object]:
         for stack in font_stacks
         if _font_stack_is_generic_only(stack)
     })
+    unsafe_font_faces = [
+        {
+            'stack': stack,
+            'role': role,
+            'typeface': typeface,
+        }
+        for stack in sorted(font_stacks)
+        for role, typeface in unsafe_exported_font_faces(stack).items()
+    ]
     return {
         'unresolved_template_tokens': placeholders,
         'fonts': {
             'stacks': sorted(font_stacks),
             'generic_only_stacks': generic_only_font_stacks,
+            'unsafe_exported_faces': unsafe_font_faces,
         },
         'images': {
             **image_counts,
@@ -298,6 +309,7 @@ def _postflight_warning_summaries(
     unresolved_token_count: int,
     external_image_count: int,
     generic_font_stack_count: int,
+    unsafe_font_face_count: int,
 ) -> tuple[str, ...]:
     """Return stable warning summaries for the terminal receipt."""
     warnings: list[str] = []
@@ -311,6 +323,8 @@ def _postflight_warning_summaries(
         warnings.append(f'external_images={external_image_count}')
     if generic_font_stack_count:
         warnings.append(f'generic_only_font_stacks={generic_font_stack_count}')
+    if unsafe_font_face_count:
+        warnings.append(f'unsafe_exported_font_faces={unsafe_font_face_count}')
     return tuple(warnings)
 
 
@@ -370,12 +384,14 @@ def _write_postflight_report(
     unresolved_tokens = source_audit['unresolved_template_tokens']
     external_image_count = source_audit['images']['external']
     generic_only_font_stacks = source_audit['fonts']['generic_only_stacks']
+    unsafe_font_faces = source_audit['fonts']['unsafe_exported_faces']
     if quality_gate == 'failed':
         report_status = 'failed'
     elif (
         not unresolved_tokens
         and not external_image_count
         and not generic_only_font_stacks
+        and not unsafe_font_faces
         and not introduced_warning_count
         and quality_gate == 'passed'
     ):
@@ -420,7 +436,9 @@ def _write_postflight_report(
                 'passed' if not external_image_count else 'warning'
             ),
             'font_portability': (
-                'passed' if not generic_only_font_stacks else 'warning'
+                'passed'
+                if not generic_only_font_stacks and not unsafe_font_faces
+                else 'warning'
             ),
         },
         'quality': quality,
@@ -443,6 +461,7 @@ def _write_postflight_report(
         unresolved_token_count=len(unresolved_tokens),
         external_image_count=external_image_count,
         generic_font_stack_count=len(generic_only_font_stacks),
+        unsafe_font_face_count=len(unsafe_font_faces),
     )
     return _PostflightReceipt(
         output_path=output_path,
@@ -838,9 +857,11 @@ Recorded narration:
     parser.add_argument('--no-image-optimize', action='store_true',
                         help='Disable native PPTX raster image optimization; embeds original image bytes.')
     parser.add_argument('--image-max-dimension', type=int, default=2560,
-                        help='Maximum optimized raster image dimension in pixels (default: 2560).')
+                        help='Preferred optimized raster cap in pixels; cap mode may retain more '
+                             'for cropped/stretched effective resolution (default: 2560).')
     parser.add_argument('--image-sizing', choices=['cap', 'display'], default='cap',
-                        help='Raster sizing mode: cap only limits source dimensions; '
+                        help='Raster sizing mode: cap limits source dimensions without '
+                             'undersupplying cropped/stretched visible pixels; '
                              'display sizes from the SVG rendered box (default: cap).')
     parser.add_argument('--image-scale', type=float, default=2.0,
                         help='Target optimized image pixels per SVG display pixel '

@@ -2,9 +2,9 @@
 
 # Image Layout Specification
 
-Sizing reference for side-by-side or multi-image pages. Use only after Strategist selects the composition; this file never selects layout or crop policy.
+Sizing reference for side-by-side or multi-image pages. Use after Strategist proposes a preferred composition; this file never locks layout or crop policy.
 
-**Selected pattern, flexible geometry**: Let original aspect ratio inform the container. A `no-crop` asset displays completely; an `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry within the selected pattern when either mode produces weak hierarchy, unsafe cropping, or excessive dead space; changing the pattern requires an upstream Design Spec update.
+**Preferred pattern, Executor-owned realization**: Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
 
 > **Scope**: The ratio tables and formulas are calculation aids for a selected side-by-side or multi-image plan. Hero, background, accent, and other compositions stay outside this file. Layout never overrides the `no-crop` boundary owned by [`strategist-image.md`](./strategist-image.md) and [`executor-image.md`](./executor-image.md).
 
@@ -13,13 +13,13 @@ Sizing reference for side-by-side or multi-image pages. Use only after Strategis
 ## Layout Decision Flow
 
 ```
-1. Read the selected narrative intent, hierarchy, and primary/modifier ids from Strategist's plan.
-2. If the selected pattern is not side-by-side or multi-image, this spec does not apply.
+1. Read the narrative intent, hierarchy, and preferred primary/modifier ids from Strategist's plan.
+2. If the preferred or Executor-selected pattern is not side-by-side or multi-image, this spec does not apply.
 3. Read the asset's `no-crop` boundary and original dimensions; calculate ratio (width/height).
 4. Use the tables as candidate structures, not an automatic selector.
 5. Calculate the image/text rectangles, then choose `meet` or focal-safe `slice` within the crop boundary.
-6. Revise geometry within the selected ids when the result weakens hierarchy, legibility, or required image content.
-7. Return upstream for a different pattern, resource, role, or crop boundary; Executor never rewrites selection.
+6. Revise geometry or choose another composition when the result weakens hierarchy, legibility, or required image content.
+7. Return upstream only for a different resource, role, must-use decision, crop boundary, or another binding constraint; Executor owns pattern-only realization changes.
 ```
 
 **When to run**: after `analyze_images.py` has produced current dimensions and a side-by-side or multi-image composition is under consideration. Skip this sizing reference for other page structures.
@@ -63,8 +63,8 @@ Image height = W / R = 1160 / R px
 Text area height = H - image height - gap(20px)
 
 Review: if the remaining text area cannot carry the planned copy legibly,
-rebalance the rectangles within the selected pattern; otherwise return upstream
-for a Design Spec pattern update.
+rebalance the rectangles or choose another composition while preserving binding
+resource/content/crop constraints.
 ```
 
 ### Left-Right Layout Calculation
@@ -83,7 +83,7 @@ Image height = image width / R
 Text area width = W - image width - gap(20px)
 ```
 
-**Review**: if the remaining text area cannot carry the planned copy legibly, rebalance the image/text rectangles within the selected pattern; otherwise return upstream for a Design Spec pattern update.
+**Review**: if the remaining text area cannot carry the planned copy legibly, rebalance the image/text rectangles or choose another composition while preserving binding resource/content/crop constraints.
 
 ---
 
@@ -108,7 +108,7 @@ Image: 773x560 (left), Text area: 367x560 (right) → 7:3 left-right
 ```
 Original: 1820x1040, R=1.75
 Strategist compares top-bottom: image height=663, text area=-43 ❌
-Strategist selects left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
+Strategist recommends left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
 ```
 
 ---
@@ -166,7 +166,7 @@ Image positions:
   (60, 390)  570x290    (650, 390) 570x290
 ```
 
-> Multi-image slides: decide `meet` or focal-safe `slice` per asset. Keep `no-crop` images complete; do not force every image into the same scaling mode merely for grid uniformity.
+> Multi-image slides: decide `meet` or focal-safe `slice` per asset. On every slide using a `no-crop` source, keep one complete instance; a same-slide same-source detail crop may supplement it. Do not force every image into the same scaling mode merely for grid uniformity.
 
 ---
 
@@ -176,8 +176,8 @@ Image positions:
 |-----------|-----------------|
 | Proportion does not reflect information weight | Rebalance image and text rectangles |
 | Container conflicts with the native ratio | Change the container, choose `meet`, or use a focal-safe crop |
-| Required pixels, labels, identity, or evidence would be cropped | Use `preserveAspectRatio="xMidYMid meet"` and recompose around the complete image |
-| Text area cannot carry the planned copy legibly | Increase its area within the selected pattern; otherwise return upstream |
+| Required pixels, labels, identity, or evidence would be cropped | Use a legal anchor with `meet` and recompose around the complete image |
+| Text area cannot carry the planned copy legibly | Increase its area or choose another composition while preserving binding constraints |
 
 ---
 
@@ -188,10 +188,10 @@ This spec only defines layout calculation. Write computed fields into the Image 
 | Field | Meaning |
 |-------|---------|
 | `Ratio` | Original image width / height |
-| `Layout pattern` | Strategist-selected catalog pattern; semantic composition fixed, geometry flexible |
-| `Crop Policy` | `no-crop` protects complete pixels; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
+| `Layout pattern` | Strategist-recommended catalog pattern; preferred composition, Executor-owned realization |
+| `Crop Policy` | `no-crop` requires one complete instance; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
-| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>` |
+| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves its ordered catalog ids (or normalized custom prose) as a recommendation, not a geometry/realization lock |
 
 For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
@@ -204,6 +204,8 @@ Complete display (`no-crop` assets such as data charts):
        x="60" y="80" width="780" height="446"
        preserveAspectRatio="xMidYMid meet"/>
 ```
+
+**Hard rule — no-crop placement**: On every slide using the source, retain one visible complete instance with one of the nine legal anchors plus `meet`, never `none`, and no `clip-path`, `mask`, clipping overflow, or nested `<svg>` viewport. An auxiliary same-slide detail or lens may crop the same source only while the complete instance remains visible. Definitions and hidden nodes are not placements; an image materialized through a visible local `<use>` is.
 
 Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 
@@ -218,12 +220,18 @@ Crop-to-fill (an `adaptive` asset with a verified focal-safe crop):
 ## Automation Tool
 
 ```bash
+<<<<<<< HEAD
 uvx ppt-master analyze-images <project_path>/images                    # Default: PPT 16:9
 uvx ppt-master analyze-images <project_path>/images --canvas ppt43     # PPT 4:3
 uvx ppt-master analyze-images <project_path>/images --canvas xiaohongshu  # Xiaohongshu
+=======
+python3 scripts/analyze_images.py <project_path>/images                    # Infer project canvas; fallback PPT 16:9
+python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
+python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
+>>>>>>> upstream/main
 ```
 
-`--canvas` selects target format (default `ppt169`). The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as planning input; record the composition actually selected for the page.
+`--canvas` explicitly overrides the project-derived format; `ppt169` is only the fallback. The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as planning input; record the composition actually selected for the page.
 
 ---
 
@@ -231,5 +239,5 @@ uvx ppt-master analyze-images <project_path>/images --canvas xiaohongshu  # Xiao
 
 | Role | Responsibility |
 |------|---------------|
-| **Strategist** | Run `analyze_images.py`, select the catalog pattern/resources, and record the crop boundary |
-| **Executor** | Realize the selected pattern for the actual asset/page while preserving its ids, role, source, must-use, and `no-crop` constraints |
+| **Strategist** | Run `analyze_images.py`, recommend a catalog pattern, select resources, and record the crop boundary |
+| **Executor** | Choose the actual composition for the asset/page while preserving role, source, must-use, content, and `no-crop` constraints |
