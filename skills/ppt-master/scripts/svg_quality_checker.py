@@ -115,6 +115,7 @@ try:
         project_filter_errors as _project_filter_errors,
         project_gradient_errors as _project_gradient_errors,
         project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
+        project_mask_errors as _project_mask_errors,
         project_marker_errors as _project_marker_errors,
         project_opacity_errors as _project_opacity_errors,
         project_paint_errors as _project_paint_errors,
@@ -164,6 +165,7 @@ except ImportError:
     _project_filter_errors = None
     _project_gradient_errors = None
     _project_image_aspect_ratio_errors = None
+    _project_mask_errors = None
     _project_marker_errors = None
     _project_opacity_errors = None
     _project_paint_errors = None
@@ -502,6 +504,9 @@ _BAKE_REQUIRED_VISUAL_PROPERTIES = frozenset({
     'isolation',
     'mix-blend-mode',
 })
+_SHARED_FAIL_CLOSED_STYLE_PROPERTIES = frozenset({'mask'})
+
+
 def _compact_preset_ancestor_paint(
     root: ET.Element,
 ) -> list[tuple[str, tuple[str, ...]]]:
@@ -1276,6 +1281,7 @@ class SVGQualityChecker:
 
                 # 2. Check forbidden elements
                 self._check_forbidden_elements(content, root, result)
+                self._check_mask_contract(root, result)
 
                 # 2a. Validate direct geometry lengths and stroke widths.
                 self._check_geometry_length_values(root, result)
@@ -1508,11 +1514,6 @@ class SVGQualityChecker:
         # ============================================================
         # Forbidden elements blocklist - PPT incompatible
         # ============================================================
-
-        # Clipping / masking. The closed image clip-path contract is validated
-        # separately by _check_clip_path_contract.
-        if 'mask' in local_names:
-            result['errors'].append("Detected forbidden <mask> element (PPT does not support SVG masks)")
 
         # Style system
         if 'style' in local_names:
@@ -1824,7 +1825,10 @@ class SVGQualityChecker:
                         f"{label} uses Bake-required visual property {name!r}; "
                         "bake the effect or rebuild it with supported geometry"
                     )
-                elif name not in _SUPPORTED_INLINE_STYLE_PROPERTIES:
+                elif (
+                    name not in _SUPPORTED_INLINE_STYLE_PROPERTIES
+                    and name not in _SHARED_FAIL_CLOSED_STYLE_PROPERTIES
+                ):
                     errors.add(
                         f"{label} uses unsupported inline style property {name!r}; "
                         "native PPTX export would ignore it"
@@ -1943,6 +1947,16 @@ class SVGQualityChecker:
             )
             return
         result['errors'].extend(_project_clip_path_errors(root))
+
+    def _check_mask_contract(self, root: ET.Element, result: Dict) -> None:
+        """Reject SVG masks through the native exporter's shared validator."""
+        if _project_mask_errors is None:
+            result['errors'].append(
+                'Unable to import the shared mask validator; cannot verify '
+                'that native PPTX export will preserve all visible effects'
+            )
+            return
+        result['errors'].extend(_project_mask_errors(root))
 
     def _check_filter_effects(self, root: ET.Element, result: Dict) -> None:
         """Validate filters against the native shadow/glow approximation."""
@@ -3744,6 +3758,11 @@ class SVGQualityChecker:
                     f"Icon {icon_name} has invalid native payload metadata: {exc}"
                 )
                 continue
+            if _project_mask_errors is not None:
+                result['errors'].extend(
+                    f'Icon {icon_name}: {error}'
+                    for error in _project_mask_errors(icon_root)
+                )
             if hydrated:
                 result['info']['native_icon_payload_refs'] = (
                     result['info'].get('native_icon_payload_refs', 0) + hydrated

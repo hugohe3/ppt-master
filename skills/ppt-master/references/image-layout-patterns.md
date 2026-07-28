@@ -230,17 +230,22 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 26. **Triptych baked into a single wide image** — one wide `<image width=1160 height=334>` whose internal composition already contains 2–3 scenes. Generate the triptych as one image (not three separate calls) when scene-to-scene consistency matters — the model preserves character identity, lighting continuity, and color grading far more reliably when panels are produced together.
 
-## Overlay & Masking Treatments
+## Overlay, Scrim & Vignette Treatments
+
+**Hard rule — visual masking is not SVG `<mask>`**: Masking in a design brief
+names the intended appearance only. Realize it with crop/clip geometry,
+scrim/overlay shapes, a real cutout path, or a baked-alpha asset; never emit
+`<mask>` or `mask="url(...)"`.
 
 > **Crop displacement (HARD rule for text over images).** `preserveAspectRatio="xMidYMid slice"` center-crops whatever the source aspect ratio does not cover — when source and display aspects differ, the subject can land under the text column even if the prompt asked for it on the "focal side". Before layering text on a slice-cropped image: estimate the crop from the aspect-ratio difference, and keep the **entire text column on the scrim's opaque plateau** — text must never start inside a gradient's transition zone. When the subject position is unverified, fall back to an opaque treatment (`#30` at high opacity, or a solid panel) instead of a two-stop scrim (`#29`).
 
-27. **Linear gradient mask for text legibility** — `<linearGradient>` in `<defs>` (set `x1/y1/x2/y2` for direction) + overlay `<rect fill="url(#grad)">`. Most common is top-to-bottom darkening on full-bleed cover images.
+27. **Linear gradient scrim for text legibility** — `<linearGradient>` in `<defs>` (set `x1/y1/x2/y2` for direction) + overlay `<rect fill="url(#grad)">`. Most common is top-to-bottom darkening on full-bleed cover images.
 
 28. **Radial gradient vignette** — `<radialGradient cx cy r>` with dark outer stops; overlay `<rect>`. Focuses attention by darkening the periphery.
 
 29. **Two-stop scrim — opaque on text side, transparent on focal side** — `<linearGradient>` with one stop at `stop-opacity="0.9"` and another at `stop-opacity="0"`. Use when text sits on one side and the image's subject on the other.
 
-30–31. **Flat overlay wash** — one `<rect fill-opacity>` over the image: neutral `#000` / `#fff` around 0.4 for uniform darkening or lightening, the simplest scrim there is (**#30**), or a deck color at 0.15–0.25 to pull a foreign-looking photo toward the palette without regenerating it (**#31**).
+30–31. **Flat overlay wash** — one `<rect fill-opacity>` over the image: neutral `#000000` / `#FFFFFF` around 0.4 for uniform darkening or lightening, the simplest scrim there is (**#30**), or a deck color at 0.15–0.25 to pull a foreign-looking photo toward the palette without regenerating it (**#31**).
 
 > **Sample the scrim color from the photo itself.** For any gradient scrim over an image (#27, #29, #31, #32, #90), take the solid end's hex from a dominant color *in that image* rather than defaulting to black or a deck color, and slide the gradient stop until the seam between scrim and photo disappears. A black scrim over a warm photo announces itself as a rectangle; a scrim in the photo's own shadow tone reads as part of the picture. This one substitution is the difference between a page that looks masked and one that looks composed.
 
@@ -281,7 +286,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
     The panel must stay in register with the base photo; a frosted panel showing a *different* part of the scene is the classic tell. Pair with #95 when the panel should also carry a floating edge.
 
-33. **Spotlight mask — clear region surrounded by darkness** — cover the canvas with `<rect>` filled by a `<radialGradient>` whose inner stop is fully transparent and outer stop is opaque dark. Reads as a flashlight beam on the focal area. Use sparingly — it kills everything outside the spotlight.
+33. **Radial spotlight overlay — clear region surrounded by darkness** — cover the canvas with `<rect>` filled by a `<radialGradient>` whose inner stop is fully transparent and outer stop is opaque dark. Reads as a flashlight beam on the focal area. Use sparingly — it kills everything outside the spotlight.
 
 34. **Gaussian-blur backdrop** — blur the background in the source image, then layer sharp SVG content above it. Native filter export maps the supported blur graph to a glow/shadow effect; it does not preserve a blurred-image backdrop.
 
@@ -321,15 +326,17 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 70–71. **Frames** — a single `<rect fill="none" stroke="#color" stroke-width="2–6"/>` at the image edge (**#70**), or several nested outlines at slightly different sizes for a photo-print look (**#71**). When the image was cut to a non-rectangular contour, use #86 instead so the frame follows the cut.
 
-72. **Image-to-image transition / merge** — two `<image>` elements with overlapping regions, one or both with gradient masks (from group C) creating a soft blend between them.
+72. **Baked-alpha image-to-image blend** — a genuinely soft blend between two images requires a precomposited bitmap or source images with baked alpha. An ordinary gradient overlay can conceal the join only when both images fade through the same solid bridge color; it is not a per-pixel mask and cannot blend arbitrary imagery.
 
-95. **Shape filled with the page background itself** — the most-used trick in real decks and the one that has no obvious SVG name. A shape is painted not with a color but with *the page's own background, sampled at the shape's own position*, so it becomes invisible against the page while still being a real object that can be moved, animated, or given an edge.
+95. **Shape filled with the page background itself** — the most-used trick in real decks and the one that has no obvious SVG name. A shape is painted not with a color but with *the page's own background, sampled at the shape's own position*, so it becomes invisible against the page while still being a real object that can carry an edge treatment.
 
     **SVG form**: give the shape the same `<image>` as the page background, positioned in root coordinates exactly as the background is, and clip it to the shape contour (§1.2). Because the fill stays registered to the page rather than to the shape, the object reads as a hole in whatever is above it.
 
+    **Registration boundary**: the sampled shape and page background must remain fixed in the same root coordinates. Moving, resizing, rotating, or morphing the sampled shape moves its pixels with it and exposes the seam; animate independent content above or below the stationary shape instead.
+
     Three things it buys you, all of which otherwise require a second asset:
     - **A cut that keeps the scene continuous** — the shape "removes" a foreground panel and shows the background through it, with no seam even over a photo or gradient.
-    - **Invisible objects that still animate** — a background-filled bar can wipe, slide, or morph across the page to reveal or conceal content, while never being visible itself.
+    - **A stationary conceal/reveal patch** — it can cover one fixed region while independent content enters or leaves above or below it.
     - **Edge-only forms** — the shape disappears but its stroke, glow, or shadow remains, giving a floating outline that appears cut into the page.
 
     Distinct from #83 (a panel with a real hole) and #90 (a scrim with cuts): those remove paint, this one *impersonates* the background. Reach for it when the thing above must stay a solid object.
