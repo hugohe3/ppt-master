@@ -20,15 +20,15 @@
     <g id="branch-skeleton" data-pptx-bounds="120 108 1040 489">
             <circle cx="640" cy="360" r="112" fill="none" stroke="#6366F1" stroke-width="1.5" stroke-opacity="0.12"/>
             <circle cx="640" cy="360" r="160" fill="none" stroke="#6366F1" stroke-width="1.5" stroke-opacity="0.06"/>
-            <!-- Main curves: center to branches -->
+            <!-- Main straight relationships: center to branches -->
         <!-- Top Right -->
-        <path d="M 703,330 C 795,280 880,225 930,195" stroke="#10B981" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+        <line x1="703" y1="330" x2="930" y2="195" stroke="#10B981" stroke-width="3" stroke-opacity="0.35"/>
         <!-- Bottom Right -->
-        <path d="M 703,390 C 795,440 880,495 930,525" stroke="#F59E0B" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+        <line x1="703" y1="390" x2="930" y2="525" stroke="#F59E0B" stroke-width="3" stroke-opacity="0.35"/>
         <!-- Top Left -->
-        <path d="M 577,330 C 485,280 400,225 350,195" stroke="#3B82F6" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+        <line x1="577" y1="330" x2="350" y2="195" stroke="#3B82F6" stroke-width="3" stroke-opacity="0.35"/>
         <!-- Bottom Left -->
-        <path d="M 577,390 C 485,440 400,495 350,525" stroke="#F43F5E" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+        <line x1="577" y1="390" x2="350" y2="525" stroke="#F43F5E" stroke-width="3" stroke-opacity="0.35"/>
         <!-- ===== Thin Lines: Branches to Sub-items ===== -->
         <!-- Top Right (Product) -->
         <line x1="1050" y1="195" x2="1075" y2="156" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.3"/>

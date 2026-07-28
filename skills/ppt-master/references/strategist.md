@@ -284,7 +284,7 @@ and intent; explicit user/template requirements remain binding.
 | Capability | Opportunity signal | Design Spec handoff |
 |---|---|---|
 | Image composition | Image-as-canvas plus native overlay, editorial crop, collage, cutout, or another image-led composition carries the page better than an adjacent rectangle | Propose a permitted image source; when selected, load [`strategist-image.md`](./strategist-image.md) and record an exact catalog §VIII `Layout pattern` as the preferred composition |
-| Native preset / Merge Shapes | A literal Office symbol or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset or Boolean operation/operands |
+| Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
 | Page transition | A section/state change, spatial continuity, or recorded/self-running flow benefits from motion between pages | Add an optional §IX `Motion suggestion` describing the communication job; leave effect and timing to Executor |
 | Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, or narration order | Add an optional §IX `Motion suggestion` describing reveal units/order; leave group ids, effect, and timing to Executor |
 
@@ -332,12 +332,15 @@ A failed validation must be corrected with a recalled key. `no-template-match` i
 
 **Native-geometry candidate detail**: Add `Native shape suggestion` to the
 affected §IX page when the content calls for a literal stock PowerPoint
-chevron, block arrow, standard flowchart node, callout, banner, or star. For a
-compound silhouette, cutout, common region, or meaningful fragmentation, name
-the candidate Union / Combine / Fragment / Intersect / Subtract operation,
-semantic operands, and intended result. Executor still decides the exact preset,
-Boolean construction, or ordinary SVG under its native-shape branch; the
-recommendation never creates a §VII row or lock field.
+chevron, block arrow, standard flowchart node, callout, banner, star, or a
+stock bent/curved Connector contour. Describe a relationship by its semantic
+route and candidate family, not an exact preset key, endpoint/site metadata, or
+attachment promise. For a compound silhouette, cutout, common region, or
+meaningful fragmentation, name the candidate Union / Combine / Fragment /
+Intersect / Subtract operation, semantic operands, and intended result.
+Executor still decides the exact basic primitive, preset, Boolean construction,
+or necessary freeform under its native-shape branch; the recommendation never
+creates a §VII row or lock field.
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 
