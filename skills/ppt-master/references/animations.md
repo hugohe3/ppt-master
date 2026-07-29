@@ -50,9 +50,11 @@ To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the
 Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains the visual source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to create better semantic anchors without changing visible output, while the sidecar controls PPTX animation behavior.
 
 Run the [`customize-animations`](../workflows/stages/customize-animations.md)
-post-processing stage when Design Spec §IX contains `Motion suggestion`, or
-when the project already carries `animations.json`, or when the user asks to
-tune animation order, effects, timing, or object-level reveals.
+post-processing stage when the project already carries `animations.json`, when
+the user explicitly asks to tune animation order/effects/timing/object-level
+reveals, or when the effective Custom Animations outcome in
+`design_spec.md §I` is enabled. A §IX `Motion suggestion` remains Strategist
+advice and informs an active pass, but never triggers the stage alone.
 
 **Hard rule — semantic anchors before object-targeted sidecar entries**: when
 object animation is in scope, derive reveal units from page meaning and
@@ -355,7 +357,7 @@ Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start
 `--animation-config` selects a sidecar; `--no-animations` disables page/object
 motion but preserves narration audio and recorded advance timing.
 
-> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`; use its default `narration_animations.json`, pass `--animation-config animations.json` for the canonical presentation animation, or pass `--no-animations`.
+> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. When either animation sidecar exists, narrated export selects `narration_animations.json`; canonical `animations.json` without that derived file remains a synchronization error. When both are absent, export creates no sidecar and keeps `fade` / no per-element builds. Pass `--animation-config animations.json` to use the canonical presentation animation, or `--no-animations` to remove both page and object motion explicitly.
 
 ### 4.1 Slow ambient motion — the page that breathes
 

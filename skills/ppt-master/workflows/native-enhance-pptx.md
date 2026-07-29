@@ -131,13 +131,19 @@ Present the plan to the user before generating notes or audio:
 
 | Module | Recommended default | Confirmation question |
 |---|---|---|
-| `notes` | Enabled | Add/replace speaker notes generated from slide content? |
-| `audio` | Enabled when user wants narration/video/autoplay | Generate one narration audio file per slide? |
+| `notes` | Enabled; required whenever audio is enabled | Add/replace speaker notes generated from slide content? |
+| `audio` | Enabled when user wants narration/video/autoplay | After notes are complete, generate one narration audio file per slide? |
 | `timings` | Enabled with audio | Set slide auto-advance from audio duration? |
 | `transitions` | Enabled, `fade` 0.5s | Add page transitions? Which canonical native effect, Effect Options, and duration? |
 | `delivery.check` | Always on, read-only | No confirmation required; review errors and advisories |
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation. Do not generate notes, generate audio, or patch the PPTX until the user confirms the module plan.
+
+**Hard dependency — notes before audio**: Confirming `audio.enabled: true`
+also requires `notes.enabled: true`. If complete per-slide notes do not already
+exist, run Step 6 and generate them before entering audio configuration or
+audio generation. Never generate narration directly from slide text or bypass
+the notes artifact.
 
 **Transition/timing ownership**:
 
@@ -271,7 +277,8 @@ Record the confirmed config into `project.json`:
 
 ## 8. Run the Shared Audio Stage
 
-🚧 **GATE**: Step 7 confirmed; notes files exist under `<project>/notes/`.
+🚧 **GATE**: Step 7 confirmed; complete non-empty notes files exist under
+`<project>/notes/` for every slide.
 
 Run [`generate-audio`](./stages/generate-audio.md) Step 4 with `<project>` and the confirmed values. Stop after audio generation; do not run its Generate-PPTX-only `svg_to_pptx.py --recorded-narration` integration. This route integrates audio through Step 9 instead.
 

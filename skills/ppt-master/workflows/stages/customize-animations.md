@@ -5,24 +5,33 @@ description: Optional post-processing stage for per-slide and per-object animati
 # Customize Animations Stage
 
 > Optional Generate-PPTX post-processing stage for per-slide or per-object
-> animation control. Run when Design Spec §IX contains at least one
-> `Motion suggestion`, when `<project_path>/animations.json` already exists, or
-> when the user asks to customize slide-specific motion, object order, effects,
-> timing, or reveals. Deck-wide transitions, auto-advance, and deck-wide
-> per-element settings without page-specific motion or an existing sidecar use
-> [`animations.md`](../../references/animations.md) directly and do not activate
-> this stage.
+> animation control. Run when `<project_path>/animations.json` already exists,
+> when the user explicitly asks to customize slide-specific motion, object
+> order, effects, timing, or reveals, or when the effective Custom Animations
+> outcome in `design_spec.md §I` is enabled. Deck-wide transitions,
+> auto-advance, and deck-wide per-element settings without page-specific motion
+> or an existing sidecar use [`animations.md`](../../references/animations.md)
+> directly and do not activate this stage.
 
 ## When to Run
 
 | Condition | Action |
 |---|---|
-| Design Spec §IX contains at least one `Motion suggestion` | Run this stage after notes exist and before Generate Step 7 |
+| Effective Custom Animations outcome in `design_spec.md §I` is enabled | Run this stage after the final SVG quality gate and any enabled speaker-note pass, before Generate Step 7; use §IX suggestions as advice |
 | User asks for per-slide or per-object animation, reveal order, timing, or effect changes | Run this stage |
 | `<project_path>/animations.json` already exists | Run this stage to validate it and resolve preserve/adjust/replace intent before export |
-| No suggestion, motion request, or existing sidecar; user only wants the default deck | Do not run; normal export keeps page transitions and no element builds |
+| §IX contains `Motion suggestion`, but no trigger above is active | Do not run; retain the suggestion as Strategist advice and keep normal export defaults |
+| No motion request, enabled outcome, or existing sidecar; user only wants the default deck | Do not run; normal export keeps page transitions and no element builds |
 | No existing sidecar; user only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
+
+**Decision precedence**: Consume the effective Custom Animations outcome already
+persisted in `design_spec.md §I`; Strategist resolves that outcome from the
+latest explicit user instruction, then the Stage 3 proactive policy, then the
+fixed compatibility default `false`. A post-Stage-3 explicit request updates
+only that outcome and its provenance; it does not reopen Confirm UI or add a
+`spec_lock.md` field. An existing `animations.json` always enters this stage for
+preserve/validate handling.
 
 ---
 
@@ -42,7 +51,7 @@ description: Optional post-processing stage for per-slide and per-object animati
 |---|---|
 | Explicit regeneration / rewrite / replacement | Rebuild the semantic grouping plan and replace `animations.json`; the previous choreography is not a constraint |
 | Explicit adjustment / tuning / repair | Validate first, preserve the existing choreography where its semantic units remain valid, and migrate affected group references after any required regrouping |
-| Stage activated by new §IX suggestions without a user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
+| Stage activated with an existing sidecar and new §IX suggestions but no user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
 | Existing sidecar with no new motion instruction | Validate and preserve it unchanged; if invalid, repair the owning sidecar/group reference before export |
 | Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
 
@@ -62,13 +71,14 @@ the animation plan merely because it already exists.
 
 **Decision ownership — advice versus requirement**: A §IX
 `Motion suggestion` expresses the Strategist's recommended communication job or
-reveal relationship; it does not lock an effect, Effect Options, timing,
-trigger, group id, or coverage. Explicit user motion requirements remain
-mandatory. Executor maps an adopted suggestion to the native registry, may
-adjust its effect/order/timing or choose `none` when motion would reduce
-clarity, and never changes page content merely to justify animation.
+reveal relationship; it neither activates this stage nor locks an effect,
+Effect Options, timing, trigger, group id, or coverage. Once another trigger
+activates the stage, Executor may adopt, adjust, or decline the suggestion,
+including choosing `none` when motion would reduce clarity. Explicit user
+motion requirements remain mandatory. Never change page content merely to
+justify animation.
 
-**Hard rule — existing visible-layer boundary**: This stage may regroup existing content only under §2 visual equivalence; it MUST NOT create or modify a crop, comparison layer, scrim, lens, hotspot, annotation, or other visible image state to satisfy motion intent. When a required state is missing and ordinary Slide-local authoring can supply it, return to Generate Step 6, rerun the final SVG gate and notes, then resume here. If a structural boundary prevents that repair, simplify a non-binding suggestion to legal existing units, a page transition, or `none`; an explicit requirement follows failure recovery instead of changing structure.
+**Hard rule — existing visible-layer boundary**: This stage may regroup existing content only under §2 visual equivalence; it MUST NOT create or modify a crop, comparison layer, scrim, lens, hotspot, annotation, or other visible image state to satisfy motion intent. When a required state is missing and ordinary Slide-local authoring can supply it, return to Generate Step 6, rerun the final SVG gate and regenerate notes only when speaker notes are enabled, then resume here. If a structural boundary prevents that repair, simplify a non-binding suggestion to legal existing units, a page transition, or `none`; an explicit requirement follows failure recovery instead of changing structure.
 
 **No-op is complete**: Evaluate suggestions before regrouping SVG content. If
 no `animations.json` exists, every page should retain the normal `fade`

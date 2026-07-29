@@ -30,9 +30,9 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 |---|---|---|
 | **1 — communication contract** | `c` audience · open-ended communication intent · audience outcome · core message / delivery context (primary + optional secondary) / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas | confirmed first |
 | **2 — complete deck solution** (authored once from the user's *actual* Stage 1) | reading mode (`delivery_purpose`, PPT only) · `d` mode + visual style · `b` page count · `e` color · `f` icon · `g` typography · `h` image source + generated-image rendering · conditional natural-language template application | derived from the confirmed contract; internal template exporter modes remain hidden |
-| **3 — resources / production** (authored once from the user's *actual* Stage 1 + Stage 2) | formula policy · conditional AI-image acquisition path · generation mode · refine-spec toggle | derived from the confirmed solution |
+| **3 — resources / production** (authored once from the user's *actual* Stage 1 + Stage 2) | formula policy · conditional AI-image acquisition path · generation mode · refine-spec toggle · proactive speaker notes / custom animations / narration audio | derived from the confirmed solution |
 
-Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, and image direction. With a template, inspect its actual prototypes/content, present one editable application plan, and keep exporter reuse/adherence internal. Present ≥3 coordinated safe / shifted / bold directions so color, type, icons, and generated-image rendering begin coherent; the user may override each component. Generated images inherit deck colors—there is no second image palette. Stage 3 covers production. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
+Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, and image direction. With a template, inspect its actual prototypes/content, present one editable application plan, and keep exporter reuse/adherence internal. Present ≥3 coordinated safe / shifted / bold directions so color, type, icons, and generated-image rendering begin coherent; the user may override each component. Generated images inherit deck colors—there is no second image palette. Stage 3 covers production. Its proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
 
 > **Execution discipline**: This is the last always-on BLOCKING checkpoint. After confirmation, proceed without another pause unless spec refinement is enabled.
 >
@@ -85,7 +85,7 @@ Seed the following as open-prose recommendations when the source and user reques
 
 The contract is not the narrative mode. `communication_intent` says what change is needed; `mode` is one Stage-2 strategy for organizing the argument. Several intents may share one dominant mode, and one intent may support several possible modes.
 
-**Reading mode** (PPT only) is a closed Stage-2 information-carriage axis: `text` (read-close) / `balanced` (business, default) / `presentation`. Keep the existing `recommend.delivery_purpose` / `result.json.delivery_purpose` key for compatibility, but label and reason about it as reading mode—never as communication purpose. It decides how meaning is divided among the page, visuals, presenter, and notes, driving page grammar, granularity, density / rhythm, and the §b page-count recommendation. The §g body baseline is a downstream typography default, not the label or definition shown in the reading-mode control.
+**Reading mode** (PPT only) is a closed Stage-2 information-carriage axis: `text` (read-close) / `balanced` (business, default) / `presentation`. Keep the existing `recommend.delivery_purpose` / `result.json.delivery_purpose` key for compatibility, but label and reason about it as reading mode—never as communication purpose. It decides how meaning is divided among the page, visuals, presenter, and, when enabled, notes, driving page grammar, granularity, density / rhythm, and the §b page-count recommendation. The §g body baseline is a downstream typography default, not the label or definition shown in the reading-mode control.
 
 **Material divergence** — a **free-text** source-treatment intent in the Stage-1 delivery section: in their own words, how closely the deck should follow the source vs how freely it may reshape it. This is the user's own call — a free prose field (`content_divergence`), **not** a fixed set of options and **not** something you recommend from analyzing the source. Surface the question plainly (in the confirm UI it appears after the delivery-context fields); leave it for the user to fill. Blank = a balanced default.
 
@@ -286,6 +286,11 @@ user/template requirements bind.
 | Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's start/end semantic states; leave effect, ids, pairing names, and timing to Executor |
 | Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` describing semantic units/order and any visible image-state relationship; leave group ids, effect, and timing to Executor |
 
+Write useful motion advice regardless of the effective Custom Animations outcome.
+The suggestion remains non-binding and never activates custom-animation
+execution by itself; only an explicit motion requirement or an enabled outcome
+may require visible endpoint/reveal-state preparation.
+
 Review planned pages through two lenses:
 
 | Lens | Content shapes |
@@ -340,11 +345,22 @@ Executor still decides the exact basic primitive, preset, Boolean construction,
 or necessary freeform under its native-shape branch; the recommendation never
 creates a §VII row or lock field.
 
-### Speaker Notes Requirements (Default — no discussion needed)
+### Speaker Notes Requirements
 
-- File naming: Recommended to match SVG names (`01_cover.svg` → `notes/01_cover.md`), also compatible with `notes/slide01.md`
-- Fill in the Design Spec: total presentation duration, notes style (formal / conversational / interactive), presentation purpose (inform / persuade / inspire / instruct / report)
-- Split note files must NOT contain `#` heading lines (`notes/total.md` master document MUST use `#` heading lines)
+Resolve the effective Speaker Notes outcome from the latest explicit user
+instruction, then Stage 3 `proactive_speaker_notes`, then compatibility default
+`true`. Effective Narration Audio `enabled` requires Speaker Notes `enabled`
+without changing the raw proactive preference; when that dependency changes the
+notes outcome, its provenance names enabled Narration Audio.
+
+| Effective outcome | Design Spec §X |
+|---|---|
+| `enabled` | Record filename policy, content/source handling, total duration, notes style, and presentation purpose |
+| `disabled` | Keep §X and write `Generation: disabled`; do not invent note requirements |
+
+When enabled, match SVG names where possible (`01_cover.svg` →
+`notes/01_cover.md`); `notes/slide01.md` remains compatible. Split files contain
+no `#` heading lines; `notes/total.md` uses `#` headings.
 
 ---
 
@@ -392,9 +408,9 @@ Free-design patterns are starting points, not quotas. Adjust composition, spacin
 
 ### 6.1 Content Planning Strategy
 
-Content-outline and speaker-notes strategy follow the deck's locked **mode** — see [`modes/_index.md`](./modes/_index.md), then the locked preset file or every listed custom reference plus its behavior. The guidance below applies within any mode:
+Content-outline strategy and, when enabled, speaker-notes strategy follow the deck's locked **mode** — see [`modes/_index.md`](./modes/_index.md), then the locked preset file or every listed custom reference plus its behavior. The guidance below applies within any mode:
 
-**Reading mode controls information carriage, not communication intent.** `result.json delivery_purpose` is retained as the compatibility key for `text` (read-close) / `balanced` (business, default) / `presentation`, confirmed with the complete deck solution in Stage 2. It decides how meaning is divided among the page, visuals, presenter, and notes. The body baseline (§g) is one consequence, not the definition:
+**Reading mode controls information carriage, not communication intent.** `result.json delivery_purpose` is retained as the compatibility key for `text` (read-close) / `balanced` (business, default) / `presentation`, confirmed with the complete deck solution in Stage 2. It decides how meaning is divided among the page, visuals, presenter, and enabled notes. The body baseline (§g) is one consequence, not the definition:
 
 | Reading mode | Primary carrier | §IX page grammar | Granularity / rhythm | Speaker notes |
 |---|---|---|---|---|
@@ -402,11 +418,14 @@ Content-outline and speaker-notes strategy follow the deck's locked **mode** —
 | `balanced` · business (default) | page + presenter | one primary claim with concise explanation, structured evidence, or a necessary list | moderate granularity; mixed rhythm | interpretation and transitions |
 | `presentation` | presenter + visuals | one claim per page, keywords / short phrases, a large visual or hero number; no paragraph dumps or prose compressed into bullet fragments | more, sparser pages; leans `anchor` / `breathing` | carries explanation, transitions, and supporting detail |
 
-**Recommendation signals**: derive the initial reading mode from the confirmed `audience`, `delivery_context`, and `artifact_afterlife`. Asynchronous review, reference, approval, audit, and leave-behind use lean `text`; presenter-led projection, large-room delivery, launch, or classroom explanation lean `presentation`; hybrid review / roadshow use leans `balanced`. When live projection and durable afterlife both matter, recommend `balanced` unless the contract clearly prioritizes one. If the user confirms `presentation`, support afterlife through notes, appendix pages, captions, and visible sources instead of crowding every slide.
+When Speaker Notes is disabled, the final column is unavailable: keep every
+required meaning in the visible page and confirmed presenter channel.
 
-**Per-block expression**: let the semantic relationship choose the form. Causal explanation, argument, interpretation, and narrative continuity use prose. Truly parallel, ordered, or enumerable items may use bullets / numbers. Never create bullets merely because copy is long or a template exposes a list slot. In `presentation`, distill one assertion and move its explanation into notes rather than turning every sentence into a fragment. Source texture remains a secondary cue: an article / transcript / talk leans prose, while a data sheet or inventory may lean structured labels. Write complete, usable phrasing into §IX; do not leave skeletons for Executor. It is preferred wording unless literal preservation applies; Executor owns faithful expression adaptation under [`executor-base.md`](./executor-base.md) §2.1's content-vs-expression contract.
+**Recommendation signals**: derive the initial reading mode from the confirmed `audience`, `delivery_context`, and `artifact_afterlife`. Asynchronous review, reference, approval, audit, and leave-behind use lean `text`; presenter-led projection, large-room delivery, launch, or classroom explanation lean `presentation`; hybrid review / roadshow use leans `balanced`. When live projection and durable afterlife both matter, recommend `balanced` unless the contract clearly prioritizes one. If the user confirms `presentation`, support afterlife through enabled notes, appendix pages, captions, and visible sources instead of crowding every slide.
 
-This is what makes the axis meaningful: a `presentation` deck and a `text` deck built from the **same source and communication contract** must differ in page grammar, page count recommendation, per-page text volume, visual burden, layout density, rhythm, and notes—not only in font size. Page count stays the user's call; reading mode informs the recommendation when the user has not fixed one. Record it as **Reading Mode** in `design_spec.md §I` (compatibility key `delivery_purpose`, lock key `consumption_mode`). Separately, `communication_intent` / `audience_outcome` determine what the outline must accomplish, while `delivery_context` and `artifact_afterlife` help select the reading mode and still remain independent constraints after selection. The `page_rhythm` leans are a bias, not a quota. Preservation paths keep source wording and structure verbatim: honor reading mode only in styling and notes, never by rephrasing or re-paginating.
+**Per-block expression**: let the semantic relationship choose the form. Causal explanation, argument, interpretation, and narrative continuity use prose. Truly parallel, ordered, or enumerable items may use bullets / numbers. Never create bullets merely because copy is long or a template exposes a list slot. In `presentation`, distill one assertion and move its explanation into enabled notes rather than turning every sentence into a fragment; when notes are disabled, keep the necessary explanation in the visible page or confirmed presenter channel. Source texture remains a secondary cue: an article / transcript / talk leans prose, while a data sheet or inventory may lean structured labels. Write complete, usable phrasing into §IX; do not leave skeletons for Executor. It is preferred wording unless literal preservation applies; Executor owns faithful expression adaptation under [`executor-base.md`](./executor-base.md) §2.1's content-vs-expression contract.
+
+This is what makes the axis meaningful: a `presentation` deck and a `text` deck built from the **same source and communication contract** must differ in page grammar, page count recommendation, per-page text volume, visual burden, layout density, rhythm, and enabled notes—not only in font size. Page count stays the user's call; reading mode informs the recommendation when the user has not fixed one. Record it as **Reading Mode** in `design_spec.md §I` (compatibility key `delivery_purpose`, lock key `consumption_mode`). Separately, `communication_intent` / `audience_outcome` determine what the outline must accomplish, while `delivery_context` and `artifact_afterlife` help select the reading mode and still remain independent constraints after selection. The `page_rhythm` leans are a bias, not a quota. Preservation paths keep source wording and structure verbatim: honor reading mode only in styling and enabled notes, never by rephrasing or re-paginating.
 
 > Note: §IX is the complete page brief; Executor retains it with the lock until context invalidation, then reloads both once.
 
@@ -414,8 +433,15 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 
 Generate Step 4 owns this sequence. `design_spec.md` is the complete human-readable decision; `spec_lock.md` is its context-selected execution subset/routing contract. Consume `result.json` once into the initial Design Spec and never reopen it for the lock. Refinement edits that same Design Spec; affected user revisions become the latest authority. Never treat the planning files as parallel interpretations.
 
+After final confirmation, a newer explicit user instruction about notes, custom
+animation, or narration updates only the corresponding effective outcome and
+provenance in `design_spec.md §I`. Resume at the owning step without reopening
+Confirm UI or adding the production decision to `spec_lock.md`. Enabling
+Narration Audio also recomputes the dependent Speaker Notes outcome and
+provenance.
+
 1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
-2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
+2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching Stage 3 proactive value → compatibility default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
 3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before entering an enabled refine-spec review or authoring `spec_lock.md`.
 4. If enabled, run [`refine-spec`](../workflows/stages/refine-spec.md) after Gate 1; edit only that Design Spec and create no lock before explicit approval.
 5. Read `templates/spec_lock_reference.md`. From the approved Design Spec plus context, create the lock once or resynchronize stale derived state. Retain identity/refinements, select stable roles/routing, omit unnamed page-local values, and do not reopen evidence. This is implementation judgment, not another recommendation.
@@ -432,6 +458,7 @@ Generate Step 4 owns this sequence. `design_spec.md` is the complete human-reada
 | Confirmed image-source set, `image_notes`, and AI strategy | §VIII uses only permitted sources and includes every explicitly required source, asset, or page role; a permitted but unused source needs no row |
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |
 | Formula policy, AI-image acquisition path, generation mode, refine-spec toggle | §I records them as production mechanics; their owning Generate stage consumes the Design Spec, and formula policy also shapes §VIII when formula-worthy content exists |
+| Proactive speaker notes, custom animations, and narration audio | §I records the three resolved effective outcomes with provenance, while §X records enabled note requirements or `Generation: disabled`; they remain outside `spec_lock.md`. §IX Motion suggestions remain optional advice regardless of the animation outcome |
 
 ⛔ **GATE 1 — active-decision fidelity.** Do not create `spec_lock.md` until the initial Design Spec passes the comparison above and any enabled refinement is explicitly approved. Before Gate 2, every requested revision must be present and every unaffected decision intact. Missing/substituted values, unapplied revisions, or silently changed semantic types block despite schema validity; bounded Reference adaptation and unused Permission remain valid.
 
