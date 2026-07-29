@@ -28,21 +28,37 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 
+def _flatten_module():
+    """Load the shared on-disk flattener after exposing the scripts root."""
+    scripts_dir = Path(__file__).resolve().parent.parent
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    from svg_finalize import flatten_tspan  # type: ignore
+    return flatten_tspan
+
+
 def flatten_positional_tspans(
     tree: ET.ElementTree,
     merge_paragraphs: bool = False,
+    preserve_line_breaks: bool = False,
 ) -> bool:
     """Flatten positional ``<tspan>`` elements into independent ``<text>``.
 
     Delegates to ``svg_finalize.flatten_tspan.flatten_text_with_tspans`` so
     the in-memory transform exactly matches the on-disk one. When
     ``merge_paragraphs`` is True, mergeable paragraph blocks are preserved
-    as a single <text> for downstream multi-<a:p> conversion.
+    as a single <text>. ``preserve_line_breaks`` marks visual rows for hard
+    DrawingML line breaks instead of reflow.
 
     Returns True if any tspan was rewritten.
     """
-    scripts_dir = Path(__file__).resolve().parent.parent
-    if str(scripts_dir) not in sys.path:
-        sys.path.insert(0, str(scripts_dir))
-    from svg_finalize.flatten_tspan import flatten_text_with_tspans  # type: ignore
-    return flatten_text_with_tspans(tree, merge_paragraphs=merge_paragraphs)
+    return _flatten_module().flatten_text_with_tspans(
+        tree,
+        merge_paragraphs=merge_paragraphs,
+        preserve_line_breaks=preserve_line_breaks,
+    )
+
+
+def nested_positional_tspan_errors(root: ET.Element) -> list[str]:
+    """Return shared diagnostics for unsupported nested baseline jumps."""
+    return _flatten_module().nested_positional_tspan_errors(root)

@@ -14,6 +14,35 @@ if TYPE_CHECKING:
 AffineMatrix = tuple[float, float, float, float, float, float]
 IDENTITY_MATRIX: AffineMatrix = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
+TEXT_FLOW_PRESERVE = 'preserve'
+TEXT_FLOW_REFLOW = 'reflow'
+TEXT_FLOW_SPLIT = 'split'
+TEXT_FLOW_MODES = frozenset({
+    TEXT_FLOW_PRESERVE,
+    TEXT_FLOW_REFLOW,
+    TEXT_FLOW_SPLIT,
+})
+
+
+def resolve_text_flow(
+    text_flow: str | None = None,
+    merge_paragraphs: bool | None = None,
+) -> str:
+    """Resolve the public text-layout options to one internal mode."""
+    if text_flow is not None and merge_paragraphs is not None:
+        raise ValueError(
+            'text_flow and legacy merge_paragraphs cannot be used together'
+        )
+    if merge_paragraphs is not None:
+        return TEXT_FLOW_REFLOW if merge_paragraphs else TEXT_FLOW_SPLIT
+    resolved = TEXT_FLOW_PRESERVE if text_flow is None else text_flow
+    if resolved not in TEXT_FLOW_MODES:
+        choices = ', '.join(sorted(TEXT_FLOW_MODES))
+        raise ValueError(
+            f'unsupported text_flow {resolved!r}; expected one of: {choices}'
+        )
+    return resolved
+
 
 @dataclass
 class ShapeResult:
@@ -73,9 +102,9 @@ class ConvertContext:
     # Explicit sidecar group ids may override the legacy chrome-name heuristic.
     # Explicit structural layer/role/placeholder markers remain non-animatable.
     animation_group_overrides: frozenset[str] = frozenset()
-    # Default-on flag: merge mergeable paragraph blocks into one editable
-    # text frame with multiple <a:p>. Disable it for strict line fidelity.
-    merge_paragraphs: bool = True
+    # Text-layout policy for positional tspans: preserve authored line breaks
+    # in one frame, reflow them, or split them into independent frames.
+    text_flow: str = TEXT_FLOW_PRESERVE
     # Explicit opt-in: replace marked chart/table fallback groups with editable
     # PowerPoint graphicFrames. Default stays off to preserve SVG output.
     native_objects_enabled: bool = False
@@ -234,7 +263,7 @@ class ConvertContext:
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
             animation_group_overrides=self.animation_group_overrides,
-            merge_paragraphs=self.merge_paragraphs,
+            text_flow=self.text_flow,
             native_objects_enabled=self.native_objects_enabled,
             image_optimize=self.image_optimize,
             image_max_dimension=self.image_max_dimension,
