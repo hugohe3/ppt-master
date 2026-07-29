@@ -623,7 +623,7 @@ Behavior:
   - When either animation sidecar exists, narrated export defaults to `<project>/narration_animations.json`; a canonical `animations.json` without that derived file remains a blocking synchronization error
   - Without animation sidecars, Generate narration reads base-report deck motion via `--inherit-motion-from`; direct low-level omission keeps legacy `fade` / no object builds. Use `--animation-config animations.json` for canonical animation, or `--no-animations` to remove object/page motion while retaining narration timings
   - Non-narrated export keeps the existing optional `<project>/animations.json` default
-  - Narration timing is merged into the existing slide timing DOM; object-animation rows and the resolved page transition are preserved rather than regenerated
+  - Narration timing merges into the existing slide timing DOM. While motion remains enabled, object-animation rows and the resolved page transition are preserved rather than regenerated; inherited `-a none` suppresses object rows, and `--no-animations` removes both motion layers
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
   - Either narration flag names the default-flow export `<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports in the same directory
   - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"

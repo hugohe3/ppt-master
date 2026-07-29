@@ -19,19 +19,16 @@ description: Optional post-processing stage for per-slide and per-object animati
 |---|---|
 | Effective Custom Animations outcome in `design_spec.md §I` is enabled | Run this stage after the final SVG quality gate and any enabled speaker-note pass, before Generate Step 7; use §IX suggestions as advice |
 | User asks for per-slide or per-object animation, reveal order, timing, or effect changes | Run this stage |
-| `<project_path>/animations.json` already exists | Run this stage to validate it and resolve preserve/adjust/replace intent before export |
+| `<project_path>/animations.json` already exists | Run this stage to resolve preserve/adjust/replace/suppress intent before export |
 | §IX contains `Motion suggestion`, but no trigger above is active | Do not run; retain the suggestion as Strategist advice and keep normal export defaults |
 | No motion request, enabled outcome, or existing sidecar; user only wants the default deck | Do not run; normal export keeps page transitions and no element builds |
 | No existing sidecar; user only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
 
-**Decision precedence**: Consume the effective Custom Animations outcome already
-persisted in `design_spec.md §I`; Strategist resolves that outcome from the
-latest explicit user instruction, then the Stage 3 proactive policy, then the
-fixed compatibility default `false`. A post-Stage-3 explicit request updates
-only that outcome and its provenance; it does not reopen Confirm UI or add a
-`spec_lock.md` field. An existing `animations.json` always enters this stage for
-preserve/validate handling.
+**Decision precedence**: latest explicit instruction → Stage 3 policy →
+compatibility default `false`; provenance stays in Design Spec §I, never the
+lock. Stage 3 `false` blocks creation, not an existing sidecar. Existing
+sidecars enter this stage; explicit disables follow the table without deletion.
 
 ---
 
@@ -49,14 +46,16 @@ preserve/validate handling.
 
 | User intent | Action |
 |---|---|
+| Explicit Custom Animations disable | Preserve and validate the sidecar; return `-a none` |
+| Explicit all-motion disable | Preserve and bypass the sidecar; return `--no-animations` |
 | Explicit regeneration / rewrite / replacement | Rebuild the semantic grouping plan and replace `animations.json`; the previous choreography is not a constraint |
 | Explicit adjustment / tuning / repair | Validate first, preserve the existing choreography where its semantic units remain valid, and migrate affected group references after any required regrouping |
 | Stage activated with an existing sidecar and new §IX suggestions but no user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
 | Existing sidecar with no new motion instruction | Validate and preserve it unchanged; if invalid, repair the owning sidecar/group reference before export |
 | Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
 
-Whenever an existing sidecar is present, validate it before deciding to
-preserve or modify it:
+Unless explicit all-motion disable bypasses it, validate an existing sidecar
+before deciding to preserve, modify, or suppress object motion:
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>

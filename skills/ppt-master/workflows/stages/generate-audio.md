@@ -175,7 +175,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2A. When animations.json exists, author or refresh narration_timing.json
+# 2A. When animations.json is active, author or refresh narration_timing.json
 #     by matching SVG group semantics to SRT topics, then derive the narrated
 #     sidecar. Reuse current SVG semantics when complete; otherwise read only
 #     the missing or stale svg_output pages.
@@ -221,11 +221,11 @@ If `notes_to_audio.py` errors with a missing dependency or missing provider API 
 
 The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. SRT cues use the service's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-visible-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary. Override the limit with `--subtitle-max-chars`. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails instead of silently distorting timing. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Cloud-provider commands currently write audio only.
 
-**Mandatory when `animations.json` exists — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
+**Mandatory when `animations.json` is consumed — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
 
-> When `animations.json` exists, authoring `narration_timing.json` is not optional polish. When it is absent, `narration_sync.py animations` still runs but maps groups **positionally** (group N → subtitle cue N) and prints a warning listing at-risk slides (those with more cues than objects, where later objects reveal while the narrator is still on an earlier point). Treat that warning as a required-repair signal: author the semantic plan and re-derive.
+> Active `animations.json` requires `narration_timing.json`; explicit `--no-animations` bypasses both. Without a sidecar, `narration_sync.py animations` maps groups **positionally** (group N → cue N) and warns when later objects may reveal during an earlier topic. Treat that warning as required repair: author the semantic plan and re-derive.
 
-**Narration animation ownership**: When `animations.json` exists, it remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group to the SRT cue that speaks about that content. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
+**Narration animation ownership**: When `animations.json` is consumed, it remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group to the SRT cue that speaks about that content. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
 
 **Title timing handoff when canonical animation exists**: preserve the title reveal decision already made by the custom-animation pass. Assign a title group to an SRT cue only when the user's request or the active motion plan explicitly chose `narration-cued`; otherwise leave its `cue` omitted in `narration_timing.json` so it keeps the canonical relative delay from `animations.json`. Do not infer `narration-cued` merely because speaker notes mention the title.
 
@@ -237,9 +237,10 @@ The edge command writes each MP3 and its internal page SRT from the same `edge-t
 | Only canonical `animations.json` exists | Block until narration synchronization creates the derived sidecar |
 | Both are absent | Create no sidecar; inherit the base report's deck motion |
 
-Except for explicit `--no-animations`, every Generate narration re-export
-passes the exact base report through `--inherit-motion-from`; missing, stale,
-or narrated reports block. Audio duration plus padding owns final slide advance.
+Generate passes the base report through `--inherit-motion-from`: inherited
+`-a none` preserves explicit objects-off, while Stage 3 `false` does not.
+Only explicit all-motion-off uses `--no-animations`. Invalid reports block;
+audio duration plus padding owns final advance.
 
 When canonical custom animation is synchronized,
 `<project_path>/narration_timing.json` is the explicit semantic mapping for
@@ -287,7 +288,7 @@ This stage keeps subtitles as external SRT files. It does not burn subtitles int
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`; with no animation sidecars, keep exporter `fade` / `none` defaults. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
+| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
 | Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export. If video was selected, pass that final PPTX to `powerpoint_video.py`. |
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
@@ -303,7 +304,7 @@ Output one summary block listing:
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - For edge, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
 - For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
-- For Generate PPTX with Edge SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report the default `fade` / `none` path.
+- For Generate PPTX with Edge SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report inherited base motion or explicit all-motion-off.
 - When video export was selected, the final MP4 path and native PowerPoint export status.
 - When a finished video exists, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
