@@ -88,7 +88,7 @@ Apply the content-vs-expression contract above within the selected reading mode.
 
 **Default — authored texture (may override when information-equivalent)**: start from each `design_spec.md §IX Content` block's written texture because it is the Strategist's recommended expression. Keep prose when its continuity carries causal, argumentative, narrative, qualification, or emphasis relationships; use bullets or keywords when the material is genuinely parallel or ordered, or another information-equivalent structure is clearer. Never convert solely because a list is easier to lay out or an inherited template exposes a list slot.
 
-- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never one sibling `<text>` per visual line. Keep the first line as direct text; each later wrap is a direct `<tspan>` that repeats the parent `x`, keeps its effective font size, and uses one positive relative `dy`. An all-`<tspan>` form may start with `dy="0"`. Choose consistent positive line spacing from the typeface, size, density, and reading distance; no fixed ratio overrides legibility or the selected style.
+- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never sibling `<text>` elements for its visual lines. Keep the first authored line as direct text; later lines use direct `<tspan>` children that repeat parent `x`, retain effective font size, and use positive relative `dy`. An all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` enables reflow. Choose positive line spacing for the typeface, size, density, and reading distance; no fixed ratio overrides legibility or the selected style.
 - **Template precedence**: an inherited slot never overrides the content relationship. If faithful expression needs prose, widen or reflow the container, or drop that card; never convert solely to fill a list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
 
@@ -281,9 +281,9 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Typography comes from `spec_lock.md`: `<role>_family` wins; otherwise titles use `title_family`, body/support `body_family`, then legacy `font_family`. Sparse accents follow §2.1. LaTeX renders stay PNG, not `code_family`.
+Read typography from `spec_lock.md`: `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1 and LaTeX stays PNG.
 
-**Default — font-family inheritance (may override where needed)**: Put the common stack on root `<svg>`; matching descendants omit it. Override at the nearest clear `<g>`, `<text>`, or `<tspan>`. Change placement, never lock selection.
+**Default — locked-stack realization (may vary treatment)**: Express the Design Spec Character Reference through scale, weight, spacing, color, and composition; keep the locked family. Put the common stack on root `<svg>`, omit matching descendants, and override at the nearest clear `<g>`, `<text>`, or `<tspan>`.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 

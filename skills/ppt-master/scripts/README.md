@@ -53,6 +53,7 @@ uvx ppt-master update-repo
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py`, `chart_recall.py` | [docs/update_spec.md](./docs/update_spec.md); [docs/chart-recall.md](./docs/chart-recall.md) |
 | Image tools | `image_gen.py`, `latex_render.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
+| Maintenance smokes | Inline temporary-project commands | [advanced image and motion](./docs/advanced-image-motion-smoke.md); [mask and gradient](./docs/mask-gradient-smoke.md); [multilingual text](./docs/multilingual-text-smoke.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
 | Troubleshooting | validation, preview, export, dependency issues | [docs/troubleshooting.md](./docs/troubleshooting.md) |
 
@@ -181,18 +182,11 @@ uvx ppt-master template-fill-pptx validate <project_path>
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
 ```bash
-<<<<<<< HEAD
-uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
-uvx ppt-master native-enhance-pptx plan <project_path>
-uvx ppt-master native-enhance-pptx validate <project_path>
-uvx ppt-master native-enhance-pptx apply <project_path>
-=======
 uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
 uvx ppt-master native-enhance-pptx plan <project_path>
 uvx ppt-master native-enhance-pptx validate <project_path>
 uvx ppt-master native-enhance-pptx apply <project_path>
 uvx ppt-master pptx-delivery-check <finished.pptx>
->>>>>>> upstream/main
 ```
 
 Native preset shape authoring (one registry-backed fragment on stdout):

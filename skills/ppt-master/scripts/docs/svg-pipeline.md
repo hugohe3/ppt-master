@@ -517,7 +517,8 @@ uvx ppt-master svg-to-pptx <project_path> --no-notes
 uvx ppt-master svg-to-pptx <project_path> -t none
 uvx ppt-master svg-to-pptx <project_path> --auto-advance 3
 uvx ppt-master svg-to-pptx <project_path> --animation mixed --animation-duration 0.8
-uvx ppt-master svg-to-pptx <project_path> --no-merge   # strict line-fidelity mode (see below)
+uvx ppt-master svg-to-pptx <project_path> --reflow-text  # opt-in PowerPoint reflow
+uvx ppt-master svg-to-pptx <project_path> --no-merge    # one text frame per visual line
 uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio
 uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio --animation-config animations.json
 uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio --no-animations
@@ -565,11 +566,11 @@ Behavior:
   requires a custom installation. A recommended stack such as
   `"Microsoft YaHei", Arial, sans-serif` does not warn merely because it ends with a
   generic fallback.
-- Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
-  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height) collapse into one editable text frame. Equal effective font sizes may join as flowing prose; a font-size change, list marker, or accepted larger gap starts a new `<a:p>` with precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it without erasing those paragraph boundaries.
-  - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
-  - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
-  - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
+- Multiline text export modes:
+  - Default: one editable frame retains authored breaks and disables PowerPoint wrapping. An ordinary generated frame uses PowerPoint's native resize-shape-to-fit-text behavior, so deleting a retained break expands the frame instead of leaving text outside it; imported exact frames and structured multiline placeholder carriers retain fixed-size behavior.
+  - `--reflow-text`: eligible same-size lines become flowing prose that PowerPoint may rewrap; a font-size change, list marker, or accepted larger gap remains a paragraph boundary. Legacy `--merge-paragraphs` aliases this mode.
+  - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
+  - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`. `-s final` is an explicit diagnostic override for comparing conversion behavior against post-processed SVGs; it does not change artifact ownership or create a supported release path.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
@@ -604,9 +605,10 @@ Behavior:
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
   - `--recorded-narration audio` prepares PowerPoint's "recorded timings and narrations": every slide must have matching `m4a` / `mp3` / `wav` audio, `ffprobe` must read every duration, and `--animation-trigger on-click` is rejected
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
-  - Narrated export defaults to `<project>/narration_animations.json`; pass `--animation-config animations.json` for the canonical presentation animation, or `--no-animations` to remove object animations and page-transition motion while retaining narration and slide timings
+  - When either animation sidecar exists, narrated export defaults to `<project>/narration_animations.json`; a canonical `animations.json` without that derived file remains a blocking synchronization error
+  - Without animation sidecars, Generate narration reads base-report deck motion via `--inherit-motion-from`; direct low-level omission keeps legacy `fade` / no object builds. Use `--animation-config animations.json` for canonical animation, or `--no-animations` to remove object/page motion while retaining narration timings
   - Non-narrated export keeps the existing optional `<project>/animations.json` default
-  - Narration timing is merged into the existing slide timing DOM; object-animation rows and the resolved page transition are preserved rather than regenerated
+  - Narration timing merges into the existing slide timing DOM. While motion remains enabled, object-animation rows and the resolved page transition are preserved rather than regenerated; inherited `-a none` suppresses object rows, and `--no-animations` removes both motion layers
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
   - Either narration flag names the default-flow export `<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports in the same directory
   - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"

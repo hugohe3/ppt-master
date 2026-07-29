@@ -92,27 +92,43 @@ def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Pa
         path for path in sorted(audio_dir.iterdir())
         if path.is_file() and path.suffix.lower() in NARRATION_EXTENSIONS
     ]
-    exact = {path.stem: path for path in audio_files}
-    normalized: dict[str, Path] = {}
-    numbered: dict[int, Path] = {}
+    exact: dict[str, list[Path]] = {}
+    normalized: dict[str, list[Path]] = {}
+    numbered: dict[int, list[Path]] = {}
     for path in audio_files:
-        normalized.setdefault(_normalize_title(path.stem), path)
+        exact.setdefault(path.stem, []).append(path)
+        normalized.setdefault(_normalize_title(path.stem), []).append(path)
         number = _leading_number(path.stem)
         if number is not None:
-            numbered.setdefault(number, path)
+            numbered.setdefault(number, []).append(path)
 
     matched: dict[str, Path] = {}
+    claimed_by: dict[Path, str] = {}
     for index, svg in enumerate(svg_files, 1):
         stem = svg.stem
-        if stem in exact:
-            matched[stem] = exact[stem]
+        candidates = exact.get(stem)
+        if not candidates:
+            candidates = normalized.get(_normalize_title(stem))
+        if not candidates:
+            candidates = numbered.get(index)
+        if not candidates:
             continue
-        norm = _normalize_title(stem)
-        if norm in normalized:
-            matched[stem] = normalized[norm]
-            continue
-        if index in numbered:
-            matched[stem] = numbered[index]
+        if len(candidates) > 1:
+            names = ", ".join(path.name for path in candidates)
+            raise ValueError(
+                f"multiple narration audio files match slide {stem!r}: "
+                f"{names}; keep exactly one supported file for this slide"
+            )
+        candidate = candidates[0]
+        previous_stem = claimed_by.get(candidate)
+        if previous_stem is not None:
+            raise ValueError(
+                f"narration audio file {candidate.name!r} matches multiple slides: "
+                f"{previous_stem!r}, {stem!r}; provide one distinct audio file "
+                "per slide"
+            )
+        matched[stem] = candidate
+        claimed_by[candidate] = stem
     return matched
 
 

@@ -125,27 +125,20 @@ def compute_line_positions(
     Returns (new_x, new_y).
     """
     del text_el
-    # Prefer explicit x/y on tspan
     t_x_attr = get_attr(tspan_el, "x")
     t_y_attr = get_attr(tspan_el, "y")
     t_dx_attr = get_attr(tspan_el, "dx")
     t_dy_attr = get_attr(tspan_el, "dy")
 
-    if t_x_attr is not None:
-        nx = parse_first_number(t_x_attr)
-    elif t_dx_attr is not None:
+    nx = parse_first_number(t_x_attr) if t_x_attr is not None else cur_x
+    if t_dx_attr is not None:
         dx = parse_first_number(t_dx_attr) or 0.0
-        nx = (cur_x or 0.0) + dx
-    else:
-        nx = cur_x
+        nx = (nx or 0.0) + dx
 
-    if t_y_attr is not None:
-        ny = parse_first_number(t_y_attr)
-    elif t_dy_attr is not None:
+    ny = parse_first_number(t_y_attr) if t_y_attr is not None else cur_y
+    if t_dy_attr is not None:
         dy = parse_first_number(t_dy_attr) or 0.0
-        ny = (cur_y or 0.0) + dy
-    else:
-        ny = cur_y
+        ny = (ny or 0.0) + dy
 
     return nx, ny
 
@@ -193,6 +186,9 @@ PARAGRAPH_SPACE_BEFORE_ATTR = "data-paragraph-space-before"
 # (SVG used dy to simulate text wrapping; the downstream converter should
 # merge its runs into the previous <a:p> rather than start a new one).
 PARAGRAPH_SOFT_BREAK_ATTR = "data-paragraph-soft-break"
+# Marks an authored visual line boundary that remains a hard DrawingML break
+# in the default single-frame preserve mode.
+PARAGRAPH_LINE_BREAK_ATTR = "data-paragraph-line-break"
 
 # Tolerance for detecting "base line-height" vs "paragraph gap": dy values
 # within ±DY_TOLERANCE_PX of each other are considered the same line-height.
@@ -211,17 +207,41 @@ def _starts_with_list_marker(line_group: list[ET.Element]) -> bool:
     return bool(LIST_MARKER_RE.match(text))
 
 
-def _tspan_has_positional_descendant(tspan: ET.Element) -> bool:
-    """Return True if any nested tspan inside this one carries x/y/dy."""
-    for child in list(tspan):
-        if child.tag != f"{{{SVG_NS}}}tspan":
-            continue
-        for k in ("x", "y", "dy"):
-            if child.get(k) is not None:
-                return True
-        if _tspan_has_positional_descendant(child):
-            return True
-    return False
+def _positional_tspan_attribute(tspan: ET.Element) -> str | None:
+    """Return the unsupported nested position attribute, if any."""
+    for name in ("x", "y"):
+        if tspan.get(name) is not None:
+            return name
+    raw_dy = tspan.get("dy")
+    dy = parse_first_number(raw_dy) if raw_dy is not None else None
+    if dy is not None and abs(dy) > 1e-6:
+        return "dy"
+    return None
+
+
+def nested_positional_tspan_errors(root: ET.Element) -> list[str]:
+    """Describe nested tspans whose baseline jumps cannot be exported."""
+    errors: list[str] = []
+    for text_el in root.iter(f"{{{SVG_NS}}}text"):
+        text_label = (
+            f"<text id={text_el.get('id')!r}>"
+            if text_el.get("id")
+            else "<text>"
+        )
+        for direct_child in list(text_el):
+            if direct_child.tag != f"{{{SVG_NS}}}tspan":
+                continue
+            for descendant in direct_child.iter(f"{{{SVG_NS}}}tspan"):
+                if descendant is direct_child:
+                    continue
+                attribute = _positional_tspan_attribute(descendant)
+                if attribute is None:
+                    continue
+                errors.append(
+                    f"{text_label} contains a nested <tspan> with {attribute}; "
+                    "move x/y/non-zero dy to a direct child of <text>"
+                )
+    return errors
 
 
 def _build_paragraph_child_view(
@@ -281,19 +301,20 @@ def _classify_paragraph_block(
     text_el: ET.Element,
     is_svg_tag,
     is_new_line_tspan,
-) -> tuple[float, list[float], list[bool], list[list[ET.Element]], ET.Element | None] | None:
+    preserve_line_breaks: bool,
+) -> tuple[float, list[float], list[str], list[list[ET.Element]], ET.Element | None] | None:
     """Detect a mergeable paragraph block.
 
     Returns ``(base_line_height_px, extra_space_before_px_per_line,
-    is_soft_break_per_line, line_groups, synthetic_first_line)`` if the children
+    break_kind_per_line, line_groups, synthetic_first_line)`` if the children
     form a mergeable paragraph. Each list has one entry per direct-child tspan
     (line), including a synthetic first line when the source used leading text:
 
       - extra_space_before_px_per_line[i]: extra px above base line-height,
         used as <a:spcBef> on the downstream <a:p>. First entry is 0.
-      - is_soft_break_per_line[i]: True if this line should merge into the
-        previous <a:p> (SVG dy was simulating word-wrap); False if it starts
-        a fresh <a:p>. First entry is always False (paragraph head).
+      - break_kind_per_line[i]: ``paragraph`` starts a fresh <a:p>, ``soft``
+        joins the previous line for reflow, and ``line`` preserves the visual
+        boundary as a hard DrawingML break. First entry is ``paragraph``.
 
     Conditions (all must hold):
       - No direct text under <text>, except simple leading text that can be
@@ -308,7 +329,8 @@ def _classify_paragraph_block(
         any larger dy must be ≤ MAX_DY_MULTIPLIER × base. Anything larger
         is treated as a section break and rejected.
       - Every line-break tspan that sets x repeats the parent <text>'s x.
-      - No nested tspan inside any line carries x/y/dy.
+      - A line-break tspan cannot add a non-zero dx offset.
+      - No nested tspan inside any line carries x/y/non-zero dy.
       - Adjacent lines with different effective font sizes start new paragraphs.
     """
     base_x = parse_first_number(get_attr(text_el, "x"))
@@ -326,8 +348,6 @@ def _classify_paragraph_block(
             line_groups.append([tspan])
         else:
             if not line_groups:
-                return None
-            if _tspan_has_positional_descendant(tspan):
                 return None
             line_groups[-1].append(tspan)
 
@@ -348,6 +368,10 @@ def _classify_paragraph_block(
             t_x = parse_first_number(t_x_raw)
             if base_x is None or t_x is None or abs(t_x - base_x) > 1e-6:
                 return None
+        t_dx_raw = get_attr(tspan, "dx")
+        t_dx = parse_first_number(t_dx_raw) if t_dx_raw is not None else None
+        if t_dx is not None and abs(t_dx) > 1e-6:
+            return None
 
         t_dy_raw = get_attr(tspan, "dy")
         t_dy = parse_first_number(t_dy_raw) if t_dy_raw is not None else None
@@ -361,9 +385,6 @@ def _classify_paragraph_block(
                 return None
             dy_values.append(t_dy)
 
-        if _tspan_has_positional_descendant(tspan):
-            return None
-
     # Second pass: pick the base line-height as the minimum positive dy and
     # express each line's dy as base + extra space-before.
     positive_dys = [d for d in dy_values[1:] if d > 0]
@@ -375,7 +396,7 @@ def _classify_paragraph_block(
         return None
 
     extras: list[float] = [0.0]  # first line never has space-before
-    soft_breaks: list[bool] = [False]  # first line starts a paragraph
+    break_kinds = ["paragraph"]
     line_font_sizes = [
         _effective_line_font_size_px(text_el, group)
         for group in line_groups
@@ -392,7 +413,7 @@ def _classify_paragraph_block(
         # dy strictly greater than base = hard paragraph break. List markers
         # and font-size changes also start a fresh paragraph so semantically
         # distinct visual lines do not merge into one PowerPoint line.
-        is_soft = (
+        reflow_candidate = (
             abs(extra) <= DY_TOLERANCE_PX
             and not _starts_with_list_marker(line_groups[idx])
             and abs(line_font_sizes[idx] - line_font_sizes[idx - 1]) <= 1e-6
@@ -401,30 +422,36 @@ def _classify_paragraph_block(
             PARAGRAPH_SOFT_BREAK_ATTR
         )
         if explicit_soft_break == "0":
-            is_soft = False
+            break_kind = "paragraph"
         elif explicit_soft_break == "1":
-            is_soft = True
-        extras.append(0.0 if is_soft else extra)
-        soft_breaks.append(is_soft)
+            break_kind = "soft"
+        elif reflow_candidate:
+            break_kind = "line" if preserve_line_breaks else "soft"
+        else:
+            break_kind = "paragraph"
+        extras.append(0.0 if break_kind != "paragraph" else extra)
+        break_kinds.append(break_kind)
 
-    return base, extras, soft_breaks, line_groups, synthetic_first
+    return base, extras, break_kinds, line_groups, synthetic_first
 
 
 def _emit_mergeable_paragraph(
     text_el: ET.Element,
     base_dy: float,
     extras: list[float],
-    soft_breaks: list[bool],
+    break_kinds: list[str],
     line_groups: list[list[ET.Element]],
     synthetic_first: ET.Element | None = None,
 ) -> None:
     """Rewrite text_el in place so it stays a single <text> with paragraph rows.
 
     The base line-height goes on the parent <text> via PARAGRAPH_MARK_ATTR.
-    Each direct-child tspan is normalized: x/y/dy stripped; inline-run
+    Each direct-child tspan is normalized: x/y/dx/dy stripped; inline-run
     styling and nested tspans are preserved. Per-tspan attrs:
       - PARAGRAPH_SOFT_BREAK_ATTR="1" on tspans that should be appended to
         the previous <a:p> downstream (SVG used dy to simulate wrap)
+      - PARAGRAPH_LINE_BREAK_ATTR="1" on tspans that retain an authored line
+        boundary inside the previous <a:p>
       - PARAGRAPH_SPACE_BEFORE_ATTR on tspans that open a new paragraph
         with an extra gap (omitted when 0)
     """
@@ -448,7 +475,7 @@ def _emit_mergeable_paragraph(
             continue
 
         container = ET.Element(f"{{{SVG_NS}}}tspan")
-        for k in ("x", "y", "dy"):
+        for k in ("x", "y", "dx", "dy"):
             line.attrib.pop(k, None)
         for run in group:
             container.append(run)
@@ -460,19 +487,27 @@ def _emit_mergeable_paragraph(
         text_el.append(line)
 
     extras_iter = iter(extras)
-    soft_iter = iter(soft_breaks)
+    break_iter = iter(break_kinds)
     for tspan in normalized_lines:
-        for k in ("x", "y", "dy"):
+        for k in ("x", "y", "dx", "dy"):
             if k in tspan.attrib:
                 del tspan.attrib[k]
+        for k in (
+            PARAGRAPH_SOFT_BREAK_ATTR,
+            PARAGRAPH_LINE_BREAK_ATTR,
+            PARAGRAPH_SPACE_BEFORE_ATTR,
+        ):
+            tspan.attrib.pop(k, None)
         try:
             extra = next(extras_iter)
-            soft = next(soft_iter)
+            break_kind = next(break_iter)
         except StopIteration:
             extra = 0.0
-            soft = False
-        if soft:
+            break_kind = "paragraph"
+        if break_kind == "soft":
             tspan.set(PARAGRAPH_SOFT_BREAK_ATTR, "1")
+        elif break_kind == "line":
+            tspan.set(PARAGRAPH_LINE_BREAK_ATTR, "1")
         elif extra > 1e-6:
             tspan.set(PARAGRAPH_SPACE_BEFORE_ATTR, format_number(extra))
 
@@ -480,17 +515,26 @@ def _emit_mergeable_paragraph(
 def flatten_text_with_tspans(
     tree: ET.ElementTree,
     merge_paragraphs: bool = False,
+    preserve_line_breaks: bool = False,
 ) -> bool:
     """Flatten multi-line tspan text into independent text nodes when needed.
 
     When ``merge_paragraphs`` is True, mergeable paragraph blocks (same x,
-    dy clustered around one base line-height) are kept as a single <text>
-    so downstream conversion emits one editable PowerPoint text frame
-    with multiple <a:p>. Default False preserves the original behavior:
-    every line-break tspan becomes its own <text>, matching the SVG's
-    pixel-fidelity contract.
+    dy clustered around one base line-height) are kept as a single <text>.
+    ``preserve_line_breaks`` marks ordinary visual rows as hard line breaks
+    instead of reflowable continuations. Default split behavior still promotes
+    every positioned row to its own <text>.
     """
     root = tree.getroot()
+    positional_errors = nested_positional_tspan_errors(root)
+    if positional_errors:
+        preview = "; ".join(positional_errors[:3])
+        suffix = (
+            ""
+            if len(positional_errors) <= 3
+            else f"; +{len(positional_errors) - 3} more"
+        )
+        raise ValueError(f"Unsupported nested positional <tspan>: {preview}{suffix}")
     parent_map = {c: p for p in root.iter() for c in p}
     changed = False
 
@@ -539,22 +583,23 @@ def flatten_text_with_tspans(
         if not needs_flatten:
             continue
 
-        # Paragraph fast-path (opt-in via merge_paragraphs=True): if the
-        # children form a mergeable paragraph (same x, dy clustered around
-        # one base line-height with optional paragraph gaps, no nested
-        # positional tspans), keep as one <text> and let the downstream
-        # converter emit multiple <a:p> runs. When disabled, every tspan
-        # gets its own independent <text> so the SVG's exact line layout
-        # is preserved in PowerPoint.
+        # Single-frame fast path: conservative same-x/dy blocks stay in one
+        # <text>. The downstream converter either preserves visual breaks or
+        # reflows them. Split mode promotes each positioned line to <text>.
         if merge_paragraphs:
-            paragraph = _classify_paragraph_block(text_el, is_svg_tag, is_new_line_tspan)
+            paragraph = _classify_paragraph_block(
+                text_el,
+                is_svg_tag,
+                is_new_line_tspan,
+                preserve_line_breaks,
+            )
             if paragraph is not None:
-                base_dy, extras, soft_breaks, line_groups, synthetic_first = paragraph
+                base_dy, extras, break_kinds, line_groups, synthetic_first = paragraph
                 _emit_mergeable_paragraph(
                     text_el,
                     base_dy,
                     extras,
-                    soft_breaks,
+                    break_kinds,
                     line_groups,
                     synthetic_first=synthetic_first,
                 )
@@ -638,13 +683,21 @@ def _has_tspan_children(elem: ET.Element) -> bool:
 def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
     """Deep-copy a tspan as an inline run, preserving nested tspan structure, head text, and tail text.
 
-    When strip_line_attrs is True, x/y/dy on the copied tspan are dropped because the
-    enclosing <text> now positions the line. dx is preserved (safe inline kerning).
+    When strip_line_attrs is True, x/y/dy are dropped because the enclosing
+    <text> owns the resolved line position. Drop dx only from a positioned
+    line starter, where compute_line_positions already consumed it; preserve
+    dx on later inline runs.
     Nested tspans are copied recursively without stripping (they are already inline-only).
     """
     new = ET.Element(f"{{{SVG_NS}}}tspan")
+    consumed_dx = (
+        strip_line_attrs
+        and _positional_tspan_attribute(src) is not None
+    )
     for k, v in src.attrib.items():
         if strip_line_attrs and k in ("x", "y", "dy"):
+            continue
+        if k == "dx" and consumed_dx:
             continue
         new.set(k, v)
     new.text = src.text

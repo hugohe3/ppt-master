@@ -188,7 +188,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 ⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
-**Confirmation ownership and surface**: Only the user confirms. Default Stage 1 is `--daemon --wait`; use chat only by explicit chat-only/delegation or after launch failure/timeout plus a `result.json` re-check. Chat tools do not replace launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
+**Confirmation ownership and surface**: Only the user confirms. Fresh Stage 1 launches, posts the required chat handoff, then waits. Use chat on explicit chat-only/delegation, explicit handoff confirmation/revision, or launch failure/timeout plus one `result.json` re-check. Chat tools do not replace the default launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
 
 | Stage file (the active unconfirmed stage may be overwritten) | Strategist writes | Completion evidence |
 |---|---|---|
@@ -198,10 +198,12 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
-1. Create `confirm_ui/recommendations.stage1.json` per the Confirm UI contract, then launch and wait:
+1. Create `confirm_ui/recommendations.stage1.json`, then run in order:
 
    ```bash
-   uvx ppt-master confirm-ui <project_path> --daemon --wait
+   uvx ppt-master confirm-ui <project_path> --daemon
+   # Post confirm_ui.md's actual URL + Stage-1 summary/chat fallback here.
+   uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1
    ```
 
 2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
@@ -224,7 +226,7 @@ If the user rejects the current recommendation before confirming it, regenerate 
    uvx ppt-master confirm-ui <project_path> --shutdown
    ```
 
-If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
+If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise use the always-on Stage-1 chat handoff; it keeps the current contract and direct-chat fallback visible without replacing UI confirmation.
 
 ⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
 
@@ -245,6 +247,25 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 
 **Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
 
+**Proactive production decisions**: Stage 3 records
+`proactive_speaker_notes`, `proactive_custom_animations`, and
+`proactive_narration_audio`. They control only what the agent initiates when the
+user has not already given an explicit instruction. Resolve each effective
+outcome as latest explicit user instruction → Stage 3 value → compatibility
+default `true` / `false` / `false`. Stage 3 Narration Audio enabled raises a
+non-explicitly-disabled Speaker Notes outcome to enabled and names that
+dependency in its provenance without rewriting the raw proactive preference.
+Persist the resolved effective outcomes plus provenance as the `Speaker Notes`,
+`Custom Animations`, and `Narration Audio` rows in `design_spec.md §I`; keep the
+raw proactive fields only as confirmation evidence and do not project either
+form into `spec_lock.md`.
+
+**Post-confirmation override**: A later explicit request updates only affected
+§I outcomes/provenance and resumes their owning step; do not reopen Confirm UI.
+If it disables Speaker Notes while Narration Audio remains enabled, write
+neither row and ask one question: disable audio too, or retain its required
+notes. Wait, then update both. Before `generate-audio`, create and split notes
+when complete per-slide files are absent.
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
 uvx ppt-master analyze-images <project_path>/images
@@ -450,6 +471,7 @@ uvx ppt-master svg-quality-check <project_path> --stage final --json
 > defaults (`fade` page transition, per-element animation `none`) and load no
 > motion reference. An existing sidecar always runs
 > [`customize-animations`](stages/customize-animations.md) to validate and
+<<<<<<< HEAD
 > resolve preserve/adjust/replace intent before export. With no sidecar, a
 > deck-wide request loads [`animations.md`](../references/animations.md) and
 > resolves Step 7.3 flags; any `Motion suggestion` or per-slide/per-object
@@ -457,6 +479,19 @@ uvx ppt-master svg-quality-check <project_path> --stage final --json
 > Executor owns exact native effects, options, order, timing, and whether a
 > non-literal suggestion should simplify to `none`. Never add motion for
 > coverage or variation.
+=======
+> resolve preserve/adjust/replace/suppress intent before export. Without a sidecar, run
+> the custom stage only for an explicit per-slide/per-object motion request or
+> when the effective Custom Animations outcome in `design_spec.md §I` is
+> enabled; §IX `Motion suggestion` rows inform that active pass but never
+> trigger it alone. A deck-wide request loads
+> [`animations.md`](../references/animations.md) and resolves Step 7.3 flags
+> without activating the custom stage. Otherwise keep the exporter defaults
+> (`fade` page transition, per-element animation `none`) and load no motion
+> reference. Strategist owns the communication purpose; Executor owns exact
+> native effects, options, order, timing, and whether a non-literal suggestion
+> should simplify to `none`. Never add motion for coverage or variation.
+>>>>>>> upstream/main
 
 ---
 
@@ -499,9 +534,11 @@ For deck-wide motion settings, append the resolved flags from
 stage preserves or produces `<project_path>/animations.json`, keep the base command above:
 the exporter reads the sidecar automatically. Explicit motion flags override
 the corresponding sidecar default/slide fields, while group overrides remain
-unless `-a none` hard-disables all object motion; do not mix deck-wide flags
-with a custom sidecar in the normal workflow. With no adopted motion input or
-existing sidecar, preserve the normal `fade` / `none` defaults.
+unless `-a none` hard-disables object motion. Exception: explicit Custom
+Animations disable keeps the sidecar and appends `-a none`; Stage 3 `false`
+does neither. Only explicit all-motion disable uses `--no-animations`.
+Otherwise do not mix deck-wide flags with a sidecar. With no motion input or
+sidecar, preserve `fade` / `none`.
 
 **Success criterion**: The command exits successfully and produces:
 
@@ -509,7 +546,7 @@ existing sidecar, preserve the normal `fade` / `none` defaults.
 - `validation/<project_name>_<timestamp>.report.json` with `passed` or `passed-with-warnings` package/resource postflight status
 - `validation/<project_name>_<timestamp>.trace.json` when bare `--conversion-trace` is enabled; an explicit `--conversion-trace <path>` uses that destination instead
 
-The command prints a compact `[POSTFLIGHT]` receipt containing `status`, `quality_gate`, Slide count, warning-category counts, and the PPTX/report paths. Use that receipt as completion evidence and disclose its material warnings to the user. Do not open or `cat` the complete report on routine success; use targeted field extraction only for failure investigation, an explicit audit request, or information absent from the receipt. A failed report or missing PPTX is not success.
+The compact `[POSTFLIGHT]` receipt prints `status`, `quality_gate`, Slide count, warning-category counts, and PPTX/report paths. Disclose material warnings. Do not open or `cat` the complete report on routine success; use targeted field extraction only for failure investigation, an explicit audit request, or information absent from the receipt. A failed report or missing PPTX is not success. Retain its report path for later Generate narration (`deck_motion` handoff).
 
 ## ✅ Generate PPTX Complete
 

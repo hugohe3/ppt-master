@@ -6,6 +6,7 @@
 - format: {{CANVAS_NAME}}
 
 ## communication
+- primary_language: [fill]
 - audience:
 - objective:
 - core_message:

@@ -81,21 +81,25 @@ Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output
 
 `finalize_svg.py` remains a mandatory Step 7 operation in the normal delivery flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-test profile skips preview and backup artifacts. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
-## Q: Why is one paragraph split into multiple text boxes? Can I get one text box per paragraph instead?
+## Q: How does multiline text export? Can PowerPoint reflow it?
 
-By default, mergeable body-text paragraphs export as one editable PowerPoint text frame with multiple paragraphs. Resizing the box reflows text inside it.
+By default, a mergeable multiline block exports as one editable PowerPoint text frame. Authored line breaks are retained and PowerPoint automatic wrapping is disabled, so resizing the frame does not rewrite the authored line layout. An ordinary generated frame uses PowerPoint's native **Resize shape to fit text** behavior: deleting a retained break expands the frame instead of leaving text outside it. Imported exact frames and structured multiline placeholder carriers retain their fixed-size behavior.
 
-If you need strict line-layout fidelity, re-export with `--no-merge`:
+To let PowerPoint reflow eligible body text, use `--reflow-text`:
+
+```bash
+uvx ppt-master svg-to-pptx <project_path> --reflow-text
+```
+
+This restores automatic paragraph reflow and may change the line count. The legacy `--merge-paragraphs` flag is a compatibility alias for `--reflow-text`.
+
+Use `--no-merge` only when every visual line must be an independent PowerPoint text frame:
 
 ```bash
 uvx ppt-master svg-to-pptx <project_path> --no-merge
 ```
 
-With `--no-merge`, every visual line becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
-
-**Trade-off**: default merging keeps one editable frame and preserves authored line boundaries. Use `--no-merge` only when every visual line must also remain an independently movable text box. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
-
-When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
+That mode preserves independent per-line object placement, but a 12-line paragraph becomes 12 textboxes. When chatting with the AI, ask for "automatic text reflow" or "one independent text box per visual line" to select the corresponding export mode.
 
 ## Q: Why are font sizes in px, not pt? Do they change on export?
 

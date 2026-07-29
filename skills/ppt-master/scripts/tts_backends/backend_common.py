@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 from pathlib import Path
 from urllib import error, request
 
@@ -57,7 +58,34 @@ def get_bytes(url: str, *, timeout: int = 180) -> bytes:
 
 
 def download_audio(url: str, output_path: Path) -> None:
-    output_path.write_bytes(get_bytes(url))
+    publish_audio_bytes(get_bytes(url), output_path)
+
+
+def publish_audio_bytes(audio: bytes, output_path: Path) -> None:
+    """Publish non-empty provider audio without exposing a partial target."""
+    if not audio:
+        raise RuntimeError("TTS provider returned empty audio data")
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, raw_path = tempfile.mkstemp(
+        prefix=f".{output_path.name}.",
+        suffix=".tmp",
+        dir=output_path.parent,
+    )
+    staged_path = Path(raw_path)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            descriptor = -1
+            stream.write(audio)
+            stream.flush()
+            os.fsync(stream.fileno())
+        if staged_path.stat().st_size <= 0:
+            raise RuntimeError("TTS provider returned empty audio data")
+        os.replace(staged_path, output_path)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        staged_path.unlink(missing_ok=True)
 
 
 def extension_from_format(audio_format: str) -> str:

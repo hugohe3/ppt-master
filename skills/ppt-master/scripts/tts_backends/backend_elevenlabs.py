@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from urllib import error, request
 
-from tts_backends.backend_common import read_api_key
+from tts_backends.backend_common import publish_audio_bytes, read_api_key
 
 
 API_BASE = "https://api.elevenlabs.io/v1"
@@ -77,7 +77,7 @@ def generate(
     )
     try:
         with request.urlopen(req, timeout=120) as response:
-            output_path.write_bytes(response.read())
+            publish_audio_bytes(response.read(), output_path)
     except error.HTTPError as exc:
         raise RuntimeError(_read_http_error(exc)) from exc
     except error.URLError as exc:

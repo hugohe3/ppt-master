@@ -22,7 +22,8 @@ Examples:
     python3 scripts/confirm_ui/server.py projects/my-project
     python3 scripts/confirm_ui/server.py projects/my-project --port 5051
     python3 scripts/confirm_ui/server.py projects/my-project --no-browser
-    python3 scripts/confirm_ui/server.py projects/my-project --daemon --wait
+    python3 scripts/confirm_ui/server.py projects/my-project --daemon
+    python3 scripts/confirm_ui/server.py projects/my-project --wait-only --wait-stage stage1
 
 Dependencies:
     flask>=3.0.0
@@ -54,6 +55,11 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from language_tags import (  # noqa: E402
+    LanguageTagError,
+    language_base,
+    normalize_language_tag,
+)
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     clear_lock as _clear_lock,
@@ -464,7 +470,8 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
         return None
     expected = _stage_name(_result_stage_number(result_stage) + 1)
     reattach = (
-        '--daemon --wait' if expected == 'stage1'
+        '--wait-only --wait-stage stage1'
+        if expected == 'stage1'
         else '--wait-only --wait-stage stage2'
     )
     expected_file = RECOMMENDATION_STAGE_NAMES[
@@ -550,17 +557,99 @@ def _positive_number(value: object) -> bool:
     return number > 0 and number != float('inf')
 
 
-def _typography_error(typography: object, label: str, *, require_sizes: bool) -> Optional[str]:
+def _is_english_language(language: object) -> bool:
+    """Return whether a recommendation language is an English locale."""
+    if not isinstance(language, str):
+        return False
+    try:
+        return language_base(language) == 'en'
+    except LanguageTagError:
+        return False
+
+
+def _recommendation_language(recommendations: dict) -> object:
+    """Return the deck's main language without conflating it with UI ``lang``."""
+    value = (
+        recommendations.get('primary_language')
+        or recommendations.get('content_language')
+        or recommendations.get('language')
+    )
+    if isinstance(value, dict):
+        return value.get('value') or value.get('id') or value.get('code') or ''
+    return value
+
+
+def _primary_language_error(recommendations: dict) -> Optional[str]:
+    """Require and canonicalize the staged content-language source of truth."""
+    return _canonicalize_primary_language(recommendations, required=True)
+
+
+def _canonicalize_primary_language(
+    recommendations: dict,
+    *,
+    required: bool,
+) -> Optional[str]:
+    """Write a canonical primary language into one recommendation/result object."""
+    value = _recommendation_language(recommendations)
+    if not isinstance(value, str) or not value.strip():
+        if required:
+            return (
+                'Stage 1 recommendations must declare a valid primary_language '
+                'BCP-47 tag; lang controls only the Confirm UI language'
+            )
+        return None
+    try:
+        recommendations['primary_language'] = normalize_language_tag(value)
+    except LanguageTagError as exc:
+        return f'invalid primary_language: {exc}'
+    return None
+
+
+def _typography_font_value(
+    font: dict,
+    field: str,
+    *,
+    english_primary: bool,
+) -> object:
+    """Return a canonical typography font value, accepting its language-aware alias."""
+    legacy_field = 'latin' if field == 'english' or english_primary else 'cjk'
+    value = font.get(field)
+    if not isinstance(value, str) or not value.strip():
+        value = font.get(legacy_field)
+    return value
+
+
+def _typography_error(
+    typography: object,
+    label: str,
+    *,
+    require_sizes: bool,
+    main_language: object = '',
+) -> Optional[str]:
     """Validate one complete user-facing typography recommendation or choice."""
     if not isinstance(typography, dict):
         return f'{label} must be an object'
+    english_primary = _is_english_language(main_language)
     for role in ('heading', 'body'):
         font = typography.get(role)
         if not isinstance(font, dict):
             return f'{label}.{role} must be an object'
-        for field in ('cjk', 'latin', 'css'):
-            if not isinstance(font.get(field), str) or not font[field].strip():
-                return f'{label}.{role}.{field} must be non-empty'
+        fields = (('primary', 'latin' if english_primary else 'cjk'),)
+        if not english_primary:
+            fields += (('english', 'latin'),)
+        for field, legacy_field in fields:
+            value = _typography_font_value(
+                font,
+                field,
+                english_primary=english_primary,
+            )
+            if not isinstance(value, str) or not value.strip():
+                return (
+                    f'{label}.{role}.{field} '
+                    f'(or legacy {legacy_field}) must be non-empty'
+                )
+        if not isinstance(font.get('css'), str) or not font['css'].strip():
+            return f'{label}.{role}.css must be non-empty'
     if not _positive_number(typography.get('body_size')):
         return f'{label}.body_size must be a positive number'
     if not require_sizes:
@@ -574,6 +663,72 @@ def _typography_error(typography: object, label: str, *, require_sizes: bool) ->
     return None
 
 
+def _typography_signature(
+    typography: dict,
+    *,
+    main_language: object,
+) -> tuple[str, ...]:
+    """Return the language-relevant font choices that distinguish one candidate."""
+    english_primary = _is_english_language(main_language)
+    fields = ('primary',) if english_primary else ('primary', 'english')
+    values = []
+    for role in ('heading', 'body'):
+        font = typography[role]
+        for field in fields:
+            value = _typography_font_value(
+                font,
+                field,
+                english_primary=english_primary,
+            )
+            values.append(str(value).strip().casefold())
+    return tuple(values)
+
+
+def _typography_candidates_distinct_error(
+    candidates: list,
+    labels: list[str],
+    *,
+    main_language: object,
+) -> Optional[str]:
+    """Require every candidate to offer a different relevant font combination."""
+    fixed = [
+        isinstance(candidate, dict) and candidate.get('fixed') is True
+        for candidate in candidates
+    ]
+    if any(fixed):
+        if not all(fixed):
+            return 'typography.fixed must be true on every candidate or omitted'
+        signatures = [
+            _typography_signature(
+                candidate,
+                main_language=main_language,
+            )
+            for candidate in candidates
+        ]
+        if any(signature != signatures[0] for signature in signatures[1:]):
+            return 'fixed typography candidates must repeat the same font combination'
+        return None
+    seen = {}
+    for index, candidate in enumerate(candidates):
+        signature = _typography_signature(
+            candidate,
+            main_language=main_language,
+        )
+        if signature in seen:
+            previous = seen[signature]
+            combination = (
+                'heading/body primary'
+                if _is_english_language(main_language)
+                else 'heading/body primary+english'
+            )
+            return (
+                f'{labels[index]} repeats {labels[previous]}; '
+                f'{combination} combinations must differ'
+            )
+        seen[signature] = index
+    return None
+
+
 def _candidate_list(spec: object) -> list:
     """Return candidates from the current or legacy recommendation shape."""
     if not isinstance(spec, dict):
@@ -584,13 +739,19 @@ def _candidate_list(spec: object) -> list:
     return candidates if isinstance(candidates, list) else []
 
 
-def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
+def _stage2_design_directions_error(
+    recommendations: dict,
+    *,
+    main_language: object = '',
+) -> Optional[str]:
     """Require three complete coordinated Stage 2 design systems."""
+    main_language = main_language or _recommendation_language(recommendations)
     directions = recommendations.get('design_directions')
     if isinstance(directions, dict):
         candidates = _candidate_list(directions)
         if len(candidates) < 3:
             return 'Stage 2 design_directions must include at least 3 candidates'
+        typography_candidates = []
         for index, candidate in enumerate(candidates, start=1):
             label = f'design_directions.candidates[{index - 1}]'
             if not isinstance(candidate, dict):
@@ -607,16 +768,25 @@ def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
                 candidate.get('typography'),
                 f'{label}.typography',
                 require_sizes=False,
+                main_language=main_language,
             )
             if error:
                 return error
+            typography_candidates.append(candidate['typography'])
             if _uses_ai_images(recommendations):
                 image_strategy = candidate.get('image_strategy')
                 if not isinstance(image_strategy, dict) or not str(
                     image_strategy.get('rendering') or ''
                 ).strip():
                     return f'{label}.image_strategy.rendering must be non-empty'
-        return None
+        return _typography_candidates_distinct_error(
+            typography_candidates,
+            [
+                f'design_directions.candidates[{index}].typography'
+                for index in range(len(typography_candidates))
+            ],
+            main_language=main_language,
+        )
 
     # Legacy staged files remain readable, but they must still provide three
     # complete color combinations and at least one complete typography choice.
@@ -630,14 +800,26 @@ def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
     typography = _candidate_list(recommendations.get('typography'))
     if not typography:
         return 'Stage 2 recommendations must include typography candidates'
+    if main_language and len(typography) < 3:
+        return 'Stage 2 recommendations must include 3 typography candidates'
     for index, candidate in enumerate(typography):
         error = _typography_error(
             candidate,
             f'typography.candidates[{index}]',
             require_sizes=False,
+            main_language=main_language,
         )
         if error:
             return error
+    if main_language:
+        return _typography_candidates_distinct_error(
+            typography,
+            [
+                f'typography.candidates[{index}]'
+                for index in range(len(typography))
+            ],
+            main_language=main_language,
+        )
     return None
 
 
@@ -701,7 +883,28 @@ def _submission_stage_error(
             return 'legacy single-pass recommendations accept only a final submission'
         return None
 
+    if rec_stage_number == 1:
+        language_error = _primary_language_error(recommendations)
+        if language_error:
+            return language_error
+
     if rec_stage_number == 2:
+        try:
+            previous_result = _read_json_object(confirm_dir / RESULT_NAME)
+        except (OSError, json.JSONDecodeError, ValueError):
+            previous_result = {}
+        language_source = (
+            previous_result
+            if _recommendation_language(previous_result)
+            else recommendations
+        )
+        language_error = _canonicalize_primary_language(
+            language_source,
+            required=True,
+        )
+        if language_error:
+            return language_error
+        main_language = _recommendation_language(language_source)
         recommendation_error = _template_stage2_error(
             recommendations,
             template_required=template_required,
@@ -711,7 +914,10 @@ def _submission_stage_error(
         recommendation_error = _stage2_custom_candidates_error(recommendations)
         if recommendation_error:
             return recommendation_error
-        recommendation_error = _stage2_design_directions_error(recommendations)
+        recommendation_error = _stage2_design_directions_error(
+            recommendations,
+            main_language=main_language,
+        )
         if recommendation_error:
             return recommendation_error
 
@@ -762,7 +968,11 @@ def _custom_selection_error(result: dict) -> Optional[str]:
     return None
 
 
-def _stage2_solution_error(result: dict) -> Optional[str]:
+def _stage2_solution_error(
+    result: dict,
+    *,
+    main_language: object = '',
+) -> Optional[str]:
     """Reject a Stage 2/final payload with an incomplete design system."""
     color = result.get('color')
     color_error = _palette_error(color, 'color')
@@ -779,19 +989,9 @@ def _stage2_solution_error(result: dict) -> Optional[str]:
         typography,
         'typography',
         require_sizes=True,
+        main_language=main_language,
     )
-    typography_custom = (
-        isinstance(typography, dict)
-        and typography.get('name') == 'custom'
-        and str(typography.get('custom') or '').strip()
-        and _positive_number(typography.get('body_size'))
-        and isinstance(typography.get('sizes'), dict)
-        and all(
-            _positive_number(typography['sizes'].get(role))
-            for role in _TYPOGRAPHY_SIZE_ROLES
-        )
-    )
-    if typography_error and not typography_custom:
+    if typography_error:
         return typography_error
     return None
 
@@ -1023,6 +1223,14 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
         recommend = data['recommend'] = {}
+    main_language = _recommendation_language(res)
+    if main_language:
+        try:
+            data['primary_language'] = normalize_language_tag(main_language)
+        except LanguageTagError:
+            # Keep the invalid legacy value visible to the API boundary below,
+            # which returns a user-facing contract error instead of hiding it.
+            data['primary_language'] = main_language
     for key in _CONTRACT_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
             recommend[key] = res[key]
@@ -1104,6 +1312,8 @@ def _apply_locked_recommendations(
     previous_locks = previous.get(_LOCKED_RECOMMENDATIONS_KEY)
     if isinstance(previous_locks, dict):
         locked_values.update(previous_locks)
+    for key in _PROACTIVE_EXECUTION_DEFAULTS:
+        locked_values.pop(key, None)
 
     try:
         recommendations = _read_json_object(recommendations_file)
@@ -1120,10 +1330,12 @@ def _apply_locked_recommendations(
     ):
         locked_values = {}
     for key, field in recommendations.items():
+        if key in _PROACTIVE_EXECUTION_DEFAULTS:
+            continue
         if not isinstance(field, dict) or field.get('locked') is not True:
             continue
         if 'value' in field:
-            locked_values[key] = field.get('value') or ''
+            locked_values[key] = field['value']
     for key, value in locked_values.items():
         result[key] = value
     return locked_values
@@ -1137,7 +1349,7 @@ def _wait_only_for_result(
 ) -> int:
     """Attach to an already-running confirm server and wait for a target stage.
 
-    No child is launched here: the page is still open from the first ``--wait``
+    No child is launched here: the page is open from the preceding ``--daemon``
     launch, so liveness is tracked via the recorded pid, not a ``proc`` handle.
     Only the stage guard is used (no mtime gate), because intermediate submits
     may happen before this wait command is issued.
@@ -1486,6 +1698,18 @@ def create_app(
         rec_stage_number = _recommendation_stage(data)
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
+        if rec_stage_number > 0:
+            language_error = _canonicalize_primary_language(
+                data,
+                required=True,
+            )
+            if language_error:
+                return jsonify({'error': language_error}), 409
+        else:
+            # Legacy single-pass files remain permissive. Canonicalize only
+            # aliases/tags the shared helper already understands; an old prose
+            # value must never prevent the compatibility UI from opening.
+            _canonicalize_primary_language(data, required=False)
         if rec_stage_number == 2:
             recommendation_error = _template_stage2_error(
                 data,
@@ -1555,8 +1779,38 @@ def create_app(
         except (OSError, json.JSONDecodeError, ValueError):
             rec_file = _active_recommendations_path(confirm_dir)
             current_recommendations = {}
-        if stage == 'stage2' or _recommendation_stage(current_recommendations) == 3:
-            solution_error = _stage2_solution_error(result)
+        rec_stage_number = _recommendation_stage(current_recommendations)
+        previous_result = {}
+        if rec_stage_number >= 2:
+            try:
+                previous_result = _read_json_object(result_file)
+            except (OSError, json.JSONDecodeError, ValueError):
+                pass
+        main_language = None
+        if rec_stage_number > 0:
+            language_source = (
+                previous_result
+                if _recommendation_language(previous_result)
+                else current_recommendations
+            )
+            if not _recommendation_language(language_source):
+                language_source = result
+            language_error = _canonicalize_primary_language(
+                language_source,
+                required=True,
+            )
+            if language_error:
+                return jsonify({'error': language_error}), 409
+            main_language = _recommendation_language(language_source)
+            if main_language:
+                result['primary_language'] = main_language
+            else:
+                result.pop('primary_language', None)
+        if stage == 'stage2' or rec_stage_number == 3:
+            solution_error = _stage2_solution_error(
+                result,
+                main_language=main_language,
+            )
             if solution_error:
                 return jsonify({'error': solution_error}), 400
         if stage not in {'stage1', 'stage2'}:
@@ -1579,6 +1833,13 @@ def create_app(
             rec_file,
             result_file,
         )
+        if stage not in {'stage1', 'stage2'}:
+            proactive_result_error = _normalize_proactive_execution_result(
+                result,
+                proactive_defaults,
+            )
+            if proactive_result_error:
+                return jsonify({'error': proactive_result_error}), 400
         result.pop('template_reuse_scope', None)
         result.pop('template_adherence', None)
         # Staged flow: Stage 1 / Stage 2 submits record intermediate choices but do
@@ -1633,13 +1894,14 @@ def build_parser() -> argparse.ArgumentParser:
              'dead server on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
-        '--wait-stage', default='final', metavar='{stage2,final}',
+        '--wait-stage', default='final', metavar='{stage1,stage2,final}',
         help='With --wait-only, wait for this result.json stage (default: final). '
-             'Use stage2 for the direction handoff in the three-stage flow.',
+             'Use stage1 after the initial daemon launch and chat handoff; use '
+             'stage2 for the direction handoff.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
-        help=f'Seconds the --wait parent blocks before returning (default: {WAIT_TIMEOUT_DEFAULT}; '
+        help=f'Seconds the wait caller blocks before returning (default: {WAIT_TIMEOUT_DEFAULT}; '
              '0 = no limit). Kept under the caller\'s tool timeout; the detached server lives on.',
     )
     parser.add_argument(
@@ -1670,8 +1932,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.error('%s is not a directory', project_path)
         return 1
     wait_stage = _stage_key(args.wait_stage)
-    if wait_stage not in {'stage2', 'final'}:
-        logger.error('--wait-stage must be stage2 or final')
+    if wait_stage not in {'stage1', 'stage2', 'final'}:
+        logger.error('--wait-stage must be stage1, stage2, or final')
         return 2
 
     # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
@@ -1679,7 +1941,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
-    # Staged wait: attach to the server launched by the first --wait and block
+    # Staged wait: attach to the server launched by --daemon and block
     # until the page writes the requested intermediate or final result.json.
     if args.wait_only:
         lock_file = project_path / LOCK_FILE_NAME

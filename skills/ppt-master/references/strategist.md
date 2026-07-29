@@ -28,7 +28,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 | Stage | Items | Role |
 |---|---|---|
-| **1 — communication contract** | `c` audience · open-ended communication intent · audience outcome · core message / delivery context (primary + optional secondary) / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas | confirmed first |
+| **1 — communication contract** | `primary_language` · `c` audience · open-ended communication intent · audience outcome · core message / delivery context (primary + optional secondary) / artifact afterlife · `content_divergence` (all prose fields may be blank) · `a` canvas | confirmed first |
 | **2 — complete deck solution** (authored once from the user's *actual* Stage 1) | reading mode (`delivery_purpose`, PPT only) · `d` mode + visual style · `b` page count · `e` color · `f` icon · `g` typography · `h` image source + generated-image rendering · conditional natural-language template application | derived from the confirmed contract; internal template exporter modes remain hidden |
 | **3 — resources / production** (authored once from the user's *actual* Stage 1 + Stage 2) | formula policy · conditional AI-image acquisition path · generation mode · refine-spec toggle · proactive speaker notes / custom animations / narration audio | derived from the confirmed solution |
 
@@ -38,7 +38,7 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 >
 > **One opt-in exception**: present the refinement line with the split-mode note ([`generate-pptx.md`](../workflows/generate-pptx.md) Step 4). Only explicit opt-in runs [`refine-spec`](../workflows/stages/refine-spec.md): write the Design Spec once, pass Gate 1, then stop before the lock for unrestricted chat revision. Never enter it unprompted.
 
-> **Default presentation surface — Confirm UI.** Use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json` at their documented handoffs and launch per Generate Step 4. The active, unconfirmed stage may be overwritten when the user asks for a new recommendation; normal progression writes the next stage file and leaves confirmed earlier stages intact. Stage 2 carries ≥3 safe / shifted / bold `design_directions`; each bundles visual style, a six-role HEX palette, CJK + Latin heading/body typography, icons, and conditional image rendering. Also print the recommendations + URL in chat as fallback context. Skip launch only for an explicit chat-only request; a chat-question tool is not a substitute. Generate Step 4 reads the final confirmed `result.json` once and retains that object for Design Spec authoring. [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns schema and lifecycle.
+> **Default presentation surface — Confirm UI.** Use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json`; launch per Generate Step 4. Stage 1 writes canonical BCP-47 `primary_language` apart from UI `lang`; the server normalizes legacy English/Chinese/Japanese/Korean names, rejecting `und` and Chinese without script/region; Strategist projects it through Design Spec §I to lock communication. Replace only the active unconfirmed stage; preserve confirmed files. Stage 2 carries ≥3 safe / shifted / bold `design_directions`; each bundles visual style, a six-role HEX palette, primary-language heading/body typography plus an English companion only for non-English decks, icons, and conditional image rendering. Print the URL, Stage-1 summary, and `confirm_ui.md` chat fallback; this is not confirmation. Skip launch only for explicit chat-only use; chat-question tools are no substitute. Step 4 reads final confirmed `result.json` once for Design Spec authoring. [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns schema and lifecycle.
 
 **Confirmed-value semantics**: confirmation preserves both the value and the owning field's semantic type. Apply the type to the affected property, not automatically to the whole object:
 
@@ -212,12 +212,12 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Family selection**:
 
-- User or active template typography is authoritative. Otherwise ≥3 Stage-2 directions include concord (safe) and contrast (tension); never add a separate font-choice round or pair near-duplicate title/body families.
-- Every Stage-2 direction carries `heading` / `body` `cjk`, `latin`, `css`, and positive `body_size`; repeat user/template-fixed stacks.
-- Use concrete, target-installed PowerPoint faces. **Examples only, never a catalog/default** (verify locale): Chinese `DengXian` / `SimSun`; Japanese `Meiryo` / `Yu Gothic`; Korean `Malgun Gothic` / `Batang`; Latin `Arial` / `Georgia` / `Consolas` / `Impact`.
+- User/template typography is authoritative. When it fixes the stacks, repeat them and set `typography.fixed: true` on every Stage-2 direction. Otherwise ≥3 directions use different concrete heading/body combinations spanning concord and contrast; no extra font round.
+- Every Stage-2 direction carries `heading` / `body` `primary`, `css`, and positive `body_size`; add `english` only when the deck's main language is not English.
+- Use concrete, target-installed PowerPoint faces. The Confirm UI font catalog supplies additional manual dropdown choices, not a recommendation whitelist.
 - Keep stacks to four families or fewer. A brand/web face may lead only after user-confirmed target installation/approved install; PPT Master does not embed fonts. Otherwise export a safe face and keep the unavailable face as Design Spec reference.
 - Avoid near-equivalent role splits such as YaHei↔PingFang, SimSun↔Songti, Arial↔Helvetica↔Segoe UI, or Times New Roman↔Times. Counterparts may aid SVG/browser preview; CSS tails are not deterministic PowerPoint fallbacks.
-- Choose by locked style and vary the axis instead of defaulting to YaHei/Arial: serif×sans, Kai/FangSong×hei, hei×song, double-serif, display×neutral, same-family weight, or sans+mono. These are recall seeds, not presets.
+- Choose by locked style and vary the axis: serif×sans, Kai/FangSong×hei, hei×song, double-serif, display×neutral, same-family weight, or sans+mono. These are recall seeds, not presets.
 
 **Strategist-owned role extension after confirmation**: Confirm UI keeps the heading/body choice unchanged. While authoring the complete §IX roster and §IV typography plan, scan the actual content for recurring roles that materially need a different family for character or legibility—such as `annotation`, `footer`, `footnote`, `data`, `emphasis`, `quote`, or `code`. Add a lowercase snake_case role and exact stack only when it recurs; inherited roles and one-off garnish stay omitted. The extension must remain coherent with the confirmed heading/body system and locked visual style, and it does not reopen confirmation. Only when an additional family role is added, record one compact `Role rationale` in §IV naming the added role(s) and why; otherwise omit the line.
 
@@ -433,12 +433,12 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 
 Generate Step 4 owns this sequence. `design_spec.md` is the complete human-readable decision; `spec_lock.md` is its context-selected execution subset/routing contract. Consume `result.json` once into the initial Design Spec and never reopen it for the lock. Refinement edits that same Design Spec; affected user revisions become the latest authority. Never treat the planning files as parallel interpretations.
 
-After final confirmation, a newer explicit user instruction about notes, custom
-animation, or narration updates only the corresponding effective outcome and
-provenance in `design_spec.md §I`. Resume at the owning step without reopening
-Confirm UI or adding the production decision to `spec_lock.md`. Enabling
-Narration Audio also recomputes the dependent Speaker Notes outcome and
-provenance.
+After final confirmation, a newer explicit notes/animation/narration instruction
+updates only affected §I outcomes/provenance and resumes their owner; never
+reopen Confirm UI or add them to `spec_lock.md`. Before editing, apply
+Generate's notes/audio dependency gate. Record animation provenance as
+Stage 3 `false`, explicit objects-off, or explicit all-motion-off; only the last
+includes transitions.
 
 1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
 2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching Stage 3 proactive value → compatibility default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
@@ -453,7 +453,7 @@ provenance.
 | Communication contract and `content_divergence` | §I records the confirmed contract; §IX realizes every stated purpose, outcome, priority, and source-treatment constraint |
 | Canvas, reading mode, and page count | §I records the confirmed input and exact resolved count; §IX contains that many ordered pages. Executor produces exactly one output slide per entry, in order |
 | Mode, visual style, palette, and generated-image rendering | §I and §III record the selected direction as identity anchors; named core roles stay stable while page-local expression remains contextual |
-| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records the confirmed heading/body stacks, any recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` anchor values; never discard a declared role override or re-derive a confirmed anchor |
+| Typography, including Strategist-derived recurring family overrides and every visible role size | §IV records Character/upgrade References, resolved heading/body stacks, recurring support-role stacks justified by §IX, and exact `body`, `title`, `subtitle`, and `annotation` anchors; never discard a declared role override or re-derive a confirmed anchor |
 | Icons | §VI uses the confirmed library or confirmed no-icon/custom path |
 | Confirmed image-source set, `image_notes`, and AI strategy | §VIII uses only permitted sources and includes every explicitly required source, asset, or page role; a permitted but unused source needs no row |
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |

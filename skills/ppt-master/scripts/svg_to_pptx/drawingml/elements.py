@@ -30,7 +30,12 @@ from resource_paths import (
     svg_image_payload_error,
 )
 
-from .context import ConvertContext, ShapeResult
+from .context import (
+    TEXT_FLOW_PRESERVE,
+    TEXT_FLOW_SPLIT,
+    ConvertContext,
+    ShapeResult,
+)
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
 from .text_properties import (
@@ -55,6 +60,7 @@ from .utils import (
     parse_inline_style, parse_font_family, is_cjk_char,
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
     resolve_text_run_fonts, split_project_text_clusters,
+    text_has_rtl_characters, text_uses_rtl,
     is_thick_circle_shorthand, parse_project_geometry_length,
     is_canonical_project_geometry_length,
     parse_project_image_aspect_ratio,
@@ -2120,6 +2126,10 @@ def _strip_leading_chars_from_runs(
     stripped: list[dict[str, Any]] = []
     remaining = char_count
     for run in runs:
+        if run.get('_line_break'):
+            if remaining == 0:
+                stripped.append(run)
+            continue
         text = str(run.get('text', ''))
         if remaining >= len(text):
             remaining -= len(text)
@@ -2233,8 +2243,11 @@ def _paragraph_pr_xml(
     body_xml: str = '',
     bullet: dict[str, Any] | None = None,
     ctx: ConvertContext | None = None,
+    rtl: bool = False,
 ) -> str:
     attrs = f'algn="{algn}"'
+    if rtl:
+        attrs += ' rtl="1"'
     if bullet:
         margin = px_to_emu(_bullet_margin_px(bullet, font_size))
         indent = px_to_emu(_bullet_indent_px(bullet, font_size))
@@ -2537,7 +2550,15 @@ def _build_run_properties_xml(
         fonts,
         ctx.theme_font_spec if ctx is not None else None,
     ) or resolve_text_run_fonts(text, fonts)
-    lang = detect_text_lang(text)
+    lang = detect_text_lang(
+        text,
+        ctx.primary_language if ctx is not None else None,
+    )
+    rtl_xml = (
+        '\n<a:rtl val="1"/>'
+        if text_has_rtl_characters(text)
+        else ''
+    )
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
@@ -2548,7 +2569,7 @@ def _build_run_properties_xml(
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
+<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>{rtl_xml}
 </a:rPr>'''
 
 
@@ -2561,6 +2582,10 @@ def _coalesce_text_runs(
     merged: list[dict[str, Any]] = []
     previous_properties: str | None = None
     for run in runs:
+        if run.get('_line_break'):
+            merged.append({'_line_break': True})
+            previous_properties = None
+            continue
         text = str(run.get('text', ''))
         if not text:
             continue
@@ -2601,6 +2626,8 @@ def _build_run_xml(
     effect_xml: str = '',
 ) -> str:
     """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
+    if run.get('_line_break'):
+        return '<a:br/>'
     text = str(run['text'])
     properties_xml = _build_run_properties_xml(
         run,
@@ -2698,16 +2725,14 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'stroke_opacity': stroke_opacity,
     }
 
-    # Paragraph mode: flatten_tspan marks <text> with data-paragraph-line-height
-    # when its direct-child tspans form a mergeable paragraph (same x, dy
-    # clustered around one base line-height). Each direct tspan becomes one
-    # <a:p> so the paragraph survives as a single editable text frame.
-    # Per-line data-paragraph-space-before encodes paragraph gaps (extra dy
-    # above the base line-height) for the corresponding <a:p>.
-    # Paragraph mode is controlled by ctx.merge_paragraphs. When off, ignore
-    # any data-paragraph-* markers and fall through to the original
-    # one-text-per-tspan path so the SVG's pixel layout is preserved.
-    line_height_attr = elem.get('data-paragraph-line-height') if ctx.merge_paragraphs else None
+    # Single-frame modes annotate conservative dy-stacked text with one base
+    # line height. Semantic paragraphs become <a:p>; authored visual rows
+    # either become <a:br/> (preserve) or join for wrapping (reflow).
+    line_height_attr = (
+        elem.get('data-paragraph-line-height')
+        if ctx.text_flow != TEXT_FLOW_SPLIT
+        else None
+    )
     line_height_px = _f(line_height_attr) if line_height_attr is not None else None
     paragraph_runs: list[list[dict[str, Any]]] | None = None
     paragraph_space_before: list[float] = []
@@ -2735,7 +2760,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 _estimate_bullet_line_width(line_runs, fonts, ctx)
             )
             soft_break = child.get('data-paragraph-soft-break') == '1'
-            if soft_break and paragraph_runs:
+            line_break = child.get('data-paragraph-line-break') == '1'
+            if line_break and paragraph_runs:
+                paragraph_runs[-1].append({'_line_break': True})
+                paragraph_runs[-1].extend(line_runs)
+            elif soft_break and paragraph_runs:
                 # Append to the previous paragraph. A Latin line-wrap needs a
                 # space to keep two words apart (SVG used a dy break, not
                 # punctuation); CJK wraps mid-sentence with no inter-character
@@ -2781,12 +2810,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         runs, single_bullet = _extract_text_bullet(runs)
         runs = _coalesce_text_runs(runs, fonts, ctx)
 
-    full_text = ''.join(r['text'] for r in runs) if runs else ''
+    is_placeholder_carrier = (
+        (elem.get('data-pptx-carrier') or '').strip().lower() == 'true'
+    )
+    full_text = ''.join(str(r.get('text', '')) for r in runs) if runs else ''
     if not full_text.strip():
-        is_placeholder_carrier = (
-            (elem.get('data-pptx-carrier') or '').strip().lower()
-            == 'true'
-        )
         if not is_placeholder_carrier:
             return None
         # A declared carrier must compile to one native text shape even when its
@@ -2800,14 +2828,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Estimate text dimensions
     if paragraph_runs is not None:
-        # Use the WIDEST visual line (per-tspan as the deck author drew it),
-        # not the joined-up paragraph: soft-broken paragraphs concatenate
-        # many lines into one <a:p>, and measuring the joined string would
-        # blow the textbox past the canvas.
+        # Use the widest authored visual line, not a reflow-joined paragraph.
         text_width = max(visual_line_widths) if visual_line_widths else 0.0
-        # Total height assumes the visual line count from the SVG source;
-        # if PowerPoint wraps to more or fewer lines after the user resizes,
-        # the user resizes the height accordingly.
+        # Keep the authored visual-line count as the source height contract.
         text_height = (
             line_height_px * (len(visual_line_widths) - 1)
             + sum(paragraph_space_before)
@@ -2986,12 +3009,24 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
                 spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
             runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
+            first_text_run = next(
+                (run for run in line if not run.get('_line_break')),
+                None,
+            )
             p_pr_xml = _paragraph_pr_xml(
                 algn=algn,
-                font_size=float(line[0].get('font_size', font_size)) if line else font_size,
+                font_size=(
+                    float(first_text_run.get('font_size', font_size))
+                    if first_text_run is not None
+                    else font_size
+                ),
                 body_xml=f'{ln_spc_xml}{spc_bef_xml}',
                 bullet=bullet,
                 ctx=ctx,
+                rtl=text_uses_rtl(
+                    ''.join(str(run.get('text', '')) for run in line),
+                    ctx.primary_language,
+                ),
             )
             paragraph_xml_chunks.append(
                 f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
@@ -3004,6 +3039,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             font_size=float(runs[0].get('font_size', font_size)) if runs else font_size,
             bullet=single_bullet,
             ctx=ctx,
+            rtl=text_uses_rtl(full_text, ctx.primary_language),
         )
         paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
 
@@ -3031,23 +3067,37 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         if exact_text_insets is None:
             raise ValueError('data-pptx-frame text insets were not resolved')
         left_inset, top_inset, right_inset = exact_text_insets
+        exact_frame_wrap = (
+            'none' if ctx.text_flow == TEXT_FLOW_PRESERVE else 'square'
+        )
         body_pr_xml = (
-            '<a:bodyPr wrap="square" '
+            f'<a:bodyPr wrap="{exact_frame_wrap}" '
             f'lIns="{px_to_emu(left_inset)}" '
             f'tIns="{px_to_emu(top_inset)}" '
             f'rIns="{px_to_emu(right_inset)}" bIns="0" '
             'anchor="t" anchorCtr="0">\n<a:noAutofit/>\n</a:bodyPr>'
         )
-    # Paragraph mode: wrap="square" so text reflows when the user resizes,
-    # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
-    # long joined-up <a:p> on one line, blowing past the canvas. The cx we
-    # write below is the longest source SVG line without single-line renderer
-    # headroom; PowerPoint wraps long paragraphs inside this design width.
-    # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
+    # Preserve mode keeps authored <a:br/> boundaries and lets an ordinary
+    # generated text box follow later manual edits, such as deleting a break.
+    # Reflow mode keeps the source width fixed as its wrapping constraint.
+    # Exact imported frames above and structured placeholder carriers remain
+    # fixed regardless of text-flow mode.
     elif paragraph_runs is not None:
+        paragraph_wrap = (
+            'none' if ctx.text_flow == TEXT_FLOW_PRESERVE else 'square'
+        )
+        paragraph_autofit = (
+            '<a:spAutoFit/>'
+            if (
+                ctx.text_flow == TEXT_FLOW_PRESERVE
+                and not is_placeholder_carrier
+            )
+            else '<a:noAutofit/>'
+        )
         body_pr_xml = (
-            '<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" '
-            'anchor="t" anchorCtr="0"/>'
+            f'<a:bodyPr wrap="{paragraph_wrap}" '
+            'lIns="0" tIns="0" rIns="0" bIns="0" '
+            f'anchor="t" anchorCtr="0">\n{paragraph_autofit}\n</a:bodyPr>'
         )
     else:
         body_pr_xml = (

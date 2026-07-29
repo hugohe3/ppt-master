@@ -125,7 +125,11 @@ If the project already existed or notes/audio coverage changed, refresh the draf
 uvx ppt-master native-enhance-pptx plan "<project>"
 ```
 
-Refresh preserves user-owned module enablement, timing padding, global transition settings, and `transitions.slides`; it recomputes file presence/coverage, resets the plan to `draft`, and requires confirmation again. Audio coverage in the plan is explicitly `decodability: unchecked`; `validate` owns the ffprobe gate. CLI flags override only fields explicitly supplied.
+`plan` preserves module settings, refreshes coverage, and emits a
+reconfirmation `draft`. It changes `audio.enabled: true` /
+`notes.enabled: false` to `notes.enabled: true`; `validate`/`apply` reject the
+old state. Audio remains unchecked until `validate` runs ffprobe. Supplied CLI
+flags override.
 
 Present the plan to the user before generating notes or audio:
 
@@ -248,10 +252,12 @@ Write:
 Run coverage check:
 
 ```bash
-uvx ppt-master native-enhance-pptx validate "<project>"
+uvx ppt-master native-enhance-pptx validate "<project>" --materials notes
 ```
 
-> Note: missing, empty, unreadable, or undecodable requested material returns exit code `2`. Package, source-drift, plan/module, or duplicate native-enhance narration-carrier errors return `1`.
+> Note: This keeps source/plan/transition/carrier checks but does not require
+> audio. Missing/invalid notes return `2`; structural/semantic errors return
+> `1`. Step 8 runs full validation after audio.
 
 ---
 

@@ -62,8 +62,8 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 - Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load
 - Quality Check Gate
 - Speaker notes generation only when the effective Speaker Notes outcome is enabled
-- Conditional custom-animation handling under the effective Custom Animations
-  outcome, explicit user instruction, and existing-sidecar rules
+- Conditional custom-animation handling under the effective outcome,
+  provenance, explicit instruction, and existing-sidecar rules
 - Step 7: Post-processing & Export (conditional `total_md_split` → `finalize_svg`
   → `svg_to_pptx`; disabled speaker notes use `--no-notes`)
 - After the base export, run `generate-audio` when the effective Narration Audio
@@ -74,7 +74,8 @@ Reload the Generate authority and required execution references; do not reconstr
 If the user gives a newer explicit instruction after Stage 3, update only the
 affected effective outcome and provenance in `design_spec.md §I`, then resume at
 its owning step. Do not reopen Confirm UI or add the decision to
-`spec_lock.md`.
+`spec_lock.md`. Before writing, apply Generate's single notes/audio dependency
+gate; at export, apply its sidecar suppression rules.
 
 **Source verification**: the execution session is fresh. Read only the relevant `sources/` passages needed to resolve explicit `Fact IDs` / source references or verify facts, quotes, names, and data required by the current §IX block. Follow [`executor-base.md`](../../references/executor-base.md) §2.1's content-vs-expression contract; source verification never authorizes a second outline. If §IX lacks executable content or evidence, stop and return to Generate Step 4 for Design Spec repair.
 

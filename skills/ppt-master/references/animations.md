@@ -357,7 +357,7 @@ Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start
 `--animation-config` selects a sidecar; `--no-animations` disables page/object
 motion but preserves narration audio and recorded advance timing.
 
-> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. When either animation sidecar exists, narrated export selects `narration_animations.json`; canonical `animations.json` without that derived file remains a synchronization error. When both are absent, export creates no sidecar and keeps `fade` / no per-element builds. Pass `--animation-config animations.json` to use the canonical presentation animation, or `--no-animations` to remove both page and object motion explicitly.
+> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. When either animation sidecar exists, narrated export selects `narration_animations.json`; canonical `animations.json` without that derived file remains a synchronization error. Without sidecars, pass `--inherit-motion-from <base_postflight_report>` for the base deck motion. Pass `--animation-config animations.json` for canonical animation, or `--no-animations` to remove page and object motion.
 
 ### 4.1 Slow ambient motion — the page that breathes
 

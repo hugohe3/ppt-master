@@ -56,7 +56,8 @@ uvx ppt-master project validate <project_path>
 uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name>...]
 
 # Step 4 Strategist confirmation stage — interactive visual page (default auto-launch; chat fallback)
-uvx ppt-master confirm-ui <project_path> --daemon --wait
+uvx ppt-master confirm-ui <project_path> --daemon
+uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1
 
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images

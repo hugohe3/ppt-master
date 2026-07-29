@@ -348,9 +348,11 @@ except ImportError:
 try:
     from svg_to_pptx.tspan_flattener import (
         flatten_positional_tspans as _flatten_positional_tspans,
+        nested_positional_tspan_errors as _nested_positional_tspan_errors,
     )
 except ImportError:
     _flatten_positional_tspans = None
+    _nested_positional_tspan_errors = None
 
 try:
     from svg_to_pptx.pptx_package.template_structure import (
@@ -2526,6 +2528,17 @@ class SVGQualityChecker:
         self._check_root_module_text_bounds(root, result)
         self._check_fragmented_paragraph_text(root, result)
         self._check_unmergeable_leading_text(root, result)
+        self._check_nested_positional_tspans(root, result)
+
+    def _check_nested_positional_tspans(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject nested baseline jumps that DrawingML runs cannot represent."""
+        if _nested_positional_tspan_errors is None:
+            return
+        result['errors'].extend(_nested_positional_tspan_errors(root))
 
     @classmethod
     def _single_line_text_runs(
@@ -3507,7 +3520,7 @@ class SVGQualityChecker:
                 )
 
     def _check_unmergeable_leading_text(self, root: ET.Element, result: Dict) -> None:
-        """Warn when leading text cannot be normalized for paragraph merging."""
+        """Warn when leading text cannot be normalized into one PPT text frame."""
         risky = []
         for text_el in root.iter(f'{{{SVG_NS}}}text'):
             if not (text_el.text or "").strip():
@@ -3525,7 +3538,7 @@ class SVGQualityChecker:
             suffix = '' if len(risky) <= 3 else f"; +{len(risky) - 3} more"
             result['warnings'].append(
                 "Detected multi-line <text> with leading direct text that cannot "
-                f"be normalized for PPT paragraph merging ({sample}{suffix})"
+                f"be normalized into one PPT text frame ({sample}{suffix})"
             )
 
     def _check_fragmented_paragraph_text(
@@ -4798,10 +4811,16 @@ class SVGQualityChecker:
             return
 
         flattened_root = copy.deepcopy(root)
-        _flatten_positional_tspans(
-            ET.ElementTree(flattened_root),
-            merge_paragraphs=True,
-        )
+        try:
+            _flatten_positional_tspans(
+                ET.ElementTree(flattened_root),
+                merge_paragraphs=True,
+                preserve_line_breaks=True,
+            )
+        except ValueError:
+            # The shared text check reports the unsupported nested-position
+            # contract; avoid turning a quality result into a checker crash.
+            return
         slots_by_id = {
             (slot.get('id') or '').strip(): slot
             for slot in flattened_root.iter(f'{{{SVG_NS}}}g')
@@ -4821,7 +4840,7 @@ class SVGQualityChecker:
                 f"{svg_path.name}: placeholder slot {slot_id} becomes "
                 f"{len(native_children)} native children after positional "
                 "<tspan> flattening; a carrier-bound slot must export as one "
-                "text or picture carrier. Use one mergeable dy-stacked text "
+                "text or picture carrier. Use one single-frame dy-stacked text "
                 "frame, or move independently positioned lines outside the slot"
             )
 
