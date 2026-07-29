@@ -557,7 +557,13 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 }
 .font-sample-heading { font-size: 24px; font-weight: 700; line-height: 1.3; }
 .font-sample-body { font-size: 14px; color: #333; margin-top: 4px; }
-.custom-typography-input { margin-top: 8px; min-height: 58px; resize: vertical; }
+.custom-typography-fields {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+}
+.custom-typography-legacy { grid-column: 1 / -1; }
+.custom-typography-field { display: flex; flex-direction: column; gap: 4px; }
 .custom-color-input { margin-top: 8px; min-height: 58px; resize: vertical; }
 .image-strategy-custom-input { margin-top: 8px; min-height: 72px; resize: vertical; }
 .image-usage-notes-input { min-height: 64px; resize: vertical; }

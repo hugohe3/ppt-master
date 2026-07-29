@@ -119,7 +119,7 @@
             size_role_subtitle: "subtitle",
             size_role_annotation: "annotation",
             custom_typography: "Custom typography",
-            custom_typography_placeholder: "Type your font plan, e.g. Heading: Georgia + KaiTi; Body: Microsoft YaHei + Arial…",
+            custom_typography_repair: "Complete the four concrete font names to continue.",
             custom_color: "Custom color",
             custom_color_placeholder: "Describe your colors in words, e.g. deep navy primary, warm orange accent, white background — or paste HEX values…",
             role_background: "bg",
@@ -266,7 +266,7 @@
             size_role_subtitle: "サブタイトル",
             size_role_annotation: "注釈",
             custom_typography: "カスタムタイポグラフィ",
-            custom_typography_placeholder: "フォント案を入力 — 例：見出し：Georgia + 游明朝 / 本文：游ゴシック + Arial…",
+            custom_typography_repair: "続行するには、4つの具体的な書体名を入力してください。",
             custom_color: "カスタム配色",
             custom_color_placeholder: "配色を言葉で説明 — 例：濃紺をメインに暖色オレンジのアクセント、背景は白 — またはHEX値を貼り付け…",
             role_background: "背景",
@@ -413,7 +413,7 @@
             size_role_subtitle: "副标题",
             size_role_annotation: "注释",
             custom_typography: "自定义字体方案",
-            custom_typography_placeholder: "输入字体方案，如：标题用楷体；正文用微软雅黑…",
+            custom_typography_repair: "请补全四个具体字体名称后继续。",
             custom_color: "自定义配色",
             custom_color_placeholder: "用文字描述配色，如：深蓝主色、暖橙强调、白色背景——或直接粘贴 HEX 值…",
             role_background: "背景",
@@ -1659,6 +1659,7 @@
                 if (isFinite(raw)) typ.sizes[role] = roundSize(raw);
             });
         }
+        if (typographyFamiliesComplete(typ)) delete typ.custom;
         // delivery_purpose is PPT-only; drop it on non-PPT canvases where it has
         // no meaning and was never shown.
         if (!isPptCanvas(payload.canvas)) delete payload.delivery_purpose;
@@ -1807,6 +1808,21 @@
         return primary + ", " + fallback;
     }
 
+    function typographyFamiliesComplete(typography) {
+        typography = normTypography(typography || {});
+        return ["heading", "body"].every(function (role) {
+            var font = typography[role] || {};
+            return ["cjk", "latin", "css"].every(function (field) {
+                return !!String(font[field] || "").trim();
+            });
+        });
+    }
+
+    function typographyNeedsConcreteRepair() {
+        return !!(STATE.typography && STATE.typography.name === "custom" &&
+            !typographyFamiliesComplete(STATE.typography));
+    }
+
     function sampleText(role, script) {
         if (role === "heading") return t(script === "latin" ? "preview_latin_title" : "preview_big_title");
         return t(script === "latin" ? "preview_latin_body" : "preview_body_intro");
@@ -1826,13 +1842,30 @@
     }
 
     function renderTypography(host) {
-        var cands = typographyRecommendationCandidates();
+        var cands = typographyRecommendationCandidates().filter(typographyFamiliesComplete);
         var sec = section(7, "sec_type");
+        if (stageNumber(REC) >= 3 && typographyNeedsConcreteRepair()) {
+            setSectionNote(sec, t("custom_typography_repair"));
+        }
         var grid = el("div", "font-grid");
-        var customInput = el("textarea", "text-input custom-typography-input");
-        customInput.rows = 2;
-        customInput.placeholder = t("custom_typography_placeholder");
-        customInput.style.display = "none";
+        var customFields = el("div", "custom-typography-fields");
+        var customInputs = {};
+        var customLegacyNote = el("div", "toggle-desc custom-typography-legacy");
+        customFields.appendChild(customLegacyNote);
+        customFields.style.display = "none";
+
+        function syncCustomInputs() {
+            var typography = STATE.typography || {};
+            customLegacyNote.textContent = String(typography.custom || "").trim();
+            customLegacyNote.style.display = customLegacyNote.textContent ? "block" : "none";
+            ["heading", "body"].forEach(function (role) {
+                var font = typography[role] || {};
+                ["cjk", "latin"].forEach(function (script) {
+                    var input = customInputs[role + "_" + script];
+                    if (input) input.value = font[script] || "";
+                });
+            });
+        }
 
         function selectFont(idx) {
             var c = normTypography(cands[idx] || {});
@@ -1848,7 +1881,7 @@
                 sizes: Object.assign({}, prev.sizes || {})
             };
             if (sizeInput) sizeInput.value = STATE.typography.body_size || "";
-            customInput.style.display = "none";
+            customFields.style.display = "none";
             grid.querySelectorAll(".font-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
             refreshSizeInputs();   // fill any role with no value yet; never overwrites existing values
             refreshStylePreview();
@@ -1856,18 +1889,29 @@
 
         function selectCustomTypography() {
             var prev = STATE.typography || {};
+            var prevHeading = prev.heading || {};
+            var prevBody = prev.body || {};
             STATE.typography = {
                 name: "custom",
-                custom: customInput.value || "",
-                heading: {},
-                body: {},
+                heading: {
+                    cjk: prevHeading.cjk || "",
+                    latin: prevHeading.latin || "",
+                    css: prevHeading.css || "sans-serif"
+                },
+                body: {
+                    cjk: prevBody.cjk || "",
+                    latin: prevBody.latin || "",
+                    css: prevBody.css || "sans-serif"
+                },
                 body_size: prev.body_size || "",
                 sizes: Object.assign({}, prev.sizes || {})   // switching font family must not drop sizes
             };
+            if (prev.custom) STATE.typography.custom = prev.custom;
             grid.querySelectorAll(".font-card").forEach(function (card) { card.classList.remove("selected"); });
             customCard.classList.add("selected");
-            customInput.style.display = "block";
-            customInput.focus();
+            customFields.style.display = "grid";
+            syncCustomInputs();
+            customInputs.heading_cjk.focus();
             refreshSizeInputs();
             refreshStylePreview();
         }
@@ -1893,12 +1937,31 @@
         customCard.addEventListener("click", selectCustomTypography);
         grid.appendChild(customCard);
         sec.appendChild(grid);
-        customInput.addEventListener("input", function () {
-            if (!STATE.typography || STATE.typography.name !== "custom") selectCustomTypography();
-            STATE.typography.custom = customInput.value;
-            refreshStylePreview();
+        [
+            ["heading", "cjk", "Microsoft YaHei"],
+            ["heading", "latin", "Arial"],
+            ["body", "cjk", "Microsoft YaHei"],
+            ["body", "latin", "Arial"]
+        ].forEach(function (config) {
+            var role = config[0], script = config[1];
+            var field = el("label", "custom-typography-field");
+            field.appendChild(el("span", "hex-cell-label", t("font_" + role) + " · " + t(script)));
+            var input = el("input", "text-input");
+            input.type = "text";
+            input.placeholder = config[2];
+            input.addEventListener("input", function () {
+                if (!STATE.typography || STATE.typography.name !== "custom") return;
+                if (!STATE.typography[role]) {
+                    STATE.typography[role] = { css: "sans-serif" };
+                }
+                STATE.typography[role][script] = input.value;
+                refreshStylePreview();
+            });
+            customInputs[role + "_" + script] = input;
+            field.appendChild(input);
+            customFields.appendChild(field);
         });
-        sec.appendChild(customInput);
+        sec.appendChild(customFields);
 
         var sizeField = el("div", "subfield");
         sizeField.appendChild(el("div", "subfield-label", t("font_body_size")));
@@ -2026,14 +2089,18 @@
         host.appendChild(sec);
 
         var selIdx = -1;
-        if (STATE.typography && STATE.typography.name) cands.forEach(function (c, i) {
+        if (STATE.typography && STATE.typography.name !== "custom") cands.forEach(function (c, i) {
             if ((localized(c, "name") || c.name) === STATE.typography.name) selIdx = i;
         });
         if (selIdx >= 0) selectFont(selIdx);
         else if (STATE.typography && STATE.typography.name === "custom") {
-            customInput.value = STATE.typography.custom || "";
+            ["heading", "body"].forEach(function (role) {
+                if (!STATE.typography[role]) STATE.typography[role] = {};
+                if (!STATE.typography[role].css) STATE.typography[role].css = "sans-serif";
+            });
             customCard.classList.add("selected");
-            customInput.style.display = "block";
+            customFields.style.display = "grid";
+            syncCustomInputs();
         }
     }
 
@@ -2542,7 +2609,13 @@
             if (previewHost) renderStylePreview(previewHost);
             if (previewHost) renderImageStrategyPreview(previewHost);
             // Stage 3 contains production mechanics only. It summarizes the
-            // confirmed image source but does not reopen aesthetic decisions.
+            // confirmed image source and reopens typography only to repair a
+            // legacy prose-only Custom result that cannot be final as-is.
+            if (typographyNeedsConcreteRepair()) {
+                var repairStyleGroup = el("div", "style-group");
+                renderTypography(repairStyleGroup);
+                host.appendChild(repairStyleGroup);
+            }
             renderImageProduction(host);
             renderFormulaPolicy(host);
             renderProactiveExecution(host);
@@ -2664,6 +2737,7 @@
             body_size: t0.body_size || typographyBodySize(REC.typography),
             sizes: Object.assign({}, t0.sizes || {})
         };
+        if (t0.custom) STATE.typography.custom = t0.custom;
 
         // Guarantee a body baseline even when a candidate omitted body_size, on
         // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
@@ -2789,22 +2863,14 @@
         var customPalette = color.name === "custom" && String(color.custom || "").trim();
 
         var typography = payload.typography || {};
-        var completeFontRole = function (role) {
-            var font = typography[role] || {};
-            return ["cjk", "latin", "css"].every(function (field) {
-                return !!String(font[field] || "").trim();
-            });
-        };
-        var completeFamilies = completeFontRole("heading") && completeFontRole("body");
-        var customFamilies = typography.name === "custom" &&
-            String(typography.custom || "").trim();
+        var completeFamilies = typographyFamiliesComplete(typography);
         var sizes = typography.sizes || {};
         var completeSizes = positiveNumber(typography.body_size) &&
             ["title", "subtitle", "annotation"].every(function (role) {
                 return positiveNumber(sizes[role]);
             });
         var valid = (completePalette || customPalette) &&
-            (completeFamilies || customFamilies) && completeSizes;
+            completeFamilies && completeSizes;
         if (!valid) {
             document.getElementById("confirm-status").textContent = t("design_system_required");
         }

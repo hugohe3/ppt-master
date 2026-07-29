@@ -58,17 +58,14 @@
 
 ### Font Plan
 
-| Role | Chinese | English | Fallback tail |
-| --- | --- | --- | --- |
-| Title | [fill] | [fill] | [fill] |
-| Body | [fill] | [fill] | [fill] |
-| Emphasis | [fill] | [fill] | [fill] |
-| Code | [fill] | [fill] | [fill] |
+| Role | Character (Reference) | Chinese | English | Fallback tail |
+| --- | --- | --- | --- | --- |
+| Title | [fill] | [fill] | [fill] | [fill] |
+| Body | [fill] | [fill] | [fill] | [fill] |
 
-- Title: [fill]
-- Body: [fill]
-- Emphasis: [fill or same as Body]
-- Code: [fill]
+- **Typography upgrade (Reference)**: [fill post-export substitution by role after target installation, or omit]
+- **Title stack**: [fill]
+- **Body stack**: [fill]
 
 ### Font Size Hierarchy
 

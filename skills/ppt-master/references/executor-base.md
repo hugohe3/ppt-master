@@ -281,9 +281,9 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Typography comes from `spec_lock.md`: `<role>_family` wins; otherwise titles use `title_family`, body/support `body_family`, then legacy `font_family`. Sparse accents follow §2.1. LaTeX renders stay PNG, not `code_family`.
+Read typography from `spec_lock.md`: `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1 and LaTeX stays PNG.
 
-**Default — font-family inheritance (may override where needed)**: Put the common stack on root `<svg>`; matching descendants omit it. Override at the nearest clear `<g>`, `<text>`, or `<tspan>`. Change placement, never lock selection.
+**Default — locked-stack realization (may vary treatment)**: Express the Design Spec Character Reference through scale, weight, spacing, color, and composition; keep the locked family. Put the common stack on root `<svg>`, omit matching descendants, and override at the nearest clear `<g>`, `<text>`, or `<tspan>`.
 
 **Missing required field — `typography.font_family`** → stop and return to Generate Step 4 / [`strategist.md`](strategist.md) §6.2 to repair `spec_lock.md`; do not infer a stack from `design_spec.md`.
 

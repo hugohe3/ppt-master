@@ -93,11 +93,12 @@ Use these exact subsections and field shapes:
 
 ### Font Plan
 
-| Role | Chinese | English | Fallback tail |
-| --- | --- | --- | --- |
-| Title | <family> | <family> | <fallback> |
-| Body | <family> | <family> | <fallback> |
+| Role | Character (Reference) | Chinese | English | Fallback tail |
+| --- | --- | --- | --- | --- |
+| Title | <category/modifier> | <family> | <family> | <fallback> |
+| Body | <category/modifier> | <family> | <family> | <fallback> |
 
+- **Typography upgrade (Reference)**: <post-export role substitution after target installation; omit if none>
 - **Title stack**: <complete ordered stack>
 - **Body stack**: <complete ordered stack>
 
@@ -135,7 +136,7 @@ Use these exact subsections and field shapes:
 | --- | --- | --- |
 ```
 
-Preserve the confirmed Title/Body system, then add every Strategist-established recurring family override justified by the completed page plan. Append the same semantic role to the Font Plan table and add `- **<Role> stack**: <complete ordered stack>`. Typical optional roles include `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only roles that recur and intentionally differ. Add one compact `Role rationale` only when at least one such override is declared; otherwise omit it. The rationale does not become a lock field. Do not collapse distinct Title/Body stacks or discard a declared optional role. Treat every Font Size Hierarchy value as a role anchor: Executor may adjust one occurrence within anchor `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when real brand marks were selected. The icon table records planned usage, but user-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that stylistic selection. Leave the §VI table empty when no icons are used.
+Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when real brand marks were selected. The icon table records planned usage, but user-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that stylistic selection. Leave the §VI table empty when no icons are used.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 
