@@ -12,7 +12,7 @@ slide auto-advance timings, and optional global or per-slide page transitions.
 Usage:
     python3 scripts/native_enhance_pptx.py init <source.pptx> [--name project_name]
     python3 scripts/native_enhance_pptx.py apply <project_path> [--output output.pptx]
-    python3 scripts/native_enhance_pptx.py validate <project_path>
+    python3 scripts/native_enhance_pptx.py validate <project_path> [--materials {all,notes}]
 
 Examples:
     python3 scripts/native_enhance_pptx.py init projects/source.pptx --name fire_station
@@ -624,10 +624,19 @@ def _audio_path(audio_dir: Path, index: int) -> Path | None:
         f"slide{index}",
     ]
     for stem in stems:
-        for ext in NARRATION_EXTENSIONS:
-            candidate = audio_dir / f"{stem}{ext}"
-            if candidate.exists():
-                return candidate
+        matches = [
+            audio_dir / f"{stem}{ext}"
+            for ext in NARRATION_EXTENSIONS
+            if (audio_dir / f"{stem}{ext}").exists()
+        ]
+        if len(matches) > 1:
+            names = ", ".join(path.name for path in matches)
+            raise ValueError(
+                f"ambiguous audio stem {stem!r}: {names}; "
+                "keep exactly one supported extension"
+            )
+        if matches:
+            return matches[0]
     return None
 
 
@@ -636,11 +645,16 @@ def _collect_material_readiness(
     notes_dir: Path,
     audio_dir: Path,
     modules: set[str],
+    *,
+    required_modules: set[str] | None = None,
 ) -> MaterialReadiness:
     """Inspect enabled-module inputs once for both validation and application."""
-    notes_required = "notes" in modules
-    audio_required = "audio" in modules or "timings" in modules
-    timings_enabled = "timings" in modules
+    material_modules = modules if required_modules is None else required_modules
+    notes_required = "notes" in material_modules
+    audio_required = (
+        "audio" in material_modules or "timings" in material_modules
+    )
+    timings_enabled = "timings" in material_modules
     note_paths: dict[int, Path] = {}
     audio_paths: dict[int, Path] = {}
     audio_durations: dict[int, float] = {}
@@ -668,7 +682,12 @@ def _collect_material_readiness(
                 elif notes_required:
                     invalid_notes[slide.index] = f"{note.name} has no spoken text"
 
-        audio = _audio_path(audio_dir, slide.index)
+        try:
+            audio = _audio_path(audio_dir, slide.index)
+        except ValueError as exc:
+            if audio_required:
+                invalid_audio[slide.index] = str(exc)
+            continue
         if audio is None:
             if audio_required:
                 missing_audio.append(slide.index)
@@ -2153,6 +2172,7 @@ def validate_project(args: argparse.Namespace) -> int:
     source_pptx, notes_dir, audio_dir, _exports_dir = _project_paths(project_path)
     plan = _load_enhancement_plan(project_path)
     modules = _enabled_modules(plan)
+    material_modules = {"notes"} if args.materials == "notes" else modules
     source_delivery = audit_pptx_delivery(source_pptx)
     validation_dir = project_path / "validation"
     validation_dir.mkdir(exist_ok=True)
@@ -2163,6 +2183,7 @@ def validate_project(args: argparse.Namespace) -> int:
             plan,
             modules,
             status="failed",
+            material_scope=args.materials,
             fatal_delivery_errors=fatal_delivery_messages,
             delivery_check=source_delivery,
         )
@@ -2229,6 +2250,7 @@ def validate_project(args: argparse.Namespace) -> int:
         notes_dir,
         audio_dir,
         modules,
+        required_modules=material_modules,
     )
     hard_failure = bool(
         source_errors
@@ -2252,9 +2274,12 @@ def validate_project(args: argparse.Namespace) -> int:
         plan,
         modules,
         status=status,
+        material_scope=args.materials,
         slide_count=len(slides),
-        notes_required="notes" in modules,
-        audio_required="audio" in modules or "timings" in modules,
+        notes_required="notes" in material_modules,
+        audio_required=(
+            "audio" in material_modules or "timings" in material_modules
+        ),
         plan_errors=plan_errors,
         transition_errors=transition_errors,
         transition_override_count=transition_slide_count,
@@ -2364,6 +2389,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="check source integrity, plan semantics, and material readiness",
     )
     validate.add_argument("project_path", help="native enhancement project directory")
+    validate.add_argument(
+        "--materials",
+        choices=("all", "notes"),
+        default="all",
+        help=(
+            "required material scope: all enabled modules, or notes only "
+            "before narration audio exists (default: all)"
+        ),
+    )
     validate.set_defaults(func=validate_project)
     return parser
 

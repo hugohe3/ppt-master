@@ -183,15 +183,16 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
   --narration-padding 0.5 --force
 
 # 2B. Re-export with audio embedded
-#     When both animation sidecars are absent, skip 2A: this command keeps the
-#     normal fade page transition and no per-element builds.
+#     Use the base export's [REPORT] path to preserve source-bound deck motion.
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --no-merge --recorded-narration audio --narration-padding 0.5
+  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --inherit-motion-from "<base_postflight_report>"
 
 # Optional: use the canonical presentation animation instead
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --no-merge --recorded-narration audio --narration-padding 0.5 \
-  --animation-config animations.json
+  --animation-config animations.json \
+  --inherit-motion-from "<base_postflight_report>"
 
 # Optional: export narration with no object or page-transition animation
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
@@ -234,13 +235,11 @@ The edge command writes each MP3 and its internal page SRT from the same `edge-t
 |---|---|
 | `narration_animations.json` exists | Use it by default |
 | Only canonical `animations.json` exists | Block until narration synchronization creates the derived sidecar |
-| Both are absent | Create no sidecar; keep the exporter defaults (`fade` page transition, `none` per-element animation) |
+| Both are absent | Create no sidecar; inherit the base report's deck motion |
 
-Pass `--animation-config animations.json` to keep the canonical presentation
-animation, or `--no-animations` only when the user explicitly wants to disable
-both object animations and page-transition motion while preserving narration
-audio and recorded slide-advance timings. Non-narrated export keeps its
-existing optional `<project_path>/animations.json` default.
+Except for explicit `--no-animations`, every Generate narration re-export
+passes the exact base report through `--inherit-motion-from`; missing, stale,
+or narrated reports block. Audio duration plus padding owns final slide advance.
 
 When canonical custom animation is synchronized,
 `<project_path>/narration_timing.json` is the explicit semantic mapping for

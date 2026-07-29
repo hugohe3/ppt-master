@@ -6,7 +6,12 @@ import binascii
 import os
 from pathlib import Path
 
-from tts_backends.backend_common import extension_from_format, post_json, read_api_key
+from tts_backends.backend_common import (
+    extension_from_format,
+    post_json,
+    publish_audio_bytes,
+    read_api_key,
+)
 
 
 DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/t2a_v2"
@@ -82,9 +87,10 @@ def generate(
     if not audio_hex:
         raise RuntimeError(f"MiniMax response missing audio data: {data}")
     try:
-        output_path.write_bytes(binascii.unhexlify(audio_hex))
+        audio = binascii.unhexlify(audio_hex)
     except (binascii.Error, ValueError) as exc:
         raise RuntimeError("MiniMax response audio is not valid hex data") from exc
+    publish_audio_bytes(audio, output_path)
 
 
 def print_voices() -> None:

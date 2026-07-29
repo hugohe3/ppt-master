@@ -248,10 +248,12 @@ Write:
 Run coverage check:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>" --materials notes
 ```
 
-> Note: missing, empty, unreadable, or undecodable requested material returns exit code `2`. Package, source-drift, plan/module, or duplicate native-enhance narration-carrier errors return `1`.
+> Note: This keeps source/plan/transition/carrier checks but does not require
+> audio. Missing/invalid notes return `2`; structural/semantic errors return
+> `1`. Step 8 runs full validation after audio.
 
 ---
 

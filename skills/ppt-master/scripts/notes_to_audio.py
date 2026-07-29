@@ -46,6 +46,7 @@ from tts_backends import (
 configure_utf8_stdio()
 
 DEFAULT_EDGE_CONCURRENCY = 3
+SUPPORTED_AUDIO_EXTENSIONS = frozenset({".m4a", ".mp3", ".wav"})
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,12 @@ class AudioBackend:
     extension: str
     api_key: str = ""
     voice_id: str = ""
+
+
+@dataclass(frozen=True)
+class NoteRosterEntry:
+    note_path: Path
+    output_stem: str
 
 
 @dataclass(frozen=True)
@@ -90,14 +97,15 @@ def spoken_text(markdown: str) -> str:
 
 
 def _prepare_audio_jobs(
-    note_files: list[Path],
+    note_roster: list[NoteRosterEntry],
     output_dir: Path,
     extension: str,
 ) -> list[AudioJob]:
     """Read a complete per-slide notes roster into ordered audio jobs."""
     jobs: list[AudioJob] = []
     invalid: list[str] = []
-    for note_path in note_files:
+    for entry in note_roster:
+        note_path = entry.note_path
         if not note_path.is_file():
             invalid.append(f"{note_path.name} is missing")
             continue
@@ -112,7 +120,7 @@ def _prepare_audio_jobs(
         jobs.append(AudioJob(
             note_path=note_path,
             text=text,
-            output_path=output_dir / f"{note_path.stem}{extension}",
+            output_path=output_dir / f"{entry.output_stem}{extension}",
         ))
     if invalid:
         raise ValueError(
@@ -121,7 +129,7 @@ def _prepare_audio_jobs(
     return jobs
 
 
-def _expected_note_files(project: Path) -> list[Path]:
+def _expected_note_roster(project: Path) -> list[NoteRosterEntry]:
     """Resolve the owning route's complete per-slide notes roster."""
     notes_dir = project / "notes"
     svg_files = sorted((project / "svg_output").glob("*.svg"))
@@ -131,11 +139,14 @@ def _expected_note_files(project: Path) -> list[Path]:
             match = re.search(r"slide[_]?(\d+)", path.stem)
             if match:
                 aliases.setdefault(int(match.group(1)), []).append(path)
-        note_files: list[Path] = []
+        note_roster: list[NoteRosterEntry] = []
         for index, svg_path in enumerate(svg_files, 1):
             exact = notes_dir / f"{svg_path.stem}.md"
             if exact.exists():
-                note_files.append(exact)
+                note_roster.append(NoteRosterEntry(
+                    note_path=exact,
+                    output_stem=svg_path.stem,
+                ))
                 continue
             matches = aliases.get(index, [])
             if len(matches) > 1:
@@ -143,8 +154,13 @@ def _expected_note_files(project: Path) -> list[Path]:
                     f"multiple notes files match slide {index}: "
                     + ", ".join(path.name for path in matches)
                 )
-            note_files.append(matches[0] if matches else exact)
-        return note_files
+            note_roster.append(
+                NoteRosterEntry(
+                    note_path=matches[0] if matches else exact,
+                    output_stem=svg_path.stem,
+                )
+            )
+        return note_roster
 
     slide_index_path = project / "analysis" / "slide_index.json"
     if slide_index_path.is_file():
@@ -165,20 +181,42 @@ def _expected_note_files(project: Path) -> list[Path]:
             or slide_count != len(slides)
         ):
             raise ValueError("invalid slide index notes roster")
-        note_files: list[Path] = []
+        note_roster: list[NoteRosterEntry] = []
         for index, slide in enumerate(slides, 1):
             note_file = slide.get("note_file") if isinstance(slide, dict) else None
             if not isinstance(note_file, str) or Path(note_file).suffix != ".md":
                 raise ValueError(
                     f"invalid slide index note_file for slide {index}"
                 )
-            note_files.append(notes_dir / Path(note_file).name)
-        return note_files
+            note_name = Path(note_file).name
+            note_roster.append(
+                NoteRosterEntry(
+                    note_path=notes_dir / note_name,
+                    output_stem=Path(note_name).stem,
+                )
+            )
+        return note_roster
 
     return [
-        path for path in sorted(notes_dir.glob("*.md"))
+        NoteRosterEntry(
+            note_path=path,
+            output_stem=path.stem,
+        )
+        for path in sorted(notes_dir.glob("*.md"))
         if path.name != "total.md"
     ]
+
+
+def _remove_stale_audio_variants(output_path: Path) -> None:
+    """Remove other supported formats only after the target audio is published."""
+    for candidate in output_path.parent.iterdir():
+        if (
+            candidate.name != output_path.name
+            and candidate.is_file()
+            and candidate.stem == output_path.stem
+            and candidate.suffix.lower() in SUPPORTED_AUDIO_EXTENSIONS
+        ):
+            candidate.unlink()
 
 
 async def _generate_edge_jobs(
@@ -200,7 +238,7 @@ async def _generate_edge_jobs(
                 job.output_path,
                 voice=voice,
                 rate=rate,
-                subtitle_path=subtitle_dir / f"{job.note_path.stem}.srt",
+                subtitle_path=subtitle_dir / f"{job.output_path.stem}.srt",
                 subtitle_max_chars=subtitle_max_chars,
             )
 
@@ -450,11 +488,11 @@ def main() -> int:
     subtitle_dir = notes_dir / "subtitles"
 
     try:
-        note_files = _expected_note_files(project)
-        if not note_files:
+        note_roster = _expected_note_roster(project)
+        if not note_roster:
             raise ValueError(f"no per-slide notes found in {notes_dir}")
         jobs = _prepare_audio_jobs(
-            note_files,
+            note_roster,
             output_dir,
             backend.extension,
         )
@@ -487,10 +525,20 @@ def main() -> int:
 
         failed = False
         for job, result in zip(jobs, results):
-            subtitle_path = subtitle_dir / f"{job.note_path.stem}.srt"
+            subtitle_path = subtitle_dir / f"{job.output_path.stem}.srt"
             if result is not None:
                 print(
                     f"error: failed to generate {job.output_path}: {result}",
+                    file=sys.stderr,
+                )
+                failed = True
+                continue
+            try:
+                _remove_stale_audio_variants(job.output_path)
+            except OSError as exc:
+                print(
+                    f"error: failed to remove stale audio for "
+                    f"{job.output_path.stem}: {exc}",
                     file=sys.stderr,
                 )
                 failed = True
@@ -563,6 +611,7 @@ def main() -> int:
                         language_hint=args.cosyvoice_language_hint,
                         base_url=args.cosyvoice_base_url,
                     )
+                _remove_stale_audio_variants(output_path)
             except Exception as exc:
                 print(f"error: failed to generate {output_path}: {exc}", file=sys.stderr)
                 return 1
@@ -571,11 +620,11 @@ def main() -> int:
 
     if backend.provider == "edge":
         print(
-            f"[Done] Generated {generated}/{len(note_files)} audio/SRT pair(s): "
+            f"[Done] Generated {generated}/{len(note_roster)} audio/SRT pair(s): "
             f"{output_dir} + {subtitle_dir}"
         )
     else:
-        print(f"[Done] Generated {generated}/{len(note_files)} audio file(s): {output_dir}")
+        print(f"[Done] Generated {generated}/{len(note_roster)} audio file(s): {output_dir}")
     return 0
 
 
