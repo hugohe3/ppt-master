@@ -251,10 +251,15 @@ the existing references without progressively wrapping more parent geometry.
 Post-processing and export:
 
 ```bash
+# Run only when the Design Spec's effective Speaker Notes outcome is enabled.
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
 python3 scripts/svg_to_pptx.py <project_path>
 ```
+
+When Speaker Notes is disabled, skip `total_md_split.py` and append
+`--no-notes` to `svg_to_pptx.py` so stale files under `notes/` cannot be
+embedded.
 
 `finalize_svg.py` optimizes ordinary raster images by default using `2x` display pixels and max `2560px`; validated nested crop transports retain source pixel dimensions because their inner `1×1` image is source-unit geometry rather than a rendered-pixel budget. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: images that need neither resizing nor EXIF geometry normalization retain their original bytes, while oversized single-frame raster sources are re-encoded after resizing toward `2560px`. Cropped or stretched placements (including imported picture crops) retain enough source pixels to avoid undersupplying the visible frame. Use `svg_to_pptx.py --image-sizing display --image-scale 2 --image-quality 85` for an explicit compact export, or `--no-image-optimize` to force original image bytes.
 

@@ -468,6 +468,8 @@ Do not confuse this tool with `extract_svg_assets.py`:
 Run these steps one at a time. Wait for each command to exit successfully before
 starting the next command.
 
+When the effective Speaker Notes outcome in `design_spec.md §I` is enabled, run:
+
 ```bash
 python3 scripts/total_md_split.py <project_path>
 ```
@@ -483,6 +485,10 @@ After `finalize_svg.py` exits successfully, run:
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
 ```
+
+When Speaker Notes is disabled, skip `total_md_split.py` and use
+`python3 scripts/svg_to_pptx.py <project_path> --no-notes` for the final
+command. This prevents stale files under `notes/` from being embedded.
 
 Do not start another post-processing command while the current command is still
 running. The canonical gates and success criteria are owned by
@@ -614,7 +620,8 @@ Behavior:
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
   - `--recorded-narration audio` prepares PowerPoint's "recorded timings and narrations": every slide must have matching `m4a` / `mp3` / `wav` audio, `ffprobe` must read every duration, and `--animation-trigger on-click` is rejected
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
-  - Narrated export defaults to `<project>/narration_animations.json`; pass `--animation-config animations.json` for the canonical presentation animation, or `--no-animations` to remove object animations and page-transition motion while retaining narration and slide timings
+  - When either animation sidecar exists, narrated export defaults to `<project>/narration_animations.json`; a canonical `animations.json` without that derived file remains a blocking synchronization error
+  - When both animation sidecars are absent, narrated export creates no sidecar and keeps the exporter defaults (`fade` page transition, no per-element animation); pass `--animation-config animations.json` for canonical animation, or `--no-animations` only to explicitly remove both object and page-transition motion while retaining narration and slide timings
   - Non-narrated export keeps the existing optional `<project>/animations.json` default
   - Narration timing is merged into the existing slide timing DOM; object-animation rows and the resolved page transition are preserved rather than regenerated
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage

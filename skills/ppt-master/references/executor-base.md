@@ -11,7 +11,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
 | Any image/formula; a cited `#<id>` or optional composition recall also triggers the library | [`executor-image.md`](./executor-image.md); conditionally [`image-layout-patterns.md`](./image-layout-patterns.md) |
 | Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
-| Speaker notes generation after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
+| Effective Speaker Notes outcome is enabled after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
 > Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). Technical constraints are in [`shared-standards-core.md`](./shared-standards-core.md).
 
@@ -40,7 +40,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 **Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
 
-**Default — resolve cross-page geometry here, while pages are still being authored (may override when the deck has no continuous action to express)**: object effects, page transitions, and Morph pair keys are post-processing decisions, but the two visible endpoint states are not. A sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as consecutive pages in `svg_output/` now. Give each continuing endpoint a compatible direct-root group; source and destination ids or geometry may differ because the later motion stage can bind them explicitly through `animations.json`. A deck that reaches export without both states cannot gain the motion by adding a flag. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
+**Default — resolve active cross-page geometry here, while pages are still being authored (may override when the deck has no continuous action to express)**: object effects, page transitions, and Morph pair keys are post-processing decisions, but the two visible endpoint states are not. Apply this preparation only when an explicit user motion instruction, an enabled effective Custom Animations outcome, or an existing `animations.json` activates motion; a §IX Motion suggestion alone remains non-operative advice. An active sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as consecutive pages in `svg_output/` now. Give each continuing endpoint a compatible direct-root group; source and destination ids or geometry may differ because the later motion stage can bind them explicitly through `animations.json`. A deck that reaches export without both states cannot gain the motion by adding a flag. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
 
 ---
 
@@ -81,8 +81,8 @@ Use named lock roles literally when that role applies, and use optional `Templat
 | `consumption_mode` | Page execution |
 |---|---|
 | `text` | Make the visible page independently understandable. Preserve complete prose, explicit labels / captions / sources, tables, and necessary detail; use bullets only for genuinely parallel or ordered items. |
-| `balanced` | Keep the primary claim and its evidence on the page; let notes add interpretation and transitions. Mix prose, structured evidence, and necessary lists according to their semantic relationship. |
-| `presentation` | Make one claim and one dominant visual expression legible at projection distance. Keep visible copy concise; put explanation and transitions in notes instead of creating paragraph dumps or compressed bullet prose. |
+| `balanced` | Keep the primary claim and its evidence on the page; when notes are enabled, let them add interpretation and transitions. Mix prose, structured evidence, and necessary lists according to their semantic relationship. |
+| `presentation` | Make one claim and one dominant visual expression legible at projection distance. Keep visible copy concise; when notes are enabled, put explanation and transitions there instead of creating paragraph dumps or compressed bullet prose. When notes are disabled, rely only on the confirmed presenter/page channels and never omit required content on the assumption that notes will carry it. |
 
 Apply the content-vs-expression contract above within the selected reading mode. Never drop or invent facts to force a mode. When the authored texture materially conflicts with the lock, render the least-destructive faithful composition and surface `warning: P<NN> content texture conflicts with consumption_mode <value>` as an upstream outline issue; do not encode this subjective judgment in the checker.
 
@@ -142,7 +142,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Template structure**: inherit the native visual framework only for `template_reuse_scope: mirror|layout`; `style` uses the flat route
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
 - **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
-- **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; state the attribution naturally in speaker notes. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and state naturally in notes that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
+- **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; when speaker notes are enabled, state the attribution naturally there too. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and, when notes are enabled, state naturally there that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
 - **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Before defaulting to stacked rounded-rect cards or uniform equal columns, pick one page-scale move from the locked visual style's §1 `Composition geometry` (a bleed shape, diagonal split, oversized numeral, orbit rings, …) to stage the page's primary zone. Card grids are one option among many, not the house layout.
 - **Containers are structural**: cards and grids express grouping, hierarchy, or capacity, not a house style. Preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Chart-catalog adaptation is owned by [`executor-chart.md`](./executor-chart.md); preview effects never override project styling or structural roles.
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first seek a basic primitive, one exact preset, or a clear Boolean result. Only when none can faithfully express the relationship should one page-specific polygon/path replace a stack of generic arrows.
@@ -150,7 +150,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Phased generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per [`executor-chart.md`](./executor-chart.md) §2.1 on every §IX-planned data-chart page — coordinate calibration is a post-generation step (see [`verify-charts`](../workflows/stages/verify-charts.md)) that depends on these markers — and **native object metadata** per [`executor-chart.md`](./executor-chart.md) §2.2 on every planned native-ready object. **Reach for native presets** per §3.0 as you draw each page: a block arrow, chevron, banner/ribbon, callout, standard flowchart node, or star is authored through `preset_shape_svg.py` at draw time — decided by the object's intent as you create it, never by scanning finished paths, and never committed to a bare `<path>`/`<polygon>` when a preset expresses it (a gradient fill/stroke or a pattern fill is the one paint exception — keep those ordinary SVG). **First-page gate (Mandatory)**: after completing the first page, run `python3 scripts/svg_quality_checker.py <project_path> --stage first-page --json` without output filtering. Review the whole P01 issue set, make one consolidated edit pass for every error and any selected warnings, then perform one verification rerun. If it still fails, treat that complete output as the next batch; never check between individual fixes. After it passes, draw P02 through the last page without checker calls.
   2. **Quality Check Gate**: only after every planned SVG exists, run `python3 scripts/svg_quality_checker.py <project_path> --stage final --json` on `svg_output/` without `tail` / `head` / `grep` filtering. One run already reports all pages. Review its complete issue set, fix every `error` plus any selected advisory warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never use checker calls to discover or fix one next issue at a time. Every `warning` is advisory: it never sends the page back for required modification, never authorizes automatic rewriting of compatible user syntax, and needs no acknowledgement/disposition line. Recommendation warnings describe the generated-SVG default; fidelity/quality warnings may be surfaced when material, while the existing input remains releasable. Prototype-identical diagnostics are recorded as `inherited`, source conversion losses as `source-import`, changed/new advisories as `introduced`, and release failures as `blocking` in `validation/svg_quality_report.json`. If release truly depends on a condition, it belongs in `errors`. On success, use the exit status and terminal summary; do not open or `cat` the complete JSON into model context. If terminal output is truncated on failure, read only the relevant issue arrays from the report written by that same run. Do NOT defer error handling to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
-  3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
+  3. **Logic Construction Phase (conditional)**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity only when the effective Speaker Notes outcome is enabled.
 
 ### 3.0 Native Shape Selection
 
@@ -293,11 +293,15 @@ Typography comes from `spec_lock.md`: `<role>_family` wins; otherwise titles use
 
 ## 6. Completion Routing
 
-After every SVG page passes the final quality check, load [`executor-notes.md`](./executor-notes.md) and complete its notes contract before entering the route's Step 7.
+After every SVG page passes the final quality check, load
+[`executor-notes.md`](./executor-notes.md) and complete its notes contract only
+when the effective Speaker Notes outcome in `design_spec.md §I` is enabled.
+When disabled, proceed directly to the route's conditional motion handling and
+Step 7.
 
 ## 7. Next Steps After Completion
 
-> **Auto-continuation**: After Visual Construction Phase (all SVG pages) and Logic Construction Phase (all notes) are complete, the Executor proceeds directly to the post-processing pipeline.
+> **Auto-continuation**: After Visual Construction Phase and any enabled Logic Construction Phase are complete, the Executor proceeds directly to the post-processing pipeline.
 
 **Post-processing & Export**: Follow [`generate-pptx.md`](../workflows/generate-pptx.md)
 Step 7. That workflow owns the serial commands, gates, success criteria, and

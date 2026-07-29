@@ -21,6 +21,9 @@
 | AI Image Acquisition Path | [fill or not applicable] |
 | Generation Mode | [fill] |
 | Spec Refinement | [fill] |
+| Speaker Notes | [fill enabled/disabled plus provenance] |
+| Custom Animations | [fill enabled/disabled plus provenance] |
+| Narration Audio | [fill enabled/disabled plus provenance] |
 | Created Date | {{CREATED_DATE}} |
 
 ## II. Canvas Specification
@@ -118,5 +121,6 @@
 
 ## X. Speaker Notes Requirements
 
+- **Generation**: [fill enabled or disabled]
 - **Filename**: match each SVG filename under `notes/`
 - **Content**: [fill]

@@ -194,7 +194,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 |---|---|---|
 | `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
 | `confirm_ui/recommendations.stage2.json` | Complete deck solution from the confirmed contract; never skip for a template | `status: stage2-confirmed` |
-| `confirm_ui/recommendations.stage3.json` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec | `stage: final`, `status: confirmed` |
+| `confirm_ui/recommendations.stage3.json` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
@@ -244,6 +244,28 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 **Mandatory — spec-refinement note** (not another Confirm UI stage): after confirmation details and any split-mode line, append one localized 💡 line offering review of the complete Design Spec before the lock; any part may be revised in chat until explicit approval. Default OFF; only explicit chat opt-in or `refine_spec: true` runs [`refine-spec`](stages/refine-spec.md) after Gate 1. Confirm UI records the toggle; chat fallback prints the same line.
 
 **Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
+
+**Proactive production decisions**: Stage 3 records
+`proactive_speaker_notes`, `proactive_custom_animations`, and
+`proactive_narration_audio`. They control only what the agent initiates when the
+user has not already given an explicit instruction. Resolve each effective
+outcome in this order: latest explicit user instruction → Stage 3 value → fixed compatibility
+default `true` / `false` / `false`. Narration Audio enabled requires Speaker
+Notes enabled without rewriting the raw `proactive_speaker_notes` preference;
+the Speaker Notes provenance then names the enabled Narration Audio dependency.
+Persist the resolved effective outcomes plus provenance as the `Speaker Notes`,
+`Custom Animations`, and `Narration Audio` rows in `design_spec.md §I`; keep the
+raw proactive fields only as confirmation evidence and do not project either
+form into `spec_lock.md`.
+
+**Post-confirmation override**: A later explicit user request changes the
+corresponding effective outcome and provenance directly in
+`design_spec.md §I`, then resumes at its owning Generate step. Do not reopen
+Confirm UI or rewrite unrelated planning decisions. The latest explicit
+instruction remains authoritative over the earlier proactive policy. Enabling
+Narration Audio also recomputes the dependent Speaker Notes outcome and
+provenance. Before entering `generate-audio`, generate `notes/total.md` and run
+Step 7.1 whenever complete per-slide notes are not already present.
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
@@ -362,7 +384,7 @@ Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visu
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
 | §IX contains `Native shape suggestion`, or current page construction calls for a literal PowerPoint stock shape, a stock Connector contour, an explicit Merge Shapes operation or result, or a shape-built dimensional form (cylinder/pedestal, layered diagram, reflection, ground plane), or Executor is about to hand-author a freeform not already required by data geometry or the locked organic / hand-drawn style | `native-shape-authoring.md` before selecting or materializing that geometry. This trigger is image-independent: a text-only, data-only, or icon-only page reaches it the same way |
-| All SVG pages and SVG quality gates are complete | `executor-notes.md` before generating speaker notes |
+| All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
 No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §VII/§VIII, the selected style, and the current page plan.
 
@@ -392,7 +414,22 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Treat §IX `Native shape suggestion` as a candidate, not a command: inspect the actual page construction, then choose the highest-level faithful construction in this order — editable basic primitive, exact Office preset, Merge Shapes Boolean result, and only then a necessary freeform. Load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before materializing an adopted native treatment. Diagram relationships follow the same Shape-first order; do not infer a preset from contour similarity.
 
-**Motion-ready image composition**: When an adopted §IX `Motion suggestion` or explicit user requirement depends on distinct in-slide image states or cross-slide image continuity, author those visible states now under [`executor-image.md`](../references/executor-image.md). Give each independently revealable or continuing ordinary Slide-local unit a descriptive direct-root `<g id>`; structured atoms/slots retain their declared boundaries and are targetable only when that contract permits. Do not defer required visible content or reshape structure for the later stage. This is SVG preparation, not early animation authoring: effects, pairing, order, and timing remain in the conditional custom stage after notes. A page-transition-only suggestion requires no extra visible layer; deterministic Morph still needs the continuing object as a direct-root group on both pages.
+**Motion-ready image composition**: Only when an explicit user motion
+instruction, the effective Custom Animations outcome in `design_spec.md §I` is
+enabled, or an existing `animations.json` activates custom motion, evaluate §IX `Motion suggestion`
+rows. If the adopted motion depends on distinct in-slide image states or
+cross-slide image continuity, author those visible states now under
+[`executor-image.md`](../references/executor-image.md). Give each independently
+revealable or continuing ordinary Slide-local unit a descriptive direct-root
+`<g id>`; structured atoms/slots retain their declared boundaries and are
+targetable only when that contract permits. Do not defer required visible
+content or reshape structure for the later stage. This is SVG preparation, not
+early animation authoring: effects, pairing, order, and timing remain in the
+conditional custom stage after the final SVG quality gate and any enabled
+speaker-note pass. A Motion suggestion alone does not activate preparation or
+custom animation. A page-transition-only request requires no extra visible
+layer; deterministic Morph still needs the continuing object as a direct-root
+group on both pages.
 
 `template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
@@ -435,36 +472,52 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 - The JSON report is written to `validation/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 - **Hard rule — token-safe report handling**: On a successful checker run, use the exit status and terminal summary as gate evidence. Do not open, `cat`, or otherwise load the complete JSON report into model context. Read it only for failure investigation, an explicit audit request, or a field absent from stdout; extract only the required field(s).
 
-**Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md), ground each page's narration in all information-bearing content in its final SVG, and generate speaker notes → `<project_path>/notes/total.md`
+**Logic Construction Phase (conditional)**: after the SVG quality gate passes,
+when the effective Speaker Notes outcome in `design_spec.md §I` is enabled, load
+[`executor-notes.md`](../references/executor-notes.md), ground each page's
+narration in all information-bearing content in its final SVG, and generate
+speaker notes → `<project_path>/notes/total.md`. When the outcome is `disabled`,
+do not load the notes branch and do not require or create `notes/total.md`.
 
-**✅ Internal checkpoint — execution complete**: verify live preview timing, the P01 method gate, uninterrupted remaining-page generation, consolidated repair of any complete failure set, exact §IX roster coverage, one-frame prose wrapping, a final checker result of 0 errors, and `notes/total.md`. Do not print this checklist. Run the applicable conditional gates below, then proceed to Step 7 under the compact status rule above.
+**✅ Internal checkpoint — execution complete**: verify live preview timing,
+the P01 method gate, uninterrupted remaining-page generation, consolidated
+repair of any complete failure set, exact §IX roster coverage, one-frame prose
+wrapping, a final checker result of 0 errors, and `notes/total.md` only when
+speaker notes are enabled. Do not print this checklist. Run the applicable
+conditional gates below, then proceed to Step 7 under the compact status rule
+above.
 
 > **Chart pages?** If this deck contains data charts, run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. Skip if no chart pages.
 
 > **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the [`visual-review`](stages/visual-review.md) quality-gate stage before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
 
 > **Motion execution (conditional)?** Visible-layer preparation belongs to the
-> main SVG pass above. After `notes/total.md` exists, inspect §IX
-> `Motion suggestion` rows, explicit user motion requirements, and an existing
-> `<project_path>/animations.json`. With none of the three, keep the exporter
-> defaults (`fade` page transition, per-element animation `none`) and load no
-> motion reference. An existing sidecar always runs
+> main SVG pass above. An existing `<project_path>/animations.json` always runs
 > [`customize-animations`](stages/customize-animations.md) to validate and
-> resolve preserve/adjust/replace intent before export. With no sidecar, a
-> deck-wide request loads [`animations.md`](../references/animations.md) and
-> resolves Step 7.3 flags; any `Motion suggestion` or per-slide/per-object
-> request runs the custom stage. Strategist owns the communication purpose;
-> Executor owns exact native effects, options, order, timing, and whether a
-> non-literal suggestion should simplify to `none`. Never add motion for
-> coverage or variation.
+> resolve preserve/adjust/replace intent before export. Without a sidecar, run
+> the custom stage only for an explicit per-slide/per-object motion request or
+> when the effective Custom Animations outcome in `design_spec.md §I` is
+> enabled; §IX `Motion suggestion` rows inform that active pass but never
+> trigger it alone. A deck-wide request loads
+> [`animations.md`](../references/animations.md) and resolves Step 7.3 flags
+> without activating the custom stage. Otherwise keep the exporter defaults
+> (`fade` page transition, per-element animation `none`) and load no motion
+> reference. Strategist owns the communication purpose; Executor owns exact
+> native effects, options, order, timing, and whether a non-literal suggestion
+> should simplify to `none`. Never add motion for coverage or variation.
 
 ---
 
 ### Step 7: Post-processing & Export
 
-🚧 **GATE**: Step 6 is complete; `svg_output/` contains every final page, `notes/total.md` exists, all required conditional quality gates passed, and the final SVG quality report has 0 errors.
+🚧 **GATE**: Step 6 is complete; `svg_output/` contains every final page, all
+required conditional quality gates passed, and the final SVG quality report has
+0 errors. When the effective Speaker Notes outcome in `design_spec.md §I` is
+enabled,
+`notes/total.md` also exists and covers every page; when it is disabled, notes
+artifacts are not gate requirements.
 
-🚧 **Image readiness GATE**: When any required resource row is `Needs-Manual`, every expected file and derived slice output MUST exist under `<project_path>/images/` before Step 7.1. If any file is absent, pause and list the exact filenames. After the files arrive, rerun `analyze_images.py`, replace each dashed placeholder in `svg_output/`, reconcile every `no-crop` container to the measured native ratio, then rerun the final SVG quality check so the gate covers the changed sources.
+🚧 **Image readiness GATE**: When any required resource row is `Needs-Manual`, every expected file and derived slice output MUST exist under `<project_path>/images/` before the first active Step 7 sub-step. If any file is absent, pause and list the exact filenames. After the files arrive, rerun `analyze_images.py`, replace each dashed placeholder in `svg_output/`, reconcile every `no-crop` container to the measured native ratio, then rerun the final SVG quality check so the gate covers the changed sources.
 
 After the separate readiness gate above has supplied every required manual file, the final SVG quality check closes each usable terminal §VIII row through `spec_lock.md images`, the exact locked file, and a real `<image href>`; it rejects unplanned/wrong-path references and also validates Sourced provenance/license records, image-specific visible credits, and effective per-placement pixel scale under `meet` / `slice` / `none`.
 
@@ -474,11 +527,16 @@ After the separate readiness gate above has supplied every required manual file,
 
 #### Step 7.1 — Split Speaker Notes
 
+Run this sub-step only when the effective Speaker Notes outcome in
+`design_spec.md §I` is enabled:
+
 ```bash
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
 
-**Success criterion**: Per-slide Markdown files exist under `<project_path>/notes/` and cover every published slide.
+**Success criterion**: When enabled, per-slide Markdown files exist under
+`<project_path>/notes/` and cover every published slide. When disabled, skip the
+command and proceed directly to Step 7.2.
 
 #### Step 7.2 — Build the Self-Contained SVG Preview
 
@@ -490,9 +548,12 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 
 #### Step 7.3 — Export the Native PPTX
 
-```bash
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
-```
+Choose exactly one notes mode:
+
+| Effective decision | Command |
+|---|---|
+| Speaker Notes `enabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
+| Speaker Notes `disabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --no-notes` |
 
 For deck-wide motion settings, append the resolved flags from
 [`animations.md`](../references/animations.md). When the conditional custom
@@ -514,7 +575,7 @@ The command prints a compact `[POSTFLIGHT]` receipt containing `status`, `qualit
 ## ✅ Generate PPTX Complete
 
 - [x] Image readiness gate passed
-- [x] Notes split completed
+- [x] Notes split completed when enabled; disabled exports used `--no-notes`
 - [x] `svg_final/` preview completed
 - [x] Native PPTX published and postflight report written
-- [ ] **Next**: Report the exported PPTX path; run a supporting post-export stage only when its explicit trigger is present
+- [ ] **Next**: Report the exported PPTX path; when the effective Narration Audio outcome in `design_spec.md §I` is enabled, run [`generate-audio`](stages/generate-audio.md), otherwise run a supporting post-export stage only when its explicit trigger is present

@@ -46,6 +46,9 @@ Start with this exact heading order:
 | AI Image Acquisition Path | <confirmed path or not applicable> |
 | Generation Mode | <continuous or split> |
 | Spec Refinement | <enabled or disabled> |
+| Speaker Notes | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, compatibility default, or enabled Narration Audio dependency> |
+| Custom Animations | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, or compatibility default> |
+| Narration Audio | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, or compatibility default> |
 | Created Date | <YYYY-MM-DD> |
 
 ## II. Canvas Specification
@@ -191,12 +194,17 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 
 ## X. Speaker Notes Requirements
 
+- **Generation**: <enabled or disabled>
 - **Filename**: match each SVG filename under `notes/`
 - **Content**: <notes content and source-handling policy>
 - **Total duration**: <resolved duration>
 - **Notes style**: <formal, conversational, interactive, or resolved equivalent>
 - **Presentation purpose**: <inform, persuade, inspire, instruct, report, or resolved combination>
 ```
+
+When Speaker Notes is disabled, keep §X with only
+`- **Generation**: disabled`; do not write filename, duration, style, or purpose
+placeholders. Narration Audio enabled requires Speaker Notes enabled.
 
 Append either or both optional lines only when the capability earns a place;
 never write an empty or `none` placeholder:
@@ -206,7 +214,7 @@ never write an empty or `none` placeholder:
 - **Motion suggestion**: <communication job plus desired page-entry or reveal relationship/order>
 ```
 
-Add `Visualization` / `Images` when a Slide consumes §VII/§VIII or uses a page-local visualization; mark it data-driven when source values determine geometry. §IX stays authoritative without a catalog match and may choose a custom visualization or table. Add `Native shape suggestion` only when a preset, stock Connector, or compound silhouette/cutout/intersection/fragment may help; name the semantic result plus candidate family or Boolean operands, never implementation geometry or keys. Executor chooses the primitive, preset, Boolean construction, or necessary freeform. Add `Motion suggestion` only when transition/reveal strengthens communication; state purpose and semantic order/relationship, not registry keys, options, timing, ids, or coverage. Describe any required visible image states in `Layout` / `Images`; the suggestion creates no content and Executor may simplify or omit it unless the user explicitly requires motion. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables, `Fact IDs` for sourced claims, and `Data class: scenario` for invented demo values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition; apply the same split to `Closing impact` only when the deck genuinely resolves. Roster/order/content stay authoritative. §VIII image layout is non-empty free prose with optional library ids; chart rows are references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
+Add `Visualization` / `Images` when a Slide consumes §VII/§VIII or uses a page-local visualization; mark it data-driven when source values determine geometry. §IX stays authoritative without a catalog match and may choose a custom visualization or table. Add `Native shape suggestion` only when a preset, stock Connector, or compound silhouette/cutout/intersection/fragment may help; name the semantic result plus candidate family or Boolean operands, never implementation geometry or keys. Executor chooses the primitive, preset, Boolean construction, or necessary freeform. Add `Motion suggestion` whenever transition/reveal advice strengthens communication, regardless of the Custom Animations outcome; state purpose and semantic order/relationship, not registry keys, options, timing, ids, or coverage. The suggestion never activates animation execution by itself, creates content, or binds implementation. Describe required visible image states in `Layout` / `Images` only for an explicit motion requirement or an enabled Custom Animations outcome. Add `Native-ready: yes|no` only for independent data charts or pure text-grid tables, `Fact IDs` for sourced claims, and `Data class: scenario` for invented demo values. Except on preservation paths, `Cover impact` carries a binding hook and adaptable composition; apply the same split to `Closing impact` only when the deck genuinely resolves. Roster/order/content stay authoritative. §VIII image layout is non-empty free prose with optional library ids; chart rows are references. Executor owns geometry, hierarchy, treatment, and sparse local garnish.
 
 For free-design pages, describe `Layout` through relationships, hierarchy, regions, and column spans; do not prescribe element-level `x`, `y`, `width`, or `height` or duplicate the global geometry in §II/§V. Exact coordinates belong to Executor SVG authoring. Preserve literal geometry only when the user explicitly requires it or a mirror/template preservation contract owns it.
 

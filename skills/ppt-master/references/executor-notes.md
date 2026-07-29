@@ -4,7 +4,11 @@
 
 Conditional late-stage authority for generating the complete speaker-notes document.
 
-**Trigger**: load only after all SVG pages pass the final quality check.
+**Trigger**: load only after all SVG pages pass the final quality check and the
+effective Speaker Notes outcome in `design_spec.md §I` is enabled. A missing
+legacy outcome uses compatibility default `enabled`; effective Narration Audio
+enabled also requires Speaker Notes enabled. When notes are disabled, do not
+load this branch or create `notes/total.md`.
 
 ## 1. Complete Speaker-notes Document
 
