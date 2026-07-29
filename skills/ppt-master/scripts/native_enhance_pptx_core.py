@@ -1507,10 +1507,15 @@ def _resolve_transition_plan(
     )
     if (
         "audio" not in modules
-        and ("transitions" in modules or cli_effect is not None)
+        and (
+            "transitions" in modules
+            or cli_effect is not None
+            or global_enter.policy == "none"
+        )
     ):
         # A confirmed global transition is independently actionable. The
         # narrated-only scope switch matters only while audio is enabled.
+        # Explicit none remains an action even though the module is disabled.
         apply_without_audio = True
 
     raw_slides = transitions_cfg.get("slides", {})

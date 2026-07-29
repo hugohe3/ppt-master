@@ -17,6 +17,7 @@ from pptx_animations import (
     ANIMATION_RESTARTS,
     ANIMATION_TIMING_OPTION_FIELDS,
     ANIMATION_TRIGGERS,
+    animation_effect_supports_bounce_end,
     animation_seconds_to_milliseconds,
     normalize_animation_effect,
     normalize_animation_effect_options,
@@ -30,6 +31,7 @@ from pptx_transitions import (
 )
 
 from .drawingml.utils import SVG_NS
+from .pptx_package.narration import AUDIO_CONTENT_TYPES
 from .semantic_markers import is_static_page_frame
 
 
@@ -370,11 +372,7 @@ def _animation_parameter_errors(
             errors.append(
                 f'animations.json {label} sound must be a non-empty path string'
             )
-        elif sound_is_path and Path(sound).suffix.lower() not in {
-            '.m4a',
-            '.mp3',
-            '.wav',
-        }:
+        elif sound_is_path and Path(sound).suffix.lower() not in AUDIO_CONTENT_TYPES:
             errors.append(
                 f'animations.json {label} sound must use .m4a, .mp3, or .wav'
             )
@@ -761,6 +759,7 @@ def validate_animation_config_errors(config: dict[str, Any]) -> list[str]:
             _animation_scope_errors(slide_cfg, f'slide "{slide_name}"')
         )
         errors.extend(_animation_group_errors(slide_name, slide_cfg))
+    errors.extend(_resolved_bounce_support_errors(config))
     return list(dict.fromkeys(errors))
 
 
@@ -904,6 +903,160 @@ def _animation_group_errors(
     return errors
 
 
+def _bounce_support_error(
+    animation: dict[str, Any],
+    label: str,
+) -> str | None:
+    """Return a writer-equivalent bounce support error for one resolved scope."""
+    bounce_end = animation.get('bounce_end')
+    if (
+        isinstance(bounce_end, bool)
+        or not isinstance(bounce_end, (int, float))
+        or not math.isfinite(float(bounce_end))
+        or float(bounce_end) <= 0
+    ):
+        return None
+    try:
+        effect, options = normalize_animation_effect_request(
+            animation.get('effect', 'auto'),
+            animation.get('effect_options'),
+            allow_none=True,
+            allow_modes=True,
+        )
+    except ValueError:
+        return None
+    if effect is None or effect in ANIMATION_MODES:
+        return None
+    if animation_effect_supports_bounce_end(effect, options):
+        return None
+    return (
+        f'animations.json {label} effect {effect!r} has no behavior that '
+        'supports bounce_end'
+    )
+
+
+def _resolved_bounce_support_errors(config: dict[str, Any]) -> list[str]:
+    """Validate effective bounce/effect pairs after sidecar inheritance."""
+    defaults = config.get('defaults', {})
+    default_animation: dict[str, Any] = {'effect': 'auto'}
+    if isinstance(defaults, dict):
+        value = defaults.get('animation', {})
+        if isinstance(value, dict):
+            default_animation.update(value)
+
+    errors: list[str] = []
+    default_error = _bounce_support_error(default_animation, 'defaults animation')
+    if default_error:
+        errors.append(default_error)
+
+    slides = config.get('slides', {})
+    if not isinstance(slides, dict):
+        return errors
+    relevant_fields = frozenset({'effect', 'effect_options', 'bounce_end'})
+    for slide_name, slide_cfg in slides.items():
+        if not isinstance(slide_cfg, dict):
+            continue
+        slide_animation = dict(default_animation)
+        slide_value = slide_cfg.get('animation', {})
+        if isinstance(slide_value, dict):
+            slide_animation.update(slide_value)
+            if relevant_fields & set(slide_value):
+                error = _bounce_support_error(
+                    slide_animation,
+                    f'slide "{slide_name}" animation',
+                )
+                if error:
+                    errors.append(error)
+
+        groups = slide_cfg.get('groups', {})
+        if not isinstance(groups, dict):
+            continue
+        for group_id, group_cfg in groups.items():
+            if (
+                not isinstance(group_cfg, dict)
+                or not relevant_fields & set(group_cfg)
+            ):
+                continue
+            group_animation = dict(slide_animation)
+            if 'effect' in group_cfg:
+                group_animation['effect'] = group_cfg['effect']
+                if 'effect_options' in group_cfg:
+                    group_animation['effect_options'] = group_cfg['effect_options']
+                else:
+                    group_animation.pop('effect_options', None)
+            if 'bounce_end' in group_cfg:
+                group_animation['bounce_end'] = group_cfg['bounce_end']
+            error = _bounce_support_error(
+                group_animation,
+                f'group "{slide_name}/{group_id}"',
+            )
+            if error:
+                errors.append(error)
+    return errors
+
+
+def _declared_animation_sounds(
+    config: dict[str, Any],
+) -> tuple[tuple[str, object], ...]:
+    """Return explicitly declared sidecar sound values with scope labels."""
+    sounds: list[tuple[str, object]] = []
+    defaults = config.get('defaults', {})
+    if isinstance(defaults, dict):
+        animation = defaults.get('animation', {})
+        if isinstance(animation, dict) and 'sound' in animation:
+            sounds.append(('defaults animation', animation['sound']))
+
+    slides = config.get('slides', {})
+    if not isinstance(slides, dict):
+        return tuple(sounds)
+    for slide_name, slide_cfg in slides.items():
+        if not isinstance(slide_cfg, dict):
+            continue
+        animation = slide_cfg.get('animation', {})
+        if isinstance(animation, dict) and 'sound' in animation:
+            sounds.append((f'slide "{slide_name}" animation', animation['sound']))
+        groups = slide_cfg.get('groups', {})
+        if not isinstance(groups, dict):
+            continue
+        for group_id, group_cfg in groups.items():
+            if isinstance(group_cfg, dict) and 'sound' in group_cfg:
+                sounds.append(
+                    (f'group "{slide_name}/{group_id}"', group_cfg['sound'])
+                )
+    return tuple(sounds)
+
+
+def _animation_sound_path_errors(
+    project_path: Path,
+    config: dict[str, Any],
+) -> list[str]:
+    """Validate declared animation sound files against the project root."""
+    errors: list[str] = []
+    project_root = project_path.resolve()
+    for label, raw_sound in _declared_animation_sounds(config):
+        if not isinstance(raw_sound, str) or not raw_sound.strip():
+            continue
+        sound_path = Path(raw_sound)
+        if sound_path.suffix.lower() not in AUDIO_CONTENT_TYPES:
+            errors.append(
+                f'animations.json {label} sound must use .m4a, .mp3, or .wav'
+            )
+            continue
+        if not sound_path.is_absolute():
+            sound_path = project_root / sound_path
+        sound_path = sound_path.resolve()
+        if not sound_path.exists():
+            errors.append(
+                f'animations.json {label} sound file not found: {sound_path}'
+            )
+        elif not sound_path.is_file():
+            errors.append(
+                f'animations.json {label} sound path is not a regular file: '
+                f'{sound_path}'
+            )
+    return errors
+
+
 def validate_animation_config(
     project_path: Path,
     config: dict[str, Any] | None = None,
@@ -913,15 +1066,16 @@ def validate_animation_config(
 
     Fatal field/type/value checks are owned by
     :func:`validate_animation_config_errors`. Anonymous groups are warnings;
-    references to missing slides/groups and structural targets are fatal at
-    export call sites. Slides omitted from a sparse sidecar inherit defaults.
+    references to invalid sound files, missing slides/groups, and structural
+    targets are fatal at export call sites. Slides omitted from a sparse
+    sidecar inherit defaults.
     """
     if config is None:
         config = load_animation_config(project_path, config_path)
     if not config:
         return []
 
-    warnings: list[str] = []
+    warnings = _animation_sound_path_errors(project_path, config)
     targets_by_slide, anonymous_groups = scan_project_targets(project_path)
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')

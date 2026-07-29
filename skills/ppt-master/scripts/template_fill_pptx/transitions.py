@@ -23,8 +23,21 @@ KEEP_TRANSITION = "keep"
 # a replacement. The duration is consumed only when a visual effect is written.
 DEFAULT_TRANSITION = KEEP_TRANSITION
 DEFAULT_TRANSITION_DURATION = 0.5
+TRANSITION_OBJECT_FIELDS = frozenset(
+    {
+        "effect",
+        "effect_options",
+        "duration",
+        "advance_after",
+    }
+)
 
 _UNSET = object()
+
+
+def transition_unknown_fields(raw: dict[str, Any]) -> list[str]:
+    """Return unsupported fields from a per-slide transition object."""
+    return sorted(set(raw) - TRANSITION_OBJECT_FIELDS)
 
 
 def _set_slide_transition(
@@ -94,6 +107,11 @@ def _resolve_slide_transition(
         )
         return effect, effect_options, default_duration, None
     if isinstance(raw, dict):
+        unknown = transition_unknown_fields(raw)
+        if unknown:
+            raise RuntimeError(
+                "Transition has unknown field(s): " + ", ".join(unknown)
+            )
         effect = raw.get("effect", default_effect)
         raw_options = raw.get("effect_options")
         if raw_options is not None and "effect" not in raw:

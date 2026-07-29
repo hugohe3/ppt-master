@@ -31,6 +31,7 @@ The merged pipeline:
         if href starts with data: → skip (already inline)
         if href is unresolvable / external URL → skip
         if href points to EMF/WMF → skip (native PPTX passthrough only)
+        if image belongs to a valid nested crop → preserve source pixels, embed
         if missing preserveAspectRatio → just embed (do not assume meet)
         if align == none → just embed (no spatial transform)
         if mode == slice → crop in memory, embed cropped bytes
@@ -79,6 +80,9 @@ if __package__ in {None, ''}:
 from .crop_images import crop_image_to_size, get_crop_anchor, parse_preserve_aspect_ratio
 from .embed_images import _optimize_image_bytes, get_mime_type
 from .fix_image_aspect import calculate_fitted_dimensions
+from svg_to_pptx.drawingml.elements import (  # noqa: E402
+    parse_project_nested_svg_crop,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from PIL import Image as PILImage  # noqa: F401
@@ -316,6 +320,20 @@ def _set_href(image: ET.Element, value: str) -> None:
         image.set('href', value)
 
 
+def _nested_crop_image_ids(root: ET.Element) -> set[int]:
+    """Return child image identities from valid nested crop transports."""
+    image_ids: set[int] = set()
+    for elem in root.iter(f'{{{SVG_NS}}}svg'):
+        if elem is root:
+            continue
+        try:
+            crop = parse_project_nested_svg_crop(elem)
+        except ValueError:
+            continue
+        image_ids.add(id(crop.image))
+    return image_ids
+
+
 def _process_one_image(
     image: ET.Element,
     svg_dir: Path,
@@ -323,6 +341,7 @@ def _process_one_image(
     compress: bool,
     max_dimension: int | None,
     image_scale: float,
+    preserve_source_pixels: bool,
     verbose: bool,
 ) -> tuple[bool, str | None]:
     """Align (slice/meet) and embed a single <image>.
@@ -447,12 +466,18 @@ def _process_one_image(
             new_h = new_h_calc
             target_box_w, target_box_h = new_w, new_h
 
-    target_w, target_h = _target_size(
-        target_box_w,
-        target_box_h,
-        max_dimension=max_dimension,
-        image_scale=image_scale,
-    )
+    if preserve_source_pixels:
+        # The child's 1×1 box is source-unit crop geometry, not its rendered
+        # frame. Keep the full source raster so the outer viewport remains
+        # authoritative and independently shaped crops do not lose detail.
+        target_w, target_h = final_img.size
+    else:
+        target_w, target_h = _target_size(
+            target_box_w,
+            target_box_h,
+            max_dimension=max_dimension,
+            image_scale=image_scale,
+        )
     final_img, resized = _downscale_to_target(final_img, target_w, target_h)
     transformed = transformed or resized
 
@@ -463,7 +488,7 @@ def _process_one_image(
         final_img,
         img_path,
         compress=compress,
-        max_dimension=max_dimension,
+        max_dimension=None if preserve_source_pixels else max_dimension,
         fallback_bytes=raw_bytes if not transformed else None,
     )
     if encoded is None:
@@ -483,7 +508,10 @@ def _process_one_image(
         del image.attrib['preserveAspectRatio']
 
     if verbose:
-        suffix = ' (cropped)' if transformed else ''
+        if preserve_source_pixels:
+            suffix = ' (nested crop, source pixels preserved)'
+        else:
+            suffix = ' (cropped)' if transformed else ''
         print(f'   [OK] {img_path.name}{suffix}')
     return True, None
 
@@ -541,6 +569,7 @@ def align_and_embed_images_in_svg(
         )
         return (0, 1)
     root = tree.getroot()
+    nested_crop_image_ids = _nested_crop_image_ids(root)
 
     # Avoid double-iteration if an element matches both namespaced and
     # bare-tag iteration paths.
@@ -561,7 +590,9 @@ def align_and_embed_images_in_svg(
         ok, err = _process_one_image(
             image, svg_dir,
             compress=compress, max_dimension=max_dimension,
-            image_scale=image_scale, verbose=verbose,
+            image_scale=image_scale,
+            preserve_source_pixels=ident in nested_crop_image_ids,
+            verbose=verbose,
         )
         if ok:
             processed += 1
