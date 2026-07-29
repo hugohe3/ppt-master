@@ -558,12 +558,43 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 .font-sample-heading { font-size: 24px; font-weight: 700; line-height: 1.3; }
 .font-sample-body { font-size: 14px; color: #333; margin-top: 4px; }
 .custom-typography-fields {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 10px;
     margin-top: 8px;
 }
+.font-picker-head {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.font-picker-head .subfield-label { margin-bottom: 0; }
+.font-picker-hint { grid-column: 1 / -1; }
+.font-custom-status {
+    display: none;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 11.5px;
+    font-weight: 650;
+}
 .custom-typography-legacy { grid-column: 1 / -1; }
 .custom-typography-field { display: flex; flex-direction: column; gap: 4px; }
+.font-select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 14px;
+}
+.font-select:focus { outline: none; border-color: var(--accent); }
+.other-font-input { margin-top: 2px; }
 .custom-color-input { margin-top: 8px; min-height: 58px; resize: vertical; }
 .image-strategy-custom-input { margin-top: 8px; min-height: 72px; resize: vertical; }
 .image-usage-notes-input { min-height: 64px; resize: vertical; }
@@ -708,13 +739,13 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
         var(--card);
 }
 
-/* ---- typography CJK / Latin previews ---- */
+/* ---- typography primary-language / English previews ---- */
 .font-sample-line { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-.font-sample-heading-box .fs-cjk { font-size: 24px; font-weight: 700; }
-.font-sample-heading-box .fs-latin { font-size: 22px; font-weight: 700; }
+.font-sample-heading-box .fs-primary { font-size: 24px; font-weight: 700; }
+.font-sample-heading-box .fs-english { font-size: 22px; font-weight: 700; }
 .font-sample-body-box { margin-top: 6px; }
-.font-sample-body-box .fs-cjk,
-.font-sample-body-box .fs-latin { font-size: 14px; color: #333; }
+.font-sample-body-box .fs-primary,
+.font-sample-body-box .fs-english { font-size: 14px; color: #333; }
 .font-card-meta { display: block; margin-top: 4px; }
 
 /* ---- confirmed overlay ---- */
@@ -775,7 +806,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.sp-title-lat { margin-left: 10px; opacity: 0.92; }
+.sp-title-english { margin-left: 10px; opacity: 0.92; }
 .sp-body { display: flex; align-items: stretch; gap: 10px; margin-top: 6px; }
 .sp-accent-bar { flex: 0 0 4px; border-radius: 2px; }
 .sp-body-wrap {
@@ -786,7 +817,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.sp-body-lat { margin-left: 10px; opacity: 0.92; }
+.sp-body-english { margin-left: 10px; opacity: 0.92; }
 .sp-content {
     display: grid;
     gap: 10px;

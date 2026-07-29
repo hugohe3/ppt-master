@@ -552,17 +552,86 @@ def _positive_number(value: object) -> bool:
     return number > 0 and number != float('inf')
 
 
-def _typography_error(typography: object, label: str, *, require_sizes: bool) -> Optional[str]:
+def _is_english_language(language: object) -> bool:
+    """Return whether a recommendation language is an English locale."""
+    if not isinstance(language, str):
+        return False
+    normalized = language.strip().casefold().replace('_', '-')
+    return (
+        normalized == 'english'
+        or normalized == 'en'
+        or normalized.startswith('en-')
+    )
+
+
+def _recommendation_language(recommendations: dict) -> object:
+    """Return the deck's main language without conflating it with UI ``lang``."""
+    value = (
+        recommendations.get('primary_language')
+        or recommendations.get('content_language')
+        or recommendations.get('language')
+    )
+    if isinstance(value, dict):
+        return value.get('value') or value.get('id') or value.get('code') or ''
+    return value
+
+
+def _primary_language_error(recommendations: dict) -> Optional[str]:
+    """Require a content-language source of truth for the new staged flow."""
+    value = _recommendation_language(recommendations)
+    if not isinstance(value, str) or not value.strip():
+        return (
+            'Stage 1 recommendations must declare a non-empty primary language; '
+            'lang controls only the Confirm UI language'
+        )
+    return None
+
+
+def _typography_font_value(
+    font: dict,
+    field: str,
+    *,
+    english_primary: bool,
+) -> object:
+    """Return a canonical typography font value, accepting its language-aware alias."""
+    legacy_field = 'latin' if field == 'english' or english_primary else 'cjk'
+    value = font.get(field)
+    if not isinstance(value, str) or not value.strip():
+        value = font.get(legacy_field)
+    return value
+
+
+def _typography_error(
+    typography: object,
+    label: str,
+    *,
+    require_sizes: bool,
+    main_language: object = '',
+) -> Optional[str]:
     """Validate one complete user-facing typography recommendation or choice."""
     if not isinstance(typography, dict):
         return f'{label} must be an object'
+    english_primary = _is_english_language(main_language)
     for role in ('heading', 'body'):
         font = typography.get(role)
         if not isinstance(font, dict):
             return f'{label}.{role} must be an object'
-        for field in ('cjk', 'latin', 'css'):
-            if not isinstance(font.get(field), str) or not font[field].strip():
-                return f'{label}.{role}.{field} must be non-empty'
+        fields = (('primary', 'latin' if english_primary else 'cjk'),)
+        if not english_primary:
+            fields += (('english', 'latin'),)
+        for field, legacy_field in fields:
+            value = _typography_font_value(
+                font,
+                field,
+                english_primary=english_primary,
+            )
+            if not isinstance(value, str) or not value.strip():
+                return (
+                    f'{label}.{role}.{field} '
+                    f'(or legacy {legacy_field}) must be non-empty'
+                )
+        if not isinstance(font.get('css'), str) or not font['css'].strip():
+            return f'{label}.{role}.css must be non-empty'
     if not _positive_number(typography.get('body_size')):
         return f'{label}.body_size must be a positive number'
     if not require_sizes:
@@ -576,6 +645,72 @@ def _typography_error(typography: object, label: str, *, require_sizes: bool) ->
     return None
 
 
+def _typography_signature(
+    typography: dict,
+    *,
+    main_language: object,
+) -> tuple[str, ...]:
+    """Return the language-relevant font choices that distinguish one candidate."""
+    english_primary = _is_english_language(main_language)
+    fields = ('primary',) if english_primary else ('primary', 'english')
+    values = []
+    for role in ('heading', 'body'):
+        font = typography[role]
+        for field in fields:
+            value = _typography_font_value(
+                font,
+                field,
+                english_primary=english_primary,
+            )
+            values.append(str(value).strip().casefold())
+    return tuple(values)
+
+
+def _typography_candidates_distinct_error(
+    candidates: list,
+    labels: list[str],
+    *,
+    main_language: object,
+) -> Optional[str]:
+    """Require every candidate to offer a different relevant font combination."""
+    fixed = [
+        isinstance(candidate, dict) and candidate.get('fixed') is True
+        for candidate in candidates
+    ]
+    if any(fixed):
+        if not all(fixed):
+            return 'typography.fixed must be true on every candidate or omitted'
+        signatures = [
+            _typography_signature(
+                candidate,
+                main_language=main_language,
+            )
+            for candidate in candidates
+        ]
+        if any(signature != signatures[0] for signature in signatures[1:]):
+            return 'fixed typography candidates must repeat the same font combination'
+        return None
+    seen = {}
+    for index, candidate in enumerate(candidates):
+        signature = _typography_signature(
+            candidate,
+            main_language=main_language,
+        )
+        if signature in seen:
+            previous = seen[signature]
+            combination = (
+                'heading/body primary'
+                if _is_english_language(main_language)
+                else 'heading/body primary+english'
+            )
+            return (
+                f'{labels[index]} repeats {labels[previous]}; '
+                f'{combination} combinations must differ'
+            )
+        seen[signature] = index
+    return None
+
+
 def _candidate_list(spec: object) -> list:
     """Return candidates from the current or legacy recommendation shape."""
     if not isinstance(spec, dict):
@@ -586,13 +721,19 @@ def _candidate_list(spec: object) -> list:
     return candidates if isinstance(candidates, list) else []
 
 
-def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
+def _stage2_design_directions_error(
+    recommendations: dict,
+    *,
+    main_language: object = '',
+) -> Optional[str]:
     """Require three complete coordinated Stage 2 design systems."""
+    main_language = main_language or _recommendation_language(recommendations)
     directions = recommendations.get('design_directions')
     if isinstance(directions, dict):
         candidates = _candidate_list(directions)
         if len(candidates) < 3:
             return 'Stage 2 design_directions must include at least 3 candidates'
+        typography_candidates = []
         for index, candidate in enumerate(candidates, start=1):
             label = f'design_directions.candidates[{index - 1}]'
             if not isinstance(candidate, dict):
@@ -609,16 +750,25 @@ def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
                 candidate.get('typography'),
                 f'{label}.typography',
                 require_sizes=False,
+                main_language=main_language,
             )
             if error:
                 return error
+            typography_candidates.append(candidate['typography'])
             if _uses_ai_images(recommendations):
                 image_strategy = candidate.get('image_strategy')
                 if not isinstance(image_strategy, dict) or not str(
                     image_strategy.get('rendering') or ''
                 ).strip():
                     return f'{label}.image_strategy.rendering must be non-empty'
-        return None
+        return _typography_candidates_distinct_error(
+            typography_candidates,
+            [
+                f'design_directions.candidates[{index}].typography'
+                for index in range(len(typography_candidates))
+            ],
+            main_language=main_language,
+        )
 
     # Legacy staged files remain readable, but they must still provide three
     # complete color combinations and at least one complete typography choice.
@@ -632,14 +782,26 @@ def _stage2_design_directions_error(recommendations: dict) -> Optional[str]:
     typography = _candidate_list(recommendations.get('typography'))
     if not typography:
         return 'Stage 2 recommendations must include typography candidates'
+    if main_language and len(typography) < 3:
+        return 'Stage 2 recommendations must include 3 typography candidates'
     for index, candidate in enumerate(typography):
         error = _typography_error(
             candidate,
             f'typography.candidates[{index}]',
             require_sizes=False,
+            main_language=main_language,
         )
         if error:
             return error
+    if main_language:
+        return _typography_candidates_distinct_error(
+            typography,
+            [
+                f'typography.candidates[{index}]'
+                for index in range(len(typography))
+            ],
+            main_language=main_language,
+        )
     return None
 
 
@@ -703,7 +865,20 @@ def _submission_stage_error(
             return 'legacy single-pass recommendations accept only a final submission'
         return None
 
+    if rec_stage_number == 1:
+        language_error = _primary_language_error(recommendations)
+        if language_error:
+            return language_error
+
     if rec_stage_number == 2:
+        try:
+            previous_result = _read_json_object(confirm_dir / RESULT_NAME)
+        except (OSError, json.JSONDecodeError, ValueError):
+            previous_result = {}
+        main_language = (
+            _recommendation_language(previous_result)
+            or _recommendation_language(recommendations)
+        )
         recommendation_error = _template_stage2_error(
             recommendations,
             template_required=template_required,
@@ -713,7 +888,10 @@ def _submission_stage_error(
         recommendation_error = _stage2_custom_candidates_error(recommendations)
         if recommendation_error:
             return recommendation_error
-        recommendation_error = _stage2_design_directions_error(recommendations)
+        recommendation_error = _stage2_design_directions_error(
+            recommendations,
+            main_language=main_language,
+        )
         if recommendation_error:
             return recommendation_error
 
@@ -764,7 +942,11 @@ def _custom_selection_error(result: dict) -> Optional[str]:
     return None
 
 
-def _stage2_solution_error(result: dict) -> Optional[str]:
+def _stage2_solution_error(
+    result: dict,
+    *,
+    main_language: object = '',
+) -> Optional[str]:
     """Reject a Stage 2/final payload with an incomplete design system."""
     color = result.get('color')
     color_error = _palette_error(color, 'color')
@@ -781,6 +963,7 @@ def _stage2_solution_error(result: dict) -> Optional[str]:
         typography,
         'typography',
         require_sizes=True,
+        main_language=main_language,
     )
     if typography_error:
         return typography_error
@@ -1014,6 +1197,9 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
         recommend = data['recommend'] = {}
+    main_language = _recommendation_language(res)
+    if main_language:
+        data['primary_language'] = main_language
     for key in _CONTRACT_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
             recommend[key] = res[key]
@@ -1481,6 +1667,10 @@ def create_app(
         rec_stage_number = _recommendation_stage(data)
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
+        if rec_stage_number == 1:
+            language_error = _primary_language_error(data)
+            if language_error:
+                return jsonify({'error': language_error}), 409
         if rec_stage_number == 2:
             recommendation_error = _template_stage2_error(
                 data,
@@ -1550,8 +1740,27 @@ def create_app(
         except (OSError, json.JSONDecodeError, ValueError):
             rec_file = _active_recommendations_path(confirm_dir)
             current_recommendations = {}
-        if stage == 'stage2' or _recommendation_stage(current_recommendations) == 3:
-            solution_error = _stage2_solution_error(result)
+        rec_stage_number = _recommendation_stage(current_recommendations)
+        previous_result = {}
+        if rec_stage_number >= 2:
+            try:
+                previous_result = _read_json_object(result_file)
+            except (OSError, json.JSONDecodeError, ValueError):
+                pass
+        main_language = (
+            _recommendation_language(previous_result)
+            or _recommendation_language(current_recommendations)
+        )
+        if rec_stage_number > 0:
+            if main_language:
+                result['primary_language'] = main_language
+            else:
+                result.pop('primary_language', None)
+        if stage == 'stage2' or rec_stage_number == 3:
+            solution_error = _stage2_solution_error(
+                result,
+                main_language=main_language,
+            )
             if solution_error:
                 return jsonify({'error': solution_error}), 400
         if stage not in {'stage1', 'stage2'}:
