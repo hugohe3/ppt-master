@@ -107,6 +107,7 @@ The AI launches Stage 1, authors the complete Stage-2 solution once from the use
 {
   "stage": "stage1",
   "lang": "zh",
+  "primary_language": "zh-CN",
   "recommend": {
     "canvas": "ppt169"
   },
@@ -130,7 +131,7 @@ The AI launches Stage 1, authors the complete Stage-2 solution once from the use
 }
 ```
 
-All seven Stage-1 prose values may be blank and none blocks confirmation. The values shown in the boxes are editable recommendations; the submitted current values are authoritative, so clearing a box writes and retains `""`. A preservation profile may lock an open field, for example `"content_divergence": { "value": "keep source wording and page structure verbatim", "locked": true }`; the browser renders it read-only. The server carries that lock through the intermediate results and restores the value on every staged submit; the internal carry-over marker is removed from the final `result.json`.
+All seven Stage-1 prose values may be blank. `primary_language` is the deck's BCP-47 content language; `lang` is UI-only, and the server carries the former across stages. Displayed prose is editable and submitted verbatim, including `""`. A profile may lock an open field with `{ "value": "...", "locked": true }`; the browser renders it read-only, the server carries the lock, and removes its internal marker from final `result.json`.
 
 The common paths — inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off — appear only as help text for `communication_intent`. They are not catalog ids and must not be emitted as a `primary_job` field.
 
@@ -183,8 +184,8 @@ After Stage 1 is confirmed, create `recommendations.stage2.json` with the comple
         } },
         "typography": {
           "name_zh": "微软雅黑 + Arial",
-          "heading": { "cjk": "Microsoft YaHei", "latin": "Arial", "css": "sans-serif" },
-          "body": { "cjk": "Microsoft YaHei", "latin": "Arial", "css": "sans-serif" },
+          "heading": { "primary": "Microsoft YaHei", "english": "Arial", "css": "sans-serif" },
+          "body": { "primary": "Microsoft YaHei", "english": "Arial", "css": "sans-serif" },
           "body_size": 24
         },
         "image_strategy": {
@@ -230,20 +231,21 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
 - When confirmed Stage-2 `image_usage` includes `ai`, Stage 3 sets `recommend.image_ai_path` to one of `auto` / `api` / `host-native` / `manual`. Stage 2 never asks for the acquisition mechanism while the user is still deciding the image role.
 - **Color candidates carry the user-facing core `palette`**: `background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, and `body_text`. The page renders every role as a labelled swatch with its HEX value visible, and offers per-role override inputs for precise single-role edits, plus a **Custom color card with a free-text box** — the user can describe the palette in words or paste HEX values instead of filling each role; this writes `color: { "name": "custom", "custom": "<text>" }` to `result.json` for the AI to interpret. Legacy `text` is accepted as an alias for `body_text`, but new files should write `body_text`. Strategist derives secondary text, borders, state colors, and visual-style neutral tiers while writing `design_spec.md`, then projects the machine values to `spec_lock.md`; those are not user-facing confirmation choices.
 - **Candidate display text may be multilingual**: color / typography candidates can provide `name_zh` / `name_en` / `name_ja` and `note_zh` / `note_en` / `note_ja`; the page falls back to legacy `name` / `note`. Labels resolve in the page language first, then fall back across the others (a `ja` page: ja → en → zh; zh/en pages keep their zh↔en fallback and try `_ja` last), so when `lang` is `ja` always include the `_ja` variants — otherwise the candidate labels render in English.
-- **Typography candidates** expose concrete CJK/Latin `heading` / `body` faces; localized `name` labels the pairing and `css` only previews. A category may explain rationale, never replace the UI choice. Custom requires all four faces and the same stacks, not category prose; a legacy prose-only result reopens these fields before final confirmation. Include topic samples. PPT baselines are `text` 20 · `balanced` 24 · `presentation` 32 px; cards preserve sizes and submit px. `delivery_purpose` remains a compatibility key.
+- **Typography candidates** use concrete heading/body `primary`; non-English decks also use `english`, while English-primary decks omit it. `cjk` / `latin` remain legacy aliases. Localized `name` labels the pair and `css` only previews. Three generated pairs differ; user/template-fixed pairs repeat only with `fixed: true`. Catalog `fonts` supplies language-filtered dropdowns plus Other without limiting recommendations; edits mark Custom and refresh the preview. Include topic samples. PPT baselines are `text` 20 · `balanced` 24 · `presentation` 32 px; cards preserve sizes and submit px.
 - **Per-role size override** (parallel to color's per-role HEX override): besides `body_size`, the page exposes editable inputs for `title` / `subtitle` / `annotation`. The browser applies one documented deterministic dependency chain: `reading mode → body baseline → unpinned role sizes` (role ramp: `body ×` the §g ratios). Changing reading mode updates the body and all unpinned roles locally; changing body updates unpinned roles locally. Editing body or a role pins that value, so later reading-mode changes do not overwrite it. Font / direction-card selection preserves all current sizes. This is a browser-only state update: it performs no fetch, asks the backend to author no new recommendations, and a re-render preserves exactly what the user sees. Each role input is labelled as px and shows an approximate pt equivalent (`1px = 0.75pt`) for orientation. The final values are written to `result.json` as `typography.sizes: { "title", "subtitle", "annotation" }` in **px** — every canvas, no pt and no `sizes_pt` provenance. These confirmed values are Strategist input anchors: the completed page plan may add recurring roles, and downstream execution owns bounded per-occurrence treatment. Candidate `sizes` remain accepted for compatibility, but the fresh Stage-2 baseline is normalized through the same local ramp before first render.
 - **`delivery_purpose` compatibility key / Reading mode** (enumerable, PPT only) decides where meaning is carried, not merely how large type is: `text` makes pages self-contained with complete sentences, short prose, captions, tables, and necessary detail; `balanced` shares explanation between page and presenter; `presentation` uses one idea, concise claims, and visual evidence while speech / notes carry the detail. It therefore governs page grammar, granularity, density / rhythm, and note burden. Reading-mode cards intentionally show **no px value**; the typography section owns the separately visible body / role sizes and applies any local default. It is surfaced in Stage 2 beside the visual system, separate from communication intent. `recommend.delivery_purpose` pre-selects one; `result.json` retains the key, while `spec_lock.md` uses canonical `consumption_mode`. Non-PPT canvases omit it.
 - **Combined style preview** — a compact live "overall impression" strip sits just above the color section and is **sticky**: it pins under the topbar so it stays visible while the user scrolls through the color / icon / typography sections, keeping the picking controls and their combined effect on screen together. It applies the currently selected color palette **and** typography (heading sample in `primary` over `background`, body sample in `body_text`, an `accent` bar, a `secondary_bg` chip) and repaints on every color / HEX-override / font / `body_size` change. It does not replace the per-candidate swatches or font samples (those stay for picking); it is deliberately an abstract style chip, **not** a slide-layout preview — page layout preview remains the live-preview server's job (Step 6). No schema field; it derives entirely from the existing color + typography selections.
 - **Generated-image direction** appears only for `image_usage: ai`: up to three preset cards plus one full-width AI custom proposal. Custom has no preset dropdown; selection makes it editable and submits `rendering: "custom"` + `behavior`. If that behavior uses catalog renderings, it visibly names their exact ids; Strategist retains that confirmed basis as optional `image_rendering_references` in `spec_lock.md`. A genuinely novel behavior produces no reference row. The live preview follows the selection. No image palette is written; deck colors remain authoritative, and legacy `image_strategy.palette` is ignored.
-- **`design_directions`** is the canonical Stage-2 spectrum: ≥3 safe / shifted / bold bundles with localized copy, style, icons, conditional image strategy, complete CJK/Latin typography, and HEX `background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`. Selection applies the bundle; component controls override it. `result.json` stores components, not a direction id.
+- **`design_directions`** is the canonical Stage-2 spectrum: ≥3 safe / shifted / bold bundles with localized copy, style, icons, conditional image strategy, complete language-aware typography, and HEX `background`, `secondary_bg`, `primary`, `accent`, `secondary_accent`, `body_text`. Selection applies the bundle; component controls override it. `result.json` stores components, not a direction id.
 - `recommend.generation_mode` and `refine_spec` mirror [`generate-pptx`](../../workflows/generate-pptx.md) Step 4. `split` / `true` are explicit opt-ins. Refinement adds no UI stage: after Gate 1 it stops before the lock for unrestricted chat revision until approval.
 - `content_divergence` is a **free-text** Stage-1 source-treatment field. Blank means a balanced default; facts stay sourced at every level. Strategist consumes it while authoring §IX and records it in `design_spec.md §I`; it is not written to `spec_lock.md`. Beautify sends `{ "value": "keep source wording and page structure verbatim", "locked": true }`, so the UI displays it read-only and the server restores it on every staged submit. Template-fill does not use this confirmation flow and does not surface it.
-- `lang` is a soft default (`zh` / `en` / `ja` — the page UI supports all three); an explicit user language choice in the page (persisted to `localStorage`) wins.
+- `lang` is the soft UI-language default (`zh` / `en` / `ja`); the persisted user choice wins. It never sets `primary_language`.
 
 ### Output — `result.json` (written on submit, read by the AI)
 
 ```json
 {
+  "primary_language": "zh-CN",
   "canvas": "ppt169",
   "page_count": "12-15",
   "audience": "...",
@@ -258,7 +260,7 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
   "visual_style": "swiss-minimal",
   "color": { "name": "...", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
   "icons": "tabler-outline",
-  "typography": { "name": "...", "heading": { "cjk": "...", "latin": "...", "css": "..." }, "body": { "cjk": "...", "latin": "...", "css": "..." }, "body_size": 24, "body_size_unit": "px", "sizes": { "title": 42, "subtitle": 32, "annotation": 18 } },
+  "typography": { "name": "...", "heading": { "primary": "...", "english": "...", "css": "..." }, "body": { "primary": "...", "english": "...", "css": "..." }, "body_size": 24, "body_size_unit": "px", "sizes": { "title": 42, "subtitle": 32, "annotation": 18 } },
   "delivery_purpose": "balanced",
   "formula_policy": "mixed",
   "image_usage": ["ai", "provided"],

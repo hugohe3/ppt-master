@@ -58,7 +58,7 @@
 
 ### Font Plan
 
-| Role | Character (Reference) | Chinese | English | Fallback tail |
+| Role | Character (Reference) | Primary | English if non-English | Fallback tail |
 | --- | --- | --- | --- | --- |
 | Title | [fill] | [fill] | [fill] | [fill] |
 | Body | [fill] | [fill] | [fill] | [fill] |
