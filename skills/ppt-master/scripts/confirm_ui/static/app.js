@@ -104,6 +104,13 @@
             proactive_narration_audio_desc: "Off by default. This raw choice does not rewrite the speaker-notes toggle; the Strategist resolves narration's effective notes dependency in the Design Spec.",
             font_heading: "Heading",
             font_body: "Body",
+            font_selection: "Font selection",
+            primary_language_font: "Primary-language font",
+            english_font: "English font",
+            font_picker_hint: "Choosing a recommendation fills these selectors. Changing any font marks the typography as customized.",
+            other_installed_font: "Other installed font…",
+            other_font_placeholder: "Exact installed font name",
+            customized: "Customized",
             font_body_size: "Body baseline size",
             font_body_size_hint: "All type sizes derive from this body baseline.",
             body_size_unit_relation: "SVG px to PPT pt: 1px = 0.75pt.",
@@ -119,7 +126,7 @@
             size_role_subtitle: "subtitle",
             size_role_annotation: "annotation",
             custom_typography: "Custom typography",
-            custom_typography_repair: "Complete the four concrete font names to continue.",
+            custom_typography_repair: "Complete the concrete font names required for this project to continue.",
             custom_color: "Custom color",
             custom_color_placeholder: "Describe your colors in words, e.g. deep navy primary, warm orange accent, white background — or paste HEX values…",
             role_background: "bg",
@@ -251,6 +258,13 @@
             proactive_narration_audio_desc: "初期設定はオフです。この選択は発表者ノートの設定を書き換えません。ナレーションに必要なノートの有効状態は、ストラテジストが設計仕様で解決します。",
             font_heading: "見出し",
             font_body: "本文",
+            font_selection: "フォント選択",
+            primary_language_font: "主要言語のフォント",
+            english_font: "英語フォント",
+            font_picker_hint: "提案を選ぶと下の選択欄に反映されます。いずれかのフォントを変更するとカスタマイズ済みになります。",
+            other_installed_font: "その他のインストール済みフォント…",
+            other_font_placeholder: "インストール済みフォントの正確な名前",
+            customized: "カスタマイズ済み",
             font_body_size: "本文の基準サイズ",
             font_body_size_hint: "すべての文字サイズはこの本文基準から導出されます。",
             body_size_unit_relation: "SVG px と PPT pt の換算：1px = 0.75pt。",
@@ -266,7 +280,7 @@
             size_role_subtitle: "サブタイトル",
             size_role_annotation: "注釈",
             custom_typography: "カスタムタイポグラフィ",
-            custom_typography_repair: "続行するには、4つの具体的な書体名を入力してください。",
+            custom_typography_repair: "続行するには、このプロジェクトに必要な具体的な書体名を入力してください。",
             custom_color: "カスタム配色",
             custom_color_placeholder: "配色を言葉で説明 — 例：濃紺をメインに暖色オレンジのアクセント、背景は白 — またはHEX値を貼り付け…",
             role_background: "背景",
@@ -398,6 +412,13 @@
             proactive_narration_audio_desc: "默认关闭。这里保留原始选择，不改写演讲者备注开关；策略师会在设计规范中解析旁白所需的最终备注状态。",
             font_heading: "标题",
             font_body: "正文",
+            font_selection: "字体选择",
+            primary_language_font: "主要语言字体",
+            english_font: "英文字体",
+            font_picker_hint: "选择推荐方案会同步下方字体；修改任一下拉或手动字体后会标记为已自定义。",
+            other_installed_font: "其他已安装字体…",
+            other_font_placeholder: "输入精确的已安装字体名称",
+            customized: "已自定义",
             font_body_size: "正文基准字号",
             font_body_size_hint: "所有字号按这个正文基准推导。",
             body_size_unit_relation: "SVG px 与 PPT pt 的换算：1px = 0.75pt。",
@@ -413,7 +434,7 @@
             size_role_subtitle: "副标题",
             size_role_annotation: "注释",
             custom_typography: "自定义字体方案",
-            custom_typography_repair: "请补全四个具体字体名称后继续。",
+            custom_typography_repair: "请补全当前项目所需的具体字体名称后继续。",
             custom_color: "自定义配色",
             custom_color_placeholder: "用文字描述配色，如：深蓝主色、暖橙强调、白色背景——或直接粘贴 HEX 值…",
             role_background: "背景",
@@ -1026,41 +1047,186 @@
         return collect(c);
     }
 
+    function recommendationLanguage() {
+        // `lang` controls the Confirm UI language; it is not evidence of the
+        // deck's content language. New staged files carry `primary_language`.
+        var raw = REC && (REC.primary_language || REC.content_language || REC.language);
+        if (raw && typeof raw === "object") {
+            raw = raw.value || raw.id || raw.code || "";
+        }
+        raw = String(raw || "und").trim().toLowerCase().replace(/_/g, "-");
+        if (raw === "english") return "en";
+        if (raw === "chinese") return "zh";
+        if (raw === "japanese") return "ja";
+        if (raw === "korean") return "ko";
+        return raw;
+    }
+
+    function isEnglishProject() {
+        return /^en(?:-|$)/.test(recommendationLanguage());
+    }
+
+    function stringList(value) {
+        if (Array.isArray(value)) return value.map(String);
+        if (value == null || value === "") return [];
+        return [String(value)];
+    }
+
+    function normalizedFontToken(value) {
+        return String(value || "").trim().toLowerCase().replace(/[_\s]+/g, "-");
+    }
+
+    function fontScriptTokens(language) {
+        var parts = normalizedFontToken(language).split("-");
+        var base = parts[0];
+        if (!base || base === "und") return [];
+        var explicitScript = parts.filter(function (part) {
+            return /^[a-z]{4}$/.test(part);
+        })[0];
+        if (explicitScript) return [explicitScript];
+        if (base === "en") return ["latin", "latn", "english"];
+        if (base === "zh") {
+            if (parts.indexOf("cn") >= 0 || parts.indexOf("sg") >= 0) {
+                return ["han", "hans", "cjk", "chinese", "zh"];
+            }
+            if (parts.indexOf("tw") >= 0 || parts.indexOf("hk") >= 0 ||
+                    parts.indexOf("mo") >= 0) {
+                return ["han", "hant", "cjk", "chinese", "zh"];
+            }
+            return ["han", "hans", "cjk", "chinese", "zh"];
+        }
+        if (base === "ja") return ["han", "jpan", "kana", "hiragana", "katakana", "cjk", "japanese", "ja"];
+        if (base === "ko") return ["hangul", "kore", "han", "cjk", "korean", "ko"];
+        if (["ru", "uk", "bg", "sr", "mk"].indexOf(base) >= 0) return ["cyrl", "cyrillic"];
+        if (["ar", "fa", "ur"].indexOf(base) >= 0) return ["arab", "arabic"];
+        if (base === "he" || base === "iw") return ["hebr", "hebrew"];
+        if (base === "el") return ["grek", "greek"];
+        if (base === "th") return ["thai"];
+        if (base === "hi" || base === "mr" || base === "ne") return ["deva", "devanagari"];
+        // Most remaining presentation locales use Latin script. Locale metadata
+        // still wins before this fallback.
+        return ["latin", "latn"];
+    }
+
+    function fontSupportsLanguage(font, language) {
+        var target = normalizedFontToken(language);
+        var targetBase = target.split("-")[0];
+        var locales = stringList(font && font.locales).map(normalizedFontToken);
+        if (locales.some(function (locale) {
+            return locale === "*" || locale === target ||
+                (target !== targetBase && locale === targetBase);
+        })) return true;
+
+        var supportedScripts = stringList(font && font.scripts).map(normalizedFontToken);
+        var wantedScripts = fontScriptTokens(language);
+        if (supportedScripts.some(function (script) {
+            return wantedScripts.indexOf(script) >= 0;
+        })) return true;
+
+        // A catalog entry without language metadata remains usable. Once either
+        // metadata field is present, filtering follows it.
+        return !locales.length && !supportedScripts.length;
+    }
+
+    function fontCatalogEntries(field) {
+        var fonts = (CAT && Array.isArray(CAT.fonts)) ? CAT.fonts : [];
+        var language = field === "english" ? "en" : recommendationLanguage();
+        if (field === "primary" && language === "und") {
+            return fonts.filter(function (font) { return font && font.id; });
+        }
+        var matching = fonts.filter(function (font) {
+            return font && font.id && fontSupportsLanguage(font, language);
+        });
+        return matching;
+    }
+
+    function findFontCatalogEntry(id) {
+        var fonts = (CAT && Array.isArray(CAT.fonts)) ? CAT.fonts : [];
+        var target = String(id || "").trim().toLowerCase();
+        for (var i = 0; i < fonts.length; i += 1) {
+            if (String(fonts[i].id || "").trim().toLowerCase() === target) return fonts[i];
+        }
+        return null;
+    }
+
+    function derivedFontCss(font) {
+        var primary = findFontCatalogEntry(font && font.primary);
+        return String((primary && primary.css) || "sans-serif").trim() ||
+            "sans-serif";
+    }
+
+    function normalizedFontRole(font, samples) {
+        font = (font && typeof font === "object") ? Object.assign({}, font) : {};
+        samples = samples || {};
+        var primary = font.primary;
+        var english = font.english;
+        if (isEnglishProject()) {
+            primary = primary || font.latin || font.cjk || "";
+            english = "";
+        } else {
+            primary = primary || font.cjk || "";
+            english = english || font.latin || "";
+        }
+        font.primary = primary;
+        if (isEnglishProject()) delete font.english;
+        else font.english = english;
+        font.sample_primary = font.sample_primary ||
+            (isEnglishProject() ? font.sample_latin : font.sample_cjk) ||
+            samples.primary || "";
+        if (isEnglishProject()) {
+            delete font.sample_english;
+        } else {
+            font.sample_english = font.sample_english || font.sample_latin ||
+                samples.english || "";
+        }
+        delete font.cjk;
+        delete font.latin;
+        delete font.sample_cjk;
+        delete font.sample_latin;
+        if (!String(font.css || "").trim()) font.css = derivedFontCss(font);
+        return font;
+    }
+
     function normTypography(c) {
         c = c || {};
-        if (c.heading && typeof c.heading === "object" && c.body && typeof c.body === "object") {
-            return Object.assign({}, c, {
-                body_size: typographyBodySize(c),
-                heading: Object.assign({}, c.heading, {
-                    sample_cjk: c.heading.sample_cjk || c.sample_heading || "",
-                    sample_latin: c.heading.sample_latin || c.sample_heading_latin || ""
-                }),
-                body: Object.assign({}, c.body, {
-                    sample_cjk: c.body.sample_cjk || c.sample_body || "",
-                    sample_latin: c.body.sample_latin || c.sample_body_latin || ""
-                })
-            });
-        }
-        return {
-            name: c.name || "",
-            note: c.note || "",
-            custom: c.custom || "",
-            body_size: typographyBodySize(c),
-            heading: {
-                cjk: c.heading || "",
-                latin: c.heading_latin || "",
-                css: c.heading_css || "",
-                sample_cjk: c.sample_heading || "",
-                sample_latin: c.sample_heading_latin || ""
-            },
-            body: {
-                cjk: c.body || "",
-                latin: c.body_latin || "",
-                css: c.body_css || "",
-                sample_cjk: c.sample_body || "",
-                sample_latin: c.sample_body_latin || ""
-            }
+        var normalized = Object.assign({}, c);
+        var objectShape = c.heading && typeof c.heading === "object" &&
+            c.body && typeof c.body === "object";
+        var heading = objectShape ? c.heading : {
+            primary: isEnglishProject() ? (c.heading_latin || c.heading || "") : (c.heading || ""),
+            english: isEnglishProject() ? "" : (c.heading_latin || ""),
+            css: c.heading_css || ""
         };
+        var body = objectShape ? c.body : {
+            primary: isEnglishProject() ? (c.body_latin || c.body || "") : (c.body || ""),
+            english: isEnglishProject() ? "" : (c.body_latin || ""),
+            css: c.body_css || ""
+        };
+        normalized.name = c.name || "";
+        normalized.note = c.note || "";
+        normalized.custom = c.custom || "";
+        normalized.body_size = typographyBodySize(c);
+        normalized.heading = normalizedFontRole(heading, {
+            primary: isEnglishProject()
+                ? (c.sample_heading_latin || c.sample_heading || "")
+                : (c.sample_heading || ""),
+            english: c.sample_heading_latin || ""
+        });
+        normalized.body = normalizedFontRole(body, {
+            primary: isEnglishProject()
+                ? (c.sample_body_latin || c.sample_body || "")
+                : (c.sample_body || ""),
+            english: c.sample_body_latin || ""
+        });
+        delete normalized.heading_latin;
+        delete normalized.body_latin;
+        delete normalized.heading_css;
+        delete normalized.body_css;
+        delete normalized.sample_heading;
+        delete normalized.sample_heading_latin;
+        delete normalized.sample_body;
+        delete normalized.sample_body_latin;
+        return normalized;
     }
 
     function typographyBodySize(c) {
@@ -1642,7 +1808,14 @@
 
     function normalizeTypographyForSubmit(payload) {
         if (!payload.typography || typeof payload.typography !== "object") return;
-        var typ = payload.typography;
+        var typ = normTypography(payload.typography);
+        payload.typography = typ;
+        if (isEnglishProject()) {
+            ["heading", "body"].forEach(function (role) {
+                delete typ[role].english;
+                delete typ[role].sample_english;
+            });
+        }
         var body = parseFloat(typ.body_size);
         if (!isFinite(body)) {
             // Cleared / invalid body field — fall back so role sizes never submit
@@ -1812,7 +1985,9 @@
         typography = normTypography(typography || {});
         return ["heading", "body"].every(function (role) {
             var font = typography[role] || {};
-            return ["cjk", "latin", "css"].every(function (field) {
+            var fields = isEnglishProject() ? ["primary", "css"] :
+                ["primary", "english", "css"];
+            return fields.every(function (field) {
                 return !!String(font[field] || "").trim();
             });
         });
@@ -1823,22 +1998,66 @@
             !typographyFamiliesComplete(STATE.typography));
     }
 
-    function sampleText(role, script) {
-        if (role === "heading") return t(script === "latin" ? "preview_latin_title" : "preview_big_title");
-        return t(script === "latin" ? "preview_latin_body" : "preview_body_intro");
+    function sampleText(role, field) {
+        var useEnglish = field === "english" || isEnglishProject();
+        if (role === "heading") {
+            return t(useEnglish ? "preview_latin_title" : "preview_big_title");
+        }
+        return t(useEnglish ? "preview_latin_body" : "preview_body_intro");
     }
 
     function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
-        var cjk = el("span", "fs-cjk", sampleText(role, "cjk"));
-        var lat = el("span", "fs-latin", sampleText(role, "latin"));
-        var cjkStack = previewFontStack(slot.cjk, css);
-        var latinStack = previewFontStack(slot.latin, css);
-        if (cjkStack) cjk.style.fontFamily = cjkStack;
-        if (latinStack) lat.style.fontFamily = latinStack;
-        if (cjkStack) cjk.title = cjkStack;
-        if (latinStack) lat.title = latinStack;
-        line.appendChild(cjk); line.appendChild(lat); box.appendChild(line);
+        var primary = el("span", "fs-primary",
+            slot.sample_primary || sampleText(role, "primary"));
+        var primaryStack = previewFontStack(slot.primary, css);
+        if (primaryStack) primary.style.fontFamily = primaryStack;
+        if (primaryStack) primary.title = primaryStack;
+        line.appendChild(primary);
+        if (!isEnglishProject()) {
+            var english = el("span", "fs-english",
+                slot.sample_english || sampleText(role, "english"));
+            var englishStack = previewFontStack(slot.english, css);
+            if (englishStack) english.style.fontFamily = englishStack;
+            if (englishStack) english.title = englishStack;
+            line.appendChild(english);
+        }
+        box.appendChild(line);
+    }
+
+    function fontChoiceLabel(font) {
+        var label = localized(font, "label") || font.id;
+        if (String(label).toLowerCase() === String(font.id).toLowerCase()) {
+            return String(font.id);
+        }
+        return label + " · " + font.id;
+    }
+
+    function typographyFieldLabel(field) {
+        if (field === "english") return t("english_font");
+        return t("primary_language_font");
+    }
+
+    function typographyChoiceConfigs() {
+        var configs = [];
+        ["heading", "body"].forEach(function (role) {
+            configs.push([role, "primary"]);
+            if (!isEnglishProject()) configs.push([role, "english"]);
+        });
+        return configs;
+    }
+
+    function typographySignature(typography) {
+        typography = normTypography(typography || {});
+        var fields = isEnglishProject() ? ["primary"] : ["primary", "english"];
+        var values = [];
+        ["heading", "body"].forEach(function (role) {
+            fields.forEach(function (field) {
+                values.push(String((typography[role] || {})[field] || "")
+                    .trim().toLowerCase());
+            });
+        });
+        return values.join("\u0000");
     }
 
     function renderTypography(host) {
@@ -1848,23 +2067,51 @@
             setSectionNote(sec, t("custom_typography_repair"));
         }
         var grid = el("div", "font-grid");
-        var customFields = el("div", "custom-typography-fields");
+        var customFields = el("div", "custom-typography-fields font-picker-fields");
         var customInputs = {};
         var customLegacyNote = el("div", "toggle-desc custom-typography-legacy");
+        var pickerHead = el("div", "font-picker-head");
+        pickerHead.appendChild(el("span", "subfield-label", t("font_selection")));
+        var customStatus = el("span", "font-custom-status", t("customized"));
+        pickerHead.appendChild(customStatus);
+        customFields.appendChild(pickerHead);
+        customFields.appendChild(el("div", "toggle-desc font-picker-hint", t("font_picker_hint")));
         customFields.appendChild(customLegacyNote);
-        customFields.style.display = "none";
 
         function syncCustomInputs() {
             var typography = STATE.typography || {};
             customLegacyNote.textContent = String(typography.custom || "").trim();
             customLegacyNote.style.display = customLegacyNote.textContent ? "block" : "none";
-            ["heading", "body"].forEach(function (role) {
-                var font = typography[role] || {};
-                ["cjk", "latin"].forEach(function (script) {
-                    var input = customInputs[role + "_" + script];
-                    if (input) input.value = font[script] || "";
-                });
+            customStatus.style.display = typography.name === "custom" ? "inline-flex" : "none";
+            typographyChoiceConfigs().forEach(function (config) {
+                var role = config[0], field = config[1];
+                var control = customInputs[role + "_" + field];
+                if (!control) return;
+                var value = String((typography[role] || {})[field] || "");
+                var matchingFont = control.options.filter(function (font) {
+                    return String(font.id).toLowerCase() === value.toLowerCase();
+                })[0];
+                control.select.value = matchingFont ? matchingFont.id : "__other__";
+                control.other.value = matchingFont ? "" : value;
+                control.other.style.display = matchingFont ? "none" : "block";
             });
+        }
+
+        function markCustomTypography() {
+            if (!STATE.typography) {
+                STATE.typography = { name: "custom", heading: {}, body: {} };
+            }
+            STATE.typography.name = "custom";
+            grid.querySelectorAll(".font-card").forEach(function (card) {
+                card.classList.remove("selected");
+            });
+            customCard.classList.add("selected");
+            customStatus.style.display = "inline-flex";
+        }
+
+        function updateRoleCss(role) {
+            if (!STATE.typography[role]) STATE.typography[role] = {};
+            STATE.typography[role].css = derivedFontCss(STATE.typography[role]);
         }
 
         function selectFont(idx) {
@@ -1881,37 +2128,23 @@
                 sizes: Object.assign({}, prev.sizes || {})
             };
             if (sizeInput) sizeInput.value = STATE.typography.body_size || "";
-            customFields.style.display = "none";
             grid.querySelectorAll(".font-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
+            syncCustomInputs();
             refreshSizeInputs();   // fill any role with no value yet; never overwrites existing values
             refreshStylePreview();
         }
 
         function selectCustomTypography() {
             var prev = STATE.typography || {};
-            var prevHeading = prev.heading || {};
-            var prevBody = prev.body || {};
-            STATE.typography = {
-                name: "custom",
-                heading: {
-                    cjk: prevHeading.cjk || "",
-                    latin: prevHeading.latin || "",
-                    css: prevHeading.css || "sans-serif"
-                },
-                body: {
-                    cjk: prevBody.cjk || "",
-                    latin: prevBody.latin || "",
-                    css: prevBody.css || "sans-serif"
-                },
-                body_size: prev.body_size || "",
-                sizes: Object.assign({}, prev.sizes || {})   // switching font family must not drop sizes
-            };
-            if (prev.custom) STATE.typography.custom = prev.custom;
-            grid.querySelectorAll(".font-card").forEach(function (card) { card.classList.remove("selected"); });
-            customCard.classList.add("selected");
-            customFields.style.display = "grid";
+            STATE.typography = normTypography(prev);
+            STATE.typography.name = "custom";
+            STATE.typography.body_size = prev.body_size || "";
+            // Switching font family must not drop any explicit size.
+            STATE.typography.sizes = Object.assign({}, prev.sizes || {});
+            markCustomTypography();
             syncCustomInputs();
-            customInputs.heading_cjk.focus();
+            var firstControl = customInputs.heading_primary;
+            if (firstControl) firstControl.select.focus();
             refreshSizeInputs();
             refreshStylePreview();
         }
@@ -1922,8 +2155,13 @@
             var card = el("div", "font-card");
             var top = el("div", "font-card-head");
             top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
-            var meta = t("font_heading") + " " + t("cjk") + ":" + (head.cjk || "—") + " / " + t("latin") + ":" + (head.latin || "—")
-                + "  ·  " + t("font_body") + " " + t("cjk") + ":" + (body.cjk || "—") + " / " + t("latin") + ":" + (body.latin || "—");
+            var metaFields = isEnglishProject() ? ["primary"] : ["primary", "english"];
+            var meta = ["heading", "body"].map(function (role) {
+                var slot = role === "heading" ? head : body;
+                return t("font_" + role) + " " + metaFields.map(function (field) {
+                    return typographyFieldLabel(field) + ": " + (slot[field] || "—");
+                }).join(" / ");
+            }).join("  ·  ");
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
             var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css, "heading"); card.appendChild(hbox);
@@ -1937,27 +2175,59 @@
         customCard.addEventListener("click", selectCustomTypography);
         grid.appendChild(customCard);
         sec.appendChild(grid);
-        [
-            ["heading", "cjk", "Microsoft YaHei"],
-            ["heading", "latin", "Arial"],
-            ["body", "cjk", "Microsoft YaHei"],
-            ["body", "latin", "Arial"]
-        ].forEach(function (config) {
-            var role = config[0], script = config[1];
+        typographyChoiceConfigs().forEach(function (config) {
+            var role = config[0], fieldName = config[1];
             var field = el("label", "custom-typography-field");
-            field.appendChild(el("span", "hex-cell-label", t("font_" + role) + " · " + t(script)));
-            var input = el("input", "text-input");
+            field.appendChild(el("span", "hex-cell-label",
+                t("font_" + role) + " · " + typographyFieldLabel(fieldName)));
+            var options = fontCatalogEntries(fieldName);
+            var select = el("select", "font-select");
+            options.forEach(function (font) {
+                var option = document.createElement("option");
+                option.value = font.id;
+                option.textContent = fontChoiceLabel(font);
+                select.appendChild(option);
+            });
+            var otherOption = document.createElement("option");
+            otherOption.value = "__other__";
+            otherOption.textContent = t("other_installed_font");
+            select.appendChild(otherOption);
+            var input = el("input", "text-input other-font-input");
             input.type = "text";
-            input.placeholder = config[2];
-            input.addEventListener("input", function () {
-                if (!STATE.typography || STATE.typography.name !== "custom") return;
+            input.placeholder = t("other_font_placeholder");
+            select.addEventListener("change", function () {
+                markCustomTypography();
                 if (!STATE.typography[role]) {
                     STATE.typography[role] = { css: "sans-serif" };
                 }
-                STATE.typography[role][script] = input.value;
+                if (select.value === "__other__") {
+                    input.value = "";
+                    input.style.display = "block";
+                    STATE.typography[role][fieldName] = "";
+                    input.focus();
+                } else {
+                    input.value = "";
+                    input.style.display = "none";
+                    STATE.typography[role][fieldName] = select.value;
+                }
+                updateRoleCss(role);
                 refreshStylePreview();
             });
-            customInputs[role + "_" + script] = input;
+            input.addEventListener("input", function () {
+                markCustomTypography();
+                if (!STATE.typography[role]) {
+                    STATE.typography[role] = { css: "sans-serif" };
+                }
+                STATE.typography[role][fieldName] = input.value;
+                updateRoleCss(role);
+                refreshStylePreview();
+            });
+            customInputs[role + "_" + fieldName] = {
+                select: select,
+                other: input,
+                options: options
+            };
+            field.appendChild(select);
             field.appendChild(input);
             customFields.appendChild(field);
         });
@@ -2089,17 +2359,20 @@
         host.appendChild(sec);
 
         var selIdx = -1;
+        var stateSignature = typographySignature(STATE.typography || {});
         if (STATE.typography && STATE.typography.name !== "custom") cands.forEach(function (c, i) {
-            if ((localized(c, "name") || c.name) === STATE.typography.name) selIdx = i;
+            var sameName = (localized(c, "name") || c.name) === STATE.typography.name;
+            if (sameName || typographySignature(c) === stateSignature) selIdx = i;
         });
         if (selIdx >= 0) selectFont(selIdx);
         else if (STATE.typography && STATE.typography.name === "custom") {
             ["heading", "body"].forEach(function (role) {
                 if (!STATE.typography[role]) STATE.typography[role] = {};
-                if (!STATE.typography[role].css) STATE.typography[role].css = "sans-serif";
+                if (!STATE.typography[role].css) updateRoleCss(role);
             });
             customCard.classList.add("selected");
-            customFields.style.display = "grid";
+            syncCustomInputs();
+        } else {
             syncCustomInputs();
         }
     }
@@ -2127,15 +2400,15 @@
         var card = el("div", "style-preview-card");
         var textcol = el("div", "sp-textcol");
         var title = el("div", "sp-title");
-        var titleCjk = el("span", "sp-title-cjk");
-        var titleLat = el("span", "sp-title-lat");
-        title.appendChild(titleCjk); title.appendChild(titleLat);
+        var titlePrimary = el("span", "sp-title-primary");
+        var titleEnglish = el("span", "sp-title-english");
+        title.appendChild(titlePrimary); title.appendChild(titleEnglish);
         var bodyRow = el("div", "sp-body");
         var accentBar = el("span", "sp-accent-bar");
         var bodyWrap = el("div", "sp-body-wrap");
-        var bodyCjk = el("span", "sp-body-cjk");
-        var bodyLat = el("span", "sp-body-lat");
-        bodyWrap.appendChild(bodyCjk); bodyWrap.appendChild(bodyLat);
+        var bodyPrimary = el("span", "sp-body-primary");
+        var bodyEnglish = el("span", "sp-body-english");
+        bodyWrap.appendChild(bodyPrimary); bodyWrap.appendChild(bodyEnglish);
         bodyRow.appendChild(accentBar); bodyRow.appendChild(bodyWrap);
         textcol.appendChild(title); textcol.appendChild(bodyRow);
         var content = el("div", "sp-content");
@@ -2163,26 +2436,30 @@
             // body_size is px everywhere — preview it directly, no conversion.
             var rawSize = parseFloat(typ.body_size) || (isPptCanvas(STATE.canvas) ? 24 : 18);
             var bodyPx = Math.max(12, Math.min(34, rawSize));
-            var headStack = previewFontStack(head.cjk, head.css);
-            var headLatStack = previewFontStack(head.latin, head.css);
-            var bodyStack = previewFontStack(body.cjk, body.css);
-            var bodyLatStack = previewFontStack(body.latin, body.css);
+            var headPrimaryStack = previewFontStack(head.primary, head.css);
+            var headEnglishStack = previewFontStack(head.english, head.css);
+            var bodyPrimaryStack = previewFontStack(body.primary, body.css);
+            var bodyEnglishStack = previewFontStack(body.english, body.css);
 
             card.style.background = bg;
-            titleCjk.textContent = t("preview_big_title");
-            titleLat.textContent = t("preview_section_title");
+            titlePrimary.textContent = head.sample_primary ||
+                sampleText("heading", "primary");
+            titleEnglish.textContent = head.sample_english ||
+                sampleText("heading", "english");
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
-            titleCjk.style.fontFamily = headStack || "";
-            titleLat.style.fontFamily = headLatStack || "";
-            // CJK and Latin previewed with their own stacks (mirrors the title
-            // and the per-card font samples) so each script's font is visible.
-            bodyCjk.textContent = t("preview_body_intro");
-            bodyLat.textContent = "";
+            titlePrimary.style.fontFamily = headPrimaryStack || "";
+            titleEnglish.style.fontFamily = headEnglishStack || "";
+            bodyPrimary.textContent = body.sample_primary ||
+                sampleText("body", "primary");
+            bodyEnglish.textContent = body.sample_english ||
+                sampleText("body", "english");
             bodyWrap.style.color = txt;
             bodyWrap.style.fontSize = bodyPx + "px";
-            bodyCjk.style.fontFamily = bodyStack || "";
-            bodyLat.style.fontFamily = bodyLatStack || "";
+            bodyPrimary.style.fontFamily = bodyPrimaryStack || "";
+            bodyEnglish.style.fontFamily = bodyEnglishStack || "";
+            titleEnglish.style.display = isEnglishProject() ? "none" : "";
+            bodyEnglish.style.display = isEnglishProject() ? "none" : "";
             accentBar.style.background = acc;
             content.style.color = txt;
             content.innerHTML = stylePreviewContentMarkup(STATE.icons);
@@ -2686,6 +2963,7 @@
     }
 
     function initStage1State() {
+        STATE.primary_language = recommendationLanguage();
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.communication_intent = (REC.communication_intent && REC.communication_intent.value) || "";
@@ -2801,7 +3079,7 @@
 
     // ---- staged submit + next-stage transitions -------------------------
     function communicationPayload() {
-        return {
+        var payload = {
             canvas: STATE.canvas,
             audience: STATE.audience,
             communication_intent: STATE.communication_intent,
@@ -2811,6 +3089,10 @@
             artifact_afterlife: STATE.artifact_afterlife,
             content_divergence: STATE.content_divergence
         };
+        if (STATE.primary_language && STATE.primary_language !== "und") {
+            payload.primary_language = STATE.primary_language;
+        }
+        return payload;
     }
 
     function stage1Payload() {
