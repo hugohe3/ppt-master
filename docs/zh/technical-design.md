@@ -66,13 +66,13 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     ├── 把 P01 作为方法样本分类完整 issue set；消除全部 blocking error，并处理选定的 advisory warning
     ├── P02 至末页连续生成项目规范化 SVG 页面 → svg_output/（中途不再运行 checker）
     ├── [Quality Check] svg_quality_checker.py --stage final --json（强制通过，0 错误；warning 非阻塞）
-    └── 讲稿生成：完整讲稿 → notes/total.md
+    └── [讲稿，条件触发] Speaker Notes 有效结果为开启 → 完整讲稿 notes/total.md
     ↓
 [图表校准（条件触发）] → verify-charts 工作流（含数据图表的 deck 必须在此步骤校准坐标）
     ↓
 [视觉自检（可选，opt-in）] → visual-review 工作流（仅在用户明确请求时触发）
     ↓
-[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py（防御校验后编译）
+[后处理] → [开启讲稿时运行 total_md_split.py] → finalize_svg.py → svg_to_pptx.py（防御校验后编译；关闭时显式 --no-notes）
     ↓
 输出：
     svg_final/
@@ -354,7 +354,11 @@ PPT Master 用的是**单主代理内的角色切换**，不是并行子代理�
 
 **为什么是角色专属 reference 而不是一个超大 prompt。** Strategist 跑的是「跟用户协商」模式（开放式、对话式、可以回退），Executor 跑的是「产出严格 XML」模式：不得重选上游方案或漏掉必需属性，但在 Design Spec 留出的范围内仍拥有几何、构图、层级和视觉处理的实现权。把两者塞进同一个 prompt，强迫模型在同一个 turn 里持守相互矛盾的纪律——所有混合模式的 prompt 工程病灶都会出现。按角色拆开，每个角色只加载它需要的、扔掉其他。
 
-**策略师确认阶段是默认连续路线中的主要用户设计决策 gate。** Strategist 阶段以一个按依赖排序的三阶段 gate 作为核心决策点。第一阶段确认开放式沟通契约与画布。`delivery_context` 在同一个开放文本字段中区分演讲者主导、读者主导、混合、录制/自动播放，明确主要场景并记录可选的次要用途；混合场景不能只写“混合”而不说明由哪一种主导。其中的文本框仍承载可编辑推荐，且没有任何一项要求非空：确认时按当前文本原样保存，清空后的值保持为空，不会回退到推荐内容。第二阶段只从该契约计算一次并确认完整 PPT 方案：阅读模式、叙事 mode、页数、成套视觉系统、图片来源和生成图渲染。存在模板时，Strategist 还会根据真实工作区和当前内容推导页面/原型应用计划，并以可编辑的自然语言文本展示；只有内部复用/遵循模式保持隐藏。阅读模式决定信息由页面、视觉、讲者和备注如何共同承担，其选项卡不展示 px 数值。浏览器可以在本地执行确定性的「阅读模式 → 正文基准 → 未锁定角色字号」联动；手动编辑字号即锁定可见值，不会重新计算第二阶段。第三阶段也只计算一次，并且只处理生产机制：条件式 AI 图片获取路径、公式策略、生成模式与 Design Spec 审核开关。JSON 为兼容保留 `delivery_purpose` 键，但用户侧统一称为阅读模式。生成图直接继承已选 PPT 色彩锚点，不再单设图片调色选择。最终状态有两个等价载体：默认 UI 路径在最终等待返回后只读取一次 `confirm_ui/result.json`；显式 chat-only 或委托路径保留等价的最终确认摘要，并可不产生 `result.json`。两条路径都先把全部最终值（含生产机制）固化到同一份 `design_spec.md` 并完成 Gate 1 fidelity。未开启 refine 时立即进入 lock 编写；`refine_spec: true` 时，流程会在 `spec_lock.md` 之前暂停，用户可以通过正常聊天任意修改这同一份 Design Spec、迭代任意轮次，明确批准后才释放 Gate 2 并编写 lock。流程不会维护第二份 Design Spec 或并行 lock。正常的 lock 编写与下游执行不再回读确认通道。必需人工素材未就绪仍可能引入条件式阻塞点，因此这里不是对所有 runtime gate 的排他声明。项目校验要求 `spec_lock.md ## communication` 下存在紧凑的 `audience` / `objective` / `core_message` 锚点，并要求 §IX 每个 Slide block 都有 `Audience move`。
+**策略师确认阶段是默认连续路线中的主要用户设计决策 gate。** Strategist 阶段以一个按依赖排序的三阶段 gate 作为核心决策点。第一阶段确认开放式沟通契约与画布。`delivery_context` 在同一个开放文本字段中区分演讲者主导、读者主导、混合、录制/自动播放，明确主要场景并记录可选的次要用途；混合场景不能只写“混合”而不说明由哪一种主导。其中的文本框仍承载可编辑推荐，且没有任何一项要求非空：确认时按当前文本原样保存，清空后的值保持为空，不会回退到推荐内容。第二阶段只从该契约计算一次并确认完整 PPT 方案：阅读模式、叙事 mode、页数、成套视觉系统、图片来源和生成图渲染。存在模板时，Strategist 还会根据真实工作区和当前内容推导页面/原型应用计划，并以可编辑的自然语言文本展示；只有内部复用/遵循模式保持隐藏。阅读模式决定信息由页面、视觉、讲者和备注如何共同承担，其选项卡不展示 px 数值。浏览器可以在本地执行确定性的「阅读模式 → 正文基准 → 未锁定角色字号」联动；手动编辑字号即锁定可见值，不会重新计算第二阶段。第三阶段也只计算一次，并且只处理生产机制：条件式 AI 图片获取路径、公式策略、生成模式、Design Spec 审核开关，以及 Agent 是否主动生成讲稿、自定义动画和旁白音频。这三项是用户未明确要求时的兜底策略，不是能力禁用开关；优先级固定为「用户最新明确指令 → Stage 3 → `true / false / false` 默认值」。Strategist 仍可按内容给出非绑定的 Motion suggestion，建议本身不会启动自定义动画执行。JSON 为兼容保留 `delivery_purpose` 键，但用户侧统一称为阅读模式。生成图直接继承已选 PPT 色彩锚点，不再单设图片调色选择。最终状态有两个等价载体：默认 UI 路径在最终等待返回后只读取一次 `confirm_ui/result.json`；显式 chat-only 或委托路径保留等价的最终确认摘要，并可不产生 `result.json`。两条路径都会先解析并把生产流程的最终有效结果固化到同一份 `design_spec.md`，再完成 Gate 1 fidelity。未开启 refine 时立即进入 lock 编写；`refine_spec: true` 时，流程会在 `spec_lock.md` 之前暂停，用户可以通过正常聊天任意修改这同一份 Design Spec、迭代任意轮次，明确批准后才释放 Gate 2 并编写 lock。流程不会维护第二份 Design Spec 或并行 lock。正常的 lock 编写与下游执行不再回读确认通道。必需人工素材未就绪仍可能引入条件式阻塞点，因此这里不是对所有 runtime gate 的排他声明。项目校验要求 `spec_lock.md ## communication` 下存在紧凑的 `audience` / `objective` / `core_message` 锚点，并要求 §IX 每个 Slide block 都有 `Audience move`。
+
+Stage 3 的三个主动执行值始终保留为相互独立的原始证据。尤其是，
+启用旁白可以在 Design Spec 中启用 Speaker Notes 的最终有效结果，
+但绝不会改写原始的备注选择。
 
 **图片分析以重算元数据为先，Strategist 只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。用户图、抽取图、网络图、AI 图、公式图和切片图仍统一汇入同一张可度量事实表。
 
@@ -431,7 +435,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 **图片执行路径以 Design Spec 为权威。** UI 或聊天中的最终确认都先固化为 `design_spec.md §I` 的 `AI Image Acquisition Path`；Image_Generator 根据该值选择 API、host-native 或 manual，不能在执行阶段重新决定。`image_gen.py --manifest` 只属于 API Path A。当前 CLI 仍保留一个读取 UI `result.json` 的防误调用 guard，用于在该文件明确记录 `host-native` / `manual` 时阻止误跑 Path A；它不是权威来源，不覆盖 chat-only，也不能替代 Design Spec 的路线判断。这是当前代码与上游权威链尚未闭合的实现差异，不能当作正常消费路径。
 
-**相关小插画用一张统一 sheet。** 当 deck 需要三个或更多同风格小插画时，资源计划使用一个 AI illustration sheet 行，再用若干 `slice` 行派生元素，而不是分别生成多张小图。`slice_images.py` 把 sheet 切成具名透明元素，这些派生文件进入 `images/`，随后重跑 `analyze_images.py`，让 Executor 看到真实尺寸。这既是成本规则，也是风格一致性规则：一张 sheet 会强迫这些小元素来自同一种视觉手法。
+**相关小插画适合时共用一张 sheet。** 多个同风格小插画在 cell 形状、细节、质量和语义需求兼容时，可以使用一个 AI illustration sheet 行再通过 `slice` 行派生元素；不兼容时可独立生成。选择 sheet 路径后，`slice_images.py` 把它切成具名透明元素，这些派生文件进入 `images/`，随后重跑 `analyze_images.py`，让 Executor 看到真实尺寸。
 
 **Executor 前必须进入终态。** 需要获取的资源行必须落到 `Generated`、`Sourced` 或 `Needs-Manual`；`Pending` 和 `Failed` 不能漏进 Executor。`Needs-Manual` 可以作为已知占位 / 依赖继续进入 SVG 生成，但 Step 7 会在最终导出前重新检查必需文件是否已经存在。
 
@@ -443,16 +447,16 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 ## 图文版式：Primary 主结构 + Modifier 修饰层
 
-「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 99 条稳定编号技法拆成两层、自由组合：
+「图片**可以怎么放上幻灯片**」的可选灵感库（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）提供 99 条稳定编号技法，分成两层并可自由组合：
 
 - **Primary 主结构**（容器布局 / 图作画布 + 原生覆盖 / 多图组合）—— 页面的骨架。一页可一个也可多个；跨 Primary 的组合，如「侧边对比 + 图作画布的注解卡」，是合规的。
 - **Modifier 修饰层**（非矩形裁剪 / 遮罩与叠加 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。
 
-**为什么显式允许复合，而不设「一页一个 Primary」配额。** 这份词表用于扩展构图选择，不是层数指标。一页可以由一个或多个 Primary 构成，并按需要叠加任意数量的 Modifier；每一层都必须对当前叙事或视觉层级有贡献。需要警惕的是整套 deck 反复退化为裸的 `#2` / `#3` / `#5` / `#6` 且完全不使用 Modifier，而不是要求每一页都必须复合。
+**为什么灵感库不设置目录或层数配额。** 它用于扩展构图选择，不定义合法输出。一页可以由一个或多个 Primary 构成，按需叠加 Modifier，也可以完全不引用编号，直接使用更适合叙事和层级的自由构图。
 
-**为什么物理拆分两层，而不是只打标签。** 词表被重排成「Primary 全部在前，Modifier 全部在后」——Strategist 或 Executor 读一次目录，就能从结构上内化「两层」心智模型。编号是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），所以 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出、过往示例里所有 `#<id>` 引用照样解析。
+**为什么物理拆分两层，而不是只打标签。** 灵感库按 Primary 在前、Modifier 在后组织，便于按构造角色查找。编号仍是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），因此 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出和过往示例里的既有 `#<id>` 引用照样解析。
 
-**为什么组合走 Strategist 资源列表，而不是到绘制时才第一次发现。** `§VIII 图片资源列表` 的 `Layout pattern` 列接受 `#<id> + #<id> ...` 表达式——Primary id 加可选 Modifier id；`Crop Policy` 则记录 `adaptive` 或 `no-crop`。Strategist 必须在 SVG 生成前完整查看目录，写出具体的首选构图和信息完整性边界，并通过 lock 投影让两者在 session 重入后继续存在。Executor 再决定实际表达：它可以调整尺寸、位置、流向与权重，也可以换成另一个目录 pattern 或普通构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
+**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Layout pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的稳定编号；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求完整读取灵感库或使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
 
 **为什么真正的硬约束留在上游。** 跨切的 SVG 创作与 PPTX 兼容性例外属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由的权威集。版式词表只指向该路由，不再复述合同；每条规则仍只有一个所属模块，词表里也不会留下过期副本。
 

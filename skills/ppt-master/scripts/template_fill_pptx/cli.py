@@ -127,11 +127,11 @@ def build_parser() -> argparse.ArgumentParser:
         ],
         default=DEFAULT_TRANSITION,
         help=(
-            "Page-to-page transition applied to every cloned slide "
+            "Page-to-page transition policy for every cloned slide "
             "(per-slide 'transition' in the plan overrides this). "
             "Use a PowerPoint-native key; old names are compatibility inputs. "
-            f"Default: {DEFAULT_TRANSITION}. Use 'none' for no motion, "
-            "or 'keep' to preserve each source slide's existing transition."
+            f"Default: {DEFAULT_TRANSITION} (preserve the source). "
+            "Use 'none' to remove visual motion."
         ),
     )
     apply.add_argument(

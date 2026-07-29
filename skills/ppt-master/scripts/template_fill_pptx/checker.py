@@ -12,6 +12,7 @@ from .selectors import (
     _replacement_text,
     _table_selectors,
 )
+from .transitions import transition_unknown_fields
 
 
 def _slot_lookup(library: dict[str, Any]) -> dict[tuple[int, str], dict[str, Any]]:
@@ -291,6 +292,24 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
 
     for slide_index, slide in enumerate(plan.get("slides", []), start=1):
         source_slide = int(slide.get("source_slide", 0))
+        transition = slide.get("transition")
+        if isinstance(transition, dict):
+            unknown_transition_fields = transition_unknown_fields(transition)
+            if unknown_transition_fields:
+                results.append(
+                    {
+                        "status": "ERROR",
+                        "code": "transition_unknown_fields",
+                        "plan_slide": slide_index,
+                        "source_slide": source_slide,
+                        "fields": unknown_transition_fields,
+                        "message": (
+                            "transition has unknown field(s): "
+                            + ", ".join(unknown_transition_fields)
+                        ),
+                    }
+                )
+                summary["error"] += 1
         replacements = slide.get("replacements", [])
         if not isinstance(replacements, list):
             results.append(

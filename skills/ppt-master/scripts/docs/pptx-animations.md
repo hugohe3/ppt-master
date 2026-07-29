@@ -190,6 +190,11 @@ the next `after-previous` row.
 
 ## 6. Validation and Read-Back
 
+Before export, `animation_config.py validate` uses the writer's effect-behavior
+test for `bounce_end` and resolves declared sound paths against the project
+root. Missing paths, non-files, and unsupported audio extensions fail this
+project-level preflight; field-only validation remains filesystem-independent.
+
 Generated export reads every slide back before packaging and compares each
 requested row with the serialized result:
 

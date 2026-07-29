@@ -39,6 +39,7 @@
             sec_type: "Typography",
             sec_images: "Image usage",
             sec_image_production: "Image production",
+            sec_proactive_execution: "Proactive execution",
             sec_mode: "Generation mode",
             sec_refine: "Review the Design Spec first",
             sec_design_directions: "Coherent design directions",
@@ -94,6 +95,13 @@
             image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
             image_usage_required: "Select at least one image usage option.",
             image_usage_none_exclusive: "No images cannot be combined with other image options.",
+            proactive_execution_hint: "These defaults apply only when you have not explicitly instructed otherwise. Your latest explicit instruction always takes priority.",
+            proactive_speaker_notes: "Proactively generate speaker notes",
+            proactive_speaker_notes_desc: "On by default. The agent generates speaker notes without a separate request.",
+            proactive_custom_animations: "Proactively create custom animations",
+            proactive_custom_animations_desc: "Off by default. Strategist motion suggestions remain available; turn this on to have the agent create custom animations without a separate request.",
+            proactive_narration_audio: "Proactively generate narration audio",
+            proactive_narration_audio_desc: "Off by default. This raw choice does not rewrite the speaker-notes toggle; the Strategist resolves narration's effective notes dependency in the Design Spec.",
             font_heading: "Heading",
             font_body: "Body",
             font_body_size: "Body baseline size",
@@ -178,6 +186,7 @@
             sec_type: "タイポグラフィ",
             sec_images: "画像の使用",
             sec_image_production: "画像制作",
+            sec_proactive_execution: "能動的な実行",
             sec_mode: "生成モード",
             sec_refine: "先に設計仕様を確認",
             sec_design_directions: "統合デザイン方針",
@@ -233,6 +242,13 @@
             image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
             image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
             image_usage_none_exclusive: "「画像なし」は他の画像オプションと同時に選択できません。",
+            proactive_execution_hint: "これらの初期設定は、明示的な指示がない場合にのみ適用されます。最新の明示的な指示が常に優先されます。",
+            proactive_speaker_notes: "発表者ノートを能動的に生成",
+            proactive_speaker_notes_desc: "初期設定はオンです。個別の依頼がなくても発表者ノートを生成します。",
+            proactive_custom_animations: "カスタムアニメーションを能動的に作成",
+            proactive_custom_animations_desc: "初期設定はオフです。ストラテジストの動きの提案は維持され、オンにすると個別の依頼がなくてもカスタムアニメーションを作成します。",
+            proactive_narration_audio: "ナレーション音声を能動的に生成",
+            proactive_narration_audio_desc: "初期設定はオフです。この選択は発表者ノートの設定を書き換えません。ナレーションに必要なノートの有効状態は、ストラテジストが設計仕様で解決します。",
             font_heading: "見出し",
             font_body: "本文",
             font_body_size: "本文の基準サイズ",
@@ -317,6 +333,7 @@
             sec_type: "字体方案",
             sec_images: "图片使用",
             sec_image_production: "图片生产",
+            sec_proactive_execution: "主动执行",
             sec_mode: "生成模式",
             sec_refine: "先审核设计规范",
             sec_design_directions: "成套设计方向",
@@ -372,6 +389,13 @@
             image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
             image_usage_required: "请至少选择一种图片使用方式。",
             image_usage_none_exclusive: "「不使用图片」不能和其它图片选项同时选择。",
+            proactive_execution_hint: "这些默认开关只在你没有明确要求时生效；你最新的明确指令始终优先。",
+            proactive_speaker_notes: "主动生成演讲者备注",
+            proactive_speaker_notes_desc: "默认开启。无需另行要求，Agent 也会生成演讲者备注。",
+            proactive_custom_animations: "主动生成自定义动画",
+            proactive_custom_animations_desc: "默认关闭。策略师的动画建议仍会保留；开启后，Agent 可在没有另行要求时实际制作自定义动画。",
+            proactive_narration_audio: "主动生成旁白音频",
+            proactive_narration_audio_desc: "默认关闭。这里保留原始选择，不改写演讲者备注开关；策略师会在设计规范中解析旁白所需的最终备注状态。",
             font_heading: "标题",
             font_body: "正文",
             font_body_size: "正文基准字号",
@@ -740,6 +764,13 @@
 
     function recValue(field) {
         return (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
+    }
+
+    function booleanRecommendation(field, fallback) {
+        if (!REC || !Object.prototype.hasOwnProperty.call(REC, field)) return fallback;
+        var spec = REC[field];
+        var value = spec && typeof spec === "object" ? spec.value : spec;
+        return typeof value === "boolean" ? value : fallback;
     }
 
     function recommendationFieldLocked(field) {
@@ -2394,6 +2425,44 @@
         host.appendChild(sec);
     }
 
+    function renderProactiveExecution(host) {
+        var sec = section("A", "sec_proactive_execution", t("proactive_execution_hint"));
+        var opts = [{ id: "off", label: t("off_default") }, { id: "on", label: t("on") }];
+
+        function addToggle(labelKey, descKey, stateKey, fallback) {
+            var field = el("div", "subfield");
+            field.appendChild(el("div", "subfield-label", t(labelKey)));
+            field.appendChild(el("div", "toggle-desc", t(descKey)));
+            var recommended = booleanRecommendation(stateKey, fallback);
+            enumField(field, opts, recommended ? "on" : "off",
+                function () { return STATE[stateKey] ? "on" : "off"; },
+                function (value) {
+                    STATE[stateKey] = value === "on";
+                });
+            sec.appendChild(field);
+        }
+
+        addToggle(
+            "proactive_speaker_notes",
+            "proactive_speaker_notes_desc",
+            "proactive_speaker_notes",
+            true
+        );
+        addToggle(
+            "proactive_custom_animations",
+            "proactive_custom_animations_desc",
+            "proactive_custom_animations",
+            false
+        );
+        addToggle(
+            "proactive_narration_audio",
+            "proactive_narration_audio_desc",
+            "proactive_narration_audio",
+            false
+        );
+        host.appendChild(sec);
+    }
+
     function renderRefine(host) {
         var sec = section("R", "sec_refine");
         var opts = [{ id: "off", label: t("off_default") }, { id: "on", label: t("on") }];
@@ -2476,6 +2545,7 @@
             // confirmed image source but does not reopen aesthetic decisions.
             renderImageProduction(host);
             renderFormulaPolicy(host);
+            renderProactiveExecution(host);
             renderMode(host);
             renderRefine(host);
         } else {
@@ -2498,6 +2568,7 @@
             renderImageDirection(host);
             renderImageProduction(host);
             renderFormulaPolicy(host);
+            renderProactiveExecution(host);
             renderMode(host);
             renderRefine(host);
         }
@@ -2632,6 +2703,9 @@
     function initStage3State() {
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
+        STATE.proactive_speaker_notes = booleanRecommendation("proactive_speaker_notes", true);
+        STATE.proactive_custom_animations = booleanRecommendation("proactive_custom_animations", false);
+        STATE.proactive_narration_audio = booleanRecommendation("proactive_narration_audio", false);
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
         STATE.refine_spec = !!((REC.refine_spec && REC.refine_spec.value) || (REC.recommend && REC.recommend.refine_spec));

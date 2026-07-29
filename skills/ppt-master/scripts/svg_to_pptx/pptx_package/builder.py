@@ -55,7 +55,11 @@ from pptx_opc_validation import (
     verify_internal_relationships,
 )
 
-from ..animation_config import MorphPair, resolve_morph_pairs
+from ..animation_config import (
+    MorphPair,
+    resolve_morph_pairs,
+    resolve_slide_animation_config,
+)
 from ..drawingml.converter import convert_svg_to_slide_shapes
 from ..drawingml.theme_colors import (
     ThemeColorSpec,
@@ -4044,8 +4048,10 @@ def _slide_animation_settings(
     if not isinstance(anim_value, dict):
         raise ValueError('animations.json slide animation must be an object')
     anim_cfg = anim_value
-    resolved_cfg = dict(default_animation_cfg)
-    resolved_cfg.update(anim_cfg)
+    resolved_cfg = resolve_slide_animation_config(
+        default_animation_cfg,
+        anim_cfg,
+    )
     if cli_overrides.get('animation'):
         effect, effect_options = normalize_animation_effect_request(
             animation,
@@ -4656,12 +4662,12 @@ def create_pptx_with_native_svg(
         narration_audio: Optional dict mapping SVG stem to narration audio file.
         use_narration_timings: Whether to set slide auto-advance from audio duration.
         narration_padding: Extra seconds added after each narration before advancing.
-        image_optimize: Whether native export downscales oversized raster images.
-        image_max_dimension: Maximum optimized image dimension in pixels.
-        image_sizing: ``cap`` only limits source dimensions; ``display`` sizes
-            from rendered SVG boxes.
+        image_optimize: Whether native export optimizes raster images when needed.
+        image_max_dimension: Preferred optimized image dimension cap in pixels.
+        image_sizing: ``cap`` preserves unchanged source bytes and limits
+            oversized sources; ``display`` sizes from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
-        image_quality: JPEG quality used for opaque optimized rasters.
+        image_quality: JPEG quality used when opaque rasters are re-encoded.
         native_objects: Replace explicit ``data-pptx-replace-with`` chart/table
             fallback groups with native PowerPoint Chart/Table objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
@@ -4878,16 +4884,19 @@ def create_pptx_with_native_svg(
                 if image_sizing == 'display':
                     image_mode = (
                         f"display scale {image_scale:g}, "
-                        f"max {image_max_dimension or 'unlimited'} px"
+                        f"preferred max {image_max_dimension or 'unlimited'} px"
                     )
                 else:
-                    image_mode = f"cap max {image_max_dimension or 'unlimited'} px"
+                    image_mode = (
+                        f"preferred cap {image_max_dimension or 'unlimited'} px, "
+                        "unchanged bytes preserved"
+                    )
                 print(
                     "  Image optimization: Enabled "
-                    f"({image_mode}, JPEG q{image_quality})"
+                    f"({image_mode}, JPEG q{image_quality} when re-encoded)"
                 )
             else:
-                print("  Image optimization: Disabled")
+                print("  Image optimization: Disabled (original bytes)")
         elif use_compat_mode:
             print(f"  Compatibility mode: Enabled (PNG + SVG dual format)")
             print(f"  PNG renderer: {renderer_name} {renderer_status}")

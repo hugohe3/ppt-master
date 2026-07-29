@@ -27,6 +27,7 @@ from xml.etree import ElementTree as ET
 
 
 SVG_WORK_DIR_NAMES = frozenset({'svg_output', 'svg_final', 'svg-flat', 'svg_flat'})
+SVG_FINAL_CANDIDATE_PREFIX = '.svg_final.candidate-'
 TEMPLATE_SOURCE_DIR_NAME = 'templates'
 TEMPLATE_SPEC_FILENAME = 'design_spec.md'
 _SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
@@ -63,7 +64,10 @@ def project_root_for_svg_path(svg_path: Path) -> Path:
     """Infer the project root from an SVG file path or SVG directory path."""
     path = Path(svg_path)
     base = path if path.is_dir() else path.parent
-    if base.name in SVG_WORK_DIR_NAMES:
+    if (
+        base.name in SVG_WORK_DIR_NAMES
+        or base.name.startswith(SVG_FINAL_CANDIDATE_PREFIX)
+    ):
         return base.parent
     if (
         base.name == TEMPLATE_SOURCE_DIR_NAME

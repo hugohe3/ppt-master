@@ -6,9 +6,15 @@ import re
 from pathlib import Path
 
 
+class NotesFileReadError(RuntimeError):
+    """Report a matched notes file that cannot be decoded or read."""
+
+
 def find_svg_files(
     project_path: Path,
     source: str = 'output',
+    *,
+    allow_fallback: bool = True,
 ) -> tuple[list[Path], str]:
     """Find SVG files in the project.
 
@@ -18,6 +24,8 @@ def find_svg_files(
             - 'output': svg_output (hand-authored source; native default)
             - 'final': svg_final (post-processed preview; diagnostic input)
             - or any subdirectory name
+        allow_fallback: Try svg_output and then the project root when the
+            requested directory is missing.
 
     Returns:
         (list_of_svg_files, actual_directory_name) tuple.
@@ -31,6 +39,8 @@ def find_svg_files(
     svg_dir = project_path / dir_name
 
     if not svg_dir.exists():
+        if not allow_fallback:
+            return [], dir_name
         print(f"  Warning: {dir_name} directory does not exist, trying svg_output")
         dir_name = 'svg_output'
         svg_dir = project_path / dir_name
@@ -76,26 +86,33 @@ def find_notes_files(
             svg_index_mapping[i] = svg_path.stem
 
     for notes_file in notes_dir.glob('*.md'):
+        stem = notes_file.stem
+
+        # Try index-based matching (backward compat with slide01.md format).
+        match = re.search(r'slide[_]?(\d+)', stem)
+        mapped_stem = (
+            svg_index_mapping.get(int(match.group(1)))
+            if match
+            else None
+        )
+        filename_match = stem in svg_stems_mapping
+        if mapped_stem is None and not filename_match:
+            continue
+
         try:
-            with open(notes_file, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-            if not content:
-                continue
+            content = notes_file.read_text(encoding='utf-8').strip()
+        except (OSError, UnicodeError) as exc:
+            raise NotesFileReadError(
+                f"Cannot read matched notes file {notes_file}: {exc}"
+            ) from exc
+        if not content:
+            continue
 
-            stem = notes_file.stem
+        if mapped_stem:
+            notes[mapped_stem] = content
 
-            # Try index-based matching (backward compat with slide01.md format)
-            match = re.search(r'slide[_]?(\d+)', stem)
-            if match:
-                index = int(match.group(1))
-                mapped_stem = svg_index_mapping.get(index)
-                if mapped_stem:
-                    notes[mapped_stem] = content
-
-            # Filename-based matching (overrides index-based)
-            if stem in svg_stems_mapping:
-                notes[stem] = content
-        except Exception:
-            pass
+        # Filename-based matching overrides index-based matching.
+        if filename_match:
+            notes[stem] = content
 
     return notes

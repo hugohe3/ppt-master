@@ -4037,6 +4037,12 @@ def _optimize_image_for_pptx(
     original_size = img.size
     img = _resize_for_target(img, target_w, target_h)
     resized = img.size != original_size
+    if (
+        ctx.image_sizing == 'cap'
+        and not geometry_normalized
+        and not resized
+    ):
+        return img_data, img_format
     # Preserve source semantics: only an original JPEG stays lossy. PNG and
     # other static raster formats use lossless PNG after any resize.
     prefer_jpeg = img_format.lower() in {'jpg', 'jpeg'}

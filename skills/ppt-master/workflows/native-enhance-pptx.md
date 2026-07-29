@@ -131,13 +131,19 @@ Present the plan to the user before generating notes or audio:
 
 | Module | Recommended default | Confirmation question |
 |---|---|---|
-| `notes` | Enabled | Add/replace speaker notes generated from slide content? |
-| `audio` | Enabled when user wants narration/video/autoplay | Generate one narration audio file per slide? |
+| `notes` | Enabled; required whenever audio is enabled | Add/replace speaker notes generated from slide content? |
+| `audio` | Enabled when user wants narration/video/autoplay | After notes are complete, generate one narration audio file per slide? |
 | `timings` | Enabled with audio | Set slide auto-advance from audio duration? |
 | `transitions` | Enabled, `fade` 0.5s | Add page transitions? Which canonical native effect, Effect Options, and duration? |
 | `delivery.check` | Always on, read-only | No confirmation required; review errors and advisories |
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation. Do not generate notes, generate audio, or patch the PPTX until the user confirms the module plan.
+
+**Hard dependency — notes before audio**: Confirming `audio.enabled: true`
+also requires `notes.enabled: true`. If complete per-slide notes do not already
+exist, run Step 6 and generate them before entering audio configuration or
+audio generation. Never generate narration directly from slide text or bypass
+the notes artifact.
 
 **Transition/timing ownership**:
 
@@ -188,11 +194,12 @@ the 1-based `index` in `analysis/slide_index.json`:
 | `effect: none` | Remove the visual transition; timings remain independently owned |
 | `effect: preserve` | Preserve the source visual transition; narration timing may still update advance |
 
-An explicit `slides` entry selects a page even when it has no audio and
-`apply_without_audio` is false. With `transitions.enabled: false`, only listed
-pages opt in; unlisted pages preserve their source transition. Morph uses
-PowerPoint's automatic matching only—this route does not rename native objects
-to create deterministic pairs.
+A `slides` entry always selects that page. Without audio, enabled global effects
+and explicit global `none` apply deck-wide; `apply_without_audio` is ignored.
+With audio, the flag extends the global policy from narrated to all pages.
+Disabled non-`none` effects preserve unlisted pages. Morph uses PowerPoint
+automatic matching; this route does not rename native objects for deterministic
+pairs.
 
 **Hard rule — no silent downgrade**: a requested native effect must be written with its complete validated Effect Options. Unknown effects or inapplicable options fail; unknown source effects are preserved when the transition module is disabled.
 
@@ -270,7 +277,8 @@ Record the confirmed config into `project.json`:
 
 ## 8. Run the Shared Audio Stage
 
-🚧 **GATE**: Step 7 confirmed; notes files exist under `<project>/notes/`.
+🚧 **GATE**: Step 7 confirmed; complete non-empty notes files exist under
+`<project>/notes/` for every slide.
 
 Run [`generate-audio`](./stages/generate-audio.md) Step 4 with `<project>` and the confirmed values. Stop after audio generation; do not run its Generate-PPTX-only `svg_to_pptx.py --recorded-narration` integration. This route integrates audio through Step 9 instead.
 
@@ -305,10 +313,9 @@ uvx ppt-master native-enhance-pptx apply "<project>" \
   --overwrite
 ```
 
-Without `--apply-transition-without-audio` (or the matching confirmed-plan
-field), the resolved enter policy is applied while processing slides with
-audio; slides without audio keep their source transition unless explicitly
-listed in `modules.transitions.slides`.
+`--apply-transition-without-audio` matters only with audio enabled: it extends
+the global enter policy from narrated slides to all slides. Explicit slide
+entries always opt in. Without audio, enabled transitions apply to every slide.
 
 `apply` reruns the same source/readiness/plan checks as `validate`. Enabling
 audio always requires every selected file to be decodable by ffprobe; enabling

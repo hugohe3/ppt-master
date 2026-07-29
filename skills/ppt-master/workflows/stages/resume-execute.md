@@ -51,16 +51,30 @@ Read skills/ppt-master/workflows/generate-pptx.md
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 - Read the complete project Design Spec, then the complete `spec_lock.md`, once to establish the fresh execution context
+- Resolve the effective Speaker Notes, Custom Animations, and Narration Audio
+  outcomes from `design_spec.md §I`. Missing legacy outcomes use
+  `enabled` / `disabled` / `disabled`; these production decisions never come
+  from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
 - Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked preset mode / visual-style files); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
 - Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load
 - Quality Check Gate
-- Speaker notes generation
-- Step 7: Post-processing & Export (`total_md_split` → `finalize_svg` → `svg_to_pptx`)
+- Speaker notes generation only when the effective Speaker Notes outcome is enabled
+- Conditional custom-animation handling under the effective Custom Animations
+  outcome, explicit user instruction, and existing-sidecar rules
+- Step 7: Post-processing & Export (conditional `total_md_split` → `finalize_svg`
+  → `svg_to_pptx`; disabled speaker notes use `--no-notes`)
+- After the base export, run `generate-audio` when the effective Narration Audio
+  outcome is enabled; narration implies speaker notes are enabled
 
 Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
+
+If the user gives a newer explicit instruction after Stage 3, update only the
+affected effective outcome and provenance in `design_spec.md §I`, then resume at
+its owning step. Do not reopen Confirm UI or add the decision to
+`spec_lock.md`.
 
 **Source verification**: the execution session is fresh. Read only the relevant `sources/` passages needed to resolve explicit `Fact IDs` / source references or verify facts, quotes, names, and data required by the current §IX block. Follow [`executor-base.md`](../../references/executor-base.md) §2.1's content-vs-expression contract; source verification never authorizes a second outline. If §IX lacks executable content or evidence, stop and return to Generate Step 4 for Design Spec repair.
 

@@ -1,9 +1,8 @@
 """apply: page-to-page transitions for cloned slides.
 
-Native templates usually ship an empty ``<p:transition/>`` that renders as no
-motion, so ``apply`` injects a default transition unless told to ``keep`` the
-source or set ``none``. Effects and OOXML mutation come from the shared
-``pptx_transitions`` core so every PPTX path uses the same writer.
+Template Fill preserves each source transition unless the CLI or a per-slide
+plan entry requests a replacement. Effects and OOXML mutation come from the
+shared ``pptx_transitions`` core so every PPTX path uses the same writer.
 """
 
 from __future__ import annotations
@@ -19,14 +18,26 @@ from pptx_transitions import (
     validate_seconds,
 )
 
-# Default page transition injected by `apply` when neither the CLI flag nor a
-# per-slide plan field asks for something else. Use `keep` to preserve the
-# source transitions instead.
-DEFAULT_TRANSITION = "fade"
-DEFAULT_TRANSITION_DURATION = 0.5
 KEEP_TRANSITION = "keep"
+# Preserve source transitions unless the CLI or a per-slide plan entry selects
+# a replacement. The duration is consumed only when a visual effect is written.
+DEFAULT_TRANSITION = KEEP_TRANSITION
+DEFAULT_TRANSITION_DURATION = 0.5
+TRANSITION_OBJECT_FIELDS = frozenset(
+    {
+        "effect",
+        "effect_options",
+        "duration",
+        "advance_after",
+    }
+)
 
 _UNSET = object()
+
+
+def transition_unknown_fields(raw: dict[str, Any]) -> list[str]:
+    """Return unsupported fields from a per-slide transition object."""
+    return sorted(set(raw) - TRANSITION_OBJECT_FIELDS)
 
 
 def _set_slide_transition(
@@ -96,6 +107,11 @@ def _resolve_slide_transition(
         )
         return effect, effect_options, default_duration, None
     if isinstance(raw, dict):
+        unknown = transition_unknown_fields(raw)
+        if unknown:
+            raise RuntimeError(
+                "Transition has unknown field(s): " + ", ".join(unknown)
+            )
         effect = raw.get("effect", default_effect)
         raw_options = raw.get("effect_options")
         if raw_options is not None and "effect" not in raw:

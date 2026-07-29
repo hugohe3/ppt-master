@@ -21,7 +21,7 @@ Atmospheric environment with narrative — a moment, a place, a situation render
 ```
 
 | LAYOUT | Three-layer composition: foreground (subject + immediate context), middle ground (supporting environment), background (atmospheric depth). The viewer reads the scene like a small story |
-| ELEMENTS | One or more figures (simplified silhouettes unless `corporate-photo`) in an environment. Environmental elements (sun, lamp, tree, desk) support the narrative |
+| ELEMENTS | One or more figures treated according to the selected rendering and Reference, inside an environment. Environmental elements (sun, lamp, tree, desk) support the narrative |
 | NEGATIVE SPACE | Atmospheric perspective creates breathing room — background paler than foreground |
 | ATMOSPHERE | Lighting direction, color temperature, and mood are deliberate (golden-hour, evening light, morning haze, etc.) |
 

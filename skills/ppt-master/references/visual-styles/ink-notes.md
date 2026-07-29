@@ -20,8 +20,8 @@ Whiteboard-ink minimalism — a pale field, confident black hand-ink line work, 
 
 ## 3. Using the deck's colors
 
-- Near-monochrome: ink-dark line work on a pale field does ~85% of the work; the deck's accent appears only as a semantic mark (risk / positive / highlight) under ~10% of canvas.
-- Color carries meaning, not decoration — one or two accents, used where they signify.
+- Near-monochrome: ink-dark line work on a pale field carries the composition; the deck's accent remains a sparse semantic mark for risk, positive state, or emphasis.
+- Color carries meaning, not decoration; use only the accents that signify something on the current page.
 
 > HEX values come from confirmation `e`; this style only governs the monochrome-with-semantic-accent discipline — it names no colors.
 

@@ -1207,8 +1207,8 @@ def _build_enhancement_plan(
     existing_plan: dict | None = None,
 ) -> dict:
     previous = existing_plan or {}
-    notes_enabled = _preserved_enabled(previous, "notes", True)
     audio_enabled = _preserved_enabled(previous, "audio", True)
+    notes_enabled = _preserved_enabled(previous, "notes", True) or audio_enabled
     timings_enabled = _preserved_enabled(previous, "timings", True)
     previous_timings = _module_config(previous, "timings")
     raw_padding: object
@@ -1411,6 +1411,19 @@ def _validate_plan_modules(plan: dict) -> None:
             raise ValueError(
                 f"enhancement plan module {name}.enabled must be a boolean"
             )
+    notes_config = modules_cfg.get("notes")
+    audio_config = modules_cfg.get("audio")
+    if (
+        isinstance(audio_config, dict)
+        and audio_config.get("enabled") is True
+        and (
+            not isinstance(notes_config, dict)
+            or notes_config.get("enabled") is not True
+        )
+    ):
+        raise ValueError(
+            "enhancement plan audio requires notes.enabled: true"
+        )
 
 
 def _resolve_transition_plan(
@@ -1505,6 +1518,18 @@ def _resolve_transition_plan(
     apply_without_audio = (
         cli_apply_without_audio or raw_apply_without_audio
     )
+    if (
+        "audio" not in modules
+        and (
+            "transitions" in modules
+            or cli_effect is not None
+            or global_enter.policy == "none"
+        )
+    ):
+        # A confirmed global transition is independently actionable. The
+        # narrated-only scope switch matters only while audio is enabled.
+        # Explicit none remains an action even though the module is disabled.
+        apply_without_audio = True
 
     raw_slides = transitions_cfg.get("slides", {})
     if not isinstance(raw_slides, dict):
@@ -1534,17 +1559,6 @@ def _resolve_transition_plan(
             selected_base,
             override,
             slide_index=slide_index,
-        )
-
-    if (
-        ("transitions" in modules or cli_effect is not None)
-        and "audio" not in modules
-        and not apply_without_audio
-        and not slide_enters
-    ):
-        raise ValueError(
-            "transitions is enabled, but no slides are reachable: enable audio, "
-            "set apply_without_audio=true, or add transitions.slides entries"
         )
 
     return ResolvedTransitionPlan(
@@ -2280,7 +2294,10 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
-        help="draft the plan with page transitions for slides without audio",
+        help=(
+            "when audio is enabled, draft transitions for slides without audio "
+            "as well"
+        ),
     )
     init.set_defaults(func=init_project)
 
@@ -2309,7 +2326,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--apply-transition-without-audio",
         action="store_true",
         default=None,
-        help="include page transitions for slides without audio",
+        help=(
+            "when audio is enabled, include page transitions for slides "
+            "without audio"
+        ),
     )
     plan.set_defaults(func=plan_project)
 
@@ -2332,7 +2352,10 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
-        help="also write page transitions on slides that do not have audio",
+        help=(
+            "when audio is enabled, also write page transitions on slides "
+            "without audio"
+        ),
     )
     apply.set_defaults(func=apply_project)
 

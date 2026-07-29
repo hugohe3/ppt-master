@@ -23,21 +23,23 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
 
-**Reference — preferred pattern, flexible realization**: Read [`image-layout-patterns.md`](./image-layout-patterns.md) once and resolve every active §VIII/lock pattern id. Adapt its geometry or composition when the page communicates better, while preserving resource role, source, must-use status, crop policy, content, and explicit user/template constraints. Pattern-only changes need no upstream rewrite. Avoid generic left/right repetition.
+**Reference — layout catalog is optional recall**: Load [`image-layout-patterns.md`](./image-layout-patterns.md) only when an active suggestion cites `#<id>` or inspiration is useful; resolve only cited ids. Free-form suggestions need no catalog lookup. Adapt or decline the suggestion when the page communicates better, while preserving resource role/source, must-use, crop/content, and explicit user/template constraints. Expression-only changes need no upstream rewrite.
 
 **Reference — motion-ready image layering, not a constraint**: For adopted §IX or an explicit focus, comparison, evidence, reveal-order, or cross-page requirement, decide during SVG authoring whether the final composition needs separate visible units. Keep ordinary stable framing/background static and wrap each independently revealed or continuing Slide-local unit in a descriptive direct-root `<g id>`; structured atoms/slots retain their boundaries. Existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.
 
 **Hard rule — visible-layer timing**: Any crop, lens, scrim, comparison, evidence, or annotation layer required by an adopted motion plan MUST already exist in the final SVG without violating structural contracts. The later stage may regroup ordinary Slide-local content visual-equivalently, but cannot invent or modify missing visible content. If no legal existing unit can serve a non-binding suggestion, simplify it to available units, a page transition, or `none`; an explicit requirement that cannot be represented follows failure recovery.
 
-**No semantic re-reading**: §VIII owns image identity, purpose, and focus / crop constraints. Executor uses its `Reference` plus regenerated dimensions; it never opens source images to rediscover subjects, substitute assets, or invent focus. For `adaptive` without reliable focus, use `meet`; missing or contradictory required constraints return upstream.
+**Hard rule — narrow visual-inspection scope**: Start with §VIII `Reference` plus dimensions. If one `Existing`/`Sourced` asset still leaves focal-safe crop, overlay contrast, or a quiet region ambiguous, inspect only that asset/review copy for placement. This cannot reopen selection, change identity/must-use, infer provenance, substitute the asset, or invent focus; never routinely read back `Generated` images. If `adaptive` focus stays uncertain, use `meet`; conflicting binding constraints return upstream.
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
 **Crop policy**: read the §VIII row and matching lock projection. On every slide that uses a `crop=no-crop` source (or a legacy trailing `| no-crop`), retain one visible complete instance using one of the nine legal anchors with `meet`, never `none`, and no `clip-path`, `mask`, clipping overflow, or nested `<svg>` crop viewport. An auxiliary same-slide detail or lens may crop the same source only while that complete instance remains visible. `crop=adaptive` permits but never requires cropping; choose `meet` or focal-safe `slice` from purpose, ratio, focus, and container. A missing or conflicting `source` / `pattern` / `crop` projection returns upstream instead of being inferred during execution; the accurately projected `pattern` remains a preferred expression that may be adapted without rewriting the lock.
 
-**Hard rule — same-source addressable crops**: for binding use or pattern
-`#100`, reuse one exact `href` without slice assets. Give every
-independent/Morph object a stable
+**Hard rule — same-source addressable crops, only when adopted**: A layout
+suggestion, including pattern `#100`, never activates this transport. Apply it
+only when the chosen composition uses independent same-source crops or an
+explicit editable/Morph requirement needs them. Once active, reuse one exact
+`href` without slice assets. Give every independent/Morph object a stable
 page-unique id and a distinct nested crop wrapper under
 [`svg-effects.md`](./svg-effects.md) §6.5. Plain rectangles need no crop marker;
 shaped frames put `data-pptx-crop="1"` on the wrapper and a matching

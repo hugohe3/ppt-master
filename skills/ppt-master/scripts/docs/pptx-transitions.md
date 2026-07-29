@@ -234,13 +234,13 @@ continue to preserve existing object names and transition XML.
 |---|---|---|---|
 | Generated PPTX CLI | fade, 0.4s | click | auto-advance maps to both |
 | Recorded narration | Preserve resolved enter | narration | none remains visually none |
-| Template Fill v1 | fade, 0.5s | click | keep preserves source; legacy advance_after maps to both |
-| Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | Explicit page entries override scope; disabled global transitions preserve unless the plan selected none |
+| Template Fill | preserve source | preserve source | explicit effects replace; legacy advance_after maps to both |
+| Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | With audio off, an enabled global transition or explicit global `none` applies to all pages; with audio on, the scope flag controls non-narrated pages |
 
-Template Fill and Native Enhance keep their established route defaults.
-The public `create_pptx_with_native_svg` Python API also retains its legacy
-0.5s default; the CLI explicitly passes 0.4s. Changing a default policy is a
-separate migration decision.
+Template Fill changes source transitions only when its CLI or per-slide plan
+selects a replacement, removal, or timed advance. Native Enhance uses its
+confirmed plan. The public `create_pptx_with_native_svg` Python API retains its
+legacy 0.5s default; the generated-deck CLI explicitly passes 0.4s.
 
 ---
 

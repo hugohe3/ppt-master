@@ -18,7 +18,7 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 | Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same stage or chat fallback |
 | Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, create `recommendations.stage2.json` without changing Stage 1, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
-| Final confirmed value is missing, changed, substituted, or weakened in `design_spec.md` | Yes | Repair from the retained final-confirmation object; only a fresh recovery turn with no retained state reads persisted final evidence once | Only when the confirmed value genuinely cannot be honored | Step 4 Gate 1 — confirmation fidelity |
+| Final confirmed value or a later explicit user override is missing, changed, substituted, or weakened in `design_spec.md` | Yes | Repair from the retained final-confirmation object plus any newer explicit instruction; only a fresh recovery turn with no retained state reads persisted final evidence once | Only when the effective value genuinely cannot be honored | Step 4 Gate 1 — confirmation fidelity |
 | `spec_lock.md` changes confirmed identity or omits a required execution anchor/routing decision | Yes | Re-author the affected lock rows from the completed Design Spec and current context; do not enumerate page-local literals | No unless the Design Spec itself is incomplete | Step 4 Gate 2 — lock context fidelity |
 | Execution exposes a missing Strategist-owned role/plan detail | Yes for the affected page | Repair affected Design Spec/lock fragments under [`executor-base.md`](../../references/executor-base.md) §2.1 | Only if confirmed intent changes | Step 4 Gate 1/2 → Step 6 current page |
 | Execution context is fresh, resumed, restarted, compacted/summary-only, external, or unknown | Yes until rebuilt | Read complete Design Spec, then lock, once; reload triggered inputs and latest completed SVG when mid-deck | No | Step 6 current page |
@@ -34,9 +34,9 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 | Browser annotations submitted during generation | No | Defer application until after Step 7 | User asks to apply annotations | `live-preview` Step 2 |
 | `svg_quality_checker.py` error | Yes | Review the complete issue set from one unfiltered run; fix all errors and selected warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, use that complete result as the next batch; never check between individual fixes | No unless required asset is missing | Step 6 Visual Construction |
 | `svg_quality_checker.py` warning | No | Continue without mandatory modification or acknowledgement; preserve compatible user syntax, and report material fidelity/quality advice when useful | No | Step 6 advisory warning handling |
-| Missing `notes/total.md` | Yes | Generate speaker notes before Step 7 | No | Step 6 Logic Construction |
+| Missing `notes/total.md` while the effective Speaker Notes outcome is enabled | Yes | Generate speaker notes before Step 7 | No | Step 6 Logic Construction |
 | Step 7 image readiness missing manual files | Yes | None for manual assets; list required filenames and prompts | Yes | Step 7 image readiness gate |
-| `total_md_split.py` failure | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |
+| `total_md_split.py` failure while speaker notes are enabled | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |
 | `finalize_svg.py` failure | Yes | Fix SVG/assets, rerun Step 7.2 | Only if source asset is missing | Step 7.2 |
 | `svg_to_pptx.py` failure | Yes | Fix conversion issue, rerun Step 7.3 | Only if required artifact is missing | Step 7.3 |
 | Export succeeds but user wants direct browser edits re-exported | No | Rerun Step 7.2 and Step 7.3 after applied edits | No | Post-export live-preview handling |
@@ -59,11 +59,21 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 
 **Forbidden — silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file, and do not change a confirmed execution value merely to keep the route moving. Fix, pause, or request a new decision at the owning boundary.
 
+**Proactive production compatibility**: Stage 3 evidence owns the raw
+`proactive_speaker_notes`, `proactive_custom_animations`, and
+`proactive_narration_audio` policies. Resolve the durable effective outcomes in
+this order: latest explicit user instruction → proactive policy → fixed legacy
+default `enabled` / `disabled` / `disabled`. Narration Audio enabled requires
+Speaker Notes enabled without rewriting the raw proactive preference; record
+that dependency as the Speaker Notes provenance. Record each outcome plus its
+provenance in `design_spec.md §I`; never project these values into
+`spec_lock.md`.
+
 ---
 
 ## 3. Generate PPTX Resume Pointers
 
-Here, **final confirmation evidence** means either the explicit final confirmation in the current chat or `<project>/confirm_ui/result.json` with `status: confirmed` and `stage: final`. Planning artifacts alone do not prove that the user confirmed their values.
+Here, **final confirmation evidence** means either the explicit final confirmation in the current chat or `<project>/confirm_ui/result.json` with `status: confirmed` and `stage: final`. Planning artifacts alone do not prove that the user confirmed their values. After that gate, a newer explicit user instruction may update only its effective production outcome and provenance in the durable Design Spec; resume from the owning step without reopening Confirm UI.
 
 | Last good state | Resume from |
 |---|---|
@@ -76,8 +86,9 @@ Here, **final confirmation evidence** means either the explicit final confirmati
 | No final confirmation evidence is available | Resume Step 4 from the latest stage evidenced by `confirm_ui/result.json`; if no stage is persisted, restart Step 4 at Stage 1. Do not infer confirmed choices from partial planning artifacts. |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](../stages/resume-execute.md) |
 | Images acquired but SVGs not started | [`generate-pptx`](../generate-pptx.md) Step 6 |
-| SVGs complete and checker passed, notes missing | Step 6 Logic Construction |
-| SVGs and notes complete | Step 7.1 |
+| SVGs complete and checker passed; effective Speaker Notes outcome enabled and notes missing | Step 6 Logic Construction |
+| SVGs complete; effective Speaker Notes outcome disabled | Run any applicable conditional motion handling, then Step 7.2 and export with `--no-notes` |
+| SVGs and enabled notes complete | Step 7.1 |
 | Step 7.1 complete, export not complete | Step 7.2 |
 | Step 7.2 complete, PPTX not complete | Step 7.3 |
 | Browser annotations saved after export | [`live-preview`](../stages/live-preview.md) Step 2 |
