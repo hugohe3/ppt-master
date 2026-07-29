@@ -252,12 +252,23 @@ def _encode_pil_to_data_uri(
 ) -> tuple[str, int] | None:
     """Serialize *img* to a base64 data URI.
 
-    If the image hasn't been transformed (slice crop or meet fit), prefer
-    re-encoding the original file bytes so we don't risk mutating an
-    already-optimized asset. *fallback_bytes* carries the raw on-disk
-    bytes for that path.
+    If the image has not been transformed, ``--no-compress`` preserves a
+    supported PNG/JPEG/GIF/WebP payload byte-for-byte. Compression mode may
+    still retain a smaller original payload. *fallback_bytes* carries those
+    raw on-disk bytes.
     """
     original_mime_type = get_mime_type(src_path.name, fallback_bytes)
+    if (
+        not compress
+        and fallback_bytes is not None
+        and original_mime_type in _PIL_FORMAT_BY_MIME
+    ):
+        encoded = base64.b64encode(fallback_bytes).decode('ascii')
+        return (
+            f'data:{original_mime_type};base64,{encoded}',
+            len(fallback_bytes),
+        )
+
     # Match native export: only original JPEG assets stay lossy. PNG remains
     # PNG, while BMP/TIFF and other static raster formats become lossless PNG.
     mime_type = (

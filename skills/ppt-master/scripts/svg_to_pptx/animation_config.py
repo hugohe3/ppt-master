@@ -36,6 +36,15 @@ from .semantic_markers import is_static_page_frame
 
 
 _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
+_INHERITANCE_SENSITIVE_ANIMATION_FIELDS = frozenset({
+    'effect',
+    'effect_options',
+    'repeat_count',
+    'repeat_duration',
+    'accelerate',
+    'decelerate',
+    'bounce_end',
+})
 _CHROME_ID_TOKENS = frozenset({
     'background', 'bg',
     'decoration', 'decorations', 'decor',
@@ -225,6 +234,18 @@ def _animation_effect_error(effect: object, label: str) -> str | None:
             f'valid effects: {valid}'
         )
     return None
+
+
+def resolve_slide_animation_config(
+    default_animation: dict[str, Any],
+    slide_animation: dict[str, Any],
+) -> dict[str, Any]:
+    """Merge one slide animation over defaults using writer inheritance rules."""
+    resolved = dict(default_animation)
+    if 'effect' in slide_animation and 'effect_options' not in slide_animation:
+        resolved.pop('effect_options', None)
+    resolved.update(slide_animation)
+    return resolved
 
 
 def _animation_parameter_errors(
@@ -759,7 +780,7 @@ def validate_animation_config_errors(config: dict[str, Any]) -> list[str]:
             _animation_scope_errors(slide_cfg, f'slide "{slide_name}"')
         )
         errors.extend(_animation_group_errors(slide_name, slide_cfg))
-    errors.extend(_resolved_bounce_support_errors(config))
+    errors.extend(_resolved_animation_parameter_errors(config))
     return list(dict.fromkeys(errors))
 
 
@@ -935,14 +956,17 @@ def _bounce_support_error(
     )
 
 
-def _resolved_bounce_support_errors(config: dict[str, Any]) -> list[str]:
-    """Validate effective bounce/effect pairs after sidecar inheritance."""
+def _resolved_animation_parameter_errors(config: dict[str, Any]) -> list[str]:
+    """Validate effective animation parameters after sidecar inheritance."""
     defaults = config.get('defaults', {})
     default_animation: dict[str, Any] = {'effect': 'auto'}
     if isinstance(defaults, dict):
         value = defaults.get('animation', {})
         if isinstance(value, dict):
-            default_animation.update(value)
+            default_animation = resolve_slide_animation_config(
+                default_animation,
+                value,
+            )
 
     errors: list[str] = []
     default_error = _bounce_support_error(default_animation, 'defaults animation')
@@ -952,21 +976,30 @@ def _resolved_bounce_support_errors(config: dict[str, Any]) -> list[str]:
     slides = config.get('slides', {})
     if not isinstance(slides, dict):
         return errors
-    relevant_fields = frozenset({'effect', 'effect_options', 'bounce_end'})
     for slide_name, slide_cfg in slides.items():
         if not isinstance(slide_cfg, dict):
             continue
-        slide_animation = dict(default_animation)
         slide_value = slide_cfg.get('animation', {})
-        if isinstance(slide_value, dict):
-            slide_animation.update(slide_value)
-            if relevant_fields & set(slide_value):
-                error = _bounce_support_error(
+        if not isinstance(slide_value, dict):
+            continue
+        slide_animation = resolve_slide_animation_config(
+            default_animation,
+            slide_value,
+        )
+        if _INHERITANCE_SENSITIVE_ANIMATION_FIELDS & set(slide_value):
+            errors.extend(
+                _animation_parameter_errors(
                     slide_animation,
                     f'slide "{slide_name}" animation',
+                    inherited_effect='auto',
                 )
-                if error:
-                    errors.append(error)
+            )
+            error = _bounce_support_error(
+                slide_animation,
+                f'slide "{slide_name}" animation',
+            )
+            if error:
+                errors.append(error)
 
         groups = slide_cfg.get('groups', {})
         if not isinstance(groups, dict):
@@ -974,18 +1007,32 @@ def _resolved_bounce_support_errors(config: dict[str, Any]) -> list[str]:
         for group_id, group_cfg in groups.items():
             if (
                 not isinstance(group_cfg, dict)
-                or not relevant_fields & set(group_cfg)
+                or not _INHERITANCE_SENSITIVE_ANIMATION_FIELDS & set(group_cfg)
             ):
                 continue
-            group_animation = dict(slide_animation)
-            if 'effect' in group_cfg:
-                group_animation['effect'] = group_cfg['effect']
-                if 'effect_options' in group_cfg:
-                    group_animation['effect_options'] = group_cfg['effect_options']
-                else:
-                    group_animation.pop('effect_options', None)
-            if 'bounce_end' in group_cfg:
-                group_animation['bounce_end'] = group_cfg['bounce_end']
+            inherited_group_animation = {
+                field: slide_animation[field]
+                for field in (
+                    'effect',
+                    'effect_options',
+                    'duration',
+                    *ANIMATION_TIMING_OPTION_FIELDS,
+                    'after_effect',
+                    'sound',
+                )
+                if field in slide_animation
+            }
+            group_animation = resolve_slide_animation_config(
+                inherited_group_animation,
+                group_cfg,
+            )
+            errors.extend(
+                _animation_parameter_errors(
+                    group_animation,
+                    f'group "{slide_name}/{group_id}"',
+                    inherited_effect='auto',
+                )
+            )
             error = _bounce_support_error(
                 group_animation,
                 f'group "{slide_name}/{group_id}"',

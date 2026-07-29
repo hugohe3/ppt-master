@@ -45,7 +45,7 @@ if __package__ in {None, ''}:
     __package__ = 'svg_to_pptx'
 
 from .dimensions import CANVAS_FORMATS, get_project_info
-from .discovery import find_svg_files, find_notes_files
+from .discovery import NotesFileReadError, find_notes_files, find_svg_files
 from .builder import create_pptx_with_native_svg
 from ..native_objects import (
     native_fallback_kind,
@@ -1258,7 +1258,11 @@ Recorded narration:
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
     if enable_notes:
-        notes = find_notes_files(project_path, ref_files)
+        try:
+            notes = find_notes_files(project_path, ref_files)
+        except NotesFileReadError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
 
     narration_audio: dict[str, Path] = {}
     narration_audio_dir_arg = args.recorded_narration or args.narration_audio_dir

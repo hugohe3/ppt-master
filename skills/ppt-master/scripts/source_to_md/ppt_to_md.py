@@ -76,6 +76,8 @@ IMAGE_EXT_BY_CONTENT_TYPE = {
     "image/x-wmf": "wmf",
 }
 LEGACY_GENERATED_IMAGE_RE = re.compile(r"^slide_\d{2}_image_\d{2}\.[A-Za-z0-9]+$")
+_READBACK_SLIDE_HEADING_RE = re.compile(r"^## Slide\s+\d+\s*$")
+_READBACK_NOTES_HEADING_RE = re.compile(r"^### Speaker Notes\s*$")
 
 # Hyperlink schemes dropped during extraction (a blacklist of known-dangerous
 # schemes). PowerPoint also rejects unrecognized schemes at open time, so the
@@ -117,6 +119,20 @@ def normalize_text(value: str) -> str:
     lines = [re.sub(r"\s+", " ", line).strip() for line in value.split("\n")]
     lines = [line for line in lines if line]
     return "\n".join(lines)
+
+
+def _escape_readback_control_lines(value: str) -> str:
+    """Escape ordinary text lines that collide with converter section markers."""
+    lines = value.split("\n")
+    return "\n".join(
+        f"\\{line}"
+        if (
+            _READBACK_SLIDE_HEADING_RE.fullmatch(line)
+            or _READBACK_NOTES_HEADING_RE.fullmatch(line)
+        )
+        else line
+        for line in lines
+    )
 
 
 def normalize_ext(ext: str | None, content_type: str | None = None) -> str:
@@ -345,7 +361,9 @@ def text_frame_to_markdown(text_frame: object, shape: object = None) -> str:
 
     paragraphs = []
     for paragraph in visible_paragraphs:
-        text = _paragraph_to_markdown(paragraph, shape)
+        text = _escape_readback_control_lines(
+            _paragraph_to_markdown(paragraph, shape)
+        )
         if not text:
             continue
         if list_like:
