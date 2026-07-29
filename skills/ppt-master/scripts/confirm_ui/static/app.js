@@ -1704,6 +1704,18 @@
         }
 
         function selectCustomColor() {
+            // Seed the free-text box from the palette currently on screen. Choosing
+            // Custom with an empty box stored \palette: {}\ together with \custom: ""\,
+            // which fails both branches of designSystemValid and blocks Continue while
+            // the card still looks selected.
+            if (!String(customInput.value || "").trim()) {
+                var seed = (STATE.color && STATE.color.palette) || {};
+                var seeded = PALETTE_ROLES.map(function (role) {
+                    var hex = normHex(seed[role]);
+                    return hex ? role + ": " + hex : null;
+                }).filter(Boolean);
+                if (seeded.length) customInput.value = seeded.join(", ");
+            }
             selectedIdx = -1;
             STATE.color = { name: "custom", custom: customInput.value || "", palette: {} };
             grid.querySelectorAll(".color-card").forEach(function (card) { card.classList.remove("selected"); });
@@ -2872,7 +2884,14 @@
         var valid = (completePalette || customPalette) &&
             completeFamilies && completeSizes;
         if (!valid) {
-            document.getElementById("confirm-status").textContent = t("design_system_required");
+            // Name the failing condition — the generic sentence alone left users
+            // guessing which of the three requirements was unmet.
+            var missing = [];
+            if (!(completePalette || customPalette)) missing.push("palette");
+            if (!(completeFamilies || customFamilies)) missing.push("typography");
+            if (!completeSizes) missing.push("sizes");
+            document.getElementById("confirm-status").textContent =
+                t("design_system_required") + " [" + missing.join(", ") + "]";
         }
         return !!valid;
     }
