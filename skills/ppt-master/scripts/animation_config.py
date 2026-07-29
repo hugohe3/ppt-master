@@ -115,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:
             print(f'Error: {exc}', file=sys.stderr)
             return 1
-        if not config:
+        if config is None:
             print('No animations.json found; default animation policy will be used.')
             return 0
         errors = list(dict.fromkeys(

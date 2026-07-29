@@ -962,6 +962,12 @@ Recorded narration:
             '--native-charts-and-tables.',
             file=sys.stderr,
         )
+    if args.animation_config is not None and not args.animation_config.strip():
+        print(
+            'Error: --animation-config must be a non-empty file path',
+            file=sys.stderr,
+        )
+        return 1
 
     if args.quick_test:
         conflicts: list[str] = []
@@ -1127,10 +1133,22 @@ Recorded narration:
     # Native DrawingML is the only PPTX product. ``-s`` remains an explicit
     # diagnostic source override; standard export always reads svg_output/.
     native_source = args.source or 'output'
-    native_files, native_source_dir = find_svg_files(project_path, native_source)
+    native_files, native_source_dir = find_svg_files(
+        project_path,
+        native_source,
+        allow_fallback=args.source is None,
+    )
     ref_files = native_files
     if not native_files:
-        print("Error: No SVG files found")
+        if args.source is not None:
+            requested_dir = project_path / native_source_dir
+            print(
+                "Error: No SVG files found in explicitly requested source: "
+                f"{requested_dir}",
+                file=sys.stderr,
+            )
+        else:
+            print("Error: No SVG files found", file=sys.stderr)
         return 1
 
     # Compatibility kwargs remain until the builder's old baseline-specific
@@ -1391,7 +1409,11 @@ Recorded narration:
 
     config_warnings: list[str] = []
     if animation_config:
-        reference_messages = validate_animation_config(project_path, animation_config)
+        reference_messages = validate_animation_config(
+            project_path,
+            animation_config,
+            svg_files=native_files,
+        )
         config_warnings = [
             message for message in reference_messages
             if ' has no id and cannot be customized in animations.json' in message

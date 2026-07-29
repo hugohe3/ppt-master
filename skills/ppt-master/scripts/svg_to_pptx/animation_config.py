@@ -174,15 +174,21 @@ def _require_unique_target_ids(
         raise ValueError(_duplicate_target_error(slide_name, duplicates))
 
 
-def scan_project_targets(project_path: Path) -> tuple[dict[str, list[GroupTarget]], list[str]]:
-    """Scan ``svg_output/*.svg`` for animation targets."""
-    svg_dir = project_path / 'svg_output'
+def scan_project_targets(
+    project_path: Path,
+    *,
+    svg_files: list[Path] | None = None,
+) -> tuple[dict[str, list[GroupTarget]], list[str]]:
+    """Scan selected SVG files, defaulting to ``svg_output/*.svg``."""
     targets_by_slide: dict[str, list[GroupTarget]] = {}
     anonymous_groups: list[str] = []
-    if not svg_dir.is_dir():
-        return targets_by_slide, [f'svg_output directory not found: {svg_dir}']
+    if svg_files is None:
+        svg_dir = project_path / 'svg_output'
+        if not svg_dir.is_dir():
+            return targets_by_slide, [f'svg_output directory not found: {svg_dir}']
+        svg_files = sorted(svg_dir.glob('*.svg'))
 
-    for svg_path in sorted(svg_dir.glob('*.svg')):
+    for svg_path in svg_files:
         targets, anonymous = scan_svg_targets(svg_path)
         targets_by_slide[svg_path.stem] = targets
         anonymous_groups.extend(anonymous)
@@ -195,14 +201,18 @@ def default_config_path(project_path: Path) -> Path:
 
 
 def load_animation_config(project_path: Path, config_path: str | None = None) -> dict[str, Any] | None:
-    """Load optional animation config; return ``None`` when absent."""
-    if config_path:
+    """Load animation config; only an absent default sidecar is optional."""
+    if config_path is not None:
+        if not config_path.strip():
+            raise ValueError('Animation config path must be non-empty')
         path = Path(config_path)
     else:
         path = default_config_path(project_path)
-    if config_path and not path.is_absolute():
+    if config_path is not None and not path.is_absolute():
         path = project_path / path
     if not path.exists():
+        if config_path is not None:
+            raise FileNotFoundError(f'Animation config does not exist: {path}')
         return None
 
     with open(path, 'r', encoding='utf-8') as f:
@@ -1108,8 +1118,10 @@ def validate_animation_config(
     project_path: Path,
     config: dict[str, Any] | None = None,
     config_path: str | None = None,
+    *,
+    svg_files: list[Path] | None = None,
 ) -> list[str]:
-    """Return sidecar-reference diagnostics for ``svg_output``.
+    """Return sidecar-reference diagnostics for the selected SVG slides.
 
     Fatal field/type/value checks are owned by
     :func:`validate_animation_config_errors`. Anonymous groups are warnings;
@@ -1123,7 +1135,10 @@ def validate_animation_config(
         return []
 
     warnings = _animation_sound_path_errors(project_path, config)
-    targets_by_slide, anonymous_groups = scan_project_targets(project_path)
+    targets_by_slide, anonymous_groups = scan_project_targets(
+        project_path,
+        svg_files=svg_files,
+    )
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')
 
