@@ -971,7 +971,47 @@ _PRODUCTION_RECOMMEND_KEYS = (
     'image_ai_path',
     'generation_mode',
 )
+_PROACTIVE_EXECUTION_DEFAULTS = {
+    'proactive_speaker_notes': True,
+    'proactive_custom_animations': False,
+    'proactive_narration_audio': False,
+}
 _LOCKED_RECOMMENDATIONS_KEY = '_locked_recommendations'
+
+
+def _resolve_proactive_execution_values(
+    source: dict,
+) -> tuple[dict[str, bool], Optional[str]]:
+    """Resolve proactive-execution booleans with backward-compatible defaults."""
+    values = {}
+    for key, default in _PROACTIVE_EXECUTION_DEFAULTS.items():
+        if key not in source:
+            values[key] = default
+            continue
+        raw_value = source[key]
+        if isinstance(raw_value, dict):
+            if 'value' not in raw_value or not isinstance(raw_value['value'], bool):
+                return {}, f'{key}.value must be a boolean'
+            raw_value = raw_value['value']
+        elif not isinstance(raw_value, bool):
+            return {}, f'{key} must be a boolean'
+        values[key] = raw_value
+    return values, None
+
+
+def _normalize_proactive_execution_result(
+    result: dict,
+    defaults: dict[str, bool],
+) -> Optional[str]:
+    """Write the independent raw confirmation booleans to the final result."""
+    values = {}
+    for key, default in defaults.items():
+        value = result.get(key, default)
+        if not isinstance(value, bool):
+            return f'{key} must be a boolean'
+        values[key] = value
+    result.update(values)
+    return None
 
 
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
@@ -1044,6 +1084,8 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
             recommend[key] = res[key]
     if 'refine_spec' in res:
         data['refine_spec'] = {'value': bool(res.get('refine_spec'))}
+    for key, default in _PROACTIVE_EXECUTION_DEFAULTS.items():
+        data[key] = {'value': res.get(key, default)}
 
 
 def _apply_locked_recommendations(
@@ -1460,6 +1502,14 @@ def create_app(
             recommendation_error = _stage2_design_directions_error(data)
             if recommendation_error:
                 return jsonify({'error': recommendation_error}), 409
+        if rec_stage_number in {0, 3}:
+            proactive_values, proactive_error = (
+                _resolve_proactive_execution_values(data)
+            )
+            if proactive_error:
+                return jsonify({'error': proactive_error}), 409
+            for key, value in proactive_values.items():
+                data[key] = {'value': value}
         # Template application is authored by Strategist from the installed
         # workspace and current content. Never expose legacy mode fields as
         # user-facing confirmation controls.
@@ -1509,6 +1559,20 @@ def create_app(
             solution_error = _stage2_solution_error(result)
             if solution_error:
                 return jsonify({'error': solution_error}), 400
+        if stage not in {'stage1', 'stage2'}:
+            proactive_defaults, proactive_recommendation_error = (
+                _resolve_proactive_execution_values(current_recommendations)
+            )
+            if proactive_recommendation_error:
+                return jsonify({
+                    'error': proactive_recommendation_error,
+                }), 409
+            proactive_result_error = _normalize_proactive_execution_result(
+                result,
+                proactive_defaults,
+            )
+            if proactive_result_error:
+                return jsonify({'error': proactive_result_error}), 400
         _normalize_custom_selections(result)
         locked_values = _apply_locked_recommendations(
             result,

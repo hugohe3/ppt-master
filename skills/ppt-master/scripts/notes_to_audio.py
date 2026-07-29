@@ -26,7 +26,9 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import os
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -92,19 +94,91 @@ def _prepare_audio_jobs(
     output_dir: Path,
     extension: str,
 ) -> list[AudioJob]:
-    """Read non-empty per-slide notes into ordered audio jobs."""
+    """Read a complete per-slide notes roster into ordered audio jobs."""
     jobs: list[AudioJob] = []
+    invalid: list[str] = []
     for note_path in note_files:
-        text = spoken_text(note_path.read_text(encoding="utf-8"))
+        if not note_path.is_file():
+            invalid.append(f"{note_path.name} is missing")
+            continue
+        try:
+            text = spoken_text(note_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError) as exc:
+            invalid.append(f"{note_path.name} is unreadable: {exc}")
+            continue
         if not text:
-            print(f"[skip] {note_path.name}: empty spoken text")
+            invalid.append(f"{note_path.name} has no spoken text")
             continue
         jobs.append(AudioJob(
             note_path=note_path,
             text=text,
             output_path=output_dir / f"{note_path.stem}{extension}",
         ))
+    if invalid:
+        raise ValueError(
+            "per-slide notes are incomplete: " + "; ".join(invalid)
+        )
     return jobs
+
+
+def _expected_note_files(project: Path) -> list[Path]:
+    """Resolve the owning route's complete per-slide notes roster."""
+    notes_dir = project / "notes"
+    svg_files = sorted((project / "svg_output").glob("*.svg"))
+    if svg_files:
+        aliases: dict[int, list[Path]] = {}
+        for path in sorted(notes_dir.glob("*.md")):
+            match = re.search(r"slide[_]?(\d+)", path.stem)
+            if match:
+                aliases.setdefault(int(match.group(1)), []).append(path)
+        note_files: list[Path] = []
+        for index, svg_path in enumerate(svg_files, 1):
+            exact = notes_dir / f"{svg_path.stem}.md"
+            if exact.exists():
+                note_files.append(exact)
+                continue
+            matches = aliases.get(index, [])
+            if len(matches) > 1:
+                raise ValueError(
+                    f"multiple notes files match slide {index}: "
+                    + ", ".join(path.name for path in matches)
+                )
+            note_files.append(matches[0] if matches else exact)
+        return note_files
+
+    slide_index_path = project / "analysis" / "slide_index.json"
+    if slide_index_path.is_file():
+        try:
+            slide_index = json.loads(
+                slide_index_path.read_text(encoding="utf-8")
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise ValueError(f"invalid slide index: {exc}") from exc
+        if not isinstance(slide_index, dict):
+            raise ValueError("invalid slide index root")
+        slides = slide_index.get("slides")
+        slide_count = slide_index.get("slide_count")
+        if (
+            not isinstance(slides, list)
+            or isinstance(slide_count, bool)
+            or not isinstance(slide_count, int)
+            or slide_count != len(slides)
+        ):
+            raise ValueError("invalid slide index notes roster")
+        note_files: list[Path] = []
+        for index, slide in enumerate(slides, 1):
+            note_file = slide.get("note_file") if isinstance(slide, dict) else None
+            if not isinstance(note_file, str) or Path(note_file).suffix != ".md":
+                raise ValueError(
+                    f"invalid slide index note_file for slide {index}"
+                )
+            note_files.append(notes_dir / Path(note_file).name)
+        return note_files
+
+    return [
+        path for path in sorted(notes_dir.glob("*.md"))
+        if path.name != "total.md"
+    ]
 
 
 async def _generate_edge_jobs(
@@ -373,20 +447,25 @@ def main() -> int:
     project = args.project_path
     notes_dir = project / "notes"
     output_dir = args.output or (project / "audio")
-    output_dir.mkdir(parents=True, exist_ok=True)
     subtitle_dir = notes_dir / "subtitles"
+
+    try:
+        note_files = _expected_note_files(project)
+        if not note_files:
+            raise ValueError(f"no per-slide notes found in {notes_dir}")
+        jobs = _prepare_audio_jobs(
+            note_files,
+            output_dir,
+            backend.extension,
+        )
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    output_dir.mkdir(parents=True, exist_ok=True)
     if backend.provider == "edge":
         subtitle_dir.mkdir(parents=True, exist_ok=True)
 
-    note_files = [
-        path for path in sorted(notes_dir.glob("*.md"))
-        if path.name != "total.md"
-    ]
-    if not note_files:
-        print(f"error: no per-slide notes found in {notes_dir}", file=sys.stderr)
-        return 2
-
-    jobs = _prepare_audio_jobs(note_files, output_dir, backend.extension)
     generated = 0
     if backend.provider == "edge":
         print(
