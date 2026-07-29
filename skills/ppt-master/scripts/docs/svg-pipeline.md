@@ -506,6 +506,10 @@ Convert project SVGs into PPTX.
 
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
+# Explicit compact image export:
+python3 scripts/svg_to_pptx.py <project_path> --image-sizing display --image-scale 2 --image-quality 85
+# Force original image bytes:
+python3 scripts/svg_to_pptx.py <project_path> --no-image-optimize
 python3 scripts/svg_to_pptx.py <project_path> --native-charts-and-tables
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # deck/layout template override
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-design/brand-only override
@@ -522,6 +526,12 @@ python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --animation-config animations.json
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --no-animations
 ```
+
+Native image export defaults to `--image-sizing cap`: it preserves source bytes
+when no resize or EXIF geometry normalization is required, and re-encodes only
+images that require one of those transformations. The `display` command above
+is an explicit compact export; `--no-image-optimize` disables all native image
+optimization and forces original bytes.
 
 The normal command reads `pptx_structure.mode` from `spec_lock.md`. For legacy
 projects whose lock exists but predates that field, export emits one compatibility
