@@ -235,7 +235,7 @@ continue to preserve existing object names and transition XML.
 | Generated PPTX CLI | fade, 0.4s | click | auto-advance maps to both |
 | Recorded narration | Preserve resolved enter | narration | none remains visually none |
 | Template Fill | preserve source | preserve source | explicit effects replace; legacy advance_after maps to both |
-| Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | With audio off, enabled global transitions apply to all pages; with audio on, the scope flag controls non-narrated pages |
+| Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | With audio off, an enabled global transition or explicit global `none` applies to all pages; with audio on, the scope flag controls non-narrated pages |
 
 Template Fill changes source transitions only when its CLI or per-slide plan
 selects a replacement, removal, or timed advance. Native Enhance uses its

@@ -66,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     validate = subparsers.add_parser(
         'validate',
-        help='validate animations.json references against svg_output/*.svg',
+        help='validate animations.json values and project-local references',
     )
     validate.add_argument('project_path', help='Project directory')
     validate.add_argument('-c', '--config', default=None, help='Config path; default: <project>/animations.json')

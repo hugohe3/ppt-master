@@ -188,12 +188,12 @@ the 1-based `index` in `analysis/slide_index.json`:
 | `effect: none` | Remove the visual transition; timings remain independently owned |
 | `effect: preserve` | Preserve the source visual transition; narration timing may still update advance |
 
-An explicit `slides` entry always selects that page. With audio disabled,
-enabled transitions apply to every page; `apply_without_audio` is ignored. With
-audio enabled, that flag extends the global policy from narrated pages to all
-pages. If global transitions are disabled, only listed pages opt in; others
-preserve source transitions. Morph uses PowerPoint automatic
-matching; this route does not rename native objects for deterministic pairs.
+A `slides` entry always selects that page. Without audio, enabled global effects
+and explicit global `none` apply deck-wide; `apply_without_audio` is ignored.
+With audio, the flag extends the global policy from narrated to all pages.
+Disabled non-`none` effects preserve unlisted pages. Morph uses PowerPoint
+automatic matching; this route does not rename native objects for deterministic
+pairs.
 
 **Hard rule — no silent downgrade**: a requested native effect must be written with its complete validated Effect Options. Unknown effects or inapplicable options fail; unknown source effects are preserved when the transition module is disabled.
 

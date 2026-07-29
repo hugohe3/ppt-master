@@ -171,6 +171,14 @@ ANIMATION_TIMING_OPTION_FIELDS = (
 )
 ANIMATION_RESTARTS = ('always', 'when-not-active', 'never')
 ANIMATION_AFTER_EFFECTS = ('none', 'dim', 'hide', 'hide-on-next-click')
+_INTERPOLATED_BEHAVIOR_TAGS = frozenset({
+    'anim',
+    'animClr',
+    'animEffect',
+    'animMotion',
+    'animRot',
+    'animScale',
+})
 _NON_CONCRETE_FONT_NAMES = frozenset({
     '-apple-system',
     'blinkmacsystemfont',
@@ -1454,6 +1462,32 @@ def _animation_row_for_options(
     return row
 
 
+def _interpolated_behavior_nodes(row: ET.Element) -> tuple[ET.Element, ...]:
+    """Return behavior nodes that can carry PowerPoint bounce metadata."""
+    return tuple(
+        node
+        for node in row.iter()
+        if _local_name(node.tag) in _INTERPOLATED_BEHAVIOR_TAGS
+    )
+
+
+def animation_effect_supports_bounce_end(
+    effect: object,
+    effect_options: object = None,
+) -> bool:
+    """Return whether one concrete effect has an interpolated behavior."""
+    animation, options = normalize_animation_effect_request(
+        effect,
+        effect_options,
+        allow_none=False,
+        allow_modes=False,
+    )
+    if animation is None:
+        raise AssertionError('concrete animation normalization returned none')
+    row = _animation_row_for_options(animation, options)
+    return bool(_interpolated_behavior_nodes(row))
+
+
 def _apply_timing_options(row: ET.Element, target: AnimationTarget) -> None:
     if target.repeat_count is not None:
         row.set('repeatCount', str(round(target.repeat_count * 1000)))
@@ -1479,19 +1513,11 @@ def _apply_timing_options(row: ET.Element, target: AnimationTarget) -> None:
         else:
             row.attrib.pop('decel', None)
     if target.bounce_end is not None:
-        bounce_nodes = [
-            node
-            for node in row.iter()
-            if _local_name(node.tag) in {
-                'anim',
-                'animClr',
-                'animEffect',
-                'animMotion',
-                'animRot',
-                'animScale',
-            }
-        ]
-        if target.bounce_end and not bounce_nodes:
+        bounce_nodes = _interpolated_behavior_nodes(row)
+        if target.bounce_end and not animation_effect_supports_bounce_end(
+            target.effect,
+            target.effect_options,
+        ):
             raise ValueError(
                 f'animation effect {target.effect!r} has no behavior that '
                 'supports bounce_end'

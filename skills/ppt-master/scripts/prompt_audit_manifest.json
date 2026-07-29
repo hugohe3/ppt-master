@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 388200
+    "max_tokens": 391000
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -1135,6 +1135,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/mask-gradient-smoke.md",
         "reason": "Maintainer-only executable smoke; never loaded by generation roles."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/advanced-image-motion-smoke.md",
+        "reason": "Maintainer-only executable image-and-motion smoke; never loaded by generation roles."
       },
       {
         "glob": "skills/ppt-master/scripts/docs/update_spec.md",
