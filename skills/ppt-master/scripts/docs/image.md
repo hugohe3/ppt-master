@@ -167,7 +167,7 @@ python3 scripts/analyze_images.py <project_path>/images --canvas ppt43
 
 Without `--canvas`, the tool resolves the project format and falls back to `ppt169`; the flag is an explicit override. The atomic CSV records EXIF-corrected native dimensions/`AspectRatio`, optional source `SourceDisplayRatio`, format, and actual transparent-pixel presence. Native ratio—not source display metadata—drives bitmap layout/crop. An empty folder rewrites a header-only report; unreadable supported files still refresh the report and produce a non-zero exit.
 
-Use this as the default inventory and geometry source; it does not perform semantic image understanding. Generate planning follows the Strategist's context-first boundary: source context, captions / alt text / titles, filenames, user notes, and existing resource records come first. Only a specific asset whose meaning or safe placement remains materially ambiguous may be inspected, and the workflow never bulk-opens the image folder.
+Use this as the default inventory and geometry source; it does not perform semantic image understanding. Generate planning follows the Strategist's context-first boundary: source context, captions / alt text / titles, filenames, user notes, and existing resource records come first. Only an already-selected provided/web asset whose focal-safe crop, overlay contrast, or quiet region remains materially ambiguous may be inspected for that placement; this never reopens selection or provenance, never bulk-opens the image folder, and never restores routine readback of AI-generated images.
 
 ## `image_search.py`
 
@@ -190,18 +190,18 @@ Providers (Pexels / Pixabay are tried first when keyed; Openverse and Wikimedia 
 | `openverse` | zero-config | fallback aggregator: Wikimedia + Flickr + museums + rawpixel |
 | `wikimedia` | zero-config | educational, scientific, geographic, historical |
 
-Default search chain (when `--provider` is unset): configured Pexels, configured Pixabay, Openverse, then Wikimedia. Missing keyed credentials are silently skipped. For polished visual decks, configure at least one keyed provider.
+Default search chain (when `--provider` is unset): configured Pexels, configured Pixabay, Openverse, then Wikimedia. Missing keyed credentials are silently skipped. Keyed providers broaden stock-photo coverage but are optional; zero-config providers remain valid.
 
 `image_search.py` uses the same `.env` lookup order as `image_gen.py`, so skill installs can keep `PEXELS_API_KEY` / `PIXABAY_API_KEY` in `~/.ppt-master/.env`.
 
 Query guidance:
 
-Keep the Design Spec §VIII `Reference` as the full visual/crop intent; write a separate 1–4 word concrete provider query for this CLI.
+Keep the Design Spec §VIII `Reference` as the full visual/crop intent; write a separate concise provider query for this CLI. Start with the shortest phrase that preserves identity, but retain exact multi-word names and necessary disambiguators beyond four words.
 
 | Case | Pattern |
 |---|---|
 | Generic stock concept | `boardroom meeting` |
-| China-specific landmark | 1–4 official place/identity words |
+| China-specific landmark | Precise official place/identity name plus necessary geography |
 | Avoid | Negative prompt wording such as `not tourist snapshot` |
 
 License filter:
@@ -240,7 +240,7 @@ Output:
 
 Allowed licenses (default): CC0, Public Domain, Pexels License, Pixabay Content License, CC BY, CC BY-SA. Auto-rejected: CC BY-NC, CC BY-ND, CC BY-NC-SA, CC BY-NC-ND, all rights reserved, unknown.
 
-The full role-level reference (intent → query translation, on-slide attribution visual specification) is in [`references/image-searcher.md`](../../references/image-searcher.md).
+The full role-level reference (intent → query translation, on-slide attribution contract) is in [`references/image-searcher.md`](../../references/image-searcher.md).
 
 ## `gemini_watermark_remover.py`
 

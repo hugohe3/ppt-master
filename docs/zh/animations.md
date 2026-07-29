@@ -95,10 +95,12 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 
 ## 自定义具体对象
 
-只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如标题先出现、图表第二个出现、结论最后出现。最简单的方式是从真实页面分组生成完整 scaffold，修改后校验并导出：
+只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如标题先出现、
+图表第二个出现、结论最后出现。先列出真实分组，只为受影响页面和对象写稀疏覆盖，
+然后校验并导出。`scaffold` 仍可作为完整编辑起点，但最终 sidecar 应删除未改动项。
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
 python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```

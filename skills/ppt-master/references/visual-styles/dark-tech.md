@@ -6,7 +6,7 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 
 ## 1. Shape & decoration
 
-- Shape language: crisp geometry; thin glowing rules; hexagon / circuit / grid motifs used sparingly. Slight rounding (`rx` 4-8) or sharp.
+- Shape language: crisp geometry; thin glowing rules; hexagon / circuit / grid motifs used sparingly. Corners may be sharp or only slightly rounded.
 - Composition geometry: a glowing diagonal circuit trace splitting the field; concentric orbit rings staging a central metric; a hexagon node cluster mapping components; an oversized low-opacity numeral or glyph floating behind the content layer; thin bracket frames zoning the page.
 - Decoration: glow accents, fine grid backgrounds, monospace labels, node / connector lines. Restrained — precision over clutter.
 - Whitespace: dark negative space reads as depth; let elements float on it.
@@ -20,8 +20,8 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 
 ## 3. Using the deck's colors
 
-- Dark background; one or two luminous accents carry focus (glowing figures, active nodes); everything else low-key.
-- The accent does the work of attention — few points, high contrast.
+- Dark background; a restrained set of luminous accents carries focus through glowing figures or active nodes while everything else stays low-key.
+- The accent does the work of attention through localized, high-contrast use rather than a fixed point count.
 
 > HEX values come from confirmation `e`; this style only governs the dark-field, luminous-accent discipline — it names no colors.
 

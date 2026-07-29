@@ -20,7 +20,7 @@
     "skills/ppt-master/references/executor-base.md": 8125,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
-    "skills/ppt-master/references/executor-image.md": 1275,
+    "skills/ppt-master/references/executor-image.md": 1500,
     "skills/ppt-master/references/executor-web-image.md": 500,
     "skills/ppt-master/references/executor-notes.md": 900,
     "skills/ppt-master/references/shared-standards.md": 250,
@@ -186,11 +186,11 @@
       "max_tokens": 30825
     },
     "route.generate.planning-image": {
-      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed.",
+      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning",
-        "stage.generate.strategist.image-layout"
+        "stage.generate.strategist.image"
       ],
       "files": [],
       "max_tokens": 74850
@@ -727,7 +727,7 @@
       "max_tokens": 2500
     },
     "stage.generate.strategist.image-layout": {
-      "description": "Non-formula image planning plus the image-layout pattern catalog required for Section VIII rows.",
+      "description": "Optional image-layout catalog recall layered on image planning when the Strategist wants additional composition vocabulary.",
       "scope": "incremental",
       "include": [
         "stage.generate.strategist.image"
@@ -754,11 +754,10 @@
       "max_tokens": 6200
     },
     "stage.generate.executor.image": {
-      "description": "Conditional image embedding and layout execution rules.",
+      "description": "Conditional image embedding and layout execution rules; the optional layout catalog is not part of the required bundle.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-image.md",
-        "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],

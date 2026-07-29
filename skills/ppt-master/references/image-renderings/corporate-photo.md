@@ -1,6 +1,6 @@
 # Rendering: corporate-photo
 
-Editorial photography style — real subjects, natural composition, professional grading. The only rendering where photorealism is intentional. Used for team photos, lifestyle shots, product photography, real-world scenarios.
+Editorial photography style — real subjects, natural composition, professional grading. Used for team photos, lifestyle shots, product photography, and real-world scenarios.
 
 ## 1. Style paragraph (paste-ready, 100 words)
 
@@ -20,13 +20,13 @@ Editorial photography style — real subjects, natural composition, professional
 
 ---
 
-## 3. Exception to global hard rule §5.2
+## 3. Human treatment
 
-corporate-photo **overrides** the global "simplified silhouettes / no realistic faces" rule (image-generator.md §5.2). For this rendering, append instead:
+Apply [`image-generator.md`](../image-generator.md) §5.2 through this rendering's photographic grammar:
 
 > Diverse, professionally attired subjects rendered photorealistically. Editorial photography composition, natural light or soft studio lighting. Subjects appear authentic and contemporary — no posed stock-photo stiffness, no exaggerated expressions, no fashion-shoot artificiality.
 
-All other renderings keep the simplified-figure rule.
+This rendering does not create a photorealism whitelist; other renderings choose their own anatomy, facial detail, texture, and realism under the same global rule.
 
 ## 4. Using the deck's HEX values
 

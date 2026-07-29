@@ -230,7 +230,7 @@ If the user opted out of the page but did not delegate confirmation, skip launch
 
 With `refine_spec: true`, run [`refine-spec`](stages/refine-spec.md) after Gate 1: review that same file in chat, accept arbitrary revisions, touch no lock, and stop until explicit approval. Revisions supersede only affected decisions. Otherwise skip the stop.
 
-After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/preferred-pattern reference/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
+After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/layout suggestion/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
 
 **Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
@@ -252,7 +252,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 > 🔁 **Image facts are regenerated on change, never maintained as a second store.** `images/` is the live working folder and single source of truth; `analysis/image_analysis.csv` is its regenerated view. Run `analyze_images.py` before the first inventory read, then reuse that CSV while `images/` is unchanged. Re-run after import/acquisition or any user addition, removal, or replacement; an empty folder produces a fresh header-only CSV rather than leaving stale facts.
 
-> ⚠️ **Image understanding**: Do not bulk-open images. Strategist uses source context, captions / alt / titles, filenames, user notes, existing resource records, and `image_analysis.csv` first; only a specifically ambiguous asset may be inspected under [`strategist-image.md`](../references/strategist-image.md). Record the result in §VIII. Executor never reopens source images for semantic discovery or reselection.
+> ⚠️ **Image understanding**: Do not bulk-open images. Strategist starts from context, filenames, records, and `image_analysis.csv`; inspect only a specifically ambiguous asset under [`strategist-image.md`](../references/strategist-image.md), then record the result in §VIII. Under [`executor-image.md`](../references/executor-image.md), Executor may inspect one selected `Existing` / `Sourced` asset only to resolve crop, focal placement, or text contrast—never to reselect, replace, or infer provenance.
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
@@ -301,9 +301,9 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](../references/image-searcher.md) §5.
 
-> Web query boundary: keep §VIII `Reference` as the locked full subject/focal/crop intent; each `image_queries.json.query` is a separate 1–4 word concrete provider query. Search/review never rewrites the Design Spec or lock to fit a returned candidate.
+> **Default — short provider query (may override for a complete entity name or necessary disambiguation)**: keep §VIII `Reference` as the locked subject/focal/crop intent and author a separate concrete `image_queries.json.query`. Search/review never rewrites the Design Spec or lock to fit a candidate.
 
-> 💡 **ai path — spot illustrations as one sheet**: when the §VIII image resource plan needs ≥3 same-family spot illustrations as decorative accessories, generate **one grid sheet** (a single `ai` sheet row) instead of one row per element, then slice it (workflow step 2.5 below). Choose sheet geometry from intended placement: `1xN` / `Nx1` are useful for extreme portrait / landscape cells, and a designed `MxN` grid is valid when its cell ratio fits the planned elements. The sheet row is generated but not placed; each cut **element row** (`Acquire Via: slice`) is placed and must appear in `spec_lock.md images`. One generation = one coherent style across all pieces. Resource contract + the geometry rules: [image-generator.md](../references/image-generator.md) §4.3.
+> **Default — one sheet for compatible AI spots (may override for different cell shape, detail, quality, or semantics)**: prefer one grid sheet for a same-family set; independent `ai` rows remain valid. When selected, choose a grid matching the planned cells, keep the sheet unplaced, and place/project each `slice` row. Contract: [image-generator.md](../references/image-generator.md) §4.3.
 
 > ⚠️ **Honor the Design Spec's confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — the production value recorded in `design_spec.md §I` wins. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never reopen `result.json` here, and never run `image_gen.py --manifest` when the recorded value is `host-native` or `manual`. Full selection rule: [image-generator.md](../references/image-generator.md) §7 Path Selection.
 
@@ -326,7 +326,7 @@ Workflow:
   - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](stages/resume-execute.md) stage.
   ```
 
-> On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](../references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to the checkpoint above.
+> On acquisition failure, follow [image-base.md](../references/image-base.md) §5 without halting. Web rows continue through materially different query/provider/license/URL strategies; after exhaustion, mark `Needs-Manual`, report, and continue.
 
 ---
 
@@ -358,7 +358,7 @@ Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visu
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
 | Any data chart/table, including mini or inset charts and sparklines | `executor-chart.md` |
 | Preset pattern or supported native chart/table | `native-data-interface.md` before drawing |
-| `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-patterns.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
+| `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `svg-image-embedding.md`; add `image-layout-patterns.md` only for a cited `#<id>` or optional composition recall |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
 | §IX contains `Native shape suggestion`, or current page construction calls for a literal PowerPoint stock shape, a stock Connector contour, an explicit Merge Shapes operation or result, or a shape-built dimensional form (cylinder/pedestal, layered diagram, reflection, ground plane), or Executor is about to hand-author a freeform not already required by data geometry or the locked organic / hand-drawn style | `native-shape-authoring.md` before selecting or materializing that geometry. This trigger is image-independent: a text-only, data-only, or icon-only page reaches it the same way |

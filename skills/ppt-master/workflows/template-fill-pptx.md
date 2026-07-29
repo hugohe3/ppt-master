@@ -272,7 +272,17 @@ Run:
 python3 skills/ppt-master/scripts/template_fill_pptx.py apply "<project_dir>/sources/<source.pptx>" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/exports/<output.pptx>"
 ```
 
-By default `apply` gives every cloned slide a `fade` transition (`0.5s`), preserving the v1 route contract. Override it with `--transition <effect>` using a canonical gallery effect from [`animations.md`](../references/animations.md) §3 and `--transition-duration <seconds>`; old names remain accepted only as compatibility CLI inputs. Pass `--transition none` for no visual motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field overrides the CLI and may include native `effect_options`; these require an explicit effect and are validated effect-by-effect. `advance_after` keeps click advance enabled and adds timed advance; it also works with `none` (timing-only transition) and `keep` (source effect preserved, Choice/Fallback timing updated together).
+By default `apply` preserves every cloned slide's existing transition. Select
+`--transition <effect>` to replace it with a canonical gallery effect from
+[`animations.md`](../references/animations.md) §3, and use
+`--transition-duration <seconds>` for the replacement duration; old names
+remain accepted only as compatibility CLI inputs. Pass `--transition none` for
+no visual motion. `--transition keep` states the default preservation policy
+explicitly. A per-slide `transition` field overrides the CLI and may include
+native `effect_options`; these require an explicit effect and are validated
+effect-by-effect. `advance_after` keeps click advance enabled and adds timed
+advance; it also works with `none` (timing-only transition) and `keep` (source
+effect preserved, Choice/Fallback timing updated together).
 
 `apply` appends a timestamp automatically. For example, `-o "<project_dir>/exports/demo.pptx"` writes `demo_YYYYMMDD_HHMMSS.pptx`. If the filename already ends with `_YYYYMMDD_HHMMSS`, it is left unchanged.
 
@@ -288,7 +298,15 @@ The script:
 | Adds timestamp to PPTX filename | Matches the main SVG-to-PPTX export convention |
 | Drops orphaned source parts | Output carries only the selected pages and the layouts / media / charts they still reference (reachability prune) |
 
-**Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this route writes directly, and `apply` adds a `fade` transition by default; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. `keep` preserves direct and `mc:AlternateContent` transition effects without converting unknown effects to `fade`; explicit replacement removes the old logical carrier before writing one new carrier. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.
+**Animation policy**: Template-fill preserves each cloned slide's existing
+object animation XML (the SVG pipeline's generated object animation defaults
+are not applied here). It also preserves source page transitions by default.
+Use `apply --transition` or a per-slide `transition` field only when the user
+requests a replacement or removal. `keep` preserves direct and
+`mc:AlternateContent` transition effects without converting unknown effects to
+`fade`; explicit replacement removes the old logical carrier before writing one
+new carrier. If the user asks to change object-level animation order / timing /
+effects, treat that as a separate direct-PPTX animation customization task.
 
 ---
 

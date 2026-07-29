@@ -12,7 +12,7 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 | Mode | Narrative skeleton | Best for |
 |---|---|---|
-| [`pyramid`](./pyramid.md) | Conclusion first; MECE arguments; every datum carries a comparison | Decision support, analysis, strategy, board / exec reports |
+| [`pyramid`](./pyramid.md) | Conclusion first; structured arguments; data contextualized with supported comparisons where useful | Decision support, analysis, strategy, board / exec reports |
 | [`narrative`](./narrative.md) | Story arc — situation → tension → resolution; suspense and turns | Pitches, case studies, brand journeys, fundraising |
 | [`instructional`](./instructional.md) | Concept decomposition; step-by-step; parallel exposition | Training, tutorials, explainers, knowledge sharing |
 | [`showcase`](./showcase.md) | Visual-led impact; big imagery / numbers; emotional rhythm | Launches, brand reveals, event / promo decks |
@@ -40,12 +40,12 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 | Torn between | …the first when | …the second when |
 |---|---|---|
-| `pyramid` / `briefing` | it must land a recommendation — conclusion-first, every number compared | it must inform completely without arguing — topic titles, even weight |
+| `pyramid` / `briefing` | it must land a recommendation — conclusion-first, figures contextualized toward a decision | it must inform completely without arguing — topic titles, even weight |
 | `narrative` / `pyramid` | the point lands through a story arc, tension → resolution | the point lands as a conclusion stated up front, then supported |
-| `narrative` / `showcase` | an argument travels through the story | presence leads — minimal copy, one big visual per page |
+| `narrative` / `showcase` | an argument travels through the story | presence leads — concise copy and a clear visual focus |
 | `instructional` / `briefing` | the goal is to build understanding step by step | the goal is to lay out a complete reference to scan |
 
-> "Keynote-style" is a *mode* request, not a visual style — it means showcase pacing (one big idea per page, full-bleed hero, reveal rhythm), skinned by whatever visual style fits the brand (`swiss-minimal` clean, `dark-tech` dramatic, `glassmorphism` premium). Don't reach for a "keynote" visual style — there isn't one, by design.
+> "Keynote-style" is a *mode* request, not a visual style — it means showcase pacing (a clear primary idea, hero-scale visual treatment, reveal rhythm), skinned by whatever visual style fits the brand (`swiss-minimal` clean, `dark-tech` dramatic, `glassmorphism` premium). Don't reach for a "keynote" visual style — there isn't one, by design.
 
 ---
 

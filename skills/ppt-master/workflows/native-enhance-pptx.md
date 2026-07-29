@@ -188,11 +188,12 @@ the 1-based `index` in `analysis/slide_index.json`:
 | `effect: none` | Remove the visual transition; timings remain independently owned |
 | `effect: preserve` | Preserve the source visual transition; narration timing may still update advance |
 
-An explicit `slides` entry selects a page even when it has no audio and
-`apply_without_audio` is false. With `transitions.enabled: false`, only listed
-pages opt in; unlisted pages preserve their source transition. Morph uses
-PowerPoint's automatic matching only—this route does not rename native objects
-to create deterministic pairs.
+An explicit `slides` entry always selects that page. With audio disabled,
+enabled transitions apply to every page; `apply_without_audio` is ignored. With
+audio enabled, that flag extends the global policy from narrated pages to all
+pages. If global transitions are disabled, only listed pages opt in; others
+preserve source transitions. Morph uses PowerPoint automatic
+matching; this route does not rename native objects for deterministic pairs.
 
 **Hard rule — no silent downgrade**: a requested native effect must be written with its complete validated Effect Options. Unknown effects or inapplicable options fail; unknown source effects are preserved when the transition module is disabled.
 
@@ -305,10 +306,9 @@ python3 skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
   --overwrite
 ```
 
-Without `--apply-transition-without-audio` (or the matching confirmed-plan
-field), the resolved enter policy is applied while processing slides with
-audio; slides without audio keep their source transition unless explicitly
-listed in `modules.transitions.slides`.
+`--apply-transition-without-audio` matters only with audio enabled: it extends
+the global enter policy from narrated slides to all slides. Explicit slide
+entries always opt in. Without audio, enabled transitions apply to every slide.
 
 `apply` reruns the same source/readiness/plan checks as `validate`. Enabling
 audio always requires every selected file to be decodable by ffprobe; enabling

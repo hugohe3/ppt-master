@@ -188,10 +188,10 @@ This spec only defines layout calculation. Write computed fields into the Image 
 | Field | Meaning |
 |-------|---------|
 | `Ratio` | Original image width / height |
-| `Layout pattern` | Strategist-recommended catalog pattern; preferred composition, Executor-owned realization |
+| `Layout pattern` | Non-empty Strategist layout suggestion in free-form prose, optionally citing catalog ids; Executor-owned realization |
 | `Crop Policy` | `no-crop` requires one complete instance; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
-| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves its ordered catalog ids (or normalized custom prose) as a recommendation, not a geometry/realization lock |
+| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves the normalized free-form suggestion and any optional catalog ids as a recommendation, not a geometry/realization lock |
 
 For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 

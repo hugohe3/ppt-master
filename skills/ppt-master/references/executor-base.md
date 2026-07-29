@@ -9,7 +9,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | `pptx_structure.mode: structured` | [`executor-structured.md`](./executor-structured.md) |
 | Any data chart, chart catalog selection, or text-grid table | [`executor-chart.md`](./executor-chart.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
-| Any image or formula resource, including template-bundled images | [`executor-image.md`](./executor-image.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) |
+| Any image/formula; a cited `#<id>` or optional composition recall also triggers the library | [`executor-image.md`](./executor-image.md); conditionally [`image-layout-patterns.md`](./image-layout-patterns.md) |
 | Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Speaker notes generation after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
@@ -119,7 +119,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 | Tag | Layout discipline |
 |-----|-------------------|
-| `anchor` | Structural page (cover / chapter / TOC / ending). With `template_reuse_scope: mirror`, follow the selected prototype verbatim except visible text values. With `layout`, retain the selected structure system while realizing the page's §IX intent. With `style` or free design, realize §IX directly — for the cover deliver its `Cover impact` and for a closing page its `Closing impact`, never a default centered title + subtitle or generic "Thank you" sign-off. |
+| `anchor` | Structural page (cover / chapter / TOC / ending). `mirror` follows its prototype; `layout` retains its structure system. `style` / free design preserves the §IX cover hook or closing takeaway but may adapt the recommended composition. Avoid an information-empty generic cover/sign-off unless content, user direction, or template requires it. |
 | `dense` | Information-heavy. Card grids, multi-column layouts, KPI dashboards, tables, and charts are all permitted. This is the baseline behavior. |
 | `breathing` | Low-density impact page. Avoid **multi-card grid layouts** — do not organize content as multiple parallel rounded containers (3-card row, 4-card KPI grid, 2×2 matrix rendered as cards). Use naked text blocks, dividers, whitespace, or full-bleed imagery as the content structure. Single rounded visual elements (hero image corners, callouts, tags, one emphasis block) are fine — the rule is about grid structure, not about the `rx` attribute. Proportions follow information weight (not a preset ratio). Typical forms: hero quote, single large number with one-line interpretation, full-bleed image with floating caption, section transition. |
 

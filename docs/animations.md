@@ -103,10 +103,14 @@ audio/video workflows because they require media or bookmark targets.
 
 ## Customize Specific Objects
 
-Use `animations.json` only when deck-wide settings are not enough—for example, title first, chart second, conclusion last. The easiest path is to generate a complete scaffold from the actual slide groups, edit it, validate it, and export:
+Use `animations.json` only when deck-wide settings are not enough—for example,
+title first, chart second, conclusion last. List the real groups, write sparse
+overrides for only the affected slides and objects, validate, and export.
+`scaffold` remains an optional complete editing starter; delete untouched
+entries before using it as the final sidecar.
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
 python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```

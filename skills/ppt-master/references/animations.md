@@ -15,7 +15,7 @@ before the page plan is frozen, not only when a deck is already exported.
 |---|---|---|
 | Reveal content in step with the narration | Per-element object animation — `-a auto` deck-wide, or an `animations.json` sidecar for specific order, effects, timing, and triggers | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
 | A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages, then select Morph and add explicit pairs when identity must be deterministic.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
-| A static full-bleed page that should stop looking frozen | One slow `path_*` motion on the background group only, `with-previous`, 4–10 s | Post-processing; §4.1, one sidecar entry |
+| A static full-bleed page that should stop looking frozen | Consider slow `path_*` motion on a visually subordinate image or atmospheric layer; §4.1 gives one starting recipe | Post-processing; §4.1 |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
 | Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
 | Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
@@ -73,19 +73,13 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```
 
-Single-slide sidecar excerpt (repeat the complete slide block for every SVG in `svg_output/`):
+Sparse sidecar excerpt (unlisted slides inherit resolved defaults):
 
 ```json
 {
   "version": 1,
-  "defaults": {
-    "transition": { "effect": "fade", "duration": 0.4 },
-    "animation": { "effect": "auto", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
-  },
   "slides": {
     "03_market": {
-      "transition": { "effect": "fade", "duration": 0.4 },
-      "animation": { "effect": "auto", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" },
       "groups": {
         "title": { "effect": "entrance_fade", "order": 1 },
         "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },
@@ -143,14 +137,14 @@ Rules:
 - An explicit sidecar group may override the legacy chrome-name heuristic, but it cannot override `data-pptx-layer` or an explicit static role/placeholder marker.
 - Unknown effects, modes, or triggers and invalid numeric/order fields fail validation; no fallback effect is substituted.
 
-**Inheritance**: the sidecar is optional. Sparse legacy slides inherit
-`defaults.transition` / `defaults.animation`, then CLI resolution. Explicit CLI
-flags override the corresponding sidecar default/slide fields; explicit group
-overrides remain unless `-a none` hard-disables all object motion. Groups
-inherit the resolved slide duration, timing modifiers, after-effect, and sound.
-`effect_options` remains coupled to an explicit effect; `trigger_shape` is
-never inherited; omitted `order`/`delay` use exporter defaults. New authoring
-writes complete slide blocks.
+**Inheritance**: the sidecar and its `defaults` block are optional. Unlisted
+slides and omitted slide fields inherit `defaults.transition` /
+`defaults.animation`, then CLI/exporter resolution. Explicit CLI flags override
+the corresponding sidecar default/slide fields; explicit group overrides remain
+unless `-a none` hard-disables all object motion. Groups inherit the resolved
+slide duration, timing modifiers, after-effect, and sound. `effect_options`
+remains coupled to an explicit effect; `trigger_shape` is never inherited;
+omitted `order`/`delay` use exporter defaults.
 
 ### 2.1 Deterministic Morph Object Pairing
 
@@ -163,22 +157,13 @@ The generated names follow Microsoft's
 ```json
 {
   "version": 1,
-  "defaults": {
-    "transition": { "effect": "fade", "duration": 0.4 },
-    "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
-  },
   "slides": {
-    "01_overview": {
-      "transition": { "effect": "fade", "duration": 0.4 },
-      "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
-    },
     "02_detail": {
       "transition": {
         "effect": "morph",
         "effect_options": { "morph_by": "object" },
         "duration": 0.8
       },
-      "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" },
       "morph": {
         "from": "01_overview",
         "pairs": {
@@ -374,13 +359,22 @@ motion but preserves narration audio and recorded advance timing.
 
 ### 4.1 Slow ambient motion — the page that breathes
 
-Most object animation exists to reveal content on click. There is a second, quieter use: **one long, slow motion on the background that never waits for a click**, so a static page stops looking frozen. It is the highest-impact-per-effort motion available and it costs one sidecar entry.
+**Reference — not a constraint**: ambient motion can keep a static page from
+feeling frozen when it remains visually subordinate to the message. A common
+starting recipe is `path_left` or `path_right` on a background image, started
+`with-previous` and paced much more slowly than a content reveal. The same
+principle may suit another atmospheric or non-information-bearing layer. Choose
+duration, distance, and moving-object count from the composition and delivery
+context.
 
-The recipe: a `path_left` (or `path_right`) motion on the **background image group only**, `with-previous` so it starts unprompted, and a duration of **4–10 s** — an order of magnitude longer than the reveal default. Set the travel distance so the image is still fully covering the canvas at both ends; a background that drifts past its own edge exposes the slide beneath it.
+Keep a full-bleed moving image covering the canvas at both endpoints; exposing
+the slide beneath it is a visible failure.
 
 It pairs naturally with a fixed foreground: with image-layout-patterns `#90`, the scrim and its cut contour stay locked while the world moves behind the cuts, which reads as looking through windows rather than as a sliding photo. The same logic applies to `#82` and `#12`.
 
-**Restraint is the whole technique**: one moving object per page, background only, never body copy or data. Two ambient motions on one page cancel each other out and the page reads as unstable.
+Motion remains subordinate: avoid competing ambient paths or movement that
+reduces the readability of body copy or data. Multiple coordinated layers are
+valid when they express one intentional depth or atmosphere relationship.
 
 ### 4.2 Recurring recipes
 
@@ -389,7 +383,7 @@ mechanisms already defined above — none needs a new capability.
 
 **Carousel** (Morph, §2.1 and §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Explicitly pair each moving content unit across adjacent pages; the fixed frames stay static and need no pair. Scales to any number of images with one page each.
 
-**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. Give each digit column a 0.1 s stagger so they settle in sequence rather than in lockstep.
+**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. A small stagger, such as `0.1s`, can make digit columns settle in sequence; synchronized motion is also valid when it fits the intended rhythm.
 
 **Parallax depth** (morph) — move a background layer a *short* distance and a foreground layer a longer one between two pages. The differing travel is read as depth. Keep both layers' z-order identical on both pages; a layer that changes stacking between pages breaks the tween and the transition jumps.
 

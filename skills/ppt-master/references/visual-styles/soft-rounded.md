@@ -6,7 +6,7 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 
 ## 1. Shape & decoration
 
-- Shape language: rounded rectangles (`rx` 12-16), pill tags, soft containers. Consistent radius deck-wide.
+- Shape language: visibly rounded rectangles, pill tags, and soft containers. Keep the radius family coherent deck-wide.
 - Composition geometry: a large soft disc or blob bleeding off one edge as the color field; a pill chain or exact native `arc` / `blockArc` preset replacing the boxed step row; one hero panel overlapping a full-width tinted band; an oversized rounded numeral behind the point. Use a custom arc path only when the presets cannot faithfully express the intended contour. Cards are the container language, not the composition — vary the stage they sit on.
 - Decoration: cards as the primary container; icon accents; numbered circles; gentle dividers. Moderate, in service of clarity.
 - Whitespace: comfortable padding inside cards; even gutters; balanced rather than austere.
@@ -27,7 +27,7 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 
 ## 4. Texture / elevation
 
-- Gentle elevation: soft shadows on floating cards (resting tier), subtle tints, optional same-hue gradients. Two-tier elevation max; keep peer-grid cards flat.
+- Gentle elevation: soft shadows on floating cards, subtle tints, and optional same-hue gradients. Keep the elevation hierarchy shallow and coherent; peer-grid cards stay flat.
 
 ## 5. Paired image-rendering
 
