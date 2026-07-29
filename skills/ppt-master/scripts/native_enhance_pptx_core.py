@@ -1386,7 +1386,11 @@ def _resolve_slide_enter(
     )
 
 
-def _validate_plan_modules(plan: dict) -> None:
+def _validate_plan_modules(
+    plan: dict,
+    *,
+    allow_legacy_audio_without_notes: bool = False,
+) -> None:
     if plan and plan.get("schema") != PLAN_SCHEMA:
         raise ValueError(
             f"unsupported enhancement plan schema: {plan.get('schema')!r}"
@@ -1432,9 +1436,15 @@ def _validate_plan_modules(plan: dict) -> None:
             )
     notes_config = modules_cfg.get("notes")
     audio_config = modules_cfg.get("audio")
+    legacy_audio_without_notes = (
+        allow_legacy_audio_without_notes
+        and isinstance(notes_config, dict)
+        and notes_config.get("enabled") is False
+    )
     if (
         isinstance(audio_config, dict)
         and audio_config.get("enabled") is True
+        and not legacy_audio_without_notes
         and (
             not isinstance(notes_config, dict)
             or notes_config.get("enabled") is not True
@@ -1784,7 +1794,10 @@ def plan_project(args: argparse.Namespace) -> int:
 
     existing_plan = _load_enhancement_plan(project_path)
     try:
-        _validate_plan_modules(existing_plan)
+        _validate_plan_modules(
+            existing_plan,
+            allow_legacy_audio_without_notes=True,
+        )
         readiness = _collect_material_readiness(
             slides,
             notes_dir,

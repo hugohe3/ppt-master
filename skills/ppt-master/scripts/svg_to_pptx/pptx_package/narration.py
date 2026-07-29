@@ -103,6 +103,7 @@ def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Pa
             numbered.setdefault(number, []).append(path)
 
     matched: dict[str, Path] = {}
+    claimed_by: dict[Path, str] = {}
     for index, svg in enumerate(svg_files, 1):
         stem = svg.stem
         candidates = exact.get(stem)
@@ -118,7 +119,16 @@ def find_narration_files(audio_dir: Path, svg_files: list[Path]) -> dict[str, Pa
                 f"multiple narration audio files match slide {stem!r}: "
                 f"{names}; keep exactly one supported file for this slide"
             )
-        matched[stem] = candidates[0]
+        candidate = candidates[0]
+        previous_stem = claimed_by.get(candidate)
+        if previous_stem is not None:
+            raise ValueError(
+                f"narration audio file {candidate.name!r} matches multiple slides: "
+                f"{previous_stem!r}, {stem!r}; provide one distinct audio file "
+                "per slide"
+            )
+        matched[stem] = candidate
+        claimed_by[candidate] = stem
     return matched
 
 
