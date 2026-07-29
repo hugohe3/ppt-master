@@ -16,28 +16,29 @@
 
 **Hard rule**: Keep detailed Confirm UI behavior here. The Generate route may summarize orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
 
-**Fallback rule**: The page is default. Use chat only on explicit chat-only request or launch failure/timeout after one `result.json` re-check; a chat-question tool is not a launch failure. Preserve all three stages and keep Stage-1 prompts open-ended.
+**Fallback rule**: The page is default. Use chat on an explicit chat-only request, when the user answers the always-on handoff in chat, or after launch failure/timeout and one `result.json` re-check; a chat-question tool alone is not a launch failure. Preserve all three stages and keep Stage-1 prompts open-ended.
 
-**Always-on Stage-1 chat handoff**: As soon as the healthy daemon prints its
-actual URL, immediately post that URL plus one compact, localized summary of
-the current Stage-1 recommendations: audience, communication intent, audience
-outcome, core message, delivery context, artifact afterlife,
+**Always-on Stage-1 chat handoff**: Launch the healthy daemon without `--wait`.
+After it returns, immediately post its actual URL plus one compact, localized
+summary of the current Stage-1 recommendations: audience, communication intent,
+audience outcome, core message, delivery context, artifact afterlife,
 `content_divergence`, and canvas. Show a blank as “not specified” without
 changing its value. End with an explicit localized line saying that, if the
-page did not open or cannot be reached, the user may revise or confirm the same
-items directly in chat and the same three-stage flow will continue. Keep the
-wait active; do not defer this handoff until launch failure. The handoff is
-context, not confirmation, and silence confirms nothing. After an actual
-launch failure/timeout and the required result re-check, present these same
-items as open Stage-1 chat questions and wait for an explicit response.
+page did not open or cannot be reached, the user may reply “continue with these
+recommendations” or revise the same items directly in chat; the same three-stage
+flow will continue. Only then run `--wait-only --wait-stage stage1`. A chat
+reply selects the chat path without waiting for timeout. The handoff is context,
+not confirmation, and silence confirms nothing. After launch failure/timeout
+and the required result re-check, present the same items as open Stage-1 chat
+questions and wait for an explicit response.
 
 ## `confirm_ui/server.py`
 
 ```bash
-python3 scripts/confirm_ui/server.py <project_path> --daemon --wait   # launch + wait for Stage 1
+python3 scripts/confirm_ui/server.py <project_path> --daemon         # healthy launch; return for chat handoff
+python3 scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1  # Stage 1
 python3 scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2  # Stage 2: wait for the direction handoff
 python3 scripts/confirm_ui/server.py <project_path> --wait-only       # Stage 3: wait for the final result
-python3 scripts/confirm_ui/server.py <project_path> --daemon
 python3 scripts/confirm_ui/server.py <project_path> --daemon --port 5051
 python3 scripts/confirm_ui/server.py <project_path> --no-browser
 python3 scripts/confirm_ui/server.py <project_path> --timeout 0   # disable idle auto-shutdown
@@ -47,8 +48,8 @@ python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 clean
 - Binds `127.0.0.1:5050` by default — or the next free port if another project already holds it (the launch log prints the actual URL) — and auto-opens the browser (suppress with `--no-browser`). `--port <other>` forces a specific port.
 - In `--daemon` mode the launcher starts the child server with browser opening suppressed, waits for `GET /api/health` to prove the server is accepting requests, then opens the printed `http://127.0.0.1:<port>` URL. If health never becomes reachable, the command fails before presenting a dead page.
 - **Shares port 5050 with the live preview server** (`svg_editor/server.py`). The two never run at once: confirm is Step 4, live preview is Step 6, and Step 4 always shuts this server down on exit (see `--shutdown`) so the port is free. One port = one forward rule for the whole pipeline. They still keep **separate processes and locks** (`.confirm_ui.lock` vs `.live_preview.lock`).
-- `--daemon` starts the Flask process in the background; add `--wait` in the main pipeline so the parent command returns only after the page writes a fresh `result.json`. The `--wait` budget defaults to **590 s** (`--wait-timeout`), kept under the typical 600 s tool ceiling — run the launch with a long tool timeout (≈600000 ms). On timeout the parent returns non-zero but the detached server keeps running, so the caller must re-check `result.json` once before the chat fallback (a slow user may confirm just after the wait returns).
-- `--wait-only` attaches to the page already running from the first `--daemon --wait` and blocks until the page writes the requested stage. If that stage is already persisted, it returns before attempting server recovery, so a fast final confirmation cannot reopen Stage 3 after the page shuts itself down. Otherwise, if the recorded server died, it automatically restarts on the recorded/default port so polling reconnects. Use `--wait-stage stage2` for the complete-solution handoff, then the default `--wait-stage final` for Stage 3. It keys on stage alone (no mtime gate), because a user may submit before the wait command starts.
+- `--daemon` starts the Flask process in the background and returns after the health check. Generate uses it without `--wait` so the Stage-1 chat handoff appears before blocking. `--daemon --wait` remains a combined compatibility form. The wait budget defaults to **590 s** (`--wait-timeout`); on timeout the detached server remains live, and the caller re-checks `result.json` once before chat fallback.
+- `--wait-only` attaches to the page opened by `--daemon` and blocks until the requested stage. If that stage is already persisted, it returns before recovery, so a fast submit between launch, chat handoff, and wait is not lost. Otherwise, if the recorded server died, it restarts on the recorded/default port. Use `stage1` only for a fresh Stage-1 launch, `stage2` for the complete-solution handoff, and `final` for Stage 3. It keys on stage alone; resume chooses the target from the persisted result instead of restarting Stage 1.
 - `--shutdown` stops a confirm server left running for this project and exits — **idempotent** (a no-op when nothing is running). Tries a graceful `/api/shutdown`, falls back to killing the recorded pid, then clears the lock. Generate Step 4 runs this on every path (page-confirm or chat-fallback) so the page never lingers on the shared port before live preview starts.
 - Refuses to start unless the recommendation file expected from `result.json` exists (initially `<project_path>/confirm_ui/recommendations.stage1.json`; `--shutdown` needs no recommendations).
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
@@ -281,7 +282,7 @@ The shape above is final. The proactive-execution values are independent flat bo
 
 - Bespoke mode / style prose lives only in the required behavior sibling; image custom prose lives in `image_strategy.behavior`. Canvas / icons retain free-text edge cases, color / typography retain `name: "custom"`, and image usage remains a source-id array plus `image_notes`.
 - `image_ai_path` and `image_strategy` appear only with `image_usage: ai` and remain confirmed downstream. The page is default; explicit/failure chat fallback keeps identical fields. `image_ai_path` selects the Step 5 path, and [`strategist-image.md`](../../references/strategist-image.md) §2 retains the selected rendering or custom behavior as the deck-level image identity anchor; individual prompts still adapt subject, composition, and atmosphere within it.
-- After the user clicks the **final Confirm** (Stage 3, or single-pass), the page saves `result.json` and shuts the server down (auto-close). Stage-1 **Confirm contract & continue** and Stage-2 **Confirm solution & continue** keep the page open while it polls for the downstream stage file. In the default flow, the first `--daemon --wait` returns on the stage-1 result, `--wait-only --wait-stage stage2` returns on the stage-2 result, and the final `--wait-only` returns on the final result; the AI reads each immediately — no extra chat confirmation is required. Chat fallback shows the same initially-unselected custom proposals. Either way, Step 4 ends with a `--shutdown` cleanup so a never-confirmed page cannot keep holding port 5050 ahead of the Step 6 live preview.
+- After the user clicks the **final Confirm** (Stage 3, or single-pass), the page saves `result.json` and shuts the server down (auto-close). Stage-1 **Confirm contract & continue** and Stage-2 **Confirm solution & continue** keep the page open while it polls for the downstream stage file. The default flow is `--daemon` → Stage-1 chat handoff → `--wait-only --wait-stage stage1` → Stage-2 wait → final wait; the AI reads each result immediately. Chat fallback shows the same initially-unselected custom proposals. Either way, Step 4 ends with `--shutdown` so a never-confirmed page cannot hold port 5050 ahead of Step 6 live preview.
 
 ## Scope
 
