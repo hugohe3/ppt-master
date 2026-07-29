@@ -1505,6 +1505,13 @@ def _resolve_transition_plan(
     apply_without_audio = (
         cli_apply_without_audio or raw_apply_without_audio
     )
+    if (
+        "audio" not in modules
+        and ("transitions" in modules or cli_effect is not None)
+    ):
+        # A confirmed global transition is independently actionable. The
+        # narrated-only scope switch matters only while audio is enabled.
+        apply_without_audio = True
 
     raw_slides = transitions_cfg.get("slides", {})
     if not isinstance(raw_slides, dict):
@@ -1534,17 +1541,6 @@ def _resolve_transition_plan(
             selected_base,
             override,
             slide_index=slide_index,
-        )
-
-    if (
-        ("transitions" in modules or cli_effect is not None)
-        and "audio" not in modules
-        and not apply_without_audio
-        and not slide_enters
-    ):
-        raise ValueError(
-            "transitions is enabled, but no slides are reachable: enable audio, "
-            "set apply_without_audio=true, or add transitions.slides entries"
         )
 
     return ResolvedTransitionPlan(
@@ -2280,7 +2276,10 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
-        help="draft the plan with page transitions for slides without audio",
+        help=(
+            "when audio is enabled, draft transitions for slides without audio "
+            "as well"
+        ),
     )
     init.set_defaults(func=init_project)
 
@@ -2309,7 +2308,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--apply-transition-without-audio",
         action="store_true",
         default=None,
-        help="include page transitions for slides without audio",
+        help=(
+            "when audio is enabled, include page transitions for slides "
+            "without audio"
+        ),
     )
     plan.set_defaults(func=plan_project)
 
@@ -2332,7 +2334,10 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
-        help="also write page transitions on slides that do not have audio",
+        help=(
+            "when audio is enabled, also write page transitions on slides "
+            "without audio"
+        ),
     )
     apply.set_defaults(func=apply_project)
 
