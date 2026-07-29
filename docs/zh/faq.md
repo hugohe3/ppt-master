@@ -85,7 +85,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 多行文本会怎样导出？可以让 PowerPoint 自动重排吗？
 
-默认会把可合并的多行文本块导出成一个可编辑的 PowerPoint 文本框，保留作者断行并禁用 PowerPoint 自动换行，因此拉伸文本框不会重写作者排好的行。
+默认会把可合并的多行文本块导出成一个可编辑的 PowerPoint 文本框，保留作者断行并禁用 PowerPoint 自动换行，因此拉伸文本框不会重写作者排好的行。普通生成文本框使用 PowerPoint 原生的“根据文字调整形状大小”：删除保留的换行后，文本框会随文字扩展，不会让文字留在框外。导入的精确文本框和结构化多行占位符 carrier 保持原有的固定尺寸行为。
 
 如果需要让 PowerPoint 自动重排适合流动的正文，请使用 `--reflow-text`：
 
