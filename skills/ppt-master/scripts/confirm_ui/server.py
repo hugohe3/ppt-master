@@ -1104,6 +1104,8 @@ def _apply_locked_recommendations(
     previous_locks = previous.get(_LOCKED_RECOMMENDATIONS_KEY)
     if isinstance(previous_locks, dict):
         locked_values.update(previous_locks)
+    for key in _PROACTIVE_EXECUTION_DEFAULTS:
+        locked_values.pop(key, None)
 
     try:
         recommendations = _read_json_object(recommendations_file)
@@ -1120,10 +1122,12 @@ def _apply_locked_recommendations(
     ):
         locked_values = {}
     for key, field in recommendations.items():
+        if key in _PROACTIVE_EXECUTION_DEFAULTS:
+            continue
         if not isinstance(field, dict) or field.get('locked') is not True:
             continue
         if 'value' in field:
-            locked_values[key] = field.get('value') or ''
+            locked_values[key] = field['value']
     for key, value in locked_values.items():
         result[key] = value
     return locked_values
@@ -1579,6 +1583,13 @@ def create_app(
             rec_file,
             result_file,
         )
+        if stage not in {'stage1', 'stage2'}:
+            proactive_result_error = _normalize_proactive_execution_result(
+                result,
+                proactive_defaults,
+            )
+            if proactive_result_error:
+                return jsonify({'error': proactive_result_error}), 400
         result.pop('template_reuse_scope', None)
         result.pop('template_adherence', None)
         # Staged flow: Stage 1 / Stage 2 submits record intermediate choices but do

@@ -9,7 +9,7 @@ global or per-slide transitions while keeping the stable workflow command.
 Usage:
     python3 scripts/native_enhance_pptx.py init <source.pptx> [--name project_name]
     python3 scripts/native_enhance_pptx.py plan <project_path>
-    python3 scripts/native_enhance_pptx.py validate <project_path>
+    python3 scripts/native_enhance_pptx.py validate <project_path> [--materials {all,notes}]
     python3 scripts/native_enhance_pptx.py apply <project_path>
 
 Examples:
