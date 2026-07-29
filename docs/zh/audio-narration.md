@@ -108,7 +108,7 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
 
 # 5. 重新导出 PPTX 嵌入音频
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  -o <final_narrated_pptx> --no-merge --recorded-narration audio \
+  -o <final_narrated_pptx> --recorded-narration audio \
   --narration-padding 0.5
 
 # 6. 按最终 PowerPoint 计时合并逐页 SRT
@@ -140,7 +140,7 @@ Edge 命令会从同一次流式请求中生成 `audio/<stem>.mp3` 与 `notes/su
 
 PowerPoint 的视频编码器可能把每个页面 / 媒体段落量化到输出帧时钟；即使 PPTX 计时值正确，这些很小的分页误差仍可能逐页累积。把最终 `.mp4` / `.wmv` / `.mov` 通过 `--video` 传入后，脚本会用归一化音频相关性在视频音轨中定位每页原始旁白。它只改页级偏移，Edge 的字幕文本和页内 `WordBoundary` 时间保持不变；这是视频导出后的字幕校准步骤，不会改写视频。
 
-最终带旁白的 SVG 导出固定使用 `--no-merge`。让每条 SVG 文本行保持独立文本框，可以保留作者坐标；合并段落会让 PowerPoint 重新计算多行文本几何，可能造成肉眼可见的偏移。
+最终带旁白的 SVG 导出使用默认文本流模式即可：在一个禁用自动换行的可编辑文本框中保留作者断行；旁白不要求每一行拆成独立文本框。
 
 ```json
 {

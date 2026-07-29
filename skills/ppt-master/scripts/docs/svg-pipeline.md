@@ -527,7 +527,8 @@ python3 scripts/svg_to_pptx.py <project_path> --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
 python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
-python3 scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
+python3 scripts/svg_to_pptx.py <project_path> --reflow-text  # opt-in PowerPoint reflow
+python3 scripts/svg_to_pptx.py <project_path> --no-merge    # one text frame per visual line
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --animation-config animations.json
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio --no-animations
@@ -581,11 +582,11 @@ Behavior:
   requires a custom installation. A recommended stack such as
   `"Microsoft YaHei", Arial, sans-serif` does not warn merely because it ends with a
   generic fallback.
-- Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
-  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height) collapse into one editable text frame. Equal effective font sizes may join as flowing prose; a font-size change, list marker, or accepted larger gap starts a new `<a:p>` with precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it without erasing those paragraph boundaries.
-  - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
-  - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
-  - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
+- Multiline text export modes:
+  - Default: one editable frame retains authored breaks and disables PowerPoint wrapping.
+  - `--reflow-text`: eligible same-size lines become flowing prose that PowerPoint may rewrap; a font-size change, list marker, or accepted larger gap remains a paragraph boundary. Legacy `--merge-paragraphs` aliases this mode.
+  - `--no-merge`: each dy-stacked line becomes an independent frame with its own placement.
+  - Detection is conservative: mixed-layout `<text>` falls back to per-line frames. Use `--reflow-text` only for resizable body copy and `--no-merge` only for independent line objects or absolute line positions.
 - Native release export reads `svg_output/`. `-s final` is an explicit diagnostic override for comparing conversion behavior against post-processed SVGs; it does not change artifact ownership or create a supported release path.
 - `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible

@@ -83,21 +83,25 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 正式交付的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速测试会跳过预览和备份产物。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
 
-## Q: 为什么一段正文被拆成了好几个文本框？能不能一段一个文本框？
+## Q: 多行文本会怎样导出？可以让 PowerPoint 自动重排吗？
 
-默认会把可合并的正文段落导出成一个可编辑的 PowerPoint 文本框，内部保留多个段落。**拉伸框时文字会在框内自动重排**。
+默认会把可合并的多行文本块导出成一个可编辑的 PowerPoint 文本框，保留作者断行并禁用 PowerPoint 自动换行，因此拉伸文本框不会重写作者排好的行。
 
-如果你需要严格保持逐行版式，重新导出时加上 `--no-merge`：
+如果需要让 PowerPoint 自动重排适合流动的正文，请使用 `--reflow-text`：
+
+```bash
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --reflow-text
+```
+
+该模式会恢复段落自动重排，最终行数可能改变。旧参数 `--merge-paragraphs` 是 `--reflow-text` 的兼容别名。
+
+只有每一视觉行都必须成为独立的 PowerPoint 文本框时，才使用 `--no-merge`：
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
 ```
 
-使用 `--no-merge` 时，SVG 里的每一视觉行都会变成一个独立的 PowerPoint 文本框。这样能**逐像素保留 SVG 的版式**，适合封面、图表、表格、以及任何对版式精度敏感的页面。
-
-**代价**：默认合并会保留一个可编辑文本框和原始视觉行边界；只有需要让每一视觉行都能单独移动时才使用 `--no-merge`。判定足够保守——非段落型 `<text>` 会自动落回按行拆框路径。
-
-跟 AI 对话时也可以直接说："这个页面要严格保持逐行版式" —— AI 重新导出时会加上 `--no-merge`。
+该模式保留逐行独立的对象位置，但 12 行正文会变成 12 个文本框。与 AI 对话时，可以直接说“允许文字自动重排”或“每一视觉行使用独立文本框”，由它选择对应的导出模式。
 
 ## Q: 字号为什么用 px 不是 pt？导出后字号会变吗？
 
