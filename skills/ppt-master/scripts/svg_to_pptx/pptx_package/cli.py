@@ -855,19 +855,23 @@ Recorded narration:
         ),
     )
     parser.add_argument('--no-image-optimize', action='store_true',
-                        help='Disable native PPTX raster image optimization; embeds original image bytes.')
+                        help='Disable native PPTX raster image optimization and always embed '
+                             'the original image bytes.')
     parser.add_argument('--image-max-dimension', type=int, default=2560,
-                        help='Preferred optimized raster cap in pixels; cap mode may retain more '
-                             'for cropped/stretched effective resolution (default: 2560).')
+                        help='Preferred raster cap in pixels. Cap mode re-encodes only images '
+                             'that require resizing or EXIF geometry normalization, and may '
+                             'retain more pixels for cropped/stretched visible resolution '
+                             '(default: 2560).')
     parser.add_argument('--image-sizing', choices=['cap', 'display'], default='cap',
-                        help='Raster sizing mode: cap limits source dimensions without '
-                             'undersupplying cropped/stretched visible pixels; '
-                             'display sizes from the SVG rendered box (default: cap).')
+                        help='Raster sizing mode: cap preserves original bytes unless resizing '
+                             'or EXIF geometry normalization is required; display targets the '
+                             'SVG rendered box for explicit compaction (default: cap).')
     parser.add_argument('--image-scale', type=float, default=2.0,
                         help='Target optimized image pixels per SVG display pixel '
                              'when --image-sizing=display (default: 2.0).')
     parser.add_argument('--image-quality', type=int, default=85,
-                        help='JPEG quality for optimized opaque raster images, 1-100 (default: 85).')
+                        help='JPEG quality for raster images re-encoded during optimization, '
+                             '1-100 (default: 85).')
 
     def non_negative_float(value: str) -> float:
         try:

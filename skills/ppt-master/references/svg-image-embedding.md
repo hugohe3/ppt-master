@@ -149,14 +149,15 @@ aliases only when invoked through `finalize_svg.py --only`.
 
 ## Best Practices
 
-### Image Optimization
+### Native PPTX Image Export
 
-Compress before embedding to reduce file size:
+**Default — preserve unmodified image bytes**: `svg_to_pptx.py` uses `--image-sizing cap`. It keeps original bytes when an image needs neither resizing nor EXIF geometry normalization, and re-encodes only images that require one of those transformations. Use the explicit compact command only when a compact export is requested.
 
-```bash
-convert input.png -quality 85 -resize 1920x1080\> output.png  # ImageMagick
-pngquant --quality=65-80 input.png -o output.png               # pngquant (recommended)
-```
+| Need | Command |
+|---|---|
+| Normal native export | `python3 scripts/svg_to_pptx.py <project_path>` |
+| Explicit compact export | `python3 scripts/svg_to_pptx.py <project_path> --image-sizing display --image-scale 2 --image-quality 85` |
+| Force original bytes | `python3 scripts/svg_to_pptx.py <project_path> --no-image-optimize` |
 
 ### File Organization
 
