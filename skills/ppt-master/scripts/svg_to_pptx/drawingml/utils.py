@@ -22,6 +22,7 @@ from pptx_shapes import (
     svg_preset_preview_fingerprint,
     validate_ooxml_xfrm,
 )
+from language_tags import language_base, language_uses_rtl
 
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
@@ -3017,8 +3018,50 @@ def is_cjk_char(ch: str) -> bool:
     )
 
 
-def detect_text_lang(text: str) -> str:
-    """Return a DrawingML language tag for a text run."""
+def _contains_codepoint_range(
+    text: str,
+    ranges: tuple[tuple[int, int], ...],
+) -> bool:
+    """Return whether text contains a code point in one of the ranges."""
+    return any(
+        start <= ord(ch) <= end
+        for ch in text
+        for start, end in ranges
+    )
+
+
+def _default_language_for_script(
+    default_language: str | None,
+    bases: frozenset[str],
+    fallback: str,
+) -> str:
+    """Prefer the project language when it belongs to the detected script."""
+    if default_language and language_base(default_language) in bases:
+        return default_language
+    return fallback
+
+
+def text_has_rtl_characters(text: str) -> bool:
+    """Return whether text contains a strong right-to-left character."""
+    return any(unicodedata.bidirectional(ch) in {'R', 'AL'} for ch in text)
+
+
+def text_uses_rtl(text: str, default_language: str | None = None) -> bool:
+    """Resolve paragraph direction from its first strong character or project."""
+    for char in text:
+        direction = unicodedata.bidirectional(char)
+        if direction in {'R', 'AL'}:
+            return True
+        if direction == 'L':
+            return False
+    return bool(default_language and language_uses_rtl(default_language))
+
+
+def detect_text_lang(
+    text: str,
+    default_language: str | None = None,
+) -> str:
+    """Return a DrawingML language tag, preferring the project contract."""
     has_hangul = False
     has_kana = False
     has_east_asian_text = False
@@ -3031,10 +3074,81 @@ def detect_text_lang(text: str) -> str:
         )
         has_east_asian_text = has_east_asian_text or is_cjk_char(ch)
     if has_hangul:
-        return 'ko-KR'
+        return _default_language_for_script(
+            default_language,
+            frozenset({'ko'}),
+            'ko-KR',
+        )
     if has_kana:
-        return 'ja-JP'
-    return 'zh-CN' if has_east_asian_text else 'en-US'
+        return _default_language_for_script(
+            default_language,
+            frozenset({'ja'}),
+            'ja-JP',
+        )
+    if has_east_asian_text:
+        return _default_language_for_script(
+            default_language,
+            frozenset({'zh', 'ja', 'ko'}),
+            'zh-CN',
+        )
+    if _contains_codepoint_range(text, (
+        (0x0600, 0x06FF),
+        (0x0750, 0x077F),
+        (0x08A0, 0x08FF),
+        (0xFB50, 0xFDFF),
+        (0xFE70, 0xFEFF),
+        (0x1EE00, 0x1EEFF),
+    )):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'ar', 'fa', 'ps', 'sd', 'ug', 'ur'}),
+            'ar-SA',
+        )
+    if _contains_codepoint_range(text, (
+        (0x0590, 0x05FF),
+        (0xFB1D, 0xFB4F),
+    )):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'he', 'yi'}),
+            'he-IL',
+        )
+    if _contains_codepoint_range(text, (
+        (0x0900, 0x097F),
+        (0xA8E0, 0xA8FF),
+    )):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'hi', 'mr', 'ne', 'sa'}),
+            'hi-IN',
+        )
+    if _contains_codepoint_range(text, ((0x0E00, 0x0E7F),)):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'th'}),
+            'th-TH',
+        )
+    if _contains_codepoint_range(text, (
+        (0x0400, 0x052F),
+        (0x1C80, 0x1C8F),
+        (0x2DE0, 0x2DFF),
+        (0xA640, 0xA69F),
+    )):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'be', 'bg', 'kk', 'ky', 'mk', 'mn', 'ru', 'sr', 'uk'}),
+            'ru-RU',
+        )
+    if _contains_codepoint_range(text, (
+        (0x0370, 0x03FF),
+        (0x1F00, 0x1FFF),
+    )):
+        return _default_language_for_script(
+            default_language,
+            frozenset({'el'}),
+            'el-GR',
+        )
+    return default_language or 'en-US'
 
 
 def _is_grapheme_extend(ch: str) -> bool:
@@ -3157,7 +3271,7 @@ def split_project_text_clusters(text: str) -> list[str]:
 def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
     """Return DrawingML latin/ea/cs typefaces for one text run."""
     latin = fonts['latin']
-    if detect_text_lang(text) != 'en-US':
+    if any(is_cjk_char(ch) for ch in text):
         ea = fonts['ea']
     else:
         ea = latin

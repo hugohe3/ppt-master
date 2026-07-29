@@ -10,7 +10,13 @@ from .marker_attributes import native_import_source
 
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.theme_colors import ThemeColorSpec, color_node_xml
-from ..drawingml.utils import _xml_escape, detect_text_lang, font_px_to_hpt
+from ..drawingml.utils import (
+    _xml_escape,
+    detect_text_lang,
+    font_px_to_hpt,
+    text_has_rtl_characters,
+    text_uses_rtl,
+)
 from .chart_style import _font_face_xml
 from .marker_common import (
     TABLE_URI,
@@ -37,6 +43,7 @@ def _table_text_run(
     font_size: int | None,
     font_face: str | None,
     language: str | None,
+    default_language: str | None,
     theme_color_spec: ThemeColorSpec | None,
     italic: bool | None = None,
     underline: bool | None = None,
@@ -55,7 +62,7 @@ def _table_text_run(
         f' strike="{"sngStrike" if strike else "noStrike"}"'
         if strike is not None else ""
     )
-    resolved_language = language or detect_text_lang(text)
+    resolved_language = language or detect_text_lang(text, default_language)
     language_attr = f' lang="{_xml_escape(resolved_language)}"'
     alt_language_attr = (
         f' altLang="{_xml_escape(alt_language)}"' if alt_language else ""
@@ -69,18 +76,38 @@ def _table_text_run(
         font_xml = (
             f'<a:latin typeface="{escaped_face}"/>'
             f'<a:ea typeface="{escaped_face}"/>'
+            f'<a:cs typeface="{escaped_face}"/>'
         )
     else:
         font_xml = _font_face_xml(font_face)
+    rtl_xml = '<a:rtl val="1"/>' if text_has_rtl_characters(text) else ''
     space_attr = ' xml:space="preserve"' if text != text.strip() else ""
     return (
         f'<a:r><a:rPr{language_attr}{alt_language_attr}{size_attr}{bold_attr}'
         f'{italic_attr}{underline_attr}{strike_attr}>'
         f'{color_xml}'
         f'{font_xml}'
+        f'{rtl_xml}'
         "</a:rPr>"
         f"<a:t{space_attr}>{_xml_escape(text)}</a:t></a:r>"
     )
+
+
+def _table_paragraph_properties(
+    align: str,
+    *,
+    emit_align: bool,
+    text: str,
+    language: str | None,
+) -> str:
+    """Build table paragraph properties with project-aware direction."""
+    attrs = []
+    if emit_align:
+        attrs.append(f'algn="{align}"')
+    if text_uses_rtl(text, language):
+        attrs.append('rtl="1"')
+    suffix = f" {' '.join(attrs)}" if attrs else ''
+    return f'<a:pPr{suffix}/>'
 
 
 def _cell_payload(value: Any) -> dict[str, Any]:
@@ -951,8 +978,12 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                     "" if cell_data.get("text") is None
                     else str(cell_data.get("text"))
                 )
-                paragraph_props = (
-                    f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
+                default_language = language or ctx.primary_language
+                paragraph_props = _table_paragraph_properties(
+                    align,
+                    emit_align=align != "l",
+                    text=text,
+                    language=default_language,
                 )
                 text_run_xml = _table_text_run(
                     text,
@@ -961,6 +992,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                     font_size=cell_font_size,
                     font_face=font_face,
                     language=language,
+                    default_language=ctx.primary_language,
                     theme_color_spec=ctx.theme_color_spec,
                 )
                 paragraphs_xml = (
@@ -970,10 +1002,19 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 paragraph_parts: list[str] = []
                 for paragraph in paragraphs:
                     paragraph_align = paragraph.align or align
-                    paragraph_props = (
-                        f'<a:pPr algn="{paragraph_align}"/>'
-                        if paragraph.align is not None or paragraph_align != "l"
-                        else "<a:pPr/>"
+                    paragraph_text = (
+                        paragraph.text
+                        if paragraph.runs is None
+                        else ''.join(run.text for run in paragraph.runs)
+                    )
+                    paragraph_props = _table_paragraph_properties(
+                        paragraph_align,
+                        emit_align=(
+                            paragraph.align is not None
+                            or paragraph_align != "l"
+                        ),
+                        text=paragraph_text,
+                        language=language or ctx.primary_language,
                     )
                     if paragraph.runs is None:
                         text_run_xml = _table_text_run(
@@ -983,6 +1024,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                             font_size=cell_font_size,
                             font_face=font_face,
                             language=language,
+                            default_language=ctx.primary_language,
                             theme_color_spec=ctx.theme_color_spec,
                         )
                     else:
@@ -998,6 +1040,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                                 ),
                                 font_face=run.font_family or font_face,
                                 language=run.lang or language,
+                                default_language=ctx.primary_language,
                                 theme_color_spec=ctx.theme_color_spec,
                                 italic=run.italic,
                                 underline=run.underline,

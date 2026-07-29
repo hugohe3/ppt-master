@@ -1,6 +1,6 @@
 # Execution Lock Structure
 
-`spec_lock.md` is the compact execution contract from audited `design_spec.md` plus current context. It keeps stable cross-page anchors and routes, not every page-local paint or typeface. This file owns authoring structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns grammar.
+`spec_lock.md` projects cross-page anchors/routes from audited `design_spec.md` and context; it excludes local paint/type. This file owns structure; [`schemas/spec_lock.schema.json`](./schemas/spec_lock.schema.json) owns grammar.
 
 ## 1. Author the complete artifact
 
@@ -19,7 +19,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | Section | Required keys | Notes |
 | --- | --- | --- |
 | `canvas` | `viewBox`, `format` | `format` is the canonical display name (for example `PPT 16:9`); `viewBox` is the matching exact geometry |
-| `communication` | `audience`, `objective`, `core_message` | Compact execution projection; `objective` combines intent and audience outcome; `consumption_mode` is optional off PPT canvases |
+| `communication` | `primary_language`, `audience`, `objective`, `core_message` | New lock: canonical BCP-47; old lock may omit it. Reject `und` and Chinese without script/region. `objective` merges intent/outcome; `consumption_mode` is optional off PPT |
 | `mode` | `mode` | Preset or `custom` |
 | `visual_style` | `visual_style` | Preset or `custom` |
 | `colors` | Stable semantic color roles | Core identity and recurring roles only; contextual SVG paints need no row; `image_rendering` appears only for AI images |

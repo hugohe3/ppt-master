@@ -33,6 +33,7 @@ Start with this exact heading order:
 | Project Name | <resolved project name> |
 | Canvas Format | <canonical format and dimensions> |
 | Page Count | <exact final count matching §IX> |
+| Primary Language | <confirmed canonical BCP-47 content tag> |
 | Target Audience | <confirmed audience> |
 | Communication Intent | <confirmed intent, including priority or sequence> |
 | Desired Audience Outcome | <confirmed observable outcome> |

@@ -60,6 +60,7 @@ from .utils import (
     parse_inline_style, parse_font_family, is_cjk_char,
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
     resolve_text_run_fonts, split_project_text_clusters,
+    text_has_rtl_characters, text_uses_rtl,
     is_thick_circle_shorthand, parse_project_geometry_length,
     is_canonical_project_geometry_length,
     parse_project_image_aspect_ratio,
@@ -2242,8 +2243,11 @@ def _paragraph_pr_xml(
     body_xml: str = '',
     bullet: dict[str, Any] | None = None,
     ctx: ConvertContext | None = None,
+    rtl: bool = False,
 ) -> str:
     attrs = f'algn="{algn}"'
+    if rtl:
+        attrs += ' rtl="1"'
     if bullet:
         margin = px_to_emu(_bullet_margin_px(bullet, font_size))
         indent = px_to_emu(_bullet_indent_px(bullet, font_size))
@@ -2546,7 +2550,15 @@ def _build_run_properties_xml(
         fonts,
         ctx.theme_font_spec if ctx is not None else None,
     ) or resolve_text_run_fonts(text, fonts)
-    lang = detect_text_lang(text)
+    lang = detect_text_lang(
+        text,
+        ctx.primary_language if ctx is not None else None,
+    )
+    rtl_xml = (
+        '\n<a:rtl val="1"/>'
+        if text_has_rtl_characters(text)
+        else ''
+    )
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
@@ -2557,7 +2569,7 @@ def _build_run_properties_xml(
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
+<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>{rtl_xml}
 </a:rPr>'''
 
 
@@ -3011,6 +3023,10 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 body_xml=f'{ln_spc_xml}{spc_bef_xml}',
                 bullet=bullet,
                 ctx=ctx,
+                rtl=text_uses_rtl(
+                    ''.join(str(run.get('text', '')) for run in line),
+                    ctx.primary_language,
+                ),
             )
             paragraph_xml_chunks.append(
                 f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
@@ -3023,6 +3039,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             font_size=float(runs[0].get('font_size', font_size)) if runs else font_size,
             bullet=single_bullet,
             ctx=ctx,
+            rtl=text_uses_rtl(full_text, ctx.primary_language),
         )
         paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
 

@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import re
 
-from ..drawingml.utils import detect_text_lang
+from language_tags import normalize_language_tag
+
+from ..drawingml.utils import (
+    detect_text_lang,
+    text_has_rtl_characters,
+    text_uses_rtl,
+)
 
 
 def markdown_to_plain_text(md_content: str) -> str:
@@ -54,16 +60,27 @@ def markdown_to_plain_text(md_content: str) -> str:
     return '\n'.join(result).strip()
 
 
-def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
+def create_notes_slide_xml(
+    slide_num: int,
+    notes_text: str,
+    primary_language: str | None = None,
+) -> str:
     """Create notes slide XML.
 
     Args:
         slide_num: Slide number.
         notes_text: Notes text in plain text format.
+        primary_language: Canonical BCP-47 deck language, when available.
 
     Returns:
         Notes slide XML string.
     """
+    primary_language = (
+        normalize_language_tag(primary_language)
+        if primary_language is not None
+        else None
+    )
+    default_language = primary_language or 'en-US'
     notes_text = (notes_text
                   .replace('&', '&amp;')
                   .replace('<', '&lt;')
@@ -72,20 +89,40 @@ def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
     paragraphs: list[str] = []
     for para in notes_text.split('\n'):
         if para.strip():
-            lang = detect_text_lang(para)
+            lang = detect_text_lang(para, primary_language)
+            paragraph_rtl = ' rtl="1"' if text_uses_rtl(
+                para,
+                primary_language,
+            ) else ''
+            run_rtl = (
+                '<a:rtl val="1"/>'
+                if text_has_rtl_characters(para)
+                else ''
+            )
             paragraphs.append(f'''<a:p>
+              <a:pPr{paragraph_rtl}/>
               <a:r>
-                <a:rPr lang="{lang}" dirty="0"/>
+                <a:rPr lang="{lang}" dirty="0">{run_rtl}</a:rPr>
                 <a:t>{para}</a:t>
               </a:r>
             </a:p>''')
         else:
-            paragraphs.append('<a:p><a:endParaRPr lang="en-US" dirty="0"/></a:p>')
+            paragraph_rtl = (
+                ' rtl="1"'
+                if primary_language and text_uses_rtl('', primary_language)
+                else ''
+            )
+            paragraphs.append(
+                f'<a:p><a:pPr{paragraph_rtl}/>'
+                f'<a:endParaRPr lang="{default_language}" dirty="0"/></a:p>'
+            )
 
     paragraphs_xml = (
         '\n            '.join(paragraphs)
         if paragraphs
-        else '<a:p><a:endParaRPr lang="en-US" dirty="0"/></a:p>'
+        else (
+            f'<a:p><a:endParaRPr lang="{default_language}" dirty="0"/></a:p>'
+        )
     )
 
     return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -160,9 +197,15 @@ def create_notes_slide_rels_xml(slide_num: int) -> str:
 </Relationships>'''
 
 
-def create_notes_master_xml() -> str:
+def create_notes_master_xml(primary_language: str | None = None) -> str:
     """Create a minimal PowerPoint-compatible notes master XML."""
-    return '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    language = (
+        normalize_language_tag(primary_language)
+        if primary_language is not None
+        else 'en-US'
+    )
+    paragraph_rtl = ' rtl="1"' if text_uses_rtl('', language) else ''
+    return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:notesMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
                xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
                xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
@@ -194,7 +237,7 @@ def create_notes_master_xml() -> str:
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>
-        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr{paragraph_rtl}/><a:endParaRPr lang="{language}"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
         <p:nvSpPr>
@@ -209,7 +252,7 @@ def create_notes_master_xml() -> str:
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>
-        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr{paragraph_rtl}/><a:endParaRPr lang="{language}"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
         <p:nvSpPr>
@@ -238,7 +281,7 @@ def create_notes_master_xml() -> str:
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>
-        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr{paragraph_rtl}/><a:endParaRPr lang="{language}"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
         <p:nvSpPr>
@@ -253,7 +296,7 @@ def create_notes_master_xml() -> str:
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>
-        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr{paragraph_rtl}/><a:endParaRPr lang="{language}"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
         <p:nvSpPr>
@@ -268,7 +311,7 @@ def create_notes_master_xml() -> str:
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>
-        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+        <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr{paragraph_rtl}/><a:endParaRPr lang="{language}"/></a:p></p:txBody>
       </p:sp>
     </p:spTree>
   </p:cSld>
@@ -278,8 +321,8 @@ def create_notes_master_xml() -> str:
             hlink="hlink" folHlink="folHlink"/>
   <p:hf/>
   <p:notesStyle>
-    <a:lvl1pPr marL="0" algn="l">
-      <a:defRPr sz="1200" lang="en-US"/>
+    <a:lvl1pPr marL="0" algn="l"{paragraph_rtl}>
+      <a:defRPr sz="1200" lang="{language}"/>
     </a:lvl1pPr>
   </p:notesStyle>
 </p:notesMaster>'''

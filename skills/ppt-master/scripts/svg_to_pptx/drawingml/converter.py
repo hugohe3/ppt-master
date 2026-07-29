@@ -1374,6 +1374,7 @@ def convert_svg_to_slide_shapes(
     animation_group_overrides: frozenset[str] | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
+    primary_language: str | None = None,
     trace_out: list[dict[str, Any]] | None = None,
     promote_background: bool = True,
     text_flow: str | None = None,
@@ -1412,6 +1413,8 @@ def convert_svg_to_slide_shapes(
         theme_color_spec: Optional context-aware theme-color contract. Exact
             locked colors emit DrawingML scheme tokens while local colors stay
             fixed.
+        primary_language: Canonical BCP-47 project content language. ``None``
+            keeps the legacy per-run script heuristic.
         trace_out: Optional list populated with one per-slide trace dictionary.
         promote_background: Promote the first eligible full-canvas rectangle
             into native ``p:bg``. Structured export disables this generic pass
@@ -1675,6 +1678,7 @@ def convert_svg_to_slide_shapes(
         trace_events=trace_events,
         theme_font_spec=theme_font_spec,
         theme_color_spec=theme_color_spec,
+        primary_language=primary_language,
         inherited_styles=_extract_inheritable_styles(root),
         text_font_sizes=text_font_sizes,
         text_letter_spacings=text_letter_spacings,

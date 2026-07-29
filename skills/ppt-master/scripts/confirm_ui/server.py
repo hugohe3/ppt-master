@@ -55,6 +55,11 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from language_tags import (  # noqa: E402
+    LanguageTagError,
+    language_base,
+    normalize_language_tag,
+)
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     clear_lock as _clear_lock,
@@ -556,12 +561,10 @@ def _is_english_language(language: object) -> bool:
     """Return whether a recommendation language is an English locale."""
     if not isinstance(language, str):
         return False
-    normalized = language.strip().casefold().replace('_', '-')
-    return (
-        normalized == 'english'
-        or normalized == 'en'
-        or normalized.startswith('en-')
-    )
+    try:
+        return language_base(language) == 'en'
+    except LanguageTagError:
+        return False
 
 
 def _recommendation_language(recommendations: dict) -> object:
@@ -577,13 +580,28 @@ def _recommendation_language(recommendations: dict) -> object:
 
 
 def _primary_language_error(recommendations: dict) -> Optional[str]:
-    """Require a content-language source of truth for the new staged flow."""
+    """Require and canonicalize the staged content-language source of truth."""
+    return _canonicalize_primary_language(recommendations, required=True)
+
+
+def _canonicalize_primary_language(
+    recommendations: dict,
+    *,
+    required: bool,
+) -> Optional[str]:
+    """Write a canonical primary language into one recommendation/result object."""
     value = _recommendation_language(recommendations)
     if not isinstance(value, str) or not value.strip():
-        return (
-            'Stage 1 recommendations must declare a non-empty primary language; '
-            'lang controls only the Confirm UI language'
-        )
+        if required:
+            return (
+                'Stage 1 recommendations must declare a valid primary_language '
+                'BCP-47 tag; lang controls only the Confirm UI language'
+            )
+        return None
+    try:
+        recommendations['primary_language'] = normalize_language_tag(value)
+    except LanguageTagError as exc:
+        return f'invalid primary_language: {exc}'
     return None
 
 
@@ -875,10 +893,18 @@ def _submission_stage_error(
             previous_result = _read_json_object(confirm_dir / RESULT_NAME)
         except (OSError, json.JSONDecodeError, ValueError):
             previous_result = {}
-        main_language = (
-            _recommendation_language(previous_result)
-            or _recommendation_language(recommendations)
+        language_source = (
+            previous_result
+            if _recommendation_language(previous_result)
+            else recommendations
         )
+        language_error = _canonicalize_primary_language(
+            language_source,
+            required=True,
+        )
+        if language_error:
+            return language_error
+        main_language = _recommendation_language(language_source)
         recommendation_error = _template_stage2_error(
             recommendations,
             template_required=template_required,
@@ -1199,7 +1225,12 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
         recommend = data['recommend'] = {}
     main_language = _recommendation_language(res)
     if main_language:
-        data['primary_language'] = main_language
+        try:
+            data['primary_language'] = normalize_language_tag(main_language)
+        except LanguageTagError:
+            # Keep the invalid legacy value visible to the API boundary below,
+            # which returns a user-facing contract error instead of hiding it.
+            data['primary_language'] = main_language
     for key in _CONTRACT_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
             recommend[key] = res[key]
@@ -1667,10 +1698,18 @@ def create_app(
         rec_stage_number = _recommendation_stage(data)
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
-        if rec_stage_number == 1:
-            language_error = _primary_language_error(data)
+        if rec_stage_number > 0:
+            language_error = _canonicalize_primary_language(
+                data,
+                required=True,
+            )
             if language_error:
                 return jsonify({'error': language_error}), 409
+        else:
+            # Legacy single-pass files remain permissive. Canonicalize only
+            # aliases/tags the shared helper already understands; an old prose
+            # value must never prevent the compatibility UI from opening.
+            _canonicalize_primary_language(data, required=False)
         if rec_stage_number == 2:
             recommendation_error = _template_stage2_error(
                 data,
@@ -1747,11 +1786,22 @@ def create_app(
                 previous_result = _read_json_object(result_file)
             except (OSError, json.JSONDecodeError, ValueError):
                 pass
-        main_language = (
-            _recommendation_language(previous_result)
-            or _recommendation_language(current_recommendations)
-        )
+        main_language = None
         if rec_stage_number > 0:
+            language_source = (
+                previous_result
+                if _recommendation_language(previous_result)
+                else current_recommendations
+            )
+            if not _recommendation_language(language_source):
+                language_source = result
+            language_error = _canonicalize_primary_language(
+                language_source,
+                required=True,
+            )
+            if language_error:
+                return jsonify({'error': language_error}), 409
+            main_language = _recommendation_language(language_source)
             if main_language:
                 result['primary_language'] = main_language
             else:

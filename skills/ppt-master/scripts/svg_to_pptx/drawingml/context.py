@@ -124,6 +124,9 @@ class ConvertContext:
     # Optional project theme-color contract. Exact locked colors are promoted
     # to context-safe DrawingML scheme slots while local colors stay concrete.
     theme_color_spec: ThemeColorSpec | None = None
+    # Canonical BCP-47 content language from spec_lock.md. ``None`` preserves
+    # the legacy per-run script heuristic for older projects and quick tests.
+    primary_language: str | None = None
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -273,6 +276,7 @@ class ConvertContext:
             trace_events=self.trace_events,
             theme_font_spec=self.theme_font_spec,
             theme_color_spec=self.theme_color_spec,
+            primary_language=self.primary_language,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

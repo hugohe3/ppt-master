@@ -54,6 +54,7 @@ from pptx_opc_validation import (
     resolve_internal_opc_target as _resolve_internal_opc_target,
     verify_internal_relationships,
 )
+from language_tags import normalize_language_tag
 
 from ..animation_config import (
     MorphPair,
@@ -3917,7 +3918,10 @@ _NOTES_MASTER_REL_TYPE = (
 )
 
 
-def _ensure_notes_master(extract_dir: Path) -> None:
+def _ensure_notes_master(
+    extract_dir: Path,
+    primary_language: str | None = None,
+) -> None:
     """Create notesMaster parts and wire them into the presentation package."""
     ppt_dir = extract_dir / 'ppt'
     notes_masters_dir = ppt_dir / 'notesMasters'
@@ -3925,7 +3929,10 @@ def _ensure_notes_master(extract_dir: Path) -> None:
 
     notes_master_path = notes_masters_dir / 'notesMaster1.xml'
     if not notes_master_path.exists():
-        notes_master_path.write_text(create_notes_master_xml(), encoding='utf-8')
+        notes_master_path.write_text(
+            create_notes_master_xml(primary_language),
+            encoding='utf-8',
+        )
 
     theme_dir = ppt_dir / 'theme'
     theme_dir.mkdir(exist_ok=True)
@@ -4624,6 +4631,7 @@ def create_pptx_with_native_svg(
     animation_resource_root: Path | None = None,
     transition_effect_options: dict[str, object] | None = None,
     text_flow: str | None = None,
+    primary_language: str | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
@@ -4700,6 +4708,8 @@ def create_pptx_with_native_svg(
             callers may omit it; other routes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
             flat/structured theme inheritance. Preserve mode ignores this value.
+        primary_language: Canonical BCP-47 deck content language. ``None``
+            preserves legacy per-run language detection.
         structured_baseline: Obsolete compatibility argument; must remain false.
         baseline_layout_specs: Obsolete compatibility argument; must remain None.
 
@@ -4707,6 +4717,8 @@ def create_pptx_with_native_svg(
         Whether all slides were successfully created.
     """
     text_flow = resolve_text_flow(text_flow, merge_paragraphs)
+    if primary_language is not None:
+        primary_language = normalize_language_tag(primary_language)
     public_svg_files = list(svg_files)
     definition_svg_files = list(layout_definition_files or [])
     public_slide_names = [path.stem for path in public_svg_files]
@@ -5175,6 +5187,7 @@ def create_pptx_with_native_svg(
                             animation_group_overrides=converter_group_overrides,
                             theme_font_spec=active_theme_font_spec,
                             theme_color_spec=active_theme_color_spec,
+                            primary_language=primary_language,
                             promote_background=pptx_structure != "structured",
                             trace_out=conversion_trace
                             if conversion_trace is not None
@@ -5436,13 +5449,17 @@ def create_pptx_with_native_svg(
                     notes_content = notes.get(svg_stem, '') if notes else ''
                     notes_text = markdown_to_plain_text(notes_content) if notes_content else ''
                     if notes_text:
-                        _ensure_notes_master(extract_dir)
+                        _ensure_notes_master(extract_dir, primary_language)
 
                         notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
                         notes_slides_dir.mkdir(exist_ok=True)
 
                         notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
-                        notes_xml = create_notes_slide_xml(slide_num, notes_text)
+                        notes_xml = create_notes_slide_xml(
+                            slide_num,
+                            notes_text,
+                            primary_language,
+                        )
                         with open(notes_xml_path, 'w', encoding='utf-8') as f:
                             f.write(notes_xml)
 
@@ -5850,7 +5867,15 @@ def create_pptx_with_native_svg(
         # author, 2013 dates, "generated using python-pptx", Slides=0) with
         # accurate, tool-neutral document properties.
         pres_format = _presentation_format(width_emu, height_emu)
-        _stamp_docprops(extract_dir, public_slide_count, pres_format, doc_metadata)
+        effective_doc_metadata = dict(doc_metadata or {})
+        if primary_language is not None:
+            effective_doc_metadata['language'] = primary_language
+        _stamp_docprops(
+            extract_dir,
+            public_slide_count,
+            pres_format,
+            effective_doc_metadata,
+        )
 
         # Repackage PPTX to a temporary file first. The public output path is
         # replaced only after every slide and relationship has succeeded.
