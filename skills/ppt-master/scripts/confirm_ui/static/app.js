@@ -843,6 +843,7 @@
 
         var allChips = [];
         var customInput = el(aiCustom ? "textarea" : "input", "text-input custom-input");
+        setNaturalInputDirection(customInput);
         if (opts2.inputClass) customInput.classList.add(opts2.inputClass);
         if (aiCustom) customInput.rows = aiCustom.rows || 4;
         else customInput.type = "text";
@@ -997,6 +998,7 @@
     function textField(parent, getVal, setVal, placeholderKey, numeric) {
         var input = el("input", numeric ? "num-input" : "text-input");
         input.type = "text";
+        if (!numeric) setNaturalInputDirection(input);
         input.value = getVal() || "";
         input.placeholder = t(placeholderKey);
         input.addEventListener("input", function () { setVal(input.value); });
@@ -1005,6 +1007,7 @@
 
     function textareaField(parent, getVal, setVal, placeholderKey, rows) {
         var input = el("textarea", "text-input");
+        setNaturalInputDirection(input);
         input.rows = rows || 2;
         input.value = getVal() || "";
         input.placeholder = t(placeholderKey);
@@ -1054,16 +1057,32 @@
         if (raw && typeof raw === "object") {
             raw = raw.value || raw.id || raw.code || "";
         }
-        raw = String(raw || "und").trim().toLowerCase().replace(/_/g, "-");
-        if (raw === "english") return "en";
-        if (raw === "chinese") return "zh";
-        if (raw === "japanese") return "ja";
-        if (raw === "korean") return "ko";
-        return raw;
+        // The API is the single normalizer; the browser consumes its canonical
+        // value instead of maintaining a second alias table.
+        return String(raw || "und").trim().replace(/_/g, "-");
     }
 
     function isEnglishProject() {
-        return /^en(?:-|$)/.test(recommendationLanguage());
+        return /^en(?:-|$)/i.test(recommendationLanguage());
+    }
+
+    function setProjectLanguageAttributes(node) {
+        node.lang = recommendationLanguage();
+        node.dir = "auto";
+    }
+
+    function setEnglishLanguageAttributes(node) {
+        node.lang = "en";
+        node.dir = "ltr";
+    }
+
+    function setUiLanguageAttributes(node) {
+        node.lang = LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja-JP" : "en-US");
+        node.dir = "ltr";
+    }
+
+    function setNaturalInputDirection(node) {
+        node.dir = "auto";
     }
 
     function stringList(value) {
@@ -1859,6 +1878,7 @@
             });
         }
         var customInput = el("textarea", "text-input custom-color-input");
+        setNaturalInputDirection(customInput);
         customInput.rows = 2;
         customInput.placeholder = t("custom_color_placeholder");
         customInput.style.display = "none";
@@ -1998,6 +2018,38 @@
             !typographyFamiliesComplete(STATE.typography));
     }
 
+    function previewText(value, maxCharacters) {
+        var text = String(value || "").replace(/\s+/g, " ").trim();
+        var characters = Array.from(text);
+        if (characters.length <= maxCharacters) return text;
+        return characters.slice(0, Math.max(1, maxCharacters - 1)).join("") + "…";
+    }
+
+    function projectLanguageProse() {
+        var fields = [
+            "core_message",
+            "communication_intent",
+            "audience_outcome",
+            "delivery_context",
+            "artifact_afterlife",
+            "content_divergence",
+            "audience"
+        ];
+        var values = [];
+        fields.forEach(function (field) {
+            var value = String((STATE && STATE[field]) || "").replace(/\s+/g, " ").trim();
+            if (value && values.indexOf(value) < 0) values.push(value);
+        });
+        return values;
+    }
+
+    function projectLanguageSample(role) {
+        var prose = projectLanguageProse();
+        if (!prose.length) return "";
+        if (role === "heading") return previewText(prose[0], 56);
+        return previewText(prose[1] || prose[0], 96);
+    }
+
     function sampleText(role, field) {
         var useEnglish = field === "english" || isEnglishProject();
         if (role === "heading") {
@@ -2008,8 +2060,12 @@
 
     function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
+        var projectSample = projectLanguageSample(role);
+        var slotSample = String(slot.sample_primary || "").trim();
         var primary = el("span", "fs-primary",
-            slot.sample_primary || sampleText(role, "primary"));
+            projectSample || slotSample || sampleText(role, "primary"));
+        if (projectSample || slotSample) setProjectLanguageAttributes(primary);
+        else setUiLanguageAttributes(primary);
         var primaryStack = previewFontStack(slot.primary, css);
         if (primaryStack) primary.style.fontFamily = primaryStack;
         if (primaryStack) primary.title = primaryStack;
@@ -2017,6 +2073,7 @@
         if (!isEnglishProject()) {
             var english = el("span", "fs-english",
                 slot.sample_english || sampleText(role, "english"));
+            setEnglishLanguageAttributes(english);
             var englishStack = previewFontStack(slot.english, css);
             if (englishStack) english.style.fontFamily = englishStack;
             if (englishStack) english.title = englishStack;
@@ -2408,6 +2465,8 @@
         var bodyWrap = el("div", "sp-body-wrap");
         var bodyPrimary = el("span", "sp-body-primary");
         var bodyEnglish = el("span", "sp-body-english");
+        setEnglishLanguageAttributes(titleEnglish);
+        setEnglishLanguageAttributes(bodyEnglish);
         bodyWrap.appendChild(bodyPrimary); bodyWrap.appendChild(bodyEnglish);
         bodyRow.appendChild(accentBar); bodyRow.appendChild(bodyWrap);
         textcol.appendChild(title); textcol.appendChild(bodyRow);
@@ -2440,18 +2499,28 @@
             var headEnglishStack = previewFontStack(head.english, head.css);
             var bodyPrimaryStack = previewFontStack(body.primary, body.css);
             var bodyEnglishStack = previewFontStack(body.english, body.css);
+            var projectTitle = projectLanguageSample("heading");
+            var projectBody = projectLanguageSample("body");
+            var headingSample = String(head.sample_primary || "").trim();
+            var bodySample = String(body.sample_primary || "").trim();
 
             card.style.background = bg;
-            titlePrimary.textContent = head.sample_primary ||
+            titlePrimary.textContent = projectTitle ||
+                headingSample ||
                 sampleText("heading", "primary");
+            if (projectTitle || headingSample) setProjectLanguageAttributes(titlePrimary);
+            else setUiLanguageAttributes(titlePrimary);
             titleEnglish.textContent = head.sample_english ||
                 sampleText("heading", "english");
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
             titlePrimary.style.fontFamily = headPrimaryStack || "";
             titleEnglish.style.fontFamily = headEnglishStack || "";
-            bodyPrimary.textContent = body.sample_primary ||
+            bodyPrimary.textContent = projectBody ||
+                bodySample ||
                 sampleText("body", "primary");
+            if (projectBody || bodySample) setProjectLanguageAttributes(bodyPrimary);
+            else setUiLanguageAttributes(bodyPrimary);
             bodyEnglish.textContent = body.sample_english ||
                 sampleText("body", "english");
             bodyWrap.style.color = txt;
@@ -2464,6 +2533,8 @@
             content.style.color = txt;
             content.style.fontFamily = bodyPrimaryStack || "";
             content.innerHTML = stylePreviewContentMarkup(STATE.icons);
+            if (projectLanguageProse().length) setProjectLanguageAttributes(content);
+            else setUiLanguageAttributes(content);
             chip.style.background = sbg;
             chipDot.style.background = sacc;
             chipLabel.textContent = t("role_secondary_bg");
@@ -2528,6 +2599,17 @@
     }
 
     function stylePreviewRows() {
+        var prose = projectLanguageProse();
+        if (prose.length) {
+            var projectRows = [];
+            for (var i = 0; i < Math.min(3, Math.ceil(prose.length / 2)); i += 1) {
+                projectRows.push([
+                    previewText(prose[i * 2], 36),
+                    previewText(prose[i * 2 + 1] || "", 72)
+                ]);
+            }
+            return projectRows;
+        }
         return [
             [t("preview_point_1_title"), t("preview_point_1_text")],
             [t("preview_point_2_title"), t("preview_point_2_text")],
@@ -2566,6 +2648,7 @@
         var usageNote = el("div", "subfield");
         usageNote.appendChild(el("div", "subfield-label", t("image_usage_notes")));
         var usageNoteInput = el("textarea", "text-input image-usage-notes-input");
+        setNaturalInputDirection(usageNoteInput);
         usageNoteInput.placeholder = t("image_usage_notes_placeholder");
         usageNoteInput.value = STATE.image_notes || "";
         usageNoteInput.addEventListener("input", function () { STATE.image_notes = usageNoteInput.value; });
@@ -2643,6 +2726,7 @@
             var customCopy = el("div", "ai-custom-candidate-copy", customStrategy.behavior);
             customCard.appendChild(customCopy);
             var customInput = el("textarea", "text-input image-strategy-custom-input");
+            setNaturalInputDirection(customInput);
             customInput.rows = 4;
             customInput.placeholder = t("image_strategy_custom_placeholder");
             customInput.value = customStrategy.behavior;
@@ -2981,6 +3065,20 @@
     // with the newly authored candidates. Stage-1 STATE is preserved
     // across the single-session transition — this never resets the contract.
     function initStage2State() {
+        [
+            "audience",
+            "communication_intent",
+            "audience_outcome",
+            "core_message",
+            "delivery_context",
+            "artifact_afterlife",
+            "content_divergence"
+        ].forEach(function (field) {
+            var value = recValue(field);
+            if (value && typeof value === "object") value = value.value;
+            if (value != null) STATE[field] = String(value);
+        });
+        STATE.primary_language = recommendationLanguage();
         resetTypographySizeOverrides();
         var templateApplication = templateApplicationRecommendation();
         if (templateApplication != null) {

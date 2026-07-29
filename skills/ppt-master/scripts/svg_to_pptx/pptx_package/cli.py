@@ -20,6 +20,10 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from language_tags import (  # noqa: E402
+    LanguageTagError,
+    normalize_language_tag,
+)
 from native_payloads import PAYLOAD_STORE_RELATIVE_PATH  # noqa: E402
 from pptx_animations import (  # noqa: E402
     ANIMATIONS,
@@ -599,6 +603,28 @@ def _declared_canvas_viewbox(project_path: Path) -> str | None:
     return value.strip() if isinstance(value, str) and value.strip() else None
 
 
+def _declared_primary_language(project_path: Path) -> str | None:
+    """Return the canonical content language declared by the execution lock."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        from update_spec import parse_lock
+
+        lock = parse_lock(lock_path)
+    except (OSError, ValueError):
+        return None
+    communication = lock.get('communication', {})
+    value = communication.get('primary_language')
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        return normalize_language_tag(value)
+    except LanguageTagError as exc:
+        raise LanguageTagError(
+            'spec_lock.md communication.primary_language '
+            f'is invalid: {exc}'
+        ) from exc
+
+
 def _print_structure_contract_error(
     mode: str | None,
     *,
@@ -1159,6 +1185,20 @@ Recorded narration:
         if args.quick_test
         else _declared_pptx_structure_mode(project_path)
     )
+    primary_language = None
+    if not args.quick_test:
+        try:
+            primary_language = _declared_primary_language(project_path)
+        except LanguageTagError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        if primary_language is None:
+            print(
+                "Warning: spec_lock.md has no "
+                "communication.primary_language; using legacy per-run "
+                "language detection.",
+                file=sys.stderr,
+            )
     if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
         _print_structure_contract_error(pptx_structure)
         return 1
@@ -1857,6 +1897,7 @@ Recorded narration:
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,
+        primary_language=primary_language,
     )
 
     if verbose:
