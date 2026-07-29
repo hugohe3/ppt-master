@@ -208,18 +208,18 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 ### g. Typography Plan Confirmation (Font + Size)
 
-🚧 **GATE**: Read the locked preset visual-style file's §2 Typography character before recommending type. For a custom style, first read every file in `visual_style_references` when present, then resolve their typography character under `visual_style_behavior`; a novel custom uses the behavior directly. The title carries the character; the body may remain neutral.
+🚧 **GATE**: Read the locked preset visual-style file's §2 Typography character before recommending type. For custom, read every named `visual_style_references` file, then resolve them under `visual_style_behavior`; a novel custom uses the behavior directly. Character may come from family, weight, scale, spacing, or layout; title/body need not use different faces.
 
 **Family selection**:
 
 - User or active template typography is authoritative. Otherwise ≥3 Stage-2 directions include concord (safe) and contrast (tension); never add a separate font-choice round or pair near-duplicate title/body families.
 - Every Stage-2 direction carries `heading` / `body` `cjk`, `latin`, `css`, and positive `body_size`; repeat user/template-fixed stacks.
-- Use concrete, target-installed PowerPoint faces. **Examples only, never a catalog/default** (verify locale): Chinese `DengXian` / `SimSun`; Japanese `Meiryo` / `Yu Gothic`; Korean `Malgun Gothic` / `Batang`; Latin `Arial` / `Georgia` / `Consolas` / `Impact`.
 - Keep stacks to four families or fewer. A brand/web face may lead only after user-confirmed target installation/approved install; PPT Master does not embed fonts. Otherwise export a safe face and keep the unavailable face as Design Spec reference.
 - Avoid near-equivalent role splits such as YaHei↔PingFang, SimSun↔Songti, Arial↔Helvetica↔Segoe UI, or Times New Roman↔Times. Counterparts may aid SVG/browser preview; CSS tails are not deterministic PowerPoint fallbacks.
-- Choose by locked style and vary the axis instead of defaulting to YaHei/Arial: serif×sans, Kai/FangSong×hei, hei×song, double-serif, display×neutral, same-family weight, or sans+mono. These are recall seeds, not presets.
+- **Default — one language-matched concord candidate (may override for confirmed identity)**: without user/template typography, every Stage-2 set includes at least one target-approved safe heading/body system—Simplified Chinese `Microsoft YaHei` + `Arial`; Traditional Chinese `Microsoft JhengHei` + `Arial`; Japanese `Meiryo` + `Arial`; Korean `Malgun Gothic` + `Arial`; Latin-script `Arial` with a target-locale EA fallback for required `cjk`. Build hierarchy through size, weight, spacing, color, and composition; this is a candidate, not a mandate.
+- **Reference — not a constraint**: shifted/bold directions may use purposeful serif×sans, calligraphic×sans, display×neutral, or sans×mono contrast. Never change family merely to avoid YaHei/Arial; expressive CJK faces may start regular and gain hierarchy through scale, spacing, color, or layout.
 
-**Strategist-owned role extension after confirmation**: Confirm UI keeps the heading/body choice unchanged. While authoring the complete §IX roster and §IV typography plan, scan the actual content for recurring roles that materially need a different family for character or legibility—such as `annotation`, `footer`, `footnote`, `data`, `emphasis`, `quote`, or `code`. Add a lowercase snake_case role and exact stack only when it recurs; inherited roles and one-off garnish stay omitted. The extension must remain coherent with the confirmed heading/body system and locked visual style, and it does not reopen confirmation. Only when an additional family role is added, record one compact `Role rationale` in §IV naming the added role(s) and why; otherwise omit the line.
+**Strategist-owned role extension after confirmation**: Reuse confirmed heading/body families for recurring roles; differentiate with size, weight, color, spacing, or treatment. Add a lowercase snake_case role and exact stack only for function or confirmed visual-style/brand need (e.g. code, tabular data, brand), not recurrence alone. Keep it coherent without reopening confirmation; add one `Role rationale` only with an additional family.
 
 **Size anchors — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
 
