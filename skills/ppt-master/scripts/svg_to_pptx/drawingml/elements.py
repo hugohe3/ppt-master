@@ -2798,12 +2798,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         runs, single_bullet = _extract_text_bullet(runs)
         runs = _coalesce_text_runs(runs, fonts, ctx)
 
+    is_placeholder_carrier = (
+        (elem.get('data-pptx-carrier') or '').strip().lower() == 'true'
+    )
     full_text = ''.join(str(r.get('text', '')) for r in runs) if runs else ''
     if not full_text.strip():
-        is_placeholder_carrier = (
-            (elem.get('data-pptx-carrier') or '').strip().lower()
-            == 'true'
-        )
         if not is_placeholder_carrier:
             return None
         # A declared carrier must compile to one native text shape even when its
@@ -3061,17 +3060,27 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             f'rIns="{px_to_emu(right_inset)}" bIns="0" '
             'anchor="t" anchorCtr="0">\n<a:noAutofit/>\n</a:bodyPr>'
         )
-    # Preserve mode disables automatic wrapping and keeps authored <a:br/>
-    # boundaries. Reflow mode uses the same source width as a wrapping
-    # constraint. Neither mode lets PowerPoint resize the frame automatically.
+    # Preserve mode keeps authored <a:br/> boundaries and lets an ordinary
+    # generated text box follow later manual edits, such as deleting a break.
+    # Reflow mode keeps the source width fixed as its wrapping constraint.
+    # Exact imported frames above and structured placeholder carriers remain
+    # fixed regardless of text-flow mode.
     elif paragraph_runs is not None:
         paragraph_wrap = (
             'none' if ctx.text_flow == TEXT_FLOW_PRESERVE else 'square'
         )
+        paragraph_autofit = (
+            '<a:spAutoFit/>'
+            if (
+                ctx.text_flow == TEXT_FLOW_PRESERVE
+                and not is_placeholder_carrier
+            )
+            else '<a:noAutofit/>'
+        )
         body_pr_xml = (
             f'<a:bodyPr wrap="{paragraph_wrap}" '
             'lIns="0" tIns="0" rIns="0" bIns="0" '
-            'anchor="t" anchorCtr="0">\n<a:noAutofit/>\n</a:bodyPr>'
+            f'anchor="t" anchorCtr="0">\n{paragraph_autofit}\n</a:bodyPr>'
         )
     else:
         body_pr_xml = (
