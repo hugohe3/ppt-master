@@ -185,18 +185,18 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
 # 2B. Re-export with audio embedded
 #     Use the base export's [REPORT] path to preserve source-bound deck motion.
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --recorded-narration audio --narration-padding 0.5 \
   --inherit-motion-from "<base_postflight_report>"
 
 # Optional: use the canonical presentation animation instead
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --recorded-narration audio --narration-padding 0.5 \
   --animation-config animations.json \
   --inherit-motion-from "<base_postflight_report>"
 
 # Optional: export narration with no object or page-transition animation
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --no-merge --recorded-narration audio --narration-padding 0.5 \
+  --recorded-narration audio --narration-padding 0.5 \
   --no-animations
 
 # 2C. Merge page-local SRT against timing values read from the final PPTX
@@ -293,7 +293,7 @@ This stage keeps subtitles as external SRT files. It does not burn subtitles int
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
 
-**Narrated SVG export**: keep `--no-merge` on the final synchronized export. Separate SVG line frames preserve authored coordinates; default paragraph merging can make PowerPoint recalculate multiline text geometry and introduce visible offsets.
+**Narrated SVG export**: use the default text-flow mode. It keeps authored line breaks in one editable, no-wrap text frame; narration does not require per-line text frames.
 
 ---
 

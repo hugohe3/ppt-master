@@ -111,7 +111,7 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
 
 # 5. Re-export PPTX with audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  -o <final_narrated_pptx> --no-merge --recorded-narration audio \
+  -o <final_narrated_pptx> --recorded-narration audio \
   --narration-padding 0.5
 
 # 6. Merge page-local SRT using the final PowerPoint timings
@@ -146,7 +146,7 @@ When canonical custom animation exists, `narration_timing.json` remains delibera
 
 PowerPoint's video encoder can quantize each slide/media segment to its output frame clock. Those small per-page differences may accumulate even when the PPTX timing values are correct. Passing the finished `.mp4` / `.wmv` / `.mov` with `--video` uses normalized audio correlation to locate each original page narration in the exported audio track. It changes only the page-level offsets: edge's cue text and page-local `WordBoundary` timing remain untouched. This is a post-export subtitle calibration step and does not rewrite the video.
 
-Use `--no-merge` for the final narrated SVG export. Keeping each SVG line in its own text frame preserves the authored coordinates; paragraph merging lets PowerPoint recalculate multiline text geometry and can introduce visible offsets.
+Use the default text-flow mode for the final narrated SVG export. It keeps authored line breaks in one editable, no-wrap text frame; narration does not require per-line text frames.
 
 ```json
 {

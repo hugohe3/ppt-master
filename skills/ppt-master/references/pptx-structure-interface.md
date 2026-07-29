@@ -110,11 +110,10 @@ and visible-stroke rects also remain ordinary objects.
 | `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
 | `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
 
-**Text slot carrier**: A multiline text placeholder must remain one
-native text frame. Use the default paragraph merge; `--no-merge` cannot supply
-several line shapes as one
-PowerPoint placeholder prototype/binding. Leave strict-line text Slide-local
-when separate frames are the required result.
+**Text slot carrier**: A multiline text placeholder must remain one native text
+frame. Default export and `--reflow-text` do; `--no-merge` cannot supply several
+line shapes as one PowerPoint placeholder prototype/binding. Leave strict-line
+text Slide-local when separate frames are required.
 
 For a materialized mirror, an imported text carrier may additionally keep the
 source shape's positive `data-pptx-frame="x y width height"`. That frame owns
