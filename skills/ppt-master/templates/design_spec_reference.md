@@ -93,7 +93,7 @@ Use these exact subsections and field shapes:
 
 ### Font Plan
 
-| Role | Character (Reference) | Chinese | English | Fallback tail |
+| Role | Character (Reference) | Primary | English if non-English | Fallback tail |
 | --- | --- | --- | --- | --- |
 | Title | <category/modifier> | <family> | <family> | <fallback> |
 | Body | <category/modifier> | <family> | <family> | <fallback> |
