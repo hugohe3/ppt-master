@@ -18,6 +18,19 @@
 
 **Fallback rule**: The page is default. Use chat only on explicit chat-only request or launch failure/timeout after one `result.json` re-check; a chat-question tool is not a launch failure. Preserve all three stages and keep Stage-1 prompts open-ended.
 
+**Always-on Stage-1 chat handoff**: As soon as the healthy daemon prints its
+actual URL, immediately post that URL plus one compact, localized summary of
+the current Stage-1 recommendations: audience, communication intent, audience
+outcome, core message, delivery context, artifact afterlife,
+`content_divergence`, and canvas. Show a blank as “not specified” without
+changing its value. End with an explicit localized line saying that, if the
+page did not open or cannot be reached, the user may revise or confirm the same
+items directly in chat and the same three-stage flow will continue. Keep the
+wait active; do not defer this handoff until launch failure. The handoff is
+context, not confirmation, and silence confirms nothing. After an actual
+launch failure/timeout and the required result re-check, present these same
+items as open Stage-1 chat questions and wait for an explicit response.
+
 ## `confirm_ui/server.py`
 
 ```bash

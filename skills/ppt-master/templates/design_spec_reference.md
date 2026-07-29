@@ -47,7 +47,7 @@ Start with this exact heading order:
 | Generation Mode | <continuous or split> |
 | Spec Refinement | <enabled or disabled> |
 | Speaker Notes | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, compatibility default, or enabled Narration Audio dependency> |
-| Custom Animations | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, or compatibility default> |
+| Custom Animations | <enabled or disabled> — <explicit instruction and object/all-motion scope, Stage 3 proactive policy, or compatibility default> |
 | Narration Audio | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, or compatibility default> |
 | Created Date | <YYYY-MM-DD> |
 
@@ -204,7 +204,7 @@ Write one ordered Slide block per page. Slide count and order must equal §I `Pa
 
 When Speaker Notes is disabled, keep §X with only
 `- **Generation**: disabled`; do not write filename, duration, style, or purpose
-placeholders. Narration Audio enabled requires Speaker Notes enabled.
+placeholders. An explicit notes-off/audio-on conflict blocks before authoring.
 
 Append either or both optional lines only when the capability earns a place;
 never write an empty or `none` placeholder:

@@ -59,15 +59,12 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 
 **Forbidden — silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file, and do not change a confirmed execution value merely to keep the route moving. Fix, pause, or request a new decision at the owning boundary.
 
-**Proactive production compatibility**: Stage 3 evidence owns the raw
-`proactive_speaker_notes`, `proactive_custom_animations`, and
-`proactive_narration_audio` policies. Resolve the durable effective outcomes in
-this order: latest explicit user instruction → proactive policy → fixed legacy
-default `enabled` / `disabled` / `disabled`. Narration Audio enabled requires
-Speaker Notes enabled without rewriting the raw proactive preference; record
-that dependency as the Speaker Notes provenance. Record each outcome plus its
-provenance in `design_spec.md §I`; never project these values into
-`spec_lock.md`.
+**Proactive production compatibility**: Keep Stage 3 raw fields as evidence.
+Resolve durable outcomes as explicit instruction → Stage 3 → legacy defaults
+`enabled` / `disabled` / `disabled`. Audio raises Notes only when Notes is not
+explicitly disabled; an explicit notes-off/audio-on conflict stops at
+Generate's one-question dependency gate. Keep raw values unchanged and record
+outcomes/provenance only in Design Spec §I, never the lock.
 
 ---
 

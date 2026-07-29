@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 394500
+    "max_tokens": 394750
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -28,12 +28,12 @@
     "skills/ppt-master/references/svg-effects.md": 11725,
     "skills/ppt-master/references/native-data-interface.md": 6200,
     "skills/ppt-master/references/pptx-structure-interface.md": 4300,
-    "skills/ppt-master/references/strategist.md": 14200,
+    "skills/ppt-master/references/strategist.md": 14225,
     "skills/ppt-master/references/strategist-image.md": 2500,
     "skills/ppt-master/references/strategist-template.md": 2100,
     "skills/ppt-master/templates/design_spec_reference.md": 3250,
     "skills/ppt-master/templates/spec_lock_reference.md": 2375,
-    "skills/ppt-master/workflows/generate-pptx.md": 13700,
+    "skills/ppt-master/workflows/generate-pptx.md": 13775,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
   },
   "load_sets": {
@@ -170,7 +170,7 @@
           "registry": "visual-styles"
         }
       ],
-      "max_tokens": 62000
+      "max_tokens": 62075
     },
     "route.generate.quick-test": {
       "description": "Explicit disposable Generate quick-test short circuit with the shared SVG authoring core.",
@@ -183,7 +183,7 @@
         "skills/ppt-master/workflows/profiles/quick-test.md",
         "skills/ppt-master/references/shared-standards-core.md"
       ],
-      "max_tokens": 31500
+      "max_tokens": 31550
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
@@ -203,7 +203,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 64225
+      "max_tokens": 64500
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -335,7 +335,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 87450
+      "max_tokens": 87725
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -393,7 +393,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 94400
+      "max_tokens": 94675
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -406,7 +406,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 111800
+      "max_tokens": 112075
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -418,7 +418,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 94500
+      "max_tokens": 94750
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -430,7 +430,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 104425
+      "max_tokens": 104700
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -442,7 +442,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 104875
+      "max_tokens": 105150
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -452,7 +452,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 88850
+      "max_tokens": 89125
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -632,7 +632,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 28825
+      "max_tokens": 28850
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",
@@ -698,7 +698,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 63875
+      "max_tokens": 64150
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",

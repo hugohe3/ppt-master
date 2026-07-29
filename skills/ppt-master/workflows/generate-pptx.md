@@ -204,6 +204,10 @@ If the user rejects the current recommendation before confirming it, regenerate 
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
    ```
 
+   When the launch log prints the actual URL, keep the wait active and
+   immediately emit the required Stage-1 chat handoff from `confirm_ui.md`;
+   do not wait for command completion or a browser failure.
+
 2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
 
    ```bash
@@ -224,7 +228,7 @@ If the user rejects the current recommendation before confirming it, regenerate 
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
 
-If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise report the launch URL and keep the staged chat summaries available as fallback.
+If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise use the always-on Stage-1 chat handoff; it keeps the current contract and direct-chat fallback visible without replacing UI confirmation.
 
 ⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
 
@@ -249,23 +253,21 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 `proactive_speaker_notes`, `proactive_custom_animations`, and
 `proactive_narration_audio`. They control only what the agent initiates when the
 user has not already given an explicit instruction. Resolve each effective
-outcome in this order: latest explicit user instruction → Stage 3 value → fixed compatibility
-default `true` / `false` / `false`. Narration Audio enabled requires Speaker
-Notes enabled without rewriting the raw `proactive_speaker_notes` preference;
-the Speaker Notes provenance then names the enabled Narration Audio dependency.
+outcome as latest explicit user instruction → Stage 3 value → compatibility
+default `true` / `false` / `false`. Stage 3 Narration Audio enabled raises a
+non-explicitly-disabled Speaker Notes outcome to enabled and names that
+dependency in its provenance without rewriting the raw proactive preference.
 Persist the resolved effective outcomes plus provenance as the `Speaker Notes`,
 `Custom Animations`, and `Narration Audio` rows in `design_spec.md §I`; keep the
 raw proactive fields only as confirmation evidence and do not project either
 form into `spec_lock.md`.
 
-**Post-confirmation override**: A later explicit user request changes the
-corresponding effective outcome and provenance directly in
-`design_spec.md §I`, then resumes at its owning Generate step. Do not reopen
-Confirm UI or rewrite unrelated planning decisions. The latest explicit
-instruction remains authoritative over the earlier proactive policy. Enabling
-Narration Audio also recomputes the dependent Speaker Notes outcome and
-provenance. Before entering `generate-audio`, generate `notes/total.md` and run
-Step 7.1 whenever complete per-slide notes are not already present.
+**Post-confirmation override**: A later explicit request updates only affected
+§I outcomes/provenance and resumes their owning step; do not reopen Confirm UI.
+If it disables Speaker Notes while Narration Audio remains enabled, write
+neither row and ask one question: disable audio too, or retain its required
+notes. Wait, then update both. Before `generate-audio`, create and split notes
+when complete per-slide files are absent.
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
@@ -494,7 +496,7 @@ above.
 > **Motion execution (conditional)?** Visible-layer preparation belongs to the
 > main SVG pass above. An existing `<project_path>/animations.json` always runs
 > [`customize-animations`](stages/customize-animations.md) to validate and
-> resolve preserve/adjust/replace intent before export. Without a sidecar, run
+> resolve preserve/adjust/replace/suppress intent before export. Without a sidecar, run
 > the custom stage only for an explicit per-slide/per-object motion request or
 > when the effective Custom Animations outcome in `design_spec.md §I` is
 > enabled; §IX `Motion suggestion` rows inform that active pass but never
@@ -560,9 +562,11 @@ For deck-wide motion settings, append the resolved flags from
 stage preserves or produces `<project_path>/animations.json`, keep the base command above:
 the exporter reads the sidecar automatically. Explicit motion flags override
 the corresponding sidecar default/slide fields, while group overrides remain
-unless `-a none` hard-disables all object motion; do not mix deck-wide flags
-with a custom sidecar in the normal workflow. With no adopted motion input or
-existing sidecar, preserve the normal `fade` / `none` defaults.
+unless `-a none` hard-disables object motion. Exception: explicit Custom
+Animations disable keeps the sidecar and appends `-a none`; Stage 3 `false`
+does neither. Only explicit all-motion disable uses `--no-animations`.
+Otherwise do not mix deck-wide flags with a sidecar. With no motion input or
+sidecar, preserve `fade` / `none`.
 
 **Success criterion**: The command exits successfully and produces:
 

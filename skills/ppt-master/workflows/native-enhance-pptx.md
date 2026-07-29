@@ -125,7 +125,11 @@ If the project already existed or notes/audio coverage changed, refresh the draf
 python3 skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
 ```
 
-Refresh preserves user-owned module enablement, timing padding, global transition settings, and `transitions.slides`; it recomputes file presence/coverage, resets the plan to `draft`, and requires confirmation again. Audio coverage in the plan is explicitly `decodability: unchecked`; `validate` owns the ffprobe gate. CLI flags override only fields explicitly supplied.
+`plan` preserves module settings, refreshes coverage, and emits a
+reconfirmation `draft`. It changes `audio.enabled: true` /
+`notes.enabled: false` to `notes.enabled: true`; `validate`/`apply` reject the
+old state. Audio remains unchecked until `validate` runs ffprobe. Supplied CLI
+flags override.
 
 Present the plan to the user before generating notes or audio:
 

@@ -43,7 +43,7 @@ Global artifact ownership rules for PPT Master projects.
 | `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Step 7.3 writes after the PPTX passes package validation and emits a compact `[POSTFLIGHT]` receipt. Agents use the receipt on routine success and keep the full JSON cold unless targeted failure/audit evidence is required. |
 | `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Step 7.3 writes only final deliverables from `svg_output/`. |
 | `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
-| `animations.json` | Optional animation config | Page-transition and object-animation sidecar | An existing file always activates preserve/validate handling. Without one, creation requires an explicit animation instruction or an enabled effective Custom Animations outcome; a §IX Motion suggestion alone never activates it |
+| `animations.json` | Optional animation config | Page-transition and object-animation sidecar | Existing files activate intent resolution: Stage 3 `false` preserves, explicit objects-off exports `-a none`, and all-motion-off bypasses with `--no-animations`. Creation requires explicit instruction or enabled outcome; §IX advice never activates it |
 
 ---
 
@@ -68,7 +68,7 @@ Global artifact ownership rules for PPT Master projects.
 | Export source | The only supported generated-PPTX route reads `svg_output/` through the project SVG-to-DrawingML converter. A diagnostic `-s final` override does not change ownership or create a supported release route. |
 | Shape-conversion boundary | PowerPoint's manual Convert-to-Shape operation on `svg_final/` is outside the project compatibility contract. |
 | Confirmation | Final UI/chat confirmation overrides recommendations and is consumed once into `design_spec.md`. Enabled refinement applies arbitrary revisions there and requires approval; only then may active-decision fidelity release lock authoring. |
-| Proactive production outcomes | Resolve notes/custom-animation/narration behavior from latest explicit user instruction → Stage 3 proactive policy → compatibility default `enabled` / `disabled` / `disabled`. Narration enabled requires notes enabled without rewriting raw Stage 3 evidence. Persist only each effective outcome plus provenance in `design_spec.md §I`; do not copy these decisions into `spec_lock.md`. |
+| Proactive production outcomes | Resolve notes/animation/narration from explicit instruction → Stage 3 → defaults, then persist outcomes/provenance only in Design Spec §I. Explicit notes-off/audio-on applies Generate's dependency gate; Stage 3 animation `false` does not suppress a sidecar. |
 
 **Forbidden - mixed ownership**: Do not copy chart values from Markdown into `analysis/` by hand, do not edit `svg_final/` as the source of a fix, do not edit imported lossless SVGs instead of their authoring IR, and do not treat `design_spec.md` prose as a replacement for `spec_lock.md`.
 
