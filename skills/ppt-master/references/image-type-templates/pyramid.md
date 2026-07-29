@@ -39,7 +39,7 @@ Sample fragment:
 
 ### 3.2 `text_policy: embedded`
 
-Self-contained pyramid with tier names typeset into the artwork. Keep tier names to single English words in a font family echoing the deck's body typography. High failure risk on 5+ tier pyramids — stay at 3-4 tiers when going embedded.
+Self-contained pyramid with tier names typeset into the artwork. Keep tier names concise and stable in the required script and echo the deck's body typography. When exact/editable labels or the available tier space cannot be preserved, move those labels to SVG; otherwise embedded lettering remains valid after visual review.
 
 ---
 

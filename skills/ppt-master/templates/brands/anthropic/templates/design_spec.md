@@ -35,10 +35,10 @@ The first two rows are literal Claude asset facts. Background and neutral rows a
 
 | Role | Family | Weight |
 |---|---|---|
-| title | `"Styrene A", "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif` | 600–700 |
-| body | `"Anthropic Sans", "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif` | 400 |
+| title | `Arial, "Microsoft YaHei", sans-serif` | 600–700 |
+| body | `Arial, "Microsoft YaHei", sans-serif` | 400 |
 
-> `Styrene A` and `Anthropic Sans` are proprietary and unlikely to be installed on viewer machines. PPT Master does not bundle or automatically embed them; use the declared fallback chain unless the user supplies an installed/approved font workflow.
+> `Styrene A` and `Anthropic Sans` are references. PPT Master neither auto-embeds fonts nor follows CSS tails in PowerPoint. The rows above are the default Windows/Office export; replace them only with a user-confirmed target-installed face.
 
 ## IV. Logo
 

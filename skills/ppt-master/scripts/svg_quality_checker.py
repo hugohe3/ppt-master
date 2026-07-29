@@ -20,6 +20,7 @@ import hashlib
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import Counter, defaultdict
+from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
@@ -52,9 +53,13 @@ from svg_to_pptx.canvas_contract import (
 )
 
 try:
-    from project_specs import parse_spec_lock as _parse_spec_lock
+    from project_specs import (
+        parse_spec_lock as _parse_spec_lock,
+        parse_spec_lock_image_value as _parse_spec_lock_image_value,
+    )
 except ImportError:
     _parse_spec_lock = None  # spec_lock anchor comparison will be skipped
+    _parse_spec_lock_image_value = None
 
 try:
     from svg_to_pptx.animation_config import (
@@ -101,8 +106,6 @@ try:
         matrix_multiply as _matrix_multiply,
         noncanonical_stroke_dash_numbers as _noncanonical_stroke_dash_numbers,
         noncanonical_transform_numbers as _noncanonical_transform_numbers,
-        parse_transform_matrix as _parse_transform_matrix,
-        parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
         parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
@@ -112,10 +115,12 @@ try:
         parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
+        parse_transform_matrix as _parse_transform_matrix,
         project_definition_errors as _project_definition_errors,
         project_filter_errors as _project_filter_errors,
         project_gradient_errors as _project_gradient_errors,
         project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
+        project_mask_errors as _project_mask_errors,
         project_marker_errors as _project_marker_errors,
         project_opacity_errors as _project_opacity_errors,
         project_paint_errors as _project_paint_errors,
@@ -124,6 +129,7 @@ try:
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         transform_point as _transform_point,
+        unsafe_exported_font_faces as _unsafe_exported_font_faces,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
 except ImportError:
@@ -150,8 +156,6 @@ except ImportError:
     _matrix_multiply = None
     _noncanonical_stroke_dash_numbers = None
     _noncanonical_transform_numbers = None
-    _parse_transform_matrix = None
-    _parse_export_font_family = None
     _parse_inline_style = None
     _parse_project_geometry_length = None
     _parse_project_image_aspect_ratio = None
@@ -161,10 +165,12 @@ except ImportError:
     _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
+    _parse_transform_matrix = None
     _project_definition_errors = None
     _project_filter_errors = None
     _project_gradient_errors = None
     _project_image_aspect_ratio_errors = None
+    _project_mask_errors = None
     _project_marker_errors = None
     _project_opacity_errors = None
     _project_paint_errors = None
@@ -173,6 +179,7 @@ except ImportError:
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
     _transform_point = None
+    _unsafe_exported_font_faces = None
     _validate_dml_shape_matrix = None
 
 try:
@@ -502,6 +509,9 @@ _BAKE_REQUIRED_VISUAL_PROPERTIES = frozenset({
     'isolation',
     'mix-blend-mode',
 })
+_SHARED_FAIL_CLOSED_STYLE_PROPERTIES = frozenset({'mask'})
+
+
 def _compact_preset_ancestor_paint(
     root: ET.Element,
 ) -> list[tuple[str, tuple[str, ...]]]:
@@ -870,21 +880,6 @@ def _normalize_hex_rgb(value: str) -> str | None:
     return color[:6].upper()
 
 
-# Fonts that survive direct PPTX typeface assignment on a typical Windows /
-# macOS viewer without requiring a custom install. Keep this aligned with
-# strategist.md §g and drawingml/utils.py FONT_FALLBACK_WIN.
-PPT_SAFE_FONTS = {
-    'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
-    'dengxian', 'microsoft jhenghei',
-    'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
-    'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
-    'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
-    'times new roman', 'times', 'georgia', 'cambria', 'palatino',
-    'garamond', 'book antiqua',
-    'consolas', 'courier new', 'menlo', 'monaco',
-    'impact',
-}
-
 # Cheap numeric envelope for font-size role enforcement. Semantic role assignment
 # is prompt-owned; Checker only verifies that a used value is close to at least
 # one declared size anchor.
@@ -1164,7 +1159,11 @@ class SVGQualityChecker:
         self._undeclared_size_occurrences: Counter[str] = Counter()
         self._undeclared_size_counts_ready = False
         self._lock_seen = False  # True once we locate at least one spec_lock.md
-        self._source_manifest_cache: Dict[Path, Dict] = {}
+        self._source_manifest_cache: Dict[
+            Path,
+            Tuple[Dict, str | None],
+        ] = {}
+        self._source_manifest_errors_reported: set[Path] = set()
         # Template-mode aggregation (populated by check_directory when
         # template_mode=True). Each entry is (severity, kind, message) where
         # severity is 'error' or 'warning'. Printed in print_summary.
@@ -1291,6 +1290,7 @@ class SVGQualityChecker:
 
                 # 2. Check forbidden elements
                 self._check_forbidden_elements(content, root, result)
+                self._check_mask_contract(root, result)
 
                 # 2a. Validate direct geometry lengths and stroke widths.
                 self._check_geometry_length_values(root, result)
@@ -1388,7 +1388,11 @@ class SVGQualityChecker:
                 # 10. Check web-sourced image attribution. Templates don't carry
                 #    image_sources.json; skip in template mode.
                 if not self.template_mode:
-                    self._check_sourced_image_attribution(content, svg_path, result)
+                    self._check_sourced_image_attribution(
+                        root,
+                        svg_path,
+                        result,
+                    )
 
             # Determine pass/fail
             result['passed'] = len(result['errors']) == 0
@@ -1523,11 +1527,6 @@ class SVGQualityChecker:
         # ============================================================
         # Forbidden elements blocklist - PPT incompatible
         # ============================================================
-
-        # Clipping / masking. The closed image clip-path contract is validated
-        # separately by _check_clip_path_contract.
-        if 'mask' in local_names:
-            result['errors'].append("Detected forbidden <mask> element (PPT does not support SVG masks)")
 
         # Style system
         if 'style' in local_names:
@@ -1839,7 +1838,10 @@ class SVGQualityChecker:
                         f"{label} uses Bake-required visual property {name!r}; "
                         "bake the effect or rebuild it with supported geometry"
                     )
-                elif name not in _SUPPORTED_INLINE_STYLE_PROPERTIES:
+                elif (
+                    name not in _SUPPORTED_INLINE_STYLE_PROPERTIES
+                    and name not in _SHARED_FAIL_CLOSED_STYLE_PROPERTIES
+                ):
                     errors.add(
                         f"{label} uses unsupported inline style property {name!r}; "
                         "native PPTX export would ignore it"
@@ -1958,6 +1960,16 @@ class SVGQualityChecker:
             )
             return
         result['errors'].extend(_project_clip_path_errors(root))
+
+    def _check_mask_contract(self, root: ET.Element, result: Dict) -> None:
+        """Reject SVG masks through the native exporter's shared validator."""
+        if _project_mask_errors is None:
+            result['errors'].append(
+                'Unable to import the shared mask validator; cannot verify '
+                'that native PPTX export will preserve all visible effects'
+            )
+            return
+        result['errors'].extend(_project_mask_errors(root))
 
     def _check_filter_effects(self, root: ET.Element, result: Dict) -> None:
         """Validate filters against the native shadow/glow approximation."""
@@ -2240,13 +2252,15 @@ class SVGQualityChecker:
                 'frames or media'
             )
             return
-        result['errors'].extend(
-            _project_image_errors(
-                root,
-                svg_path.parent,
-                allow_template_placeholders=self.template_mode,
+        _working_root, _parent_by_id, images = self._visible_image_elements(root)
+        for image in images:
+            result['errors'].extend(
+                _project_image_errors(
+                    image,
+                    svg_path.parent,
+                    allow_template_placeholders=self.template_mode,
+                )
             )
-        )
 
     def _check_freeform_geometry_values(
         self,
@@ -2454,18 +2468,16 @@ class SVGQualityChecker:
             return
 
         result['info']['fonts'] = sorted(set(font_matches))
-        if _parse_export_font_family is None:
+        if _unsafe_exported_font_faces is None:
             result['warnings'].append(
                 "Unable to import svg_to_pptx font resolver; skipped exported-font safety check"
             )
             return
 
         for font_family in font_matches:
-            exported = _parse_export_font_family(font_family)
             unsafe = [
                 f"{role}={family}"
-                for role, family in exported.items()
-                if family.strip().lower() not in PPT_SAFE_FONTS
+                for role, family in _unsafe_exported_font_faces(font_family).items()
             ]
             if unsafe:
                 result['warnings'].append(
@@ -3022,20 +3034,17 @@ class SVGQualityChecker:
         )
 
     @staticmethod
-    def _transformed_rect_bounds(
+    def _accumulated_transform_matrix(
         element: ET.Element,
-        bounds: Tuple[float, float, float, float],
         parent_by_id: Dict[int, ET.Element],
-    ) -> Tuple[float, float, float, float] | None:
-        """Transform one local rectangle into root SVG coordinates."""
+    ):
+        """Return the element-to-root transform matrix when available."""
         if any(helper is None for helper in (
             _IDENTITY_MATRIX,
             _matrix_multiply,
             _parse_transform_matrix,
-            _transform_point,
         )):
             return None
-        x, y, width, height = bounds
         chain: List[ET.Element] = []
         current: ET.Element | None = element
         while current is not None:
@@ -3050,6 +3059,25 @@ class SVGQualityChecker:
                         matrix,
                         _parse_transform_matrix(raw_transform),
                     )
+        except (TypeError, ValueError):
+            return None
+        return matrix
+
+    @classmethod
+    def _transformed_rect_bounds(
+        cls,
+        element: ET.Element,
+        bounds: Tuple[float, float, float, float],
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[float, float, float, float] | None:
+        """Transform one local rectangle into root SVG coordinates."""
+        if _transform_point is None:
+            return None
+        matrix = cls._accumulated_transform_matrix(element, parent_by_id)
+        if matrix is None:
+            return None
+        x, y, width, height = bounds
+        try:
             corners = [
                 _transform_point(matrix, corner_x, corner_y)
                 for corner_x, corner_y in (
@@ -3064,6 +3092,38 @@ class SVGQualityChecker:
         xs = [point[0] for point in corners]
         ys = [point[1] for point in corners]
         return min(xs), min(ys), max(xs), max(ys)
+
+    @classmethod
+    def _transformed_rect_edge_lengths(
+        cls,
+        element: ET.Element,
+        bounds: Tuple[float, float, float, float],
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[float, float] | None:
+        """Return frame-axis lengths after accumulated SVG transforms."""
+        if _transform_point is None:
+            return None
+        matrix = cls._accumulated_transform_matrix(element, parent_by_id)
+        if matrix is None:
+            return None
+        x, y, width, height = bounds
+        try:
+            origin = _transform_point(matrix, x, y)
+            width_end = _transform_point(matrix, x + width, y)
+            height_end = _transform_point(matrix, x, y + height)
+        except (TypeError, ValueError):
+            return None
+        rendered_w = math.hypot(
+            width_end[0] - origin[0],
+            width_end[1] - origin[1],
+        )
+        rendered_h = math.hypot(
+            height_end[0] - origin[0],
+            height_end[1] - origin[1],
+        )
+        if rendered_w <= 0 or rendered_h <= 0:
+            return None
+        return rendered_w, rendered_h
 
     @staticmethod
     def _resolved_root_module_bounds(
@@ -3173,14 +3233,19 @@ class SVGQualityChecker:
         parent_by_id: Dict[int, ET.Element],
     ) -> bool:
         """Return whether inherited display or visibility hides an element."""
-        display = (
-            _effective_presentation_value(
-                element,
-                'display',
-                parent_by_id,
+        current: ET.Element | None = element
+        while current is not None:
+            style_values = (
+                _parse_inline_style(current.get('style'))
+                if _parse_inline_style is not None
+                else {}
             )
-            or ''
-        ).strip().lower()
+            display = style_values.get('display')
+            if display is None:
+                display = current.get('display')
+            if display and display.strip().lower() == 'none':
+                return True
+            current = parent_by_id.get(id(current))
         visibility = (
             _effective_presentation_value(
                 element,
@@ -3189,7 +3254,74 @@ class SVGQualityChecker:
             )
             or ''
         ).strip().lower()
-        return display == 'none' or visibility in {'hidden', 'collapse'}
+        return visibility in {'hidden', 'collapse'}
+
+    @staticmethod
+    def _has_zero_opacity(
+        element: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> bool:
+        """Return whether an element or ancestor has zero effective opacity."""
+        current: ET.Element | None = element
+        while current is not None:
+            style_values = (
+                _parse_inline_style(current.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            raw = style_values.get('opacity')
+            if raw is None:
+                raw = current.get('opacity')
+            if raw is not None:
+                value = raw.strip()
+                try:
+                    opacity = (
+                        float(value[:-1]) / 100
+                        if value.endswith('%')
+                        else float(value)
+                    )
+                except ValueError:
+                    pass
+                else:
+                    if opacity <= 0:
+                        return True
+            current = parent_by_id.get(id(current))
+        return False
+
+    @classmethod
+    def _visible_image_elements(
+        cls,
+        root: ET.Element,
+    ) -> Tuple[ET.Element, Dict[int, ET.Element], List[ET.Element]]:
+        """Return rendered image instances after expanding static local uses."""
+        working_root = copy.deepcopy(root)
+        if (
+            _expand_local_use_references is not None
+            and _UseExpansionError is not None
+        ):
+            try:
+                _expand_local_use_references(working_root)
+            except _UseExpansionError:
+                # The local-reference validator owns the actionable failure.
+                working_root = copy.deepcopy(root)
+
+        parent_by_id = {
+            id(child): parent
+            for parent in working_root.iter()
+            for child in list(parent)
+        }
+        images = [
+            element
+            for element in working_root.iter(f'{{{SVG_NS}}}image')
+            if not cls._is_hidden_element(element, parent_by_id)
+            and not cls._has_non_visual_ancestor(
+                element,
+                working_root,
+                parent_by_id,
+            )
+            and not cls._has_zero_opacity(element, parent_by_id)
+        ]
+        return working_root, parent_by_id, images
 
     @staticmethod
     def _has_non_visual_ancestor(
@@ -3601,19 +3733,11 @@ class SVGQualityChecker:
         return None
 
     def _check_image_references(self, root: ET.Element, svg_path: Path, result: Dict):
-        """Check image file existence and resolution vs display size."""
+        """Check image file existence and effective rendered resolution."""
         svg_dir = svg_path.parent
-        checked = set()
-        parent_by_id = {
-            id(child): parent
-            for parent in root.iter()
-            for child in list(parent)
-        }
+        working_root, parent_by_id, images = self._visible_image_elements(root)
 
-        for image in root.iter():
-            if image.tag != f'{{{SVG_NS}}}image':
-                continue
-
+        for image in images:
             href = image.get('href') or image.get(f'{{{XLINK_NS}}}href')
             if not href or href.startswith('data:'):
                 continue
@@ -3625,9 +3749,6 @@ class SVGQualityChecker:
                     "export will still validate them."
                 )
                 return
-            if href in checked:
-                continue
-            checked.add(href)
 
             img_path = _resolve_external_image_reference(svg_dir, href)
             if img_path is None:
@@ -3641,7 +3762,7 @@ class SVGQualityChecker:
             parent = parent_by_id.get(id(image))
             if (
                 parent is not None
-                and parent is not root
+                and parent is not working_root
                 and parent.tag == f'{{{SVG_NS}}}svg'
             ):
                 # Imported crops use a unit-frame inner image. Quality advice
@@ -3653,32 +3774,100 @@ class SVGQualityChecker:
                 continue
 
             try:
-                display_w = float(display_w_str)
-                display_h = float(display_h_str)
+                display_x = float(display_owner.get('x') or '0')
+                display_y = float(display_owner.get('y') or '0')
+                local_display_w = float(display_w_str)
+                local_display_h = float(display_h_str)
             except (ValueError, TypeError):
                 continue
+            if local_display_w <= 0 or local_display_h <= 0:
+                continue
+            display_w = local_display_w
+            display_h = local_display_h
+            transformed_size = self._transformed_rect_edge_lengths(
+                display_owner,
+                (display_x, display_y, local_display_w, local_display_h),
+                parent_by_id,
+            )
+            if transformed_size is not None:
+                display_w, display_h = transformed_size
+            axis_scale_x = display_w / local_display_w
+            axis_scale_y = display_h / local_display_h
 
             try:
-                from PIL import Image as PILImage
+                from PIL import Image as PILImage, ImageOps
                 with PILImage.open(img_path) as img:
-                    actual_w, actual_h = img.size
+                    actual_w, actual_h = ImageOps.exif_transpose(img).size
                 source_bytes = img_path.stat().st_size
 
-                if actual_w < display_w or actual_h < display_h:
+                visible_w = float(actual_w)
+                visible_h = float(actual_h)
+                fit_owner = image
+                if display_owner is not image:
+                    fit_owner = display_owner
+                    viewbox = (display_owner.get('viewBox') or '').split()
+                    if len(viewbox) == 4:
+                        try:
+                            viewbox_w = float(viewbox[2])
+                            viewbox_h = float(viewbox[3])
+                        except ValueError:
+                            pass
+                        else:
+                            if 0 < viewbox_w <= 1 and 0 < viewbox_h <= 1:
+                                visible_w *= viewbox_w
+                                visible_h *= viewbox_h
+
+                raw_aspect = fit_owner.get('preserveAspectRatio')
+                try:
+                    align, mode = (
+                        _parse_project_image_aspect_ratio(raw_aspect)
+                        if _parse_project_image_aspect_ratio is not None
+                        else ('xMidYMid', 'meet')
+                    )
+                except ValueError:
+                    continue
+
+                local_scale_x = local_display_w / visible_w
+                local_scale_y = local_display_h / visible_h
+                if align == 'none':
+                    render_scale = max(
+                        local_scale_x * axis_scale_x,
+                        local_scale_y * axis_scale_y,
+                    )
+                    fit_label = 'none'
+                elif mode == 'slice':
+                    render_scale = (
+                        max(local_scale_x, local_scale_y)
+                        * max(axis_scale_x, axis_scale_y)
+                    )
+                    fit_label = 'slice'
+                else:
+                    render_scale = (
+                        min(local_scale_x, local_scale_y)
+                        * max(axis_scale_x, axis_scale_y)
+                    )
+                    fit_label = 'meet'
+
+                if render_scale > 1.0:
                     result['warnings'].append(
-                        f"Image {href} is {actual_w}x{actual_h} but displayed at "
-                        f"{int(display_w)}x{int(display_h)} — may appear blurry")
+                        f"Image {href} is {actual_w}x{actual_h} and renders at "
+                        f"{render_scale:.2f}x scale in a "
+                        f"{int(display_w)}x{int(display_h)} {fit_label} frame "
+                        "— may appear blurry"
+                    )
                 elif (
-                    actual_w > display_w * IMAGE_DOWNSIZE_WARN_RATIO
-                    and actual_h > display_h * IMAGE_DOWNSIZE_WARN_RATIO
+                    render_scale < 1.0 / IMAGE_DOWNSIZE_WARN_RATIO
                     and source_bytes >= IMAGE_DOWNSIZE_WARN_MIN_BYTES
                 ):
                     source_mib = source_bytes / (1024 * 1024)
                     result['warnings'].append(
-                        f"Image {href} is {actual_w}x{actual_h} but displayed at "
-                        f"{int(display_w)}x{int(display_h)} and the source is "
-                        f"{source_mib:.1f} MiB — file-size advisory only, not an "
-                        f"aspect-ratio warning; consider a smaller source asset")
+                        f"Image {href} is {actual_w}x{actual_h} and renders at "
+                        f"{render_scale:.2f}x scale in a "
+                        f"{int(display_w)}x{int(display_h)} {fit_label} frame; "
+                        f"the source is {source_mib:.1f} MiB — file-size "
+                        "advisory only, not an aspect-ratio warning; consider "
+                        "a smaller source asset"
+                    )
             except ImportError:
                 pass  # PIL not available, skip resolution check
             except Exception:
@@ -3761,6 +3950,11 @@ class SVGQualityChecker:
                     f"Icon {icon_name} has invalid native payload metadata: {exc}"
                 )
                 continue
+            if _project_mask_errors is not None:
+                result['errors'].extend(
+                    f'Icon {icon_name}: {error}'
+                    for error in _project_mask_errors(icon_root)
+                )
             if hydrated:
                 result['info']['native_icon_payload_refs'] = (
                     result['info'].get('native_icon_payload_refs', 0) + hydrated
@@ -5209,6 +5403,7 @@ class SVGQualityChecker:
                 f"{', '.join(inherited_parts)} come unchanged from mirror "
                 "prototype and are accepted without expanding spec_lock.md",
             )
+
     def _find_image_sources_manifest(self, svg_path: Path) -> Path | None:
         """Locate image_sources.json for a project SVG.
 
@@ -5222,56 +5417,187 @@ class SVGQualityChecker:
                 return candidate
         return None
 
-    def _load_image_sources_manifest(self, svg_path: Path) -> Dict:
+    def _load_image_sources_manifest(
+        self,
+        svg_path: Path,
+    ) -> Tuple[Dict, str | None, Path | None]:
         manifest_path = self._find_image_sources_manifest(svg_path)
         if manifest_path is None:
-            return {}
+            return {}, None, None
+        payload, error = self._read_image_sources_manifest(manifest_path)
+        return payload, error, manifest_path
+
+    def _read_image_sources_manifest(
+        self,
+        manifest_path: Path,
+    ) -> Tuple[Dict, str | None]:
+        """Read one provenance manifest without accepting damaged state."""
         if manifest_path in self._source_manifest_cache:
             return self._source_manifest_cache[manifest_path]
         try:
             payload = json.loads(manifest_path.read_text(encoding='utf-8'))
-        except (OSError, json.JSONDecodeError):
+        except (OSError, json.JSONDecodeError) as exc:
             payload = {}
-        self._source_manifest_cache[manifest_path] = payload
-        return payload
+            error = f"cannot read {manifest_path}: {exc}"
+        else:
+            if not isinstance(payload, dict):
+                error = f"{manifest_path} must contain a JSON object"
+                payload = {}
+            elif not isinstance(payload.get('items'), list):
+                error = f"{manifest_path} must contain an items array"
+                payload = {}
+            elif any(not isinstance(item, dict) for item in payload['items']):
+                error = f"{manifest_path} items must contain JSON objects"
+                payload = {}
+            else:
+                seen_filenames: set[str] = set()
+                error = None
+                for index, item in enumerate(payload['items']):
+                    filename = item.get('filename')
+                    if (
+                        not isinstance(filename, str)
+                        or not filename.strip()
+                        or filename in {'.', '..'}
+                        or '/' in filename
+                        or '\\' in filename
+                        or ':' in filename
+                        or Path(filename).is_absolute()
+                    ):
+                        error = (
+                            f"{manifest_path} items[{index}].filename must be "
+                            "a non-empty bare filename"
+                        )
+                        break
+                    if filename in seen_filenames:
+                        error = (
+                            f"{manifest_path} contains duplicate filename "
+                            f"{filename!r}"
+                        )
+                        break
+                    seen_filenames.add(filename)
+                if error:
+                    payload = {}
+        self._source_manifest_cache[manifest_path] = (payload, error)
+        return payload, error
 
-    def _check_sourced_image_attribution(self, content: str, svg_path: Path, result: Dict):
+    @staticmethod
+    def _external_image_reference_basename(href: str) -> str | None:
+        """Return a decoded basename for one local external image href."""
+        if not href or href.startswith('data:'):
+            return None
+        decoded_href = html.unescape(href)
+        parsed = urlsplit(decoded_href)
+        if parsed.scheme and parsed.scheme != 'file':
+            return None
+        path_part = (
+            parsed.path
+            if parsed.scheme
+            else decoded_href.split('?', 1)[0].split('#', 1)[0]
+        )
+        return Path(unquote(path_part)).name or None
+
+    @classmethod
+    def _referenced_image_basenames(cls, root: ET.Element) -> set[str]:
+        """Return external image basenames rendered by one parsed SVG."""
+        filenames = set()
+        _working_root, _parent_by_id, images = cls._visible_image_elements(root)
+        for elem in images:
+            href = elem.get('href') or elem.get(f'{{{XLINK_NS}}}href')
+            filename = cls._external_image_reference_basename(href or '')
+            if filename:
+                filenames.add(filename)
+        return filenames
+
+    def _check_sourced_image_attribution(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ):
         """Require visible credit text for attribution-required web images.
 
         image_search.py records the legal tier in images/image_sources.json;
         Executor must render compact credit text into the SVG. This check
-        prevents a quality-first CC BY / CC BY-SA image from silently reaching
-        export without attribution.
+        binds each credit to the referenced image's author and license instead
+        of accepting one generic deck-level CC token.
         """
-        manifest = self._load_image_sources_manifest(svg_path)
+        manifest, error, manifest_path = self._load_image_sources_manifest(svg_path)
+        if error:
+            if (
+                manifest_path is not None
+                and manifest_path not in self._source_manifest_errors_reported
+            ):
+                result['errors'].append(
+                    f"Invalid image source manifest: {error}"
+                )
+                self._source_manifest_errors_reported.add(manifest_path)
+            return
+
         items = manifest.get('items') or []
         if not items:
             return
 
-        text_content = html.unescape(re.sub(r'<[^>]+>', ' ', content))
-        text_content = re.sub(r'\s+', ' ', text_content)
-        svg_stem = svg_path.stem
+        credit_blocks = self._visible_svg_text_blocks(root)
+        referenced_filenames = self._referenced_image_basenames(root)
 
         for item in items:
             if not item.get('attribution_required') and item.get('license_tier') != 'attribution-required':
                 continue
 
-            filename = Path(str(item.get('filename') or '')).name
-            slide = str(item.get('slide') or '').strip()
-            referenced = bool(filename and filename in content)
-            same_slide = bool(slide and slide == svg_stem)
-            if not referenced and not same_slide:
+            filename = str(item.get('filename') or '')
+            if not filename or filename not in referenced_filenames:
                 continue
 
             license_name = str(item.get('license_name') or '').upper()
             license_token = 'CC BY-SA' if 'BY-SA' in license_name else 'CC BY'
-            has_credit = license_token in text_content.upper()
+            author = str(item.get('author') or '').strip()
+            has_credit = bool(author) and any(
+                author.casefold() in block.casefold()
+                and license_token in block.upper()
+                for block in credit_blocks
+            )
             if not has_credit:
                 result['errors'].append(
-                    f"Missing inline attribution for sourced image {filename or '(unknown)'} "
-                    f"({license_token}). Add compact credit text per "
+                    f"Missing image-specific inline attribution for sourced "
+                    f"image {filename} ({author or 'unknown author'}; "
+                    f"{license_token}). Add compact author + license credit per "
                     f"references/image-searcher.md §7."
                 )
+
+    @classmethod
+    def _visible_svg_text_blocks(cls, root: ET.Element) -> List[str]:
+        """Return rendered text blocks, excluding hidden/non-visual content."""
+        working_root = copy.deepcopy(root)
+        if (
+            _expand_local_use_references is not None
+            and _UseExpansionError is not None
+        ):
+            try:
+                _expand_local_use_references(working_root)
+            except _UseExpansionError:
+                working_root = copy.deepcopy(root)
+        parent_by_id = {
+            id(child): parent
+            for parent in working_root.iter()
+            for child in list(parent)
+        }
+
+        blocks: List[str] = []
+        for element in working_root.iter(f'{{{SVG_NS}}}text'):
+            if (
+                cls._is_hidden_element(element, parent_by_id)
+                or cls._has_non_visual_ancestor(
+                    element,
+                    working_root,
+                    parent_by_id,
+                )
+                or cls._has_zero_opacity(element, parent_by_id)
+            ):
+                continue
+            text = re.sub(r'\s+', ' ', ' '.join(element.itertext())).strip()
+            if text:
+                blocks.append(text)
+        return blocks
 
     @staticmethod
     def _normalize_size(value: str) -> str:
@@ -5955,7 +6281,7 @@ class SVGQualityChecker:
         )
 
     def _check_illustration_resource_contract(self, dir_path: Path) -> None:
-        """Project-level illustration resource checks."""
+        """Project-level planned-image and illustration resource checks."""
         project_path = self._resolve_project_path(dir_path)
         spec_path = project_path / 'design_spec.md'
         if not spec_path.exists():
@@ -5971,22 +6297,35 @@ class SVGQualityChecker:
             ))
             return
 
+        current_contract = (
+            '<!-- ppt-master-schema: design-spec/v1 -->' in spec_text
+        )
         rows = self._extract_image_resource_rows(spec_text)
-        if not rows:
+        if not rows and not current_contract:
             return
 
-        lock_images = self._load_project_lock_images(project_path)
-        svg_texts = self._load_project_svg_texts(project_path)
-        all_svg_text = "\n".join(svg_texts.values())
+        lock_entries, lock_error = self._load_project_lock_image_entries(
+            project_path
+        )
+        lock_images = set(lock_entries)
+        svg_references, inline_image_counts, image_placements = (
+            self._load_project_svg_image_references(project_path)
+        )
+        all_svg_references = (
+            set().union(*(
+                set(references)
+                for references in svg_references.values()
+            ))
+            if svg_references
+            else set()
+        )
 
-        sheet_rows = [row for row in rows if self._row_type(row).lower() == 'illustration sheet']
-        slice_rows = [row for row in rows if self._row_acquire(row) == 'slice']
-        image_rows = [
-            row for row in rows
-            if self._row_acquire(row) in {'ai', 'web', 'user', 'placeholder', 'slice'}
-            and self._row_type(row).lower() not in {'latex formula', 'illustration sheet'}
+        sheet_rows = [
+            row
+            for row in rows
+            if self._row_type(row).lower() == 'illustration sheet'
         ]
-
+        slice_rows = [row for row in rows if self._row_acquire(row) == 'slice']
         for row in sheet_rows:
             filename = self._row_filename(row)
             if not filename:
@@ -5998,36 +6337,55 @@ class SVGQualityChecker:
                     f"{filename} is an Illustration Sheet but is listed in spec_lock.md images; "
                     "only sliced element rows may be listed.",
                 ))
-            if filename in all_svg_text:
+            if filename in all_svg_references:
                 self._illustration_issues.append((
                     'error',
                     'sheet_referenced',
                     f"{filename} is an Illustration Sheet but is referenced by an SVG; "
                     "generate it only as a slice source, never place it.",
                 ))
-
-        for row in slice_rows:
-            filename = self._row_filename(row)
-            if not filename:
-                continue
-            if filename not in lock_images:
-                self._illustration_issues.append((
-                    'error',
-                    'slice_missing_lock',
-                    f"{filename} is a slice row but is absent from spec_lock.md images.",
-                ))
             if (
                 self._row_status(row) == 'generated'
-                and not (project_path / 'images' / filename).exists()
+                and not (project_path / 'images' / filename).is_file()
             ):
                 self._illustration_issues.append((
                     'error',
-                    'slice_file_missing',
-                    f"{filename} is a Generated slice row but images/{filename} does not exist.",
+                    'sheet_file_missing',
+                    f"{filename} is a Generated Illustration Sheet but "
+                    f"images/{filename} does not exist.",
                 ))
 
-        for row in image_rows:
-            self._check_decorative_image_row(row, project_path, svg_texts)
+        if current_contract:
+            self._check_planned_image_closure(
+                rows,
+                project_path,
+                lock_entries,
+                lock_error,
+                svg_references,
+                inline_image_counts,
+                image_placements,
+            )
+        else:
+            for row in slice_rows:
+                filename = self._row_filename(row)
+                if not filename:
+                    continue
+                if filename not in lock_images:
+                    self._illustration_issues.append((
+                        'error',
+                        'slice_missing_lock',
+                        f"{filename} is a slice row but is absent from spec_lock.md images.",
+                    ))
+                if (
+                    self._row_status(row) == 'generated'
+                    and not (project_path / 'images' / filename).exists()
+                ):
+                    self._illustration_issues.append((
+                        'error',
+                        'slice_file_missing',
+                        f"{filename} is a Generated slice row but "
+                        f"images/{filename} does not exist.",
+                    ))
 
     @staticmethod
     def _resolve_project_path(dir_path: Path) -> Path:
@@ -6085,7 +6443,10 @@ class SVGQualityChecker:
                 continue
             row = {header[i]: cells[i] if i < len(cells) else '' for i in range(len(header))}
             filename = row.get('Filename', '').strip()
-            if filename and filename.lower() != 'filename':
+            if (
+                filename.lower() != 'filename'
+                and any(value.strip() for value in row.values())
+            ):
                 rows.append(row)
 
         return rows
@@ -6093,6 +6454,10 @@ class SVGQualityChecker:
     @staticmethod
     def _row_filename(row: Dict[str, str]) -> str:
         return Path(row.get('Filename', '').strip()).name
+
+    @staticmethod
+    def _row_raw_filename(row: Dict[str, str]) -> str:
+        return row.get('Filename', '').strip()
 
     @staticmethod
     def _row_type(row: Dict[str, str]) -> str:
@@ -6110,196 +6475,717 @@ class SVGQualityChecker:
     def _row_layout(row: Dict[str, str]) -> str:
         return row.get('Layout pattern', '').strip()
 
-    def _load_project_lock_images(self, project_path: Path) -> set[str]:
-        """Return filenames listed under spec_lock.md images."""
+    @staticmethod
+    def _row_crop(row: Dict[str, str]) -> str:
+        return row.get('Crop Policy', '').strip().lower()
+
+    @staticmethod
+    def _layout_projection_matches(left: str, right: str) -> bool:
+        """Compare one Strategist recommendation without locking its wording."""
+        left_ids = re.findall(r'#([0-9]+)(?![0-9])', left)
+        right_ids = re.findall(r'#([0-9]+)(?![0-9])', right)
+        if left_ids or right_ids:
+            return left_ids == right_ids
+
+        def normalize(value: str) -> str:
+            return re.sub(r'\s+', ' ', value.replace('`', '')).strip()
+
+        return normalize(left) == normalize(right)
+
+    def _load_project_lock_image_entries(
+        self,
+        project_path: Path,
+    ) -> Tuple[Dict[str, List[Dict[str, str]]], str | None]:
+        """Return parsed image-lock rows keyed by basename."""
         lock_path = project_path / 'spec_lock.md'
-        if _parse_spec_lock is None or not lock_path.exists():
-            return set()
+        if not lock_path.exists():
+            return {}, f"{lock_path} does not exist"
+        if _parse_spec_lock is None:
+            return {}, "spec_lock parser is unavailable"
+        if _parse_spec_lock_image_value is None:
+            return {}, "spec_lock image parser is unavailable"
         try:
             lock = _parse_spec_lock(lock_path)
-        except Exception:
-            return set()
-        images = set()
-        for value in lock.get('images', {}).values():
-            path_part = value.split('|', 1)[0].strip()
-            images.add(Path(path_part).name)
-        return images
+        except Exception as exc:
+            return {}, f"cannot parse {lock_path}: {exc}"
 
-    @staticmethod
-    def _load_project_svg_texts(project_path: Path) -> Dict[Path, str]:
-        """Read project SVG output files for project-level cross-checks."""
+        entries: Dict[str, List[Dict[str, str]]] = defaultdict(list)
+        legacy_metadata_keys = {
+            'image_rendering',
+            'image_rendering_references',
+            'image_rendering_behavior',
+        }
+        errors: List[str] = []
+        for key, value in lock.get('images', {}).items():
+            if str(key).strip().lower() in legacy_metadata_keys:
+                continue
+            try:
+                parsed = _parse_spec_lock_image_value(str(key), str(value))
+            except ValueError as exc:
+                errors.append(f"images row {key!r} {exc}")
+                continue
+            path_part = parsed['path']
+            filename = Path(path_part).name
+            if not filename:
+                continue
+            entries[filename].append({
+                'key': str(key),
+                'path': path_part,
+                'source': parsed['source'],
+                'pattern': parsed['pattern'],
+                'crop': parsed['crop'],
+                'legacy': parsed['legacy'],
+            })
+        error = (
+            f"{lock_path}: " + "; ".join(errors)
+            if errors
+            else None
+        )
+        return dict(entries), error
+
+    def _load_project_lock_images(self, project_path: Path) -> set[str]:
+        """Return filenames listed under spec_lock.md images."""
+        entries, _error = self._load_project_lock_image_entries(project_path)
+        return set(entries)
+
+    @classmethod
+    def _load_project_svg_image_references(
+        cls,
+        project_path: Path,
+    ) -> Tuple[
+        Dict[Path, Dict[str, set[Path]]],
+        Dict[Path, int],
+        Dict[str, List[Tuple[Path, str, Tuple[str, ...]]]],
+    ]:
+        """Parse rendered image instances, paths, and crop mechanisms."""
         svg_dir = project_path / 'svg_output'
         if not svg_dir.exists():
-            return {}
-        out: Dict[Path, str] = {}
+            return {}, {}, {}
+        out: Dict[Path, Dict[str, set[Path]]] = {}
+        inline_counts: Dict[Path, int] = {}
+        placements: Dict[
+            str,
+            List[Tuple[Path, str, Tuple[str, ...]]],
+        ] = defaultdict(list)
         for svg_path in sorted(svg_dir.glob('*.svg')):
             try:
-                out[svg_path] = svg_path.read_text(encoding='utf-8')
-            except OSError:
+                root = ET.parse(svg_path).getroot()
+            except (OSError, ET.ParseError):
                 continue
-        return out
+            working_root, parent_by_id, images = cls._visible_image_elements(root)
+            references: Dict[str, set[Path]] = defaultdict(set)
+            inline_count = 0
+            for element in images:
+                href = (
+                    element.get('href')
+                    or element.get(f'{{{XLINK_NS}}}href')
+                    or ''
+                )
+                if href.lstrip().lower().startswith('data:'):
+                    inline_count += 1
+                    continue
+                filename = cls._external_image_reference_basename(href)
+                if not filename:
+                    continue
+                references.setdefault(filename, set())
+                placements[filename].append((
+                    svg_path,
+                    element.get('preserveAspectRatio') or '',
+                    cls._image_crop_mechanisms(
+                        element,
+                        working_root,
+                        parent_by_id,
+                    ),
+                ))
+                if _resolve_external_image_reference is not None:
+                    resolved = _resolve_external_image_reference(
+                        svg_path.parent,
+                        href,
+                    )
+                    if resolved is not None:
+                        references[filename].add(resolved.resolve())
+            out[svg_path] = dict(references)
+            if inline_count:
+                inline_counts[svg_path] = inline_count
+        return out, inline_counts, dict(placements)
 
-    def _check_decorative_image_row(
+    @staticmethod
+    def _image_crop_mechanisms(
+        image: ET.Element,
+        root: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+    ) -> Tuple[str, ...]:
+        """Return objective clipping mechanisms affecting one image instance."""
+        mechanisms: List[str] = []
+        current: ET.Element | None = image
+        while current is not None:
+            tag = _local_name(current)
+            style_values = (
+                _parse_inline_style(current.get('style'))
+                if _parse_inline_style is not None
+                else {}
+            )
+            for property_name in ('clip-path', 'mask'):
+                value = style_values.get(property_name)
+                if value is None:
+                    value = current.get(property_name)
+                if value and value.strip().lower() != 'none':
+                    mechanisms.append(f"<{tag}> {property_name}")
+            overflow = style_values.get('overflow')
+            if overflow is None:
+                overflow = current.get('overflow')
+            if overflow and overflow.strip().lower() in {'hidden', 'clip'}:
+                mechanisms.append(f"<{tag}> overflow={overflow.strip()!r}")
+            if current is not root and tag == 'svg':
+                mechanisms.append('nested <svg> viewport')
+            current = parent_by_id.get(id(current))
+        return tuple(dict.fromkeys(mechanisms))
+
+    def _check_planned_image_closure(
         self,
-        row: Dict[str, str],
+        rows: List[Dict[str, str]],
         project_path: Path,
-        svg_texts: Dict[Path, str],
+        lock_entries: Dict[str, List[Dict[str, str]]],
+        lock_error: str | None,
+        svg_references: Dict[Path, Dict[str, set[Path]]],
+        inline_image_counts: Dict[Path, int],
+        image_placements: Dict[
+            str,
+            List[Tuple[Path, str, Tuple[str, ...]]],
+        ],
     ) -> None:
-        """Warn when decorative image patterns lack obvious SVG/file evidence."""
-        filename = self._row_filename(row)
-        if not filename:
-            return
-        layout = self._row_layout(row)
-        ids = {int(match.group(1)) for match in re.finditer(r'#(\d+)\b', layout)}
-        decorative_ids = ids & {4, 58, 63, 66, 69}
-        if not decorative_ids:
-            return
-        if self._row_type(row).lower() == 'illustration sheet':
-            return
-
-        referenced_tags: List[Tuple[Path, str]] = []
-        for svg_path, content in svg_texts.items():
-            for tag in re.findall(r'<image\b[^>]*>', content, re.IGNORECASE):
-                if filename in tag:
-                    referenced_tags.append((svg_path, tag))
-
-        if 63 in decorative_ids:
-            if Path(filename).suffix.lower() != '.png':
-                self._illustration_issues.append((
-                    'warning',
-                    'sticker_not_png',
-                    f"{filename} uses #63 transparent sticker / cutout but is not a PNG.",
-                ))
-            elif not self._png_has_alpha(project_path / 'images' / filename):
-                self._illustration_issues.append((
-                    'warning',
-                    'sticker_no_alpha',
-                    f"{filename} uses #63 transparent sticker / cutout but the PNG "
-                    "does not appear to have an alpha channel.",
-                ))
-
-        if not referenced_tags:
-            return
-
-        if 69 in decorative_ids and not any('rotate(' in tag for _path, tag in referenced_tags):
+        """Close Design Spec, execution lock, files, SVGs, and provenance."""
+        project_root = project_path.resolve()
+        if inline_image_counts:
+            total = sum(inline_image_counts.values())
+            shown = ', '.join(
+                f"{path.name} ({count})"
+                for path, count in sorted(inline_image_counts.items())
+            )
             self._illustration_issues.append((
-                'warning',
-                'rotation_missing',
-                f"{filename} declares #69 slight rotation but no referenced <image> "
-                "tag contains rotate(...).",
+                'error',
+                'svg_inline_image_untracked',
+                f"svg_output contains {total} inline data-URI image(s): "
+                f"{shown}. Current projects must keep external project-local "
+                "image hrefs so every placement closes through Design Spec "
+                "§VIII and spec_lock.md.",
+            ))
+        valid_acquisitions = {
+            'ai',
+            'web',
+            'user',
+            'formula',
+            'placeholder',
+            'slice',
+        }
+        valid_statuses = {
+            'pending',
+            'failed',
+            'generated',
+            'sourced',
+            'rendered',
+            'needs-manual',
+            'existing',
+            'placeholder',
+        }
+        terminal_by_acquisition = {
+            'ai': {'generated', 'needs-manual'},
+            'web': {'sourced', 'needs-manual'},
+            'user': {'existing', 'needs-manual'},
+            'formula': {'rendered', 'needs-manual'},
+            'placeholder': {'placeholder'},
+            'slice': {'generated', 'needs-manual'},
+        }
+        current_image_contract = (
+            any('Crop Policy' in row for row in rows)
+            or any(
+                entry.get('legacy') == 'false'
+                for entries in lock_entries.values()
+                for entry in entries
+            )
+        )
+        seen_filenames: set[str] = set()
+        for row in rows:
+            raw_filename = self._row_raw_filename(row)
+            filename = self._row_filename(row)
+            acquire = self._row_acquire(row)
+            status = self._row_status(row)
+            layout = self._row_layout(row)
+            crop = self._row_crop(row)
+            filename_is_bare = bool(filename) and (
+                filename not in {'.', '..'}
+                and '/' not in filename
+                and '\\' not in filename
+                and ':' not in filename
+            )
+            filename_is_canonical = raw_filename in {
+                filename,
+                f"images/{filename}",
+            }
+            if not filename_is_bare or not filename_is_canonical:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_invalid_filename',
+                    f"Design Spec §VIII Filename {raw_filename!r} must be "
+                    "a non-empty bare filename or canonical "
+                    "images/<filename> path.",
+                ))
+            elif filename in seen_filenames:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_duplicate_filename',
+                    f"Design Spec §VIII repeats Filename {filename!r}; "
+                    "one resource must have one authoritative row.",
+                ))
+            else:
+                seen_filenames.add(filename)
+
+            if current_image_contract and not layout:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_missing_pattern',
+                    f"{filename or '(missing filename)'} has an empty Design "
+                    "Spec §VIII Layout pattern; preserve one non-empty "
+                    "Strategist recommendation without locking SVG geometry.",
+                ))
+            if current_image_contract and crop not in {'adaptive', 'no-crop'}:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_invalid_crop_policy',
+                    f"{filename or '(missing filename)'} has invalid Design "
+                    f"Spec §VIII Crop Policy "
+                    f"{row.get('Crop Policy', '').strip()!r}; use adaptive "
+                    "or no-crop.",
+                ))
+
+            if acquire not in valid_acquisitions:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_invalid_acquisition',
+                    f"{filename or '(missing filename)'} has invalid "
+                    f"Acquire Via {row.get('Acquire Via', '').strip()!r}.",
+                ))
+                continue
+            if status not in valid_statuses:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_invalid_status',
+                    f"{filename or '(missing filename)'} has invalid "
+                    f"Status {row.get('Status', '').strip()!r}.",
+                ))
+                continue
+            if status in {'pending', 'failed'}:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_not_terminal',
+                    f"{filename or '(missing filename)'} has non-terminal "
+                    f"Status {row.get('Status', '').strip()!r}; finish the "
+                    "owning acquisition or mark it Needs-Manual before export.",
+                ))
+            elif status not in terminal_by_acquisition[acquire]:
+                expected = ', '.join(sorted(terminal_by_acquisition[acquire]))
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_status_mismatch',
+                    f"{filename or '(missing filename)'} uses Acquire Via "
+                    f"{acquire!r} but Status {status!r}; terminal status must "
+                    f"be one of: {expected}.",
+                ))
+
+        if lock_error:
+            self._illustration_issues.append((
+                'error',
+                'image_lock_unreadable',
+                lock_error,
+            ))
+            return
+
+        placed_rows = [
+            row for row in rows
+            if self._row_type(row).lower() != 'illustration sheet'
+            and self._row_acquire(row)
+            in {'ai', 'web', 'user', 'formula', 'placeholder', 'slice'}
+        ]
+        rows_by_filename = {
+            self._row_filename(row): row
+            for row in placed_rows
+            if self._row_filename(row)
+        }
+        referenced_paths: Dict[str, set[Path]] = defaultdict(set)
+        for references in svg_references.values():
+            for filename, paths in references.items():
+                referenced_paths[filename].update(paths)
+        referenced = set(referenced_paths)
+
+        for filename, row in rows_by_filename.items():
+            if filename not in lock_entries:
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_missing_lock',
+                    f"{filename} is a placed Design Spec image row but is "
+                    "absent from spec_lock.md images.",
+                ))
+                continue
+            if current_image_contract and any(
+                entry.get('legacy') != 'false'
+                for entry in lock_entries[filename]
+            ):
+                self._illustration_issues.append((
+                    'error',
+                    'planned_image_legacy_lock_projection',
+                    f"{filename} uses the current Design Spec image contract "
+                    "but its spec_lock.md row does not provide complete "
+                    "source=..., pattern=..., and crop=... metadata.",
+                ))
+
+        for filename in sorted(referenced - set(rows_by_filename)):
+            lock_note = (
+                ""
+                if filename in lock_entries
+                else " and is absent from spec_lock.md images"
+            )
+            self._illustration_issues.append((
+                'error',
+                'svg_image_missing_spec',
+                f"svg_output references {filename}, but it has no placed "
+                f"Design Spec §VIII row{lock_note}.",
             ))
 
-        if 4 in decorative_ids and not self._has_off_canvas_reference(referenced_tags):
-            self._illustration_issues.append((
-                'warning',
-                'edge_bleed_missing',
-                f"{filename} declares #4 edge bleed but no referenced <image> appears "
-                "to extend past the canvas edge.",
-            ))
-
-        if 58 in decorative_ids and not self._has_corner_fragment_reference(referenced_tags):
-            self._illustration_issues.append((
-                'warning',
-                'corner_fragment_missing',
-                f"{filename} declares #58 decorative corner fragment but no referenced "
-                "<image> appears near a canvas corner.",
-            ))
-
-        if 66 in decorative_ids:
-            content_scope = "\n".join(svg_texts.get(path, '') for path, _tag in referenced_tags)
-            if '<linearGradient' not in content_scope and 'opacity' not in content_scope:
+        for filename, entries in lock_entries.items():
+            row = rows_by_filename.get(filename)
+            if row is None:
                 self._illustration_issues.append((
-                    'warning',
-                    'fade_missing',
-                    f"{filename} declares #66 fade into background but the referencing "
-                    "SVG has no obvious gradient or opacity treatment.",
+                    'error',
+                    'locked_image_missing_spec',
+                    f"{filename} is listed in spec_lock.md images but has no "
+                    "placed row in Design Spec §VIII.",
+                ))
+                continue
+
+            acquire = self._row_acquire(row)
+            status = self._row_status(row)
+            layout_pattern = self._row_layout(row)
+            crop_policy = self._row_crop(row)
+            if len(entries) > 1:
+                keys = ', '.join(repr(entry.get('key', '')) for entry in entries)
+                self._illustration_issues.append((
+                    'error',
+                    'locked_image_duplicate_entries',
+                    f"{filename} appears in multiple spec_lock.md image rows "
+                    f"({keys}); one resource must have one authoritative row.",
+                ))
+            for entry in entries:
+                if entry.get('legacy') != 'false':
+                    continue
+                if entry.get('source') != acquire:
+                    self._illustration_issues.append((
+                        'error',
+                        'locked_image_source_mismatch',
+                        f"{filename} spec_lock source={entry.get('source')!r} "
+                        f"does not match Design Spec §VIII Acquire Via "
+                        f"{acquire!r}.",
+                    ))
+                if entry.get('crop') != crop_policy:
+                    self._illustration_issues.append((
+                        'error',
+                        'locked_image_crop_mismatch',
+                        f"{filename} spec_lock crop={entry.get('crop')!r} "
+                        f"does not match Design Spec §VIII Crop Policy "
+                        f"{crop_policy!r}.",
+                    ))
+                if not self._layout_projection_matches(
+                    entry.get('pattern', ''),
+                    layout_pattern,
+                ):
+                    self._illustration_issues.append((
+                        'error',
+                        'locked_image_pattern_mismatch',
+                        f"{filename} spec_lock pattern="
+                        f"{entry.get('pattern')!r} does not preserve the "
+                        "Design Spec §VIII Layout pattern recommendation "
+                        f"{layout_pattern!r}. This Design Spec-to-spec_lock "
+                        "projection check compares ordered catalog ids when "
+                        "present, otherwise normalized text; it does not "
+                        "compare SVG geometry or restrict the Executor's "
+                        "realization.",
+                    ))
+            candidate_paths: List[Path] = []
+            for entry in entries:
+                raw_path = entry.get('path', '')
+                if not raw_path:
+                    continue
+                lock_path = Path(raw_path)
+                legacy_bare_filename = (
+                    not lock_path.is_absolute()
+                    and raw_path not in {'.', '..'}
+                    and '/' not in raw_path
+                    and '\\' not in raw_path
+                    and ':' not in raw_path
+                )
+                if lock_path.is_absolute():
+                    path = lock_path
+                elif legacy_bare_filename:
+                    path = project_path / 'images' / raw_path
+                else:
+                    path = project_path / raw_path
+                resolved_path = path.resolve()
+                try:
+                    resolved_path.relative_to(project_root)
+                except ValueError:
+                    self._illustration_issues.append((
+                        'error',
+                        'locked_image_path_outside_project',
+                        f"{filename} lock path {entry['path']!r} resolves "
+                        "outside the project workspace.",
+                    ))
+                    continue
+                candidate_paths.append(resolved_path)
+
+            distinct_candidate_paths = set(candidate_paths)
+            if len(distinct_candidate_paths) > 1:
+                shown = ', '.join(
+                    str(path.relative_to(project_root))
+                    for path in sorted(distinct_candidate_paths)
+                )
+                self._illustration_issues.append((
+                    'error',
+                    'locked_image_ambiguous_paths',
+                    f"{filename} resolves to multiple locked project paths: "
+                    f"{shown}. One resource must have one authoritative asset.",
                 ))
 
-    @staticmethod
-    def _png_has_alpha(path: Path) -> bool:
-        """Return True when a PNG appears to carry transparent pixels."""
-        if not path.exists():
-            return False
-        try:
-            from PIL import Image as PILImage
-            with PILImage.open(path) as img:
-                if img.mode in {'RGBA', 'LA'}:
-                    alpha = img.getchannel('A')
-                    return alpha.getextrema()[0] < 255
-                return 'transparency' in img.info
-        except (ImportError, OSError, ValueError):
-            return False
+            expected_paths = {
+                path
+                for path in distinct_candidate_paths
+                if path.is_file()
+            }
+            asset_exists = bool(expected_paths)
+            file_required = status in {
+                'existing',
+                'generated',
+                'sourced',
+                'rendered',
+            }
+            if not asset_exists and file_required:
+                expected = entries[0].get('path') or f"images/{filename}"
+                self._illustration_issues.append((
+                    'error',
+                    'locked_image_file_missing',
+                    f"{filename} is locked and has terminal Status "
+                    f"{row.get('Status', '').strip()!r}, but {expected} "
+                    "does not exist.",
+                ))
 
-    @staticmethod
-    def _parse_image_geometry(tag: str) -> Tuple[float, float, float, float] | None:
-        """Extract x/y/width/height from an <image> tag."""
-        values = {}
-        for attr in ('x', 'y', 'width', 'height'):
-            match = re.search(rf'\b{attr}\s*=\s*["\']([^"\']+)["\']', tag)
-            if not match:
-                return None
-            try:
-                values[attr] = float(match.group(1))
-            except ValueError:
-                return None
-        return values['x'], values['y'], values['width'], values['height']
+            actual_paths = referenced_paths.get(filename, set())
+            unexpected_paths = actual_paths - expected_paths
+            if unexpected_paths:
+                shown = ', '.join(
+                    str(path.relative_to(project_root))
+                    if path.is_relative_to(project_root)
+                    else str(path)
+                    for path in sorted(unexpected_paths)
+                )
+                self._illustration_issues.append((
+                    'error',
+                    'locked_image_reference_mismatch',
+                    f"{filename} is referenced from {shown}, not exclusively "
+                    "from its locked project path.",
+                ))
 
-    @staticmethod
-    def _parse_svg_viewbox(content: str) -> Tuple[float, float] | None:
-        """Return root viewBox width/height from SVG content."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return None
-        viewbox = root.get('viewBox')
-        if not viewbox:
-            return None
-        values = _parse_viewbox_values(viewbox)
-        if values is None:
-            return None
-        return values[2], values[3]
+            should_be_referenced = (
+                acquire != 'placeholder'
+                and asset_exists
+                and status
+                in {
+                    'existing',
+                    'generated',
+                    'sourced',
+                    'rendered',
+                    'needs-manual',
+                }
+            )
+            if should_be_referenced and not (actual_paths & expected_paths):
+                self._illustration_issues.append((
+                    'error',
+                    'locked_image_unreferenced',
+                    f"{filename} has usable terminal content but its locked "
+                    "file is not referenced by any svg_output <image> element.",
+                ))
 
-    @classmethod
-    def _has_off_canvas_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
-        for svg_path, tag in refs:
-            geometry = cls._parse_image_geometry(tag)
-            if geometry is None:
-                continue
-            x, y, width, height = geometry
-            try:
-                content = svg_path.read_text(encoding='utf-8')
-            except OSError:
-                continue
-            viewbox = cls._parse_svg_viewbox(content)
-            if viewbox is None:
-                continue
-            vb_width, vb_height = viewbox
-            if x < 0 or y < 0 or x + width > vb_width or y + height > vb_height:
-                return True
-        return False
+            effective_no_crop = (
+                crop_policy == 'no-crop'
+                or acquire == 'formula'
+                or any(entry.get('crop') == 'no-crop' for entry in entries)
+            )
+            if effective_no_crop:
+                placements_by_svg: Dict[
+                    Path,
+                    List[Tuple[str, Tuple[str, ...]]],
+                ] = defaultdict(list)
+                for svg_path, raw_aspect, mechanisms in image_placements.get(
+                    filename,
+                    [],
+                ):
+                    placements_by_svg[svg_path].append((
+                        raw_aspect,
+                        mechanisms,
+                    ))
 
-    @classmethod
-    def _has_corner_fragment_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
-        for svg_path, tag in refs:
-            geometry = cls._parse_image_geometry(tag)
-            if geometry is None:
+                for svg_path, placements in placements_by_svg.items():
+                    parsed_placements = []
+                    for raw_aspect, mechanisms in placements:
+                        try:
+                            align, mode = (
+                                _parse_project_image_aspect_ratio(raw_aspect or None)
+                                if _parse_project_image_aspect_ratio is not None
+                                else ('', '')
+                            )
+                        except ValueError:
+                            # The per-SVG aspect-ratio validator owns malformed syntax.
+                            continue
+                        parsed_placements.append((
+                            raw_aspect,
+                            mechanisms,
+                            align,
+                            mode,
+                        ))
+
+                    has_complete_placement = any(
+                        align != 'none'
+                        and mode == 'meet'
+                        and not mechanisms
+                        for _raw_aspect, mechanisms, align, mode
+                        in parsed_placements
+                    )
+
+                    for raw_aspect, _mechanisms, align, _mode in parsed_placements:
+                        if align != 'none':
+                            continue
+                        actual = raw_aspect or '(implicit xMidYMid meet)'
+                        self._illustration_issues.append((
+                            'error',
+                            'no_crop_image_fit_mismatch',
+                            f"{svg_path.name}: {filename} is no-crop but its "
+                            f"rendered placement uses "
+                            f"preserveAspectRatio={actual!r}; stretching is not "
+                            "a detail crop and remains forbidden.",
+                        ))
+
+                    if has_complete_placement:
+                        continue
+
+                    for raw_aspect, mechanisms, align, mode in parsed_placements:
+                        if align != 'none' and mode != 'meet':
+                            actual = raw_aspect or '(implicit xMidYMid meet)'
+                            self._illustration_issues.append((
+                                'error',
+                                'no_crop_image_fit_mismatch',
+                                f"{svg_path.name}: {filename} is no-crop but "
+                                "this page has no complete placement and uses "
+                                f"preserveAspectRatio={actual!r}; keep at least "
+                                "one unclipped placement with a legal alignment "
+                                "anchor and meet.",
+                            ))
+                        if mechanisms:
+                            self._illustration_issues.append((
+                                'error',
+                                'no_crop_image_clipped',
+                                f"{svg_path.name}: {filename} is no-crop but "
+                                "this page has no complete placement; its "
+                                "rendered placement is affected by "
+                                f"{', '.join(mechanisms)}. Keep at least one "
+                                "unclipped meet placement so every source pixel "
+                                "remains visible.",
+                            ))
+
+        self._check_sourced_image_provenance(
+            rows_by_filename,
+            project_path,
+        )
+
+    def _check_sourced_image_provenance(
+        self,
+        rows_by_filename: Dict[str, Dict[str, str]],
+        project_path: Path,
+    ) -> None:
+        """Require one valid provenance item for every Sourced web row."""
+        sourced = {
+            filename: row
+            for filename, row in rows_by_filename.items()
+            if self._row_acquire(row) == 'web'
+            and self._row_status(row) == 'sourced'
+        }
+        if not sourced:
+            return
+
+        manifest_path = project_path / 'images' / 'image_sources.json'
+        if not manifest_path.exists():
+            self._illustration_issues.append((
+                'error',
+                'image_sources_missing',
+                "Sourced web images are used, but "
+                "images/image_sources.json does not exist.",
+            ))
+            return
+
+        payload, error = self._read_image_sources_manifest(manifest_path)
+        if error:
+            if manifest_path not in self._source_manifest_errors_reported:
+                self._illustration_issues.append((
+                    'error',
+                    'image_sources_invalid',
+                    error,
+                ))
+                self._source_manifest_errors_reported.add(manifest_path)
+            return
+
+        manifest_items = {
+            str(item.get('filename') or ''): item
+            for item in payload['items']
+            if item.get('filename')
+        }
+        valid_tiers = {
+            'no-attribution',
+            'attribution-required',
+            'manual',
+        }
+        for filename in sourced:
+            item = manifest_items.get(filename)
+            if item is None:
+                self._illustration_issues.append((
+                    'error',
+                    'sourced_image_missing_provenance',
+                    f"{filename} is Sourced but has no matching entry in "
+                    "images/image_sources.json.",
+                ))
                 continue
-            x, y, width, height = geometry
-            try:
-                content = svg_path.read_text(encoding='utf-8')
-            except OSError:
-                continue
-            viewbox = cls._parse_svg_viewbox(content)
-            if viewbox is None:
-                continue
-            vb_width, vb_height = viewbox
-            near_left = x <= 40
-            near_top = y <= 40
-            near_right = x + width >= vb_width - 40
-            near_bottom = y + height >= vb_height - 40
-            if (near_left or near_right) and (near_top or near_bottom):
-                return True
-        return False
+
+            tier = str(item.get('license_tier') or '').strip()
+            if tier not in valid_tiers:
+                self._illustration_issues.append((
+                    'error',
+                    'sourced_image_invalid_license_tier',
+                    f"{filename} has invalid license_tier {tier!r} in "
+                    "images/image_sources.json.",
+                ))
+            if tier != 'manual' and not str(
+                item.get('attribution_text') or ''
+            ).strip():
+                self._illustration_issues.append((
+                    'error',
+                    'sourced_image_missing_attribution_text',
+                    f"{filename} has license_tier {tier!r} but no "
+                    "attribution_text in images/image_sources.json.",
+                ))
+            if tier == 'attribution-required' and not str(
+                item.get('author') or ''
+            ).strip():
+                self._illustration_issues.append((
+                    'error',
+                    'sourced_image_missing_author',
+                    f"{filename} requires attribution but has no author in "
+                    "images/image_sources.json.",
+                ))
 
     def _check_animation_config_contract(self, dir_path: Path) -> None:
         """Project-level animations.json reference checks."""
@@ -6813,7 +7699,7 @@ class SVGQualityChecker:
         errors = [item for item in self._illustration_issues if item[0] == 'error']
         warnings = [item for item in self._illustration_issues if item[0] == 'warning']
 
-        print("\n[ILLUSTRATION] Illustration strategy checks")
+        print("\n[IMAGES] Image resource checks")
         if errors:
             print(f"  Errors ({len(errors)}):")
             for _severity, kind, msg in errors:

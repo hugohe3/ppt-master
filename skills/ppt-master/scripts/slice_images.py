@@ -175,6 +175,17 @@ def slice_sheet(
             f"{total_cells} cells; provide exactly one name per cell"
         )
     safe_names = [_safe_basename(n) for n in names] if names else None
+    if safe_names:
+        seen_outputs: set[str] = set()
+        for name in safe_names:
+            output_name = name if Path(name).suffix else f"{name}.png"
+            normalized_output = output_name.casefold()
+            if normalized_output in seen_outputs:
+                raise ValueError(
+                    f"--names repeats output filename {output_name!r} "
+                    "(case-insensitive)"
+                )
+            seen_outputs.add(normalized_output)
     if alpha and safe_names:
         for name in safe_names:
             suffix = Path(name).suffix.lower()

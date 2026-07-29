@@ -47,7 +47,7 @@ uvx ppt-master update-repo
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
-| Project management | `project_manager.py`, `page_context.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
+| Project management | `project_manager.py`, `page_context.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py`, `pptx_delivery_check.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `preset_shape_svg.py`, `shape_boolean_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py`, `narration_sync.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native shape authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
@@ -181,10 +181,18 @@ uvx ppt-master template-fill-pptx validate <project_path>
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
 ```bash
+<<<<<<< HEAD
 uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
 uvx ppt-master native-enhance-pptx plan <project_path>
 uvx ppt-master native-enhance-pptx validate <project_path>
 uvx ppt-master native-enhance-pptx apply <project_path>
+=======
+uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
+uvx ppt-master native-enhance-pptx plan <project_path>
+uvx ppt-master native-enhance-pptx validate <project_path>
+uvx ppt-master native-enhance-pptx apply <project_path>
+uvx ppt-master pptx-delivery-check <finished.pptx>
+>>>>>>> upstream/main
 ```
 
 Native preset shape authoring (one registry-backed fragment on stdout):
@@ -256,7 +264,7 @@ uvx ppt-master finalize-svg <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 ```
 
-`finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
+`finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: oversized full sources normally reduce toward `2560px`, but cropped or stretched placements (including imported picture crops) retain enough source pixels to avoid undersupplying the visible frame. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
 `finalize_svg.py` remains mandatory because it creates the self-contained `svg_final/` visual preview. Those SVGs may be opened directly or inserted into PowerPoint as SVG pictures. The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter; `-s final` is diagnostic-only, and PowerPoint's manual Convert-to-Shape operation is unsupported.
 

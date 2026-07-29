@@ -391,7 +391,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 `--record-usage` 在 `analysis/page-context/` 下为实际调用的页面写入派生快照，记录输入 hash 和紧凑 stdout 的实测大小。token 计数按需加载 `o200k_base`；没有安装 `tiktoken` 时写入 `tokens: null`，但不阻塞执行。`page-context-report` 排除过期快照，汇总已有快照并列出唯一引用指纹；统计可以只覆盖部分页面。一次加载的大型引用 payload 与其他会话上下文有意不纳入统计。
 
-`update_spec.py` 用两个协调步骤传播一次有意的 deck 级锚点修改：把新值写入 `spec_lock.md`，然后字面替换到每一份 `svg_output/*.svg`。工具的范围**故意收得很窄**——只支持 `colors.*`（HEX 值，大小写不敏感替换）和 `typography.font_family`（属性级）。其他字段（字号、图标、图片、画布）**有意不支持**——它们的替换需要属性级或语义级理解，风险/收益不值得做批量传播。当重复出现的上下文值被明确提升为具名语义角色时，反向回写 lock 同样合理；但不能只为了清空 checker 的信息提示而扩充 lock。其他字段应修改其权威产物并重做受影响页面。
+`update_spec.py` 用两个协调步骤传播一次有意的 deck 级锚点修改：先规划并字面替换每一份 `svg_output/*.svg`，这些 SVG 更新成功后才写权威 `spec_lock.md`。工具的范围**故意收得很窄**——只支持 `colors.*`（HEX 值，大小写不敏感替换）和全局 `typography.font_family`（属性级）。全局字体替换还会在一次 lock 文件写入中，把所有既有 `typography.*_family` 行同步为同一值，避免标题、正文或其他角色保留已从全部 SVG 移除的旧字体。其他字段（字号、按角色字体变更、图标、图片、画布）**有意不支持**——它们的替换需要属性级或语义级理解，风险/收益不值得做批量传播。当重复出现的上下文值被明确提升为具名语义角色时，反向回写 lock 同样合理；但不能只为了清空 checker 的信息提示而扩充 lock。其他字段应修改其权威产物并重做受影响页面。
 
 工具拒绝做备份：依赖 git 回滚。加备份机制只是重复 git 的工作，还会留下过时快照。
 
@@ -404,18 +404,18 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 | 餐厅角色 | PPT Master 对应项 | 决策权 |
 |---|---|---|
 | 顾客与初始食材 | 用户确认与用户提供的原材料/素材 | 决定事实、意图、排除项、材料补充许可，以及要求具体到什么程度 |
-| 菜单策划与备料负责人 | Strategist、`design_spec.md`、`spec_lock.md` 及其负责的材料获取阶段 | 判断材料是否充分；补齐获准补充的事实；选定内容、资源、页面清单、图表参考 key / 版式 key、字体、色板锚点、图标和裁剪边界；在执行前备齐项目级材料清单 |
-| 厨师 | Executor | 只使用项目中已备好的材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料 |
+| 菜单策划与备料负责人 | Strategist、`design_spec.md`、`spec_lock.md` 及其负责的材料获取阶段 | 判断材料是否充分；补齐获准补充的事实；选定内容、资源、页面清单、图表参考 key / 模板版式 key、字体、色板锚点、图标和裁剪边界；记录可选的能力 / 表达建议；在执行前备齐项目级材料清单 |
+| 厨师 | Executor | 只使用项目中已备好的材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料；可以调整明确标为 suggestion 或 Reference 的字段 |
 
 **备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。
 
 **项目中已备好的材料就是边界。** 图片和其他声明型资源，仍须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 记录 Strategist 计划选用的内置图标，但不是穷尽式执行白名单。其他目录中的文件不构成使用许可。缺料必须返回上游；Executor 不得搜索、生成、下载、同步或替换资源。
 
-**具体程度决定自由度。** “做麻婆豆腐”锁定成品身份：火候、口感和摆盘可以发挥，但不能换成番茄炒蛋或豆腐汤。“做一道豆腐菜”则保留了品类内选择空间。Strategist 可以把这个开放要求收敛成具体方案；如果 Design Spec 有意保留某个维度的开放性，Executor 可以在该范围内实现。一旦 Design Spec 已经选定具体结果，执行阶段不得重新打开选择。
+**具体程度决定自由度。** “做麻婆豆腐”锁定成品身份：火候、口感和摆盘可以发挥，但不能换成番茄炒蛋或豆腐汤。“做一道豆腐菜”则保留了品类内选择空间。Strategist 可以把这个开放要求收敛成具体方案；如果 Design Spec 有意保留某个维度的开放性，Executor 可以在该范围内实现。一旦 Design Spec 已经选定具有约束力的结果，执行阶段不得重新打开选择。明确标为 suggestion 或 Reference 的字段——包括页面级首选图片 pattern——仍是表达建议；Executor 可以在不改变内容、资源、身份和显式约束的前提下调整。
 
-**点缀只能保持局部。** 零星的页面级字体或颜色可以用于增加层级、区分和氛围，但不能发展成第二套视觉系统。结构性或重复出现的字体、色板角色、资源与 pattern 仍属于 Strategist 决策；复用前必须先更新 Design Spec/lock。
+**点缀只能保持局部。** 零星的页面级字体或颜色可以用于增加层级、区分和氛围，但不能发展成第二套视觉系统。结构性或重复出现的字体、色板角色、资源与跨页身份 pattern 仍属于 Strategist 决策；复用前必须先更新 Design Spec/lock。页面级 §VIII 图片 pattern 仍是首选构图参考。
 
-**提示词重构不变量。** 压缩提示词时，必须继续区分初始材料、用户确认、Strategist 负责的备料、策略规划和执行自由。把材料获取下放给 Executor、把许可变成配额、把灵活实现变成重新选型，或把精确计划降级成近似目标，均属于语义回归。运行时权威位于 [`strategist.md`](../../skills/ppt-master/references/strategist.md) 与 [`executor-base.md`](../../skills/ppt-master/references/executor-base.md)，提示词编写规则位于 [`prompt-style.md`](../rules/prompt-style.md)。
+**提示词重构不变量。** 压缩提示词时，必须继续区分初始材料、用户确认、Strategist 负责的备料、策略规划和执行自由。把材料获取下放给 Executor、把许可变成配额、把灵活实现变成静默更换资源 / 身份，或把精确的约束计划降级成近似目标，均属于语义回归。运行时权威位于 [`strategist.md`](../../skills/ppt-master/references/strategist.md) 与 [`executor-base.md`](../../skills/ppt-master/references/executor-base.md)，提示词编写规则位于 [`prompt-style.md`](../rules/prompt-style.md)。
 
 ---
 
@@ -443,7 +443,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 ## 图文版式：Primary 主结构 + Modifier 修饰层
 
-「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 81 条稳定编号技法拆成两层、自由组合：
+「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 99 条稳定编号技法拆成两层、自由组合：
 
 - **Primary 主结构**（容器布局 / 图作画布 + 原生覆盖 / 多图组合）—— 页面的骨架。一页可一个也可多个；跨 Primary 的组合，如「侧边对比 + 图作画布的注解卡」，是合规的。
 - **Modifier 修饰层**（非矩形裁剪 / 遮罩与叠加 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。
@@ -452,7 +452,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 **为什么物理拆分两层，而不是只打标签。** 词表被重排成「Primary 全部在前，Modifier 全部在后」——Strategist 或 Executor 读一次目录，就能从结构上内化「两层」心智模型。编号是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），所以 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出、过往示例里所有 `#<id>` 引用照样解析。
 
-**为什么组合走 Strategist 资源列表，不只交给 Executor 临场发挥。** `§VIII 图片资源列表` 的 `Layout pattern` 列接受 `#<id> + #<id> ...` 表达式——Primary id 加可选 Modifier id；`Crop Policy` 则记录 `adaptive` 或 `no-crop`。Strategist 会在 SVG 生成前同时选定语义构图和信息完整性边界，并通过 lock 投影让两者在 session 重入后继续存在。Executor 负责实现方式，而不是重新选型：它可以根据真实图片比例和内容层级调整所选 pattern 的尺寸、位置、流向与权重；`adaptive` 行既可完整显示，也可安全裁剪。若要更换 pattern 或改变裁剪策略，必须先更新 Design Spec。
+**为什么组合走 Strategist 资源列表，而不是到绘制时才第一次发现。** `§VIII 图片资源列表` 的 `Layout pattern` 列接受 `#<id> + #<id> ...` 表达式——Primary id 加可选 Modifier id；`Crop Policy` 则记录 `adaptive` 或 `no-crop`。Strategist 必须在 SVG 生成前完整查看目录，写出具体的首选构图和信息完整性边界，并通过 lock 投影让两者在 session 重入后继续存在。Executor 再决定实际表达：它可以调整尺寸、位置、流向与权重，也可以换成另一个目录 pattern 或普通构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
 
 **为什么真正的硬约束留在上游。** 跨切的 SVG 创作与 PPTX 兼容性例外属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由的权威集。版式词表只指向该路由，不再复述合同；每条规则仍只有一个所属模块，词表里也不会留下过期副本。
 
@@ -557,9 +557,9 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 `template_fill_pptx.py` 是 `scripts/template_fill_pptx/` 包的薄 CLI 入口。analyzer 抽取带文本槽位、表格、图表和几何信息的 slide library；fill plan 选择源页面并确认替换内容；applier 克隆幻灯片并直接 patch XML parts。这条路线故意绕开 SVG：用户提供 PowerPoint 模板时，通常期望原生母版、占位符、表格和图表继续保持 PowerPoint-native。
 
-`native_enhance_pptx.py` 是已完成 deck 原生增强的稳定入口。它委托 `native_enhance_pptx_core.py`，在项目归档副本上直接 patch PPTX package：讲稿、页面转场、录制旁白媒体、页面计时和相关元数据。旧名称 `native_narration_pptx.py` 仅保留为精简的 CLI 兼容包装器。它的契约是保留：已有内容、布局和格式不重新生成。
+`native_enhance_pptx.py` 是已完成 deck 原生增强的稳定入口。它委托 `native_enhance_pptx_core.py`，在项目归档副本上直接 patch PPTX package：讲稿、全局或按页转场、录制旁白媒体、页面计时和相关元数据。intake 会记录来源 hash 与有序 slide-part roster；validate/apply 会拒绝来源漂移或缺少已请求素材。只读 delivery check 会在 intake/preflight 盘点包完整性、字体、媒体、隐藏页、体积与已有 motion，并在原子发布前审计候选文件。旧名称 `native_narration_pptx.py` 仅保留为精简的 CLI 兼容包装器。它的契约是保留：已有内容、布局和格式不重新生成。
 
-这些直接路线会和主流水线共享部分分析原语，但复用深度不同：Template Fill 消费标准 PPTX intake 的 slide library；Native Enhance 只用 `ppt_to_md.py` 理解内容，并从归档 package 生成自己的轻量 `slide_index.json`。两者都不共享 SVG 作者阶段和后处理阶段。这个分离是有意的：SVG 生成是设计合成路径；直接 OOXML 编辑是保留路径。
+这些直接路线会和主流水线共享部分分析原语，但复用深度不同：Template Fill 消费标准 PPTX intake 的 slide library；Native Enhance 用 `ppt_to_md.py` 理解内容，从归档 package 生成自己的轻量 `slide_index.json`，并把机器 delivery report 放在 `validation/`。两者都不共享 SVG 作者阶段和后处理阶段。这个分离是有意的：SVG 生成是设计合成路径；直接 OOXML 编辑是保留路径。
 
 ---
 

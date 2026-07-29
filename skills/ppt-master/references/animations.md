@@ -1,8 +1,9 @@
 # Page Transitions & Per-Element Animations
 
 Execution contract for generated-PPTX **page transitions** and **per-element
-object animations**. This file owns defaults, sidecar semantics, anchor
-selection, validation, and package read-back.
+object animations**, including deterministic Morph object pairing. This file
+owns defaults, sidecar semantics, anchor selection, validation, and package
+read-back.
 
 ## Capability Menu — Open Here
 
@@ -13,19 +14,19 @@ before the page plan is frozen, not only when a deck is already exported.
 | What the deck needs | Reach for | Decided at |
 |---|---|---|
 | Reveal content in step with the narration | Per-element object animation — `-a auto` deck-wide, or an `animations.json` sidecar for specific order, effects, timing, and triggers | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
-| A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages plus `-t morph`.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6)** — §3.1 |
+| A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages, then select Morph and add explicit pairs when identity must be deterministic.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
 | A static full-bleed page that should stop looking frozen | One slow `path_*` motion on the background group only, `with-previous`, 4–10 s | Post-processing; §4.1, one sidecar entry |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
 | Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
 | Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
 
-**Hard rule — morph is an authoring decision, not an export flag**: `-t morph`
-tweens only objects it can match across consecutive slides, and matching is by
-object identity — same image filename, same group `id`, unchanged container
-dimensions. A deck that reaches export without paired pages cannot gain morph
-motion by adding the flag; it degrades silently to a cross-fade. Resolve this
-while `svg_output/` is still being authored, or accept that the sequence stays
-static.
+**Hard rule — Morph geometry is an authoring decision; pairing is a later
+execution decision**: export cannot invent the two visible endpoint states.
+Author both consecutive pages while `svg_output/` is still being built. For
+deterministic identity, expose each endpoint as a compatible direct-root group
+and declare the pair in `animations.json` (§2.1); the source and destination ids
+and geometry may differ. `-t morph` without explicit pairs leaves matching to
+PowerPoint's heuristic and is not proof that the intended objects will tween.
 
 **Reference — not a constraint**: per-element animation stays off by default
 (§1). Auto-firing element builds on every page are an unsolicited "AI deck"
@@ -48,11 +49,15 @@ To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the
 
 Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains the visual source; the custom stage may rewrite its grouping hierarchy, ids, and bounds to create better semantic anchors without changing visible output, while the sidecar controls PPTX animation behavior.
 
-Run the [`customize-animations`](../workflows/stages/customize-animations.md) post-processing stage when the user asks to tune animation order, effects, timing, or object-level reveals.
+Run the [`customize-animations`](../workflows/stages/customize-animations.md)
+post-processing stage when Design Spec §IX contains `Motion suggestion`, or
+when the project already carries `animations.json`, or when the user asks to
+tune animation order, effects, timing, or object-level reveals.
 
-**Hard rule — semantic anchors before sidecar**: derive reveal units from page
-meaning and narration, then regroup coarse/fragmented Slide-local content
-without changing its appearance. Only post-regroup top-level ids are valid.
+**Hard rule — semantic anchors before object-targeted sidecar entries**: when
+object animation is in scope, derive reveal units from page meaning and
+narration, then regroup coarse/fragmented Slide-local content without changing
+its appearance. Only post-regroup top-level ids are valid object targets.
 
 ```bash
 # Inspect the real anchors after the semantic regrouping pass
@@ -114,7 +119,8 @@ Rules:
   | `direction` | Directional Fly/Crawl/Wipe/Peek/Strips/Split/Stretch/Zoom and related entrance/exit effects |
   | `amount` | Wheel spokes (`1`, `2`, `3`, `4`, `8`), emphasis Spin degrees, or Transparency ratio |
   | `color` | Color-capable emphasis effects; `#RRGGBB` or `theme:<scheme-color>` |
-  | `font_name`, `size` | Change Font and Grow/Shrink |
+  | `font_name` | Change Font; required for `emphasis_change_font`; one installed PowerPoint face, not a CSS list |
+  | `size` | Grow/Shrink |
   | `relative` | Motion paths (`true` = shape-relative, `false` = fixed slide path) |
 - Any animation/group block may set `repeat_count` or `repeat_duration`
   (mutually exclusive), `auto_reverse`, `rewind`, `accelerate`, `decelerate`,
@@ -138,11 +144,80 @@ Rules:
 - Unknown effects, modes, or triggers and invalid numeric/order fields fail validation; no fallback effect is substituted.
 
 **Inheritance**: the sidecar is optional. Sparse legacy slides inherit
-`defaults.transition` / `defaults.animation`, then CLI resolution; explicit CLI
-flags win. Groups inherit the resolved slide duration, timing modifiers,
-after-effect, and sound. `effect_options` remains coupled to an explicit effect;
-`trigger_shape` is never inherited; omitted `order`/`delay` use exporter
-defaults. New authoring writes complete slide blocks.
+`defaults.transition` / `defaults.animation`, then CLI resolution. Explicit CLI
+flags override the corresponding sidecar default/slide fields; explicit group
+overrides remain unless `-a none` hard-disables all object motion. Groups
+inherit the resolved slide duration, timing modifiers, after-effect, and sound.
+`effect_options` remains coupled to an explicit effect; `trigger_shape` is
+never inherited; omitted `order`/`delay` use exporter defaults. New authoring
+writes complete slide blocks.
+
+### 2.1 Deterministic Morph Object Pairing
+
+When one semantic object continues across two adjacent slides, the destination
+slide may declare explicit forced-Morph pairs. This is separate from `groups`:
+Morph owns cross-slide identity, while `groups` owns Animation Pane rows.
+The generated names follow Microsoft's
+[forced object-matching convention](https://support.microsoft.com/en-us/powerpoint/morph-transition-tips-and-tricks).
+
+```json
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.4 },
+    "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_overview": {
+      "transition": { "effect": "fade", "duration": 0.4 },
+      "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
+    },
+    "02_detail": {
+      "transition": {
+        "effect": "morph",
+        "effect_options": { "morph_by": "object" },
+        "duration": 0.8
+      },
+      "animation": { "effect": "none", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" },
+      "morph": {
+        "from": "01_overview",
+        "pairs": {
+          "hero-image": {
+            "from": "hero-overview",
+            "to": "hero-detail"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+- `morph` belongs to the destination slide. `morph.from` must be the
+  immediately preceding SVG stem in export order.
+- `animation_config.py scaffold` never guesses cross-slide identity. Add pairs
+  from the semantic motion plan after inspecting the final direct-root ids.
+- Each `pairs` key is a stable identity; its `from` and `to` values are unique
+  direct-root `<g id>` values on the source and destination slides. Supply the
+  key without `!!`; export writes the PowerPoint Selection Pane name
+  `!!<key>` on both objects.
+- A destination with explicit pairs must explicitly set `effect: morph`.
+  `morph_by` may be omitted for its `object` default or set to `object`;
+  `word`/`character` are rejected. A CLI transition override that changes the
+  resolved effect fails export.
+- A middle slide may continue the same object into another Morph transition,
+  but the same group must retain the same key. One key cannot name two objects
+  on one slide, and one object cannot carry two keys. Every `!!` key shared by
+  two adjacent Morph pages must be declared in that destination's `pairs`;
+  undeclared forced matches are rejected.
+- Explicit pairing can coexist with in-slide object animation and remains
+  active when `-a none` disables Animation Pane rows. `--no-animations`
+  disables the sidecar and all page/object motion.
+- The exporter resolves both group ids to final Slide-local PowerPoint shapes,
+  writes names only after Master/Layout processing, then reopens the package
+  and verifies adjacency, Morph by object, one name per slide, and matching
+  OOXML object types. Missing, structural, moved, ambiguous, or mismatched
+  targets fail instead of falling back to automatic Morph matching.
 
 ---
 
@@ -193,7 +268,7 @@ Flags:
 
 ### 3.1 Morph — author an action as the difference between two pages
 
-Morph tweens objects it can match across consecutive slides. That makes it a general mechanism, not just a transition: **any continuous action can be authored as two static pages plus `-t morph`**, with no keyframe timeline anywhere. Duplicate the page, change one property on one object, and PowerPoint interpolates the rest.
+Morph tweens objects it can match across consecutive slides. That makes it a general mechanism, not just a transition: **any continuous action can be authored as two static pages plus a Morph transition**, with no keyframe timeline anywhere. Duplicate the page, change one property on one object, and PowerPoint interpolates the rest. Use §2.1 explicit pairs when the match must be deterministic.
 
 | Change between the two pages | Reads as |
 |---|---|
@@ -205,11 +280,22 @@ Morph tweens objects it can match across consecutive slides. That makes it a gen
 
 Chain three or more pages to build a sequence — extend, hold, retract — where each page is still an ordinary editable slide.
 
-**Hard rule — matching is by object identity**: keep the same image filename, the same group `id`, and container dimensions that do not change between the pages. Rename the file or resize the frame and morph silently degrades to a cross-fade with none of the motion. This is the most common reason a morph sequence "does nothing".
+**Hard rule — matching needs compatible object identity, not identical SVG
+geometry**: for generated decks, prefer §2.1 deterministic pairs. The source
+and destination direct-root group ids may differ, and position, size, crop, or
+other visible state is expected to change; both endpoints must still resolve to
+one compatible top-level PowerPoint object kind. Automatic Morph without pairs
+is heuristic and may cross-fade instead of tweening.
 
-**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix, used in essentially every morph-driven deck: place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages with the same identity.
+**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages and be explicitly paired when deterministic identity matters.
 
-**When morph refuses to match**: PowerPoint pairs objects of the same kind first, so two different shape types, or a shape and a picture, will cross-fade instead of tweening. Authored decks force the pairing by giving both objects an identical custom shape name. The exporter does read a per-object name — `data-pptx-shape-name` on the wrapper — but that attribute is currently specified as **importer metadata** for mirror/preserve packages ([`svg-effects.md`](./svg-effects.md) §6.6), not as an authoring control for generated pages. Until that contract is widened, keep morph pairs the same object kind with matching geometry and `id`, and do not introduce the attribute on generated pages to force a match.
+**When Morph refuses to match**: PowerPoint pairs compatible object kinds; a
+shape and a picture will cross-fade instead of tweening. For generated pages,
+declare the identity through the destination slide's `morph` block (§2.1).
+The exporter writes the shared `!!<key>` name after structure processing and
+reads the package back. Do not author `data-pptx-shape-name` for this purpose;
+that attribute remains importer metadata for mirror/preserve packages
+([`svg-effects.md`](./svg-effects.md) §6.6).
 
 **Not supported — Slide Zoom / Summary Zoom.** Click-to-jump navigation built on PowerPoint's Zoom objects (the "click a portrait, zoom into that section" pattern) has no exporter path. Build click-driven navigation with `trigger_shape` on ordinary object animations instead, or with plain hyperlinks.
 
@@ -301,9 +387,9 @@ It pairs naturally with a fixed foreground: with image-layout-patterns `#90`, th
 Four combinations that recur constantly in authored decks. Each is built from
 mechanisms already defined above — none needs a new capability.
 
-**Carousel** (morph, §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Morph then slides the images between frames and the row appears to scroll. Requires identical frame geometry and `id`s on every page; only the image assignments change. Scales to any number of images with one page each.
+**Carousel** (Morph, §2.1 and §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Explicitly pair each moving content unit across adjacent pages; the fixed frames stay static and need no pair. Scales to any number of images with one page each.
 
-**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window: a masked opening, or a background-filled rectangle above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. Give each digit column a 0.1 s stagger so they settle in sequence rather than in lockstep.
+**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. Give each digit column a 0.1 s stagger so they settle in sequence rather than in lockstep.
 
 **Parallax depth** (morph) — move a background layer a *short* distance and a foreground layer a longer one between two pages. The differing travel is read as depth. Keep both layers' z-order identical on both pages; a layer that changes stacking between pages breaks the tween and the transition jumps.
 
@@ -350,6 +436,9 @@ Generated export reads each slide's timing tree back and checks row count/order,
 trigger, trigger shape, shape target, preset class, resolved effect tuple, native behavior
 signature, duration, and timeline offset. Package validation then checks root
 timing placement, unique and valid `p:cTn` ids, and every `p:spTgt` reference.
+Deterministic Morph additionally checks the final adjacent slide parts for the
+requested `!!` names, one-to-one uniqueness, compatible object types, and a
+real Morph-by-object transition on the destination.
 The writer does not emit `p:bldP` for groups or pictures. Direct-PPTX preserve
 mode tolerates unchanged legacy group/picture `p:bldP` rows from earlier PPT
 Master exports; new generated packages remain strict.

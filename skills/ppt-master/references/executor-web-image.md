@@ -18,8 +18,8 @@ Whenever the slide uses an image with `Status: Sourced`, look up the correspondi
 
 The credit text is **not** rendered by post-processing or export — it must be present in the SVG you produce. The shape of the credit element (size, position, color, multi-image source line, hero gradient overlay) is specified in [image-searcher.md §7](./image-searcher.md). Do not invent a different style.
 
-Use `attribution_text` from the manifest entry as the **starting point**, then compress for the small-text constraint (drop URL, drop filename, keep "via Provider / License"). For CC0/PD images that landed in the `attribution-required` tier only because of upstream metadata quirks (rare), credits are still safe to render.
+Use `attribution_text` from the manifest entry as the **starting point**, then compress for the small-text constraint: drop URL and filename, but retain that image's author and CC BY / CC BY-SA license so the quality checker can bind the credit to the referenced asset. For CC0/PD images that landed in the `attribution-required` tier only because of upstream metadata quirks (rare), credits are still safe to render.
 
-`svg_quality_checker.py` treats missing CC BY / CC BY-SA inline attribution as an **error**. Fix the offending SVG before post-processing.
+`svg_quality_checker.py` treats a missing image-specific author + license credit as an **error**; one generic CC token does not cover multiple files. An unreadable/missing manifest or missing per-file provenance is also blocking. Fix the manifest or SVG before post-processing.
 
 **The manifest is the single source of truth for credits.** Do not duplicate license info into speaker notes or any other artifact.

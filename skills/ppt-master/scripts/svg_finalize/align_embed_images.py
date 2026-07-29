@@ -46,12 +46,12 @@ from __future__ import annotations
 
 import base64
 import io
+import math
 import os
 import re
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
@@ -59,6 +59,11 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from resource_paths import (  # noqa: E402
+    resolve_external_image_reference,
+    svg_data_uri_payload_error,
+    svg_image_payload_error,
+)
 
 configure_utf8_stdio()
 
@@ -119,14 +124,7 @@ def _resolve_image_path(href: str, svg_dir: Path) -> Path | None:
     """
     if not href:
         return None
-    decoded = unquote(href)
-    if decoded.startswith(('http://', 'https://', 'file://')):
-        return None
-    if os.path.isabs(decoded):
-        candidate = Path(decoded)
-    else:
-        candidate = (svg_dir / decoded).resolve()
-    return candidate if candidate.exists() else None
+    return resolve_external_image_reference(svg_dir, href)
 
 
 def _is_svg_image(img_path: Path, raw_bytes: bytes) -> bool:
@@ -156,6 +154,29 @@ def _load_pil_image(img_path: Path) -> 'PILImage' | None:
         return None
 
 
+def _prepare_raster_for_geometry(img: 'PILImage') -> 'PILImage':
+    """Apply EXIF orientation and materialize palette/tRNS transparency."""
+    from PIL import ImageOps
+
+    prepared = ImageOps.exif_transpose(img)
+    if prepared.mode == 'P':
+        prepared = prepared.convert('RGBA' if _has_alpha(prepared) else 'RGB')
+    elif (
+        'transparency' in getattr(prepared, 'info', {})
+        and prepared.mode not in {'RGBA', 'LA'}
+    ):
+        prepared = prepared.convert('RGBA')
+    return prepared
+
+
+def _has_exif_geometry_transform(img: 'PILImage') -> bool:
+    """Return whether EXIF requires a physical mirror or rotation."""
+    try:
+        return int(img.getexif().get(274, 1)) in range(2, 9)
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+
 def _normalize_for_save(img: 'PILImage', mime_type: str) -> 'PILImage':
     """Coerce a PIL image into a mode that the target format can save.
 
@@ -166,15 +187,17 @@ def _normalize_for_save(img: 'PILImage', mime_type: str) -> 'PILImage':
         if img.mode in ('RGBA', 'LA'):
             from PIL import Image
             background = Image.new('RGB', img.size, (255, 255, 255))
-            alpha = img.getchannel('A') if img.mode == 'RGBA' else None
+            alpha = img.getchannel('A')
             background.paste(img.convert('RGB'), mask=alpha)
             return background
         if img.mode != 'RGB':
             return img.convert('RGB')
         return img
-    # PNG / GIF / WEBP — preserve alpha if present
+    # Lossless output — preserve alpha if present.
     if img.mode == 'P':
-        return img.convert('RGBA' if 'A' in img.getbands() else 'RGB')
+        return img.convert('RGBA' if _has_alpha(img) else 'RGB')
+    if img.mode not in {'1', 'L', 'LA', 'I', 'I;16', 'RGB', 'RGBA'}:
+        return img.convert('RGBA' if _has_alpha(img) else 'RGB')
     return img
 
 
@@ -182,9 +205,7 @@ def _has_alpha(img: 'PILImage') -> bool:
     """Return whether a PIL image has transparency."""
     if img.mode in ('RGBA', 'LA'):
         return True
-    if img.mode == 'P':
-        return 'transparency' in getattr(img, 'info', {})
-    return False
+    return 'transparency' in getattr(img, 'info', {})
 
 
 def _target_size(
@@ -207,6 +228,8 @@ def _target_size(
 def _downscale_to_target(img: 'PILImage', target_w: int, target_h: int) -> tuple['PILImage', bool]:
     """Downscale without upsampling."""
     width, height = img.size
+    if width <= 0 or height <= 0:
+        return img, False
     ratio = min(target_w / width, target_h / height, 1.0)
     if ratio >= 1.0:
         return img, False
@@ -231,9 +254,11 @@ def _encode_pil_to_data_uri(
     bytes for that path.
     """
     original_mime_type = get_mime_type(src_path.name, fallback_bytes)
-    mime_type = original_mime_type
-    if compress and mime_type == 'image/png' and not _has_alpha(img):
-        mime_type = 'image/jpeg'
+    # Match native export: only original JPEG assets stay lossy. PNG remains
+    # PNG, while BMP/TIFF and other static raster formats become lossless PNG.
+    mime_type = (
+        'image/jpeg' if original_mime_type == 'image/jpeg' else 'image/png'
+    )
     pil_format = _PIL_FORMAT_BY_MIME.get(mime_type, 'PNG')
 
     # Encode current PIL image
@@ -251,16 +276,19 @@ def _encode_pil_to_data_uri(
     except (OSError, ValueError):
         return None
 
-    # If caller passed the original bytes and they're smaller (because PIL
-    # round-tripping an asset that was already well-compressed inflates it),
-    # fall back to those.
-    chosen = encoded_bytes
-    if fallback_bytes and mime_type == original_mime_type and len(fallback_bytes) < len(encoded_bytes):
-        chosen = fallback_bytes
-
-    chosen = _optimize_image_bytes(
-        chosen, mime_type, compress=compress, max_dimension=max_dimension,
+    optimized_bytes = _optimize_image_bytes(
+        encoded_bytes, mime_type, compress=compress, max_dimension=max_dimension,
     )
+
+    # If the original represents the same uncropped pixels and is smaller,
+    # retain it instead of inflating an already efficient PNG/JPEG.
+    chosen = optimized_bytes
+    if (
+        fallback_bytes
+        and mime_type == original_mime_type
+        and len(fallback_bytes) < len(optimized_bytes)
+    ):
+        chosen = fallback_bytes
 
     b64 = base64.b64encode(chosen).decode('ascii')
     return f'data:{mime_type};base64,{b64}', len(chosen)
@@ -306,7 +334,10 @@ def _process_one_image(
     href = _get_href(image)
     if not href:
         return False, None
-    if href.startswith('data:'):
+    if href.lower().startswith('data:'):
+        payload_error = svg_data_uri_payload_error(href)
+        if payload_error is not None:
+            return False, payload_error
         return False, None  # already inline
 
     img_path = _resolve_image_path(href, svg_dir)
@@ -325,6 +356,9 @@ def _process_one_image(
         return False, None
 
     if _is_svg_image(img_path, raw_bytes):
+        payload_error = svg_image_payload_error(raw_bytes)
+        if payload_error is not None:
+            return False, f'{img_path.name}: {payload_error}'
         _embed_raw_image(image, img_path, raw_bytes)
         if verbose:
             print(f'   [OK] {img_path.name} (svg, embedded as-is)')
@@ -352,11 +386,18 @@ def _process_one_image(
             print(f'   [OK] {img_path.name} (animated, embedded as-is)')
         return True, None
 
+    geometry_normalized = _has_exif_geometry_transform(img)
+    img = _prepare_raster_for_geometry(img)
     box_x = _parse_float(image.get('x'))
     box_y = _parse_float(image.get('y'))
     box_w = _parse_float(image.get('width'))
     box_h = _parse_float(image.get('height'))
-    if box_w <= 0 or box_h <= 0:
+    if (
+        not math.isfinite(box_w)
+        or not math.isfinite(box_h)
+        or box_w <= 0
+        or box_h <= 0
+    ):
         return False, 'zero-sized box'
 
     par_attr = image.get('preserveAspectRatio') or ''
@@ -367,8 +408,10 @@ def _process_one_image(
     # ------------------------------------------------------------------
     final_img: 'PILImage' = img
     new_x, new_y, new_w, new_h = box_x, box_y, box_w, box_h
-    transformed = False  # True iff bitmap content changed (crop happened)
+    transformed = geometry_normalized
     target_box_w, target_box_h = box_w, box_h
+    preserve_stretch = False
+    preserve_slice = False
 
     if not par_attr:
         # No preserveAspectRatio at all. The previous pipeline's fix-aspect
@@ -380,13 +423,20 @@ def _process_one_image(
         align, mode = parse_preserve_aspect_ratio(par_attr)
         if align == 'none':
             # Author wants stretch-to-box; preserve geometry, embed bytes.
-            pass
+            preserve_stretch = True
         elif mode == 'slice':
             x_anchor, y_anchor = get_crop_anchor(align)
-            cropped = crop_image_to_size(img, int(box_w), int(box_h),
-                                         x_anchor, y_anchor)
-            final_img = cropped
+            cropped_img = crop_image_to_size(
+                img, box_w, box_h, x_anchor, y_anchor
+            )
+            final_img = cropped_img
             transformed = True
+            preserve_slice = not math.isclose(
+                cropped_img.size[0] / cropped_img.size[1],
+                box_w / box_h,
+                rel_tol=1e-6,
+                abs_tol=1e-9,
+            )
         else:  # meet (or any other mode → treat as meet)
             new_w_calc, new_h_calc, off_x, off_y = calculate_fitted_dimensions(
                 img.size[0], img.size[1], box_w, box_h, mode='meet',
@@ -425,7 +475,11 @@ def _process_one_image(
     image.set('y', _format_number(new_y))
     image.set('width', _format_number(new_w))
     image.set('height', _format_number(new_h))
-    if 'preserveAspectRatio' in image.attrib:
+    if preserve_stretch:
+        image.set('preserveAspectRatio', 'none')
+    elif preserve_slice:
+        image.set('preserveAspectRatio', par_attr)
+    elif 'preserveAspectRatio' in image.attrib:
         del image.attrib['preserveAspectRatio']
 
     if verbose:
@@ -481,8 +535,10 @@ def align_and_embed_images_in_svg(
     try:
         tree = ET.parse(svg_path)
     except ET.ParseError as exc:
-        if verbose:
-            print(f'  [ERROR] {svg_path.name}: parse failed ({exc})')
+        print(
+            f'  [ERROR] {svg_path.name}: parse failed ({exc})',
+            file=sys.stderr,
+        )
         return (0, 1)
     root = tree.getroot()
 
@@ -511,10 +567,9 @@ def align_and_embed_images_in_svg(
             processed += 1
         elif err:
             errors += 1
-            if verbose:
-                print(f'   [WARN] {svg_path.name}: {err}')
+            print(f'   [ERROR] {svg_path.name}: {err}', file=sys.stderr)
 
-    if processed > 0 and not dry_run:
+    if processed > 0 and errors == 0 and not dry_run:
         tree.write(svg_path, encoding='utf-8', xml_declaration=False)
 
     return (processed, errors)

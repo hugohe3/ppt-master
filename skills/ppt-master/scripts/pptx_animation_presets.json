@@ -938,7 +938,7 @@
       "effect_options": {
         "font_name": {
           "type": "string",
-          "default": "??"
+          "required": true
         }
       }
     },

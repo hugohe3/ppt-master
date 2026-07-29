@@ -177,7 +177,7 @@ No. PPT Master is a presentation workflow, not a model or a complete agent. It s
 
 If the results you've seen look mediocre, check your setup before concluding anything about the tool: What model? What context size? Was image generation enabled? PPT Master + Claude Opus at 1M context + `gpt-image-2` images is a genuinely different experience from PPT Master + a small open-source model with no image API configured.
 
-> **No Claude access?** Project sponsor [PackyCode](https://www.packyapi.com/register?aff=ppt-master) provides pay-as-you-go access to Claude and other models — no subscription, no overseas card required. Use promo code **`ppt-master`** for 10% off.
+> **No Claude access?** Project sponsor [PackyCode](https://www.packyapi.ai/register?aff=ppt-master) provides pay-as-you-go access to Claude and other models — no subscription, no overseas card required. Use promo code **`ppt-master`** for 10% off.
 
 One last thing: this is a free, solo-maintained open-source project. If it fits your needs, use it — I'm glad it helps; if it doesn't, pick another tool. Sincere feedback and suggestions are always welcome, because that's how the project gets a little better over time.
 

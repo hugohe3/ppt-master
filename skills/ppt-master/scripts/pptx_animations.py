@@ -71,6 +71,7 @@ configure_utf8_stdio()
 # Entrance animation definitions
 # ============================================================================
 
+<<<<<<< HEAD
 #
 # 'filter' values must be valid PowerPoint <p:animEffect filter=".."/> strings
 # (see ECMA-376 §19.5.10 ST_TLAnimateEffectTransition / filter dictionary).
@@ -106,6 +107,283 @@ ANIMATIONS: dict[str, dict[str, Any]] = {
     'stretch':  {'name': 'Stretch',  'filter': 'stretch(across)', 'presetID': 17, 'presetSubtype': 0},
     'expand':   {'name': 'Expand',   'filter': 'stretch(across)', 'presetID': 50, 'presetSubtype': 0},
     'swivel':   {'name': 'Swivel',   'filter': 'wheel(1)', 'presetID': 19, 'presetSubtype': 0},
+=======
+# Compatibility names normalize to canonical PowerPoint-authored presets.
+# ``cut`` has no current object-animation preset, so the compatibility name
+# resolves to the standard instantaneous entrance, ``entrance_appear``.
+ANIMATION_ALIASES: dict[str, str] = {
+    'appear': 'entrance_appear',
+    'fade': 'entrance_fade',
+    'fly': 'entrance_fly',
+    'fly_left': 'entrance_fly',
+    'fly_right': 'entrance_fly',
+    'fly_top': 'entrance_fly',
+    'cut': 'entrance_appear',
+    'zoom': 'entrance_zoom',
+    'wipe': 'entrance_wipe',
+    'wipe_left': 'entrance_wipe',
+    'wipe_right': 'entrance_wipe',
+    'wipe_up': 'entrance_wipe',
+    'wipe_down': 'entrance_wipe',
+    'split': 'entrance_split',
+    'blinds': 'entrance_blinds',
+    'checkerboard': 'entrance_checkerboard',
+    'dissolve': 'entrance_dissolve',
+    'random_bars': 'entrance_random_bars',
+    'peek': 'entrance_peek',
+    'wheel': 'entrance_wheel',
+    'box': 'entrance_box',
+    'circle': 'entrance_circle',
+    'diamond': 'entrance_diamond',
+    'plus': 'entrance_plus',
+    'strips': 'entrance_strips',
+    'wedge': 'entrance_wedge',
+    'stretch': 'entrance_stretch',
+    'expand': 'entrance_expand',
+    'swivel': 'entrance_swivel',
+}
+
+LEGACY_ANIMATION_KEYS = tuple(ANIMATION_ALIASES)
+ANIMATION_CATEGORIES = ('entrance', 'emphasis', 'path', 'exit')
+_PRESET_CLASS_BY_CATEGORY = {
+    'entrance': 'entr',
+    'emphasis': 'emph',
+    'path': 'path',
+    'exit': 'exit',
+}
+_DML_NS = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+_REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+_PACKAGE_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships'
+_AUDIO_REL_TYPE = (
+    'http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio'
+)
+_P14_NS = 'http://schemas.microsoft.com/office/powerpoint/2010/main'
+_MC_NS = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+ET.register_namespace('p', PML_NS)
+ET.register_namespace('a', _DML_NS)
+ET.register_namespace('r', _REL_NS)
+ET.register_namespace('p14', _P14_NS)
+
+ANIMATION_EFFECT_OPTION_FIELDS = (
+    'direction',
+    'amount',
+    'color',
+    'font_name',
+    'relative',
+    'size',
+)
+ANIMATION_TIMING_OPTION_FIELDS = (
+    'repeat_count',
+    'repeat_duration',
+    'auto_reverse',
+    'rewind',
+    'accelerate',
+    'decelerate',
+    'bounce_end',
+    'restart',
+)
+ANIMATION_RESTARTS = ('always', 'when-not-active', 'never')
+ANIMATION_AFTER_EFFECTS = ('none', 'dim', 'hide', 'hide-on-next-click')
+_NON_CONCRETE_FONT_NAMES = frozenset({
+    '-apple-system',
+    'blinkmacsystemfont',
+    'cursive',
+    'emoji',
+    'fantasy',
+    'inherit',
+    'initial',
+    'math',
+    'monospace',
+    'revert',
+    'revert-layer',
+    'sans-serif',
+    'serif',
+    'system-ui',
+    'ui-monospace',
+    'ui-rounded',
+    'ui-sans-serif',
+    'ui-serif',
+    'unset',
+})
+
+# Legacy directional names retain their historical semantics by desugaring
+# into one canonical effect plus the matching PowerPoint EffectParameters
+# value. New plans never select these aliases.
+ANIMATION_ALIAS_OPTIONS: dict[str, dict[str, object]] = {
+    'fly_left': {'direction': 'left'},
+    'fly_right': {'direction': 'right'},
+    'fly_top': {'direction': 'up'},
+    'wipe_left': {'direction': 'left'},
+    'wipe_right': {'direction': 'right'},
+    'wipe_up': {'direction': 'up'},
+    'wipe_down': {'direction': 'down'},
+    'wheel': {'amount': 4},
+}
+
+
+def _load_native_animations() -> dict[str, dict[str, Any]]:
+    """Load the PowerPoint-authored preset rows shipped with this module."""
+    manifest_path = Path(__file__).with_name('pptx_animation_presets.json')
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f'unable to load native animation presets from {manifest_path}: {exc}'
+        ) from exc
+    if manifest.get('version') != 2:
+        raise RuntimeError(
+            f'unsupported native animation preset version: {manifest.get("version")!r}'
+        )
+    raw_effects = manifest.get('effects')
+    if not isinstance(raw_effects, list):
+        raise RuntimeError('native animation preset manifest field "effects" must be a list')
+
+    native: dict[str, dict[str, Any]] = {}
+    category_counts = {category: 0 for category in ANIMATION_CATEGORIES}
+    for raw in raw_effects:
+        if not isinstance(raw, dict):
+            raise RuntimeError('native animation preset entries must be objects')
+        key = raw.get('key')
+        category = raw.get('category')
+        if not isinstance(key, str) or not key:
+            raise RuntimeError(f'native animation preset has invalid key: {key!r}')
+        if category not in ANIMATION_CATEGORIES:
+            raise RuntimeError(
+                f'native animation preset {key!r} has invalid category: {category!r}'
+            )
+        if key in native or key in ANIMATION_ALIASES:
+            raise RuntimeError(f'duplicate animation preset key: {key}')
+        row_xml = raw.get('row_xml')
+        if not isinstance(row_xml, str):
+            raise RuntimeError(f'native animation preset {key!r} is missing row_xml')
+        try:
+            row = ET.fromstring(row_xml)
+        except ET.ParseError as exc:
+            raise RuntimeError(
+                f'native animation preset {key!r} contains invalid row_xml: {exc}'
+            ) from exc
+        if row.tag != f'{{{PML_NS}}}cTn':
+            raise RuntimeError(f'native animation preset {key!r} is not a p:cTn row')
+
+        spec = {
+            'name': str(raw.get('name') or key),
+            'filter': raw.get('filter'),
+            'presetID': int(raw.get('preset_id')),
+            'presetSubtype': int(raw.get('preset_subtype')),
+            'presetClass': _PRESET_CLASS_BY_CATEGORY[category],
+            'category': category,
+            'msoEffectId': int(raw.get('mso_effect_id')),
+            'defaultDurationMs': raw.get('default_duration_ms'),
+            'durationScalable': bool(raw.get('duration_scalable')),
+            'rowXml': row_xml,
+            'effectOptions': raw.get('effect_options', {}),
+        }
+        if row.get('presetClass') != spec['presetClass']:
+            raise RuntimeError(f'native animation preset {key!r} changed presetClass')
+        if int(row.get('presetID', '-1')) != spec['presetID']:
+            raise RuntimeError(f'native animation preset {key!r} changed presetID')
+        if int(row.get('presetSubtype', '-1')) != spec['presetSubtype']:
+            raise RuntimeError(f'native animation preset {key!r} changed presetSubtype')
+        effect_options = spec['effectOptions']
+        if not isinstance(effect_options, dict):
+            raise RuntimeError(
+                f'native animation preset {key!r} effect_options must be an object'
+            )
+        unknown_options = set(effect_options) - set(ANIMATION_EFFECT_OPTION_FIELDS)
+        if unknown_options:
+            raise RuntimeError(
+                f'native animation preset {key!r} has unknown effect option(s): '
+                + ', '.join(sorted(unknown_options))
+            )
+        for option_name, option_spec in effect_options.items():
+            if not isinstance(option_spec, dict):
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'must be an object'
+                )
+            required = option_spec.get('required', False)
+            if not isinstance(required, bool):
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'required must be a boolean'
+                )
+            if required and 'default' in option_spec:
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    'cannot define both required and default'
+                )
+            option_type = option_spec.get('type')
+            if option_type == 'enum':
+                values = option_spec.get('values')
+                if not isinstance(values, dict) or not values:
+                    raise RuntimeError(
+                        f'native animation preset {key!r} enum option '
+                        f'{option_name!r} must define values'
+                    )
+                default = str(option_spec.get('default'))
+                if default not in values:
+                    raise RuntimeError(
+                        f'native animation preset {key!r} enum option '
+                        f'{option_name!r} has an unknown default'
+                    )
+                for option_value, variant_xml in values.items():
+                    if not isinstance(option_value, str) or not isinstance(
+                        variant_xml,
+                        str,
+                    ):
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r} contains an invalid variant'
+                        )
+                    try:
+                        variant = ET.fromstring(variant_xml)
+                    except ET.ParseError as exc:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} contains invalid XML: '
+                            f'{exc}'
+                        ) from exc
+                    if variant.tag != f'{{{PML_NS}}}cTn':
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} is not a p:cTn row'
+                        )
+                    if variant.get('presetClass') != spec['presetClass']:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} changed presetClass'
+                        )
+                    if int(variant.get('presetID', '-1')) != spec['presetID']:
+                        raise RuntimeError(
+                            f'native animation preset {key!r} enum option '
+                            f'{option_name!r}/{option_value!r} changed presetID'
+                        )
+            elif option_type not in {'number', 'string', 'boolean', 'color'}:
+                raise RuntimeError(
+                    f'native animation preset {key!r} option {option_name!r} '
+                    f'has unknown type: {option_type!r}'
+                )
+        native[key] = spec
+        category_counts[category] += 1
+
+    expected_counts = {'entrance': 53, 'emphasis': 33, 'path': 64, 'exit': 53}
+    if category_counts != expected_counts:
+        raise RuntimeError(
+            'native animation preset category counts changed: '
+            f'{category_counts!r}; expected {expected_counts!r}'
+        )
+    return native
+
+
+NATIVE_ANIMATIONS = _load_native_animations()
+NATIVE_ANIMATION_KEYS = tuple(NATIVE_ANIMATIONS)
+ANIMATIONS = {
+    **NATIVE_ANIMATIONS,
+    **{
+        alias: NATIVE_ANIMATIONS[canonical]
+        for alias, canonical in ANIMATION_ALIASES.items()
+    },
+>>>>>>> upstream/main
 }
 
 ANIMATION_MODES = ('auto', 'mixed', 'random')
@@ -190,6 +468,194 @@ def normalize_animation_effect(
     )
 
 
+<<<<<<< HEAD
+=======
+def _finite_number(value: object, field: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'{field} must be a finite number: {value!r}')
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError(f'{field} must be a finite number: {value!r}')
+    return number
+
+
+def _normalize_animation_color(value: object, field: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(
+            f'{field} must be #RRGGBB or theme:<scheme-color>: {value!r}'
+        )
+    if re.fullmatch(r'#[0-9A-Fa-f]{6}', value):
+        return value.upper()
+    if re.fullmatch(
+        r'theme:(?:dk1|lt1|dk2|lt2|tx1|tx2|bg1|bg2|accent[1-6]|'
+        r'hlink|folHlink)',
+        value,
+    ):
+        return value
+    raise ValueError(
+        f'{field} must be #RRGGBB or theme:<scheme-color>: {value!r}'
+    )
+
+
+def _normalize_powerpoint_font_name(value: object, field: str) -> str:
+    """Return one concrete PowerPoint font name without checking installation."""
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name: {value!r}'
+        )
+    normalized = value.strip()
+    if len(normalized) > 255:
+        raise ValueError(f'{field} exceeds 255 characters')
+    if ',' in normalized:
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name, '
+            f'not a CSS font stack: {value!r}'
+        )
+    if normalized.casefold() in _NON_CONCRETE_FONT_NAMES:
+        raise ValueError(
+            f'{field} must be one concrete PowerPoint font name, '
+            f'not a generic family or CSS-wide keyword: {value!r}'
+        )
+    return normalized
+
+
+def normalize_animation_effect_options(
+    effect: str,
+    options: object = None,
+) -> dict[str, object]:
+    """Validate effect-specific PowerPoint EffectParameters values."""
+    if effect not in NATIVE_ANIMATIONS:
+        if options in (None, {}):
+            return {}
+        raise ValueError(
+            'animation effect_options require one explicit canonical effect; '
+            f'found {effect!r}'
+        )
+    if options is None:
+        options = {}
+    if not isinstance(options, Mapping):
+        raise ValueError(f'animation effect_options must be an object: {options!r}')
+
+    option_specs = NATIVE_ANIMATIONS[effect]['effectOptions']
+    unknown = set(options) - set(option_specs)
+    if unknown:
+        unsupported = ', '.join(sorted(unknown))
+        supported = ', '.join(option_specs) or '(none)'
+        raise ValueError(
+            f'animation effect {effect!r} does not support effect option(s): '
+            f'{unsupported}; supported options: {supported}'
+        )
+    missing_required = sorted(
+        name
+        for name, spec in option_specs.items()
+        if spec.get('required') and name not in options
+    )
+    if missing_required:
+        required_fields = ', '.join(
+            f'effect_options.{name}' for name in missing_required
+        )
+        raise ValueError(
+            f'animation effect {effect!r} requires {required_fields}'
+        )
+
+    normalized: dict[str, object] = {}
+    for name, value in options.items():
+        spec = option_specs[name]
+        option_type = spec['type']
+        field = f'animation effect_options.{name}'
+        if option_type == 'enum':
+            key = str(value)
+            if isinstance(value, bool) or key not in spec['values']:
+                valid = ', '.join(spec['values'])
+                raise ValueError(
+                    f'{field} for {effect!r} must be one of {valid}: {value!r}'
+                )
+            normalized[name] = (
+                int(key)
+                if name == 'amount' and re.fullmatch(r'\d+', key)
+                else key
+            )
+        elif option_type == 'number':
+            number = _finite_number(value, field)
+            minimum = spec.get('minimum')
+            maximum = spec.get('maximum')
+            if minimum is not None and number < float(minimum):
+                raise ValueError(
+                    f'{field} for {effect!r} must be at least {minimum}: {value!r}'
+                )
+            if maximum is not None and number > float(maximum):
+                raise ValueError(
+                    f'{field} for {effect!r} must be at most {maximum}: {value!r}'
+                )
+            normalized[name] = number
+        elif option_type == 'string':
+            if name == 'font_name':
+                normalized[name] = _normalize_powerpoint_font_name(value, field)
+            else:
+                if not isinstance(value, str) or not value.strip():
+                    raise ValueError(
+                        f'{field} must be a non-empty string: {value!r}'
+                    )
+                normalized_value = value.strip()
+                if len(normalized_value) > 255:
+                    raise ValueError(f'{field} exceeds 255 characters')
+                normalized[name] = normalized_value
+        elif option_type == 'boolean':
+            if not isinstance(value, bool):
+                raise ValueError(f'{field} must be a boolean: {value!r}')
+            normalized[name] = value
+        elif option_type == 'color':
+            normalized[name] = _normalize_animation_color(value, field)
+        else:
+            raise AssertionError(f'unhandled animation effect option type: {option_type}')
+    return normalized
+
+
+def normalize_animation_effect_request(
+    effect: object,
+    options: object = None,
+    *,
+    allow_none: bool = True,
+    allow_modes: bool = True,
+) -> tuple[str | None, dict[str, object]]:
+    """Normalize one effect plus options, including legacy semantic aliases."""
+    raw_effect = effect
+    canonical = normalize_animation_effect(
+        effect,
+        allow_none=allow_none,
+        allow_modes=allow_modes,
+    )
+    alias_options = (
+        ANIMATION_ALIAS_OPTIONS.get(raw_effect, {})
+        if isinstance(raw_effect, str)
+        else {}
+    )
+    explicit_options: Mapping[str, object]
+    if options is None:
+        explicit_options = {}
+    elif isinstance(options, Mapping):
+        explicit_options = options
+    else:
+        raise ValueError(f'animation effect_options must be an object: {options!r}')
+    for name, alias_value in alias_options.items():
+        if name in explicit_options and explicit_options[name] != alias_value:
+            raise ValueError(
+                f'legacy animation effect {raw_effect!r} implies '
+                f'effect_options.{name}={alias_value!r}, which conflicts with '
+                f'{explicit_options[name]!r}'
+            )
+    merged = {**alias_options, **explicit_options}
+    if canonical is None or canonical in ANIMATION_MODES:
+        if merged:
+            raise ValueError(
+                'animation effect_options require one explicit canonical effect; '
+                f'found {canonical or "none"!r}'
+            )
+        return canonical, {}
+    return canonical, normalize_animation_effect_options(canonical, merged)
+
+
+>>>>>>> upstream/main
 def normalize_animation_trigger(trigger: object) -> str:
     """Return a supported PowerPoint Start mode or raise a precise error."""
     if not isinstance(trigger, str):
@@ -909,12 +1375,200 @@ def _behavior_duration_ms(
     row: ET.Element,
     filter_name: str | None,
     errors: list[str],
+<<<<<<< HEAD
 ) -> int:
     if filter_name is None:
         behaviors = list(row.iter(_qn(PML_NS, 'set')))
     else:
         behaviors = list(row.iter(_qn(PML_NS, 'animEffect')))
     if len(behaviors) != 1:
+=======
+) -> dict[str, object]:
+    if effect is None:
+        return {}
+    option_specs = NATIVE_ANIMATIONS[effect]['effectOptions']
+    values: dict[str, object] = {}
+    for name, spec in option_specs.items():
+        option_type = spec['type']
+        if option_type == 'enum':
+            matches = []
+            for value, variant_xml in spec['values'].items():
+                variant = ET.fromstring(variant_xml)
+                variant_filter = _row_filter(variant, variant.get('presetClass', ''), [])
+                if variant.get('presetSubtype') != row.get('presetSubtype'):
+                    continue
+                if variant_filter != filter_name:
+                    continue
+                matches.append(value)
+            if len(matches) != 1:
+                errors.append(
+                    f'animation effect {effect!r} option {name!r} could not be '
+                    f'read from presetSubtype={row.get("presetSubtype")!r}, '
+                    f'filter={filter_name!r}'
+                )
+                continue
+            value: object = matches[0]
+            if name == 'amount' and re.fullmatch(r'\d+', str(value)):
+                value = int(str(value))
+            values[name] = value
+        elif name == 'amount' and effect == 'emphasis_spin':
+            rotations = list(row.iter(_qn(PML_NS, 'animRot')))
+            raw = rotations[0].get('by') if len(rotations) == 1 else None
+            if raw is None or not re.fullmatch(r'-?\d+', raw):
+                errors.append('emphasis_spin row has an invalid rotation amount')
+            else:
+                values[name] = int(raw) / 60000
+        elif name == 'amount' and effect == 'emphasis_transparency':
+            opacity_values = []
+            for node in row.iter(_qn(PML_NS, 'set')):
+                attributes = {
+                    (attribute.text or '').strip()
+                    for attribute in node.iter(_qn(PML_NS, 'attrName'))
+                }
+                if 'style.opacity' in attributes:
+                    opacity_values.extend(
+                        value.get('val')
+                        for value in node.iter(_qn(PML_NS, 'strVal'))
+                    )
+            if len(opacity_values) != 1:
+                errors.append('emphasis_transparency row has an invalid opacity')
+            else:
+                try:
+                    values[name] = 1 - float(str(opacity_values[0]))
+                except ValueError:
+                    errors.append(
+                        'emphasis_transparency row has a non-numeric opacity'
+                    )
+        elif name == 'color':
+            color = _read_animation_color(
+                row,
+                errors,
+                f'animation effect {effect!r} color option',
+            )
+            if color is not None:
+                values[name] = color
+        elif name == 'font_name':
+            fonts = []
+            for node in row.iter(_qn(PML_NS, 'set')):
+                attributes = {
+                    (attribute.text or '').strip()
+                    for attribute in node.iter(_qn(PML_NS, 'attrName'))
+                }
+                if 'style.fontFamily' in attributes:
+                    fonts.extend(
+                        value.get('val')
+                        for value in node.iter(_qn(PML_NS, 'strVal'))
+                    )
+            if len(fonts) != 1:
+                errors.append(
+                    'emphasis_change_font row must contain one font name'
+                )
+                continue
+            try:
+                values[name] = _normalize_powerpoint_font_name(
+                    fonts[0],
+                    'emphasis_change_font row font name',
+                )
+            except ValueError as exc:
+                errors.append(str(exc))
+        elif name == 'relative':
+            motions = list(row.iter(_qn(PML_NS, 'animMotion')))
+            if len(motions) != 1:
+                errors.append(f'motion-path effect {effect!r} has no single path')
+            else:
+                values[name] = motions[0].get('pathEditMode') != 'fixed'
+        elif name == 'size':
+            scales = list(row.iter(_qn(PML_NS, 'animScale')))
+            targets = (
+                scales[0].findall(_qn(PML_NS, 'to'))
+                if len(scales) == 1
+                else []
+            )
+            raw = (
+                targets[0].get('x')
+                if len(targets) == 1
+                else '100000' if not targets and len(scales) == 1 else None
+            )
+            if raw is None or not re.fullmatch(r'\d+', raw):
+                errors.append('emphasis_grow_shrink row has an invalid size')
+            else:
+                values[name] = int(raw) / 1000
+        else:
+            errors.append(
+                f'animation effect {effect!r} option {name!r} has no reader'
+            )
+    return values
+
+
+def _timing_summary(
+    row: ET.Element,
+    duration_ms: int | None,
+    errors: list[str],
+) -> tuple[
+    float | None,
+    int | None,
+    bool,
+    bool,
+    float,
+    float,
+    float,
+    str,
+    int | None,
+]:
+    raw_repeat_count = row.get('repeatCount')
+    repeat_count = None
+    if raw_repeat_count is not None:
+        if not re.fullmatch(r'\d+', raw_repeat_count):
+            errors.append(
+                f'object-animation repeatCount must be numeric; found '
+                f'{raw_repeat_count!r}'
+            )
+        else:
+            repeat_count = int(raw_repeat_count) / 1000
+    raw_repeat_duration = row.get('repeatDur')
+    repeat_duration_ms = None
+    if raw_repeat_duration is not None:
+        if not re.fullmatch(r'\d+', raw_repeat_duration):
+            errors.append(
+                f'object-animation repeatDur must be numeric; found '
+                f'{raw_repeat_duration!r}'
+            )
+        else:
+            repeat_duration_ms = int(raw_repeat_duration)
+    if repeat_count is not None and repeat_duration_ms is not None:
+        errors.append('object-animation row sets both repeatCount and repeatDur')
+
+    def ratio(attribute: str) -> float:
+        raw = row.get(attribute)
+        if raw is None:
+            return 0.0
+        if not re.fullmatch(r'\d+', raw):
+            errors.append(
+                f'object-animation {attribute} must be numeric; found {raw!r}'
+            )
+            return 0.0
+        number = int(raw)
+        if number > 100000:
+            errors.append(
+                f'object-animation {attribute} exceeds 100000; found {number}'
+            )
+        return number / 100000
+
+    accelerate = ratio('accel')
+    decelerate = ratio('decel')
+    if accelerate + decelerate > 1:
+        errors.append('object-animation accel + decel exceeds 100000')
+    raw_bounce_values = {
+        node.get(_qn(_P14_NS, 'bounceEnd'))
+        for node in row.iter()
+        if node.get(_qn(_P14_NS, 'bounceEnd')) is not None
+    }
+    preset_bounce = row.get(_qn(_P14_NS, 'presetBounceEnd'))
+    if preset_bounce is not None:
+        raw_bounce_values.add(preset_bounce)
+    bounce_end = 0.0
+    if len(raw_bounce_values) > 1:
+>>>>>>> upstream/main
         errors.append(
             'entrance row must contain exactly one primary behavior; '
             f'found {len(behaviors)}'
@@ -1471,6 +2125,71 @@ def get_animation_help() -> str:
     return '\n'.join(lines)
 
 
+<<<<<<< HEAD
+=======
+def describe_animation_effect(effect: object) -> dict[str, Any]:
+    """Return the author-facing option contract for one animation effect."""
+    canonical = normalize_animation_effect(
+        effect,
+        allow_none=False,
+        allow_modes=False,
+    )
+    assert canonical is not None
+    implied_options = (
+        dict(ANIMATION_ALIAS_OPTIONS.get(effect, {}))
+        if isinstance(effect, str)
+        else {}
+    )
+    option_contract: dict[str, Any] = {}
+    for name, raw_spec in NATIVE_ANIMATIONS[canonical]['effectOptions'].items():
+        spec = {
+            key: value
+            for key, value in raw_spec.items()
+            if key != 'values'
+        }
+        if raw_spec.get('type') == 'enum':
+            spec['values'] = list(raw_spec['values'])
+        option_contract[name] = spec
+    return {
+        'input': effect,
+        'effect': canonical,
+        'compatibility_alias': (
+            effect if isinstance(effect, str) and effect in ANIMATION_ALIASES else None
+        ),
+        'implied_effect_options': implied_options,
+        'effect_options': option_contract,
+        'timing': {
+            'duration': 'positive seconds',
+            'delay': 'non-negative seconds; group scope only',
+            'stagger': 'non-negative seconds; animation scope only',
+            'trigger': list(ANIMATION_TRIGGERS),
+            'trigger_shape': (
+                'other top-level SVG group id; group scope only; maps to '
+                'PowerPoint "On Click of"'
+            ),
+            'repeat_count': 'positive number; mutually exclusive with repeat_duration',
+            'repeat_duration': 'positive seconds; mutually exclusive with repeat_count',
+            'auto_reverse': 'boolean',
+            'rewind': 'boolean',
+            'accelerate': 'number from 0 to 1',
+            'decelerate': 'number from 0 to 1',
+            'bounce_end': (
+                'number from 0 to 1; requires an interpolated behavior and '
+                'is mutually exclusive with decelerate'
+            ),
+            'restart': list(ANIMATION_RESTARTS),
+        },
+        'after_effect': list(ANIMATION_AFTER_EFFECTS),
+        'sound': 'project-relative or absolute .m4a, .mp3, or .wav path',
+        'derived_not_configured': {
+            'speed': 'derived from duration',
+            'smooth_start': 'derived from accelerate',
+            'smooth_end': 'derived from decelerate',
+        },
+    }
+
+
+>>>>>>> upstream/main
 def main() -> None:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(

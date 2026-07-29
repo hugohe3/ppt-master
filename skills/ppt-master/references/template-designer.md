@@ -64,7 +64,7 @@ ownership.
 
 | Mode | Output structure contract |
 |---|---|
-| `standard` / `fidelity` | Author project-canonical SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. Use the compact authored-preset group only for exact registered preset matches. |
+| `standard` / `fidelity` | Author project-canonical SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. For every new contour, use an editable basic primitive, then an exact compact authored preset, then a Boolean result; use freeform only when those cannot express it faithfully. |
 | `mirror` | Materialize a new workspace from the validated source graph one-to-one: keep the Master/Layout identities and parentage, slide assignments, placeholder type/index/bounds, and supported visual/native-object facts that are actually present. Edit the authoring IR; materialization may rehydrate converter-supported native payload only for unchanged source refs. Mechanical normalization maps fixed-layer source groups into the direct atoms required by the current explicit SVG contract while preserving ownership, paint order, and appearance; it must not invent missing facts or semantically redesign the graph. |
 
 Every page remains a complete standalone SVG preview.
@@ -83,6 +83,8 @@ bundle into an authored template. `mirror` instead preserves the supported
 expanded lossless source representation. The exact syntax and validation
 contract remain owned by
 [`shared-standards-core.md`](./shared-standards-core.md) and the native-shape reference.
+When one preset is insufficient, apply the same reference's Boolean gate before
+hand-authoring a freeform.
 
 **Hard rule — complete mirror graph**: Preserve every supported source Layout represented by the validated import,
 including Layouts unused by source Slides. Emit one complete source-page
@@ -236,14 +238,15 @@ page_count: <N>
 - HEX values with role labels (primary / accent / background / text / etc.)
 - Brand-specific application rules when present (e.g. "KPI cards rotate blue→green→red→yellow")
 
-## III. Typography (omit when using the default `Arial, "Microsoft YaHei", sans-serif` stack)
-- Per-role font stacks ONLY when the template intentionally diverges (display serif title, brand typeface, etc.)
-- Font-install or embedding requirement when a non-preinstalled font leads any stack
+## III. Typography (omit without template-owned typeface identity)
+- Per-role stacks for identity (display serif, brand face, etc.)
+- A non-preinstalled face may lead only after user-confirmed target installation/approved install; no auto-embedding
+- Otherwise export a safe face; unavailable proprietary faces stay references. CSS tails aid preview, not deterministic PowerPoint fallback
 - Body baseline px (informational; `spec_lock.md` owns the actual values per project)
 
 ## IV. Signature Design Elements
 - Decorative motifs that ARE this template — top bar, gradient underline, logo treatment, brand emblem placement
-- Source-derived layout grammar — grid / column rhythm, page chrome, image zones, mask / crop behavior, overlay treatment, and density rhythm that make the template recognizable
+- Source-derived layout grammar — grid / column rhythm, page chrome, image zones, crop/clip behavior, scrim/overlay or baked-alpha treatment, and density rhythm that make the template recognizable
 - Optional XML snippet for any reusable component unique to this template
 
 ## V. Page Roster
@@ -335,7 +338,7 @@ Templates must strictly follow the finalized template brief and the generated `d
 - **Color scheme**: Uses primary, secondary, and accent colors from the spec
 - **Font plan**: Uses the per-role font families declared in the spec
 - **Layout principles**: Margins and spacing conform to the spec
-- **Image system**: Image placement, crop / mask behavior, full-bleed zones, and overlay rules follow the source-derived norms in the spec
+- **Image system**: Image placement, crop/clip behavior, full-bleed zones, and scrim/overlay or baked-alpha treatment follow the source-derived norms in the spec
 - **Deck application**: Template Overview describes the recurring situations, audiences/outcomes, and representative roles; Page Roster factually describes the actual prototypes and reusable slots without prescribing future use
 
 If PPTX import output exists:
@@ -372,7 +375,7 @@ template.
 |---|---|---|
 | Lossless import SVG | Native-payload backing | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity. Keep it immutable and resolve it only through validated source refs. |
 | Authoring IR bundle | Editable template-creation source | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and stable document-local source refs. Models read `authoring_summary.json`; tools read `authoring_manifest.json` for source paths and initial hashes. |
-| `standard` / `fidelity` output | Newly authored contract | Use `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches, with paint from the confirmed brief / `design_spec.md`; use ordinary project SVG for other geometry. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
+| `standard` / `fidelity` output | Newly authored contract | Use editable basic primitives directly, `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches, and `shape_boolean_svg.py` for compound closed contours before allowing a necessary freeform. Paint comes from the confirmed brief / `design_spec.md`. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
 | `mirror` output | Materialized preserved contract | Preserve currently supported imported metadata on unchanged Slide-local/slot refs, use the edited SVG fallback otherwise, and normalize fixed structural layers into semantic atoms. Strip IR-only source refs from final templates. |
 
 **Validation**: Mirror does not silently use stale metadata. Materialization
@@ -381,8 +384,9 @@ hash before reusing native payload. If an imported object cannot use the
 converter's supported native metadata after normalization, keep its current SVG fallback and report the
 limitation. For exact registered preset matches, `standard` / `fidelity`
 regenerate the compact helper group instead of transplanting opaque source
-payload; other geometry stays ordinary project SVG. `data-pptx-replace-with` remains
-reserved for optional PowerPoint-native Chart/Table replacement markers.
+payload; otherwise they apply the Boolean/freeform fallback gate above.
+`data-pptx-replace-with` remains reserved for optional PowerPoint-native
+Chart/Table replacement markers.
 
 **Explicit template SVG contract**:
 

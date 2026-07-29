@@ -25,6 +25,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
+from svg_to_pptx.drawingml.utils import detect_text_lang, is_cjk_char
+
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
     NS, Xfrm, fmt_num, emu_to_px, format_ooxml_alpha,
@@ -576,11 +578,31 @@ def _build_run(
     latin_face = _typeface_chain(style_chain, "latin")
     ea_face = _typeface_chain(style_chain, "ea")
     cs_face = _typeface_chain(style_chain, "cs")
+    lang = _attr_chain(style_chain, "lang")
+    alt_lang = _attr_chain(style_chain, "altLang")
 
     # Resolve theme refs (e.g. typeface="+mn-lt" / "+mj-ea")
-    latin_face = _resolve_theme_typeface(latin_face, theme_fonts)
-    ea_face = _resolve_theme_typeface(ea_face, theme_fonts)
-    cs_face = _resolve_theme_typeface(cs_face, theme_fonts)
+    latin_face = _resolve_theme_typeface(
+        latin_face,
+        theme_fonts,
+        text=text,
+        lang=lang,
+        alt_lang=alt_lang,
+    )
+    ea_face = _resolve_theme_typeface(
+        ea_face,
+        theme_fonts,
+        text=text,
+        lang=lang,
+        alt_lang=alt_lang,
+    )
+    cs_face = _resolve_theme_typeface(
+        cs_face,
+        theme_fonts,
+        text=text,
+        lang=lang,
+        alt_lang=alt_lang,
+    )
 
     font_family = _build_font_stack(latin_face, ea_face, cs_face)
 
@@ -698,8 +720,63 @@ def _typeface_chain(
     return None
 
 
-def _resolve_theme_typeface(face: str | None, theme_fonts: dict[str, str]) -> str | None:
-    """Theme references look like '+mj-lt' (major latin) / '+mn-ea' (minor EA)."""
+def _theme_script_from_lang(lang: str | None) -> str | None:
+    """Map a DrawingML language tag to one theme supplemental-script key."""
+    if not lang:
+        return None
+    normalized = lang.strip().replace("_", "-").lower()
+    if not normalized:
+        return None
+    parts = normalized.split("-")
+    primary = parts[0]
+    if primary == "ja":
+        return "Jpan"
+    if primary == "ko":
+        return "Hang"
+    if primary != "zh":
+        return None
+    if any(part in {"hant", "cht", "tw", "hk", "mo"} for part in parts[1:]):
+        return "Hant"
+    return "Hans"
+
+
+def _theme_script_from_text(text: str) -> str | None:
+    """Infer a CJK theme script from glyph ranges, defaulting plain Han to Hans."""
+    if any(
+        0x3100 <= ord(char) <= 0x312F
+        or 0x31A0 <= ord(char) <= 0x31BF
+        for char in text
+    ):
+        return "Hant"
+    return {
+        "ko-KR": "Hang",
+        "ja-JP": "Jpan",
+        "zh-CN": "Hans",
+    }.get(detect_text_lang(text))
+
+
+def _run_theme_script(
+    text: str,
+    lang: str | None,
+    alt_lang: str | None,
+) -> str | None:
+    """Resolve EA script from run language first, then alternate language/text."""
+    return (
+        _theme_script_from_lang(lang)
+        or _theme_script_from_lang(alt_lang)
+        or _theme_script_from_text(text)
+    )
+
+
+def _resolve_theme_typeface(
+    face: str | None,
+    theme_fonts: dict[str, str],
+    *,
+    text: str = "",
+    lang: str | None = None,
+    alt_lang: str | None = None,
+) -> str | None:
+    """Resolve DrawingML major/minor Latin, EA, and complex-script tokens."""
     if not face or not face.startswith("+"):
         return face
     code = face[1:]
@@ -707,10 +784,31 @@ def _resolve_theme_typeface(face: str | None, theme_fonts: dict[str, str]) -> st
         return theme_fonts.get("majorLatin") or face
     if code == "mn-lt":
         return theme_fonts.get("minorLatin") or face
-    if code == "mj-ea":
-        return theme_fonts.get("majorEastAsia") or theme_fonts.get("majorLatin") or face
-    if code == "mn-ea":
-        return theme_fonts.get("minorEastAsia") or theme_fonts.get("minorLatin") or face
+    if code in {"mj-ea", "mn-ea"}:
+        prefix = "major" if code.startswith("mj") else "minor"
+        script = _run_theme_script(text, lang, alt_lang)
+        script_face = (
+            theme_fonts.get(f"{prefix}Script{script}")
+            if script is not None else None
+        )
+        return (
+            theme_fonts.get(f"{prefix}EastAsia")
+            or script_face
+            or theme_fonts.get(f"{prefix}Latin")
+            or face
+        )
+    if code == "mj-cs":
+        return (
+            theme_fonts.get("majorComplexScript")
+            or theme_fonts.get("majorLatin")
+            or face
+        )
+    if code == "mn-cs":
+        return (
+            theme_fonts.get("minorComplexScript")
+            or theme_fonts.get("minorLatin")
+            or face
+        )
     return face
 
 
@@ -848,11 +946,7 @@ def _collect_text_defs(paragraphs: list[TextParagraph]) -> list[str]:
 
 def _is_cjk(ch: str) -> bool:
     """Check if a character is CJK (Chinese/Japanese/Korean) or full-width."""
-    cp = ord(ch)
-    return (0x4E00 <= cp <= 0x9FFF or 0x3400 <= cp <= 0x4DBF or
-            0x2E80 <= cp <= 0x2EFF or 0x3000 <= cp <= 0x303F or
-            0xFF00 <= cp <= 0xFFEF or 0xF900 <= cp <= 0xFAFF or
-            0x20000 <= cp <= 0x2A6DF)
+    return is_cjk_char(ch)
 
 
 def _char_width(ch: str, font_size: float, bold: bool) -> float:
@@ -1197,11 +1291,12 @@ def _run_tspan_attrs(run: TextRun) -> str:
     """Per-run overrides on a <tspan>. Only emit attributes that differ from
     the run that drove the parent <text> (we keep things simple: emit only
     overrides that can plausibly change run-to-run, never re-emit common
-    defaults). For v1 we just always emit fill / font-size / weight to be
-    safe — tspan inherits when omitted, so callers can simplify later.
+    defaults). For v1 we always emit fill, font family, and font size so each
+    imported run keeps its resolved typeface even when adjacent runs differ.
     """
     parts = [
         f'fill="{run.fill}"',
+        f'font-family="{run.font_family}"',
         f'font-size="{fmt_num(run.font_size_px)}"',
     ]
     if run.fill_opacity < 1.0:

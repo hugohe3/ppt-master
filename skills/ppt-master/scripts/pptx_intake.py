@@ -200,6 +200,36 @@ def build_source_profile(
 SOURCE_INDEX_NAME = "source_profile.json"
 
 
+def _load_source_index(index_path: Path) -> dict[str, Any]:
+    """Load and validate an existing multi-deck source index."""
+    if not index_path.exists():
+        return {}
+    if not index_path.is_file():
+        raise RuntimeError(f"Source index is not a file: {index_path}")
+
+    try:
+        loaded = json.loads(index_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeError) as exc:
+        raise RuntimeError(
+            f"Source index contains invalid JSON and was left unchanged: {index_path}"
+        ) from exc
+    except OSError as exc:
+        raise RuntimeError(f"Cannot read source index: {index_path}: {exc}") from exc
+
+    if not isinstance(loaded, dict) or not isinstance(loaded.get("decks"), list):
+        raise RuntimeError(
+            f"Source index must be a JSON object with a decks array and was left unchanged: "
+            f"{index_path}"
+        )
+    for index, deck in enumerate(loaded["decks"]):
+        if not isinstance(deck, dict):
+            raise RuntimeError(
+                f"Source index decks[{index}] must be an object and was left unchanged: "
+                f"{index_path}"
+            )
+    return loaded
+
+
 def upsert_source_index(output_dir: Path, digest: dict[str, Any]) -> Path:
     """Merge one deck's digest into the single multi-deck index `source_profile.json`.
 
@@ -209,14 +239,7 @@ def upsert_source_index(output_dir: Path, digest: dict[str, Any]) -> Path:
     with the same stem replaces its entry in place.
     """
     index_path = output_dir / SOURCE_INDEX_NAME
-    index: dict[str, Any] = {}
-    if index_path.is_file():
-        try:
-            loaded = json.loads(index_path.read_text(encoding="utf-8"))
-            if isinstance(loaded, dict) and isinstance(loaded.get("decks"), list):
-                index = loaded
-        except (json.JSONDecodeError, OSError):
-            index = {}
+    index = _load_source_index(index_path)
     stem = digest.get("stem")
     decks = [d for d in index.get("decks", []) if d.get("stem") != stem]
     decks.append(digest)

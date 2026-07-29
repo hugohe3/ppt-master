@@ -912,7 +912,7 @@ def _write_emit_result(result_file: str, url: str, markdown_path: str) -> None:
         print(f"   [WARN] Could not write --emit-result: {exc}")
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Web to Markdown Converter (Python)")
@@ -926,7 +926,7 @@ def main() -> None:
         help="On success, write the saved output path as JSON to this file "
              "(single-URL dispatcher use, so a title-named file can be located)")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.dir:
         CONFIG["output_dir"] = args.dir
@@ -942,11 +942,16 @@ def main() -> None:
                          and not l.strip().startswith("#")]
                 targets.extend(lines)
         else:
-            print(f"Error: File {args.file} not found")
+            print(f"Error: File {args.file} not found", file=sys.stderr)
+            return 1
 
     if not targets:
-        parser.print_help()
-        sys.exit(0)
+        parser.print_usage(sys.stderr)
+        print(
+            "web_to_md.py: error: at least one URL or --file is required",
+            file=sys.stderr,
+        )
+        return 2
 
     results = []
     for i, url in enumerate(targets):
@@ -970,10 +975,12 @@ def main() -> None:
         for r in results:
             if not r[0]:
                 print(f"   - {r[1]}: {r[2]}")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
     # Disable warnings for verify=False if needed, though often useful to see
     import urllib3
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    main()
+    raise SystemExit(main())

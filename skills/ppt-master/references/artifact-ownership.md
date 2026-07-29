@@ -10,7 +10,7 @@ Global artifact ownership rules for PPT Master projects.
 
 | Artifact | Owner | Role | Read/write contract |
 |---|---|---|---|
-| `sources/` content-type files | Content contract | Main pipeline factual/text origin for tables, chart data values, SmartArt node wording, and presentation content | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), judges by content, and resolves approved on-slide wording into §IX. Executor opens source passages only for explicit verification/resolution; do not replace values with PPTX geometry JSON in the main pipeline. |
+| `sources/` content-type files | Content contract | Main pipeline factual/text origin for tables, chart data values, SmartArt node wording, and presentation content | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), judges by content, and resolves approved semantic content plus complete preferred on-slide wording into §IX. Executor opens source passages only for explicit verification/resolution; do not replace values with PPTX geometry JSON in the main pipeline. |
 | `sources/*.facts.json` | Fact provenance contract | Stable external `fact_id` → claim/source mapping created by topic research | Strategist cites IDs in §IX; Executor resolves them for visible footnotes / natural notes attribution. Scenario data never enters this file. |
 | `sources/` converted-source originals | Source archive | Imported source files that have a converted content contract (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) and source-adjacent extracted assets | Read via the converted `<stem>.md` in the main pipeline; direct-PPTX workflows read the `.pptx` by route |
 | `sources/*.conversion_profile.json`, `sources/*_files/image_manifest.json` | Pipeline sidecar | Conversion audit record / asset index | NOT read as slide content; open only to audit a conversion or resolve assets |
@@ -43,7 +43,7 @@ Global artifact ownership rules for PPT Master projects.
 | `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Step 7.3 writes after the PPTX passes package validation and emits a compact `[POSTFLIGHT]` receipt. Agents use the receipt on routine success and keep the full JSON cold unless targeted failure/audit evidence is required. |
 | `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Step 7.3 writes only final deliverables from `svg_output/`. |
 | `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
-| `animations.json` | Optional animation config | Object-level animation sidecar | Created only by explicit animation workflow/request |
+| `animations.json` | Optional animation config | Page-transition and object-animation sidecar | Created only when the conditional animation workflow activates; normal export never creates it |
 
 ---
 
@@ -51,7 +51,7 @@ Global artifact ownership rules for PPT Master projects.
 
 | Invariant | Rule |
 |---|---|
-| Content authority | Content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) own the factual/text origin for main-pipeline content, tables, chart values, and SmartArt node wording; Strategist resolves approved on-slide wording into §IX. Executor renders §IX and opens sources only for explicit verification/resolution, never to draft a second outline. `slide_library.json` does not own content values. |
+| Content authority | Content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) own the factual/text origin for main-pipeline content, tables, chart values, and SmartArt node wording; Strategist resolves approved semantic content plus complete preferred on-slide wording into §IX. Executor realizes §IX under [`executor-base.md`](./executor-base.md) §2.1's content-vs-expression contract and opens sources only for explicit verification/resolution, never to draft a second outline. `slide_library.json` does not own content values. |
 | Sources read policy | In `sources/`, read content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judge by content — a `.json` / `.csv` may be core content or just data. Exclude known sidecars: `*.conversion_profile.json` and `*_files/image_manifest.json`. `analysis/` facts (`source_profile.json`, `<stem>.slide_library.json`) are read per Step 4 / direct-PPTX workflow, not in the `sources/` content scan. |
 | PPTX structure | `slide_library.json` owns native geometry, slot facts, and SmartArt layout/relationships for direct PPTX workflows. |
 | Design contract | Final confirmation once → audited `design_spec.md` → optional same-file refinement/approval → context-authored lock. Never maintain a parallel draft/lock. Executor may apply `Template Application` prose but never replace identity. Repair divergence from the approved Design Spec/context unless it fails active-decision fidelity. |

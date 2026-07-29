@@ -52,8 +52,8 @@ route selection. After selection, the route authority owns execution.
 | Data charts exist | Run [`verify-charts`](./stages/verify-charts.md) before export |
 | User explicitly requests visual review | Run [`visual-review`](./stages/visual-review.md) before post-processing |
 | User requests preview, selection, or annotation application | Run [`live-preview`](./stages/live-preview.md) at the stage defined there |
-| User requests page transitions, auto-advance, or deck-wide animation settings | Load [`animations`](../references/animations.md) and apply its export-level contract |
-| User requests per-slide or object-level animation control | Run [`customize-animations`](./stages/customize-animations.md) during post-processing |
+| User requests page transitions, auto-advance, or deck-wide animation settings without page-specific motion planning or an existing `animations.json` | Load [`animations`](../references/animations.md) and apply its export-level contract |
+| Generate `design_spec.md §IX` contains `Motion suggestion`, `<project_path>/animations.json` already exists, or the user requests per-slide or object-level animation control | Run [`customize-animations`](./stages/customize-animations.md) after notes readiness and before Generate Step 7 |
 | Generated project needs narration audio | Run [`generate-audio`](./stages/generate-audio.md) after notes/export readiness |
 
 **Hard rule — profile, not fifth route**: The 1:1 beautify behavior uses the same Strategist → Executor → SVG export lifecycle as Generate PPTX. It changes content/page invariants; it does not define a separate artifact lifecycle.

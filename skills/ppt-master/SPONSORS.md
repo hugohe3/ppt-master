@@ -24,9 +24,9 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT M
 
 ### PackyCode
 
-<a href="https://www.packyapi.com/register?aff=ppt-master"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a>
+<a href="https://www.packyapi.ai/register?aff=ppt-master"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a>
 
-[PackyCode](https://www.packyapi.com/register?aff=ppt-master) provides relay access to Claude Code, Codex, Gemini, and other services. Register through the dedicated link and enter the promo code **`ppt-master`** during recharge to receive 10% off.
+[PackyCode](https://www.packyapi.ai/register?aff=ppt-master) provides relay access to Claude Code, Codex, Gemini, and other services. Register through the dedicated link and enter the promo code **`ppt-master`** during recharge to receive 10% off.
 
 ### APIKEY.FUN
 

@@ -26,7 +26,7 @@ import time
 import requests
 
 try:
-    from PIL import Image as PILImage
+    from PIL import Image as PILImage, ImageOps as PILImageOps
     HAS_PIL = True
 except ImportError:
     HAS_PIL = False
@@ -78,11 +78,6 @@ EXT_TO_PIL_FORMAT = {
 
 def detect_image_extension(image_bytes: bytes, content_type: str = None) -> str | None:
     """Best-effort detection of the real image format."""
-    if content_type:
-        clean_type = content_type.split(";", 1)[0].strip().lower()
-        if clean_type in CONTENT_TYPE_TO_EXT:
-            return CONTENT_TYPE_TO_EXT[clean_type]
-
     if image_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
         return ".png"
     if image_bytes.startswith(b"\xff\xd8\xff"):
@@ -95,6 +90,10 @@ def detect_image_extension(image_bytes: bytes, content_type: str = None) -> str 
         return ".bmp"
     if image_bytes.startswith((b"II*\x00", b"MM\x00*")):
         return ".tiff"
+    if content_type:
+        clean_type = content_type.split(";", 1)[0].strip().lower()
+        if clean_type in CONTENT_TYPE_TO_EXT:
+            return CONTENT_TYPE_TO_EXT[clean_type]
     return None
 
 
@@ -140,16 +139,62 @@ def save_image_bytes(image_bytes: bytes, path: str, content_type: str = None) ->
     if not target_format:
         raise ValueError(f"Unsupported output image extension: {target_ext}")
 
-    image = PILImage.open(io.BytesIO(image_bytes))
-    if target_format == "JPEG" and image.mode in ("RGBA", "LA", "P"):
-        image = image.convert("RGB")
-    image.save(path, format=target_format)
+    with PILImage.open(io.BytesIO(image_bytes)) as source:
+        image = PILImageOps.exif_transpose(source)
+        try:
+            if target_format == "JPEG":
+                has_alpha = (
+                    image.mode in ("RGBA", "LA")
+                    or "transparency" in getattr(image, "info", {})
+                )
+                if has_alpha:
+                    rgba = image.convert("RGBA")
+                    alpha = rgba.getchannel("A")
+                    rgb = rgba.convert("RGB")
+                    converted = PILImage.new("RGB", image.size, (255, 255, 255))
+                    converted.paste(rgb, mask=alpha)
+                    rgb.close()
+                    alpha.close()
+                    rgba.close()
+                    if image is not source:
+                        image.close()
+                    image = converted
+                elif image.mode != "RGB":
+                    converted = image.convert("RGB")
+                    if image is not source:
+                        image.close()
+                    image = converted
+            image.save(path, format=target_format)
+        finally:
+            if image is not source:
+                image.close()
 
     if actual_ext and actual_ext != target_ext:
         print(f"  Converted:    {actual_ext} -> {target_ext}")
     print(f"  File saved to: {path}")
     report_resolution(path)
     return path
+
+
+def validate_image_file(path: str) -> str:
+    """Require an existing regular file that Pillow can read as an image."""
+    image_path = Path(path)
+    if not image_path.exists():
+        raise RuntimeError(f"Image output path does not exist: {path}")
+    if not image_path.is_file():
+        raise RuntimeError(f"Image output path is not a file: {path}")
+    if not HAS_PIL:
+        raise RuntimeError(
+            "Pillow is required to verify generated images. "
+            "Install it with: pip install Pillow"
+        )
+
+    try:
+        with PILImage.open(image_path) as image:
+            image.verify()
+    except (OSError, ValueError, SyntaxError) as exc:
+        raise RuntimeError(f"Image output is not readable: {path}: {exc}") from exc
+    return str(image_path)
 
 
 def report_resolution(path: str) -> None:
@@ -176,11 +221,27 @@ def normalize_image_size(image_size: str) -> str:
 def is_rate_limit_error(exc: Exception) -> bool:
     """Check whether the exception appears to be rate limiting."""
     err_str = str(exc).lower()
+    status_code = getattr(exc, "status_code", None)
+    error_code = getattr(exc, "code", None)
+    response = getattr(exc, "response", None)
+    error_name = type(exc).__name__.lower()
+    if (
+        status_code == 429
+        or error_code == 429
+        or getattr(response, "status_code", None) == 429
+        or error_name in {"ratelimiterror", "toomanyrequestserror"}
+    ):
+        return True
     return (
         "429" in err_str
-        or "rate" in err_str
+        or "rate limit" in err_str
+        or "rate-limit" in err_str
+        or "rate_limit" in err_str
+        or "too many requests" in err_str
         or "quota" in err_str
         or "resource_exhausted" in err_str
+        or "resource exhausted" in err_str
+        or "throttl" in err_str
     )
 
 

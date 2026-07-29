@@ -14,7 +14,7 @@ Strict Swiss-grid discipline. Modular grid, sharp geometry, aggressive whitespac
 
 ## 2. Typography character
 
-- Sans-serif, single family; weight contrast (e.g. 900 / 300) over family contrast. Tight, rigorous spacing.
+- Sans-serif, single family; regular/bold contrast. Exact Light/Black requires a user-confirmed installed face. Tight, rigorous spacing.
 - Strong size hierarchy — large headlines, small precise body. Left-aligned, flush.
 
 > Family is chosen at confirmation `g` by subject fit — this style asks for a grotesque / neo-grotesque *character*, not a specific font.
