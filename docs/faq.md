@@ -83,7 +83,7 @@ Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output
 
 ## Q: How does multiline text export? Can PowerPoint reflow it?
 
-By default, a mergeable multiline block exports as one editable PowerPoint text frame. Authored line breaks are retained and PowerPoint automatic wrapping is disabled, so resizing the frame does not rewrite the authored line layout.
+By default, a mergeable multiline block exports as one editable PowerPoint text frame. Authored line breaks are retained and PowerPoint automatic wrapping is disabled, so resizing the frame does not rewrite the authored line layout. An ordinary generated frame uses PowerPoint's native **Resize shape to fit text** behavior: deleting a retained break expands the frame instead of leaving text outside it. Imported exact frames and structured multiline placeholder carriers retain their fixed-size behavior.
 
 To let PowerPoint reflow eligible body text, use `--reflow-text`:
 
