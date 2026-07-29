@@ -198,6 +198,14 @@ def is_within_path(path: Path, parent: Path) -> bool:
         return False
 
 
+def _has_usable_import(summary: dict[str, list[str]]) -> bool:
+    """Return whether import-sources produced at least one usable source artifact."""
+    return any(
+        summary.get(key)
+        for key in ("archived", "markdown", "assets", "images", "analysis")
+    )
+
+
 class ProjectManager:
     """Create, inspect, validate, and populate project folders."""
 
@@ -727,6 +735,7 @@ class ProjectManager:
         sources_dir = self._source_dir(project_dir)
         summary: dict[str, list[str]] = {
             "archived": [],
+            "url_records": [],
             "markdown": [],
             "assets": [],
             "images": [],
@@ -775,14 +784,14 @@ class ProjectManager:
                     self._import_url(item, markdown_path)
                 except Exception as exc:  # pragma: no cover - summary path
                     archived = self._archive_url_record(sources_dir, item)
-                    summary["archived"].append(str(archived))
+                    summary["url_records"].append(str(archived))
                     summary["skipped"].append(f"{item}: {exc}")
                     continue
 
                 if not self._is_valid_imported_url_markdown(markdown_path):
                     markdown_path.unlink(missing_ok=True)
                     archived = self._archive_url_record(sources_dir, item)
-                    summary["archived"].append(str(archived))
+                    summary["url_records"].append(str(archived))
                     summary["skipped"].append(f"{item}: URL conversion produced no usable Markdown")
                     continue
 
@@ -1138,10 +1147,21 @@ def main(argv: list[str] | None = None) -> int:
                 move=args.move,
                 copy=args.copy,
             )
-            print(f"[OK] Imported sources into: {args.project_path}")
+            has_usable_import = _has_usable_import(summary)
+            if has_usable_import:
+                print(f"[OK] Imported sources into: {args.project_path}")
+            else:
+                print(
+                    f"[ERROR] No usable sources imported into: {args.project_path}",
+                    file=sys.stderr,
+                )
             if summary["archived"]:
-                print("\nArchived originals / URL records:")
+                print("\nArchived originals:")
                 for item in summary["archived"]:
+                    print(f"  - {item}")
+            if summary["url_records"]:
+                print("\nArchived URL records:")
+                for item in summary["url_records"]:
                     print(f"  - {item}")
             if summary["markdown"]:
                 print("\nNormalized markdown:")
@@ -1167,7 +1187,7 @@ def main(argv: list[str] | None = None) -> int:
                 print("\nSkipped:")
                 for item in summary["skipped"]:
                     print(f"  - {item}")
-            return 0
+            return 0 if has_usable_import else 1
 
         if args.command == "scaffold-spec":
             artifact_path = manager.scaffold_artifact(args.project_path, "design_spec")

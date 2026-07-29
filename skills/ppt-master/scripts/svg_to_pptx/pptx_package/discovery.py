@@ -13,6 +13,8 @@ class NotesFileReadError(RuntimeError):
 def find_svg_files(
     project_path: Path,
     source: str = 'output',
+    *,
+    allow_fallback: bool = True,
 ) -> tuple[list[Path], str]:
     """Find SVG files in the project.
 
@@ -22,6 +24,8 @@ def find_svg_files(
             - 'output': svg_output (hand-authored source; native default)
             - 'final': svg_final (post-processed preview; diagnostic input)
             - or any subdirectory name
+        allow_fallback: Try svg_output and then the project root when the
+            requested directory is missing.
 
     Returns:
         (list_of_svg_files, actual_directory_name) tuple.
@@ -35,6 +39,8 @@ def find_svg_files(
     svg_dir = project_path / dir_name
 
     if not svg_dir.exists():
+        if not allow_fallback:
+            return [], dir_name
         print(f"  Warning: {dir_name} directory does not exist, trying svg_output")
         dir_name = 'svg_output'
         svg_dir = project_path / dir_name
