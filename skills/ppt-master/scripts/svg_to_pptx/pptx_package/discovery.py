@@ -6,6 +6,10 @@ import re
 from pathlib import Path
 
 
+class NotesFileReadError(RuntimeError):
+    """Report a matched notes file that cannot be decoded or read."""
+
+
 def find_svg_files(
     project_path: Path,
     source: str = 'output',
@@ -76,26 +80,33 @@ def find_notes_files(
             svg_index_mapping[i] = svg_path.stem
 
     for notes_file in notes_dir.glob('*.md'):
+        stem = notes_file.stem
+
+        # Try index-based matching (backward compat with slide01.md format).
+        match = re.search(r'slide[_]?(\d+)', stem)
+        mapped_stem = (
+            svg_index_mapping.get(int(match.group(1)))
+            if match
+            else None
+        )
+        filename_match = stem in svg_stems_mapping
+        if mapped_stem is None and not filename_match:
+            continue
+
         try:
-            with open(notes_file, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-            if not content:
-                continue
+            content = notes_file.read_text(encoding='utf-8').strip()
+        except (OSError, UnicodeError) as exc:
+            raise NotesFileReadError(
+                f"Cannot read matched notes file {notes_file}: {exc}"
+            ) from exc
+        if not content:
+            continue
 
-            stem = notes_file.stem
+        if mapped_stem:
+            notes[mapped_stem] = content
 
-            # Try index-based matching (backward compat with slide01.md format)
-            match = re.search(r'slide[_]?(\d+)', stem)
-            if match:
-                index = int(match.group(1))
-                mapped_stem = svg_index_mapping.get(index)
-                if mapped_stem:
-                    notes[mapped_stem] = content
-
-            # Filename-based matching (overrides index-based)
-            if stem in svg_stems_mapping:
-                notes[stem] = content
-        except Exception:
-            pass
+        # Filename-based matching overrides index-based matching.
+        if filename_match:
+            notes[stem] = content
 
     return notes

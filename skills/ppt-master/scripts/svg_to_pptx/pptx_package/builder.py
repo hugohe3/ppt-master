@@ -55,7 +55,11 @@ from pptx_opc_validation import (
     verify_internal_relationships,
 )
 
-from ..animation_config import MorphPair, resolve_morph_pairs
+from ..animation_config import (
+    MorphPair,
+    resolve_morph_pairs,
+    resolve_slide_animation_config,
+)
 from ..drawingml.converter import convert_svg_to_slide_shapes
 from ..drawingml.theme_colors import (
     ThemeColorSpec,
@@ -4044,8 +4048,10 @@ def _slide_animation_settings(
     if not isinstance(anim_value, dict):
         raise ValueError('animations.json slide animation must be an object')
     anim_cfg = anim_value
-    resolved_cfg = dict(default_animation_cfg)
-    resolved_cfg.update(anim_cfg)
+    resolved_cfg = resolve_slide_animation_config(
+        default_animation_cfg,
+        anim_cfg,
+    )
     if cli_overrides.get('animation'):
         effect, effect_options = normalize_animation_effect_request(
             animation,
