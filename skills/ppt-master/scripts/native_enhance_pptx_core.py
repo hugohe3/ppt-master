@@ -1207,8 +1207,8 @@ def _build_enhancement_plan(
     existing_plan: dict | None = None,
 ) -> dict:
     previous = existing_plan or {}
-    notes_enabled = _preserved_enabled(previous, "notes", True)
     audio_enabled = _preserved_enabled(previous, "audio", True)
+    notes_enabled = _preserved_enabled(previous, "notes", True) or audio_enabled
     timings_enabled = _preserved_enabled(previous, "timings", True)
     previous_timings = _module_config(previous, "timings")
     raw_padding: object
@@ -1411,6 +1411,19 @@ def _validate_plan_modules(plan: dict) -> None:
             raise ValueError(
                 f"enhancement plan module {name}.enabled must be a boolean"
             )
+    notes_config = modules_cfg.get("notes")
+    audio_config = modules_cfg.get("audio")
+    if (
+        isinstance(audio_config, dict)
+        and audio_config.get("enabled") is True
+        and (
+            not isinstance(notes_config, dict)
+            or notes_config.get("enabled") is not True
+        )
+    ):
+        raise ValueError(
+            "enhancement plan audio requires notes.enabled: true"
+        )
 
 
 def _resolve_transition_plan(

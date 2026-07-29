@@ -692,6 +692,24 @@ def _recorded_narration_on_click_slides(
     return blocked
 
 
+def _resolve_animation_config_source(
+    project_path: Path,
+    requested_config: str | None,
+    *,
+    recorded_narration: bool,
+    no_animations: bool,
+) -> str | None:
+    """Resolve the animation sidecar selected for this export."""
+    if requested_config is not None or not recorded_narration or no_animations:
+        return requested_config
+
+    canonical_exists = (project_path / 'animations.json').is_file()
+    narration_exists = (project_path / 'narration_animations.json').is_file()
+    if canonical_exists or narration_exists:
+        return 'narration_animations.json'
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
     transition_choices = [
@@ -762,7 +780,9 @@ Recorded narration:
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
     - Requires one m4a/mp3/wav file per slide
-    - Uses narration_animations.json by default
+    - Uses narration_animations.json when animation sidecars exist
+    - With no animation sidecars, keeps the default fade transition and no
+      per-element builds
     - Use --animation-config animations.json for the canonical animation
     - Use --no-animations for narration and timings without animation motion
     - Embeds per-slide audio matched by SVG filename / slide number
@@ -929,9 +949,10 @@ Recorded narration:
         type=str,
         default=None,
         help=(
-            'Per-slide/per-object animation config. Recorded narration defaults '
-            'to <project>/narration_animations.json; other exports default to '
-            '<project>/animations.json when present.'
+            'Per-slide/per-object animation config. Recorded narration uses '
+            '<project>/narration_animations.json when an animation sidecar exists, '
+            'or keeps exporter defaults when neither sidecar exists. Other exports '
+            'default to <project>/animations.json when present.'
         ),
     )
     animation_source.add_argument(
@@ -1359,13 +1380,12 @@ Recorded narration:
         )
         return 1
 
-    effective_animation_config = args.animation_config
-    if (
-        effective_animation_config is None
-        and args.recorded_narration
-        and not args.no_animations
-    ):
-        effective_animation_config = 'narration_animations.json'
+    effective_animation_config = _resolve_animation_config_source(
+        project_path,
+        args.animation_config,
+        recorded_narration=bool(args.recorded_narration),
+        no_animations=args.no_animations,
+    )
 
     if effective_animation_config:
         config_path = Path(effective_animation_config)
