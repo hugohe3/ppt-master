@@ -782,18 +782,7 @@ def _stage2_solution_error(result: dict) -> Optional[str]:
         'typography',
         require_sizes=True,
     )
-    typography_custom = (
-        isinstance(typography, dict)
-        and typography.get('name') == 'custom'
-        and str(typography.get('custom') or '').strip()
-        and _positive_number(typography.get('body_size'))
-        and isinstance(typography.get('sizes'), dict)
-        and all(
-            _positive_number(typography['sizes'].get(role))
-            for role in _TYPOGRAPHY_SIZE_ROLES
-        )
-    )
-    if typography_error and not typography_custom:
+    if typography_error:
         return typography_error
     return None
 

@@ -72,7 +72,7 @@ Structured section value shapes:
 
 Project each §VII `Page | Template | Usage` row's first two fields into `page_charts`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Keys must exist in `charts/charts_index.json`; no-match stays in §IX.
 
-Typography projection is role-for-role, not a lossy summary:
+Typography projection excludes Character/upgrade References:
 
 | Design Spec §IV declaration | `spec_lock.md` field |
 | --- | --- |
