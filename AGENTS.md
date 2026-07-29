@@ -55,8 +55,8 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
 python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
 
-# Step 4 Strategist confirmation stage — interactive visual page (default auto-launch; chat fallback)
-python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
+python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon
+python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
 
 # Image tools and SVG quality check
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images

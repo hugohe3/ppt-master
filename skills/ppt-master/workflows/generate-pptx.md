@@ -188,7 +188,7 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 ⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
-**Confirmation ownership and surface**: Only the user confirms. Default Stage 1 is `--daemon --wait`; use chat only by explicit chat-only/delegation or after launch failure/timeout plus a `result.json` re-check. Chat tools do not replace launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
+**Confirmation ownership and surface**: Only the user confirms. Fresh Stage 1 launches, posts the required chat handoff, then waits. Use chat on explicit chat-only/delegation, explicit handoff confirmation/revision, or launch failure/timeout plus one `result.json` re-check. Chat tools do not replace the default launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
 
 | Stage file (the active unconfirmed stage may be overwritten) | Strategist writes | Completion evidence |
 |---|---|---|
@@ -198,15 +198,13 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
-1. Create `confirm_ui/recommendations.stage1.json` per the Confirm UI contract, then launch and wait:
+1. Create `confirm_ui/recommendations.stage1.json`, then run in order:
 
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
+   # Post confirm_ui.md's actual URL + Stage-1 summary/chat fallback here.
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
    ```
-
-   When the launch log prints the actual URL, keep the wait active and
-   immediately emit the required Stage-1 chat handoff from `confirm_ui.md`;
-   do not wait for command completion or a browser failure.
 
 2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
 
