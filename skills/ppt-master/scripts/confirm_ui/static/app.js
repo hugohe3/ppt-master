@@ -2462,11 +2462,13 @@
             bodyEnglish.style.display = isEnglishProject() ? "none" : "";
             accentBar.style.background = acc;
             content.style.color = txt;
+            content.style.fontFamily = bodyPrimaryStack || "";
             content.innerHTML = stylePreviewContentMarkup(STATE.icons);
             chip.style.background = sbg;
             chipDot.style.background = sacc;
             chipLabel.textContent = t("role_secondary_bg");
             chipLabel.style.color = txt;
+            chipLabel.style.fontFamily = bodyPrimaryStack || "";
         }
         refreshStylePreview = paint;
         paint();
