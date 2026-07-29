@@ -912,8 +912,9 @@ def validate_animation_config(
     """Return sidecar-reference diagnostics for ``svg_output``.
 
     Fatal field/type/value checks are owned by
-    :func:`validate_animation_config_errors`.  Anonymous groups are warnings;
-    missing slides/groups and structural targets are fatal at export call sites.
+    :func:`validate_animation_config_errors`. Anonymous groups are warnings;
+    references to missing slides/groups and structural targets are fatal at
+    export call sites. Slides omitted from a sparse sidecar inherit defaults.
     """
     if config is None:
         config = load_animation_config(project_path, config_path)
@@ -945,9 +946,6 @@ def validate_animation_config(
     slides = config.get('slides', {})
     if not isinstance(slides, dict):
         return list(dict.fromkeys(warnings))
-    for slide_name in sorted(known_slides - set(slides)):
-        warnings.append(f'animations.json omits slide: {slide_name}')
-
     for slide_name, slide_cfg in slides.items():
         if slide_name not in known_slides:
             warnings.append(f'animations.json references missing slide: {slide_name}')

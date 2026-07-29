@@ -1,9 +1,8 @@
 """apply: page-to-page transitions for cloned slides.
 
-Native templates usually ship an empty ``<p:transition/>`` that renders as no
-motion, so ``apply`` injects a default transition unless told to ``keep`` the
-source or set ``none``. Effects and OOXML mutation come from the shared
-``pptx_transitions`` core so every PPTX path uses the same writer.
+Template Fill preserves each source transition unless the CLI or a per-slide
+plan entry requests a replacement. Effects and OOXML mutation come from the
+shared ``pptx_transitions`` core so every PPTX path uses the same writer.
 """
 
 from __future__ import annotations
@@ -19,12 +18,11 @@ from pptx_transitions import (
     validate_seconds,
 )
 
-# Default page transition injected by `apply` when neither the CLI flag nor a
-# per-slide plan field asks for something else. Use `keep` to preserve the
-# source transitions instead.
-DEFAULT_TRANSITION = "fade"
-DEFAULT_TRANSITION_DURATION = 0.5
 KEEP_TRANSITION = "keep"
+# Preserve source transitions unless the CLI or a per-slide plan entry selects
+# a replacement. The duration is consumed only when a visual effect is written.
+DEFAULT_TRANSITION = KEEP_TRANSITION
+DEFAULT_TRANSITION_DURATION = 0.5
 
 _UNSET = object()
 
