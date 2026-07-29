@@ -54,6 +54,11 @@ from ..native_objects import (
 )
 from ..native_objects.marker_status import native_marker_release_block_reason
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
+from ..drawingml.context import (
+    TEXT_FLOW_PRESERVE,
+    TEXT_FLOW_REFLOW,
+    TEXT_FLOW_SPLIT,
+)
 from ..drawingml.theme_fonts import (
     ThemeFontError,
     load_master_text_style_spec,
@@ -870,14 +875,35 @@ Recorded narration:
         ),
     )
 
-    merge_group = parser.add_mutually_exclusive_group()
-    merge_group.add_argument('--merge-paragraphs', action='store_true', dest='merge_paragraphs',
-                             help='Compatibility no-op: mergeable paragraph blocks are merged '
-                                  'by default.')
-    merge_group.add_argument('--no-merge', action='store_false', dest='merge_paragraphs',
-                             help='Disable paragraph merging. Every dy-stacked line becomes '
-                                  'its own text frame for strict SVG line-layout fidelity.')
-    parser.set_defaults(merge_paragraphs=True)
+    text_flow_group = parser.add_mutually_exclusive_group()
+    text_flow_group.add_argument(
+        '--reflow-text',
+        action='store_const',
+        const=TEXT_FLOW_REFLOW,
+        dest='text_flow',
+        help=(
+            'Let PowerPoint automatically reflow conservative dy-stacked text '
+            'inside one editable text frame.'
+        ),
+    )
+    text_flow_group.add_argument(
+        '--merge-paragraphs',
+        action='store_const',
+        const=TEXT_FLOW_REFLOW,
+        dest='text_flow',
+        help='Compatibility alias for --reflow-text.',
+    )
+    text_flow_group.add_argument(
+        '--no-merge',
+        action='store_const',
+        const=TEXT_FLOW_SPLIT,
+        dest='text_flow',
+        help=(
+            'Emit every positioned visual line as its own text frame for '
+            'strict per-line SVG positioning.'
+        ),
+    )
+    parser.set_defaults(text_flow=TEXT_FLOW_PRESERVE)
     parser.add_argument(
         '--conversion-trace',
         nargs='?',
@@ -1816,7 +1842,7 @@ Recorded narration:
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
         narration_padding=args.narration_padding,
-        merge_paragraphs=args.merge_paragraphs,
+        text_flow=args.text_flow,
         image_optimize=not args.no_image_optimize,
         image_max_dimension=args.image_max_dimension,
         image_sizing=args.image_sizing,

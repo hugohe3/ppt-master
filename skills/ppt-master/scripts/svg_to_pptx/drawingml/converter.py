@@ -26,7 +26,13 @@ from pptx_to_svg.preset_authoring import (
 )
 from resource_paths import icon_search_dirs_for_svg
 
-from .context import ConvertContext, ShapeResult
+from .context import (
+    TEXT_FLOW_PRESERVE,
+    TEXT_FLOW_SPLIT,
+    ConvertContext,
+    ShapeResult,
+    resolve_text_flow,
+)
 from .paths import (
     project_freeform_geometry_errors,
     project_gradient_geometry_errors,
@@ -1358,7 +1364,7 @@ def convert_svg_to_slide_shapes(
     svg_path: str | Path,
     slide_num: int = 1,
     verbose: bool = False,
-    merge_paragraphs: bool = True,
+    merge_paragraphs: bool | None = None,
     image_optimize: bool = True,
     image_max_dimension: int | None = 2560,
     image_sizing: str = 'cap',
@@ -1370,6 +1376,7 @@ def convert_svg_to_slide_shapes(
     theme_color_spec: ThemeColorSpec | None = None,
     trace_out: list[dict[str, Any]] | None = None,
     promote_background: bool = True,
+    text_flow: str | None = None,
 ) -> tuple[
     str,
     dict[str, bytes],
@@ -1384,10 +1391,11 @@ def convert_svg_to_slide_shapes(
         svg_path: Path to the SVG file.
         slide_num: Slide number (for naming).
         verbose: Print progress info.
-        merge_paragraphs: When True, mergeable paragraph blocks (same x,
-            dy clustered around one base line-height) become a single
-            editable text frame with multiple <a:p>. Disable it to preserve
-            the SVG's exact line layout (one textbox per line).
+        merge_paragraphs: Legacy compatibility option. True selects reflow;
+            False selects split. Do not combine with ``text_flow``.
+        text_flow: Positional-tspan policy. ``preserve`` keeps authored visual
+            line breaks in one frame, ``reflow`` lets PowerPoint wrap the text,
+            and ``split`` emits one text frame per visual line.
         image_optimize: Downsample oversized raster images for PPTX export.
         image_max_dimension: Maximum optimized image dimension in pixels.
         image_sizing: ``cap`` to only cap source dimensions, ``display`` to
@@ -1423,6 +1431,7 @@ def convert_svg_to_slide_shapes(
         - content_type_overrides: Dict of {pptx internal path: content type}
           for package_files that require [Content_Types].xml overrides.
     """
+    text_flow = resolve_text_flow(text_flow, merge_paragraphs)
     svg_path = Path(svg_path)
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
@@ -1606,17 +1615,24 @@ def convert_svg_to_slide_shapes(
     # and an x-anchored tspan would render in the wrong column. finalize_svg
     # does the same flattening on disk; doing it here keeps native pptx output
     # correct when reading raw svg_output/.
-    # merge_paragraphs additionally folds mergeable paragraph blocks into a
-    # single annotated <text> for downstream multi-<a:p> conversion.
+    # Preserve/reflow modes additionally fold conservative paragraph blocks
+    # into one annotated <text>. Preserve keeps visual lines as DrawingML hard
+    # breaks; reflow joins wrapping lines; split keeps one frame per line.
     from ..tspan_flattener import flatten_positional_tspans
-    flattened = flatten_positional_tspans(tree, merge_paragraphs=merge_paragraphs)
+    flattened = flatten_positional_tspans(
+        tree,
+        merge_paragraphs=text_flow != TEXT_FLOW_SPLIT,
+        preserve_line_breaks=text_flow == TEXT_FLOW_PRESERVE,
+    )
     if flattened:
         trace_steps.append({
             'action': 'flatten-positional-tspans',
-            'merge_paragraphs': merge_paragraphs,
+            'text_flow': text_flow,
+            # Compatibility field for older trace readers.
+            'merge_paragraphs': text_flow != TEXT_FLOW_SPLIT,
         })
         if verbose:
-            print('  Flattened positional <tspan> into independent <text>')
+            print(f'  Lowered positional <tspan> using {text_flow} text flow')
 
     _require_project_text_properties(root, svg_path)
     try:
@@ -1648,7 +1664,7 @@ def convert_svg_to_slide_shapes(
         viewport_width=viewport_width,
         viewport_height=viewport_height,
         svg_dir=Path(svg_path).parent,
-        merge_paragraphs=merge_paragraphs,
+        text_flow=text_flow,
         image_optimize=image_optimize,
         image_max_dimension=image_max_dimension,
         image_sizing=image_sizing,
