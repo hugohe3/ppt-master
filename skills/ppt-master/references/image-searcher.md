@@ -59,7 +59,7 @@ Default chain (when `--provider` is unset):
 
 Keyed providers without an API key are silently skipped — not an error.
 
-**Validation**: For polished visual decks, configure at least one keyed provider before using `Acquire Via: web`.
+**Default — keyed providers for broader stock coverage (may override when zero-config sources fit)**: Configure Pexels or Pixabay when their stock-photo coverage serves the brief. Their absence is not a validation failure; Openverse and Wikimedia remain valid zero-config acquisition paths.
 
 ---
 
@@ -70,11 +70,11 @@ Keep two layers distinct:
 | Layer | Owner and grammar |
 |---|---|
 | Design Spec §VIII `Reference` | Strategist's complete visual intent: exact subject, desired view/mood, focal or quiet region, and crop-safety constraints. Positive quality cues are valid here. |
-| `image_queries.json.items[].query` / positional query | Image_Searcher's provider keyword string: 1–4 concrete entity or identity words only; omit mood, quality, composition, HEX, and negative wording. |
+| `image_queries.json.items[].query` / positional query | Image_Searcher's concrete entity/identity keyword string. Start with the shortest phrase that preserves identity; keep exact multi-word names and necessary disambiguators even when they exceed four words. Omit mood, quality, composition, HEX, and negative wording. |
 
-Web APIs match metadata, not semantic intent. For ad-hoc long positional input, `simplify_query` strips noise and caps the fallback at four words, but a pipeline manifest should already contain the short provider query. For Chinese landmarks, use the precise Chinese name with Wikimedia; for stock providers, use short English identity terms.
+Web APIs match metadata, not semantic intent. Providers try the original query first, then progressively simplified four/three/two/one-word variants. A pipeline manifest should therefore use a concise query without pre-truncating exact names. For Chinese landmarks, use the precise Chinese name with Wikimedia; for stock providers, use compact English identity terms when they retain the subject.
 
-Image_Searcher consumes the locked Reference and never rewrites `design_spec.md` or `spec_lock.md`. A candidate either satisfies that existing subject/focal/crop intent, or the role re-queries once and then marks `Needs-Manual`.
+Image_Searcher consumes the locked Reference and never rewrites `design_spec.md` or `spec_lock.md`. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the locked intent to manufacture a match.
 
 When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
 
@@ -183,14 +183,14 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
 
 **Replacement ladder when a best match is not right** (any reviewer):
 
-1. refine the query and re-run that row once;
+1. refine the query and re-run that row while each revision tests a materially different identity phrase or disambiguator; do not repeat a semantically exhausted query;
 2. **manual URL replace (universal, model-agnostic)** — the user finds a better image anywhere and gives its URL; download and swap it in:
    ```bash
    python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
    Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds ([`executor-web-image.md`](./executor-web-image.md) §1);
 3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
-4. if nothing fits, mark the row `Needs-Manual`.
+4. when the query variants, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
 
 Web search is far cheaper than AI generation, so this review pass is well worth it.
 
@@ -265,40 +265,23 @@ Every successful download appends or replaces one entry keyed on `filename`:
 
 ---
 
-## 7. On-Slide Attribution — Visual Specification
+## 7. On-Slide Attribution Contract
 
-Applied by Executor when an image's `license_tier == "attribution-required"`. Three layouts depending on the page.
+Applied by Executor when an image's `license_tier == "attribution-required"`.
 
-### 7.1 Single-image page
+**Hard rule — legal content and binding**: Every slide that uses the asset carries a visible, readable credit bound unambiguously to that asset. Preserve its author, source/provider, and CC BY / CC BY-SA license facts from `attribution_text`; do not invent, merge away, or drop identity.
 
-- **Position**: bottom-right of the image's container, hugging the image edge (within ~8 px)
-- **Font size**: 6–8pt equivalent (≈ 0.7–1 % of canvas short edge)
-- **Color**: `fill="#999999"` on light/photo backgrounds; `fill="#FFFFFF" fill-opacity="0.6"` on dark/photo
-- **Content**: `© {author} / {provider_short} / {license_short}`
-  - `provider_short`: `Openverse` / `Wikimedia` / `Pexels` / `Pixabay`
-  - `license_short`: `CC BY 4.0` / `CC BY-SA 4.0` / `Public Domain`
-  - Drop empty fields (CC0 with no author → `via Openverse`)
+**Reference — visual treatment is not a constraint**: Position, size, color, line structure, per-image versus combined credits, labels, and contrast treatment belong to the page composition. Use any treatment that stays readable and preserves the asset-to-credit binding; a scrim or gradient is optional, not required.
 
-**Forbidden — fields that break the visual line**: full URLs, `attribution_text` verbatim, "License:" prefix.
+**Reference — attribution treatments, not constraints**:
 
-### 7.2 Multi-image page (≥ 2 attribution-required)
+| Page situation | Possible treatment |
+|---|---|
+| One credited image | Place a compact credit near the image edge or in a page footnote area |
+| Several credited images | Use per-image credits or one combined source line with labels when needed for unambiguous mapping |
+| Hero / full-bleed image | Place the credit in an available quiet region; add a scrim or gradient only when contrast otherwise fails |
 
-Combine into one source line at the page bottom rather than scattering credits:
-
-```
-Sources: a, b via Wikimedia (CC BY); c via Openverse (CC BY-SA)
-```
-
-Use single-letter labels (a/b/c) only when needed for disambiguation.
-
-### 7.3 Hero / full-bleed image
-
-- Bottom 1.5 cm gradient overlay: `stop-color="#000000" stop-opacity="0"` → `stop-color="#000000" stop-opacity="0.5"`
-- 7pt text with `fill="#FFFFFF" fill-opacity="0.6"` inside the overlay band, right-aligned ~24 px from edge
-
-### 7.4 Source for the credit text
-
-Use `attribution_text` from the manifest as the **starting point**. Compress for the small-text constraint:
+Use `attribution_text` from the manifest as the **starting point**. Compress when the chosen page treatment needs a shorter line, without dropping the required facts:
 
 | Manifest | Slide credit |
 |---|---|
@@ -313,7 +296,7 @@ Extends [`image-base.md`](./image-base.md) §6.
 
 | Situation | Behavior |
 |---|---|
-| No candidates from any provider in either stage | Mark row `Needs-Manual`. Suggest: shorter query, drop `--strict-no-attribution`, or set keyed provider's API key. |
+| No candidates from any provider in either stage | Mark row `Needs-Manual`. Suggest a more precise query or another configured provider; rerun without `--strict-no-attribution` only when the confirmed page may carry visible credit. |
 | Single candidate fails to download (HTTP 403/404) | Dispatcher auto-falls through to the next ranked candidate. No user action. |
 | All candidates from one provider fail | Dispatcher moves to the next provider in the chain. |
 | Provider/network failure remains after dispatch | Mark row `Failed`; a later batch run retries it. |
@@ -327,7 +310,7 @@ CLI exit: `0` when all attempted rows resolve; `1` while any row remains `Failed
 
 Reference field is **intent description**, not a query. See [`image-base.md`](./image-base.md) §8 for the rule.
 
-Keep it intact as the acceptance contract. Derive a separate 1–4 word provider query; do not pass the Reference verbatim or rewrite it after search.
+Keep it intact as the acceptance contract. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
 
 ---
 

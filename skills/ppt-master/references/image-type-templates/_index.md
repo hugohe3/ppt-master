@@ -1,6 +1,6 @@
 # Type Templates — Index
 
-A **type** describes the **internal geometric composition skeleton** of a local infographic image block — what the layout looks like *inside the rectangle the model paints*. Type is decided **per image**, not per deck (one deck typically uses 2-4 different types).
+A **type** optionally describes the **internal geometric composition skeleton** of a local infographic image block — what the layout looks like *inside the rectangle the model paints*. Type is decided **per image**, not per deck.
 
 ## What Type *is* and *is not*
 
@@ -12,7 +12,7 @@ A **type** describes the **internal geometric composition skeleton** of a local 
 - *not* "what subject occupies the image" — single subject, single person, big number, no subject: these are all expressible through §4.1 no-type primitives or natural-language prompt description, not through types
 - *not* a high-level asset category — the row's `Purpose` + `Reference` columns in `design_spec.md §VIII` already carry that, no separate vocabulary needed
 
-**When to skip type entirely** — every `hero_page` omits type and uses the prose primitives in [`image-generator.md`](../image-generator.md) §4.1. A local single-subject or single-person region also omits type and uses Primitive A/B sized to that region. The 11 types below are for local structural infographic blocks only.
+**Reference — when to skip type**: Every `hero_page` omits type and uses the prose primitives in [`image-generator.md`](../image-generator.md) §4.1. A local single-subject or single-person region also omits type and uses Primitive A/B sized to that region. A local structural infographic with no genuine catalog match omits type and uses custom Primitive E prose. The 11 types below are recall tools, not a closed set.
 
 ---
 
@@ -38,7 +38,7 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 
 ## 2. Auto-selection — per-image `Purpose` → type
 
-For each row in `design_spec.md §VIII Image Resource List` where `page_role: local`, match `Purpose` against this table.
+**Reference — not a constraint**: For a `page_role: local` row in `design_spec.md §VIII Image Resource List`, use this table when `Purpose` genuinely matches. Otherwise omit `type` and write the intended composition directly.
 
 | `Purpose` keyword | Type |
 |---|---|

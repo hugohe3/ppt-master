@@ -8,11 +8,11 @@ Teaching-led exposition. Decompose a concept into ordered, digestible parts and 
 
 **Decompose, then sequence**: break the subject into parts and present them in a deliberate order (simple → complex, prerequisite → dependent, overview → detail).
 
-**One concept per page**: each page teaches a single idea well; do not stack unrelated concepts.
+**Focused learning unit**: center each page on a coherent teaching step; related concepts may share a page when their relationship is what the learner needs to understand.
 
 **Parallel exposition**: sibling concepts get parallel structure — same shape, same depth — so the audience can compare and map them.
 
-**Show, then tell**: lead with a concrete example or analogy, then state the principle. A worked example beats an abstract definition.
+**Ground abstraction**: use a concrete example or analogy when it clarifies the principle; sequence example and explanation according to the learner's prerequisite needs.
 
 **Signpost**: orient the learner — what we covered, what comes next.
 
@@ -24,7 +24,7 @@ Titles state what the page teaches ("How attention weights are computed") — cl
 
 - Numbered steps / ordered flows for processes; parallel cards for sibling concepts.
 - Diagrams that build incrementally; annotate the part currently being explained.
-- A concrete example anchors each abstract point.
+- Concrete examples anchor abstract points when they improve transfer or comprehension.
 
 > Step / flow / diagram geometry lives in [`templates/charts/`](../../templates/charts/); this mode decides *the learning order and granularity*.
 

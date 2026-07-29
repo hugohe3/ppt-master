@@ -80,13 +80,16 @@ author motion merely to expose a capability.
 
 ## 2. Rebuild Semantic Motion Groups When Needed, Then List IDs
 
-**Mandatory when object-targeted motion is in scope — content-first grouping audit**:
-inspect every slide's visible content against its communication job and speaker
-flow before treating any top-level `<g>` as an animation anchor. Existing
-groups are implementation evidence only. Keep a current group unchanged only
-after confirming that it already represents exactly one audience-facing reveal
-unit or one continuing Morph object. Only a page-transition plan without
-explicit Morph pairs skips regrouping and group listing.
+**Mandatory when object-targeted motion is in scope — content-first grouping
+audit**: inspect each affected slide's visible content against its communication
+job and speaker flow before treating any top-level `<g>` as an animation
+anchor. The affected set is the page named by an adopted suggestion or explicit
+object-motion request, plus both endpoints of each deterministic Morph pair.
+Untouched pages need no animation audit. Existing groups are implementation
+evidence only. Keep a current group unchanged only after confirming that it
+already represents exactly one audience-facing reveal unit or one continuing
+Morph object. A page-transition-only plan without explicit Morph pairs skips
+regrouping and group listing.
 
 | Content condition | Required grouping action |
 |---|---|
@@ -159,7 +162,9 @@ Do not read the full scaffold unless it is needed as an editing starting point.
 
 ## 3. Plan Slide and Object Motion
 
-**Mandatory**: plan both page-level transitions and in-slide object animations before editing `animations.json`.
+**Mandatory**: plan the requested motion layers for each affected slide before
+editing `animations.json`. A local object-animation request does not require a
+deck-wide transition review.
 
 | Layer | Config path | Use |
 |---|---|---|
@@ -168,15 +173,23 @@ Do not read the full scaffold unless it is needed as an editing starting point.
 | Page animation defaults | `defaults.animation` or `slides.<slide>.animation` | Control the default object-animation behavior for animated groups on a slide |
 | Object overrides | `slides.<slide>.groups.<group_id>` | Control order, effect, delay, or duration for a real SVG group |
 
-**Per-page motion brief**: for each slide, first decide what communication job motion should perform—or that it should perform none—then decide transition effect, transition duration, object reveal sequence, object effects, and timing. Use `design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style, speaker notes for narration order, and SVG group ids for target validity.
+**Per-affected-page motion brief**: decide what communication job the requested
+motion should perform—or that it should perform none—then choose only the
+relevant transition, reveal sequence, object effects, and timing. Use
+`design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style,
+speaker notes for narration order, and SVG group ids for target validity.
 
-**Title reveal decision**: treat each real title as a first-class plan item.
-Choose static, immediate, delayed, synchronized, post-hero, or narration-cued
-behavior from slide intent. Use the sidecar override for a marker-free legacy
-chrome-like id; repair an incorrect explicit structural/static marker before
-animating it.
+**Title reveal decision**: when a title participates in the affected page's
+motion job, choose static, immediate, delayed, synchronized, post-hero, or
+narration-cued behavior from slide intent. Use the sidecar override for a
+marker-free legacy chrome-like id; repair an incorrect explicit
+structural/static marker before animating it.
 
-**Hard rule**: a custom animation pass must not only edit group effects. It must also decide whether each slide should inherit the default transition or need a slide-specific `transition` override. Inheritance is a complete decision; do not create slide-specific transitions to satisfy a variation quota.
+**Default — inherit unaffected motion layers (may override when the page's
+communication job requires it)**: a custom object-animation pass may leave the
+page transition and every untouched page on exporter or sidecar defaults. Add a
+slide-specific `transition` only when the affected page needs one; never add
+variation for coverage.
 
 **Timing guidance**: use shorter motion for dense/repeated scan content and
 longer motion for conceptual pivots, hero diagrams, section boundaries, and
@@ -261,30 +274,20 @@ one.
 
 ## 4. Edit `animations.json`
 
-**Hard rule — when this stage writes `animations.json`, write every slide
-explicitly; let groups inherit**. Each slide under `slides.<slide>` MUST carry
-its own complete `transition` and
-`animation` block (effect + duration + stagger + trigger where applicable),
-even when the values match `defaults`. This makes per-page rhythm visible
-at a glance without mentally merging the inheritance chain. Group-level
-overrides remain opt-in — list only the groups that genuinely diverge from
-the slide's `animation` block. Chrome groups stay out (the exporter pins
-them to `none` by default). Name a legacy chrome-like id only when the user
-explicitly wants that content animated and the SVG has no explicit structural
-layer, role, or placeholder marker.
-
-> Note: version-1 legacy sidecars may omit fields inside a listed slide under
-> the declared inheritance in [`animations.md`](../../references/animations.md) §2. This
-> workflow writes complete new slide blocks, and validation still requires
-> every current SVG stem to be present under `slides`.
-
-`defaults` is still required: it supplies the legacy inheritance baseline and
-the deck-wide values copied into every complete new slide block.
+**Hard rule — sparse overrides reference real targets**: write only affected
+slides and only fields that differ from exporter or sidecar defaults. An
+unlisted SVG inherits the resolved deck-wide settings; a listed slide may
+contain only `transition`, `animation`, `groups`, or `morph` fields that it
+actually overrides. `defaults` is optional and belongs only to intentional
+deck-wide settings. Group-level overrides remain opt-in. Chrome groups stay out
+(the exporter pins them to `none` by default). Name a legacy chrome-like id only
+when the user explicitly wants that content animated and the SVG has no
+explicit structural layer, role, or placeholder marker.
 
 **Forbidden**:
 
-- Omitting a slide that exists in `svg_output/` — every produced slide must appear under `slides`
-- Writing a slide block with only `groups` and no `transition`/`animation`
+- Referencing a slide that does not exist in `svg_output/`
+- Referencing a missing, ambiguous, or structural group
 - Enumerating every content group in a slide just to restate the slide-level default effect
 - Listing a group with `data-pptx-layer` or an explicit static role/placeholder marker
 - Listing a legacy chrome-like id without an explicit, reviewed intent to override the name heuristic
@@ -322,28 +325,19 @@ PowerPoint Speed; `accelerate`/`decelerate` own smooth start/end, so do not
 invent duplicate fields. Change Font's `font_name` is one concrete
 target-installed PowerPoint face, never a CSS font stack.
 
-**Canonical example — every slide carries explicit transition + animation;
-groups appear only when they diverge**:
+**Canonical sparse example — only the affected slide and divergent fields
+appear**:
 
 ```json
 {
   "version": 1,
-  "defaults": {
-    "transition": { "effect": "fade", "duration": 0.4 },
-    "animation": { "effect": "entrance_fade", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
-  },
   "slides": {
-    "01_cover": {
-      "transition": { "effect": "fade", "duration": 0.5 },
-      "animation": { "effect": "entrance_fade", "duration": 0.5, "stagger": 0.4, "trigger": "after-previous" }
-    },
     "03_market": {
       "transition": {
         "effect": "wipe",
         "effect_options": { "direction": "left" },
         "duration": 0.35
       },
-      "animation": { "effect": "entrance_fade", "duration": 0.4, "stagger": 0.25, "trigger": "after-previous" },
       "groups": {
         "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },
         "insight": { "effect": "entrance_fly", "effect_options": { "direction": "up_right" }, "order": 3, "delay": 0.2, "trigger_shape": "chart" }
@@ -353,9 +347,10 @@ groups appear only when they diverge**:
 }
 ```
 
-`01_cover` shows a complete per-slide block even when values closely match
-the defaults. `03_market` lists only divergent groups. Structural chrome stays
-omitted unless a marker-free legacy name needs an explicitly reviewed override.
+Every unlisted page inherits the resolved defaults. `03_market` changes its
+transition and two real groups without restating a page animation block.
+Structural chrome stays omitted unless a marker-free legacy name needs an
+explicitly reviewed override.
 
 Use the complete two-slide deterministic Morph example in
 [`animations.md`](../../references/animations.md) §2.1; do not copy the source
@@ -425,7 +420,7 @@ renderer parameters but cannot replace the source effect. See
 
 - [x] Applicable semantic context and motion intent were resolved
 - [x] Adopted object targets use real post-regroup SVG ids when object motion is in scope
-- [x] `animations.json` is complete and validated when present; a no-op path creates none
+- [x] Sparse `animations.json` overrides are valid when present; a no-op path creates none
 - [x] Any regrouped SVG passed the final quality gate
 - [x] Control returned to Generate Step 7 for preview, export, read-back, and package validation
 - [x] Any requested video plan waits for the final resolved conversion trace

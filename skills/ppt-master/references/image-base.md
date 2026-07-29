@@ -74,9 +74,9 @@ After all rows reach terminal status:
 
 **Hard rule**: acquisition failures MUST NOT halt the pipeline.
 
-1. Try once
-2. On recoverable failure (network, no candidates, license rejection, rate limit), retry once with broadened parameters
-3. On second failure, set `Status: Needs-Manual`, log the reason in conversation, continue
+1. Run the selected path's initial strategy
+2. On recoverable failure (network, no candidates, license rejection, rate limit), continue through materially different strategies that remain inside that path's confirmed permissions; never loop an already exhausted strategy
+3. When the path-specific query/provider/license-stage or backend/retry strategy is exhausted, set `Status: Needs-Manual`, log the reason in conversation, and continue
 4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.md` paste-ready blocks for ai rows; refresh via `image_gen.py --render-md` if stale), and where to place generated files (`project/images/<filename>`). For `slice` rows, list the parent sheet filename and target element names; the user places the sheet, then the agent reruns `slice_images.py`.
 
 `Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §7 Offline Manual Mode.

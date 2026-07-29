@@ -431,7 +431,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 **图片执行路径以 Design Spec 为权威。** UI 或聊天中的最终确认都先固化为 `design_spec.md §I` 的 `AI Image Acquisition Path`；Image_Generator 根据该值选择 API、host-native 或 manual，不能在执行阶段重新决定。`image_gen.py --manifest` 只属于 API Path A。当前 CLI 仍保留一个读取 UI `result.json` 的防误调用 guard，用于在该文件明确记录 `host-native` / `manual` 时阻止误跑 Path A；它不是权威来源，不覆盖 chat-only，也不能替代 Design Spec 的路线判断。这是当前代码与上游权威链尚未闭合的实现差异，不能当作正常消费路径。
 
-**相关小插画用一张统一 sheet。** 当 deck 需要三个或更多同风格小插画时，资源计划使用一个 AI illustration sheet 行，再用若干 `slice` 行派生元素，而不是分别生成多张小图。`slice_images.py` 把 sheet 切成具名透明元素，这些派生文件进入 `images/`，随后重跑 `analyze_images.py`，让 Executor 看到真实尺寸。这既是成本规则，也是风格一致性规则：一张 sheet 会强迫这些小元素来自同一种视觉手法。
+**相关小插画适合时共用一张 sheet。** 多个同风格小插画在 cell 形状、细节、质量和语义需求兼容时，可以使用一个 AI illustration sheet 行再通过 `slice` 行派生元素；不兼容时可独立生成。选择 sheet 路径后，`slice_images.py` 把它切成具名透明元素，这些派生文件进入 `images/`，随后重跑 `analyze_images.py`，让 Executor 看到真实尺寸。
 
 **Executor 前必须进入终态。** 需要获取的资源行必须落到 `Generated`、`Sourced` 或 `Needs-Manual`；`Pending` 和 `Failed` 不能漏进 Executor。`Needs-Manual` 可以作为已知占位 / 依赖继续进入 SVG 生成，但 Step 7 会在最终导出前重新检查必需文件是否已经存在。
 
@@ -443,16 +443,16 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 ## 图文版式：Primary 主结构 + Modifier 修饰层
 
-「图片**怎么放上幻灯片**」的词表（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）把 99 条稳定编号技法拆成两层、自由组合：
+「图片**可以怎么放上幻灯片**」的可选灵感库（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）提供 99 条稳定编号技法，分成两层并可自由组合：
 
 - **Primary 主结构**（容器布局 / 图作画布 + 原生覆盖 / 多图组合）—— 页面的骨架。一页可一个也可多个；跨 Primary 的组合，如「侧边对比 + 图作画布的注解卡」，是合规的。
 - **Modifier 修饰层**（非矩形裁剪 / 遮罩与叠加 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。
 
-**为什么显式允许复合，而不设「一页一个 Primary」配额。** 这份词表用于扩展构图选择，不是层数指标。一页可以由一个或多个 Primary 构成，并按需要叠加任意数量的 Modifier；每一层都必须对当前叙事或视觉层级有贡献。需要警惕的是整套 deck 反复退化为裸的 `#2` / `#3` / `#5` / `#6` 且完全不使用 Modifier，而不是要求每一页都必须复合。
+**为什么灵感库不设置目录或层数配额。** 它用于扩展构图选择，不定义合法输出。一页可以由一个或多个 Primary 构成，按需叠加 Modifier，也可以完全不引用编号，直接使用更适合叙事和层级的自由构图。
 
-**为什么物理拆分两层，而不是只打标签。** 词表被重排成「Primary 全部在前，Modifier 全部在后」——Strategist 或 Executor 读一次目录，就能从结构上内化「两层」心智模型。编号是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），所以 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出、过往示例里所有 `#<id>` 引用照样解析。
+**为什么物理拆分两层，而不是只打标签。** 灵感库按 Primary 在前、Modifier 在后组织，便于按构造角色查找。编号仍是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），因此 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出和过往示例里的既有 `#<id>` 引用照样解析。
 
-**为什么组合走 Strategist 资源列表，而不是到绘制时才第一次发现。** `§VIII 图片资源列表` 的 `Layout pattern` 列接受 `#<id> + #<id> ...` 表达式——Primary id 加可选 Modifier id；`Crop Policy` 则记录 `adaptive` 或 `no-crop`。Strategist 必须在 SVG 生成前完整查看目录，写出具体的首选构图和信息完整性边界，并通过 lock 投影让两者在 session 重入后继续存在。Executor 再决定实际表达：它可以调整尺寸、位置、流向与权重，也可以换成另一个目录 pattern 或普通构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
+**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Layout pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的稳定编号；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求完整读取灵感库或使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
 
 **为什么真正的硬约束留在上游。** 跨切的 SVG 创作与 PPTX 兼容性例外属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由的权威集。版式词表只指向该路由，不再复述合同；每条规则仍只有一个所属模块，词表里也不会留下过期副本。
 
