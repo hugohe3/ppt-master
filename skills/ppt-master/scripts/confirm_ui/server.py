@@ -22,7 +22,8 @@ Examples:
     python3 scripts/confirm_ui/server.py projects/my-project
     python3 scripts/confirm_ui/server.py projects/my-project --port 5051
     python3 scripts/confirm_ui/server.py projects/my-project --no-browser
-    python3 scripts/confirm_ui/server.py projects/my-project --daemon --wait
+    python3 scripts/confirm_ui/server.py projects/my-project --daemon
+    python3 scripts/confirm_ui/server.py projects/my-project --wait-only --wait-stage stage1
 
 Dependencies:
     flask>=3.0.0
@@ -464,7 +465,8 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
         return None
     expected = _stage_name(_result_stage_number(result_stage) + 1)
     reattach = (
-        '--daemon --wait' if expected == 'stage1'
+        '--wait-only --wait-stage stage1'
+        if expected == 'stage1'
         else '--wait-only --wait-stage stage2'
     )
     expected_file = RECOMMENDATION_STAGE_NAMES[
@@ -1141,7 +1143,7 @@ def _wait_only_for_result(
 ) -> int:
     """Attach to an already-running confirm server and wait for a target stage.
 
-    No child is launched here: the page is still open from the first ``--wait``
+    No child is launched here: the page is open from the preceding ``--daemon``
     launch, so liveness is tracked via the recorded pid, not a ``proc`` handle.
     Only the stage guard is used (no mtime gate), because intermediate submits
     may happen before this wait command is issued.
@@ -1644,13 +1646,14 @@ def build_parser() -> argparse.ArgumentParser:
              'dead server on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
-        '--wait-stage', default='final', metavar='{stage2,final}',
+        '--wait-stage', default='final', metavar='{stage1,stage2,final}',
         help='With --wait-only, wait for this result.json stage (default: final). '
-             'Use stage2 for the direction handoff in the three-stage flow.',
+             'Use stage1 after the initial daemon launch and chat handoff; use '
+             'stage2 for the direction handoff.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
-        help=f'Seconds the --wait parent blocks before returning (default: {WAIT_TIMEOUT_DEFAULT}; '
+        help=f'Seconds the wait caller blocks before returning (default: {WAIT_TIMEOUT_DEFAULT}; '
              '0 = no limit). Kept under the caller\'s tool timeout; the detached server lives on.',
     )
     parser.add_argument(
@@ -1681,8 +1684,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.error('%s is not a directory', project_path)
         return 1
     wait_stage = _stage_key(args.wait_stage)
-    if wait_stage not in {'stage2', 'final'}:
-        logger.error('--wait-stage must be stage2 or final')
+    if wait_stage not in {'stage1', 'stage2', 'final'}:
+        logger.error('--wait-stage must be stage1, stage2, or final')
         return 2
 
     # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
@@ -1690,7 +1693,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
-    # Staged wait: attach to the server launched by the first --wait and block
+    # Staged wait: attach to the server launched by --daemon and block
     # until the page writes the requested intermediate or final result.json.
     if args.wait_only:
         lock_file = project_path / LOCK_FILE_NAME
