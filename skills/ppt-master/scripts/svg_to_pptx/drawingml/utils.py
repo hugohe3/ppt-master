@@ -245,7 +245,13 @@ PROJECT_FILTER_EFFECT_PRIMITIVES = frozenset({
     'feDropShadow',
     'feGaussianBlur',
 })
-PROJECT_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
+PROJECT_FILTER_PUBLIC_TARGETS = frozenset({
+    'rect',
+    'circle',
+    'image',
+    'path',
+    'text',
+})
 _PROJECT_MARKER_NUMBER_TOKEN = (
     r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
 )
@@ -2632,10 +2638,11 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         if (
             tag not in PROJECT_FILTER_PUBLIC_TARGETS
             and not _is_imported_preset_preview_filter_target(elem, parents)
+            and not is_imported_picture_crop_effect_carrier(elem)
         ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
-                'rect, circle, path, and text'
+                'rect, circle, image, path, and text'
             )
         match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
         if match is None:
@@ -2847,6 +2854,36 @@ def _is_imported_preset_preview_filter_target(
     return (
         expected_hash is not None
         and svg_preset_preview_fingerprint(parent) == expected_hash
+    )
+
+
+def is_imported_picture_crop_effect_carrier(elem: ET.Element) -> bool:
+    """Recognize the private effect carrier around an imported picture crop."""
+    if (
+        _svg_element_tag(elem) != 'g'
+        or elem.get('data-pptx-object') != 'picture'
+    ):
+        return False
+    children = [
+        child for child in elem
+        if _svg_element_tag(child) not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+    ]
+    if len(children) != 1:
+        return False
+    crop = children[0]
+    if (
+        _svg_element_tag(crop) != 'svg'
+        or crop.get('data-pptx-object') != 'picture'
+        or crop.get('viewBox') is None
+        or crop.get('preserveAspectRatio') != 'none'
+        or crop.get('filter') is not None
+        or crop.get('data-pptx-shape-id') != elem.get('data-pptx-shape-id')
+    ):
+        return False
+    crop_children = list(crop)
+    return (
+        len(crop_children) == 1
+        and _svg_element_tag(crop_children[0]) == 'image'
     )
 
 
