@@ -101,17 +101,18 @@ silently replace it with unrelated material.
 ## 3. Direct SVG Authoring
 
 Always read
-[`shared-standards-core.md`](../../references/shared-standards-core.md). Do not
-load `executor-base.md`: its persisted-plan prerequisites do not apply to this
-profile. For any image/formula, always read
+[`shared-standards-core.md`](../../references/shared-standards-core.md),
+[`svg-effects.md`](../../references/svg-effects.md), and
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md). Do
+not load `executor-base.md`: its persisted-plan prerequisites do not apply to
+this profile. For any image/formula, always read
 [`executor-image.md`](../../references/executor-image.md),
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
 [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
 web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
-for a non-default canvas, and load `native-shape-authoring.md` for selected
-preset/Boolean construction such as text knockouts.
+for a non-default canvas.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.

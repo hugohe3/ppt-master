@@ -2,7 +2,7 @@
 
 # SVG Effects and Geometry Specification
 
-Conditional reference for advanced paint, effects, transforms, freeform/radial geometry, and constructed visual styles. Load only when the page uses one of these capabilities.
+Authority for advanced paint, effects, transforms, freeform/radial geometry, and constructed visual styles. Default and Quick Generate load it before SVG authoring; other SVG-authoring routes follow their workflow trigger.
 
 **Cross-reference map**: unqualified §1, §2, and §4 references point to [`shared-standards-core.md`](./shared-standards-core.md); §6 references are local to this file.
 

@@ -173,7 +173,7 @@
       "max_tokens": 62475
     },
     "route.generate.quick-generate": {
-      "description": "Explicit non-interactive Generate path with conditional source/resource preparation and the shared SVG authoring core.",
+      "description": "Explicit non-interactive Generate path with conditional source/resource preparation and the complete SVG visual-construction authorities.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -182,9 +182,11 @@
         "skills/ppt-master/workflows/generate-pptx.md",
         "skills/ppt-master/workflows/profiles/quick-generate.md",
         "skills/ppt-master/references/artifact-ownership.md",
-        "skills/ppt-master/references/shared-standards-core.md"
+        "skills/ppt-master/references/shared-standards-core.md",
+        "skills/ppt-master/references/svg-effects.md",
+        "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 36950
+      "max_tokens": 53040
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -194,7 +196,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 38450
+      "max_tokens": 54540
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -205,7 +207,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 38850
+      "max_tokens": 54940
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -215,7 +217,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 46275
+      "max_tokens": 62365
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -227,7 +229,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 49475
+      "max_tokens": 65565
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -238,7 +240,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 69400
+      "max_tokens": 85490
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -249,7 +251,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 54025
+      "max_tokens": 70115
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -401,7 +403,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 88175
+      "max_tokens": 104265
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -414,7 +416,7 @@
         "stage.generate.image.ai-two-types"
       ],
       "files": [],
-      "max_tokens": 133200
+      "max_tokens": 149290
     },
     "route.generate.flat-in-hand-image": {
       "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
@@ -426,7 +428,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 106525
+      "max_tokens": 122615
     },
     "route.generate.flat-web-image": {
       "description": "Generate-PPTX context with web image acquisition.",
@@ -439,7 +441,7 @@
         "stage.generate.image.web"
       ],
       "files": [],
-      "max_tokens": 113800
+      "max_tokens": 129890
     },
     "route.enhance-native-pptx.audio": {
       "description": "Enhance Native PPTX with the shared narration-audio stage.",
@@ -459,7 +461,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 95100
+      "max_tokens": 111190
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -472,7 +474,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 112500
+      "max_tokens": 128590
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -484,7 +486,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 95200
+      "max_tokens": 111290
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -496,7 +498,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 105150
+      "max_tokens": 121240
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -508,7 +510,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 105600
+      "max_tokens": 121690
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -518,14 +520,16 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 89675
+      "max_tokens": 105765
     },
     "stage.generate.executor.flat": {
-      "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
+      "description": "Incremental flat Executor core with complete visual-construction authorities and representative multi-source custom mode/style execution.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-base.md",
         "skills/ppt-master/references/shared-standards-core.md",
+        "skills/ppt-master/references/svg-effects.md",
+        "skills/ppt-master/references/native-shape-authoring.md",
         "skills/ppt-master/references/semantic-svg.md",
         {
           "glob": "skills/ppt-master/references/modes/*.md",
@@ -548,7 +552,7 @@
           "allow_repeat": true
         }
       ],
-      "max_tokens": 36500
+      "max_tokens": 52590
     },
     "stage.generate.executor.structured": {
       "description": "Structured template execution layered on the flat/shared core.",
@@ -560,7 +564,7 @@
         "skills/ppt-master/references/executor-structured.md",
         "skills/ppt-master/references/pptx-structure-interface.md"
       ],
-      "max_tokens": 37000
+      "max_tokens": 53090
     },
     "stage.generate.image.ai-two-types": {
       "description": "Incremental AI-image role with representative multi-source custom rendering and two selected local types.",
@@ -618,7 +622,7 @@
         "skills/ppt-master/workflows/stages/resume-execute.md",
         "skills/ppt-master/references/artifact-ownership.md"
       ],
-      "max_tokens": 51025
+      "max_tokens": 67115
     },
     "stage.generate.resume-execute-image": {
       "description": "Fresh-session resume when the locked resource plan contains image rows.",
@@ -628,7 +632,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 67800
+      "max_tokens": 83890
     },
     "stage.generate.topic-research": {
       "description": "Gap-targeted factual intake stage.",
@@ -841,7 +845,7 @@
       "max_tokens": 900
     },
     "stage.generate.executor.native-shape": {
-      "description": "Conditional stock PowerPoint shape selection and Boolean materialization contract.",
+      "description": "Stock PowerPoint shape selection and Boolean materialization authority, always included in Generate Executor contexts.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-shape-authoring.md"
@@ -849,7 +853,7 @@
       "max_tokens": 4500
     },
     "stage.shared.svg-effects": {
-      "description": "Conditional advanced SVG paint, effects, transforms, and geometry for Generate Executor or Create Template.",
+      "description": "Advanced SVG paint, effects, transforms, and geometry authority, always included in Generate Executor contexts and conditionally loaded by other SVG-authoring routes.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/svg-effects.md"
