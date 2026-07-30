@@ -43,6 +43,7 @@ _OOXML_PERCENT_LITERAL_RE = re.compile(
 _OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
 _OOXML_PERCENTAGE_MIN = Decimal(-(2**31)) / Decimal(PERCENT_UNIT)
 _OOXML_PERCENTAGE_MAX = Decimal(2**31 - 1) / Decimal(PERCENT_UNIT)
+_SVG_RADIAL_FOCUS_TOLERANCE = Decimal(1) / Decimal(PERCENT_UNIT)
 _DRAWINGML_FILL_NAMES = (
     "noFill",
     "solidFill",
@@ -270,6 +271,11 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                 and focus_y + focus["b"] == Decimal(1)
                 and Decimal(0) <= focus_x <= Decimal(1)
                 and Decimal(0) <= focus_y <= Decimal(1)
+                and (
+                    (focus_x - Decimal("0.5")) ** 2
+                    + (focus_y - Decimal("0.5")) ** 2
+                    <= Decimal("0.25") + _SVG_RADIAL_FOCUS_TOLERANCE
+                )
             )
             if (
                 point_focus
@@ -286,7 +292,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
                 palette._diagnose(
                     "path-gradient-focus-normalized",
                     "DrawingML path gradient focus is not one point within "
-                    "the SVG 0..1 focus range",
+                    "the canonical SVG radial circle",
                     "center the radial gradient while preserving its stops",
                 )
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
