@@ -165,16 +165,29 @@ MINIMAX_API_KEY=your-api-key
 
 ## `analyze_images.py`
 
-Analyze images in a project directory before writing the design spec or composing slide layouts.
+Analyze objective image-file facts in a project directory before writing the
+design spec or authoring SVG.
 
 ```bash
 python3 scripts/analyze_images.py <project_path>/images
-python3 scripts/analyze_images.py <project_path>/images --canvas ppt43
 ```
 
-Without `--canvas`, the tool resolves the project format and falls back to `ppt169`; the flag is an explicit override. The atomic CSV records EXIF-corrected native dimensions/`AspectRatio`, optional source `SourceDisplayRatio`, format, and actual transparent-pixel presence. Native ratio—not source display metadata—drives bitmap layout/crop. An empty folder rewrites a header-only report; unreadable supported files still refresh the report and produce a non-zero exit.
+The tool does not resolve a canvas or recommend a left/right, top/bottom, or
+other slide layout. Its atomic CSV records EXIF-corrected native dimensions and
+`AspectRatio`, the objective aspect-ratio category, optional source
+`SourceDisplayRatio`, format, actual transparent-pixel presence, usage count,
+and bitmap/vector capability facts. An empty folder rewrites a header-only
+report; unreadable supported files still refresh the report and produce a
+non-zero exit.
 
-Use this as the default inventory and geometry source; it does not perform semantic image understanding. Generate planning follows the Strategist's context-first boundary: source context, captions / alt text / titles, filenames, user notes, and existing resource records come first. Only an already-selected provided/web asset whose focal-safe crop, overlay contrast, or quiet region remains materially ambiguous may be inspected for that placement; this never reopens selection or provenance, never bulk-opens the image folder, and never restores routine readback of AI-generated images.
+Use this as the default factual inventory; it does not perform semantic image
+understanding or choose composition. Generate planning follows the Strategist's
+context-first boundary: source context, captions / alt text / titles, filenames,
+user notes, and existing resource records come first. Only an already-selected
+provided/web asset whose focal-safe crop, overlay contrast, or quiet region
+remains materially ambiguous may be inspected for that placement; this never
+reopens selection or provenance, never bulk-opens the image folder, and never
+restores routine readback of AI-generated images.
 
 ## `image_search.py`
 

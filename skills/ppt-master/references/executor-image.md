@@ -27,9 +27,14 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 
 **Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
 
-**Reference — layout catalog is optional recall**: Load [`image-layout-patterns.md`](./image-layout-patterns.md) for a cited `#<id>` or useful recall; free-form suggestions need no lookup.
-
-**Default — action-bearing image composition (may override only for an upstream-documented restraint or explicit user/template/content boundary)**: On a `hero_page` or other image-led page, first understand the suggestion's communication job, then develop an image/content or image/shape relationship from hierarchy, copy, asset ratio/focus, and deck rhythm; do not mechanically reproduce its named pattern. Position, size, crop, and a legibility-only scrim alone do not constitute that relationship. A split or full-bleed remains valid only for deliberate restraint recorded in §IX `Layout` / `Images` or an explicit boundary. Preserve role/source, must-use, crop/content, and explicit user/template constraints; expression-only changes need no upstream rewrite.
+**Layout ownership**: The image branch always arrives with
+[`image-layout-spec.md`](./image-layout-spec.md) and
+[`image-layout-patterns.md`](./image-layout-patterns.md) already read. Use the
+catalog as vocabulary, not a quota or geometry lock. Executor owns final SVG
+geometry and may deepen, simplify, or replace the preferred pattern—including
+with a plain split or full bleed—while preserving resource role/source,
+must-use status, crop/content boundaries, and explicit user/template
+constraints. Expression-only changes need no upstream rewrite.
 
 **Reference — motion-ready image layering, not a constraint**: For adopted §IX or an explicit focus, comparison, evidence, reveal-order, or cross-page requirement, decide during SVG authoring whether the final composition needs separate visible units. Keep ordinary stable framing/background static and wrap each independently revealed or continuing Slide-local unit in a descriptive direct-root `<g id>`; structured atoms/slots retain their boundaries. Existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.
 

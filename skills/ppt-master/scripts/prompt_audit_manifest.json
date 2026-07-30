@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 402440
+    "max_tokens": 392825
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -215,7 +215,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 43975
+      "max_tokens": 46275
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -227,7 +227,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 47160
+      "max_tokens": 49475
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -238,7 +238,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 67015
+      "max_tokens": 69400
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -249,27 +249,27 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 51725
+      "max_tokens": 54025
     },
     "route.generate.planning-image": {
-      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
+      "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning",
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 74850
+      "max_tokens": 70275
     },
     "route.generate.planning-formula": {
-      "description": "Formula-only planning context with no non-formula image resource or layout catalog.",
+      "description": "Formula-only planning context, including the shared image/formula layout math and vocabulary.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning",
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 64975
+      "max_tokens": 70275
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -289,7 +289,7 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 79100
+      "max_tokens": 74500
     },
     "stage.generate.apply-template-workspace": {
       "description": "Conditional Step 3 workspace validation, installation, and fusion framework.",
@@ -594,7 +594,7 @@
           "registry": "image-type-templates"
         }
       ],
-      "max_tokens": 23050
+      "max_tokens": 23125
     },
     "stage.generate.image.web": {
       "description": "Incremental web-image acquisition role.",
@@ -785,23 +785,14 @@
       "max_tokens": 3100
     },
     "stage.generate.strategist.image": {
-      "description": "Conditional Strategist image/formula policy module without a resource-layout catalog.",
+      "description": "Conditional Strategist image/formula policy with the always-read layout math and compact composition vocabulary.",
       "scope": "incremental",
       "files": [
-        "skills/ppt-master/references/strategist-image.md"
-      ],
-      "max_tokens": 2525
-    },
-    "stage.generate.strategist.image-layout": {
-      "description": "Optional image-layout catalog recall layered on image planning when the Strategist wants additional composition vocabulary.",
-      "scope": "incremental",
-      "include": [
-        "stage.generate.strategist.image"
-      ],
-      "files": [
+        "skills/ppt-master/references/strategist-image.md",
+        "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/image-layout-patterns.md"
       ],
-      "max_tokens": 14675
+      "max_tokens": 7825
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
@@ -820,14 +811,15 @@
       "max_tokens": 6200
     },
     "stage.generate.executor.image": {
-      "description": "Conditional image embedding and layout execution rules; the optional layout catalog is not part of the required bundle.",
+      "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-image.md",
         "skills/ppt-master/references/image-layout-spec.md",
+        "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 18425
+      "max_tokens": 9425
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",
@@ -1012,7 +1004,7 @@
       "name": "image-layout-patterns",
       "kind": "numbered_markdown",
       "source": "skills/ppt-master/references/image-layout-patterns.md",
-      "entry_pattern": "^(?P<ids>\\d+(?:\\s*(?:[-–]|·)\\s*\\d+)*)\\.\\s+\\*\\*",
+      "entry_pattern": "^(?:\\|\\s*`#)?(?P<ids>\\d+(?:\\s*(?:[-–]|·)\\s*\\d+)*)(?:`\\s*\\||\\.\\s+\\*\\*)",
       "reference_terms": [
         "image-layout-patterns",
         "image-text layout patterns"
