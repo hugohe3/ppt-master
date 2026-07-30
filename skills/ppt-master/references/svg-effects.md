@@ -10,6 +10,8 @@ Authority for advanced paint, effects, transforms, freeform/radial geometry, and
 
 **Mandatory**: Default and Quick Generate read this file completely before SVG
 authoring and keep its compatible techniques in active construction vocabulary.
+Before constructing each page, run the §6.1 selection procedure and use §6.13
+to route each diagnosed visual job.
 
 **Default — situational use (may override when plain construction is stronger)**:
 “Advanced” means capability depth, not an effect quota. During page authoring,
@@ -21,14 +23,26 @@ rhythm, and style; apply those that materially help.
 | Decision layer | Authority |
 |---|---|
 | Technical validity | Required / Forbidden / Conditional contracts in this file |
-| Project values | `<project_path>/spec_lock.md` stable anchors plus the retained Design Spec and current page context |
-| Aesthetic fit | Locked `visual_style` / `visual_style_behavior` |
+| Project values | Default: `<project_path>/spec_lock.md` anchors plus retained Design Spec/page context; Quick: anchors resolved in the current context |
+| Aesthetic fit | Locked or Quick-resolved `visual_style` / `visual_style_behavior` |
 | Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
 
+**Mandatory — job-first effect selection**: start from a readable, editable
+plain construction, not from the effect catalog.
+
+| Pass | Decision |
+|---|---|
+| Baseline | Name the concrete job an effect would perform: separate planes, direct attention, integrate image and text, encode state/direction, or express the locked or Quick-resolved material/style. If plain hierarchy already performs it, keep the plain construction. |
+| Surface | Identify the exact target—text, image, line, geometry, or a supported `<g>` / `<use>` subtree—and verify that the owning subsection allows that operation on the surface and states usable fidelity. |
+| Select | Route the job through §6.13 and choose the smallest compatible technique that performs it. When alternatives communicate equally well, prefer `Native-stable` / `Native-normalized` over `Approximate` or `Bake-required`. |
+| Integrate | Align paint, contour, light direction, hierarchy, and z-order with the page. Combine techniques only when each owns a different job; never stack shadow, glow, gradient, border, and tint merely to look advanced. |
+| Gate / Stop | Check legibility, editability, object density, native fidelity, and style fit. Simplify for legibility/style failures; use a legal explicit layer or alternative for unsupported syntax; bake the smallest visual layer/asset only when the intent truly depends on pixels. Keep authoritative text/data native and review any material `Approximate` result in the exported PPTX. |
+
 **Reference — illustrative colors**: colors below demonstrate syntax only;
-generated pages choose paint from the locked identity anchors, visual style,
-content semantics, and current composition. A contextual tint, gradient stop,
-shadow/glow paint, or one-off display color need not already be a lock row;
+generated pages choose paint from the Default locked or Quick-resolved identity
+anchors, visual style, content semantics, and current composition. A contextual
+tint, gradient stop, shadow/glow paint, or one-off display color need not
+already be a persistent identity role;
 promote it only when it becomes a recurring named role. Fidelity labels are defined
 in [`shared-standards-core.md`](./shared-standards-core.md). Review an `Approximate` result in native PPTX
 when the effect carries material meaning.
@@ -129,7 +143,7 @@ PPTX import normalizes gradients and reports degradation;
 Checker/exporter preflight share this validation.
 Gradient-stop colors are contextual paint values. Keep them coherent with the
 deck anchors and page intent; they are not required to duplicate existing
-`spec_lock.colors` literals.
+Default `spec_lock.colors` literals or Quick-resolved anchors.
 
 **Hard rule — non-degenerate gradient geometry**: an `objectBoundingBox`
 gradient stroke requires non-zero intrinsic width and height. SVG stroke width
@@ -561,8 +575,8 @@ freeform, apply [`native-shape-authoring.md`](./native-shape-authoring.md):
 prefer an editable basic primitive, one exact Office preset, or a Boolean
 materialization. Use a closed cubic path only for an organic silhouette those
 cannot express, polygon/closed path for unmatched ribbons/facets, and an open
-path only for a required data curve, custom route, or locked hand-drawn /
-organic style. Straight relationships use `<line>`; exact stock bends/curves
+path only for a required data curve, custom route, or locked or Quick-resolved
+hand-drawn / organic style. Straight relationships use `<line>`; exact stock bends/curves
 use an authored native Connector preset. Multi-`M` paths remain available for
 exact linework, and a [`shared-standards-core.md`](./shared-standards-core.md)
 §1.2 path clip for unmatched organic pictures. Filled silhouettes end with
@@ -655,9 +669,10 @@ filled `Native-normalized` arrowhead. Example:
 **Hard rule — explicit construction**: these are supported-layer recipes, not
 browser-filter permissions.
 
-**Reference — not a constraint**: use them only when they match the locked style.
-Their curve recipes are explicit exceptions to the Shape-first default above;
-they do not authorize decorative freeforms in another style.
+**Reference — not a constraint**: use them only when they match the locked or
+Quick-resolved style. Their curve recipes are explicit exceptions to the
+Shape-first default above; they do not authorize decorative freeforms in
+another style.
 
 | Intent | Construction | Boundary / fidelity |
 |---|---|---|
@@ -730,24 +745,26 @@ import diagnostics. Resolve those diagnostics before release export; see
 
 ---
 
-### 6.13 Scenario Quick Reference
+### 6.13 Scenario Routing
 
-**Reference — not a constraint**: fidelity remains authoritative in the owning
-subsection; this table only routes scenarios.
+**Reference — not a constraint**: this table routes a job diagnosed in §6.1;
+it is not a catalog checklist. Fidelity and the locked or Quick-resolved style
+remain authoritative in the owning subsection.
 
 | Decision family | Scenario routing | Authority / boundary |
 |---|---|---|
-| Elevation | Floating card → resting shadow; one CTA → colored shadow; equal peers/background → flat; maximum predictability → layered shapes; title/metric → glow | §6.4; never body-copy glow |
-| Image/material | Text over image → directional scrim; bottom title → bottom fade; centered hero → vignette; brand wash → brand overlay; glass card → faux glass | §6.5; no backdrop blur |
-| Lines | Draft/optional → dash; process direction → marker; flow/series → gradient stroke; exact grid → multi-subpath path | §6.6 / §6.3 |
-| Text | Removed/former value → line-through; eyebrow → tracking; watermark/outline heading → text outline; list → native bullet | §6.7 |
-| Composition | Move/rotate/mirror → §6.8 transform; repeated static mark → local `<use>` | §6.8; preserve z-order |
+| Paint | Directional or continuous value change → linear gradient; center-weighted focus → radial gradient; subordinate layer or overlap depth → channel alpha; short display emphasis → gradient text; hierarchy already clear → solid paint | §6.2 / §6.3; do not use color variation without a semantic or material job |
+| Elevation | Object visibly above another surface → resting/raised shadow; one focal CTA → restrained colored shadow; equal peers/background → flat; luminous short title/metric → glow | §6.4; one light direction; never body-copy glow |
+| Image/material | Text over image → directional scrim; bottom title → bottom fade; centered hero → vignette; brand unification → brand wash; foreground panel over image → faux glass | §6.5; validate actual contrast; no backdrop blur |
+| Lines | Draft/optional/future → dash; process direction → marker; undirected relationship → solid connector; continuous flow/series → gradient stroke; exact grid → multi-subpath path | §6.6 / §6.3 |
+| Text | Removed/former value → line-through; short eyebrow → tracking; display heading needing a distinct silhouette → outline/gradient; luminous focal metric → glow; list → native bullet | §6.7 / §6.4; body copy may keep semantic decoration, but not decorative gradient/outline/glow/tracking |
+| Composition | Physical tilt or directional energy → rotate; reversible non-text asset facing the wrong way → mirror; repeated exact static mark → local `<use>` | §6.8; preserve z-order; never mirror text, logos, or directional evidence |
 | Hand/print | Annotation → highlighter/curve; ink wash → layered alpha paths; Riso → offset duplicate | §6.11; no turbulence, true bleed, or blend mode |
 | Pixel/halftone | Pixel accent → integer rect grid; sparse screen → circles | §6.11; dense screen → §6.12 |
 | Faceted/layered | Pseudo-3D → 2D facets; paper cut → direct shadow per layer | §6.11; no 3D transform/group composite shadow |
 | Data/freeform | Series depth → area first + line above; unmatched organic silhouette → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
 | Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
 | Arrow | Straight relationship → `<line>` + marker; stock bend/curve → native Connector; unmatched custom route → separate calculated arrowhead if needed | §6.10 / §1.1 / native-shape authoring |
-| Unsupported | Dense grain, complex composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
+| Unsupported | Dense grain, complex per-pixel composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
 
 ---

@@ -27,18 +27,16 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 1. Effect Capability Discovery
 
-**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. Use the already-loaded [`svg-effects.md`](./svg-effects.md) before authoring a selection, except the cross-page motion row, which loads [`animations.md`](./animations.md) §3.1.
+**Mandatory — select by visual job**: before authoring each page, run the
+already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure and use its
+§6.13 scenario routing. The catalog expands construction vocabulary; it does
+not create an effect quota. Active cross-page continuous action additionally
+loads [`animations.md`](./animations.md) §3.1 before authoring both endpoints.
 
-| Visual need | Available construction |
-|---|---|
-| Color / material | alpha paint, gradients, translucent overlays |
-| Elevation | shadow, glow, explicit highlights |
-| Image integration | scrim, vignette, brand wash, clipping, faux glass |
-| Line / type | dash/cap/join, markers, gradient stroke; tracking, outline, alpha/gradient text |
-| Space / constructed style | transform/reuse, hand-drawn, ink/Riso, halftone, isometric, paper cut; custom curves/arcs only when meaning or the locked style requires them |
-| Continuous action across pages | Paired pages that differ in one property, exported with morph |
-
-**Hard rule — discovery does not expand compatibility**: Follow `svg-effects.md` syntax and fallbacks; unsupported blur, blend, mask, dense texture, or skew remains baked/alternative-only.
+**Hard rule — discovery does not expand compatibility**: Follow
+`svg-effects.md` syntax and fallbacks; unsupported source/backdrop blur, blend
+mode, SVG `<mask>` / per-pixel masking, dense texture, or skew remains
+baked/alternative-only.
 
 **Default — resolve active cross-page geometry here, while pages are still being authored (may override when the deck has no continuous action to express)**: object effects, page transitions, and Morph pair keys are post-processing decisions, but the two visible endpoint states are not. Apply this preparation only when an explicit user motion instruction, an enabled effective Custom Animations outcome, or an existing `animations.json` activates motion; a §IX Motion suggestion alone remains non-operative advice. An active sequence that should read as one continuous action (slide-in, flip, camera push-in, progressive reveal, camera pan) must be authored as consecutive pages in `svg_output/` now. Give each continuing endpoint a compatible direct-root group; source and destination ids or geometry may differ because the later motion stage can bind them explicitly through `animations.json`. A deck that reaches export without both states cannot gain the motion by adding a flag. Adding pages is a §IX roster change and returns to Strategist for Design Spec repair first.
 
