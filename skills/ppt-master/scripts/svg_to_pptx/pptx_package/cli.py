@@ -79,6 +79,7 @@ from .template_structure import (
     template_prototype_errors,
 )
 from ..animation_config import (
+    animation_group_effect_entries,
     load_animation_config,
     validate_animation_config,
     validate_animation_config_errors,
@@ -728,36 +729,50 @@ def _recorded_narration_on_click_slides(
         slide_animation = animation
         if not animation_cli_overrides.get('animation') and 'effect' in anim_cfg:
             slide_animation = normalize_animation_effect(anim_cfg.get('effect'))
-        groups_cfg = _as_dict(slide_cfg.get('groups'))
-        has_explicit_animation = any(
-            isinstance(group_cfg, dict)
-            and 'effect' in group_cfg
-            and normalize_animation_effect(group_cfg.get('effect')) is not None
-            for group_cfg in groups_cfg.values()
-        )
-        if slide_animation is None and not has_explicit_animation:
-            continue
-        has_interactive_animation = any(
-            isinstance(group_cfg, dict)
-            and isinstance(group_cfg.get('trigger_shape'), str)
-            and bool(group_cfg['trigger_shape'].strip())
-            and (
-                (
-                    'effect' in group_cfg
-                    and normalize_animation_effect(group_cfg.get('effect')) is not None
-                )
-                or ('effect' not in group_cfg and slide_animation is not None)
-            )
-            for group_cfg in groups_cfg.values()
-        )
-        if has_interactive_animation:
-            blocked.append(svg_path.stem)
-            continue
-
         slide_trigger = animation_trigger
-        if not animation_cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
+        if (
+            not animation_cli_overrides.get('animation_trigger')
+            and anim_cfg.get('trigger')
+        ):
             slide_trigger = normalize_animation_trigger(anim_cfg.get('trigger'))
-        if slide_trigger == 'on-click':
+
+        groups_cfg = _as_dict(slide_cfg.get('groups'))
+        has_interactive_animation = False
+        for group_id, group_cfg in groups_cfg.items():
+            if not isinstance(group_cfg, dict):
+                continue
+            group_path = (
+                f'slides[{json.dumps(svg_path.stem, ensure_ascii=False)}]'
+                f'.groups[{json.dumps(str(group_id), ensure_ascii=False)}]'
+            )
+            for _effect_path, effect_cfg in animation_group_effect_entries(
+                group_cfg,
+                path=group_path,
+            ):
+                row_effect = (
+                    normalize_animation_effect(effect_cfg.get('effect'))
+                    if 'effect' in effect_cfg
+                    else slide_animation
+                )
+                if row_effect is None:
+                    continue
+                row_trigger = (
+                    normalize_animation_trigger(effect_cfg.get('trigger'))
+                    if effect_cfg.get('trigger')
+                    else slide_trigger
+                )
+                if effect_cfg.get('trigger_shape') is not None:
+                    has_interactive_animation = True
+                    break
+                if row_trigger == 'on-click':
+                    has_interactive_animation = True
+                    break
+            if has_interactive_animation:
+                break
+
+        if has_interactive_animation or (
+            slide_animation is not None and slide_trigger == 'on-click'
+        ):
             blocked.append(svg_path.stem)
     return blocked
 
@@ -834,9 +849,10 @@ Per-element object animation (-a/--animation, native shapes mode):
              after-previous (default)  cascade on slide entry;
                                        gap = --animation-stagger seconds
            mixed (compatible mode name) cycles a larger 16-preset canonical
-           PowerPoint pool by group order; random samples from the same pool.
-           Use "-a none" to disable
-           element builds explicitly.
+           PowerPoint entrance pool by group order; random samples from the
+           same entrance pool. Use explicit canonical keys for emphasis,
+           motion-path, or exit duties. Use "-a none" to disable element
+           builds explicitly.
 
 Speaker notes:
     - Automatically reads Markdown notes files from the notes/ directory
@@ -1017,9 +1033,10 @@ Recorded narration:
                              '(map effect from group id — image-like ids cycle a '
                              'richer canonical pool for visual variation, fallback '
                              'cycles entrance_fade/entrance_wipe/entrance_fly/'
-                             'entrance_zoom), "mixed" (canonical 16-preset pool), or '
-                             '"random". Legacy short names remain accepted only for '
-                             'compatibility.')
+                             'entrance_zoom), "mixed" (canonical 16-preset entrance '
+                             'pool), or "random" (the same entrance pool). Use '
+                             'explicit keys for emphasis/path/exit. Legacy short '
+                             'names remain accepted only for compatibility.')
     parser.add_argument('--animation-duration', type=positive_float, default=None,
                         help='Per-element object-animation duration in seconds '
                              '(default: 0.4; instantaneous native presets keep their '
