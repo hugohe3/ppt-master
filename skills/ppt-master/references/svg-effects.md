@@ -295,10 +295,10 @@ filter directly on an unclipped `<image>`. For a clipped picture, keep
 sole visual child is that image. Never combine `filter` and `clip-path` on the
 same `<image>`: SVG would clip the preview effect while PowerPoint would not.
 The carrier may keep object-local id, role, transform, and
-`data-pptx-carrier`; it must not own `data-pptx-layer`,
+`data-pptx-carrier`. It may own `data-pptx-layer="master|layout"` only when
+the carrier itself is the direct fixed atom. It must not own
 `data-pptx-placeholder`, `data-pptx-binding`, or chart/table replacement
-metadata. In structured SVG, keep that ownership on the outer slot/layer
-boundary.
+metadata; keep slot ownership on the outer placeholder boundary.
 
 **Hard rule — picture frames and sources are explicit and decodable**: every
 SVG `<image>` has explicit positive `width`/`height` and exactly one non-empty
