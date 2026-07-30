@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 397825
+    "max_tokens": 399925
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -33,7 +33,7 @@
     "skills/ppt-master/references/strategist-template.md": 2100,
     "skills/ppt-master/templates/design_spec_reference.md": 3275,
     "skills/ppt-master/templates/spec_lock_reference.md": 2375,
-    "skills/ppt-master/workflows/generate-pptx.md": 13775,
+    "skills/ppt-master/workflows/generate-pptx.md": 13825,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 1800
   },
   "load_sets": {
@@ -170,10 +170,10 @@
           "registry": "visual-styles"
         }
       ],
-      "max_tokens": 62075
+      "max_tokens": 62225
     },
     "route.generate.quick-generate": {
-      "description": "Explicit Generate direct-authoring short circuit with the shared SVG authoring core.",
+      "description": "Explicit non-interactive Generate path with conditional source/resource preparation and the shared SVG authoring core.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -181,9 +181,75 @@
       "files": [
         "skills/ppt-master/workflows/generate-pptx.md",
         "skills/ppt-master/workflows/profiles/quick-generate.md",
+        "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md"
       ],
-      "max_tokens": 31825
+      "max_tokens": 36525
+    },
+    "route.generate.quick-generate.topic-research": {
+      "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.topic-research"
+      ],
+      "files": [],
+      "max_tokens": 38025
+    },
+    "route.generate.quick-generate.icon": {
+      "description": "Quick Generate with project-local bundled icon selection and synchronization.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate"
+      ],
+      "files": [
+        "skills/ppt-master/templates/icons/README.md"
+      ],
+      "max_tokens": 38425
+    },
+    "route.generate.quick-generate.in-hand-image": {
+      "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.image"
+      ],
+      "files": [],
+      "max_tokens": 43450
+    },
+    "route.generate.quick-generate.formula": {
+      "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.image"
+      ],
+      "files": [
+        "skills/ppt-master/scripts/docs/image.md"
+      ],
+      "max_tokens": 46650
+    },
+    "route.generate.quick-generate.ai-two-types": {
+      "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.image.ai-two-types",
+        "stage.generate.executor.image"
+      ],
+      "files": [],
+      "max_tokens": 66500
+    },
+    "route.generate.quick-generate.web-image": {
+      "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.image.web",
+        "stage.generate.executor.web-image"
+      ],
+      "files": [],
+      "max_tokens": 51200
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
@@ -203,7 +269,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 64500
+      "max_tokens": 64650
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -335,7 +401,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 87725
+      "max_tokens": 87900
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -393,7 +459,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 94675
+      "max_tokens": 94825
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -406,7 +472,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 112075
+      "max_tokens": 112225
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -418,7 +484,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 94775
+      "max_tokens": 94925
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -430,7 +496,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 104700
+      "max_tokens": 104875
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -442,7 +508,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 105150
+      "max_tokens": 105325
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -452,7 +518,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 89125
+      "max_tokens": 89400
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with representative multi-source custom mode/style execution.",
@@ -528,7 +594,7 @@
           "registry": "image-type-templates"
         }
       ],
-      "max_tokens": 23000
+      "max_tokens": 23050
     },
     "stage.generate.image.web": {
       "description": "Incremental web-image acquisition role.",
@@ -537,7 +603,7 @@
         "skills/ppt-master/references/image-base.md",
         "skills/ppt-master/references/image-searcher.md"
       ],
-      "max_tokens": 7000
+      "max_tokens": 7275
     },
     "stage.generate.resume-execute": {
       "description": "Fresh-session resume plus the flat Executor core and post-SVG notes rules.",
@@ -632,7 +698,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 28850
+      "max_tokens": 28975
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",
@@ -698,7 +764,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 64150
+      "max_tokens": 64300
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
@@ -1119,10 +1185,6 @@
       {
         "glob": "skills/ppt-master/scripts/README.md",
         "reason": "Script inventory for maintainers; not loaded by generation roles."
-      },
-      {
-        "glob": "skills/ppt-master/scripts/docs/image.md",
-        "reason": "Maintainer command reference; image roles use their owning role documents instead."
       },
       {
         "glob": "skills/ppt-master/scripts/docs/project.md",
