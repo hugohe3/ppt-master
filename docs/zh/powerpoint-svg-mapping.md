@@ -153,7 +153,7 @@ PowerPoint 意图
 | 纯色填充 | 已锁定规范 `fill="#RRGGBB"` | `a:solidFill`；当锁定角色可精确复用时使用 theme token | `Native-stable` | 兼容颜色拼法可产生 warning；格式错误或生成未锁定值失败 |
 | 填充透明度 | 不透明 fill 加 `fill-opacity` | 原生 alpha | `Native-stable` | 生成值为 0 到 1 的有限无单位数 |
 | 线性渐变填充 | `<defs>` 中已登记 `<linearGradient>` | 原生 `a:gradFill` | `Native-normalized` | stop、坐标、transform 与引用必须遵循封闭合同 |
-| 径向渐变填充 | 已登记 `<radialGradient>` | 可偏心单点焦点的圆形 DrawingML 渐变 | `Approximate`；有效焦点可往返，外圆中心与半径会归一化 | 对半径或外圆中心敏感的设计需复核 |
+| 径向渐变填充 | 已登记 `<radialGradient>` | 可偏心单点焦点的圆形 DrawingML 渐变 | `Approximate`；位于规范圆内的有效焦点可往返，外圆中心与半径会归一化 | 有效焦点必须落在中心 `(0.5,0.5)`、半径 `0.5` 的规范圆内；回导会居中越界焦点并记录诊断；对半径或外圆中心敏感的设计需复核 |
 | 图案填充 | 带注解的项目 pattern 定义 | 原生 `a:pattFill` | `Native-normalized` | 仅支持已登记 PowerPoint 预设 pattern |
 | 无轮廓 | `stroke="none"` 或已登记线缺省 | `a:ln` 内的 `a:noFill` | `Native-stable` | 不得用零线宽模糊 CSS 模拟缺省 |
 | 实线轮廓 | 已登记 `stroke` 与宽度 | 原生 `a:ln` | `Native-stable` | 宽度与 paint 必须使用规范单位/语法 |
