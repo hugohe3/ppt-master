@@ -79,9 +79,9 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 生成的 PPT 可以编辑吗？
 
-可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。在默认 Generate 流程中，Executor 的原始 SVG 源（`svg_output/` 副本）会镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重跑 `finalize_svg → svg_to_pptx` 重建 PPTX，无需再走 LLM。
+可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。使用默认输出路径时，Default Generate 与 Quick Generate 都会把作者源 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重建 PPTX，无需再走 LLM。
 
-默认 Generate 流程的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速生成会跳过预览和备份产物。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
+默认 Generate 流程的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速生成会跳过这项预览产物，但在无锁最终质量检查通过后，仍保留普通 postflight 报告和默认输出路径下的备份。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
 
 ## Q: 多行文本会怎样导出？可以让 PowerPoint 自动重排吗？
 
@@ -204,9 +204,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 ## Q: 可以跳过策略师阶段直接生成吗？
 
-可以。请显式要求**快速生成**。Generate 路线会启用 [`quick-generate` profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)：仍按需转换来源并研究已识别的事实缺口，但当前 Agent 会在上下文中自动决定内容、页结构、视觉系统和资源清单，不进入 Strategist、确认、`design_spec.md` 或 `spec_lock.md`。
+可以。请显式要求**快速生成**。Generate 路线会启用 [`quick-generate` profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)：仍按需转换来源并研究已识别的事实缺口，但当前 Agent 会在上下文中自动决定内容、页结构、视觉系统和资源清单，不进入 Strategist、确认、`design_spec.md` 或 `spec_lock.md`；同时跳过 `finalize_svg.py`，因此不生成 `svg_final/` 预览。
 
-该 profile 仍会按需备齐生成 deck 所需的资源：用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、渲染公式，以及对应的必要 manifest 或来源记录。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，随后调用直接导出器。短路流程仍不包含结构化模板复用、原生图表 / 表格替换、Live Preview、视觉复核交付、质量报告、讲稿、`svg_final/`、备份、动画或旁白；页数本身既不会自动触发，也不会阻止快速生成。这是工作流短路，不承诺具体耗时，也不承诺与默认流程质量等价。
+该 profile 仍会按需备齐生成 deck 所需的资源：用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、渲染公式，以及对应的必要 manifest 或来源记录。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。这是规划阶段的短路，不承诺具体耗时，也不承诺与默认流程质量等价。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 

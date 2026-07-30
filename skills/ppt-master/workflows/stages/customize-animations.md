@@ -11,7 +11,9 @@ description: Optional post-processing stage for per-slide and per-object animati
 > outcome in `design_spec.md §I` is enabled. Deck-wide transitions,
 > auto-advance, and deck-wide per-element settings without page-specific motion
 > or an existing sidecar use [`animations.md`](../../references/animations.md)
-> directly and do not activate this stage.
+> directly and do not activate this stage. In Quick Generate, the current agent
+> may activate either path from the request/deck in active context without a
+> Design Spec or user interaction.
 
 ## When to Run
 
@@ -52,7 +54,7 @@ sidecars enter this stage; explicit disables follow the table without deletion.
 | Explicit adjustment / tuning / repair | Validate first, preserve the existing choreography where its semantic units remain valid, and migrate affected group references after any required regrouping |
 | Stage activated with an existing sidecar and new §IX suggestions but no user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
 | Existing sidecar with no new motion instruction | Validate and preserve it unchanged; if invalid, repair the owning sidecar/group reference before export |
-| Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
+| Ambiguous generation request | Default Generate asks whether to regenerate or modify; Quick Generate decides from the request, visible SVG, and existing sidecar, then continues |
 
 Unless explicit all-motion disable bypasses it, validate an existing sidecar
 before deciding to preserve, modify, or suppress object motion:

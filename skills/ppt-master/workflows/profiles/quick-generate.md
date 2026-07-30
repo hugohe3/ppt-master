@@ -1,12 +1,12 @@
 ---
-description: Generate profile for agent-decided source and resource preparation, direct SVG authoring, and one PPTX export without Strategist or confirmation artifacts.
+description: Generate profile for agent-decided source and resource preparation, direct SVG authoring, and final PPTX delivery without Strategist or confirmation artifacts.
 ---
 
 # Quick Generate Profile
 
 > Generate-PPTX profile, not a top-level route. It removes the separate
-> Strategist and confirmation phase; it does not remove the facts or visible
-> resources needed to build the deck.
+> Strategist and confirmation phase; it does not remove the facts, resources,
+> or export capabilities needed to build the final deck.
 
 **Trigger**: the user explicitly requests quick/fast generation, asks to skip
 strategy/confirmation, or directs the agent to proceed to SVG and export.
@@ -18,31 +18,32 @@ Page count alone never activates or blocks this profile.
 
 | Concern | Quick Generate contract |
 |---|---|
-| Interaction | The current main agent resolves routine content, page, visual, and resource choices in active context; do not invoke Strategist, open Confirm UI, or wait for design confirmation |
+| Interaction | The current main agent decides content, design, resources, and implementation without Strategist, Confirm UI, or approval stops |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before the referencing SVG is authored |
 | Planning artifacts | Do not create `design_spec.md`, `spec_lock.md`, confirmation payloads, or a second persisted strategy |
-| Delivery | Hand-author the resolved SVG roster and export one native PPTX through `--quick-generate` |
+| Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
 
 **Hard rule — speed removes interaction, not material**: source conversion,
 topic research, supplied/extracted assets, AI or web images, illustration
 slices, project icons, formula rendering, and regenerated image facts remain
 available whenever the deck needs them. The workspace may therefore contain
 `sources/`, `analysis/`, `images/`, `icons/`, and their operational manifests.
-Do not misread direct export's lack of report sidecars as a ban on resource
-artifacts.
+The missing planning contract relaxes design constraints; it does not remove
+resource preparation or exporter capabilities.
 
 Explicit user facts, wording, choices, exclusions, and permission boundaries
 still win. For every unspecified routine choice, decide directly and continue;
-do not ask the user to approve a provisional strategy. Stop only when a required
-fact/resource cannot be resolved safely or an explicit user decision is
-genuinely required.
+do not ask the user to approve a strategy or implementation detail.
 
-Structured template reuse, native chart/table replacement, Live Preview,
-speaker notes, animation, narration, and visual-review delivery remain
-default-pipeline capabilities. Do not silently discard one of those requested
-capabilities to fit this profile. Source preparation and visible-page resource
-preparation do not disqualify Quick Generate.
+After entry, continue through selected work, the final checker, and export.
+Pause only for user interruption or an unresolved hard prerequisite.
+
+**Default — optional production behavior (may override when useful)**: Speaker
+notes, custom object animations, and narration start off. The current agent may
+enable any ordinary capability when the request or deck benefits; use its
+normal inputs, flags, and prerequisites without asking for approval. Quick
+never creates or reads a Design Spec or lock to enable it.
 
 ---
 
@@ -52,8 +53,8 @@ Run [`generate-pptx.md`](../generate-pptx.md) Step 1 source conversion and
 bounded research when applicable. Initialize/import the project through Step 2
 when those tools or project-local resources are needed, but never scaffold a
 Design Spec or lock. Use a new project path, or first verify that its
-`svg_output/` is empty and that no `design_spec.md` / `spec_lock.md` from
-another pipeline is present.
+`svg_output/` is empty; Quick does not read any existing `design_spec.md` or
+`spec_lock.md`.
 
 Before writing P01, resolve in active context:
 
@@ -98,7 +99,7 @@ Always read
 [`shared-standards-core.md`](../../references/shared-standards-core.md). Do not
 load `executor-base.md`: its persisted-plan prerequisites do not apply to this
 profile. Load the conditional image/web/canvas references only when the
-resolved SVG needs them.
+resolved SVG or selected capability needs them.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.
@@ -120,17 +121,24 @@ and omit Master/Layout/layer/placeholder metadata.
 on a lock or generated font asset.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
-order. Use P01 as the visual anchor, continue directly through the remaining
-pages, and skip the default first-page and final checker gates. This profile
-still obeys every loaded SVG/resource rule; skipping a report does not relax
-the authoring contract.
+order. Use P01 as the visual anchor and continue directly through the remaining
+pages without a first-page checker or confirmation stop. After the complete
+roster exists, run the one final checker below. Apply other supporting tools
+and stages only when their capability is actually needed.
 
 ---
 
-## 4. Direct Export
+## 4. Export
 
-Run one export command after every page exists and every required referenced
-resource in the resolved roster has validated evidence and a usable status:
+After every page and required referenced resource exists, run the lockless
+final SVG check:
+
+```bash
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
+  --quick-generate --stage final --json
+```
+
+Fix every blocking error and rerun the same command. Then export:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate
@@ -138,23 +146,25 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate
 
 `--quick-generate` reads `svg_output/` as the page source and resolves the
 project-local assets referenced by those SVGs. It infers one consistent canvas,
-uses a flat PowerPoint package with converter defaults, disables notes and
-motion, skips lock/theme export sidecars, and writes no backup, conversion
-trace, or validation report. Resource manifests remain in the project. An
-explicit `-o <path>.pptx` may replace the default `exports/` destination.
+uses a lockless flat PowerPoint package, and does not force-disable ordinary
+export options. Notes, custom object animation, and narration remain off unless
+selected by the agent. Do not run `finalize_svg.py`.
 
-**Package sanity**: the standard non-quiet command succeeds only when
-`[QUICK-GENERATE] status=passed`, the discovered SVG count equals the published
-Slide count, and the PPTX passes in-memory ZIP integrity. This receipt does not
-claim SVG-checker, visual-quality, factual-correctness, or default postflight
-approval. On failure, repair the owning SVG/resource and rerun this command; do
-not create planning or validation-report artifacts.
+The exporter requires a passing `final` report whose SVG fingerprint matches
+the current `svg_output/`; missing, blocking, non-final, or stale reports stop
+before PPTX creation. The default output path retains ordinary backup and
+postflight behavior. An explicit `-o <path>.pptx` keeps the ordinary no-backup
+behavior. On failure, repair the owning SVG, resource, or optional capability
+input, rerun the final checker, then export again; do not create a Design Spec
+or lock.
 
 ```markdown
 ## ✅ Quick Generate Complete
 
 - [x] All required source/resource preparation is complete
 - [x] Resolved SVG pages and their project-local references exist
+- [x] The lockless final SVG quality report passes and matches the current SVGs
+- [x] Every selected optional export capability completed
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, Design Spec, or lock artifact was created
 - [ ] **Next**: Report the PPTX path

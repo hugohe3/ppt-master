@@ -41,7 +41,7 @@ route selection. After selection, the route authority owns execution.
 
 | Request condition | Generate-route behavior |
 |---|---|
-| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Activate [`quick-generate`](./profiles/quick-generate.md): prepare sources/resources as needed, let the current agent decide without interaction, omit Strategist/confirmation, hand-author SVG, and export directly |
+| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Activate [`quick-generate`](./profiles/quick-generate.md): prepare sources/resources as needed, let the current agent decide without interaction, omit Strategist/confirmation/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
@@ -61,9 +61,9 @@ route selection. After selection, the route authority owns execution.
 **Hard rule — direct-generation profile, not a fifth route**: `quick-generate`
 stays inside Generate PPTX but owns an explicit SVG → PPTX short circuit. Page
 count alone never activates or blocks it. Conversion, bounded research, and
-project-local image/icon/formula preparation remain available. Structured
-template reuse, native data objects, or additional package behavior require the
-default Generate pipeline.
+project-local resources remain available. Package capabilities may be requested
+or agent-selected. Structured template reuse requires the default lock-backed
+Generate pipeline.
 
 ---
 

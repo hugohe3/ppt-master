@@ -36,7 +36,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 ## Generate PPTX 路线架构
 
-下图描述 Generate PPTX 的默认生命周期，也包含其 `beautify-pptx` profile。显式 `quick-generate` profile 仍属于同一路线，但只绕过其中独立的规划 / 确认与默认交付门禁；来源理解和资源准备仍按需运行。Create Template 有独立的工作区生命周期；Fill Native PPTX 与 Enhance Native PPTX 直接操作 OOXML。本文后续路线表会覆盖全部四条顶层路线。
+下图描述 Generate PPTX 的默认生命周期，也包含其 `beautify-pptx` profile。显式 `quick-generate` profile 仍属于同一路线，但只绕过独立的规划 / 确认、首屏 gate 与预览终稿化；来源理解和资源准备仍按需运行，一次无锁最终质量门始终保留。Create Template 有独立的工作区生命周期；Fill Native PPTX 与 Enhance Native PPTX 直接操作 OOXML。本文后续路线表会覆盖全部四条顶层路线。
 
 ```
 用户输入 (PDF/DOCX/XLSX/PPTX/URL/Markdown/主题文本)
@@ -100,6 +100,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     -> 在当前上下文决定内容、页结构、视觉系统和资源
     -> 准备所需图片 / 图标 / 公式与资源 manifest
     -> 按共享 SVG 规范手写 svg_output/
+    -> svg_quality_checker.py --quick-generate --stage final --json
     -> svg_to_pptx.py --quick-generate
     -> exports/<name>_<timestamp>.pptx
 ```
@@ -109,7 +110,8 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 默认流程未显式指定 `-o` 时，native 与 narration 标记可以组合成
 `<project_name>_<timestamp>_native_charts_tables_narrated.pptx`；显式 `-o`
-则保留调用者给定的文件名。快速生成不接受这两类标记。
+则保留调用者给定的文件名。快速生成同样接受按需启用的 native 与
+narration 标记。
 
 ### SVG 是受约束的页面设计语言
 
@@ -149,7 +151,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 |---|---|---|
 | 只有主题，或现有材料缺少实现用户目标所需的事实 | Generate PPTX Step 1 内运行 `topic-research` | 只有主题时立即研究；有材料时先转换 / 阅读，只补已识别的事实缺口 |
 | 有源文件或对话文本，deck 结构可以重想 | Generate PPTX | Strategist 可以拆分、合并、删除、重排和重设计 |
-| 显式要求快速生成 | Generate PPTX + `quick-generate` profile | 按需转换 / 阅读来源、研究事实缺口并准备所需资源；当前 Agent 在上下文中决定内容、页结构、视觉与资源，跳过 Strategist / 确认 / spec / lock，手写 SVG 后直接导出一个 PPTX |
+| 显式要求快速生成 | Generate PPTX + `quick-generate` profile | 按需转换 / 阅读来源、研究事实缺口并准备所需资源；当前 Agent 在上下文中决定内容、页结构、视觉与资源，跳过 Strategist / 确认 / spec / lock / finalize，手写 SVG、通过一次无锁 final gate 后导出最终 PPTX |
 | PPTX 作为源材料，用户允许重构故事和页结构 | Generate PPTX，经 `ppt_to_md` + `pptx_intake` | PPTX 身份和几何是事实与候选，不是复刻约束 |
 | 原生 PPTX 模板 + 新材料 / 新主题 | Fill Native PPTX（`template-fill-pptx`） | 克隆并填充原生页面；不生成 SVG |
 | 现有 PPTX，页数 / 页序 / 措辞 1:1 保留，只改善排版 | Generate PPTX + `beautify-pptx` profile | 通过 SVG 重新生成；内容和分页锁定 |
@@ -178,7 +180,7 @@ Executor 角色逐页生成演示文稿的视觉内容，输出为 SVG 文件。
 **第三阶段：工程化转换**
 后处理脚本将受支持的 SVG 向量元素转换为 DrawingML。文本和向量形状会保持为 PowerPoint 原生对象——可点击、可编辑、可改样式；位图资源则复制为 PPT picture media，而不是把整页压平成一张图片。
 
-`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段，以及默认流程中生成报告的门禁。当前 Agent 在有效上下文中自动完成内容、页结构、视觉和资源决策，随后仍按共享 SVG 规范创作，并使用同一个 DrawingML 转换器；转换器继续在内存中校验 ZIP 完整性和已发布 Slide 数量。
+`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 在有效上下文中自动完成内容、页结构、视觉和资源决策，随后仍按共享 SVG 规范创作，运行一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。
 
 ---
 
@@ -210,7 +212,10 @@ Quick Generate：
           └─> 当前上下文中的内容 / 页结构 / 视觉 / 资源决策
                 └─> images/ + icons/ + 公式 / 资源 manifest [按需]
                       └─> 手写 svg_output/
-                            └─> svg_to_pptx.py --quick-generate -> exports/*.pptx
+                            └─> svg_quality_checker.py --quick-generate --stage final --json
+                                  └─> svg_to_pptx.py --quick-generate -> exports/*.pptx
+                                        + validation/<output_stem>.report.json
+                                        + backup/<ts>/svg_output/ [默认输出路径]
 
 直接 OOXML 路由：
 analysis/<stem>.slide_library.json + 源 PPTX + fill_plan.json
@@ -281,7 +286,7 @@ SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可�
 
 ## 项目结构与生命周期
 
-`project_manager.py init` 创建固定的项目工作目录；默认导出随后创建带时间戳的备份目录，再尝试复制 `backup/` 快照。显式 [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md) profile 省略规划产物和默认交付 sidecar，但项目中仍可按需存在已转换来源、分析结果、图片、图标、渲染公式及必要资源 manifest；随后手写 `svg_output/` 并直接写入 PPTX 目标。默认交付生命周期如下：
+`project_manager.py init` 创建固定的项目工作目录；使用默认输出路径的导出会创建带时间戳的备份目录，再尝试复制 `backup/` 快照。显式 [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md) profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已转换来源、分析结果、图片、图标、渲染公式及必要资源 manifest；它会手写 `svg_output/`，生成无锁最终质量报告，并围绕最终 PPTX 保留普通 postflight 与默认路径备份。默认交付生命周期如下：
 
 | 目录 | 职责 |
 |---|---|
@@ -400,7 +405,7 @@ Generate 执行以 [`workflows/generate-pptx.md`](../../skills/ppt-master/workfl
 
 全路由通用的停止 / 继续规则以 [`failure-recovery.md`](../../skills/ppt-master/workflows/governance/failure-recovery.md) 为准；其中具体故障矩阵与续跑入口目前覆盖 Generate PPTX。本节不复制这些规则。
 
-其中三条边界尤其关键。第一，页面 SVG 必须由当前主代理逐页手写；禁止写 Python / Node / shell 生成器批量吐 SVG，因为这种输出会丢失跨页判断和视觉连续性。第二，默认流程节奏是 `P01 → first-page gate → 不间断生成其余页面 → final gate`。P01 是方法样本：执行者先输出 `gate-signal`，再把已解决的方法规则带入后续页面；P02 到末页之间不分批，也不插入 checker。`quick-generate` 仍串行手写并以 P01 为视觉锚点，但跳过两道 checker gate。第三，路由是确定性的：原生 PPTX 模板、beautify、native enhancement、自定义动画、live preview 等触发条件已经在仓库里定义清楚时，不再额外抛给用户一个开放式路线选择题。
+其中三条边界尤其关键。第一，页面 SVG 必须由当前主代理逐页手写；禁止写 Python / Node / shell 生成器批量吐 SVG，因为这种输出会丢失跨页判断和视觉连续性。第二，默认流程节奏是 `P01 → first-page gate → 不间断生成其余页面 → final gate`。P01 是方法样本：执行者先输出 `gate-signal`，再把已解决的方法规则带入后续页面；P02 到末页之间不分批，也不插入 checker。`quick-generate` 仍串行手写并以 P01 为视觉锚点，跳过首屏 gate，并在完整 roster 生成后运行一次无锁 final gate。第三，路由是确定性的：原生 PPTX 模板、beautify、native enhancement、自定义动画、live preview 等触发条件已经在仓库里定义清楚时，不再额外抛给用户一个开放式路线选择题。
 
 默认流程的角色切换协议（切换模式前必须 `read_file references/<role>.md`）有两个互相支撑的作用：把新鲜的角色指令载入上下文，覆盖前一模式的漂移；对话 transcript 中的可见标记构成审计轨迹，让用户能看到 agent 何时切换了模式——回看一个具体决策为什么这样做时，这条线索很关键。
 

@@ -10,15 +10,17 @@ This stage is **context-independent**: it reads `notes/*.md` and queries the sel
 
 **Trigger**: In Generate PPTX, run when the effective `Narration Audio` outcome
 in `design_spec.md` §I is `enabled`; a later explicit request first updates that
-outcome and its provenance. In Enhance Native PPTX, run when its confirmed
-enhancement plan has `audio.enabled: true`.
+outcome and its provenance. Quick Generate instead runs when the request or
+current agent's active-context decision selects narration. In Enhance Native
+PPTX, run when its confirmed enhancement plan has `audio.enabled: true`.
 
 **Hard dependency — speaker notes**: Audio requires complete per-slide speaker
 notes. Generate PPTX additionally requires its effective `Speaker Notes`
 outcome to be enabled; Enhance Native PPTX follows its confirmed notes/audio
-plan, where enabling audio also enables notes. Do not enter audio generation
-while the owning route's notes are missing or incomplete; generate and validate
-those notes first, then resume this stage.
+plan, where enabling audio also enables notes. Quick records the same dependency
+in active context. Do not enter audio generation while the owning route's notes
+are missing or incomplete; generate and validate those notes first, then resume
+this stage.
 
 ## When to Run
 
@@ -56,7 +58,7 @@ The AI already knows the deck's language from writing the notes. No detection sc
 
 - Identify the primary language from the notes content: `zh` / `en` / `ja` / `ko` / etc.
 - For mixed-language decks (e.g. Chinese with English technical terms), pick the language the audience will hear most of.
-- For Chinese specifically: pick the locale based on context — `zh-CN` (mainland mandarin, default), `zh-TW` (Taiwanese mandarin), or `zh-HK` (Cantonese). Ask the user only if the project context doesn't make it clear.
+- For Chinese specifically: pick the locale based on context — `zh-CN` (mainland mandarin, default), `zh-TW` (Taiwanese mandarin), or `zh-HK` (Cantonese). Default Generate may ask when context is unclear; Quick chooses the best supported default and continues.
 
 ---
 

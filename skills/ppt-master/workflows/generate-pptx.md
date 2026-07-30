@@ -21,14 +21,15 @@ For an explicit quick/fast, skip-strategy, or direct-SVG request, follow
 [`quick-generate.md`](./profiles/quick-generate.md). It runs applicable source
 conversion/research and project-local resource preparation, lets the current
 agent decide content/visual/resource details in active context, then
-hand-authors SVG and exports directly. It invokes no Strategist, Confirm UI,
-Design Spec refinement, or lock authoring.
+hand-authors SVG, runs one lockless final checker, and exports the final PPTX.
+It skips Strategist, Confirm UI, Design Spec/lock, the first-page gate, and
+`finalize_svg.py`.
 
 **Hard rule — no implicit downgrade or page cap**: page count neither selects
 nor blocks quick generation. Source preparation, images, icons, formulas, and
-their manifests remain valid. Structured template reuse, native data objects,
-Live Preview, notes, motion, narration, or visual-review delivery requires the
-default pipeline; do not silently drop those requested capabilities.
+their manifests remain valid. All exporter capabilities remain available when
+requested or agent-selected; use their existing prerequisites. Structured
+template reuse still requires the default lock-backed pipeline.
 
 ### SVG Page-Design Boundary
 

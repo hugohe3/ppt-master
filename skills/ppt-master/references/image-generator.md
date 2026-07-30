@@ -591,7 +591,7 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
    - Filenames awaiting manual generation
    - Pointer to `images/image_prompts.md` (paste-ready `### Image N:` block per item) or `image_prompts.json` (`items[].prompt`)
    - Target placement: `project/images/<filename>` matching the resource list exactly
-   - Resume: Default Generate re-runs Step 7; Quick Generate re-runs its resource gate, then `--quick-generate`
+   - Resume: Default Generate re-runs Step 7; Quick Generate re-runs its resource gate, final checker, then `--quick-generate`
 
 **User-initiated**: When Strategist Step 4 captured `manual` in Default Generate, or the user explicitly requested `manual` in the Quick Generate active context, Path A is skipped from the start.
 

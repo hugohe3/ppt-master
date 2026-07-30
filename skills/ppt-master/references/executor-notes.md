@@ -4,11 +4,12 @@
 
 Conditional late-stage authority for generating the complete speaker-notes document.
 
-**Trigger**: load only after all SVG pages pass the final quality check and the
-effective Speaker Notes outcome in `design_spec.md §I` is enabled. A missing
-legacy outcome uses compatibility default `enabled`; effective Narration Audio
-enabled also requires Speaker Notes enabled. When notes are disabled, do not
-load this branch or create `notes/total.md`.
+**Trigger**: Default Generate loads this after the final quality check when the
+effective Speaker Notes outcome in `design_spec.md §I` is enabled. Quick
+Generate loads it after its final check when the current agent selected notes
+or narration in active context. A missing legacy outcome defaults to enabled.
+Narration requires notes; when notes are disabled, do not load this branch or
+create `notes/total.md`.
 
 ## 1. Complete Speaker-notes Document
 
@@ -16,11 +17,11 @@ Write the complete deck to `notes/total.md` in one batch for coherent transition
 
 **Pure spoken narration**: `notes_to_audio.py` reads the body verbatim. Write prose only; never add Markdown list/bullet markup, stage markers, key-point labels, duration lines, or other metadata.
 
-**Length follows content**: size natural sentences to semantic burden. Two to five is typical, not a cap; anchor pages may use less and dense pages more. Honor `design_spec.md` style, detail, and source rules. Duration is pacing guidance only: never pad, repeat, compress, or omit meaning to hit it.
+**Length follows content**: size natural sentences to semantic burden. Two to five is typical, not a cap; anchor pages may use less and dense pages more. Honor the active Design Spec or Quick context plus source rules. Duration is pacing guidance only: never pad, repeat, compress, or omit meaning to hit it.
 
 ## 2. Final-SVG Grounding and Coverage
 
-**Hard rule — the final SVG is the visible page authority**: read every finalized `svg_output/<slide>.svg` in slide order. Use the locked plan and approved sources for context; never write from the outline or core message alone.
+**Hard rule — the final SVG is the visible page authority**: read every finalized `svg_output/<slide>.svg` in slide order. Use the active plan/context and approved sources; never write from the outline or core message alone.
 
 Before drafting, internally inventory the visible title/subtitle and every information-bearing direct-root `<g id>`; structured placeholder content still counts. Coverage requires its unique claim, evidence, example, relationship, qualifier, or implication—not merely its label—to enter the narration.
 
