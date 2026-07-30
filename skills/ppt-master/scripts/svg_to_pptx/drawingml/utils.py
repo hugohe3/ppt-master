@@ -2906,6 +2906,20 @@ def is_picture_effect_carrier(elem: ET.Element) -> bool:
     if (
         _svg_element_tag(elem) != 'g'
         or elem.get('data-pptx-object') == 'group'
+        or re.fullmatch(
+            r'url\(#([^)]+)\)',
+            (elem.get('filter') or '').strip(),
+        ) is None
+        or any(
+            elem.get(attribute) is not None
+            for attribute in (
+                'data-pptx-layer',
+                'data-pptx-placeholder',
+                'data-pptx-binding',
+                'data-pptx-replace-with',
+                'data-pptx-native',
+            )
+        )
     ):
         return False
     children = [
