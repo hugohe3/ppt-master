@@ -4,9 +4,10 @@
 
 Use this reference during Executor SVG construction or project-owned canonical
 template maintenance when basic primitives, one standard PowerPoint shape, or
-multiple closed shapes can express the intended object. Prefer, in order:
+supported shape/text operands can express the intended object. Prefer, in order:
 editable basic primitives, one exact Office preset, then a PowerPoint-style
-Boolean result. Hand-authored freeform geometry is allowed only when those
+Boolean result from closed shapes and/or resolvable text. Hand-authored freeform
+geometry is allowed only when those
 constructions cannot faithfully express the object. Neither helper writes a
 page. The preset helper does not create the shape's own `p:txBody`; keep visible
 text outside the atomic fragment.
@@ -24,7 +25,7 @@ Apply this decision order before drawing any new geometric contour.
 | Straight relationship, divider, or leader | Write `<line>`; use a registered marker only when direction is meaningful. |
 | One DrawingML preset exactly expresses the intended object | Run `preset_shape_svg.py render`, then insert its complete stdout fragment into the hand-authored page or canonical template. |
 | A stock `bentConnector*` / `curvedConnector*` contour exactly expresses a bent or curved relationship and endpoint attachment is not required | Run `preset_shape_svg.py render --object-kind connector`; the result is an unconnected native Connector shape. |
-| Two or more closed authored shapes require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
+| Two or more supported closed-shape / resolvable-text operands require Union, Combine, Fragment, Intersect, or Subtract | Run `shape_boolean_svg.py render`, then replace the operands with every stdout path; the result remains ordinary editable custom geometry. |
 | Basic primitives, one preset, and Boolean materialization cannot faithfully express the visual meaning or contour | Write ordinary `<path>` / `<polygon>` geometry; export keeps it as editable custom geometry. |
 | The shape only resembles a preset | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |
 | Mirror/preserve input already owns native-shape metadata | Keep the existing object and metadata; never reselect its preset. |
@@ -201,7 +202,7 @@ freshness contract.
 
 ## 6. Shape Boolean Materialization
 
-**Trigger**: Current page construction has two or more closed vector operands
+**Trigger**: Current page construction has two or more supported shape/text operands
 whose faithful result calls for PowerPoint-style Union, Combine, Fragment,
 Intersect, or Subtract. A §IX `Native shape suggestion` is a semantic candidate,
 not a prerequisite or tool command; Executor may adopt, adapt, or decline it
@@ -217,7 +218,7 @@ python3 ${SKILL_DIR}/scripts/shape_boolean_svg.py render <svg-file> \
 
 | Concern | Contract |
 |---|---|
-| Sources | Closed `path`, `polygon`, `rect`, `circle`, `ellipse`, or one validated compact authored shape preset. Open ordinary geometry, connectors, ordinary groups, text, images, definitions, and nested SVG viewports fail closed. |
+| Sources | Closed `path`, `polygon`, `rect`, `circle`, `ellipse`, one validated compact authored shape preset, or supported horizontal implicit-LTR direct `<text>` with a resolvable exact OpenType weight/style (`--font-dir` adds search roots). Text becomes glyph geometry and is no longer editable text. Open geometry, groups, nested text, images, definitions, and nested SVG viewports fail closed. |
 | Primary shape | The first `--source` supplies result paint. For `subtract`, all later operands are removed from that primary geometry. Explicit paint flags override only their named channels. |
 | Coordinates | Ancestor and local transforms are baked into SVG-root coordinate space. Place stdout in the primary operand's z-order with no additional transform; never reinsert it under an original transformed ancestor. Root-coordinate space does not require each result path to be a direct `<svg>` child. |
 | Placement | Ordinary Slide-local results belong in the applicable untransformed direct-root semantic `<g>` with its normal `id` / `data-pptx-bounds`. Master/Layout results remain direct-root path atoms and redeclare `data-pptx-layer`. One non-fragment result may be the direct `data-pptx-carrier="true"` child of an `object` slot. |

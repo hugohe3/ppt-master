@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 402100
+    "max_tokens": 402440
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -227,7 +227,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 47150
+      "max_tokens": 47160
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -238,7 +238,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 67000
+      "max_tokens": 67015
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -698,7 +698,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 30300
+      "max_tokens": 30490
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",

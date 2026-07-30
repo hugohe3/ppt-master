@@ -2,11 +2,11 @@
 """
 PPT Master - Shape Boolean SVG Fragment Tool
 
-Combine closed SVG shapes and print the resulting canonical SVG path fragment
-to stdout. Result geometry is in SVG-root coordinate space: replace the
-operands at their original z-order under the final semantic or structured
-parent, never under the old transformed ancestor. The source SVG is read-only;
-this tool never rewrites the page.
+Combine closed SVG shapes or resolvable text outlines and print the resulting
+canonical SVG path fragment to stdout. Result geometry is in SVG-root coordinate
+space: replace the operands at their original z-order under the final semantic
+or structured parent, never under the old transformed ancestor. The source SVG
+is read-only; this tool never rewrites the page.
 
 Usage:
     python3 scripts/shape_boolean_svg.py render SVG_FILE \
@@ -18,9 +18,11 @@ Examples:
     python3 scripts/shape_boolean_svg.py render slide.svg \
         --operation subtract --source body --source cutout --id result \
         --fill "#2563EB" --stroke none
+    python3 scripts/shape_boolean_svg.py render cover.svg \
+        --operation subtract --source scrim --source chapter-number --id reveal
 
 Dependencies:
-    skia-pathops and local PPT Master modules
+    skia-pathops, local PPT Master modules, and uharfbuzz for text operands
 """
 
 from __future__ import annotations
@@ -40,11 +42,11 @@ configure_utf8_stdio()
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Print the Boolean result of closed SVG shapes as canonical SVG "
-            "path fragments in SVG-root coordinate space. Insert the result at "
-            "the original z-order under the final semantic or structured "
-            "parent, never under the old transformed ancestor. The source file "
-            "is never modified."
+            "Print the Boolean result of closed SVG shapes or resolvable text "
+            "outlines as canonical SVG path fragments in SVG-root coordinate "
+            "space. Insert the result at the original z-order under the final "
+            "semantic or structured parent, never under the old transformed "
+            "ancestor. The source file is never modified."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -81,6 +83,18 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         dest="output_id",
         help="Stable id for the result, or the base id for fragment results.",
+    )
+    render_parser.add_argument(
+        "--font-dir",
+        action="append",
+        default=[],
+        dest="font_dirs",
+        type=Path,
+        metavar="PATH",
+        help=(
+            "Additional font directory for text operands; repeat as needed. "
+            "Explicit directories are searched before system font directories."
+        ),
     )
     render_parser.add_argument(
         "--fill",
@@ -125,6 +139,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             source_ids=args.source_ids,
             output_id=args.output_id,
             style=style or None,
+            font_dirs=args.font_dirs,
         )
     except (OSError, RuntimeError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
@@ -141,6 +156,9 @@ def _validate_render_args(args: argparse.Namespace) -> None:
         raise ValueError("--source ids must be unique")
     if not args.output_id.strip():
         raise ValueError("--id must not be empty")
+    for font_dir in args.font_dirs:
+        if not font_dir.is_dir():
+            raise ValueError(f"--font-dir is not a directory: {font_dir}")
 
 
 def _style_from_args(args: argparse.Namespace) -> dict[str, str]:

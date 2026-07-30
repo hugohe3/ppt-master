@@ -301,7 +301,7 @@ scrim/overlay shapes, a real cutout path, or a baked-alpha asset; never emit
 
     **Edge thickness**: to make the cut read as a physical opening, apply `feDropShadow` with `dx="0" dy="0"` and a small `stdDeviation` to the scrim path. Per [`svg-effects.md`](./svg-effects.md) §6.4 a zero-offset shadow is classified and exported as a **glow**, not a shadow — so use an accent or light color; black will read as diffuse haze rather than an edge. Never apply it to the `<image>` itself (#36).
 
-    **Numeral / lettering caveat**: cutting *text* out of the scrim needs the glyph as a `<path>` outline, which is not something to author by hand — least of all for CJK. Set the numeral as ordinary `<text>` over the scrim (nearly as strong, fully editable), or pre-render a knocked-out numeral as an RGBA PNG (#68). Do not approximate glyph outlines.
+    **Numeral / lettering**: keep the glyph as ordinary horizontal `<text>`, then use `shape_boolean_svg.py render --operation subtract` to resolve its exact font face and cut the shaped outline from the scrim ([`native-shape-authoring.md`](./native-shape-authoring.md) §6). The result is editable freeform geometry, not editable text. Do not hand-trace glyphs; use a baked RGBA fallback only when the font or text structure cannot resolve.
 
     **Motion pairing**: the scrim stays fixed while the image beneath drifts slowly (a 4–10s linear path, left, starting with the previous animation) — the cuts then behave like windows onto a moving world. That is an animation-stage decision, not page design; see [`animations.md`](./animations.md). It pairs with this pattern more often than with any other.
 
@@ -345,7 +345,7 @@ scrim/overlay shapes, a real cutout path, or a baked-alpha asset; never emit
 
 67. **Image with knock-out / cut-out shape** — overlay a shape filled with the background color or another image, creating the impression of a hole punched through the underlying image.
 
-68. **Text-as-mask over image** — letterforms revealing image through them. Under the canonical SVG compatibility boundary in [`shared-standards-core.md`](./shared-standards-core.md), realize this pattern as a pre-rendered image rather than a runtime effect. Prompt for "large lettering revealing the underlying scene through letterforms" and treat the result as a fixed artistic choice.
+68. **Text-as-mask over image** — letterforms revealing an image, gradient, texture, or solid field through them. Author the foreground as a closed shape and the lettering as supported direct `<text>`, then materialize Subtract with `shape_boolean_svg.py`; this produces an editable freeform with real glyph-shaped holes, without SVG `<mask>`. Use a pre-rendered RGBA treatment only when the font/text cannot resolve or the lettering must remain a fixed artistic asset.
 
 69. **Image rotated at a slight angle for editorial feel** — `transform="rotate(angle cx cy)"` on the `<image>` or its container `<g>`; 2–6 degrees typical. Adds dynamism without breaking layout.
 
