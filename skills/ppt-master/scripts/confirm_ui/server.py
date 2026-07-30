@@ -322,6 +322,8 @@ def _wait_for_result(
 
 def _result_stage(result_file: Path) -> Optional[str]:
     """Return the canonical ``stage`` field of result.json, or None."""
+    if not result_file.is_file():
+        return None
     try:
         data = _read_json_object(result_file)
     except (OSError, json.JSONDecodeError, ValueError):
