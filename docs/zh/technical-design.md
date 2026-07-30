@@ -488,16 +488,16 @@ Generate 执行以 [`workflows/generate-pptx.md`](../../skills/ppt-master/workfl
 
 ## 图文版式：Primary 主结构 + Modifier 修饰层
 
-「图片**可以怎么放上幻灯片**」的可选灵感库（完整词汇在 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md)）提供 99 条稳定编号技法，分成两层并可自由组合：
+只要图片 / 公式分支被触发，就会把 [`references/image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md) 的精简版式词汇与布局计算规范一起读入。词汇库提供 100 条稳定编号技法，分成两层并可自由组合：
 
 - **Primary 主结构**（容器布局 / 图作画布 + 原生覆盖 / 多图组合）—— 页面的骨架。一页可一个也可多个；跨 Primary 的组合，如「侧边对比 + 图作画布的注解卡」，是合规的。
-- **Modifier 修饰层**（非矩形裁剪 / 遮罩与叠加 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。
+- **Modifier 修饰层**（非矩形裁剪 / 叠加与挖孔 / 纹理 / 特殊技法）—— 装饰层。一页可叠任意多个，附着在 Primary 之上。
 
-**为什么灵感库不设置目录或层数配额。** 它用于扩展构图选择，不定义合法输出。一页可以由一个或多个 Primary 构成，按需叠加 Modifier，也可以完全不引用编号，直接使用更适合叙事和层级的自由构图。
+**为什么常驻读取灵感库仍不设置目录或层数配额。** 它用于扩展构图选择，不定义合法输出。一页可以由一个或多个 Primary 构成，按需叠加 Modifier，也可以完全不引用编号，直接使用更适合叙事和层级的自由构图。
 
 **为什么物理拆分两层，而不是只打标签。** 灵感库按 Primary 在前、Modifier 在后组织，便于按构造角色查找。编号仍是稳定 id（`#38` 永远是「图作画布 + 注解卡」，不论它在文件里的物理位置），因此 `spec_lock.md`、`design_spec.md §VIII`、历史 executor 输出和过往示例里的既有 `#<id>` 引用照样解析。
 
-**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Layout pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的稳定编号；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求完整读取灵感库或使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
+**为什么构图意图走 Strategist 资源列表。** `§VIII 图片资源列表` 的 `Layout pattern` 列承载一句非空自由格式建议，也可以按需引用灵感库的稳定编号；`Crop Policy` 独立记录 `adaptive` 或 `no-crop`。这让可用的构图起点通过 lock 投影在 session 重入后继续存在，但不要求使用编号。Executor 可以调整尺寸、位置、流向与权重，也可以替换建议或使用其他构图。资源身份、必用 / 内容义务、`no-crop` 和显式用户 / 模板约束仍具有约束力；只有改变这些边界才需要先更新 Design Spec。
 
 **为什么真正的硬约束留在上游。** 跨切的 SVG 创作与 PPTX 兼容性例外属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由的权威集。版式词表只指向该路由，不再复述合同；每条规则仍只有一个所属模块，词表里也不会留下过期副本。
 

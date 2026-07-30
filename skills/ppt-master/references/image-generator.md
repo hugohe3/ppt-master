@@ -16,7 +16,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 
 | `page_role` | Use |
 |---|---|
-| `local` | Image occupies a region of an SVG page (left half, right column, hero band, accent corner). Composition is the AI's call — fill the region as the page design wants |
+| `local` | Image occupies a prepared SVG region. The AI composes inside that bitmap/container; it does not choose the page region or final SVG geometry |
 | `hero_page` | Image is the page's main voice — cover, chapter divider, mood transition, single-number hero, closing quote. SVG above may be minimal or empty |
 
 **Two text policies** (orthogonal to page_role):
@@ -34,13 +34,13 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 - **In-image text is only for words that will not need editing later** — visual keywords, decorative lettering, mood words. Editable text (titles that may be reworded, subtitles, dates, authors, captions, body) belongs in SVG. Changing one in-image word costs an image regeneration; one SVG word costs a keystroke.
 - Prompts are one coherent prose paragraph, not tag soup (a model-output reality, not an aesthetic choice)
 
-Everything else is the AI's judgment per page. No mandated padding, no type-locked text_policy, no scenario whitelists for hero_page.
+Everything else inside the prepared bitmap is the AI's judgment per page. No mandated padding, no type-locked text_policy, no scenario whitelists for hero_page.
 
 ---
 
 ## 2. Style and Composition Inputs
 
-Every AI image uses one deck-wide rendering, the deck's stable color anchors/semantic behavior, and a per-image type / composition. Only rendering is a separate image-direction decision.
+Every AI image uses one deck-wide rendering, the deck's stable color anchors/semantic behavior, and a per-image type / internal composition. Only rendering is a separate image-direction decision.
 
 | Dimension | Decides | When fixed |
 |---|---|---|
@@ -71,7 +71,7 @@ Every AI image uses one deck-wide rendering, the deck's stable color anchors/sem
 
 ### Step 1 — Load the dimension indices
 
-Read the two index files that own user-visible image direction and per-image composition.
+Read the two index files that own user-visible image direction and per-image internal composition.
 
 ```
 read_file references/image-renderings/_index.md
@@ -121,6 +121,8 @@ Derive color behavior from the available roles and image context: background / s
 ### Step 3 — Per-image type + assembly
 
 For each `Acquire Via: ai` row, use Strategist-owned §VIII/lock by default or the main agent's transient Quick roster. Explicit values remain binding; Quick resolves omissions automatically.
+
+`Layout pattern` is a page-realization preference and is not copied wholesale into the bitmap prompt. Any generation-time subject direction, focal placement, quiet region, or overlay-safety requirement must therefore be present in the row's `Reference`, the matching §IX block, or the Quick roster's visual intent.
 
 1. **Determine `page_role`** — the owning row's explicit value wins; a blank or omitted value resolves to `local`. In Default Generate, `hero_page` must be Strategist-explicit; in Quick Generate, the main agent may resolve it while building the transient roster.
 2. **Determine `text_policy`** — the owning row's value wins when set. **Declared-inference fallback for a blank or omitted value**: pick `none` or `embedded` from the row's `Purpose`, `Reference`, and page intent based on whether in-image text serves the page. Long body / data / lists stay in SVG.

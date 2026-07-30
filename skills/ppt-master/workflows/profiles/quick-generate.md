@@ -66,13 +66,12 @@ Before writing P01, resolve in active context:
 
 - the slide roster, canvas, visual direction, palette, typography, and wording;
 - a transient resource roster with page, filename, purpose, visual intent,
-  acquisition path, crop behavior, and status; for a hero page or other
-  image-led use, the visual intent includes an action-bearing composition;
+  acquisition path, crop behavior, and status. For an image/formula, include
+  its page relationship plus any subject position, focus, quiet region, or
+  overlay-safety cue that must exist before SVG authoring;
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
-
-**Default — action-bearing image composition (may override only for an explicit user/material boundary or a page-specific restraint decision)**: For a hero page or otherwise image-led resource, resolve one concrete image/content or image/shape relationship before SVG authoring. Position, size, routine crop, and a legibility-only scrim alone do not constitute that relationship. A plain split or full-bleed treatment remains valid only when the explicit boundary requires it or the agent records a page-specific restraint reason in active context; decide and continue without another interaction.
 
 Prepare only the resource paths that the roster triggers:
 
@@ -104,9 +103,15 @@ silently replace it with unrelated material.
 Always read
 [`shared-standards-core.md`](../../references/shared-standards-core.md). Do not
 load `executor-base.md`: its persisted-plan prerequisites do not apply to this
-profile. Load the conditional image/web/canvas references when needed, and load
-`native-shape-authoring.md` for selected preset/Boolean construction such as
-text knockouts.
+profile. For any image/formula, always read
+[`executor-image.md`](../../references/executor-image.md),
+[`image-layout-spec.md`](../../references/image-layout-spec.md),
+[`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
+[`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
+[`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
+web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
+for a non-default canvas, and load `native-shape-authoring.md` for selected
+preset/Boolean construction such as text knockouts.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.

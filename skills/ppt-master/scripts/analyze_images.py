@@ -2,20 +2,12 @@
 """
 Image Size Analysis Tool
 ========================
-Reports objective parameters (width, height, aspect ratio, category) for all
-images in a folder. Intentionally does NOT prescribe a layout — the Strategist
-decides narrative intent (hero / atmosphere / side-by-side / accent) per
-references/strategist-image.md; this tool only supplies the numbers.
-
-After resolving the canvas from the project, an explicit override, or the
-ppt169 fallback, also reports the reference image/text area sizes that would
-apply *if* an image is placed side-by-side with body text. Those numbers are
-conditional on the Strategist picking the side-by-side intent.
+Reports objective parameters for all images in a folder. It does not resolve a
+canvas, prescribe a layout, or generate Strategist recommendations.
 
 Usage:
     python scripts/analyze_images.py <images_folder_path>
     python scripts/analyze_images.py projects/xxx/images
-    python scripts/analyze_images.py projects/xxx/images --canvas ppt43
 
 Output:
     - Analysis report displayed in console
@@ -41,36 +33,10 @@ except ImportError:
     print("Error: PIL/Pillow not installed. Run: pip install Pillow")
     sys.exit(1)
 
-try:
-    from config import CANVAS_FORMATS, LAYOUT_MARGINS
-except ImportError:
-    CANVAS_FORMATS = {
-        'ppt169': {
-            'name': 'PPT 16:9',
-            'width': 1280,
-            'height': 720,
-        },
-    }
-    LAYOUT_MARGINS = {
-        'ppt169': {
-            'top': 60, 'right': 60, 'bottom': 60, 'left': 60,
-            'content_width': 1160, 'content_height': 600
-        },
-    }
-
-from project_utils import get_project_info, normalize_canvas_format
-
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff", ".tif"}
 OFFICE_VECTOR_EXTENSIONS = {".emf", ".wmf"}
 REPORT_WIDTH = 100
 CATEGORY_WIDTH = 50
-
-# Title area height and gap between image/text areas (px)
-TITLE_HEIGHT = 60
-LAYOUT_GAP = 20
-# Minimum text area dimensions (px)
-MIN_TEXT_HEIGHT = 150
-MIN_TEXT_WIDTH = 280
 
 ImageAnalysis = dict[str, object]
 
@@ -219,7 +185,7 @@ def _result_from_manifest(
         'ratio_source': 'manifest',
         'format': Path(filename).suffix.lstrip('.').upper(),
         'has_transparent_pixels': None,
-        'layout_hint': classify_ratio(ratio),
+        'category': classify_ratio(ratio),
         'filesize_kb': os.path.getsize(filepath) / 1024,
     }
     _apply_manifest_metadata(result, meta)
@@ -238,11 +204,10 @@ def _result_from_manifest(
 
 
 def classify_ratio(aspect_ratio: float) -> str:
-    """Classify image aspect ratio into layout category.
+    """Classify an image by its objective aspect-ratio range.
 
-    Thresholds aligned with image-layout-spec.md:
-      >2.0 ultra-wide, 1.5-2.0 wide, 1.2-1.5 standard landscape,
-      0.8-1.2 square, <0.8 portrait.
+    Ranges: >2.0 ultra-wide, 1.5-2.0 wide, 1.2-1.5 standard
+    landscape, 0.8-1.2 near square, and <0.8 portrait.
     """
     if aspect_ratio > 2.0:
         return "Ultra-wide"
@@ -254,77 +219,6 @@ def classify_ratio(aspect_ratio: float) -> str:
         return "Near square"
     else:
         return "Portrait"
-
-
-def compute_layout_dimensions(
-    ratio: float,
-    content_w: int,
-    content_h: int,
-    gap: int = LAYOUT_GAP,
-) -> dict:
-    """Compute image and text area dimensions following image-layout-spec.md.
-
-    Returns dict with layout_type, image_w, image_h, text_w, text_h.
-    """
-    # Effective content height (below title)
-    H = content_h
-    W = content_w
-
-    def _try_top_bottom() -> dict | None:
-        img_w = W
-        img_h = int(round(W / ratio))
-        text_h = H - img_h - gap
-        if text_h >= MIN_TEXT_HEIGHT:
-            return {
-                'layout_type': 'top-bottom',
-                'image_w': img_w,
-                'image_h': img_h,
-                'text_w': W,
-                'text_h': text_h,
-            }
-        return None
-
-    def _try_left_right_height_first() -> dict | None:
-        img_h = H
-        img_w = int(round(H * ratio))
-        text_w = W - img_w - gap
-        if text_w >= MIN_TEXT_WIDTH:
-            return {
-                'layout_type': 'left-right',
-                'image_w': img_w,
-                'image_h': img_h,
-                'text_w': text_w,
-                'text_h': H,
-            }
-        return None
-
-    def _try_left_right_width_constrained() -> dict:
-        img_w = int(round(W * 0.7))
-        img_h = int(round(img_w / ratio))
-        text_w = W - img_w - gap
-        return {
-            'layout_type': 'left-right',
-            'image_w': img_w,
-            'image_h': min(img_h, H),
-            'text_w': max(text_w, MIN_TEXT_WIDTH),
-            'text_h': H,
-        }
-
-    # Decision tree per image-layout-spec.md
-    if ratio > 1.5:
-        # Ultra-wide or wide → try top-bottom first
-        result = _try_top_bottom()
-        if result:
-            return result
-        # Fallback to left-right (wide-constrained)
-        return _try_left_right_width_constrained()
-    else:
-        # Standard landscape, square, portrait → try left-right (height-first)
-        result = _try_left_right_height_first()
-        if result:
-            return result
-        # Fallback to left-right (width-constrained)
-        return _try_left_right_width_constrained()
 
 
 def _analyze_images(images_dir: str) -> tuple[list[ImageAnalysis], list[str]]:
@@ -373,7 +267,7 @@ def _analyze_images(images_dir: str) -> tuple[list[ImageAnalysis], list[str]]:
                         'ratio_source': 'native',
                         'format': image_format,
                         'has_transparent_pixels': has_transparent_pixels,
-                        'layout_hint': classify_ratio(aspect_ratio),
+                        'category': classify_ratio(aspect_ratio),
                         'filesize_kb': os.path.getsize(filepath) / 1024
                     }
                     _apply_manifest_metadata(result, meta)
@@ -411,25 +305,6 @@ def analyze_images(images_dir: str) -> list[ImageAnalysis]:
     return results
 
 
-def enrich_with_layout(
-    results: list[ImageAnalysis],
-    canvas_key: str,
-) -> None:
-    """Add computed layout dimensions to each result in-place."""
-    margins = LAYOUT_MARGINS.get(canvas_key)
-
-    if not margins:
-        print(f"[WARN] No layout margins for canvas '{canvas_key}', skipping dimension calculation")
-        return
-
-    content_w = margins['content_width']
-    content_h = margins['content_height']
-
-    for img in results:
-        dims = compute_layout_dimensions(img['aspect_ratio'], content_w, content_h)
-        img.update(dims)
-
-
 def print_results(results: list[ImageAnalysis]) -> None:
     """Print the analysis report to stdout."""
 
@@ -437,31 +312,26 @@ def print_results(results: list[ImageAnalysis]) -> None:
     print("Image Size Analysis Report")
     print("=" * REPORT_WIDTH)
 
-    has_layout = 'layout_type' in results[0] if results else False
-
-    if has_layout:
-        print("\nNote: 'Img (SxS)' shows the image area *if* the Strategist chooses the")
-        print("side-by-side intent for this image. Decide narrative intent first — see")
-        print("references/strategist-image.md. Hero / atmosphere / accent intents ignore it.\n")
-        print(f"{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Img (SxS)':<14} {'Filename'}")
-    else:
-        print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Filename'}")
+    print(
+        f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} "
+        f"{'Source':<8} {'Refs':<5} {'Size':<10} {'Category':<20} {'Filename'}"
+    )
     print("-" * REPORT_WIDTH)
 
     for i, img in enumerate(results, 1):
         ratio_source = str(img.get('ratio_source', 'native'))
         usage_count = int(img.get('usage_count', 1))
-        base = f"{i:<4} {img['width']:<7} {img['height']:<7} {img['aspect_ratio']:<7.2f} {ratio_source:<8} {usage_count:<5} {img['filesize_kb']:<10.1f}KB {img['layout_hint']:<20}"
-        if has_layout:
-            img_area = f"{img['image_w']}x{img['image_h']}"
-            print(f"{base} {img_area:<14} {img['filename'][:35]}")
-        else:
-            print(f"{base} {img['filename'][:40]}")
+        base = (
+            f"{i:<4} {img['width']:<7} {img['height']:<7} "
+            f"{img['aspect_ratio']:<7.2f} {ratio_source:<8} {usage_count:<5} "
+            f"{img['filesize_kb']:<10.1f}KB {img['category']:<20}"
+        )
+        print(f"{base} {img['filename'][:40]}")
 
     print("-" * REPORT_WIDTH)
     print(f"Total: {len(results)} images\n")
 
-    # Group statistics by aspect ratio (aligned with image-layout-spec.md thresholds)
+    # Group statistics by objective aspect-ratio ranges.
     print("\nGroup by Aspect Ratio:")
     print("-" * CATEGORY_WIDTH)
 
@@ -508,49 +378,6 @@ def print_results(results: list[ImageAnalysis]) -> None:
             print(f"  ... and {len(native_only) - 10} more")
 
 
-def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
-    """Print a Markdown-ready image inventory section."""
-    print("\n" + "=" * REPORT_WIDTH)
-    print("Markdown Snippet for Strategist (Copy & Paste)")
-    print("=" * REPORT_WIDTH)
-
-    has_layout = 'layout_type' in results[0] if results else False
-    fmt_name = CANVAS_FORMATS.get(canvas_key, {}).get('name', canvas_key)
-
-    print(f"\n## Image Resource Inventory (Auto-scan Results — {fmt_name})\n")
-
-    print("> Decide narrative intent per image (hero / atmosphere / side-by-side /")
-    print("> accent) per `references/strategist-image.md` before filling the table. The")
-    print("> `Img Area (SxS)` / `Text Area (SxS)` columns only apply if the chosen")
-    print("> intent is side-by-side; ignore them for hero / atmosphere / accent intents.\n")
-
-    if has_layout:
-        print("| Filename | Size | Ratio | Category | Img Area (SxS) | Text Area (SxS) | Intent | Usage | Type | Status | Generation Description |")
-        print("|----------|------|-------|----------|----------------|-----------------|--------|-------|------|--------|-----------------------|")
-    else:
-        print("| Filename | Size | Ratio | Category | Intent | Usage | Type | Status | Generation Description |")
-        print("|----------|------|-------|----------|--------|-------|------|--------|-----------------------|")
-
-    for img in results:
-        ratio_str = f"{img['aspect_ratio']:.2f}"
-        asset_kind = str(img.get('asset_kind', 'bitmap'))
-        image_type = "Office Vector" if asset_kind == "office_vector" else ""
-        status = (
-            "PPTX Native Only"
-            if asset_kind == "office_vector" and not img.get('svg_renderable', True)
-            else "Existing"
-        )
-
-        if has_layout:
-            img_area = f"{img['image_w']}x{img['image_h']}"
-            text_area = f"{img['text_w']}x{img['text_h']}"
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | {img_area} | {text_area} | (to be filled) | {img.get('usage_count', 1)} refs | {image_type} | {status} | - |")
-        else:
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | (to be filled) | {img.get('usage_count', 1)} refs | {image_type} | {status} | - |")
-
-    print("\n" + "=" * REPORT_WIDTH + "\n")
-
-
 def _format_optional_number(value: object, digits: int = 2) -> str:
     """Format a numeric value for CSV, leaving unavailable facts blank."""
     if not isinstance(value, (int, float)):
@@ -558,16 +385,10 @@ def _format_optional_number(value: object, digits: int = 2) -> str:
     return f"{float(value):.{digits}f}"
 
 
-def save_csv(
-    results: list[ImageAnalysis],
-    csv_path: str | Path,
-    include_layout: bool | None = None,
-) -> None:
+def save_csv(results: list[ImageAnalysis], csv_path: str | Path) -> None:
     """Atomically save analysis results to a standards-compliant CSV file."""
     target = Path(csv_path)
     target.parent.mkdir(parents=True, exist_ok=True)
-    if include_layout is None:
-        include_layout = bool(results and "layout_type" in results[0])
     header = [
         "No",
         "Filename",
@@ -587,8 +408,6 @@ def save_csv(
         "SizeKB",
         "Category",
     ]
-    if include_layout:
-        header.extend(["ImageArea_SxS", "TextArea_SxS"])
 
     temporary_path: Path | None = None
     try:
@@ -622,20 +441,8 @@ def save_csv(
                     image.get("svg_renderable", True),
                     image.get("pptx_native_supported", True),
                     _format_optional_number(image["filesize_kb"], digits=1),
-                    image["layout_hint"],
+                    image["category"],
                 ]
-                if include_layout:
-                    image_area = (
-                        f"{image['image_w']}x{image['image_h']}"
-                        if "image_w" in image
-                        else ""
-                    )
-                    text_area = (
-                        f"{image['text_w']}x{image['text_h']}"
-                        if "text_w" in image
-                        else ""
-                    )
-                    row.extend([image_area, text_area])
                 writer.writerow(row)
         os.replace(temporary_path, target)
         temporary_path = None
@@ -646,37 +453,15 @@ def save_csv(
     print(f"\nCSV saved to: {target}")
 
 
-def _resolve_canvas_key(images_dir: Path, override: str | None) -> tuple[str, str]:
-    """Resolve canvas from an explicit override, project context, or fallback."""
-    if override:
-        return normalize_canvas_format(override), "--canvas"
-
-    project_dir = images_dir.parent if images_dir.name == "images" else images_dir
-    project_info = get_project_info(str(project_dir))
-    project_canvas = normalize_canvas_format(str(project_info.get("format", "")))
-    if project_canvas in CANVAS_FORMATS:
-        return project_canvas, "project"
-    return "ppt169", "fallback"
-
-
 def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="Analyze image sizes and compute PPT layout dimensions"
+        description="Analyze objective image-file facts"
     )
     parser.add_argument(
         "images_dir",
         help="Path to the images directory"
     )
-    parser.add_argument(
-        "--canvas",
-        help=(
-            "Canvas format override. By default, infer it from the project "
-            f"directory and fall back to ppt169. Available: "
-            f"{', '.join(sorted(CANVAS_FORMATS.keys()))}"
-        ),
-    )
-
     args = parser.parse_args(argv)
     images_dir = Path(args.images_dir).resolve()
 
@@ -688,31 +473,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Error: Not a directory: {images_dir}")
         return 1
 
-    canvas_key, canvas_source = _resolve_canvas_key(images_dir, args.canvas)
-    if canvas_key not in CANVAS_FORMATS:
-        available = ", ".join(sorted(CANVAS_FORMATS.keys()))
-        print(f"Error: Unknown canvas format '{canvas_key}'. Available: {available}")
-        return 1
-
-    fmt = CANVAS_FORMATS[canvas_key]
     print(f"Analyzing: {images_dir}")
-    print(
-        f"Canvas: {fmt.get('name', canvas_key)} "
-        f"({fmt.get('width', '?')}x{fmt.get('height', '?')}; {canvas_source})"
-    )
 
     results, errors = _analyze_images(str(images_dir))
-    enrich_with_layout(results, canvas_key)
 
     if results:
         print_results(results)
-        generate_markdown(results, canvas_key)
     else:
         print("No readable supported image files found in the directory.")
 
     analysis_dir = images_dir.parent / "analysis"
     csv_path = analysis_dir / "image_analysis.csv"
-    save_csv(results, csv_path, include_layout=canvas_key in LAYOUT_MARGINS)
+    save_csv(results, csv_path)
 
     if errors:
         print(
