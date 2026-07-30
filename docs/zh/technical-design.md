@@ -286,7 +286,13 @@ SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可�
 
 ## 项目结构与生命周期
 
-`project_manager.py init` 创建固定的项目工作目录；使用默认输出路径的导出会创建带时间戳的备份目录，再尝试复制 `backup/` 快照。显式 [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md) profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已转换来源、分析结果、图片、图标、渲染公式及必要资源 manifest；它会手写 `svg_output/`，生成无锁最终质量报告，并围绕最终 PPTX 保留普通 postflight 与默认路径备份。默认交付生命周期如下：
+`project_manager.py init` 默认创建标准项目工作目录；使用
+`--quick-generate` 时只创建 `svg_output/`，省略项目 README，其他目录按需产生。
+显式
+[`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md)
+profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已转换来源、分析结果、
+图片、图标、渲染公式及必要资源 manifest；它会手写 `svg_output/`，生成无锁最终
+质量报告，并围绕最终 PPTX 保留普通 postflight 与默认路径备份。默认交付生命周期如下：
 
 | 目录 | 职责 |
 |---|---|
