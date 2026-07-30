@@ -300,7 +300,15 @@ Two converter design choices still shape the system:
 
 ## Project Structure & Lifecycle
 
-`project_manager.py init` creates the fixed project working directories; a later default-path export creates a timestamped backup directory and then attempts to copy a `backup/` snapshot. The explicit [`quick-generate`](../skills/ppt-master/workflows/profiles/quick-generate.md) profile omits planning artifacts and `svg_final/`, but its project may still contain converted sources, analysis, images, icons, rendered formulas, and required resource manifests. It hand-authors `svg_output/`, writes a lockless final quality report, and retains the ordinary postflight and default-path backup around the final PPTX. The default delivery lifecycle is:
+`project_manager.py init` creates the standard project working directories;
+`--quick-generate` creates only `svg_output/`, omits the project README, and
+leaves other directories on demand. The explicit
+[`quick-generate`](../skills/ppt-master/workflows/profiles/quick-generate.md)
+profile omits planning artifacts and `svg_final/`, but its project may still
+contain converted sources, analysis, images, icons, rendered formulas, and
+required resource manifests. It hand-authors `svg_output/`, writes a lockless
+final quality report, and retains the ordinary postflight and default-path
+backup around the final PPTX. The default delivery lifecycle is:
 
 | Directory | Role |
 |---|---|

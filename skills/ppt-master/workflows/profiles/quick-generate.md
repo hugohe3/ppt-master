@@ -24,13 +24,10 @@ Page count alone never activates or blocks this profile.
 | Planning artifacts | Do not create `design_spec.md`, `spec_lock.md`, confirmation payloads, or a second persisted strategy |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
 
-**Hard rule — speed removes interaction, not material**: source conversion,
-topic research, supplied/extracted assets, AI or web images, illustration
-slices, project icons, formula rendering, and regenerated image facts remain
-available whenever the deck needs them. The workspace may therefore contain
-`sources/`, `analysis/`, `images/`, `icons/`, and their operational manifests.
-The missing planning contract relaxes design constraints; it does not remove
-resource preparation or exporter capabilities.
+**Hard rule — speed removes interaction, not material**: all ordinary source,
+research, resource-preparation, analysis, and export capabilities remain
+available when needed; the missing planning contract relaxes design constraints
+only.
 
 Explicit user facts, wording, choices, exclusions, and permission boundaries
 still win. For every unspecified routine choice, decide directly and continue;
@@ -49,11 +46,20 @@ never creates or reads a Design Spec or lock to enable it.
 
 ## 2. Source and Resource Preparation
 
-Run [`generate-pptx.md`](../generate-pptx.md) Step 1 source conversion and
-bounded research when applicable. Initialize/import the project through Step 2
-when those tools or project-local resources are needed, but never scaffold a
-Design Spec or lock. Use a new project path, or first verify that its
-`svg_output/` is empty; Quick does not read any existing `design_spec.md` or
+Run [`generate-pptx.md`](../generate-pptx.md) Step 1 when applicable. Initialize
+the minimal workspace with:
+
+```bash
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
+  --format <format> --quick-generate
+```
+
+It creates only `svg_output/` and no root README. Add capability inputs only
+when triggered; checker/exporter create `validation/`, `exports/`, and the
+default-path `backup/`. With source files, continue with Step 2
+`import-sources`; it creates the triggered input directories. Never scaffold a
+Design Spec or lock. Use a new path, or verify that an existing path's
+`svg_output/` is empty; Quick ignores any existing `design_spec.md` or
 `spec_lock.md`.
 
 Before writing P01, resolve in active context:
