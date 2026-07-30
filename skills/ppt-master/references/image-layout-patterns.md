@@ -8,21 +8,20 @@ Compact composition vocabulary for prepared images, illustrations, and rendered 
 
 | Boundary | Rule |
 |---|---|
-| Selection | **Reference — not a constraint**: use any listed pattern, combine compatible patterns, or author a clearer free-form composition. No ID, family, or coverage quota applies |
-| Stable IDs | `#1`–`#100` are lookup handles. Keep their meanings stable; their numeric order is not a workflow |
-| Primary vs modifier | A Primary Structure supplies page geometry. Modifier Layers change crop, contrast, depth, framing, asset treatment, or continuity |
-| Asset ownership | Patterns consume prepared project-local assets. This catalog does not authorize acquisition or processing during SVG realization |
-| Exact information | Keep authoritative text, data, labels, and annotations native when they must remain exact or editable |
+| Selection | **Reference — not a constraint**: use any pattern, combine compatible ones, or author a clearer free-form composition; no ID, family, or coverage quota applies |
+| Stable IDs | `#1`–`#100` are stable lookup handles, not a workflow |
+| Primary vs modifier | One or more compatible Primary Structures + `0..n` Modifier Layers |
+| Asset ownership | Consume prepared project-local assets; no acquisition or processing during SVG realization |
+| Exact information | Keep exact or editable text, data, labels, and annotations native |
 
-| Technical concern | Owner |
+| Mechanism, not generic “mask” | Owner |
 |---|---|
-| SVG legality | [`shared-standards-core.md`](./shared-standards-core.md) |
-| Image embedding and crop policy | [`svg-image-embedding.md`](./svg-image-embedding.md) |
-| Container sizing and aspect-ratio math | [`image-layout-spec.md`](./image-layout-spec.md) |
-| Supported effects | [`svg-effects.md`](./svg-effects.md) |
-| Boolean shape authoring | [`native-shape-authoring.md`](./native-shape-authoring.md) |
-| Accurate chart overlays | [`executor-chart.md`](./executor-chart.md) |
-| Page and object motion | [`animations.md`](./animations.md) |
+| Layout geometry | [`image-layout-spec.md`](./image-layout-spec.md) |
+| Crop: policy / legality / wrapper | [`svg-image-embedding.md`](./svg-image-embedding.md) / [`shared-standards-core.md`](./shared-standards-core.md) / [`svg-effects.md`](./svg-effects.md) |
+| Scrim / gradient / wash / depth paint | [`svg-effects.md`](./svg-effects.md) |
+| Boolean hole / text subtraction | [`native-shape-authoring.md`](./native-shape-authoring.md) |
+| Per-pixel mask / blend | Prepared / baked asset; [`svg-effects.md`](./svg-effects.md) boundary |
+| Chart overlay / motion | [`executor-chart.md`](./executor-chart.md) / [`animations.md`](./animations.md) |
 
 ---
 
@@ -43,7 +42,7 @@ Compact composition vocabulary for prepared images, illustrations, and rendered 
 
 ## 3. Primary Structures
 
-### 3.1 Single-Image Structures
+### 3.1 Single-Image Layouts
 
 1 · 73. **Full-bleed title structures** — **#1** floats a title over one canvas-filling image; **#73** uses a poster-like side or lower-corner title stack without a title card.
 
@@ -71,7 +70,7 @@ Compact composition vocabulary for prepared images, illustrations, and rendered 
 
 81. **Illustration-as-layout field** — let a large illustration or cutout set the page rhythm; place copy in its calm regions.
 
-### 3.2 Image-as-Canvas with Native Overlay
+### 3.2 Image-as-Canvas Layouts with Native Overlay
 
 Use the prepared visual as the spatial field while native SVG carries the information layer.
 
@@ -93,7 +92,7 @@ Use the prepared visual as the spatial field while native SVG carries the inform
 
 46. **Detail lens** — border one sub-region and place a native caption nearby.
 
-### 3.3 Multi-Image Structures
+### 3.3 Multi-Image Layouts
 
 8. **Z-pattern serpentine** — alternate image and text positions down successive bands to create a zigzag reading path.
 
@@ -141,7 +140,7 @@ Use the prepared visual as the spatial field while native SVG carries the inform
 
 ## 4. Modifier Layers
 
-### 4.1 Crop, Boolean, and Same-Source Geometry
+### 4.1 Reveal, Crop, and Registration
 
 20–23. **Basic crops** — **#20** is a circle, **#21** a rounded rectangle, **#22** an ellipse, and **#23** a bounded polygon.
 
@@ -177,7 +176,7 @@ The following three patterns are topologically different and are not interchange
 | Addressable same-source crops (`#100`) | One exact source reference | Several independently addressable native pictures | Crops share one source coordinate system and remain in exact registration; follow [`executor-image.md`](./executor-image.md) §1 |
 | Different-source split tiling (`#92`) | Different sources | Several independent picture objects in interlocking cells | The parent contour unifies peers; scene continuity across cells is not implied |
 
-### 4.2 Contrast, Color, and Depth
+### 4.2 Tone and Contrast
 
 27. **Linear-gradient scrim** — add directional contrast while retaining image detail.
 
@@ -191,29 +190,29 @@ The following three patterns are topologically different and are not interchange
 
 33. **Radial spotlight** — keep a selected region clear while surrounding content recedes.
 
-36. **Shadow under an image panel** — lift the panel through a supporting shape; follow [`svg-effects.md`](./svg-effects.md).
-
-37. **Glow on an overlay shape** — emphasize an overlay boundary within the supported effect contract.
-
 57 · 60 · 61. **Receded image fields** — **#57** is a texture wash, **#60** ambient atmosphere, and **#61** a watermark behind body copy.
 
 66. **Fade into a solid background** — match the fade endpoint to the page background so the image edge disappears.
 
-91. **Faceted gradient form** — build a folded or ribbon-like object from adjacent facets with consistent light logic.
-
 98. **Grid scrim with varied cell opacity** — modulate one underlying image through a seamless grid of translucent cells.
 
-### 4.3 Placement and Framing
+### 4.3 Placement, Framing, and Depth
 
 58. **Decorative corner fragment** — use a cropped image fragment as a secondary corner accent.
 
 59. **Image divider band** — replace a line between content regions with a narrow visual strip.
+
+36. **Shadow under an image panel** — lift the panel through a supporting shape; follow [`svg-effects.md`](./svg-effects.md).
+
+37. **Glow on an overlay shape** — emphasize an overlay boundary within the supported effect contract.
 
 69. **Editorial rotation** — rotate an image or its container slightly when the style benefits from an informal print gesture.
 
 70–71. **Frames** — **#70** traces the image with one restrained outline; **#71** repeats nearby outlines for a layered photo-print treatment.
 
 86. **Contour echo** — reuse a non-rectangular clip contour as an offset stroke instead of boxing it in a rectangle.
+
+91. **Faceted gradient form** — build a folded or ribbon-like object from adjacent facets with consistent light logic.
 
 ### 4.4 Prepared-Asset Treatments
 
@@ -249,7 +248,7 @@ The following three patterns are topologically different and are not interchange
 
 ## 5. Composition
 
-**Reference — not a constraint**: start with the content relationship, choose a Primary Structure, then add only Modifier Layers that clarify hierarchy, focus, continuity, or material character. Combining primaries is valid when both remain legible; for example, `#48` may use `#38` annotations, and the center of `#9` may use `#40`.
+**Reference — not a constraint**: choose a Primary Structure, add only useful Modifier Layers, and combine compatible Primaries when both remain legible.
 
 **Registration boundary**: registration-dependent effects succeed only when their declared coordinate relationship remains exact. Preserve registration for `#62`, `#82`, `#85`, `#89`, `#95`, `#96`, `#97`, `#99`, and `#100`; `#84` is the intentional exception.
 
