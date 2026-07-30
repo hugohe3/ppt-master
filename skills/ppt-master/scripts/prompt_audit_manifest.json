@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 399925
+    "max_tokens": 400200
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -20,7 +20,7 @@
     "skills/ppt-master/references/executor-base.md": 8250,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
-    "skills/ppt-master/references/executor-image.md": 1500,
+    "skills/ppt-master/references/executor-image.md": 1600,
     "skills/ppt-master/references/executor-web-image.md": 500,
     "skills/ppt-master/references/executor-notes.md": 900,
     "skills/ppt-master/references/shared-standards.md": 250,
@@ -29,7 +29,7 @@
     "skills/ppt-master/references/native-data-interface.md": 6200,
     "skills/ppt-master/references/pptx-structure-interface.md": 4300,
     "skills/ppt-master/references/strategist.md": 14225,
-    "skills/ppt-master/references/strategist-image.md": 2500,
+    "skills/ppt-master/references/strategist-image.md": 2525,
     "skills/ppt-master/references/strategist-template.md": 2100,
     "skills/ppt-master/templates/design_spec_reference.md": 3275,
     "skills/ppt-master/templates/spec_lock_reference.md": 2375,
@@ -184,7 +184,7 @@
         "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md"
       ],
-      "max_tokens": 36525
+      "max_tokens": 36650
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -194,7 +194,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 38025
+      "max_tokens": 38150
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -205,7 +205,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 38425
+      "max_tokens": 38550
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -215,7 +215,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 43450
+      "max_tokens": 43675
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -227,7 +227,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 46650
+      "max_tokens": 46850
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -238,7 +238,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 66500
+      "max_tokens": 66700
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -249,7 +249,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 51200
+      "max_tokens": 51425
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
@@ -269,7 +269,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 64650
+      "max_tokens": 64750
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -790,7 +790,7 @@
       "files": [
         "skills/ppt-master/references/strategist-image.md"
       ],
-      "max_tokens": 2500
+      "max_tokens": 2525
     },
     "stage.generate.strategist.image-layout": {
       "description": "Optional image-layout catalog recall layered on image planning when the Strategist wants additional composition vocabulary.",

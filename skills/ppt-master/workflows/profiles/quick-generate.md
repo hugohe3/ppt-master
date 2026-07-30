@@ -59,10 +59,13 @@ Before writing P01, resolve in active context:
 
 - the slide roster, canvas, visual direction, palette, typography, and wording;
 - a transient resource roster with page, filename, purpose, visual intent,
-  acquisition path, crop behavior, and status;
+  acquisition path, crop behavior, and status; for a hero page or other
+  image-led use, the visual intent includes an action-bearing composition;
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
+
+**Default — action-bearing image composition (may override only for an explicit user/material boundary or a page-specific restraint decision)**: For a hero page or otherwise image-led resource, resolve one concrete image/content or image/shape relationship before SVG authoring. Position, size, routine crop, and a legibility-only scrim alone do not constitute that relationship. A plain split or full-bleed treatment remains valid only when the explicit boundary requires it or the agent records a page-specific restraint reason in active context; decide and continue without another interaction.
 
 Prepare only the resource paths that the roster triggers:
 
