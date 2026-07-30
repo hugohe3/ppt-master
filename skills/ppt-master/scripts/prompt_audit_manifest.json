@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 392879
+    "max_tokens": 393375
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -217,7 +217,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 62419
+      "max_tokens": 62925
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -229,7 +229,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 65619
+      "max_tokens": 66100
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -240,7 +240,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 85490
+      "max_tokens": 86025
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -251,7 +251,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 70169
+      "max_tokens": 70675
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -261,7 +261,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 70275
+      "max_tokens": 70575
     },
     "route.generate.planning-formula": {
       "description": "Formula-only planning context, including the shared image/formula layout math and vocabulary.",
@@ -271,7 +271,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 70275
+      "max_tokens": 70575
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -291,7 +291,7 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 74500
+      "max_tokens": 74825
     },
     "stage.generate.apply-template-workspace": {
       "description": "Conditional Step 3 workspace validation, installation, and fusion framework.",
@@ -796,7 +796,7 @@
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/image-layout-patterns.md"
       ],
-      "max_tokens": 7825
+      "max_tokens": 8300
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
@@ -823,7 +823,7 @@
         "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 9535
+      "max_tokens": 10075
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",

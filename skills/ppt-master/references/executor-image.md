@@ -30,8 +30,10 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 **Default — active image integration (may override when plain placement is
 stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)
 as vocabulary and [`image-layout-spec.md`](./image-layout-spec.md) as math, not
-a quota or lock. On every image-bearing page, derive its image/content or
-image/shape relationship from the communication job, hierarchy, copy, asset
+a quota or lock. Run the catalog's §5 playbook before drawing; its combinations
+are recall aids, not coverage targets. For every image-bearing page, derive the
+image/content or image/shape relationship from the communication job, hierarchy,
+copy, asset
 ratio/focus, and deck rhythm. Before drawing, evaluate useful modifiers across
 reveal/crop/registration, tone/contrast, framing/depth, and native overlay.
 Adopt a legal modifier, effect, or Boolean construction when it materially
