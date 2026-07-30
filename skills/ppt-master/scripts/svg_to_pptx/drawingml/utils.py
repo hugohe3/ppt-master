@@ -2910,10 +2910,10 @@ def is_picture_effect_carrier(elem: ET.Element) -> bool:
             r'url\(#([^)]+)\)',
             (elem.get('filter') or '').strip(),
         ) is None
+        or elem.get('data-pptx-layer') not in {None, 'master', 'layout'}
         or any(
             elem.get(attribute) is not None
             for attribute in (
-                'data-pptx-layer',
                 'data-pptx-placeholder',
                 'data-pptx-binding',
                 'data-pptx-replace-with',
