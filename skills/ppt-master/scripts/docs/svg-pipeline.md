@@ -153,6 +153,12 @@ source.write_text(
       fill="#2563EB" stroke="#0F172A" stroke-width="5"
       stroke-dasharray="10 4"/>
     <circle id="cutout" cx="240" cy="160" r="70" fill="#F97316"/>
+    <text id="text-cutout" x="240" y="235" text-anchor="middle"
+      font-family="sans-serif" font-size="180" font-weight="700">01</text>
+    <text id="missing-font" x="240" y="235"
+      font-family="Definitely Missing Font" font-size="80">X</text>
+    <text id="nested-text" x="240" y="235"
+      font-family="sans-serif" font-size="80"><tspan>X</tspan></text>
     <path id="open" d="M 40 320 L 260 320 L 260 420" fill="#2563EB"/>
     <rect id="clipped" x="40" y="320" width="160" height="100"
       clip-path="url(#clip)" fill="#2563EB"/>
@@ -174,17 +180,18 @@ source.write_text(
 )
 
 operations = [
-    ("union", "preset-source", "preset-cut"),
-    ("combine", "body", "cutout"),
-    ("fragment", "body", "cutout"),
-    ("intersect", "body", "cutout"),
-    ("subtract", "body", "cutout"),
+    ("union", "union", "preset-source", "preset-cut"),
+    ("combine", "combine", "body", "cutout"),
+    ("fragment", "fragment", "body", "cutout"),
+    ("intersect", "intersect", "body", "cutout"),
+    ("subtract", "subtract", "body", "cutout"),
+    ("text-subtract", "subtract", "body", "text-cutout"),
 ]
 expected_custom_shapes = 0
-for index, (operation, first, second) in enumerate(operations, start=1):
+for index, (name, operation, first, second) in enumerate(operations, start=1):
     fragment = run_tool(
         "shape_boolean_svg.py", "render", source, "--operation", operation,
-        "--source", first, "--source", second, "--id", f"result-{operation}",
+        "--source", first, "--source", second, "--id", f"result-{name}",
     )
     paths = list(
         ET.fromstring(
@@ -199,12 +206,12 @@ for index, (operation, first, second) in enumerate(operations, start=1):
     if operation == "fragment":
         assert len(paths) > 1
         assert [path.get("id") for path in paths] == [
-            f"result-fragment-{piece}"
+            f"result-{name}-{piece}"
             for piece in range(1, len(paths) + 1)
         ]
     else:
         assert len(paths) == 1
-        assert paths[0].get("id") == f"result-{operation}"
+        assert paths[0].get("id") == f"result-{name}"
     if operation == "combine":
         assert all(path.get("stroke-width") == "6" for path in paths)
         assert all(path.get("stroke-dasharray") == "12 4.8" for path in paths)
@@ -212,7 +219,7 @@ for index, (operation, first, second) in enumerate(operations, start=1):
         assert (paths[0].get("d") or "").count("M ") >= 2
 
     expected_custom_shapes += len(paths)
-    (svg_output / f"{index:02d}_{operation}.svg").write_text(
+    (svg_output / f"{index:02d}_{name}.svg").write_text(
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
         'data-pptx-page-role="content">'
         '<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>'
@@ -237,6 +244,8 @@ rejections = [
     ("union", "body", "imported", "PPTX import/round-trip metadata"),
     ("union", "body", "dashoffset", "stroke-dashoffset"),
     ("intersect", "body", "far", "produced no filled area"),
+    ("subtract", "body", "missing-font", "cannot resolve an installed font"),
+    ("subtract", "body", "nested-text", "child content is unsupported"),
 ]
 for operation, first, second, expected_error in rejections:
     rejected = subprocess.run(
@@ -269,7 +278,7 @@ with zipfile.ZipFile(pptx) as archive:
         archive.read(name).count(b"<a:custGeom>")
         for name in slides
     )
-assert len(slides) == 5, slides
+assert len(slides) == len(operations), slides
 assert custom_shapes == expected_custom_shapes
 
 readback = project / "readback"
@@ -282,7 +291,7 @@ readback_custom_shapes = sum(
     slide.read_text(encoding="utf-8").count('data-pptx-custgeom="')
     for slide in slides
 )
-assert len(slides) == 5, slides
+assert len(slides) == len(operations), slides
 assert readback_custom_shapes == expected_custom_shapes
 print(
     f"Shape Boolean smoke: passed "
@@ -291,10 +300,11 @@ print(
 PY
 ```
 
-The five inline negative cases must return nonzero and match their expected
+The seven inline negative cases must return nonzero and match their expected
 errors; every other command must pass. Open the printed
-`boolean-smoke.pptx` path in PowerPoint: the Subtract result must have a real
-hole, and every Fragment sibling must remain separately selectable.
+`boolean-smoke.pptx` path in PowerPoint: both shape-cut and text-cut Subtract
+results must have real holes, and every Fragment sibling must remain separately
+selectable.
 
 ## `compact_svg_coordinates.py`
 

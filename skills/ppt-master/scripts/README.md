@@ -223,7 +223,11 @@ python3 scripts/shape_boolean_svg.py render slide.svg \
 The first source owns result paint and is the primary geometry for `subtract`.
 Local and ancestor transforms are baked into SVG-root coordinates. Replace the
 operands with every returned path at the root in the primary operand's z-order;
-`fragment` returns multiple stable sibling paths. See
+`fragment` returns multiple stable sibling paths. Operands may be supported
+closed geometry or supported horizontal implicit-LTR direct `<text>` whose exact
+OpenType weight/style can be resolved; repeat `--font-dir PATH` for additional
+font roots. Text is shaped to glyph outlines before the operation, so the
+result remains editable freeform geometry but is no longer editable text. See
 [`references/native-shape-authoring.md`](../references/native-shape-authoring.md)
 §6 for the closed operand and failure contract.
 

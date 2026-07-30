@@ -178,7 +178,7 @@ content.
 | Straight relationship / divider / leader | Use `<line>`; add a registered marker only when direction is meaningful. |
 | Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
 | Bent / curved relationship exactly expressed by a stock Connector contour, with no required endpoint attachment | Use the matching `bentConnector*` / `curvedConnector*` preset through the helper as an unconnected native Connector shape. |
-| Two or more closed operands whose final semantic object depends on union, cutout, overlap-only coverage, symmetric difference, or fragmentation | Evaluate `shape_boolean_svg.py` at draw time and use it when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
+| Supported closed-shape / resolvable-text operands need union, cutout, overlap, symmetric difference, or fragmentation | Use `shape_boolean_svg.py` when Boolean materialization is the clearest faithful construction; follow [`native-shape-authoring.md`](./native-shape-authoring.md) §6. |
 | Stock shape that needs a gradient fill/stroke or a pattern fill | Keep ordinary SVG — the helper paints `none` or a solid HEX on both fill and stroke only ([`native-shape-authoring.md`](./native-shape-authoring.md) §5). |
 | Page-specific freeform, organic, branded, icon, data geometry, or relationship contour that primitives, one preset, and Boolean materialization cannot faithfully express | Keep ordinary SVG path/polygon geometry. |
 | Similar-looking contour only | Never infer a preset; continue to the Boolean gate, then use freeform only if no faithful construction exists. |

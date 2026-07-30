@@ -18,6 +18,8 @@ python-pptx>=0.6.21
 XlsxWriter>=3.0.0
 # PowerPoint-style Merge Shapes materialization / PowerPoint 风格合并形状物化
 skia-pathops>=0.9.2
+# OpenType shaping + glyph outlines for text operands / 文字 operand 的排版与轮廓
+uharfbuzz>=0.50.0
 
 # Recorded narration / 录制计时和旁白
 # notes_to_audio.py generates per-slide narration audio on macOS/Linux/Windows.

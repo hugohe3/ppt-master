@@ -104,8 +104,9 @@ silently replace it with unrelated material.
 Always read
 [`shared-standards-core.md`](../../references/shared-standards-core.md). Do not
 load `executor-base.md`: its persisted-plan prerequisites do not apply to this
-profile. Load the conditional image/web/canvas references only when the
-resolved SVG or selected capability needs them.
+profile. Load the conditional image/web/canvas references when needed, and load
+`native-shape-authoring.md` for selected preset/Boolean construction such as
+text knockouts.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.
