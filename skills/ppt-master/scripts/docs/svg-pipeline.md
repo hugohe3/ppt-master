@@ -647,26 +647,27 @@ Behavior:
   - Long-audio import and automatic long-audio splitting are not supported; keep narration assets page-level
   - Voice choices can be listed with `python3 scripts/notes_to_audio.py --list-common-voices`, `python3 scripts/notes_to_audio.py --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
 - Page transitions are controlled by `-t/--transition`; per-element object animations are controlled by `-a/--animation`
-- Per-element animation applies to ordinary top-level SVG `<g id="...">` groups in z-order; use one group per logical Slide-local content unit rather than targeting a group count. Master/Layout atoms and slot groups are structural and excluded; exact id tokens remain a fallback only when explicit structural roles are absent
+- Per-element animation applies to ordinary top-level SVG `<g id="...">` groups; each group is a PowerPoint shape-target anchor, not necessarily one Animation Pane row. Use one group per logical Slide-local content unit rather than targeting a group count. Master/Layout atoms and slot groups are structural and excluded; exact id tokens remain a fallback only when explicit structural roles are absent
 - An explicit `animations.json` group entry may override the marker-free legacy chrome-name heuristic. It cannot override `data-pptx-layer` or an explicit static role/placeholder marker
-- Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
-- `on-click` is for live presentations only; recorded narration rejects it because the tool does not generate object-level click timings
+- Start mode is set globally by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), or `with-previous` (all together on slide entry). A sidecar row may override it with `trigger`; the slide value is only the inherited Start mode
+- `on-click` is for live presentations only; recorded narration rejects every row that resolves to it, including a row with `trigger_shape`, because the tool does not generate object-level click timings
 - Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
 - Per-element animation defaults to `none`. `auto` is opt-in (`-a auto`) and maps
-  effects from the group's SVG id: information-dense elements get a stable
-  effect (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like
-  ids (hero/figure-/image/img-/kpi) cycle through a richer pool
-  (zoom/dissolve/circle/box/diamond/wheel), while unmatched ids cycle through
-  fade/wipe/fly/zoom.
-- `mixed` (legacy) is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a larger 16-effect pool across the whole deck; `random` uses a stable seed from the effective deck input, and `--conversion-trace` records each resolved effect when enabled
-- `--animation-duration` controls the per-element schedule length (default
+  generic entrance effects from the group's SVG id: information-dense elements
+  get a stable entrance (chart→wipe, card-/step-/pillar-→fly,
+  title/takeaway→fade); image-like and unmatched ids rotate through bounded
+  entrance pools.
+- `mixed` (legacy) deterministically rotates through the canonical entrance pool; `random` selects from the same entrance pool with a stable seed from the effective deck input. `auto`, `mixed`, and `random` never choose emphasis, motion-path, or exit effects; select an explicit canonical `entrance_*`, `emphasis_*`, `path_*`, or `exit_*` key for those authored duties. `--conversion-trace` records each resolved effect when enabled
+- `--animation-duration` controls the inherited per-row schedule length (default
   `0.4`); scalable native effects preserve internal timing ratios, while
   instantaneous presets keep their authored duration. `--animation-stagger`
-  adds gap between elements in `after-previous` mode (default `0.5`)
-- Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
+  supplies the default gap between successive non-trigger-shape rows in
+  `after-previous` mode (default `0.5`)
+- Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`. The scaffold is neutral (`defaults.animation.effect: none`, untouched groups `{}`). A populated group uses either the fully compatible legacy single-effect fields or a non-empty `effects[]`, never both; every `effects[]` row names an explicit effect
+- One `effects[]` row becomes one Animation Pane record on the group's shape target. Each row may independently set sequence `order`, `delay`, `duration`, `trigger`, and `trigger_shape`; ordinary rows use page-wide order, while `trigger_shape` rows keep relative order in separate interactive sequences and imply `on-click`
 - Animation configuration is strict: unknown effects/modes/triggers, invalid finite/range/order values, missing slides/groups, and structural-layer targets fail export without fallback or silent omission
-- Generated export reads every slide back and verifies animation row order, trigger, shape target, resolved effect tuple, duration, and offset. Package validation then checks timing placement, `p:cTn` ids, and `p:spTgt` references before publication
-- The animation writer does not emit `p:bldP` for groups or pictures. Direct-PPTX routes preserve source object animation and perform structural package validation only; they do not author effects
+- Generated export reads every slide back and verifies animation row order, including repeated rows on one shape target, trigger, shape target, resolved effect tuple and native behavior signature, duration, and offset. Package validation then checks timing placement, `p:cTn` ids, and `p:spTgt` references before publication
+- The animation writer does not emit paragraph/text-range builds (`p:bldP`), custom freeform motion paths, native Chart/SmartArt build sequences, or media playback commands for grouped SVG content. Direct-PPTX routes preserve source object animation and perform structural package validation only; they do not author effects
 - The full registry, OOXML rules, and compatibility boundary are documented in [`pptx-animations.md`](./pptx-animations.md)
 
 Dependency:
