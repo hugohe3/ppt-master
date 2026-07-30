@@ -140,10 +140,12 @@ There is no target group count. Granularity follows the page's actual claims,
 comparisons, sequence, causality, and narration beats.
 
 After any regrouping, rerun the final SVG quality gate because `svg_output/`
-changed:
+changed. Use the owning route's checker form; Quick Generate must add its
+lockless profile flag:
 
 ```bash
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path> --stage final --json
+# Quick Generate: insert --quick-generate before --stage.
 ```
 
 Then list the **post-regroup** anchors:
@@ -195,19 +197,11 @@ relevant transition, object effects, order, and timing. Use
 `design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style,
 speaker notes for narration order, and SVG group ids for target validity.
 
-**Mandatory — lifecycle before effect selection**:
-
-| Duty | State contract | Effect family |
-|---|---|---|
-| `enter` | absent → introduce → present | `entrance_*`; modes only for generic reveal |
-| `emphasize` | present → redirect attention → present/altered | Explicit `emphasis_*` |
-| `move` | state/position A → progress → state/position B | Explicit `path_*`, or endpoint pages + Morph |
-| `exit` | present → retire → absent | Explicit `exit_*` |
-| `static` | present → hold as reference → present | Omit; use legacy `effect: none` only to suppress inheritance |
-
-A unit may carry several duties as ordered `effects[]` rows. There is no
-category quota; never reverse-engineer a communication job from an available
-effect.
+**Mandatory — select from meaning, not catalog coverage**: run the
+page-relationship and lifecycle selection playbooks in
+[`animations.md`](../../references/animations.md) §3 and §4 before choosing any
+specific effect. Their candidates are recall aids, not coverage targets; this
+stage binds the selected duties to real targets.
 
 **Title motion decision**: when a title participates, classify its lifecycle,
 then choose immediate, delayed, synchronized, post-hero, or narration-cued
@@ -392,12 +386,18 @@ run:
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 ```
 
-After validation succeeds, return to
-[`generate-pptx.md`](../generate-pptx.md) Step 7.1. Generate owns note
-splitting, `finalize_svg.py`, native export, and the published postflight
-receipt; Step 7.3 reads `<project_path>/animations.json` automatically. If §2
-changed `svg_output/`, complete its required final SVG quality rerun before
-returning. Do not finalize or export independently from this stage.
+After validation succeeds, return to the owning export path:
+
+- Default Generate → [`generate-pptx.md`](../generate-pptx.md) Step 7.1, which
+  owns note splitting, `finalize_svg.py`, native export, and the published
+  postflight receipt.
+- Quick Generate → [`quick-generate.md`](../profiles/quick-generate.md) §4,
+  which skips finalization and exports with `--quick-generate`.
+
+Both exporters read `<project_path>/animations.json` automatically. If §2
+changed `svg_output/`, complete the owning route's required final SVG quality
+rerun before returning. Do not finalize or export independently from this
+stage.
 
 **Validation**: The later native export must reflect the per-slide and
 per-object overrides. `--animation none` still disables all per-element

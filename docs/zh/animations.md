@@ -28,12 +28,28 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 | 每 5 秒自动翻页 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5` |
 | 开启自动元素入场 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto` |
 | 全部使用同一种入场效果 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade` |
-| 全部使用同一种原生强调效果 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation emphasis_spin` |
-| 全部使用同一种原生动作路径 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation path_circle` |
-| 全部使用同一种原生退出效果 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation exit_fade` |
 | 单击逐个揭示元素 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click` |
 | 所有元素同时入场 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | 放慢逐步揭示节奏 | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
+
+## 选择页间切换
+
+| 相邻页面关系 | 优先考虑 |
+|---|---|
+| 同一章节内的普通连续叙述 | `fade` |
+| 无需保留连续性的直接切换 | `none` 或 `cut` |
+| 有明确方向的步骤、时间线或可见层级推进 | 按语义方向使用 `push`、`wipe`、`cover` 或 `uncover` |
+| 同一对象或场景的位置、尺寸、裁切或外观发生变化 | `morph` |
+| 章节开场、关键揭示或明显状态边界 | 少量使用 `split`、`reveal`、`shape`、`flash` 或 `random_bars` |
+| 重复内容在同一空间框架中连续推进 | `pan`、`conveyor` 或 `ferris_wheel`；单个对象需要保持身份时使用 Morph |
+| 视点围绕或穿越一个连续空间 | `rotate`、`window`、`orbit` 或 `fly_through` |
+| 主题适合舞台、纸张或实体翻页隐喻 | 少量使用 `fall_over`、`drape`、`curtains`、`wind`、`prestige`、`peel_off`、`page_curl`、`airplane`、`origami` 或 `doors` |
+| 破坏性节点表达断裂、坍塌或消散 | 少量使用 `fracture`、`crush`、`dissolve`、`vortex` 或 `shred` |
+| 关键揭示适合几何、计时或纹理图案 | 少量使用 `checkerboard`、`blinds`、`clock`、`ripple`、`honeycomb`、`glitter` 或 `comb` |
+| 卡片、面板、图库或视角发生可见翻面 | 少量使用 `switch`、`flip`、`gallery`、`cube`、`box` 或 `zoom` |
+
+没有其他切换能增加表达意义时，保留 `fade` 或 `none`。不要只为制造变化而
+更换效果；只有“不确定性”本身就是意图时才使用 `random`。
 
 48 个规范页间切换标识已经覆盖当前 PowerPoint 效果库的三个完整分组：
 
@@ -71,18 +87,19 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 
 `--recorded-narration` 不支持 `on-click`；带旁白或用于视频导出的 deck 应使用 `after-previous` 或 `with-previous`。
 
-## 选择动画效果
+## 选择对象动画
 
-| 选择 | 适用场景 |
-|---|---|
-| `auto` | 让 PPT Master 根据内容组角色选择通用进入效果；这是自动开启元素动画时的推荐选项 |
-| 原生 `entrance_*` | 使用 PowerPoint 的 53 个原生进入预设之一 |
-| 原生 `emphasis_*` | 让已显示对象获得关注或改变外观 |
-| 原生 `path_*` | 让对象沿 PowerPoint 的 64 条动作路径之一移动 |
-| 原生 `exit_*` | 让对象在动画序列中退出页面 |
-| `mixed` | 在规范进入预设池中确定性轮换 |
-| `random` | 从同一规范进入预设池中按固定种子生成变化 |
-| `none` | 关闭元素动画 |
+从 `none` 开始。只有对象运动承担明确沟通任务时，才先选择生命周期，再选择
+视觉效果：
+
+| 沟通任务 | 选择 | 使用边界 |
+|---|---|---|
+| 按阅读或旁白顺序揭示信息 | `auto` 或原生 `entrance_*` | 这是最常见的对象动画场景 |
+| 让已经可见的对象重新获得关注 | 显式 `emphasis_*` | 不用于对象第一次出现 |
+| 表达有意义的空间或因果移动 | 显式 `path_*`，或在相邻页间使用 Morph | 路径本身应承载意义；刻意设计的背景氛围运动属于高级例外 |
+| 在同一页移除、替换内容或腾出空间 | 显式 `exit_*` | 普通翻页已经会移走旧页面 |
+| 为通用进入效果增加确定性或固定种子变化 | `mixed` 或 `random` | 两种模式仍只选择进入效果 |
+| 没有明确的运动任务 | `none` | 保持静态 |
 
 规范注册表包含 203 个 PowerPoint 原生标识：53 个进入、33 个强调、64 条
 动作路径、53 个退出。现在新选择、sidecar、自动决策、转换轨迹和示例都只使用

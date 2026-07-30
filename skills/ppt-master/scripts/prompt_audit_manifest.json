@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 393375
+    "max_tokens": 394495
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -186,7 +186,7 @@
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 53040
+      "max_tokens": 53348
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -196,7 +196,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 54540
+      "max_tokens": 54848
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -207,7 +207,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 54940
+      "max_tokens": 55248
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -217,7 +217,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 62925
+      "max_tokens": 63233
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -229,7 +229,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 66100
+      "max_tokens": 66408
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -240,7 +240,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 86025
+      "max_tokens": 86333
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -251,7 +251,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 70675
+      "max_tokens": 70983
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -702,7 +702,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 30490
+      "max_tokens": 31302
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",
@@ -718,7 +718,7 @@
       "files": [
         "skills/ppt-master/references/animations.md"
       ],
-      "max_tokens": 7175
+      "max_tokens": 8021
     },
     "stage.shared.generate-audio": {
       "description": "Shared narration-audio stage.",

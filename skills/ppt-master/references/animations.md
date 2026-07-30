@@ -242,6 +242,33 @@ The generated names follow Microsoft's
 
 ## 3. Page Transitions
 
+**Reference — not a constraint**: choose a transition from the relationship
+between adjacent pages, not from gallery coverage. Run this playbook before
+selecting a canonical key:
+
+| Pass | Decision |
+|---|---|
+| Relate | Decide whether the destination continues the same object or space, advances in a meaningful direction, opens a new section, or intentionally breaks continuity. |
+| Diagnose | Name the transition's job: neutral continuity, immediate cut, directional progress, object/state continuity, spatial movement, or a deliberate thematic beat. |
+| Select | Use the smallest family that performs that job; keep `fade` when no stronger relationship exists. |
+| Coordinate | Align direction, duration, and recurrence with reading order, narration, and the deck's established motion language. |
+| Stop | Keep `fade` or `none` when another effect adds no meaning; never vary transitions for catalog coverage. |
+
+| Page relationship | Candidate family |
+|---|---|
+| Ordinary continuation within one section | `fade` |
+| Immediate change with no continuity to preserve | `none` or `cut` |
+| Directional steps, timeline, or layer progression | `push` / `wipe`; use `cover` / `uncover` when an overlay relationship is visible |
+| The same semantic object or scene changes across adjacent pages | `morph`; use §2.1 pairs when identity must be deterministic |
+| Section opening, key reveal, or marked state boundary | Selective `split` / `reveal` / `shape` / `flash` / `random_bars` |
+| A repeated collection advances through one spatial frame | `pan` / `conveyor` / `ferris_wheel`; use the §4.2 Morph carousel when individual cards need deterministic identity |
+| The viewpoint travels around or through a continuous space | `rotate` / `window` / `orbit` / `fly_through` |
+| The narrative or theme supports a stage, paper, or physical-page metaphor | Selective `fall_over` / `drape` / `curtains` / `wind` / `prestige` / `peel_off` / `page_curl` / `airplane` / `origami` / `doors` |
+| A disruptive beat represents breakage, collapse, or dispersal | Selective `fracture` / `crush` / `dissolve` / `vortex` / `shred` |
+| A marked reveal benefits from a geometric, timed, or textured pattern | Selective `checkerboard` / `blinds` / `clock` / `ripple` / `honeycomb` / `glitter` / `comb` |
+| A card, panel, gallery, or viewpoint visibly turns or changes face | Selective `switch` / `flip` / `gallery` / `cube` / `box` / `zoom` |
+| Unpredictability is itself the requested behavior | `random`; never use it merely to create variety |
+
 ```bash
 # Pick a different effect
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
@@ -338,11 +365,22 @@ PowerPoint's separate **Trigger → On Click of** behavior uses row-specific
 `trigger_shape`. It links that row to another top-level group while unlinked
 rows keep the slide Start mode; it is not a fourth deck-wide Start mode.
 
-**Lifecycle-first selection**: classify semantic `initial → action → end`
-before choosing an effect: `enter→entrance_*`,
-`emphasize→emphasis_*`, `move→path_*` or Morph, `exit→exit_*`, and
-`static→` no row (or legacy `effect: none` to suppress inheritance). A unit may
-use several ordered `effects[]` rows. There is no category quota.
+**Mandatory — lifecycle before effect selection**: start from `static`, then
+classify semantic `initial → action → end` before choosing an effect. Generic
+staged reveals normally use `enter`; narrower communication jobs select their
+matching lifecycle instead.
+
+| Duty | State contract | Use when | Effect family |
+|---|---|---|---|
+| `static` | present → hold as reference → present | Motion adds no clarity or intended feeling | No row; legacy `effect: none` only suppresses inheritance |
+| `enter` | absent → introduce → present | Information should be withheld, ordered, or revealed with narration | `entrance_*`; modes only for generic reveal |
+| `emphasize` | present → redirect attention → present/altered | An already visible object must regain attention or show a local change; never substitute for its first reveal | Explicit `emphasis_*` |
+| `move` | state/position A → progress → state/position B | The trajectory carries spatial or causal meaning, or §4.1 adopts subordinate ambient motion; use Morph for cross-page continuity | Explicit `path_*`, or endpoint pages + Morph |
+| `exit` | present → retire → absent | The same slide must remove, replace, or make room for content; an ordinary page change needs no object exit | Explicit `exit_*` |
+
+Entrance is the common opt-in family for staged information, not a deck or
+category quota. A unit may use several ordered `effects[]` rows only when it
+has several real lifecycle duties.
 
 The registry exposes two layers:
 

@@ -42,6 +42,23 @@ enable any ordinary capability when the request or deck benefits; use its
 normal inputs, flags, and prerequisites without asking for approval. Quick
 never creates or reads a Design Spec or lock to enable it.
 
+**Mandatory — discover motion before deciding whether to load it**: scan this
+compact gate once; do not load the full execution reference when the defaults
+already fit.
+
+| Signal | Action |
+|---|---|
+| The same semantic object or scene continues across adjacent pages | Load [`animations.md`](../../references/animations.md) before SVG authoring; prepare both visible endpoints and use its Morph contract |
+| Page- or object-specific reveal, renewed emphasis, meaningful movement, or same-page removal clarifies the message | Load [`animations.md`](../../references/animations.md) before SVG authoring; preserve the required units/states, then run [`customize-animations`](../stages/customize-animations.md) after the final checker |
+| One deck-wide entrance policy supplies all required staged reveal | Load [`animations.md`](../../references/animations.md) before export and use an exporter flag such as `-a auto`; do not run the custom stage |
+| A directional/section boundary benefits from a non-default transition | Load [`animations.md`](../../references/animations.md) before export and select from its §3 playbook |
+| No earlier signal applies | Keep `fade` transitions and object animation `none`; do not load the motion reference |
+
+This gate activates capability discovery, not motion coverage. Keep the
+defaults when no row supplies a concrete communication job. When several
+signals apply, perform every required action and use the earliest required load
+point; a before-authoring signal always overrides a before-export-only timing.
+
 ---
 
 ## 2. Source and Resource Preparation

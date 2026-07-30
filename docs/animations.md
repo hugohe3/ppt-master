@@ -30,12 +30,29 @@ Changing animation settings does not require regenerating the slides. Rerun `svg
 | Auto-advance every 5 seconds | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5` |
 | Enable automatic element reveals | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto` |
 | Use one entrance effect throughout | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation entrance_fade` |
-| Use one native emphasis effect | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation emphasis_spin` |
-| Use one native motion path | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation path_circle` |
-| Use one native exit effect | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation exit_fade` |
 | Reveal elements on click | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click` |
 | Animate all elements together | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous` |
 | Slow the reveal sequence | `python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
+
+## Choose a Page Transition
+
+| Relationship between adjacent slides | Start with |
+|---|---|
+| Ordinary continuation within one section | `fade` |
+| Immediate change with no continuity to preserve | `none` or `cut` |
+| Directional steps, timeline, or visible layer progression | `push`, `wipe`, `cover`, or `uncover` with a meaningful direction |
+| The same object or scene changes position, size, crop, or appearance | `morph` |
+| Section opening, key reveal, or marked state boundary | A selective `split`, `reveal`, `shape`, `flash`, or `random_bars` |
+| A repeated collection advances through one spatial frame | `pan`, `conveyor`, or `ferris_wheel`; use Morph when individual objects must retain identity |
+| The viewpoint travels around or through a continuous space | `rotate`, `window`, `orbit`, or `fly_through` |
+| The theme supports a stage, paper, or physical-page metaphor | A selective `fall_over`, `drape`, `curtains`, `wind`, `prestige`, `peel_off`, `page_curl`, `airplane`, `origami`, or `doors` |
+| A disruptive beat represents breakage, collapse, or dispersal | A selective `fracture`, `crush`, `dissolve`, `vortex`, or `shred` |
+| A marked reveal benefits from a geometric, timed, or textured pattern | A selective `checkerboard`, `blinds`, `clock`, `ripple`, `honeycomb`, `glitter`, or `comb` |
+| A card, panel, gallery, or viewpoint visibly turns or changes face | A selective `switch`, `flip`, `gallery`, `cube`, `box`, or `zoom` |
+
+Keep `fade` or `none` when no other transition adds meaning. Do not change
+effects merely to create variety; `random` is appropriate only when
+unpredictability is itself intentional.
 
 The 48 canonical transition keys cover all three sections in the current
 PowerPoint gallery:
@@ -75,18 +92,19 @@ an explicitly configured auto-advance timer.
 
 `--recorded-narration` does not support `on-click`; use `after-previous` or `with-previous` for narrated or video-ready output.
 
-## Choose an Effect
+## Choose an Object Animation
 
-| Choice | Use it when |
-|---|---|
-| `auto` | You want PPT Master to choose a generic entrance from each content group's role; this is the recommended automatic opt-in |
-| A native `entrance_*` key | You want one of PowerPoint's 53 native entrance presets |
-| A native `emphasis_*` key | An already visible object should draw attention or change appearance |
-| A native `path_*` key | An object should follow one of PowerPoint's 64 motion paths |
-| A native `exit_*` key | An object should leave the slide during the sequence |
-| `mixed` | You need deterministic variation across the canonical entrance pool |
-| `random` | You want seeded variation from the same canonical entrance pool |
-| `none` | You want to disable element animation |
+Start with `none`. When object motion has a communication job, choose its
+lifecycle before its visual effect:
+
+| Communication job | Choice | Boundary |
+|---|---|---|
+| Reveal information in reading or narration order | `auto` or a native `entrance_*` key | This is the usual object-animation case |
+| Redirect attention to an already visible object | An explicit `emphasis_*` key | Do not use it as the object's first reveal |
+| Show meaningful spatial or causal movement | An explicit `path_*` key, or Morph across adjacent slides | The path itself should carry meaning; deliberate background ambience is an advanced exception |
+| Remove, replace, or make room for content on the same slide | An explicit `exit_*` key | A normal slide change already removes the old page |
+| Add deterministic or seeded variation to generic entrances | `mixed` or `random` | These modes still select entrance effects only |
+| No clear motion task | `none` | Keep the slide static |
 
 The canonical registry contains 203 PowerPoint-native keys: 53 entrance, 33
 emphasis, 64 motion path, and 53 exit presets. New selections, sidecars,
