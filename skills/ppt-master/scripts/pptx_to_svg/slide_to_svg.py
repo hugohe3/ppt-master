@@ -978,9 +978,12 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
     group_attrs = _metadata_group_attrs(effect_metadata)
     if effect.filter_id is not None:
         filter_attr = f"url(#{effect.filter_id})"
-        if clipped_svg.startswith("<svg"):
+        if (
+            clipped_svg.startswith("<svg")
+            or clipped_svg.startswith("<image clip-path=")
+        ):
             # Keep the effect outside the crop viewport so shadows and glows
-            # remain visible beyond the picture frame in SVG previews.
+            # remain visible beyond the picture geometry in SVG previews.
             group_attrs.append(f'filter="{filter_attr}"')
         else:
             picture_attrs["filter"] = filter_attr

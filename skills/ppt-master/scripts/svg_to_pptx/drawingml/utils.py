@@ -2638,11 +2638,17 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         if (
             tag not in PROJECT_FILTER_PUBLIC_TARGETS
             and not _is_imported_preset_preview_filter_target(elem, parents)
-            and not is_imported_picture_crop_effect_carrier(elem)
+            and not is_picture_effect_carrier(elem)
         ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
-                'rect, circle, image, path, and text'
+                'rect, circle, image, path, text, and an exact single clipped-'
+                'image carrier group'
+            )
+        if tag == 'image' and elem.get('clip-path') is not None:
+            errors.add(
+                f'{label} cannot combine filter and clip-path on the same '
+                'image; put the filter on an exact single-image outer <g>'
             )
         match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
         if match is None:
@@ -2857,11 +2863,11 @@ def _is_imported_preset_preview_filter_target(
     )
 
 
-def is_imported_picture_crop_effect_carrier(elem: ET.Element) -> bool:
-    """Recognize the private effect carrier around an imported picture crop."""
+def is_picture_effect_carrier(elem: ET.Element) -> bool:
+    """Recognize one effect carrier around exactly one clipped picture."""
     if (
         _svg_element_tag(elem) != 'g'
-        or elem.get('data-pptx-object') != 'picture'
+        or elem.get('data-pptx-object') == 'group'
     ):
         return False
     children = [
@@ -2870,17 +2876,37 @@ def is_imported_picture_crop_effect_carrier(elem: ET.Element) -> bool:
     ]
     if len(children) != 1:
         return False
-    crop = children[0]
+    picture = children[0]
+    if picture.get('filter') is not None:
+        return False
+    owner_kind = elem.get('data-pptx-object')
+    if _svg_element_tag(picture) == 'image':
+        if resolve_url_id(picture.get('clip-path', '')) is None:
+            return False
+        if owner_kind is None:
+            return True
+        shape_id = elem.get('data-pptx-shape-id')
+        return (
+            owner_kind == 'picture'
+            and shape_id is not None
+            and picture.get('data-pptx-object') == 'picture'
+            and picture.get('data-pptx-shape-id') == shape_id
+        )
     if (
-        _svg_element_tag(crop) != 'svg'
-        or crop.get('data-pptx-object') != 'picture'
-        or crop.get('viewBox') is None
-        or crop.get('preserveAspectRatio') != 'none'
-        or crop.get('filter') is not None
-        or crop.get('data-pptx-shape-id') != elem.get('data-pptx-shape-id')
+        _svg_element_tag(picture) != 'svg'
+        or owner_kind != 'picture'
+        or picture.get('data-pptx-object') != 'picture'
+        or picture.get('viewBox') is None
+        or picture.get('preserveAspectRatio') != 'none'
     ):
         return False
-    crop_children = list(crop)
+    shape_id = elem.get('data-pptx-shape-id')
+    if (
+        shape_id is None
+        or picture.get('data-pptx-shape-id') != shape_id
+    ):
+        return False
+    crop_children = list(picture)
     return (
         len(crop_children) == 1
         and _svg_element_tag(crop_children[0]) == 'image'
