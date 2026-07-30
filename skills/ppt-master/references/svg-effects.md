@@ -8,8 +8,13 @@ Authority for advanced paint, effects, transforms, freeform/radial geometry, and
 
 ## 6. Advanced SVG Effects and Authoring Techniques
 
-**Reference — not a constraint**: “Advanced” means capability depth, not rarity.
-Use any compatible technique when it serves the locked visual style and content.
+**Mandatory**: Default and Quick Generate read this file completely before SVG
+authoring and keep its compatible techniques in active construction vocabulary.
+
+**Default — situational use (may override when plain construction is stronger)**:
+“Advanced” means capability depth, not an effect quota. During page authoring,
+recall relevant techniques from content, hierarchy, legibility, semantics,
+rhythm, and style; apply those that materially help.
 
 ### 6.1 Availability, Precedence, and Fidelity
 
