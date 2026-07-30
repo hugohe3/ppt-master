@@ -14,6 +14,7 @@ from .utils import (
     px_to_emu, _f, _get_attr, parse_svg_length,
     combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
     classify_project_marker_shape,
+    is_project_radial_focus_point,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
     parse_project_filter_params, project_filter_drawingml_coordinates,
     parse_project_gradient_ratio, parse_project_linear_gradient_coordinate,
@@ -125,6 +126,11 @@ def build_gradient_fill(
         focus_y = parse_project_gradient_ratio(
             grad_elem.get('fy', grad_elem.get('cy', '0.5'))
         )
+        if not is_project_radial_focus_point(focus_x, focus_y):
+            raise ValueError(
+                'Radial gradient effective focus must lie within the '
+                'canonical circle centered at 0.5,0.5 with radius 0.5'
+            )
         focus_l = quantize_ooxml_unit_ratio(focus_x)
         focus_t = quantize_ooxml_unit_ratio(focus_y)
         focus_r = 100000 - focus_l

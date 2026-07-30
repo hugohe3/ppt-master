@@ -230,6 +230,7 @@ PROJECT_GRADIENT_TAGS = frozenset({'linearGradient', 'radialGradient'})
 # PPTX angle projection can overshoot a unit box by at most ~0.1036.
 PROJECT_LINEAR_GRADIENT_COORDINATE_MIN = -0.105
 PROJECT_LINEAR_GRADIENT_COORDINATE_MAX = 1.105
+PROJECT_RADIAL_FOCUS_TOLERANCE = 0.00001
 PROJECT_FILTER_PRIMITIVES = frozenset({
     'feDropShadow',
     'feGaussianBlur',
@@ -2313,6 +2314,16 @@ def parse_project_linear_gradient_coordinate(raw: str) -> float:
     return number
 
 
+def is_project_radial_focus_point(focus_x: float, focus_y: float) -> bool:
+    """Return whether a focus lies inside the canonical SVG radial circle."""
+    if not math.isfinite(focus_x) or not math.isfinite(focus_y):
+        return False
+    return (
+        (focus_x - 0.5) ** 2 + (focus_y - 0.5) ** 2
+        <= 0.25 + PROJECT_RADIAL_FOCUS_TOLERANCE
+    )
+
+
 def project_gradient_errors(root: ET.Element) -> list[str]:
     """Validate the normalized native gradient authoring interface."""
     errors: set[str] = set()
@@ -2382,6 +2393,7 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                     'point; use different x1/y1 and x2/y2 coordinates'
                 )
         else:
+            radial_coordinates: dict[str, float] = {}
             for coordinate_name in ('cx', 'cy', 'r', 'fx', 'fy'):
                 raw_coordinate = gradient.get(coordinate_name)
                 if raw_coordinate is None:
@@ -2395,8 +2407,34 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                         f'got {raw_coordinate!r}'
                     )
                     continue
+                radial_coordinates[coordinate_name] = coordinate
                 if coordinate_name == 'r' and coordinate <= 0:
                     errors.add(f'{label} r must be greater than 0')
+            focus_x_name = (
+                'fx' if gradient.get('fx') is not None else 'cx'
+            )
+            focus_y_name = (
+                'fy' if gradient.get('fy') is not None else 'cy'
+            )
+            focus_is_valid = (
+                (
+                    gradient.get(focus_x_name) is None
+                    or focus_x_name in radial_coordinates
+                )
+                and (
+                    gradient.get(focus_y_name) is None
+                    or focus_y_name in radial_coordinates
+                )
+            )
+            if focus_is_valid:
+                focus_x = radial_coordinates.get(focus_x_name, 0.5)
+                focus_y = radial_coordinates.get(focus_y_name, 0.5)
+                if not is_project_radial_focus_point(focus_x, focus_y):
+                    errors.add(
+                        f'{label} effective focus (fx/fy, otherwise cx/cy) '
+                        'must lie within the canonical circle centered at '
+                        f'0.5,0.5 with radius 0.5; got ({focus_x}, {focus_y})'
+                    )
 
         stops: list[ET.Element] = []
         for child in list(gradient):
