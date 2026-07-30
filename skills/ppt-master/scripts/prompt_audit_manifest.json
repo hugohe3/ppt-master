@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 397600
+    "max_tokens": 397825
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -172,18 +172,18 @@
       ],
       "max_tokens": 62075
     },
-    "route.generate.quick-test": {
-      "description": "Explicit disposable Generate quick-test short circuit with the shared SVG authoring core.",
+    "route.generate.quick-generate": {
+      "description": "Explicit Generate direct-authoring short circuit with the shared SVG authoring core.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
       ],
       "files": [
         "skills/ppt-master/workflows/generate-pptx.md",
-        "skills/ppt-master/workflows/profiles/quick-test.md",
+        "skills/ppt-master/workflows/profiles/quick-generate.md",
         "skills/ppt-master/references/shared-standards-core.md"
       ],
-      "max_tokens": 31550
+      "max_tokens": 31825
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed; layout-catalog recall remains optional.",
@@ -418,7 +418,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 94750
+      "max_tokens": 94775
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",

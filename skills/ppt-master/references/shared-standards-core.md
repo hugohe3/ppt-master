@@ -426,8 +426,8 @@ helper cannot write a project, select layout, or generate a page.
 stroke, optional fill/stroke opacity, stroke width, line cap, and line join.
 Normal generated pages use `spec_lock.md` for stable semantic color anchors and
 choose page-local paint from the retained Design Spec, style, and composition context.
-The test-only [`quick-test`](../workflows/profiles/quick-test.md) profile has no
-lock: keep every chosen paint value explicit in the SVG.
+The lockless [`quick-generate`](../workflows/profiles/quick-generate.md) profile
+keeps every chosen paint value explicit in the SVG.
 `create-template` authored templates take their values from the confirmed brief
 and template `design_spec.md`.
 Use ordinary SVG for gradients, patterns, filters, or other treatments outside
@@ -530,7 +530,7 @@ continue without modification.
 
 ## 3. Canvas Format Quick Reference
 
-Use the already locked canvas id and exact viewBox. [`canvas-formats.md`](canvas-formats.md) owns format selection; this core owns only SVG conformance on that canvas. The test-only [`quick-test`](../workflows/profiles/quick-test.md) profile has no lock; its first SVG establishes the canvas and every remaining page must use the identical viewBox.
+Use the already locked canvas id and exact viewBox. [`canvas-formats.md`](canvas-formats.md) owns format selection; this core owns only SVG conformance on that canvas. The lockless [`quick-generate`](../workflows/profiles/quick-generate.md) profile uses its first SVG to establish the canvas; every remaining page must use the identical viewBox.
 
 ---
 
@@ -553,12 +553,12 @@ Semantic markers are minimal compiler hints. Flat pages declare one root `data-p
 
 - **Canvas authority**: New authoring writes `viewBox="0 0 W H"` with positive
   integer pixels from the lock, or from the first SVG when the explicit
-  `quick-test` profile is active. Numerically equivalent spellings and positive
+  `quick-generate` profile is active. Numerically equivalent spellings and positive
   fractional imported dimensions remain compatible; export quantizes once at
   `1 SVG px = 9,525 EMU`. Invalid/non-finite values, non-zero origin,
   non-positive size, or unsupported PowerPoint dimensions are errors. All pages
   and Layout prototypes in one normal build share the numeric canvas and match
-  `spec_lock.md canvas.viewBox`; quick-test pages match the first SVG;
+  `spec_lock.md canvas.viewBox`; quick-generate pages match the first SVG;
   standalone templates match `design_spec.md canvas_viewbox`. Optional root
   `width`/`height` do not override `viewBox`.
   Root `<svg>` transform is forbidden; nested crop and `<symbol viewBox>` keep
@@ -580,7 +580,7 @@ These forms are needed only when the stated PPT behavior matters:
 | One editable PPT text frame with mixed formatting or multiline prose | Use one `<text>` per logical paragraph and non-positional `<tspan>` children for inline runs. Keep the first authored line as direct text; later lines use direct positioned `<tspan>` children that repeat parent `x` with positive relative `dy`; an all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` may join eligible lines. A font-size change, list marker, or larger accepted gap starts another paragraph. Sibling `<text>` elements are forbidden as one paragraph's line breaks; they remain valid for independent frames. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Outside structured mode, the first eligible visual layer may be a direct full-canvas `<rect>` or one inside a simple single-child group. Its fill must have a registered native mapping (solid, linear/radial gradient, or preset pattern), and it must have no transform, filter, clip, rounding, or visible stroke. Export writes the fill as Slide `p:bg`; image elements remain pictures. Structured routes use the narrower explicit solid-background ownership contract in [`pptx-structure-interface.md`](./pptx-structure-interface.md). |
-| Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. Quick-test uses the same flat object ownership but converter-default theme scaffolding because no lock exists. |
+| Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. Quick-generate uses the same flat object ownership but converter-default theme scaffolding because no lock exists. |
 | Reusable template-based PowerPoint Layout | Select one complete authoring SVG per page in `page_layouts`, declare each unique Master/Layout definition once, and assign pages through `page_pptx_layouts`. Strict preserves the prototype contract; adaptive retains its Master and uses a current or new Layout key already declared and assigned by Strategist. Construction cannot extend or mutate that mapping downstream. Non-mirror skin follows `spec_lock`. |
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
@@ -646,8 +646,8 @@ separate parent content group; never put them inside the preset group itself.
 
 The normal serial post-processing and export workflow belongs to
 [`generate-pptx.md`](../workflows/generate-pptx.md) Step 7. The explicit
-test-only exception belongs to
-[`quick-test.md`](../workflows/profiles/quick-test.md). This file defines SVG
+direct-generation exception belongs to
+[`quick-generate.md`](../workflows/profiles/quick-generate.md). This file defines SVG
 authoring boundaries and intentionally does not mirror commands, flags, or
 output behavior.
 

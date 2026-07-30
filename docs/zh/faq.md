@@ -79,9 +79,9 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 生成的 PPT 可以编辑吗？
 
-可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。在正式交付流程中，Executor 的原始 SVG 源（`svg_output/` 副本）会镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重跑 `finalize_svg → svg_to_pptx` 重建 PPTX，无需再走 LLM。
+可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。在默认 Generate 流程中，Executor 的原始 SVG 源（`svg_output/` 副本）会镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重跑 `finalize_svg → svg_to_pptx` 重建 PPTX，无需再走 LLM。
 
-正式交付的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速测试会跳过预览和备份产物。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
+默认 Generate 流程的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速生成会跳过预览和备份产物。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
 
 ## Q: 多行文本会怎样导出？可以让 PowerPoint 自动重排吗？
 
@@ -202,11 +202,11 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 如果感觉生成很慢，检查一下模型的 token 吞吐速度。瓶颈通常在模型的输出速度，而不是脚本本身。
 
-## Q: 临时测试几页 PPT，可以走快速模式吗？
+## Q: 可以跳过策略师阶段直接生成吗？
 
-可以。请明确说明这是一次**快速测试**，并给出少量、固定、自包含的页面清单。Generate 路线会启用 [`quick-test` profile](../../skills/ppt-master/workflows/profiles/quick-test.md)：AI 直接手写 `svg_output/`，随后调用测试专用的直接导出器。
+可以。请显式要求**快速生成**，并提供事实充分、内容自包含的材料。Generate 路线会启用 [`quick-generate` profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)：AI 在当前上下文直接决定页结构，按共享规范手写 `svg_output/`，随后调用直接导出器。
 
-该模式只产出 SVG 页面和一个 PPTX；不会做源文件转换、事实研究、策略师规划与确认、模板套用、素材获取、Live Preview、质量报告、讲稿、`svg_final/`、备份、动画或旁白。正式交付、需要事实或源文件、依赖外部素材/模板/原生图表表格，或要求复用时，仍走标准流程。
+该 profile 只产出 SVG 页面和一个 PPTX；不会做源文件转换、事实研究、策略师规划与确认、模板套用、素材获取、Live Preview、质量报告、讲稿、`svg_final/`、备份、动画或旁白。需要任一被跳过能力时仍走默认流程；页数本身既不会自动触发，也不会阻止快速生成。这是工作流短路，不承诺具体耗时，也不承诺与默认流程质量等价。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 
