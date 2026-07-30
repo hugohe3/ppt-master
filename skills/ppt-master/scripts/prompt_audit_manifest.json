@@ -12,12 +12,12 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 397351
+    "max_tokens": 397343
   },
   "file_budgets": {
     "AGENTS.md": 2400,
     "skills/ppt-master/SKILL.md": 850,
-    "skills/ppt-master/references/executor-base.md": 8253,
+    "skills/ppt-master/references/executor-base.md": 8245,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
     "skills/ppt-master/references/executor-image.md": 1700,
@@ -403,7 +403,7 @@
         "stage.generate.executor.notes"
       ],
       "files": [],
-      "max_tokens": 106085
+      "max_tokens": 106077
     },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, representative multi-source custom rendering, and two local types.",
@@ -461,7 +461,7 @@
         "profile.generate.beautify-pptx"
       ],
       "files": [],
-      "max_tokens": 113092
+      "max_tokens": 113084
     },
     "route.generate.flat-no-image-chart": {
       "description": "Default flat Generate-PPTX path with chart authoring, native-data replacement, and verification.",
@@ -474,7 +474,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [],
-      "max_tokens": 130421
+      "max_tokens": 130413
     },
     "route.generate.brand-flat-no-image": {
       "description": "Brand-preset flat Generate-PPTX path without image acquisition.",
@@ -486,7 +486,7 @@
         "stage.generate.template.brand"
       ],
       "files": [],
-      "max_tokens": 113117
+      "max_tokens": 113109
     },
     "route.generate.deck-structured-no-image": {
       "description": "Deck-preset structured Generate-PPTX path without image acquisition.",
@@ -498,7 +498,7 @@
         "stage.generate.template.deck"
       ],
       "files": [],
-      "max_tokens": 123054
+      "max_tokens": 123046
     },
     "route.generate.layout-structured-no-image": {
       "description": "Layout-preset structured Generate-PPTX path without image acquisition.",
@@ -510,7 +510,7 @@
         "stage.generate.template.layout"
       ],
       "files": [],
-      "max_tokens": 123503
+      "max_tokens": 123495
     },
     "route.generate.topic-only-flat-no-image": {
       "description": "Topic research followed by the default flat no-image Generate-PPTX path.",
@@ -520,7 +520,7 @@
         "route.generate.flat-no-image"
       ],
       "files": [],
-      "max_tokens": 107597
+      "max_tokens": 107589
     },
     "stage.generate.executor.flat": {
       "description": "Incremental flat Executor core with complete visual-construction authorities and representative multi-source custom mode/style execution.",
@@ -622,7 +622,7 @@
         "skills/ppt-master/workflows/stages/resume-execute.md",
         "skills/ppt-master/references/artifact-ownership.md"
       ],
-      "max_tokens": 68295
+      "max_tokens": 68287
     },
     "stage.generate.resume-execute-image": {
       "description": "Fresh-session resume when the locked resource plan contains image rows.",
