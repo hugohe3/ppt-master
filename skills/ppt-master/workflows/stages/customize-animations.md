@@ -70,14 +70,15 @@ the animation plan merely because it already exists.
 
 **Optional-context fallback**: these semantic files inform this supporting stage but are not its gate artifacts. If any are absent, state what is missing and proceed with every remaining file plus visible SVG content. If all three context inputs are absent, use only explicit user instructions, visible SVG content, and the resolution rules in [`animations.md`](../../references/animations.md); do not infer detailed choreography beyond what the page itself expresses.
 
-**Decision ownership — advice versus requirement**: A §IX
-`Motion suggestion` expresses the Strategist's recommended communication job or
-reveal relationship; it neither activates this stage nor locks an effect,
-Effect Options, timing, trigger, group id, or coverage. Once another trigger
-activates the stage, Executor may adopt, adjust, or decline the suggestion,
-including choosing `none` when motion would reduce clarity. Explicit user
-motion requirements remain mandatory. Never change page content merely to
-justify animation.
+**Decision ownership — understand, then design**: A §IX `Motion suggestion`
+expresses the Strategist's communication job and semantic relationship; it
+neither activates this stage nor locks implementation. Once active, understand
+that intent, then develop the motion brief from the final SVG's semantic units,
+visible states, composition, and speaker flow. Do not mechanically map it to
+groups, effects, order, or timing. Executor may preserve, adapt, simplify,
+decline, or choose `none`; an unchanged realization is valid and requires no
+novelty. Explicit user motion requirements bind. Never change page
+content merely to justify animation.
 
 **Hard rule — existing visible-layer boundary**: This stage may regroup existing content only under §2 visual equivalence; it MUST NOT create or modify a crop, comparison layer, scrim, lens, hotspot, annotation, or other visible image state to satisfy motion intent. When a required state is missing and ordinary Slide-local authoring can supply it, return to Generate Step 6, rerun the final SVG gate and regenerate notes only when speaker notes are enabled, then resume here. If a structural boundary prevents that repair, simplify a non-binding suggestion to legal existing units, a page transition, or `none`; an explicit requirement follows failure recovery instead of changing structure.
 

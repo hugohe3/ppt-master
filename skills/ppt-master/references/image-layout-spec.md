@@ -2,9 +2,9 @@
 
 # Image Layout Specification
 
-Sizing reference for side-by-side or multi-image pages. Use after the active resource owner proposes a preferred composition; this file never locks layout or crop policy.
+Sizing reference for side-by-side or multi-image pages. Use after the active resource owner's preferred composition and its communication job have been understood; this file never locks layout or crop policy.
 
-**Preferred pattern, authoring-owned realization**: Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
+**Preferred pattern, authoring-owned realization**: Preserve the proposed communication job and binding resource/content/crop constraints, then deepen its expression for the actual page. Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Use the current hierarchy, copy volume, declared focal content, and deck rhythm to develop the geometry or choose another composition; do not mechanically transcribe the named pattern. A pattern-only change needs no upstream update.
 
 > **Scope**: The ratio tables and formulas are calculation aids for a selected side-by-side or multi-image plan. Hero, background, accent, and other compositions stay outside this file. Layout never overrides the `no-crop` boundary owned by [`strategist-image.md`](./strategist-image.md) and [`executor-image.md`](./executor-image.md).
 
@@ -13,8 +13,8 @@ Sizing reference for side-by-side or multi-image pages. Use after the active res
 ## Layout Decision Flow
 
 ```
-1. Read the narrative intent, hierarchy, and preferred primary/modifier ids from the active resource authority.
-2. If the preferred or authoring-selected pattern is not side-by-side or multi-image, this spec does not apply.
+1. Understand the narrative intent, hierarchy, communication job, and preferred primary/modifier ids from the active resource authority; do not translate the ids directly into geometry.
+2. Deepen that concept into the actual composition from the current copy volume, asset dimensions and declared focus, crop safety, and deck rhythm. If the authoring-selected result is not side-by-side or multi-image, this spec does not apply.
 3. Read the asset's `no-crop` boundary and original dimensions; calculate ratio (width/height).
 4. Use the tables as candidate structures, not an automatic selector.
 5. Calculate the image/text rectangles, then choose `meet` or focal-safe `slice` within the crop boundary.
