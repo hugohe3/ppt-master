@@ -190,9 +190,23 @@ The core chooses proposed Stage 2 source ids first. Load this bundle for a non-`
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
+⛔ **BLOCKING**: Unless explicitly delegated, the three-stage Strategist confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. In the UI branch, keep Stage 1/2 handoffs in one turn and author the next stage after each wait. In the chat branch, wait for an explicit user response at each stage. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
-**Confirmation ownership and surface**: Only the user confirms. Fresh Stage 1 launches, posts the required chat handoff, then waits. Use chat on explicit chat-only/delegation, explicit handoff confirmation/revision, or launch failure/timeout plus one `result.json` re-check. Chat tools do not replace the default launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
+**Confirmation ownership and surface**: Only the user confirms. Before any
+server command, apply `confirm_ui.md`'s surface decision to this run's most
+recent explicit surface instruction and retain that branch as the owner
+specifies. A natural-language request or agreement to personally confirm in
+chat, or to avoid the page, selects the chat branch without a magic keyword;
+skip `--daemon`, every `--wait-only`, and UI `result.json`. Explicit delegation
+is a separate higher-priority branch. With no surface instruction, fresh Stage
+1 uses the default UI branch: launch, post the required chat handoff, then wait.
+A chat-question tool alone does not replace that default. The agent may write
+recommendations, operate the server, and read state, but MUST NOT call
+`/api/confirm`, automate submission, synthesize a payload, or write/replace
+`result.json`. Delegation applies only to this run: show the complete
+three-stage summary and never fabricate UI results. Silence confirms nothing.
+
+**UI branch files and completion evidence:**
 
 | Stage file (the active unconfirmed stage may be overwritten) | Strategist writes | Completion evidence |
 |---|---|---|
@@ -202,7 +216,9 @@ The core chooses proposed Stage 2 source ids first. Load this bundle for a non-`
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
-1. Create `confirm_ui/recommendations.stage1.json`, then run in order:
+**UI branch only** — create `confirm_ui/recommendations.stage1.json`, then:
+
+1. Run in order:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
@@ -230,7 +246,18 @@ If the user rejects the current recommendation before confirming it, regenerate 
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
 
-If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise use the always-on Stage-1 chat handoff; it keeps the current contract and direct-chat fallback visible without replacing UI confirmation.
+If the user selects chat any time after the UI server launches, immediately
+apply `confirm_ui.md`'s in-run switch procedure. Continue the unresolved current
+stage and all remaining stages in chat; do not enter UI interruption recovery
+or relaunch the server.
+
+**Chat branch** — run the same three stages in chat with explicit user
+responses, retaining one visible cumulative confirmation summary as the
+equivalent final state; do not create or require a UI result. If the user
+explicitly delegated confirmation, consolidate the same three stages into one
+AI-authored summary. Otherwise the no-selection UI branch uses the always-on
+Stage-1 chat handoff, which keeps direct-chat fallback visible without replacing
+UI confirmation.
 
 ⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
 
