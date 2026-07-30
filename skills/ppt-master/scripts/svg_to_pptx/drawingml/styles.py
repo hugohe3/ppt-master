@@ -119,10 +119,20 @@ def build_gradient_fill(
 </a:gradFill>'''
 
     elif tag == 'radialGradient':
+        focus_x = parse_project_gradient_ratio(
+            grad_elem.get('fx', grad_elem.get('cx', '0.5'))
+        )
+        focus_y = parse_project_gradient_ratio(
+            grad_elem.get('fy', grad_elem.get('cy', '0.5'))
+        )
+        focus_l = quantize_ooxml_unit_ratio(focus_x)
+        focus_t = quantize_ooxml_unit_ratio(focus_y)
+        focus_r = 100000 - focus_l
+        focus_b = 100000 - focus_t
         return f'''<a:gradFill>
 <a:gsLst>{gs_list}</a:gsLst>
 <a:path path="circle">
-<a:fillToRect l="50000" t="50000" r="50000" b="50000"/>
+<a:fillToRect l="{focus_l}" t="{focus_t}" r="{focus_r}" b="{focus_b}"/>
 </a:path>
 </a:gradFill>'''
 
