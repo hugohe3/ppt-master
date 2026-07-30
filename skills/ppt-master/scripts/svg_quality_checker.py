@@ -1140,8 +1140,14 @@ class SVGQualityChecker:
         "ending": (),  # ending pages legitimately use varied vocabularies
     }
 
-    def __init__(self, *, template_mode: bool = False):
+    def __init__(
+        self,
+        *,
+        template_mode: bool = False,
+        quick_generate: bool = False,
+    ):
         self.template_mode = template_mode
+        self.quick_generate = quick_generate
         self.results = []
         self.summary = {
             'total': 0,
@@ -4707,6 +4713,20 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate the intrinsic structured Master/Layout SVG contract."""
+        if self.quick_generate:
+            forbidden_attrs = sorted({
+                attr
+                for elem in root.iter()
+                for attr in _PPTX_STRUCTURE_ATTRS
+                if elem.get(attr) is not None
+            })
+            if forbidden_attrs:
+                result['errors'].append(
+                    f"{svg_path.name}: Quick Generate uses flat export and "
+                    "forbids Master/Layout/layer/placeholder metadata; remove "
+                    + ', '.join(forbidden_attrs)
+                )
+            return
         if not self.template_mode and svg_path.parent.name == 'svg_output':
             declared_mode = _declared_pptx_structure_mode(
                 self._resolve_project_path(svg_path)
@@ -4975,6 +4995,8 @@ class SVGQualityChecker:
         common layouts: SVG directly under <project>/ or under
         <project>/svg_output/). Results are cached per lock path.
         """
+        if self.quick_generate:
+            return None
         if _parse_spec_lock is None:
             return None
         for candidate in (svg_path.parent / 'spec_lock.md',
@@ -5668,7 +5690,11 @@ class SVGQualityChecker:
             'warning_count': 0,
             'by_code': {},
         }
-        if self.template_mode or _load_pptx_structure_lock is None:
+        if (
+            self.template_mode
+            or self.quick_generate
+            or _load_pptx_structure_lock is None
+        ):
             return
         project_path = self._resolve_project_path(target_path)
         try:
@@ -5882,10 +5908,18 @@ class SVGQualityChecker:
                 )
         elif _CHECK_PPTX_STRUCTURED_PROJECT:
             self._check_pptx_structure_contract(dir_path, svg_files)
-        if not self.template_mode and dir_path.is_dir():
+        if (
+            not self.template_mode
+            and not self.quick_generate
+            and dir_path.is_dir()
+        ):
             self._check_animation_config_contract(dir_path)
             self._check_illustration_resource_contract(dir_path)
-        if not self.template_mode and validate_communication_trace is not None:
+        if (
+            not self.template_mode
+            and not self.quick_generate
+            and validate_communication_trace is not None
+        ):
             project_path = self._resolve_project_path(dir_path)
             self._communication_trace_issues.extend(
                 ('error', message)
@@ -5900,6 +5934,8 @@ class SVGQualityChecker:
         svg_files: List[Path],
     ) -> None:
         """Validate the all-page structured lock and reusable contracts."""
+        if self.quick_generate:
+            return
         project_path = self._resolve_project_path(target_path)
         standard_project = bool(
             not self.template_mode
@@ -8153,6 +8189,8 @@ def print_usage() -> None:
     print("                                  requires the complete declared page roster.")
     print("  --json                         Write a machine-readable quality report")
     print("  --json-output <path>           Override the JSON report path")
+    print("  --quick-generate               Validate lockless flat Quick Generate SVGs;")
+    print("                                  ignore design_spec.md and spec_lock.md.")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
     print("                                  Brand validates design_spec.md and referenced assets;")
     print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
@@ -8181,7 +8219,14 @@ def main() -> None:
         sys.exit(1)
 
     template_mode = '--template-mode' in sys.argv
-    checker = SVGQualityChecker(template_mode=template_mode)
+    quick_generate = '--quick-generate' in sys.argv
+    if template_mode and quick_generate:
+        print("[ERROR] --template-mode cannot be combined with --quick-generate")
+        sys.exit(1)
+    checker = SVGQualityChecker(
+        template_mode=template_mode,
+        quick_generate=quick_generate,
+    )
 
     # Parse arguments
     target = sys.argv[1]
@@ -8204,6 +8249,9 @@ def main() -> None:
 
     # Execute check
     if target == '--all':
+        if quick_generate:
+            print("[ERROR] --quick-generate does not support --all")
+            sys.exit(1)
         if stage != 'final':
             print("[ERROR] --stage first-page does not support --all")
             sys.exit(1)
