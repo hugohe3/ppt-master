@@ -79,18 +79,20 @@ an explicitly configured auto-advance timer.
 
 | Choice | Use it when |
 |---|---|
-| `auto` | You want PPT Master to choose suitable effects from each content group's role; this is the recommended opt-in |
+| `auto` | You want PPT Master to choose a generic entrance from each content group's role; this is the recommended automatic opt-in |
 | A native `entrance_*` key | You want one of PowerPoint's 53 native entrance presets |
 | A native `emphasis_*` key | An already visible object should draw attention or change appearance |
 | A native `path_*` key | An object should follow one of PowerPoint's 64 motion paths |
 | A native `exit_*` key | An object should leave the slide during the sequence |
-| `mixed` | You need the compatible deterministic mode over canonical PowerPoint presets |
-| `random` | You want deterministic variation from the same canonical preset pool |
+| `mixed` | You need deterministic variation across the canonical entrance pool |
+| `random` | You want seeded variation from the same canonical entrance pool |
 | `none` | You want to disable element animation |
 
 The canonical registry contains 203 PowerPoint-native keys: 53 entrance, 33
 emphasis, 64 motion path, and 53 exit presets. New selections, sidecars,
 automatic choices, traces, and examples use these category-qualified keys.
+`auto`, `mixed`, and `random` select entrances only. Use an explicit canonical
+key for emphasis, motion-path, or exit behavior.
 The 29 established short names remain accepted only as compatibility inputs;
 they normalize before writing and do not retain a second behavior engine.
 Old Fly direction names all normalize to `entrance_fly`, and old Wipe
@@ -104,10 +106,11 @@ audio/video workflows because they require media or bookmark targets.
 ## Customize Specific Objects
 
 Use `animations.json` only when deck-wide settings are not enough—for example,
-title first, chart second, conclusion last. List the real groups, write sparse
-overrides for only the affected slides and objects, validate, and export.
-`scaffold` remains an optional complete editing starter; delete untouched
-entries before using it as the final sidecar.
+one object entering, moving, drawing attention, and then leaving. List the real
+groups, write sparse overrides for only the affected slides and objects,
+validate, and export. `scaffold` is an optional neutral editing starter: it
+sets the default object effect to `none`, and untouched `{}` group entries do
+not enable animation.
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py list-groups <project>
@@ -115,18 +118,55 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```
 
-The generated sidecar targets stable top-level `<g id="...">` content groups. Common per-object fields are:
+The sidecar targets stable top-level `<g id="...">` content groups. A group ID
+is a PowerPoint shape-target anchor, not an Animation Pane row. The compatible
+single-effect object still creates one row; an `effects[]` array can create
+several ordered rows that all target the same shape:
+
+```json
+{
+  "version": 1,
+  "slides": {
+    "03_threshold": {
+      "animation": { "trigger": "after-previous" },
+      "groups": {
+        "risk-marker": {
+          "effects": [
+            { "effect": "entrance_fade", "order": 1, "duration": 0.25 },
+            { "effect": "path_right", "order": 2, "delay": 0.1, "duration": 0.7 },
+            { "effect": "emphasis_teeter", "order": 3, "trigger": "with-previous", "duration": 0.45 },
+            { "effect": "exit_fade", "order": 4, "trigger_shape": "details-button", "duration": 0.3 }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+A populated group uses either the legacy single-effect fields or the
+`{ "effects": [...] }` form, never both. `effects` must be non-empty, and every
+row names an explicit `effect`. Existing single-effect sidecars remain fully
+compatible.
+
+Common row fields are:
 
 | Field | Purpose |
 |---|---|
-| `effect` | Override the object effect; use `none` to keep that object static |
-| `order` | Change reveal order without changing slide layer order |
-| `delay` | Add a pause in `after-previous`, or after clicking `trigger_shape` |
-| `duration` | Override that object's scheduled animation duration |
+| `effect` | Select one explicit effect; the legacy form may use `none` to keep that object static |
+| `trigger` | Override this row's Start mode; otherwise inherit the slide animation trigger |
+| `order` | Order ordinary rows across the slide without changing slide layers; trigger-shape rows remain in separate interactive sequences |
+| `delay` | Add a pause to this row's resolved Start behavior |
+| `duration` | Override this row's scheduled animation duration |
 | `effect_options` | Set effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` |
 | `trigger_shape` | Trigger this row when another top-level group is clicked (PowerPoint **On Click of**) |
 | Timing modifiers | `repeat_count`/`repeat_duration`, `auto_reverse`, `rewind`, `accelerate`, `decelerate`, `bounce_end`, and `restart` |
 | Completion | `after_effect` (dim/hide) and a `.m4a`/`.mp3`/`.wav` `sound` path |
+
+`order`, `delay`, `duration`, `trigger`, and `trigger_shape` are resolved per
+row. The slide-level animation trigger is inheritance only. `trigger_shape`
+implies `on-click`; if the row also declares `trigger`, it must be
+`on-click`.
 
 Use `python3 skills/ppt-master/scripts/pptx_animations.py --describe
 <canonical_effect>` to see exactly which options that effect accepts. Speed is
@@ -134,9 +174,9 @@ controlled by `duration`; smooth start/end are controlled by
 `accelerate`/`decelerate`. Change Font's `font_name` is one concrete
 target-installed PowerPoint face, never a CSS font stack.
 
-`trigger_shape` is group-only and points to a different group id on the same
-slide. It affects only that row; the slide Start mode still controls all other
-rows. Recorded narration rejects interactive trigger-shape animations.
+`trigger_shape` points to a different group id on the same slide and affects
+only its row. Recorded narration rejects any row that resolves to `on-click`,
+including trigger-shape rows.
 
 When a user asks the AI to tune individual objects, use the [`customize-animations`](../skills/ppt-master/workflows/stages/customize-animations.md) stage. The full sidecar schema and target-validation rules remain in the [animation execution reference](../skills/ppt-master/references/animations.md).
 
@@ -146,8 +186,9 @@ PPT Master validates animation settings strictly: unknown effects or Start modes
 
 | Boundary | User-facing consequence |
 |---|---|
-| Animation target | Element animation operates on logical top-level content groups, not every SVG atom |
+| Animation target | Element animation operates on logical top-level content-group anchors; one anchor may own several Animation Pane rows |
 | Static structure | Backgrounds, Master/Layout content, placeholders, and page chrome remain static |
+| Unsupported object builds | No paragraph/text-range builds, custom freeform motion-path authoring, native Chart/SmartArt build sequencing, or media playback commands are inferred from grouped SVG content |
 | Output route | Animation exists in the native PPTX generated from `svg_output/`; `svg_final/` is a static preview |
 | Existing PPTX routes | Template Fill and Native Enhance preserve source object animation rather than translating it into this generated-deck model |
 | Playback compatibility | Microsoft PowerPoint desktop is the primary validation target; Keynote, WPS, LibreOffice, and older Office versions may remap or omit individual effects |

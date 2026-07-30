@@ -686,11 +686,36 @@ Animating individual primitives would produce 30+ separately moving atoms per
 slide, while animating only the slide as a whole loses visual storytelling.
 Top-level groups are the natural granularity: Executor already uses
 `<g id="...">` to mark logical content blocks, so entrance, emphasis, path,
-and exit effects share the same semantic units.
+and exit effects share the same semantic units. The group identifies a
+PowerPoint shape target rather than one timeline record: the legacy
+single-effect object creates one Animation Pane row, while `effects[]` may
+create several ordered rows that all target the same shape.
 
 **Why page structure is auto-skipped.** Any top-level group with `data-pptx-layer` is static structure, and the current scanner also treats every explicit `data-pptx-placeholder` as static page framing; `background` / `header` / `footer` / `decoration` / `watermark` / `page-number` roles cover the remaining chrome. The ID-token fallback is not enabled or disabled per SVG: it applies to each top-level group that lacks layer, role, and placeholder markers, so a mixed new/legacy SVG may still use the legacy ID heuristic on only its unmarked groups. Separately, when an SVG has no top-level groups, no animation target has been found, and only one to eight root primitives qualify, those primitives form a bounded compatibility fallback. This is the scanner's actual scope; the animation reference's whole-page “marker-free legacy SVG” wording still needs separate alignment with the implementation.
 
-**Why object-level animation uses a sidecar, not SVG attributes.** SVG remains the static visual source of truth. Custom PPTX animation is export policy, so per-object overrides live in optional `animations.json` keyed by slide stem and top-level group id. This avoids polluting SVG with PowerPoint-specific metadata while still letting users tune order, effect, delay, and duration when the default global animation is not enough.
+**Why object-level animation uses a sidecar, not SVG attributes.** SVG remains
+the static visual source of truth. Custom PPTX animation is export policy, so
+per-object overrides live in optional `animations.json` keyed by slide stem and
+top-level group id. A populated group uses either the fully compatible legacy
+single-effect fields or a non-empty `effects[]` envelope, never both. Each
+resolved row owns its effect, sequence order, delay, duration, Start mode,
+and optional `trigger_shape`; the slide animation trigger supplies only the
+inherited Start mode. The generated scaffold is neutral (`effect: none`) and
+leaves groups as `{}` until motion is adopted. This keeps PowerPoint-specific
+metadata out of SVG without forcing one semantic object to have only one
+motion phase.
+
+**Why automatic modes remain entrance-only.** `auto`, `mixed`, and `random`
+answer one bounded question: how an otherwise generic reveal should enter.
+They do not invent emphasis, movement, or exit intent. Those three categories,
+and an explicitly selected entrance, use canonical effects in the sidecar so
+the authoring decision remains inspectable.
+
+**Why the target model stops at top-level shape effects.** The generated model
+does not infer paragraph/text-range builds, author custom freeform motion
+paths, sequence native Chart/SmartArt internals, or emit media playback
+commands. Native motion-path presets remain valid object effects; media
+playback remains in the audio/video workflows.
 
 **Why recorded narration drives auto-advance from clip duration.** Recorded-narration mode targets video export, where no presenter clicks through the deck. It probes each clip's real duration and sets slide auto-advance to `audio duration + --narration-padding`; padding defaults to 0.5 seconds so the tail is not cut off. It does not use estimated reading speed or a fixed per-slide duration.
 
@@ -700,7 +725,8 @@ object-level click events. The recorded narration path writes page-level audio
 and slide auto-advance timings only, so click-driven object effects would leave
 the export dependent on extra manual PowerPoint rehearsal. Decks exported with
 `--recorded-narration` must therefore use click-free object animations
-(`after-previous` or `with-previous`).
+(`after-previous` or `with-previous`) on every resolved row; this also excludes
+`trigger_shape`.
 
 **Why native video export is a separate command.** Audio synthesis and PPTX
 packaging are cross-platform project operations; PowerPoint video encoding is a

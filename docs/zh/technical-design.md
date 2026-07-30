@@ -654,11 +654,29 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 形状 ID——每个被动画的对象都需要稳定的 shape ID。给单个原语做动画会产出
 每页 30+ 个分别运动的原子，只给整页做动画又会损失视觉叙事。顶层 group
 本来就是 Executor 标记逻辑内容块的自然粒度，因此进入、强调、动作路径和退出
-可以共用同一套语义单元。
+可以共用同一套语义单元。group 标识的是 PowerPoint shape target，而不是一条
+时序记录：旧单效果对象生成一条 Animation Pane 记录，`effects[]` 则可以生成
+多条有序记录，并让它们共同指向同一 shape。
 
 **为什么页面结构自动跳过。** 顶层 group 只要带有 `data-pptx-layer`，就被视为不可动画的结构层；当前实现也把任何显式 `data-pptx-placeholder` 视为静态页框，`background` / `header` / `footer` / `decoration` / `watermark` / `page-number` 等 role 再补齐其余页面 chrome。ID token 回退不是按整份 SVG 启停，而是仅对同时缺少 layer、role 和 placeholder 的单个顶层 group 生效，因此新旧标记混合的 SVG 仍可能只在未标记 group 上使用 legacy ID 判断。另有一个有界的原语兼容回退：只有整页没有顶层 group、尚未找到任何动画目标且根原语候选为 1–8 个时，才把这些根原语作为锚点。这是当前扫描器的真实作用域；动画 reference 中“仅 marker-free legacy SVG”这一整页口径仍需另行与实现对齐。
 
-**为什么对象级动画用 sidecar，而不是 SVG 属性。** SVG 继续作为静态视觉源。自定义 PPTX 动画属于导出策略，所以对象级覆盖放在可选的 `animations.json`，按 slide stem 和顶层 group id 关联。这样不会把 PowerPoint 专用元数据塞进 SVG，同时仍能在默认全局动画不够用时调整顺序、效果、延迟和时长。
+**为什么对象级动画用 sidecar，而不是 SVG 属性。** SVG 继续作为静态视觉源。
+自定义 PPTX 动画属于导出策略，所以对象级覆盖放在可选的 `animations.json`，
+按 slide stem 和顶层 group id 关联。一个已填写的分组只能使用完全兼容的旧单
+效果字段或非空 `effects[]` 封套，不能混用。每条解析后的动画行独立拥有效果、
+序列顺序、延迟、时长、Start 模式和可选 `trigger_shape`；页面动画 trigger
+只提供继承的 Start 模式。生成的 scaffold 保持中性（`effect: none`），分组在
+采用动效前只是 `{}`。这样既不会把 PowerPoint 专用元数据塞进 SVG，也不会迫使
+一个语义对象只能拥有一个动作阶段。
+
+**为什么自动模式只负责进入效果。** `auto`、`mixed` 与 `random` 只回答一个
+有界问题：普通揭示应如何进入。它们不会自行发明强调、移动或退出意图。这三类
+效果以及显式选择的进入效果都使用 sidecar 中的规范标识，使创作决策可以检查。
+
+**为什么目标模型止于顶层 shape 效果。** 生成模型不会推导段落/文字范围 build、
+创作自定义自由动作路径、编排原生 Chart/SmartArt 内部 build，也不会写入媒体播放
+命令。PowerPoint 原生动作路径预设仍是有效对象效果；媒体播放继续归音视频工作流
+所有。
 
 **为什么录制旁白让自动推进时长跟着片段时长走。** 录制旁白模式面向视频导出，视频里没有演讲者去点击。该模式会逐页探测音频实际时长，并把自动推进设置为“音频时长 + `--narration-padding`”；padding 默认是 0.5 秒，用于避免音频尾部被切断。它不使用估算朗读速度或固定每页时长。
 
@@ -666,7 +684,8 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 点击计时，但 PPT Master 不合成对象级点击事件。录制旁白路径只写页面级音频和
 页面自动推进计时，所以单击触发的对象效果会让导出依赖额外的 PowerPoint 人工
 排练。使用 `--recorded-narration` 导出的 deck 必须采用无点击对象动画
-（`after-previous` 或 `with-previous`）。
+（`after-previous` 或 `with-previous`）；该要求按每条解析后的动画行检查，也排除
+`trigger_shape`。
 
 **为什么原生视频导出保持独立命令。** 音频合成和 PPTX 打包属于跨平台项目操作；PowerPoint 视频编码则是 Windows 桌面集成。`powerpoint_video.py` 接收最终带旁白 PPTX，调用 `CreateVideo` 并轮询 `CreateVideoStatus`，对调用方呈现同步结果，同时避免把 Office 自动化耦合进 TTS backend。
 

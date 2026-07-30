@@ -283,13 +283,25 @@ user/template requirements bind.
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, load [`strategist-image.md`](./strategist-image.md), record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
-| Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's start/end semantic states; leave effect, ids, pairing names, and timing to Executor |
-| Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` describing semantic units/order and any visible image-state relationship; leave group ids, effect, and timing to Executor |
+| Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
+| Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
 
-Write useful motion advice regardless of the effective Custom Animations outcome.
-The suggestion remains non-binding and never activates custom-animation
-execution by itself; only an explicit motion requirement or an enabled outcome
-may require visible endpoint/reveal-state preparation.
+**Reference — not a constraint: motion lifecycle vocabulary.**
+
+| Duty | Semantic lifecycle |
+|---|---|
+| `enter` | absent → introduce → present |
+| `emphasize` | present → redirect attention → present/altered |
+| `move` | state/position A → progress → state/position B |
+| `exit` | present → retire → absent |
+| `static` | present → hold as reference → present |
+
+Use only relevant duties—no category quota. For every unit mentioned in a
+`Motion suggestion`, state its duty, lifecycle, and meaningful order; never
+name an effect, target id, option, or timing. Write useful advice regardless of
+the effective outcome. Suggestions remain non-binding and never activate the
+custom stage; only an explicit motion requirement or an enabled outcome may
+require visible lifecycle-state preparation.
 
 Review planned pages through two lenses:
 
