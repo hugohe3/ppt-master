@@ -16,7 +16,46 @@
 
 **Hard rule**: Keep detailed Confirm UI behavior here. The Generate route may summarize orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
 
-**Fallback rule**: The page is default. Use chat on an explicit chat-only request, when the user answers the always-on handoff in chat, or after launch failure/timeout and one `result.json` re-check; a chat-question tool alone is not a launch failure. Preserve all three stages and keep Stage-1 prompts open-ended.
+**Mandatory surface decision — before any UI command**: Resolve the most recent
+explicit confirmation-surface instruction for this run before running
+`--daemon` or `--wait-only`. Unrelated later messages do not reset the selected
+branch. A new explicit selection may change it before launch; once confirmation
+starts in chat or UI switches to chat, keep chat for the rest of this run.
+
+| Most recent explicit surface instruction | Branch |
+|---|---|
+| The user explicitly delegates confirmation | Present one complete delegated three-stage summary in chat. Do not launch the page or fabricate `result.json`. |
+| Otherwise, the user asks for or agrees to personally confirm in chat, or declines the confirmation page | Use chat for all three stages. Do not launch the page, run `--wait-only`, or require a UI-authored `result.json`. |
+| No explicit confirmation-surface instruction exists for this run | Use the page as the default. |
+
+Interpret the instruction semantically: “confirm here”, “use the chat window”, or
+“do not open the confirmation page” are sufficient; no literal `chat-only`
+keyword is required. Invoking a chat-question tool by itself does not select the
+chat branch—the user's instruction does. Both branches preserve the same three
+stages and confirmed-value semantics.
+
+**Fallback rule**: When no surface was selected before launch, the page is the
+default. Use chat when the user answers the always-on handoff in chat, or after
+launch failure/timeout and one `result.json` re-check. A chat-question tool
+alone is not a launch failure. Preserve all three stages and keep Stage-1
+prompts open-ended.
+
+**In-run UI → chat switch — any stage**: If the user explicitly selects chat
+after the UI server has launched—while `--wait-only` is active, before that wait
+starts, or after it times out while the server remains live:
+
+1. If a wait is active, interrupt it and confirm that its process has exited.
+   Only the return code from this deliberate wait interruption is expected to
+   be non-zero.
+2. Run `server.py <project_path> --shutdown` and require that cleanup to
+   succeed. The browser tab may remain open, but its stopped server makes it
+   inactive.
+3. Re-check `result.json` once for the current stage. Retain only values whose
+   confirmation was persisted before shutdown; an unsubmitted browser draft is
+   not confirmed.
+4. Continue the unresolved current stage and every remaining stage in chat. Do
+   not call `--wait-only` again, recover the server, or relaunch the page during
+   this run.
 
 **Always-on Stage-1 chat handoff**: Launch the healthy daemon without `--wait`.
 After it returns, immediately post its actual URL plus one compact, localized
@@ -27,12 +66,14 @@ changing its value. End with an explicit localized line saying that, if the
 page did not open or cannot be reached, the user may reply “continue with these
 recommendations” or revise the same items directly in chat; the same three-stage
 flow will continue. Only then run `--wait-only --wait-stage stage1`. A chat
-reply selects the chat path without waiting for timeout. The handoff is context,
-not confirmation, and silence confirms nothing. After launch failure/timeout
-and the required result re-check, present the same items as open Stage-1 chat
-questions and wait for an explicit response.
+reply to that handoff applies the in-run switch above without waiting for
+timeout. The handoff is context, not confirmation, and silence confirms
+nothing. After launch failure/timeout and the required result re-check, present
+the same items as open Stage-1 chat questions and wait for an explicit response.
 
 ## `confirm_ui/server.py`
+
+The following launch and wait commands belong to the **UI branch only**:
 
 ```bash
 python3 scripts/confirm_ui/server.py <project_path> --daemon         # healthy launch; return for chat handoff
