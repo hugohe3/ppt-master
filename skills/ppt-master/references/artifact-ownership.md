@@ -9,6 +9,8 @@ profile may explicitly omit an artifact without erasing its facts.
 Its current main agent reads source/analysis facts, keeps routine decisions in
 active context, and prepares images/icons/formulas plus required manifests
 before SVG authoring. Those artifacts retain their factual/provenance roles.
+Quick writes the same final SVG quality provenance and package postflight as
+the default profile, but it does not create `svg_final/`.
 
 ---
 
@@ -46,10 +48,10 @@ before SVG authoring. Those artifacts retain their factual/provenance roles.
 | `notes/total.md` | Conditional speaker-note source | Complete notes before splitting | Step 6 writes only when the effective Speaker Notes outcome is enabled; Step 7.1 splits |
 | `notes/slide_*.md` | Conditional split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` only when speaker notes are enabled |
 | `svg_final/` | Default-only derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Default rebuilds it from `svg_output/` with `finalize_svg.py`; Quick omits it. Never use it as a supported PPTX source. |
-| `validation/svg_quality_report.json` | Default quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | Default `svg_quality_checker.py --stage final --json` writes before export; the exporter links it only when fingerprints match. Quick omits this report. |
-| `validation/<output_stem>.report.json` | Default published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Default Step 7.3 writes it and emits `[POSTFLIGHT]`; Quick instead performs in-memory package sanity and emits `[QUICK-GENERATE]` without a report. |
+| `validation/svg_quality_report.json` | Final SVG quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | Default runs `svg_quality_checker.py --stage final --json`; Quick adds `--quick-generate` so the checker ignores Design Spec/lock and validates the lockless flat roster. Export links the report only when fingerprints match; Quick requires that link to pass before PPTX creation. |
+| `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Both Generate profiles write it and emit `[POSTFLIGHT]` after package validation. |
 | `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Default Step 7.3 or Quick direct export writes final deliverables from `svg_output/`. |
-| `backup/<timestamp>/svg_output/` | Default frozen author-source archive | Re-export source without re-running LLM | Default export writes a snapshot; Quick direct export omits it. |
+| `backup/<timestamp>/svg_output/` | Default-path frozen author-source archive | Re-export source without re-running LLM | Both Generate profiles write a snapshot for default-path exports; explicit `-o/--output` skips it. |
 | `animations.json` | Optional animation config | Page-transition and object-animation sidecar | Existing files activate intent resolution: Stage 3 `false` preserves, explicit objects-off exports `-a none`, and all-motion-off bypasses with `--no-animations`. Creation requires explicit instruction or enabled outcome; §IX advice never activates it |
 
 ---
@@ -89,8 +91,8 @@ before SVG authoring. Those artifacts retain their factual/provenance roles.
 | `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `python3 ${SKILL_DIR}/scripts/svg_authoring_view.py <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
 | `notes/slide_*.md` | `notes/total.md`, when speaker notes are enabled | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
 | `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
-| `validation/svg_quality_report.json` | `svg_output/`, locks, template provenance | `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json` |
+| `validation/svg_quality_report.json` | `svg_output/`, plus locks/template provenance in Default Generate | Default: `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json`; Quick: append `--quick-generate` |
 | Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
-| Quick native PPTX | `svg_output/` plus prepared project-local resources | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate` |
+| Quick native PPTX | `svg_output/`, prepared resources, passing Quick final report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

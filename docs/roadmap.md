@@ -87,8 +87,8 @@ In the cost / speed / quality triangle this project picks **quality**. ~20 minut
 Will do: indirect improvements via prompt slimming / cache hit rate.
 Explicit `quick-generate` is a user-selected workflow shortcut, not a default
 quality-preserving speed optimization: it skips Strategist, confirmation, and
-report-producing quality gates, then authors SVG and exports directly. It makes
-no wall-clock or quality-equivalence promise.
+the first-page gate, then authors SVG, runs one lockless final quality gate, and
+exports the final PPTX. It makes no wall-clock or quality-equivalence promise.
 
 The default Generate pipeline continues to prefer quality over speed.
 

@@ -59,7 +59,7 @@ Each image carries an `Acquire Via` field plus a status annotation. This file is
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Export:
    - Default Generate → follow [`generate-pptx.md`](../workflows/generate-pptx.md) Step 7
-   - Quick Generate → after every required resource has a validated expected file/provenance and a usable status, run the profile's direct `--quick-generate` export
+   - Quick Generate → after every required resource has a validated expected file/provenance and usable status, run the profile's final checker, then its `--quick-generate` export
 ```
 
 > Keep external references in `svg_output/` during generation. Default Generate uses `finalize_svg.py` to embed images into the mandatory `svg_final/` visual preview. Quick Generate omits that preview artifact. Both native PPTX exports independently read image references from `svg_output/`.
