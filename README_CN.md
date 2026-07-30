@@ -313,7 +313,7 @@ pip install -r requirements.txt
 你：请根据以下内容制作成 PPT：[粘贴你的文字内容...]
 ```
 
-两种方式下 AI 都会先确认设计规范：
+默认流程下（除非显式要求快速生成），AI 会先确认设计规范：
 
 ```
 AI：好的，先确认设计规范：
@@ -325,7 +325,7 @@ AI：好的，先确认设计规范：
 
 AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
-> **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。正式交付流程会生成自包含预览 `svg_final/`，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；PowerPoint 手工“转换为形状”不在支持范围。明确用于临时测试的少量自包含页面可改用[快速测试模式](./skills/ppt-master/workflows/profiles/quick-test.md)：只写 SVG 页面和一个 PPTX，不生成规划、预览、讲稿、验证报告或备份。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；加 `--native-charts-and-tables` 则把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。两条路线都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
+> **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。默认 Generate 流程会生成自包含预览 `svg_final/`，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；PowerPoint 手工“转换为形状”不在支持范围。对事实充分、内容自包含的材料，用户可显式启用[快速生成模式](./skills/ppt-master/workflows/profiles/quick-generate.md)：AI 在当前上下文直接决定页结构，跳过策略师和确认，按规范手写 SVG 后导出一个 PPTX，不生成预览、讲稿、验证报告或备份。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；加 `--native-charts-and-tables` 则把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。这两种图表/表格导出变体都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
 
 > **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
 

@@ -77,9 +77,9 @@ Be clear on what this buys you: **web search only finds *a* relevant, downloadab
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. In the normal delivery flow, a copy of `svg_output/` (the Executor's raw SVG source) is written to `backup/<timestamp>/svg_output/` so you can rebuild via `finalize_svg → svg_to_pptx` without re-running the LLM.
+Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. In the default Generate flow, a copy of `svg_output/` (the Executor's raw SVG source) is written to `backup/<timestamp>/svg_output/` so you can rebuild via `finalize_svg → svg_to_pptx` without re-running the LLM.
 
-`finalize_svg.py` remains a mandatory Step 7 operation in the normal delivery flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-test profile skips preview and backup artifacts. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
+`finalize_svg.py` remains a mandatory Step 7 operation in the default Generate flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-generate profile skips preview and backup artifacts. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
 ## Q: How does multiline text export? Can PowerPoint reflow it?
 
@@ -201,18 +201,20 @@ A typical 10–15 page presentation takes about **10–20 minutes** with a fast 
 
 If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
 
-## Q: Can I use a fast mode for a few disposable test slides?
+## Q: Can I generate directly without the Strategist phase?
 
-Yes. Explicitly say that this is a **quick test** and request a small fixed
-roster of self-contained slides. The Generate route then uses the
-[`quick-test` profile](../skills/ppt-master/workflows/profiles/quick-test.md):
-the agent hand-authors `svg_output/` and runs the test-only direct exporter.
+Yes. Explicitly request **quick generation** and provide fact-sufficient,
+self-contained content. The Generate route then uses the
+[`quick-generate` profile](../skills/ppt-master/workflows/profiles/quick-generate.md):
+the agent decides the page structure in active context, hand-authors
+`svg_output/` to the shared standards, and runs the direct exporter.
 
-This mode produces only the SVG pages and one PPTX. It skips source conversion,
-research, Strategist/confirmation, templates, asset acquisition, Live Preview,
-quality-report files, notes, `svg_final/`, backup, animation, and narration. It
-is not available for normal delivery, factual/source-backed decks, external
-assets, templates, native charts/tables, or reusable output.
+This profile produces only the SVG pages and one PPTX. It skips source
+conversion, research, Strategist/confirmation, templates, asset acquisition,
+Live Preview, quality-report files, notes, `svg_final/`, backup, animation, and
+narration. Requests needing any skipped capability stay on the default
+pipeline. Page count alone neither activates nor blocks quick generation. This
+is a workflow shortcut, not a wall-clock or default-quality-equivalence promise.
 
 ## Q: Will long decks blow out the context window in one shot?
 

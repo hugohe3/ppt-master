@@ -85,9 +85,12 @@ The narrow exception is the `data-pptx-replace-with` marker: independently plann
 In the cost / speed / quality triangle this project picks **quality**. ~20 minutes for a high-quality PPTX is the current reasonable point.
 
 Will do: indirect improvements via prompt slimming / cache hit rate.
-Won't do: trading quality for "throw a few pages together" speed.
+Explicit `quick-generate` is a user-selected workflow shortcut, not a default
+quality-preserving speed optimization: it skips Strategist, confirmation, and
+report-producing quality gates, then authors SVG and exports directly. It makes
+no wall-clock or quality-equivalence promise.
 
-If speed-sensitive and quality-tolerant, a zero-setup browser SaaS tool is a better fit.
+The default Generate pipeline continues to prefer quality over speed.
 
 ### Standalone CLI / hosted SaaS / desktop app form factors
 
