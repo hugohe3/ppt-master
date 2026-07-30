@@ -2,7 +2,7 @@
 """
 PPT Master - LaTeX Formula Renderer
 
-Render Strategist-declared LaTeX formulas to transparent PNG assets.
+Render project-declared LaTeX formulas to transparent PNG assets.
 The script reads an explicit manifest; it never scans spec_lock.md or source
 content for dollar-delimited math.
 
@@ -553,7 +553,7 @@ def render_manifest(
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser(
-        description="Render Strategist-declared LaTeX formulas to PNG assets.",
+        description="Render project-declared LaTeX formulas to PNG assets.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("project_path", type=Path, help="Project directory.")

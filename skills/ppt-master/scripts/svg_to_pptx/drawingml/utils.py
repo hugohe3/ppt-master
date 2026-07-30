@@ -64,14 +64,15 @@ EA_FONTS = {
     'Source Han Sans JP', 'Source Han Serif JP',
     'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
     'YouYuan', 'LiSu', 'HuaWenKaiTi',
-    'Songti SC', 'Songti TC',
+    'Heiti TC', 'Kaiti TC', 'Songti SC', 'Songti TC',
     # Windows 10/11 + Office default / common Simplified Chinese
     'DengXian', 'DengXian Light', 'DengXian Bold', 'Microsoft YaHei UI',
     # Office display Chinese (华文 / 方正) — usually title-only, not on every client
     'STXingkai', 'STLiti', 'STXinwei', 'STHupo', 'STCaiyun',
     'FZShuTi', 'FZYaoti',
     # Common Traditional Chinese (Office)
-    'DFKai-SB', 'MingLiU', 'PMingLiU', 'MingLiU-ExtB', 'PMingLiU-ExtB',
+    'DFKai-SB', 'MingLiU', 'PMingLiU', 'MingLiU_HKSCS',
+    'MingLiU-ExtB', 'PMingLiU-ExtB',
     'Microsoft JhengHei UI',
     # Japanese fonts (Windows-available)
     'Yu Gothic', 'Yu Gothic UI', 'Yu Mincho',
@@ -88,6 +89,8 @@ FONT_FALLBACK_WIN = {
     'PingFang SC': 'Microsoft YaHei',
     'PingFang TC': 'Microsoft JhengHei',
     'PingFang HK': 'Microsoft JhengHei',
+    'Heiti TC': 'Microsoft JhengHei',
+    'Kaiti TC': 'DFKai-SB',
     'Hiragino Sans': 'Microsoft YaHei',
     'Hiragino Sans GB': 'Microsoft YaHei',
     'Hiragino Mincho ProN': 'SimSun',
@@ -98,12 +101,12 @@ FONT_FALLBACK_WIN = {
     'STXihei': 'Microsoft YaHei',
     'STZhongsong': 'SimSun',
     'Songti SC': 'SimSun',
-    'Songti TC': 'SimSun',
+    'Songti TC': 'PMingLiU',
     'Noto Sans SC': 'Microsoft YaHei',
     'Noto Sans CJK SC': 'Microsoft YaHei',
     'Noto Sans TC': 'Microsoft JhengHei',
     'Noto Serif SC': 'SimSun',
-    'Noto Serif TC': 'SimSun',
+    'Noto Serif TC': 'PMingLiU',
     # Japanese: keep as-is if user specified (PowerPoint will fallback if uninstalled)
     # 'Noto Sans JP': → keep as 'Noto Sans JP' (do not map)
     # 'メイリオ': → keep as 'メイリオ' (Meiryo alias)
@@ -111,7 +114,7 @@ FONT_FALLBACK_WIN = {
     'Source Han Sans SC': 'Microsoft YaHei',
     'Source Han Sans TC': 'Microsoft JhengHei',
     'Source Han Serif SC': 'SimSun',
-    'Source Han Serif TC': 'SimSun',
+    'Source Han Serif TC': 'PMingLiU',
     'Source Han Sans JP': 'Noto Sans JP',
     'Source Han Serif JP': 'Noto Serif JP',
     'WenQuanYi Micro Hei': 'Microsoft YaHei',
@@ -153,8 +156,11 @@ _SERIF_LATIN = {
 # target-specific; keep these examples aligned with strategist.md §g.
 PPT_SAFE_FONTS = frozenset({
     'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
-    'dengxian', 'microsoft jhenghei',
+    'dengxian',
+    'microsoft jhenghei', 'microsoft jhenghei ui', 'pmingliu', 'mingliu',
+    'mingliu_hkscs', 'dfkai-sb',
     'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
+    'pingfang tc', 'pingfang hk', 'heiti tc', 'songti tc', 'kaiti tc',
     'yu gothic', 'yu gothic ui', 'yu mincho',
     'meiryo', 'meiryo ui',
     'ms gothic', 'ms mincho', 'ms pgothic', 'ms pmincho', 'ms ui gothic',

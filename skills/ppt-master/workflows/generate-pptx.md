@@ -15,17 +15,21 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 - `preset_shape_svg.py` and `shape_boolean_svg.py` may provide only their documented stdout fragment(s) after the main agent chooses the object's role, operands, paint, and z-order; neither helper chooses layout or writes a page.
 - Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
-### Quick Test Profile Short Circuit
+### Quick Generate Profile Short Circuit
 
-When the user explicitly requests quick/fast mode for a disposable test with a
-small fixed roster of self-contained slides, load and follow
-[`quick-test.md`](./profiles/quick-test.md). That profile owns the complete
-test-only sequence and skips this route's Steps 1–7.
+For an explicit quick/fast, skip-strategy, or direct-SVG request, follow
+[`quick-generate.md`](./profiles/quick-generate.md). It runs applicable source
+conversion/research and project-local resource preparation, lets the current
+agent decide content/visual/resource details in active context, then
+hand-authors SVG, runs one lockless final checker, and exports the final PPTX.
+It skips Strategist, Confirm UI, Design Spec/lock, the first-page gate, and
+`finalize_svg.py`.
 
-**Hard rule — no implicit downgrade**: page count alone never selects quick
-test. Normal delivery, source conversion, factual research, template use,
-external assets, native data objects, notes, animation, narration, and reusable
-output remain on the default pipeline below.
+**Hard rule — no implicit downgrade or page cap**: page count neither selects
+nor blocks quick generation. Source preparation, images, icons, formulas, and
+their manifests remain valid. All exporter capabilities remain available when
+requested or agent-selected; use their existing prerequisites. Structured
+template reuse still requires the default lock-backed pipeline.
 
 ### SVG Page-Design Boundary
 
@@ -34,7 +38,7 @@ output remain on the default pipeline below.
 | Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
 | Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
-| `svg_final/` | Mandatory derived, self-contained SVG visual preview in the default pipeline. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. Quick-test skips it. |
+| `svg_final/` | Mandatory derived, self-contained SVG visual preview in the default pipeline. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. Quick-generate skips it. |
 | SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It compiles only the selected route's explicit structure contract: `flat` keeps represented content Slide-local, while `structured` may place explicitly scoped content in Master/Layout/Slide parts. It MUST NOT infer structure, upgrade `flat`, or invent new visible page content. |
 | Native PPTX routes and presentation-behavior stages | Remain outside SVG page-design closure. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
@@ -64,7 +68,7 @@ routes by source type, and writes the standard Markdown plus conversion profile.
 
 | User Provides | Action |
 |---------------|--------|
-| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | `uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
+| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as plain-text table source |
 | Markdown | Read directly |
 
@@ -109,7 +113,7 @@ After reading direct and converted content, assess factual sufficiency:
 🚧 **GATE**: Step 1 complete; source content is ready (Markdown file, user-provided text, or requirements described in conversation are all valid).
 
 ```bash
-uvx ppt-master project init <project_name> --format <format>
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
 ```
 
 Format options must be named with concrete dimensions. Default: `ppt169` = `1280x720`, `viewBox="0 0 1280 720"`. Other examples: `ppt43` = `1024x768`, `story` = `1080x1920`, `banner` = `1920x1080`. For the full format list, see `references/canvas-formats.md`.
@@ -118,13 +122,13 @@ Import source content (choose based on the situation):
 
 | Situation | Action |
 |-----------|--------|
-| Has source files (PDF/MD/etc.) | `uvx ppt-master project import-sources <project_path> <source_files_or_dirs...> --move` |
+| Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
 ```bash
-uvx ppt-master pptx-intake <project_path>/sources/<source.pptx> -o <project_path>/analysis
+python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx> -o <project_path>/analysis
 ```
 
 For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, observed usage) and `<stem>.slide_library.json` (text slots, geometry, native tables, native chart caches, SmartArt nodes/connections), and merges that deck's Strategist-facing digest into the single multi-deck index `analysis/source_profile.json` (`decks[]`, one self-contained entry per source deck, with prefixed artifact pointers). In the main generation path these are source facts and recommendation candidates, not replica constraints; the beautify profile and Fill Native PPTX route decide separately which fields become locked constraints.
@@ -172,11 +176,11 @@ Read references/strategist.md
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
 | Step 3 installed an explicit Brand/Layout/Deck workspace | `references/strategist-template.md` |
-| The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` before authoring image renderings, production detail, formula resources, or §VIII |
+| The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
 
-The core first chooses the proposed Stage 2 source ids. Load the image module before writing Stage 2 whenever that proposal is non-`none`; after confirmation, keep it active only for confirmed non-`none` sources or an active formula plan. A confirmed `none` path with no formula work writes no image rows. Bare template names and style language do not load the template module.
+The core chooses proposed Stage 2 source ids first. Load this bundle for a non-`none` proposal; after confirmation, retain it only for confirmed non-`none` sources or an active formula plan. Confirmed `none` without formulas writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory artifact gates**: after final confirmation, author the complete `design_spec.md` from `templates/design_spec_reference.md`. After Gate 1, run enabled refinement and wait for approval; then author `spec_lock.md` from its reference, the approved Design Spec, and context. Create each new artifact once—no placeholder scaffold; `scaffold-*` commands remain manual-only. Schemas validate structure; semantic fidelity remains mandatory.
+> ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -186,36 +190,52 @@ The core first chooses the proposed Stage 2 source ids. Load the image module be
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: Unless explicitly delegated, final confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. Keep Stage 1/2 handoffs in one turn; after each wait, author the next stage without chat. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
+⛔ **BLOCKING**: Unless explicitly delegated, the three-stage Strategist confirmation is the single always-on user gate. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. In the UI branch, keep Stage 1/2 handoffs in one turn and author the next stage after each wait. In the chat branch, wait for an explicit user response at each stage. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
 
-**Confirmation ownership and surface**: Only the user confirms. Fresh Stage 1 launches, posts the required chat handoff, then waits. Use chat on explicit chat-only/delegation, explicit handoff confirmation/revision, or launch failure/timeout plus one `result.json` re-check. Chat tools do not replace the default launch. The agent may write recommendations, operate the server, and read state, but MUST NOT call `/api/confirm`, automate submission, synthesize a payload, or write/replace `result.json`. Delegation applies only to this run: show the complete three-stage summary and never fabricate UI results. Silence confirms nothing.
+**Confirmation ownership and surface**: Only the user confirms. Before any
+server command, apply `confirm_ui.md`'s surface decision to this run's most
+recent explicit surface instruction and retain that branch as the owner
+specifies. A natural-language request or agreement to personally confirm in
+chat, or to avoid the page, selects the chat branch without a magic keyword;
+skip `--daemon`, every `--wait-only`, and UI `result.json`. Explicit delegation
+is a separate higher-priority branch. With no surface instruction, fresh Stage
+1 uses the default UI branch: launch, post the required chat handoff, then wait.
+A chat-question tool alone does not replace that default. The agent may write
+recommendations, operate the server, and read state, but MUST NOT call
+`/api/confirm`, automate submission, synthesize a payload, or write/replace
+`result.json`. Delegation applies only to this run: show the complete
+three-stage summary and never fabricate UI results. Silence confirms nothing.
+
+**UI branch files and completion evidence:**
 
 | Stage file (the active unconfirmed stage may be overwritten) | Strategist writes | Completion evidence |
 |---|---|---|
 | `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
 | `confirm_ui/recommendations.stage2.json` | Complete deck solution from the confirmed contract; never skip for a template | `status: stage2-confirmed` |
-| `confirm_ui/recommendations.stage3.json` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec | `stage: final`, `status: confirmed` |
+| `confirm_ui/recommendations.stage3.json` | Production mechanics only: conditional AI path, formula policy, generation mode, refine-spec, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
-1. Create `confirm_ui/recommendations.stage1.json`, then run in order:
+**UI branch only** — create `confirm_ui/recommendations.stage1.json`, then:
+
+1. Run in order:
 
    ```bash
-   uvx ppt-master confirm-ui <project_path> --daemon
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
    # Post confirm_ui.md's actual URL + Stage-1 summary/chat fallback here.
-   uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
    ```
 
-2. Read the Stage 1 result. Derive proposed image sources in core and load `strategist-image.md` before constructing Stage 2 when its trigger fires; apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
+2. Read Stage 1. Derive proposed image sources, load the triggered image-planning bundle above, and apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
 
    ```bash
-   uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage2
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
    ```
 
 3. Read the Stage 2 result, create `confirm_ui/recommendations.stage3.json` without changing either earlier stage, then perform the final blocking wait:
 
    ```bash
-   uvx ppt-master confirm-ui <project_path> --wait-only
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
    ```
 
 4. After the final wait returns, read the complete `result.json` exactly once and retain that object through Design Spec authoring and its fidelity audit. Proceed only when it carries `stage: final` and `status: confirmed`. Do not reopen the file during normal lock authoring or downstream execution. On a non-zero wait, this same single read determines whether the persisted result succeeded before using the documented chat fallback. A stage-skip result returns to the missing stage; it is not a browser failure.
@@ -223,16 +243,27 @@ If the user rejects the current recommendation before confirming it, regenerate 
 5. After final confirmation or chat fallback, always release the server:
 
    ```bash
-   uvx ppt-master confirm-ui <project_path> --shutdown
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
    ```
 
-If the user opted out of the page but did not delegate confirmation, skip launch and run the same three stages in chat with explicit user responses. If the user explicitly delegated confirmation, consolidate the same three stages into one AI-authored summary and proceed without `result.json`. Otherwise use the always-on Stage-1 chat handoff; it keeps the current contract and direct-chat fallback visible without replacing UI confirmation.
+If the user selects chat any time after the UI server launches, immediately
+apply `confirm_ui.md`'s in-run switch procedure. Continue the unresolved current
+stage and all remaining stages in chat; do not enter UI interruption recovery
+or relaunch the server.
+
+**Chat branch** — run the same three stages in chat with explicit user
+responses, retaining one visible cumulative confirmation summary as the
+equivalent final state; do not create or require a UI result. If the user
+explicitly delegated confirmation, consolidate the same three stages into one
+AI-authored summary. Otherwise the no-selection UI branch uses the always-on
+Stage-1 chat handoff, which keeps direct-chat fallback visible without replacing
+UI confirmation.
 
 ⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
 
 With `refine_spec: true`, run [`refine-spec`](stages/refine-spec.md) after Gate 1: review that same file in chat, accept arbitrary revisions, touch no lock, and stop until explicit approval. Revisions supersede only affected decisions. Otherwise skip the stop.
 
-After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/preferred-pattern reference/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
+After the review closes, author `spec_lock.md` from the approved Design Spec and context. Preserve identity/refinements, every recurring typography role, reusable routing anchors, and each placed image's source/layout suggestion/crop policy; omit page-local garnish and never write a separate image palette. Apply `strategist-template.md` §3 when active. Unhonorable requirements follow [`failure-recovery.md`](governance/failure-recovery.md).
 
 **Conditional — split-mode note** (not a separate confirmation): after listing the Strategist confirmation stage details, append one short line (rendered in the user's language, prefixed with 💡) only when the confirmed mode is `split` or upstream-load signals make a fresh execution context materially useful. Judge those signals from recommended page count, source-material bulk, and substantial `topic-research` web-fetch accumulation:
 
@@ -245,7 +276,7 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 
 **Mandatory — spec-refinement note** (not another Confirm UI stage): after confirmation details and any split-mode line, append one localized 💡 line offering review of the complete Design Spec before the lock; any part may be revised in chat until explicit approval. Default OFF; only explicit chat opt-in or `refine_spec: true` runs [`refine-spec`](stages/refine-spec.md) after Gate 1. Confirm UI records the toggle; chat fallback prints the same line.
 
-**Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When the confirmed policy requires rendering formula-worthy content, load [`strategist-image.md`](../references/strategist-image.md) even if `image_usage` is `none`, and follow its formula-resource contract before filling the planning artifacts. `text-only` creates no formula image rows.
+**Formula policy**: Stage 3 confirms `mixed`, `render-all`, or `text-only`. When rendering is required, load the image-planning bundle even if `image_usage` is `none`, then follow [`strategist-image.md`](../references/strategist-image.md)'s formula-resource contract. `text-only` creates no formula image rows.
 
 **Proactive production decisions**: Stage 3 records
 `proactive_speaker_notes`, `proactive_custom_animations`, and
@@ -266,14 +297,15 @@ If it disables Speaker Notes while Narration Audio remains enabled, write
 neither row and ask one question: disable audio too, or retain its required
 notes. Wait, then update both. Before `generate-audio`, create and split notes
 when complete per-slide files are absent.
+
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
-uvx ppt-master analyze-images <project_path>/images
+python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```
 
 > 🔁 **Image facts are regenerated on change, never maintained as a second store.** `images/` is the live working folder and single source of truth; `analysis/image_analysis.csv` is its regenerated view. Run `analyze_images.py` before the first inventory read, then reuse that CSV while `images/` is unchanged. Re-run after import/acquisition or any user addition, removal, or replacement; an empty folder produces a fresh header-only CSV rather than leaving stale facts.
 
-> ⚠️ **Image understanding**: Do not bulk-open images. Strategist uses source context, captions / alt / titles, filenames, user notes, existing resource records, and `image_analysis.csv` first; only a specifically ambiguous asset may be inspected under [`strategist-image.md`](../references/strategist-image.md). Record the result in §VIII. Executor never reopens source images for semantic discovery or reselection.
+> ⚠️ **Image understanding**: Do not bulk-open images. Strategist starts from context, filenames, records, and `image_analysis.csv`; inspect only a specifically ambiguous asset under [`strategist-image.md`](../references/strategist-image.md), then record the result in §VIII. Under [`executor-image.md`](../references/executor-image.md), Executor may inspect one selected `Existing` / `Sourced` asset only to resolve crop, focal placement, or text contrast—never to reselect, replace, or infer provenance.
 
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
@@ -281,11 +313,11 @@ uvx ppt-master analyze-images <project_path>/images
 
 For a new project, use the reference-first whole-document sequence:
 
-1. Read `templates/design_spec_reference.md`; compose I–X from retained confirmation, analysis, and context; create `<project_path>/design_spec.md` once without placeholders/examples.
+1. Read `${SKILL_DIR}/templates/design_spec_reference.md`; create complete I–X `<project_path>/design_spec.md` once from retained confirmation, analysis, and context, without placeholders/examples.
 2. Audit it field by field against retained confirmation; Gate 1 must pass.
 3. If enabled, run [`refine-spec`](stages/refine-spec.md) on that file until explicit approval; touch no lock.
-4. From `templates/spec_lock_reference.md`, the approved Design Spec, and context, create the new lock once or resynchronize stale derived state. Do not reopen `result.json` or make a new design choice.
-5. Compare lock anchors/routing to the Design Spec; run `uvx ppt-master project validate <project_path>`.
+4. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create or resynchronize the lock once from approved Design Spec and context. Never reopen `result.json` or make a new design choice.
+5. Compare lock anchors/routing to the Design Spec; run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
 
 Final state → initial Design Spec mismatch, approved Design Spec/context → lock mismatch, or an unapplied revision blocks despite schema validity. `validate` does not prove fidelity. Repair from retained confirmation before refinement; during it, preserve unaffected values and apply explicit revisions. After approval, derive the lock from that Design Spec/context. Resume/refine edits existing files, never scaffolds. Fresh recovery alone may reread persisted final evidence once.
 
@@ -312,8 +344,8 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 | Acquire Via | Load reference (only if any such row exists) | Run |
 |---|---|---|
 | `ai` | `references/image-generator.md` | write `<project_path>/images/image_prompts.json`, then follow `image-generator.md §7 Path Selection` (`image_gen.py --manifest` is **Path A only**) |
-| `web` | `references/image-searcher.md` | `uvx ppt-master image-search ...` (≥2 web rows → `--batch images/image_queries.json`) |
-| `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
+| `web` | `references/image-searcher.md` | `python3 ${SKILL_DIR}/scripts/image_search.py ...` (≥2 web rows → `--batch images/image_queries.json`) |
+| `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `python3 ${SKILL_DIR}/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
 | `user` / `formula` / `placeholder` | (skip) | (skip) |
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
@@ -322,9 +354,9 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](../references/image-searcher.md) §5.
 
-> Web query boundary: keep §VIII `Reference` as the locked full subject/focal/crop intent; each `image_queries.json.query` is a separate 1–4 word concrete provider query. Search/review never rewrites the Design Spec or lock to fit a returned candidate.
+> **Default — short provider query (may override for a complete entity name or necessary disambiguation)**: keep §VIII `Reference` as the locked subject/focal/crop intent and author a separate concrete `image_queries.json.query`. Search/review never rewrites the Design Spec or lock to fit a candidate.
 
-> 💡 **ai path — spot illustrations as one sheet**: when the §VIII image resource plan needs ≥3 same-family spot illustrations as decorative accessories, generate **one grid sheet** (a single `ai` sheet row) instead of one row per element, then slice it (workflow step 2.5 below). Choose sheet geometry from intended placement: `1xN` / `Nx1` are useful for extreme portrait / landscape cells, and a designed `MxN` grid is valid when its cell ratio fits the planned elements. The sheet row is generated but not placed; each cut **element row** (`Acquire Via: slice`) is placed and must appear in `spec_lock.md images`. One generation = one coherent style across all pieces. Resource contract + the geometry rules: [image-generator.md](../references/image-generator.md) §4.3.
+> **Default — one sheet for compatible AI spots (may override for different cell shape, detail, quality, or semantics)**: prefer one grid sheet for a same-family set; independent `ai` rows remain valid. When selected, choose a grid matching the planned cells, keep the sheet unplaced, and place/project each `slice` row. Contract: [image-generator.md](../references/image-generator.md) §4.3.
 
 > ⚠️ **Honor the Design Spec's confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — the production value recorded in `design_spec.md §I` wins. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never reopen `result.json` here, and never run `image_gen.py --manifest` when the recorded value is `host-native` or `manual`. Full selection rule: [image-generator.md](../references/image-generator.md) §7 Path Selection.
 
@@ -334,7 +366,7 @@ Workflow:
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](../references/image-base.md) §3 dispatch table
 2.5. **Slice any spot-illustration sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](../references/image-generator.md) §4.3.
 3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. On `auto`, follow the owning fallback chain. On an explicitly confirmed `api` or `host-native` path, retry only that path; if it still fails, mark the row `Needs-Manual` without switching to another automated provider.
-4. Re-derive image facts now that web / AI / sliced files are in the folder — `uvx ppt-master analyze-images <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
+4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
 **✅ Internal checkpoint — acquisition complete**: verify conditional AI/web sidecars, all required slice outputs, terminal status for every resource row, and a refreshed `image_analysis.csv`. Do not print this checklist. On success, auto-proceed under the compact status rule above.
 
@@ -347,7 +379,7 @@ Workflow:
   - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter the execution session via the [`resume-execute`](stages/resume-execute.md) stage.
   ```
 
-> On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](../references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to the checkpoint above.
+> On acquisition failure, follow [image-base.md](../references/image-base.md) §6 without halting. Web rows continue through materially different query/provider/license/URL strategies; after exhaustion, mark `Needs-Manual`, report, and continue.
 
 ---
 
@@ -367,23 +399,23 @@ Read the execution references for this deck's locked `mode` + `visual_style` (fr
 ```
 Read references/executor-base.md                  # REQUIRED: flat/shared execution core
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility core
+Read references/svg-effects.md                    # REQUIRED: advanced visual effects and construction vocabulary
+Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
 Read references/modes/<resolved-id>.md            # one preset id, or each `mode_references` id
 Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visual_style_references` id
 ```
 
-> Read only the five always-on references above plus the conditionally triggered modules below. A preset reads its one locked file. For `mode: custom` or `visual_style: custom`, read every exact file named by the optional `mode_references` / `visual_style_references`, then synthesize those sources under the corresponding behavior. If the reference field is absent, the direction is genuinely novel: read no preset file and follow the behavior directly. Never infer adjacent references or glob `modes/` / `visual-styles/`.
+> Read only the always-on references above plus the conditionally triggered modules below. A preset reads its one locked file. For `mode: custom` or `visual_style: custom`, read every exact file named by the optional `mode_references` / `visual_style_references`, then synthesize those sources under the corresponding behavior. If the reference field is absent, the direction is genuinely novel: read no preset file and follow the behavior directly. Never infer adjacent references or glob `modes/` / `visual-styles/`.
 
 | Deterministic trigger | Additional references |
 |---|---|
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
 | Any data chart/table, including mini or inset charts and sparklines | `executor-chart.md` |
 | Preset pattern or supported native chart/table | `native-data-interface.md` before drawing |
-| `spec_lock.md images` or §VIII contains at least one image/formula row, or an active template carries bundled images | `executor-image.md` + `image-layout-patterns.md` + `image-layout-spec.md` + `svg-image-embedding.md` |
+| `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
-| The locked style/current page calls for noncanonical or alpha paint, dash/cap/join, tracking/decoration/outline, gradient/filter/glow/shadow, path/transform/clipping, or another constructed effect | `svg-effects.md` before authoring that value or effect |
-| §IX contains `Native shape suggestion`, or current page construction calls for a literal PowerPoint stock shape, a stock Connector contour, an explicit Merge Shapes operation or result, or a shape-built dimensional form (cylinder/pedestal, layered diagram, reflection, ground plane), or Executor is about to hand-author a freeform not already required by data geometry or the locked organic / hand-drawn style | `native-shape-authoring.md` before selecting or materializing that geometry. This trigger is image-independent: a text-only, data-only, or icon-only page reaches it the same way |
-| All SVG pages and SVG quality gates are complete | `executor-notes.md` before generating speaker notes |
+| All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
 No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §VII/§VIII, the selected style, and the current page plan.
 
@@ -391,7 +423,7 @@ No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §V
 
 **Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
-uvx ppt-master confirm-ui <project_path> --live --daemon
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 ```
 - Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at the launch-log URL such as `http://127.0.0.1:5050`; if another project already holds it, the launcher **auto-advances to the next free port** — read the actual URL from the launch log and report that.
 - Treat the launch URL as a checkpoint value: before writing the first SVG, either report the actual URL from the launcher or state the launch failure explicitly. Do not silently continue while claiming preview is available.
@@ -402,7 +434,7 @@ uvx ppt-master confirm-ui <project_path> --live --daemon
 
 **Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for chart SVGs. Read each selected full reference once per valid context; reread only after a known change or context invalidation. Flat routes skip template reads. Summaries and sidecars never replace full SVGs.
 
-> Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `uvx ppt-master analyze-images <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
+> Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
 **Page-context**: use the read-only projector only for the diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load.
 
@@ -411,9 +443,24 @@ uvx ppt-master confirm-ui <project_path> --live --daemon
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Treat §IX `Native shape suggestion` as a candidate, not a command: inspect the actual page construction, then choose the highest-level faithful construction in this order — editable basic primitive, exact Office preset, Merge Shapes Boolean result, and only then a necessary freeform. Load and apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before materializing an adopted native treatment. Diagram relationships follow the same Shape-first order; do not infer a preset from contour similarity.
+Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Treat §IX `Native shape suggestion` as a candidate, not a command: inspect the actual page construction, then choose the highest-level faithful construction in this order — editable basic primitive, exact Office preset, Merge Shapes Boolean result, and only then a necessary freeform. Apply [`native-shape-authoring.md`](../references/native-shape-authoring.md) before materializing an adopted native treatment. Diagram relationships follow the same Shape-first order; do not infer a preset from contour similarity.
 
-**Motion-ready image composition**: When an adopted §IX `Motion suggestion` or explicit user requirement depends on distinct in-slide image states or cross-slide image continuity, author those visible states now under [`executor-image.md`](../references/executor-image.md). Give each independently revealable or continuing ordinary Slide-local unit a descriptive direct-root `<g id>`; structured atoms/slots retain their declared boundaries and are targetable only when that contract permits. Do not defer required visible content or reshape structure for the later stage. This is SVG preparation, not early animation authoring: effects, pairing, order, and timing remain in the conditional custom stage after notes. A page-transition-only suggestion requires no extra visible layer; deterministic Morph still needs the continuing object as a direct-root group on both pages.
+**Motion-ready image composition**: Only when an explicit user motion
+instruction, the effective Custom Animations outcome in `design_spec.md §I` is
+enabled, or an existing `animations.json` activates custom motion, evaluate §IX `Motion suggestion`
+rows. If the adopted motion depends on distinct in-slide image states or
+cross-slide image continuity, author those visible states now under
+[`executor-image.md`](../references/executor-image.md). Give each independently
+revealable or continuing ordinary Slide-local unit a descriptive direct-root
+`<g id>`; structured atoms/slots retain their declared boundaries and are
+targetable only when that contract permits. Do not defer required visible
+content or reshape structure for the later stage. This is SVG preparation, not
+early animation authoring: effects, pairing, order, and timing remain in the
+conditional custom stage after the final SVG quality gate and any enabled
+speaker-note pass. A Motion suggestion alone does not activate preparation or
+custom animation. A page-transition-only request requires no extra visible
+layer; deterministic Morph still needs the continuing object as a direct-root
+group on both pages.
 
 `template_reuse_scope: mirror|layout` pages MUST start from the complete `page_layouts` SVG, keep inherited visible objects, and preserve root Master/Layout identity plus stable atoms/slots. Strict preserves that reusable contract; under `layout`, the once-loaded Design Spec's `Template Application` may still authorize carrier text/tspan reflow inside unchanged slot bounds. Adaptive uses the current or new Layout key/name already declared by Strategist. If construction proves that fixed atoms or slot topology/bounds must change, stop and return upstream for Strategist to repair the owning plan and lock, validate and read back the affected fragments, then resume; Executor never mutates `spec_lock.md`. `mirror` changes only visible text values while preserving text/tspan topology and attributes. `style` follows the flat paragraph below without structure metadata.
 
@@ -423,7 +470,7 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 
 **First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
 ```bash
-uvx ppt-master svg-quality-check <project_path> --stage first-page --json
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage first-page --json
 ```
 Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. Review the complete P01 issue set from that one run before editing. Select any advisory warnings worth addressing, fix all blocking errors and selected warnings in one consolidated edit pass, then perform one verification rerun. Do not rerun merely to reveal the next issue. If verification still fails, treat its complete output as the next batch and repeat the same review → consolidated edit → single verification cycle; never check between individual fixes. If the terminal output itself is truncated, read only the relevant issue arrays from `validation/svg_quality_first_page_report.json`; do not launch another checker run for discovery. After the gate passes, draw P02 through the final page without checker calls.
 
@@ -445,7 +492,7 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 
 **Quality Check Gate (Mandatory)** — only after every planned SVG exists, BEFORE annotation handling and speaker notes:
 ```bash
-uvx ppt-master svg-quality-check <project_path> --stage final --json
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json
 ```
 - **MUST**: Before this gate, every chart/table whose Design Spec §IX page block says `Native-ready: yes` already has its own draw-time marker plus JSON metadata. Rows marked `no` and incidental microvisuals remain ordinary SVG. For legacy specs only, a matching §VII value may supply the decision when §IX has no field.
 - Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.
@@ -456,30 +503,28 @@ uvx ppt-master svg-quality-check <project_path> --stage final --json
 - The JSON report is written to `validation/svg_quality_report.json`. `inherited` prototype diagnostics and `source-import` compatibility losses are informational provenance; only changed/new warnings remain `introduced`, and all release-blocking failures remain `blocking`.
 - **Hard rule — token-safe report handling**: On a successful checker run, use the exit status and terminal summary as gate evidence. Do not open, `cat`, or otherwise load the complete JSON report into model context. Read it only for failure investigation, an explicit audit request, or a field absent from stdout; extract only the required field(s).
 
-**Logic Construction Phase**: after the SVG quality gate passes, load [`executor-notes.md`](../references/executor-notes.md), ground each page's narration in all information-bearing content in its final SVG, and generate speaker notes → `<project_path>/notes/total.md`
+**Logic Construction Phase (conditional)**: after the SVG quality gate passes,
+when the effective Speaker Notes outcome in `design_spec.md §I` is enabled, load
+[`executor-notes.md`](../references/executor-notes.md), ground each page's
+narration in all information-bearing content in its final SVG, and generate
+speaker notes → `<project_path>/notes/total.md`. When the outcome is `disabled`,
+do not load the notes branch and do not require or create `notes/total.md`.
 
-**✅ Internal checkpoint — execution complete**: verify live preview timing, the P01 method gate, uninterrupted remaining-page generation, consolidated repair of any complete failure set, exact §IX roster coverage, one-frame prose wrapping, a final checker result of 0 errors, and `notes/total.md`. Do not print this checklist. Run the applicable conditional gates below, then proceed to Step 7 under the compact status rule above.
+**✅ Internal checkpoint — execution complete**: verify live preview timing,
+the P01 method gate, uninterrupted remaining-page generation, consolidated
+repair of any complete failure set, exact §IX roster coverage, one-frame prose
+wrapping, a final checker result of 0 errors, and `notes/total.md` only when
+speaker notes are enabled. Do not print this checklist. Run the applicable
+conditional gates below, then proceed to Step 7 under the compact status rule
+above.
 
 > **Chart pages?** If this deck contains data charts, run the [`verify-charts`](stages/verify-charts.md) quality-gate stage before Step 7 to calibrate coordinates. Skip if no chart pages.
 
 > **Visual self-check (opt-in)?** If the user explicitly asked for a per-page visual re-pass on the SVGs ("跑一下视觉自检 / 视觉回看", "visual review", "check pages visually", etc.), run the [`visual-review`](stages/visual-review.md) quality-gate stage before Step 7. Do NOT run it by default and do NOT recommend it based on inferred model capability or deck size — trigger is user request only.
 
 > **Motion execution (conditional)?** Visible-layer preparation belongs to the
-> main SVG pass above. After `notes/total.md` exists, inspect §IX
-> `Motion suggestion` rows, explicit user motion requirements, and an existing
-> `<project_path>/animations.json`. With none of the three, keep the exporter
-> defaults (`fade` page transition, per-element animation `none`) and load no
-> motion reference. An existing sidecar always runs
+> main SVG pass above. An existing `<project_path>/animations.json` always runs
 > [`customize-animations`](stages/customize-animations.md) to validate and
-<<<<<<< HEAD
-> resolve preserve/adjust/replace intent before export. With no sidecar, a
-> deck-wide request loads [`animations.md`](../references/animations.md) and
-> resolves Step 7.3 flags; any `Motion suggestion` or per-slide/per-object
-> request runs the custom stage. Strategist owns the communication purpose;
-> Executor owns exact native effects, options, order, timing, and whether a
-> non-literal suggestion should simplify to `none`. Never add motion for
-> coverage or variation.
-=======
 > resolve preserve/adjust/replace/suppress intent before export. Without a sidecar, run
 > the custom stage only for an explicit per-slide/per-object motion request or
 > when the effective Custom Animations outcome in `design_spec.md §I` is
@@ -491,15 +536,19 @@ uvx ppt-master svg-quality-check <project_path> --stage final --json
 > reference. Strategist owns the communication purpose; Executor owns exact
 > native effects, options, order, timing, and whether a non-literal suggestion
 > should simplify to `none`. Never add motion for coverage or variation.
->>>>>>> upstream/main
 
 ---
 
 ### Step 7: Post-processing & Export
 
-🚧 **GATE**: Step 6 is complete; `svg_output/` contains every final page, `notes/total.md` exists, all required conditional quality gates passed, and the final SVG quality report has 0 errors.
+🚧 **GATE**: Step 6 is complete; `svg_output/` contains every final page, all
+required conditional quality gates passed, and the final SVG quality report has
+0 errors. When the effective Speaker Notes outcome in `design_spec.md §I` is
+enabled,
+`notes/total.md` also exists and covers every page; when it is disabled, notes
+artifacts are not gate requirements.
 
-🚧 **Image readiness GATE**: When any required resource row is `Needs-Manual`, every expected file and derived slice output MUST exist under `<project_path>/images/` before Step 7.1. If any file is absent, pause and list the exact filenames. After the files arrive, rerun `analyze_images.py`, replace each dashed placeholder in `svg_output/`, reconcile every `no-crop` container to the measured native ratio, then rerun the final SVG quality check so the gate covers the changed sources.
+🚧 **Image readiness GATE**: When any required resource row is `Needs-Manual`, every expected file and derived slice output MUST exist under `<project_path>/images/` before the first active Step 7 sub-step. If any file is absent, pause and list the exact filenames. After the files arrive, rerun `analyze_images.py`, replace each dashed placeholder in `svg_output/`, reconcile every `no-crop` container to the measured native ratio, then rerun the final SVG quality check so the gate covers the changed sources.
 
 After the separate readiness gate above has supplied every required manual file, the final SVG quality check closes each usable terminal §VIII row through `spec_lock.md images`, the exact locked file, and a real `<image href>`; it rejects unplanned/wrong-path references and also validates Sourced provenance/license records, image-specific visible credits, and effective per-placement pixel scale under `meet` / `slice` / `none`.
 
@@ -509,25 +558,33 @@ After the separate readiness gate above has supplied every required manual file,
 
 #### Step 7.1 — Split Speaker Notes
 
+Run this sub-step only when the effective Speaker Notes outcome in
+`design_spec.md §I` is enabled:
+
 ```bash
-uvx ppt-master total-md-split <project_path>
+python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
 
-**Success criterion**: Per-slide Markdown files exist under `<project_path>/notes/` and cover every published slide.
+**Success criterion**: When enabled, per-slide Markdown files exist under
+`<project_path>/notes/` and cover every published slide. When disabled, skip the
+command and proceed directly to Step 7.2.
 
 #### Step 7.2 — Build the Self-Contained SVG Preview
 
 ```bash
-uvx ppt-master finalize-svg <project_path>
+python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```
 
 **Success criterion**: `<project_path>/svg_final/` contains one self-contained preview SVG for every published slide. This mandatory derived preview does not replace `svg_output/` as the native-export source.
 
 #### Step 7.3 — Export the Native PPTX
 
-```bash
-uvx ppt-master svg-to-pptx <project_path>
-```
+Choose exactly one notes mode:
+
+| Effective decision | Command |
+|---|---|
+| Speaker Notes `enabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
+| Speaker Notes `disabled` | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --no-notes` |
 
 For deck-wide motion settings, append the resolved flags from
 [`animations.md`](../references/animations.md). When the conditional custom
@@ -551,7 +608,7 @@ The compact `[POSTFLIGHT]` receipt prints `status`, `quality_gate`, Slide count,
 ## ✅ Generate PPTX Complete
 
 - [x] Image readiness gate passed
-- [x] Notes split completed
+- [x] Notes split completed when enabled; disabled exports used `--no-notes`
 - [x] `svg_final/` preview completed
 - [x] Native PPTX published and postflight report written
-- [ ] **Next**: Report the exported PPTX path; run a supporting post-export stage only when its explicit trigger is present
+- [ ] **Next**: Report the exported PPTX path; when the effective Narration Audio outcome in `design_spec.md §I` is enabled, run [`generate-audio`](stages/generate-audio.md), otherwise run a supporting post-export stage only when its explicit trigger is present

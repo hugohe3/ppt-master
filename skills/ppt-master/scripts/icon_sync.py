@@ -6,8 +6,8 @@ Copy chosen library icons into `<project>/icons/<lib>/` when selected. Missing
 names exit non-zero before export. Known basenames need no separate existence
 check; search the chosen library only for unresolved concepts.
 
-Project-local custom icons count as satisfied. In one Strategist selection
-batch, `simple-icons` may accompany one of the four stylistic libraries for
+Project-local custom icons count as satisfied. In one resource-selection batch,
+`simple-icons` may accompany one of the four stylistic libraries for
 real brand marks.
 
 Usage:

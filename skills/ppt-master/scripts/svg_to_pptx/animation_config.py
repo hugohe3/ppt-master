@@ -45,6 +45,18 @@ _INHERITANCE_SENSITIVE_ANIMATION_FIELDS = frozenset({
     'decelerate',
     'bounce_end',
 })
+_GROUP_EFFECT_FIELDS = frozenset({
+    'effect',
+    'effect_options',
+    'duration',
+    'delay',
+    'order',
+    'trigger',
+    'trigger_shape',
+    *ANIMATION_TIMING_OPTION_FIELDS,
+    'after_effect',
+    'sound',
+})
 _CHROME_ID_TOKENS = frozenset({
     'background', 'bg',
     'decoration', 'decorations', 'decor',
@@ -256,6 +268,45 @@ def resolve_slide_animation_config(
         resolved.pop('effect_options', None)
     resolved.update(slide_animation)
     return resolved
+
+
+def animation_group_effect_entries(
+    group_cfg: dict[str, Any],
+    *,
+    path: str,
+) -> tuple[tuple[str, dict[str, Any]], ...]:
+    """Expand one legacy group block or one ordered multi-effect envelope."""
+    if 'effects' not in group_cfg:
+        return ((path, group_cfg),)
+
+    extra_fields = sorted(set(group_cfg) - {'effects'})
+    if extra_fields:
+        rendered = ', '.join(repr(field) for field in extra_fields)
+        raise ValueError(
+            f'animations.json {path} cannot combine "effects" with '
+            f'other group-level field(s): {rendered}'
+        )
+    effects = group_cfg['effects']
+    if not isinstance(effects, list):
+        raise ValueError(f'animations.json {path}.effects must be an array')
+    if not effects:
+        raise ValueError(
+            f'animations.json {path}.effects must contain at least one effect'
+        )
+
+    entries: list[tuple[str, dict[str, Any]]] = []
+    for index, effect_cfg in enumerate(effects):
+        effect_path = f'{path}.effects[{index}]'
+        if not isinstance(effect_cfg, dict):
+            raise ValueError(
+                f'animations.json {effect_path} must be an object'
+            )
+        if 'effect' not in effect_cfg:
+            raise ValueError(
+                f'animations.json {effect_path}.effect is required'
+            )
+        entries.append((effect_path, effect_cfg))
+    return tuple(entries)
 
 
 def _animation_parameter_errors(
@@ -860,77 +911,137 @@ def _animation_group_errors(
 
     errors: list[str] = []
     for group_id, group_cfg in groups.items():
-        label = f'group "{slide_name}/{group_id}"'
+        path = (
+            f'slides[{json.dumps(str(slide_name), ensure_ascii=False)}]'
+            f'.groups[{json.dumps(str(group_id), ensure_ascii=False)}]'
+        )
         if not isinstance(group_cfg, dict):
-            errors.append(f'animations.json {label} must be an object')
+            errors.append(f'animations.json {path} must be an object')
             continue
 
-        errors.extend(
-            _unknown_field_errors(
-                group_cfg,
-                frozenset({
-                    'effect',
-                    'effect_options',
-                    'duration',
-                    'delay',
-                    'order',
-                    'trigger_shape',
-                    *ANIMATION_TIMING_OPTION_FIELDS,
-                    'after_effect',
-                    'sound',
-                }),
-                label,
+        if 'effects' not in group_cfg:
+            errors.extend(
+                _animation_effect_entry_errors(
+                    group_cfg,
+                    path,
+                    require_effect=False,
+                    target_group_id=str(group_id),
+                )
             )
-        )
+            continue
 
-        if 'effect' in group_cfg:
-            effect_error = _animation_effect_error(group_cfg['effect'], label)
-            if effect_error:
-                errors.append(effect_error)
-
-        for field, allow_zero in (('duration', False), ('delay', True)):
-            if field not in group_cfg:
+        extra_fields = sorted(set(group_cfg) - {'effects'})
+        if extra_fields:
+            rendered = ', '.join(repr(field) for field in extra_fields)
+            errors.append(
+                f'animations.json {path} cannot combine "effects" with '
+                f'other group-level field(s): {rendered}'
+            )
+        effects = group_cfg['effects']
+        if not isinstance(effects, list):
+            errors.append(f'animations.json {path}.effects must be an array')
+            continue
+        if not effects:
+            errors.append(
+                f'animations.json {path}.effects must contain at least one effect'
+            )
+            continue
+        for index, effect_cfg in enumerate(effects):
+            effect_path = f'{path}.effects[{index}]'
+            if not isinstance(effect_cfg, dict):
+                errors.append(
+                    f'animations.json {effect_path} must be an object'
+                )
                 continue
-            try:
-                animation_seconds_to_milliseconds(
-                    group_cfg[field],
-                    f'animations.json {label} animation {field}',
-                    allow_zero=allow_zero,
+            errors.extend(
+                _animation_effect_entry_errors(
+                    effect_cfg,
+                    effect_path,
+                    require_effect=True,
+                    target_group_id=str(group_id),
                 )
-            except ValueError as exc:
-                errors.append(str(exc))
-
-        if 'order' in group_cfg:
-            order = group_cfg['order']
-            if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
-                errors.append(
-                    f'animations.json {label} animation order must be a positive integer: '
-                    f'{order!r}'
-                )
-        if 'trigger_shape' in group_cfg:
-            trigger_shape = group_cfg['trigger_shape']
-            if not isinstance(trigger_shape, str) or not trigger_shape.strip():
-                errors.append(
-                    f'animations.json {label} trigger_shape must be a '
-                    f'non-empty group id: {trigger_shape!r}'
-                )
-            elif trigger_shape == str(group_id):
-                errors.append(
-                    f'animations.json {label} trigger_shape must reference '
-                    'a different group'
-                )
-            if group_cfg.get('effect') == 'none':
-                errors.append(
-                    f'animations.json {label} trigger_shape cannot be used '
-                    'with effect "none"'
-                )
-        errors.extend(
-            _animation_parameter_errors(
-                group_cfg,
-                label,
-                inherited_effect='auto',
             )
+    return errors
+
+
+def _animation_effect_entry_errors(
+    effect_cfg: dict[str, Any],
+    path: str,
+    *,
+    require_effect: bool,
+    target_group_id: str,
+) -> list[str]:
+    """Validate one legacy group block or one ``effects[]`` row."""
+    errors = _unknown_field_errors(
+        effect_cfg,
+        _GROUP_EFFECT_FIELDS,
+        path,
+    )
+    if require_effect and 'effect' not in effect_cfg:
+        errors.append(f'animations.json {path}.effect is required')
+    elif 'effect' in effect_cfg:
+        effect_error = _animation_effect_error(effect_cfg['effect'], path)
+        if effect_error:
+            errors.append(effect_error)
+
+    for field, allow_zero in (('duration', False), ('delay', True)):
+        if field not in effect_cfg:
+            continue
+        try:
+            animation_seconds_to_milliseconds(
+                effect_cfg[field],
+                f'animations.json {path}.{field}',
+                allow_zero=allow_zero,
+            )
+        except ValueError as exc:
+            errors.append(str(exc))
+
+    if 'order' in effect_cfg:
+        order = effect_cfg['order']
+        if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
+            errors.append(
+                f'animations.json {path}.order must be a positive integer: '
+                f'{order!r}'
+            )
+
+    if 'trigger' in effect_cfg:
+        trigger_error = _animation_trigger_error(effect_cfg['trigger'], path)
+        if trigger_error:
+            errors.append(trigger_error)
+
+    if 'trigger_shape' in effect_cfg:
+        trigger_shape = effect_cfg['trigger_shape']
+        if not isinstance(trigger_shape, str) or not trigger_shape.strip():
+            errors.append(
+                f'animations.json {path}.trigger_shape must be a '
+                f'non-empty group id: {trigger_shape!r}'
+            )
+        elif trigger_shape == target_group_id:
+            errors.append(
+                f'animations.json {path}.trigger_shape must reference '
+                'a different group'
+            )
+        if effect_cfg.get('effect') == 'none':
+            errors.append(
+                f'animations.json {path}.trigger_shape cannot be used '
+                'with effect "none"'
+            )
+        if (
+            'trigger' in effect_cfg
+            and effect_cfg.get('trigger') != 'on-click'
+        ):
+            errors.append(
+                f'animations.json {path}.trigger_shape requires '
+                'trigger "on-click" when trigger is explicit'
+            )
+
+    errors.extend(
+        _animation_parameter_errors(
+            effect_cfg,
+            path,
+            inherited_effect='auto',
         )
+    )
     return errors
 
 
@@ -969,7 +1080,7 @@ def _bounce_support_error(
 def _resolved_animation_parameter_errors(config: dict[str, Any]) -> list[str]:
     """Validate effective animation parameters after sidecar inheritance."""
     defaults = config.get('defaults', {})
-    default_animation: dict[str, Any] = {'effect': 'auto'}
+    default_animation: dict[str, Any] = {'effect': 'none'}
     if isinstance(defaults, dict):
         value = defaults.get('animation', {})
         if isinstance(value, dict):
@@ -1015,40 +1126,54 @@ def _resolved_animation_parameter_errors(config: dict[str, Any]) -> list[str]:
         if not isinstance(groups, dict):
             continue
         for group_id, group_cfg in groups.items():
-            if (
-                not isinstance(group_cfg, dict)
-                or not _INHERITANCE_SENSITIVE_ANIMATION_FIELDS & set(group_cfg)
-            ):
+            if not isinstance(group_cfg, dict):
                 continue
-            inherited_group_animation = {
-                field: slide_animation[field]
-                for field in (
-                    'effect',
-                    'effect_options',
-                    'duration',
-                    *ANIMATION_TIMING_OPTION_FIELDS,
-                    'after_effect',
-                    'sound',
-                )
-                if field in slide_animation
-            }
-            group_animation = resolve_slide_animation_config(
-                inherited_group_animation,
-                group_cfg,
+            path = (
+                f'slides[{json.dumps(str(slide_name), ensure_ascii=False)}]'
+                f'.groups[{json.dumps(str(group_id), ensure_ascii=False)}]'
             )
-            errors.extend(
-                _animation_parameter_errors(
+            try:
+                effect_entries = animation_group_effect_entries(
+                    group_cfg,
+                    path=path,
+                )
+            except ValueError:
+                continue
+            for effect_path, effect_cfg in effect_entries:
+                if not (
+                    _INHERITANCE_SENSITIVE_ANIMATION_FIELDS
+                    & set(effect_cfg)
+                ):
+                    continue
+                inherited_group_animation = {
+                    field: slide_animation[field]
+                    for field in (
+                        'effect',
+                        'effect_options',
+                        'duration',
+                        *ANIMATION_TIMING_OPTION_FIELDS,
+                        'after_effect',
+                        'sound',
+                    )
+                    if field in slide_animation
+                }
+                group_animation = resolve_slide_animation_config(
+                    inherited_group_animation,
+                    effect_cfg,
+                )
+                errors.extend(
+                    _animation_parameter_errors(
+                        group_animation,
+                        effect_path,
+                        inherited_effect='none',
+                    )
+                )
+                error = _bounce_support_error(
                     group_animation,
-                    f'group "{slide_name}/{group_id}"',
-                    inherited_effect='auto',
+                    effect_path,
                 )
-            )
-            error = _bounce_support_error(
-                group_animation,
-                f'group "{slide_name}/{group_id}"',
-            )
-            if error:
-                errors.append(error)
+                if error:
+                    errors.append(error)
     return errors
 
 
@@ -1076,10 +1201,22 @@ def _declared_animation_sounds(
         if not isinstance(groups, dict):
             continue
         for group_id, group_cfg in groups.items():
-            if isinstance(group_cfg, dict) and 'sound' in group_cfg:
-                sounds.append(
-                    (f'group "{slide_name}/{group_id}"', group_cfg['sound'])
+            if not isinstance(group_cfg, dict):
+                continue
+            path = (
+                f'slides[{json.dumps(str(slide_name), ensure_ascii=False)}]'
+                f'.groups[{json.dumps(str(group_id), ensure_ascii=False)}]'
+            )
+            try:
+                effect_entries = animation_group_effect_entries(
+                    group_cfg,
+                    path=path,
                 )
+            except ValueError:
+                continue
+            for effect_path, effect_cfg in effect_entries:
+                if 'sound' in effect_cfg:
+                    sounds.append((effect_path, effect_cfg['sound']))
     return tuple(sounds)
 
 
@@ -1159,6 +1296,15 @@ def validate_animation_config(
             for target in slide_targets
             if target.group_id not in ambiguous_ids
         }
+    default_animation: dict[str, Any] = {'effect': 'none'}
+    defaults = config.get('defaults', {})
+    if isinstance(defaults, dict):
+        animation_value = defaults.get('animation', {})
+        if isinstance(animation_value, dict):
+            default_animation = resolve_slide_animation_config(
+                default_animation,
+                animation_value,
+            )
     slides = config.get('slides', {})
     if not isinstance(slides, dict):
         return list(dict.fromkeys(warnings))
@@ -1169,6 +1315,13 @@ def validate_animation_config(
         if not isinstance(slide_cfg, dict):
             continue
 
+        slide_animation = default_animation
+        animation_value = slide_cfg.get('animation', {})
+        if isinstance(animation_value, dict):
+            slide_animation = resolve_slide_animation_config(
+                default_animation,
+                animation_value,
+            )
         slide_targets = targets_by_slide.get(slide_name, [])
         duplicate_ids = duplicates_by_slide.get(slide_name, ())
         ambiguous_ids = set(duplicate_ids)
@@ -1177,42 +1330,71 @@ def validate_animation_config(
         if not isinstance(groups, dict):
             continue
         for group_id, group_cfg in groups.items():
+            path = (
+                f'slides[{json.dumps(str(slide_name), ensure_ascii=False)}]'
+                f'.groups[{json.dumps(str(group_id), ensure_ascii=False)}]'
+            )
             if group_id in ambiguous_ids:
                 continue
             if group_id not in known_groups:
                 warnings.append(
-                    f'animations.json references missing group: {slide_name}/{group_id}'
+                    f'animations.json {path} references a missing group'
                 )
                 continue
             target = known_groups[group_id]
-            effect = group_cfg.get('effect') if isinstance(group_cfg, dict) else None
-            if target.structurally_static and effect != 'none':
-                warnings.append(
-                    'animations.json references non-animatable structural group: '
-                    f'{slide_name}/{group_id}'
-                )
             if not isinstance(group_cfg, dict):
                 continue
-            trigger_shape = group_cfg.get('trigger_shape')
-            if not isinstance(trigger_shape, str) or not trigger_shape.strip():
+            try:
+                effect_entries = animation_group_effect_entries(
+                    group_cfg,
+                    path=path,
+                )
+            except ValueError:
                 continue
-            if trigger_shape in ambiguous_ids:
-                warnings.append(
-                    'animations.json trigger_shape references ambiguous group: '
-                    f'{slide_name}/{trigger_shape}'
+            if (
+                target.structurally_static
+                and any(
+                    normalize_animation_effect(
+                        effect_cfg.get(
+                            'effect',
+                            slide_animation.get('effect', 'none'),
+                        ),
+                        allow_none=True,
+                        allow_modes=True,
+                    )
+                    is not None
+                    for _effect_path, effect_cfg in effect_entries
                 )
-                continue
-            trigger_target = known_groups.get(trigger_shape)
-            if trigger_target is None:
+            ):
                 warnings.append(
-                    'animations.json trigger_shape references missing group: '
-                    f'{slide_name}/{trigger_shape}'
+                    f'animations.json {path} references a non-animatable '
+                    'structural group'
                 )
-            elif trigger_target.structurally_static:
-                warnings.append(
-                    'animations.json trigger_shape references non-triggerable '
-                    f'structural group: {slide_name}/{trigger_shape}'
-                )
+            for effect_path, effect_cfg in effect_entries:
+                trigger_shape = effect_cfg.get('trigger_shape')
+                if (
+                    not isinstance(trigger_shape, str)
+                    or not trigger_shape.strip()
+                ):
+                    continue
+                if trigger_shape in ambiguous_ids:
+                    warnings.append(
+                        f'animations.json {effect_path}.trigger_shape '
+                        f'references ambiguous group {trigger_shape!r}'
+                    )
+                    continue
+                trigger_target = known_groups.get(trigger_shape)
+                if trigger_target is None:
+                    warnings.append(
+                        f'animations.json {effect_path}.trigger_shape '
+                        f'references missing group {trigger_shape!r}'
+                    )
+                elif trigger_target.structurally_static:
+                    warnings.append(
+                        f'animations.json {effect_path}.trigger_shape '
+                        f'references non-triggerable structural group '
+                        f'{trigger_shape!r}'
+                    )
 
     morph_pairs, morph_errors = _resolve_morph_pairs(
         list(targets_by_slide),
@@ -1250,7 +1432,7 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
     """
     transition_defaults = {'effect': 'fade', 'duration': 0.4}
     animation_defaults = {
-        'effect': 'auto',
+        'effect': 'none',
         'duration': 0.4,
         'stagger': 0.5,
         'trigger': 'after-previous',

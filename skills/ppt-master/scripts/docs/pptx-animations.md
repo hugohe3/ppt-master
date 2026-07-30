@@ -25,17 +25,23 @@ package validation; they do not resolve or author animation effects.
 
 ## 2. Domain Model
 
-One resolved animation-pane row contains these fields:
+`groups.<id>` accepts either one backward-compatible effect object or one
+non-empty `effects[]` array; the forms are exclusive and every array row names
+`effect`. Both expand into the same row model, so repeated shape targets are
+valid. Legacy rows also accept `trigger`; omitted row settings inherit the
+resolved slide animation.
+
+One resolved row contains these fields:
 
 | Field | Meaning |
 |---|---|
 | Target | Positive PowerPoint shape id written to `p:spTgt@spid` |
 | Effect | One canonical PowerPoint-authored preset class / id / subtype / behavior-tree signature |
-| Trigger | `on-click`, `with-previous`, or `after-previous` |
+| Trigger | Row-specific `on-click`, `with-previous`, or `after-previous`; omitted values inherit the resolved slide Start mode |
 | Trigger shape | Optional different top-level group; maps to PowerPoint `On Click of` |
 | Duration | Finite positive schedule duration; scalable native behavior trees preserve their internal timing ratios |
-| Delay | Finite non-negative offset used by `after-previous` or as trigger-shape `TriggerDelayTime` |
-| Order | Positive integer sidecar order; ties retain stable SVG order |
+| Delay | Finite non-negative row offset; shape-trigger rows use it as `TriggerDelayTime` |
+| Order | Positive integer sidecar order; ties retain stable SVG group order, then `effects[]` index |
 | Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters` |
 | Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
 | Completion | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
@@ -44,14 +50,17 @@ Modes resolve before XML writing:
 
 | Mode | Resolution |
 |---|---|
-| `auto` | Deterministic semantic mapping from the SVG group id |
-| `mixed` | Deterministic cycle over canonical PowerPoint entrance presets |
-| `random` | Stable seeded choice from the same canonical preset pool |
+| `auto` | Generic entrance only: deterministic semantic mapping from the SVG group id |
+| `mixed` | Generic entrance only: deterministic cycle over canonical PowerPoint entrance presets |
+| `random` | Generic entrance only: stable seeded choice from the same canonical entrance pool |
 | `none` | No object-animation sequence |
 
 The same effective input produces the same `random` choices. When enabled,
 `--conversion-trace` records each resolved row and effect, so a generated deck
 can be audited without replaying the resolver.
+
+`animation_config.py scaffold` is neutral: object defaults are `none`, and
+empty `{}` group placeholders inherit no motion until populated.
 
 ---
 
@@ -128,7 +137,7 @@ for marker-free legacy SVGs.
 
 | Target state | Behavior |
 |---|---|
-| Ordinary content group | Animatable |
+| Ordinary content group | Animatable; a legacy block resolves one row and `effects[]` may resolve several rows against the same final shape |
 | Legacy chrome-like id | Skipped unless explicitly named in `animations.json` |
 | Explicit sidecar group override | May override only the legacy chrome-name heuristic |
 | `data-pptx-layer` or explicit static role/placeholder | Structural and never animatable |
@@ -157,10 +166,16 @@ Trigger mapping:
 | `with-previous` | `withEffect` |
 | `after-previous` | `afterEffect` |
 
-A group-level `trigger_shape` resolves to a different shape id and writes
+A row-level `trigger_shape` resolves to a different shape id and writes
 PowerPoint's native `interactiveSeq` with `onClick` shape conditions. Its row
-remains `clickEffect`; group `delay` becomes `TriggerDelayTime`. Ordinary rows
+remains `clickEffect`; row `delay` becomes `TriggerDelayTime`. Ordinary rows
 remain in `mainSeq` and keep the slide Start mode.
+
+Row `trigger` overrides slide Start in both forms. `trigger_shape` implies
+`on-click` and conflicts with an explicit non-`on-click` Start. Repeated
+`p:spTgt@spid` values are valid distinct Animation Pane rows. Ordinary rows
+retain page-wide `order`; trigger-shape rows retain their relative order in
+separate `interactiveSeq` branches and do not interleave with `mainSeq`.
 
 The writer does not emit `p:bldP` for grouped content or pictures. Microsoft
 defines `p:bldP@spid` for a text-bearing `p:sp`; using it for `p:grpSp` or
@@ -198,7 +213,7 @@ project-level preflight; field-only validation remains filesystem-independent.
 Generated export reads every slide back before packaging and compares each
 requested row with the serialized result:
 
-- row count and row order;
+- row count and row order, including stable repeated-target rows;
 - trigger, optional trigger shape, and shape target;
 - resolved effect key, preset class, filter, `presetID`, and `presetSubtype`;
 - exact effect options, repeat/reverse/rewind/acceleration/bounce/restart

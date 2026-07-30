@@ -2,8 +2,8 @@
 """
 PPT Master - Shape Boolean Core
 
-Resolve closed SVG operands into SVG-root-coordinate paths and apply
-PowerPoint-compatible merge-shapes operations without mutating the source SVG.
+Resolve closed SVG or text-outline operands into SVG-root-coordinate paths and
+apply PowerPoint-compatible merge-shapes operations without mutating the source.
 Callers insert returned paths at the original z-order under the final semantic
 or structured parent, never under the old transformed ancestor.
 
@@ -19,7 +19,7 @@ Examples:
     )
 
 Dependencies:
-    skia-pathops and local PPT Master modules
+    skia-pathops, local PPT Master modules, and uharfbuzz for text operands
 """
 
 from __future__ import annotations
@@ -117,6 +117,7 @@ def render_boolean_svg_fragments(
     source_ids: Sequence[str],
     output_id: str,
     style: Mapping[str, str] | None = None,
+    font_dirs: Sequence[str | Path] = (),
 ) -> str:
     """Return canonical SVG path fragments for one merge-shapes operation.
 
@@ -172,7 +173,12 @@ def render_boolean_svg_fragments(
 
     pathops = _load_pathops()
     operands = [
-        _element_to_pathops(element, parents, pathops)
+        _element_to_pathops(
+            element,
+            parents,
+            pathops,
+            font_dirs=font_dirs,
+        )
         for element in selected
     ]
     inherited_style = _materialize_baked_stroke_style(
@@ -315,6 +321,8 @@ def _element_to_pathops(
     element: ET.Element,
     parents: Mapping[ET.Element, ET.Element],
     pathops: Any,
+    *,
+    font_dirs: Sequence[str | Path] = (),
 ) -> Any:
     chain = _element_chain(element, parents)
     _validate_source_location(element, chain)
@@ -326,11 +334,20 @@ def _element_to_pathops(
     elif tag in _BOOLEAN_TAGS:
         commands = _shape_commands(element)
         commands = transform_path_commands(commands, matrix)
+    elif tag == "text":
+        from .text_outline import text_element_to_path_commands
+
+        commands = text_element_to_path_commands(
+            element,
+            parents,
+            font_dirs=font_dirs,
+        )
+        commands = transform_path_commands(commands, matrix)
     else:
-        supported = ", ".join(sorted(_BOOLEAN_TAGS))
+        supported = ", ".join((*sorted(_BOOLEAN_TAGS), "text"))
         raise ValueError(
-            f"Shape Boolean source {_element_label(element)} must be a closed "
-            f"{supported}, or a compact authored preset group"
+            f"Shape Boolean source {_element_label(element)} must be a "
+            f"supported {supported}, or a compact authored preset group"
         )
 
     result = _simplify_path(_commands_to_pathops(commands, pathops), pathops)

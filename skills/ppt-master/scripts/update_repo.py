@@ -204,13 +204,8 @@ def sync_python_dependencies() -> None:
         print("Neither requirements.txt nor pyproject.toml found; skipping Python dependency sync.")
         return
 
-<<<<<<< HEAD
     print("Dependency files changed. Syncing Python dependencies with uv...")
     result = run_command(["uv", "sync"])
-=======
-    print_status("Requirements include tree changed. Syncing Python dependencies...")
-    result = run_command([sys.executable, "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)])
->>>>>>> upstream/main
     if result.stdout.strip():
         print_status(result.stdout.strip())
     if result.stderr.strip():
@@ -227,12 +222,8 @@ def main(argv: list[str] | None = None) -> int:
         ensure_clean_tracked_worktree()
 
         before_head = get_head_revision()
-<<<<<<< HEAD
         before_requirements = file_digest(REQUIREMENTS_FILE)
         before_pyproject = file_digest(PYPROJECT_FILE)
-=======
-        before_requirements = requirements_digest(REQUIREMENTS_FILE)
->>>>>>> upstream/main
 
         print_status(f"Repository: {REPO_ROOT}")
         pull_result = run_command(["git", "pull", "--ff-only"])
@@ -242,12 +233,8 @@ def main(argv: list[str] | None = None) -> int:
             print_status(pull_result.stderr.strip())
 
         after_head = get_head_revision()
-<<<<<<< HEAD
         after_requirements = file_digest(REQUIREMENTS_FILE)
         after_pyproject = file_digest(PYPROJECT_FILE)
-=======
-        after_requirements = requirements_digest(REQUIREMENTS_FILE)
->>>>>>> upstream/main
 
         if before_head == after_head:
             print_status("Repository is already up to date.")
@@ -259,13 +246,7 @@ def main(argv: list[str] | None = None) -> int:
         elif before_requirements != after_requirements or before_pyproject != after_pyproject:
             sync_python_dependencies()
         else:
-<<<<<<< HEAD
             print("Dependency files unchanged. Skipping Python dependency sync.")
-=======
-            print_status(
-                "Requirements include tree unchanged. Skipping Python dependency sync."
-            )
->>>>>>> upstream/main
 
         print_status(
             "Note: system dependencies such as Node.js and Pandoc still need "

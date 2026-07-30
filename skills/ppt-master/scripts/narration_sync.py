@@ -55,9 +55,11 @@ from pptx_animations import (  # noqa: E402
     ANIMATION_TIMING_OPTION_FIELDS,
     animation_seconds_to_milliseconds,
     normalize_animation_effect,
+    normalize_animation_trigger,
 )
 from pptx_transitions import read_slide_transition_xml  # noqa: E402
 from svg_to_pptx.animation_config import (  # noqa: E402
+    animation_group_effect_entries,
     scan_project_targets,
     scan_svg_targets,
     validate_animation_config_errors,
@@ -112,6 +114,7 @@ class AnimationGroupState:
     """One effective canonical animation row before narration timing."""
 
     group_id: str
+    effect_index: int | None
     order: int
     source_index: int
     duration_ms: int
@@ -531,12 +534,12 @@ def _effective_slide_animation(
         "canonical animation stagger",
         allow_zero=True,
     )
-    trigger = slide_animation.get(
-        "trigger",
-        default_animation.get("trigger", "after-previous"),
+    trigger = normalize_animation_trigger(
+        slide_animation.get(
+            "trigger",
+            default_animation.get("trigger", "after-previous"),
+        )
     )
-    if not isinstance(trigger, str):
-        raise ValueError(f"Canonical animation trigger must be a string: {trigger!r}")
     timing_options = {
         field: (
             slide_animation[field]
@@ -582,16 +585,81 @@ def _animation_playback_duration_ms(
     return max(1, round(one_play * float(repeat_count)))
 
 
+def _active_group_effect_entries(
+    slide_name: str,
+    group_id: str,
+    group_cfg: dict[str, Any],
+    slide_effect: str | None,
+) -> tuple[tuple[int | None, str, dict[str, Any]], ...]:
+    """Return active legacy or multi-effect rows with stable write locations."""
+    group_path = (
+        f'slides[{json.dumps(slide_name, ensure_ascii=False)}]'
+        f'.groups[{json.dumps(group_id, ensure_ascii=False)}]'
+    )
+    effect_entries = animation_group_effect_entries(
+        group_cfg,
+        path=group_path,
+    )
+    is_multi_effect = 'effects' in group_cfg
+    active: list[tuple[int | None, str, dict[str, Any]]] = []
+    for index, (effect_path, effect_cfg) in enumerate(effect_entries):
+        effect = normalize_animation_effect(
+            effect_cfg.get("effect", slide_effect)
+        )
+        if effect is None:
+            continue
+        active.append((
+            index if is_multi_effect else None,
+            effect_path,
+            effect_cfg,
+        ))
+    return tuple(active)
+
+
 def _group_is_animated(
+    slide_name: str,
+    group_id: str,
     group_cfg: dict[str, Any],
     slide_effect: str | None,
 ) -> bool:
-    if "effect" not in group_cfg:
-        return slide_effect is not None
-    return normalize_animation_effect(group_cfg["effect"]) is not None
+    return bool(
+        _active_group_effect_entries(
+            slide_name,
+            group_id,
+            group_cfg,
+            slide_effect,
+        )
+    )
+
+
+def _active_group_order_requires_svg(
+    slide_name: str,
+    groups_cfg: dict[str, Any],
+    group_ids: list[str],
+    slide_effect: str | None,
+) -> bool:
+    """Return whether SVG group order is needed to break sequence ambiguity."""
+    if len(group_ids) <= 1:
+        return False
+    order_owners: dict[int, str] = {}
+    for group_id in group_ids:
+        for _effect_index, _effect_path, effect_cfg in _active_group_effect_entries(
+            slide_name,
+            group_id,
+            groups_cfg[group_id],
+            slide_effect,
+        ):
+            order = effect_cfg.get("order")
+            if order is None:
+                return True
+            previous_group = order_owners.setdefault(order, group_id)
+            if previous_group != group_id:
+                return True
+    return False
 
 
 def _needs_svg_group_resolution(
+    slide_name: str,
     settings: SlideAnimationSettings,
     groups_cfg: dict[str, Any],
     plan_entries: list[TimingPlanEntry] | None,
@@ -601,14 +669,21 @@ def _needs_svg_group_resolution(
         group_id
         for group_id, group_cfg in groups_cfg.items()
         if isinstance(group_cfg, dict)
-        and _group_is_animated(group_cfg, settings.effect)
+        and _group_is_animated(
+            slide_name,
+            group_id,
+            group_cfg,
+            settings.effect,
+        )
     ]
     if plan_entries is None:
         if settings.effect is not None:
             return True
-        return (
-            len(active_explicit) > 1
-            and any("order" not in groups_cfg[group_id] for group_id in active_explicit)
+        return _active_group_order_requires_svg(
+            slide_name,
+            groups_cfg,
+            active_explicit,
+            settings.effect,
         )
 
     candidate_ids = list(
@@ -624,11 +699,19 @@ def _needs_svg_group_resolution(
         for group_id in candidate_ids
         if group_id in groups_cfg
         and isinstance(groups_cfg[group_id], dict)
-        and _group_is_animated(groups_cfg[group_id], settings.effect)
+        and _group_is_animated(
+            slide_name,
+            group_id,
+            groups_cfg[group_id],
+            settings.effect,
+        )
     ]
-    if len(active_candidates) <= 1:
-        return False
-    return any("order" not in groups_cfg[group_id] for group_id in active_candidates)
+    return _active_group_order_requires_svg(
+        slide_name,
+        groups_cfg,
+        active_candidates,
+        settings.effect,
+    )
 
 
 def _resolve_animation_groups(
@@ -652,19 +735,12 @@ def _resolve_animation_groups(
                 "must be an object"
             )
         groups_cfg[group_id] = group_cfg
-    interactive_ids = sorted(
-        group_id
-        for group_id, group_cfg in groups_cfg.items()
-        if group_cfg.get("trigger_shape") is not None
-        and _group_is_animated(group_cfg, settings.effect)
+    use_svg = _needs_svg_group_resolution(
+        slide_name,
+        settings,
+        groups_cfg,
+        plan_entries,
     )
-    if interactive_ids:
-        raise ValueError(
-            f'Recorded narration cannot synchronize trigger-shape animations '
-            f'on slide "{slide_name}": {", ".join(interactive_ids)}'
-        )
-
-    use_svg = _needs_svg_group_resolution(settings, groups_cfg, plan_entries)
     candidate_ids: list[str]
     if use_svg:
         svg_path = project_path / "svg_output" / f"{slide_name}.svg"
@@ -706,7 +782,12 @@ def _resolve_animation_groups(
             if targets_by_id[group_id].structurally_static
             and (
                 group_id not in groups_cfg
-                or _group_is_animated(groups_cfg[group_id], settings.effect)
+                or _group_is_animated(
+                    slide_name,
+                    group_id,
+                    groups_cfg[group_id],
+                    settings.effect,
+                )
             )
         )
         if structural_ids:
@@ -722,7 +803,12 @@ def _resolve_animation_groups(
             group_cfg = groups_cfg.get(target.group_id, {})
             explicitly_animated = (
                 target.group_id in groups_cfg
-                and _group_is_animated(group_cfg, settings.effect)
+                and _group_is_animated(
+                    slide_name,
+                    target.group_id,
+                    group_cfg,
+                    settings.effect,
+                )
             )
             if target.chrome and not explicitly_animated:
                 continue
@@ -739,53 +825,105 @@ def _resolve_animation_groups(
     else:
         candidate_ids = list(groups_cfg)
 
-    preliminaries: list[tuple[int, int, str, dict[str, Any]]] = []
+    preliminaries: list[
+        tuple[
+            int,
+            int,
+            int,
+            str,
+            int | None,
+            str,
+            dict[str, Any],
+            str,
+        ]
+    ] = []
     for source_index, group_id in enumerate(candidate_ids):
         group_cfg = groups_cfg.get(group_id, {})
-        if not _group_is_animated(group_cfg, settings.effect):
-            continue
-        order = group_cfg.get("order", source_index + 1)
-        if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
-            raise ValueError(
-                f'Canonical animation order for "{slide_name}/{group_id}" '
-                f"must be a positive integer: {order!r}"
+        effect_entries = _active_group_effect_entries(
+            slide_name,
+            group_id,
+            group_cfg,
+            settings.effect,
+        )
+        for effect_position, (
+            effect_index,
+            effect_path,
+            effect_cfg,
+        ) in enumerate(effect_entries):
+            order = effect_cfg.get("order", source_index + 1)
+            if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
+                raise ValueError(
+                    f'Canonical animation order for "{effect_path}" '
+                    f"must be a positive integer: {order!r}"
+                )
+            if effect_cfg.get("trigger_shape") is not None:
+                raise ValueError(
+                    f'Recorded narration cannot synchronize trigger-shape '
+                    f'animation "{effect_path}" on slide "{slide_name}"'
+                )
+            effect_trigger = normalize_animation_trigger(
+                effect_cfg.get("trigger", settings.trigger)
             )
-        preliminaries.append((order, source_index, group_id, group_cfg))
-    preliminaries.sort(key=lambda item: (item[0], item[1]))
+            if effect_trigger == "on-click":
+                raise ValueError(
+                    f'Recorded narration cannot synchronize on-click animation '
+                    f'"{effect_path}" on slide "{slide_name}"'
+                )
+            preliminaries.append((
+                order,
+                source_index,
+                effect_position,
+                group_id,
+                effect_index,
+                effect_path,
+                effect_cfg,
+                effect_trigger,
+            ))
+    preliminaries.sort(key=lambda item: (item[0], item[1], item[2]))
 
     states: list[AnimationGroupState] = []
-    for sequence_index, (order, source_index, group_id, group_cfg) in enumerate(
-        preliminaries
-    ):
+    for sequence_index, (
+        order,
+        source_index,
+        _effect_position,
+        group_id,
+        effect_index,
+        effect_path,
+        effect_cfg,
+        effect_trigger,
+    ) in enumerate(preliminaries):
         duration_ms = animation_seconds_to_milliseconds(
-            group_cfg.get("duration", settings.duration_ms / 1000),
-            f'canonical animation duration for "{slide_name}/{group_id}"',
+            effect_cfg.get("duration", settings.duration_ms / 1000),
+            f'canonical animation duration for "{effect_path}"',
             allow_zero=False,
         )
         timing_options = dict(settings.timing_options)
         timing_options.update(
             {
-                field: group_cfg[field]
+                field: effect_cfg[field]
                 for field in ANIMATION_TIMING_OPTION_FIELDS
-                if field in group_cfg
+                if field in effect_cfg
             }
         )
         playback_duration_ms = _animation_playback_duration_ms(
             duration_ms,
             timing_options,
-            label=f'canonical animation for "{slide_name}/{group_id}"',
+            label=f'canonical animation for "{effect_path}"',
+        )
+        default_delay = (
+            settings.stagger_ms / 1000
+            if effect_trigger == "after-previous" and sequence_index > 0
+            else 0
         )
         original_delay_ms = animation_seconds_to_milliseconds(
-            group_cfg.get(
-                "delay",
-                0 if sequence_index == 0 else settings.stagger_ms / 1000,
-            ),
-            f'canonical animation delay for "{slide_name}/{group_id}"',
+            effect_cfg.get("delay", default_delay),
+            f'canonical animation delay for "{effect_path}"',
             allow_zero=True,
         )
         states.append(
             AnimationGroupState(
                 group_id=group_id,
+                effect_index=effect_index,
                 order=order,
                 source_index=source_index,
                 duration_ms=playback_duration_ms,
@@ -922,7 +1060,11 @@ def rebuild_animations(
         if used_svg:
             svg_fallback_slide_count += 1
         if timing_plan is None and states:
-            positional_slides.append((slide_name, len(states), len(cues)))
+            positional_slides.append((
+                slide_name,
+                len({state.group_id for state in states}),
+                len(cues),
+            ))
 
         state_ids = {state.group_id for state in states}
         cue_by_group: dict[str, int | None] = {}
@@ -941,9 +1083,12 @@ def rebuild_animations(
                     )
                 cue_by_group[entry.group_id] = entry.cue_number
         else:
+            ordered_group_ids = list(
+                dict.fromkeys(state.group_id for state in states)
+            )
             cue_by_group = {
-                state.group_id: index + 1 if index < len(cues) else None
-                for index, state in enumerate(states)
+                group_id: index + 1 if index < len(cues) else None
+                for index, group_id in enumerate(ordered_group_ids)
             }
 
         animation_value = derived_slide.setdefault("animation", {})
@@ -960,10 +1105,18 @@ def rebuild_animations(
 
         previous_end_ms = 0
         referenced_cues: set[int] = set()
+        seen_groups: set[str] = set()
         for state in states:
-            cue_number = cue_by_group.get(state.group_id)
+            first_group_effect = state.group_id not in seen_groups
+            seen_groups.add(state.group_id)
+            cue_number = (
+                cue_by_group.get(state.group_id)
+                if first_group_effect
+                else None
+            )
             if cue_number is None:
-                fallback_count += 1
+                if first_group_effect:
+                    fallback_count += 1
                 delay_ms = state.original_delay_ms
                 actual_start_ms = previous_end_ms + delay_ms
             else:
@@ -987,8 +1140,21 @@ def rebuild_animations(
                     f'Derived animation group "{slide_name}/{state.group_id}" '
                     "must be an object"
                 )
-            group_value["order"] = state.order
-            group_value["delay"] = _seconds_from_ms(delay_ms)
+            if state.effect_index is None:
+                effect_value = group_value
+            else:
+                group_path = (
+                    f'slides[{json.dumps(slide_name, ensure_ascii=False)}]'
+                    f'.groups[{json.dumps(state.group_id, ensure_ascii=False)}]'
+                )
+                derived_effect_entries = animation_group_effect_entries(
+                    group_value,
+                    path=group_path,
+                )
+                effect_value = derived_effect_entries[state.effect_index][1]
+            effect_value["order"] = state.order
+            effect_value["delay"] = _seconds_from_ms(delay_ms)
+            effect_value["trigger"] = "after-previous"
             previous_end_ms = actual_start_ms + state.duration_ms
 
         ignored_cue_count += len(cues) - len(referenced_cues)

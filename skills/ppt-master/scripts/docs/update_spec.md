@@ -33,13 +33,8 @@ uvx ppt-master update-spec projects/acme_ppt169_20260301 primary=#0066AA
 uvx ppt-master update-spec projects/acme_ppt169_20260301 colors.accent=#FF6B35
 
 # change the deck-wide font family
-<<<<<<< HEAD
-uvx ppt-master update-spec projects/acme_ppt169_20260301 \
-  'typography.font_family="Inter", Arial, sans-serif'
-=======
 uvx ppt-master update-spec projects/acme_ppt169_20260301 \
   'typography.font_family=Arial, "Microsoft YaHei", sans-serif'
->>>>>>> upstream/main
 ```
 
 ## v2 scope

@@ -11,7 +11,9 @@ description: Optional post-processing stage for per-slide and per-object animati
 > outcome in `design_spec.md §I` is enabled. Deck-wide transitions,
 > auto-advance, and deck-wide per-element settings without page-specific motion
 > or an existing sidecar use [`animations.md`](../../references/animations.md)
-> directly and do not activate this stage.
+> directly and do not activate this stage. In Quick Generate, the current agent
+> may activate either path from the request/deck in active context without a
+> Design Spec or user interaction.
 
 ## When to Run
 
@@ -52,7 +54,7 @@ sidecars enter this stage; explicit disables follow the table without deletion.
 | Explicit adjustment / tuning / repair | Validate first, preserve the existing choreography where its semantic units remain valid, and migrate affected group references after any required regrouping |
 | Stage activated with an existing sidecar and new §IX suggestions but no user replacement request | Validate first; preserve valid existing choreography and adjust only the affected semantic units |
 | Existing sidecar with no new motion instruction | Validate and preserve it unchanged; if invalid, repair the owning sidecar/group reference before export |
-| Ambiguous generation request | Ask whether to regenerate from scratch or modify the current animation; do not choose on the user's behalf |
+| Ambiguous generation request | Default Generate asks whether to regenerate or modify; Quick Generate decides from the request, visible SVG, and existing sidecar, then continues |
 
 Unless explicit all-motion disable bypasses it, validate an existing sidecar
 before deciding to preserve, modify, or suppress object motion:
@@ -68,14 +70,15 @@ the animation plan merely because it already exists.
 
 **Optional-context fallback**: these semantic files inform this supporting stage but are not its gate artifacts. If any are absent, state what is missing and proceed with every remaining file plus visible SVG content. If all three context inputs are absent, use only explicit user instructions, visible SVG content, and the resolution rules in [`animations.md`](../../references/animations.md); do not infer detailed choreography beyond what the page itself expresses.
 
-**Decision ownership — advice versus requirement**: A §IX
-`Motion suggestion` expresses the Strategist's recommended communication job or
-reveal relationship; it neither activates this stage nor locks an effect,
-Effect Options, timing, trigger, group id, or coverage. Once another trigger
-activates the stage, Executor may adopt, adjust, or decline the suggestion,
-including choosing `none` when motion would reduce clarity. Explicit user
-motion requirements remain mandatory. Never change page content merely to
-justify animation.
+**Decision ownership — understand, then design**: A §IX `Motion suggestion`
+expresses the Strategist's communication job and semantic relationship; it
+neither activates this stage nor locks implementation. Once active, understand
+that intent, then develop the motion brief from the final SVG's semantic units,
+visible states, composition, and speaker flow. Do not mechanically map it to
+groups, effects, order, or timing. Executor may preserve, adapt, simplify,
+decline, or choose `none`; an unchanged realization is valid and requires no
+novelty. Explicit user motion requirements bind. Never change page
+content merely to justify animation.
 
 **Hard rule — existing visible-layer boundary**: This stage may regroup existing content only under §2 visual equivalence; it MUST NOT create or modify a crop, comparison layer, scrim, lens, hotspot, annotation, or other visible image state to satisfy motion intent. When a required state is missing and ordinary Slide-local authoring can supply it, return to Generate Step 6, rerun the final SVG gate and regenerate notes only when speaker notes are enabled, then resume here. If a structural boundary prevents that repair, simplify a non-binding suggestion to legal existing units, a page transition, or `none`; an explicit requirement follows failure recovery instead of changing structure.
 
@@ -87,7 +90,7 @@ author motion merely to expose a capability.
 
 ---
 
-## 2. Rebuild Semantic Motion Groups When Needed, Then List IDs
+## 2. Rebuild Semantic Motion Units When Needed, Then List IDs
 
 **Mandatory when object-targeted motion is in scope — content-first grouping
 audit**: inspect each affected slide's visible content against its communication
@@ -96,15 +99,15 @@ anchor. The affected set is the page named by an adopted suggestion or explicit
 object-motion request, plus both endpoints of each deterministic Morph pair.
 Untouched pages need no animation audit. Existing groups are implementation
 evidence only. Keep a current group unchanged only after confirming that it
-already represents exactly one audience-facing reveal unit or one continuing
+already represents exactly one audience-facing motion unit or one continuing
 Morph object. A page-transition-only plan without explicit Morph pairs skips
 regrouping and group listing.
 
 | Content condition | Required grouping action |
 |---|---|
-| One current group contains several independently narrated rows, cards, steps, claims, or stages | Split it into descriptive direct-root sibling groups, one per reveal unit |
-| One reveal unit is scattered across groups or root primitives | Merge or wrap its background, icon, label, value, and supporting text into one direct-root group |
-| A connector or arrow explains entry into a node or stage | Reveal it with the relationship or target unit that makes the connection intelligible |
+| One current group contains several independently narrated rows, cards, steps, claims, or stages | Split it into descriptive direct-root sibling groups, one per motion unit |
+| One motion unit is scattered across groups or root primitives | Merge or wrap its background, icon, label, value, and supporting text into one direct-root group |
+| A connector or arrow explains entry into a node or stage | Keep it with the relationship or target unit that makes the connection intelligible |
 | A hero visual, overview graphic, takeaway, or warning has its own communication role | Give it its own semantic group |
 | The same semantic object continues across adjacent Morph pages | Isolate each endpoint as one direct-root group and keep both endpoints as compatible object kinds |
 | Several atoms express one inseparable idea | Keep them together; do not animate the atoms separately |
@@ -137,10 +140,12 @@ There is no target group count. Granularity follows the page's actual claims,
 comparisons, sequence, causality, and narration beats.
 
 After any regrouping, rerun the final SVG quality gate because `svg_output/`
-changed:
+changed. Use the owning route's checker form; Quick Generate must add its
+lockless profile flag:
 
 ```bash
 uvx ppt-master svg-quality-check <project_path> --stage final --json
+# Quick Generate: insert --quick-generate before --stage.
 ```
 
 Then list the **post-regroup** anchors:
@@ -165,7 +170,10 @@ only after semantic regrouping:
 uvx ppt-master animation-config scaffold <project_path>
 ```
 
-Do not read the full scaffold unless it is needed as an editing starting point.
+The scaffold is neutral: its default object effect is `none`, and listed groups
+may remain empty `{}` placeholders until adopted. Creating it does not select
+generic entrance animation. Do not read the full scaffold unless it is needed
+as an editing starting point.
 
 ---
 
@@ -180,19 +188,26 @@ deck-wide transition review.
 | Page transition | `defaults.transition` or `slides.<slide>.transition` | Control how one slide enters from the previous slide |
 | Deterministic Morph pair | `slides.<destination>.morph` | Bind one real source group to one real destination group when semantic identity continues across adjacent slides |
 | Page animation defaults | `defaults.animation` or `slides.<slide>.animation` | Control the default object-animation behavior for animated groups on a slide |
-| Object overrides | `slides.<slide>.groups.<group_id>` | Control order, effect, delay, or duration for a real SVG group |
+| Object lifecycle | `slides.<slide>.groups.<group_id>` | Assign one legacy effect row or an ordered `effects[]` sequence to a real SVG motion unit |
 
 **Per-affected-page motion brief**: decide what communication job the requested
-motion should perform—or that it should perform none—then choose only the
-relevant transition, reveal sequence, object effects, and timing. Use
+motion should perform—or that it should perform none. Classify the relevant
+motion units by lifecycle before choosing effects, then select only the
+relevant transition, object effects, order, and timing. Use
 `design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style,
 speaker notes for narration order, and SVG group ids for target validity.
 
-**Title reveal decision**: when a title participates in the affected page's
-motion job, choose static, immediate, delayed, synchronized, post-hero, or
-narration-cued behavior from slide intent. Use the sidecar override for a
-marker-free legacy chrome-like id; repair an incorrect explicit
-structural/static marker before animating it.
+**Mandatory — select from meaning, not catalog coverage**: run the
+page-relationship and lifecycle selection playbooks in
+[`animations.md`](../../references/animations.md) §3 and §4 before choosing any
+specific effect. Their candidates are recall aids, not coverage targets; this
+stage binds the selected duties to real targets.
+
+**Title motion decision**: when a title participates, classify its lifecycle,
+then choose immediate, delayed, synchronized, post-hero, or narration-cued
+timing from slide intent. Use the sidecar override for a marker-free legacy
+chrome-like id; repair an incorrect explicit structural/static marker before
+animating it.
 
 **Default — inherit unaffected motion layers (may override when the page's
 communication job requires it)**: a custom object-animation pass may leave the
@@ -205,9 +220,10 @@ longer motion for conceptual pivots, hero diagrams, section boundaries, and
 final takeaways. Uniform timing is valid when it fits the requested style.
 
 **Reference — not a constraint: motion judgment.** Decide the communication
-job, tone, audience order, and whether direction carries meaning before using
-geometry. If motion adds no clarity or intended feeling, use `none`,
-`entrance_appear`, or `entrance_fade`. Layout direction alone does not require
+job, lifecycle, tone, audience order, and whether direction carries meaning
+before using geometry. If motion adds no clarity or intended feeling, classify
+the unit `static`; use `none`, `entrance_appear`, or `entrance_fade` only when
+that result matches the lifecycle. Layout direction alone does not require
 special motion; variation follows a real content/tone change, never a quota.
 
 ### 3.1 Supported Page Transitions
@@ -252,9 +268,9 @@ tree. Media-only commands remain in the audio/video workflows.
 | Choice | Behavior |
 |---|---|
 | `entrance_*` / `emphasis_*` / `path_*` / `exit_*` | Select one explicit canonical PowerPoint object effect |
-| `auto` | Map content roles to canonical entrances; image-like ids use a richer canonical pool |
-| `mixed` | Cycle 16 canonical entrance presets by group order |
-| `random` | Select deterministically from the same canonical entrance pool |
+| `auto` | Generic `enter` only: map content roles to canonical entrances; image-like ids use a richer canonical pool |
+| `mixed` | Generic `enter` only: cycle 16 canonical entrance presets by group order |
+| `random` | Generic `enter` only: select deterministically from the same canonical entrance pool |
 | `none` | Exclude the object or slide from in-slide animation |
 
 The 29 old short names remain readable only as compatibility inputs; do not use
@@ -266,10 +282,15 @@ direction as `effect_options.direction`; legacy `wheel` preserves its historical
 four-spoke amount.
 
 `auto`, `mixed`, and `random` never choose emphasis, motion-path, or exit
-effects implicitly. Select an explicit canonical key when the plan calls for
-one.
+effects implicitly. Use them only after classifying a unit as a generic
+`enter`; select an explicit canonical key for every adopted `emphasize`,
+`move`, or `exit` duty.
 
-**Hard rule — explicit semantic choreography**: When an adopted image-led plan depends on a specific reveal relationship or order, target its real groups with explicit canonical effects and order; do not delegate those material decisions to `auto`, `mixed`, or `random`. Those modes remain valid when generic entrance treatment is sufficient.
+**Hard rule — explicit semantic choreography**: When an adopted plan depends
+on a specific lifecycle, relationship, or order, target its real groups with
+explicit canonical effects and order; do not delegate those material decisions
+to `auto`, `mixed`, or `random`. Those modes remain valid only when generic
+entrance treatment is sufficient.
 
 **Start modes**:
 
@@ -312,18 +333,27 @@ explicit structural layer, role, or placeholder marker.
 | `animation.duration` | Slide-specific default object schedule duration |
 | `animation.stagger` | Slide-specific delay between object animation rows |
 | `animation.trigger` | Slide-specific start mode |
-| `groups.<id>.effect` | Object-specific canonical native effect, `auto`, `mixed`, `random`, or `none`; old names are read-only compatibility inputs |
-| `order` | Animation order only; does not change SVG layer order |
-| `delay` | Extra seconds in `after-previous`, or after clicking `trigger_shape` |
-| `duration` | Per-group schedule duration in seconds; scalable native behavior trees keep their internal timing ratios, while `entrance_appear` and instantaneous native presets retain their PowerPoint-authored duration and use this value for subsequent `after-previous` spacing |
-| `effect_options` | Effect-specific PowerPoint parameters; requires an explicit canonical `effect` in the same block |
-| `trigger_shape` | Different top-level group id for native **On Click of**; group-only and not inherited |
+| `groups.<id>.effects` | Non-empty ordered array for a multi-duty lifecycle; every row explicitly names `effect`, and `effects` cannot coexist with legacy single-effect fields in the same group block |
+| `groups.<id>.effect` | Backward-compatible single-row form: one canonical native effect, `auto`, `mixed`, `random`, or `none`; old names are read-only compatibility inputs |
+| `effects[].trigger` / legacy `trigger` | Row-specific Start mode; omitted values inherit `animation.trigger` |
+| `order` | Page-wide order for ordinary rows; ties retain SVG group order and then `effects[]` index. `trigger_shape` rows keep relative order in separate interactive sequences; SVG layer order never changes |
+| `delay` | Row-specific seconds added to the resolved Start or shape trigger |
+| `duration` | Per-row schedule duration in seconds; scalable native behavior trees keep their internal timing ratios, while `entrance_appear` and instantaneous native presets retain their PowerPoint-authored duration and use this value for subsequent `after-previous` spacing |
+| `effect_options` | Effect-specific PowerPoint parameters; requires an explicit canonical `effect` in the same legacy block or `effects[]` row |
+| `trigger_shape` | Different top-level group id for native **On Click of**; row-only and not inherited. It implies `on-click`; an explicit row `trigger` may accompany it only when also `on-click` |
 | `repeat_count` / `repeat_duration` | Repeat count or total repeat span; mutually exclusive |
 | `auto_reverse`, `rewind` | Reverse each cycle and/or restore the pre-animation state |
 | `accelerate`, `decelerate`, `bounce_end` | `0..1` timing ratios; acceleration plus deceleration must not exceed `1`; bounce requires an interpolated effect and cannot combine with deceleration |
 | `restart` | `always`, `when-not-active`, or `never` |
 | `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
 | `sound` | Project-relative or absolute `.m4a`, `.mp3`, or `.wav` path |
+
+**Hard rule — one group representation**: A populated
+`groups.<id>` object uses either the backward-compatible single-effect fields
+or `effects[]`, never both. `effects[]` must contain at least one object, and
+every row explicitly names `effect`. An untouched scaffold `{}` is a neutral
+placeholder. Omitted row duration, Start, timing/completion controls, and sound
+inherit the resolved slide animation values exactly as the legacy form does.
 
 `effect_options` may contain `direction`, `amount`, `color`, `font_name`,
 `relative`, or `size`, but validation permits only fields supported by the
@@ -334,32 +364,10 @@ PowerPoint Speed; `accelerate`/`decelerate` own smooth start/end, so do not
 invent duplicate fields. Change Font's `font_name` is one concrete
 target-installed PowerPoint face, never a CSS font stack.
 
-**Canonical sparse example — only the affected slide and divergent fields
-appear**:
-
-```json
-{
-  "version": 1,
-  "slides": {
-    "03_market": {
-      "transition": {
-        "effect": "wipe",
-        "effect_options": { "direction": "left" },
-        "duration": 0.35
-      },
-      "groups": {
-        "chart": { "effect": "entrance_wipe", "effect_options": { "direction": "left" }, "order": 2, "duration": 0.6 },
-        "insight": { "effect": "entrance_fly", "effect_options": { "direction": "up_right" }, "order": 3, "delay": 0.2, "trigger_shape": "chart" }
-      }
-    }
-  }
-}
-```
-
-Every unlisted page inherits the resolved defaults. `03_market` changes its
-transition and two real groups without restating a page animation block.
-Structural chrome stays omitted unless a marker-free legacy name needs an
-explicitly reviewed override.
+Use the coherent multi-category `effects[]` example in
+[`animations.md`](../../references/animations.md) §2. Its static frame stays
+unlisted while one real unit runs enter → move → emphasize → exit. Keep the
+legacy object for one-row overrides; never convert old sidecars mechanically.
 
 Use the complete two-slide deterministic Morph example in
 [`animations.md`](../../references/animations.md) §2.1; do not copy the source
@@ -375,21 +383,21 @@ When `animations.json` was newly created or changed after the §1 validation,
 run:
 
 ```bash
-<<<<<<< HEAD
 uvx ppt-master animation-config validate <project_path>
-uvx ppt-master finalize-svg <project_path>
-uvx ppt-master svg-to-pptx <project_path>
-=======
-uvx ppt-master animation-config validate <project_path>
->>>>>>> upstream/main
 ```
 
-After validation succeeds, return to
-[`generate-pptx.md`](../generate-pptx.md) Step 7.1. Generate owns note
-splitting, `finalize_svg.py`, native export, and the published postflight
-receipt; Step 7.3 reads `<project_path>/animations.json` automatically. If §2
-changed `svg_output/`, complete its required final SVG quality rerun before
-returning. Do not finalize or export independently from this stage.
+After validation succeeds, return to the owning export path:
+
+- Default Generate → [`generate-pptx.md`](../generate-pptx.md) Step 7.1, which
+  owns note splitting, `finalize_svg.py`, native export, and the published
+  postflight receipt.
+- Quick Generate → [`quick-generate.md`](../profiles/quick-generate.md) §4,
+  which skips finalization and exports with `--quick-generate`.
+
+Both exporters read `<project_path>/animations.json` automatically. If §2
+changed `svg_output/`, complete the owning route's required final SVG quality
+rerun before returning. Do not finalize or export independently from this
+stage.
 
 **Validation**: The later native export must reflect the per-slide and
 per-object overrides. `--animation none` still disables all per-element
@@ -404,8 +412,9 @@ ambiguous direct-root groups, conflicting or undeclared shared keys, non-object
 Morph, and any target that does not remain one compatible Slide-local object
 after structure processing.
 
-Generate Step 7 export reads back row order, trigger, target, resolved effect,
-duration, offset, timing placement, IDs, and shape references. Narration
+Generate Step 7 export reads back row order, including repeated rows targeting
+one shape, trigger, target, resolved effect, duration, offset, timing placement,
+IDs, and shape references. Narration
 preserves these rows. Direct-PPTX routes fingerprint and preserve source object
 animation; they never author it. See
 [`pptx-animations.md`](../../scripts/docs/pptx-animations.md).

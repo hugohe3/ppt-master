@@ -124,7 +124,7 @@ PPT Master is not intended to become:
 - An arbitrary SVG-to-PPTX or arbitrary OOXML conversion service.
 - A system that reconstructs missing historical Master / Layout intent from a finished PPTX or SVG.
 - An in-place upgrader that grafts inferred template structure onto existing files.
-- A speed-first generator that sacrifices deck coherence, native editability, or delivery reliability.
+- A product-wide speed-first default that sacrifices deck coherence, native editability, or delivery reliability.
 
 These non-goals do not forbid presentation-specific use of research, images, audio, native objects, or existing decks. They prevent supporting infrastructure from becoming an independent product with a different user promise.
 
