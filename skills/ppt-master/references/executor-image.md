@@ -27,15 +27,20 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 
 **Template-bundled images**: [`apply-template-workspace.md`](../workflows/stages/apply-template-workspace.md) copies them into project `images/`. Outside `mirror`, reference `../images/<name>` and never copy a template SVG's bare sibling href: the rendered page lives in `svg_output/`. `mirror` ([`executor-structured.md`](./executor-structured.md) §1.1) keeps hrefs verbatim; export resolves them against `images/`.
 
-**Layout ownership**: Loaded
-[`image-layout-patterns.md`](./image-layout-patterns.md) is vocabulary;
-[`image-layout-spec.md`](./image-layout-spec.md) is math, not quota/lock. On an
-image-led page, interpret its communication job and develop an
-image/content or image/shape action from hierarchy, copy, asset ratio/focus,
-and deck rhythm; do not mechanically reproduce the named pattern. Position,
-size, crop, and legibility scrim are treatments. Executor may deepen, simplify,
-or replace it, including
-plain split/full bleed when clearest. Preserve role/source,
+**Default — active image integration (may override when plain placement is
+stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)
+as vocabulary and [`image-layout-spec.md`](./image-layout-spec.md) as math, not
+a quota or lock. On every image-bearing page, derive its image/content or
+image/shape relationship from the communication job, hierarchy, copy, asset
+ratio/focus, and deck rhythm. Before drawing, evaluate useful modifiers across
+reveal/crop/registration, tone/contrast, framing/depth, and native overlay.
+Adopt a legal modifier, effect, or Boolean construction when it materially
+improves focus, hierarchy, image-copy integration, legibility, or style; use
+the already-loaded [`svg-effects.md`](./svg-effects.md) and
+[`native-shape-authoring.md`](./native-shape-authoring.md) to realize it. This
+is an opportunity pass, not an effect quota. Deepen, simplify, replace, or
+combine suggestions without mechanically reproducing their names; plain
+split/frame/full bleed remains valid when strongest. Preserve role/source,
 must-use, crop/content, and explicit user/template constraints; expression-only
 changes need no upstream rewrite.
 
