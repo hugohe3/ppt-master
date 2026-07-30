@@ -176,7 +176,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Concern | Contract |
 |---|---|
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
-| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>` |
+| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>`; an exact outer `<g filter>` is also registered when its sole visual child is one clipped `<image>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
 | Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx`, `dy`, and `flood-opacity` on `feDropShadow`; explicit `flood-opacity` on `feFlood`; explicit `slope` on linear `feFuncA` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
@@ -192,9 +192,10 @@ converter-only historical path may also multiply flood-color alpha and
 ancestor group opacity.
 Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
-`<tspan>` / `<g>` / unsupported targets are forbidden; apply the
+`<tspan>` / ordinary `<g>` / unsupported targets are forbidden; apply the
 effect to supported objects or use explicit layers.
-Private `<g filter>` carriers are limited to the hash-locked
+Special `<g filter>` carriers are limited to the exact single clipped-image
+form in §6.5, the hash-locked
 `data-pptx-part="geometry-preview"` transport in §1.4—a direct child of an
 imported preset object referencing the hidden geometry carrier's filter—and the
 exact imported picture-crop carrier in §6.5, which keeps the effect outside its
@@ -285,8 +286,11 @@ modes, `none` with a mode, and extra tokens are errors; the converter never
 guesses a fallback.
 
 **Hard rule — fit/clip interaction**: a non-trivial clip disables `meet`
-frame-fit. Match the image box to the source ratio or use `slice`. One §6.4
-filter may apply directly to `<image>`.
+frame-fit. Match the image box to the source ratio or use `slice`. Put one §6.4
+filter directly on an unclipped `<image>`. For a clipped picture, keep
+`clip-path` on the `<image>` and put the filter on an exact outer `<g>` whose
+sole visual child is that image. Never combine `filter` and `clip-path` on the
+same `<image>`: SVG would clip the preview effect while PowerPoint would not.
 
 **Hard rule — picture frames and sources are explicit and decodable**: every
 SVG `<image>` has explicit positive `width`/`height` and exactly one non-empty
@@ -772,9 +776,9 @@ remain authoritative in the owning subsection.
 
 #### Page-Level Stacks
 
-Choose the skeleton in
-[`image-layout-patterns.md`](./image-layout-patterns.md), read each stack
-back-to-front, and omit every layer without a distinct job.
+Use the planned page skeleton; when images are active, select it through
+[`image-layout-patterns.md`](./image-layout-patterns.md). Read each stack
+back-to-front and omit every layer without a distinct job.
 
 | Page job | Back-to-front stack | Stop |
 |---|---|---|

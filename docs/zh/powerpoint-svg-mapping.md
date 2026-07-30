@@ -140,7 +140,7 @@ PowerPoint 意图
 | 图片裁剪填充 | 一个已登记对齐值加显式 `slice` | 原生 `a:srcRect` 裁剪 | 源尺寸可读时为 `Native-stable` | 对齐值区分大小写；未知模式与额外 token 为 error |
 | 图片适应框 | 省略时使用默认值，或一个已登记对齐值加显式 `meet` | 原生 fitted picture frame | `Native-normalized` | 仅写对齐值是兼容输入，Checker 会给出规范化建议 |
 | 图片透明度 | 原子 image `opacity` | 原生 `a:alphaModFix` | `Native-stable` | 值必须有限，并在可接受 opacity 语法内 |
-| 图片阴影或发光 | `<image>` 上一个已登记效果 filter；导入裁剪图使用私有外层载体 | 原生 `p:pic/p:spPr/a:effectLst` | `Approximate`；单一效果可往返 | 其他 primitive、效果 DAG 与多个独立效果仍不支持 |
+| 图片阴影或发光 | 未裁剪 `<image>` 直接承载一个已登记效果 filter；裁剪图片或导入 crop 使用精确单图片外层载体 | 原生 `p:pic/p:spPr/a:effectLst` | `Approximate`；单一效果以一个可编辑图片往返 | `filter` 与 `clip-path` 不得同挂一个 `<image>`；普通组 filter、其他 primitive、效果 DAG 与多个独立效果仍不支持 |
 | 图片裁成形状 | 作用于 image/crop wrapper 且只含一个 SVG 命名空间形状的已登记 `clip-path` | picture preset 或 custom geometry | `Native-normalized` | circle/ellipse/rect preset 必须覆盖完整图片 frame；局部或偏移轮廓使用 path/polygon；不接受任意 mask 或依赖绕组规则（winding rule）的轮廓 |
 | 导入的裁剪图片 | 导入器产生的精确 SVG 命名空间嵌套 crop wrapper，在可视根/`g` 树中内含一个直接 unit-frame image | 重新导出为原生 signed `a:srcRect` | crop 合同内为 `Native-stable`，包括负裁剪值 | 拒绝通用嵌套 viewport、非可视或仅渲染所属容器、额外可视子元素、不可表示的 crop window、无裁剪的冗余 wrapper，以及无法解析的 clip-marker 配对 |
 | 图片重着色、艺术滤镜、模糊或复杂 mask | 无通用创作映射 | 使用受支持 overlay 重建或预渲染 | `Bake-required` | 未登记 SVG filter 和 blend mode 违反主合同 |
