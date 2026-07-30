@@ -158,7 +158,7 @@ preset selection and authoring behavior are documented in
 | Solid fill | Canonical `fill="#RRGGBB"`, either a named lock anchor or contextual page paint | `a:solidFill`, with a theme token when an anchor role is exactly reusable | `Native-stable` | Compatible spellings may warn; malformed colors fail, while valid contextual colors are informational |
 | Fill transparency | Opaque fill plus `fill-opacity` | Native alpha | `Native-stable` | Generated values are finite unitless numbers from 0 to 1 |
 | Linear gradient fill | Registered `<linearGradient>` in `<defs>` | Native `a:gradFill` | `Native-normalized` | Stops, coordinates, transforms, and references must follow the closed contract |
-| Radial gradient fill | Registered `<radialGradient>` | Point-focused circular DrawingML gradient | `Approximate`; effective focus round-trips while outer center/radius normalize | Review radius- or outer-center-sensitive designs |
+| Radial gradient fill | Registered `<radialGradient>` | Point-focused circular DrawingML gradient | `Approximate`; an in-circle effective focus round-trips while outer center/radius normalize | Effective focus must lie inside the canonical centered radius-0.5 circle; import centers an outside focus with a diagnostic; review radius- or outer-center-sensitive designs |
 | Pattern fill | Annotated project pattern definition | Native `a:pattFill` | `Native-normalized` | Only registered PowerPoint preset patterns are supported |
 | No outline | `stroke="none"` or the registered absence of a line | `a:noFill` under `a:ln` | `Native-stable` | Do not simulate absence with zero-width ambiguous CSS |
 | Solid outline | Registered `stroke` and width | Native `a:ln` | `Native-stable` | Width and paint must use canonical units/grammar |
