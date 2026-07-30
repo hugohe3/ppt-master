@@ -82,6 +82,9 @@ Design Spec or lock. Use a new path, or verify that an existing path's
 Before writing P01, resolve in active context:
 
 - the slide roster, canvas, visual direction, palette, typography, and wording;
+- when useful, one transient deck-level visual motif with an identity or
+  communication job, a recognizable invariant, and planned variation across
+  applicable page roles; omit it when restraint serves the deck better;
 - a transient resource roster with page, filename, purpose, visual intent,
   acquisition path, crop behavior, and status. For an image/formula, include
   its page relationship plus any subject position, focus, quiet region, or
@@ -152,9 +155,12 @@ on a lock or generated font asset.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
 order. Use P01 as the visual anchor and continue directly through the remaining
-pages without a first-page checker or confirmation stop. After the complete
-roster exists, run the one final checker below. Apply other supporting tools
-and stages only when their capability is actually needed.
+pages without a first-page checker or confirmation stop. When a motif was
+resolved, reuse it selectively and vary scale, crop, density, position, or
+content interaction instead of cloning one ornament. Keep this choice only in
+active context; create no planning artifact or approval stop. After the complete
+roster exists, run the one final checker below. Apply other supporting tools and
+stages only when their capability is actually needed.
 
 ---
 
