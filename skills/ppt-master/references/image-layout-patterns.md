@@ -202,7 +202,7 @@ The following three patterns are topologically different and are not interchange
 
 59. **Image divider band** — replace a line between content regions with a narrow visual strip.
 
-36. **Shadow under an image panel** — lift the panel through a supporting shape; follow [`svg-effects.md`](./svg-effects.md).
+36. **Shadow under an image panel** — apply one §6.4 filter to a standalone `<image>`; when the lifted object includes a frame or caption, shadow that supporting shape instead.
 
 37. **Glow on an overlay shape** — emphasize an overlay boundary within the supported effect contract.
 

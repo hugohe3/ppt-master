@@ -174,7 +174,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Concern | Contract |
 |---|---|
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
-| Public targets | `<rect>`, `<circle>`, `<path>`, `<text>` |
+| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
 | Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx`, `dy`, and `flood-opacity` on `feDropShadow`; explicit `flood-opacity` on `feFlood`; explicit `slope` on linear `feFuncA` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
@@ -190,14 +190,15 @@ converter-only historical path may also multiply flood-color alpha and
 ancestor group opacity.
 Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
-`<image>` / `<tspan>` / `<g>` / unsupported targets are forbidden; apply the
+`<tspan>` / `<g>` / unsupported targets are forbidden; apply the
 effect to supported objects or use explicit layers.
-The sole `<g filter>` exception is the hash-locked
-`data-pptx-part="geometry-preview"` transport in §1.4: it must be a direct child
-of an imported preset object and reference the same filter as that object's one
-hidden geometry carrier. The preview is render-only and never becomes a second
-PowerPoint object; this exception does not authorize filters on ordinary groups.
-PPTX import preserves one registered shape/connector shadow or glow and records
+Private `<g filter>` carriers are limited to the hash-locked
+`data-pptx-part="geometry-preview"` transport in §1.4—a direct child of an
+imported preset object referencing the hidden geometry carrier's filter—and the
+exact imported picture-crop carrier in §6.5, which keeps the effect outside its
+viewport. Neither authorizes ordinary group filters or creates a second
+PowerPoint object.
+PPTX import preserves one registered shape/connector/picture shadow or glow and records
 unsupported object/run effects as import diagnostics instead of exposing a new
 authoring surface. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary)
@@ -282,8 +283,8 @@ modes, `none` with a mode, and extra tokens are errors; the converter never
 guesses a fallback.
 
 **Hard rule — fit/clip interaction**: a non-trivial clip disables `meet`
-frame-fit. Match the image box to the source ratio or use `slice`. Do not apply
-filters directly to `<image>`.
+frame-fit. Match the image box to the source ratio or use `slice`. One §6.4
+filter may apply directly to `<image>`.
 
 **Hard rule — picture frames and sources are explicit and decodable**: every
 SVG `<image>` has explicit positive `width`/`height` and exactly one non-empty
@@ -304,7 +305,7 @@ every non-root `<svg>` is the exact wrapper accepted by the shared crop parser:
 |---|---|
 | Outer | Registered `x`, `y`, positive `width`/`height`; four ordinary-decimal unit coordinates in `viewBox`; `preserveAspectRatio="none"`; `overflow="hidden"` |
 | Child | Exactly one direct empty `<image>` with one non-empty `href`/`xlink:href`, `x="0" y="0" width="1" height="1" preserveAspectRatio="none"` |
-| Context | Only root SVG / ordinary visual `<g>` ancestors; outer may add `id`, supported `transform`, registered layer/carrier metadata, and `data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`, `data-pptx-shape-name`, `data-pptx-shape-scope` |
+| Context | Only root SVG / ordinary visual `<g>` ancestors; outer may add `id`, supported `transform`, registered layer/carrier metadata, and `data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`, `data-pptx-shape-name`, `data-pptx-shape-scope`; an exact imported picture carrier may hold its one §6.4 filter outside this viewport |
 | Shape crop | Exact outer `data-pptx-crop="1"`; authored wrappers put the registered, locally resolving image-only clip on the inner image, using `userSpaceOnUse` geometry matching the visible `viewBox`; legacy imported outer clips remain compatible |
 
 The inner image may add only registered `opacity` and that clip. Quantize the
