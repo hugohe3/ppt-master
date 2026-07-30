@@ -20,7 +20,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Strategist Confirmation Stage
 
-🚧 **GATE — whole-document authoring**: Generate Step 4 reads `templates/design_spec_reference.md`, writes the complete Design Spec from scratch, passes Gate 1, then reads `templates/spec_lock_reference.md` and writes the complete lock projection. For a new project, create each finished artifact once; do not instantiate or patch a placeholder scaffold. Run `project_manager.py validate`; the machine schemas, not remembered headings, own grammar validation.
+🚧 **GATE — whole-document authoring**: Generate Step 4 reads `${SKILL_DIR}/templates/design_spec_reference.md`, authors the complete Design Spec once, passes Gate 1, then reads `${SKILL_DIR}/templates/spec_lock_reference.md` and authors the complete lock once. Do not scaffold or patch placeholders. Run `project_manager.py validate`; machine schemas, not remembered headings, own grammar validation.
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the confirmation fields below and wait for explicit user confirmation.
 
@@ -452,11 +452,11 @@ Generate's notes/audio dependency gate. Record animation provenance as
 Stage 3 `false`, explicit objects-off, or explicit all-motion-off; only the last
 includes transitions.
 
-1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
+1. With Generate Step 4's retained complete final-confirmation state, read `${SKILL_DIR}/templates/design_spec_reference.md`.
 2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching Stage 3 proactive value → compatibility default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
 3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before entering an enabled refine-spec review or authoring `spec_lock.md`.
 4. If enabled, run [`refine-spec`](../workflows/stages/refine-spec.md) after Gate 1; edit only that Design Spec and create no lock before explicit approval.
-5. Read `templates/spec_lock_reference.md`. From the approved Design Spec plus context, create the lock once or resynchronize stale derived state. Retain identity/refinements, select stable roles/routing, omit unnamed page-local values, and do not reopen evidence. This is implementation judgment, not another recommendation.
+5. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create the lock once or resynchronize stale derived state from the approved Design Spec and context. Retain identity/refinements and stable roles/routing; omit unnamed page-local values, do not reopen evidence, and make no new recommendation.
 
 **Final confirmation → Design Spec consumption map**:
 

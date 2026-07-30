@@ -180,7 +180,7 @@ Read references/strategist.md
 
 The core chooses proposed Stage 2 source ids first. Load this bundle for a non-`none` proposal; after confirmation, retain it only for confirmed non-`none` sources or an active formula plan. Confirmed `none` without formulas writes no image rows. Bare template names and style language do not load the template module.
 
-> ⚠️ **Mandatory artifact gates**: after final confirmation, author the complete `design_spec.md` from `templates/design_spec_reference.md`. After Gate 1, run enabled refinement and wait for approval; then author `spec_lock.md` from its reference, the approved Design Spec, and context. Create each new artifact once—no placeholder scaffold; `scaffold-*` commands remain manual-only. Schemas validate structure; semantic fidelity remains mandatory.
+> ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](../references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -286,10 +286,10 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 For a new project, use the reference-first whole-document sequence:
 
-1. Read `templates/design_spec_reference.md`; compose I–X from retained confirmation, analysis, and context; create `<project_path>/design_spec.md` once without placeholders/examples.
+1. Read `${SKILL_DIR}/templates/design_spec_reference.md`; create complete I–X `<project_path>/design_spec.md` once from retained confirmation, analysis, and context, without placeholders/examples.
 2. Audit it field by field against retained confirmation; Gate 1 must pass.
 3. If enabled, run [`refine-spec`](stages/refine-spec.md) on that file until explicit approval; touch no lock.
-4. From `templates/spec_lock_reference.md`, the approved Design Spec, and context, create the new lock once or resynchronize stale derived state. Do not reopen `result.json` or make a new design choice.
+4. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create or resynchronize the lock once from approved Design Spec and context. Never reopen `result.json` or make a new design choice.
 5. Compare lock anchors/routing to the Design Spec; run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
 
 Final state → initial Design Spec mismatch, approved Design Spec/context → lock mismatch, or an unapplied revision blocks despite schema validity. `validate` does not prove fidelity. Repair from retained confirmation before refinement; during it, preserve unaffected values and apply explicit revisions. After approval, derive the lock from that Design Spec/context. Resume/refine edits existing files, never scaffolds. Fresh recovery alone may reread persisted final evidence once.
