@@ -551,25 +551,26 @@ def _print_postflight_receipt(receipt: _PostflightReceipt) -> None:
     print(f'  [REPORT] {receipt.report_path}')
 
 
-def _validate_quick_test_output(
+def _validate_quick_generate_output(
     output_path: Path,
     *,
     expected_slide_count: int,
 ) -> dict[str, object]:
-    """Validate a quick-test PPTX without writing a report sidecar."""
+    """Validate a quick-generated PPTX without writing a report sidecar."""
     try:
         package = _package_part_counts(output_path)
     except (OSError, zipfile.BadZipFile) as exc:
         raise PptxPostflightValidationError(
-            f"quick-test PPTX is not a readable ZIP package: {exc}"
+            f"quick-generated PPTX is not a readable ZIP package: {exc}"
         ) from exc
     if package['zip_integrity'] != 'passed':
         raise PptxPostflightValidationError(
-            f"quick-test PPTX ZIP integrity failed at {package['corrupt_member']}"
+            "quick-generated PPTX ZIP integrity failed at "
+            f"{package['corrupt_member']}"
         )
     if package['slides'] != expected_slide_count:
         raise PptxPostflightValidationError(
-            "Quick-test Slide count does not match authored SVG count: "
+            "Quick-generated Slide count does not match authored SVG count: "
             f"{package['slides']} != {expected_slide_count}"
         )
     return package
@@ -812,7 +813,7 @@ def main(argv: list[str] | None = None) -> int:
 Examples:
     %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
-    %(prog)s projects/_smoke_quick --quick-test           # Test-only: svg_output/ -> PPTX, no sidecars
+    %(prog)s projects/quick_generate_demo --quick-generate # Direct: svg_output/ -> PPTX, no sidecars
 
     # Disable transition / change transition effect
     %(prog)s examples/ppt169_demo -t none
@@ -890,11 +891,11 @@ Recorded narration:
                         help='Require SVG canvases to match this registered format')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
     parser.add_argument(
-        '--quick-test',
+        '--quick-generate',
         action='store_true',
         help=(
-            'Test-only direct export of a small fixed SVG roster from '
-            'svg_output/. Infer one consistent canvas from the SVGs, use a flat '
+            'Direct export of an authored SVG roster from svg_output/. Infer '
+            'one consistent canvas from the SVGs, use a flat '
             'package with converter defaults, and skip spec_lock.md, notes, '
             'animations, backup, conversion trace, and validation report '
             'artifacts.'
@@ -1122,7 +1123,7 @@ Recorded narration:
         )
         return 1
 
-    if args.quick_test:
+    if args.quick_generate:
         conflicts: list[str] = []
         if args.source not in {None, 'output'}:
             conflicts.append('--source must be omitted or output')
@@ -1156,7 +1157,7 @@ Recorded narration:
             conflicts.append('animation overrides')
         if conflicts:
             print(
-                "Error: --quick-test cannot be combined with: "
+                "Error: --quick-generate cannot be combined with: "
                 + ", ".join(conflicts),
                 file=sys.stderr,
             )
@@ -1174,7 +1175,7 @@ Recorded narration:
     native_structure_contract = None
     pptx_structure = args.pptx_structure
     lock_path = project_path / 'spec_lock.md'
-    if not args.quick_test and not lock_path.is_file():
+    if not args.quick_generate and not lock_path.is_file():
         print(
             "Error: spec_lock.md is required for release SVG export",
             file=sys.stderr,
@@ -1182,11 +1183,11 @@ Recorded narration:
         return 1
     declared_structure_mode = (
         None
-        if args.quick_test
+        if args.quick_generate
         else _declared_pptx_structure_mode(project_path)
     )
     primary_language = None
-    if not args.quick_test:
+    if not args.quick_generate:
         try:
             primary_language = _declared_primary_language(project_path)
         except LanguageTagError as exc:
@@ -1245,7 +1246,7 @@ Recorded narration:
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure in {'flat', 'structured'} and not args.quick_test:
+    if pptx_structure in {'flat', 'structured'} and not args.quick_generate:
         try:
             theme_font_spec = load_theme_font_spec(project_path)
             master_text_style_spec = load_master_text_style_spec(project_path)
@@ -1287,10 +1288,10 @@ Recorded narration:
     canvas_format = args.format
     expected_viewbox = (
         None
-        if args.quick_test
+        if args.quick_generate
         else _declared_canvas_viewbox(project_path)
     )
-    if expected_viewbox is None and not args.quick_test:
+    if expected_viewbox is None and not args.quick_generate:
         print(
             "Error: spec_lock.md must contain canvas.viewBox for release export",
             file=sys.stderr,
@@ -1303,11 +1304,17 @@ Recorded narration:
     native_files, native_source_dir = find_svg_files(
         project_path,
         native_source,
-        allow_fallback=args.source is None,
+        allow_fallback=args.source is None and not args.quick_generate,
     )
     ref_files = native_files
     if not native_files:
-        if args.source is not None:
+        if args.quick_generate:
+            print(
+                "Error: No SVG files found for --quick-generate in: "
+                f"{project_path / 'svg_output'}",
+                file=sys.stderr,
+            )
+        elif args.source is not None:
             requested_dir = project_path / native_source_dir
             print(
                 "Error: No SVG files found in explicitly requested source: "
@@ -1433,7 +1440,7 @@ Recorded narration:
         narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
         native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}.pptx"
         # Preserve the authored svg_output/ beside every default-flow export.
-        if not args.quick_test:
+        if not args.quick_generate:
             backup_dir = project_path / "backup" / timestamp
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1841,7 +1848,7 @@ Recorded narration:
     # are still stamped at export; only the authored fields stay blank.
     doc_metadata = None
     metadata_path = project_path / 'metadata.json'
-    if metadata_path.is_file() and not args.quick_test:
+    if metadata_path.is_file() and not args.quick_generate:
         try:
             loaded = json.loads(metadata_path.read_text(encoding='utf-8'))
         except (json.JSONDecodeError, OSError) as exc:
@@ -1966,15 +1973,15 @@ Recorded narration:
             print(f"  [info] svg_output/ not found, backup skipped")
 
     if success:
-        if args.quick_test:
+        if args.quick_generate:
             try:
-                package = _validate_quick_test_output(
+                package = _validate_quick_generate_output(
                     native_path,
                     expected_slide_count=len(native_files),
                 )
             except PptxPostflightValidationError as exc:
                 print(
-                    "Error: quick-test PPTX failed in-memory validation and "
+                    "Error: quick-generated PPTX failed in-memory validation and "
                     f"must not be used: {exc}",
                     file=sys.stderr,
                 )
@@ -1985,7 +1992,7 @@ Recorded narration:
                 return 1
             if verbose:
                 print(
-                    "  [QUICK-TEST] "
+                    "  [QUICK-GENERATE] "
                     f"status=passed slides={package['slides']} "
                     "sidecars=none"
                 )

@@ -3752,7 +3752,7 @@ def _prepare_flat_structure(
         text_style_status = (
             f"{master_count} master text style(s)"
             if master_text_style_spec is not None
-            else "stock text defaults retained (diagnostic caller)"
+            else "stock text defaults retained (no theme contract)"
         )
         print(f"  Flat theme: {theme_count} theme part(s), {text_style_status}")
 
