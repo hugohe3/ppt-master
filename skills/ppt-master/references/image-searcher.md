@@ -2,9 +2,9 @@
 
 # Image_Searcher Reference Manual
 
-Role definition for the **web image acquisition path**: translate Strategist intent into keyword queries, search openly-licensed providers, download a license-cleared image into `project/images/`, and record provenance + license metadata into `image_sources.json`.
+Role definition for the **web image acquisition path**: translate the active resource owner's intent into keyword queries, search openly-licensed providers, download a license-cleared image into `project/images/`, and record provenance + license metadata into `image_sources.json`.
 
-**Trigger**: resource list rows with `Acquire Via: web`. The role is loaded only when at least one such row exists.
+**Trigger**: the Default Generate resource list or Quick Generate transient roster contains `Acquire Via: web`. The role is loaded only when at least one such row exists.
 
 ---
 
@@ -69,12 +69,13 @@ Keep two layers distinct:
 
 | Layer | Owner and grammar |
 |---|---|
-| Design Spec §VIII `Reference` | Strategist's complete visual intent: exact subject, desired view/mood, focal or quiet region, and crop-safety constraints. Positive quality cues are valid here. |
+| Default Generate `design_spec.md §VIII Reference` | Strategist's complete visual intent: exact subject, desired view/mood, focal or quiet region, and crop-safety constraints. Positive quality cues are valid here. |
+| Quick Generate transient `Reference` | Current main agent's active-context intent after honoring explicit user assets, URLs, subjects, and constraints; unspecified choices are resolved automatically without confirmation. |
 | `image_queries.json.items[].query` / positional query | Image_Searcher's concrete entity/identity keyword string. Start with the shortest phrase that preserves identity; keep exact multi-word names and necessary disambiguators even when they exceed four words. Omit mood, quality, composition, HEX, and negative wording. |
 
 Web APIs match metadata, not semantic intent. Providers try the original query first, then progressively simplified four/three/two/one-word variants. A pipeline manifest should therefore use a concise query without pre-truncating exact names. For Chinese landmarks, use the precise Chinese name with Wikimedia; for stock providers, use compact English identity terms when they retain the subject.
 
-Image_Searcher consumes the locked Reference and never rewrites `design_spec.md` or `spec_lock.md`. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the locked intent to manufacture a match.
+Image_Searcher consumes the active Reference and never rewrites its owner. In Default Generate, that means no rewrite of `design_spec.md` or `spec_lock.md`; in Quick Generate, the transient Reference remains fixed for the run. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the active intent to manufacture a match.
 
 When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
 
@@ -172,29 +173,36 @@ Do not tune this into a visual taste engine. The scorer prevents obvious metadat
 
 ### Suitability review — with or without a multimodal model
 
-A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. Review it against the locked §VIII Reference and Crop Policy before it is trusted:
+A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. Review it against the active Reference and Crop Policy before it is trusted:
 
-- **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution). Judge subject identity, intended mood/view, focal or quiet region, and whether the locked crop policy remains safe.
-- **Non-multimodal model (no vision)**: do **not** pretend to confirm. Hand off to a human — surface each web image's `source_page_url` from `image_sources.json` (live preview also shows the placed result) and let the user judge.
+- **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution). Judge subject identity, intended mood/view, focal or quiet region, and whether the active crop policy remains safe.
+- **Non-multimodal model (no vision)**: do **not** pretend to confirm. Default Generate hands off via each `source_page_url`. Quick Generate does not open an interaction; mark a required image `Needs-Manual` when visual suitability cannot be established, preserve provenance, and let the quick export gate block.
 
-For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject and satisfy the locked focal/crop intent. Passing metadata never authorizes changing that intent downstream.
+For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject and satisfy the active focal/crop intent. Passing metadata never authorizes changing that intent downstream.
 
 Never treat a generic `required_terms` pass as acceptance. For example, matching `Ground Fissure` can return an unrelated transit station named Yunlong, and matching `stone pillar` can return a different scenic area. If the proper name / geography cannot be retained, stop at `Needs-Manual`.
 
 **Replacement ladder when a best match is not right** (any reviewer):
 
 1. refine the query and re-run that row while each revision tests a materially different identity phrase or disambiguator; do not repeat a semantically exhausted query;
-2. **manual URL replace (universal, model-agnostic)** — the user finds a better image anywhere and gives its URL; download and swap it in:
+2. **manual URL replace (universal, model-agnostic)** — use a user-supplied URL and swap it in:
    ```bash
    python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
-   Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds ([`executor-web-image.md`](./executor-web-image.md) §1);
+   Recorded with `license_tier: manual` — verifying usage rights is the user's
+   call. In Quick Generate, use this step only when the URL was already
+   supplied; never pause to request one. The command updates the image and
+   `image_sources.json` but does **not** rewrite `image_queries.json`. Validate
+   the downloaded file and matching manual-provenance entry, then reconcile
+   that query row and the active roster to `Sourced` before export; a stale
+   `Needs-Manual` status remains blocking
+   ([`executor-web-image.md`](./executor-web-image.md) §1);
 3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
 4. when the query variants, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
 
 Web search is far cheaper than AI generation, so this review pass is well worth it.
 
-**This review never halts the pipeline** (image-base §6 hard rule). It runs inside Step 5 image acquisition: an image that cannot be verified or replaced right now becomes `Needs-Manual` and the deck still builds (placeholder), so generation flows straight into Step 6. Manual `--from-url` replacement is an improvement step, not a blocking gate — do it now, or later from live preview, without stopping the run.
+**This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §6). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
 
 ### Manual review candidates (escalation, opt-in)
 
@@ -306,11 +314,11 @@ CLI exit: `0` when all attempted rows resolve; `1` while any row remains `Failed
 
 ---
 
-## 9. Handoff with Strategist
+## 9. Handoff with the Intent Owner
 
 Reference field is **intent description**, not a query. See [`image-base.md`](./image-base.md) §8 for the rule.
 
-Keep it intact as the acceptance contract. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
+Keep it intact as the acceptance contract. In Default Generate the owner is Strategist; in Quick Generate it is the current main agent's transient roster. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
 
 ---
 
@@ -335,7 +343,7 @@ Executor does not interpret raw license strings — `license_tier` is sufficient
 In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
 
 - [ ] Every web row has a downloaded file at `project/images/<filename>` OR is marked `Needs-Manual`
-- [ ] Each `Sourced` web image was reviewed against the locked Reference/Crop Policy — a multimodal model via `images/.review/<stem>.jpg`, otherwise handed to the user via `source_page_url`; a mismatch was re-queried, replaced, escalated, or marked `Needs-Manual`, never repaired by rewriting the locked intent
+- [ ] Each `Sourced` web image was reviewed against the active Reference/Crop Policy — a multimodal model via `images/.review/<stem>.jpg`; without vision, Default Generate hands off via `source_page_url` while Quick Generate records `Needs-Manual` without interaction. A mismatch was re-queried, replaced, escalated, or marked `Needs-Manual`, never repaired by rewriting the active intent
 - [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text` (except `manual` `--from-url` rows, which carry no `attribution_text`)
 - [ ] Any `attribution-required` image has visible author + license credit in every SVG that references it
 - [ ] `metadata_dimensions` warnings surfaced when downloaded preview is much smaller than upstream-claimed size

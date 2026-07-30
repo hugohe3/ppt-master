@@ -203,18 +203,22 @@ If generation feels slow, check your model's token throughput. The bottleneck is
 
 ## Q: Can I generate directly without the Strategist phase?
 
-Yes. Explicitly request **quick generation** and provide fact-sufficient,
-self-contained content. The Generate route then uses the
+Yes. Explicitly request **quick generation**. The Generate route then uses the
 [`quick-generate` profile](../skills/ppt-master/workflows/profiles/quick-generate.md):
-the agent decides the page structure in active context, hand-authors
-`svg_output/` to the shared standards, and runs the direct exporter.
+source conversion and research for identified factual gaps still run when
+needed, but the current agent decides the content, page structure, visual
+system, and resource roster in active context without invoking Strategist,
+confirmation, `design_spec.md`, or `spec_lock.md`.
 
-This profile produces only the SVG pages and one PPTX. It skips source
-conversion, research, Strategist/confirmation, templates, asset acquisition,
-Live Preview, quality-report files, notes, `svg_final/`, backup, animation, and
-narration. Requests needing any skipped capability stay on the default
-pipeline. Page count alone neither activates nor blocks quick generation. This
-is a workflow shortcut, not a wall-clock or default-quality-equivalence promise.
+The profile still prepares every resource the deck needs: supplied or extracted
+images, AI/web/sliced images, project icons, rendered formulas, and the required
+manifests or provenance records. After preparation, the current agent
+hand-authors `svg_output/` to the shared standards and runs the direct exporter.
+The shortcut still omits structured template reuse, native chart/table
+replacement, Live Preview, visual-review delivery, quality-report files, notes,
+`svg_final/`, backup, animation, and narration. Page count alone neither
+activates nor blocks quick generation. This is a workflow shortcut, not a
+wall-clock or default-quality-equivalence promise.
 
 ## Q: Will long decks blow out the context window in one shot?
 

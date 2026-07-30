@@ -813,7 +813,7 @@ def main(argv: list[str] | None = None) -> int:
 Examples:
     %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
-    %(prog)s projects/quick_generate_demo --quick-generate # Direct: svg_output/ -> PPTX, no sidecars
+    %(prog)s projects/quick_generate_demo --quick-generate # Direct: svg_output/ -> PPTX, no export sidecars
 
     # Disable transition / change transition effect
     %(prog)s examples/ppt169_demo -t none
@@ -1994,7 +1994,7 @@ Recorded narration:
                 print(
                     "  [QUICK-GENERATE] "
                     f"status=passed slides={package['slides']} "
-                    "sidecars=none"
+                    "export_sidecars=none"
                 )
                 print(f"  [PPTX] {native_path}")
             return 0

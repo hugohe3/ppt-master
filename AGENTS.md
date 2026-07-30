@@ -6,14 +6,14 @@ This file is the project entry point for general AI agents.
 
 ## Project Overview
 
-PPT Master turns source material into natively editable DrawingML PPTX. Generate owns a default Strategist → Image_Generator → Executor pipeline and an explicit quick-generation bypass.
+PPT Master turns source material into natively editable DrawingML PPTX. Generate owns the default Strategist → Image_Generator → Executor pipeline and an explicit Quick profile without a separate strategy/confirmation phase.
 
 **Route selection authority**: [`skills/ppt-master/workflows/routing.md`](skills/ppt-master/workflows/routing.md) owns the four top-level artifact routes: Generate PPTX, Create Template, Fill Native PPTX, and Enhance Native PPTX. Child workflows, profiles, stages, and governance documents refine one selected route; they are not competing top-level routes.
 
 - Topic-only or fact-insufficient inputs run [`topic-research`](skills/ppt-master/workflows/stages/topic-research.md) in Generate Step 1; facts only, no images.
 - Raw PPTX template plus new material/topic routes to [`template-fill-pptx`](skills/ppt-master/workflows/template-fill-pptx.md), not the SVG pipeline.
 - Raw PPTX cannot be consumed as a Generate Step 3 SVG template; run [`create-template`](skills/ppt-master/workflows/create-template.md) first and return with the generated template workspace root. Never add Master/Layout structure directly to an existing PPTX/SVG; generate new structured SVG pages from the workspace.
-- Explicit quick/fast generation from fact-sufficient self-contained content may use [`quick-generate`](skills/ppt-master/workflows/profiles/quick-generate.md): decide structure in context, skip Strategist/confirmation, hand-author `svg_output/`, and export directly without default sidecars.
+- Explicit quick/fast or skip-strategy generation may use [`quick-generate`](skills/ppt-master/workflows/profiles/quick-generate.md): prepare sources and page resources as needed, let the current agent decide without interaction, omit Strategist/confirmation/spec/lock, hand-author `svg_output/`, and export directly.
 - PPTX beautify is a strict 1:1 main-generation [`profile`](skills/ppt-master/workflows/profiles/beautify-pptx.md), not a separate route; any split/merge/drop/reorder uses the default main-pipeline policy.
 - Finished PPTX native enhancement uses [`native-enhance-pptx`](skills/ppt-master/workflows/native-enhance-pptx.md) and must not enter SVG regeneration.
 - [`visual-review`](skills/ppt-master/workflows/stages/visual-review.md), [`customize-animations`](skills/ppt-master/workflows/stages/customize-animations.md), and [`generate-audio`](skills/ppt-master/workflows/stages/generate-audio.md) are supporting stages; their trigger rules remain explicit/conditional.
@@ -28,7 +28,7 @@ PPT Master turns source material into natively editable DrawingML PPTX. Generate
 ## Required Conventions
 
 - **Repo-wide style rules** — when editing prompt files under [`skills/ppt-master/references/`](skills/ppt-master/references/), Python under [`skills/ppt-master/scripts/`](skills/ppt-master/scripts/), or any other code/prose in the repo, follow the matching style rule in [`docs/rules/`](docs/rules/).
-- **Prompt decision ownership** — follow [`docs/rules/prompt-style.md`](docs/rules/prompt-style.md) §4.1: Strategist readies project-local resources; Executor realizes the plan from that prepared pool. For icons, every SVG under `<project>/icons/` is prepared execution material, while `icons.inventory` records the Strategist's planned bundled selection rather than an execution whitelist. Never move acquisition or reselection downstream.
+- **Prompt decision ownership** — follow [`docs/rules/prompt-style.md`](docs/rules/prompt-style.md) §4.1. Default Strategist prepares project-local resources and Executor realizes them; Quick's current agent decides and prepares before SVG authoring. This is not downstream acquisition. Every project icon is prepared material; `icons.inventory` records only the default plan's bundled selection.
 - **Markdown language consistency** — Markdown files under `skills/ppt-master/workflows/`, `skills/ppt-master/references/`, and `docs/` are currently single-language per directory. New files mirror the language of their siblings; do not mix English scaffolding with Chinese paragraphs (or vice versa) inside one file. Chat replies are unaffected.
 
 ## Compatibility Boundary
@@ -60,7 +60,7 @@ python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --wait-onl
 
 # Image tools and SVG quality check
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
-# Formula rendering — manifest written by Strategist after typography confirmation:
+# Formula rendering — manifest written by Default Strategist after confirmation or by the Quick main agent during resource preparation:
 python3 skills/ppt-master/scripts/latex_render.py <project_path>
 python3 skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
 python3 skills/ppt-master/scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia

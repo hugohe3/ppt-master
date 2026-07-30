@@ -4,7 +4,7 @@
 
 Conditional Executor authority for inline attribution on web-sourced images.
 
-**Trigger**: load when at least one placed image has `Status: Sourced`.
+**Trigger**: load for any placed `Status: Sourced` image. Quick Generate uses the same `image_sources.json` contract without interaction.
 
 ## 1. Inline Attribution for Sourced Images
 
@@ -20,6 +20,6 @@ The credit is **not** rendered by post-processing or export — it must be prese
 
 Use `attribution_text` from the manifest entry as the **starting point**. You may omit the filename and full URL when the visible source/provider remains clear, but retain that image's author and CC BY / CC BY-SA license so the quality checker can bind the credit to the referenced asset. For CC0/PD images that landed in the `attribution-required` tier only because of upstream metadata quirks (rare), credits are still safe to render.
 
-`svg_quality_checker.py` treats a missing image-specific author + license credit as an **error**; one generic CC token does not cover multiple files. An unreadable/missing manifest or missing per-file provenance is also blocking. Fix the manifest or SVG before post-processing.
+`svg_quality_checker.py` treats a missing image-specific author + license credit as an **error**; one generic CC token does not cover multiple files. An unreadable/missing manifest or missing per-file provenance is also blocking. Fix the manifest or SVG before Default Generate post-processing or Quick Generate direct export.
 
 **The manifest is the single source of truth for credits.** Do not duplicate license info into speaker notes or any other artifact.

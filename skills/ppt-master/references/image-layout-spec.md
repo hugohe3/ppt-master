@@ -2,9 +2,9 @@
 
 # Image Layout Specification
 
-Sizing reference for side-by-side or multi-image pages. Use after Strategist proposes a preferred composition; this file never locks layout or crop policy.
+Sizing reference for side-by-side or multi-image pages. Use after the active resource owner proposes a preferred composition; this file never locks layout or crop policy.
 
-**Preferred pattern, Executor-owned realization**: Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
+**Preferred pattern, authoring-owned realization**: Let original aspect ratio inform the container. Every slide using a `no-crop` asset keeps one complete visible instance; a same-slide same-source detail crop may supplement it. An `adaptive` asset may use `meet` or a focal-safe `slice`. Rework geometry or choose another composition when the recommendation produces weak hierarchy, unsafe cropping, excessive dead space, or a poorer communication result. Preserve binding resource/content/crop constraints; a pattern-only change needs no upstream update.
 
 > **Scope**: The ratio tables and formulas are calculation aids for a selected side-by-side or multi-image plan. Hero, background, accent, and other compositions stay outside this file. Layout never overrides the `no-crop` boundary owned by [`strategist-image.md`](./strategist-image.md) and [`executor-image.md`](./executor-image.md).
 
@@ -13,13 +13,13 @@ Sizing reference for side-by-side or multi-image pages. Use after Strategist pro
 ## Layout Decision Flow
 
 ```
-1. Read the narrative intent, hierarchy, and preferred primary/modifier ids from Strategist's plan.
-2. If the preferred or Executor-selected pattern is not side-by-side or multi-image, this spec does not apply.
+1. Read the narrative intent, hierarchy, and preferred primary/modifier ids from the active resource authority.
+2. If the preferred or authoring-selected pattern is not side-by-side or multi-image, this spec does not apply.
 3. Read the asset's `no-crop` boundary and original dimensions; calculate ratio (width/height).
 4. Use the tables as candidate structures, not an automatic selector.
 5. Calculate the image/text rectangles, then choose `meet` or focal-safe `slice` within the crop boundary.
 6. Revise geometry or choose another composition when the result weakens hierarchy, legibility, or required image content.
-7. Return upstream only for a different resource, role, must-use decision, crop boundary, or another binding constraint; Executor owns pattern-only realization changes.
+7. Return to the active resource owner only for a different resource, role, must-use decision, crop boundary, or another binding constraint; SVG authoring owns pattern-only realization changes.
 ```
 
 **When to run**: after `analyze_images.py` has produced current dimensions and a side-by-side or multi-image composition is under consideration. Skip this sizing reference for other page structures.
@@ -107,8 +107,8 @@ Image: 773x560 (left), Text area: 367x560 (right) → 7:3 left-right
 
 ```
 Original: 1820x1040, R=1.75
-Strategist compares top-bottom: image height=663, text area=-43 ❌
-Strategist recommends left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
+The resource owner compares top-bottom: image height=663, text area=-43 ❌
+The resource owner recommends left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
 ```
 
 ---
@@ -183,15 +183,16 @@ Image positions:
 
 ## Handoff Fields
 
-This spec only defines layout calculation. Write computed fields into the Image Resource List defined in [`svg-image-embedding.md`](svg-image-embedding.md):
+This spec only defines layout calculation. Keep computed fields in the active resource authority defined in [`svg-image-embedding.md`](svg-image-embedding.md):
 
 | Field | Meaning |
 |-------|---------|
 | `Ratio` | Original image width / height |
-| `Layout pattern` | Non-empty Strategist layout suggestion in free-form prose, optionally citing catalog ids; Executor-owned realization |
-| `Crop Policy` | `no-crop` requires one complete instance; `adaptive` lets Executor choose `meet` or focal-safe `slice` |
+| `Layout pattern` | Non-empty owner-resolved suggestion in free-form prose, optionally citing catalog ids; SVG-authoring realization |
+| `Crop Policy` | `no-crop` requires one complete instance; `adaptive` lets SVG authoring choose `meet` or focal-safe `slice` |
 | `Reference` | Optional calculated image/text rectangles, focal notes, and composition intent |
-| `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves the normalized free-form suggestion and any optional catalog ids as a recommendation, not a geometry/realization lock |
+| Default `spec_lock.md images` value | `<path> | source=<Acquire Via> | pattern=<Layout pattern> | crop=<adaptive|no-crop>`; source/crop exactly project §VIII, while pattern preserves the normalized free-form suggestion and any optional catalog ids as a recommendation, not a geometry/realization lock |
+| Quick Generate transient row | Keep the same source/pattern/crop meanings in active context; do not create a lock |
 
 For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
@@ -225,7 +226,7 @@ python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT
 python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 ```
 
-`--canvas` explicitly overrides the project-derived format; `ppt169` is only the fallback. The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as planning input; record the composition actually selected for the page.
+`--canvas` explicitly overrides the project-derived format; `ppt169` is only the fallback. The tool computes a top-bottom / left-right candidate, image display area, and text area from the formulas above. Treat its output as decision input; retain the composition actually selected for the page in the active authority.
 
 ---
 
@@ -233,5 +234,6 @@ python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # 
 
 | Role | Responsibility |
 |------|---------------|
-| **Strategist** | Run `analyze_images.py`, recommend a catalog pattern, select resources, and record the crop boundary |
-| **Executor** | Choose the actual composition for the asset/page while preserving role, source, must-use, content, and `no-crop` constraints |
+| **Default Strategist** | Run `analyze_images.py`, recommend a catalog pattern, select resources, and record the crop boundary |
+| **Default Executor** | Choose the actual composition for the asset/page while preserving role, source, must-use, content, and `no-crop` constraints |
+| **Quick Generate main agent** | Complete the same analysis/selection in active context before SVG authoring, then keep the chosen resource/crop boundary stable while realizing the page |

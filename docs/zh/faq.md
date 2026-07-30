@@ -204,9 +204,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 ## Q: 可以跳过策略师阶段直接生成吗？
 
-可以。请显式要求**快速生成**，并提供事实充分、内容自包含的材料。Generate 路线会启用 [`quick-generate` profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)：AI 在当前上下文直接决定页结构，按共享规范手写 `svg_output/`，随后调用直接导出器。
+可以。请显式要求**快速生成**。Generate 路线会启用 [`quick-generate` profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)：仍按需转换来源并研究已识别的事实缺口，但当前 Agent 会在上下文中自动决定内容、页结构、视觉系统和资源清单，不进入 Strategist、确认、`design_spec.md` 或 `spec_lock.md`。
 
-该 profile 只产出 SVG 页面和一个 PPTX；不会做源文件转换、事实研究、策略师规划与确认、模板套用、素材获取、Live Preview、质量报告、讲稿、`svg_final/`、备份、动画或旁白。需要任一被跳过能力时仍走默认流程；页数本身既不会自动触发，也不会阻止快速生成。这是工作流短路，不承诺具体耗时，也不承诺与默认流程质量等价。
+该 profile 仍会按需备齐生成 deck 所需的资源：用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、渲染公式，以及对应的必要 manifest 或来源记录。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，随后调用直接导出器。短路流程仍不包含结构化模板复用、原生图表 / 表格替换、Live Preview、视觉复核交付、质量报告、讲稿、`svg_final/`、备份、动画或旁白；页数本身既不会自动触发，也不会阻止快速生成。这是工作流短路，不承诺具体耗时，也不承诺与默认流程质量等价。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 

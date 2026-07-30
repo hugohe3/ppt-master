@@ -546,20 +546,28 @@ warning and uses `flat`; no SVG regeneration is required. A missing `spec_lock.m
 an explicit legacy/unknown mode, or a requested `structured` export without an
 explicit current structured contract remains blocking.
 
-Explicit direct generation from fact-sufficient self-contained content may use
-the [`quick-generate`](../../workflows/profiles/quick-generate.md) profile:
+Explicit direct generation may use the
+[`quick-generate`](../../workflows/profiles/quick-generate.md) profile after the
+current agent has converted/read sources, researched identified factual gaps,
+and prepared the required images, icons, formulas, and resource manifests as
+needed. That profile skips Strategist, Confirm UI, `design_spec.md`, and
+`spec_lock.md`; it does not skip the resources required by the authored pages:
 
 ```bash
 python3 scripts/svg_to_pptx.py <project_path> --quick-generate
 ```
 
-This direct-export flag reads only `svg_output/`, infers one consistent canvas,
-uses flat converter-default package scaffolding, disables notes and motion, and
-does not read or require `spec_lock.md`. It writes the PPTX only: no `backup/`,
-conversion trace, or `validation/` report. ZIP integrity and Slide count are
-checked in memory; non-quiet runs report
+This direct-export flag takes `svg_output/` as its authored page source, resolves
+valid project-local resources referenced by those pages, infers one consistent
+canvas, uses flat converter-default package scaffolding, disables notes and
+motion, and does not read or require `spec_lock.md`. The exporter itself writes
+the PPTX only: no `backup/`, conversion trace, or `validation/` report. Existing
+source, analysis, image/icon/formula, and resource-manifest artifacts are
+allowed and remain untouched. ZIP integrity and Slide count are checked in
+memory; non-quiet runs report
 `[QUICK-GENERATE] status=passed`. The flag rejects options that would add native
-data objects, motion, narration, alternate SVG sources, or diagnostic sidecars.
+data objects, motion, narration, alternate SVG sources, or export diagnostic
+sidecars.
 The receipt proves only ZIP integrity and equality between discovered SVG and
 published Slide counts; it is not an SVG-quality, visual, factual, or normal
 postflight approval.

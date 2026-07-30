@@ -17,15 +17,18 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 ### Quick Generate Profile Short Circuit
 
-For an explicit quick/fast or direct-SVG request with fact-sufficient
-self-contained content, follow
-[`quick-generate.md`](./profiles/quick-generate.md). It owns the direct
-SVG-to-PPTX sequence and skips this route's Steps 1–7.
+For an explicit quick/fast, skip-strategy, or direct-SVG request, follow
+[`quick-generate.md`](./profiles/quick-generate.md). It runs applicable source
+conversion/research and project-local resource preparation, lets the current
+agent decide content/visual/resource details in active context, then
+hand-authors SVG and exports directly. It invokes no Strategist, Confirm UI,
+Design Spec refinement, or lock authoring.
 
 **Hard rule — no implicit downgrade or page cap**: page count neither selects
-nor blocks quick generation. Conversion, research, templates, asset
-acquisition, native data objects, notes, motion, narration, or visual review
-requires the default pipeline below.
+nor blocks quick generation. Source preparation, images, icons, formulas, and
+their manifests remain valid. Structured template reuse, native data objects,
+Live Preview, notes, motion, narration, or visual-review delivery requires the
+default pipeline; do not silently drop those requested capabilities.
 
 ### SVG Page-Design Boundary
 
