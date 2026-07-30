@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 392825
+    "max_tokens": 392879
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -217,7 +217,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 62365
+      "max_tokens": 62419
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -229,7 +229,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 65565
+      "max_tokens": 65619
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -251,7 +251,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 70115
+      "max_tokens": 70169
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
