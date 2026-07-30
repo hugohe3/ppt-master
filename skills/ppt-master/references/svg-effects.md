@@ -750,7 +750,7 @@ import diagnostics. Resolve those diagnostics before release export; see
 
 ### 6.13 Scenario Routing
 
-**Reference — not a constraint**: this table routes a job diagnosed in §6.1;
+**Reference — not a quota**: this table routes a job diagnosed in §6.1;
 it is not a catalog checklist. Fidelity and the locked or Quick-resolved style
 remain authoritative in the owning subsection.
 
@@ -769,5 +769,19 @@ remain authoritative in the owning subsection.
 | Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
 | Arrow | Straight relationship → `<line>` + marker; stock bend/curve → native Connector; unmatched custom route → separate calculated arrowhead if needed | §6.10 / §1.1 / native-shape authoring |
 | Unsupported | Dense grain, complex per-pixel composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
+
+#### Page-Level Stacks
+
+Choose the skeleton in
+[`image-layout-patterns.md`](./image-layout-patterns.md), read each stack
+back-to-front, and omit every layer without a distinct job.
+
+| Page job | Back-to-front stack | Stop |
+|---|---|---|
+| Cover | Hero visual/field → directional scrim/wash → one explicit opening or contour → native title/accent | Skip contrast treatment when copy is already safe; stop when title and field read as one composition |
+| Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse the deck language; introduce no new effect family |
+| Evidence / metric | Context image/field → local contrast field → native leaders/labels/metric → optional focus/elevation | Keep claims native; remove atmosphere that weakens evidence |
+| Comparison | Matched visual planes → optional shared wash/divider → matched labels → one difference marker | Keep crop, elevation, and paint symmetric unless asymmetry is the claim |
+| Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Add no new effect family; keep the action unambiguous and omit a competing image |
 
 ---
