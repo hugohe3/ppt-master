@@ -408,6 +408,16 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
 
+**Default — define one cross-page visual motif when it can carry identity or
+meaning (may omit when restraint serves the deck better)**: after the complete
+§IX roster and planned visual resources are known, choose or inherit one reusable
+page-scale geometry or material gesture—such as a directional contour, opening,
+line lattice, or oversized numeral. Fold its recognizable invariant and allowed
+variation (scale, crop, density, position, content interaction) into the
+existing §III `Theme`, and mention it only in §IX `Layout` blocks that use it.
+Vary it by page role instead of copying one ornament; create no motif field or
+lock row. This is a continuity Reference, not a decoration quota.
+
 On PPT 16:9, start from a 1200×640 safe area with 40px outer margins, then adapt to content. Template workspaces may supply different geometry; when active, [`strategist-template.md`](./strategist-template.md) owns precedence.
 
 ---
