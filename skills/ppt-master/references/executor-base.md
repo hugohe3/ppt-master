@@ -27,7 +27,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 1. Effect Capability Discovery
 
-**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. After selecting one, load [`svg-effects.md`](./svg-effects.md) before authoring it — except the cross-page motion row, which loads [`animations.md`](./animations.md) §3.1.
+**Reference — not a constraint**: Scan this menu for treatments that support the locked style and hierarchy. Use the already-loaded [`svg-effects.md`](./svg-effects.md) before authoring a selection, except the cross-page motion row, which loads [`animations.md`](./animations.md) §3.1.
 
 | Visual need | Available construction |
 |---|---|
