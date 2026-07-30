@@ -51,7 +51,7 @@ from .utils import (
     _extract_inheritable_styles,
     _get_attr,
     _is_unit_axis_reflection,
-    is_imported_picture_crop_effect_carrier,
+    is_picture_effect_carrier,
     parse_svg_length,
     parse_transform_operations,
     parse_transform_matrix,
@@ -863,7 +863,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     )
     logical_picture_effect_group = (
         filter_id is not None
-        and is_imported_picture_crop_effect_carrier(elem)
+        and is_picture_effect_carrier(elem)
     )
     explicit_native_group = elem.get('data-pptx-object') == 'group'
     if (
