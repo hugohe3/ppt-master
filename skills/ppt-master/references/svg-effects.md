@@ -134,8 +134,10 @@ closed parser checks. See
 | `<image>` | No gradient paint; use §6.5 overlays |
 
 Linear export preserves stops/alpha and reduces direction to an angle;
-coincident endpoints are invalid. Radial export centers a circular
-approximation, dropping `cx/cy/r/fx/fy`. Gradient strokes stay editable;
+coincident endpoints are invalid. Radial export preserves the effective focus
+(`fx/fy`, otherwise `cx/cy`) as a point-focused circle; its outer center and
+radius normalize to `0.5`, so distinct outer `cx/cy` and `r` are dropped.
+Gradient strokes stay editable;
 reverse import may keep the first stop only. Stop alpha multiplies element opacity.
 PPTX import normalizes gradients and reports degradation;
 `--strict` keeps the closed parser contract. See
@@ -320,7 +322,7 @@ and converter share this parser.
 |---|---|---|
 | Directional scrim | Linear rect, darkest beside text | `0%: 0.88; 55%: 0.30; 100%: 0` |
 | Bottom title fade | Vertical rect over lower image | black `0 → 0.72` |
-| Vignette/spotlight | Centered radial rect (`cx=50%`, `cy=50%`, `r=70%`); native center only | black `0 → 0.58` |
+| Vignette/spotlight | Radial rect; place the hotspot with `fx/fy` or `cx/cy`; outer center/radius remain approximate | black `0 → 0.58` |
 | Brand wash | Directional existing brand-color gradient | `0.80 → 0.10` |
 | Faux glass | Visible fields + diagonal linear panel (`0,0 → 1,1`) + highlight stroke; optional §6.4 elevation | white `0.38 → 0.12`; stroke about `0.55` |
 
