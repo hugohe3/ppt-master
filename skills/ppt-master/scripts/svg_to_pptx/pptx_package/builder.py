@@ -58,6 +58,7 @@ from language_tags import normalize_language_tag
 
 from ..animation_config import (
     MorphPair,
+    animation_group_effect_entries,
     resolve_morph_pairs,
     resolve_slide_animation_config,
 )
@@ -4124,6 +4125,7 @@ def _slide_animation_settings(
 
 def _build_sequence_targets(
     anim_targets: list[tuple[int, str]],
+    slide_name: str,
     slide_cfg: dict[str, Any],
     animation: str | None,
     animation_cfg: dict[str, Any],
@@ -4139,44 +4141,74 @@ def _build_sequence_targets(
     shape_ids_by_group = {
         svg_id: sid for sid, svg_id in anim_targets
     }
-    ordered: list[tuple[int, int, str, dict[str, Any]]] = []
+    ordered: list[tuple[int, int, int, str, str, dict[str, Any]]] = []
     for idx, (sid, svg_id) in enumerate(anim_targets):
         group_value = groups_cfg.get(svg_id, {})
         if not isinstance(group_value, dict):
             raise ValueError(
                 f'animations.json group "{svg_id}" must be an object'
             )
-        group_cfg = group_value
-        raw_effect = group_cfg.get('effect')
-        if raw_effect is not None:
-            normalized_effect = normalize_animation_effect(
-                raw_effect,
-                allow_none=True,
-                allow_modes=True,
+        group_path = (
+            f'slides[{json.dumps(slide_name, ensure_ascii=False)}]'
+            f'.groups[{json.dumps(svg_id, ensure_ascii=False)}]'
+        )
+        effect_entries = animation_group_effect_entries(
+            group_value,
+            path=group_path,
+        )
+        for effect_idx, (effect_path, effect_cfg) in enumerate(effect_entries):
+            raw_effect = effect_cfg.get('effect')
+            if raw_effect is not None:
+                normalized_effect = normalize_animation_effect(
+                    raw_effect,
+                    allow_none=True,
+                    allow_modes=True,
+                )
+            else:
+                normalized_effect = None
+            if 'effect' in effect_cfg and normalized_effect is None:
+                continue
+            if animation is None and normalized_effect is None:
+                continue
+            order_value = effect_cfg.get('order')
+            order = order_value if order_value is not None else idx + 1
+            if (
+                isinstance(order, bool)
+                or not isinstance(order, int)
+                or order <= 0
+            ):
+                raise ValueError(
+                    f'animations.json {effect_path}.order must be '
+                    'a positive integer'
+                )
+            effect_entry = dict(effect_cfg)
+            effect_entry['_shape_id'] = sid
+            effect_entry['_effect'] = normalized_effect
+            effect_entry['_effect_raw'] = raw_effect
+            ordered.append(
+                (
+                    order,
+                    idx,
+                    effect_idx,
+                    svg_id,
+                    effect_path,
+                    effect_entry,
+                )
             )
-        else:
-            normalized_effect = None
-        if 'effect' in group_cfg and normalized_effect is None:
-            continue
-        if animation is None and normalized_effect is None:
-            continue
-        order_value = group_cfg.get('order')
-        order = order_value if order_value is not None else idx + 1
-        if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
-            raise ValueError(
-                f'animations.json group "{svg_id}" order must be a positive integer'
-            )
-        group_entry = dict(group_cfg)
-        group_entry['_shape_id'] = sid
-        group_entry['_effect'] = normalized_effect
-        group_entry['_effect_raw'] = raw_effect
-        ordered.append((order, idx, svg_id, group_entry))
 
-    ordered.sort(key=lambda item: (item[0], item[1]))
+    ordered.sort(key=lambda item: (item[0], item[1], item[2]))
 
     seq_targets: list[dict[str, Any]] = []
     resolved_group_modes: list[str | None] = []
-    for seq_idx, (_order, _original_idx, _svg_id, group_cfg) in enumerate(ordered):
+    main_sequence_count = 0
+    for seq_idx, (
+        _order,
+        _original_idx,
+        _effect_idx,
+        _svg_id,
+        effect_path,
+        group_cfg,
+    ) in enumerate(ordered):
         shape_id = int(group_cfg['_shape_id'])
         raw_effect = group_cfg.get('_effect')
         resolved_group_modes.append(
@@ -4211,22 +4243,39 @@ def _build_sequence_targets(
             )
         item_duration = validate_seconds(
             group_cfg.get('duration', duration),
-            f'animation duration for group "{_svg_id}"',
+            f'animations.json {effect_path}.duration',
             allow_zero=False,
         )
+        trigger_shape = group_cfg.get('trigger_shape')
+        raw_trigger = group_cfg.get(
+            'trigger',
+            animation_cfg.get('trigger', 'after-previous'),
+        )
+        resolved_trigger = normalize_animation_trigger(raw_trigger)
+        if trigger_shape is not None:
+            if 'trigger' in group_cfg and resolved_trigger != 'on-click':
+                raise ValueError(
+                    f'animations.json {effect_path}.trigger_shape requires '
+                    'trigger "on-click" when trigger is explicit'
+                )
+            resolved_trigger = 'on-click'
         default_delay = (
-            0
-            if group_cfg.get('trigger_shape') is not None or seq_idx == 0
-            else stagger
+            stagger
+            if (
+                trigger_shape is None
+                and resolved_trigger == 'after-previous'
+                and main_sequence_count > 0
+            )
+            else 0
         )
         delay_seconds = validate_seconds(
             group_cfg.get('delay', default_delay),
-            f'animation delay for group "{_svg_id}"',
+            f'animations.json {effect_path}.delay',
             allow_zero=True,
         )
         delay_ms = animation_seconds_to_milliseconds(
             delay_seconds,
-            f'animation delay for group "{_svg_id}"',
+            f'animations.json {effect_path}.delay',
             allow_zero=True,
         )
         inherited_fields = {
@@ -4255,27 +4304,29 @@ def _build_sequence_targets(
             'effect': effect,
             'effect_options': effect_options,
             'duration': item_duration,
+            'trigger': resolved_trigger,
         }
-        trigger_shape = group_cfg.get('trigger_shape')
         if trigger_shape is not None:
             if not isinstance(trigger_shape, str) or not trigger_shape.strip():
                 raise ValueError(
-                    f'animations.json group "{_svg_id}" trigger_shape must '
+                    f'animations.json {effect_path}.trigger_shape must '
                     'be a non-empty group id'
                 )
             trigger_shape_id = shape_ids_by_group.get(trigger_shape)
             if trigger_shape_id is None:
                 raise ValueError(
-                    f'animations.json group "{_svg_id}" trigger_shape '
+                    f'animations.json {effect_path}.trigger_shape '
                     f'references a missing or non-triggerable group: '
                     f'{trigger_shape}'
                 )
             if trigger_shape_id == shape_id:
                 raise ValueError(
-                    f'animations.json group "{_svg_id}" trigger_shape must '
+                    f'animations.json {effect_path}.trigger_shape must '
                     'reference a different group'
                 )
             target_entry['trigger_shape_id'] = trigger_shape_id
+        else:
+            main_sequence_count += 1
         target_entry.update(inherited_fields)
         if 'sound' in target_entry:
             target_entry['_sound_path'] = target_entry.pop('sound')
@@ -5138,25 +5189,41 @@ def create_pptx_with_native_svg(
                         animation_cli_overrides.get('animation', False)
                         and animation is None
                     )
-                    explicit_animation_groups = (
-                        frozenset({
-                            str(group_id)
-                            for group_id, group_cfg in groups_value.items()
-                            if isinstance(group_cfg, dict)
-                            and group_cfg.get('effect') != 'none'
-                            and (
-                                slide_animation is not None
-                                or 'effect' in group_cfg
+                    explicit_group_ids: set[str] = set()
+                    trigger_group_ids: set[str] = set()
+                    if not animation_hard_disabled:
+                        for group_id, group_cfg in groups_value.items():
+                            if not isinstance(group_cfg, dict):
+                                continue
+                            group_path = (
+                                f'slides['
+                                f'{json.dumps(svg_path.stem, ensure_ascii=False)}'
+                                f'].groups['
+                                f'{json.dumps(str(group_id), ensure_ascii=False)}'
+                                f']'
                             )
-                        } | {
-                            group_cfg['trigger_shape']
-                            for group_cfg in groups_value.values()
-                            if isinstance(group_cfg, dict)
-                            and isinstance(group_cfg.get('trigger_shape'), str)
-                            and group_cfg['trigger_shape'].strip()
-                        })
-                        if not animation_hard_disabled
-                        else frozenset()
+                            effect_entries = animation_group_effect_entries(
+                                group_cfg,
+                                path=group_path,
+                            )
+                            if any(
+                                effect_cfg.get('effect') != 'none'
+                                and (
+                                    slide_animation is not None
+                                    or 'effect' in effect_cfg
+                                )
+                                for _effect_path, effect_cfg in effect_entries
+                            ):
+                                explicit_group_ids.add(str(group_id))
+                            for _effect_path, effect_cfg in effect_entries:
+                                trigger_shape = effect_cfg.get('trigger_shape')
+                                if (
+                                    isinstance(trigger_shape, str)
+                                    and trigger_shape.strip()
+                                ):
+                                    trigger_group_ids.add(trigger_shape)
+                    explicit_animation_groups = frozenset(
+                        explicit_group_ids | trigger_group_ids
                     )
                     converter_group_overrides = (
                         explicit_animation_groups
@@ -5247,6 +5314,7 @@ def create_pptx_with_native_svg(
                     ):
                         seq_targets, mixed_count = _build_sequence_targets(
                             anim_targets,
+                            svg_path.stem,
                             slide_cfg,
                             slide_animation,
                             slide_animation_cfg,

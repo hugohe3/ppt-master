@@ -402,6 +402,7 @@ class AnimationTarget:
     effect: str
     duration_ms: int
     effect_options: Mapping[str, object]
+    trigger: str = 'after-previous'
     trigger_shape_id: int | None = None
     repeat_count: float | None = None
     repeat_duration_ms: int | None = None
@@ -849,6 +850,7 @@ def _normalize_sound(value: object) -> tuple[str | None, str | None]:
 def _normalize_target_mapping(
     target: Mapping[str, object],
     default_duration_ms: int,
+    default_trigger: str,
 ) -> AnimationTarget:
     allowed = {
         'shape_id',
@@ -856,6 +858,7 @@ def _normalize_target_mapping(
         'effect',
         'duration',
         'effect_options',
+        'trigger',
         'trigger_shape_id',
         *ANIMATION_TIMING_OPTION_FIELDS,
         'after_effect',
@@ -896,6 +899,18 @@ def _normalize_target_mapping(
         raise ValueError(
             'animation trigger_shape_id must target a different shape'
         )
+    target_trigger = (
+        normalize_animation_trigger(target['trigger'])
+        if 'trigger' in target
+        else default_trigger
+    )
+    if trigger_shape_id is not None:
+        if 'trigger' in target and target_trigger != 'on-click':
+            raise ValueError(
+                'animation target with trigger_shape_id must use '
+                'trigger "on-click"'
+            )
+        target_trigger = 'on-click'
     repeat_count = (
         _normalize_repeat_count(target['repeat_count'])
         if 'repeat_count' in target
@@ -968,6 +983,7 @@ def _normalize_target_mapping(
         effect=effect,
         duration_ms=duration_ms,
         effect_options=effect_options,
+        trigger=target_trigger,
         trigger_shape_id=trigger_shape_id,
         repeat_count=repeat_count,
         repeat_duration_ms=repeat_duration_ms,
@@ -987,9 +1003,14 @@ def _normalize_target_mapping(
 def _normalize_target(
     target: Sequence[object] | Mapping[str, object],
     default_duration_ms: int,
+    default_trigger: str = 'after-previous',
 ) -> AnimationTarget:
     if isinstance(target, Mapping):
-        return _normalize_target_mapping(target, default_duration_ms)
+        return _normalize_target_mapping(
+            target,
+            default_duration_ms,
+            default_trigger,
+        )
     if isinstance(target, (str, bytes)) or not isinstance(target, Sequence):
         raise ValueError(f'animation target must be a 3- or 4-item sequence: {target!r}')
     if len(target) not in (3, 4):
@@ -1014,6 +1035,7 @@ def _normalize_target(
         effect=effect,
         duration_ms=duration_ms,
         effect_options=effect_options,
+        trigger=default_trigger,
     )
 
 # Pool used by 'mixed' / 'random' modes. Every entry is a canonical
@@ -1694,17 +1716,7 @@ def _instantiate_animation_row(
     direct_conditions[0].attrib.clear()
     direct_conditions[0].set(
         'delay',
-        str(
-            target.delay_ms
-            if (
-                node_type == 'afterEffect'
-                or (
-                    node_type == 'clickEffect'
-                    and target.trigger_shape_id is not None
-                )
-            )
-            else 0
-        ),
+        str(target.delay_ms),
     )
 
     if spec['durationScalable']:
@@ -1746,6 +1758,90 @@ def _build_animation_row_xml(
     )
 
 
+def _main_target_offsets(targets: Sequence[AnimationTarget]) -> list[int]:
+    """Return each regular row's start offset within its click group."""
+    offsets: list[int] = []
+    previous_start_ms = 0
+    previous_duration_ms = 0
+    has_previous = False
+    for target in targets:
+        if target.trigger == 'on-click':
+            start_ms = target.delay_ms
+        elif target.trigger == 'with-previous':
+            start_ms = (
+                previous_start_ms if has_previous else 0
+            ) + target.delay_ms
+        else:
+            start_ms = (
+                previous_start_ms + previous_duration_ms
+                if has_previous
+                else 0
+            ) + target.delay_ms
+        if start_ms > MAX_OOXML_MILLISECONDS:
+            raise ValueError(
+                'animation sequence offset exceeds the OOXML millisecond '
+                f'limit at target {len(offsets) + 1}: {start_ms}'
+            )
+        offsets.append(start_ms)
+        previous_start_ms = start_ms
+        previous_duration_ms = target.playback_duration_ms
+        has_previous = True
+    return offsets
+
+
+def _build_mixed_main_steps(
+    targets: Sequence[AnimationTarget],
+    next_id: int,
+) -> tuple[str, int]:
+    """Build one mainSeq containing mixed per-row PowerPoint Start modes."""
+    offsets = _main_target_offsets(targets)
+    groups: list[list[tuple[AnimationTarget, int]]] = []
+    for target, offset_ms in zip(targets, offsets):
+        if not groups or target.trigger == 'on-click':
+            groups.append([])
+        groups[-1].append((target, offset_ms))
+
+    rendered_groups: list[str] = []
+    for group in groups:
+        group_id = next_id
+        next_id += 1
+        first_target = group[0][0]
+        if first_target.trigger == 'on-click':
+            group_conditions = '<p:cond delay="indefinite"/>'
+        else:
+            group_conditions = (
+                '<p:cond delay="indefinite"/>'
+                '<p:cond evt="onBegin" delay="0"><p:tn val="2"/></p:cond>'
+            )
+        rendered_rows: list[str] = []
+        for target, offset_ms in group:
+            wrapper_id = next_id
+            row_id = next_id + 1
+            row_xml, next_id = _build_animation_row_xml(
+                target,
+                target.trigger,
+                row_id,
+                next_id + 2,
+            )
+            wrapper_offset_ms = offset_ms - target.delay_ms
+            rendered_rows.append(f'''<p:par>
+                  <p:cTn id="{wrapper_id}" fill="hold">
+                    <p:stCondLst><p:cond delay="{wrapper_offset_ms}"/></p:stCondLst>
+                    <p:childTnLst><p:par>{row_xml}</p:par></p:childTnLst>
+                  </p:cTn>
+                </p:par>''')
+        rows_xml = '\n                '.join(rendered_rows)
+        rendered_groups.append(f'''<p:par>
+                <p:cTn id="{group_id}" fill="hold">
+                  <p:stCondLst>{group_conditions}</p:stCondLst>
+                  <p:childTnLst>
+                    {rows_xml}
+                  </p:childTnLst>
+                </p:cTn>
+              </p:par>''')
+    return '\n              '.join(rendered_groups), next_id
+
+
 def create_sequence_timing_xml(
     targets: list,
     duration: float = 0.3,
@@ -1757,9 +1853,10 @@ def create_sequence_timing_xml(
         targets: list of (shape_id, delay_ms, animation_name) or
             (shape_id, delay_ms, animation_name, duration_seconds) tuples, in
             the order they should play. ``delay_ms`` is the gap before
-            this element starts in ``after-previous`` mode. For a mapping
-            target with ``trigger_shape_id``, it is the delay after that
-            shape is clicked; otherwise the other Start modes ignore it.
+            this element starts relative to its Start mode. Mapping targets
+            may set an independent ``trigger``; otherwise they inherit the
+            function-level ``trigger``. A target with ``trigger_shape_id``
+            must use ``on-click`` and runs in an interactive sequence.
         duration: per-element animation duration in seconds. Instantaneous
             native presets retain their PowerPoint-authored duration.
         trigger: PowerPoint-standard Start mode for each element.
@@ -1785,12 +1882,9 @@ def create_sequence_timing_xml(
     if not targets:
         return ''
     normalized_targets = [
-        _normalize_target(target, default_dur_ms)
+        _normalize_target(target, default_dur_ms, trigger)
         for target in targets
     ]
-    shape_ids = [target.shape_id for target in normalized_targets]
-    if len(shape_ids) != len(set(shape_ids)):
-        raise ValueError('animation targets must not contain duplicate shape ids')
     next_id = 3
     main_targets = [
         target
@@ -1803,7 +1897,23 @@ def create_sequence_timing_xml(
         if target.trigger_shape_id is not None
     ]
 
-    if trigger == 'on-click':
+    main_triggers = {target.trigger for target in main_targets}
+    main_trigger = (
+        next(iter(main_triggers))
+        if len(main_triggers) == 1
+        else None
+    )
+    needs_per_target_layout = (
+        main_trigger is None
+        or (
+            main_trigger == 'with-previous'
+            and any(target.delay_ms for target in main_targets)
+        )
+    )
+
+    if needs_per_target_layout and main_targets:
+        all_steps, next_id = _build_mixed_main_steps(main_targets, next_id)
+    elif main_trigger == 'on-click':
         # Each element is an independent click-driven par directly under
         # mainSeq. Three-level nesting per element: outer cTn holds for
         # the click via delay="indefinite", innermost cTn owns the
@@ -1815,7 +1925,7 @@ def create_sequence_timing_xml(
             leaf_id = next_id + 2
             row_xml, next_id = _build_animation_row_xml(
                 target,
-                trigger,
+                main_trigger,
                 leaf_id,
                 next_id + 3,
             )
@@ -1848,16 +1958,16 @@ def create_sequence_timing_xml(
         next_id += 1
         inner_steps = []
         with_wrapper_id = None
-        if trigger == 'with-previous':
+        if main_trigger == 'with-previous':
             with_wrapper_id = next_id
             next_id += 1
         elapsed_ms = 0
         for target_index, target in enumerate(main_targets, 1):
-            if trigger == 'with-previous':
+            if main_trigger == 'with-previous':
                 leaf_id = next_id
                 row_xml, next_id = _build_animation_row_xml(
                     target,
-                    trigger,
+                    main_trigger,
                     leaf_id,
                     next_id + 1,
                 )
@@ -1874,7 +1984,7 @@ def create_sequence_timing_xml(
                 leaf_id = next_id + 1
                 row_xml, next_id = _build_animation_row_xml(
                     target,
-                    trigger,
+                    main_trigger,
                     leaf_id,
                     next_id + 2,
                 )
@@ -1891,7 +2001,7 @@ def create_sequence_timing_xml(
                 elapsed_ms += target.delay_ms + target.playback_duration_ms
 
         inner_xml = '\n                '.join(inner_steps)
-        if trigger == 'with-previous':
+        if main_trigger == 'with-previous':
             # Match PowerPoint's native "Start: With Previous" export:
             # one delay=0 wrapper begins on slide entry, and all withEffect
             # rows live under that wrapper so they truly start in parallel.
@@ -1903,7 +2013,7 @@ def create_sequence_timing_xml(
                         </p:childTnLst>
                       </p:cTn>
                     </p:par>'''
-        if trigger in ('with-previous', 'after-previous'):
+        if main_trigger in ('with-previous', 'after-previous'):
             # Match PowerPoint's native slide-entry export: the wrapper waits
             # for mainSeq to begin, then child nodes resolve their Start modes.
             outer_start_conditions = (
@@ -2621,34 +2731,14 @@ def _row_offset_ms(
         errors.append(
             'object-animation row must have one numeric leaf start condition'
         )
-    if (
-        trigger != 'after-previous'
-        and trigger_shape_id is None
-        and leaf_delay not in {None, 0}
-    ):
-        errors.append(
-            f'{trigger} object-animation row must have leaf delay="0"'
-        )
-
     current = parent_map.get(row)
     saw_indefinite = False
-    saw_main_begin = False
     numeric_offset: int | None = None
     while current is not None:
         if current.tag == _qn(PML_NS, 'cTn'):
             conditions = _direct_conditions(current)
             if any(condition.get('delay') == 'indefinite' for condition in conditions):
                 saw_indefinite = True
-            if any(
-                condition.get('evt') == 'onBegin'
-                and condition.get('delay') == '0'
-                and any(
-                    target.get('val') == '2'
-                    for target in condition.iter(_qn(PML_NS, 'tn'))
-                )
-                for condition in conditions
-            ):
-                saw_main_begin = True
             if trigger in {'with-previous', 'after-previous'}:
                 numeric = [
                     condition.get('delay')
@@ -2673,15 +2763,13 @@ def _row_offset_ms(
         errors.append(
             'on-click object-animation row is missing an indefinite click wrapper'
         )
-    if trigger in {'with-previous', 'after-previous'} and not (
-        saw_indefinite and saw_main_begin
-    ):
-        errors.append(f'{trigger} sequence is missing the slide-entry onBegin anchor')
-    if trigger == 'after-previous' and numeric_offset is None:
+    if trigger in {'with-previous', 'after-previous'} and not saw_indefinite:
+        errors.append(f'{trigger} sequence is missing its sequence anchor')
+    if trigger in {'with-previous', 'after-previous'} and numeric_offset is None:
         errors.append(
-            'after-previous object-animation row is missing its numeric offset wrapper'
+            f'{trigger} object-animation row is missing its numeric offset wrapper'
         )
-    if trigger == 'after-previous':
+    if trigger in {'with-previous', 'after-previous'}:
         absolute_offset = (numeric_offset or 0) + (leaf_delay or 0)
         if absolute_offset > MAX_OOXML_MILLISECONDS:
             errors.append(
@@ -2691,12 +2779,97 @@ def _row_offset_ms(
         return absolute_offset
     if trigger_shape_id is not None:
         return leaf_delay or 0
-    return 0
+    return leaf_delay or 0
+
+
+def _row_matches_powerpoint_behavior(
+    row: ET.Element,
+    *,
+    shape_id: int,
+    effect: str,
+    effect_options: Mapping[str, object],
+    trigger: str,
+    duration_ms: int,
+    repeat_count: float | None,
+    repeat_duration_ms: int | None,
+    auto_reverse: bool,
+    rewind: bool,
+    accelerate: float,
+    decelerate: float,
+    bounce_end: float,
+    restart: str,
+    after_effect: str,
+    after_effect_color: str | None,
+    sound_relationship_id: str | None,
+    sound_name: str | None,
+) -> bool:
+    """Match one read-back row to its reconstructed native behavior tree."""
+    spec = NATIVE_ANIMATIONS[effect]
+    target = AnimationTarget(
+        shape_id=shape_id,
+        delay_ms=0,
+        effect=effect,
+        duration_ms=duration_ms,
+        effect_options=effect_options,
+        trigger=trigger,
+        repeat_count=repeat_count,
+        repeat_duration_ms=repeat_duration_ms,
+        auto_reverse=True if auto_reverse else None,
+        rewind=True if rewind else None,
+        accelerate=accelerate or None,
+        decelerate=decelerate or None,
+        bounce_end=bounce_end or None,
+        restart=restart if row.get('restart') is not None else None,
+        after_effect=after_effect,
+        after_effect_color=after_effect_color,
+        sound_relationship_id=sound_relationship_id,
+        sound_name=sound_name,
+    )
+    option_candidates = [dict(effect_options)]
+    option_candidates.extend(
+        {
+            name: value
+            for name, value in effect_options.items()
+            if name != omitted
+        }
+        for omitted in effect_options
+    )
+    option_candidates.append({})
+    seen: set[tuple[tuple[str, object], ...]] = set()
+    for candidate in option_candidates:
+        candidate_key = tuple(sorted(candidate.items()))
+        if candidate_key in seen:
+            continue
+        seen.add(candidate_key)
+        expected = _animation_row_for_options(effect, candidate)
+        if spec['durationScalable']:
+            _scale_animation_row_duration(
+                expected,
+                base_duration_ms=int(spec['defaultDurationMs']),
+                requested_duration_ms=duration_ms,
+            )
+        _apply_timing_options(expected, target)
+        row_id = row.get('id')
+        expected.set('id', row_id if row_id and row_id.isdigit() else '1')
+        _append_after_effect(
+            expected,
+            target,
+            int(expected.get('id', '1')),
+        )
+        _append_animation_sound(expected, target)
+        if _animation_spec_matches_row(
+            row,
+            {'rowXml': ET.tostring(expected, encoding='unicode')},
+        ):
+            return True
+    return False
 
 
 def _animation_rows(
     slide_root: ET.Element,
     errors: list[str],
+    *,
+    require_behavior_signatures: bool = False,
 ) -> list[AnimationRowSummary]:
     parent_map = {
         child: parent
@@ -2761,6 +2934,35 @@ def _animation_rows(
             or preset_subtype is None
         ):
             continue
+        if (
+            require_behavior_signatures
+            and resolved_effect is not None
+            and duration_ms is not None
+            and not _row_matches_powerpoint_behavior(
+                row,
+                shape_id=shape_id,
+                effect=resolved_effect,
+                effect_options=effect_options,
+                trigger=trigger,
+                duration_ms=duration_ms,
+                repeat_count=repeat_count,
+                repeat_duration_ms=repeat_duration_ms,
+                auto_reverse=auto_reverse,
+                rewind=rewind,
+                accelerate=accelerate,
+                decelerate=decelerate,
+                bounce_end=bounce_end,
+                restart=restart,
+                after_effect=after_effect,
+                after_effect_color=after_effect_color,
+                sound_relationship_id=sound_relationship_id,
+                sound_name=sound_name,
+            )
+        ):
+            errors.append(
+                'object-animation PowerPoint-authored behavior tree changed '
+                f'for shape {shape_id}'
+            )
         rows.append(
             AnimationRowSummary(
                 shape_id=shape_id,
@@ -2980,7 +3182,11 @@ def validate_slide_animation_structure(
         if node.get('presetClass') in set(_PRESET_CLASS_BY_CATEGORY.values())
     ]
     if require_supported_effects:
-        rows = _animation_rows(slide_root, errors)
+        rows = _animation_rows(
+            slide_root,
+            errors,
+            require_behavior_signatures=True,
+        )
         if not rows and animation_nodes:
             errors.append('generated object-animation rows could not be read back')
     else:
@@ -3012,16 +3218,6 @@ def validate_slide_animation_structure(
                 'each generated trigger-shape animation must have one '
                 'interactiveSeq time node'
             )
-        regular_triggers = {row.trigger for row in regular_rows}
-        if len(regular_triggers) > 1:
-            errors.append(
-                'one generated main object-animation sequence must use one '
-                'Start mode; found '
-                + ', '.join(sorted(regular_triggers))
-            )
-        row_shape_ids = [row.shape_id for row in rows]
-        if len(row_shape_ids) != len(set(row_shape_ids)):
-            errors.append('generated object-animation sequence repeats a shape target')
         for row in rows:
             if (
                 row.trigger_shape_id is not None
@@ -3064,7 +3260,11 @@ def read_slide_animation_sequence(
         require_supported_effects=require_supported_effects,
     )
     row_errors: list[str] = []
-    rows = _animation_rows(root, row_errors)
+    rows = _animation_rows(
+        root,
+        row_errors,
+        require_behavior_signatures=require_supported_effects,
+    )
     for error in row_errors:
         if error not in errors:
             errors.append(error)
@@ -3111,7 +3311,7 @@ def validate_generated_animation_xml(
         allow_zero=False,
     )
     normalized_expected = tuple(
-        _normalize_target(target, default_duration_ms)
+        _normalize_target(target, default_duration_ms, trigger)
         for target in targets
     )
     # PowerPoint stores ordinary rows in mainSeq and shape-triggered rows in
@@ -3130,6 +3330,13 @@ def validate_generated_animation_xml(
         slide_xml,
         require_supported_effects=True,
     )
+    data = slide_xml.encode('utf-8') if isinstance(slide_xml, str) else slide_xml
+    actual_root = _select_supported_timing_branch(ET.fromstring(data))
+    actual_row_elements = [
+        row
+        for row in actual_root.iter(_qn(PML_NS, 'cTn'))
+        if row.get('presetClass') in set(_PRESET_CLASS_BY_CATEGORY.values())
+    ]
     errors: list[str] = []
     if len(summary.rows) != len(expected):
         errors.append(
@@ -3139,8 +3346,17 @@ def validate_generated_animation_xml(
     expected_main_targets = tuple(
         target for target in expected if target.trigger_shape_id is None
     )
+    expected_main_triggers = {
+        target.trigger for target in expected_main_targets
+    }
     expected_sequence_trigger = (
-        trigger if expected_main_targets else ('on-click' if expected else None)
+        (
+            next(iter(expected_main_triggers))
+            if len(expected_main_triggers) == 1
+            else None
+        )
+        if expected_main_targets
+        else ('on-click' if expected else None)
     )
     if expected and summary.trigger != expected_sequence_trigger:
         errors.append(
@@ -3148,28 +3364,19 @@ def validate_generated_animation_xml(
             f'expected {expected_sequence_trigger!r}'
         )
 
-    expected_offsets: list[int] = []
-    elapsed_ms = 0
-    previous_duration_ms = 0
-    main_index = 0
-    for index, target in enumerate(expected):
-        if target.trigger_shape_id is not None:
-            expected_offsets.append(target.delay_ms)
-        elif trigger == 'after-previous':
-            if main_index == 0:
-                elapsed_ms = target.delay_ms
-            else:
-                elapsed_ms += previous_duration_ms + target.delay_ms
-            if elapsed_ms > MAX_OOXML_MILLISECONDS:
-                errors.append(
-                    'requested animation sequence offset exceeds the OOXML '
-                    f'millisecond limit at row {index + 1}: {elapsed_ms}'
-                )
-            expected_offsets.append(elapsed_ms)
-            previous_duration_ms = target.playback_duration_ms
-            main_index += 1
-        else:
-            expected_offsets.append(0)
+    try:
+        main_offsets = iter(_main_target_offsets(expected_main_targets))
+    except ValueError as exc:
+        errors.append(str(exc))
+        main_offsets = iter(())
+    expected_offsets = [
+        (
+            target.delay_ms
+            if target.trigger_shape_id is not None
+            else next(main_offsets, 0)
+        )
+        for target in expected
+    ]
 
     for index, (actual, target) in enumerate(zip(summary.rows, expected), 1):
         spec = NATIVE_ANIMATIONS[target.effect]
@@ -3220,13 +3427,43 @@ def validate_generated_animation_xml(
                 f'animation row {index} expected-option model failed: '
                 + '; '.join(option_errors)
             )
+        if index <= len(actual_row_elements):
+            actual_row_element = actual_row_elements[index - 1]
+            expected_behavior_row = copy.deepcopy(expected_row)
+            actual_row_id = actual_row_element.get('id')
+            expected_behavior_row.set(
+                'id',
+                actual_row_id
+                if actual_row_id and actual_row_id.isdigit()
+                else '1',
+            )
+            _append_after_effect(
+                expected_behavior_row,
+                target,
+                int(expected_behavior_row.get('id', '1')),
+            )
+            _append_animation_sound(expected_behavior_row, target)
+            behavior_spec = {
+                'rowXml': ET.tostring(
+                    expected_behavior_row,
+                    encoding='unicode',
+                )
+            }
+            if not _animation_spec_matches_row(
+                actual_row_element,
+                behavior_spec,
+            ):
+                errors.append(
+                    f'animation row {index} PowerPoint-authored behavior '
+                    'tree changed'
+                )
         if actual.shape_id != target.shape_id:
             errors.append(
                 f'animation row {index} targets shape {actual.shape_id}; '
                 f'expected {target.shape_id}'
             )
         expected_row_trigger = (
-            'on-click' if target.trigger_shape_id is not None else trigger
+            target.trigger
         )
         if actual.trigger != expected_row_trigger:
             errors.append(
@@ -3581,13 +3818,22 @@ def describe_animation_effect(effect: object) -> dict[str, Any]:
         'implied_effect_options': implied_options,
         'effect_options': option_contract,
         'timing': {
-            'duration': 'positive seconds',
-            'delay': 'non-negative seconds; group scope only',
+            'duration': (
+                'positive seconds; legacy group effect or effects[] row'
+            ),
+            'delay': (
+                'non-negative seconds; legacy group effect or effects[] row'
+            ),
             'stagger': 'non-negative seconds; animation scope only',
             'trigger': list(ANIMATION_TRIGGERS),
+            'trigger_scope': (
+                'animation default for a legacy group effect; each effects[] '
+                'row may override it'
+            ),
             'trigger_shape': (
-                'other top-level SVG group id; group scope only; maps to '
-                'PowerPoint "On Click of"'
+                'other top-level SVG group id; legacy group effect or '
+                'effects[] row; maps to PowerPoint "On Click of" and requires '
+                'trigger on-click'
             ),
             'repeat_count': 'positive number; mutually exclusive with repeat_duration',
             'repeat_duration': 'positive seconds; mutually exclusive with repeat_count',
