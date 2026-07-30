@@ -246,9 +246,33 @@ The following three patterns are topologically different and are not interchange
 
 ---
 
-## 5. Composition
+## 5. Composition Playbook
 
-**Reference — not a constraint**: choose a Primary Structure, add only useful Modifier Layers, and combine compatible Primaries when both remain legible.
+**Reference — not a constraint**: build from the page's communication job, not catalog coverage. Choose one or more compatible Primary Structures, then add only Modifier Layers or native overlays that solve an observed page problem.
+
+### 5.1 Combination Procedure
+
+| Pass | Decision |
+|---|---|
+| Skeleton | Select the Primary relationship: one visual field, comparison, sequence, evidence view, or multi-image system. Compatible Primaries may share one page. |
+| Diagnose | Name the concrete integration problem: weak text contrast, aspect mismatch, unclear focus, missing reveal/opening, unrelated peers, or exact information needing a native layer. |
+| Repair | Add the smallest legal Modifier or native overlay that solves each chosen problem; add no technique without a job. |
+| Integrate | Reuse contours, baselines, gap rhythm, palette, and required registration so the layers read as one composition. |
+| Stop | Omit or simplify the next layer when it repeats a job, competes with the message, requires an unavailable asset, or weakens legibility/editability. |
+
+### 5.2 High-Yield Combinations
+
+| Page job | Composition candidates |
+|---|---|
+| Atmospheric cover or divider | `#1` / `#73` + `#29`; use `#90` + optional `#86` when an opening should supply the page character |
+| One source does not fit the canvas | `#89` + `#24` or `#82`, with every copy kept in exact registration |
+| Comparison with evidence on both sides | `#48` + `#38`; keep labels, leaders, and exact claims native |
+| Scene-backed evidence or metrics | `#38` / `#40` + `#29` or `#30`; let the image carry context and native SVG carry information |
+| Several sources should read as one object | `#92` + restrained `#70`, or `#88` + a native text/color cell |
+| One continuous scene should span detached shapes | `#82` + optional `#86`; keep one-picture topology |
+| Same-source windows must remain independent | `#100`; add `#87` only when consecutive pages benefit from continuity or motion |
+| A busy visual needs one focal region | `#33`, or prepared-pair `#96` / `#99` when native contrast treatment is insufficient |
+| Formula or technical figure needs explanation | `#19` + `#41` / `#46`; keep explanatory labels native |
 
 **Registration boundary**: registration-dependent effects succeed only when their declared coordinate relationship remains exact. Preserve registration for `#62`, `#82`, `#85`, `#89`, `#95`, `#96`, `#97`, `#99`, and `#100`; `#84` is the intentional exception.
 

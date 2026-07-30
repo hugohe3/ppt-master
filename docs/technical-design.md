@@ -523,6 +523,8 @@ Whenever the image/formula branch is active, its compact placement vocabulary in
 - **Primary Structures** (container layouts / image-as-canvas + native overlay / multi-image compositions) — the page's bones. One or more per page; cross-Primary combinations like *side-by-side comparison + image-as-canvas annotation* are legitimate.
 - **Modifier Layers** (non-rectangular clips / overlays & cutouts / texture / special techniques) — finish. Any number per page, stacked on top of the Primary.
 
+**Why the catalog includes a combination playbook.** Capability discovery alone does not teach repeatable composition. The playbook turns a page job into a compact sequence: select the Primary skeleton, diagnose a concrete integration problem, add the smallest useful Modifier or native overlay, integrate the layers through shared geometry and style, then stop when another layer no longer earns its place. Its high-yield combinations are recall aids, not recipes that every deck must cover.
+
 **Why always reading the library does not impose a catalog or layer quota.** It expands compositional choice rather than defining legal output. A page may use one or several Primary structures and any useful Modifiers, cite no id at all, or use a free-form composition when that better serves the narrative and hierarchy.
 
 **Why the layers are physically separated, not just tagged.** Patterns are organized with Primary structures first and Modifiers second so the active role can navigate by construction role. Numbers remain stable identifiers (`#38` is still image-as-canvas + annotation cards regardless of where it sits in the file), so existing references across `spec_lock.md`, `design_spec.md §VIII`, executor logs, and historical examples keep resolving.
