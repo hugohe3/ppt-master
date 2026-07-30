@@ -1497,6 +1497,7 @@ def parse_template_slide(
             and layer in {"master", "layout"}
             and tag == "g"
             and not _is_authored_preset_atom(elem)
+            and not is_picture_effect_carrier(elem)
         ):
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} is a <g> on the {layer} "
