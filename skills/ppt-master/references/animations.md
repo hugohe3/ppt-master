@@ -353,9 +353,13 @@ that attribute remains importer metadata for mirror/preserve packages
 
 Off by default — enable deck-wide with `-a auto` (or another effect). Once enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
-- **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals. Forbidden with `--recorded-narration` because video-ready exports need click-free playback.
-- **`with-previous`** — all groups start together on slide entry, playing their object animation in parallel. Stagger ignored.
-- **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
+- **`on-click`** — each click reveals the next group. Use only for a controlled semantic reveal; live delivery alone is insufficient. Forbidden with `--recorded-narration`.
+- **`with-previous`** — groups start together as one coordinated beat. Stagger ignored.
+- **`after-previous`** (default) — click-free cascade on slide entry with `--animation-stagger` spacing. Use when controlled reveals are unnecessary.
+
+**Default — coherent Start rhythm (may override when a semantic beat needs
+different control)**: Keep one dominant deck rhythm and normally one mode per
+slide. Mix only for a distinct simultaneous or presenter-controlled beat.
 
 Enable with `-a auto`, select a canonical effect with
 `--animation entrance_fade`, and choose Start behavior with
@@ -378,9 +382,10 @@ matching lifecycle instead.
 | `move` | state/position A → progress → state/position B | The trajectory carries spatial or causal meaning, or §4.1 adopts subordinate ambient motion; use Morph for cross-page continuity | Explicit `path_*`, or endpoint pages + Morph |
 | `exit` | present → retire → absent | The same slide must remove, replace, or make room for content; an ordinary page change needs no object exit | Explicit `exit_*` |
 
-Entrance is the common opt-in family for staged information, not a deck or
-category quota. A unit may use several ordered `effects[]` rows only when it
-has several real lifecycle duties.
+**Default — restrained entrance-led choreography (may override for content,
+tone, or the request)**: Use entrances for ordinary builds. Add emphasis or
+exit sparingly, only for a real duty and fitting effect. Multiple `effects[]`
+rows require multiple duties.
 
 The registry exposes two layers:
 
