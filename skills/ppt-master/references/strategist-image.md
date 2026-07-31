@@ -4,7 +4,7 @@
 
 Conditional extension for formula assets, proposed / confirmed image elaboration, AI rendering selection, and `design_spec.md §VIII` resource planning.
 
-**Trigger**: Core first derives proposed `recommend.image_usage`. Load this module before Stage-2 direction construction when that proposal contains any non-`none` source, when the user supplied an explicit non-`none` image constraint, or when formula handling is triggered. After confirmation, the confirmed sources bound production: confirmed `none` with no formula trigger stops before resource authoring. On a formula-only path, read §3 and the formula-row rules in §4; skip non-formula planning. [`strategist.md`](./strategist.md) owns source recommendation; this module owns image-dependent candidates, production detail, and §VIII rows.
+**Trigger**: Load before Stage-2 directions for a proposed non-`none` source, an explicit non-`none` constraint, or formulas. If confirmed `none` becomes non-`none`, load after Stage 2 without backfilling candidates. Confirmed `none` without formulas stops before resources. A formula-only path reads §3 and §4 formula rows only. [`strategist.md`](./strategist.md) owns source recommendation; this module owns image-dependent candidates, production detail, and §VIII rows.
 
 ---
 
@@ -18,11 +18,13 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Default — one coherent sheet for compatible same-family spots (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference and use separate sheets for incompatible shapes. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Stage 3 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
 
-## 2. AI Image Strategy — propose before Stage 2; lock only for confirmed `ai`
+## 2. AI Image Strategy — propose only for recommended `ai`; lock any confirmed `ai`
 
 When proposed sources include `ai`, read [`image-renderings/_index.md`](./image-renderings/_index.md) before constructing Stage 2. Unless the user or active template already names a rendering, place at least three credible, distinct preset renderings across the coordinated safe/shifted/bold directions; a genuine compatibility shortfall may return fewer with a reason. Each preset `image_strategy` carries localized `rendering`, `visual`, and `mood` only. Mood includes a recognizable real-world analogy. Image colors always inherit that direction's deck HEX roles; never add an image palette or alter deck colors to rescue a rendering.
 
 Also write one `custom_candidates.image_strategy` under the Confirm UI contract: localized `name` / `visual` / `mood`, `rendering: custom`, and non-empty localized `behavior` satisfying the catalog grammar. If it combines or borrows existing renderings, name every exact id in the visible proposal and read every corresponding `image-renderings/<id>.md` before writing the synthesis. If it is genuinely novel, read no preset file and name no catalog basis. Keep it unselected unless the user supplied it (`recommend.image_strategy: custom`); under a template it obeys inherited identity and application. Only a selected custom locks its edited behavior as `image_rendering_behavior`; when catalog material is actually used, also project the exact ids as `image_rendering_references`, otherwise omit that field. Discard an unselected candidate downstream. Ignore legacy `image_palette`.
+
+Post-confirmation AI activation creates no candidates: read the selected preset, or consume custom behavior/references.
 
 For specialized or regulated paper-figure subjects, preserve the prompt depth required by [`image-generator.md`](./image-generator.md) §4.2 rather than shortening to a generic brief. Scan the outline for genuine image-led pages, list the proposed hero pages in Stage-2 `image_notes` so the user can retain, edit, or remove them in the same confirmation, then mark only the confirmed pages' AI rows `page_role: hero_page`; local is the default. `text_policy: embedded` is reserved for stable figure-internal identifiers or lettering deliberately fused into the artwork; page titles, editable data values/labels, and prose remain SVG. Resolve confirmed provided assets through the context-first boundary above before writing §VIII.
 
