@@ -9,7 +9,7 @@ cross-platform process-liveness check and the claim/read/release lock logic so
 the two servers cannot drift apart.
 
 Usage:
-    from server_common import process_alive, read_lock, lock_pid, claim_lock, release_lock, clear_lock, find_free_port
+    from server_common import find_free_port, validate_port
 
 Dependencies:
     None (only uses standard library)
@@ -24,14 +24,33 @@ from pathlib import Path
 from typing import Optional
 
 
+MIN_PORT = 1
+MAX_PORT = 65535
+
+
+def validate_port(port: int) -> int:
+    """Return a valid TCP port, raising ``ValueError`` outside 1..65535."""
+    if isinstance(port, bool) or not isinstance(port, int):
+        raise ValueError('port must be an integer between 1 and 65535')
+    if not MIN_PORT <= port <= MAX_PORT:
+        raise ValueError(f'port must be between {MIN_PORT} and {MAX_PORT}: {port}')
+    return port
+
+
 def find_free_port(preferred: int, host: str = '127.0.0.1', span: int = 50) -> int:
-    """Return ``preferred`` if it is bindable, else the next free port within
-    ``span``. Lets a new project's UI server coexist with another project's
-    server already holding the default port, instead of crashing on bind — each
-    project ends up on its own port serving its own data. Falls back to
-    ``preferred`` if the whole span is taken (let the caller's bind surface it).
+    """Return the first bindable port from ``preferred`` through its scan span.
+
+    The scan remains sequential so callers can keep 5050 as their preferred
+    port and advance predictably when it is occupied. Invalid ports fail before
+    probing, and an exhausted valid range raises ``RuntimeError`` instead of
+    returning a port already known to be unavailable.
     """
-    for port in range(preferred, preferred + span):
+    preferred = validate_port(preferred)
+    if isinstance(span, bool) or not isinstance(span, int) or span <= 0:
+        raise ValueError(f'span must be a positive integer: {span}')
+
+    last_port = min(preferred + span - 1, MAX_PORT)
+    for port in range(preferred, last_port + 1):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
             probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             try:
@@ -39,7 +58,9 @@ def find_free_port(preferred: int, host: str = '127.0.0.1', span: int = 50) -> i
                 return port
             except OSError:
                 continue
-    return preferred
+    raise RuntimeError(
+        f'no free TCP port on {host} in range {preferred}..{last_port}'
+    )
 
 
 def popen_detached(

@@ -71,6 +71,7 @@ from server_common import (  # noqa: E402
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
+    validate_port as _validate_port,
 )
 
 configure_utf8_stdio()
@@ -506,6 +507,8 @@ def create_app(
             slide_count = 0
         resp = jsonify({
             'status': 'ok',
+            'service': 'live_preview',
+            'pid': os.getpid(),
             'project': str(project_path),
             'live': app.config['LIVE_MODE'],
             'svg_output': str(svg_dir),
@@ -1072,9 +1075,10 @@ def _shutdown_existing(project_path: Path) -> int:
 def _wait_for_ready(
     port: int,
     proc: subprocess.Popen,
+    project_path: Path,
     timeout: int = STARTUP_TIMEOUT,
 ) -> bool:
-    """Wait until the server responds or the child exits."""
+    """Wait until this project's detached live-preview server responds."""
     deadline = time.time() + timeout
     health_url = _server_url(port, '/api/health')
     last_error = ''
@@ -1084,9 +1088,17 @@ def _wait_for_ready(
             return False
         try:
             with urllib.request.urlopen(health_url, timeout=1) as response:
-                if response.status == 200:
+                data = json.load(response)
+                if (
+                    response.status == 200
+                    and isinstance(data, dict)
+                    and data.get('service') == 'live_preview'
+                    and data.get('project') == str(project_path)
+                    and data.get('pid') == proc.pid
+                ):
                     return True
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                last_error = 'health response belongs to another service or project'
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
             last_error = str(exc)
         time.sleep(0.25)
     logger.error(
@@ -1112,7 +1124,12 @@ def _open_browser(url: str) -> bool:
     return False
 
 
-def _reuse_running_server(existing: dict, *, open_browser: bool) -> int:
+def _reuse_running_server(
+    existing: dict,
+    *,
+    open_browser: bool,
+    requested_port: Optional[int] = None,
+) -> int:
     """Idempotent relaunch: point at the already-running preview instead of failing.
 
     A relaunch while the server is alive is the normal second-preview flow
@@ -1129,6 +1146,14 @@ def _reuse_running_server(existing: dict, *, open_browser: bool) -> int:
             'live preview is already running for this project (pid=%s) but its '
             'lock records no usable port; run --shutdown, then start again',
             pid,
+        )
+        return 1
+    if requested_port is not None and port != requested_port:
+        logger.error(
+            'live preview is already running for this project on port %s; '
+            'explicit --port %s cannot reuse it. Run --shutdown, then start again',
+            port,
+            requested_port,
         )
         return 1
     url = _server_url(port)
@@ -1159,8 +1184,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--port',
         type=int,
-        default=DEFAULT_PORT,
-        help=f'Port to listen on (default: {DEFAULT_PORT})',
+        default=None,
+        help=f'Exact port to listen on (default: first free port from {DEFAULT_PORT})',
     )
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument(
@@ -1197,6 +1222,13 @@ def main(argv: Optional[list[str]] = None) -> int:
         datefmt='%H:%M:%S',
     )
 
+    if args.port is not None:
+        try:
+            args.port = _validate_port(args.port)
+        except ValueError as exc:
+            logger.error('%s', exc)
+            return 2
+
     project_path = Path(args.project_dir).resolve()
     if args.shutdown:
         return _shutdown_existing(project_path)
@@ -1214,7 +1246,11 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     legacy_existing = _legacy_live_lock(project_path)
     if legacy_existing:
-        return _reuse_running_server(legacy_existing, open_browser=not args.no_browser)
+        return _reuse_running_server(
+            legacy_existing,
+            open_browser=not args.no_browser,
+            requested_port=args.port,
+        )
 
     runtime_dir = _runtime_dir(project_path)
     lock_file = _lock_file(project_path)
@@ -1222,7 +1258,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.daemon:
         existing = _read_lock(lock_file)
         if existing and _process_alive(_lock_pid(existing)):
-            return _reuse_running_server(existing, open_browser=not args.no_browser)
+            return _reuse_running_server(
+                existing,
+                open_browser=not args.no_browser,
+                requested_port=args.port,
+            )
 
         try:
             runtime_dir.mkdir(parents=True, exist_ok=True)
@@ -1230,7 +1270,11 @@ def main(argv: Optional[list[str]] = None) -> int:
             logger.error('cannot create live preview runtime directory: %s (%s)', runtime_dir, exc)
             return 1
         log_path = runtime_dir / 'server.log'
-        port = _find_free_port(args.port)
+        try:
+            port = args.port if args.port is not None else _find_free_port(DEFAULT_PORT)
+        except RuntimeError as exc:
+            logger.error('%s', exc)
+            return 1
         idle_timeout = args.timeout
         if idle_timeout is None:
             idle_timeout = 7200 if args.live else 900
@@ -1259,7 +1303,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             logger.error('cannot write live preview log: %s (%s)', log_path, exc)
             return 1
         url = _server_url(port)
-        if not _wait_for_ready(port, proc):
+        if not _wait_for_ready(port, proc, project_path):
+            if proc.poll() is None:
+                proc.terminate()
             logger.error('live preview failed to become reachable: %s (log: %s)', url, log_path)
             return 1
         logger.info('started live preview in background: %s (pid=%s)', url, proc.pid)
@@ -1271,7 +1317,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     # Pick a free port: another project's preview/confirm server may already
     # hold the default, so bind the next free one instead of crashing — each
     # project then serves its own data on its own port (no cross-project mix-up).
-    port = _find_free_port(args.port)
+    try:
+        port = args.port if args.port is not None else _find_free_port(DEFAULT_PORT)
+    except RuntimeError as exc:
+        logger.error('%s', exc)
+        return 1
 
     # Per-project mutual exclusion. The major driver of orphaned servers is
     # --live mode (which used to disable idle timeout entirely) combined with
@@ -1285,7 +1335,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
     existing = _claim_lock(lock_file, port)
     if existing:
-        return _reuse_running_server(existing, open_browser=not args.no_browser)
+        return _reuse_running_server(
+            existing,
+            open_browser=not args.no_browser,
+            requested_port=args.port,
+        )
     # atexit covers normal interpreter shutdown (Ctrl+C / SystemExit);
     # /api/shutdown and idle timeout call _release_lock directly before
     # os._exit since atexit handlers do not run on os._exit.

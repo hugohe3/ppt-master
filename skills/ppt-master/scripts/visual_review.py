@@ -40,6 +40,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
+from server_common import lock_pid, process_alive, read_lock
 from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
@@ -210,15 +211,53 @@ def discover_pages(project_path: Path, requested: list[str] | None) -> list[str]
     return selected
 
 
-def check_server(server_url: str) -> None:
-    """Probe server liveness via /api/slides. Raises RuntimeError if down."""
-    url = f"{server_url.rstrip('/')}/api/slides"
+def discover_server_url(project_path: Path) -> str:
+    """Return the live-preview URL recorded for one project."""
+    lock_paths = (
+        project_path / 'live_preview' / 'lock.json',
+        project_path / '.live_preview.lock',
+    )
+    for lock_path in lock_paths:
+        lock = read_lock(lock_path)
+        if not lock or not process_alive(lock_pid(lock)):
+            continue
+        try:
+            port = int(lock.get('port', 0) or 0)
+        except (TypeError, ValueError):
+            port = 0
+        if 1 <= port <= 65535:
+            return f'http://127.0.0.1:{port}'
+    raise RuntimeError(
+        f'no running live-preview server recorded for project: {project_path}'
+    )
+
+
+def check_server(server_url: str, project_path: Path) -> None:
+    """Require a live-preview server that belongs to the target project."""
+    url = f"{server_url.rstrip('/')}/api/health"
     try:
         with urllib.request.urlopen(url, timeout=3.0) as resp:
             if resp.status != 200:
                 raise RuntimeError(f'{url} returned HTTP {resp.status}')
-    except urllib.error.URLError as e:
+            data = json.load(resp)
+    except (urllib.error.URLError, OSError, ValueError) as e:
         raise RuntimeError(f'live-preview server not reachable at {server_url}: {e}')
+    expected_project = str(project_path)
+    expected_svg_output = str((project_path / 'svg_output').resolve())
+    service = data.get('service') if isinstance(data, dict) else None
+    legacy_live_preview = (
+        service is None
+        and isinstance(data, dict)
+        and data.get('svg_output') == expected_svg_output
+    )
+    if (
+        not isinstance(data, dict)
+        or data.get('project') != expected_project
+        or (service != 'live_preview' and not legacy_live_preview)
+    ):
+        raise RuntimeError(
+            f'URL does not belong to this project live preview: {server_url}'
+        )
 
 
 def main() -> int:
@@ -232,8 +271,8 @@ def main() -> int:
              "Accepts '02', '02_three_steps', or '02_three_steps.svg'.",
     )
     parser.add_argument(
-        '--server-url', default='http://localhost:5050',
-        help='Live-preview server URL (default: http://localhost:5050)',
+        '--server-url', default=None,
+        help='Explicit live-preview URL (default: discover it from the project lock)',
     )
     parser.add_argument(
         '--lock-timeout', type=float, default=30.0,
@@ -258,7 +297,8 @@ def main() -> int:
         return 3
 
     try:
-        check_server(args.server_url)
+        server_url = args.server_url or discover_server_url(project_path)
+        check_server(server_url, project_path)
     except RuntimeError as e:
         _safe_print(str(e))
         _safe_print(
@@ -278,7 +318,7 @@ def main() -> int:
 
     with file_lock(lock_path, timeout=args.lock_timeout):
         try:
-            records = render_pages(args.server_url, pages, preview_dir)
+            records = render_pages(server_url, pages, preview_dir)
         except Exception as e:  # noqa: BLE001 — browser launch failure
             _safe_print(f'browser session failed: {type(e).__name__}: {e}')
             _safe_print(
@@ -294,7 +334,7 @@ def main() -> int:
 
     summary = {
         'project': str(project_path),
-        'server_url': args.server_url,
+        'server_url': server_url,
         'rendered': sum(1 for r in records if r['ok']),
         'failed': sum(1 for r in records if not r['ok']),
         'all_background': sum(1 for r in records if r.get('all_background')),
