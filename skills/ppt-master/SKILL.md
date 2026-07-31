@@ -7,6 +7,12 @@ description: >
   template, fill, or enhance a presentation, or mentions ppt-master.
 metadata:
   version: "4.3.0"
+  copyright: "Copyright (c) 2025-2026 Hugo He"
+  license: "MIT"
+  official_repository: "https://github.com/hugohe3/ppt-master"
+  sponsors:
+    - "SPONSORS.md"
+    - "SPONSORS_CN.md"
 ---
 
 # PPT Master Skill
