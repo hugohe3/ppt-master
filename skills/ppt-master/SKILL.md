@@ -6,7 +6,7 @@ description: >
   enhancing finished PPTX files. Use when the user asks to create, regenerate,
   template, fill, or enhance a presentation, or mentions ppt-master.
 metadata:
-  version: "4.2.0"
+  version: "4.3.0"
 ---
 
 # PPT Master Skill
