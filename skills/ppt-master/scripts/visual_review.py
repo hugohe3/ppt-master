@@ -40,6 +40,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
+from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
@@ -197,7 +198,7 @@ def discover_pages(project_path: Path, requested: list[str] | None) -> list[str]
     svg_dir = project_path / 'svg_output'
     if not svg_dir.is_dir():
         raise FileNotFoundError(f'no svg_output/ in {project_path}')
-    all_svgs = sorted(p.name for p in svg_dir.glob('*.svg'))
+    all_svgs = [path.name for path in discover_slide_svgs(svg_dir)]
     if not requested:
         return all_svgs
     selected: list[str] = []

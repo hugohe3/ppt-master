@@ -222,9 +222,7 @@ redirect, loop, or batch helper output into `svg_output/`.
 
 ### SVG File Naming Convention
 
-Format: `<NN>_<page_name>.svg` (two-digit number from 01; name matches the deck's language and the page title in the Design Spec).
-
-Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.svg` / `02_agenda.svg` / `03_key_benefits.svg`.
+Format: `<index>_<page_name>.svg`. Use one roster-wide zero-padded index width sized for the Design Spec §IX roster, such as `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`; match the deck language and page title.
 
 ---
 

@@ -61,6 +61,7 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from resource_paths import icon_search_dirs_for_project  # noqa: E402
+from slide_roster import discover_slide_svgs  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     clear_lock as _clear_lock,
@@ -575,7 +576,7 @@ def create_app(
 
         annotations = app.config['ANNOTATIONS']
         slides = []
-        for svg_file in sorted(svg_dir.glob('*.svg')):
+        for svg_file in discover_slide_svgs(svg_dir):
             path_str = str(svg_file)
             try:
                 mtime = svg_file.stat().st_mtime
