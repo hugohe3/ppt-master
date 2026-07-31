@@ -425,8 +425,8 @@ No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §V
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 ```
-- Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at the launch-log URL such as `http://127.0.0.1:5050`; if another project already holds it, the launcher **auto-advances to the next free port** — read the actual URL from the launch log and report that.
-- Treat the launch URL as a checkpoint value: before writing the first SVG, either report the actual URL from the launcher or state the launch failure explicitly. Do not silently continue while claiming preview is available.
+- Start when Executor begins; `svg_output/` may be empty. Default: first free port from `5050`; `--port N`: strict bind. Read the actual URL from output or `<project_path>/live_preview/lock.json`.
+- Before the first SVG, report that URL or the launch failure; never claim an unavailable preview.
 - Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.
 - **Service must keep running** until one of: (a) the user clicks **Exit preview** in the browser, or (b) the user explicitly asks in chat to stop it. Generation continues even if the user closes the editor.
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).

@@ -46,7 +46,7 @@ python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --no-brows
 # (single instance per project — if it's already running, skip)
 ```
 
-The renderer (`visual_review.py`) does **not** auto-start the live-preview server. It expects the server to be reachable at `http://localhost:5050` (override with `--server-url`).
+The renderer (`visual_review.py`) does **not** auto-start the live-preview server. Without `--server-url`, it discovers the actual port from the target project's `live_preview/lock.json`; an explicit `--server-url` overrides discovery. In either case it validates `/api/health` against the resolved target project before rendering and rejects a server for another project.
 
 > **Why playwright, not cairosvg**: cairo's text API has no font-fallback chain, so CJK characters render as tofu boxes for any deck whose font-family list relies on system fallback (Microsoft YaHei / PingFang SC / etc.). Playwright drives a real chromium and produces output identical to what the live-preview browser shows — the only fidelity-preserving option for bilingual decks.
 
@@ -63,7 +63,7 @@ This writes one PNG per page to `<project_path>/.preview/<page>.png` at 1280×72
 Exit codes:
 
 - `0` — all pages rendered
-- `2` — live-preview server unreachable (start it per Prerequisites)
+- `2` — live-preview server unreachable or serving a different project (start the target project's server per Prerequisites)
 - `3` — playwright python / chromium not installed (or browser failed to launch)
 - `4` — one or more page-level render failures (see stderr; partial output is on disk)
 

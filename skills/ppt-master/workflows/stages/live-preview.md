@@ -34,14 +34,14 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon
 
 (Plain mode — no `--live`. The `--live` flag is reserved for Step 6's auto-startup.)
 
-The launcher binds `127.0.0.1:5050` (or the next free port), starts the server in the background, waits for `GET /api/health` to prove the server is accepting requests, writes runtime files under `<project_path>/live_preview/`, opens the browser on a local desktop when possible, and edits `<project_path>/svg_output/` in place. After it prints the running URL, tell the user in their language, in one short message:
+The launcher starts the server in the background on its selected port, waits for `GET /api/health`, records the actual pid + port in `<project_path>/live_preview/lock.json`, opens the browser when possible, and edits `<project_path>/svg_output/` in place. After it prints the running URL, tell the user in their language, in one short message:
 
 - editor is at the URL reported by the launcher, e.g. `http://127.0.0.1:5050`
 - **Direct edit** (deterministic tweaks — wording, color, coordinates, SVG attributes): select an element → change the controls in the right panel → preview updates immediately, but nothing is written to `svg_output/` until **Apply changes**. `Ctrl+Z` or the **Undo** button drops staged edits step by step; applied changes are logged to `<project>/live_preview/edits.jsonl`. Re-export stays chat-driven and separate: say "re-export" / "重新导出" to refresh the PPTX.
 - **Annotate** (changes that need AI judgement / re-layout): select an element → write the instruction, optionally starting from a quick type such as move / resize / replace image / copy / relayout → click **Add annotation** to stage it → click **Apply changes** to write annotation markers → return to the chat and say `apply my annotations` (or quote the browser prompt)
 - to skip the editor, just describe the change in chat
 
-Do not wait for confirmation before launching — the user already asked for preview, so launching is the response. If another project already holds the port, the launcher auto-advances to the next free one — report the actual URL from the launch log (`--port <other>` still forces a specific port). Remote access → see the appendix.
+Launch immediately — the user already asked for preview. Report the actual URL from the output or project lock; never infer it from `5050`. Remote access → see the appendix.
 
 ---
 
@@ -79,9 +79,9 @@ Triggered by the user signals listed in "When to Run".
 - **Unsaved-work guard**: staged direct edits and annotation changes (added or removed) live in server memory until **Apply changes**; closing the tab triggers the browser's native "leave site?" prompt while any are unapplied, since an idle timeout or process kill would drop them.
 - **Re-export is chat-driven**: applying changes updates `svg_output/` only. Refreshing the PPTX (finalize + svg_to_pptx) stays a chat step — the editor never runs the export pipeline or presents browser-side export as part of applying edits.
 - **Stop conditions**: the service stops when the user clicks **Exit preview** in the browser, asks in chat to stop it, the idle timeout fires, or the process is killed externally.
-- **Port**: default `5050`, auto-advancing to the next free port when another project already holds it (report the actual URL from the launch log); force a specific port with `--port <other>`.
+- **Port**: without `--port`, use the first free port from `5050`; `--port N` binds `N` strictly and fails if unavailable. Read the actual URL from launch output or `<project_path>/live_preview/lock.json`.
 - **Idle timeout**: plain mode `900s`, `--live` mode `7200s`; override with `--timeout <seconds>` (`0` disables).
-- **Single instance per project**: `<project_path>/live_preview/lock.json` records the running pid + port. A second launch against the same project refuses to start and prints the existing URL; stale locks (dead pid) are overwritten on the next launch. Legacy root locks at `<project_path>/.live_preview.lock` are still detected when they point to a live process.
+- **Single instance per project**: `<project_path>/live_preview/lock.json` records the running pid + actual port and is the discovery source for project-local consumers. A second launch reuses the live instance unless an explicit, different `--port N` was requested; that mismatch fails and requires `--shutdown` before restart. Stale locks (dead pid) are overwritten on the next launch. Legacy root locks at `<project_path>/.live_preview.lock` are still detected when they point to a live process.
 - **Transient ids**: each element gets a temporary `_edit_N` id while the editor is running. On save, only annotated elements keep their id; unannotated `_edit_N` ids are stripped before write-back.
 - **Browser preview**: the server inlines `<use data-icon>` placeholders and serves `images/*` so SVG renders correctly; the on-disk SVG is unchanged by this preview.
 
@@ -97,8 +97,10 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon --no-b
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon --no-browser
 ```
 
-- **VS Code / Cursor Remote-SSH**: open the **PORTS** panel (`Ctrl+Shift+P` → `Ports: Focus on Ports View`), click **Forward a Port**, enter `5050`. The workspace remembers it.
-- **Termius**: open the **Port Forwarding** module from the left sidebar (top-level, not nested). Add a rule with **Type = Local**, Host = your remote, Binding `127.0.0.1:5050`, Destination `127.0.0.1:5050`. Save, then start the rule (▶ button).
-- **Plain SSH**: `ssh -L 5050:127.0.0.1:5050 <user>@<host>` (or add `LocalForward 5050 127.0.0.1:5050` to `~/.ssh/config`).
+Let `<P>` be the port in launch output or `<project_path>/live_preview/lock.json`:
 
-Then open `http://localhost:5050` in your local browser.
+- **VS Code / Cursor Remote-SSH**: in the **PORTS** panel, forward `<P>`.
+- **Termius**: add a Local rule with Binding and Destination both `127.0.0.1:<P>`, then start it.
+- **Plain SSH**: `ssh -L <P>:127.0.0.1:<P> <user>@<host>`.
+
+Then open `http://localhost:<P>` locally.
