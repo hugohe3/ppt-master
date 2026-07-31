@@ -52,6 +52,9 @@ _REQUIRED_GATE_FILES = (
     "scripts/register_template.py",
     "scripts/template_preview_pptx.py",
 )
+_SKILL_GATE_MARKER = "python3 scripts/attribution_guard.py"
+
+
 def _normalized_bytes(path: Path) -> bytes:
     """Return UTF-8 text bytes with platform line endings normalized."""
     data = path.read_bytes()
@@ -87,6 +90,7 @@ def _metadata_is_valid() -> bool:
             len(re.findall(rf"(?m)^  {re.escape(field)}\s*:", metadata)) == 1
             for field in _REQUIRED_METADATA_FIELDS
         )
+        and skill_text.count(_SKILL_GATE_MARKER) == 1
     )
 
 
