@@ -54,7 +54,7 @@ from svg_to_pptx.canvas_contract import (
 )
 
 try:
-    from project_specs import (
+    from project_management.project_specs import (
         parse_spec_lock as _parse_spec_lock,
         parse_spec_lock_image_value as _parse_spec_lock_image_value,
     )
