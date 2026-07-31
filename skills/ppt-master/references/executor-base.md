@@ -27,11 +27,12 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 1. Effect Capability Discovery
 
-**Mandatory — select by visual job**: before authoring each page, run the
-already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure and use its
-§6.13 scenario routing. The catalog expands construction vocabulary; it does
-not create an effect quota. Active cross-page continuous action additionally
-loads [`animations.md`](./animations.md) §3.1 before authoring both endpoints.
+**Mandatory — select by visual job**: establish each page's semantic skeleton,
+then run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure
+and Visual Job Router before finalizing; use §6.13 for a coordinated page
+recipe when useful. The catalog expands construction vocabulary; it creates no
+effect quota. Active cross-page continuous action additionally loads
+[`animations.md`](./animations.md) §3.1 before authoring both endpoints.
 
 **Hard rule — discovery does not expand compatibility**: Follow
 `svg-effects.md` syntax and fallbacks; unsupported source/backdrop blur, blend

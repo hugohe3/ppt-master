@@ -25,6 +25,7 @@ Compact composition vocabulary for prepared images, illustrations, and rendered 
 | Mechanism, not generic “mask” | Owner |
 |---|---|
 | Layout geometry | [`image-layout-spec.md`](./image-layout-spec.md) |
+| Image-treatment implementation map | [`svg-effects.md`](./svg-effects.md) §6.1 Image-Treatment Implementation Map |
 | Crop: policy / legality / wrapper | [`svg-image-embedding.md`](./svg-image-embedding.md) / [`shared-standards-core.md`](./shared-standards-core.md) / [`svg-effects.md`](./svg-effects.md) |
 | Scrim / gradient / wash | [`svg-effects.md`](./svg-effects.md) |
 | Shadow / glow / overlay-boundary elevation | [`svg-effects.md`](./svg-effects.md) §6.4 |

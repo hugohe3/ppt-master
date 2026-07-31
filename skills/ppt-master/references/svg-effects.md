@@ -10,8 +10,8 @@ Authority for advanced paint, effects, transforms, freeform/radial geometry, and
 
 **Mandatory**: Default and Quick Generate read this file completely before SVG
 authoring and keep its compatible techniques in active construction vocabulary.
-Before constructing each page, run the §6.1 selection procedure and use §6.13
-to route each diagnosed visual job.
+Before finalizing each page, run the §6.1 selection procedure and Visual Job
+Router. Use §6.13 when diagnosed jobs benefit from one coordinated page recipe.
 
 **Default — situational use (may override when plain construction is stronger)**:
 “Advanced” means capability depth, not an effect quota. During page authoring,
@@ -27,16 +27,53 @@ rhythm, and style; apply those that materially help.
 | Aesthetic fit | Locked or Quick-resolved `visual_style` / `visual_style_behavior` |
 | Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
 
-**Mandatory — job-first effect selection**: start from a readable, editable
-plain construction, not from the effect catalog.
+**Mandatory — job-first effect selection**: establish the editable semantic
+skeleton first, then diagnose effect jobs before treating the page as complete.
+Plain construction remains valid only when that diagnostic finds no unresolved
+visual job.
 
 | Pass | Decision |
 |---|---|
-| Baseline | Name the concrete job an effect would perform: separate planes, direct attention, integrate image and text, encode state/direction, or express the locked or Quick-resolved material/style. If plain hierarchy already performs it, keep the plain construction. |
-| Surface | Identify the exact target—text, image, line, geometry, or a supported `<g>` / `<use>` subtree—and verify that the owning subsection allows that operation on the surface and states usable fidelity. |
-| Select | Route the job through §6.13 and choose the smallest compatible technique that performs it. When alternatives communicate equally well, prefer `Native-stable` / `Native-normalized` over `Approximate` or `Bake-required`. |
-| Integrate | Align paint, contour, light direction, hierarchy, and z-order with the page. Combine techniques only when each owns a different job; never stack shadow, glow, gradient, border, and tint merely to look advanced. |
-| Gate / Stop | Check legibility, editability, object density, native fidelity, and style fit. Simplify for legibility/style failures; use a legal explicit layer or alternative for unsupported syntax; bake the smallest visual layer/asset only when the intent truly depends on pixels. Keep authoritative text/data native and review any material `Approximate` result in the exported PPTX. |
+| Skeleton / diagnose | Establish native information, relationships, and hierarchy. Before completion, check image/text integration, plane separation, focus, state/direction, material/style, and the recurring motif; keep plain construction when none needs treatment. |
+| Surface / select | Name the target, confirm its owning subsection and fidelity, then use the Router. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
+| Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
+
+#### Visual Job Router
+
+**Reference — not a quota**: route diagnosed problems through this table. A
+page may use no listed technique, one technique, or several techniques with
+different jobs.
+
+| Diagnosed visual problem | Candidate technique | Authority / stop |
+|---|---|---|
+| Meaningful direction, continuous value, or center focus is missing | Linear/radial gradient or channel alpha | §6.2 / §6.3; otherwise keep solid paint |
+| Picture/card/overlay elevation or boundary is unclear | Object or picture/carrier shadow, restrained glow, or hairline | §6.4; equal peers stay flat; one light direction |
+| Native copy and image do not integrate | Scrim, fade, wash, vignette, off-center spotlight, or faux glass | §6.5 and the Image-Treatment Implementation Map; verify contrast; no backdrop blur |
+| Relationship state, direction, continuity, or boundary is unclear | Draft/optional/future → dash; direction → marker; undirected → solid; continuous flow → gradient stroke; repeated boundary → frame/contour/crop edge; exact grid → multi-subpath | §6.6 / §6.3; every line needs a job |
+| Short display text needs notation or silhouette | Removed/former → strike; eyebrow distinction → tracking; display silhouette → outline/gradient; luminous metric → glow; semantic list → native bullet | §6.7 / §6.4; no decorative body-copy treatment |
+| Tilt, repetition, or reversible asset direction helps composition | Rotate, translate/mirror, or local `<use>` | §6.8; never mirror text, logos, or directional evidence |
+| Resolved style needs hand, print, pixel, facets, layers, ribbon, or line-plus-area | Matching constructed recipe | §6.11; no generic decorative freeform |
+| Meaning needs an unmatched silhouette, radial hierarchy, gauge, or custom route | Freeform, explicit arc/sector, or calculated arrowhead | §6.9 / §6.10; prefer an equal stock shape/marker |
+| Look depends on dense texture, source blur, per-pixel composite, reflection, or skew | Native-safe alternative or prepared/baked asset | §6.12; text/data stay editable |
+
+#### Image-Treatment Implementation Map
+
+**Reference — not a constraint**: when image composition names one of these
+modifier or prepared-asset treatments, resolve its implementation here.
+`Effect-only` keeps a visible capability here without restoring a layout ID.
+
+| Image handles / treatment | Construction / boundary |
+|---|---|
+| `M2 · 01/03/04/08/09` · scrim, wash, fade, grid | Explicit solid/linear/radial layers over one picture; §6.2 / §6.3 / §6.5 |
+| `M2 · 06/07` · atmospheric wash, watermark/receded field | Reduced picture alpha + optional wash; subordinate to native content; §6.2 / §6.5 |
+| `M2 · 02/05` · vignette or spotlight | Radial layer with movable `fx/fy` or `cx/cy`; outer geometry `Approximate`; §6.3 / §6.5 |
+| `M3 · 04` · lifted picture panel / visible overlay edge | Picture/carrier shadow, glow, or hairline; shadow one support shape for a framed/captioned panel; §6.4 |
+| `M3 · 01/02/05` · frame, print frame, contour/cut edge | Registered native stroke/path; §6.6 |
+| `M3 · 03; M1 · 09` · rotation, misregistration, Riso offset | Transform + explicit duplicate layers; §6.8 / §6.11 |
+| `M1 · 03` + effect-only forms · paper cut, facets/folds, ribbon, staging | Ordered paths/facets + consistent paint/light; §6.11 / [`native-shape-authoring.md`](./native-shape-authoring.md) §7 |
+| `M1 · 01/02/04–08` · crop, opening, subtraction, reveal | Direct clip or materialized Boolean; no `<mask>`; [`shared-standards-core.md`](./shared-standards-core.md) §1.2 / [`native-shape-authoring.md`](./native-shape-authoring.md) §6 |
+| Effect-only · faux glass | Visible field + translucent panel + highlight; no blur or frosted-crop substitution; §6.5 |
+| `A1 · 02–04; A3 · 02/03` · blur, duotone, blend, frost, desaturation | Prepared local bitmap/composite/derivative; registered frost is a blurred derivative; §6.12 |
 
 **Reference — illustrative colors**: colors below demonstrate syntax only;
 generated pages choose paint from the Default locked or Quick-resolved identity
@@ -73,7 +110,7 @@ contract, such as SVG's default fill or §6.3's required gradient-stop color.
 | Fill/text alpha | Opaque `fill` + `fill-opacity="0..1"` | Fill/run alpha; `Native-stable` |
 | Stroke alpha | Opaque `stroke` + `stroke-opacity="0..1"` | Line/outline alpha; `Native-stable` |
 | Gradient-stop alpha | Opaque `stop-color` + `stop-opacity="0..1"` | Per-stop alpha; `Native-stable` |
-| Shadow/glow alpha | Opaque `flood-color` + `flood-opacity="0..1"` | Effect alpha; `Native-stable` within §6.4 |
+| Shadow/glow alpha | Opaque `flood-color` + `flood-opacity="0..1"` | Glow is `Native-stable`; outer shadow is visually calibrated `Approximate` within §6.4 |
 | Picture fade | `<image opacity="0..1">` | Picture `<a:alphaModFix>`; `Native-stable` |
 | One atomic whole-object fade | Non-group element `opacity="0..1"` | Alpha compiled into its supported paint/effect channels; `Native-normalized` |
 | Pattern alpha | Opaque pattern child paint + child fill/stroke opacity | Conditional; [`native-data-interface.md`](./native-data-interface.md) |
@@ -181,6 +218,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
 | Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>`; an exact outer `<g filter>` is also registered when its sole visual child is one clipped `<image>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
+| Generated glow form | Zero-offset `feDropShadow` with flood paint, or the complete blur + flood + composite + merge graph below; never bare blur |
 | Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx`, `dy`, and `flood-opacity` on `feDropShadow`; explicit `flood-opacity` on `feFlood`; explicit `slope` on linear `feFuncA` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
 | Alpha transfer | Linear `feFuncA` maps multiplicative `slope` only; `intercept` is unsupported |
@@ -204,9 +242,10 @@ imported preset object referencing the hidden geometry carrier's filter—and th
 exact imported picture-crop carrier in §6.5, which keeps the effect outside its
 viewport. Neither authorizes ordinary group filters or creates a second
 PowerPoint object.
-PPTX import preserves one registered shape/connector/picture shadow or glow and records
-unsupported object/run effects as import diagnostics instead of exposing a new
-authoring surface. See
+PPTX import maps one classifiable shape/connector/picture outer shadow or glow
+to this contract. Unsupported effects and outer-shadow variants whose scale,
+skew, alignment, or rotation semantics cannot be retained become import
+diagnostics instead of a silently simplified authoring surface. See
 [`conversion.md`](../scripts/docs/conversion.md#import-compatibility-and-recovery-boundary)
 for tolerant, strict, and release-handling behavior.
 The quality checker and exporter preflight enforce the same definition,
@@ -237,7 +276,8 @@ native export.
 ```
 
 Even `feDropShadow` with `dx="0" dy="0"` becomes glow. Use an existing accent
-color for glow; black reads as diffuse shadow.
+color; black reads as diffuse shadow. Bare `feGaussianBlur` remains compatible
+input but is never generated: preview blurs the object while export emits glow.
 
 | Elevation | Use | `dy` | `stdDeviation` | Alpha |
 |---|---|---:|---:|---:|
@@ -246,28 +286,29 @@ color for glow; black reads as diffuse shadow.
 | Raised | Primary CTA, focused card, overlay | 6–10 | 10–16 | 0.12–0.20 |
 | Glow | Short display text, metric, focus accent | 0 offset | 4–8 | 0.35–0.55 |
 
-**Strong default — single light source per page**: every `feOffset` shadow on
-one slide shares the same `dx`/`dy` direction (default `dx="0"`, `dy="4"`–`dy="8"`,
-light from upper front). Contradictory shadow directions read as multiple light
-sources — a clear low-quality tell. The one sanctioned exception is a deliberate
-upward paper-layer light, where every affected layer flips direction together;
-never mix directions on the same plane. This is a strong default, not a
-checker-enforced hard rule.
+**Default — one light source per page (may override when every affected layer
+uses one deliberate alternative direction)**: every `feOffset` shadow on one
+slide shares the same `dx`/`dy` direction (default `dx="0"`,
+`dy="4"`–`dy="8"`, light from upper front). Contradictory shadow directions
+make one plane read as several incompatible surfaces. A deliberate upward
+paper-layer treatment flips every affected layer together; never mix
+directions on the same plane.
 
-**Reference — not a constraint**: keep at most two
-non-floor tiers; two or three shadowed objects usually suffice. Do not lift
-every peer card or stack strong shadow, border, gradient, and tint on one
-container. Same-family colored shadow is reserved for a focal accent. On dark
-backgrounds, prefer a light hairline or restrained glow; never glow body copy.
-Negative `dy` is valid for an intentional upward paper-layer light source when
-every affected layer uses the same direction. For older/strict renderers,
-replace a filter with two or three offset translucent shapes behind the object:
+**Reference — not a constraint**: use no more elevation categories than the
+hierarchy needs; a page may reuse one category across several related objects.
+Do not lift every peer card or stack strong shadow, border, gradient, and tint
+on one container. Same-family colored shadow is reserved for a focal accent.
+On dark backgrounds, prefer a light hairline or restrained glow; never glow body copy.
+For older/strict renderers, replace a filter with two or three offset
+translucent shapes behind the object:
 alpha `0.03–0.05`, increasing offset/radius, and optional same-family tint near
 `0.04` (`Native-stable`).
 
 ---
 
 ### 6.5 Image Treatments, Overlays, and Glass-like Surfaces
+
+#### Image Carrier and Crop Contracts
 
 | Need | Authoring contract | Fidelity |
 |---|---|---|
@@ -330,12 +371,15 @@ plain `<image>`. Extra, indirect, or character content; unknown attributes;
 malformed or unrepresentable crops; and general nested viewports fail. Checker
 and converter share this parser.
 
+#### Image Overlay and Material Techniques
+
 | Overlay | Construction | Typical stops / alpha |
 |---|---|---|
 | Directional scrim | Linear rect, darkest beside text | `0%: 0.88; 55%: 0.30; 100%: 0` |
 | Bottom title fade | Vertical rect over lower image | black `0 → 0.72` |
 | Vignette/spotlight | Radial rect; place the hotspot with `fx/fy` or `cx/cy` inside the canonical focus circle; outer center/radius remain approximate | black `0 → 0.58` |
 | Brand wash | Directional existing brand-color gradient | `0.80 → 0.10` |
+| Grid scrim | Seamless no-stroke rect cells over one image; vary neighboring alpha narrowly and irregularly | Keep the field subordinate; a regular alternation reads as a checkerboard |
 | Faux glass | Visible fields + diagonal linear panel (`0,0 → 1,1`) + highlight stroke; optional §6.4 elevation | white `0.38 → 0.12`; stroke about `0.55` |
 
 Layer in document order: image → scrim/wash → text. True source/backdrop blur is
@@ -679,7 +723,7 @@ filled `Native-normalized` arrowhead. Example:
 
 ---
 
-### 6.11 Constructed Visual Styles
+### 6.11 Constructed Technique Recipes
 
 **Hard rule — explicit construction**: these are supported-layer recipes, not
 browser-filter permissions.
@@ -689,18 +733,18 @@ Quick-resolved style. Their curve recipes are explicit exceptions to the
 Shape-first default above; they do not authorize decorative freeforms in
 another style.
 
-| Intent | Construction | Boundary / fidelity |
-|---|---|---|
-| Faux glass | §6.5 translucent panel + highlight stroke + visible fields | No backdrop blur; `Native-normalized` |
-| Hand-drawn mark | Rotated translucent bar + irregular `Q/C` paths + round caps | No roughness filter; `Native-normalized` |
-| Ink wash | Few same-family translucent closed curves/strokes | No feather/wet edge; `Native-normalized` |
-| Riso offset | Duplicate text/shape with small offset, second ink, lower alpha | No blend mode; `Native-normalized` |
-| Pixel grid | Integer-aligned rects on one cell grid | `shape-rendering` preview-only; `Native-stable` |
-| Halftone | Sparse calculated circles | `Native-stable`; bake dense screens / use suitable [`native-data-interface.md`](./native-data-interface.md) preset |
-| Isometric facets | Shared-vertex top/front/side polygons, one light direction | 2D only; `Native-normalized` |
-| Paper cut | Ordered organic paths + consistent §6.4 shadow per layer | Filter each layer, not group; `Approximate` |
-| Gradient ribbon | Non-degenerate cubic path + §6.3 gradient stroke; closed gradient-filled shape for horizontal/vertical ribbons | `Native-normalized`; no mesh gradient; re-import may flatten color |
-| Line-plus-area data | Low-alpha closed area first, crisp line above | Keep area subordinate; `Native-normalized` |
+| Family | Technique | Use when | Construction / boundary |
+|---|---|---|---|
+| Material / depth | Faux glass | Visible field must remain present behind a panel | §6.5 translucent panel + highlight; no backdrop blur; `Native-normalized` |
+| Material / depth | Paper cut | Ordered layers/openings carry the material language | Organic paths + one §6.4 shadow per layer, never the group; `Approximate` |
+| Hand / print | Hand-drawn mark | Annotation, underline, or highlighter gesture | Rotated translucent bar + restrained `Q/C` paths + round caps; no roughness filter; `Native-normalized` |
+| Hand / print | Ink wash | Brush mass or atmosphere | Same-family translucent curves/strokes; no feather/wet edge; `Native-normalized` |
+| Hand / print | Riso offset | Deliberate print misregistration | Offset duplicate, second ink, lower alpha; no blend mode; `Native-normalized` |
+| Hand / print | Pixel grid | Sparse hard-cell digital accent | Integer-aligned rect grid; `shape-rendering` preview-only; `Native-stable` |
+| Hand / print | Halftone | Sparse screen modulation | Calculated circles; `Native-stable`; bake dense screens or use [`native-data-interface.md`](./native-data-interface.md) |
+| Form / geometry | Faceted or folded form | Isometric object, folded ribbon, dimensional numeral/band | Shared vertices, one light direction, same-hue alternating paint per [`native-shape-authoring.md`](./native-shape-authoring.md) §7.1; no 3D; `Native-normalized` |
+| Form / geometry | Gradient ribbon | Continuous directional energy, not faceted depth | Cubic gradient stroke or closed gradient-filled band; no mesh gradient; `Native-normalized`, re-import may flatten color |
+| Data expression | Line plus area | Magnitude context beneath an exact reading edge | Subordinate low-alpha area first, crisp line above; `Native-normalized` |
 
 **Minimal construction anchors**:
 
@@ -760,40 +804,22 @@ import diagnostics. Resolve those diagnostics before release export; see
 
 ---
 
-### 6.13 Scenario Routing
+### 6.13 Page-Level Composition Recipes
 
-**Reference — not a quota**: this table routes a job diagnosed in §6.1;
-it is not a catalog checklist. Fidelity and the locked or Quick-resolved style
-remain authoritative in the owning subsection.
-
-| Decision family | Scenario routing | Authority / boundary |
-|---|---|---|
-| Paint | Directional or continuous value change → linear gradient; center-weighted focus → radial gradient; subordinate layer or overlap depth → channel alpha; short display emphasis → gradient text; hierarchy already clear → solid paint | §6.2 / §6.3; do not use color variation without a semantic or material job |
-| Elevation | Object visibly above another surface → resting/raised shadow; overlay boundary against a dark or complex image → restrained glow or hairline; one focal CTA → restrained colored shadow; equal peers/background → flat; luminous short title/metric → glow | §6.4; one light direction; never body-copy glow |
-| Image/material | Text over image → directional scrim; bottom title → bottom fade; centered hero → vignette; brand unification → brand wash; foreground panel over image → faux glass | §6.5; validate actual contrast; no backdrop blur |
-| Lines | Draft/optional/future → dash; process direction → marker; undirected relationship → solid connector; continuous flow/series → gradient stroke; exact grid → multi-subpath path | §6.6 / §6.3 |
-| Text | Removed/former value → line-through; short eyebrow → tracking; display heading needing a distinct silhouette → outline/gradient; luminous focal metric → glow; list → native bullet | §6.7 / §6.4; body copy may keep semantic decoration, but not decorative gradient/outline/glow/tracking |
-| Composition | Physical tilt or directional energy → rotate; reversible non-text asset facing the wrong way → mirror; repeated exact static mark → local `<use>` | §6.8; preserve z-order; never mirror text, logos, or directional evidence |
-| Hand/print | Annotation → highlighter/curve; ink wash → layered alpha paths; Riso → offset duplicate | §6.11; no turbulence, true bleed, or blend mode |
-| Pixel/halftone | Pixel accent → integer rect grid; sparse screen → circles | §6.11; dense screen → §6.12 |
-| Faceted/layered | Pseudo-3D → 2D facets; paper cut → direct shadow per layer | §6.11; no 3D transform/group composite shadow |
-| Data/freeform | Series depth → area first + line above; unmatched organic silhouette → closed cubic; shaped image → [`shared-standards-core.md`](./shared-standards-core.md) §1.2 path clip | §6.11 / §6.9 |
-| Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
-| Arrow | Straight relationship → `<line>` + marker; stock bend/curve → native Connector; unmatched custom route → separate calculated arrowhead if needed | §6.10 / §1.1 / native-shape authoring |
-| Unsupported | Dense grain, complex per-pixel composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
-
-#### Page-Level Stacks
-
-Use the planned page skeleton; when images are active, select it through
-[`image-layout-patterns.md`](./image-layout-patterns.md). Read each stack
+**Reference — not a quota**: use the planned page skeleton; when images are
+active, select it through
+[`image-layout-patterns.md`](./image-layout-patterns.md). Read each recipe
 back-to-front and omit every layer without a distinct job.
 
-| Page job | Back-to-front stack | Stop |
+| Page / deck job | Back-to-front stack | Stop |
 |---|---|---|
-| Cover | Hero visual/field → directional scrim/wash → one explicit opening or contour → native title/accent | Skip contrast treatment when copy is already safe; stop when title and field read as one composition |
-| Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse the deck language; introduce no new effect family |
-| Evidence / metric | Context image/field → local contrast field → native leaders/labels/metric → optional focus/elevation | Keep claims native; remove atmosphere that weakens evidence |
-| Comparison | Matched visual planes → optional shared wash/divider → matched labels → one difference marker | Keep crop, elevation, and paint symmetric unless asymmetry is the claim |
-| Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Add no new effect family; keep the action unambiguous and omit a competing image |
+| Cover | Hero field → optional scrim/wash → purposeful opening/contour → native title | Stop when copy is safe and title/field read together |
+| Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse deck language; add no effect family |
+| Text-led explanation | Quiet field → recurring material/contour → native hierarchy → optional local emphasis | Emphasis clarifies the argument, never decorates body copy |
+| Process / system | Context field → native relation lines → nodes/labels → optional state/direction focus | Every connector stays semantic; atmosphere must not obscure flow |
+| Evidence / metric | Context field → local contrast → native leaders/labels/metric → optional focus/elevation | Claims stay native; atmosphere must not weaken evidence |
+| Comparison | Matched planes → optional shared wash/divider → matched labels → one difference marker | Keep crop, elevation, and paint symmetric unless asymmetry is the claim |
+| Closing / CTA | Receded field → echoed contour/gradient → native action → optional raised accent | Add no effect family or competing image |
+| Cross-page motif | Reuse contour, gradient direction, line language, texture, or light logic; vary scale, crop, or position by page job | Preserve recognition without copying the page or adding novelty effects |
 
 ---

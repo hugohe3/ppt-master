@@ -8,7 +8,10 @@ Technical spec and workflow for adding images to SVG files.
 
 ## Image Resource List Format
 
-Each image carries an `Acquire Via` field plus a status annotation. This file is authoritative for status names and SVG embedding behavior.
+Each image carries an `Acquire Via` field plus a status annotation. This file
+owns status names, resource lifecycle, and embedding workflow;
+[`svg-effects.md`](./svg-effects.md) §6.5 owns native carrier, crop transport,
+and filter/clip contracts.
 
 | Mode | Resource authority and preparation timing |
 |---|---|
