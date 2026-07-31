@@ -212,7 +212,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Family selection**:
 
-- User/template typography is authoritative. When it fixes the stacks, repeat them and set `typography.fixed: true` on every Stage-2 direction. Otherwise ≥3 directions use different concrete heading/body combinations spanning concord and contrast; no extra font round.
+- User/template typography is authoritative. Repeat fixed stacks with `typography.fixed: true` in every direction; never vary them for diversity. Keep ≥3 directions distinct as full bundles; reasonable font repetition is non-blocking, with no extra font round.
 - Every Stage-2 direction carries `heading` / `body` `primary`, `css`, and positive `body_size`; add `english` only when the deck's main language is not English.
 - Use concrete, target-installed PowerPoint faces. The Confirm UI font catalog supplies additional manual dropdown choices, not a recommendation whitelist.
 - Keep stacks to four families or fewer. A brand/web face may lead only after user-confirmed target installation/approved install; PPT Master does not embed fonts. Otherwise export a safe face and keep the unavailable face as Design Spec reference.

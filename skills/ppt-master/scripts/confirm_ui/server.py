@@ -698,13 +698,12 @@ def _typography_signature(
     return tuple(values)
 
 
-def _typography_candidates_distinct_error(
+def _typography_candidates_fixed_error(
     candidates: list,
-    labels: list[str],
     *,
     main_language: object,
 ) -> Optional[str]:
-    """Require every candidate to offer a different relevant font combination."""
+    """Reject contradictions in an explicitly fixed typography contract."""
     fixed = [
         isinstance(candidate, dict) and candidate.get('fixed') is True
         for candidate in candidates
@@ -722,24 +721,6 @@ def _typography_candidates_distinct_error(
         if any(signature != signatures[0] for signature in signatures[1:]):
             return 'fixed typography candidates must repeat the same font combination'
         return None
-    seen = {}
-    for index, candidate in enumerate(candidates):
-        signature = _typography_signature(
-            candidate,
-            main_language=main_language,
-        )
-        if signature in seen:
-            previous = seen[signature]
-            combination = (
-                'heading/body primary'
-                if _is_english_language(main_language)
-                else 'heading/body primary+english'
-            )
-            return (
-                f'{labels[index]} repeats {labels[previous]}; '
-                f'{combination} combinations must differ'
-            )
-        seen[signature] = index
     return None
 
 
@@ -793,12 +774,8 @@ def _stage2_design_directions_error(
                     image_strategy.get('rendering') or ''
                 ).strip():
                     return f'{label}.image_strategy.rendering must be non-empty'
-        return _typography_candidates_distinct_error(
+        return _typography_candidates_fixed_error(
             typography_candidates,
-            [
-                f'design_directions.candidates[{index}].typography'
-                for index in range(len(typography_candidates))
-            ],
             main_language=main_language,
         )
 
@@ -826,12 +803,8 @@ def _stage2_design_directions_error(
         if error:
             return error
     if main_language:
-        return _typography_candidates_distinct_error(
+        return _typography_candidates_fixed_error(
             typography,
-            [
-                f'typography.candidates[{index}]'
-                for index in range(len(typography))
-            ],
             main_language=main_language,
         )
     return None

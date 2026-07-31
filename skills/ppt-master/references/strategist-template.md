@@ -64,7 +64,7 @@ When the communication contract conflicts with the workspace, choose and state t
 
 > Internal note: `content_divergence` controls source reorganization; the AI-derived `template_reuse_scope` records the reused layer; `template_adherence` records whether a structured plan keeps or extends existing Layout identities.
 
-**Template design precedence**: User overrides win. Otherwise template colors and title/body stacks are fixed anchors, not industry defaults. Each of ≥3 Stage-2 directions carries all six palette roles and complete fonts: repeat fixed values with `typography.fixed: true`; vary only template-open roles. Keep declared icon and image constraints.
+**Template design precedence**: User overrides win. Otherwise template colors and title/body stacks are fixed anchors, not industry defaults. Each of ≥3 directions carries six palette roles and complete fonts: repeat fixed values with `typography.fixed: true`; vary only template-open roles. Bundles differ overall; fonts may repeat. Keep declared icon and image constraints.
 
 ---
 

@@ -2406,12 +2406,23 @@
 
         host.appendChild(sec);
 
-        var selIdx = -1;
+        var nameMatch = -1;
+        var signatureMatch = -1;
         var stateSignature = typographySignature(STATE.typography || {});
         if (STATE.typography && STATE.typography.name !== "custom") cands.forEach(function (c, i) {
-            var sameName = (localized(c, "name") || c.name) === STATE.typography.name;
-            if (sameName || typographySignature(c) === stateSignature) selIdx = i;
+            var sameName = [localized(c, "name"), c.name_zh, c.name_en, c.name_ja]
+                .some(function (name) { return name === STATE.typography.name; });
+            if (!sameName && c.name && typeof c.name === "object") {
+                sameName = Object.keys(c.name).some(function (key) {
+                    return c.name[key] === STATE.typography.name;
+                });
+            }
+            if (sameName && nameMatch < 0) nameMatch = i;
+            if (typographySignature(c) === stateSignature && signatureMatch < 0) signatureMatch = i;
         });
+        // Names preserve the selected candidate when several recommendations share
+        // one font stack. Signature matching is only a first-match legacy fallback.
+        var selIdx = nameMatch >= 0 ? nameMatch : signatureMatch;
         if (selIdx >= 0) selectFont(selIdx);
         else if (STATE.typography && STATE.typography.name === "custom") {
             ["heading", "body"].forEach(function (role) {
