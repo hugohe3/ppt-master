@@ -995,6 +995,16 @@ def _stage2_solution_error(
     )
     if typography_error:
         return typography_error
+
+    if _uses_ai_images(result):
+        image_strategy = result.get('image_strategy')
+        if not isinstance(image_strategy, dict) or not str(
+            image_strategy.get('rendering') or ''
+        ).strip():
+            return 'image_usage includes ai, so image_strategy.rendering must be non-empty'
+        rendering = image_strategy['rendering'].strip()
+        if rendering != 'custom' and rendering not in _ai_rendering_ids():
+            return f'image_strategy.rendering is not a known preset: {rendering}'
     return None
 
 
@@ -1528,6 +1538,11 @@ def _ai_comparison_items(kind: str) -> list[dict[str, str]]:
             'alt_text': item.get('alt_text') or '',
         })
     return items
+
+
+def _ai_rendering_ids() -> set[str]:
+    """Return the rendering presets exposed by the confirmation UI."""
+    return {item['id'] for item in _ai_comparison_items('rendering')}
 
 
 def _build_ai_image_comparison() -> dict:

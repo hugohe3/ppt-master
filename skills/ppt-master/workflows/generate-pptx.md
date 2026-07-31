@@ -178,7 +178,7 @@ Read references/strategist.md
 | Step 3 installed an explicit Brand/Layout/Deck workspace | `references/strategist-template.md` |
 | The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
 
-The core chooses proposed Stage 2 source ids first. Load this bundle for a non-`none` proposal; after confirmation, retain it only for confirmed non-`none` sources or an active formula plan. Confirmed `none` without formulas writes no image rows. Bare template names and style language do not load the template module.
+Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Bare template/style names do not load the template module.
 
 > ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
@@ -232,7 +232,7 @@ If the user rejects the current recommendation before confirming it, regenerate 
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
    ```
 
-3. Read the Stage 2 result, create `confirm_ui/recommendations.stage3.json` without changing either earlier stage, then perform the final blocking wait:
+3. Read Stage 2; load the image bundle if it newly confirms non-`none`. Create `confirm_ui/recommendations.stage3.json` without changing prior stages and wait:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only

@@ -266,7 +266,7 @@ Formula policy and formula-asset planning are conditional. If the source contain
 **Conditional module — two-stage trigger**:
 
 1. First derive the proposed `recommend.image_usage` in core. If it contains any non-`none` source—especially `ai`—read [`strategist-image.md`](./strategist-image.md) **before authoring the Stage-2 design directions** so rendering and other image-dependent candidate details are real, not backfilled after confirmation. An explicit non-`none` image constraint or the formula trigger from §g activates the module at the same point.
-2. After confirmation, the confirmed value is the production boundary. A confirmed non-`none` set continues into resource planning; confirmed `none` with no formula trigger skips all downstream image rows even if the proposed recommendation had loaded the module.
+2. Confirmed sources bound production. Non-`none` loads or retains [`strategist-image.md`](./strategist-image.md) for resource planning without backfilling candidates; `none` without formulas writes no image rows.
 
 The module owns formula policy, AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
