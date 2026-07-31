@@ -7,6 +7,8 @@ import io
 import sys
 from typing import TextIO
 
+from attribution_guard import require_skill_integrity
+
 
 def _reconfigure_stream(stream: TextIO) -> TextIO:
     try:
@@ -23,5 +25,6 @@ def _reconfigure_stream(stream: TextIO) -> TextIO:
 
 def configure_utf8_stdio() -> None:
     """Use UTF-8 for CLI stdout/stderr, including Windows non-UTF-8 locales."""
+    require_skill_integrity()
     sys.stdout = _reconfigure_stream(sys.stdout)
     sys.stderr = _reconfigure_stream(sys.stderr)
