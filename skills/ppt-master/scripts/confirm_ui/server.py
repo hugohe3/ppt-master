@@ -69,6 +69,7 @@ from server_common import (  # noqa: E402
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
+    validate_port as _validate_port,
 )
 
 configure_utf8_stdio()
@@ -113,10 +114,9 @@ _ICON_PREVIEW_SAMPLES = {
     'phosphor-duotone': ('house', 'chart-line', 'users', 'target'),
 }
 
-# Shares port 5050 with the live preview server (svg_editor/server.py). The two
-# never run at once: confirm is Step 4 and shuts down on confirm (or idle),
-# freeing the port before live preview starts at Step 6. One port = one forward
-# rule for the whole pipeline. They still keep separate processes and locks.
+# Prefer the same memorable entry port as live preview. Normal single-project
+# execution releases it between Step 4 and Step 6; concurrent projects advance
+# from this base while explicit ``--port`` remains exact.
 DEFAULT_PORT = 5050
 PUBLIC_HOST = '127.0.0.1'
 STARTUP_TIMEOUT = 10
@@ -172,9 +172,10 @@ def _server_url(port: int, path: str = '') -> str:
 def _wait_for_server_ready(
     port: int,
     proc: subprocess.Popen,
+    project_path: Path,
     timeout: int = STARTUP_TIMEOUT,
 ) -> bool:
-    """Wait until the detached child is accepting HTTP requests."""
+    """Wait until this project's detached confirm server is accepting requests."""
     deadline = time.time() + timeout
     last_error = ''
     health_url = _server_url(port, '/api/health')
@@ -185,9 +186,17 @@ def _wait_for_server_ready(
             return False
         try:
             with urllib.request.urlopen(health_url, timeout=1) as resp:
-                if 200 <= resp.status < 500:
+                data = json.load(resp)
+                if (
+                    resp.status == 200
+                    and isinstance(data, dict)
+                    and data.get('service') == 'confirm_ui'
+                    and data.get('project') == str(project_path)
+                    and data.get('pid') == proc.pid
+                ):
                     return True
-        except (OSError, urllib.error.URLError) as exc:
+                last_error = 'health response belongs to another service or project'
+        except (OSError, ValueError, urllib.error.URLError) as exc:
             last_error = str(exc)
         time.sleep(0.2)
     logger.error(
@@ -203,6 +212,7 @@ def _launch_background_server(
     project_path: Path,
     *,
     preferred_port: int,
+    exact_port: bool,
     idle_timeout: int,
     open_browser: bool,
 ) -> tuple[subprocess.Popen, int, Path]:
@@ -210,7 +220,7 @@ def _launch_background_server(
     confirm_dir = project_path / CONFIRM_DIR_NAME
     confirm_dir.mkdir(parents=True, exist_ok=True)
     log_path = confirm_dir / 'server.log'
-    port = _find_free_port(preferred_port)
+    port = preferred_port if exact_port else _find_free_port(preferred_port)
     cmd = [
         sys.executable,
         str(Path(__file__).resolve()),
@@ -230,7 +240,9 @@ def _launch_background_server(
             logger=logger,
         )
     logger.info('log: %s', log_path)
-    if not _wait_for_server_ready(port, proc):
+    if not _wait_for_server_ready(port, proc, project_path):
+        if proc.poll() is None:
+            proc.terminate()
         raise RuntimeError(f'confirm UI failed to become reachable: {_server_url(port)}')
     _sync_session_state(confirm_dir, server_port=port, event='server-ready')
     url = _server_url(port)
@@ -255,9 +267,9 @@ def _preferred_recovery_port(lock_file: Path, fallback: int) -> int:
     existing = _read_lock(lock_file)
     try:
         port = int((existing or {}).get('port', 0) or 0)
+        return _validate_port(port) if port else fallback
     except (TypeError, ValueError):
-        port = 0
-    return port or fallback
+        return fallback
 
 
 def _open_browser_async(url: str, delay: float = 0.4) -> None:
@@ -1416,11 +1428,9 @@ def _wait_result_status(
 def _shutdown_existing(lock_file: Path) -> int:
     """Stop a confirm server left running for this project (idempotent).
 
-    Step 4 always calls this on exit so the page never lingers on the shared
-    port 5050 — whether the user clicked **Confirm** (the page already shut the
-    server down) or replied in chat instead (the server is still up). Tries a
-    graceful ``/api/shutdown`` first, falls back to killing the recorded pid,
-    then clears the lock. A no-op when nothing is running.
+    Step 4 always calls this on exit so the page never lingers on its selected
+    port. Tries a graceful ``/api/shutdown`` first, falls back to killing the
+    recorded pid, then clears the lock. A no-op when nothing is running.
     """
     existing = _read_lock(lock_file)
     if not existing:
@@ -1627,6 +1637,8 @@ def create_app(
                 rec_ok = False
         resp = jsonify({
             'status': 'ok',
+            'service': 'confirm_ui',
+            'pid': os.getpid(),
             'project': str(project_path),
             'recommendations': rec_ok,
             'stage': stage,
@@ -1891,8 +1903,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument('project_dir', help='Path to project directory')
     parser.add_argument(
-        '--port', type=int, default=DEFAULT_PORT,
-        help=f'Port to listen on (default: {DEFAULT_PORT})',
+        '--port', type=int, default=None,
+        help=f'Exact port to listen on (default: first free port from {DEFAULT_PORT})',
     )
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument(
@@ -1929,7 +1941,7 @@ def build_parser() -> argparse.ArgumentParser:
         '--shutdown', action='store_true',
         help='Stop a confirm server left running for this project, then exit '
              '(idempotent). Run at the end of Step 4 so the page never lingers '
-             'on the shared port before live preview starts.',
+             'on its selected port before live preview starts.',
     )
     return parser
 
@@ -1943,6 +1955,13 @@ def main(argv: Optional[list[str]] = None) -> int:
         format='[%(asctime)s] [%(levelname)s] confirm_ui: %(message)s',
         datefmt='%H:%M:%S',
     )
+
+    if args.port is not None:
+        try:
+            args.port = _validate_port(args.port)
+        except ValueError as exc:
+            logger.error('%s', exc)
+            return 2
 
     project_path = Path(args.project_dir).resolve()
     if not project_path.is_dir():
@@ -1975,11 +1994,17 @@ def main(argv: Optional[list[str]] = None) -> int:
                     rec_file,
                 )
                 return 1
-            recovery_port = _preferred_recovery_port(lock_file, args.port)
+            exact_port = args.port is not None
+            recovery_port = (
+                args.port
+                if exact_port
+                else _preferred_recovery_port(lock_file, DEFAULT_PORT)
+            )
             try:
                 _, actual_port, _ = _launch_background_server(
                     project_path,
                     preferred_port=recovery_port,
+                    exact_port=exact_port,
                     idle_timeout=args.timeout,
                     open_browser=False,
                 )
@@ -2028,7 +2053,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         try:
             proc, port, _ = _launch_background_server(
                 project_path,
-                preferred_port=args.port,
+                preferred_port=args.port if args.port is not None else DEFAULT_PORT,
+                exact_port=args.port is not None,
                 idle_timeout=args.timeout,
                 open_browser=not args.no_browser,
             )
@@ -2045,10 +2071,16 @@ def main(argv: Optional[list[str]] = None) -> int:
             )
         return 0
 
+    try:
+        port = args.port if args.port is not None else _find_free_port(DEFAULT_PORT)
+    except RuntimeError as exc:
+        logger.error('%s', exc)
+        return 1
+
     # Per-project mutual exclusion: refuse duplicate launches. Stale locks
     # (dead pid) are overwritten by _claim_lock.
     lock_file = project_path / LOCK_FILE_NAME
-    existing = _claim_lock(lock_file, args.port)
+    existing = _claim_lock(lock_file, port)
     if existing:
         existing_pid = existing.get('pid', '?')
         existing_port = existing.get('port', '?')
@@ -2072,17 +2104,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         str(project_path),
         idle_timeout=args.timeout,
         lock_file=lock_file,
-        server_port=args.port,
+        server_port=port,
     )
 
-    url = _server_url(args.port)
+    url = _server_url(port)
     if not args.no_browser:
         _open_browser_async(url)
 
     logger.info('running at %s', url)
     logger.info('project: %s', project_path)
     logger.info('idle timeout: %ds (0 = disabled)', args.timeout)
-    app.run(host=PUBLIC_HOST, port=args.port, debug=False)
+    app.run(host=PUBLIC_HOST, port=port, debug=False)
     return 0
 
 
