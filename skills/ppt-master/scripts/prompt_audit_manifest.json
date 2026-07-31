@@ -12,7 +12,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 397343
+    "max_tokens": 398902
   },
   "file_budgets": {
     "AGENTS.md": 2400,
@@ -20,12 +20,12 @@
     "skills/ppt-master/references/executor-base.md": 8245,
     "skills/ppt-master/references/executor-structured.md": 5300,
     "skills/ppt-master/references/executor-chart.md": 3100,
-    "skills/ppt-master/references/executor-image.md": 1700,
+    "skills/ppt-master/references/executor-image.md": 1728,
     "skills/ppt-master/references/executor-web-image.md": 500,
     "skills/ppt-master/references/executor-notes.md": 900,
     "skills/ppt-master/references/shared-standards.md": 250,
     "skills/ppt-master/references/shared-standards-core.md": 11100,
-    "skills/ppt-master/references/svg-effects.md": 12792,
+    "skills/ppt-master/references/svg-effects.md": 12807,
     "skills/ppt-master/references/native-data-interface.md": 6200,
     "skills/ppt-master/references/pptx-structure-interface.md": 4300,
     "skills/ppt-master/references/strategist.md": 14487,
@@ -170,7 +170,7 @@
           "registry": "visual-styles"
         }
       ],
-      "max_tokens": 63108
+      "max_tokens": 63121
     },
     "route.generate.quick-generate": {
       "description": "Explicit non-interactive Generate path with conditional source/resource preparation and the complete SVG visual-construction authorities.",
@@ -186,7 +186,7 @@
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
-      "max_tokens": 54545
+      "max_tokens": 54558
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -196,7 +196,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 56057
+      "max_tokens": 56070
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -207,7 +207,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 56457
+      "max_tokens": 56470
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -217,7 +217,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 64629
+      "max_tokens": 66151
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -229,7 +229,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 67815
+      "max_tokens": 69337
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -240,7 +240,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 87734
+      "max_tokens": 89256
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -251,7 +251,7 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 72382
+      "max_tokens": 73904
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -261,7 +261,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 71429
+      "max_tokens": 72937
     },
     "route.generate.planning-formula": {
       "description": "Formula-only planning context, including the shared image/formula layout math and vocabulary.",
@@ -271,7 +271,7 @@
         "stage.generate.strategist.image"
       ],
       "files": [],
-      "max_tokens": 71429
+      "max_tokens": 72937
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning when AI image direction is available, including representative multi-source custom rendering synthesis.",
@@ -291,7 +291,7 @@
           "registry": "image-renderings"
         }
       ],
-      "max_tokens": 75671
+      "max_tokens": 77179
     },
     "stage.generate.apply-template-workspace": {
       "description": "Conditional Step 3 workspace validation, installation, and fusion framework.",
@@ -702,7 +702,7 @@
         "skills/ppt-master/scripts/docs/pptx-transitions.md",
         "skills/ppt-master/scripts/docs/svg-pipeline.md"
       ],
-      "max_tokens": 31302
+      "max_tokens": 31324
     },
     "stage.generate.video-motion-plan": {
       "description": "Conditional resolved animation-to-video handoff contract.",
@@ -718,7 +718,7 @@
       "files": [
         "skills/ppt-master/references/animations.md"
       ],
-      "max_tokens": 8021
+      "max_tokens": 8037
     },
     "stage.shared.generate-audio": {
       "description": "Shared narration-audio stage.",
@@ -768,7 +768,7 @@
         "stage.generate.strategist.template"
       ],
       "files": [],
-      "max_tokens": 65184
+      "max_tokens": 65197
     },
     "route.generate.planning-template-ai": {
       "description": "Explicit template workspace plus confirmed AI-image planning.",
@@ -796,7 +796,7 @@
         "skills/ppt-master/references/image-layout-spec.md",
         "skills/ppt-master/references/image-layout-patterns.md"
       ],
-      "max_tokens": 8321
+      "max_tokens": 9828
     },
     "stage.generate.strategist.template": {
       "description": "Conditional Strategist module for an explicitly installed template workspace.",
@@ -823,7 +823,7 @@
         "skills/ppt-master/references/image-layout-patterns.md",
         "skills/ppt-master/references/svg-image-embedding.md"
       ],
-      "max_tokens": 10084
+      "max_tokens": 11613
     },
     "stage.generate.executor.web-image": {
       "description": "Conditional sourced-image attribution layered on image execution.",
@@ -858,7 +858,7 @@
       "files": [
         "skills/ppt-master/references/svg-effects.md"
       ],
-      "max_tokens": 12792
+      "max_tokens": 12807
     }
   },
   "duplicates": {
@@ -1006,9 +1006,24 @@
   "registries": [
     {
       "name": "image-layout-patterns",
-      "kind": "numbered_markdown",
+      "kind": "structured_markdown",
       "source": "skills/ppt-master/references/image-layout-patterns.md",
-      "entry_pattern": "^(?:\\|\\s*`#)?(?P<ids>\\d+(?:\\s*(?:[-–]|·)\\s*\\d+)*)(?:`\\s*\\||\\.\\s+\\*\\*)",
+      "entry_pattern": "^-\\s+\\*\\*#(?P<id>[PMAC][1-9][0-9]*-[0-9]+)\\s+·\\s+",
+      "sequence_width": 2,
+      "prefix_counts": {
+        "P1": 13,
+        "P2": 10,
+        "P3": 23,
+        "M1": 11,
+        "M2": 9,
+        "M3": 7,
+        "A1": 4,
+        "A2": 3,
+        "A3": 3,
+        "C1": 1,
+        "C2": 2,
+        "C3": 1
+      },
       "reference_terms": [
         "image-layout-patterns",
         "image-text layout patterns"
