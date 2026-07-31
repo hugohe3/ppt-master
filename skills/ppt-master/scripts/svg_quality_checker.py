@@ -25,6 +25,7 @@ from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
 from native_payloads import NativePayloadError, hydrate_native_payload_refs
+from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
@@ -5715,7 +5716,7 @@ class SVGQualityChecker:
             for reference in structure_lock.prototypes
         }
         if target_path.is_file():
-            sibling_files = sorted(target_path.parent.glob('*.svg'))
+            sibling_files = discover_slide_svgs(target_path.parent)
             resolved_target = target_path.resolve()
             slide_num = next(
                 (
@@ -5821,12 +5822,12 @@ class SVGQualityChecker:
         else:
             if self.template_mode:
                 # Template directories live at templates/{layouts,decks}/<id>/.
-                svg_files = sorted(dir_path.glob('*.svg'))
+                svg_files = discover_slide_svgs(dir_path)
             else:
                 svg_output = dir_path / \
                     'svg_output' if (
                         dir_path / 'svg_output').exists() else dir_path
-                svg_files = sorted(svg_output.glob('*.svg'))
+                svg_files = discover_slide_svgs(svg_output)
 
         if not svg_files:
             print(f"[ERROR] No SVG files found in: {directory}")
@@ -6052,7 +6053,7 @@ class SVGQualityChecker:
         complete_roster = target_path.is_dir()
         try:
             if not complete_roster and target_path.is_file():
-                sibling_files = sorted(target_path.parent.glob('*.svg'))
+                sibling_files = discover_slide_svgs(target_path.parent)
                 resolved_target = target_path.resolve()
                 slide_num = next(
                     (
@@ -6617,7 +6618,7 @@ class SVGQualityChecker:
             str,
             List[Tuple[Path, str, Tuple[str, ...]]],
         ] = defaultdict(list)
-        for svg_path in sorted(svg_dir.glob('*.svg')):
+        for svg_path in discover_slide_svgs(svg_dir):
             try:
                 root = ET.parse(svg_path).getroot()
             except (OSError, ET.ParseError):
@@ -8142,7 +8143,7 @@ def _first_page_target(target: str) -> str:
     if path.is_file():
         return str(path)
     svg_root = path / 'svg_output' if (path / 'svg_output').is_dir() else path
-    svg_files = sorted(svg_root.glob('*.svg')) if svg_root.is_dir() else []
+    svg_files = discover_slide_svgs(svg_root) if svg_root.is_dir() else []
     return str(svg_files[0]) if svg_files else target
 
 

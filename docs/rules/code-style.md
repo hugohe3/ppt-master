@@ -222,6 +222,7 @@ Common functionality lives in these designated submodules. New scripts use these
 | [`image_backends/backend_common.py`](../../skills/ppt-master/scripts/image_backends/backend_common.py) | HTTP download, retry, image format detection, save-with-Pillow-transcode |
 | [`image_sources/provider_common.py`](../../skills/ppt-master/scripts/image_sources/provider_common.py) | License classification, query simplification, scoring, attribution text, dataclasses |
 | [`project_utils.py`](../../skills/ppt-master/scripts/project_utils.py) | Canvas formats, project path conventions |
+| [`slide_roster.py`](../../skills/ppt-master/scripts/slide_roster.py) | Numeric slide-filename ordering and SVG roster discovery |
 | [`error_helper.py`](../../skills/ppt-master/scripts/error_helper.py) | User-facing error message templates |
 | [`console_encoding.py`](../../skills/ppt-master/scripts/console_encoding.py) | `configure_utf8_stdio()` — force UTF-8 console for CLI entries (§4) |
 
