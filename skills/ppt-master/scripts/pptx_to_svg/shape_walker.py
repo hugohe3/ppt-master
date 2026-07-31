@@ -74,6 +74,9 @@ class ShapeNode:
     placeholder: PlaceholderInfo | None = None
     inherited_lst_styles: tuple[ET.Element, ...] = ()
     inherited_body_properties: tuple[ET.Element, ...] = ()
+    # Local plus ancestor group rotation; used for effect-fidelity decisions
+    # without applying the group transform twice to the rendered geometry.
+    effective_rotation: float = 0.0
     # GROUP only: children, in z-order
     children: list["ShapeNode"] = field(default_factory=list)
 
@@ -216,6 +219,7 @@ def _resolve_alternate_content(wrapper: ET.Element) -> ET.Element | None:
 def _walk_container(
     container: ET.Element,
     parent_group_xfrm: Xfrm | None,
+    ancestor_rotation: float = 0.0,
     placeholder_xfrms: dict[tuple[str | None, str | None], Xfrm] | None = None,
     placeholder_lst_styles: dict[
         tuple[str | None, str | None],
@@ -246,6 +250,7 @@ def _walk_container(
 
         name, spid, hidden, ph = _read_nv_sp_pr(child, nv_tag)
         xfrm = parse_xfrm(_resolve_xfrm(child, kind))
+        effective_rotation = (ancestor_rotation + xfrm.rot) % 360.0
 
         # Placeholders without their own xfrm inherit geometry from a matching
         # placeholder in the layout, then the master. This is what PowerPoint
@@ -285,11 +290,12 @@ def _walk_container(
             name=name, spid=spid, hidden=hidden, placeholder=ph,
             inherited_lst_styles=inherited_lst_styles,
             inherited_body_properties=inherited_body_properties,
+            effective_rotation=effective_rotation,
         )
 
         if kind == GROUP:
             node.children = _walk_container(
-                child, xfrm,
+                child, xfrm, effective_rotation,
                 placeholder_xfrms=placeholder_xfrms,
                 placeholder_lst_styles=placeholder_lst_styles,
                 placeholder_body_properties=placeholder_body_properties,

@@ -772,6 +772,7 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
             ctx.palette,
             id_prefix="fx",
             id_seq=ctx.filter_seq,
+            target_rotation_degrees=node.effective_rotation,
         )
     except ValueError as exc:
         if ctx.strict:
@@ -969,6 +970,7 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
         ctx.palette,
         id_prefix="fx",
         id_seq=ctx.filter_seq,
+        target_rotation_degrees=node.effective_rotation,
     )
     ctx.defs.extend(effect.defs)
     effect_metadata = dict(effect.metadata)
