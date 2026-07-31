@@ -339,4 +339,4 @@ Existing files take precedence. If a current script contradicts a rule here, dec
 | A small CLI utility | [`total_md_split.py`](../../skills/ppt-master/scripts/total_md_split.py), [`gemini_watermark_remover.py`](../../skills/ppt-master/scripts/gemini_watermark_remover.py) |
 | A multi-backend / dispatcher CLI | [`image_search.py`](../../skills/ppt-master/scripts/image_search.py), [`image_gen.py`](../../skills/ppt-master/scripts/image_gen.py) |
 | A library / shared helper | [`image_sources/provider_common.py`](../../skills/ppt-master/scripts/image_sources/provider_common.py), [`image_backends/backend_common.py`](../../skills/ppt-master/scripts/image_backends/backend_common.py) |
-| A class-based checker / validator | [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) |
+| A class-based checker / validator | [`svg_quality/checker.py`](../../skills/ppt-master/scripts/svg_quality/checker.py) |
