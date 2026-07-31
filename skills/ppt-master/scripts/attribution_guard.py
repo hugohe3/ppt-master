@@ -53,6 +53,8 @@ _REQUIRED_GATE_FILES = (
     "scripts/template_preview_pptx.py",
 )
 _SKILL_GATE_MARKER = "python3 scripts/attribution_guard.py"
+_SECONDARY_GATE_FILE = "scripts/console_encoding.py"
+_SECONDARY_GATE_NAME = "_require_official_distribution_identity"
 
 
 def _normalized_bytes(path: Path) -> bytes:
@@ -104,16 +106,21 @@ def _protected_files_are_valid() -> bool:
     return license_digest == _LICENSE_DIGEST
 
 
-def _is_gate_call(node: ast.stmt) -> bool:
-    """Return whether one statement directly invokes the integrity gate."""
+def _is_zero_arg_call(node: ast.stmt, function_name: str) -> bool:
+    """Return whether one statement directly invokes the named function."""
     return (
         isinstance(node, ast.Expr)
         and isinstance(node.value, ast.Call)
         and isinstance(node.value.func, ast.Name)
-        and node.value.func.id == "require_skill_integrity"
+        and node.value.func.id == function_name
         and not node.value.args
         and not node.value.keywords
     )
+
+
+def _is_gate_call(node: ast.stmt) -> bool:
+    """Return whether one statement directly invokes the primary integrity gate."""
+    return _is_zero_arg_call(node, "require_skill_integrity")
 
 
 def _execution_gate_is_valid(path: Path) -> bool:
@@ -148,7 +155,36 @@ def _execution_gates_are_valid() -> bool:
     for relative_path in _REQUIRED_GATE_FILES:
         if not _execution_gate_is_valid(_SKILL_DIR / relative_path):
             return False
-    return True
+    return _secondary_execution_gate_is_valid(_SKILL_DIR / _SECONDARY_GATE_FILE)
+
+
+def _secondary_execution_gate_is_valid(path: Path) -> bool:
+    """Require the independent identity guard and its live bootstrap call."""
+    tree = ast.parse(_normalized_bytes(path).decode("utf-8"), filename=str(path))
+    has_guard = any(
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == _SECONDARY_GATE_NAME
+        for node in tree.body
+    )
+    for node in tree.body:
+        if not (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == "configure_utf8_stdio"
+        ):
+            continue
+        body = node.body[1:] if (
+            node.body
+            and isinstance(node.body[0], ast.Expr)
+            and isinstance(node.body[0].value, ast.Constant)
+            and isinstance(node.body[0].value.value, str)
+        ) else node.body
+        return (
+            has_guard
+            and len(body) >= 2
+            and _is_gate_call(body[0])
+            and _is_zero_arg_call(body[1], _SECONDARY_GATE_NAME)
+        )
+    return False
 
 
 def _integrity_is_valid() -> bool:
