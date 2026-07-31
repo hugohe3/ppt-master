@@ -31,18 +31,17 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)
 as vocabulary and [`image-layout-spec.md`](./image-layout-spec.md) as math, not
 a quota or lock. Run the catalog's §7 playbook before drawing; its combinations
-are recall aids, not coverage targets. For every image-bearing page, derive the
-image/content or image/shape relationship from the communication job, hierarchy,
-copy, asset
-ratio/focus, and deck rhythm. Before drawing, evaluate useful modifiers across
-reveal/crop/registration, tone/contrast, framing/depth, and native overlay.
-Adopt a legal modifier, effect, or Boolean construction when it materially
-improves focus, hierarchy, image-copy integration, legibility, or style; use
-the already-loaded [`svg-effects.md`](./svg-effects.md) and
-[`native-shape-authoring.md`](./native-shape-authoring.md) to realize it. This
-is an opportunity pass, not an effect quota. Deepen, simplify, replace, or
-combine suggestions without mechanically reproducing their names; plain
-split/frame/full bleed remains valid when strongest. Preserve role/source,
+are recall aids, not coverage targets. A `#P...` suggestion completes only the
+page skeleton; omitted `M`, effect, Boolean, or native overlay leaves
+realization open and never means “keep plain.” For every image-bearing page,
+derive the image/content or image/shape relationship from its communication job,
+hierarchy, copy, asset ratio/focus, and deck rhythm. Before drawing, form one
+relevant treatment candidate, compare it with `P`-only, implement the stronger
+legal composition, and realize any adopted treatment through the already-loaded
+[`svg-effects.md`](./svg-effects.md) and
+[`native-shape-authoring.md`](./native-shape-authoring.md). This is an opportunity
+pass, not an effect quota. Deepen, simplify, replace, or combine suggestions;
+plain placement remains valid when it communicates better. Preserve role/source,
 must-use, crop/content, and explicit user/template constraints; expression-only
 changes need no upstream rewrite.
 
