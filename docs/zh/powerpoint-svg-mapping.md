@@ -164,7 +164,7 @@ PowerPoint 意图
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
 | 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | 固定 join 合同内为 `Native-stable` | 回导仅接受一个 join；miter 必须精确使用 `lim="800000"` |
 | 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 仅 triangle、stealth、arrow、diamond、oval 遵循条件 marker 合同 |
-| 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一 shape/connector/picture 来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
+| 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移可稳定分类，且缩放、倾斜和旋转行为为中性或可表达时，才重建单一 shape/connector/picture 来源 `outerShdw` | 非中性的 `sx`/`sy`/`kx`/`ky`、旋转对象上的随形旋转、零偏移，以及不支持的属性或效果图均产生阻塞诊断，不做静默简化 |
 | 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一 shape/connector/picture 来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
 | 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；继承自 Layout/Master 的列表样式以及竖排、含关系引用、表格单元格降级路径使用仅限导入的阻塞效果状态 | `p:txBody` 内原始的 slide-local 原生 run 效果 | 仅在原始 slide-local payload 仍可用时为 `Native-stable`；继承效果、编辑或降级路径若会丢失非空 run `effectLst` / `effectDag` 则被阻断 | 不是公开创作语法；表格单元格 run 效果还会禁用原生 Table 替换 payload |
 | 整个对象透明度 | 原子元素 `opacity` | alpha 分发至受支持原生通道 | `Native-normalized` | 除非整个原子对象需要淡出，否则优先通道专属 alpha |
