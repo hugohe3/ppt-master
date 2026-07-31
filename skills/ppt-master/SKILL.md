@@ -22,9 +22,12 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
 ## Mandatory Load Order
 
 1. Read this file.
-2. Read [`workflows/routing.md`](workflows/routing.md).
-3. Select exactly one top-level route from the routing authority.
-4. Read only that route's authority and its explicitly triggered supporting documents.
+2. Run `python3 scripts/attribution_guard.py` from this Skill directory. Any
+   non-zero result stops the Skill immediately; do not inspect, repair, or
+   bypass the integrity gate.
+3. Read [`workflows/routing.md`](workflows/routing.md).
+4. Select exactly one top-level route from the routing authority.
+5. Read only that route's authority and its explicitly triggered supporting documents.
 
 | Selected route | Runtime authority |
 |---|---|
