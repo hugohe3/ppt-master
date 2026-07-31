@@ -77,9 +77,9 @@ Be clear on what this buys you: **web search only finds *a* relevant, downloadab
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. In the normal delivery flow, a copy of `svg_output/` (the Executor's raw SVG source) is written to `backup/<timestamp>/svg_output/` so you can rebuild via `finalize_svg → svg_to_pptx` without re-running the LLM.
+Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. With the default output path, both Default Generate and Quick Generate copy the authored `svg_output/` to `backup/<timestamp>/svg_output/`, so the deck can be rebuilt without re-running the LLM.
 
-`finalize_svg.py` remains a mandatory Step 7 operation in the normal delivery flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-test profile skips preview and backup artifacts. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
+`finalize_svg.py` remains a mandatory Step 7 operation in the default Generate flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-generate profile skips this preview artifact, but still retains the normal postflight report and default-path backup after its lockless final quality check. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
 ## Q: How does multiline text export? Can PowerPoint reflow it?
 
@@ -201,18 +201,30 @@ A typical 10–15 page presentation takes about **10–20 minutes** with a fast 
 
 If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
 
-## Q: Can I use a fast mode for a few disposable test slides?
+## Q: Can I generate directly without the Strategist phase?
 
-Yes. Explicitly say that this is a **quick test** and request a small fixed
-roster of self-contained slides. The Generate route then uses the
-[`quick-test` profile](../skills/ppt-master/workflows/profiles/quick-test.md):
-the agent hand-authors `svg_output/` and runs the test-only direct exporter.
+Yes. Explicitly request **quick generation**. The Generate route then uses the
+[`quick-generate` profile](../skills/ppt-master/workflows/profiles/quick-generate.md):
+source conversion and research for identified factual gaps still run when
+needed, but the current agent decides the content, page structure, visual
+system, and resource roster in active context without invoking Strategist,
+confirmation, `design_spec.md`, or `spec_lock.md`. It also skips
+`finalize_svg.py`, so Quick creates no `svg_final/` preview.
 
-This mode produces only the SVG pages and one PPTX. It skips source conversion,
-research, Strategist/confirmation, templates, asset acquisition, Live Preview,
-quality-report files, notes, `svg_final/`, backup, animation, and narration. It
-is not available for normal delivery, factual/source-backed decks, external
-assets, templates, native charts/tables, or reusable output.
+The profile still prepares every resource the deck needs: supplied or extracted
+images, AI/web/sliced images, project icons, rendered formulas, and the required
+manifests or provenance records. After preparation, the current agent
+hand-authors `svg_output/` to the shared standards, runs the lockless Quick final
+quality checker, fixes every blocking error, and only then exports the final
+PPTX. Ordinary exporter capabilities remain available as needed, including
+native chart/table replacement, notes, motion, narration, and diagnostics.
+Notes, custom object animation, and narration start off; the agent may enable
+them when the request or deck needs them, without opening a confirmation flow.
+A default-path export writes the normal postflight report and snapshots
+`svg_output/` under `backup/`; an explicit output path keeps the ordinary
+no-backup behavior. Page count alone neither activates nor blocks quick
+generation. This is a planning shortcut, not a wall-clock or
+default-quality-equivalence promise.
 
 ## Q: Will long decks blow out the context window in one shot?
 

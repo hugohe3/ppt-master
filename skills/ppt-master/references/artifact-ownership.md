@@ -1,8 +1,16 @@
 # Artifact Ownership Specification
 
-Global artifact ownership rules for PPT Master projects.
+Global artifact ownership rules for PPT Master projects. A selected route or
+profile may explicitly omit an artifact without erasing its facts.
 
 **Hard rule**: Read each fact from its owning artifact. Do not merge multiple channels into a second source of truth.
+
+**Quick Generate projection**: Quick omits confirmation, Design Spec, and lock.
+Its current main agent reads source/analysis facts, keeps routine decisions in
+active context, and prepares images/icons/formulas plus required manifests
+before SVG authoring. Those artifacts retain their factual/provenance roles.
+Quick writes the same final SVG quality provenance and package postflight as
+the default profile, but it does not create `svg_final/`.
 
 ---
 
@@ -10,20 +18,21 @@ Global artifact ownership rules for PPT Master projects.
 
 | Artifact | Owner | Role | Read/write contract |
 |---|---|---|---|
-| `sources/` content-type files | Content contract | Main pipeline factual/text origin for tables, chart data values, SmartArt node wording, and presentation content | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), judges by content, and resolves approved semantic content plus complete preferred on-slide wording into §IX. Executor opens source passages only for explicit verification/resolution; do not replace values with PPTX geometry JSON in the main pipeline. |
-| `sources/*.facts.json` | Fact provenance contract | Stable external `fact_id` → claim/source mapping created by topic research | Strategist cites IDs in §IX; Executor resolves them for visible footnotes / natural notes attribution. Scenario data never enters this file. |
+| `sources/` content-type files | Content contract | Main pipeline factual/text origin for tables, chart data values, SmartArt node wording, and presentation content | Default Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), judges by content, and resolves approved semantics plus preferred on-slide wording into §IX; Quick's current agent resolves them in active context. Default Executor opens source passages only for explicit verification/resolution. Never replace values with PPTX geometry JSON. |
+| `sources/*.facts.json` | Fact provenance contract | Stable external `fact_id` → claim/source mapping created by topic research | Default Strategist cites IDs in §IX and Executor resolves them for attribution; Quick's current agent carries the same IDs into visible attribution. Scenario data never enters this file. |
 | `sources/` converted-source originals | Source archive | Imported source files that have a converted content contract (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) and source-adjacent extracted assets | Read via the converted `<stem>.md` in the main pipeline; direct-PPTX workflows read the `.pptx` by route |
 | `sources/*.conversion_profile.json`, `sources/*_files/image_manifest.json` | Pipeline sidecar | Conversion audit record / asset index | NOT read as slide content; open only to audit a conversion or resolve assets |
-| `analysis/source_profile.json` | Machine fact index | Compact Strategist-facing PPTX intake digest | Main pipeline reads as factual context and recommendation candidates |
+| `analysis/source_profile.json` | Machine fact index | Compact PPTX intake digest | Default Strategist or Quick's current agent reads it as factual context and recommendation candidates |
 | `analysis/<stem>.identity.json` | Native deck identity facts | Canvas, theme palette/fonts, observed usage | Read selectively when detailed identity facts are needed |
 | `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches, SmartArt nodes/connections | Direct PPTX workflows use as native fill/structure contract |
 | `analysis/image_analysis.csv` | Regenerated image fact view | Measured facts about the current `images/` folder | Re-run `analyze_images.py` before reading image facts after changes |
-| `design_spec.md` | Strategist design authority | Human-readable design intent, page brief, rationale, resources, and production mechanics | Consume final confirmation once, write/audit here, and apply enabled refinement to this same artifact. After Gate 1 plus conditional approval, later roles read it instead of `result.json`; §IX owns Executor page content. |
+| `design_spec.md` | Strategist design authority | Human-readable design intent, page brief, rationale, resources, and production mechanics | Consume final confirmation once, write/audit here, and apply enabled refinement to this same artifact. §I records effective Speaker Notes, Custom Animations, and Narration Audio outcomes plus provenance; a newer explicit user instruction updates only its owning outcome without reopening Confirm UI. After Gate 1 plus conditional approval, later roles read this file instead of `result.json`; §IX owns Executor page content. |
 | `spec_lock.md` | Execution anchor and routing contract | Machine-readable stable color/type roles, icons, images, page rhythm, charts, `template_reuse_scope`, and the route's PowerPoint structure mode; mirror/layout template routes additionally own input prototypes, the Master roster, and the complete page-to-Master/Layout mapping | Strategist authors the route-specific anchors from the audited Design Spec plus current project/page/template context. Executor retains the complete lock once per valid execution context; local uncertainty consults that retained copy before the owning Design Spec fragment. Sparse page-local color/font garnish needs no lock row; a recurring semantic role or new adaptive Layout identity requires Strategist repair before reuse. |
 | `project_manager.py page-context` stdout | Derived on-demand page context | Read-only model-facing anchor set + current-page delta + fingerprints for large references | Use only for explicit diagnostics/telemetry or an unresolved page/template/chart path-SHA projection. Never edit or persist it as a replacement source of truth, and never run it as a routine pre-page gate. `global` is a bounded anchor set, not a whitelist. `reference_set` carries path/SHA/load policy but never appends reference payloads. |
 | `analysis/page-context/P<NN>.usage.json` | Derived optional context telemetry | Measured on-demand page-context size plus hashes of owning inputs/references | `page-context --record-usage` deterministically replaces only the invoked page's snapshot; `page-context-report` summarizes existing snapshots. Telemetry may be partial. Use token data to evaluate context cost, never as content or an execution contract. |
-| `images/` | Runtime image pool | User, extracted, AI, web, formula, slice, EMF/WMF assets | Step 5 writes here; `analysis/image_analysis.csv` derives from current contents |
-| `icons/` | Prepared project icon pool | Bundled icons copied by `icon_sync.py` plus user-provided, template, imported, or custom icon SVGs | Executor may use any icon in this project-local pool; `spec_lock.icons.inventory` records planned bundled choices rather than an exhaustive whitelist. Exporter global fallback is legacy compatibility only. |
+| `images/` | Runtime image pool | User, extracted, AI, web, formula, slice, EMF/WMF assets | Default Step 5 or Quick Generate resource preparation writes here; `analysis/image_analysis.csv` derives from current contents |
+| `images/image_prompts.json`, `image_queries.json`, `image_sources.json`, `formula_manifest.json` | Conditional resource contracts | AI/web/formula execution status and provenance | Create only for a triggered path, including Quick. They guide preparation/attribution, never page design. |
+| `icons/` | Prepared project icon pool | Bundled icons copied by `icon_sync.py` plus user-provided, template, imported, or custom icon SVGs | SVG authoring may use any icon in this project-local pool; `spec_lock.icons.inventory` records the default plan's bundled choices rather than an exhaustive whitelist. Exporter global fallback is legacy compatibility only. |
 | `templates/` | Project template reference | Step 3 imported specs, template SVGs, and non-image assets | Strategist reads the template Design Spec and actual SVG roster during planning. Continuous Executor reuses that context; fresh Executor reads the Design Spec once and each selected complete SVG only before first use or after its SHA changes. |
 | `templates/template_execution_manifest.json` (`v1`) + `templates/template_execution/*.text-slots.json` (`v2-min`) | Derived template index | Compact prototype/source-import summary plus per-prototype text-slot diagnostics; the sidecar integrity hash is tool-only | Materialization may publish these deterministic records, but page-context does not inject or require them and models do not read them during page authoring. The complete prototype SVG is the sole visual/template authority; never author from either JSON artifact. |
 | `<import_workspace>/svg/` | Imported native-payload backing | Complete PPTX-derived metadata, hidden carriers, fallback evidence, and source structure | Keep immutable; create-template materialization may resolve a validated source ref against these files, but models do not edit or bulk-read them |
@@ -36,13 +45,13 @@ Global artifact ownership rules for PPT Master projects.
 | `confirm_ui/recommendations.stage1.json`, `.stage2.json`, `.stage3.json` | Confirmation proposals | One Strategist-authored payload per confirmation stage | Confirm UI selects the active file from `result.json`. The active, unconfirmed stage may be overwritten when the user requests a new recommendation; normal progression writes the next stage file and leaves confirmed earlier stages intact. Legacy `recommendations.json` is read only when no stage-specific file exists. |
 | `confirm_ui/result.json` | Confirmation result | Persisted user-confirmed input evidence | Generate Step 4 reads the final object once into active context; Strategist consumes it completely into `design_spec.md`. Normal downstream work does not reopen it; fresh recovery may read it once when no retained final state exists. |
 | `svg_output/` | Page-design author source | Main-agent handwritten SVG pages containing the complete visible design | Quality checker and native PPTX export read this as the canonical visual/page-layout source; templates and locks do not add missing visible objects at export |
-| `notes/total.md` | Speaker-note source | Complete notes before splitting | Step 6 writes; Step 7.1 splits |
-| `notes/slide_*.md` | Split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` |
-| `svg_final/` | Derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Rebuild from `svg_output/` with `finalize_svg.py`; do not use as a supported PPTX source |
-| `validation/svg_quality_report.json` | Quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | `svg_quality_checker.py --stage final --json` writes before export; the exporter reads it programmatically and links it only when the export-source fingerprint matches. Agents use successful command output and do not load the full JSON except for targeted failure/audit reads. |
-| `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Step 7.3 writes after the PPTX passes package validation and emits a compact `[POSTFLIGHT]` receipt. Agents use the receipt on routine success and keep the full JSON cold unless targeted failure/audit evidence is required. |
-| `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Step 7.3 writes only final deliverables from `svg_output/`. |
-| `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
+| `notes/total.md` | Conditional speaker-note source | Complete notes before splitting | Step 6 writes only when the effective Speaker Notes outcome is enabled; Step 7.1 splits |
+| `notes/slide_*.md` | Conditional split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` only when speaker notes are enabled |
+| `svg_final/` | Default-only derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Default rebuilds it from `svg_output/` with `finalize_svg.py`; Quick omits it. Never use it as a supported PPTX source. |
+| `validation/svg_quality_report.json` | Final SVG quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | Default runs `svg_quality_checker.py --stage final --json`; Quick adds `--quick-generate` so the checker ignores Design Spec/lock and validates the lockless flat roster. Export links the report only when fingerprints match; Quick requires that link to pass before PPTX creation. |
+| `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Both Generate profiles write it and emit `[POSTFLIGHT]` after package validation. |
+| `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Default Step 7.3 or Quick direct export writes final deliverables from `svg_output/`. |
+| `backup/<timestamp>/svg_output/` | Default-path frozen author-source archive | Re-export source without re-running LLM | Both Generate profiles write a snapshot for default-path exports; explicit `-o/--output` skips it. |
 | `animations.json` | Optional animation config | Page-transition and object-animation sidecar | Existing files activate intent resolution: Stage 3 `false` preserves, explicit objects-off exports `-a none`, and all-motion-off bypasses with `--no-animations`. Creation requires explicit instruction or enabled outcome; §IX advice never activates it |
 
 ---
@@ -51,7 +60,7 @@ Global artifact ownership rules for PPT Master projects.
 
 | Invariant | Rule |
 |---|---|
-| Content authority | Content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) own the factual/text origin for main-pipeline content, tables, chart values, and SmartArt node wording; Strategist resolves approved semantic content plus complete preferred on-slide wording into §IX. Executor realizes §IX under [`executor-base.md`](./executor-base.md) §2.1's content-vs-expression contract and opens sources only for explicit verification/resolution, never to draft a second outline. `slide_library.json` does not own content values. |
+| Content authority | Content-type files in `sources/` own the factual/text origin for content, tables, chart values, and SmartArt wording. Default Strategist resolves them into §IX and Executor realizes that contract without drafting a second outline. Quick's current agent resolves them once in active context before SVG authoring. `slide_library.json` does not own content values. |
 | Sources read policy | In `sources/`, read content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judge by content — a `.json` / `.csv` may be core content or just data. Exclude known sidecars: `*.conversion_profile.json` and `*_files/image_manifest.json`. `analysis/` facts (`source_profile.json`, `<stem>.slide_library.json`) are read per Step 4 / direct-PPTX workflow, not in the `sources/` content scan. |
 | PPTX structure | `slide_library.json` owns native geometry, slot facts, and SmartArt layout/relationships for direct PPTX workflows. |
 | Design contract | Final confirmation once → audited `design_spec.md` → optional same-file refinement/approval → context-authored lock. Never maintain a parallel draft/lock. Executor may apply `Template Application` prose but never replace identity. Repair divergence from the approved Design Spec/context unless it fails active-decision fidelity. |
@@ -64,7 +73,7 @@ Global artifact ownership rules for PPT Master projects.
 | SVG source | `svg_output/` is the only author source for generated pages. |
 | Page-design closure | On SVG-authoring routes, every visible exported-slide object exists in the corresponding page SVG or an explicitly referenced visual asset. |
 | Package-behavior separation | Speaker notes, animations, transitions, narration, and direct native-PPTX workflows keep their owning artifacts; do not force them into SVG metadata. |
-| Post-processed SVG | `svg_final/` is disposable, must be rebuilt in Step 7.2, and serves only as a self-contained visual preview / manually insertable SVG picture. |
+| Post-processed SVG | In Default Generate, `svg_final/` is disposable, must be rebuilt in Step 7.2, and serves only as a self-contained visual preview / manually insertable SVG picture. Quick omits it. |
 | Export source | The only supported generated-PPTX route reads `svg_output/` through the project SVG-to-DrawingML converter. A diagnostic `-s final` override does not change ownership or create a supported release route. |
 | Shape-conversion boundary | PowerPoint's manual Convert-to-Shape operation on `svg_final/` is outside the project compatibility contract. |
 | Confirmation | Final UI/chat confirmation overrides recommendations and is consumed once into `design_spec.md`. Enabled refinement applies arbitrary revisions there and requires approval; only then may active-decision fidelity release lock authoring. |
@@ -78,11 +87,12 @@ Global artifact ownership rules for PPT Master projects.
 
 | Derived artifact | Regenerate from | Command / owner |
 |---|---|---|
-| `analysis/image_analysis.csv` | Current `images/` | `uvx ppt-master analyze-images <project_path>/images` |
-| `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `uvx ppt-master svg-authoring-view <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
-| `notes/slide_*.md` | `notes/total.md` | `uvx ppt-master total-md-split <project_path>` |
-| `svg_final/` | `svg_output/` plus project assets | `uvx ppt-master finalize-svg <project_path>` |
-| `validation/svg_quality_report.json` | `svg_output/`, locks, template provenance | `uvx ppt-master svg-quality-check <project_path> --stage final --json` |
-| Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `uvx ppt-master svg-to-pptx <project_path>` |
+| `analysis/image_analysis.csv` | Current `images/` | `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` |
+| `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `python3 ${SKILL_DIR}/scripts/svg_authoring_view.py <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
+| `notes/slide_*.md` | `notes/total.md`, when speaker notes are enabled | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
+| `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
+| `validation/svg_quality_report.json` | `svg_output/`, plus locks/template provenance in Default Generate | Default: `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json`; Quick: append `--quick-generate` |
+| Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
+| Quick native PPTX | `svg_output/`, prepared resources, passing Quick final report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

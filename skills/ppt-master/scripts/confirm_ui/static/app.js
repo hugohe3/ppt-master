@@ -1066,11 +1066,6 @@
         return /^en(?:-|$)/i.test(recommendationLanguage());
     }
 
-    function setProjectLanguageAttributes(node) {
-        node.lang = recommendationLanguage();
-        node.dir = "auto";
-    }
-
     function setEnglishLanguageAttributes(node) {
         node.lang = "en";
         node.dir = "ltr";
@@ -2018,39 +2013,8 @@
             !typographyFamiliesComplete(STATE.typography));
     }
 
-    function previewText(value, maxCharacters) {
-        var text = String(value || "").replace(/\s+/g, " ").trim();
-        var characters = Array.from(text);
-        if (characters.length <= maxCharacters) return text;
-        return characters.slice(0, Math.max(1, maxCharacters - 1)).join("") + "…";
-    }
-
-    function projectLanguageProse() {
-        var fields = [
-            "core_message",
-            "communication_intent",
-            "audience_outcome",
-            "delivery_context",
-            "artifact_afterlife",
-            "content_divergence",
-            "audience"
-        ];
-        var values = [];
-        fields.forEach(function (field) {
-            var value = String((STATE && STATE[field]) || "").replace(/\s+/g, " ").trim();
-            if (value && values.indexOf(value) < 0) values.push(value);
-        });
-        return values;
-    }
-
-    function projectLanguageSample(role) {
-        var prose = projectLanguageProse();
-        if (!prose.length) return "";
-        if (role === "heading") return previewText(prose[0], 56);
-        return previewText(prose[1] || prose[0], 96);
-    }
-
     function sampleText(role, field) {
+        // Keep comparison copy stable: choices change visual treatment, not content.
         var useEnglish = field === "english" || isEnglishProject();
         if (role === "heading") {
             return t(useEnglish ? "preview_latin_title" : "preview_big_title");
@@ -2060,19 +2024,14 @@
 
     function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
-        var projectSample = projectLanguageSample(role);
-        var slotSample = String(slot.sample_primary || "").trim();
-        var primary = el("span", "fs-primary",
-            projectSample || slotSample || sampleText(role, "primary"));
-        if (projectSample || slotSample) setProjectLanguageAttributes(primary);
-        else setUiLanguageAttributes(primary);
+        var primary = el("span", "fs-primary", sampleText(role, "primary"));
+        setUiLanguageAttributes(primary);
         var primaryStack = previewFontStack(slot.primary, css);
         if (primaryStack) primary.style.fontFamily = primaryStack;
         if (primaryStack) primary.title = primaryStack;
         line.appendChild(primary);
         if (!isEnglishProject()) {
-            var english = el("span", "fs-english",
-                slot.sample_english || sampleText(role, "english"));
+            var english = el("span", "fs-english", sampleText(role, "english"));
             setEnglishLanguageAttributes(english);
             var englishStack = previewFontStack(slot.english, css);
             if (englishStack) english.style.fontFamily = englishStack;
@@ -2499,30 +2458,18 @@
             var headEnglishStack = previewFontStack(head.english, head.css);
             var bodyPrimaryStack = previewFontStack(body.primary, body.css);
             var bodyEnglishStack = previewFontStack(body.english, body.css);
-            var projectTitle = projectLanguageSample("heading");
-            var projectBody = projectLanguageSample("body");
-            var headingSample = String(head.sample_primary || "").trim();
-            var bodySample = String(body.sample_primary || "").trim();
 
             card.style.background = bg;
-            titlePrimary.textContent = projectTitle ||
-                headingSample ||
-                sampleText("heading", "primary");
-            if (projectTitle || headingSample) setProjectLanguageAttributes(titlePrimary);
-            else setUiLanguageAttributes(titlePrimary);
-            titleEnglish.textContent = head.sample_english ||
-                sampleText("heading", "english");
+            titlePrimary.textContent = sampleText("heading", "primary");
+            setUiLanguageAttributes(titlePrimary);
+            titleEnglish.textContent = sampleText("heading", "english");
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
             titlePrimary.style.fontFamily = headPrimaryStack || "";
             titleEnglish.style.fontFamily = headEnglishStack || "";
-            bodyPrimary.textContent = projectBody ||
-                bodySample ||
-                sampleText("body", "primary");
-            if (projectBody || bodySample) setProjectLanguageAttributes(bodyPrimary);
-            else setUiLanguageAttributes(bodyPrimary);
-            bodyEnglish.textContent = body.sample_english ||
-                sampleText("body", "english");
+            bodyPrimary.textContent = sampleText("body", "primary");
+            setUiLanguageAttributes(bodyPrimary);
+            bodyEnglish.textContent = sampleText("body", "english");
             bodyWrap.style.color = txt;
             bodyWrap.style.fontSize = bodyPx + "px";
             bodyPrimary.style.fontFamily = bodyPrimaryStack || "";
@@ -2533,8 +2480,7 @@
             content.style.color = txt;
             content.style.fontFamily = bodyPrimaryStack || "";
             content.innerHTML = stylePreviewContentMarkup(STATE.icons);
-            if (projectLanguageProse().length) setProjectLanguageAttributes(content);
-            else setUiLanguageAttributes(content);
+            setUiLanguageAttributes(content);
             chip.style.background = sbg;
             chipDot.style.background = sacc;
             chipLabel.textContent = t("role_secondary_bg");
@@ -2599,17 +2545,6 @@
     }
 
     function stylePreviewRows() {
-        var prose = projectLanguageProse();
-        if (prose.length) {
-            var projectRows = [];
-            for (var i = 0; i < Math.min(3, Math.ceil(prose.length / 2)); i += 1) {
-                projectRows.push([
-                    previewText(prose[i * 2], 36),
-                    previewText(prose[i * 2 + 1] || "", 72)
-                ]);
-            }
-            return projectRows;
-        }
         return [
             [t("preview_point_1_title"), t("preview_point_1_text")],
             [t("preview_point_2_title"), t("preview_point_2_text")],

@@ -24,7 +24,7 @@ Titles are short and evocative — a phrase, not a sentence.
 - Generous negative space around the primary visual relationship.
 - Bold use of the deck's theme color for atmosphere (cover / chapter pages).
 
-> Hero / full-bleed / breathing-page geometry lives in [`executor-base.md`](../executor-base.md) and the optional [`image-layout-patterns.md`](../image-layout-patterns.md) library; this mode decides *what each page makes primary*.
+> Hero / full-bleed / breathing-page geometry lives in [`executor-base.md`](../executor-base.md) and the compact [`image-layout-patterns.md`](../image-layout-patterns.md) vocabulary loaded by the image branch; this mode decides *what each page makes primary*.
 
 ---
 

@@ -28,12 +28,28 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 | 每 5 秒自动翻页 | `uvx ppt-master svg-to-pptx <project> --auto-advance 5` |
 | 开启自动元素入场 | `uvx ppt-master svg-to-pptx <project> -a auto` |
 | 全部使用同一种入场效果 | `uvx ppt-master svg-to-pptx <project> --animation entrance_fade` |
-| 全部使用同一种原生强调效果 | `uvx ppt-master svg-to-pptx <project> --animation emphasis_spin` |
-| 全部使用同一种原生动作路径 | `uvx ppt-master svg-to-pptx <project> --animation path_circle` |
-| 全部使用同一种原生退出效果 | `uvx ppt-master svg-to-pptx <project> --animation exit_fade` |
 | 单击逐个揭示元素 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click` |
 | 所有元素同时入场 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger with-previous` |
 | 放慢逐步揭示节奏 | `uvx ppt-master svg-to-pptx <project> -a auto --animation-duration 0.5 --animation-stagger 0.8` |
+
+## 选择页间切换
+
+| 相邻页面关系 | 优先考虑 |
+|---|---|
+| 同一章节内的普通连续叙述 | `fade` |
+| 无需保留连续性的直接切换 | `none` 或 `cut` |
+| 有明确方向的步骤、时间线或可见层级推进 | 按语义方向使用 `push`、`wipe`、`cover` 或 `uncover` |
+| 同一对象或场景的位置、尺寸、裁切或外观发生变化 | `morph` |
+| 章节开场、关键揭示或明显状态边界 | 少量使用 `split`、`reveal`、`shape`、`flash` 或 `random_bars` |
+| 重复内容在同一空间框架中连续推进 | `pan`、`conveyor` 或 `ferris_wheel`；单个对象需要保持身份时使用 Morph |
+| 视点围绕或穿越一个连续空间 | `rotate`、`window`、`orbit` 或 `fly_through` |
+| 主题适合舞台、纸张或实体翻页隐喻 | 少量使用 `fall_over`、`drape`、`curtains`、`wind`、`prestige`、`peel_off`、`page_curl`、`airplane`、`origami` 或 `doors` |
+| 破坏性节点表达断裂、坍塌或消散 | 少量使用 `fracture`、`crush`、`dissolve`、`vortex` 或 `shred` |
+| 关键揭示适合几何、计时或纹理图案 | 少量使用 `checkerboard`、`blinds`、`clock`、`ripple`、`honeycomb`、`glitter` 或 `comb` |
+| 卡片、面板、图库或视角发生可见翻面 | 少量使用 `switch`、`flip`、`gallery`、`cube`、`box` 或 `zoom` |
+
+没有其他切换能增加表达意义时，保留 `fade` 或 `none`。不要只为制造变化而
+更换效果；只有“不确定性”本身就是意图时才使用 `random`。
 
 48 个规范页间切换标识已经覆盖当前 PowerPoint 效果库的三个完整分组：
 
@@ -71,58 +87,96 @@ OOXML，而不是嵌入视频。对象动画包括进入、强调、动作路径
 
 `--recorded-narration` 不支持 `on-click`；带旁白或用于视频导出的 deck 应使用 `after-previous` 或 `with-previous`。
 
-## 选择动画效果
+## 选择对象动画
 
-| 选择 | 适用场景 |
-|---|---|
-| `auto` | 让 PPT Master 根据内容组角色选择合适效果；这是开启元素动画时的推荐选项 |
-| 原生 `entrance_*` | 使用 PowerPoint 的 53 个原生进入预设之一 |
-| 原生 `emphasis_*` | 让已显示对象获得关注或改变外观 |
-| 原生 `path_*` | 让对象沿 PowerPoint 的 64 条动作路径之一移动 |
-| 原生 `exit_*` | 让对象在动画序列中退出页面 |
-| `mixed` | 使用兼容模式名，在规范 PowerPoint 预设中确定性轮换 |
-| `random` | 从同一规范预设池中稳定地生成变化 |
-| `none` | 关闭元素动画 |
+从 `none` 开始。只有对象运动承担明确沟通任务时，才先选择生命周期，再选择
+视觉效果：
+
+| 沟通任务 | 选择 | 使用边界 |
+|---|---|---|
+| 按阅读或旁白顺序揭示信息 | `auto` 或原生 `entrance_*` | 这是最常见的对象动画场景 |
+| 让已经可见的对象重新获得关注 | 显式 `emphasis_*` | 不用于对象第一次出现 |
+| 表达有意义的空间或因果移动 | 显式 `path_*`，或在相邻页间使用 Morph | 路径本身应承载意义；刻意设计的背景氛围运动属于高级例外 |
+| 在同一页移除、替换内容或腾出空间 | 显式 `exit_*` | 普通翻页已经会移走旧页面 |
+| 为通用进入效果增加确定性或固定种子变化 | `mixed` 或 `random` | 两种模式仍只选择进入效果 |
+| 没有明确的运动任务 | `none` | 保持静态 |
 
 规范注册表包含 203 个 PowerPoint 原生标识：53 个进入、33 个强调、64 条
 动作路径、53 个退出。现在新选择、sidecar、自动决策、转换轨迹和示例都只使用
-带类别前缀的规范名称。29 个旧短名称只保留为兼容输入，写入前会归一化，不再
-维护第二套动画行为。旧 Fly 方向名统一映射到 `entrance_fly`，旧 Wipe 方向名
-统一映射到 `entrance_wipe`；方向会保留为参数，而不会形成新的规范预设。旧
-`wheel` 保留四辐语义。运行
+带类别前缀的规范名称。`auto`、`mixed` 与 `random` 只会选择进入效果；强调、
+动作路径与退出必须使用显式规范标识。29 个旧短名称只保留为兼容输入，写入前会
+归一化，不再维护第二套动画行为。旧 Fly 方向名统一映射到 `entrance_fly`，旧
+Wipe 方向名统一映射到 `entrance_wipe`；方向会保留为参数，而不会形成新的规范
+预设。旧 `wheel` 保留四辐语义。运行
 `uvx ppt-master pptx-animations --list` 可查看完整分类清单。
 4 个媒体播放命令需要媒体或书签目标，仍由音视频工作流负责。
 
 ## 自定义具体对象
 
-只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如标题先出现、图表第二个出现、结论最后出现。最简单的方式是从真实页面分组生成完整 scaffold，修改后校验并导出：
+只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如让同一对象
+进入、移动、获得强调后再退出。先列出真实分组，只为受影响页面和对象写稀疏覆盖，
+然后校验并导出。`scaffold` 是可选的中性编辑起点：其默认对象效果为 `none`，
+未修改的 `{}` 分组条目不会开启动画。
 
 ```bash
-uvx ppt-master animation-config scaffold <project>
+uvx ppt-master animation-config list-groups <project>
 uvx ppt-master animation-config validate <project>
 uvx ppt-master svg-to-pptx <project>
 ```
 
-生成的 sidecar 以稳定的顶层 `<g id="...">` 内容组为目标。常用对象级字段如下：
+sidecar 以稳定的顶层 `<g id="...">` 内容组为目标。group ID 是 PowerPoint
+shape target 锚点，不等同于 Animation Pane 中的一行。兼容的单效果对象仍生成
+一行；`effects[]` 可以生成多条有序记录，并让它们共同指向同一 shape：
+
+```json
+{
+  "version": 1,
+  "slides": {
+    "03_threshold": {
+      "animation": { "trigger": "after-previous" },
+      "groups": {
+        "risk-marker": {
+          "effects": [
+            { "effect": "entrance_fade", "order": 1, "duration": 0.25 },
+            { "effect": "path_right", "order": 2, "delay": 0.1, "duration": 0.7 },
+            { "effect": "emphasis_teeter", "order": 3, "trigger": "with-previous", "duration": 0.45 },
+            { "effect": "exit_fade", "order": 4, "trigger_shape": "details-button", "duration": 0.3 }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+一个已填写的分组只能使用旧单效果字段或 `{ "effects": [...] }`，不能混用。
+`effects` 必须非空，且每一行都要显式声明 `effect`。现有单效果 sidecar 完全兼容。
+
+常用动画行字段如下：
 
 | 字段 | 用途 |
 |---|---|
-| `effect` | 覆盖对象动画效果；设为 `none` 可让该对象保持静态 |
-| `order` | 调整揭示顺序，不改变页面图层顺序 |
-| `delay` | 在 `after-previous` 中或单击 `trigger_shape` 后增加等待时间 |
-| `duration` | 覆盖该对象的动画排程时长 |
+| `effect` | 选择一个显式效果；旧单效果形式可用 `none` 让对象保持静态 |
+| `trigger` | 覆盖本行的 Start 模式；省略时继承页面动画 trigger |
+| `order` | 设置普通动画行的整页顺序且不改变图层；trigger-shape 行保留在独立交互序列中 |
+| `delay` | 给本行解析后的 Start 行为增加等待时间 |
+| `duration` | 覆盖本行的动画排程时长 |
 | `effect_options` | 设置效果适用的 `direction`、`amount`、`color`、`font_name`、`relative` 或 `size` |
 | `trigger_shape` | 单击另一个顶层内容组时触发本行（PowerPoint“单击下列对象时”） |
 | 计时修饰 | `repeat_count`/`repeat_duration`、`auto_reverse`、`rewind`、`accelerate`、`decelerate`、`bounce_end` 与 `restart` |
 | 播放完成 | `after_effect`（变暗/隐藏）和 `.m4a`/`.mp3`/`.wav` `sound` 路径 |
+
+`order`、`delay`、`duration`、`trigger` 与 `trigger_shape` 都按动画行独立解析。
+页面级动画 trigger 只负责提供继承值。`trigger_shape` 隐含 `on-click`；若同一行
+也显式写了 `trigger`，其值必须是 `on-click`。
 
 运行 `uvx ppt-master pptx-animations --describe
 <canonical_effect>` 可查看该效果实际接受的完整参数。速度由 `duration` 控制，
 平滑开始/结束由 `accelerate`/`decelerate` 控制。Change Font 的 `font_name`
 必须是目标环境已安装的一个具体 PowerPoint 字体名，不能写 CSS 字体列表。
 
-`trigger_shape` 只能写在对象组上，并指向同一页另一个分组 id。它只让当前动画行
-变为交互触发，其他行仍遵循页面 Start 模式；录制旁白不接受这种交互动画。
+`trigger_shape` 指向同一页另一个分组 id，并且只影响所在动画行。录制旁白不接受
+任何最终解析为 `on-click` 的动画行，其中包括 `trigger_shape` 行。
 
 当用户要求 AI 调整具体对象时，使用 [`customize-animations`](../../skills/ppt-master/workflows/stages/customize-animations.md) 阶段。完整 sidecar schema 与目标校验规则仍由[动画执行规范](../../skills/ppt-master/references/animations.md)维护。
 
@@ -132,8 +186,9 @@ PPT Master 会严格校验动画设置：未知效果或 Start 模式、非法�
 
 | 边界 | 对用户的影响 |
 |---|---|
-| 动画目标 | 元素动画作用于逻辑内容组，而不是每一个 SVG 原子 |
+| 动画目标 | 元素动画作用于逻辑顶层内容组锚点；一个锚点可以拥有多条 Animation Pane 记录 |
 | 静态结构 | 背景、Master/Layout 内容、placeholder 与页面框架保持静态 |
+| 不支持的对象 build | 不会从分组 SVG 推导段落/文字范围 build、自定义自由动作路径、原生 Chart/SmartArt 分步 build 或媒体播放命令 |
 | 输出路线 | 动画存在于从 `svg_output/` 生成的原生 PPTX；`svg_final/` 只是静态预览 |
 | 现有 PPTX 路线 | Template Fill 与 Native Enhance 保留源对象动画，不把它翻译成生成路线的动画模型 |
 | 播放兼容性 | Microsoft PowerPoint 桌面版是主要验证目标；Keynote、WPS、LibreOffice 与较旧 Office 可能重新映射或忽略个别效果 |

@@ -20,7 +20,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Strategist Confirmation Stage
 
-🚧 **GATE — whole-document authoring**: Generate Step 4 reads `templates/design_spec_reference.md`, writes the complete Design Spec from scratch, passes Gate 1, then reads `templates/spec_lock_reference.md` and writes the complete lock projection. For a new project, create each finished artifact once; do not instantiate or patch a placeholder scaffold. Run `project_manager.py validate`; the machine schemas, not remembered headings, own grammar validation.
+🚧 **GATE — whole-document authoring**: Generate Step 4 reads `${SKILL_DIR}/templates/design_spec_reference.md`, authors the complete Design Spec once, passes Gate 1, then reads `${SKILL_DIR}/templates/spec_lock_reference.md` and authors the complete lock once. Do not scaffold or patch placeholders. Run `project_manager.py validate`; machine schemas, not remembered headings, own grammar validation.
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the confirmation fields below and wait for explicit user confirmation.
 
@@ -38,7 +38,7 @@ Do not force communication intent into one catalog label; Stage 1 records compos
 >
 > **One opt-in exception**: present the refinement line with the split-mode note ([`generate-pptx.md`](../workflows/generate-pptx.md) Step 4). Only explicit opt-in runs [`refine-spec`](../workflows/stages/refine-spec.md): write the Design Spec once, pass Gate 1, then stop before the lock for unrestricted chat revision. Never enter it unprompted.
 
-> **Default presentation surface — Confirm UI.** Use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json`; launch per Generate Step 4. Stage 1 writes canonical BCP-47 `primary_language` apart from UI `lang`; the server normalizes legacy English/Chinese/Japanese/Korean names, rejecting `und` and Chinese without script/region; Strategist projects it through Design Spec §I to lock communication. Replace only the active unconfirmed stage; preserve confirmed files. Stage 2 carries ≥3 safe / shifted / bold `design_directions`; each bundles visual style, a six-role HEX palette, primary-language heading/body typography plus an English companion only for non-English decks, icons, and conditional image rendering. Print the URL, Stage-1 summary, and `confirm_ui.md` chat fallback; this is not confirmation. Skip launch only for explicit chat-only use; chat-question tools are no substitute. Step 4 reads final confirmed `result.json` once for Design Spec authoring. [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns schema and lifecycle.
+> **Default presentation surface — Confirm UI.** Before launch, apply [`confirm_ui.md`](../scripts/docs/confirm_ui.md)'s sticky per-run surface decision; its explicit chat branch skips every UI command, and a chat selection after UI launch follows its in-run switch procedure. Chat-question tools alone do not select a branch. In the UI branch, use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json`; replace only the active unconfirmed stage, preserve confirmed files, and print the URL plus Stage-1 summary/fallback without treating that handoff as confirmation. Stage 1 writes canonical BCP-47 `primary_language` apart from UI `lang`; Strategist projects it through Design Spec §I to lock communication. Stage 2 carries ≥3 safe / shifted / bold `design_directions`, each bundling visual style, a six-role HEX palette, primary-language heading/body typography plus an English companion only for non-English decks, icons, and conditional image rendering. Step 4 retains final confirmation from the selected channel for Design Spec authoring. `confirm_ui.md` owns schema and lifecycle.
 
 **Confirmed-value semantics**: confirmation preserves both the value and the owning field's semantic type. Apply the type to the affected property, not automatically to the whole object:
 
@@ -283,13 +283,25 @@ user/template requirements bind.
 | Image composition | Image-as-canvas, editorial crop, collage, cutout, or meaningful focus / comparison / evidence units carry the page better than an adjacent rectangle | Propose a permitted source; when selected, load [`strategist-image.md`](./strategist-image.md), record a concise §VIII `Layout pattern` suggestion, and describe page-level image/overlay relationships in §IX `Layout` / `Images` |
 | Native paint / overlay | Gradient, translucency, scrim, vignette, or wash supports focus, hierarchy, depth, legibility, or image integration | Record purpose/layering in §IX `Layout`, plus `Images` when imagery participates; no new field or type/stops/opacity/coordinates—Executor chooses realization |
 | Native shape / Merge Shapes | A literal Office symbol, a stock bent/curved relationship contour, or a compound silhouette, negative-space cutout, overlap-only region, or meaningful fragmentation strengthens the visual idea | Add an optional §IX `Native shape suggestion` with the semantic result plus a candidate preset/Connector family or Boolean operation/operands |
-| Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's start/end semantic states; leave effect, ids, pairing names, and timing to Executor |
-| Object animation | Progressive reveal clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` describing semantic units/order and any visible image-state relationship; leave group ids, effect, and timing to Executor |
+| Page transition | A section/state change, spatial continuity, recorded/self-running flow, or the same semantic object changing position, scale, crop, or state across adjacent pages benefits from motion | Add an optional §IX `Motion suggestion` describing the communication job and any continuing object's initial state → action → end state; leave effect, ids, pairing names, and timing to Executor |
+| Object animation | Progressive reveal, emphasis, movement, removal, or deliberate stillness clarifies sequence, causality, comparison, hierarchy, narration order, full-view → detail, atmosphere → evidence, or hotspot/annotation order | Add an optional §IX `Motion suggestion` naming each relevant semantic unit's lifecycle duty and initial state → communication action → end state, plus any meaningful order/relationship; leave group ids, effects, options, and timing to Executor |
 
-Write useful motion advice regardless of the effective Custom Animations outcome.
-The suggestion remains non-binding and never activates custom-animation
-execution by itself; only an explicit motion requirement or an enabled outcome
-may require visible endpoint/reveal-state preparation.
+**Reference — not a constraint: motion lifecycle vocabulary.**
+
+| Duty | Semantic lifecycle |
+|---|---|
+| `enter` | absent → introduce → present |
+| `emphasize` | present → redirect attention → present/altered |
+| `move` | state/position A → progress → state/position B |
+| `exit` | present → retire → absent |
+| `static` | present → hold as reference → present |
+
+Use only relevant duties—no category quota. For every unit mentioned in a
+`Motion suggestion`, state its duty, lifecycle, and meaningful order; never
+name an effect, target id, option, or timing. Write useful advice regardless of
+the effective outcome. Suggestions remain non-binding and never activate the
+custom stage; only an explicit motion requirement or an enabled outcome may
+require visible lifecycle-state preparation.
 
 Review planned pages through two lenses:
 
@@ -440,11 +452,11 @@ Generate's notes/audio dependency gate. Record animation provenance as
 Stage 3 `false`, explicit objects-off, or explicit all-motion-off; only the last
 includes transitions.
 
-1. Use the retained complete final-confirmation state already read once by Generate Step 4, then read `templates/design_spec_reference.md`.
+1. With Generate Step 4's retained complete final-confirmation state, read `${SKILL_DIR}/templates/design_spec_reference.md`.
 2. Compose the whole Design Spec in active context before touching the target path. Create `design_spec.md` once from the schema marker through §X; do not copy a scaffold into the project or patch placeholder fields. Record production mechanics in §I, including one effective outcome plus provenance for Speaker Notes, Custom Animations, and Narration Audio. Resolve them from latest explicit user instruction → matching Stage 3 proactive value → compatibility default `enabled` / `disabled` / `disabled`; Narration Audio enabled requires Speaker Notes enabled without rewriting the raw proactive evidence, and a dependency-driven notes outcome records that provenance. In §IX, create the complete ordered roster; each entry carries layout, title, core message, **Audience move**, complete preferred wording, applicable capability recommendations, visualization/image references, sourced `Fact IDs`, and `Data class: scenario` for invented demo data. After Gate 1 plus conditional refine approval, roster ids/count/order and semantic content are authoritative; non-literal wording, block texture, layout, cover/closing composition, capability recommendations, and image/chart patterns remain References unless promoted.
 3. Compare `design_spec.md` against the final confirmation field by field. Repair every omission or deviation before entering an enabled refine-spec review or authoring `spec_lock.md`.
 4. If enabled, run [`refine-spec`](../workflows/stages/refine-spec.md) after Gate 1; edit only that Design Spec and create no lock before explicit approval.
-5. Read `templates/spec_lock_reference.md`. From the approved Design Spec plus context, create the lock once or resynchronize stale derived state. Retain identity/refinements, select stable roles/routing, omit unnamed page-local values, and do not reopen evidence. This is implementation judgment, not another recommendation.
+5. Read `${SKILL_DIR}/templates/spec_lock_reference.md`; create the lock once or resynchronize stale derived state from the approved Design Spec and context. Retain identity/refinements and stable roles/routing; omit unnamed page-local values, do not reopen evidence, and make no new recommendation.
 
 **Final confirmation → Design Spec consumption map**:
 

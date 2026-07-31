@@ -56,7 +56,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
   `enabled` / `disabled` / `disabled`; these production decisions never come
   from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
-- Read the Step 6 flat core (`executor-base`, `shared-standards-core`, and the locked preset mode / visual-style files); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
+- Read the complete Step 6 always-on core exactly as listed in [`generate-pptx.md`](../generate-pptx.md); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
 - Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load

@@ -1,6 +1,6 @@
 [project]
 name = "ppt-master"
-version = "0.1.67"
+version = "0.1.68"
 description = "AI-driven multi-format SVG content generation system"
 readme = "PYPI_README.md"
 license = { text = "MIT" }
@@ -44,6 +44,8 @@ dependencies = [
     "google-genai>=1.0.0",
     # SVG editor server
     "flask>=3.0.0",
+    # Font shaping
+    "uharfbuzz>=0.50.0",
 ]
 
 [project.urls]

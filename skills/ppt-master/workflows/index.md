@@ -20,6 +20,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 | ID | Class | Path | Parent / lifecycle slot |
 |---|---|---|---|
 | `beautify-pptx` | Generation profile | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX |
+| `quick-generate` | Generation profile | [`profiles/quick-generate.md`](./profiles/quick-generate.md) | Generate PPTX direct SVG-to-PPTX short circuit |
 | `apply-template-workspace` | Template-input stage | [`stages/apply-template-workspace.md`](./stages/apply-template-workspace.md) | Generate Step 3 |
 | `create-brand` | Template child workflow | [`create-template/create-brand.md`](./create-template/create-brand.md) | Create Template |
 | `create-layout` | Template child workflow | [`create-template/create-layout.md`](./create-template/create-layout.md) | Create Template |
