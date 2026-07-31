@@ -516,20 +516,22 @@ Several architectural decisions shape this phase:
 
 ---
 
-## Image-Text Layout: Primary Structures + Modifier Layers
+## Image-Text Composition: P / M / A / C
 
-Whenever the image/formula branch is active, its compact placement vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md) is read alongside the layout math. It offers 100 stable-id techniques in two freely composable layers:
+Whenever the image/formula branch is active, its compact placement vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md) is read alongside the layout math. Its current patterns are organized by composition responsibility:
 
-- **Primary Structures** (container layouts / image-as-canvas + native overlay / multi-image compositions) — the page's bones. One or more per page; cross-Primary combinations like *side-by-side comparison + image-as-canvas annotation* are legitimate.
-- **Modifier Layers** (non-rectangular clips / overlays & cutouts / texture / special techniques) — finish. Any number per page, stacked on top of the Primary.
+- **P · Primary Structures** — single-visual, image-as-canvas, and multi-visual page skeletons.
+- **M · Modifier Layers** — crop/reveal, tone/focus, and framing/placement/depth treatments applied to an existing skeleton.
+- **A · Asset-Dependent Treatments** — compositions that require a prepared composite or appearance, cutout, or registered derivative.
+- **C · Cross-Page Continuity** — persistent-state, camera, and matched-framing relationships across slides.
 
-**Why the catalog includes a combination playbook.** Capability discovery alone does not teach repeatable composition. The playbook turns a page job into a compact sequence: select the Primary skeleton, diagnose a concrete integration problem, add the smallest useful Modifier or native overlay, integrate the layers through shared geometry and style, then stop when another layer no longer earns its place. Its high-yield combinations are recall aids, not recipes that every deck must cover.
+**Why the catalog includes a combination playbook.** Capability discovery alone does not teach repeatable composition. The playbook turns a page job into a compact sequence: select the `P` skeleton, name the integration need or stylistic role, add the smallest `M` that serves it, use `A` only when its prepared asset exists, add `C` only for an intentional cross-page relationship, then stop when another layer no longer earns its place. Its high-yield combinations are recall aids, not recipes that every deck must cover.
 
-**Why always reading the library does not impose a catalog or layer quota.** It expands compositional choice rather than defining legal output. A page may use one or several Primary structures and any useful Modifiers, cite no id at all, or use a free-form composition when that better serves the narrative and hierarchy.
+**Why always reading the library does not impose a catalog or layer quota.** It expands compositional choice rather than defining legal output. A page may use one or several `P` structures and any useful `M`, prepared `A`, or cross-page `C` patterns, cite no id at all, or use a free-form composition when that better serves the narrative and hierarchy.
 
-**Why the layers are physically separated, not just tagged.** Patterns are organized with Primary structures first and Modifiers second so the active role can navigate by construction role. Numbers remain stable identifiers (`#38` is still image-as-canvas + annotation cards regardless of where it sits in the file), so existing references across `spec_lock.md`, `design_spec.md §VIII`, executor logs, and historical examples keep resolving.
+**Why the catalog uses two-level IDs.** Handles such as `#P2-01` and `#M1-01` expose both composition responsibility and the local family, so combinations remain readable. The final number follows current browse order rather than preserving historical numbering. These are prompt vocabulary, not runtime effect codes: the Executor realizes the accompanying composition guidance, and the exporter does not map an ID to fixed DrawingML.
 
-**Why composition intent flows through Strategist's resource list.** The `Layout pattern` column in `§VIII Image Resource List` carries one non-empty free-form suggestion and may optionally cite stable ids from the library; `Crop Policy` separately records `adaptive` or `no-crop`. This preserves a useful starting point across session re-entry without making any catalog entry or id mandatory. Executor may resize, reflow, reposition, rebalance, replace the suggestion, or use another composition when that communicates better. Resource identity, must-use/content obligations, `no-crop`, and explicit user/template constraints remain binding; only changing those requires an upstream Design Spec update.
+**Why composition intent flows through Strategist's resource list.** The `Layout pattern` column in `§VIII Image Resource List` carries one non-empty free-form suggestion and may optionally cite hierarchical ids from the library; `Crop Policy` separately records `adaptive` or `no-crop`. This preserves a useful starting point across session re-entry without making any catalog entry or id mandatory. Executor may resize, reflow, reposition, rebalance, replace the suggestion, or use another composition when that communicates better. Resource identity, must-use/content obligations, `no-crop`, and explicit user/template constraints remain binding; only changing those requires an upstream Design Spec update.
 
 **Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live in the authority set routed by [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points to that router rather than restating the contract, so each rule still has one owning module and no stale duplicate in the pattern catalog.
 

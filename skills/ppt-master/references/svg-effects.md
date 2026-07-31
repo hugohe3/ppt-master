@@ -769,7 +769,7 @@ remain authoritative in the owning subsection.
 | Decision family | Scenario routing | Authority / boundary |
 |---|---|---|
 | Paint | Directional or continuous value change → linear gradient; center-weighted focus → radial gradient; subordinate layer or overlap depth → channel alpha; short display emphasis → gradient text; hierarchy already clear → solid paint | §6.2 / §6.3; do not use color variation without a semantic or material job |
-| Elevation | Object visibly above another surface → resting/raised shadow; one focal CTA → restrained colored shadow; equal peers/background → flat; luminous short title/metric → glow | §6.4; one light direction; never body-copy glow |
+| Elevation | Object visibly above another surface → resting/raised shadow; overlay boundary against a dark or complex image → restrained glow or hairline; one focal CTA → restrained colored shadow; equal peers/background → flat; luminous short title/metric → glow | §6.4; one light direction; never body-copy glow |
 | Image/material | Text over image → directional scrim; bottom title → bottom fade; centered hero → vignette; brand unification → brand wash; foreground panel over image → faux glass | §6.5; validate actual contrast; no backdrop blur |
 | Lines | Draft/optional/future → dash; process direction → marker; undirected relationship → solid connector; continuous flow/series → gradient stroke; exact grid → multi-subpath path | §6.6 / §6.3 |
 | Text | Removed/former value → line-through; short eyebrow → tracking; display heading needing a distinct silhouette → outline/gradient; luminous focal metric → glow; list → native bullet | §6.7 / §6.4; body copy may keep semantic decoration, but not decorative gradient/outline/glow/tracking |

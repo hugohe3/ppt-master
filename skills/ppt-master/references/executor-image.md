@@ -30,7 +30,7 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 **Default — active image integration (may override when plain placement is
 stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)
 as vocabulary and [`image-layout-spec.md`](./image-layout-spec.md) as math, not
-a quota or lock. Run the catalog's §5 playbook before drawing; its combinations
+a quota or lock. Run the catalog's §7 playbook before drawing; its combinations
 are recall aids, not coverage targets. For every image-bearing page, derive the
 image/content or image/shape relationship from the communication job, hierarchy,
 copy, asset
@@ -57,9 +57,11 @@ changes need no upstream rewrite.
 **Crop policy**: read the §VIII row and matching lock projection. On every slide that uses a `crop=no-crop` source (or a legacy trailing `| no-crop`), retain one visible complete instance using one of the nine legal anchors with `meet`, never `none`, and no `clip-path`, `mask`, clipping overflow, or nested `<svg>` crop viewport. An auxiliary same-slide detail or lens may crop the same source only while that complete instance remains visible. `crop=adaptive` permits but never requires cropping; choose `meet` or focal-safe `slice` from purpose, ratio, focus, and container. A missing or conflicting `source` / `pattern` / `crop` projection returns upstream instead of being inferred during execution; the accurately projected `pattern` remains a preferred expression that may be adapted without rewriting the lock.
 
 **Hard rule — same-source addressable crops, only when adopted**: A layout
-suggestion, including pattern `#100`, never activates this transport. Apply it
-only when the chosen composition uses independent same-source crops or an
-explicit editable/Morph requirement needs them. Once active, reuse one exact
+suggestion, including pattern `#M1-11`, never activates this transport. Pattern
+`#M1-09` is a separate deliberate-offset treatment and never claims registered
+or Morph continuity. Apply this transport only when independent crops must
+preserve one exact scene map or an explicit editable/Morph requirement needs
+them. Once active, reuse one exact
 `href` without slice assets. Give every independent/Morph object a stable
 page-unique id and a distinct nested crop wrapper under
 [`svg-effects.md`](./svg-effects.md) §6.5. Plain rectangles need no crop marker;
@@ -70,7 +72,7 @@ source-to-page transform over the union of the visible containers. Never run
 `cover` / focal cropping independently per container: different container
 positions and heights must change the source-unit `x`, `y`, `width`, and
 `height` by the same union-relative mapping, so the gaps remove pixels without
-rescaling the scene. A compound clip on one `<image>` is pattern `#82`, not a
+rescaling the scene. A compound clip on one `<image>` is pattern `#M1-10`, not a
 substitute when the objects must remain independently editable or Morphable.
 
 **Formula images — declared-inference fallback for a missing `no-crop` flag**: rows with `Acquire Via: formula` or `Type: Latex Formula` MUST be treated as no-crop. For a rendered file, use dimensions in this order: current `analysis/image_analysis.csv`, `design_spec.md §VIII`, then `images/formula_manifest.json`. For a `Needs-Manual` row, size the dashed placeholder from the planned dimensions in §VIII, then the manifest; the readiness gate re-analyzes the supplied file and reconciles the container before export. Do not normalize all formulas to one height unless the spec explicitly states that layout choice.
