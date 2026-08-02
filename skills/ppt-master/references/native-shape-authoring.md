@@ -259,9 +259,8 @@ reads flat no matter how strong the contrast.
 Keep every stop on one hue and vary only lightness, hold one light direction for
 the whole page, and remove strokes so adjacent facets meet cleanly. For a
 cylinder, apply the alternating ramp across the body and cap it with an ellipse
-carrying its own shallower ramp. This is the shape-level twin of
-[`image-layout-patterns.md`](./image-layout-patterns.md) `#91`, which applies the
-same idea across separate facets of a folded form.
+carrying its own shallower ramp. The same light logic applies across separate
+facets of any folded form.
 
 ### 7.2 Reflection without a reflection effect
 
@@ -302,7 +301,7 @@ but the four jobs they normally do are all reachable with gradients:
 | Contact shadow under an object | Ellipse filled with a `radialGradient` from dark-transparent at the centre to fully transparent at the rim |
 | Spotlight / stage pool | Cone or ellipse filled with a gradient fading to transparent at its far end, at low opacity over the scene |
 | Object dissolving into the page | Overlay a rectangle whose gradient runs from transparent to the exact page background hex |
-| Hiding an object while keeping it live | Full transparency, or a background-registered fill ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`) |
+| Hiding an object while keeping it live | Full transparency, or a background-registered fill ([`image-layout-patterns.md`](./image-layout-patterns.md) `#M1-08`) |
 
 A radial or linear alpha ramp reads the same as a feathered edge at slide scale
 and, unlike a filter, exports intact. Never approximate a soft edge with a stack

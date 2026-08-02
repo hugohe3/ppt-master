@@ -24,6 +24,28 @@ _OOXML_HEX_COLOR_RE = re.compile(r"[0-9A-Fa-f]{6}")
 _DRAWINGML_NAMESPACE = NS["a"]
 _DRAWINGML_TAG_PREFIX = f"{{{_DRAWINGML_NAMESPACE}}}"
 _EFFECT_CONTAINER_NAMES = frozenset({"effectLst", "effectDag"})
+_OUTER_SHADOW_ATTRIBUTES = frozenset({
+    "algn",
+    "blurRad",
+    "dir",
+    "dist",
+    "kx",
+    "ky",
+    "rotWithShape",
+    "sx",
+    "sy",
+})
+_OUTER_SHADOW_ALIGNMENTS = frozenset({
+    "b",
+    "bl",
+    "br",
+    "ctr",
+    "l",
+    "r",
+    "t",
+    "tl",
+    "tr",
+})
 
 
 @dataclass(frozen=True)
@@ -75,6 +97,7 @@ def convert_effects(
     *,
     id_prefix: str = "fx",
     id_seq: list[int] | None = None,
+    target_rotation_degrees: float = 0.0,
 ) -> EffectResult:
     """Return one supported filter or blocking metadata for source effects."""
     if sp_pr is None:
@@ -121,6 +144,15 @@ def convert_effects(
         )
     try:
         if effect_name == "outerShdw":
+            unsupported_attributes = _unsupported_outer_shadow_attributes(
+                effect,
+                target_rotation_degrees=target_rotation_degrees,
+            )
+            if unsupported_attributes:
+                return EffectResult.unsupported(
+                    "unsupported-effect-attributes:outerShdw:"
+                    + ",".join(unsupported_attributes)
+                )
             primitives = _outer_shadow(effect, palette)
         elif effect_name == "glow":
             primitives = _glow(effect, palette)
@@ -260,6 +292,55 @@ def _effect_integer(
     ):
         raise ValueError(f"{attr}={raw!r}")
     return value
+
+
+def _unsupported_outer_shadow_attributes(
+    elem: ET.Element,
+    *,
+    target_rotation_degrees: float,
+) -> tuple[str, ...]:
+    """Return source shadow attributes the local SVG filter cannot preserve."""
+    unsupported = set(elem.attrib) - _OUTER_SHADOW_ATTRIBUTES
+    neutral_transforms = (
+        ("sx", 100000),
+        ("sy", 100000),
+        ("kx", 0),
+        ("ky", 0),
+    )
+    for attr, neutral in neutral_transforms:
+        if attr in elem.attrib and _effect_integer(elem, attr) != neutral:
+            unsupported.add(attr)
+
+    raw_alignment = elem.get("algn")
+    if (
+        raw_alignment is not None
+        and raw_alignment.strip() not in _OUTER_SHADOW_ALIGNMENTS
+    ):
+        raise ValueError(f"algn={raw_alignment!r}")
+
+    raw_rotates = elem.get("rotWithShape")
+    if raw_rotates is None:
+        rotates_with_shape = True
+    else:
+        token = raw_rotates.strip()
+        if token in {"1", "true"}:
+            rotates_with_shape = True
+        elif token in {"0", "false"}:
+            rotates_with_shape = False
+        else:
+            raise ValueError(f"rotWithShape={raw_rotates!r}")
+    target_is_rotated = not math.isclose(
+        math.remainder(target_rotation_degrees, 360.0),
+        0.0,
+        abs_tol=1e-9,
+    )
+    if rotates_with_shape and target_is_rotated:
+        # CT_OuterShadowEffect defaults rotWithShape to true, while the local
+        # SVG-to-PPTX mapping writes false. Blocking the visible distinction
+        # prevents the next export from changing the source shadow direction.
+        unsupported.add("rotWithShape")
+
+    return tuple(sorted(unsupported))
 
 
 def _direction_offset(elem: ET.Element) -> tuple[float, float]:

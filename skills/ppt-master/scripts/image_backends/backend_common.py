@@ -19,8 +19,10 @@ if __name__ == "__main__":
     print("This is an internal helper module used by image_gen.py backends.")
     raise SystemExit(0 if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]) else 1)
 
+import base64
 import io
 import os
+import re
 import time
 
 import requests
@@ -94,6 +96,62 @@ def detect_image_extension(image_bytes: bytes, content_type: str = None) -> str 
         clean_type = content_type.split(";", 1)[0].strip().lower()
         if clean_type in CONTENT_TYPE_TO_EXT:
             return CONTENT_TYPE_TO_EXT[clean_type]
+    return None
+
+
+DATA_URI_HEADER = re.compile(
+    r"data:(?P<mime>image/[A-Za-z0-9.+-]+)(?P<params>;[^,]*)?,",
+    re.IGNORECASE,
+)
+
+
+def decode_data_uri(value: str) -> tuple[bytes, str | None]:
+    """
+    Decode a base64 image data URI into raw bytes plus its declared content type.
+
+    The declared type is returned so callers can hand it to `save_image_bytes` instead of
+    assuming the payload matches the output extension.
+    """
+    header = DATA_URI_HEADER.match(value.strip())
+    if not header:
+        raise ValueError("Expected a base64 image data URI (data:image/...;base64,...).")
+
+    params = (header.group("params") or "").lower()
+    if "base64" not in params:
+        raise ValueError("Only base64-encoded image data URIs are supported.")
+
+    payload = "".join(value.strip()[header.end():].split())
+    payload += "=" * (-len(payload) % 4)
+    return base64.urlsafe_b64decode(payload), header.group("mime").lower()
+
+
+def find_data_uri(content) -> str | None:
+    """
+    Return the first base64 image data URI inside a chat completion `content` value.
+
+    OpenAI-compatible gateways differ here: some return a dedicated image field, others
+    inline the image in the message text (often as `![image](data:image/png;base64,...)`)
+    or in a content-part list.
+    """
+    if isinstance(content, str):
+        header = DATA_URI_HEADER.search(content)
+        if not header:
+            return None
+        payload = re.match(r"[A-Za-z0-9+/=_-]*", content[header.end():]).group(0)
+        return content[header.start():header.end()] + payload
+
+    if isinstance(content, list):
+        for part in content:
+            if isinstance(part, dict):
+                nested = part.get("image_url")
+                if isinstance(nested, dict):
+                    nested = nested.get("url")
+                found = find_data_uri(nested if nested else part.get("text"))
+            else:
+                found = find_data_uri(part)
+            if found:
+                return found
+
     return None
 
 

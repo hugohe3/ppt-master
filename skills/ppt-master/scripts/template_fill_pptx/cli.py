@@ -12,6 +12,7 @@ _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from attribution_guard import require_skill_integrity  # noqa: E402
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from pptx_transitions import (  # noqa: E402
     LEGACY_TRANSITION_KEYS,
@@ -153,6 +154,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    require_skill_integrity()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:

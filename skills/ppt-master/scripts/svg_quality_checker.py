@@ -23,6 +23,7 @@ from collections import Counter, defaultdict
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
+from attribution_guard import require_skill_integrity  # noqa: E402
 from console_encoding import configure_utf8_stdio
 from native_payloads import NativePayloadError, hydrate_native_payload_refs
 
@@ -8316,5 +8317,6 @@ def main() -> None:
         sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    require_skill_integrity()
     main()

@@ -51,6 +51,7 @@ from .utils import (
     _extract_inheritable_styles,
     _get_attr,
     _is_unit_axis_reflection,
+    is_picture_effect_carrier,
     parse_svg_length,
     parse_transform_operations,
     parse_transform_matrix,
@@ -860,11 +861,19 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             or elem.get('data-pptx-geometry-kind') == 'custom'
         )
     )
+    logical_picture_effect_group = (
+        filter_id is not None
+        and is_picture_effect_carrier(elem)
+    )
     explicit_native_group = elem.get('data-pptx-object') == 'group'
     if (
         len(child_results) == 1
         and not explicit_native_group
-        and (not should_animate_group or logical_native_shape_group)
+        and (
+            not should_animate_group
+            or logical_native_shape_group
+            or logical_picture_effect_group
+        )
     ):
         if should_animate_group and elem_id:
             shape_match = re.search(r'<p:cNvPr id="(\d+)"', child_results[0].xml)

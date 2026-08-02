@@ -497,19 +497,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     gap: 8px;
     margin: 8px 0 10px;
 }
-.image-strategy-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
-}
-.image-strategy-grid > .font-card:not(.image-strategy-custom-card) {
-    min-width: 0;
-    padding: 10px;
-}
-.image-strategy-grid > .image-strategy-custom-card,
-.image-strategy-grid > .toggle-desc {
-    grid-column: 1 / -1;
-}
+.image-strategy-picker { margin-top: 10px; }
 .image-strategy-preview {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -554,6 +542,7 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 }
 .image-strategy-custom-card {
     background: var(--card);
+    margin-top: 10px;
 }
 .font-sample-heading { font-size: 24px; font-weight: 700; line-height: 1.3; }
 .font-sample-body { font-size: 14px; color: #333; margin-top: 4px; }

@@ -35,6 +35,7 @@ from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
 from config import load_prefixed_env_file
+from slide_roster import discover_slide_svgs
 from tts_backends import (
     backend_cosyvoice,
     backend_edge,
@@ -132,7 +133,7 @@ def _prepare_audio_jobs(
 def _expected_note_roster(project: Path) -> list[NoteRosterEntry]:
     """Resolve the owning route's complete per-slide notes roster."""
     notes_dir = project / "notes"
-    svg_files = sorted((project / "svg_output").glob("*.svg"))
+    svg_files = discover_slide_svgs(project / "svg_output")
     if svg_files:
         aliases: dict[int, list[Path]] = {}
         for path in sorted(notes_dir.glob("*.md")):

@@ -17,7 +17,8 @@ from xml.etree import ElementTree as ET
 scripts = Path("skills/ppt-master/scripts").resolve()
 sys.path.insert(0, str(scripts))
 
-from pptx_to_svg.fill_to_svg import _angle_to_unit_endpoints
+from pptx_to_svg.color_resolver import ColorPalette
+from pptx_to_svg.fill_to_svg import _angle_to_unit_endpoints, resolve_fill
 from svg_quality_checker import SVGQualityChecker
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
@@ -46,7 +47,7 @@ valid = svg(
     <stop offset="0" stop-color="#2563EB"/>
     <stop offset="100%" stop-color="#F97316" stop-opacity="0.4"/>
   </linearGradient>
-  <radialGradient id="radial" cx="0.5" cy="0.5" r="0.5">
+  <radialGradient id="radial" cx="0.25" cy="0.7" r="0.8">
     <stop offset="0" stop-color="#FFFFFF"/>
     <stop offset="1" stop-color="#0F172A"/>
   </radialGradient>
@@ -61,6 +62,66 @@ radial_xml = build_gradient_fill(radial)
 assert '<a:lin ang="0" scaled="1"/>' in linear_xml
 assert '<a:alpha val="40000"/>' in linear_xml
 assert '<a:path path="circle">' in radial_xml
+assert (
+    '<a:fillToRect l="25000" t="70000" r="75000" b="30000"/>'
+    in radial_xml
+)
+radial.set("fx", "0.8")
+radial.set("fy", "0.2")
+focused_xml = build_gradient_fill(radial)
+assert (
+    '<a:fillToRect l="80000" t="20000" r="20000" b="80000"/>'
+    in focused_xml
+)
+native_gradient = ET.fromstring(
+    f'<root xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+    f'{focused_xml}</root>'
+)[0]
+restored = resolve_fill(native_gradient, None)
+assert 'cx="0.5" cy="0.5" r="0.5" fx="0.8" fy="0.2"' in restored.defs[0]
+assert '<a:fillToRect l="80000" t="20000" r="20000" b="80000"/>' in (
+    build_gradient_fill(ET.fromstring(restored.defs[0]))
+)
+radial.set("fx", "0")
+radial.set("fy", "0")
+outside_focus_errors = project_gradient_errors(valid)
+assert any(
+    "must lie within the canonical circle" in error
+    for error in outside_focus_errors
+), outside_focus_errors
+try:
+    build_gradient_fill(radial)
+except ValueError as exc:
+    assert "must lie within the canonical circle" in str(exc)
+else:
+    raise AssertionError("outside radial focus reached DrawingML")
+radial.set("fx", "0.8")
+radial.set("fy", "0.2")
+
+diagnostics = []
+palette = ColorPalette(
+    None,
+    None,
+    strict=False,
+    diagnostic_sink=lambda code, message, fallback: diagnostics.append(
+        (code, message, fallback)
+    ),
+)
+outside_native_xml = focused_xml.replace(
+    'l="80000" t="20000" r="20000" b="80000"',
+    'l="0" t="0" r="100000" b="100000"',
+)
+outside_native_gradient = ET.fromstring(
+    f'<root xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+    f"{outside_native_xml}</root>"
+)[0]
+normalized = resolve_fill(outside_native_gradient, palette)
+assert " fx=" not in normalized.defs[0]
+assert " fy=" not in normalized.defs[0]
+assert any(
+    code == "path-gradient-focus-normalized"
+    for code, _message, _fallback in diagnostics
+)
 
 with tempfile.TemporaryDirectory(prefix="ppt-master-gradient-smoke-") as tmp:
     source = Path(tmp) / "gradient.svg"
@@ -202,9 +263,11 @@ print("Mask and gradient smoke: passed")
 PY
 ```
 
-The three invalid-gradient cases, all three direct mask forms, and a mask
-hidden inside a `data-icon` asset must produce the named shared-validator
-errors in both Checker and direct export. The legal cases must retain stop
-alpha, promote the full-canvas gradient to one native `p:bg`, default an
-unpositioned linear gradient to horizontal, and recover approximately 30
-degrees from the importer's out-of-unit-box endpoint form.
+The three invalid-gradient cases, the outside-circle radial focus, all three
+direct mask forms, and a mask hidden inside a `data-icon` asset must produce
+the named shared-validator errors in both Checker and direct export. The legal
+cases must retain stop alpha, round-trip an in-circle focus, center an imported
+outside-circle focus with a diagnostic, promote the full-canvas gradient to
+one native `p:bg`, default an unpositioned linear gradient to horizontal, and
+recover approximately 30 degrees from the importer's out-of-unit-box endpoint
+form.

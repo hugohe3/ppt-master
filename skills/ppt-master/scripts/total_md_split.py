@@ -29,6 +29,7 @@ import re
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
+from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
@@ -122,7 +123,7 @@ def find_svg_files(project_path: Path) -> list[Path]:
         project_path: Project directory path
 
     Returns:
-        List of SVG files (sorted by filename)
+        List of SVG files in numeric filename order
     """
     svg_dir = project_path / 'svg_output'
 
@@ -130,7 +131,7 @@ def find_svg_files(project_path: Path) -> list[Path]:
         print(f"Error: {svg_dir} directory does not exist")
         return []
 
-    return sorted(svg_dir.glob('*.svg'))
+    return discover_slide_svgs(svg_dir)
 
 
 def parse_total_md(

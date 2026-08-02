@@ -80,7 +80,12 @@
             formula_policy: "Formula rendering policy",
             image_ai_path: "AI image source",
             image_strategy: "Generated image style",
-            image_strategy_empty: "No generated-image style candidates were provided.",
+            image_strategy_empty: "No preset style references are available. You can still use a custom style.",
+            image_strategy_required: "Choose a generated-image preset or describe a custom style.",
+            image_strategy_invalid: "The selected generated-image preset is not available.",
+            image_strategy_select_placeholder: "Choose a generated-image preset…",
+            image_strategy_recommended_group: "Recommended for this deck",
+            image_strategy_all_group: "All preset styles",
             image_strategy_rendering: "Rendering",
             image_strategy_visual: "Visual",
             image_strategy_mood: "Mood",
@@ -234,7 +239,12 @@
             formula_policy: "数式レンダリング方針",
             image_ai_path: "AI画像の生成元",
             image_strategy: "生成画像のスタイル",
-            image_strategy_empty: "生成画像スタイルの候補がまだありません。",
+            image_strategy_empty: "プリセットのスタイル見本を利用できません。カスタムスタイルは引き続き使用できます。",
+            image_strategy_required: "生成画像のプリセットを選ぶか、カスタムスタイルを記述してください。",
+            image_strategy_invalid: "選択した生成画像プリセットは利用できません。",
+            image_strategy_select_placeholder: "生成画像のプリセットを選択…",
+            image_strategy_recommended_group: "この資料へのおすすめ",
+            image_strategy_all_group: "すべてのプリセットスタイル",
             image_strategy_rendering: "レンダリング",
             image_strategy_visual: "ビジュアル",
             image_strategy_mood: "ムード",
@@ -388,7 +398,12 @@
             formula_policy: "公式渲染策略",
             image_ai_path: "生成配图来源",
             image_strategy: "生成图风格",
-            image_strategy_empty: "还没有提供生成图风格候选。",
+            image_strategy_empty: "当前没有可用的预设风格参考，仍可使用自定义风格。",
+            image_strategy_required: "请选择一种生成图预设，或填写自定义风格。",
+            image_strategy_invalid: "所选生成图预设当前不可用。",
+            image_strategy_select_placeholder: "选择生成图预设…",
+            image_strategy_recommended_group: "本项目推荐",
+            image_strategy_all_group: "全部预设风格",
             image_strategy_rendering: "渲染风格",
             image_strategy_visual: "视觉",
             image_strategy_mood: "情绪",
@@ -598,6 +613,7 @@
     var CAT = null;     // catalogs.json — finite option universe
     var REC = null;     // current recommendation stage — AI picks + candidates
     var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
+    var AI_IMAGE_COMPARISON = {};  // /api/ai-image-comparison — preset rendering catalog
     var STATE = {};
     var REC_ALIASES = {
         icons: {
@@ -1343,6 +1359,23 @@
         }).slice(0, 3);
     }
 
+    function imageStrategyCatalogCandidates() {
+        var items = AI_IMAGE_COMPARISON && AI_IMAGE_COMPARISON.rendering;
+        if (!Array.isArray(items)) return [];
+        return items.map(function (item) {
+            return item && item.id ? { rendering: item.id } : null;
+        }).filter(Boolean);
+    }
+
+    function imageStrategySelectableCandidates() {
+        var recommended = imageStrategyRecommendationCandidates();
+        var seen = {};
+        recommended.forEach(function (candidate) { seen[candidate.rendering] = true; });
+        return recommended.concat(imageStrategyCatalogCandidates().filter(function (candidate) {
+            return !seen[candidate.rendering];
+        }));
+    }
+
     function imageStrategyCustomCandidate() {
         var candidate = customCandidateSpec("image_strategy");
         if (!customCandidateBehavior("image_strategy")) {
@@ -1350,10 +1383,9 @@
                 return item && item.rendering === "custom";
             })[0] || {};
         }
-        if (!candidate || typeof candidate !== "object") return null;
+        if (!candidate || typeof candidate !== "object") candidate = {};
         candidate = Object.assign({}, candidate, { rendering: "custom" });
-        var normalized = normalizedImageStrategy(candidate);
-        return String(normalized.behavior || "").trim() ? normalized : null;
+        return normalizedImageStrategy(candidate);
     }
 
     function normalizedImageStrategy(candidate) {
@@ -2374,12 +2406,23 @@
 
         host.appendChild(sec);
 
-        var selIdx = -1;
+        var nameMatch = -1;
+        var signatureMatch = -1;
         var stateSignature = typographySignature(STATE.typography || {});
         if (STATE.typography && STATE.typography.name !== "custom") cands.forEach(function (c, i) {
-            var sameName = (localized(c, "name") || c.name) === STATE.typography.name;
-            if (sameName || typographySignature(c) === stateSignature) selIdx = i;
+            var sameName = [localized(c, "name"), c.name_zh, c.name_en, c.name_ja]
+                .some(function (name) { return name === STATE.typography.name; });
+            if (!sameName && c.name && typeof c.name === "object") {
+                sameName = Object.keys(c.name).some(function (key) {
+                    return c.name[key] === STATE.typography.name;
+                });
+            }
+            if (sameName && nameMatch < 0) nameMatch = i;
+            if (typographySignature(c) === stateSignature && signatureMatch < 0) signatureMatch = i;
         });
+        // Names preserve the selected candidate when several recommendations share
+        // one font stack. Signature matching is only a first-match legacy fallback.
+        var selIdx = nameMatch >= 0 ? nameMatch : signatureMatch;
         if (selIdx >= 0) selectFont(selIdx);
         else if (STATE.typography && STATE.typography.name === "custom") {
             ["heading", "body"].forEach(function (role) {
@@ -2516,8 +2559,13 @@
             visual.innerHTML = "";
             var row = appendImageStrategyPreviews(visual, strategy);
             visual.classList.toggle("image-strategy-preview-empty", !row);
-            if (!row) visual.appendChild(el("div", "toggle-desc", t("image_strategy_no_reference")));
-            title.textContent = strategy.name || t("image_strategy_ai_custom");
+            if (!row) visual.appendChild(el("div", "toggle-desc",
+                strategy.rendering === "custom" ? t("image_strategy_no_reference") :
+                    t("image_strategy_select_placeholder")));
+            title.textContent = strategy.name ||
+                (strategy.rendering === "custom" ? t("image_strategy_ai_custom") :
+                    (strategy.rendering ? comparisonValueLabel("rendering", strategy.rendering) :
+                        t("image_strategy_select_placeholder")));
             var parts = [];
             if (strategy.rendering) {
                 parts.push(t("image_strategy_rendering") + ": " +
@@ -2592,22 +2640,21 @@
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
         strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
-        var strategyGrid = el("div", "font-grid image-strategy-grid");
-        var strategyCands = imageStrategyRecommendationCandidates();
+        var recommendedStrategies = imageStrategyRecommendationCandidates();
+        var strategyCands = imageStrategySelectableCandidates();
+        var hasRecommendedStrategies = recommendedStrategies.length > 0;
         var customStrategy = STATE.image_strategy_custom || imageStrategyCustomCandidate();
+        var presetPicker = el("div", "image-strategy-picker");
+        var presetSelect = el("select", "font-select image-strategy-select");
         var customCard = null;
         var syncCustomStrategy = function () {};
         var selectCustomImageStrategy = function () {};
 
-        function markStrategyCard(selectedCard) {
-            strategyGrid.querySelectorAll(".font-card").forEach(function (card) {
-                card.classList.toggle("selected", card === selectedCard);
-            });
-        }
-
-        function selectImageStrategy(idx, selectedCard) {
+        function selectImageStrategy(idx) {
+            if (!strategyCands[idx]) return;
             STATE.image_strategy = normalizedImageStrategy(strategyCands[idx]);
-            markStrategyCard(selectedCard || strategyGrid.querySelector('[data-strategy-index="' + idx + '"]'));
+            presetSelect.value = String(idx);
+            if (customCard) customCard.classList.remove("selected");
             syncCustomStrategy(false);
             refreshImageStrategyPreview();
         }
@@ -2620,28 +2667,44 @@
             return -1;
         }
 
-        strategyCands.forEach(function (candidate, idx) {
-            var card = el("div", "font-card");
-            card.setAttribute("data-strategy-index", String(idx));
-            var top = el("div", "font-card-head");
-            top.appendChild(el("span", "font-card-name",
-                localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
-            if (candidate.rendering) {
-                top.appendChild(el("span", "font-card-meta",
-                    t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", candidate.rendering)));
+        function strategyOptionLabel(candidate, idx) {
+            var renderingLabel = comparisonValueLabel("rendering", candidate.rendering);
+            var candidateName = localized(candidate, "name") || renderingLabel ||
+                (t("option_prefix") + " " + (idx + 1));
+            return candidateName !== renderingLabel ?
+                candidateName + " · " + renderingLabel : candidateName;
+        }
+
+        function appendStrategyOptions(label, start, end) {
+            if (start >= end) return;
+            var group = document.createElement("optgroup");
+            group.label = label;
+            for (var idx = start; idx < end; idx += 1) {
+                var option = document.createElement("option");
+                option.value = String(idx);
+                option.textContent = strategyOptionLabel(strategyCands[idx], idx);
+                group.appendChild(option);
             }
-            card.appendChild(top);
-            appendImageStrategyPreviews(card, candidate);
-            [
-                ["image_strategy_visual", localized(candidate, "visual")],
-                ["image_strategy_mood", localized(candidate, "mood")]
-            ].forEach(function (row) {
-                if (row[1]) card.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
-            });
-            card.addEventListener("click", function () { selectImageStrategy(idx, card); });
-            strategyGrid.appendChild(card);
+            presetSelect.appendChild(group);
+        }
+
+        var placeholderOption = document.createElement("option");
+        placeholderOption.value = "";
+        placeholderOption.textContent = t("image_strategy_select_placeholder");
+        placeholderOption.disabled = true;
+        placeholderOption.selected = true;
+        presetSelect.appendChild(placeholderOption);
+        appendStrategyOptions(t("image_strategy_recommended_group"), 0, recommendedStrategies.length);
+        appendStrategyOptions(t("image_strategy_all_group"), recommendedStrategies.length, strategyCands.length);
+        presetSelect.disabled = !strategyCands.length;
+        presetSelect.addEventListener("change", function () {
+            selectImageStrategy(parseInt(presetSelect.value, 10));
         });
-        if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
+        presetPicker.appendChild(presetSelect);
+        if (!strategyCands.length) {
+            presetPicker.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
+        }
+        strategySub.appendChild(presetPicker);
 
         if (customStrategy) {
             customStrategy = normalizedImageStrategy(customStrategy);
@@ -2658,7 +2721,8 @@
             ].forEach(function (row) {
                 if (row[1]) customCard.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
             });
-            var customCopy = el("div", "ai-custom-candidate-copy", customStrategy.behavior);
+            var customCopy = el("div", "ai-custom-candidate-copy",
+                customStrategy.behavior || t("image_strategy_custom_placeholder"));
             customCard.appendChild(customCopy);
             var customInput = el("textarea", "text-input image-strategy-custom-input");
             setNaturalInputDirection(customInput);
@@ -2669,7 +2733,7 @@
             customCard.appendChild(customInput);
 
             syncCustomStrategy = function (selected) {
-                customCopy.textContent = customStrategy.behavior || "";
+                customCopy.textContent = customStrategy.behavior || t("image_strategy_custom_placeholder");
                 customCopy.style.display = selected ? "none" : "block";
                 customInput.style.display = selected ? "block" : "none";
                 if (selected && customInput.value !== customStrategy.behavior) {
@@ -2679,7 +2743,8 @@
 
             selectCustomImageStrategy = function () {
                 STATE.image_strategy = normalizedImageStrategy(customStrategy);
-                markStrategyCard(customCard);
+                presetSelect.value = "";
+                customCard.classList.add("selected");
                 syncCustomStrategy(true);
                 refreshImageStrategyPreview();
             };
@@ -2695,9 +2760,8 @@
                 customInput.focus();
             });
             syncCustomStrategy(false);
-            strategyGrid.appendChild(customCard);
+            strategySub.appendChild(customCard);
         }
-        strategySub.appendChild(strategyGrid);
 
         var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
         if (!recommendedIds.length) recommendedIds = [defaultImageUsageId()];
@@ -2748,10 +2812,9 @@
             selectCustomImageStrategy();
         } else if (STATE.image_strategy && imageStrategyCandidateIndex(STATE.image_strategy) >= 0) {
             selectImageStrategy(imageStrategyCandidateIndex(STATE.image_strategy));
-        } else if (strategyCands.length) {
+        } else if (needsGeneratedImagesForUsage(STATE.image_usage) &&
+                hasRecommendedStrategies && strategyCands.length) {
             selectImageStrategy(imageStrategySelectedIndex());
-        } else if (customCard) {
-            selectCustomImageStrategy();
         }
         refreshUsageChips();
         host.appendChild(sec);
@@ -3082,8 +3145,6 @@
             );
         } else if (directionStrategy) {
             STATE.image_strategy = normalizedImageStrategy(directionStrategy);
-        } else if (STATE.image_strategy_custom) {
-            STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy_custom);
         }
     }
 
@@ -3164,6 +3225,24 @@
             document.getElementById("confirm-status").textContent = t("custom_behavior_required");
         }
         return !!valid;
+    }
+
+    function imageStrategyValid(payload) {
+        if (!needsGeneratedImagesForUsage(payload.image_usage)) return true;
+        var imageStrategy = payload.image_strategy || {};
+        var rendering = String(imageStrategy.rendering || "").trim();
+        if (!rendering) {
+            document.getElementById("confirm-status").textContent = t("image_strategy_required");
+            return false;
+        }
+        var presetIds = imageStrategyCatalogCandidates().map(function (candidate) {
+            return candidate.rendering;
+        });
+        if (rendering !== "custom" && presetIds.length && presetIds.indexOf(rendering) < 0) {
+            document.getElementById("confirm-status").textContent = t("image_strategy_invalid");
+            return false;
+        }
+        return true;
     }
 
     function positiveNumber(value) {
@@ -3256,6 +3335,7 @@
     function submitStage2() {
         var payload = stage2Payload();
         if (!imageUsageValid(payload.image_usage)) return;
+        if (!imageStrategyValid(payload)) return;
         if (!designSystemValid(payload)) return;
         if (!customSelectionsValid(payload)) return;
         submitStage(payload, 3);
@@ -3322,6 +3402,7 @@
             payload.image_strategy = normalizedImageStrategy(payload.image_strategy);
         }
         normalizeCreativePayload(payload);
+        if (!imageStrategyValid(payload)) return;
         if (!designSystemValid(payload)) return;
         if (!customSelectionsValid(payload)) return;
         btn.disabled = true;
@@ -3378,6 +3459,11 @@
 
     function loadIconPreviews() {
         return fetchJson("/api/icon-previews", "icon previews")
+            .catch(function () { return {}; });
+    }
+
+    function loadAiImageComparison() {
+        return fetchJson("/api/ai-image-comparison", "AI image comparison")
             .catch(function () { return {}; });
     }
 
@@ -3466,11 +3552,13 @@
         Promise.all([
             loadCatalogs(),
             fetchJson("/api/recommendations", "recommendations"),
-            loadIconPreviews()
+            loadIconPreviews(),
+            loadAiImageComparison()
         ]).then(function (res) {
             CAT = res[0];
             REC = res[1];
             ICON_PREVIEWS = res[2] || {};
+            AI_IMAGE_COMPARISON = res[3] || {};
             if (REC.lang === "zh" || REC.lang === "en" || REC.lang === "ja") {
                 var hasStored = false;
                 try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }

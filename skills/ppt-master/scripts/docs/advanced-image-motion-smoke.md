@@ -12,7 +12,7 @@ The fixture deliberately closes the full planning and execution chain:
 
 - `design_spec.md` carries `Motion suggestion`, `Native shape suggestion`, one
   current §VIII image row, and `Crop Policy`;
-- `spec_lock.md` projects that row with optional layout pattern `#100`;
+- `spec_lock.md` projects that row with optional layout pattern `#M1-11`;
 - both pages reuse one raster through ordinary, ellipse-preset, and custom-path
   independent nested crops;
 - `animations.json` pairs the main crop across adjacent Morph pages;
@@ -130,7 +130,7 @@ preset = (
 
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference | text_policy | page_role |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| scene.png | 1280x720 | 16:9 | Morph crop continuity | Photo | #100 same-source independent crops with a shaped detail | adaptive | user | Existing | Synthetic three-band scene for crop and Morph verification | none | local |
+| scene.png | 1280x720 | 16:9 | Morph crop continuity | Photo | #M1-11 same-source independent crops with a shaped detail | adaptive | user | Existing | Synthetic three-band scene for crop and Morph verification | none | local |
 
 ## IX. Content Outline
 
@@ -194,7 +194,7 @@ preset = (
 - library: none
 - inventory: none
 ## images
-- scene: images/scene.png | source=user | pattern=#100 same-source independent crops with a shaped detail | crop=adaptive
+- scene: images/scene.png | source=user | pattern=#M1-11 same-source independent crops with a shaped detail | crop=adaptive
 ## page_rhythm
 - P01: dense
 - P02: dense

@@ -230,6 +230,7 @@ PROJECT_GRADIENT_TAGS = frozenset({'linearGradient', 'radialGradient'})
 # PPTX angle projection can overshoot a unit box by at most ~0.1036.
 PROJECT_LINEAR_GRADIENT_COORDINATE_MIN = -0.105
 PROJECT_LINEAR_GRADIENT_COORDINATE_MAX = 1.105
+PROJECT_RADIAL_FOCUS_TOLERANCE = 0.00001
 PROJECT_FILTER_PRIMITIVES = frozenset({
     'feDropShadow',
     'feGaussianBlur',
@@ -245,7 +246,13 @@ PROJECT_FILTER_EFFECT_PRIMITIVES = frozenset({
     'feDropShadow',
     'feGaussianBlur',
 })
-PROJECT_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
+PROJECT_FILTER_PUBLIC_TARGETS = frozenset({
+    'rect',
+    'circle',
+    'image',
+    'path',
+    'text',
+})
 _PROJECT_MARKER_NUMBER_TOKEN = (
     r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
 )
@@ -2307,6 +2314,16 @@ def parse_project_linear_gradient_coordinate(raw: str) -> float:
     return number
 
 
+def is_project_radial_focus_point(focus_x: float, focus_y: float) -> bool:
+    """Return whether a focus lies inside the canonical SVG radial circle."""
+    if not math.isfinite(focus_x) or not math.isfinite(focus_y):
+        return False
+    return (
+        (focus_x - 0.5) ** 2 + (focus_y - 0.5) ** 2
+        <= 0.25 + PROJECT_RADIAL_FOCUS_TOLERANCE
+    )
+
+
 def project_gradient_errors(root: ET.Element) -> list[str]:
     """Validate the normalized native gradient authoring interface."""
     errors: set[str] = set()
@@ -2376,6 +2393,7 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                     'point; use different x1/y1 and x2/y2 coordinates'
                 )
         else:
+            radial_coordinates: dict[str, float] = {}
             for coordinate_name in ('cx', 'cy', 'r', 'fx', 'fy'):
                 raw_coordinate = gradient.get(coordinate_name)
                 if raw_coordinate is None:
@@ -2389,8 +2407,34 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
                         f'got {raw_coordinate!r}'
                     )
                     continue
+                radial_coordinates[coordinate_name] = coordinate
                 if coordinate_name == 'r' and coordinate <= 0:
                     errors.add(f'{label} r must be greater than 0')
+            focus_x_name = (
+                'fx' if gradient.get('fx') is not None else 'cx'
+            )
+            focus_y_name = (
+                'fy' if gradient.get('fy') is not None else 'cy'
+            )
+            focus_is_valid = (
+                (
+                    gradient.get(focus_x_name) is None
+                    or focus_x_name in radial_coordinates
+                )
+                and (
+                    gradient.get(focus_y_name) is None
+                    or focus_y_name in radial_coordinates
+                )
+            )
+            if focus_is_valid:
+                focus_x = radial_coordinates.get(focus_x_name, 0.5)
+                focus_y = radial_coordinates.get(focus_y_name, 0.5)
+                if not is_project_radial_focus_point(focus_x, focus_y):
+                    errors.add(
+                        f'{label} effective focus (fx/fy, otherwise cx/cy) '
+                        'must lie within the canonical circle centered at '
+                        f'0.5,0.5 with radius 0.5; got ({focus_x}, {focus_y})'
+                    )
 
         stops: list[ET.Element] = []
         for child in list(gradient):
@@ -2632,10 +2676,17 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         if (
             tag not in PROJECT_FILTER_PUBLIC_TARGETS
             and not _is_imported_preset_preview_filter_target(elem, parents)
+            and not is_picture_effect_carrier(elem)
         ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
-                'rect, circle, path, and text'
+                'rect, circle, image, path, text, and an exact single clipped-'
+                'image carrier group'
+            )
+        if tag == 'image' and elem.get('clip-path') is not None:
+            errors.add(
+                f'{label} cannot combine filter and clip-path on the same '
+                'image; put the filter on an exact single-image outer <g>'
             )
         match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
         if match is None:
@@ -2847,6 +2898,70 @@ def _is_imported_preset_preview_filter_target(
     return (
         expected_hash is not None
         and svg_preset_preview_fingerprint(parent) == expected_hash
+    )
+
+
+def is_picture_effect_carrier(elem: ET.Element) -> bool:
+    """Recognize one effect carrier around exactly one clipped picture."""
+    if (
+        _svg_element_tag(elem) != 'g'
+        or elem.get('data-pptx-object') == 'group'
+        or re.fullmatch(
+            r'url\(#([^)]+)\)',
+            (elem.get('filter') or '').strip(),
+        ) is None
+        or elem.get('data-pptx-layer') not in {None, 'master', 'layout'}
+        or any(
+            elem.get(attribute) is not None
+            for attribute in (
+                'data-pptx-placeholder',
+                'data-pptx-binding',
+                'data-pptx-replace-with',
+                'data-pptx-native',
+            )
+        )
+    ):
+        return False
+    children = [
+        child for child in elem
+        if _svg_element_tag(child) not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+    ]
+    if len(children) != 1:
+        return False
+    picture = children[0]
+    if picture.get('filter') is not None:
+        return False
+    owner_kind = elem.get('data-pptx-object')
+    if _svg_element_tag(picture) == 'image':
+        if resolve_url_id(picture.get('clip-path', '')) is None:
+            return False
+        if owner_kind is None:
+            return True
+        shape_id = elem.get('data-pptx-shape-id')
+        return (
+            owner_kind == 'picture'
+            and shape_id is not None
+            and picture.get('data-pptx-object') == 'picture'
+            and picture.get('data-pptx-shape-id') == shape_id
+        )
+    if (
+        _svg_element_tag(picture) != 'svg'
+        or owner_kind != 'picture'
+        or picture.get('data-pptx-object') != 'picture'
+        or picture.get('viewBox') is None
+        or picture.get('preserveAspectRatio') != 'none'
+    ):
+        return False
+    shape_id = elem.get('data-pptx-shape-id')
+    if (
+        shape_id is None
+        or picture.get('data-pptx-shape-id') != shape_id
+    ):
+        return False
+    crop_children = list(picture)
+    return (
+        len(crop_children) == 1
+        and _svg_element_tag(crop_children[0]) == 'image'
     )
 
 

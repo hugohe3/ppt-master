@@ -510,8 +510,8 @@ def _apply_blip_image_effects(
 ) -> tuple[str, bytes, tuple[PictureDiagnostic, ...]]:
     """Bake supported DrawingML blip effects into extracted image bytes.
 
-    Keeping the SVG as a plain <image> avoids introducing CSS filters that the
-    downstream native PPTX converter cannot reliably map back to DrawingML.
+    Brightness and contrast are pixel operations, not picture-shape
+    shadow/glow effects, so preserve them in the extracted bitmap.
     """
     lum_effects = blip.findall("a:lum", NS)
     if not lum_effects:

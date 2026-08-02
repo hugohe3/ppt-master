@@ -33,6 +33,7 @@ from pptx_to_svg.preset_authoring import (
 )
 
 from ..drawingml.utils import (
+    is_picture_effect_carrier,
     parse_project_geometry_length,
     project_geometry_length_errors,
 )
@@ -1237,15 +1238,21 @@ def _validate_placeholder_carrier(
             f"{svg_path.name}: {element_id} placeholder '{placeholder}' must be "
             "carried by one direct <text> child"
         )
-    if placeholder == "picture" and tag not in {"image", "svg"}:
+    picture_carrier = (
+        tag in {"image", "svg"}
+        or (tag == "g" and is_picture_effect_carrier(carrier))
+    )
+    if placeholder == "picture" and not picture_carrier:
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} picture placeholder must be declared "
-            "with one direct <image> or crop <svg> carrier"
+            "with one direct <image>, crop <svg>, or exact clipped-picture "
+            "effect carrier"
         )
-    if placeholder == "media" and tag not in {"image", "svg"}:
+    if placeholder == "media" and not picture_carrier:
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} media placeholder must be declared "
-            "with one direct <image> or crop <svg> carrier"
+            "with one direct <image>, crop <svg>, or exact clipped-picture "
+            "effect carrier"
         )
     if (
         placeholder == "object"
@@ -1490,6 +1497,7 @@ def parse_template_slide(
             and layer in {"master", "layout"}
             and tag == "g"
             and not _is_authored_preset_atom(elem)
+            and not is_picture_effect_carrier(elem)
         ):
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} is a <g> on the {layer} "

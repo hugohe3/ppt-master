@@ -8,7 +8,10 @@ Technical spec and workflow for adding images to SVG files.
 
 ## Image Resource List Format
 
-Each image carries an `Acquire Via` field plus a status annotation. This file is authoritative for status names and SVG embedding behavior.
+Each image carries an `Acquire Via` field plus a status annotation. This file
+owns status names, resource lifecycle, and embedding workflow;
+[`svg-effects.md`](./svg-effects.md) §6.5 owns native carrier, crop transport,
+and filter/clip contracts.
 
 | Mode | Resource authority and preparation timing |
 |---|---|
@@ -18,7 +21,7 @@ Each image carries an `Acquire Via` field plus a status annotation. This file is
 ```markdown
 | Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
 |----------|------------|---------|------|----------------|-------------|-------------|--------|-----------|
-| team.jpg | 800x600 | Team photo | Photography | `#2 left-third` | adaptive | web | Pending | Diverse engineering team in modern office |
+| team.jpg | 800x600 | Team photo | Photography | `#P1-02 image left, copy right` | adaptive | web | Pending | Diverse engineering team in modern office |
 | formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | no-crop | formula | Rendered | `E = mc^2` |
 ```
 
