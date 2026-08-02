@@ -33,7 +33,7 @@ import tempfile
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
-from project_specs import parse_spec_lock as parse_lock
+from project_management.project_specs import parse_spec_lock as parse_lock
 
 configure_utf8_stdio()
 

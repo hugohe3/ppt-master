@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from slide_roster import discover_slide_svgs
+
 
 class NotesFileReadError(RuntimeError):
     """Report a matched notes file that cannot be decoded or read."""
@@ -52,7 +54,7 @@ def find_svg_files(
         else:
             return [], ''
 
-    return sorted(svg_dir.glob('*.svg')), dir_name
+    return discover_slide_svgs(svg_dir), dir_name
 
 
 def find_notes_files(

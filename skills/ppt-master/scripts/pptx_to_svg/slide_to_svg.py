@@ -772,6 +772,7 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
             ctx.palette,
             id_prefix="fx",
             id_seq=ctx.filter_seq,
+            target_rotation_degrees=node.effective_rotation,
         )
     except ValueError as exc:
         if ctx.strict:
@@ -964,22 +965,40 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
         return ""
     _diagnose_picture_result(ctx, result)
     ctx.media.update(result.media)
-    effect_metadata = unsupported_target_effect_metadata(
+    effect = convert_effects(
         sp_pr,
-        "picture",
+        ctx.palette,
+        id_prefix="fx",
+        id_seq=ctx.filter_seq,
+        target_rotation_degrees=node.effective_rotation,
     )
+    ctx.defs.extend(effect.defs)
+    effect_metadata = dict(effect.metadata)
     _diagnose_unsupported_effect(ctx, effect_metadata)
     clipped_svg = _clip_blip_image(result.svg, geom, ctx)
+    picture_attrs = {**_object_metadata(node, ctx), **effect_metadata}
+    group_attrs = _metadata_group_attrs(effect_metadata)
+    if effect.filter_id is not None:
+        filter_attr = f"url(#{effect.filter_id})"
+        if (
+            clipped_svg.startswith("<svg")
+            or clipped_svg.startswith("<image clip-path=")
+        ):
+            # Keep the effect outside the crop viewport so shadows and glows
+            # remain visible beyond the picture geometry in SVG previews.
+            group_attrs.append(f'filter="{filter_attr}"')
+        else:
+            picture_attrs["filter"] = filter_attr
     picture_svg = _inject_root_svg_attrs(
         clipped_svg,
-        {**_object_metadata(node, ctx), **effect_metadata},
+        picture_attrs,
     )
     return _wrap_shape_group(
         picture_svg,
         node,
         ctx,
         top_level=top_level,
-        extra_attrs=_metadata_group_attrs(effect_metadata),
+        extra_attrs=group_attrs,
     )
 
 

@@ -81,6 +81,8 @@ def main(argv: list[str] | None = None) -> int:
     scripts.discard("svg_to_pptx/pptx_cli.py")
     scripts.discard("svg_to_pptx/pptx_package/cli.py")
     scripts.discard("template_fill_pptx/cli.py")
+    scripts.discard("project_management/cli.py")
+    scripts.discard("svg_quality/cli.py")
 
     if not os.path.exists(CLI_FILE):
         print(f"ERROR: cli.py not found at {CLI_FILE}", file=sys.stderr)

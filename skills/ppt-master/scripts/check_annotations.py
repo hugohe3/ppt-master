@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Optional
 
 from console_encoding import configure_utf8_stdio
+from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
 
@@ -65,7 +66,7 @@ def scan_directory(dir_path: Path) -> dict[str, list[dict]]:
         return {}
 
     results = {}
-    for svg_file in sorted(svg_dir.glob('*.svg')):
+    for svg_file in discover_slide_svgs(svg_dir):
         annotations = scan_svg_file(svg_file)
         if annotations:
             results[svg_file.name] = annotations

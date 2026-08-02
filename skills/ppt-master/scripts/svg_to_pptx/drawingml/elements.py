@@ -4350,6 +4350,13 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Resolve clip-path → DrawingML geometry
     clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
+    effect_xml = ''
+    filter_id = get_effective_filter_id(elem, ctx)
+    if filter_id and filter_id in ctx.defs:
+        effect_xml = build_effect_xml(
+            ctx.defs[filter_id],
+            get_element_opacity(elem, ctx),
+        )
 
     # Resolve preserveAspectRatio="<align> slice" as DrawingML crop metadata.
     # Image optimization only downscales the full source image; it never crops
@@ -4419,6 +4426,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <a:xfrm{xfrm_attr}><a:off x="{off_x}" y="{off_y}"/>
 <a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
 {clip_geom}
+{effect_xml}
 </p:spPr>
 </p:pic>''', bounds_emu=bounds_emu)
 
@@ -4987,6 +4995,13 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
             svg_w,
             svg_h,
         )
+    effect_xml = ''
+    filter_id = get_effective_filter_id(elem, ctx)
+    if filter_id and filter_id in ctx.defs:
+        effect_xml = build_effect_xml(
+            ctx.defs[filter_id],
+            get_element_opacity(elem, ctx),
+        )
     blip_xml = _build_image_blip_xml(
         r_id,
         get_element_opacity(image_elem, ctx),
@@ -5006,5 +5021,6 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
 <a:xfrm{xfrm_attr}><a:off x="{off_x}" y="{off_y}"/>
 <a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
 {clip_geom}
+{effect_xml}
 </p:spPr>
 </p:pic>''', bounds_emu=bounds_emu)

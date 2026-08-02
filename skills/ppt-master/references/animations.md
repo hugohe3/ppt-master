@@ -322,7 +322,7 @@ Morph tweens objects it can match across consecutive slides. That makes it a gen
 | Object rotates | Flip, turn, hinge |
 | Image container scales up | Camera push-in |
 | Scrim opacity drops, or a cut contour grows | Progressive reveal |
-| Same wide image at two `x` offsets | Camera pan (see image-layout-patterns `#87`) |
+| Same wide image at two `x` offsets | Camera pan (see image-layout-patterns `#C2-01`) |
 
 Chain three or more pages to build a sequence — extend, hold, retract — where each page is still an ordinary editable slide.
 
@@ -345,7 +345,7 @@ that attribute remains importer metadata for mirror/preserve packages
 
 **Not supported — Slide Zoom / Summary Zoom.** Click-to-jump navigation built on PowerPoint's Zoom objects (the "click a portrait, zoom into that section" pattern) has no exporter path. Build click-driven navigation with `trigger_shape` on ordinary object animations instead, or with plain hyperlinks.
 
-**No 3D**: perspective rotation, extrusion, and shear are outside the SVG contract — `skewX` / `skewY` and shear matrices fail closed ([`svg-effects.md`](./svg-effects.md) §6.8). Build the same impression with 2D means — offset, scale, overlap, and per-facet lightness (image-layout-patterns `#91`) — rather than attempting a 3D tilt.
+**No 3D**: perspective rotation, extrusion, and shear are outside the SVG contract — `skewX` / `skewY` and shear matrices fail closed ([`svg-effects.md`](./svg-effects.md) §6.8). Build the same impression with 2D means — offset, scale, overlap, and per-facet lightness — rather than attempting a 3D tilt.
 
 ---
 
@@ -353,9 +353,13 @@ that attribute remains importer metadata for mirror/preserve packages
 
 Off by default — enable deck-wide with `-a auto` (or another effect). Once enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
-- **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals. Forbidden with `--recorded-narration` because video-ready exports need click-free playback.
-- **`with-previous`** — all groups start together on slide entry, playing their object animation in parallel. Stagger ignored.
-- **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
+- **`on-click`** — each click reveals the next group. Use only for a controlled semantic reveal; live delivery alone is insufficient. Forbidden with `--recorded-narration`.
+- **`with-previous`** — groups start together as one coordinated beat. Stagger ignored.
+- **`after-previous`** (default) — click-free cascade on slide entry with `--animation-stagger` spacing. Use when controlled reveals are unnecessary.
+
+**Default — coherent Start rhythm (may override when a semantic beat needs
+different control)**: Keep one dominant deck rhythm and normally one mode per
+slide. Mix only for a distinct simultaneous or presenter-controlled beat.
 
 Enable with `-a auto`, select a canonical effect with
 `--animation entrance_fade`, and choose Start behavior with
@@ -378,9 +382,10 @@ matching lifecycle instead.
 | `move` | state/position A → progress → state/position B | The trajectory carries spatial or causal meaning, or §4.1 adopts subordinate ambient motion; use Morph for cross-page continuity | Explicit `path_*`, or endpoint pages + Morph |
 | `exit` | present → retire → absent | The same slide must remove, replace, or make room for content; an ordinary page change needs no object exit | Explicit `exit_*` |
 
-Entrance is the common opt-in family for staged information, not a deck or
-category quota. A unit may use several ordered `effects[]` rows only when it
-has several real lifecycle duties.
+**Default — restrained entrance-led choreography (may override for content,
+tone, or the request)**: Use entrances for ordinary builds. Add emphasis or
+exit sparingly, only for a real duty and fitting effect. Multiple `effects[]`
+rows require multiple duties.
 
 The registry exposes two layers:
 
@@ -451,7 +456,7 @@ context.
 Keep a full-bleed moving image covering the canvas at both endpoints; exposing
 the slide beneath it is a visible failure.
 
-It pairs naturally with a fixed foreground: with image-layout-patterns `#90`, the scrim and its cut contour stay locked while the world moves behind the cuts, which reads as looking through windows rather than as a sliding photo. The same logic applies to `#82` and `#12`.
+It pairs naturally with a fixed foreground: with image-layout-patterns `#M1-07`, the scrim and its cut contour stay locked while the world moves behind the cuts, which reads as looking through windows rather than as a sliding photo. The same logic applies to `#M1-10` and `#P1-09`.
 
 Motion remains subordinate: avoid competing ambient paths or movement that
 reduces the readability of body copy or data. Multiple coordinated layers are
@@ -464,7 +469,7 @@ mechanisms already defined above — none needs a new capability.
 
 **Carousel** (Morph, §2.1 and §3.1) — hold a fixed row of card frames and rotate the *content* through them: on each page every image advances one position, so the card at centre changes while the frames stay put. Explicitly pair each moving content unit across adjacent pages; the fixed frames stay static and need no pair. Scales to any number of images with one page each.
 
-**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#95`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. A small stagger, such as `0.1s`, can make digit columns settle in sequence; synchronized motion is also valid when it fits the intended rhythm.
+**Odometer / counting numerals** (morph or motion path) — build a vertical strip of digits 0–9 and show one through a fixed window formed by background-filled rectangles above and below ([`image-layout-patterns.md`](./image-layout-patterns.md) `#M1-08`). Shift the strip so the target digit lands in the window, then either morph between two pages or run a `path_up` motion on the strip. A small stagger, such as `0.1s`, can make digit columns settle in sequence; synchronized motion is also valid when it fits the intended rhythm.
 
 **Parallax depth** (morph) — move a background layer a *short* distance and a foreground layer a longer one between two pages. The differing travel is read as depth. Keep both layers' z-order identical on both pages; a layer that changes stacking between pages breaks the tween and the transition jumps.
 

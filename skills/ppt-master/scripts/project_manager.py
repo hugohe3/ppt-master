@@ -27,6 +27,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
+from attribution_guard import require_skill_integrity  # noqa: E402
 from console_encoding import configure_utf8_stdio
 
 try:
@@ -1234,4 +1235,5 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    require_skill_integrity()
     raise SystemExit(main())

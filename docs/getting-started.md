@@ -74,7 +74,7 @@ Before it starts, the AI confirms a short design spec (template, format, page co
 
 ## Live preview & visual edits
 
-A browser preview opens at `http://localhost:5050` while the deck is being generated.
+A browser preview opens at the URL reported by the launcher while the deck is being generated. It prefers `http://localhost:5050` and uses the next free port when `5050` is occupied.
 
 - **Watch pages render live** as the AI produces them.
 - **Edit directly, no AI** — select an element to change its text, color, font, or size in the side panel; drag it to reposition, or nudge with the arrow keys (`Shift` = 10px). `Ctrl+Z` undoes. Edits preview instantly and write to `svg_output/` when you click **Apply changes**.

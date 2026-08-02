@@ -212,7 +212,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Family selection**:
 
-- User/template typography is authoritative. When it fixes the stacks, repeat them and set `typography.fixed: true` on every Stage-2 direction. Otherwise ≥3 directions use different concrete heading/body combinations spanning concord and contrast; no extra font round.
+- User/template typography is authoritative. Repeat fixed stacks with `typography.fixed: true` in every direction; never vary them for diversity. Keep ≥3 directions distinct as full bundles; reasonable font repetition is non-blocking, with no extra font round.
 - Every Stage-2 direction carries `heading` / `body` `primary`, `css`, and positive `body_size`; add `english` only when the deck's main language is not English.
 - Use concrete, target-installed PowerPoint faces. The Confirm UI font catalog supplies additional manual dropdown choices, not a recommendation whitelist.
 - Keep stacks to four families or fewer. A brand/web face may lead only after user-confirmed target installation/approved install; PPT Master does not embed fonts. Otherwise export a safe face and keep the unavailable face as Design Spec reference.
@@ -266,7 +266,7 @@ Formula policy and formula-asset planning are conditional. If the source contain
 **Conditional module — two-stage trigger**:
 
 1. First derive the proposed `recommend.image_usage` in core. If it contains any non-`none` source—especially `ai`—read [`strategist-image.md`](./strategist-image.md) **before authoring the Stage-2 design directions** so rendering and other image-dependent candidate details are real, not backfilled after confirmation. An explicit non-`none` image constraint or the formula trigger from §g activates the module at the same point.
-2. After confirmation, the confirmed value is the production boundary. A confirmed non-`none` set continues into resource planning; confirmed `none` with no formula trigger skips all downstream image rows even if the proposed recommendation had loaded the module.
+2. Confirmed sources bound production. Non-`none` loads or retains [`strategist-image.md`](./strategist-image.md) for resource planning without backfilling candidates; `none` without formulas writes no image rows.
 
 The module owns formula policy, AI rendering alternatives, acquisition paths, resource rows, prompt depth, page roles, and placement intent.
 
@@ -407,6 +407,16 @@ Lock the stable role set the deck needs, including recurring neutrals such as `s
 | Parallel sequence | three-column, process line, or Z-pattern |
 | Core + surrounding forces | center-radiating or hub-spoke |
 | Wide visual + explanation | top-bottom split |
+
+**Default — define one cross-page visual motif when it can carry identity or
+meaning (may omit when restraint serves the deck better)**: after the complete
+§IX roster and planned visual resources are known, choose or inherit one reusable
+page-scale geometry or material gesture—such as a directional contour, opening,
+line lattice, or oversized numeral. Fold its recognizable invariant and allowed
+variation (scale, crop, density, position, content interaction) into the
+existing §III `Theme`, and mention it only in §IX `Layout` blocks that use it.
+Vary it by page role instead of copying one ornament; create no motif field or
+lock row. This is a continuity Reference, not a decoration quota.
 
 On PPT 16:9, start from a 1200×640 safe area with 40px outer margins, then adapt to content. Template workspaces may supply different geometry; when active, [`strategist-template.md`](./strategist-template.md) owns precedence.
 

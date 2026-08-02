@@ -27,11 +27,12 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 
 ## 1. Effect Capability Discovery
 
-**Mandatory — select by visual job**: before authoring each page, run the
-already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure and use its
-§6.13 scenario routing. The catalog expands construction vocabulary; it does
-not create an effect quota. Active cross-page continuous action additionally
-loads [`animations.md`](./animations.md) §3.1 before authoring both endpoints.
+**Mandatory — select by visual job**: establish each page's semantic skeleton,
+then run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 procedure
+and Visual Job Router before finalizing; use §6.13 for a coordinated page
+recipe when useful. The catalog expands construction vocabulary; it creates no
+effect quota. Active cross-page continuous action additionally loads
+[`animations.md`](./animations.md) §3.1 before authoring both endpoints.
 
 **Hard rule — discovery does not expand compatibility**: Follow
 `svg-effects.md` syntax and fallbacks; unsupported source/backdrop blur, blend
@@ -142,6 +143,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Generation rhythm**: P01 → first-page gate → uninterrupted remaining pages → final gate, in one context without batches or mid-run checker calls.
 - **Fact provenance**: when a §IX page lists `Fact IDs`, resolve each ID from `sources/*.facts.json` and keep the claim/value unchanged. Render a compact source footnote using the source name and a short URL/domain when space permits; when speaker notes are enabled, state the attribution naturally there too. When §IX says `Data class: scenario`, place a visible localized `Scenario data` / `情景数据` label adjacent to the affected KPI/chart and, when notes are enabled, state naturally there that the number is illustrative. Never attach an external fact ID to scenario data or let an unlabeled invented KPI look factual.
 - **Default — stage each page with the style's composition geometry (may override when the content genuinely calls for a plain grid)**: an SVG page is a canvas, not a DOM. Before defaulting to stacked rounded-rect cards or uniform equal columns, pick one page-scale move from the locked visual style's §1 `Composition geometry` (a bleed shape, diagonal split, oversized numeral, orbit rings, …) to stage the page's primary zone. Card grids are one option among many, not the house layout.
+- **Default — vary a planned deck motif instead of cloning it (may omit where it has no page job)**: when §III `Theme` names a cross-page motif, use the current §IX `Layout` to preserve its recognizable contour, direction, material, or relationship while varying scale, crop, density, position, and content interaction by page role. Apply it only where it supports hierarchy or continuity; do not paste identical ornament or invent a second recurring identity.
 - **Containers are structural**: cards and grids express grouping, hierarchy, or capacity, not a house style. Preserve meaningful template frames; restyle radius, fill, stroke, and depth from the active Design Spec and `spec_lock.md`. Chart-catalog adaptation is owned by [`executor-chart.md`](./executor-chart.md); preview effects never override project styling or structural roles.
 - **Reference — prefer semantic geometry over preset stacks**: for relationships such as ascending, converging, breaking through, or stacking, first seek a basic primitive, one exact preset, or a clear Boolean result. Only when none can faithfully express the relationship should one page-specific polygon/path replace a stack of generic arrows.
 - **Reference — create depth with restraint**: use rhythm, spacing, typography, accent bars, and subtle tints before shadows. Reserve lift for a few genuinely floating elements; keep peer grids, dividers, and body containers flat.
@@ -221,9 +223,7 @@ redirect, loop, or batch helper output into `svg_output/`.
 
 ### SVG File Naming Convention
 
-Format: `<NN>_<page_name>.svg` (two-digit number from 01; name matches the deck's language and the page title in the Design Spec).
-
-Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.svg` / `02_agenda.svg` / `03_key_benefits.svg`.
+Format: `<index>_<page_name>.svg`. Use one roster-wide zero-padded index width sized for the Design Spec §IX roster, such as `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`; match the deck language and page title.
 
 ---
 

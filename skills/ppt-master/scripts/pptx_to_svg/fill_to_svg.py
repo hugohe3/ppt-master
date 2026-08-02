@@ -43,6 +43,7 @@ _OOXML_PERCENT_LITERAL_RE = re.compile(
 _OOXML_FULL_CIRCLE = 360 * ANGLE_UNIT
 _OOXML_PERCENTAGE_MIN = Decimal(-(2**31)) / Decimal(PERCENT_UNIT)
 _OOXML_PERCENTAGE_MAX = Decimal(2**31 - 1) / Decimal(PERCENT_UNIT)
+_SVG_RADIAL_FOCUS_TOLERANCE = Decimal(1) / Decimal(PERCENT_UNIT)
 _DRAWINGML_FILL_NAMES = (
     "noFill",
     "solidFill",
@@ -260,11 +261,46 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     elif rad is not None:
         _validate_path_gradient_structure(rad)
         _validate_path_gradient_type(rad)
-        _validate_path_gradient_focus(rad)
+        focus = _validate_path_gradient_focus(rad)
+        focus_attrs = ""
+        if focus is not None:
+            focus_x = focus["l"]
+            focus_y = focus["t"]
+            point_focus = (
+                focus_x + focus["r"] == Decimal(1)
+                and focus_y + focus["b"] == Decimal(1)
+                and Decimal(0) <= focus_x <= Decimal(1)
+                and Decimal(0) <= focus_y <= Decimal(1)
+                and (
+                    (focus_x - Decimal("0.5")) ** 2
+                    + (focus_y - Decimal("0.5")) ** 2
+                    <= Decimal("0.25") + _SVG_RADIAL_FOCUS_TOLERANCE
+                )
+            )
+            if (
+                point_focus
+                and (
+                    focus_x != Decimal("0.5")
+                    or focus_y != Decimal("0.5")
+                )
+            ):
+                focus_attrs = (
+                    f' fx="{format_ooxml_unit_ratio(float(focus_x))}"'
+                    f' fy="{format_ooxml_unit_ratio(float(focus_y))}"'
+                )
+            elif not point_focus and palette is not None:
+                palette._diagnose(
+                    "path-gradient-focus-normalized",
+                    "DrawingML path gradient focus is not one point within "
+                    "the canonical SVG radial circle",
+                    "center the radial gradient while preserving its stops",
+                )
         # Treat as radial regardless of path="circle" / "rect" / "shape" — SVG
-        # only has circle/ellipse, and path="circle" maps to fillToRect=center.
+        # only has circle/ellipse. Point-style fillToRect retains its focus;
+        # the outer center and radius remain normalized.
         defs_xml = (
-            f'<radialGradient id="{grad_id}" cx="0.5" cy="0.5" r="0.5">'
+            f'<radialGradient id="{grad_id}" cx="0.5" cy="0.5" '
+            f'r="0.5"{focus_attrs}>'
             + "".join(stops_xml)
             + "</radialGradient>"
         )
@@ -459,18 +495,25 @@ def _validate_gradient_tile_rect(gradient: ET.Element) -> None:
             )
 
 
-def _validate_path_gradient_focus(path: ET.Element) -> None:
-    """Validate the focus rectangle normalized by the radial approximation."""
+def _validate_path_gradient_focus(
+    path: ET.Element,
+) -> dict[str, Decimal] | None:
+    """Validate and return one path-gradient focus rectangle."""
     focus_rects = path.findall("a:fillToRect", NS)
     if len(focus_rects) > 1:
         raise ValueError(
             "DrawingML path gradient must contain at most one fillToRect"
         )
-    if focus_rects:
-        _relative_rect_values(
-            focus_rects[0],
-            label="path gradient fillToRect",
-        )
+    if not focus_rects:
+        return None
+    values = _relative_rect_values(
+        focus_rects[0],
+        label="path gradient fillToRect",
+    )
+    return {
+        edge: values.get(edge, Decimal(0))
+        for edge in ("l", "t", "r", "b")
+    }
 
 
 def _relative_rect_values(

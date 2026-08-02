@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 from console_encoding import configure_utf8_stdio
+from slide_roster import discover_slide_svgs
 from svg_to_pptx.canvas_contract import (
     CanvasContractError,
     parse_project_viewbox,
@@ -222,7 +223,7 @@ def get_project_info(project_path: str) -> Dict:
     # Count SVG files
     svg_output = project_path / 'svg_output'
     if svg_output.exists():
-        svg_files = sorted(svg_output.glob('*.svg'))
+        svg_files = discover_slide_svgs(svg_output)
         info['svg_count'] = len(svg_files)
         info['svg_files'] = [f.name for f in svg_files]
 

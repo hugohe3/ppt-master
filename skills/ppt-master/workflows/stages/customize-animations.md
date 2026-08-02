@@ -190,12 +190,12 @@ deck-wide transition review.
 | Page animation defaults | `defaults.animation` or `slides.<slide>.animation` | Control the default object-animation behavior for animated groups on a slide |
 | Object lifecycle | `slides.<slide>.groups.<group_id>` | Assign one legacy effect row or an ordered `effects[]` sequence to a real SVG motion unit |
 
-**Per-affected-page motion brief**: decide what communication job the requested
-motion should perform—or that it should perform none. Classify the relevant
-motion units by lifecycle before choosing effects, then select only the
-relevant transition, object effects, order, and timing. Use
-`design_spec.md` for slide role, `spec_lock.md` for rhythm and visual style,
-speaker notes for narration order, and SVG group ids for target validity.
+**Per-affected-page motion brief**: classify the communication job—including
+none—and each unit's lifecycle. Choose only the required transition, effect,
+order, timing, and one dominant Start rhythm; mix modes or add emphasis and
+exit only for a distinct job with a restrained, fitting effect. Read
+`design_spec.md`, `spec_lock.md`, speaker notes, and SVG group ids for role,
+rhythm, order, and target validity.
 
 **Mandatory — select from meaning, not catalog coverage**: run the
 page-relationship and lifecycle selection playbooks in
@@ -296,9 +296,9 @@ entrance treatment is sufficient.
 
 | Trigger | Behavior |
 |---|---|
-| `after-previous` | Cascade automatically on slide entry |
-| `with-previous` | Start together on slide entry |
-| `on-click` | One presenter click per animated group |
+| `after-previous` | Default click-free cascade |
+| `with-previous` | One coordinated beat together |
+| `on-click` | Controlled semantic reveal |
 
 ---
 

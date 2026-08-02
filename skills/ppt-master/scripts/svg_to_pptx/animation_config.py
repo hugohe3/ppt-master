@@ -29,6 +29,7 @@ from pptx_transitions import (
     normalize_transition_effect_request,
     validate_seconds,
 )
+from slide_roster import discover_slide_svgs
 
 from .drawingml.utils import SVG_NS
 from .pptx_package.narration import AUDIO_CONTENT_TYPES
@@ -198,7 +199,7 @@ def scan_project_targets(
         svg_dir = project_path / 'svg_output'
         if not svg_dir.is_dir():
             return targets_by_slide, [f'svg_output directory not found: {svg_dir}']
-        svg_files = sorted(svg_dir.glob('*.svg'))
+        svg_files = discover_slide_svgs(svg_dir)
 
     for svg_path in svg_files:
         targets, anonymous = scan_svg_targets(svg_path)
