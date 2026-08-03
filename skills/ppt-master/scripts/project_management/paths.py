@@ -8,7 +8,7 @@ Usage:
     Import the required path constants from project_management.paths.
 
 Examples:
-    from project_management.paths import PROJECTS_ROOT, SCHEMA_DIR
+    from project_management.paths import projects_root, SCHEMA_DIR
 
 Dependencies:
     None (only uses the standard library)
