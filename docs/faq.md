@@ -201,29 +201,45 @@ A typical 10–15 page presentation takes about **10–20 minutes** with a fast 
 
 If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
 
-## Q: Can I generate directly without the Strategist phase?
+If what you want is less process rather than a different model, explicitly ask
+for quick generation: it skips the Strategist analysis and the confirmation
+stop, so the planning phase costs nothing, but per-page SVG authoring takes the
+same time. See the next question, "I don't want to confirm a design spec first
+— can I generate directly?".
 
-Yes. Explicitly request **quick generation**. The Generate route then uses the
-[`quick-generate` profile](../skills/ppt-master/workflows/profiles/quick-generate.md):
-source conversion and research for identified factual gaps still run when
-needed, but the current agent decides the content, page structure, visual
-system, and resource roster in active context without invoking Strategist,
-confirmation, `design_spec.md`, or `spec_lock.md`. It also skips
-`finalize_svg.py`, so Quick creates no `svg_final/` preview.
+## Q: I don't want to confirm a design spec first — can I generate directly?
 
-The profile still prepares every resource the deck needs: supplied or extracted
-images, AI/web/sliced images, project icons, rendered formulas, and the required
-manifests or provenance records. After preparation, the current agent
-hand-authors `svg_output/` to the shared standards, runs the lockless Quick final
-quality checker, fixes every blocking error, and only then exports the final
-PPTX. Ordinary exporter capabilities remain available as needed, including
-native chart/table replacement, notes, motion, narration, and diagnostics.
-Notes, custom object animation, and narration start off; the agent may enable
-them when the request or deck needs them, without opening a confirmation flow.
-A default-path export writes the normal postflight report and snapshots
+Yes. Explicitly request **quick generation**, and the Generate route uses the
+[`quick-generate` profile](../skills/ppt-master/workflows/profiles/quick-generate.md).
+
+**What it skips is the Strategist analysis, the `design_spec.md` /
+`spec_lock.md` artifacts, and the staged confirmation stop: whatever you state
+explicitly is followed, and whatever you leave unspecified the current agent
+decides directly and continues, without coming back for approval.** State
+nothing, and the agent decides everything. It also skips `finalize_svg.py`, so
+Quick creates no `svg_final/` preview.
+
+It does not skip preparation. Source conversion, research on identified factual
+gaps, and every resource the deck needs still run when required: supplied or
+extracted images, AI/web/sliced images, project icons, rendered formulas, and
+the required manifests or provenance records. If a required asset is not ready,
+it still stops and asks you for it instead of substituting unrelated material.
+After preparation, the current agent hand-authors `svg_output/` to the shared
+standards, runs the lockless Quick final quality checker, fixes every blocking
+error, and only then exports the final PPTX.
+
+Ordinary exporter capabilities remain available as needed, including native
+chart/table replacement, notes, motion, narration, and diagnostics. Notes,
+custom object animation, and narration start off; the agent may enable them when
+the request or deck needs them, without opening a confirmation flow. A
+default-path export writes the normal postflight report and snapshots
 `svg_output/` under `backup/`; an explicit output path keeps the ordinary
 no-backup behavior. Page count alone neither activates nor blocks quick
-generation. This is a planning shortcut, not a wall-clock or
+generation.
+
+Because the whole planning phase no longer happens, token usage is materially
+lower than the default flow; per-page SVG authoring is the dominant cost of a
+run and it does not shrink. So this is a planning shortcut, not a wall-clock or
 default-quality-equivalence promise.
 
 ## Q: Will long decks blow out the context window in one shot?
