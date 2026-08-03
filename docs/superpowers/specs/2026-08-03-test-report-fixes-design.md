@@ -33,7 +33,7 @@ P2（门禁内容问题）与 P3（PowerShell 编码注意事项）为质量基�
 
 ### 3.1 启动 token 身份凭证
 
-- 启动器（`_launch_background_server` / svg 对应启动函数）每次生成随机 token（`uuid.uuid4().hex`）
+- confirm_ui：启动器 `_launch_background_server`；svg_editor：daemon 启动逻辑**内联在 `main()` 的 `args.daemon` 分支**（约 1281-1301 行 cmd 构建与 `_popen_detached` 调用之间），无独立启动函数——两处都生成随机 token（`uuid.uuid4().hex`）
 - 通过环境变量 `PPT_MASTER_LAUNCH_TOKEN` 传给 detached 子进程（`_popen_detached` 的 `env` 参数）
 - **env 必须基于 `os.environ.copy()` 合并**：`subprocess.Popen(env=...)` 是整体替换而非合并，只传 token 会丢失 PATH/系统环境导致子进程无法启动
 - 子进程 `/api/health` 响应新增 `launch_token` 字段（`os.environ.get('PPT_MASTER_LAUNCH_TOKEN')`）
@@ -44,6 +44,7 @@ P2（门禁内容问题）与 P3（PowerShell 编码注意事项）为质量基�
 - `Path(...).resolve()` 规范化后比较；Windows 上（`os.name == 'nt'`）再 `casefold()`
 - 替代原 `str(project_path)` 精确比较
 - 三个文件（confirm_ui / svg_editor / visual_review）统一采用同一比较逻辑
+- **visual_review.py 细节**：`check_server(server_url, project_path)` 中 `expected_project = str(project_path)`（245 行）——`project_path` 由调用方传入（lock 记录或命令行参数），可能未经 resolve。修复时在 `check_server` 内部先 `project_path = project_path.resolve()` 再比较（或直接 `expected_project = str(Path(project_path).resolve())`），与服务端返回的 resolve 后路径对齐
 
 ### 3.3 pid 降级为诊断
 
@@ -125,10 +126,10 @@ def projects_root() -> Path:
     env = os.environ.get("PPT_MASTER_PROJECTS")
     if env:
         return Path(env).expanduser().resolve()
-    return Path.cwd() / "projects"
+    return (Path.cwd() / "projects").resolve()
 ```
 
-`PROJECTS_ROOT` 常量删除，改为函数。`REPO_ROOT` 保留（`project_management/cli.py:45` 依赖它作子进程 cwd）。
+两个分支都 `.resolve()`，保证返回绝对规范化路径（Windows 下统一为系统实际大小写）。`REPO_ROOT` 保留（`project_management/cli.py:45` 依赖它作子进程 cwd）。
 
 ### 6.2 使用点接入（清单已核实）
 
@@ -165,12 +166,18 @@ def projects_root() -> Path:
 ### 7.1 sync-upstream.md 调整
 
 - Step 3 新增「**fork 修改文件清单**」小节：列出上述 6 文件，策略改为「保留 fork 的 Windows/uvx 适配（token 校验、`PPT_MASTER_PROJECTS`、规范化路径比较），合入上游功能改动」，注明每个文件的关键适配点
-- Step 4a 扫描命令补充 `python3 ${SKILL_DIR}/scripts/` 模式
+- Step 4a 扫描命令补全 `${SKILL_DIR}` 模式（当前 `rg -g '*.md' 'python3 (scripts/|skills/)' .` 不匹配该形式）：
+
+  ```bash
+  rg -g '*.md' -e 'python3 (scripts/|skills/)' -e 'python3 \$\{SKILL_DIR\}/scripts/' .
+  ```
+
 - Step 4e 门禁追加「fork 适配完整性检查」：grep 验证 `PPT_MASTER_LAUNCH_TOKEN`、`PPT_MASTER_PROJECTS` 等适配标记仍存在于对应文件
 
 ### 7.2 sync-upstream.yml 调整
 
 - schedule 与 manual 两个 prompt 追加「fork 适配完整性门禁」：合并后 grep 验证适配标记仍在；缺失则回退修复再提交（与现有 guard 门禁并列）
+- 两个 prompt 中的 python3 扫描命令同步追加 `${SKILL_DIR}` 模式（同 7.1）
 - 确认 `ALIASES` 字典（cli.py，fork 独有文件）仍在
 
 ### 7.3 发布链核查结论
@@ -179,7 +186,7 @@ def projects_root() -> Path:
 |--------|------|
 | auto-tag.yml Gate 0（版本一致） | bump 0.1.72 两处同步即可 |
 | auto-tag.yml Gate 1（check_cli_sync） | 别名在独立 ALIASES，不影响；双 cli.py 同步 |
-| auto-tag.yml Gate 2/3（python3/uv run 残留） | **Gate 2 grep 追加 `python3 ${SKILL_DIR}/scripts/` 模式**，与 4.3 修复及 7.1 Step 4a 对称（否则 auto-fix 漏网的 `${SKILL_DIR}` 形式无法被发布门禁捕获）；文档措辞避免 python3 模式 |
+| auto-tag.yml Gate 2/3（python3/uv run 残留） | **Gate 2 追加 `${SKILL_DIR}` 模式**，与 4.3 修复及 7.1 Step 4a 对称（否则 auto-fix 漏网的 `${SKILL_DIR}` 形式无法被发布门禁捕获）。精确命令（bash 单引号下 `$`/`{` 为字面量，`-E` 下仍需 `\$`/`\{` 转义防歧义）：`grep -rn -E --include='*.md' 'python3 (skills/ppt-master/scripts/|\$\{SKILL_DIR\}/scripts/)' skills/ppt-master/ AGENTS.md CLAUDE.md docs/ 2>/dev/null | grep -v 'superpowers' | ...`（既有 `grep -v` 排除项不变，`docs/superpowers/` 下含 `${SKILL_DIR}` 的设计文档仍被 `superpowers` 排除）；文档措辞避免 python3 模式 |
 | auto-tag.yml Gate 4（依赖） | token 用标准库，无新依赖 |
 | auto-tag.yml Gate 5/6（guard + MANIFEST.in） | 不碰 attribution 文件 |
 | publish-pypi.yml | scripts/ 已在 MANIFEST.in include，自动进 wheel |
