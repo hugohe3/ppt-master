@@ -49,7 +49,7 @@ git merge --abort
 
 ### Step 3: 解决冲突
 
-**核心原则：保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 零改动。**
+**核心原则：保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 外零改动。**
 
 | 冲突类型 | 解决策略 |
 |----------|----------|
@@ -60,6 +60,7 @@ git merge --abort
 | `pyproject.toml` 依赖变更 | 手动审查，同步到两个 `pyproject.toml` |
 | `update_repo.py` | 保留 fork 的 uv 功能（`ensure_uv_available`、`uv sync`、`--skip-deps`），合入上游新功能 |
 | `generate_examples_index.py` | 确保内部字符串已替换为 `uvx` |
+| `attribution_guard.py` 冲突 | **保留 fork 的 `_SKILL_GATE_MARKER`（uvx 形式）**，合入上游其他改动；合并后必须运行 guard 验证（见 Step 4e 门禁 3） |
 
 **冲突文件速查：**
 
@@ -68,7 +69,7 @@ git merge --abort
 | `*.md` workflow/reference | 接受上游内容，将所有 `python3` → `uvx` |
 | `cli.py` (根 & skills) | 无冲突（上游无此文件）；检查新脚本映射 |
 | `pyproject.toml` | 手动同步依赖；保留 version/tool.uv/tool.setuptools 段 |
-| `skills/ppt-master/scripts/*.py` | **零改动**（跳过 `upstream-sync.md` 中的 `.py` 替换脚本） |
+| `skills/ppt-master/scripts/*.py` | **零改动**（跳过 `upstream-sync.md` 中的 `.py` 替换脚本）——**唯一例外：`attribution_guard.py` 的 `_SKILL_GATE_MARKER` 必须保持 `uvx ppt-master attribution-guard`（fork 适配），不得回退为上游的 `python3 scripts/attribution_guard.py`** |
 
 ---
 
@@ -214,12 +215,17 @@ python skills/ppt-master/scripts/check_cli_sync.py
 
 #### 4e. 提交前门禁（必须通过）
 
-在 `git commit` 之前，**必须**确认以下两项全部通过：
+在 `git commit` 之前，**必须**确认以下三项全部通过：
 
 1. **全仓库扫描零残留**：重复 Step 4d 的 `rg` 命令，确认输出为空
 2. **cli.py 同步**：`python skills/ppt-master/scripts/check_cli_sync.py` 确认 OK
+3. **Skill 完整性 guard**：运行 `python skills/ppt-master/scripts/attribution_guard.py`，**必须 exit 0**（无输出）。如果失败（exit 78），说明上游的 attribution/完整性约束与 fork 的 uvx 适配冲突，必须修复后再验证：
+   - 检查 `skills/ppt-master/SKILL.md` 是否包含且仅包含一次 `uvx ppt-master attribution-guard`（marker 被上游恢复为 `python3` 时,Step 4c 的批量替换会处理,但如果 guard 换用了新 marker 字符串,需同步更新 `attribution_guard.py` 的 `_SKILL_GATE_MARKER` 与 SKILL.md）
+   - 检查 `skills/ppt-master/LICENSE`、`SPONSORS.md`、`SPONSORS_CN.md` 是否存在
+   - 检查 `MANIFEST.in`（根 与 `skills/ppt-master/`）是否仍包含 `SKILL.md`/`LICENSE`/`SPONSORS.md`/`SPONSORS_CN.md`（上游若调整文件布局可能导致 wheel 打包缺失）
+   - 检查上游是否在 `attribution_guard.py` 中新增了 `_REQUIRED_GATE_FILES`/`_REQUIRED_ATTRIBUTION_FILES` 条目,对应文件必须存在
 
-**两项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
+**三项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
 ---
 

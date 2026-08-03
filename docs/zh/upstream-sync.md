@@ -79,7 +79,7 @@ Gate 4: 依赖清单一致 (check_deps_sync.py)
 
 ### 核心原则
 
-**保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 零改动。**
+**保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 外零改动。**
 
 | 冲突类型 | 解决策略 |
 |----------|----------|
@@ -89,6 +89,7 @@ Gate 4: 依赖清单一致 (check_deps_sync.py)
 | `pyproject.toml` | 保留 fork 结构（version, tool.uv, tool.setuptools），只同步依赖 |
 | `update_repo.py` | 保留 fork 的 uv 功能，合入上游改进 |
 | `skills/ppt-master/scripts/*.py` | **零改动** —— docstring 中 `python3` 残留已知且可接受 |
+| `attribution_guard.py` | **保留 fork 的 `_SKILL_GATE_MARKER`（`uvx ppt-master attribution-guard`）**；合入上游其他改动；合并后必须运行 guard 验证（exit 0） |
 
 ### 命令转换规则
 
@@ -163,6 +164,7 @@ git tag vX.Y.Z && git push origin vX.Y.Z
 - **`sync-upstream.yml` 不使用 `workflow_dispatch`** — OpenCode action 在 `workflow_dispatch` 事件下会卡在权限 `ask` 状态
 - **`issue_comment` 权限问题** — OpenCode Agent 在 issue_comment 事件下可能也需要权限批准（依赖 actor 角色）。如果 repo 所有者在 issue 下评论，权限通常自动放行
 - **`skills/ppt-master/scripts/*.py` 的 `python3` 残留** — `check_uvx_migration.yml` 已豁免该目录
+- **合并后必须运行 `python skills/ppt-master/scripts/attribution_guard.py` 且 exit 0** — 上游若更新 attribution 约束（`_SKILL_GATE_MARKER`、`_REQUIRED_GATE_FILES`、metadata 字段、LICENSE 摘要），必须同步适配：SKILL.md 只保留一次 `uvx ppt-master attribution-guard`、`skills/ppt-master/` 下 LICENSE/SPONSORS.md/SPONSORS_CN.md 存在、MANIFEST.in（根与 skill）仍包含 4 个 attribution 文件。`auto-tag.yml` 的 Gate 5/6 会拦截发布
 - 合并后运行 `uvx ppt-master check-deps-sync` 验证依赖一致性
 - 两处 `uv.lock` 文件必须提交以实现可重复构建
 

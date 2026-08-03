@@ -123,6 +123,28 @@ jobs:
           python3 skills/ppt-master/scripts/check_deps_sync.py
           echo "✅ Dependencies in sync"
 
+      # ── Gate 5: Skill 完整性 guard（防止坏版本发布到 PyPI）──
+      - name: Gate — Skill integrity guard
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          if ! python3 skills/ppt-master/scripts/attribution_guard.py; then
+            echo "::error::attribution_guard failed — skill attribution bundle incomplete. Fix attribution files/marker before publishing."
+            exit 1
+          fi
+          echo "✅ Skill integrity guard passed"
+
+      # ── Gate 6: wheel 打包完整性（guard 运行所需文件必须进包）──
+      - name: Gate — Wheel attribution files packaged
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          for f in SKILL.md LICENSE SPONSORS.md SPONSORS_CN.md; do
+            if ! grep -q "include skills/ppt-master/$f" MANIFEST.in; then
+              echo "::error::MANIFEST.in missing 'include skills/ppt-master/$f' — attribution guard will fail in uvx"
+              exit 1
+            fi
+          done
+          echo "✅ MANIFEST.in includes all attribution files"
+
       # ── 通过所有门禁，创建 tag → 触发 publish-pypi.yml ──
       - name: Create tag
         if: steps.check.outputs.exists == 'false'

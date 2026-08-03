@@ -1,2 +1,6 @@
 recursive-include scripts *
 recursive-include templates *
+include SKILL.md
+include LICENSE
+include SPONSORS.md
+include SPONSORS_CN.md
