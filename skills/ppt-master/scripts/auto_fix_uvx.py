@@ -21,7 +21,7 @@ def main():
 
     script_to_cmd = {}
     for cmd_name, script_rel in commands.items():
-        script_name = script_rel.replace("\\", "/").split("/")[-1]
+        script_name = script_rel.replace("\\", "/")
         script_to_cmd[script_name] = cmd_name
 
     exclude = ["superpowers", "windows-installation", "code-style", "upstream-sync"]
@@ -47,6 +47,7 @@ def main():
             content = re.sub(rf"(?<!\w)python3\s+scripts/(\S*/)?{p}", f"uvx ppt-master {cmd_name}", content)
             content = re.sub(rf"uv\s+run\s+skills/ppt-master/scripts/(\S*/)?{p}", f"uvx ppt-master {cmd_name}", content)
             content = re.sub(rf"(?<!\w)uv\s+run\s+scripts/(\S*/)?{p}", f"uvx ppt-master {cmd_name}", content)
+            content = re.sub(rf"python3\s+\$\{{SKILL_DIR\}}/scripts/(\S*/)?{p}", f"uvx ppt-master {cmd_name}", content)
         if content != original:
             try:
                 fp.write_text(content)

@@ -87,12 +87,12 @@ the default profile, but it does not create `svg_final/`.
 
 | Derived artifact | Regenerate from | Command / owner |
 |---|---|---|
-| `analysis/image_analysis.csv` | Current `images/` | `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` |
-| `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `python3 ${SKILL_DIR}/scripts/svg_authoring_view.py <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
-| `notes/slide_*.md` | `notes/total.md`, when speaker notes are enabled | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
-| `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
-| `validation/svg_quality_report.json` | `svg_output/`, plus locks/template provenance in Default Generate | Default: `python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final --json`; Quick: append `--quick-generate` |
-| Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
-| Quick native PPTX | `svg_output/`, prepared resources, passing Quick final report | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate` |
+| `analysis/image_analysis.csv` | Current `images/` | `uvx ppt-master analyze-images <project_path>/images` |
+| `<import_workspace>/authoring-svg/authoring_summary.json` | Current authoring SVGs plus tool-only manifest roster | `uvx ppt-master svg-authoring-view <import_workspace>/authoring-svg --refresh-summary`; in-place vector/picture extraction refreshes it automatically |
+| `notes/slide_*.md` | `notes/total.md`, when speaker notes are enabled | `uvx ppt-master total-md-split <project_path>` |
+| `svg_final/` | `svg_output/` plus project assets | `uvx ppt-master finalize-svg <project_path>` |
+| `validation/svg_quality_report.json` | `svg_output/`, plus locks/template provenance in Default Generate | Default: `uvx ppt-master svg-quality-check <project_path> --stage final --json`; Quick: append `--quick-generate` |
+| Native PPTX + `validation/<output_stem>.report.json` | `svg_output/` plus notes/assets and final quality report | `uvx ppt-master svg-to-pptx <project_path>` |
+| Quick native PPTX | `svg_output/`, prepared resources, passing Quick final report | `uvx ppt-master svg-to-pptx <project_path> --quick-generate` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

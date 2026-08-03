@@ -68,7 +68,7 @@ Run [`generate-pptx.md`](../generate-pptx.md) Step 1 when applicable. Initialize
 the minimal workspace with:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
+uvx ppt-master project init <project_name> \
   --format <format> --quick-generate
 ```
 
@@ -171,14 +171,14 @@ After every page and required referenced resource exists, run the lockless
 final SVG check:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
+uvx ppt-master svg-quality-check <project_path> \
   --quick-generate --stage final --json
 ```
 
 Fix every blocking error and rerun the same command. Then export:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate
+uvx ppt-master svg-to-pptx <project_path> --quick-generate
 ```
 
 `--quick-generate` reads `svg_output/` as the page source and resolves the

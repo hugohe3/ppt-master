@@ -87,6 +87,8 @@ research look complete.
 
 Write two artifacts under `projects/`:
 
+> `projects/` 指项目工作区根（`PPT_MASTER_PROJECTS` 环境变量指定的目录，或默认 `<cwd>/projects/`）。
+
 | Artifact | Path |
 |---|---|
 | Research supplement | `projects/<research_slug>.md` |
