@@ -97,6 +97,17 @@ def popen_detached(
         return subprocess.Popen(args, creationflags=base_flags, **kwargs)
 
 
+def normalized_project_key(project_path: object) -> str:
+    """Return a canonical comparable key for a project path.
+
+    Resolves symlinks and relative segments; on Windows the key is
+    case-folded so drive-letter case differences (``c:\\`` vs ``C:\\``)
+    do not defeat identity comparison.
+    """
+    resolved = Path(project_path).resolve()
+    return str(resolved).casefold() if os.name == 'nt' else str(resolved)
+
+
 def process_alive(pid: object) -> bool:
     """Return True if a process with this pid is reachable.
 

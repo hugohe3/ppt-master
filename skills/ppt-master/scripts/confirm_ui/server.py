@@ -65,6 +65,7 @@ from server_common import (  # noqa: E402
     clear_lock as _clear_lock,
     find_free_port as _find_free_port,
     lock_pid as _lock_pid,
+    normalized_project_key as _normalized_project_key,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -174,11 +175,13 @@ def _wait_for_server_ready(
     proc: subprocess.Popen,
     project_path: Path,
     timeout: int = STARTUP_TIMEOUT,
+    launch_token: Optional[str] = None,
 ) -> bool:
     """Wait until this project's detached confirm server is accepting requests."""
     deadline = time.time() + timeout
     last_error = ''
     health_url = _server_url(port, '/api/health')
+    expected_project = _normalized_project_key(project_path)
     while time.time() < deadline:
         returncode = proc.poll()
         if returncode is not None:
@@ -191,11 +194,21 @@ def _wait_for_server_ready(
                     resp.status == 200
                     and isinstance(data, dict)
                     and data.get('service') == 'confirm_ui'
-                    and data.get('project') == str(project_path)
-                    and data.get('pid') == proc.pid
+                    and _normalized_project_key(Path(data.get('project') or '')) == expected_project
+                    and (launch_token is None or data.get('launch_token') == launch_token)
                 ):
+                    if data.get('pid') != proc.pid:
+                        logger.warning(
+                            'confirm UI health pid=%s differs from launcher pid=%s; '
+                            'accepting (identity confirmed by launch token)',
+                            data.get('pid'), proc.pid,
+                        )
                     return True
-                last_error = 'health response belongs to another service or project'
+                last_error = (
+                    'health response belongs to another service or project: '
+                    f'service={data.get("service")!r} project={data.get("project")!r} '
+                    f'token={data.get("launch_token")!r} expected_project={expected_project!r}'
+                )
         except (OSError, ValueError, urllib.error.URLError) as exc:
             last_error = str(exc)
         time.sleep(0.2)
@@ -221,6 +234,7 @@ def _launch_background_server(
     confirm_dir.mkdir(parents=True, exist_ok=True)
     log_path = confirm_dir / 'server.log'
     port = preferred_port if exact_port else _find_free_port(preferred_port)
+    launch_token = uuid.uuid4().hex
     cmd = [
         sys.executable,
         str(Path(__file__).resolve()),
@@ -231,16 +245,19 @@ def _launch_background_server(
         str(idle_timeout),
         '--no-browser',
     ]
+    child_env = os.environ.copy()
+    child_env['PPT_MASTER_LAUNCH_TOKEN'] = launch_token
     with log_path.open('a', encoding='utf-8') as log:
         proc = _popen_detached(
             cmd,
             stdout=log,
             stderr=subprocess.STDOUT,
             stdin=subprocess.DEVNULL,
+            env=child_env,
             logger=logger,
         )
     logger.info('log: %s', log_path)
-    if not _wait_for_server_ready(port, proc, project_path):
+    if not _wait_for_server_ready(port, proc, project_path, launch_token=launch_token):
         if proc.poll() is None:
             proc.terminate()
         raise RuntimeError(f'confirm UI failed to become reachable: {_server_url(port)}')
@@ -1613,6 +1630,7 @@ def create_app(
             'service': 'confirm_ui',
             'pid': os.getpid(),
             'project': str(project_path),
+            'launch_token': os.environ.get('PPT_MASTER_LAUNCH_TOKEN'),
             'recommendations': rec_ok,
             'stage': stage,
             'session': _build_session_state(
