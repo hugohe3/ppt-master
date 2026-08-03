@@ -53,7 +53,7 @@ except ImportError:
 TOOLS_DIR = Path(__file__).resolve().parent
 SKILL_DIR = TOOLS_DIR.parent
 REPO_ROOT = SKILL_DIR.parent.parent
-PROJECTS_ROOT = REPO_ROOT / "projects"
+from project_management.paths import projects_root  # noqa: E402
 SOURCE_TO_MD_TOOLS_DIR = TOOLS_DIR / "source_to_md"
 if str(SOURCE_TO_MD_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(SOURCE_TO_MD_TOOLS_DIR))
@@ -206,7 +206,7 @@ class ProjectManager:
     CANVAS_FORMATS = CANVAS_FORMATS
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
-        self.base_dir = Path(base_dir) if base_dir is not None else Path.cwd() / "projects"
+        self.base_dir = Path(base_dir) if base_dir is not None else projects_root()
 
     def init_project(
         self,
@@ -795,7 +795,7 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
-            inside_projects = is_within_path(source_path, PROJECTS_ROOT)
+            inside_projects = is_within_path(source_path, projects_root())
             if copy:
                 effective_move = False
             elif inside_projects:
@@ -804,7 +804,7 @@ class ProjectManager:
                 effective_move = False
             if move and not inside_projects:
                 print(
-                    f"note: {source_path} is outside {PROJECTS_ROOT}; copied "
+                    f"note: {source_path} is outside {projects_root()}; copied "
                     f"(not moved). Only sources under projects/ may be moved.",
                     file=sys.stderr,
                 )
@@ -968,7 +968,7 @@ class ProjectManager:
         # its files move into the target project. Every other location is copied
         # and remains untouched, even when the caller passes --move.
         for directory in supplied_dirs:
-            if copy or not is_within_path(directory, PROJECTS_ROOT):
+            if copy or not is_within_path(directory, projects_root()):
                 continue
             if directory.is_dir() and not any(directory.iterdir()):
                 try:

@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 
 from console_encoding import configure_utf8_stdio
+from project_management.paths import projects_root
 
 configure_utf8_stdio()
 
@@ -41,7 +42,7 @@ WORKFLOWS_DIR = PROJECT_ROOT / 'workflows'
 # Repository root directory
 REPO_ROOT = PROJECT_ROOT.parent.parent
 EXAMPLES_DIR = REPO_ROOT / 'examples'
-PROJECTS_DIR = REPO_ROOT / 'projects'
+PROJECTS_DIR = projects_root()
 
 # Template subdirectories
 CHART_TEMPLATES_DIR = TEMPLATES_DIR / 'charts'

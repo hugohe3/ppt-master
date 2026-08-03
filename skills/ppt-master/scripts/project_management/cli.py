@@ -40,12 +40,7 @@ from .page_context import (
     record_page_context_usage,
     render_page_context,
 )
-from .paths import (
-    PROJECTS_ROOT,
-    REPO_ROOT,
-    SCRIPTS_DIR,
-    SOURCE_TO_MD_DIR,
-)
+from .paths import (REPO_ROOT, SCRIPTS_DIR, SOURCE_TO_MD_DIR, projects_root,)
 from .project_specs import scaffold_project_artifact, validate_project_artifacts
 
 if str(SCRIPTS_DIR) not in sys.path:
@@ -826,7 +821,7 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
-            inside_projects = is_within_path(source_path, PROJECTS_ROOT)
+            inside_projects = is_within_path(source_path, projects_root())
             if copy:
                 effective_move = False
             elif inside_projects:
@@ -835,7 +830,7 @@ class ProjectManager:
                 effective_move = False
             if move and not inside_projects:
                 print(
-                    f"note: {source_path} is outside {PROJECTS_ROOT}; copied "
+                    f"note: {source_path} is outside {projects_root()}; copied "
                     f"(not moved). Only sources under projects/ may be moved.",
                     file=sys.stderr,
                 )
@@ -999,7 +994,7 @@ class ProjectManager:
         # its files move into the target project. Every other location is copied
         # and remains untouched, even when the caller passes --move.
         for directory in supplied_dirs:
-            if copy or not is_within_path(directory, PROJECTS_ROOT):
+            if copy or not is_within_path(directory, projects_root()):
                 continue
             if directory.is_dir() and not any(directory.iterdir()):
                 try:
