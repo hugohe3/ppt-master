@@ -33,7 +33,7 @@ P2（门禁内容问题）与 P3（PowerShell 编码注意事项）为质量基�
 
 ### 3.1 启动 token 身份凭证
 
-- confirm_ui：启动器 `_launch_background_server`；svg_editor：daemon 启动逻辑**内联在 `main()` 的 `args.daemon` 分支**（约 1281-1301 行 cmd 构建与 `_popen_detached` 调用之间），无独立启动函数——两处都生成随机 token（`uuid.uuid4().hex`）
+- confirm_ui：启动器 `_launch_background_server`；svg_editor：daemon 启动逻辑**内联在 `main()` 的 `args.daemon` 分支**（约 1281-1301 行 cmd 构建与 `_popen_detached` 调用之间），无独立启动函数——两处都生成随机 token（`uuid.uuid4().hex`）。svg_editor 的 token 生成点建议在 cmd 构建之前、log 文件打开之前（与 confirm_ui 的 `_launch_background_server` 中 log 打开前生成保持一致）
 - 通过环境变量 `PPT_MASTER_LAUNCH_TOKEN` 传给 detached 子进程（`_popen_detached` 的 `env` 参数）
 - **env 必须基于 `os.environ.copy()` 合并**：`subprocess.Popen(env=...)` 是整体替换而非合并，只传 token 会丢失 PATH/系统环境导致子进程无法启动
 - 子进程 `/api/health` 响应新增 `launch_token` 字段（`os.environ.get('PPT_MASTER_LAUNCH_TOKEN')`）
@@ -45,6 +45,7 @@ P2（门禁内容问题）与 P3（PowerShell 编码注意事项）为质量基�
 - 替代原 `str(project_path)` 精确比较
 - 三个文件（confirm_ui / svg_editor / visual_review）统一采用同一比较逻辑
 - **visual_review.py 细节**：`check_server(server_url, project_path)` 中 `expected_project = str(project_path)`（245 行）——`project_path` 由调用方传入（lock 记录或命令行参数），可能未经 resolve。修复时在 `check_server` 内部先 `project_path = project_path.resolve()` 再比较（或直接 `expected_project = str(Path(project_path).resolve())`），与服务端返回的 resolve 后路径对齐
+- **visual_review legacy 分支**：`check_server` 内约 248-252 行存在 `legacy_live_preview`（svg_output resolve 比较）兼容分支——本次只改 `expected_project` 比较，**不动 legacy 分支**，实施时注意勿误伤
 
 ### 3.3 pid 降级为诊断
 
@@ -146,13 +147,13 @@ def projects_root() -> Path:
 
 `topic-research.md:88` 的 `projects/` 相对路径补一句：「`projects/` 指项目工作区根（`PPT_MASTER_PROJECTS` 或默认 `<cwd>/projects/`）」，消除研究产物落到 `.agents/projects` 的歧义。
 
-### 6.4 已知遗留风险（不改动，仅记录）
+### 6.4 已知遗留风险（monitor-only，不阻断本次发布）
 
-`project_manager.py:354` 与 `project_management/cli.py:385` 用 `REPO_ROOT`（uvx 下指向安装目录）作为转换工具子进程 cwd。测试未暴露问题（工具输出均为绝对路径），超出本次范围，备查。
+`project_manager.py:354` 与 `project_management/cli.py:385` 用 `REPO_ROOT`（uvx 下指向安装目录）作为转换工具子进程 cwd。测试未暴露问题（工具输出均为绝对路径），超出本次范围。`REPO_ROOT` 常量本身保留（`project_management/cli.py:45` 依赖它），仅在后续重构时评估统一。
 
 ## 7. 同步工作流调整（sync-upstream）
 
-**必要性**：本次修复修改 5 个上游文件，突破「scripts 零改动」隔离原则：
+**必要性**：本次修复修改 6 个上游文件，突破「scripts 零改动」隔离原则：
 
 | 文件 | 修改原因 | 上游冲突风险 |
 |------|---------|-------------|
