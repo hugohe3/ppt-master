@@ -160,11 +160,19 @@ COMMAND_DESCRIPTIONS = {
     "align-embed-images":     "Single-pass image alignment + Base64 embedding",
 }
 
+# Alias names tolerated for documentation/backward compatibility. Must stay
+# separate from COMMANDS: auto_fix_uvx.py derives its normalization mapping
+# from COMMANDS, and an alias key would overwrite the canonical command name.
+ALIASES = {
+    "notes-split": "total-md-split",
+    "svg-editor-server": "svg-editor",
+}
+
 def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 
-    if len(argv) < 2 or any(a in ("-h", "--help") for a in argv[1:]):
+    if len(argv) < 2 or argv[1] in ("-h", "--help"):
         print("Usage: ppt-master <command> [args...]")
         print("\nCommands:")
         width = max(len(k) for k in COMMANDS) + 2
@@ -181,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ppt-master {ver}")
         return 0
 
-    cmd = argv[1]
+    cmd = ALIASES.get(argv[1], argv[1])
     args = argv[2:]
 
     script_rel = COMMANDS.get(cmd)
