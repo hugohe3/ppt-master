@@ -31,6 +31,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import uuid
 import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -67,6 +68,7 @@ from server_common import (  # noqa: E402
     clear_lock as _clear_lock,
     find_free_port as _find_free_port,
     lock_pid as _lock_pid,
+    normalized_project_key as _normalized_project_key,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -510,6 +512,7 @@ def create_app(
             'service': 'live_preview',
             'pid': os.getpid(),
             'project': str(project_path),
+            'launch_token': os.environ.get('PPT_MASTER_LAUNCH_TOKEN'),
             'live': app.config['LIVE_MODE'],
             'svg_output': str(svg_dir),
             'slides': slide_count,
@@ -1077,11 +1080,13 @@ def _wait_for_ready(
     proc: subprocess.Popen,
     project_path: Path,
     timeout: int = STARTUP_TIMEOUT,
+    launch_token: Optional[str] = None,
 ) -> bool:
     """Wait until this project's detached live-preview server responds."""
     deadline = time.time() + timeout
     health_url = _server_url(port, '/api/health')
     last_error = ''
+    expected_project = _normalized_project_key(project_path)
     while time.time() < deadline:
         if proc.poll() is not None:
             logger.error('live preview exited during startup (code=%s)', proc.returncode)
@@ -1093,12 +1098,25 @@ def _wait_for_ready(
                     response.status == 200
                     and isinstance(data, dict)
                     and data.get('service') == 'live_preview'
-                    and data.get('project') == str(project_path)
-                    and data.get('pid') == proc.pid
+                    and _normalized_project_key(Path(data.get('project') or '')) == expected_project
+                    and (launch_token is None or data.get('launch_token') == launch_token)
                 ):
+                    if data.get('pid') != proc.pid:
+                        logger.warning(
+                            'live preview health pid=%s differs from launcher pid=%s; '
+                            'accepting (identity confirmed by launch token)',
+                            data.get('pid'), proc.pid,
+                        )
                     return True
-                last_error = 'health response belongs to another service or project'
-        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+                if isinstance(data, dict):
+                    last_error = (
+                        'health response belongs to another service or project: '
+                        f'service={data.get("service")!r} project={data.get("project")!r} '
+                        f'token={data.get("launch_token")!r} expected_project={expected_project!r}'
+                    )
+                else:
+                    last_error = f'non-dict health payload: {data!r}'
+        except (urllib.error.URLError, TimeoutError, OSError, TypeError, ValueError) as exc:
             last_error = str(exc)
         time.sleep(0.25)
     logger.error(
@@ -1278,6 +1296,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         idle_timeout = args.timeout
         if idle_timeout is None:
             idle_timeout = 7200 if args.live else 900
+        launch_token = uuid.uuid4().hex
         cmd = [
             sys.executable,
             str(Path(__file__).resolve()),
@@ -1290,6 +1309,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         ]
         if args.live:
             cmd.append('--live')
+        child_env = os.environ.copy()
+        child_env['PPT_MASTER_LAUNCH_TOKEN'] = launch_token
         try:
             with log_path.open('a', encoding='utf-8') as log:
                 proc = _popen_detached(
@@ -1297,13 +1318,14 @@ def main(argv: Optional[list[str]] = None) -> int:
                     stdout=log,
                     stderr=subprocess.STDOUT,
                     stdin=subprocess.DEVNULL,
+                    env=child_env,
                     logger=logger,
                 )
         except OSError as exc:
             logger.error('cannot write live preview log: %s (%s)', log_path, exc)
             return 1
         url = _server_url(port)
-        if not _wait_for_ready(port, proc, project_path):
+        if not _wait_for_ready(port, proc, project_path, launch_token=launch_token):
             if proc.poll() is None:
                 proc.terminate()
             logger.error('live preview failed to become reachable: %s (log: %s)', url, log_path)
