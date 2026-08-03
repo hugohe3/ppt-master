@@ -68,7 +68,26 @@ The whole loop is three steps. Install first — you only need Python; see [Quic
    ```
 3. **Get an editable `.pptx`** at `exports/<name>_<timestamp>.pptx` — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
 
-Before it starts, the AI confirms a short design spec (template, format, page count, …); from there it handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on.
+Before it starts, the AI confirms a short design spec (template, format, page count, …); from there it handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on. To skip the confirmation step, see [Quick mode](#quick-mode) below.
+
+---
+
+## Quick mode
+
+The default flow confirms a short design spec with you first. To skip that step, explicitly ask for **quick generation**:
+
+```
+You: Quickly generate a deck from sources/report.pdf — no need to confirm with me
+You: Turn this into a deck, skip the confirmation, about 8 pages, dark corporate look
+```
+
+**Whatever you state explicitly is followed; whatever you leave unspecified the agent decides directly, without coming back to ask.** The page count and the look in the second example still hold — quick mode drops the round trip, not your say. State nothing, and the agent decides everything.
+
+It does not skip preparation: source conversion, research on identified factual gaps, and image / icon / formula preparation still run as needed. If a required asset is missing, it still stops and asks you for it instead of substituting unrelated material.
+
+Because the whole planning phase no longer happens (Strategist analysis, `design_spec.md` / `spec_lock.md` authoring, the staged confirmation round trip), token usage is materially lower than the default flow. Per-page SVG authoring is unchanged, so this is neither a wall-clock promise nor a promise of quality equivalence with the default flow.
+
+Full guide → [quick-generate profile](../skills/ppt-master/workflows/profiles/quick-generate.md)
 
 ---
 
