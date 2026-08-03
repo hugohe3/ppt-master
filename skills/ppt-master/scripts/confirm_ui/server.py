@@ -204,12 +204,15 @@ def _wait_for_server_ready(
                             data.get('pid'), proc.pid,
                         )
                     return True
-                last_error = (
-                    'health response belongs to another service or project: '
-                    f'service={data.get("service")!r} project={data.get("project")!r} '
-                    f'token={data.get("launch_token")!r} expected_project={expected_project!r}'
-                )
-        except (OSError, ValueError, urllib.error.URLError) as exc:
+                if isinstance(data, dict):
+                    last_error = (
+                        'health response belongs to another service or project: '
+                        f'service={data.get("service")!r} project={data.get("project")!r} '
+                        f'token={data.get("launch_token")!r} expected_project={expected_project!r}'
+                    )
+                else:
+                    last_error = f'non-dict health payload: {data!r}'
+        except (OSError, TypeError, ValueError, urllib.error.URLError) as exc:
             last_error = str(exc)
         time.sleep(0.2)
     logger.error(
