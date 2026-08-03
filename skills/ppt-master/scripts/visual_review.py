@@ -40,7 +40,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
-from server_common import lock_pid, process_alive, read_lock
+from server_common import lock_pid, normalized_project_key, process_alive, read_lock
 from slide_roster import discover_slide_svgs
 
 configure_utf8_stdio()
@@ -242,7 +242,7 @@ def check_server(server_url: str, project_path: Path) -> None:
             data = json.load(resp)
     except (urllib.error.URLError, OSError, ValueError) as e:
         raise RuntimeError(f'live-preview server not reachable at {server_url}: {e}')
-    expected_project = str(project_path)
+    expected_project = normalized_project_key(project_path)
     expected_svg_output = str((project_path / 'svg_output').resolve())
     service = data.get('service') if isinstance(data, dict) else None
     legacy_live_preview = (
@@ -252,7 +252,7 @@ def check_server(server_url: str, project_path: Path) -> None:
     )
     if (
         not isinstance(data, dict)
-        or data.get('project') != expected_project
+        or normalized_project_key(Path(data.get('project') or '')) != expected_project
         or (service != 'live_preview' and not legacy_live_preview)
     ):
         raise RuntimeError(
