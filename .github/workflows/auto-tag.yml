@@ -142,8 +142,12 @@ jobs:
               echo "::error::MANIFEST.in missing 'include skills/ppt-master/$f' — attribution guard will fail in uvx"
               exit 1
             fi
+            if ! grep -q "include $f" skills/ppt-master/MANIFEST.in; then
+              echo "::error::skills/ppt-master/MANIFEST.in missing 'include $f' — standalone skill build would fail its guard"
+              exit 1
+            fi
           done
-          echo "✅ MANIFEST.in includes all attribution files"
+          echo "✅ Both MANIFEST.in files include all attribution files"
 
       # ── 通过所有门禁，创建 tag → 触发 publish-pypi.yml ──
       - name: Create tag

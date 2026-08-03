@@ -34,4 +34,14 @@ jobs:
           echo "Version check passed: ${ROOT_VERSION}"
 
       - run: uv build
+
+      - name: Verify wheel passes skill integrity guard
+        run: |
+          uvx --from dist/ppt_master-*.whl ppt-master attribution-guard
+          if [ $? -ne 0 ]; then
+            echo "::error::Built wheel failed attribution_guard — do not publish."
+            exit 1
+          fi
+          echo "✅ Wheel-level integrity guard passed"
+
       - run: uv publish

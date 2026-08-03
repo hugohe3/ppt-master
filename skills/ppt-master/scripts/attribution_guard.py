@@ -6,10 +6,10 @@ Fail closed when the distributed Skill attribution bundle or its execution
 gates are missing or modified.
 
 Usage:
-    python3 scripts/attribution_guard.py
+    uvx ppt-master attribution-guard
 
 Examples:
-    python3 scripts/attribution_guard.py
+    uvx ppt-master attribution-guard
 
 Dependencies:
     None (only uses standard library)

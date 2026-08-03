@@ -244,7 +244,7 @@ python skills/ppt-master/scripts/check_deps_sync.py
 
 ### Step 6: 提交、打版本号、推送
 
-**提交前确认 Step 4e 门禁已通过（全仓库扫描零残留 + cli.py 同步）。**
+**提交前确认 Step 4e 门禁已通过（全仓库扫描零残留 + cli.py 同步 + Skill 完整性 guard）。**
 
 ```bash
 # 提交合并和适配（仅已追踪文件的更新 + 新文件）

@@ -64,6 +64,7 @@ ppt-master = "cli:main"
 
 [tool.setuptools]
 py-modules = ["cli"]
+include-package-data = true
 
 [tool.setuptools.packages.find]
 include = ["skills", "skills.*", "skills.*.*", "skills.*.*.*"]
