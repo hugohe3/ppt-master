@@ -85,10 +85,15 @@ The narrow exception is the `data-pptx-replace-with` marker: independently plann
 In the cost / speed / quality triangle this project picks **quality**. ~20 minutes for a high-quality PPTX is the current reasonable point.
 
 Will do: indirect improvements via prompt slimming / cache hit rate.
-Explicit `quick-generate` is a user-selected workflow shortcut, not a default
-quality-preserving speed optimization: it skips Strategist, confirmation, and
-the first-page gate, then authors SVG, runs one lockless final quality gate, and
-exports the final PPTX. It makes no wall-clock or quality-equivalence promise.
+
+Explicit `quick-generate` is a user-selected workflow shortcut: it skips
+Strategist, confirmation, and the first-page gate, then authors SVG, runs one
+lockless final quality gate, and exports the final PPTX. Because the whole
+planning phase no longer happens — the Strategist reference load, the
+`design_spec.md` / `spec_lock.md` artifacts, and the staged confirmation round
+trip — its token cost disappears with it, while per-page SVG authoring is
+unchanged. It is not a default quality-preserving speed optimization, and it
+makes no wall-clock or quality-equivalence promise.
 
 The default Generate pipeline continues to prefer quality over speed.
 

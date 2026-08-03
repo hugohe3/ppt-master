@@ -18,6 +18,7 @@ Page count alone never activates or blocks this profile.
 
 | Concern | Quick Generate contract |
 |---|---|
+| Authority | Follow every explicit user requirement as stated; decide every unspecified choice directly without asking |
 | Interaction | The current main agent decides content, design, resources, and implementation without Strategist, Confirm UI, or approval stops |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before the referencing SVG is authored |

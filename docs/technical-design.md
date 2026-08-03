@@ -160,7 +160,7 @@ Use this table before reasoning about implementation details. Most failed runs s
 |---|---|---|
 | Topic only, or supplied material lacks facts required by the requested outcome | Generate PPTX + `topic-research` inside Step 1 | topic-only research starts immediately; source-backed research follows conversion/read and fills only identified factual gaps |
 | Source files or conversation text, deck structure may be rethought | Generate PPTX | Strategist may split, merge, drop, reorder, and redesign |
-| Explicit quick generation | Generate PPTX + `quick-generate` profile | convert/read sources, research factual gaps, and prepare required resources as needed; the current agent decides content, pages, visuals, and resources in active context, skips Strategist/confirmation/spec/lock/finalize, hand-authors SVG, passes one lockless final gate, and exports the final PPTX |
+| Explicit quick generation | Generate PPTX + `quick-generate` profile | convert/read sources, research factual gaps, and prepare required resources as needed; explicit user requirements are followed and the current agent decides every remaining content, page, visual, and resource question in active context, skips Strategist/confirmation/spec/lock/finalize, hand-authors SVG, passes one lockless final gate, and exports the final PPTX |
 | PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | regenerate through SVG; content and pagination are locked |
@@ -191,10 +191,11 @@ Post-processing scripts convert supported SVG vector elements to DrawingML. Text
 
 `quick-generate` retains the source-understanding and resource-preparation work
 needed by the deck, but skips the separate Strategist planning/confirmation
-phase, first-page gate, and `finalize_svg.py`. The current agent makes those
-content, page, visual, and resource decisions automatically in active context,
-then authors under the shared SVG standards, runs one lockless final quality
-gate, and uses the same DrawingML converter and postflight.
+phase, first-page gate, and `finalize_svg.py`. The current agent follows every
+explicit user requirement and makes the remaining content, page, visual, and
+resource decisions automatically in active context, then authors under the
+shared SVG standards, runs one lockless final quality gate, and uses the same
+DrawingML converter and postflight.
 
 ---
 
@@ -339,7 +340,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 |---|---|
 | `sources/` content-type files are the Generate content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
 | `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist in the default pipeline and the current agent in `quick-generate`; they do not lock page count/order except in workflows that say so |
-| `design_spec.md` explains the design; `spec_lock.md` executes it in the default pipeline | both remain owning artifacts there; `quick-generate` persists neither, and the current agent keeps its content, page, visual, and resource decisions in active context |
+| `design_spec.md` explains the design; `spec_lock.md` executes it in the default pipeline | both remain owning artifacts there; `quick-generate` persists neither, and the current agent follows explicit user requirements while keeping every remaining content, page, visual, and resource decision in active context |
 | Planning context is retained until invalidated | continuous execution reuses the complete Design Spec, lock, and triggered references; fresh/resumed/restarted or compacted execution reloads them once |
 | `page-context` is on demand | the read-only projector supports diagnostics, deterministic routing checks, and optional usage telemetry; it is not a pre-page gate |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |

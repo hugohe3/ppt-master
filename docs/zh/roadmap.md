@@ -86,7 +86,7 @@ Generate PPTX 路线围绕完全可控的新形状、文字与版式创作。结
 
 会做：通过 prompt 精简 / 缓存命中率提升带来的间接改善。
 
-显式 `quick-generate` 是用户主动选择的工作流短路，不是默认流程的保质提速：它跳过 Strategist、确认和首屏 gate，随后创作 SVG、运行一次无锁最终质量门，再导出最终 PPTX。它不承诺具体耗时，也不承诺与默认流程质量等价。
+显式 `quick-generate` 是用户主动选择的工作流短路：它跳过 Strategist、确认和首屏 gate，随后创作 SVG、运行一次无锁最终质量门，再导出最终 PPTX。由于整个规划阶段不再发生——Strategist 系 reference 的加载、`design_spec.md` / `spec_lock.md` 的写入、分步确认往返——这部分 token 开销随之消失，而逐页 SVG 创作的开销不变。它不是默认流程的保质提速，也不承诺具体耗时或与默认流程质量等价。
 
 默认 Generate 流程仍坚持质量优先。
 
