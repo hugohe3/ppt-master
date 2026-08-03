@@ -49,7 +49,21 @@ git merge --abort
 
 ### Step 3: 解决冲突
 
-**核心原则：保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 外零改动。**
+**核心原则：保留 fork 的 uvx 适配，合入上游的新功能。`skills/ppt-master/scripts/*.py` 除 `attribution_guard.py` 与下方「fork 修改文件清单」列出的文件外零改动。**
+
+**fork 修改文件清单**（这些文件含 fork 独有的 Windows/uvx 适配，上游更新时**保留 fork 适配标记、合入上游功能改动**，不得整文件回退）：
+
+| 文件 | 关键适配标记 |
+|------|-------------|
+| `confirm_ui/server.py` | `PPT_MASTER_LAUNCH_TOKEN`（launch token 校验）、`normalized_project_key`（Windows casefold 路径比较） |
+| `svg_editor/server.py` | `PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key` |
+| `visual_review.py` | `normalized_project_key` |
+| `server_common.py` | `normalized_project_key` 函数本身 |
+| `config.py` | `projects_root()`（`PPT_MASTER_PROJECTS`） |
+| `project_management/paths.py` | `projects_root()` 函数 |
+| `project_manager.py` | `projects_root()` 接入 |
+
+合并后必须逐文件 grep 验证适配标记仍在（见 Step 4e 门禁 4）。
 
 | 冲突类型 | 解决策略 |
 |----------|----------|
@@ -81,7 +95,7 @@ git merge --abort
 
 ```bash
 # 扫描 python3 命令残留（全仓库 .md 文件）
-rg -g '*.md' 'python3 (scripts/|skills/)' . \
+rg -g '*.md' -e 'python3 (scripts/|skills/)' -e 'python3 \$\{SKILL_DIR\}/scripts/' . \
   --glob '!.opencode/**' \
   --glob '!docs/superpowers/**' \
   --glob '!docs/zh/upstream-sync.md'
@@ -143,11 +157,14 @@ for node in ast.walk(tree):
             commands = dict(zip(keys, vals))
             break
 
-# 构建脚本名 → uvx 命令名 的映射
+# 构建脚本路径 → uvx 命令名 的映射（用完整相对路径作 key，避免
+# confirm_ui/server.py 与 svg_editor/server.py 等 basename 冲突）
 script_to_cmd = {}
 for cmd_name, script_rel in commands.items():
     script_name = script_rel.rsplit('/', 1)[-1]
     script_to_cmd[script_name] = cmd_name
+    if '/' in script_rel:
+        script_to_cmd[script_rel] = cmd_name
 
 # 需要扫描的豁免目录（这些目录下的文件不参与替换）
 EXCLUDE_DIRS = ['.opencode', 'docs/superpowers', 'docs/zh']
@@ -175,6 +192,11 @@ for filepath in sorted(set(files)):
             rf'(?<!\w)python3\s+scripts/(\S*/)?{re.escape(script_name)}',
             f'uvx ppt-master {cmd_name}', content
         )
+        # python3 ${SKILL_DIR}/scripts/xxx.py → uvx ppt-master xxx
+        content = re.sub(
+            rf'python3\s+\$\{{SKILL_DIR\}}/scripts/(\S*/)?{re.escape(script_name)}',
+            f'uvx ppt-master {cmd_name}', content
+        )
         # uv run skills/ppt-master/scripts/xxx.py → uvx ppt-master xxx
         content = re.sub(
             rf'uv\s+run\s+skills/ppt-master/scripts/(\S*/)?{re.escape(script_name)}',
@@ -196,7 +218,7 @@ print(f'\nDone: {total_replacements} files updated.')
 
 ```bash
 # 确认全仓库 .md 文件无 python3 残留（排除豁免目录）
-rg -g '*.md' 'python3 (scripts/|skills/)' . \
+rg -g '*.md' -e 'python3 (scripts/|skills/)' -e 'python3 \$\{SKILL_DIR\}/scripts/' . \
   --glob '!.opencode/**' \
   --glob '!docs/superpowers/**' \
   --glob '!docs/zh/upstream-sync.md'
@@ -224,8 +246,9 @@ python skills/ppt-master/scripts/check_cli_sync.py
    - 检查 `skills/ppt-master/LICENSE`、`SPONSORS.md`、`SPONSORS_CN.md` 是否存在
    - 检查 `MANIFEST.in`（根 与 `skills/ppt-master/`）是否仍包含 `SKILL.md`/`LICENSE`/`SPONSORS.md`/`SPONSORS_CN.md`（上游若调整文件布局可能导致 wheel 打包缺失）
    - 检查上游是否在 `attribution_guard.py` 中新增了 `_REQUIRED_GATE_FILES`/`_REQUIRED_ATTRIBUTION_FILES` 条目,对应文件必须存在
+4. **fork 适配完整性**：对「fork 修改文件清单」的每个文件 grep 验证其关键适配标记仍在（`PPT_MASTER_LAUNCH_TOKEN`、`normalized_project_key`、`projects_root`），任一缺失必须修复后再提交
 
-**三项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
+**四项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
 ---
 

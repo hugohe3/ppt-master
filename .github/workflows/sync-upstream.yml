@@ -81,6 +81,12 @@ jobs:
             SPONSORS.md/SPONSORS_CN.md. Re-run the guard until it exits 0.
             Do NOT commit or push until BOTH gates pass.
 
+            CRITICAL: After the python3 and skill guard gates, verify fork adaptation markers
+            still exist: grep for PPT_MASTER_LAUNCH_TOKEN in scripts/confirm_ui/server.py and
+            scripts/svg_editor/server.py, grep for normalized_project_key in server_common.py,
+            and grep for projects_root in project_management/paths.py and config.py. If any
+            marker is missing, restore the fork adaptation before committing.
+
       # workflow_dispatch 事件：opencode CLI 非交互模式
       - name: Configure git for push (manual)
         if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
@@ -96,6 +102,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           npm install -g opencode-ai@latest
-          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes. CRITICAL: Step 4 must scan ALL .md files in the entire repo. Before committing, run Step 4e gate — rg 'python3' across all .md files (excluding .opencode/, docs/superpowers/). Do NOT commit until clean. CRITICAL: also run the skill integrity guard via python3 skills/ppt-master/scripts/attribution_guard.py and require exit 0; if it fails, fix the attribution/uvx conflict (keep _SKILL_GATE_MARKER as uvx ppt-master attribution-guard, keep SKILL.md/LICENSE/SPONSORS files and MANIFEST.in includes) and re-run until exit 0. Do NOT commit or push until both gates pass."
+          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes. CRITICAL: Step 4 must scan ALL .md files in the entire repo. Before committing, run Step 4e gate — rg 'python3' across all .md files (excluding .opencode/, docs/superpowers/). Do NOT commit until clean. CRITICAL: also run the skill integrity guard via python3 skills/ppt-master/scripts/attribution_guard.py and require exit 0; if it fails, fix the attribution/uvx conflict (keep _SKILL_GATE_MARKER as uvx ppt-master attribution-guard, keep SKILL.md/LICENSE/SPONSORS files and MANIFEST.in includes) and re-run until exit 0. Do NOT commit or push until both gates pass. Also verify fork adaptation markers (PPT_MASTER_LAUNCH_TOKEN in confirm_ui/server.py + svg_editor/server.py, normalized_project_key in server_common.py, projects_root in paths.py/config.py) still exist; restore them if missing before committing."
 
 

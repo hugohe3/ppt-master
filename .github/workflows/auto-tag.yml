@@ -96,7 +96,7 @@ jobs:
       - name: Gate — No python3 remnants
         if: steps.check.outputs.exists == 'false'
         run: |
-          MATCHES=$(grep -rn --include='*.md' 'python3 skills/ppt-master/scripts/' skills/ppt-master/ AGENTS.md CLAUDE.md docs/ 2>/dev/null | grep -v 'superpowers' | grep -v 'windows-installation' | grep -v 'code-style' | grep -v 'upstream-sync' || true)
+          MATCHES=$(grep -rn --include='*.md' -E 'python3 (skills/ppt-master/scripts/|\$\{SKILL_DIR\}/scripts/)' skills/ppt-master/ AGENTS.md CLAUDE.md docs/ 2>/dev/null | grep -v 'superpowers' | grep -v 'windows-installation' | grep -v 'code-style' | grep -v 'upstream-sync' || true)
           if [ -n "$MATCHES" ]; then
             echo "$MATCHES"
             echo "::error::python3 command remnants found — uvx adaptation incomplete"
