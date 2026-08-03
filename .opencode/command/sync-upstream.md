@@ -162,9 +162,10 @@ for node in ast.walk(tree):
 script_to_cmd = {}
 for cmd_name, script_rel in commands.items():
     script_name = script_rel.rsplit('/', 1)[-1]
-    script_to_cmd[script_name] = cmd_name
     if '/' in script_rel:
         script_to_cmd[script_rel] = cmd_name
+    else:
+        script_to_cmd[script_name] = cmd_name
 
 # 需要扫描的豁免目录（这些目录下的文件不参与替换）
 EXCLUDE_DIRS = ['.opencode', 'docs/superpowers', 'docs/zh']
@@ -237,7 +238,7 @@ python skills/ppt-master/scripts/check_cli_sync.py
 
 #### 4e. 提交前门禁（必须通过）
 
-在 `git commit` 之前，**必须**确认以下三项全部通过：
+在 `git commit` 之前，**必须**确认以下四项全部通过：
 
 1. **全仓库扫描零残留**：重复 Step 4d 的 `rg` 命令，确认输出为空
 2. **cli.py 同步**：`python skills/ppt-master/scripts/check_cli_sync.py` 确认 OK
