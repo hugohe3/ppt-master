@@ -19,7 +19,7 @@ PPT Master 模板是一种可复用工作区，明确分为四类：**Brand** �
 | 起点与目标 | 路线 | 可直接复制的请求 |
 |---|---|---|
 | 手里是原始 `.pptx`，想保留现有页面壳并替换内容 | **Fill Native PPTX** | `用 projects/source/template.pptx 套入 projects/source/content.md 的内容。` |
-| 已有可复用 Brand/Style/Layout/Deck 工作区，想生成一份全新 deck | **Generate PPTX + 显式工作区路径** | `用 sources/report.pdf 做 deck，模板用 skills/ppt-master/templates/layouts/presentation_core/。` |
+| 已有可复用 Brand/Style/Layout/Deck 工作区，想生成一份全新 deck | **Generate PPTX → Step 3 模板选择** | `用 sources/report.pdf 做 deck，模板用 skills/ppt-master/templates/layouts/presentation_core/。` |
 | 手里是 PPTX、SVG、品牌手册、网站、图片或混合参考，想先建立可复用系统 | **Create Template → Generate PPTX** | `用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 工作区。` |
 
 不要把原始 `.pptx` 当作 Generate PPTX 的模板路径。想沿用它的现有页面就直接回填；想建立可复用系统，就先运行 Create Template。
@@ -37,8 +37,8 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 
 最容易避免误用的两条规则：
 
-1. 提供**工作区根目录**，不要只给它的 `templates/` 子目录，也不要只写模板名。
-2. 在 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option) 之前明确给出工作区路径。同一对话刚完成 Create Template 时，也可直接把已验证工作区交给 Generate PPTX。
+1. 默认页面会在 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-selection-and-installation) 选择自由设计或精确的已注册工作区；若在聊天中选择，请给出工作区根目录，不要只给 `templates/` 子目录，也不要只写模板名。
+2. 显式路径和 Create Template 的精确交接仍然有效。Step 3 会先确认并安装全部所选工作区，再进入 Stage 1；后续角色只读项目本地副本。
 
 ---
 
@@ -46,29 +46,31 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 
 ### 触发方式
 
-工作流**默认走自由设计**——不会主动问你要不要用模板，也不会基于内容主动推荐模板。模板是 opt-in 的，**只接受显式目录路径**：在 Generate PPTX 进入 Step 3 前把模板目录路径写出来。
+默认确认页面会在 Stage 1 之前打开一个独立的 **Step 3 模板选择阶段**，同时提供自由设计、已注册的 Brand/Style/Layout/Deck，以及本次运行已明确给出的工作区根目录。它不会根据主题替用户推断推荐模板，选择必须由用户明确完成。
 
 ### 怎么触发模板流程
 
-在 Generate PPTX 进入 Step 3 前，于对话里写出 Brand/Style/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
+在默认页面中，可选择一个或多个兼容的已注册工作区，也可以选择自由设计。已注册列表只来自四类索引，工作流不会扫描模板目录。也可以在 Generate PPTX 进入 Step 3 前，于对话里写出 Brand/Style/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
 
 > "用这个模板做：`skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-对于当前所有模板类型，这里给的都是**模板工作区根目录**。Step 3 会解析其中的 `templates/design_spec.md`；Brand/Layout/Deck 安装其包自有 `templates/` 及真实存在的 `images/`、`icons/`，Style 只安装 spec，并忽略项目中无关的脚手架。如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 create-template 时，可把精确的已验证工作区根目录直接交给 Step 3；用户显式提供路径与当前对话的 Create Template 交接是两种合法触发方式。
+对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`。Step 3 会解析其中的 `templates/design_spec.md`；Brand/Layout/Deck 安装其包自有 `templates/` 及真实存在的 `images/`、`icons/`，Style 只安装 spec，并忽略项目中无关的脚手架。如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给 Step 3。
+
+模板选择不属于 Stage 1。确认后，Step 3 会运行统一 apply 阶段，把所选工作区校验、合成并安装到当前项目的 `templates/`、`images/`、`icons/`；完成后 Strategist 才开始 Stage 1。Stage 2 的 `template_application` 只描述**如何使用**已安装模板，不负责决定**选哪个模板**。
 
 > **兼容性预检：** Step 3 也接受 `design_spec.md` 直接位于所给根目录、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。旧的原子 placeholder、未映射 Master/Layout 等语义旧包会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
 
 ### 什么**不会**触发模板流程
 
-- **只写模板名、不给路径**："用 presentation_core 模板" / "做一份中国电信模板的产品介绍" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
-- **风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
-- **模糊意图**："想用个模板" / "选一个吧"——没给路径 → 走自由设计。
+- **在聊天中只写模板名**："用 presentation_core 模板" / "做一份中国电信模板的产品介绍" 不会被隐式解析。请在页面选择对应索引项，或在聊天中返回精确路径。
+- **风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" 仍只是设计说明；除非用户另行选择工作区，否则不会激活模板。
+- **模糊意图**："想用个模板" / "选一个吧" 不会授权模糊查找或目录扫描，Step 3 选择仍保持未完成。
 
-这是有意的——AI 永远**不做模糊 / 解释性判断**，不替你把名字解析成路径。要用模板，直接给路径。
+这是有意的——AI 永远**不做模糊 / 解释性判断**，不会替你把普通文字解析成模板。请使用页面中的精确索引项，或提供精确 root。
 
-想知道内置库里有哪些模板，问一句"有哪些模板可以用？"——AI 会从发现索引里列出名字和对应路径。单纯列出并不进入模板流程，需要你**把其中一条路径**再发回来才会触发 Step 3。
+想在聊天里知道内置库有哪些模板，问一句"有哪些模板可以用？"——AI 会从同一组四类索引列出名字和精确路径。单纯列出不代表选择；需要返回其中一条精确路径，或在 Step 3 页面完成选择。
 
 ### 可直接复制的用法
 
@@ -94,7 +96,7 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 模板工作区：projects/acme_template/
 ```
 
-“模板工作区”这些标签可以不写，但路径本身必须明确。如果给出两个相同 kind 的路径，工作流会进入既有冲突解决门，不会静默替你选一个。
+在聊天中显式选择时，“模板工作区”这些标签可以不写，但 root 必须精确；页面中的 library 选择已自带精确 root。如果选择两个相同 kind 的工作区，工作流会进入既有冲突解决门，不会静默替你选一个。
 
 你不需要选择模板使用模式。对 Layout/Deck，Strategist 会读取真实的 Master/Layout/原型集合和当前内容，决定选哪些页、哪些重复/跳过/重排，以及是否重组。Brand 只提供身份约束，Style 只提供方向/方法默认值；除非另一个工作区提供结构，否则两者都保持页面自由编排。如果你在意某个边界，直接在同一句请求里用普通语言说明即可，例如“封面和结束页原样保留，中间页由你选择”或“只参考视觉语言”；明确文字优先于 AI 判断。
 
@@ -107,7 +109,7 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 - [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json) — 仅结构工作区：canvas / 页面语法 / page types / SVG roster，身份系统下游再选
 - [`decks_index.json`](../../skills/ppt-master/templates/decks/decks_index.json) — 可重复演示应用，包含一体化身份、结构与原型事实描述
 
-直接问“有哪些模板可以用？”即可得到带工作区路径的可读清单。索引是当前安装内容的真值，四类 README 负责定义合同。完整数据模型与四类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
+这四个索引是默认 Step 3 页面与聊天发现共用的完整已注册模板来源，目录永远不会被扫描。直接问“有哪些模板可以用？”即可得到带精确工作区路径的可读清单；四类 README 负责定义合同。完整数据模型与四类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
 ### 自由设计 vs 模板
 
@@ -117,16 +119,16 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 
 ### 风格说明不是 Style 工作区
 
-**风格说明**是解释性语言（“极简风” / “Keynote 风” / “杂志风”），由 Strategist 转化为当前 deck 的具体设计选择。**Style 工作区**则是真实存在的 `kind: style` 模板，预写可复用沟通方法与视觉默认值，只有在你给出**显式目录路径**时才会被消费。
+**风格说明**是解释性语言（“极简风” / “Keynote 风” / “杂志风”），由 Strategist 转化为当前 deck 的具体设计选择。**Style 工作区**则是真实存在的 `kind: style` 模板，预写可复用沟通方法与视觉默认值；用户在 Step 3 选择对应注册项，或提供精确工作区 root 后才会消费。
 
 | | Style 工作区 | 风格说明 |
 |---|---|---|
-| 怎么触发 | 消息里给出明确的目录路径 | 消息里写自由描述 |
+| 怎么触发 | Step 3 页面选择注册项，或消息里给出精确目录路径 | 消息里写自由描述 |
 | 提供什么 | 可复用方法、角色/证据纪律和视觉默认值；无身份真值或页面原型 | 由 Strategist 解释为 mode、visual style、色彩、字体、图标与图片方向 |
 | 如何确认 | 已存值作为 Stage 2 起点；Brand/Deck 身份和用户最终确认仍然权威 | 没有预写数值；Strategist 给出具体候选，由用户确认 |
 | 适用场景 | 跨项目复用论证与设计方法，但不锁页面 | 只表达当前项目想要的感觉 |
 
-风格描述和 Style 工作区仍走**两套机制**：“极简风”是解释性语言，`templates/styles/<id>/` 则是真实模板目录，必须提供显式路径。`kind: style`、Stage 2 `visual_style` 与内部 `template_reuse_scope: style` 是三条不同轴。
+风格描述和 Style 工作区仍走**两套机制**：“极简风”是解释性语言，`templates/styles/<id>/` 则是真实注册工作区，必须通过精确索引项或精确路径选择。`kind: style`、Stage 2 `visual_style` 与内部 `template_reuse_scope: style` 是三条不同轴。
 
 ### 风格说明如何被解释
 
@@ -228,7 +230,7 @@ python3 skills/ppt-master/scripts/mirror_template_materialize.py \
 | `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand/Create Style：不适用；Create Layout/Create Deck：单 Master 可选、多 Master 必须 | 校验后注册到对应 `brands_index.json`、`styles_index.json`、`layouts_index.json` 或 `decks_index.json` |
 | `project` | `projects/<name>/` | 沿用同一套 kind-specific 审阅规则 | 跳过全局索引注册 |
 
-全局注册让模板**可被发现**——下次有人问“有哪些模板可用？”时，AI 会从索引里把它列出来。两种范围的用法相同：按 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option) 的规则，在 Step 3 运行前给出工作区根目录，例如 `用这个模板：skills/ppt-master/templates/layouts/<your_template_id>/` 或 `用这个模板：projects/<name>/`。项目工作区也可以迁移或被其他工作区复用，因为核心结构完全一致；只有放进全局库并需要被发现时才执行注册。
+全局注册会让模板出现在默认页面中，也可在聊天中发现，因为两者都读取同一个索引。使用已注册工作区时，在 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-selection-and-installation) 中直接选择它。项目范围或精确交接则提供工作区 root，例如 `用这个模板：projects/<name>/`；未注册 root 仍标记为 `explicit`。项目工作区也可以迁移或被其他工作区复用，因为核心结构完全一致；只有放进全局库并需要出现在 library 列表中时才执行注册。
 
 选择 Deck/Layout 模板后，Strategist 会自动生成页面/原型应用计划：可以使用全套或子集，重复或重排原型，并按内容需要重组。`strict` / `adaptive` 只作为内部导出值，不再出现在确认选项中。
 

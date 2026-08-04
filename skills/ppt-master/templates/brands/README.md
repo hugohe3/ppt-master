@@ -10,13 +10,17 @@ lives in the parent [`README.md`](../README.md).
 
 ## How brands are consumed
 
-Brand application follows the common explicit-path trigger in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The conditional
+Brand application follows the independent selection phase in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
+lists registered brands only from `brands_index.json`, alongside exact
+workspace roots supplied for this run; it never scans this directory or
+fuzzy-matches a bare brand name. An exact supplied root that matches a
+registered root may be labelled `library`, while an unregistered root remains
+`explicit`. The conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage owns path normalization, portable-root installation, multi-kind fusion,
-same-kind conflict resolution, and provenance. This file owns only the Brand
-schema. `brands_index.json` is discovery-only; listing brands never advances
-the pipeline.
+same-kind conflict resolution, and provenance before Stage 1. Later roles read
+only the installed project-local copy. This file owns only the Brand schema.
 
 ## Creating a new brand
 
@@ -51,4 +55,8 @@ Logo filenames are descriptive, not contractual — `templates/design_spec.md` �
 
 [brands_index.json](./brands_index.json) is a slim machine-readable map (`brand_id → { summary, primary_color }`). Refresh it with `register_template.py --kind brand <brand_id>` after a brand is created or edited. Registration rejects incomplete frontmatter, mismatched IDs, page SVGs, missing required identity sections, invalid or inconsistent colors/provenance, and broken workspace-local asset references.
 
-Listing the index does not trigger any pipeline action — Generate Step 3 triggers only on an explicit directory path supplied by the user or an exact validated Create Template handoff, regardless of whether the brand appears in the index.
+The default Step-3 page reads this index as its complete registered-brand
+catalog; chat discovery reads the same file and returns exact workspace roots.
+Choosing an entry and confirming it triggers installation. Exact directory
+paths and validated Create Template handoffs remain supported, while a bare ID
+never resolves implicitly.

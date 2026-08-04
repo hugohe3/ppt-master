@@ -1,14 +1,14 @@
 ---
-description: Conditional Generate-PPTX runbook for validating, installing, or fusing explicit Brand, Style, Layout, and Deck workspaces.
+description: Generate-PPTX Step-3 runbook for validating, installing, or fusing selected Brand, Style, Layout, and Deck workspaces.
 ---
 
 # Apply Template Workspace Stage
 
-> Run only from [`generate-pptx.md`](../generate-pptx.md) Step 3 after the user supplies an explicit workspace-root path, or after Create Template hands off its exact validated workspace root in the current conversation. Never load this stage for free design, a bare template name, a style description, or a brand mention.
+> Run only from [`generate-pptx.md`](../generate-pptx.md) Step 3 after the user confirms one or more library/explicit workspace roots, or after Create Template hands off its exact validated root in the current conversation. Never load this stage for confirmed free design, a bare template name, a style description, or a brand mention. This stage applies a completed selection; it does not move template choice into Stage 1 or Stage 2.
 
 ## 1. Gate and Normalize Inputs
 
-🚧 **GATE**: Every external input resolves to one of these current contracts:
+🚧 **GATE**: Step-3 template selection is confirmed and every selected input resolves to one of these current contracts:
 
 | Input shape | Spec and SVG source | Asset source |
 |---|---|---|
@@ -17,6 +17,20 @@ description: Conditional Generate-PPTX runbook for validating, installing, or fu
 | Current Create Template handoff | Its exact validated library or project workspace root | Existing portable sibling `images/` and `icons/`; already installed only when the root is the target project |
 
 The spec frontmatter MUST declare `kind: brand`, `kind: style`, `kind: layout`, or `kind: deck`. Do not accept only another project's inner `templates/` directory because that omits sibling assets.
+
+**Selection-source classification**:
+
+| Source label | Resolution rule |
+|---|---|
+| `library` | The normalized root exactly equals `templates/<kind_dir>/<id>/` derived from an entry in that kind's `*_index.json` |
+| `explicit` | The user or Create Template supplied an exact workspace root that is not registered at that canonical index-derived root |
+
+Read library choices only from `brands_index.json`, `styles_index.json`,
+`layouts_index.json`, and `decks_index.json`. Never scan kind directories or
+promote an unregistered directory into the UI catalog. An explicit root remains
+valid without index membership; exact equality with a registered root may be
+reported as `library`. The label changes discovery provenance only, never schema
+validation, fusion precedence, or installation behavior.
 
 **Hard rule — raw source boundary**: A raw PPTX is not a Step 3 workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first and return with its validated workspace root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
@@ -77,6 +91,12 @@ For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `tem
 
 If the normalized source root equals the target project root, consume it in place and copy nothing. An in-place workspace cannot participate in multi-path fusion. Ignore source `exports/`; it contains review artifacts, not portable template inputs. Empty optional roots remain absent.
 
+**Hard rule — project-local consumer boundary**: After installation/fusion,
+Strategist and every later role read only `<project_path>/templates/` and the
+project-local `images/` / `icons/` pools. The original library or external root
+is installation input, not a later prompt source. If source and target are the
+same project root, that in-place root already satisfies this boundary.
+
 Template SVGs are authoring prototypes, not export-time overlays. The generated page remains complete in `svg_output/`; `page_layouts` selects the complete prototype and its explicit structure contract for authoring.
 
 
@@ -122,12 +142,12 @@ Write one final `<project>/templates/design_spec.md`. Immediately under its H1, 
 
 Single-path installs do not add provenance. Set fused frontmatter `kind` from the non-Style capability: `deck` when identity and structure are both present, `layout` for structure only, or `brand` for identity only. Use `kind: style` only for Style-only input. Adding Style to Brand, Layout, Deck, or Brand + Layout does not change that existing capability label; its Direction / method ownership stays explicit in the fused provenance and body. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not automatically a reusable library Deck; its application remains current-project context.
 
-**Completion receipt**: Report `roots=<normalized roots>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
+**Completion receipt**: Report `roots=<normalized roots>; sources=<library|explicit per root>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
 
 ## ✅ Template Workspace Applied
 
-- [x] Every input was an explicit root satisfying a listed workspace contract or the exact current Create Template handoff
+- [x] Every selected input was an index-derived library root or an exact explicit/Create Template root satisfying a listed workspace contract
 - [x] Every kind schema passed preflight; structured SVG checks ran only for Layout/Deck inputs
 - [x] All collisions and fusion conflicts were resolved before one atomic install
-- [x] `<project_path>/templates/` and any portable sibling assets are complete
+- [x] `<project_path>/templates/` and any portable sibling assets are complete and are the only downstream template source
 - [ ] **Next**: Return to [`generate-pptx.md`](../generate-pptx.md) Step 4

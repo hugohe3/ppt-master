@@ -39,15 +39,22 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The indexes are discovery aids only. [`generate-pptx`](../workflows/generate-pptx.md)
-Step 3 activates a template only from an explicit workspace-root path supplied
-by the user or an exact validated Create Template handoff.
+The four indexes are the complete library-discovery source for
+[`generate-pptx`](../workflows/generate-pptx.md) Step 3. The default page shows
+their registered entries alongside free design and any exact workspace roots
+supplied for the run; it never scans the four directories or fuzzy-matches a
+bare name. An exact root that matches a registered index entry may be displayed
+as `library`; an unregistered root remains `explicit`. After confirmation,
+[`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
+validates, fuses, and installs every selected workspace into the current
+project before Stage 1 starts. Later roles read only that project-local copy.
 
 ## Orthogonal contracts
 
 | Axis | Values | Meaning |
 |---|---|---|
 | Template kind | `brand` / `style` / `layout` / `deck` | Which reusable contract the package owns: identity, direction/method, brand-neutral structure, or a complete recurring application |
+| Selection source | `library` / `explicit` | Step-3 discovery provenance only: exact index-derived root or exact unregistered root; it does not change template semantics |
 | Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
 | Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
 | PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; Style-only, style-scope, brand-only, and free design remain Slide-local. Style fused with Layout/Deck does not change the non-Style structure plan. |
@@ -77,12 +84,14 @@ Style narrows this shared routing shape to `templates/design_spec.md` only and
 does not carry asset or review payloads; initialized-project sibling scaffolding
 may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion. Brand/Layout/Deck consume package-owned
+stage owns installation and fusion during the independent Step-3 selection
+phase. Brand/Layout/Deck consume package-owned
 `templates/`, `images/`, and `icons/`; Style consumes only
 `templates/design_spec.md` and ignores sibling project scaffolding. Every kind
 ignores `exports/`. Compatible legacy-flat Brand/Layout/Deck packages remain
 readable; Style has no legacy-flat form, and directory shape alone does not
-indicate legacy Master/Layout semantics.
+indicate legacy Master/Layout semantics. Strategist and all later consumers use
+the installed project-local files, never the original library or explicit root.
 
 ## Design specification references
 
