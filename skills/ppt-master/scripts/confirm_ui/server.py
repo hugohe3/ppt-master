@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-PPT Master - Strategist confirmation stage UI Server (Step 4)
+PPT Master - Template and Strategist confirmation UI Server (Steps 3-4)
 
-Lightweight Flask backend for the interactive, visual Strategist confirmation
-stage page. Strategist writes each stage to
+Lightweight Flask backend for the independent Step-3 template selection and
+interactive Step-4 Strategist confirmation page. The agent writes template
+input to ``<project>/confirm_ui/template_options.json``; template selection is
+persisted separately from the Strategist contract. Strategist writes each stage to
 ``<project>/confirm_ui/recommendations.stageN.json``; this server selects the
 current stage from ``result.json`` and renders it as a clickable page (color
 swatches, live font previews, candidate picks). On submit it writes the user's
@@ -24,6 +26,8 @@ Examples:
     python3 scripts/confirm_ui/server.py projects/my-project --no-browser
     python3 scripts/confirm_ui/server.py projects/my-project --daemon
     python3 scripts/confirm_ui/server.py projects/my-project --wait-only --wait-stage stage1
+    python3 scripts/confirm_ui/server.py projects/my-project --complete-template-phase
+    python3 scripts/confirm_ui/server.py projects/my-project --reset-template-phase
 
 Dependencies:
     flask>=3.0.0
@@ -31,6 +35,7 @@ Dependencies:
 
 import argparse
 import atexit
+import hashlib
 import json
 import logging
 import os
@@ -91,6 +96,10 @@ RECOMMENDATION_STAGE_NAMES = {
 }
 RESULT_NAME = 'result.json'
 SESSION_NAME = 'session.json'
+TEMPLATE_OPTIONS_NAME = 'template_options.json'
+TEMPLATE_SELECTION_NAME = 'template_selection.json'
+TEMPLATE_HANDOFF_NAME = 'template_handoff.json'
+TEMPLATE_SCHEMA_VERSION = 1
 
 _PALETTE_ROLES = (
     'background',
@@ -104,9 +113,17 @@ _TYPOGRAPHY_SIZE_ROLES = ('title', 'subtitle', 'annotation')
 _HEX_COLOR_RE = re.compile(r'#?(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})\Z')
 
 # Static option universe served at /api/catalogs (canvas synced live from config).
+_SKILL_DIR = Path(__file__).resolve().parents[2]
+_TEMPLATES_DIR = _SKILL_DIR / 'templates'
 _CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
-_ICON_LIBRARY_DIR = Path(__file__).resolve().parents[2] / 'templates' / 'icons'
-_AI_IMAGE_COMPARISON_DIR = Path(__file__).resolve().parents[2] / 'references' / 'ai-image-comparison'
+_ICON_LIBRARY_DIR = _TEMPLATES_DIR / 'icons'
+_AI_IMAGE_COMPARISON_DIR = _SKILL_DIR / 'references' / 'ai-image-comparison'
+_TEMPLATE_LIBRARY_CONFIG = {
+    'brand': ('brands', 'brands_index.json'),
+    'style': ('styles', 'styles_index.json'),
+    'layout': ('layouts', 'layouts_index.json'),
+    'deck': ('decks', 'decks_index.json'),
+}
 _ICON_PREVIEW_SAMPLES = {
     'chunk-filled': ('home', 'chart-line', 'users', 'target'),
     'tabler-filled': ('home', 'chart-dots', 'user', 'bulb'),
@@ -161,6 +178,588 @@ def _write_json_atomic(path: Path, data: dict) -> None:
             tmp.unlink(missing_ok=True)
         except OSError:
             pass
+
+
+def _json_sha256(data: object) -> str:
+    """Return a stable SHA-256 over one JSON-compatible value."""
+    canonical = json.dumps(
+        data,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(',', ':'),
+    )
+    return hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+
+
+def _safe_template_id(template_id: object) -> bool:
+    """Return whether an index key is one safe directory-segment id."""
+    return (
+        isinstance(template_id, str)
+        and re.fullmatch(r'\w[\w.-]*', template_id) is not None
+    )
+
+
+def _read_template_options_input(confirm_dir: Path) -> tuple[dict, list[Path]]:
+    """Read and validate the agent-authored Step-3 template input."""
+    options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
+    data = _read_json_object(options_file)
+    if type(data.get('schema_version')) is not int or data['schema_version'] != TEMPLATE_SCHEMA_VERSION:
+        raise ValueError(
+            f'{TEMPLATE_OPTIONS_NAME} schema_version must be {TEMPLATE_SCHEMA_VERSION}'
+        )
+    if data.get('phase') != 'template':
+        raise ValueError(f'{TEMPLATE_OPTIONS_NAME} phase must be template')
+    if 'lang' in data and (
+        not isinstance(data['lang'], str) or not data['lang'].strip()
+    ):
+        raise ValueError(f'{TEMPLATE_OPTIONS_NAME} lang must be a non-empty string')
+    if 'explicit_workspace_roots' not in data:
+        raise ValueError(
+            f'{TEMPLATE_OPTIONS_NAME} must include explicit_workspace_roots'
+        )
+    raw_roots = data['explicit_workspace_roots']
+    if not isinstance(raw_roots, list):
+        raise ValueError(
+            f'{TEMPLATE_OPTIONS_NAME} explicit_workspace_roots must be an array'
+        )
+
+    roots = []
+    seen = set()
+    for index, raw_root in enumerate(raw_roots):
+        if not isinstance(raw_root, str) or not raw_root.strip():
+            raise ValueError(
+                f'{TEMPLATE_OPTIONS_NAME} explicit_workspace_roots[{index}] '
+                'must be a non-empty string'
+            )
+        candidate = Path(raw_root)
+        if not candidate.is_absolute():
+            raise ValueError(
+                f'{TEMPLATE_OPTIONS_NAME} explicit_workspace_roots[{index}] '
+                'must be an absolute path'
+            )
+        try:
+            root = candidate.resolve()
+        except (OSError, RuntimeError) as exc:
+            raise ValueError(
+                f'cannot resolve explicit workspace root {raw_root}: {exc}'
+            ) from exc
+        canonical = str(root)
+        if canonical in seen:
+            raise ValueError(
+                f'{TEMPLATE_OPTIONS_NAME} contains duplicate workspace root: {canonical}'
+            )
+        if not root.is_dir():
+            raise ValueError(f'explicit workspace root is not a directory: {canonical}')
+        if not (
+            (root / 'templates' / 'design_spec.md').is_file()
+            or (root / 'design_spec.md').is_file()
+        ):
+            raise ValueError(
+                'explicit workspace root is missing templates/design_spec.md '
+                f'or legacy design_spec.md: {canonical}'
+            )
+        seen.add(canonical)
+        roots.append(root)
+    return data, roots
+
+
+def _build_template_library() -> tuple[dict, dict[str, dict], dict[str, dict], dict]:
+    """Build indexed library groups without scanning template directories."""
+    library = {}
+    candidates = {}
+    registered_roots = {}
+    index_contracts = {}
+    for kind, (directory_name, index_name) in _TEMPLATE_LIBRARY_CONFIG.items():
+        kind_dir = (_TEMPLATES_DIR / directory_name).resolve()
+        index_path = kind_dir / index_name
+        index_data = _read_json_object(index_path)
+        index_contracts[kind] = index_data
+        group = []
+        for template_id, metadata in index_data.items():
+            if not _safe_template_id(template_id):
+                raise ValueError(
+                    f'{index_path} contains unsafe template id: {template_id!r}'
+                )
+            if not isinstance(metadata, dict):
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} must be an object'
+                )
+            workspace_root = (kind_dir / template_id).resolve()
+            if workspace_root.parent != kind_dir:
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} does not resolve to a '
+                    f'direct child of {kind_dir}'
+                )
+            if not workspace_root.is_dir():
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} workspace does not exist: '
+                    f'{workspace_root}'
+                )
+            spec_path = workspace_root / 'templates' / 'design_spec.md'
+            if not spec_path.is_file():
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} is missing {spec_path}'
+                )
+            summary = metadata.get('summary', '')
+            if not isinstance(summary, str):
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} summary must be a string'
+                )
+            key = f'library:{kind}:{template_id}'
+            if key in candidates:
+                raise ValueError(f'duplicate template candidate key: {key}')
+            candidate = {
+                'key': key,
+                'source': 'library',
+                'kind': kind,
+                'id': template_id,
+                'label': template_id,
+                'summary': summary,
+                'workspace_root': str(workspace_root),
+            }
+            canonical_root = candidate['workspace_root']
+            if canonical_root in registered_roots:
+                raise ValueError(
+                    f'duplicate registered workspace root: {canonical_root}'
+                )
+            group.append(candidate)
+            candidates[key] = candidate
+            registered_roots[canonical_root] = candidate
+        library[kind] = group
+    return library, candidates, registered_roots, index_contracts
+
+
+def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
+    """Return the browser contract and its server-owned candidate whitelist."""
+    source, explicit_roots = _read_template_options_input(confirm_dir)
+    library, candidates, registered_roots, index_contracts = _build_template_library()
+    explicit = []
+    preselected_keys = []
+    for root in explicit_roots:
+        canonical_root = str(root)
+        registered = registered_roots.get(canonical_root)
+        if registered is not None:
+            preselected_keys.append(registered['key'])
+            continue
+        digest = hashlib.sha256(canonical_root.encode('utf-8')).hexdigest()
+        key = f'explicit:{digest}'
+        if key in candidates:
+            raise ValueError(f'duplicate template candidate key: {key}')
+        candidate = {
+            'key': key,
+            'source': 'explicit',
+            'label': root.name or canonical_root,
+            'workspace_root': canonical_root,
+        }
+        explicit.append(candidate)
+        candidates[key] = candidate
+        preselected_keys.append(key)
+
+    response = {
+        'schema_version': TEMPLATE_SCHEMA_VERSION,
+        'phase': 'template',
+        'library': library,
+        'explicit': explicit,
+        'preselected_keys': preselected_keys,
+    }
+    if 'lang' in source:
+        response['lang'] = source['lang'].strip()
+    response['options_sha256'] = _json_sha256({
+        'schema_version': TEMPLATE_SCHEMA_VERSION,
+        'phase': 'template',
+        'lang': response.get('lang'),
+        'explicit_workspace_roots': [str(root) for root in explicit_roots],
+        'library_indexes': index_contracts,
+        'library': library,
+        'explicit': explicit,
+        'preselected_keys': preselected_keys,
+    })
+    return response, candidates
+
+
+def _template_selection_from_candidate(candidate: dict) -> dict:
+    """Project one trusted browser candidate into the persisted selection."""
+    selection = {
+        'source': candidate['source'],
+        'workspace_root': candidate['workspace_root'],
+    }
+    if candidate['source'] == 'library':
+        selection['kind'] = candidate['kind']
+        selection['id'] = candidate['id']
+    return selection
+
+
+def _template_selection_sha256(
+    mode: str,
+    selections: list[dict],
+    options_sha256: str,
+) -> str:
+    """Bind one resolved choice to the candidate/options contract it used."""
+    return _json_sha256({
+        'mode': mode,
+        'selections': selections,
+        'options_sha256': options_sha256,
+    })
+
+
+def _validate_template_selection(data: dict) -> None:
+    """Validate the server-owned template-selection receipt shape."""
+    expected_fields = {
+        'schema_version',
+        'phase',
+        'status',
+        'mode',
+        'selections',
+        'options_sha256',
+        'selection_sha256',
+        'confirmed_at',
+    }
+    if set(data) != expected_fields:
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} has invalid fields')
+    if type(data.get('schema_version')) is not int or data['schema_version'] != TEMPLATE_SCHEMA_VERSION:
+        raise ValueError(
+            f'{TEMPLATE_SELECTION_NAME} schema_version must be {TEMPLATE_SCHEMA_VERSION}'
+        )
+    if data.get('phase') != 'template':
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} phase must be template')
+    if data.get('status') != 'confirmed':
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} status must be confirmed')
+    mode = data.get('mode')
+    if mode not in {'free_design', 'templates'}:
+        raise ValueError(
+            f'{TEMPLATE_SELECTION_NAME} mode must be free_design or templates'
+        )
+    selections = data.get('selections')
+    if not isinstance(selections, list):
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} selections must be an array')
+    if mode == 'free_design' and selections:
+        raise ValueError('free_design cannot carry template selections')
+    if mode == 'templates' and not selections:
+        raise ValueError('templates mode requires at least one selection')
+
+    options_sha256 = data.get('options_sha256')
+    selection_sha256 = data.get('selection_sha256')
+    if not isinstance(options_sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', options_sha256):
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} options_sha256 is invalid')
+    if not isinstance(selection_sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', selection_sha256):
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 is invalid')
+
+    seen_roots = set()
+    for index, selection in enumerate(selections):
+        if not isinstance(selection, dict):
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] must be an object'
+            )
+        source = selection.get('source')
+        expected_keys = {'source', 'workspace_root'}
+        if source == 'library':
+            expected_keys.update({'kind', 'id'})
+            if selection.get('kind') not in _TEMPLATE_LIBRARY_CONFIG:
+                raise ValueError(
+                    f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid kind'
+                )
+            if not _safe_template_id(selection.get('id')):
+                raise ValueError(
+                    f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid id'
+                )
+        elif source != 'explicit':
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid source'
+            )
+        if set(selection) != expected_keys:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid fields'
+            )
+        workspace_root = selection.get('workspace_root')
+        if not isinstance(workspace_root, str) or not workspace_root:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] '
+                'workspace_root must be a non-empty string'
+            )
+        root = Path(workspace_root)
+        if not root.is_absolute() or str(root.resolve()) != workspace_root:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] '
+                'workspace_root must be a canonical absolute path'
+            )
+        if workspace_root in seen_roots:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} contains duplicate workspace root: '
+                f'{workspace_root}'
+            )
+        seen_roots.add(workspace_root)
+    if not isinstance(data.get('confirmed_at'), str) or not data['confirmed_at']:
+        raise ValueError(
+            f'{TEMPLATE_SELECTION_NAME} confirmed_at must be a non-empty string'
+        )
+    expected_selection_sha256 = _template_selection_sha256(
+        mode,
+        selections,
+        options_sha256,
+    )
+    if selection_sha256 != expected_selection_sha256:
+        raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 does not match')
+
+
+def _read_template_selection(selection_file: Path) -> dict:
+    """Read a selection and revalidate it against current indexed options."""
+    data = _read_json_object(selection_file)
+    _validate_template_selection(data)
+    options, candidates = _build_template_options(selection_file.parent)
+    if data['options_sha256'] != options['options_sha256']:
+        raise ValueError(
+            f'{TEMPLATE_SELECTION_NAME} options_sha256 no longer matches current options'
+        )
+    available_selections = {
+        _json_sha256(_template_selection_from_candidate(candidate))
+        for candidate in candidates.values()
+    }
+    for selection in data['selections']:
+        if _json_sha256(selection) not in available_selections:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} references an unavailable candidate'
+            )
+    return data
+
+
+def _validate_template_handoff(data: dict) -> None:
+    """Validate the agent-owned Step-3 completion receipt shape."""
+    expected_fields = {
+        'schema_version',
+        'phase',
+        'status',
+        'mode',
+        'selection_sha256',
+        'completed_at',
+    }
+    if set(data) != expected_fields:
+        raise ValueError(f'{TEMPLATE_HANDOFF_NAME} has invalid fields')
+    if type(data.get('schema_version')) is not int or data['schema_version'] != TEMPLATE_SCHEMA_VERSION:
+        raise ValueError(
+            f'{TEMPLATE_HANDOFF_NAME} schema_version must be {TEMPLATE_SCHEMA_VERSION}'
+        )
+    if data.get('phase') != 'template':
+        raise ValueError(f'{TEMPLATE_HANDOFF_NAME} phase must be template')
+    if data.get('status') != 'ready':
+        raise ValueError(f'{TEMPLATE_HANDOFF_NAME} status must be ready')
+    if data.get('mode') not in {'free_design', 'templates'}:
+        raise ValueError(
+            f'{TEMPLATE_HANDOFF_NAME} mode must be free_design or templates'
+        )
+    selection_sha256 = data.get('selection_sha256')
+    if not isinstance(selection_sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', selection_sha256):
+        raise ValueError(f'{TEMPLATE_HANDOFF_NAME} selection_sha256 is invalid')
+    if not isinstance(data.get('completed_at'), str) or not data['completed_at']:
+        raise ValueError(
+            f'{TEMPLATE_HANDOFF_NAME} completed_at must be a non-empty string'
+        )
+
+
+def _read_template_handoff(project_path: Path, handoff_file: Path) -> dict:
+    """Read a handoff and bind it to the current selection and installed state."""
+    data = _read_json_object(handoff_file)
+    _validate_template_handoff(data)
+    selection = _read_template_selection(handoff_file.parent / TEMPLATE_SELECTION_NAME)
+    if data['mode'] != selection['mode']:
+        raise ValueError(f'{TEMPLATE_HANDOFF_NAME} mode does not match selection')
+    if data['selection_sha256'] != selection['selection_sha256']:
+        raise ValueError(
+            f'{TEMPLATE_HANDOFF_NAME} selection_sha256 does not match selection'
+        )
+    if data['mode'] == 'templates':
+        installed_spec = project_path / 'templates' / 'design_spec.md'
+        if not installed_spec.is_file():
+            raise ValueError(
+                f'{TEMPLATE_HANDOFF_NAME} requires installed template spec: '
+                f'{installed_spec}'
+            )
+    return data
+
+
+def _complete_template_phase(project_path: Path) -> int:
+    """Write the agent-owned handoff after free-design or template application."""
+    confirm_dir = project_path / CONFIRM_DIR_NAME
+    selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+    if not selection_file.exists():
+        logger.error('%s not found — the user must confirm Step 3 first', selection_file)
+        return 1
+    try:
+        selection = _read_template_selection(selection_file)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        logger.error('cannot complete template phase: %s', exc)
+        return 1
+    if selection['mode'] == 'templates':
+        installed_spec = project_path / 'templates' / 'design_spec.md'
+        if not installed_spec.is_file():
+            logger.error(
+                'cannot complete template phase before template apply writes %s',
+                installed_spec,
+            )
+            return 1
+
+    handoff_file = confirm_dir / TEMPLATE_HANDOFF_NAME
+    if handoff_file.exists():
+        try:
+            existing = _read_template_handoff(project_path, handoff_file)
+        except (OSError, json.JSONDecodeError, ValueError):
+            existing = None
+        if (
+            existing is not None
+            and existing['selection_sha256'] == selection['selection_sha256']
+        ):
+            logger.info('template phase already complete: %s', handoff_file)
+            return 0
+
+    handoff = {
+        'schema_version': TEMPLATE_SCHEMA_VERSION,
+        'phase': 'template',
+        'status': 'ready',
+        'mode': selection['mode'],
+        'selection_sha256': selection['selection_sha256'],
+        'completed_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+    }
+    _validate_template_handoff(handoff)
+    _write_json_atomic(handoff_file, handoff)
+    logger.info('template phase handoff written to %s', handoff_file)
+    return 0
+
+
+def _reset_template_phase(confirm_dir: Path) -> int:
+    """Remove only the two mutable Step-3 receipts so the user may reselect."""
+    removed = []
+    for filename in (TEMPLATE_SELECTION_NAME, TEMPLATE_HANDOFF_NAME):
+        path = confirm_dir / filename
+        try:
+            path.unlink()
+            removed.append(str(path))
+        except FileNotFoundError:
+            continue
+        except OSError as exc:
+            logger.error('cannot remove %s: %s', path, exc)
+            return 1
+    if removed:
+        logger.info('reset template phase receipts: %s', ', '.join(removed))
+    else:
+        logger.info('template phase receipts already absent')
+    return 0
+
+
+def _template_stage1_ready_error(project_path: Path, confirm_dir: Path) -> Optional[str]:
+    """Return why Step 3 has not safely handed off to a fresh Stage 1."""
+    selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+    if not selection_file.exists():
+        return f'{TEMPLATE_SELECTION_NAME} not found'
+    try:
+        _read_template_selection(selection_file)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        return f'invalid template selection: {exc}'
+
+    handoff_file = confirm_dir / TEMPLATE_HANDOFF_NAME
+    if not handoff_file.exists():
+        return f'{TEMPLATE_HANDOFF_NAME} not found'
+    try:
+        _read_template_handoff(project_path, handoff_file)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        return f'invalid template handoff: {exc}'
+
+    stage1_file = confirm_dir / RECOMMENDATION_STAGE_NAMES[1]
+    if not stage1_file.exists():
+        return f'{stage1_file.name} not found after template handoff'
+    try:
+        stage1_data = _read_json_object(stage1_file)
+        if _recommendation_stage(stage1_data) != 1:
+            return f'{stage1_file.name} does not declare stage1'
+        if stage1_file.stat().st_mtime_ns < handoff_file.stat().st_mtime_ns:
+            return f'{stage1_file.name} is older than {TEMPLATE_HANDOFF_NAME}'
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        return f'cannot validate fresh Stage 1 recommendations: {exc}'
+    return None
+
+
+def _resolve_template_confirmation(
+    payload: dict,
+    candidates: dict[str, dict],
+    options_sha256: str,
+) -> dict:
+    """Resolve browser keys against the current server-owned candidate set."""
+    required_fields = {'mode', 'selection_keys'}
+    if set(payload) != required_fields:
+        raise ValueError('template confirmation accepts only mode and selection_keys')
+    mode = payload.get('mode')
+    if mode not in {'free_design', 'templates'}:
+        raise ValueError('mode must be free_design or templates')
+    selection_keys = payload.get('selection_keys')
+    if not isinstance(selection_keys, list):
+        raise ValueError('selection_keys must be an array')
+    if any(not isinstance(key, str) or not key for key in selection_keys):
+        raise ValueError('selection_keys must contain non-empty strings')
+    if len(selection_keys) != len(set(selection_keys)):
+        raise ValueError('selection_keys must not contain duplicates')
+    if mode == 'free_design' and selection_keys:
+        raise ValueError('free_design cannot carry selection_keys')
+    if mode == 'templates' and not selection_keys:
+        raise ValueError('templates mode requires at least one selection key')
+
+    unknown_keys = [key for key in selection_keys if key not in candidates]
+    if unknown_keys:
+        raise ValueError(
+            'selection_keys contains unavailable candidate keys: '
+            + ', '.join(unknown_keys)
+        )
+    selections = sorted([
+        _template_selection_from_candidate(candidates[key])
+        for key in selection_keys
+    ], key=lambda item: (
+        item['source'],
+        item.get('kind', ''),
+        item.get('id', ''),
+        item['workspace_root'],
+    ))
+    selection_sha256 = _template_selection_sha256(
+        mode,
+        selections,
+        options_sha256,
+    )
+    receipt = {
+        'schema_version': TEMPLATE_SCHEMA_VERSION,
+        'phase': 'template',
+        'status': 'confirmed',
+        'mode': mode,
+        'selections': selections,
+        'options_sha256': options_sha256,
+        'selection_sha256': selection_sha256,
+        'confirmed_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+    }
+    _validate_template_selection(receipt)
+    return receipt
+
+
+def _confirmation_launch_error(
+    confirm_dir: Path,
+    *,
+    require_template: bool = False,
+) -> Optional[str]:
+    """Return why neither the template phase nor current Strategist stage can launch."""
+    options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
+    if options_file.exists():
+        try:
+            _build_template_options(confirm_dir)
+            selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+            if selection_file.exists():
+                _read_template_selection(selection_file)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return f'invalid template phase input: {exc}'
+        return None
+    if require_template:
+        return f'{options_file} not found — cannot start the template phase'
+
+    rec_file = _active_recommendations_path(confirm_dir)
+    if rec_file.exists():
+        return None
+    return (
+        f'{rec_file} and {options_file} not found — write template options or '
+        'the current Strategist recommendation before launch'
+    )
 
 
 def _server_url(port: int, path: str = '') -> str:
@@ -326,6 +925,42 @@ def _wait_for_result(
             logger.error(
                 'timed out waiting for browser confirmation — the page is still '
                 'open; re-check %s before falling back to chat', result_file,
+            )
+            return 124
+
+        time.sleep(0.5)
+
+
+def _wait_for_template_selection(
+    selection_file: Path,
+    proc: subprocess.Popen,
+    started_at: float,
+    timeout: int,
+) -> int:
+    """Wait until this launch writes a fresh template-selection receipt."""
+    logger.info('waiting for browser template selection...')
+    deadline = None if timeout <= 0 else time.time() + timeout
+    while True:
+        if selection_file.exists():
+            try:
+                if selection_file.stat().st_mtime >= started_at:
+                    _read_template_selection(selection_file)
+                    logger.info('template selection received: %s', selection_file)
+                    return 0
+            except (OSError, json.JSONDecodeError, ValueError) as exc:
+                logger.error('invalid template selection: %s', exc)
+                return 2
+
+        returncode = proc.poll()
+        if returncode is not None:
+            logger.error('confirm UI exited before a fresh template selection was written')
+            return returncode or 1
+
+        if deadline is not None and time.time() >= deadline:
+            logger.error(
+                'timed out waiting for template selection — the page is still '
+                'open; re-check %s before falling back to chat',
+                selection_file,
             )
             return 124
 
@@ -1090,8 +1725,9 @@ def _build_session_state(
         status = 'ready_user' if ready else 'waiting_agent'
         current_stage = rec_stage if ready else 'stage1'
 
-    return {
+    session = {
         'session_id': previous.get('session_id') or uuid.uuid4().hex,
+        'phase': 'strategist',
         'status': status,
         'current_stage': current_stage,
         'stage_skip': stage_skip,
@@ -1108,6 +1744,77 @@ def _build_session_state(
         'server_port': server_port or previous.get('server_port'),
         'event': event or previous.get('event') or 'derived',
     }
+
+    options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
+    selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+    handoff_file = confirm_dir / TEMPLATE_HANDOFF_NAME
+    if not options_file.exists():
+        return session
+
+    session.update({
+        'template_options_file': TEMPLATE_OPTIONS_NAME,
+        'template_options_version': _file_version(options_file),
+        'template_selection_file': TEMPLATE_SELECTION_NAME,
+        'template_selection_version': _file_version(selection_file),
+        'template_handoff_file': TEMPLATE_HANDOFF_NAME,
+        'template_handoff_version': _file_version(handoff_file),
+    })
+    try:
+        _build_template_options(confirm_dir)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        session.update({
+            'phase': 'template',
+            'status': 'error',
+            'current_stage': 'template',
+            'expected_stage': 'template',
+            'expected_stage_number': None,
+            'template_status': 'error',
+            'template_error': str(exc),
+        })
+        return session
+
+    if selection_file.exists():
+        try:
+            _read_template_selection(selection_file)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            session.update({
+                'phase': 'template',
+                'status': 'waiting_agent',
+                'current_stage': 'template',
+                'expected_stage': 'template',
+                'expected_stage_number': None,
+                'template_status': 'invalid',
+                'template_error': str(exc),
+            })
+            return session
+        ready_error = _template_stage1_ready_error(
+            confirm_dir.parent,
+            confirm_dir,
+        )
+        if ready_error is None:
+            session['template_status'] = 'ready'
+            return session
+        session.update({
+            'phase': 'template',
+            'status': 'waiting_agent',
+            'current_stage': 'template',
+            'expected_stage': 'stage1',
+            'expected_stage_number': 1,
+            'template_status': 'confirmed',
+            'template_error': ready_error,
+        })
+        return session
+
+    session.update({
+        'phase': 'template',
+        'status': 'ready_user',
+        'current_stage': 'template',
+        'expected_stage': 'template',
+        'expected_stage_number': None,
+        'template_status': 'ready_user',
+        'template_error': None,
+    })
+    return session
 
 
 def _write_session_state(confirm_dir: Path, session: dict) -> None:
@@ -1398,6 +2105,52 @@ def _wait_result_status(
     return None
 
 
+def _wait_template_selection_status(selection_file: Path) -> Optional[int]:
+    """Return a terminal wait status for the template-selection receipt."""
+    if not selection_file.exists():
+        return None
+    try:
+        _read_template_selection(selection_file)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        logger.error('invalid template selection: %s', exc)
+        return 2
+    logger.info('template selection received: %s', selection_file)
+    return 0
+
+
+def _wait_only_for_template_selection(
+    selection_file: Path,
+    lock_file: Path,
+    timeout: int,
+) -> int:
+    """Attach to the running page and wait for Step-3 template selection."""
+    logger.info('waiting for browser template selection...')
+    deadline = None if timeout <= 0 else time.time() + timeout
+    while True:
+        selection_status = _wait_template_selection_status(selection_file)
+        if selection_status is not None:
+            return selection_status
+
+        lock = _read_lock(lock_file)
+        pid = _lock_pid(lock)
+        if not pid or not _process_alive(pid):
+            logger.error(
+                'confirm server is no longer running before template selection '
+                'was confirmed'
+            )
+            return 1
+
+        if deadline is not None and time.time() >= deadline:
+            logger.error(
+                'timed out waiting for template selection — the page may still '
+                'be open; re-check %s before falling back to chat',
+                selection_file,
+            )
+            return 124
+
+        time.sleep(0.5)
+
+
 def _shutdown_existing(lock_file: Path) -> int:
     """Stop a confirm server left running for this project (idempotent).
 
@@ -1625,7 +2378,7 @@ def create_app(
 
     @app.route('/api/session')
     def get_session():
-        """Expose the derived three-stage wizard state for browser polling."""
+        """Expose the derived template/Strategist wizard state for polling."""
         session = _sync_session_state(
             confirm_dir,
             server_port=app.config.get('SERVER_PORT'),
@@ -1634,6 +2387,66 @@ def create_app(
         resp = jsonify(session)
         resp.headers['Cache-Control'] = 'no-store'
         return resp
+
+    @app.route('/api/template-options')
+    def get_template_options():
+        """Serve indexed library groups and agent-supplied explicit candidates."""
+        options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
+        if not options_file.exists():
+            return jsonify({'error': f'{TEMPLATE_OPTIONS_NAME} not found'}), 404
+        try:
+            data, _ = _build_template_options(confirm_dir)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return jsonify({'error': f'invalid template options: {exc}'}), 409
+        resp = jsonify(data)
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
+
+    @app.route('/api/template-confirm', methods=['POST'])
+    def confirm_template():
+        """Persist a template choice resolved only from current candidate keys."""
+        payload = request.get_json(silent=True)
+        if not isinstance(payload, dict):
+            return jsonify({'error': 'invalid payload'}), 400
+        try:
+            options, candidates = _build_template_options(confirm_dir)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return jsonify({'error': f'invalid template options: {exc}'}), 409
+        try:
+            receipt = _resolve_template_confirmation(
+                payload,
+                candidates,
+                options['options_sha256'],
+            )
+        except ValueError as exc:
+            return jsonify({'error': str(exc)}), 400
+        selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+        if selection_file.exists():
+            try:
+                existing = _read_template_selection(selection_file)
+            except (OSError, json.JSONDecodeError, ValueError) as exc:
+                return jsonify({
+                    'error': (
+                        f'existing template selection is invalid: {exc}; '
+                        'the agent must run --reset-template-phase'
+                    ),
+                }), 409
+            if existing['selection_sha256'] == receipt['selection_sha256']:
+                return jsonify({'status': 'ok', 'idempotent': True})
+            return jsonify({
+                'error': (
+                    'template phase is already confirmed with a different '
+                    'selection; the agent must run --reset-template-phase'
+                ),
+            }), 409
+        _write_json_atomic(selection_file, receipt)
+        _sync_session_state(
+            confirm_dir,
+            server_port=app.config.get('SERVER_PORT'),
+            event='template-submitted',
+        )
+        logger.info('template selection written to %s', selection_file)
+        return jsonify({'status': 'ok'})
 
     @app.route('/api/catalogs')
     def get_catalogs():
@@ -1764,6 +2577,15 @@ def create_app(
         stage = _stage_key(raw_stage)
         if raw_stage is not None and stage is None:
             return jsonify({'error': 'invalid confirmation stage'}), 400
+        if stage == 'stage1' and (confirm_dir / TEMPLATE_OPTIONS_NAME).exists():
+            template_error = _template_stage1_ready_error(
+                project_path,
+                confirm_dir,
+            )
+            if template_error:
+                return jsonify({
+                    'error': f'template phase is not ready for Stage 1: {template_error}',
+                }), 409
         stage_error = _submission_stage_error(
             project_path,
             confirm_dir,
@@ -1871,7 +2693,7 @@ def create_app(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='PPT Master Strategist confirmation stage UI',
+        description='PPT Master template and Strategist confirmation UI',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory')
@@ -1886,20 +2708,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--wait', action='store_true',
-        help='With --daemon, wait until a fresh result.json is written',
+        help='With --daemon, wait until the requested template/result receipt is written',
     )
     parser.add_argument(
         '--wait-only', action='store_true',
         help='Attach to the confirm server for this project and wait for an '
-             'already-open page to write result.json. If the target result is '
+             'already-open page to write the requested receipt. If it is '
              'already persisted, return without recovery; otherwise recover a '
              'dead server on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
-        '--wait-stage', default='final', metavar='{stage1,stage2,final}',
-        help='With --wait-only, wait for this result.json stage (default: final). '
-             'Use stage1 after the initial daemon launch and chat handoff; use '
-             'stage2 for the direction handoff.',
+        '--wait-stage', default='final', metavar='{template,stage1,stage2,final}',
+        help='Wait for the Step-3 template selection or this result.json stage '
+             '(default: final). Use template after the initial template-phase '
+             'launch, stage1 after its Strategist handoff, and stage2 for the '
+             'direction handoff.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
@@ -1915,6 +2738,16 @@ def build_parser() -> argparse.ArgumentParser:
         help='Stop a confirm server left running for this project, then exit '
              '(idempotent). Run at the end of Step 4 so the page never lingers '
              'on its selected port before live preview starts.',
+    )
+    parser.add_argument(
+        '--complete-template-phase', action='store_true',
+        help='Agent-only: bind the current template selection to a ready handoff. '
+             'Template mode requires <project>/templates/design_spec.md.',
+    )
+    parser.add_argument(
+        '--reset-template-phase', action='store_true',
+        help='Agent-only: remove exactly template_selection.json and '
+             'template_handoff.json so the user may select again.',
     )
     return parser
 
@@ -1940,33 +2773,63 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not project_path.is_dir():
         logger.error('%s is not a directory', project_path)
         return 1
-    wait_stage = _stage_key(args.wait_stage)
-    if wait_stage not in {'stage1', 'stage2', 'final'}:
-        logger.error('--wait-stage must be stage1, stage2, or final')
+    raw_wait_stage = str(args.wait_stage).strip().lower()
+    wait_stage = 'template' if raw_wait_stage == 'template' else _stage_key(raw_wait_stage)
+    if wait_stage not in {'template', 'stage1', 'stage2', 'final'}:
+        logger.error('--wait-stage must be template, stage1, stage2, or final')
         return 2
+
+    template_control = args.complete_template_phase or args.reset_template_phase
+    if template_control and (
+        args.daemon or args.wait or args.wait_only or args.shutdown
+    ):
+        logger.error(
+            '--complete-template-phase/--reset-template-phase cannot be combined '
+            'with server, wait, or shutdown actions'
+        )
+        return 2
+    if args.complete_template_phase and args.reset_template_phase:
+        logger.error(
+            '--complete-template-phase and --reset-template-phase are mutually exclusive'
+        )
+        return 2
+    if args.complete_template_phase:
+        return _complete_template_phase(project_path)
+    if args.reset_template_phase:
+        return _reset_template_phase(project_path / CONFIRM_DIR_NAME)
 
     # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
     # recommendation files (the page may never have been confirmed).
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
-    # Staged wait: attach to the server launched by --daemon and block
-    # until the page writes the requested intermediate or final result.json.
+    # Staged wait: attach to the server launched by --daemon and block until
+    # the page writes the requested template or Strategist receipt.
     if args.wait_only:
         lock_file = project_path / LOCK_FILE_NAME
-        result_file = project_path / CONFIRM_DIR_NAME / RESULT_NAME
-        if not _live_lock(lock_file):
-            confirm_dir = project_path / CONFIRM_DIR_NAME
-            result_status = _wait_result_status(result_file, wait_stage)
-            if result_status is not None:
-                return result_status
-            rec_file = _active_recommendations_path(confirm_dir)
-            if not rec_file.exists():
-                logger.error(
-                    '%s not found — cannot recover confirm UI before wait-only',
-                    rec_file,
-                )
+        confirm_dir = project_path / CONFIRM_DIR_NAME
+        result_file = confirm_dir / RESULT_NAME
+        selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
+        if wait_stage == 'template':
+            wait_status = _wait_template_selection_status(selection_file)
+            if wait_status is not None:
+                return wait_status
+            launch_error = _confirmation_launch_error(
+                confirm_dir,
+                require_template=True,
+            )
+            if launch_error:
+                logger.error('%s', launch_error)
                 return 1
+        if not _live_lock(lock_file):
+            if wait_stage != 'template':
+                wait_status = _wait_result_status(result_file, wait_stage)
+                if wait_status is not None:
+                    return wait_status
+                launch_error = _confirmation_launch_error(confirm_dir)
+                if launch_error:
+                    logger.error('%s', launch_error)
+                    return 1
             exact_port = args.port is not None
             recovery_port = (
                 args.port
@@ -1990,6 +2853,12 @@ def main(argv: Optional[list[str]] = None) -> int:
                 'recovered confirm UI for wait-only at %s; the browser polling should resume',
                 _server_url(actual_port),
             )
+        if wait_stage == 'template':
+            return _wait_only_for_template_selection(
+                selection_file,
+                lock_file,
+                args.wait_timeout,
+            )
         return _wait_only_for_result(
             result_file,
             lock_file,
@@ -1998,12 +2867,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         )
 
     confirm_dir = project_path / CONFIRM_DIR_NAME
-    rec_file = _active_recommendations_path(confirm_dir)
-    if not rec_file.exists():
-        logger.error(
-            '%s not found — Strategist must write the current recommendation stage before launch',
-            rec_file,
-        )
+    launch_error = _confirmation_launch_error(
+        confirm_dir,
+        require_template=args.daemon and args.wait and wait_stage == 'template',
+    )
+    if launch_error:
+        logger.error('%s', launch_error)
         return 1
 
     if args.daemon:
@@ -2021,6 +2890,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
         confirm_dir = project_path / CONFIRM_DIR_NAME
         result_file = confirm_dir / RESULT_NAME
+        selection_file = confirm_dir / TEMPLATE_SELECTION_NAME
         expected_stage = _expected_result_stage(confirm_dir)
         started_at = time.time()
         try:
@@ -2035,6 +2905,13 @@ def main(argv: Optional[list[str]] = None) -> int:
             logger.error('%s', exc)
             return 1
         if args.wait:
+            if wait_stage == 'template':
+                return _wait_for_template_selection(
+                    selection_file,
+                    proc,
+                    started_at,
+                    args.wait_timeout,
+                )
             return _wait_for_result(
                 result_file,
                 proc,
