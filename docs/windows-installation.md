@@ -75,15 +75,16 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 Open the `ppt-master` folder in an agent-capable AI tool (Claude Code, Codex, Cursor, a VS Code agent, etc.) and type in the chat:
 
 ```
-Please create a simple 3-page test PPT with a cover, one content page, and a closing page. Topic: "Hello World".
+Quickly generate a simple 3-page test PPT with a cover, one content page, and a closing page. Topic: "Hello World". No need to confirm with me.
 ```
 
-After the standard flow finishes, you should see:
+Asking for **quick generation** is what keeps this smoke test short: the AI skips the Strategist analysis and the design-confirmation round trips and goes straight to authoring and export. The default flow confirms the design spec with you first, which is what you want for a real deck but slow when all you are checking is that the environment works. Full guide → [Quick mode](./getting-started.md#quick-mode).
+
+When it finishes, you should see:
 
 - A native DrawingML `.pptx` under `exports/`, generated from `svg_output/`, that opens in PowerPoint and remains editable element by element.
-- A `svg_final/` directory containing self-contained visual-preview SVGs. They may be inserted manually as SVG pictures, but manual "Convert to Shape" is outside the supported contract.
 
-If both are present, **you're done.**
+That's the check that matters — if the file is there and opens, **you're done.** Note that quick generation skips `finalize_svg.py`, so there is no `svg_final/` preview directory; the default flow produces one, containing self-contained visual-preview SVGs. They may be inserted manually as SVG pictures, but manual "Convert to Shape" is outside the supported contract.
 
 ---
 
