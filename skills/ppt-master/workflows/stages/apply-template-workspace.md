@@ -4,7 +4,7 @@ description: Generate-PPTX Step-3 runbook for validating, installing, or fusing 
 
 # Apply Template Workspace Stage
 
-> Run only from [`generate-pptx.md`](../generate-pptx.md) Step 3 after the user confirms one or more library/explicit workspace roots, or after Create Template hands off its exact validated root in the current conversation. Never load this stage for confirmed free design, a bare template name, a style description, or a brand mention. This stage applies a completed selection; it does not move template choice into Stage 1 or Stage 2.
+> Run only from [`generate-pptx.md`](../generate-pptx.md) Step 3 after the user confirms the dropdown-composed library/explicit workspace roots, or after Create Template hands off its exact validated root in the current conversation. Never load this stage for confirmed free design, a bare template name, a style description, or a brand mention. This stage applies a completed selection; it does not move template choice into Stage 1 or Stage 2.
 
 ## 1. Gate and Normalize Inputs
 
@@ -31,6 +31,8 @@ promote an unregistered directory into the UI catalog. An explicit root remains
 valid without index membership; exact equality with a registered root may be
 reported as `library`. The label changes discovery provenance only, never schema
 validation, fusion precedence, or installation behavior.
+
+**Selection cardinality**: The default page permits one registered root per kind plus one explicit root. Kinds compose freely; an explicit root may pair with a same-kind library root under §5.2. Reject larger receipts server-side.
 
 **Hard rule — raw source boundary**: A raw PPTX is not a Step 3 workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first and return with its validated workspace root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
@@ -92,8 +94,9 @@ For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `tem
 If the normalized source root equals the target project root, consume it in place and copy nothing. An in-place workspace cannot participate in multi-path fusion. Ignore source `exports/`; it contains review artifacts, not portable template inputs. Empty optional roots remain absent.
 
 **Hard rule — project-local consumer boundary**: After installation/fusion,
-Strategist and every later role read only `<project_path>/templates/` and the
-project-local `images/` / `icons/` pools. The original library or external root
+template-aware Strategist work from Stage 2 onward and every later role read
+only `<project_path>/templates/` and the project-local `images/` / `icons/`
+pools. The original library or external root
 is installation input, not a later prompt source. If source and target are the
 same project root, that in-place root already satisfies this boundary.
 
@@ -102,24 +105,24 @@ Template SVGs are authoring prototypes, not export-time overlays. The generated 
 
 ## 5. Fuse Multiple Workspace Paths
 
-Multi-path fusion supports different kinds, or at most two workspaces of the same kind. Resolve all segment and asset conflicts before writing any target file.
+Fuse different kinds or at most two same-kind roots. Resolve template segment/asset conflicts before writing. Never read, predict, or revise Stage 1 here.
 
 ### 5.1 Different Kinds
 
-Resolve four whole segments instead of enumerating every kind combination. This table selects the starting workspace owner; explicit current user instructions and the final Strategist confirmation remain authoritative over every result:
+Resolve four whole template segments. This table selects the installed starting owner; current user instructions and later confirmation still govern project use:
 
 | Segment | Starting owner |
 |---|---|
-| Identity | Brand, otherwise Deck, otherwise the current Stage-2 project decision. Style color/type/icon/image values are direction candidates, never identity truth. |
-| Structure | A compatible Layout, otherwise Deck, otherwise free design. Style owns no canvas, prototype, Master/Layout, slot, or page mapping. |
-| Application | The current Stage-1 communication contract, informed by Deck's descriptive recurring-application context when present. Style never supplies the current audience, outcome, page count, outline, or content. |
-| Direction / method | Style, otherwise the current Stage-2 project decision. Actual Deck prototypes and Signature facts may inform compatibility, but Deck does not own the Style-only method segment. |
+| Identity | Brand, otherwise Deck, otherwise unresolved until Stage 2. Style color/type/icon/image values are direction candidates, never identity truth. |
+| Structure | A compatible Layout, otherwise Deck, otherwise unresolved/free design until Stage 2. Style owns no canvas, prototype, Master/Layout, slot, or page mapping. |
+| Reusable application context | Deck only when present. Preserve it for the later Stage-2 comparison; it never becomes the current project's application contract. |
+| Direction / method | Style when present, otherwise unresolved until Stage 2. Actual Deck prototypes and Signature facts may inform compatibility, but Deck does not own the Style-only method segment. |
 
 Replace each selected segment wholesale; do not mix its fields implicitly. Brand or Deck identity replaces any identity-adjacent defaults carried by Style. A Style direction may adapt to that resolved identity, but cannot relabel its candidates as official brand facts.
 
-Before Layout overrides Deck structure, verify that every required application/narrative/content role fits the Layout's page roles, slot types, and capacity. On mismatch, stop and surface exactly three remedies: retain Deck structure, select another Layout, or explicitly revise the application contract.
+Before Layout overrides Deck structure, compare Deck's reusable roles with Layout roles, slots, and capacity. On mismatch, offer exactly three remedies: retain Deck structure, select another Layout, or omit Deck. Do not invent the current project contract before Stage 1.
 
-Before Style overlays Deck-derived prototype/visual guidance, verify that its communication method can serve the Deck application and that its composition requirements fit the selected Layout/Deck structure. On mismatch, stop and surface the conflicting segment facts; require the user to omit the Style, choose a compatible Style/structure, or explicitly revise the application contract. Do not silently weaken Style, Deck, or Layout to make the paths appear compatible.
+Before Style overlays Deck guidance, verify that its method serves Deck's reusable context and fits the selected structure. On mismatch, require omitting Style or choosing a compatible Style/structure; never silently weaken a segment. Stage 2 separately checks the result against the confirmed project contract.
 
 Field-level micro-adjustments such as a primary-color override are not Step 3 fusion. Carry them into the normal Strategist confirmation fields.
 
@@ -142,7 +145,7 @@ Write one final `<project>/templates/design_spec.md`. Immediately under its H1, 
 
 Single-path installs do not add provenance. Set fused frontmatter `kind` from the non-Style capability: `deck` when identity and structure are both present, `layout` for structure only, or `brand` for identity only. Use `kind: style` only for Style-only input. Adding Style to Brand, Layout, Deck, or Brand + Layout does not change that existing capability label; its Direction / method ownership stays explicit in the fused provenance and body. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not automatically a reusable library Deck; its application remains current-project context.
 
-**Completion receipt**: Report `roots=<normalized roots>; sources=<library|explicit per root>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
+**Completion receipt**: Report `roots=<normalized roots>; sources=<library|explicit per root>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application_context:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
 
 ## ✅ Template Workspace Applied
 

@@ -4,24 +4,26 @@
 
 Conditional extension for applying an installed Brand/Style/Layout/Deck workspace to Stage 2 recommendations and the execution lock.
 
-**Trigger**: Load only when Generate Step 3 validated an explicit workspace path and either installed it into `<project_path>/templates/` or confirmed that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
+**Trigger**: Load only after Stage 1 is confirmed, when Generate Step 3 validated a library or explicit workspace path and either installed it into `<project_path>/templates/` or confirmed that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
 
 ---
 
 ## 1. AI-Authored Template Application Plan
 
-**Template vs preset**: A style mention and a Style workspace are different inputs. Bare names and style words remain interpretive input and never resolve to a local path; only an explicitly installed workspace activates the rules below. Its fused `<project_path>/templates/design_spec.md` is the template-design source. Treat `kind: style` or a fused provenance entry for `style` as an active Direction / method segment.
+**Template vs preset**: A style mention and a Style workspace are different inputs. Bare names and style words remain interpretive input and never resolve to a local path; only a selected and installed workspace activates the rules below. Its fused `<project_path>/templates/design_spec.md` is the template-design source. Treat `kind: style` or a fused provenance entry for `style` as an active Direction / method segment. Whether a source root was labelled `library` or `explicit` is installation provenance only and never affects Stage-2 precedence.
 
 **Legacy template boundary**: A Layout/Deck template containing `native_structure.json`, `source_template.pptx`, missing root Master identity, direct atomic placeholders, or old `baseline` / `preserve` / distillation metadata is not a Generate Step 3 input. Create a current workspace through [`create-template`](../workflows/create-template.md), preferably from the original PPTX when native topology matters. Brand and Style are intentionally roster-free; never reject either for omitting SVG or Master identity. Do not mutate the input in place.
 
 **No template-mode confirmation**: Never ask the user to select `template_reuse_scope`, `template_adherence`, `mirror`, `layout`, `style`, `strict`, or `adaptive`. These are internal execution values for the current exporter. The user communicates intent in natural language; explicit instructions such as “全部原样保留”, “从中选合适的页面”, “可以重组”, or “只参考视觉” are authoritative. Without an explicit instruction, Strategist decides.
 
+**Hard rule — no Stage-1 influence**: Do not load this module, the installed template spec, prototypes, assets, or template canvas while authoring Stage 1. Stage 1 is already confirmed when this module begins; never revise it to match the workspace.
+
 Immediately before authoring the Stage-2 solution, load each relevant template
 resource once per path + SHA and inspect:
 
 - every installed `design_spec.md`; for Layout/Deck only, also inspect the actual Page Roster and relevant SVG prototypes;
-- the resolved Identity, Structure, Application, and Direction / method segment owners from the Step-3 fusion receipt;
-- the current communication contract, source obligations, planned page count, and content shape of every planned page;
+- the resolved Identity, Structure, Reusable Application Context, and Direction / method segment owners from the Step-3 fusion receipt;
+- the confirmed current communication contract, source obligations, planned page count, and content shape of every planned page;
 - the user's natural-language instructions, including any page names/numbers or elements they explicitly require.
 
 Then author one plan that decides all of the following without presenting an option menu:
@@ -54,7 +56,7 @@ Write only the derived values to `spec_lock.md pptx_structure`; omit `template_a
 
 ## 2. Scenario Fit and Inherited Design
 
-**Mandatory — decide from the §1 inspection**: For an installed `kind: deck`, compare the retained Template Overview with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Compare the retained Page Roster/relevant SVG prototypes with required narrative roles, content shapes, slots, and capacity. Reopen a resource only when its path + SHA changed. The template describes what exists; it never overrides the current project or own required/optional/repeatable or fixed/replaceable/example-only policy. For `kind: layout`, compare only structural roles, slots, and capacity. For an active Style segment, compare its communication method with the current contract and its composition requirements with any selected Layout/Deck structure. Surface a material incompatibility; never silently weaken one segment to make it fit.
+**Mandatory — decide from the §1 inspection**: For an installed `kind: deck`, compare the retained Template Overview with the confirmed audience, intent, outcome, delivery context, artifact afterlife, and source obligations. Deck application is reusable context for this comparison, never the current project's application contract and never an override. Compare the retained Page Roster/relevant SVG prototypes with required narrative roles, content shapes, slots, and capacity. Reopen a resource only when its path + SHA changed. The template describes what exists; it never overrides the current project or own required/optional/repeatable or fixed/replaceable/example-only policy. For `kind: layout`, compare only structural roles, slots, and capacity. For an active Style segment, compare its communication method with the current contract and its composition requirements with any selected Layout/Deck structure. Surface a material incompatibility; never silently weaken one segment to make it fit.
 
 | Internal scope | Appropriate when |
 |---|---|
@@ -66,7 +68,7 @@ When the communication contract conflicts with the workspace, choose and state t
 
 > Internal note: `content_divergence` controls source reorganization; the AI-derived `template_reuse_scope` records the reused layer; `template_adherence` records whether a structured plan keeps or extends existing Layout identities.
 
-**Template design precedence**: Explicit current user instructions and final confirmation win. Brand identity overrides Deck identity, and either is fixed starting truth rather than an industry default. Style owns Direction / method only: its color, typography, icon, and image values are candidate defaults and never override resolved Brand/Deck identity or become official facts. Preferred Mode / Visual Style values seed Stage 2; the Style overlay must resolve into the final single `mode` and `visual_style` lock rather than create a parallel narrative or aesthetic authority. Style takes this segment ahead of ordinary Stage-2 defaults; actual Deck prototypes and Signature facts remain compatibility constraints, not a second method owner. Each of ≥3 directions still carries six palette roles and complete fonts: repeat fixed Brand/Deck values with `typography.fixed: true`; adapt Style candidates to that identity and vary only open roles. Keep resolved icon and image constraints. Style Review Focus never activates [`visual-review`](../workflows/stages/visual-review.md); only an explicit user request does.
+**Template design precedence**: Explicit current user instructions and final confirmation win. Brand identity overrides Deck identity, Layout structure overrides Deck structure, and Deck retains only its non-overridden integrated segments plus reusable application context. Style owns Direction / method only: its color, typography, icon, and image values are candidate defaults and never override resolved Brand/Deck identity or become official facts. Preferred Mode / Visual Style values seed Stage 2; the Style overlay must resolve into the final single `mode` and `visual_style` lock rather than create a parallel narrative or aesthetic authority. Style takes this segment ahead of ordinary Stage-2 defaults; actual Deck prototypes and Signature facts remain compatibility constraints, not a second method owner. Library/explicit provenance never changes this order. Each of ≥3 directions still carries six palette roles and complete fonts: repeat fixed Brand/Deck values with `typography.fixed: true`; adapt Style candidates to that identity and vary only open roles. Keep resolved icon and image constraints. Style Review Focus never activates [`visual-review`](../workflows/stages/visual-review.md); only an explicit user request does.
 
 ---
 

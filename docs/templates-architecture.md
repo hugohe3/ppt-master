@@ -377,15 +377,17 @@ These indexes cover library scope only. A project-root workspace is intentionall
 
 ### Segment ownership (implicit dispatch)
 
-When the user supplies explicit workspace-root paths, Step 3 resolves each
-segment independently and writes one `<project>/templates/design_spec.md`:
+When the user confirms registered and/or specified workspace roots, Step 3
+parses every root's real `kind`, resolves each template segment independently,
+and writes one `<project>/templates/design_spec.md`. `library` / `explicit`
+records discovery provenance only and never changes ownership:
 
 | Segment | Starting owner |
 |---|---|
-| Identity | Brand, otherwise Deck, otherwise the current project; Style supplies fallback candidates only |
-| Direction / method | Style, otherwise the current Stage-2 recommendation; actual Deck prototypes and Signature facts inform compatibility only |
-| Structure | Compatible Layout, otherwise Deck, otherwise free design |
-| Application context | The current Stage-1 communication contract, informed by Deck's descriptive recurring-application context |
+| Identity | Brand, otherwise Deck, otherwise unresolved until Stage 2; Style supplies fallback candidates only |
+| Direction / method | Style, otherwise unresolved until Stage 2; actual Deck prototypes and Signature facts inform compatibility only |
+| Structure | Compatible Layout, otherwise Deck, otherwise unresolved/free design until Stage 2 |
+| Reusable application context | Deck only; retained for Stage-2 comparison, never used as the current project's application contract |
 
 Current user instructions and final confirmation override every starting
 owner. Brand identity remains authoritative over Style palette/type fallbacks.
@@ -393,12 +395,13 @@ Style alone, or Style with Brand, uses flat page authoring. Style with a Layout
 or Deck follows the selected structural source. A Style never upgrades or
 downgrades structure by itself.
 
-Before applying a Layout override to a Deck, compare the Deck application
-contract against the Layout's page roles, slot types, and capacity. Before
-combining Style with Layout/Deck, verify that its communication method and
-composition expectations can be realized by the selected application and
-structure. On mismatch, surface the conflicting segments; do not silently mix
-fields or retain a promise that the selected structure cannot satisfy.
+Before applying a Layout override to a Deck, compare the Deck's reusable
+application roles against the Layout's page roles, slot types, and capacity.
+Before combining Style with Layout/Deck, verify that its communication method
+and composition expectations can be realized by that reusable context and
+structure. On mismatch, surface the conflicting template segments; do not
+silently mix fields or retain a promise that the selected structure cannot
+satisfy. Current-project fit begins only in Stage 2 after Stage 1 is confirmed.
 
 ### Whole-segment replacement (default granularity)
 
@@ -428,6 +431,12 @@ Rules:
 - `style × 2`, `layout × 2`, `deck × 2`, `brand × 2` handled the same way
 - Max two of any one kind (more than that — ask the user to converge in chat first)
 
+The default page already narrows this space: Brand/Style/Layout/Deck each have
+one registered single-select dropdown, and one additional specified-root
+dropdown may contribute a second workspace of its parsed kind. The server
+enforces those limits; chat-based composition retains the general maximum of
+two per kind.
+
 ### Provenance
 
 When fusion happens (any multi-path case), the resulting `<project>/templates/design_spec.md` carries a provenance block immediately under its H1:
@@ -447,7 +456,7 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with Generate PPTX Step 3
 
-**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option)), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a legacy-flat Brand/Layout/Deck root containing `<workspace>/design_spec.md` when the package satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays exact-choice-based** — use a registered Step-3 dropdown choice or an explicit workspace-root path (see [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option)); bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a legacy-flat Brand/Layout/Deck root containing `<workspace>/design_spec.md` when the package satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
@@ -462,7 +471,7 @@ Bitmaps share the workspace `images/` pool and template SVGs reference them thro
 
 ### Strategist confirmation stage behavior per kind
 
-Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck also contributes descriptive application context. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. For Layout/Deck, it inspects the actual prototypes and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. The Confirm UI exposes no template-mode fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
+Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template, using only the current request, source facts, conversation constraints, and project initialization; even template canvas is excluded. Only after Stage 1 closes does Stage 2 inspect the installed state. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck contributes descriptive reusable application context for comparison, not the current project's contract. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. For Layout/Deck, it inspects the actual prototypes and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. The Confirm UI exposes no template-mode fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
 
 ---
 

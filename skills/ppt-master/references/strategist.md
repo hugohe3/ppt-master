@@ -38,6 +38,8 @@ second, production third:
 
 Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, image direction, and how the already installed template should be used. It never chooses or installs a template. Inspect only the project-local template spec/prototypes, present one editable application plan, and keep exporter reuse/adherence internal. Present ≥3 coordinated safe / shifted / bold directions so color, type, icons, and generated-image rendering begin coherent; the user may override each component. Generated images inherit deck colors—there is no second image palette. Stage 3 covers production. Its proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
 
+**Hard rule — Stage-1 source boundary**: Build Stage 1 only from the current user request, source facts, conversation constraints, and project-initialization state. Ignore the selected template roots, installed/fused template state, template assets/prototypes, and template-owned canvas. Do not load or apply [`strategist-template.md`](./strategist-template.md) until the confirmed Stage-1 contract is available for Stage 2. Early installation is storage preparation, not planning evidence for Stage 1.
+
 > **Execution discipline**: Step 3 template selection was the preceding independent BLOCKING checkpoint. This is the last always-on checkpoint. After confirmation, proceed without another pause unless spec refinement is enabled.
 >
 > **One opt-in exception**: present the refinement line with the split-mode note ([`generate-pptx.md`](../workflows/generate-pptx.md) Step 4). Only explicit opt-in runs [`refine-spec`](../workflows/stages/refine-spec.md): write the Design Spec once, pass Gate 1, then stop before the lock for unrestricted chat revision. Never enter it unprompted.
@@ -62,7 +64,7 @@ Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording m
 
 ### a. Canvas Format Confirmation
 
-Recommend format based on scenario (see [`canvas-formats.md`](canvas-formats.md)).
+Recommend format from the current scenario and project initialization (see [`canvas-formats.md`](canvas-formats.md)). A template canvas is not Stage-1 evidence; Stage 2 later checks whether selected structure can serve the confirmed current-project canvas.
 
 ### b. Page Count Confirmation
 

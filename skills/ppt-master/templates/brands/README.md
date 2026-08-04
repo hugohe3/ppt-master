@@ -12,15 +12,16 @@ lives in the parent [`README.md`](../README.md).
 
 Brand application follows the independent selection phase in
 [`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
-lists registered brands only from `brands_index.json`, alongside exact
-workspace roots supplied for this run; it never scans this directory or
-fuzzy-matches a bare brand name. An exact supplied root that matches a
-registered root may be labelled `library`, while an unregistered root remains
-`explicit`. The conditional
+fills the Brand dropdown only from `brands_index.json`; unregistered exact roots
+appear only in the separate specified-root dropdown. It never scans this
+directory or fuzzy-matches a bare brand name. An exact supplied root matching a
+registered root may be labelled `library`; otherwise it remains `explicit`. The
+conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage owns path normalization, portable-root installation, multi-kind fusion,
-same-kind conflict resolution, and provenance before Stage 1. Later roles read
-only the installed project-local copy. This file owns only the Brand schema.
+same-kind conflict resolution, and provenance before Stage 1. Template-aware
+reading begins in Stage 2 from the installed project-local copy. This file owns
+only the Brand schema.
 
 ## Creating a new brand
 
