@@ -127,4 +127,4 @@ python3 skills/ppt-master/scripts/register_template.py <deck_id> --kind deck --d
 python3 skills/ppt-master/scripts/register_template.py <deck_id> --kind deck
 ```
 
-For project scope, skip both commands. The exact workspace root becomes the next Generate PPTX Step 3 input; any separately supplied Brand or Layout workspace overrides the corresponding complete segment downstream without mutating this deck workspace.
+For project scope, skip both commands. The exact workspace root becomes the next Generate PPTX Step 3 input; any separately supplied Brand, Style, or Layout workspace overrides the corresponding complete segment downstream without mutating this deck workspace.

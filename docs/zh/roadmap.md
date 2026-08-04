@@ -12,7 +12,7 @@
 
 项目的主轴是**原生深度**：逐版本创作或保留更多 PowerPoint 自身的对象模型、行为与可复用结构——持续向 PowerPoint 本身靠拢。完整论述见[项目定位章程](./project-positioning.md)；[PowerPoint ↔ SVG 映射指南](./powerpoint-svg-mapping.md)逐特性诚实记录当前边界。
 
-这条主轴今天体现为四条显式产物路线：**Generate PPTX** 通过受约束的 SVG → DrawingML 创作全新设计的页面；**Create Template** 产出可复用的 Brand / Layout / Deck 模板工作区；**Fill Native PPTX** 与 **Enhance Native PPTX** 通过限定范围的 OOXML 操作保留既有文件包。
+这条主轴今天体现为四条显式产物路线：**Generate PPTX** 通过受约束的 SVG → DrawingML 创作全新设计的页面；**Create Template** 产出可复用的 Brand / Style / Layout / Deck 模板工作区；**Fill Native PPTX** 与 **Enhance Native PPTX** 通过限定范围的 OOXML 操作保留既有文件包。
 
 ---
 

@@ -31,7 +31,7 @@ route selection. After selection, the route authority owns execution.
 | Route | Request shape | Authority | Preconditions | Mutation model | Output contract |
 |---|---|---|---|---|---|
 | Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally apply an explicit template workspace | [`generate-pptx`](./generate-pptx.md) | Source facts exist or research can gather them; explicit quick intent activates its profile | Author new SVG pages and export a new PPTX | Default: spec, lock, SVG, validation, and PPTX; Quick: optional source/resource artifacts, no spec/lock, SVG, and one PPTX |
-| Create Template | Create a reusable brand/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
+| Create Template | Create a reusable brand/style/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
 | Fill Native PPTX | Use a raw PPTX's native slide shells and replace/fill content | [`template-fill-pptx`](./template-fill-pptx.md) | Source PPTX plus new material/topic | Clone and patch PPTX through OOXML; no SVG pipeline | New filled PPTX in project `exports/` |
 | Enhance Native PPTX | Keep a finished PPTX's visible slides stable while adding notes, audio, timings, or transitions | [`native-enhance-pptx`](./native-enhance-pptx.md) | Finished source PPTX exists | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX in project `exports/` |
 
@@ -45,7 +45,7 @@ route selection. After selection, the route authority owns execution.
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
-| Explicit current brand/layout/deck workspace root | Enter [`generate-pptx`](./generate-pptx.md) Step 3 and conditionally load [`apply-template-workspace`](./stages/apply-template-workspace.md); consume the workspace root, never only its inner `templates/` directory |
+| Explicit current brand/style/layout/deck workspace root | Enter [`generate-pptx`](./generate-pptx.md) Step 3 and conditionally load [`apply-template-workspace`](./stages/apply-template-workspace.md); consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | Existing generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Design Spec Gate 1 and before lock Gate 2 |
@@ -78,14 +78,14 @@ Generate pipeline.
 
 When a PPTX already contains native Master/Layout parts, `create-template` mirror may read and preserve those existing package facts in the new workspace. It does not infer missing historical intent. An incomplete or legacy SVG package may guide `standard` / `fidelity` visually, but it is not mutated into a structured template and cannot claim source-topology recovery.
 
-**Hard rule — no automatic structure upgrade**: Free-design and brand-only generation remains `pptx_structure.mode: flat`. Repeated Slide-local objects never trigger `structured`, Master/Layout promotion, placeholder inference, or deduplication. The minimal Master plus Blank Layout emitted by flat export is package scaffolding, not an inferred reusable design master.
+**Hard rule — no automatic structure upgrade**: Free-design, brand-only, and style-only generation remains `pptx_structure.mode: flat`. Repeated Slide-local objects never trigger `structured`, Master/Layout promotion, placeholder inference, or deduplication. The minimal Master plus Blank Layout emitted by flat export is package scaffolding, not an inferred reusable design master.
 
 | Input | Route behavior |
 |---|---|
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
 | Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Step 3 |
-| Legacy-flat root with current `design_spec.md` and current SVG contract | [`apply-template-workspace`](./stages/apply-template-workspace.md) compatibility reader |
+| Legacy-flat Brand/Layout/Deck root satisfying its current kind contract; Layout/Deck also require current structured SVGs | [`apply-template-workspace`](./stages/apply-template-workspace.md) compatibility reader; Style has no flat form |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
 | Request to add a master directly to an existing PPTX/SVG | Unsupported; explain the Create Template → Generate PPTX lifecycle |
 
@@ -96,14 +96,17 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 | Selected kind | Behavior |
 |---|---|
 | `brand` | Dispatch to [`create-brand`](./create-template/create-brand.md); write identity only and no SVG roster |
+| `style` | Dispatch to [`create-style`](./create-template/create-style.md); write reusable communication method and design direction only, with no SVG roster or native structure |
 | `layout` | Dispatch to [`create-layout`](./create-template/create-layout.md); author brand-neutral, application-neutral structure and an SVG roster |
 | `deck` | Dispatch to [`create-deck`](./create-template/create-deck.md); author descriptive recurring-application context with integrated identity, structure, and an SVG roster |
 
-Create Template remains the fixed route name and owns the shared contract. These three documents are mutually exclusive child workflows, not additional top-level routes.
+Create Template remains the fixed route name and owns the shared contract. These four documents are mutually exclusive child workflows, not additional top-level routes.
 
 **Hard rule — classify reusable rules, not source completeness**: A complete
 PPTX does not automatically select Deck. Use Brand when only identity is
-stable; use Layout when structure is brand-neutral and the communication
+stable; use Style when reusable communication method and design direction
+should travel without identity truth, page prototypes, or native
+structure; use Layout when structure is brand-neutral and the communication
 application stays downstream-defined; use Deck when structure carries identity
 or reusable scenario/content semantics.
 
@@ -133,6 +136,7 @@ For that Q&A only, read the matching discovery indexes:
 | Kind | Discovery index |
 |---|---|
 | Brand | [`brands_index.json`](../templates/brands/brands_index.json) |
+| Style | [`styles_index.json`](../templates/styles/styles_index.json) |
 | Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
 | Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
 

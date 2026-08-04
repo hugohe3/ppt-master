@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Register a brand / layout / deck template into the global template index.
+"""Register a brand / style / layout / deck template in the global index.
 
-Three kinds, three workspace roots, three index files. The shared model lives
+Four kinds, four workspace roots, four index files. The shared model lives
 in ``templates/README.md``; each kind's schema lives in its directory README:
 
 | --kind  | Workspace roots         | Index file                    |
 |---------|-------------------------|-------------------------------|
 | brand   | ``templates/brands/``   | ``brands_index.json``         |
+| style   | ``templates/styles/``   | ``styles_index.json``         |
 | layout  | ``templates/layouts/``  | ``layouts_index.json``        |
 | deck    | ``templates/decks/``    | ``decks_index.json``          |
 
 Current workspaces keep ``design_spec.md`` and any SVG roster under
 ``<workspace>/templates/``. Assets live in optional ``images/`` / ``icons/``
 directories. Explicitly generated review artifacts go to the optional, ignored
-``exports/`` directory. Legacy flat roots remain readable.
+``exports/`` directory. Legacy flat roots remain readable for Brand/Layout/Deck;
+Style uses only the current nested one-file contract.
 
 Index entry schemas (the JSON file is the single source of truth — README
 files describe the kind and usage in prose but do **not** enumerate templates;
 discovery happens exclusively against the index file):
 
 - brand:  ``{ summary, primary_color }``
+- style:  ``{ summary, keywords[] }``
 - layout: ``{ summary, canvas_format, page_count, page_types[] }``
 - deck:   ``{ summary, canvas_format, page_count, primary_color }``
 
@@ -28,15 +31,17 @@ Usage::
     python3 scripts/register_template.py <id> --kind deck     # default kind=deck
     python3 scripts/register_template.py <id> --kind layout
     python3 scripts/register_template.py <id> --kind brand
+    python3 scripts/register_template.py <id> --kind style
     python3 scripts/register_template.py --rebuild-all --kind deck
     python3 scripts/register_template.py <id> --dry-run
 
 ``--rebuild-all`` rebuilds every entry from scratch within the chosen kind;
 recommended for repairing index drift across many templates at once.
 
-Project-scoped Brand workspaces are validated, not registered, through
-``svg_quality_checker.py <workspace>/templates --template-mode``. That entry
-reuses :func:`validate_brand_workspace`, so the Brand schema has one authority.
+Project-scoped Brand and Style workspaces are validated, not registered,
+through ``svg_quality_checker.py <workspace>/templates --template-mode``. That
+entry reuses :func:`validate_brand_workspace` or
+:func:`validate_style_workspace`, so each schema has one authority.
 """
 
 from __future__ import annotations
@@ -71,6 +76,12 @@ KIND_CONFIG = {
         "dir": TEMPLATES_DIR / "brands",
         "index": TEMPLATES_DIR / "brands" / "brands_index.json",
         "id_key": "brand_id",
+        "needs_svg_roster": False,
+    },
+    "style": {
+        "dir": TEMPLATES_DIR / "styles",
+        "index": TEMPLATES_DIR / "styles" / "styles_index.json",
+        "id_key": "style_id",
         "needs_svg_roster": False,
     },
     "layout": {
@@ -109,7 +120,130 @@ _BRAND_PROVENANCE_VALUES = {"fact", "approx", "user"}
 _BRAND_ASSET_REF_RE = re.compile(
     r"`((?:\.\./)+(?:images|icons)/[^`]+)`"
 )
+_STYLE_REQUIRED_SECTIONS = (
+    ("I", "Style Overview"),
+    ("II", "Communication Method"),
+    ("III", "Page Role Vocabulary"),
+    ("IV", "Evidence & Data Expression"),
+    ("V", "Visual System Defaults"),
+    ("VI", "Image & Icon Direction"),
+    ("VII", "Review Focus"),
+)
+_STYLE_FORBIDDEN_SECTIONS = (
+    "Brand Overview",
+    "Template Overview",
+    "Color Scheme",
+    "Typography",
+    "Logo",
+    "Voice & Tone",
+    "Icon Style",
+    "Assets",
+    "Signature Design Elements",
+    "Page Roster",
+    "Placeholder Overrides",
+)
+_STYLE_REQUIRED_FIELDS = {
+    "I. Style Overview": (
+        "Style Name",
+        "Best Fit",
+        "Reusable Intent",
+        "Sources",
+    ),
+    "II. Communication Method": (
+        "Argument Flow",
+        "Page Message Discipline",
+        "Claim Discipline",
+    ),
+    "IV. Evidence & Data Expression": (
+        "Argument Trace",
+        "Charts",
+        "Tables",
+        "Sources",
+        "Native Editability",
+    ),
+    "V. Visual System Defaults": (
+        "Composition",
+        "Density",
+        "Decoration",
+        "Color Behavior",
+        "Typography Character",
+    ),
+    "VI. Image & Icon Direction": (
+        "Image Usage",
+        "Image Treatment",
+        "Icon Treatment",
+    ),
+}
+_STYLE_CUSTOM_FIELDS = (
+    (
+        "II. Communication Method",
+        "Preferred Mode",
+        "Mode Behavior",
+        "Mode References",
+        SKILL_DIR / "references" / "modes",
+    ),
+    (
+        "V. Visual System Defaults",
+        "Preferred Visual Style",
+        "Visual Style Behavior",
+        "Visual Style References",
+        SKILL_DIR / "references" / "visual-styles",
+    ),
+    (
+        "VI. Image & Icon Direction",
+        "Preferred Image Rendering",
+        "Image Rendering Behavior",
+        "Image Rendering References",
+        SKILL_DIR / "references" / "image-renderings",
+    ),
+)
+_STYLE_FORBIDDEN_FIELDS = (
+    "Brand Overview",
+    "Template Overview",
+    "Color Scheme",
+    "Typography",
+    "Signature Design Elements",
+    "Page Roster",
+    "Placeholder Overrides",
+    "Target Audience",
+    "Communication Objective",
+    "Desired Outcome",
+    "Core Message",
+    "Delivery Context",
+    "Artifact Afterlife",
+    "Application Context",
+    "Content Outline",
+    "Page Count",
+    "Page Types",
+    "Page Order",
+    "Page Sequence",
+    "Canvas Format",
+    "Canvas Width",
+    "Canvas Height",
+    "Canvas ViewBox",
+    "Replication Mode",
+    "Native Structure Mode",
+    "Master",
+    "Layout",
+    "Placeholders",
+    "Page Assignment",
+    "Icon Inventory",
+    "Image Resources",
+    "Primary Color",
+    "Logo",
+    "Voice & Tone",
+    "Icon Style",
+    "Assets",
+)
+_STYLE_ALLOWED_FRONTMATTER_FIELDS = frozenset({
+    "style_id",
+    "kind",
+    "summary",
+    "keywords",
+})
+_STYLE_REVIEW_TRIGGER_MARKER = "<!-- visual-review-trigger: explicit-user-only -->"
 _HEX_COLOR_RE = re.compile(r"#[0-9A-Fa-f]{6}")
+_PORTABLE_STYLE_ID_RE = re.compile(r"^\w[\w.-]*$")
 
 
 # ---------------------------------------------------------------------------
@@ -238,6 +372,53 @@ def _numbered_section(body: str, title: str) -> str | None:
         re.MULTILINE | re.DOTALL,
     )
     return match.group(0) if match else None
+
+
+def _markdown_subsection(body: str, title: str) -> str | None:
+    match = re.search(
+        rf"^###\s+{re.escape(title)}\s*$.*?(?=^#{{2,3}}\s+|\Z)",
+        body,
+        re.MULTILINE | re.DOTALL,
+    )
+    return match.group(0) if match else None
+
+
+def _markdown_table_rows(section: str) -> list[list[str]]:
+    rows: list[list[str]] = []
+    for line in section.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if not cells or all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+            continue
+        rows.append(cells)
+    return rows
+
+
+def _style_value_is_substantive(value: str | None) -> bool:
+    if value is None:
+        return False
+    cleaned = _clean_field_value(value)
+    if not cleaned or re.fullmatch(r"<[^>]+>", cleaned):
+        return False
+    return cleaned.casefold() not in {"tbd", "todo", "n/a", "none", "-", "—"}
+
+
+def _style_field_is_declared(body: str, label: str) -> bool:
+    escaped = re.escape(label)
+    return bool(
+        re.search(
+            rf"^\s*(?:>\s*)?(?:[-*]\s*)?"
+            rf"\*{{0,2}}{escaped}\*{{0,2}}\s*[:：]",
+            body,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        or re.search(
+            rf"^\|\s*\*{{0,2}}{escaped}\*{{0,2}}\s*\|",
+            body,
+            re.MULTILINE | re.IGNORECASE,
+        )
+    )
 
 
 def _validate_brand_spec(
@@ -374,6 +555,327 @@ def _validate_brand_spec(
     if errors:
         details = "\n".join(f"  - {error}" for error in errors)
         raise SpecParseError(f"invalid brand specification:\n{details}")
+
+
+def _validate_style_spec(
+    expected_template_id: str | None,
+    template_root: Path,
+    template_dir: Path,
+    frontmatter: dict,
+    body: str,
+) -> None:
+    """Reject Style workspaces outside the roster-free method contract."""
+    errors: list[str] = []
+
+    raw_style_id = frontmatter.get("style_id")
+    declared_id = raw_style_id.strip() if isinstance(raw_style_id, str) else ""
+    if not declared_id:
+        errors.append("frontmatter style_id must be a non-empty string")
+    else:
+        if (
+            _PORTABLE_STYLE_ID_RE.fullmatch(declared_id) is None
+            or declared_id in {".", ".."}
+            or declared_id.endswith(".")
+        ):
+            errors.append(
+                "frontmatter style_id must be a filesystem-safe portable slug"
+            )
+        if (
+            expected_template_id is not None
+            and declared_id != expected_template_id
+        ):
+            errors.append(
+                "frontmatter style_id must match directory "
+                f"{expected_template_id!r}, got {declared_id!r}"
+            )
+
+    raw_kind = frontmatter.get("kind")
+    declared_kind = raw_kind.strip() if isinstance(raw_kind, str) else ""
+    if declared_kind != "style":
+        errors.append(
+            "frontmatter kind must be 'style', "
+            f"got {declared_kind!r}"
+        )
+
+    raw_summary = frontmatter.get("summary")
+    if not isinstance(raw_summary, str) or not _style_value_is_substantive(
+        raw_summary
+    ):
+        errors.append("frontmatter summary must be a non-empty string")
+
+    non_string_fields = [key for key in frontmatter if not isinstance(key, str)]
+    if non_string_fields:
+        errors.append("style frontmatter field names must be strings")
+    unexpected_fields = sorted(
+        key
+        for key in frontmatter
+        if isinstance(key, str) and key not in _STYLE_ALLOWED_FRONTMATTER_FIELDS
+    )
+    if unexpected_fields:
+        errors.append(
+            "style frontmatter contains unsupported field(s): "
+            + ", ".join(unexpected_fields)
+        )
+
+    keywords = frontmatter.get("keywords")
+    if (
+        not isinstance(keywords, list)
+        or not 3 <= len(keywords) <= 5
+        or not all(
+            isinstance(item, str) and _style_value_is_substantive(item)
+            for item in keywords
+        )
+    ):
+        errors.append(
+            "frontmatter keywords must contain 3-5 non-empty strings"
+        )
+    elif len({item.strip().casefold() for item in keywords}) != len(keywords):
+        errors.append("frontmatter keywords must be unique")
+
+    unexpected_source_entries = sorted(
+        path.relative_to(template_dir).as_posix()
+        + ("/" if path.is_dir() else "")
+        for path in template_dir.rglob("*")
+        if path.relative_to(template_dir).as_posix() != "design_spec.md"
+    )
+    if unexpected_source_entries:
+        errors.append(
+            "style workspaces must contain only templates/design_spec.md; "
+            "unexpected template entry(s): "
+            + ", ".join(unexpected_source_entries)
+        )
+
+    if expected_template_id is not None:
+        unexpected_workspace_entries = sorted(
+            path.relative_to(template_root).as_posix()
+            + ("/" if path.is_dir() else "")
+            for path in template_root.rglob("*")
+            if path.relative_to(template_root).as_posix()
+            not in {"templates", "templates/design_spec.md"}
+        )
+        if unexpected_workspace_entries:
+            errors.append(
+                "library Style workspaces must contain only "
+                "templates/design_spec.md; unexpected workspace entry(s): "
+                + ", ".join(unexpected_workspace_entries)
+            )
+
+    h1_headings = re.findall(r"^#\s+(.+?)\s*$", body, re.MULTILINE)
+    if len(h1_headings) != 1:
+        errors.append(
+            "style body must contain exactly one document-title H1; got "
+            f"{len(h1_headings)}"
+        )
+
+    expected_headings = [
+        f"{numeral}. {title}" for numeral, title in _STYLE_REQUIRED_SECTIONS
+    ]
+    actual_headings = re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE)
+    if actual_headings != expected_headings:
+        errors.append(
+            "style body must contain exactly the required I-VII sections in "
+            "order; got: " + (", ".join(actual_headings) or "none")
+        )
+
+    nested_headings = re.findall(
+        r"^(#{3,6})\s+(.+?)\s*$",
+        body,
+        re.MULTILINE,
+    )
+    unexpected_nested_headings = [
+        f"{marks} {title}"
+        for marks, title in nested_headings
+        if len(marks) != 3
+        or title not in {"Fallback Color Scheme", "Fallback Typography"}
+    ]
+    if unexpected_nested_headings:
+        errors.append(
+            "style body contains unsupported nested heading(s): "
+            + ", ".join(unexpected_nested_headings)
+        )
+    allowed_h3 = [title for marks, title in nested_headings if len(marks) == 3]
+    if len(allowed_h3) != len(set(allowed_h3)):
+        errors.append("style fallback subsections must not be repeated")
+
+    for title in _STYLE_FORBIDDEN_SECTIONS:
+        if re.search(
+            rf"^#{{1,6}}\s+(?:[IVX]+\.\s+)?{re.escape(title)}\s*$",
+            body,
+            re.MULTILINE,
+        ):
+            errors.append(f"style scope must not declare section: {title}")
+
+    for section_title, labels in _STYLE_REQUIRED_FIELDS.items():
+        section_name = section_title.split(". ", 1)[1]
+        if _numbered_section(body, section_name) is None:
+            continue
+        for label in labels:
+            value = _extract_section_field(body, section_title, [label])
+            if not _style_value_is_substantive(value):
+                errors.append(
+                    f"{section_title} must declare a non-empty {label} field"
+                )
+
+    role_section = _numbered_section(body, "Page Role Vocabulary") or ""
+    role_rows = [
+        row
+        for row in _markdown_table_rows(role_section)
+        if row and row[0].casefold() != "role"
+    ]
+    if not any(
+        len(row) >= 4
+        and all(_style_value_is_substantive(cell) for cell in row[:4])
+        for row in role_rows
+    ):
+        errors.append(
+            "III. Page Role Vocabulary must contain at least one complete "
+            "four-column role row"
+        )
+
+    for (
+        section_title,
+        preferred_label,
+        behavior_label,
+        references_label,
+        catalog_dir,
+    ) in _STYLE_CUSTOM_FIELDS:
+        preferred = _extract_section_field(
+            body,
+            section_title,
+            [preferred_label],
+        )
+        behavior = _extract_section_field(
+            body,
+            section_title,
+            [behavior_label],
+        )
+        references = _extract_section_field(
+            body,
+            section_title,
+            [references_label],
+        )
+        preferred_text = _clean_field_value(preferred or "")
+        catalog_ids = {
+            path.stem
+            for path in catalog_dir.glob("*.md")
+            if not path.stem.startswith("_")
+        }
+        is_custom = bool(
+            re.match(r"^custom(?:\b|\s*[:—-])", preferred_text, re.IGNORECASE)
+        )
+        if is_custom and not _style_value_is_substantive(behavior):
+            errors.append(
+                f"{behavior_label} is required when {preferred_label} is custom"
+            )
+        if not is_custom and _style_value_is_substantive(behavior):
+            errors.append(
+                f"{behavior_label} is allowed only when {preferred_label} is custom"
+            )
+        if not is_custom and _style_value_is_substantive(references):
+            errors.append(
+                f"{references_label} is allowed only when "
+                f"{preferred_label} is custom"
+            )
+        if (
+            _style_value_is_substantive(preferred)
+            and not is_custom
+            and preferred_text not in catalog_ids
+        ):
+            errors.append(
+                f"{preferred_label} references unknown catalog id "
+                f"{preferred_text!r}"
+            )
+        if is_custom and _style_value_is_substantive(references):
+            catalog_references = [
+                _clean_field_value(item)
+                for item in (references or "").split(",")
+            ]
+            if any(not item for item in catalog_references):
+                errors.append(
+                    f"{references_label} must be a comma-separated list of "
+                    "catalog ids"
+                )
+            duplicates = sorted(
+                item
+                for item in set(catalog_references)
+                if catalog_references.count(item) > 1
+            )
+            if duplicates:
+                errors.append(
+                    f"{references_label} repeats catalog id(s): "
+                    + ", ".join(duplicates)
+                )
+            unknown_references = sorted(
+                item
+                for item in set(catalog_references)
+                if item == "custom" or item not in catalog_ids
+            )
+            if unknown_references:
+                errors.append(
+                    f"{references_label} references unknown catalog id(s): "
+                    + ", ".join(unknown_references)
+                )
+
+    visual_section = _numbered_section(body, "Visual System Defaults") or ""
+    fallback_colors = _markdown_subsection(body, "Fallback Color Scheme")
+    if fallback_colors is not None:
+        if "### Fallback Color Scheme" not in visual_section:
+            errors.append("Fallback Color Scheme must appear under section V")
+        color_rows = [
+            row
+            for row in _markdown_table_rows(fallback_colors)
+            if row and row[0].casefold() != "role"
+        ]
+        if not color_rows:
+            errors.append("Fallback Color Scheme must contain at least one row")
+        for row in color_rows:
+            if (
+                len(row) < 3
+                or not _style_value_is_substantive(row[0])
+                or _HEX_COLOR_RE.fullmatch(row[1].strip("` ")) is None
+                or not _style_value_is_substantive(row[2])
+            ):
+                errors.append(
+                    "Fallback Color Scheme rows must be Role | #RRGGBB | Purpose"
+                )
+                break
+
+    fallback_typography = _markdown_subsection(body, "Fallback Typography")
+    if fallback_typography is not None:
+        if "### Fallback Typography" not in visual_section:
+            errors.append("Fallback Typography must appear under section V")
+        typography_rows = [
+            row
+            for row in _markdown_table_rows(fallback_typography)
+            if row and row[0].casefold() != "role"
+        ]
+        if not any(
+            len(row) >= 4
+            and all(_style_value_is_substantive(cell) for cell in row[:4])
+            for row in typography_rows
+        ):
+            errors.append(
+                "Fallback Typography must contain at least one complete "
+                "four-column row"
+            )
+
+    review_section = _numbered_section(body, "Review Focus") or ""
+    if review_section.count(_STYLE_REVIEW_TRIGGER_MARKER) != 1:
+        errors.append(
+            "VII. Review Focus must contain exactly one "
+            f"{_STYLE_REVIEW_TRIGGER_MARKER} marker"
+        )
+    review_items = re.findall(r"^[-*]\s+(.+?)\s*$", review_section, re.MULTILINE)
+    if not any(_style_value_is_substantive(item) for item in review_items):
+        errors.append("VII. Review Focus must contain at least one check")
+
+    for label in _STYLE_FORBIDDEN_FIELDS:
+        if _style_field_is_declared(body, label):
+            errors.append(f"style scope must not declare field: {label}")
+
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(f"invalid style specification:\n{details}")
 
 
 def _validate_svg_template_spec(
@@ -522,6 +1024,11 @@ def _extract_entry(
     """Build the index entry + extras for a single template."""
     template_root = template_dir
     template_dir = _template_content_dir(template_root)
+    if kind == "style" and template_dir == template_root:
+        raise SpecParseError(
+            "Style workspaces require templates/design_spec.md; "
+            "legacy-flat design_spec.md is not supported"
+        )
     spec_path = template_dir / "design_spec.md"
 
     frontmatter, body = _read_spec(spec_path)
@@ -534,7 +1041,8 @@ def _extract_entry(
             f"expected kind={kind!r} — use --kind {declared_kind} instead"
         )
 
-    summary = (fm.get("summary") or "").strip()
+    raw_summary = fm.get("summary")
+    summary = raw_summary.strip() if isinstance(raw_summary, str) else ""
     if not summary:
         section_title = (
             "I. Brand Overview" if kind == "brand" else "I. Template Overview"
@@ -563,6 +1071,18 @@ def _extract_entry(
         entry = OrderedDict(
             summary=summary,
             primary_color=str(primary_color),
+        )
+    elif kind == "style":
+        _validate_style_spec(
+            template_id,
+            template_root,
+            template_dir,
+            fm,
+            body,
+        )
+        entry = OrderedDict(
+            summary=summary,
+            keywords=[item.strip() for item in fm["keywords"]],
         )
     elif kind == "layout":
         if template_id is None:
@@ -627,6 +1147,22 @@ def validate_brand_workspace(template_root: str | Path) -> dict:
     return _extract_entry("brand", None, Path(template_root))
 
 
+def validate_style_workspace(template_root: str | Path) -> dict:
+    """Validate a portable Style workspace without registering it.
+
+    Global library roots also enforce directory identity and the one-file
+    package boundary. Project roots keep their unrelated initialized-project
+    scaffolding out of the Style contract.
+    """
+    root = Path(template_root)
+    expected_id = (
+        root.name
+        if root.resolve().parent == KIND_CONFIG["style"]["dir"].resolve()
+        else None
+    )
+    return _extract_entry("style", expected_id, root)
+
+
 # ---------------------------------------------------------------------------
 # Index / README writers
 # ---------------------------------------------------------------------------
@@ -664,8 +1200,18 @@ def _enumerate_ids(kind: str) -> list[str]:
 
 
 def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dict) -> None:
-    pretty_kind = {"layout": "Layout", "deck": "Deck", "brand": "Brand"}[kind]
-    dir_name = {"layout": "layouts", "deck": "decks", "brand": "brands"}[kind]
+    pretty_kind = {
+        "layout": "Layout",
+        "deck": "Deck",
+        "brand": "Brand",
+        "style": "Style",
+    }[kind]
+    dir_name = {
+        "layout": "layouts",
+        "deck": "decks",
+        "brand": "brands",
+        "style": "styles",
+    }[kind]
     print()
     print(f"## {pretty_kind} Registration Complete")
     print()
@@ -682,7 +1228,7 @@ def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dic
     print(f"**Summary**: {entry.get('summary') or '—'}")
     print("**Index Registration**: Done")
     print()
-    if kind != "brand":
+    if KIND_CONFIG[kind]["needs_svg_roster"]:
         pages = extras.get("pages") or []
         page_prefix = extras.get("page_prefix") or ""
         preview = extras.get("preview") or ""
@@ -708,7 +1254,10 @@ def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dic
 def main() -> int:
     require_skill_integrity()
     parser = argparse.ArgumentParser(
-        description="Register / refresh templates (brand / layout / deck) in the index."
+        description=(
+            "Register / refresh templates (brand / style / layout / deck) "
+            "in the index."
+        )
     )
     parser.add_argument(
         "template_id", nargs="?",

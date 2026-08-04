@@ -146,3 +146,5 @@ omitted.
 General SVG/PPT rules remain authoritative in
 [`shared-standards-core.md`](../../references/shared-standards-core.md) and
 [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md).
+See [`styles/`](../styles/) when reusable method and visual direction should be
+combined with this structure without becoming identity truth.

@@ -589,13 +589,15 @@ If suitable template resources already exist, use them directly instead of gener
 
 This section describes downstream reuse of an existing workspace. Library and project scopes carry the same portable template contract.
 
-**Example library structure** (query the appropriate kind's index — `templates/layouts/layouts_index.json` for brand-neutral structure templates, `templates/decks/decks_index.json` for recurring applications with integrated identity/structure, `templates/brands/brands_index.json` for identity-only presets):
+**Example library structure** (query the appropriate kind's index — `templates/brands/brands_index.json` for identity, `templates/styles/styles_index.json` for roster-free direction/method, `templates/layouts/layouts_index.json` for brand-neutral structure, and `templates/decks/decks_index.json` for recurring applications with integrated identity/structure):
 
 ```
 templates/
 ├── brands/
 │   ├── anthropic/         # Anthropic brand identity (logo + colors + typography)
 │   └── google/            # Google brand identity
+├── styles/
+│   └── <style_id>/         # Communication method and design direction; no SVG roster
 ├── layouts/
 │   └── presentation_core/ # General structure system (no identity)
 └── decks/
