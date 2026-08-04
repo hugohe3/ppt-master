@@ -349,9 +349,14 @@
         "stage.generate.apply-template-workspace"
       ],
       "files": [
-        "skills/ppt-master/templates/styles/README.md"
+        "skills/ppt-master/templates/styles/README.md",
+        {
+          "glob": "skills/ppt-master/templates/styles/*/templates/design_spec.md",
+          "select": 1,
+          "load_event": "template-application"
+        }
       ],
-      "max_tokens": 6500
+      "max_tokens": 9000
     },
     "stage.generate.template.layout": {
       "description": "Conditional Layout workspace application with one selected Layout spec.",
@@ -414,6 +419,11 @@
         "skills/ppt-master/templates/decks/README.md",
         {
           "glob": "skills/ppt-master/templates/brands/*/templates/design_spec.md",
+          "select": 1,
+          "load_event": "template-application"
+        },
+        {
+          "glob": "skills/ppt-master/templates/styles/*/templates/design_spec.md",
           "select": 1,
           "load_event": "template-application"
         },
