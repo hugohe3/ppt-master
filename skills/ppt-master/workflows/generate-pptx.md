@@ -25,11 +25,21 @@ hand-authors SVG, runs one lockless final checker, and exports the final PPTX.
 It skips Strategist, Confirm UI, Design Spec/lock, the first-page gate, and
 `finalize_svg.py`.
 
+Quick never enters Step 3. When the request supplies at most one exact current
+workspace root for each Brand/Style/Layout/Deck kind, or the current
+conversation carries an exact Create Template handoff, Quick runs
+[`apply-template-workspace`](./stages/apply-template-workspace.md) directly and
+uses the installed project-local state during authoring. With no exact root it
+uses free design. It never launches `confirm_ui/server.py`, reads the template
+catalog to choose on the user's behalf, or creates template-selection receipts;
+a bare template name, brand mention, or style description remains brief text.
+
 **Hard rule — no implicit downgrade or page cap**: page count neither selects
 nor blocks quick generation. Source preparation, images, icons, formulas, and
 their manifests remain valid. All exporter capabilities remain available when
 requested or agent-selected; use their existing prerequisites. Structured
-template reuse still requires the default lock-backed pipeline.
+Master/Layout template compilation still requires the default lock-backed
+pipeline; Quick applies templates while authoring complete flat pages.
 
 ### SVG Page-Design Boundary
 
@@ -144,6 +154,10 @@ Direct supported bitmap inputs follow both boundaries: the original is archived 
 ---
 
 ### Step 3: Template Selection and Installation
+
+**Scope**: Default Generate only. Quick Generate resolves exact supplied roots
+or free design inside its profile and never enters this Step or launches Confirm
+UI.
 
 🚧 **GATE**: Step 2 complete; the project workspace exists. Finish this phase before authoring or confirming Stage 1. Template selection is not part of the Stage-1 communication contract.
 

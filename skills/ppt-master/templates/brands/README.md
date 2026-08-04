@@ -21,7 +21,9 @@ conditional
 stage owns path normalization, portable-root installation, multi-kind fusion,
 same-kind conflict resolution, and provenance before Stage 1. Template-aware
 reading begins in Stage 2 from the installed project-local copy. This file owns
-only the Brand schema.
+only the Brand schema. Quick Generate never opens the selector: an exact Brand
+root supplied for the run enters the same stage directly, while no exact root
+leaves Quick in free design.
 
 ## Creating a new brand
 

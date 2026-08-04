@@ -48,6 +48,11 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 
 默认确认页面会在 Stage 1 之前打开一个独立的 **Step 3 模板选择阶段**，同时提供自由设计、已注册的 Brand/Style/Layout/Deck，以及本次运行已明确给出的工作区根目录。它不会根据主题替用户推断推荐模板，选择必须由用户明确完成。
 
+> **快速模式例外：** Quick 不会打开这个页面。请求中每个 kind 最多一个精确
+> 工作区 root，会被直接校验、安装并使用；没有精确 root 就直接自由设计。
+> 裸模板名仍不会被解析。Quick 继续采用无锁 flat 导出，因此 Layout/Deck
+> 原型是页面创作输入，不会变成可复用的原生 Master/Layout 输出。
+
 ### 怎么触发模板流程
 
 默认页面提供自由设计，以及五个紧凑下拉框：Brand、Style、Layout、Deck 各一个已注册工作区单选框，再加一个本次运行指定地址单选框。每个下拉框都有“无”；四类已注册模板可跨类型组合，指定地址最多选一个。已注册列表只来自四类索引，工作流不会扫描模板目录。也可以在 Generate PPTX 进入 Step 3 前，于对话里写出 Brand/Style/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
