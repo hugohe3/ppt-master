@@ -19,14 +19,14 @@ These names are separate contracts. Style-only and Style + Brand naturally produ
 
 Selection uses the independent phase in
 [`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
-lists registered Styles only from `styles_index.json`, alongside exact
-workspace roots supplied for this run; it never scans this directory or
-fuzzy-matches a bare Style name. An exact supplied root that matches a
-registered root may be labelled `library`, while an unregistered root remains
-`explicit`. A consulting label or ordinary visual description remains a brief
-or catalog signal and does not activate this workspace. Confirmation runs the
-common installation/fusion stage before Stage 1; later roles read only the
-project-local copy.
+fills the Style dropdown only from `styles_index.json`; unregistered exact roots
+appear only in the separate specified-root dropdown. It never scans this
+directory or fuzzy-matches a bare Style name. An exact supplied root matching a
+registered root may be labelled `library`; otherwise it remains `explicit`. A
+consulting label or ordinary visual description remains a brief or catalog
+signal and does not activate this workspace. Confirmation runs the
+common installation/fusion stage before Stage 1; template-aware reading begins
+in Stage 2 from the project-local copy.
 
 | Decision | Precedence |
 |---|---|

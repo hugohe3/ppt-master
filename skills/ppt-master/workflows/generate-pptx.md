@@ -147,14 +147,14 @@ Direct supported bitmap inputs follow both boundaries: the original is archived 
 
 🚧 **GATE**: Step 2 complete; the project workspace exists. Finish this phase before authoring or confirming Stage 1. Template selection is not part of the Stage-1 communication contract.
 
-**Default UI phase**: When the selected confirmation surface is the page, open its template-selection phase first. Offer free design plus registered Brand/Style/Layout/Deck workspaces from exactly these discovery sources:
+**Default UI phase**: When the selected confirmation surface is the page, open its template-selection phase first. Show one exclusive free-design choice, four single-select registered-workspace dropdowns (Brand / Style / Layout / Deck), and one single-select specified-root dropdown. Every dropdown has a `None` option. A non-empty dropdown exits free design; choosing free design clears all five dropdowns. Populate the registered dropdowns from exactly these discovery sources:
 
 - `templates/brands/brands_index.json`
 - `templates/styles/styles_index.json`
 - `templates/layouts/layouts_index.json`
 - `templates/decks/decks_index.json`
 
-Derive each library root as `templates/<kind_dir>/<id>/` from its index entry. Never scan kind directories, infer unregistered entries, or resolve a bare name, brand mention, or style phrase to a path. A path the user explicitly supplied remains an `explicit` selection unless its normalized root exactly equals an entry derived from the matching index, in which case the UI may present it as `library`. This source label records discovery provenance only; every selected root passes the same validation.
+Derive each library root as `templates/<kind_dir>/<id>/` from its index entry. Never scan kind directories, infer unregistered entries, or resolve a bare name, brand mention, or style phrase to a path. The registered dropdowns may be combined across kinds, with at most one choice from each. The specified dropdown offers the exact roots supplied for this run and allows at most one choice. The server parses that workspace's declared `kind`; the specified choice may therefore coexist with one registered choice of the same kind and enter the existing two-workspace conflict gate. A path the user explicitly supplied remains an `explicit` selection unless its normalized root exactly equals an entry derived from the matching index, in which case the UI may present it as `library`. This source label records discovery provenance only; it never changes segment ownership, fusion precedence, validation, or installation behavior.
 
 **UI branch — executable sequence**: Resolve the confirmation surface under
 [`confirm_ui.md`](../scripts/docs/confirm_ui.md) before the first command. For
@@ -173,15 +173,17 @@ python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --w
 
 After the wait, read `confirm_ui/template_selection.json` exactly once and
 require `schema_version: 1`, `phase: "template"`, and `status: "confirmed"`.
-`mode: "free_design"` carries no selections; `mode: "templates"` carries one
-or more server-resolved exact roots with `source: "library"|"explicit"`. Keep
+`mode: "free_design"` carries no selections; `mode: "templates"` carries the
+server-resolved exact roots with `source: "library"|"explicit"` and declared
+`kind`. It contains at most one library selection per kind plus at most one
+explicit selection. Keep
 the server live while applying selected workspaces and preparing Stage 1; the
 same page polls for `recommendations.stage1.json`. On a non-zero wait, re-check
 the receipt once, then follow `confirm_ui.md`'s chat fallback/switch contract.
 
 ⛔ **BLOCKING — template selection**: Wait for the user to confirm free design or the selected roots. Do not expose Stage 1 before this choice closes.
 
-**Selected workspace path**: For every non-free selection, load and run [`apply-template-workspace.md`](./stages/apply-template-workspace.md) against the exact roots in the confirmed receipt (or their chat-equivalent selection). It validates all roots, resolves fusion/collisions, and installs one project-local template state under `<project_path>/templates/` plus any real `<project_path>/images/` and `<project_path>/icons/` assets. Do not proceed until installation completes. Strategist and later roles read only this installed project-local state, never the library or external source root.
+**Selected workspace path**: For every non-free selection, load and run [`apply-template-workspace.md`](./stages/apply-template-workspace.md) against the exact roots in the confirmed receipt (or their chat-equivalent selection). It validates all roots, resolves template-to-template segment ownership/collisions, and installs one project-local template state under `<project_path>/templates/` plus any real `<project_path>/images/` and `<project_path>/icons/` assets. It does not judge current-project fit or derive any Stage-1 field. Do not proceed until installation completes. Template-aware Strategist work from Stage 2 onward and later roles read only this installed project-local state, never the library or external source root.
 
 **UI handoff**: After free design closes, or after every selected workspace is
 installed, bind that completed state to the current selection before authoring
@@ -209,6 +211,8 @@ write the handoff manually.
 
 🚧 **GATE**: Step 3 selection is confirmed; free design is active, or the selected template state is validated and installed in the project. Stage 1 has not started before this point.
 
+**Hard rule — Stage 1 is template-independent**: Author every Stage-1 recommendation from the user's current request, source facts, conversation constraints, and project-initialization state only. Do not read or use the Step-3 selection, installed template spec/prototypes/assets, fused segment owners, or any template canvas when recommending or confirming Stage 1. The project initialization canvas remains the Stage-1 starting value unless the current user/source context changes it. Template inspection and current-project fit begin only after Stage 1 is confirmed, while authoring Stage 2.
+
 First, read the role core, then only the modules triggered by the current plan:
 ```
 Read references/strategist.md
@@ -216,10 +220,10 @@ Read references/strategist.md
 
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
-| Step 3 installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` |
+| Stage 1 is confirmed and Step 3 installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
 | The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
 
-Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Only an installed project-local template state loads the template module; a bare template/style name does not.
+Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Only an installed project-local template state loads the template module, and only after Stage 1 is confirmed; a bare template/style name does not.
 
 > ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
@@ -272,7 +276,7 @@ chat fallback using the already printed URL, then:
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
    ```
 
-2. Read Stage 1. Derive proposed image sources, load the triggered image-planning bundle above, and apply `strategist-template.md` when active. Create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
+2. Read Stage 1. Only now inspect the installed template state and apply `strategist-template.md` when active. Derive proposed image sources, load the triggered image-planning bundle above, and create `confirm_ui/recommendations.stage2.json` without changing Stage 1, then wait:
 
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2

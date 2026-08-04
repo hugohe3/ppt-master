@@ -124,6 +124,10 @@ _TEMPLATE_LIBRARY_CONFIG = {
     'layout': ('layouts', 'layouts_index.json'),
     'deck': ('decks', 'decks_index.json'),
 }
+_TEMPLATE_KIND_LINE_RE = re.compile(
+    r'''kind\s*:\s*(?:'([^']*)'|"([^"]*)"|([A-Za-z][A-Za-z0-9_-]*))'''
+    r'''\s*(?:#.*)?\Z'''
+)
 _ICON_PREVIEW_SAMPLES = {
     'chunk-filled': ('home', 'chart-line', 'users', 'target'),
     'tabler-filled': ('home', 'chart-dots', 'user', 'bulb'),
@@ -199,6 +203,61 @@ def _safe_template_id(template_id: object) -> bool:
     )
 
 
+def _template_design_spec_path(workspace_root: Path) -> Path:
+    """Return the current or legacy Design Spec for one workspace root."""
+    current = workspace_root / 'templates' / 'design_spec.md'
+    if current.is_file():
+        return current
+    legacy = workspace_root / 'design_spec.md'
+    if legacy.is_file():
+        return legacy
+    raise ValueError(
+        'template workspace is missing templates/design_spec.md '
+        f'or legacy design_spec.md: {workspace_root}'
+    )
+
+
+def _template_kind_from_spec(spec_path: Path) -> str:
+    """Read one supported top-level ``kind`` from Design Spec frontmatter."""
+    try:
+        lines = spec_path.read_text(encoding='utf-8-sig').splitlines()
+    except OSError as exc:
+        raise ValueError(f'cannot read template Design Spec {spec_path}: {exc}') from exc
+    if not lines or lines[0] != '---':
+        raise ValueError(f'{spec_path} must start with YAML frontmatter')
+    try:
+        frontmatter_end = lines.index('---', 1)
+    except ValueError as exc:
+        raise ValueError(f'{spec_path} has unterminated YAML frontmatter') from exc
+
+    declared_kind = None
+    for line_number, line in enumerate(lines[1:frontmatter_end], start=2):
+        if re.match(r'^\s*kind\s*:', line) is None:
+            continue
+        if line != line.lstrip():
+            raise ValueError(
+                f'{spec_path}:{line_number} kind must be a top-level frontmatter field'
+            )
+        match = _TEMPLATE_KIND_LINE_RE.fullmatch(line)
+        if match is None:
+            raise ValueError(
+                f'{spec_path}:{line_number} has an invalid kind declaration'
+            )
+        if declared_kind is not None:
+            raise ValueError(f'{spec_path} frontmatter declares kind more than once')
+        declared_kind = next(value for value in match.groups() if value is not None)
+
+    if declared_kind is None:
+        raise ValueError(f'{spec_path} frontmatter must declare kind')
+    if declared_kind not in _TEMPLATE_LIBRARY_CONFIG:
+        supported = ', '.join(_TEMPLATE_LIBRARY_CONFIG)
+        raise ValueError(
+            f'{spec_path} frontmatter kind must be one of {supported}; '
+            f'got {declared_kind!r}'
+        )
+    return declared_kind
+
+
 def _read_template_options_input(confirm_dir: Path) -> tuple[dict, list[Path]]:
     """Read and validate the agent-authored Step-3 template input."""
     options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
@@ -250,14 +309,7 @@ def _read_template_options_input(confirm_dir: Path) -> tuple[dict, list[Path]]:
             )
         if not root.is_dir():
             raise ValueError(f'explicit workspace root is not a directory: {canonical}')
-        if not (
-            (root / 'templates' / 'design_spec.md').is_file()
-            or (root / 'design_spec.md').is_file()
-        ):
-            raise ValueError(
-                'explicit workspace root is missing templates/design_spec.md '
-                f'or legacy design_spec.md: {canonical}'
-            )
+        _template_design_spec_path(root)
         seen.add(canonical)
         roots.append(root)
     return data, roots
@@ -300,6 +352,12 @@ def _build_template_library() -> tuple[dict, dict[str, dict], dict[str, dict], d
                 raise ValueError(
                     f'{index_path} entry {template_id!r} is missing {spec_path}'
                 )
+            declared_kind = _template_kind_from_spec(spec_path)
+            if declared_kind != kind:
+                raise ValueError(
+                    f'{index_path} entry {template_id!r} declares kind '
+                    f'{declared_kind!r}, expected {kind!r}'
+                )
             summary = metadata.get('summary', '')
             if not isinstance(summary, str):
                 raise ValueError(
@@ -334,26 +392,33 @@ def _build_template_options(confirm_dir: Path) -> tuple[dict, dict[str, dict]]:
     source, explicit_roots = _read_template_options_input(confirm_dir)
     library, candidates, registered_roots, index_contracts = _build_template_library()
     explicit = []
-    preselected_keys = []
+    suggested_keys = []
     for root in explicit_roots:
         canonical_root = str(root)
         registered = registered_roots.get(canonical_root)
         if registered is not None:
-            preselected_keys.append(registered['key'])
+            suggested_keys.append(registered['key'])
             continue
         digest = hashlib.sha256(canonical_root.encode('utf-8')).hexdigest()
         key = f'explicit:{digest}'
         if key in candidates:
             raise ValueError(f'duplicate template candidate key: {key}')
+        kind = _template_kind_from_spec(_template_design_spec_path(root))
         candidate = {
             'key': key,
             'source': 'explicit',
+            'kind': kind,
             'label': root.name or canonical_root,
             'workspace_root': canonical_root,
         }
         explicit.append(candidate)
         candidates[key] = candidate
-        preselected_keys.append(key)
+        suggested_keys.append(key)
+
+    # One supplied exact root is an unambiguous convenience default. Multiple
+    # roots are candidates for the single-select controls, not an instruction
+    # to select all of them.
+    preselected_keys = suggested_keys if len(suggested_keys) == 1 else []
 
     response = {
         'schema_version': TEMPLATE_SCHEMA_VERSION,
@@ -381,11 +446,11 @@ def _template_selection_from_candidate(candidate: dict) -> dict:
     """Project one trusted browser candidate into the persisted selection."""
     selection = {
         'source': candidate['source'],
-        'workspace_root': candidate['workspace_root'],
+        'kind': candidate['kind'],
     }
     if candidate['source'] == 'library':
-        selection['kind'] = candidate['kind']
         selection['id'] = candidate['id']
+    selection['workspace_root'] = candidate['workspace_root']
     return selection
 
 
@@ -445,27 +510,42 @@ def _validate_template_selection(data: dict) -> None:
         raise ValueError(f'{TEMPLATE_SELECTION_NAME} selection_sha256 is invalid')
 
     seen_roots = set()
+    seen_library_kinds = set()
+    explicit_count = 0
     for index, selection in enumerate(selections):
         if not isinstance(selection, dict):
             raise ValueError(
                 f'{TEMPLATE_SELECTION_NAME} selections[{index}] must be an object'
             )
         source = selection.get('source')
-        expected_keys = {'source', 'workspace_root'}
+        if source not in {'library', 'explicit'}:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid source'
+            )
+        kind = selection.get('kind')
+        if kind not in _TEMPLATE_LIBRARY_CONFIG:
+            raise ValueError(
+                f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid kind'
+            )
+        expected_keys = {'source', 'kind', 'workspace_root'}
         if source == 'library':
-            expected_keys.update({'kind', 'id'})
-            if selection.get('kind') not in _TEMPLATE_LIBRARY_CONFIG:
+            expected_keys.add('id')
+            if kind in seen_library_kinds:
                 raise ValueError(
-                    f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid kind'
+                    'template selection allows at most one library workspace '
+                    f'for kind {kind!r}'
                 )
+            seen_library_kinds.add(kind)
             if not _safe_template_id(selection.get('id')):
                 raise ValueError(
                     f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid id'
                 )
-        elif source != 'explicit':
-            raise ValueError(
-                f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid source'
-            )
+        else:
+            explicit_count += 1
+            if explicit_count > 1:
+                raise ValueError(
+                    'template selection allows at most one explicit workspace'
+                )
         if set(selection) != expected_keys:
             raise ValueError(
                 f'{TEMPLATE_SELECTION_NAME} selections[{index}] has invalid fields'
@@ -1134,12 +1214,16 @@ def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
     )
 
 
-def _template_confirmation_required(project_path: Path, recommendations: dict) -> bool:
-    """Return whether this project must use the staged template confirmation."""
-    return (
-        'template_application' in recommendations
-        or (project_path / 'templates' / 'design_spec.md').is_file()
-    )
+def _template_confirmation_required(project_path: Path) -> bool:
+    """Return whether the confirmed project state has an active template."""
+    confirm_dir = project_path / CONFIRM_DIR_NAME
+    if (confirm_dir / TEMPLATE_OPTIONS_NAME).is_file():
+        handoff = _read_template_handoff(
+            project_path,
+            confirm_dir / TEMPLATE_HANDOFF_NAME,
+        )
+        return handoff['mode'] == 'templates'
+    return (project_path / 'templates' / 'design_spec.md').is_file()
 
 
 def _template_stage2_error(
@@ -1480,9 +1564,10 @@ def _stage2_custom_candidates_error(recommendations: dict) -> Optional[str]:
 
 
 def _submission_stage_error(
-    project_path: Path,
     confirm_dir: Path,
     submitted_stage: Optional[str],
+    *,
+    template_required: bool,
 ) -> Optional[str]:
     """Reject a confirmation that does not match the staged recommendation."""
     try:
@@ -1491,10 +1576,6 @@ def _submission_stage_error(
         return f'cannot confirm without valid current recommendations: {exc}'
 
     rec_stage_number = _recommendation_stage(recommendations)
-    template_required = _template_confirmation_required(
-        project_path,
-        recommendations,
-    )
     if rec_stage_number == 0:
         if template_required:
             return (
@@ -2497,6 +2578,19 @@ def create_app(
             return jsonify({
                 'error': f'invalid current recommendation file: {exc}',
             }), 400
+        rec_stage_number = _recommendation_stage(data)
+        if rec_stage_number == 1 and (confirm_dir / TEMPLATE_OPTIONS_NAME).exists():
+            template_error = _template_stage1_ready_error(
+                project_path,
+                confirm_dir,
+            )
+            if template_error:
+                return jsonify({
+                    'error': (
+                        'template phase is not ready for Stage 1: '
+                        f'{template_error}'
+                    ),
+                }), 409
         # Report whether a result already exists (re-open after confirm).
         result_file = confirm_dir / RESULT_NAME
         if _stage_skip(
@@ -2510,7 +2604,6 @@ def create_app(
         # Later stages render only downstream sections, so fold earlier confirmed
         # choices from result.json back in. A refresh / reopen then re-inits from
         # the user's choices instead of catalog defaults.
-        rec_stage_number = _recommendation_stage(data)
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
         if rec_stage_number > 0:
@@ -2525,13 +2618,18 @@ def create_app(
             # aliases/tags the shared helper already understands; an old prose
             # value must never prevent the compatibility UI from opening.
             _canonicalize_primary_language(data, required=False)
+        try:
+            template_required = _template_confirmation_required(project_path)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return jsonify({
+                'error': f'cannot determine active template mode: {exc}',
+            }), 409
+        if not template_required:
+            data.pop('template_application', None)
         if rec_stage_number == 2:
             recommendation_error = _template_stage2_error(
                 data,
-                template_required=_template_confirmation_required(
-                    project_path,
-                    data,
-                ),
+                template_required=template_required,
             )
             if recommendation_error:
                 return jsonify({'error': recommendation_error}), 409
@@ -2586,10 +2684,16 @@ def create_app(
                 return jsonify({
                     'error': f'template phase is not ready for Stage 1: {template_error}',
                 }), 409
+        try:
+            template_required = _template_confirmation_required(project_path)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return jsonify({
+                'error': f'cannot determine active template mode: {exc}',
+            }), 409
         stage_error = _submission_stage_error(
-            project_path,
             confirm_dir,
             stage,
+            template_required=template_required,
         )
         if stage_error:
             return jsonify({'error': stage_error}), 409
@@ -2657,6 +2761,9 @@ def create_app(
             rec_file,
             result_file,
         )
+        if not template_required:
+            result.pop('template_application', None)
+            locked_values.pop('template_application', None)
         if stage not in {'stage1', 'stage2'}:
             proactive_result_error = _normalize_proactive_execution_result(
                 result,

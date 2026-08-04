@@ -38,7 +38,7 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 最容易避免误用的两条规则：
 
 1. 默认页面会在 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-selection-and-installation) 选择自由设计或精确的已注册工作区；若在聊天中选择，请给出工作区根目录，不要只给 `templates/` 子目录，也不要只写模板名。
-2. 显式路径和 Create Template 的精确交接仍然有效。Step 3 会先确认并安装全部所选工作区，再进入 Stage 1；后续角色只读项目本地副本。
+2. 显式路径和 Create Template 的精确交接仍然有效。Step 3 会先确认并安装全部所选工作区，再进入 Stage 1；模板感知读取从 Stage 2 开始，且只读项目本地副本。
 
 ---
 
@@ -50,15 +50,15 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是 PowerPoint 原生对象�
 
 ### 怎么触发模板流程
 
-在默认页面中，可选择一个或多个兼容的已注册工作区，也可以选择自由设计。已注册列表只来自四类索引，工作流不会扫描模板目录。也可以在 Generate PPTX 进入 Step 3 前，于对话里写出 Brand/Style/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
+默认页面提供自由设计，以及五个紧凑下拉框：Brand、Style、Layout、Deck 各一个已注册工作区单选框，再加一个本次运行指定地址单选框。每个下拉框都有“无”；四类已注册模板可跨类型组合，指定地址最多选一个。已注册列表只来自四类索引，工作流不会扫描模板目录。也可以在 Generate PPTX 进入 Step 3 前，于对话里写出 Brand/Style/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
 
 > "用这个模板做：`skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`。Step 3 会解析其中的 `templates/design_spec.md`；Brand/Layout/Deck 安装其包自有 `templates/` 及真实存在的 `images/`、`icons/`，Style 只安装 spec，并忽略项目中无关的脚手架。如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给 Step 3。
+对于当前所有模板类型，显式路径都是**模板工作区根目录**。若精确路径与索引中的注册 root 一致，页面可以把它显示为 `library`；未注册 root 则单独标为 `explicit`，并由服务端解析其 frontmatter 中的真实 `kind`。`explicit` 只是来源，不是第五种类型，也不提高优先级。Step 3 会解析其中的 `templates/design_spec.md`；Brand/Layout/Deck 安装其包自有 `templates/` 及真实存在的 `images/`、`icons/`，Style 只安装 spec，并忽略项目中无关的脚手架。如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同；Brand/Style 校验各自无 roster 的 spec。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 Create Template 时，可把精确的已验证工作区根目录直接交给 Step 3。
 
-模板选择不属于 Stage 1。确认后，Step 3 会运行统一 apply 阶段，把所选工作区校验、合成并安装到当前项目的 `templates/`、`images/`、`icons/`；完成后 Strategist 才开始 Stage 1。Stage 2 的 `template_application` 只描述**如何使用**已安装模板，不负责决定**选哪个模板**。
+模板选择不属于 Stage 1。确认后，Step 3 会运行统一 apply 阶段，把所选工作区校验、合成并安装到当前项目的 `templates/`、`images/`、`icons/`；完成后 Strategist 才开始 Stage 1。Stage 1 只使用当前请求、源材料事实、对话约束和项目初始化状态，模板选择、已安装内容及模板画布均不得影响这份契约。Stage 1 确认后，Stage 2 才把它与已安装状态进行适配；`template_application` 只描述**如何使用**，不负责决定**选哪个模板**。
 
 > **兼容性预检：** Step 3 也接受 `design_spec.md` 直接位于所给根目录、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。旧的原子 placeholder、未映射 Master/Layout 等语义旧包会被拒绝。先运行 `create-template` 创建新工作区，再从该工作区生成新的 structured 页面；不会原地升级旧包。
 
@@ -96,7 +96,7 @@ Layout 工作区：skills/ppt-master/templates/layouts/presentation_core/
 模板工作区：projects/acme_template/
 ```
 
-在聊天中显式选择时，“模板工作区”这些标签可以不写，但 root 必须精确；页面中的 library 选择已自带精确 root。如果选择两个相同 kind 的工作区，工作流会进入既有冲突解决门，不会静默替你选一个。
+在聊天中显式选择时，“模板工作区”这些标签可以不写，但 root 必须精确；页面中的 library 选择已自带精确 root。页面中每个注册 kind 最多选一个，指定地址最多选一个；若指定地址解析出的 kind 与某个注册选择相同，工作流会进入既有的两份同类冲突解决门，不会静默替你选一个。
 
 你不需要选择模板使用模式。对 Layout/Deck，Strategist 会读取真实的 Master/Layout/原型集合和当前内容，决定选哪些页、哪些重复/跳过/重排，以及是否重组。Brand 只提供身份约束，Style 只提供方向/方法默认值；除非另一个工作区提供结构，否则两者都保持页面自由编排。如果你在意某个边界，直接在同一句请求里用普通语言说明即可，例如“封面和结束页原样保留，中间页由你选择”或“只参考视觉语言”；明确文字优先于 AI 判断。
 

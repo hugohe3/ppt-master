@@ -41,13 +41,16 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 
 The four indexes are the complete library-discovery source for
 [`generate-pptx`](../workflows/generate-pptx.md) Step 3. The default page shows
-their registered entries alongside free design and any exact workspace roots
-supplied for the run; it never scans the four directories or fuzzy-matches a
-bare name. An exact root that matches a registered index entry may be displayed
-as `library`; an unregistered root remains `explicit`. After confirmation,
+free design, one registered single-select dropdown per kind, and one separate
+single-select dropdown for exact roots supplied for the run; it never scans the
+four directories or fuzzy-matches a bare name. An exact root that matches a
+registered index entry may be displayed in its kind dropdown as `library`; an
+unregistered root remains `explicit` in the specified-root dropdown. After
+confirmation,
 [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
 validates, fuses, and installs every selected workspace into the current
-project before Stage 1 starts. Later roles read only that project-local copy.
+project before Stage 1 starts. Template-aware reading begins in Stage 2 from
+that project-local copy.
 
 ## Orthogonal contracts
 

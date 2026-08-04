@@ -71,9 +71,11 @@ starts, or after it times out while the server remains live:
 
 **Always-on Step-3 chat handoff**: After writing `template_options.json`, launch
 the healthy daemon without `--wait`. Immediately post its actual URL plus a
-compact localized summary: free design is available; registered options come
-only from the four kind indexes; and every supplied exact root is shown as a
-library or explicit candidate according to exact canonical-root equality. End
+compact localized summary: free design is available; the page has one
+single-select dropdown for each registered kind plus one for supplied exact
+roots; registered options come only from the four kind indexes; and every
+supplied exact root is shown as a library or explicit candidate according to
+exact canonical-root equality. End
 with a localized line saying the user may select on the page or reply in chat
 with free design / exact roots if the page did not open. Only then run
 `--wait-only --wait-stage template`. Silence confirms nothing.
@@ -121,7 +123,7 @@ python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 clean
 - Initial Step-3 launch requires valid `<project_path>/confirm_ui/template_options.json`. After template selection, the same service exposes Stage 1 only when a matching handoff exists and the Stage-1 recommendation is no older than that handoff. Compatibility launches without a template phase still require the recommendation file expected from `result.json`; `--shutdown` needs neither input.
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
 - Idle auto-shutdown after 900 s by default; `/api/shutdown` exits gracefully and releases the lock.
-- `/api/template-options` serves the server-built Step-3 catalog and `/api/template-confirm` accepts only current candidate keys, then writes the trusted receipt. `/api/recommendations` and `/api/confirm` own only the later Strategist stages and strip legacy `template_reuse_scope` / `template_adherence` fields. Those exporter values are never user-facing controls; an installed template instead exposes editable natural-language `template_application` in Stage 2.
+- `/api/template-options` serves the server-built Step-3 catalog and `/api/template-confirm` accepts only current candidate keys, then writes the trusted receipt. `/api/recommendations` and `/api/confirm` own only the later Strategist stages and strip legacy `template_reuse_scope` / `template_adherence` fields. The completed template handoff is authoritative: `free_design` also strips a stray `template_application`, while `templates` exposes that editable natural-language field in Stage 2.
 
 Dependency:
 
@@ -152,6 +154,8 @@ Template selection is a separate pre-Strategist phase. Its files live under
 - `explicit_workspace_roots` is required even when empty. Every item is a
   unique absolute path resolving to an existing directory with
   `templates/design_spec.md` or compatible legacy `design_spec.md`.
+- The array supplies candidates for the one specified-root dropdown; it does
+  not authorize selecting several explicit roots in one confirmation.
 - Do not write library entries into this file. The server reads only
   `templates/brands/brands_index.json`,
   `templates/styles/styles_index.json`,
@@ -181,12 +185,28 @@ Template selection is a separate pre-Strategist phase. Its files live under
 
 A library candidate has `key`, `source: "library"`, `kind`, `id`, `label`,
 `summary`, and canonical absolute `workspace_root`. An unregistered explicit
-candidate has `key`, `source: "explicit"`, `label`, and canonical absolute
-`workspace_root`. If a supplied root exactly equals a registered canonical
+candidate has `key`, `source: "explicit"`, parsed `kind`, `label`, and
+canonical absolute `workspace_root`. If a supplied root exactly equals a registered canonical
 root, the server reuses the library candidate/key instead of duplicating it as
 explicit. Candidate keys are server-owned; the page posts only
 `{ "mode": "free_design"|"templates", "selection_keys": [...] }` to
 `POST /api/template-confirm`.
+
+When the input supplies exactly one root, `preselected_keys` contains its
+resolved candidate key as a convenience default, including when exact equality
+reclassifies it as library. When several roots are supplied, all remain
+candidates but none is preselected; one specified-root dropdown cannot encode
+an instruction to use all of them.
+
+**Page selection model**: The first control is exclusive free design. Below it,
+Brand, Style, Layout, and Deck each have one registered single-select dropdown,
+and Specified has one explicit-root single-select dropdown. Every dropdown
+starts with `None`. Selecting any template exits free design; selecting free
+design clears all dropdowns. The registered kinds may be combined, but each
+contributes at most one root and the specified channel contributes at most one.
+The server enforces the same limits. Because an explicit candidate carries its
+parsed kind, it may coexist with one registered root of that kind and enter the
+two-workspace same-kind conflict gate. Source provenance never grants priority.
 
 ### Output — `template_selection.json` (written on confirmation)
 
@@ -205,6 +225,7 @@ explicit. Candidate keys are server-owned; the page posts only
     },
     {
       "source": "explicit",
+      "kind": "deck",
       "workspace_root": "/canonical/unregistered/workspace/root"
     }
   ],
@@ -217,7 +238,10 @@ explicit. Candidate keys are server-owned; the page posts only
 `mode: "free_design"` requires `selections: []`; `mode: "templates"` requires
 at least one selection. Roots are unique canonical absolute paths. A library
 selection contains exactly `source`, `kind`, `id`, and `workspace_root`; an
-explicit selection contains exactly `source` and `workspace_root`. The browser
+explicit selection contains exactly `source`, `kind`, and `workspace_root`.
+There is at most one library selection per kind and at most one explicit
+selection overall; cross-kind composition remains valid, and one explicit plus
+one library selection may share a kind. The browser
 cannot submit arbitrary paths because the server resolves posted keys against
 the catalog it just built. `options_sha256` binds the receipt to the current
 input, four index files, and resolved candidates. `selection_sha256` binds the
@@ -228,7 +252,9 @@ After `--wait-only --wait-stage template` returns, Generate reads this receipt
 once. Free design skips installation but still completes the agent handoff
 below before Stage 1. Template mode runs `apply-template-workspace` against all
 selected roots, waits for complete project-local installation/fusion, and only
-then completes that handoff. Strategist never reads the source roots.
+then completes that handoff. Step 3 resolves only template-to-template segment
+ownership and installation; it does not evaluate current-project fit.
+Strategist never reads the source roots.
 
 ### Agent handoff — `template_handoff.json`
 
@@ -305,8 +331,12 @@ from `result.json`; `template_selection.json` is its separate prerequisite.
 | `recommendations.json` | stage or legacy no-stage payload | read-only compatibility when no stage-specific file exists | matching legacy behavior | preserves the former staged or single-pass behavior; new projects never create this file |
 
 The AI launches the template phase, applies its confirmed receipt, and only then
-authors Stage 1. It authors the complete Stage-2 solution once from the user's
-actual communication contract, then authors Stage-3 production mechanics once
+authors Stage 1. Stage-1 recommendations use only the current user request,
+source facts, conversation constraints, and project initialization; the
+selection, installed template content/assets, and template canvas are excluded.
+After Stage 1 is confirmed, the AI inspects the installed project-local state
+and authors the complete Stage-2 solution once from the user's actual
+communication contract, then authors Stage-3 production mechanics once
 from the confirmed solution. An edit inside the current stage never requests
 another recommendation. The page preserves earlier answers across transitions.
 `GET /api/session` reports `phase: "template"` until selection closes, its
@@ -329,12 +359,17 @@ match the filename. A later file that skips ahead (for example
 `recommendations.stage3.json` while only Stage 1 is confirmed and Stage 2 is
 absent) is never rendered: `/api/session` keeps reporting `waiting_agent` with
 `stage_skip: true`, and `--wait` / `--wait-only` exit `2` if a result skips the
-stage being awaited. An installed template does not exempt Stage 2: its
-recommendations must include `template_application.value`, and an installed
-workspace or that field disables the no-stage legacy single-pass path. Legacy
+stage being awaited. A confirmed templates-mode workspace does not exempt
+Stage 2: its
+recommendations must include `template_application.value`, and that completed
+mode disables the no-stage legacy single-pass path. Legacy
 single-pass remains available only for non-template compatibility payloads.
 
-### Input — `recommendations.stage1.json` (created after Step 3 installation)
+### Input — `recommendations.stage1.json` (created after the Step 3 handoff)
+
+Installation is only the ordering prerequisite. Do not read template selection,
+specs, prototypes, assets, fused segment owners, or template canvas when
+authoring this file.
 
 ```json
 {
@@ -381,9 +416,6 @@ After Stage 1 is confirmed, create `recommendations.stage2.json` with the comple
     "image_usage": ["ai", "provided"]
   },
   "page_count": { "value": "12-15" },
-  "template_application": {
-    "value": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。"
-  },
   "image_notes": { "value": "封面和章节页用 AI 主视觉；产品页优先用户素材。" },
   "custom_candidates": {
     "mode": {
@@ -458,7 +490,18 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
 - `custom_candidates` is recommendation-only. Mode / style carry localized `name` + `behavior`; conditional image strategy also carries `rendering: "custom"`, `visual`, and `mood`. When a proposal combines or borrows existing catalog entries, the visible behavior names every exact id and Strategist reads every corresponding file before authoring it; a genuinely novel proposal names none. The server rejects missing required candidates; the UI shows full copy, edits it only after selection, rejects a selected blank, and omits unselected candidates from `result.json`. Template-backed proposals obey inherited identity, prototype capacity, and `template_application`.
 - Seed `audience`, `communication_intent`, `audience_outcome`, and `delivery_context` when evidence supports them; users need not supply them, and every Stage-1 prose field may end blank. The contract and `primary_language` stay in `result.json` and `design_spec.md`; `spec_lock.md communication` receives `primary_language`, compact `audience` / `objective` / `core_message`, and reading mode. `communication_intent` may preserve multiple purposes and priority/sequence; never add a `primary_job` enum.
 - Do not write `recommend.template_reuse_scope` or `recommend.template_adherence`. Strategist records those internal exporter values later in `spec_lock.md` after inspecting the actual template and current content.
-- For an installed template workspace, write one editable prose field as top-level `template_application.value`. It summarizes **how to use** the already selected project-local template: actual page/prototype use and preservation/reorganization decisions. It never chooses, changes, or reinstalls a workspace. Omit it for free design. The UI returns the current string through Stage 2, Stage 3, and final confirmation; Strategist then persists the final effective plan as `- **Template Application**: ...` in `design_spec.md §I`, which Executor reads from the retained Design Spec. Never replace it with internal reuse/adherence ids or a fixed option menu.
+- For a confirmed templates-mode handoff, write one editable prose field as top-level `template_application.value`. It summarizes **how to use** the already selected project-local template: actual page/prototype use and preservation/reorganization decisions. It never chooses, changes, or reinstalls a workspace. Omit it for free design. The UI returns the current string through Stage 2, Stage 3, and final confirmation; Strategist then persists the final effective plan as `- **Template Application**: ...` in `design_spec.md §I`, which Executor reads from the retained Design Spec. Never replace it with internal reuse/adherence ids or a fixed option menu.
+
+Template-mode-only Stage-2 fragment:
+
+```json
+{
+  "template_application": {
+    "value": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。"
+  }
+}
+```
+
 - `recommend.image_usage` should be an array of source ids when more than one source applies, e.g. `["ai", "provided"]`. A single string is still accepted for backward compatibility. Do not write bare `"custom"` and do not encode a mixed-source plan as prose here; write the prose to top-level `image_notes.value`.
 - `image_notes` is the initial strategy note shown under the image source chips. Use it for page-role guidance and constraints: which source applies where, what to avoid, which user assets are authoritative, how realistic / abstract the imagery should be, and what can remain as placeholders. It is intent guidance, not a separate finite option.
 - When confirmed Stage-2 `image_usage` includes `ai`, Stage 3 sets `recommend.image_ai_path` to one of `auto` / `api` / `host-native` / `manual`. Stage 2 never asks for the acquisition mechanism while the user is still deciding the image role.
@@ -488,7 +531,6 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
   "delivery_context": "Primary: presenter-led 20-minute leadership review; secondary: reader-led approval copy shared afterward",
   "artifact_afterlife": "Approval record, hand-off reference, and audit trail",
   "content_divergence": "freely restructure and expand within the source",
-  "template_application": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。",
   "mode": "pyramid",
   "visual_style": "swiss-minimal",
   "color": { "name": "...", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
