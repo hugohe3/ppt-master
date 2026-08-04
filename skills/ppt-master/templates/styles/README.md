@@ -17,7 +17,16 @@ These names are separate contracts. Style-only and Style + Brand naturally produ
 
 ## Trigger, Precedence, and Fusion
 
-Selection uses the common explicit-path trigger in [`generate-pptx`](../../workflows/generate-pptx.md) Step 3. A bare Style name, consulting label, or ordinary visual description remains a brief or catalog signal and does not activate this workspace. `styles_index.json` is discovery-only.
+Selection uses the independent phase in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
+lists registered Styles only from `styles_index.json`, alongside exact
+workspace roots supplied for this run; it never scans this directory or
+fuzzy-matches a bare Style name. An exact supplied root that matches a
+registered root may be labelled `library`, while an unregistered root remains
+`explicit`. A consulting label or ordinary visual description remains a brief
+or catalog signal and does not activate this workspace. Confirmation runs the
+common installation/fusion stage before Stage 1; later roles read only the
+project-local copy.
 
 | Decision | Precedence |
 |---|---|
@@ -80,4 +89,9 @@ Do not create empty `images/`, `icons/`, or `exports/` directories. Existing ini
 2. Validate with `svg_quality_checker.py --template-mode`.
 3. In library scope, register with `register_template.py <id> --kind style`.
 
-The discovery source of truth is [`styles_index.json`](./styles_index.json). Each entry is `style_id → { summary, keywords }`; the index never duplicates the full method or defaults and never activates Generate Step 3.
+The discovery source of truth is [`styles_index.json`](./styles_index.json).
+Each entry is `style_id → { summary, keywords }`; the index never duplicates
+the full method or defaults. The default Step-3 page reads this file as its
+complete registered-Style catalog, and chat discovery returns exact roots from
+the same entries. Choosing and confirming an entry activates installation;
+reading a name in ordinary prose does not.

@@ -314,7 +314,7 @@
         "skills/ppt-master/workflows/stages/apply-template-workspace.md",
         "skills/ppt-master/templates/README.md"
       ],
-      "max_tokens": 4500
+      "max_tokens": 5000
     },
     "stage.generate.template.brand": {
       "description": "Conditional Brand workspace application with one selected Brand spec.",
@@ -341,7 +341,7 @@
       "files": [
         "skills/ppt-master/templates/styles/README.md"
       ],
-      "max_tokens": 5750
+      "max_tokens": 6500
     },
     "stage.generate.template.layout": {
       "description": "Conditional Layout workspace application with one selected Layout spec.",
