@@ -107,6 +107,17 @@ def _read_utf8(path: Path) -> str:
         raise AuditError(f"Cannot read UTF-8 file {path}: {exc}") from exc
 
 
+def _validate_fixed_budget(label: str, budget: Any) -> None:
+    """Require durable rounded ceilings instead of current-count ratchets."""
+    if not isinstance(budget, int) or isinstance(budget, bool) or budget < 1:
+        raise AuditError(f"{label} must be a positive integer")
+    increment = 250 if budget < 10_000 else 1_000 if budget < 100_000 else 5_000
+    if budget % increment:
+        raise AuditError(
+            f"{label} must use a fixed {increment}-token increment, got {budget}"
+        )
+
+
 def load_manifest(path: Path) -> dict[str, Any]:
     """Load and validate the prompt-audit manifest."""
     try:
@@ -128,21 +139,29 @@ def load_manifest(path: Path) -> dict[str, Any]:
             raise AuditError(f"Manifest is missing required key: {key}")
     if raw["audit_only"] is not True or raw["runtime_consumed"] is not False:
         raise AuditError("Manifest must remain audit-only and excluded from runtime loading")
-    if raw["budget_policy"] != "current_growth_ceiling":
-        raise AuditError("Manifest budget_policy must remain current_growth_ceiling")
+    if raw["budget_policy"] != "fixed_upper_bound":
+        raise AuditError("Manifest budget_policy must remain fixed_upper_bound")
     if raw["encoding"] != "o200k_base":
         raise AuditError("Manifest encoding must remain o200k_base")
     documents = raw["documents"]
     if not isinstance(documents, dict):
         raise AuditError("documents must be an object")
-    if not isinstance(documents.get("max_tokens"), int) or documents["max_tokens"] < 1:
-        raise AuditError("documents.max_tokens must be a positive integer")
+    _validate_fixed_budget("documents.max_tokens", documents.get("max_tokens"))
     for key in ("load_sets", "file_budgets", "duplicates", "coverage"):
         if key in raw and not isinstance(raw[key], dict):
             raise AuditError(f"{key} must be an object")
     for key in ("authority_edges", "registries", "schema_grammars"):
         if key in raw and not isinstance(raw[key], list):
             raise AuditError(f"{key} must be an array")
+    for file_path, budget in raw.get("file_budgets", {}).items():
+        _validate_fixed_budget(f"file_budgets.{file_path}", budget)
+    for name, load_set in raw.get("load_sets", {}).items():
+        if not isinstance(load_set, dict):
+            raise AuditError(f"load_sets.{name} must be an object")
+        _validate_fixed_budget(
+            f"load_sets.{name}.max_tokens",
+            load_set.get("max_tokens"),
+        )
 
     schema_configs = raw.get("schema_grammars", [])
     for index, config in enumerate(schema_configs):
@@ -1693,7 +1712,7 @@ def render_text(report: dict[str, Any]) -> str:
     lines = [
         "PPT Master Prompt Audit",
         "=======================",
-        "Manifest: audit-only | runtime loading: disabled | budgets: current growth ceilings",
+        "Manifest: audit-only | runtime loading: disabled | budgets: fixed upper bounds",
         (
             f"Corpus: {summary['files']} files | {summary['tokens']} tokens "
             f"(budget {summary['max_tokens']})"
