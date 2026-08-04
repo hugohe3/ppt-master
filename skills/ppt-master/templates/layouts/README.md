@@ -57,6 +57,10 @@ Choosing and confirming an entry triggers the conditional
 stage, which owns path normalization, compatibility checks, installation, and
 fusion before Stage 1. Template-aware reading begins in Stage 2 from the
 installed project-local copy.
+Quick Generate never opens the selector: an exact Layout root supplied for the
+run enters the same stage directly, while no exact root leaves Quick in free
+design. Quick uses the installed prototypes as flat authoring inputs; reusable
+native Master/Layout compilation remains a default lock-backed capability.
 This file owns the Layout schema and its identity/application boundary. Chat
 discovery reads the same index and returns exact roots; a bare ID never resolves
 implicitly.

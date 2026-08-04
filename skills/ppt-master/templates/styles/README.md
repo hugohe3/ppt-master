@@ -26,7 +26,10 @@ registered root may be labelled `library`; otherwise it remains `explicit`. A
 consulting label or ordinary visual description remains a brief or catalog
 signal and does not activate this workspace. Confirmation runs the
 common installation/fusion stage before Stage 1; template-aware reading begins
-in Stage 2 from the project-local copy.
+in Stage 2 from the project-local copy. Quick Generate never opens the selector:
+an exact Style root supplied for the run enters the same stage directly, while
+no exact root leaves Quick in free design; its current agent reads the installed
+copy before authoring flat pages.
 
 | Decision | Precedence |
 |---|---|

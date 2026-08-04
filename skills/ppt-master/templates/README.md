@@ -50,7 +50,9 @@ confirmation,
 [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
 validates, fuses, and installs every selected workspace into the current
 project before Stage 1 starts. Template-aware reading begins in Stage 2 from
-that project-local copy.
+that project-local copy. Quick Generate is the non-interactive exception: it
+never opens this selector, directly applies exact roots supplied for the run,
+and uses free design when no exact root exists.
 
 ## Orthogonal contracts
 
@@ -87,14 +89,15 @@ Style narrows this shared routing shape to `templates/design_spec.md` only and
 does not carry asset or review payloads; initialized-project sibling scaffolding
 may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion during the independent Step-3 selection
-phase. Brand/Layout/Deck consume package-owned
+stage owns installation and fusion during the default Step-3 selection phase or
+the Quick exact-root branch. Brand/Layout/Deck consume package-owned
 `templates/`, `images/`, and `icons/`; Style consumes only
 `templates/design_spec.md` and ignores sibling project scaffolding. Every kind
 ignores `exports/`. Compatible legacy-flat Brand/Layout/Deck packages remain
 readable; Style has no legacy-flat form, and directory shape alone does not
-indicate legacy Master/Layout semantics. Strategist and all later consumers use
-the installed project-local files, never the original library or explicit root.
+indicate legacy Master/Layout semantics. Default Strategist, Quick's current
+agent, and all later consumers use the installed project-local files, never the
+original library or explicit root.
 
 ## Design specification references
 

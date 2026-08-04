@@ -41,12 +41,12 @@ route selection. After selection, the route authority owns execution.
 
 | Request condition | Generate-route behavior |
 |---|---|
-| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Activate [`quick-generate`](./profiles/quick-generate.md): prepare sources/resources as needed, let the current agent decide without interaction, omit Strategist/confirmation/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
+| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Activate [`quick-generate`](./profiles/quick-generate.md): prepare sources/resources as needed, let the current agent decide without interaction, directly apply at most one exact workspace root per kind supplied for this run, otherwise use free design, omit Strategist/Confirm UI/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
 | Default Generate reaches Step 3 | Complete the independent template-selection phase before Stage 1. The UI offers only index-registered library roots plus any user-supplied explicit roots; confirmed non-free selections run [`apply-template-workspace`](./stages/apply-template-workspace.md) |
-| Explicit current brand/style/layout/deck workspace root | Preserve the exact-path path through Step 3. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
+| Explicit current brand/style/layout/deck workspace root | Default Generate preserves the exact-path path through Step 3; Quick Generate validates and installs it directly without Step 3 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | Existing generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Design Spec Gate 1 and before lock Gate 2 |
@@ -63,8 +63,9 @@ route selection. After selection, the route authority owns execution.
 stays inside Generate PPTX but owns an explicit SVG → PPTX short circuit. Page
 count alone never activates or blocks it. Conversion, bounded research, and
 project-local resources remain available. Package capabilities may be requested
-or agent-selected. Structured template reuse requires the default lock-backed
-Generate pipeline.
+or agent-selected. Quick may consume exact Brand/Style/Layout/Deck workspaces as
+flat authoring inputs; compiling reusable Master/Layout/placeholder structure
+still requires the default lock-backed Generate pipeline.
 
 ---
 

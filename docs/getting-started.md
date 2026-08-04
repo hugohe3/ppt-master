@@ -83,6 +83,13 @@ You: Turn this into a deck, skip the confirmation, about 8 pages, dark corporate
 
 **Whatever you state explicitly is followed; whatever you leave unspecified the agent decides directly, without coming back to ask.** The page count and the look in the second example still hold — quick mode drops the round trip, not your say. State nothing, and the agent decides everything.
 
+Quick mode never opens the Confirm UI template selector. Give it up to one exact
+Brand / Style / Layout / Deck workspace root per kind and it validates,
+installs, and uses them directly; give it no exact root and it uses free design.
+A bare template name or style phrase is still only a design brief. Quick keeps
+its lockless flat export, so Layout / Deck prototypes guide the authored pages
+but do not compile into reusable native Master / Layout objects.
+
 It does not skip preparation: source conversion, research on identified factual gaps, and image / icon / formula preparation still run as needed. If a required asset is missing, it still stops and asks you for it instead of substituting unrelated material.
 
 Because the whole planning phase no longer happens (Strategist analysis, `design_spec.md` / `spec_lock.md` authoring, the staged confirmation round trip), token usage is materially lower than the default flow. Per-page SVG authoring is unchanged, so this is neither a wall-clock promise nor a promise of quality equivalence with the default flow.

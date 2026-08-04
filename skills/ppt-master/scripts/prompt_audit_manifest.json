@@ -34,7 +34,7 @@
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
     "skills/ppt-master/workflows/generate-pptx.md": 16000,
-    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 2750
+    "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
   },
   "load_sets": {
     "bootstrap.routing": {
@@ -187,7 +187,7 @@
       "max_tokens": 70000
     },
     "route.generate.quick-generate": {
-      "description": "Explicit non-interactive Generate path with conditional source/resource preparation and the complete SVG visual-construction authorities.",
+      "description": "Explicit non-interactive Generate path with conditional source/resource/template preparation and the complete flat SVG visual-construction authorities.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -201,6 +201,16 @@
         "skills/ppt-master/references/native-shape-authoring.md"
       ],
       "max_tokens": 61000
+    },
+    "route.generate.quick-generate.template-fusion": {
+      "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion loaded for flat authoring.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.template.fusion-brand-style-layout-deck"
+      ],
+      "files": [],
+      "max_tokens": 80000
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -308,7 +318,7 @@
       "max_tokens": 86000
     },
     "stage.generate.apply-template-workspace": {
-      "description": "Conditional Step 3 workspace validation, installation, and fusion framework.",
+      "description": "Conditional Default Step 3 or Quick exact-root workspace validation, installation, and fusion framework.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/stages/apply-template-workspace.md",
@@ -330,7 +340,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 6500
+      "max_tokens": 7500
     },
     "stage.generate.template.style": {
       "description": "Conditional roster-free Style workspace application.",
@@ -357,7 +367,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 8000
+      "max_tokens": 9000
     },
     "stage.generate.template.deck": {
       "description": "Conditional Deck workspace application with one selected Deck spec.",
@@ -373,7 +383,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 7500
+      "max_tokens": 8500
     },
     "stage.generate.template.brand-two": {
       "description": "Same-kind conflict path with two selected Brand specs.",
@@ -389,7 +399,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 7500
+      "max_tokens": 8500
     },
     "stage.generate.template.fusion-brand-style-layout-deck": {
       "description": "Maximum supported cross-kind fusion with Brand, Style, Layout, and Deck contracts.",
@@ -418,7 +428,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 14000
+      "max_tokens": 16000
     },
     "route.generate.flat-no-image": {
       "description": "Default fixed Generate-PPTX context with no image-acquisition role.",
@@ -983,6 +993,11 @@
     {
       "concern": "template-application",
       "from": "skills/ppt-master/workflows/generate-pptx.md",
+      "to": "skills/ppt-master/workflows/stages/apply-template-workspace.md"
+    },
+    {
+      "concern": "quick-template-application",
+      "from": "skills/ppt-master/workflows/profiles/quick-generate.md",
       "to": "skills/ppt-master/workflows/stages/apply-template-workspace.md"
     },
     {

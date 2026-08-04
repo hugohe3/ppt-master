@@ -54,6 +54,12 @@ The two rules that prevent most mistakes:
 
 The default confirmation page opens an independent **Step-3 template-selection phase before Stage 1**. It offers free design, registered Brand/Style/Layout/Deck workspaces, and any exact workspace roots already supplied for the run. It does not infer a recommendation from the topic: the user makes the selection explicitly.
 
+> **Quick Generate exception:** Quick never opens that page. Up to one exact
+> workspace root per kind supplied in the request is validated, installed, and
+> used directly; no exact root means free design. Bare names still do not
+> resolve. Quick remains a lockless flat export, so Layout/Deck prototypes are
+> authoring inputs rather than reusable native Master/Layout output.
+
 ### How to enter the template flow
 
 On the default page, choose free design or compose templates through five compact dropdowns: one each for registered Brand, Style, Layout, and Deck workspaces, plus one for exact roots supplied for this run. Each dropdown is single-select and includes `None`; the four registered kinds can be combined, and the specified-root channel contributes at most one workspace. The registered lists come only from the four kind indexes; the workflow never scans the template directories. You can also send an exact Brand/Style/Layout/Deck workspace root in chat before Step 3. Anywhere in the sentence is fine; the path just has to be unambiguous:
