@@ -14,7 +14,7 @@ This English file is the canonical policy source. The [Chinese version](./zh/pro
 
 > **PPT Master is an open-source, chat-driven workflow that lets AI reason the argument into shape first, then design and produce a real, editable PowerPoint — not slide images or a thin editable skin. Its defining axis is native depth: author or preserve more of PowerPoint's own object model, behavior, and reusable structure, release after release.**
 
-The input may be a topic, source material, data, design references, brand assets, or an existing `.pptx`. The main pipeline creates a new deck; other explicit routes and profiles can distill reusable Brand / Layout / Deck workspaces, fill an existing PowerPoint with new content, redesign it, or add native presentation behavior while preserving what their contracts promise to keep.
+The input may be a topic, source material, data, design references, brand assets, or an existing `.pptx`. The main pipeline creates a new deck; other explicit routes and profiles can distill reusable Brand / Style / Layout / Deck workspaces, fill an existing PowerPoint with new content, redesign it, or add native presentation behavior while preserving what their contracts promise to keep.
 
 That native depth is a direction of travel, not a fixed checklist. PPT Master's north star is to keep converging with PowerPoint itself, narrowing the gap between what an AI can generate and what a skilled user can build by hand. The [PowerPoint ↔ SVG Mapping Guide](./powerpoint-svg-mapping.md) records the current boundary honestly, feature by feature.
 
@@ -72,7 +72,7 @@ The capability model is broader than one generation pipeline, but deliberately n
 |---|---|
 | Presentation reasoning | Turn a topic or source bundle into an audience-aware message, narrative mode, outline, page plan, and explicit design direction |
 | Native presentation authoring | Create new slide visuals and compile them into a real, natively editable PowerPoint deck |
-| Reusable presentation design | Distill, create, combine, validate, and apply Brand, Layout, and Deck workspaces |
+| Reusable presentation design | Distill, create, combine, validate, and apply Brand, Style, Layout, and Deck workspaces |
 | Existing-deck adaptation | Redesign an existing deck, fill native slide shells with new content, or add native behaviors under distinct preservation contracts |
 | PowerPoint expression | Use images, diagrams, charts, tables, formulas, notes, narration, transitions, and animation when they serve the communication goal |
 | Review and delivery | Preview, inspect, validate, repair, export, read back, and retain enough local project state for later refinement or re-export |
@@ -160,7 +160,7 @@ Future work should improve this outcome in the following priority order:
 
 1. Native depth, output correctness, and delivery reliability.
 2. Content reasoning, narrative quality, and visual coherence.
-3. Reuse of brands, layouts, decks, and existing PowerPoint assets.
+3. Reuse of brands, styles, layouts, decks, and existing PowerPoint assets.
 4. Human review, correction, and controlled iteration.
 5. Additional formats, providers, and convenience features that strengthen the first four priorities.
 

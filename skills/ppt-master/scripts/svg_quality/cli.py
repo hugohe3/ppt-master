@@ -78,7 +78,7 @@ def print_usage() -> None:
     print("  --quick-generate               Validate lockless flat Quick Generate SVGs;")
     print("                                  ignore design_spec.md and spec_lock.md.")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
-    print("                                  Brand validates design_spec.md and referenced assets;")
+    print("                                  Brand/Style validate their portable workspace contracts;")
     print("                                  Layout/Deck glob *.svg directly, skip spec_lock checks,")
     print("                                  enforce roster consistency, and emit placeholder hints.")
     print("                                  native_structure_mode: structured also enables complete")

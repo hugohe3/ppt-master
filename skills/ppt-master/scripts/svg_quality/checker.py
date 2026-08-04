@@ -771,30 +771,34 @@ SPARSE_UNDECLARED_FONT_SIZE_MAX_OCCURRENCES = 2
 IMAGE_DOWNSIZE_WARN_RATIO = 4.0
 IMAGE_DOWNSIZE_WARN_MIN_BYTES = 1024 * 1024
 
-def _design_spec_is_brand(spec_path: Path) -> bool:
-    """Return True when a design_spec.md frontmatter declares ``kind: brand``.
+def _design_spec_kind(spec_path: Path) -> str | None:
+    """Return a roster-free ``kind`` declared in design_spec.md frontmatter.
 
     Lightweight detector that does not require PyYAML — scans only the
-    frontmatter block (``---`` delimited) for a ``kind:`` line whose value
-    contains ``brand``. Used by ``check_directory`` to select Brand schema
-    validation instead of SVG-roster validation.
+    frontmatter block (``---`` delimited). Used by ``check_directory`` to
+    select schema-only validation for Brand and Style workspaces instead of
+    SVG-roster validation.
     """
     try:
         text = spec_path.read_text(encoding='utf-8')
     except OSError:
-        return False
+        return None
     if not text.startswith('---\n'):
-        return False
+        return None
     end = text.find('\n---\n', 4)
     if end == -1:
-        return False
+        return None
     fm_block = text[4:end]
     for line in fm_block.splitlines():
         stripped = line.strip()
-        if stripped.startswith('kind:'):
-            value = stripped.split(':', 1)[1].strip().strip('"\'')
-            return value == 'brand'
-    return False
+        match = re.fullmatch(
+            r'''kind\s*:\s*(?:(['"])(brand|style)\1|(brand|style))'''
+            r'''(?:\s+#.*)?\s*''',
+            stripped,
+        )
+        if match:
+            return match.group(2) or match.group(3)
+    return None
 
 
 def _declared_template_structure_mode(target_path: Path) -> str | None:
@@ -1038,7 +1042,7 @@ class SVGQualityChecker:
         # template_mode=True). Each entry is (severity, kind, message) where
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
-        self._brand_template_checked = False
+        self._spec_only_template_kind: str | None = None
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
         self._communication_trace_issues: List[Tuple[str, str]] = []
@@ -4719,20 +4723,23 @@ class SVGQualityChecker:
             self.issue_types['Input issues'] += 1
             return []
 
-        # Brand-only workspaces have no SVG roster. Validate their portable
-        # identity schema through the same authority used by library
+        # Brand and Style workspaces have no SVG roster. Validate their
+        # portable contracts through the same authority used by library
         # registration, while keeping project scope independent of global
         # indexes and directory names.
         if self.template_mode and dir_path.is_dir():
             nested_spec = dir_path / 'templates' / 'design_spec.md'
             spec = nested_spec if nested_spec.is_file() else dir_path / 'design_spec.md'
-            if spec.exists() and _design_spec_is_brand(spec):
-                self._brand_template_checked = True
+            spec_kind = _design_spec_kind(spec) if spec.exists() else None
+            if spec_kind in {'brand', 'style'}:
+                self._spec_only_template_kind = spec_kind
                 self.summary['total'] += 1
-                brand_valid = True
+                spec_valid = True
+                pretty_kind = spec_kind.title()
                 print(
-                    f"[INFO] Brand directory detected (kind: brand) — "
-                    f"validating design_spec.md and referenced assets."
+                    f"[INFO] {pretty_kind} directory detected "
+                    f"(kind: {spec_kind}) — "
+                    f"validating its portable workspace contract."
                 )
                 workspace_root = (
                     spec.parent.parent
@@ -4743,23 +4750,28 @@ class SVGQualityChecker:
                     from register_template import (
                         SpecParseError,
                         validate_brand_workspace,
+                        validate_style_workspace,
                     )
-                    validate_brand_workspace(workspace_root)
+                    validator = {
+                        'brand': validate_brand_workspace,
+                        'style': validate_style_workspace,
+                    }[spec_kind]
+                    validator(workspace_root)
                 except ImportError as exc:
-                    brand_valid = False
+                    spec_valid = False
                     self._template_issues.append((
                         'error',
-                        'brand_contract',
-                        f"Brand schema validator could not be imported: {exc}",
+                        f'{spec_kind}_contract',
+                        f"{pretty_kind} schema validator could not be imported: {exc}",
                     ))
                 except (OSError, SpecParseError) as exc:
-                    brand_valid = False
+                    spec_valid = False
                     self._template_issues.append((
                         'error',
-                        'brand_contract',
+                        f'{spec_kind}_contract',
                         str(exc),
                     ))
-                if brand_valid:
+                if spec_valid:
                     self.summary['passed'] += 1
                 return self.results
 
@@ -6747,7 +6759,7 @@ class SVGQualityChecker:
         from ``main`` agrees), warnings under ``warnings``. Both are listed
         per file so the user can act on them directly.
         """
-        if not self._template_issues and not self._brand_template_checked:
+        if not self._template_issues and self._spec_only_template_kind is None:
             return
 
         errors = [item for item in self._template_issues if item[0] == 'error']
@@ -6762,10 +6774,11 @@ class SVGQualityChecker:
             print(f"  Warnings ({len(warnings)}):")
             for _sev, kind, msg in warnings:
                 print(f"    [{kind}] {msg}")
-        if self._brand_template_checked and not errors:
-            print("  Brand design_spec.md schema and asset references passed.")
+        if self._spec_only_template_kind is not None and not errors:
+            pretty_kind = self._spec_only_template_kind.title()
+            print(f"  {pretty_kind} design_spec.md contract passed.")
         if not errors:
-            if not self._brand_template_checked:
+            if self._spec_only_template_kind is None:
                 print("  No structural roster issues.")
                 print("  Conventional placeholder-name hints may be declared through "
                       "'placeholders:' frontmatter. Placeholder bounds are mandatory "

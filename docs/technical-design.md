@@ -59,8 +59,8 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── If canonical same-stem Markdown is absent, run ppt_to_md.py against that archived PPTX
     └── Content-type files in sources/ become the content contract
     ↓
-[Template / Brand / Layout (optional)] — default: skip, proceed with free design
-    Trigger only on an explicit current-contract Brand/Layout/Deck workspace-root path: either a global-library entry root or a project workspace root
+[Template / Brand / Style / Layout (optional)] — default: skip, proceed with free design
+    Trigger only on an explicit current-contract Brand/Style/Layout/Deck workspace-root path: either a global-library entry root or a project workspace root
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md
@@ -165,8 +165,8 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | regenerate through SVG; content and pagination are locked |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
-| User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Layout, or Create Deck child workflow, then returns a workspace root for Generate Step 3; structured children may export a review PPTX |
-| User supplies an explicit current-contract template path | Generate PPTX Step 3 | Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; flat roots may resolve direct `design_spec.md`; semantic-legacy packages are rejected and replaced through Create Template |
+| User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root for Generate Step 3; structured children may export a review PPTX |
+| User supplies an explicit current-contract template path | Generate PPTX Step 3 | Current Brand/Style/Layout/Deck workspaces resolve `templates/design_spec.md`; only compatible legacy-flat Brand/Layout/Deck roots may resolve direct `design_spec.md`; semantic-legacy packages are rejected and replaced through Create Template |
 | User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
@@ -367,9 +367,9 @@ Templates are **opt-in, not default**. The default Strategist flow is free desig
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**Mechanical trigger, not semantic matching.** A bare name like `presentation_core`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible flat-directory packages resolve direct `design_spec.md` only when their SVGs already satisfy the current contract. Directory shape never authorizes structure migration. A package with legacy Master/Layout/placeholder semantics must be replaced by a newly created template workspace before Step 3. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+**Mechanical trigger, not semantic matching.** A bare name like `presentation_core`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Style/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible flat Brand/Layout/Deck packages may resolve direct `design_spec.md` only when they satisfy the current kind contract, including current structured SVGs for Layout/Deck. Style has no legacy-flat form. A free-form style brief remains ordinary Stage-2 input; only an explicit `kind: style` workspace path activates the reusable Style contract. Directory shape never authorizes structure migration. A package with legacy Master/Layout/placeholder semantics must be replaced by a newly created template workspace before Step 3. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
 
-All current Brand/Layout/Deck packages use one workspace routing contract. Brand workspaces omit the SVG roster; empty optional directories are omitted:
+All current Brand/Style/Layout/Deck packages use one workspace routing contract. Brand and Style workspaces omit the SVG roster; empty optional directories are omitted:
 
 ```text
 <template_workspace>/
@@ -380,15 +380,20 @@ All current Brand/Layout/Deck packages use one workspace routing contract. Brand
 └── exports/     # optional, on-demand review files; Git-ignored in the library
 ```
 
+Style narrows this routing shape to `templates/design_spec.md` only; it does
+not carry asset or review payloads. Existing project scaffolding is not Style
+input.
+
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
 
-For Create Layout / Create Deck, `standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Layout mirror is legal only when that preserved source is already brand-neutral and application-neutral; otherwise author a new Layout or retain the facts as Deck. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance. Create Brand analyzes and materializes identity fragments only; it does not enter these structural replication strategies or produce an SVG roster.
+For Create Layout / Create Deck, `standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` materializes a new workspace from the source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals that are actually present and validated, without semantic synthesis or gap filling. Layout mirror is legal only when that preserved source is already brand-neutral and application-neutral; otherwise author a new Layout or retain the facts as Deck. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance. Create Brand analyzes identity fragments only; Create Style extracts portable method/direction only. Neither enters structural replication strategies or produces an SVG roster.
 
-The three template kinds own different segments of the design contract:
+The four template kinds own different segments of the design contract:
 
 | Kind | Owns | Typical contents | Effect on Strategist |
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
+| `style` | direction / method | communication method, open page roles, evidence/data rules, visual defaults, image/icon direction, advisory review focus | seeds Stage 2; Style-only stays flat, while fusion follows the selected Layout/Deck structure; never becomes identity truth or triggers visual review |
 | `layout` | brand-neutral structure | canvas, page structure, semantic text roles/spatial behavior, page types, SVG roster | exposes structure; identity and communication application remain downstream decisions |
 | `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, representative page roles, identity, and actual SVG roster | contributes descriptive context and prototypes that Strategist compares with the independently confirmed Stage-1 contract and current content before deriving the application plan |
 
@@ -400,11 +405,11 @@ formatting from those rules plus the confirmed reading mode/type scale;
 `mirror` preserves literal source formatting and text topology. Export may
 place both rule sets into the same native Master/Layout graph.
 
-When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the application segment. A Layout may replace Deck structure only when its page roles and slots can express the Deck's required narrative/content roles; otherwise fusion surfaces a conflict. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
+When several paths are supplied, fusion is segment-level, not field-level. Brand owns identity, Style owns direction/method defaults, Layout owns compatible structure, and Deck supplies descriptive recurring-application context plus fallback identity/structure under the current Stage-1 communication contract. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity; its method/composition expectations must be compatible with the selected Deck application and Layout/Deck structure or fusion surfaces a conflict. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
 
 **Raw PPTX files cannot be Step 3 workspaces.** Normal Generate may use a PPTX as source material, and `beautify-pptx` may redesign it while preserving page count, order, and per-page wording 1:1; neither treats the source PPTX as a Step 3 template. When a raw PPTX is used as a template or native slide shell and filled with new material, the default route is Fill Native PPTX. If the request permits splitting, merging, dropping, reordering, or narrative restructuring, it remains Generate. Only a request to create a reusable template workspace and reuse that design system in SVG-route Step 3 first runs Create Template and then supplies the generated workspace root.
 
-**Layouts are opt-in; charts and icons are not.** The asymmetry isn't an inconsistency — *layout* is what locks visual idiom (the floor/ceiling problem above), while charts and icons are reusable primitives that don't impose deck-wide style. Same `templates/` directory, different role in the visual contract.
+**Template contracts are opt-in; charts and icons are not.** The asymmetry is intentional: Layout locks reusable structure, Style locks direction/method defaults, Brand locks identity, and Deck combines a recurring application with identity and structure. Charts and icons are reusable primitives that do not by themselves impose a deck-wide contract. Same `templates/` directory, different ownership.
 
 ---
 
@@ -770,7 +775,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 | Class | Runbooks | Owning route |
 |---|---|---|
 | Generation profiles | `beautify-pptx`, `quick-generate` | Generate PPTX with either wording/page invariants or the explicit direct SVG-to-PPTX short circuit |
-| Template child workflows | `create-brand`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
+| Template child workflows | `create-brand`, `create-style`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, roster-free direction/method, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
 | Template-input stage | `apply-template-workspace` | Generate PPTX Step 3; loaded only when an explicit workspace-root path triggers it |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
 | Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |

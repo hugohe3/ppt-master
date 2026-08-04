@@ -2,10 +2,11 @@
 
 This directory holds **brand-only templates**: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Strategist locks the brand's identity segment as truth; Executor designs pages freely under those constraints.
 
-Brand is one of three template kinds in the library — alongside
-[`layouts/`](../layouts/) (brand-neutral structure) and [`decks/`](../decks/)
-(a recurring application with integrated identity and structure). The shared
-kind and workspace model lives in the parent [`README.md`](../README.md).
+Brand is one of four template kinds in the library — alongside
+[`styles/`](../styles/) (direction/method defaults), [`layouts/`](../layouts/)
+(brand-neutral structure), and [`decks/`](../decks/) (a recurring application
+with integrated identity and structure). The shared kind and workspace model
+lives in the parent [`README.md`](../README.md).
 
 ## How brands are consumed
 

@@ -20,7 +20,7 @@
 |---|---|
 | [音频旁白](./audio-narration.md) | 从演讲者备注到逐页旁白：服务商、声音复刻、时序、PPTX 嵌入 |
 | [转场与动画](./animations.md) | 页间转场与页内元素动画的默认行为和自定义方式 |
-| [模板使用指南](./templates-guide.md) | 品牌 / 版式 / 成品模板的创建与套用 |
+| [模板使用指南](./templates-guide.md) | 品牌 / 风格 / 版式 / 成品模板的创建与套用 |
 
 ## 架构与原理
 
@@ -28,7 +28,7 @@
 |---|---|
 | [技术路线](./technical-design.md) | 架构、设计哲学、为什么选 SVG → DrawingML |
 | [PowerPoint–SVG 能力映射](./powerpoint-svg-mapping.md) | PowerPoint 构造与管线之间逐项能力映射 |
-| [模板体系架构](./templates-architecture.md) | 品牌 / 版式 / 成品模板体系的设计 |
+| [模板体系架构](./templates-architecture.md) | 品牌 / 风格 / 版式 / 成品模板体系的设计 |
 
 ## 项目方向
 

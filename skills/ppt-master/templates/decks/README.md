@@ -133,5 +133,6 @@ does not register globally. Empty optional directories are omitted.
 3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
 4. In library scope, register with `register_template.py <id> --kind deck`.
 
-See also [`layouts/`](../layouts/) for structure-only packages and
+See also [`styles/`](../styles/) for direction/method packages,
+[`layouts/`](../layouts/) for structure-only packages, and
 [`brands/`](../brands/) for identity-only packages.

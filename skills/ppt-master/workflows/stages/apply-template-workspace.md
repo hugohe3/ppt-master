@@ -1,5 +1,5 @@
 ---
-description: Conditional Generate-PPTX runbook for validating, installing, or fusing explicit Brand, Layout, and Deck workspaces.
+description: Conditional Generate-PPTX runbook for validating, installing, or fusing explicit Brand, Style, Layout, and Deck workspaces.
 ---
 
 # Apply Template Workspace Stage
@@ -13,14 +13,14 @@ description: Conditional Generate-PPTX runbook for validating, installing, or fu
 | Input shape | Spec and SVG source | Asset source |
 |---|---|---|
 | Current workspace root | `<root>/templates/design_spec.md` and `<root>/templates/` | Existing `<root>/images/` and `<root>/icons/` |
-| Compatible legacy-flat root | `<root>/design_spec.md` and current-contract SVGs under `<root>/` | Package-local files |
+| Compatible legacy-flat Brand/Layout/Deck root | `<root>/design_spec.md`; Layout/Deck also require current-contract SVGs under `<root>/` | Package-local files |
 | Current Create Template handoff | Its exact validated library or project workspace root | Existing portable sibling `images/` and `icons/`; already installed only when the root is the target project |
 
-The spec frontmatter MUST declare `kind: brand`, `kind: layout`, or `kind: deck`. Do not accept only another project's inner `templates/` directory because that omits sibling assets.
+The spec frontmatter MUST declare `kind: brand`, `kind: style`, `kind: layout`, or `kind: deck`. Do not accept only another project's inner `templates/` directory because that omits sibling assets.
 
 **Hard rule — raw source boundary**: A raw PPTX is not a Step 3 workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first and return with its validated workspace root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
-**Compatibility gate**: Reject semantic-legacy or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved. A legacy-flat directory is readable only when its SVG contract is current.
+**Compatibility gate**: Reject semantic-legacy or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved. A legacy-flat Brand/Layout/Deck directory is readable only when it satisfies its current kind contract; Layout/Deck also require a current structured SVG contract. Style has no legacy-flat form and always requires `<root>/templates/design_spec.md`.
 
 ## 2. Read the Matching Schema
 
@@ -29,14 +29,27 @@ Read [`templates/README.md`](../../templates/README.md), then only the README fo
 | Kind | Schema | Owned segment |
 |---|---|---|
 | `brand` | [`templates/brands/README.md`](../../templates/brands/README.md) | Identity: color, typography, logo, voice/tone, icon style |
+| `style` | [`templates/styles/README.md`](../../templates/styles/README.md) | Direction/method: reusable communication method, visual language, composition, and information-expression defaults |
 | `layout` | [`templates/layouts/README.md`](../../templates/layouts/README.md) | Structure: canvas, page structure, semantic text roles, page types, SVG roster |
 | `deck` | [`templates/decks/README.md`](../../templates/decks/README.md) | Application plus integrated identity and structure |
 
 A Layout created with `mirror` remains eligible only when its source contract is brand-neutral and application-neutral. Keep a branded or application-bearing source as a Deck, or re-author it as Layout through `standard` / `fidelity`; do not remove those semantics through mirror.
 
+Before mapping any current workspace, run its shared package validator from the
+workspace root. This is the same schema authority used during creation and
+library registration; Brand/Style pass without SVG, while Layout/Deck validate
+their roster and structure:
+
+```bash
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<workspace_root>/templates" --template-mode
+```
+
+Any error blocks installation. A compatible legacy-flat root uses its own root
+as the checker target.
+
 ## 3. Structured Preflight
 
-Before copying a Deck or Layout workspace, inspect every SVG root and slot:
+Before copying a Deck or Layout workspace, inspect every SVG root and slot. Brand and Style workspaces are roster-free and skip this structured preflight:
 
 - Every page declares root Master/Layout keys and PowerPoint picker names.
 - Master/Layout visuals are direct atoms, not generic layer `<g>` wrappers.
@@ -49,6 +62,7 @@ Before copying a Deck or Layout workspace, inspect every SVG root and slot:
 | Kind | Install behavior |
 |---|---|
 | `brand` | Install `templates/` plus existing `images/` and `icons/`; ignore `exports/`. Identity is constrained; structure remains free. |
+| `style` | Install `templates/design_spec.md` only. Ignore sibling project scaffolding and reject a library Style carrying asset/review payloads. Expose reusable direction/method without identity truth, page prototypes, or native structure. Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. A Style workspace never activates visual review. |
 | `layout` | Install the same portable roots. Expose the actual reusable structure; Strategist later inspects the prototypes and derives the application plan automatically. |
 | `deck` | Install the same portable roots. Expose descriptive application context, identity, structure, and the actual prototype roster; Strategist compares them with the current communication contract and content, then derives the application plan automatically. |
 
@@ -72,25 +86,26 @@ Multi-path fusion supports different kinds, or at most two workspaces of the sam
 
 ### 5.1 Different Kinds
 
-Use segment-level integer replacement; do not mix fields implicitly:
+Resolve four whole segments instead of enumerating every kind combination. This table selects the starting workspace owner; explicit current user instructions and the final Strategist confirmation remain authoritative over every result:
 
-| Combination | Identity from | Structure from | Application from |
-|---|---|---|---|
-| brand only | brand | free design | none |
-| layout only | free design | layout | none |
-| deck only | deck | deck | deck |
-| brand + layout | brand | layout | current Stage-1 communication contract |
-| brand + deck | brand | deck | deck |
-| layout + deck | deck | compatible layout | deck |
-| brand + layout + deck | brand | compatible layout | deck |
+| Segment | Starting owner |
+|---|---|
+| Identity | Brand, otherwise Deck, otherwise the current Stage-2 project decision. Style color/type/icon/image values are direction candidates, never identity truth. |
+| Structure | A compatible Layout, otherwise Deck, otherwise free design. Style owns no canvas, prototype, Master/Layout, slot, or page mapping. |
+| Application | The current Stage-1 communication contract, informed by Deck's descriptive recurring-application context when present. Style never supplies the current audience, outcome, page count, outline, or content. |
+| Direction / method | Style, otherwise the current Stage-2 project decision. Actual Deck prototypes and Signature facts may inform compatibility, but Deck does not own the Style-only method segment. |
+
+Replace each selected segment wholesale; do not mix its fields implicitly. Brand or Deck identity replaces any identity-adjacent defaults carried by Style. A Style direction may adapt to that resolved identity, but cannot relabel its candidates as official brand facts.
 
 Before Layout overrides Deck structure, verify that every required application/narrative/content role fits the Layout's page roles, slot types, and capacity. On mismatch, stop and surface exactly three remedies: retain Deck structure, select another Layout, or explicitly revise the application contract.
+
+Before Style overlays Deck-derived prototype/visual guidance, verify that its communication method can serve the Deck application and that its composition requirements fit the selected Layout/Deck structure. On mismatch, stop and surface the conflicting segment facts; require the user to omit the Style, choose a compatible Style/structure, or explicitly revise the application contract. Do not silently weaken Style, Deck, or Layout to make the paths appear compatible.
 
 Field-level micro-adjustments such as a primary-color override are not Step 3 fusion. Carry them into the normal Strategist confirmation fields.
 
 ### 5.2 Same Kind
 
-Do not use path order as priority. Report every segment-level difference and ask the user to choose workspace A, workspace B, or select per segment. Only the per-segment choice opens a segment-by-segment resolution. Do not resolve field-level conflicts here. Three or more same-kind paths require the user to converge to at most two.
+Do not use path order as priority. Report every segment-level difference and ask the user to choose workspace A, workspace B, or select per segment. Only the per-segment choice opens a segment-by-segment resolution. Two Style workspaces conflict over the complete Direction / method segment. Do not resolve field-level conflicts here. Three or more same-kind paths require the user to converge to at most two.
 
 ### 5.3 Fused Provenance
 
@@ -100,18 +115,19 @@ Write one final `<project>/templates/design_spec.md`. Immediately under its H1, 
 > **Fused from:**
 > - deck: `templates/decks/example/` (base)
 > - brand: `templates/brands/example/` (identity override)
+> - style: `templates/styles/example/` (direction/method override)
 > - layout: `templates/layouts/example/` (structure override)
 > - conflicts resolved: Color Scheme from brand (user selected A)
 ```
 
-Single-path installs do not add provenance. Set fused frontmatter `kind` from the resulting capability: `deck` when identity and structure are both present, `layout` for structure only, or `brand` for identity only. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not automatically a reusable library Deck; its application remains current-project context.
+Single-path installs do not add provenance. Set fused frontmatter `kind` from the non-Style capability: `deck` when identity and structure are both present, `layout` for structure only, or `brand` for identity only. Use `kind: style` only for Style-only input. Adding Style to Brand, Layout, Deck, or Brand + Layout does not change that existing capability label; its Direction / method ownership stays explicit in the fused provenance and body. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not automatically a reusable library Deck; its application remains current-project context.
 
-**Completion receipt**: Report `roots=<normalized roots>; kinds=<kind per root>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
+**Completion receipt**: Report `roots=<normalized roots>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
 
 ## ✅ Template Workspace Applied
 
 - [x] Every input was an explicit root satisfying a listed workspace contract or the exact current Create Template handoff
-- [x] Kind schemas and structured SVG contracts passed preflight
+- [x] Every kind schema passed preflight; structured SVG checks ran only for Layout/Deck inputs
 - [x] All collisions and fusion conflicts were resolved before one atomic install
 - [x] `<project_path>/templates/` and any portable sibling assets are complete
 - [ ] **Next**: Return to [`generate-pptx.md`](../generate-pptx.md) Step 4

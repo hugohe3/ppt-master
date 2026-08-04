@@ -18,14 +18,14 @@ The short path to your first deck, how to use everything around it — templates
 
 ## Start from a template
 
-**Optional.** By default PPT Master uses **free design** — you don't need a template, and you can skip to the next section. Reach for one only when a deck must reuse a fixed layout set or brand identity.
+**Optional.** By default PPT Master uses **free design** — you don't need a template, and you can skip to the next section. Reach for one when a deck must reuse a brand identity, a communication/design method, a fixed layout set, or a recurring deck application.
 
 **Two ways to reuse an existing `.pptx`, depending on what you want back:**
 
 | You want… | Route | What happens |
 |---|---|---|
 | **Use this deck's native slide shells with new content** | Fill Native PPTX | Clones the selected source slides and patches text / table / chart data directly in OOXML. The source design remains native; output is a new filled deck bound to the available slide shells. |
-| **Build a reusable design system, then generate a new deck** | Create Template → Generate PPTX | Creates a validated Brand, Layout, or Deck workspace from the reference, then authors a fresh deck. The new story, structure, and page count can differ from the source. |
+| **Build a reusable design system, then generate a new deck** | Create Template → Generate PPTX | Creates a validated Brand, Style, Layout, or Deck workspace from the reference, then authors a fresh deck. The new story, structure, and page count can differ from the source. |
 
 For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
 
@@ -35,7 +35,7 @@ For the first, give the AI your `.pptx` plus your material (or a topic) and ask 
 You: Create a reusable Deck template from projects/brand/our_deck.pptx via /create-template
 ```
 
-Create Template analyzes the reference, confirms whether the result is a Brand, Layout, or Deck, and then authors or materializes a new validated workspace. The importer supplies source evidence; the final workspace owns `templates/design_spec.md`, any required SVG prototypes, and matching assets. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The workspace root is what you point to at generation time.
+Create Template analyzes the reference, confirms whether the result is a Brand, Style, Layout, or Deck, and then authors or materializes a new validated workspace. The importer supplies source evidence; the final workspace owns `templates/design_spec.md` plus any prototypes and assets required by its kind. Brand and Style are roster-free; Layout and Deck own structured SVG prototypes. If you want a PowerPoint review file for Layout or Deck, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The workspace root is what you point to at generation time.
 
 During the create-template brief, choose `library` (the existing default) or `project`. Both require `templates/` and use optional `images/`, `icons/`, and on-demand `exports/`; empty optional directories are omitted. Project scope requires an initialized target project; library scope alone adds global registration.
 
@@ -46,7 +46,7 @@ A created template lives in one of two places:
 | **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
 | **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
-Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for directory-shape compatibility it also accepts a flat root whose direct `design_spec.md` and SVGs already satisfy the current contract. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
+Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for directory-shape compatibility it also accepts a legacy-flat Brand/Layout/Deck root that satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
 You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/
