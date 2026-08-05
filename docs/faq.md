@@ -246,7 +246,9 @@ default-quality-equivalence promise.
 
 Default recommendation: **continuous one-shot generation**. 10–15 page decks fit comfortably in a 200K window, and cross-page visual consistency is best when the Executor can see prior pages in the same session (it actively aligns style, font sizes, and rhythm).
 
-Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<project_name>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
+When the current AI editor supports an isolated research worker, `topic-research` keeps raw fetches there and the main chat reads only the saved research supplement and fact-provenance file.
+
+Only when signals are heavy (≥ 18 pages, thick source material, or substantial research material remains in the main chat after a local fallback or unusually large imported supplement) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<project_name>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
 
 Split mode is a **compromise** — the fresh session pays the fixed cost of reloading the Generate authority and required execution references, but drops the planning-session noise and reuses the freed budget to re-read `sources/` for richer slide content. **Not needed when signals are normal**; the hint won't appear, and you can always ignore it and stay in continuous mode.
 

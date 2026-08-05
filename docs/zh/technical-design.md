@@ -392,7 +392,7 @@ Theme、Slide Master、Slide Layout 与 Placeholder 是编译生成的 PowerPoin
 
 ## 角色系统：单一流水线中的专业模式
 
-PPT Master 用的是**单主代理内的角色切换**，不是并行子代理。Strategist、Image_Generator、Executor，以及各路线中的 child workflow / profile / stage，本质上都是按需加载的指令作用域；它们不是带着各自过期 deck 状态的独立 agent。这个选择有三条互相支撑的理由：
+PPT Master 把拥有 deck 状态的 Strategist、Image_Generator 和 Executor 保持在同一主代理内，而不是分发给并行子代理。它们是按需加载的指令作用域，不是各自持有过期 deck 状态的独立 agent。只有当支撑阶段的权威文件定义了不依赖共享 deck 状态的持久产物交接时，才可使用有界子代理。核心选择有三条互相支撑的理由：
 
 **为什么是单代理而非并行子代理。** 页面设计依赖完整的上游上下文——Strategist 的色彩选择、图片资源是否成功获取（还是失败被替代）、之前几页的视觉节奏。子代理拿到的只能是这个上下文的过期局部快照，产出的 deck 视觉会逐页漂。同一逻辑也禁止分批生成（比如一次 5 页）：分批加速上下文压缩，deck 的视觉一致性下降速度比节省的速度更快——不划算。
 
@@ -457,7 +457,7 @@ Generate 执行以 [`workflows/generate-pptx.md`](../../skills/ppt-master/workfl
 
 **快速生成把规划职责合并到当前 Agent。** 来源转换、事实缺口研究和资源准备仍按需运行。当前 Agent 在上下文中自动选择内容、页面清单、视觉系统和资源需求，准备用户提供 / 来源抽取 / AI / 网络 / 切片图片、图标和公式及其必要 manifest 或来源记录，随后手写 SVG；不进入 Strategist、Confirm UI、`design_spec.md` 或 `spec_lock.md`。
 
-**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
+**默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证图标 inventory。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
 
 **项目中已备好的材料就是边界。** 默认流程中，图片和其他声明型资源须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 记录 Strategist 计划选用的内置图标，但不是穷尽式执行白名单。快速生成以当前上下文中的资源清单及其项目级文件 / manifest 代替该规划投影；当前 Agent 可以在手写 SVG 前获取并准备这些资源。其他目录中的文件不构成使用许可。缺料必须回到所属备料步骤；SVG 创作阶段不得静默换料。
 
