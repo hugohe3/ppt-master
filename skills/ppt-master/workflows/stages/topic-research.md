@@ -4,7 +4,7 @@ description: Generate source-intake stage that fills externally verifiable factu
 
 # Topic Research Stage
 
-> Factual preparation inside [`generate-pptx`](../generate-pptx.md) source intake. Default Generate hands its output to Strategist; Quick Generate keeps it with the current agent. Run immediately for topic-only input, or after supplied material is converted and read when it leaves planning-critical factual gaps. Output is a research supplement plus stable fact provenance for project import.
+> Factual preparation inside [`generate-pptx`](../generate-pptx.md) source intake. Default Generate hands its output to Strategist; Quick Generate's main agent consumes the same output. Run immediately for topic-only input, or after supplied material is converted and read when it leaves planning-critical factual gaps. Output is a research supplement plus stable fact provenance for project import.
 
 This stage supplies facts needed to build the requested deck. It does not select,
 download, or generate images. Default Generate resolves image selection in the
@@ -55,9 +55,24 @@ confirmation stage.
 
 ---
 
+## Execution Context
+
+**Default — isolated research when available**: The main agent owns the sufficiency decision and gap brief. When the current AI editor supports and permits an isolated subagent with web/fetch access and write access to the declared outputs, dispatch exactly one research worker. Otherwise the main agent runs Steps 2–3 locally.
+
+| Actor | Contract |
+|---|---|
+| Main agent | Supply the topic/outcome, baseline or relevant source paths, declared gaps, output language, two exact unused output paths, and this stage's absolute path as execution authority; use paths instead of pasting source bodies when possible |
+| Research worker | Read the supplied stage file completely, then follow Steps 2–3 using the brief and declared source paths as its baseline; limit project writes to the two output artifacts; acquire no images and make no deck-planning or design decisions |
+
+**Hard rule — isolated hand-off**: Raw page content and fetch transcripts stay in the worker context. In at most 250 words, return only `status`, exact artifact paths, covered/unresolved gap counts, external-fact count, and material conflicts; do not return page excerpts or duplicate the research narrative in chat. The two saved artifacts are the hand-off.
+
+**Validation**: Before import, the main agent verifies both exact files exist, the Markdown contains `## Research Brief` and `## Sources`, the JSON parses with schema `ppt-master.fact-provenance.v1` and unique sequential IDs, and the two files agree. Return an invalid pair to the research worker for owning-artifact repair; use main-context web research only when isolated execution is unavailable.
+
+---
+
 ## Step 2: Gather factual sources
 
-Use the web search and fetch tools supplied by the current IDE. If none are available, pause and ask the user for authoritative URLs covering the declared gaps, then fetch each with:
+Use the web search and fetch tools available in the active research context. An isolated worker without them returns `blocked: web-tools-unavailable`. If no usable research context has search/fetch tools, the main agent pauses and asks the user for authoritative URLs covering the declared gaps, then fetches each with:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>
@@ -136,8 +151,10 @@ resource-preparation phase.
 
 ```markdown
 ## ✅ Topic Research Complete
+- [x] Research execution: <isolated worker | main-context fallback>
 - [x] Research supplement: `projects/<research_slug>.md` (N declared gaps covered)
 - [x] Fact provenance: `projects/<research_slug>.facts.json` (N external facts)
+- [x] Artifact contract validated: `## Research Brief`, `## Sources`, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
 - [x] No images acquired inside this factual-research stage
 - [ ] **Next**: return to [`generate-pptx`](../generate-pptx.md) Step 1, then import all source artifacts in Step 2
 ```
