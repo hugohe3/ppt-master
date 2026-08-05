@@ -1,11 +1,21 @@
-# Confirm UI — Strategist Confirmation Stage Page
+# Confirm UI — Template Selection and Strategist Confirmation Page
 
-> The interactive, visual surface for [`generate-pptx`](../../workflows/generate-pptx.md) Step 4. Stage 1 is an open communication brief: common purpose paths are prompt text, never checkboxes or a forced single label. Stage 2 offers **≥3 coordinated design directions** and then exposes their component values for deliberate override; color, typography, icons, and generated-image rendering are one system rather than unrelated grids. When a template workspace is active, Stage 2 also shows one editable natural-language template-application plan—never internal mode controls. Generated images inherit the selected deck colors directly—there is no image-palette control. Stage 3 contains production mechanics only. The AI uses one `recommendations.stageN.json` file per stage; the active, unconfirmed stage may be overwritten when the user requests a new recommendation. Confirmed values accumulate into `result.json`. Final confirm saves the result and shuts the server down. The chat path mirrors the same staged semantics.
+> The interactive surface for [`generate-pptx`](../../workflows/generate-pptx.md)
+> Step 3 template selection and Step 4 Strategist confirmation. The independent
+> Step-3 phase first confirms free design or exact indexed/explicit template
+> roots; selected workspaces are applied into the project before Stage 1 exists.
+> Stage 1 then confirms the open communication brief, Stage 2 confirms a
+> coordinated deck solution and—when a template is installed—editable prose for
+> **how** to apply it, and Stage 3 confirms production mechanics. Template
+> selection persists separately in `template_selection.json`; Strategist values
+> accumulate into `result.json`. The chat path mirrors the same phase boundary.
 
 ## Authority and Scope
 
 | Concern | Owner |
 |---|---|
+| Step 3 template-selection gate and installation order | [`generate-pptx.md`](../../workflows/generate-pptx.md) |
+| Template option/selection schema and page transport | This document |
 | Step 4 gate and pipeline order | [`generate-pptx.md`](../../workflows/generate-pptx.md) |
 | Confirm UI schema | This document |
 | Stage 1 / Stage 2 / Stage 3 field membership | This document |
@@ -16,7 +26,7 @@
 
 **Hard rule**: Keep detailed Confirm UI behavior here. The Generate route may summarize orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
 
-**Mandatory surface decision — before any UI command**: Resolve the most recent
+**Mandatory surface decision — before Step 3 or any UI command**: Resolve the most recent
 explicit confirmation-surface instruction for this run before running
 `--daemon` or `--wait-only`. Unrelated later messages do not reset the selected
 branch. A new explicit selection may change it before launch; once confirmation
@@ -24,23 +34,25 @@ starts in chat or UI switches to chat, keep chat for the rest of this run.
 
 | Most recent explicit surface instruction | Branch |
 |---|---|
-| The user explicitly delegates confirmation | Present one complete delegated three-stage summary in chat. Do not launch the page or fabricate `result.json`. |
-| Otherwise, the user asks for or agrees to personally confirm in chat, or declines the confirmation page | Use chat for all three stages. Do not launch the page, run `--wait-only`, or require a UI-authored `result.json`. |
+| The user explicitly delegates confirmation | Present one complete delegated template choice plus three-stage summary in chat. Do not launch the page or fabricate either UI receipt. |
+| Otherwise, the user asks for or agrees to personally confirm in chat, or declines the confirmation page | Use chat for Step 3 selection and all three Strategist stages. Do not launch the page, run `--wait-only`, or require UI-authored receipts. |
 | No explicit confirmation-surface instruction exists for this run | Use the page as the default. |
 
 Interpret the instruction semantically: “confirm here”, “use the chat window”, or
 “do not open the confirmation page” are sufficient; no literal `chat-only`
 keyword is required. Invoking a chat-question tool by itself does not select the
-chat branch—the user's instruction does. Both branches preserve the same three
-stages and confirmed-value semantics.
+chat branch—the user's instruction does. Both branches preserve the independent
+template choice followed by the same three Strategist stages and confirmed-value
+semantics.
 
 **Fallback rule**: When no surface was selected before launch, the page is the
-default. Use chat when the user answers the always-on handoff in chat, or after
-launch failure/timeout and one `result.json` re-check. A chat-question tool
-alone is not a launch failure. Preserve all three stages and keep Stage-1
-prompts open-ended.
+default. Use chat when the user answers either always-on handoff in chat, or
+after launch failure/timeout and one re-check of the receipt for the active
+phase (`template_selection.json` for Step 3, `result.json` afterward). A
+chat-question tool alone is not a launch failure. Preserve template selection
+as an independent choice and keep Stage-1 prompts open-ended.
 
-**In-run UI → chat switch — any stage**: If the user explicitly selects chat
+**In-run UI → chat switch — any phase or stage**: If the user explicitly selects chat
 after the UI server has launched—while `--wait-only` is active, before that wait
 starts, or after it times out while the server remains live:
 
@@ -50,16 +62,28 @@ starts, or after it times out while the server remains live:
 2. Run `server.py <project_path> --shutdown` and require that cleanup to
    succeed. The browser tab may remain open, but its stopped server makes it
    inactive.
-3. Re-check `result.json` once for the current stage. Retain only values whose
-   confirmation was persisted before shutdown; an unsubmitted browser draft is
-   not confirmed.
-4. Continue the unresolved current stage and every remaining stage in chat. Do
+3. Re-check the active receipt once: `template_selection.json` during Step 3,
+   otherwise `result.json`. Retain only values persisted before shutdown; an
+   unsubmitted browser draft is not confirmed.
+4. Continue the unresolved current phase/stage and everything remaining in chat. Do
    not call `--wait-only` again, recover the server, or relaunch the page during
    this run.
 
-**Always-on Stage-1 chat handoff**: Launch the healthy daemon without `--wait`.
-After it returns, immediately post its actual URL plus one compact, localized
-summary of the current Stage-1 recommendations: audience, communication intent,
+**Always-on Step-3 chat handoff**: After writing `template_options.json`, launch
+the healthy daemon without `--wait`. Immediately post its actual URL plus a
+compact localized summary: free design is available; the page has one
+single-select dropdown for each registered kind plus one for supplied exact
+roots; registered options come only from the four kind indexes; and every
+supplied exact root is shown as a library or explicit candidate according to
+exact canonical-root equality. End
+with a localized line saying the user may select on the page or reply in chat
+with free design / exact roots if the page did not open. Only then run
+`--wait-only --wait-stage template`. Silence confirms nothing.
+
+**Always-on Stage-1 chat handoff**: After Step 3 confirms and any template is
+installed, write `recommendations.stage1.json`; the same live page changes from
+waiting state to Stage 1. Immediately post the existing actual URL plus one
+compact, localized summary of the current Stage-1 recommendations: audience, communication intent,
 audience outcome, core message, delivery context, artifact afterlife,
 `content_divergence`, and canvas. Show a blank as “not specified” without
 changing its value. End with an explicit localized line saying that, if the
@@ -76,26 +100,30 @@ the same items as open Stage-1 chat questions and wait for an explicit response.
 The following launch and wait commands belong to the **UI branch only**:
 
 ```bash
-uvx ppt-master confirm-ui <project_path> --daemon         # healthy launch; return for chat handoff
+uvx ppt-master confirm-ui <project_path> --daemon         # launch Step 3; return for template chat handoff
+uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage template # Step 3 selection
+uvx ppt-master confirm-ui <project_path> --complete-template-phase # after free-design closure / template install
 uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1  # Stage 1
 uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage2  # Stage 2: wait for the direction handoff
 uvx ppt-master confirm-ui <project_path> --wait-only       # Stage 3: wait for the final result
 uvx ppt-master confirm-ui <project_path> --daemon --port 5051
 uvx ppt-master confirm-ui <project_path> --no-browser
 uvx ppt-master confirm-ui <project_path> --timeout 0   # disable idle auto-shutdown
+uvx ppt-master confirm-ui <project_path> --reset-template-phase # re-open Step 3 receipts only
 uvx ppt-master confirm-ui <project_path> --shutdown    # Step 4 cleanup (idempotent)
 ```
 
 - Without `--port`, binds the first free port from `127.0.0.1:5050`; the launch log prints the actual URL. `--port N` is exact and fails when unavailable. Auto-open is suppressed by `--no-browser`.
 - In `--daemon` mode the launcher starts the child with browser opening suppressed, then accepts readiness only when `GET /api/health` identifies this confirm service, project, and child process. It opens the printed `http://127.0.0.1:<port>` URL only after that check.
 - Confirm UI and live preview prefer the same memorable base port but keep separate processes and project-local locks (`.confirm_ui.lock` vs `live_preview/lock.json`). Normal Step 4 cleanup releases the confirm port before Step 6; concurrent projects may use different ports.
-- `--daemon` starts the Flask process in the background and returns after the health check. Generate uses it without `--wait` so the Stage-1 chat handoff appears before blocking. `--daemon --wait` remains a combined compatibility form. The wait budget defaults to **590 s** (`--wait-timeout`); on timeout the detached server remains live, and the caller re-checks `result.json` once before chat fallback.
-- `--wait-only` attaches to the page opened by `--daemon` and blocks until the requested stage. If that stage is already persisted, it returns before recovery, so a fast submit between launch, chat handoff, and wait is not lost. Otherwise, if the recorded server died, it restarts on the recorded/default port. Use `stage1` only for a fresh Stage-1 launch, `stage2` for the complete-solution handoff, and `final` for Stage 3. It keys on stage alone; resume chooses the target from the persisted result instead of restarting Stage 1.
+- `--daemon` starts the Flask process in the background and returns after the health check. Generate first uses it without `--wait` for the Step-3 handoff; the same process then remains live across installation and all three Strategist stages. `--daemon --wait --wait-stage template` remains a combined compatibility form. The wait budget defaults to **590 s** (`--wait-timeout`); on timeout the detached server remains live, and the caller re-checks the active receipt once before chat fallback.
+- `--wait-only` attaches to the page opened by `--daemon` and blocks until the requested receipt. If it is already persisted, the command returns before recovery, so a fast submit between launch, chat handoff, and wait is not lost. Otherwise, if the recorded server died, it restarts on the recorded/default port. Use `template` for Step 3, `stage1` after installation and the communication handoff, `stage2` for the complete-solution handoff, and `final` for Stage 3. Strategist resume still derives its target from persisted `result.json`; template resume derives it from `template_selection.json`.
+- `--complete-template-phase` is agent-only. It validates the current selection and writes the bound `template_handoff.json`; template mode additionally requires project-local `templates/design_spec.md`. Run it before writing Stage 1. `--reset-template-phase` removes exactly `template_selection.json` and `template_handoff.json`; it does not alter options, Strategist files, installed template content, or `result.json`.
 - `--shutdown` stops a confirm server left running for this project and exits — **idempotent** (a no-op when nothing is running). Tries a graceful `/api/shutdown`, falls back to killing the recorded pid, then clears the lock. Generate Step 4 runs this on every path so the selected port is released before live preview starts.
-- Refuses to start unless the recommendation file expected from `result.json` exists (initially `<project_path>/confirm_ui/recommendations.stage1.json`; `--shutdown` needs no recommendations).
+- Initial Step-3 launch requires valid `<project_path>/confirm_ui/template_options.json`. After template selection, the same service exposes Stage 1 only when a matching handoff exists and the Stage-1 recommendation is no older than that handoff. Compatibility launches without a template phase still require the recommendation file expected from `result.json`; `--shutdown` needs neither input.
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
 - Idle auto-shutdown after 900 s by default; `/api/shutdown` exits gracefully and releases the lock.
-- `/api/recommendations` and `/api/confirm` strip legacy `template_reuse_scope` and `template_adherence` fields. Those exporter values are never user-facing controls; an active template instead exposes the editable natural-language `template_application` field in Stage 2.
+- `/api/template-options` serves the server-built Step-3 catalog and `/api/template-confirm` accepts only current candidate keys, then writes the trusted receipt. `/api/recommendations` and `/api/confirm` own only the later Strategist stages and strip legacy `template_reuse_scope` / `template_adherence` fields. The completed template handoff is authoritative: `free_design` also strips a stray `template_application`, while `templates` exposes that editable natural-language field in Stage 2.
 
 Dependency:
 
@@ -103,7 +131,161 @@ Dependency:
 pip install flask
 ```
 
+## Step-3 template-selection contract
+
+Template selection is a separate pre-Strategist phase. Its files live under
+`<project_path>/confirm_ui/` but never enter `result.json`.
+
+### Input — `template_options.json` (created before launch)
+
+```json
+{
+  "schema_version": 1,
+  "phase": "template",
+  "lang": "zh",
+  "explicit_workspace_roots": [
+    "/absolute/path/to/a/project-or-template-workspace"
+  ]
+}
+```
+
+- `schema_version` is exactly `1`; `phase` is exactly `template`.
+- `lang` is optional, but when present it is a non-empty UI-language string.
+- `explicit_workspace_roots` is required even when empty. Every item is a
+  unique absolute path resolving to an existing directory with
+  `templates/design_spec.md` or compatible legacy `design_spec.md`.
+- The array supplies candidates for the one specified-root dropdown; it does
+  not authorize selecting several explicit roots in one confirmation.
+- Do not write library entries into this file. The server reads only
+  `templates/brands/brands_index.json`,
+  `templates/styles/styles_index.json`,
+  `templates/layouts/layouts_index.json`, and
+  `templates/decks/decks_index.json`, derives each direct-child workspace root,
+  and validates that it exists with `templates/design_spec.md`. It never scans
+  kind directories.
+
+`GET /api/template-options` returns the browser catalog:
+
+```json
+{
+  "schema_version": 1,
+  "phase": "template",
+  "lang": "zh",
+  "library": {
+    "brand": [],
+    "style": [],
+    "layout": [],
+    "deck": []
+  },
+  "explicit": [],
+  "preselected_keys": [],
+  "options_sha256": "<64 lowercase hex characters>"
+}
+```
+
+A library candidate has `key`, `source: "library"`, `kind`, `id`, `label`,
+`summary`, and canonical absolute `workspace_root`. An unregistered explicit
+candidate has `key`, `source: "explicit"`, parsed `kind`, `label`, and
+canonical absolute `workspace_root`. If a supplied root exactly equals a registered canonical
+root, the server reuses the library candidate/key instead of duplicating it as
+explicit. Candidate keys are server-owned; the page posts only
+`{ "mode": "free_design"|"templates", "selection_keys": [...] }` to
+`POST /api/template-confirm`.
+
+When the input supplies exactly one root, `preselected_keys` contains its
+resolved candidate key as a convenience default, including when exact equality
+reclassifies it as library. When several roots are supplied, all remain
+candidates but none is preselected; one specified-root dropdown cannot encode
+an instruction to use all of them.
+
+**Page selection model**: The first control is exclusive free design. Below it,
+Brand, Style, Layout, and Deck each have one registered single-select dropdown,
+and Specified has one explicit-root single-select dropdown. Every dropdown
+starts with `None`. Selecting any template exits free design; selecting free
+design clears all dropdowns. The registered kinds may be combined, but each
+contributes at most one root and the specified channel contributes at most one.
+The server enforces the same limits. Because an explicit candidate carries its
+parsed kind, it may coexist with one registered root of that kind and enter the
+two-workspace same-kind conflict gate. Source provenance never grants priority.
+
+### Output — `template_selection.json` (written on confirmation)
+
+```json
+{
+  "schema_version": 1,
+  "phase": "template",
+  "status": "confirmed",
+  "mode": "templates",
+  "selections": [
+    {
+      "source": "library",
+      "kind": "style",
+      "id": "example_style",
+      "workspace_root": "/canonical/library/root/example_style"
+    },
+    {
+      "source": "explicit",
+      "kind": "deck",
+      "workspace_root": "/canonical/unregistered/workspace/root"
+    }
+  ],
+  "options_sha256": "<64 lowercase hex characters>",
+  "selection_sha256": "<64 lowercase hex characters>",
+  "confirmed_at": "2026-08-04T12:00:00"
+}
+```
+
+`mode: "free_design"` requires `selections: []`; `mode: "templates"` requires
+at least one selection. Roots are unique canonical absolute paths. A library
+selection contains exactly `source`, `kind`, `id`, and `workspace_root`; an
+explicit selection contains exactly `source`, `kind`, and `workspace_root`.
+There is at most one library selection per kind and at most one explicit
+selection overall; cross-kind composition remains valid, and one explicit plus
+one library selection may share a kind. The browser
+cannot submit arbitrary paths because the server resolves posted keys against
+the catalog it just built. `options_sha256` binds the receipt to the current
+input, four index files, and resolved candidates. `selection_sha256` binds the
+mode and canonical sorted selections to that option hash. Every receipt read
+rebuilds the catalog and rejects option/index drift.
+
+After `--wait-only --wait-stage template` returns, Generate reads this receipt
+once. Free design skips installation but still completes the agent handoff
+below before Stage 1. Template mode runs `apply-template-workspace` against all
+selected roots, waits for complete project-local installation/fusion, and only
+then completes that handoff. Step 3 resolves only template-to-template segment
+ownership and installation; it does not evaluate current-project fit.
+Strategist never reads the source roots.
+
+### Agent handoff — `template_handoff.json`
+
+After free design closes or template installation succeeds, run:
+
+```bash
+uvx ppt-master confirm-ui <project_path> --complete-template-phase
+```
+
+The command writes, and agents must not hand-author:
+
+```json
+{
+  "schema_version": 1,
+  "phase": "template",
+  "status": "ready",
+  "mode": "templates",
+  "selection_sha256": "<64 lowercase hex characters>",
+  "completed_at": "2026-08-04T12:01:00"
+}
+```
+
+The handoff must match the current valid selection. Template mode also requires
+`<project_path>/templates/design_spec.md`; free design requires no installed
+spec. Write `recommendations.stage1.json` only after this command succeeds, so
+its file time is no earlier than the handoff.
+
 ## Field shapes
+
+The following fields belong to the Strategist stages after Step 3, not to the
+template-selection receipt.
 
 - **Enumerable + custom** — canvas / icons retain blank manual inputs; mode / visual_style instead show a mandatory AI-authored proposal in full, initially unselected and editable after selection. Selected mode / style writes literal `custom` plus its behavior sibling.
 - **Visual examples for hard-to-name choices** — the full-screen confirmation page loads real SVG page samples from `static/style_previews/` for `visual_style`, and renders real sample SVGs from `templates/icons` for `icons`. These thumbnails make style and icon-library choices visually comparable before the user locks them. Preview copy is fixed role text (big title / section title / body / points), not project content from recommendation files, so users compare visual treatment rather than copywriting. These previews are a confirmation aid only: they do not add fields to recommendation stage files or `result.json`, and they do not replace the later Step 6 live preview.
@@ -125,11 +307,21 @@ The front-end loads `/api/catalogs` (served by the confirm server) and falls bac
 
 ## Round-trip data contract
 
-Round-trip and session files live under `<project_path>/confirm_ui/`.
+Round-trip and session files live under `<project_path>/confirm_ui/`. The
+Step-3 files (`template_options.json` / `template_selection.json` /
+`template_handoff.json`) close before the Strategist pair
+(`recommendations.stageN.json` / `result.json`) begins.
 
 ### Three-stage flow
 
-The page runs as a **three-stage wizard in one browser session**. Each stage has its own Strategist-authored file and top-level `"stage"` selector. The active, unconfirmed stage may be overwritten any number of times when the user asks for a better recommendation; refresh the page to load the replacement. Once the user confirms it, normal progression writes the next stage file rather than repurposing the previous one. The server derives the active filename from `result.json`.
+After template selection and project-local installation, the same page runs a
+**three-stage Strategist wizard in one browser session**. Each stage has its own
+Strategist-authored file and top-level `"stage"` selector. The active,
+unconfirmed stage may be overwritten any number of times when the user asks for
+a better recommendation; refresh the page to load the replacement. Once the
+user confirms it, normal progression writes the next stage file rather than
+repurposing the previous one. The server derives the active Strategist filename
+from `result.json`; `template_selection.json` is its separate prerequisite.
 
 | Recommendation file | Declared stage | Page renders | Button | On submit |
 |---|---|---|---|---|
@@ -138,11 +330,46 @@ The page runs as a **three-stage wizard in one browser session**. Each stage has
 | `recommendations.stage3.json` | `"stage3"` | production only — confirmed image-source summary, conditional AI acquisition path, formula policy, proactive notes / custom-animation / narration-audio toggles, generation mode, Design Spec review toggle | **Confirm** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
 | `recommendations.json` | stage or legacy no-stage payload | read-only compatibility when no stage-specific file exists | matching legacy behavior | preserves the former staged or single-pass behavior; new projects never create this file |
 
-The AI launches Stage 1, authors the complete Stage-2 solution once from the user's actual contract, then authors Stage-3 production mechanics once from the confirmed solution. An edit inside the current stage never requests another recommendation. The page preserves earlier answers across transitions. `GET /api/session` is the waiting-state endpoint; `GET /api/recommendations` is `no-store`, and the server folds confirmed earlier-stage choices back into later payloads so refresh / reopen restores the user's actual values—including Stage-2 color, typography, icon, image-source, and rendering choices. Once any stage-specific file exists, the server ignores legacy `recommendations.json` to prevent mixed lifecycles.
+The AI launches the template phase, applies its confirmed receipt, and only then
+authors Stage 1. Stage-1 recommendations use only the current user request,
+source facts, conversation constraints, and project initialization; the
+selection, installed template content/assets, and template canvas are excluded.
+After Stage 1 is confirmed, the AI inspects the installed project-local state
+and authors the complete Stage-2 solution once from the user's actual
+communication contract, then authors Stage-3 production mechanics once
+from the confirmed solution. An edit inside the current stage never requests
+another recommendation. The page preserves earlier answers across transitions.
+`GET /api/session` reports `phase: "template"` until selection closes, its
+bound handoff is ready, and a fresh Stage-1 file exists; only then does it
+report `phase: "strategist"`. `GET /api/recommendations`
+is `no-store`, and the server folds confirmed earlier-stage choices back into
+later payloads so refresh / reopen restores the user's actual values—including
+Stage-2 color, typography, icon, image-source, and rendering choices. Once any
+stage-specific file exists, the server ignores legacy `recommendations.json`
+to prevent mixed lifecycles.
 
-**Stage progression guard.** Stages confirm strictly in order. `/api/confirm` accepts only the submit stage matching the active filename and its required predecessor; the declared `stage` must also match the filename. A later file that skips ahead (for example `recommendations.stage3.json` while only Stage 1 is confirmed and Stage 2 is absent) is never rendered: `/api/session` keeps reporting `waiting_agent` with `stage_skip: true`, and `--wait` / `--wait-only` exit `2` if a result skips the stage being awaited. An active template does not exempt Stage 2: its recommendations must include `template_application.value`, and an installed workspace or that field disables the no-stage legacy single-pass path. Legacy single-pass remains available only for non-template compatibility payloads.
+**Progression guard.** Stage 1 must not be exposed while
+`template_options.json` exists without a valid confirmed
+`template_selection.json`. After confirmation the session requires a valid
+`template_handoff.json` bound to that selection and a Stage-1 recommendation
+no older than the handoff. Strategist stages then confirm
+strictly in order. `/api/confirm` accepts only the submit stage matching the
+active filename and its required predecessor; the declared `stage` must also
+match the filename. A later file that skips ahead (for example
+`recommendations.stage3.json` while only Stage 1 is confirmed and Stage 2 is
+absent) is never rendered: `/api/session` keeps reporting `waiting_agent` with
+`stage_skip: true`, and `--wait` / `--wait-only` exit `2` if a result skips the
+stage being awaited. A confirmed templates-mode workspace does not exempt
+Stage 2: its
+recommendations must include `template_application.value`, and that completed
+mode disables the no-stage legacy single-pass path. Legacy
+single-pass remains available only for non-template compatibility payloads.
 
-### Input — `recommendations.stage1.json` (created by Strategist before launch)
+### Input — `recommendations.stage1.json` (created after the Step 3 handoff)
+
+Installation is only the ordering prerequisite. Do not read template selection,
+specs, prototypes, assets, fused segment owners, or template canvas when
+authoring this file.
 
 ```json
 {
@@ -189,9 +416,6 @@ After Stage 1 is confirmed, create `recommendations.stage2.json` with the comple
     "image_usage": ["ai", "provided"]
   },
   "page_count": { "value": "12-15" },
-  "template_application": {
-    "value": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。"
-  },
   "image_notes": { "value": "封面和章节页用 AI 主视觉；产品页优先用户素材。" },
   "custom_candidates": {
     "mode": {
@@ -266,7 +490,18 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
 - `custom_candidates` is recommendation-only. Mode / style carry localized `name` + `behavior`; conditional image strategy also carries `rendering: "custom"`, `visual`, and `mood`. When a proposal combines or borrows existing catalog entries, the visible behavior names every exact id and Strategist reads every corresponding file before authoring it; a genuinely novel proposal names none. The server rejects missing required candidates; the UI shows full copy, edits it only after selection, rejects a selected blank, and omits unselected candidates from `result.json`. Template-backed proposals obey inherited identity, prototype capacity, and `template_application`.
 - Seed `audience`, `communication_intent`, `audience_outcome`, and `delivery_context` when evidence supports them; users need not supply them, and every Stage-1 prose field may end blank. The contract and `primary_language` stay in `result.json` and `design_spec.md`; `spec_lock.md communication` receives `primary_language`, compact `audience` / `objective` / `core_message`, and reading mode. `communication_intent` may preserve multiple purposes and priority/sequence; never add a `primary_job` enum.
 - Do not write `recommend.template_reuse_scope` or `recommend.template_adherence`. Strategist records those internal exporter values later in `spec_lock.md` after inspecting the actual template and current content.
-- For an active template workspace, write one editable prose field as top-level `template_application.value`. It summarizes actual page/prototype use and preservation/reorganization decisions. Omit it for free design. The UI returns the current string through Stage 2, Stage 3, and final confirmation; Strategist then persists the final effective plan as `- **Template Application**: ...` in `design_spec.md §I`, which Executor reads from the retained Design Spec. Never replace it with internal reuse/adherence ids or a fixed option menu.
+- For a confirmed templates-mode handoff, write one editable prose field as top-level `template_application.value`. It summarizes **how to use** the already selected project-local template: actual page/prototype use and preservation/reorganization decisions. It never chooses, changes, or reinstalls a workspace. Omit it for free design. The UI returns the current string through Stage 2, Stage 3, and final confirmation; Strategist then persists the final effective plan as `- **Template Application**: ...` in `design_spec.md §I`, which Executor reads from the retained Design Spec. Never replace it with internal reuse/adherence ids or a fixed option menu.
+
+Template-mode-only Stage-2 fragment:
+
+```json
+{
+  "template_application": {
+    "value": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。"
+  }
+}
+```
+
 - `recommend.image_usage` should be an array of source ids when more than one source applies, e.g. `["ai", "provided"]`. A single string is still accepted for backward compatibility. Do not write bare `"custom"` and do not encode a mixed-source plan as prose here; write the prose to top-level `image_notes.value`.
 - `image_notes` is the initial strategy note shown under the image source chips. Use it for page-role guidance and constraints: which source applies where, what to avoid, which user assets are authoritative, how realistic / abstract the imagery should be, and what can remain as placeholders. It is intent guidance, not a separate finite option.
 - When confirmed Stage-2 `image_usage` includes `ai`, Stage 3 sets `recommend.image_ai_path` to one of `auto` / `api` / `host-native` / `manual`. Stage 2 never asks for the acquisition mechanism while the user is still deciding the image role.
@@ -296,7 +531,6 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
   "delivery_context": "Primary: presenter-led 20-minute leadership review; secondary: reader-led approval copy shared afterward",
   "artifact_afterlife": "Approval record, hand-off reference, and audit trail",
   "content_divergence": "freely restructure and expand within the source",
-  "template_application": "选用封面、章节页和数据页原型；跳过示例内容页。品牌标识和页脚保留，正文可按当前材料重组。",
   "mode": "pyramid",
   "visual_style": "swiss-minimal",
   "color": { "name": "...", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
@@ -319,13 +553,27 @@ After Stage 2 is confirmed, create `recommendations.stage3.json` with production
 }
 ```
 
-The shape above is final. The proactive-execution values are independent flat booleans in `result.json`; old recommendations and results that omit them resolve to `true / false / false`. They remain raw evidence even when `proactive_speaker_notes` is `false` and `proactive_narration_audio` is `true`; Strategist owns the effective dependency resolution described above. Selected custom values use `mode: custom` + `mode_behavior`, `visual_style: custom` + `visual_style_behavior`, or `image_strategy.rendering: custom` + `behavior`. During Design Spec and lock authoring, Strategist projects optional `mode_references`, `visual_style_references`, or `image_rendering_references` only when that confirmed behavior actually uses named catalog sources; genuinely novel custom behavior has no reference list. Intermediate writes retain accumulated fields; legacy tier names remain read-compatible.
+The shape above is final for Strategist confirmation. It intentionally contains
+no template-selection field: `template_selection.json`, its agent handoff, and
+the installed project-local state own that earlier decision. The proactive-execution values
+are independent flat booleans in `result.json`; old recommendations and results
+that omit them resolve to `true / false / false`. They remain raw evidence even
+when `proactive_speaker_notes` is `false` and `proactive_narration_audio` is
+`true`; Strategist owns the effective dependency resolution described above.
+Selected custom values use `mode: custom` + `mode_behavior`, `visual_style:
+custom` + `visual_style_behavior`, or `image_strategy.rendering: custom` +
+`behavior`. During Design Spec and lock authoring, Strategist projects optional
+`mode_references`, `visual_style_references`, or
+`image_rendering_references` only when that confirmed behavior actually uses
+named catalog sources; genuinely novel custom behavior has no reference list.
+Intermediate writes retain accumulated fields; legacy tier names remain
+read-compatible.
 
 **Final-result consumption contract.** A final result is the user-confirmed input contract for the Strategist's Design Spec, not another recommendation input. After the final wait, Generate Step 4 reads the complete final object exactly once and retains it while Strategist writes and audits `design_spec.md` against every explicitly present field. Normal lock authoring and downstream execution do not reopen `result.json`; the completed Design Spec is the durable authority. Only after that audit passes does Strategist author `spec_lock.md` from the Design Spec plus current execution context, selecting stable anchors and routing rather than copying every field or enumerating every legal color/font. Every value must be consumed at the semantic type owned by [`strategist.md`](../../references/strategist.md) §1 and its field owner: do not omit or substitute it, and do not silently strengthen or weaken its type. If a confirmed requirement cannot be honored, the owning workflow reports or pauses under failure recovery; it never deletes the requirement to keep the pipeline moving.
 
 - Bespoke mode / style prose lives only in the required behavior sibling; image custom prose lives in `image_strategy.behavior`. Canvas / icons retain free-text edge cases, color / typography retain `name: "custom"`, and image usage remains a source-id array plus `image_notes`.
 - `image_ai_path` and `image_strategy` appear only with `image_usage: ai` and remain confirmed downstream. The page is default; explicit/failure chat fallback keeps identical fields. `image_ai_path` selects the Step 5 path, and [`strategist-image.md`](../../references/strategist-image.md) §2 retains the selected rendering or custom behavior as the deck-level image identity anchor; individual prompts still adapt subject, composition, and atmosphere within it.
-- After the user clicks the **final Confirm** (Stage 3, or single-pass), the page saves `result.json` and shuts the server down (auto-close). Stage-1 **Confirm contract & continue** and Stage-2 **Confirm solution & continue** keep the page open while it polls for the downstream stage file. The default flow is `--daemon` → Stage-1 chat handoff → `--wait-only --wait-stage stage1` → Stage-2 wait → final wait; the AI reads each result immediately. Chat fallback mirrors the same preset/custom choices. Either way, Step 4 ends with `--shutdown` so a never-confirmed page cannot retain its selected port ahead of Step 6 live preview.
+- Step-3 **Confirm template & continue** writes `template_selection.json` and keeps the page open while the agent applies the choice. The agent then runs `--complete-template-phase` and writes fresh Stage 1. Stage-1 **Confirm contract & continue** and Stage-2 **Confirm solution & continue** likewise keep polling for the downstream file. The final Stage-3 Confirm saves `result.json` and shuts the server down (auto-close). The default flow is `template_options.json` → `--daemon` → template chat handoff → `--wait-only --wait-stage template` → installation/free-design closure → `--complete-template-phase` → fresh Stage-1 handoff/wait → Stage-2 wait → final wait. The AI reads each receipt at its owning boundary. Chat fallback mirrors the same choices. Either way, Step 4 ends with `--shutdown` so a never-confirmed page cannot retain its selected port ahead of Step 6 live preview.
 
 ## Scope
 

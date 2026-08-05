@@ -2,27 +2,31 @@
 
 ## Reusable template kinds
 
-Brand, Layout, and Deck are independent template kinds, not stages of one
+Brand, Style, Layout, and Deck are independent template kinds, not stages of one
 inheritance hierarchy.
 
 | Kind | Owns | Does not own | Discovery index |
 |---|---|---|---|
 | [`brands/`](./brands/) | Identity: color, typography, logo, voice, icon style | Page structure or SVG roster | [`brands_index.json`](./brands/brands_index.json) |
+| [`styles/`](./styles/) | Direction/method: reusable communication method, visual language, composition rhythm, and information-expression defaults | Official brand identity, current-project application, page structure, or SVG roster | [`styles_index.json`](./styles/styles_index.json) |
 | [`layouts/`](./layouts/) | Brand-neutral structure: canvas, Master/Layout graph, page types, slots, SVG roster | Brand identity or a recurring communication application | [`layouts_index.json`](./layouts/layouts_index.json) |
 | [`decks/`](./decks/) | A recurring presentation family: application contract + integrated identity + structure | — | [`decks_index.json`](./decks/decks_index.json) |
 
-A brand is not “a layout minus its pages”: it owns a different segment. Use a
-brand for identity with free page composition, a layout for brand-neutral
-structure whose identity and communication purpose remain downstream
-decisions, and a deck for a recurring presentation family with an explicit
-application contract.
+A brand is not “a layout minus its pages”, and a Style is not a roster-free
+Deck: each owns a different segment. Use a brand for identity with free page
+composition, a Style for reusable direction/method without identity truth or
+page prototypes, a layout for brand-neutral structure whose identity and
+communication purpose remain downstream decisions, and a deck for a recurring
+presentation family with an explicit application contract.
 
 PowerPoint package objects are compilation targets, not additional template
 kinds. Theme values and identity assets are projected from resolved identity
 rules supplied by Brand, Deck, or the current project; Layout rules project
 into Master/Layout/Placeholder topology, semantic text roles, and
 spatial behavior; Deck combines both with descriptive recurring-application
-context and actual prototype examples. Downstream AI planning decides which
+context and actual prototype examples. Style rules guide communication method,
+visual language, composition, and information expression; they do not create a
+PowerPoint package object or override resolved Brand/Deck identity. Downstream AI planning decides which
 prototypes and content to use, then records the required exporter values.
 A compiled Slide Master may therefore contain both
 structural geometry and brand visuals even though their source rules remain
@@ -31,21 +35,34 @@ separately owned.
 New workspaces always enter [`Create Template`](../workflows/create-template.md),
 which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Brand`](../workflows/create-template/create-brand.md),
+[`Create Style`](../workflows/create-template/create-style.md),
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The indexes are discovery aids only. [`generate-pptx`](../workflows/generate-pptx.md)
-Step 3 activates a template only from an explicit workspace-root path supplied
-by the user or an exact validated Create Template handoff.
+The four indexes are the complete library-discovery source for
+[`generate-pptx`](../workflows/generate-pptx.md) Step 3. The default page shows
+free design, one registered single-select dropdown per kind, and one separate
+single-select dropdown for exact roots supplied for the run; it never scans the
+four directories or fuzzy-matches a bare name. An exact root that matches a
+registered index entry may be displayed in its kind dropdown as `library`; an
+unregistered root remains `explicit` in the specified-root dropdown. After
+confirmation,
+[`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
+validates, fuses, and installs every selected workspace into the current
+project before Stage 1 starts. Template-aware reading begins in Stage 2 from
+that project-local copy. Quick Generate is the non-interactive exception: it
+never opens this selector, directly applies exact roots supplied for the run,
+and uses free design when no exact root exists.
 
 ## Orthogonal contracts
 
 | Axis | Values | Meaning |
 |---|---|---|
-| Template kind | `brand` / `layout` / `deck` | Which reusable contract the package owns: identity, brand-neutral structure, or a complete recurring application |
+| Template kind | `brand` / `style` / `layout` / `deck` | Which reusable contract the package owns: identity, direction/method, brand-neutral structure, or a complete recurring application |
+| Selection source | `library` / `explicit` | Step-3 discovery provenance only: exact index-derived root or exact unregistered root; it does not change template semantics |
 | Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
 | Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
-| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; style-only, brand-only, and free design remain Slide-local |
+| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; Style-only, style-scope, brand-only, and free design remain Slide-local. Style fused with Layout/Deck does not change the non-Style structure plan. |
 
 These axes must not be used as synonyms or exposed as a user mode matrix. In
 particular, a mirror-created deck is still an ordinary reusable `deck` package
@@ -59,7 +76,7 @@ initialized project:
 
 ```text
 <template_workspace>/
-├── templates/                # design_spec.md, SVG prototypes, optional native_payloads.json.gz store
+├── templates/                # design_spec.md; optional Layout/Deck SVG prototypes and native_payloads.json.gz store
 ├── images/                   # optional bitmaps
 ├── icons/
 │   └── imported/             # optional imported vectors, one canonical copy
@@ -68,10 +85,19 @@ initialized project:
 
 Empty optional directories are omitted. Template SVGs reference bitmaps through
 `../images/<name>` and imported vectors through `data-icon="imported/<name>"`.
+Style narrows this shared routing shape to `templates/design_spec.md` only and
+does not carry asset or review payloads; initialized-project sibling scaffolding
+may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion: it consumes `templates/`, `images/`, and
-`icons/` and ignores `exports/`. Compatible legacy-flat packages remain
-readable; directory shape alone does not indicate legacy Master/Layout semantics.
+stage owns installation and fusion during the default Step-3 selection phase or
+the Quick exact-root branch. Brand/Layout/Deck consume package-owned
+`templates/`, `images/`, and `icons/`; Style consumes only
+`templates/design_spec.md` and ignores sibling project scaffolding. Every kind
+ignores `exports/`. Compatible legacy-flat Brand/Layout/Deck packages remain
+readable; Style has no legacy-flat form, and directory shape alone does not
+indicate legacy Master/Layout semantics. Default Strategist, Quick's current
+agent, and all later consumers use the installed project-local files, never the
+original library or explicit root.
 
 ## Design specification references
 
@@ -81,7 +107,7 @@ authoring; their schemas own machine validation. Files under `scaffolds/` are
 optional overwrite-safe CLI conveniences, not Generate-route starting artifacts.
 Reusable template `design_spec.md` files are
 deliberately smaller: they contain portable metadata and only the identity,
-structure, or application rules owned by that package. General SVG rules live
+direction/method, structure, or application rules owned by that package. General SVG rules live
 in [`shared-standards-core.md`](../references/shared-standards-core.md), with
 effects and PowerPoint interfaces loaded only when triggered.
 

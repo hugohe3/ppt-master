@@ -6,7 +6,7 @@ description: Optional quality-gate stage for per-page rubric-based visual review
 
 > Optional Generate-PPTX quality stage. Goal: reduce human iteration by letting AI subagents visually self-check each rendered slide against a fixed rubric and apply atomic position/spacing fixes.
 >
-> Reads `<project>/svg_output/<page>.svg` and a pre-rendered PNG of each slide, then either applies a fix or flags `needs_human`. **Never touches** brand decisions, layout structure, or other files.
+> Reads `<project>/svg_output/<page>.svg` and a pre-rendered PNG of each slide, then either applies a fix or flags `needs_human`. When an installed/fused Style exists, it also reads that workspace's `Review Focus` as supplemental acceptance context. **Never touches** brand decisions, layout structure, or other files.
 >
 > This stage is **context-independent** — invokable in a fresh chat session with only `<project_path>` as input. No upstream conversation context required.
 
@@ -14,7 +14,7 @@ description: Optional quality-gate stage for per-page rubric-based visual review
 
 This is an **optional auxiliary loop**, opt-in only. The [`generate-pptx`](../generate-pptx.md) Step 1–7 pipeline does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
 
-**Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
+**Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` + the short Style Review Focus when present, and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
 
 ## When to Run
 
@@ -73,7 +73,9 @@ If any page comes back with `"all_background": true` in the JSON summary, that p
 
 ## Step 2 — Spawn the review team
 
-Create a team and dispatch one orchestrator agent. The orchestrator partitions the N pages into batches of ≤ K pages (default **K = 5**) and spawns one subagent per batch **in parallel** (single message, `ceil(N/K)` parallel `Agent` calls). Each batch subagent reads the fixed inputs (rubric + `design_spec.md` + `spec_lock.md`) **once**, then iterates over its assigned pages sequentially.
+Create a team and dispatch one orchestrator agent. The orchestrator partitions the N pages into batches of ≤ K pages (default **K = 5**) and spawns one subagent per batch **in parallel** (single message, `ceil(N/K)` parallel `Agent` calls). Each batch subagent reads the fixed inputs (rubric + `design_spec.md` + `spec_lock.md` + conditional Style Review Focus) **once**, then iterates over its assigned pages sequentially.
+
+Before dispatch, inspect `<project>/templates/design_spec.md`. If it declares `kind: style` or its fused provenance contains an active Style segment, read only `## VII. Review Focus` once and include those checks in every batch prompt. Otherwise pass no Style supplement. This lookup never triggers visual review; it runs only after the user has already activated this stage. The supplement cannot weaken the fixed rubric or widen edit permissions.
 
 ```text
 TeamCreate(team_name="visual-review-<project>", agent_type="orchestrator")
@@ -92,8 +94,9 @@ The orchestrator prompt must be self-contained and is the **single** place where
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`
+- Style Review Focus excerpt, only when the conditional lookup above found one; preserve its wording and source path
 - Dispatch contract reference: rubric [§6](../../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
-- Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `animations.json`, `image_prompts.json`, or `images/`
+- Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `templates/design_spec.md`, `animations.json`, `image_prompts.json`, or `images/`
 
 **Host compatibility**: `TeamCreate` and `SendMessage` are Claude-Code-specific multi-agent primitives. On hosts without those primitives (Cursor, VS Code + Copilot, Codebuddy, etc.) the main agent processes batches sequentially — same partitioning, same per-batch prompts, no parallel dispatch. Token savings from shared fixed inputs still apply; wall-clock time grows roughly N/K-fold.
 

@@ -116,7 +116,7 @@
 
 形态上，它是一套在有 Agent 能力的 AI 工具里运行的工作流（一个 "skill"）：你在对话框里说"用这份 PDF 做一份 PPT"，它就按流程在你本机生成、导出原生可编辑的 `.pptx`。你不写任何代码，只做三件事——装 Python、装一个 AI 工具、把材料放进来。
 
-从源材料生成新 deck 是主管线，但不是唯一路线：PPT Master 还能从你的参考资料中提炼可复用的品牌 / 版式 / 成品模板，把新内容填进你已有的 `.pptx` 并保留其设计，或为成品 deck 追加原生转场、动画和旁白——每条路线都有明确的保留契约。
+从源材料生成新 deck 是主管线，但不是唯一路线：PPT Master 还能从你的参考资料中提炼可复用的品牌 / 风格 / 版式 / 成品模板，把新内容填进你已有的 `.pptx` 并保留其设计，或为成品 deck 追加原生转场、动画和旁白——每条路线都有明确的保留契约。
 
 在这份原生深度之上，这个形态还带来三个承诺：
 
@@ -326,6 +326,14 @@ AI：好的，先确认设计规范：
 ```
 
 AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
+
+**快速生成（跳过来回确认）：** 显式说明即可，AI 直接进入创作与导出。
+
+```
+你：用 projects/q3-report/sources/report.pdf 快速生成一份 5 页 PPT，不用跟我确认
+```
+
+你明确提的照做，你没提的由 AI 直接定，不再回来问你。它仍会转换来源、补齐事实、准备图片 / 图标 / 公式——省掉的是策略与确认阶段，不是材料本身。这种模式下不会生成 `svg_final/` 预览。完整说明 → [快速模式](./docs/zh/getting-started.md#快速模式)。
 
 > **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。默认 Generate 流程会运行 `finalize_svg.py` 并生成自包含预览 `svg_final/`；PowerPoint 手工“转换为形状”不在支持范围。用户可显式启用[快速生成](./skills/ppt-master/workflows/profiles/quick-generate.md)：它跳过策略师分析与确认阶段——你明确提出的要求照做，你没提的由 Agent 直接决定，不再回来问你；仍按需转换来源、研究事实缺口，并准备图片、图标、公式和资源 manifest，跳过 `design_spec.md`、`spec_lock.md` 与 `finalize_svg.py`，随后按规范手写 SVG，通过无锁的 Quick 最终质量检查，再导出最终 PPTX。原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时启用。Quick 使用默认输出路径时仍会生成普通 postflight 报告，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；显式指定输出路径时沿用普通流程不创建备份的行为。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；可加 `--native-charts-and-tables`，把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。这两种图表/表格导出变体都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
 

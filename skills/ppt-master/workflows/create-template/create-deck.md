@@ -127,4 +127,4 @@ uvx ppt-master register-template <deck_id> --kind deck --dry-run
 uvx ppt-master register-template <deck_id> --kind deck
 ```
 
-For project scope, skip both commands. The exact workspace root becomes the next Generate PPTX Step 3 input; any separately supplied Brand or Layout workspace overrides the corresponding complete segment downstream without mutating this deck workspace.
+For project scope, skip both commands. The exact workspace root becomes the next Generate PPTX Step 3 input; any separately supplied Brand, Style, or Layout workspace overrides the corresponding complete segment downstream without mutating this deck workspace.

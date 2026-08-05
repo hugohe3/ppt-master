@@ -31,12 +31,24 @@ Overview when application fit must be judged in detail.
 
 ## Trigger and fusion
 
-Selection uses the common explicit-path trigger in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. Supplying a bare ID
-or reading the discovery index does not trigger template use. The conditional
+Selection uses the independent phase in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
+fills the Deck dropdown only from `decks_index.json`; unregistered exact roots
+appear only in the separate specified-root dropdown. It never scans this
+directory or fuzzy-matches a bare ID. An exact supplied root matching a
+registered root may be labelled `library`; otherwise it remains `explicit`. Choosing and
+confirming an entry triggers the conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
-stage owns path normalization, compatibility checks, installation, and fusion.
-This file owns the Deck schema and application-context boundary.
+stage, which owns path normalization, compatibility checks, installation, and
+fusion before Stage 1. Template-aware reading begins in Stage 2 from the
+installed project-local copy.
+Quick Generate never opens the selector: an exact Deck root supplied for the
+run enters the same stage directly, while no exact root leaves Quick in free
+design. Quick uses the installed prototypes as flat authoring inputs; reusable
+native Master/Layout compilation remains a default lock-backed capability.
+This file owns the Deck schema and application-context boundary. Chat discovery
+reads the same index and returns exact roots; a bare ID never resolves
+implicitly.
 
 ---
 
@@ -133,5 +145,6 @@ does not register globally. Empty optional directories are omitted.
 3. Run `template_preview_pptx.py` when review is requested and always when the roster declares multiple Masters.
 4. In library scope, register with `register_template.py <id> --kind deck`.
 
-See also [`layouts/`](../layouts/) for structure-only packages and
+See also [`styles/`](../styles/) for direction/method packages,
+[`layouts/`](../layouts/) for structure-only packages, and
 [`brands/`](../brands/) for identity-only packages.

@@ -2,20 +2,28 @@
 
 This directory holds **brand-only templates**: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Strategist locks the brand's identity segment as truth; Executor designs pages freely under those constraints.
 
-Brand is one of three template kinds in the library — alongside
-[`layouts/`](../layouts/) (brand-neutral structure) and [`decks/`](../decks/)
-(a recurring application with integrated identity and structure). The shared
-kind and workspace model lives in the parent [`README.md`](../README.md).
+Brand is one of four template kinds in the library — alongside
+[`styles/`](../styles/) (direction/method defaults), [`layouts/`](../layouts/)
+(brand-neutral structure), and [`decks/`](../decks/) (a recurring application
+with integrated identity and structure). The shared kind and workspace model
+lives in the parent [`README.md`](../README.md).
 
 ## How brands are consumed
 
-Brand application follows the common explicit-path trigger in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The conditional
+Brand application follows the independent selection phase in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
+fills the Brand dropdown only from `brands_index.json`; unregistered exact roots
+appear only in the separate specified-root dropdown. It never scans this
+directory or fuzzy-matches a bare brand name. An exact supplied root matching a
+registered root may be labelled `library`; otherwise it remains `explicit`. The
+conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage owns path normalization, portable-root installation, multi-kind fusion,
-same-kind conflict resolution, and provenance. This file owns only the Brand
-schema. `brands_index.json` is discovery-only; listing brands never advances
-the pipeline.
+same-kind conflict resolution, and provenance before Stage 1. Template-aware
+reading begins in Stage 2 from the installed project-local copy. This file owns
+only the Brand schema. Quick Generate never opens the selector: an exact Brand
+root supplied for the run enters the same stage directly, while no exact root
+leaves Quick in free design.
 
 ## Creating a new brand
 
@@ -50,4 +58,8 @@ Logo filenames are descriptive, not contractual — `templates/design_spec.md` �
 
 [brands_index.json](./brands_index.json) is a slim machine-readable map (`brand_id → { summary, primary_color }`). Refresh it with `register_template.py --kind brand <brand_id>` after a brand is created or edited. Registration rejects incomplete frontmatter, mismatched IDs, page SVGs, missing required identity sections, invalid or inconsistent colors/provenance, and broken workspace-local asset references.
 
-Listing the index does not trigger any pipeline action — Generate Step 3 triggers only on an explicit directory path supplied by the user or an exact validated Create Template handoff, regardless of whether the brand appears in the index.
+The default Step-3 page reads this index as its complete registered-brand
+catalog; chat discovery reads the same file and returns exact workspace roots.
+Choosing an entry and confirming it triggers installation. Exact directory
+paths and validated Create Template handoffs remain supported, while a bare ID
+never resolves implicitly.

@@ -46,12 +46,24 @@ kind of rule is never a mirror operation.
 
 ## Trigger and identity boundary
 
-Selection uses the common explicit-path trigger in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. Supplying a bare ID
-or reading the discovery index does not trigger template use. The conditional
+Selection uses the independent phase in
+[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
+fills the Layout dropdown only from `layouts_index.json`; unregistered exact
+roots appear only in the separate specified-root dropdown. It never scans this
+directory or fuzzy-matches a bare ID. An exact supplied root matching a
+registered root may be labelled `library`; otherwise it remains `explicit`.
+Choosing and confirming an entry triggers the conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
-stage owns path normalization, compatibility checks, installation, and fusion.
-This file owns the Layout schema and its identity/application boundary.
+stage, which owns path normalization, compatibility checks, installation, and
+fusion before Stage 1. Template-aware reading begins in Stage 2 from the
+installed project-local copy.
+Quick Generate never opens the selector: an exact Layout root supplied for the
+run enters the same stage directly, while no exact root leaves Quick in free
+design. Quick uses the installed prototypes as flat authoring inputs; reusable
+native Master/Layout compilation remains a default lock-backed capability.
+This file owns the Layout schema and its identity/application boundary. Chat
+discovery reads the same index and returns exact roots; a bare ID never resolves
+implicitly.
 
 ---
 
@@ -146,3 +158,5 @@ omitted.
 General SVG/PPT rules remain authoritative in
 [`shared-standards-core.md`](../../references/shared-standards-core.md) and
 [`pptx-structure-interface.md`](../../references/pptx-structure-interface.md).
+See [`styles/`](../styles/) when reusable method and visual direction should be
+combined with this structure without becoming identity truth.
