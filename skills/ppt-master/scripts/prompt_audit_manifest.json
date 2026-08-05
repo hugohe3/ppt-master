@@ -698,7 +698,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/topic-research.md"
       ],
-      "max_tokens": 1750
+      "max_tokens": 2000
     },
     "profile.generate.beautify-pptx": {
       "description": "Strict 1:1 wording, order, and page-count generation profile.",
