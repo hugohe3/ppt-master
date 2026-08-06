@@ -4,7 +4,12 @@ description: Generate source-intake stage that fills externally verifiable factu
 
 # Topic Research Stage
 
-> Factual preparation inside [`generate-pptx`](../generate-pptx.md) source intake. Default Generate hands its output to Strategist; Quick Generate's main agent consumes the same output. Run immediately for topic-only input, or after supplied material is converted and read when it leaves planning-critical factual gaps. Output is a research supplement plus stable fact provenance for project import.
+> Factual preparation inside the active Generate profile's source intake.
+> Default Generate hands its output to Strategist; Quick Generate's main agent
+> consumes the same output. Run immediately for topic-only input, or after
+> supplied material is converted and read when it leaves planning-critical
+> factual gaps. Output is a research supplement plus stable fact provenance for
+> project import.
 
 This stage supplies facts needed to build the requested deck. It does not select,
 download, or generate images. Default Generate resolves image selection in the
@@ -18,7 +23,7 @@ phase without adding a confirmation gate.
 |---|---|
 | Topic or requirements with no supporting facts | Research the factual baseline needed for the requested outcome |
 | Supplied files or chat content cover only part of the requested outcome | After conversion and reading, research only the identified externally verifiable gaps |
-| Supplied material already supports the requested outcome | Skip this stage and continue Generate Step 1 |
+| Supplied material already supports the requested outcome | Skip this stage and continue the active Generate profile's source preparation |
 | User requires a closed corpus, source-only transformation, or no external enrichment | Skip this stage and keep planning within supplied material |
 
 **Sufficiency test**: a gap exists when the active content owner would otherwise need to invent, omit, or leave unsupported an externally verifiable claim required by the user's requested outcome. File presence, source length, and a generic topic taxonomy do not decide sufficiency.
@@ -136,7 +141,8 @@ IDs are immutable within the file. Correct a claim under the same ID; never reus
 
 ## Hand-off
 
-Import the research supplement and provenance alongside any user-supplied sources in Generate Step 2:
+Import the research supplement and provenance alongside any user-supplied
+sources through the active profile's source intake:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources projects/<project_name> [<source_paths...>] projects/<research_slug>.md projects/<research_slug>.facts.json
@@ -155,5 +161,5 @@ active-context content, design, and resource decisions.
 - [x] Fact provenance: `projects/<research_slug>.facts.json` (N external facts)
 - [x] Artifact contract validated: `## Research Brief`, `## Sources`, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
 - [x] No images acquired inside this factual-research stage
-- [ ] **Next**: return to [`generate-pptx`](../generate-pptx.md), import all source artifacts in Step 2, then fully read the imported research pair before planning or direct SVG authoring
+- [ ] **Next**: Default returns to [`generate-pptx`](../generate-pptx.md) Step 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2. Import all source artifacts, then fully read the imported research pair before planning or direct SVG authoring
 ```
