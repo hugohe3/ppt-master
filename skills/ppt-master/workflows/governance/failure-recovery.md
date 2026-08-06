@@ -39,7 +39,7 @@ Global stop/continue rules for all four top-level routes, plus concrete failure 
 | Step 7 image readiness missing manual files | Yes | None for manual assets; list required filenames and prompts | Yes | Step 7 image readiness gate |
 | `total_md_split.py` failure while speaker notes are enabled | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |
 | `finalize_svg.py` failure | Yes | Fix SVG/assets, rerun Step 7.2 | Only if source asset is missing | Step 7.2 |
-| `svg_to_pptx.py` failure | Yes | Fix conversion issue, rerun Step 7.3 | Only if required artifact is missing | Step 7.3 |
+| `svg_to_pptx.py` failure | Yes | If no current matching passing final SVG quality report exists, obtain the complete blocking issue set from the final checker as needed, fix it, rerun the checker against the updated `svg_output/`, and proceed to Step 7.3 only after it reports `passed`; otherwise fix the conversion issue and rerun Step 7.3 | Only if a required artifact is missing | Step 6 final quality gate or Step 7.3 |
 | Export succeeds but user wants direct browser edits re-exported | No | Rerun Step 7.2 and Step 7.3 after applied edits | No | Post-export live-preview handling |
 
 ---
