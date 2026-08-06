@@ -10,7 +10,17 @@ Mandatory reference for every route that authors or regenerates slide visuals th
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
 | `pptx_structure.mode: structured` | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
 
-**Default — shared aesthetic baseline (may be overridden by explicit user, template / brand, or locked visual-style requirements)**: Required / Forbidden technical contracts remain absolute. Within that valid surface, establish quality through clear hierarchy, typography and leading, alignment, negative space, purposeful imagery / icons, and restrained repetition before decoration. Silence at a higher authority does not disable these defaults. Default and Quick Generate also run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 Visual Job Router before completing each page; apply a compatible technique only for a diagnosed visual job.
+**Default — shared aesthetic baseline (may be overridden by explicit user, installed template / brand, or locked / Quick-resolved visual-style requirements)**: Required / Forbidden technical contracts remain absolute. When a higher authority is silent, build clear hierarchy through typography and leading, alignment, negative space, purposeful imagery / icons, and restrained repetition before decoration. Deliberate tightness, imbalance, off-axis placement, or container-heavy structure remains valid when that authority calls for it.
+
+| Concern | Shared default |
+|---|---|
+| Text-block rhythm | Use §4.2 leading. Make the baseline step into a new paragraph visibly larger than the intra-paragraph line step; keep the extra gap between list items smaller than paragraph separation but large enough to scan each item. Repeated peer blocks share one rhythm unless their hierarchy differs. |
+| Natural wrapping | Break at semantic phrase or punctuation boundaries where possible. Reflow the text frame or adjust neighboring geometry before using any permitted local size reduction. Let the final line run naturally shorter; avoid mechanically equal lines or a stranded single-character / single-word line when an earlier natural break preserves meaning. |
+| Alignment and proximity | Establish shared axes from the current composition. Align related titles, copy, labels, images, and diagram nodes to those edges, centers, or baselines; group related elements more tightly than unrelated groups so spacing carries hierarchy. Break an axis only when the offset performs hierarchy, direction, or tension. |
+| Visual weight | Judge weight from area, darkness, saturation, density, stroke, image detail, and elevation together. Distribute it to support the focal path; symmetry is optional, and deliberate imbalance may create direction. |
+| Containers | Use a card or panel when it expresses grouping, hierarchy, boundary, capacity, or a distinct material plane. Otherwise prefer spacing, rules, or direct text / geometry; peer containers share treatment unless a semantic difference justifies contrast. |
+
+**Default — active effects vocabulary (may resolve to no added technique when no visual job is diagnosed)**: Default and Quick Generate run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 Visual Job Router before completing each page; apply a compatible technique only for a diagnosed visual job.
 
 **Fidelity labels**:
 

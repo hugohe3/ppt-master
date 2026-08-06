@@ -118,7 +118,10 @@ template was installed, resolve the same design choices freely.
 
 Before writing P01, resolve in active context:
 
-- the slide roster, canvas, visual direction, palette, typography, and wording;
+- the exact slide roster and one compact core message for every page, used to choose its composition and hierarchy;
+- the canvas, visual direction, palette, wording, and one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses; explicit user, template, or resolved-style requirements may call for a deliberate exception;
+- an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
+- for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
 - when useful, one transient deck-level visual motif with an identity or
   communication job, a recognizable invariant, and planned variation across
   applicable page roles; omit it when restraint serves the deck better;
@@ -173,6 +176,8 @@ web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
 for a non-default canvas.
 
 Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
+
+**Per-page execution anchors**: apply the transient core-message, typography-role, body-frame, density, and composition anchors resolved in §2 throughout the roster; they guide authoring without creating a persisted planning artifact.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.
