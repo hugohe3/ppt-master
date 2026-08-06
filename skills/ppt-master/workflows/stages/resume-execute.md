@@ -8,6 +8,13 @@ description: Main-pipeline control stage for resuming execution in a fresh chat 
 
 This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. Persisted project artifacts replace the planning session's confirmation dialogue and image-acquisition history.
 
+`validation/workflow.log` is a cold Python-output transcript with optional
+important manual entries, not persisted planning state. Do not open or replay
+it while resuming. Use the real artifacts in Step 1 to establish current state;
+inspect the transcript only when the user explicitly asks to review the prior
+run. Run inherited Python commands normally; their shared CLI bootstrap records
+stdout/stderr automatically.
+
 ## When to Run
 
 The user opens a new chat and gives a phrase that names a project path and signals continuation. Recognize any of:
