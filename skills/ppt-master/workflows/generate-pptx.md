@@ -1,10 +1,12 @@
 ---
-description: Generate PPTX route authority for source intake, planning, SVG authoring, quality gates, and native PPTX export.
+description: Default Generate PPTX authority for source intake, planning, SVG authoring, quality gates, and native PPTX export.
 ---
 
 # Generate PPTX Route
 
-> Load only after [`routing.md`](./routing.md) selects Generate PPTX. This file owns the route's Step 1–7 sequence, gates, role switching, and mandatory commands.
+> Load only after [`routing.md`](./routing.md) selects Default Generate or its
+> Beautify profile. This file owns that runtime's Step 1–7 sequence, gates, role
+> switching, and mandatory commands. Explicit Quick loads its own profile instead.
 
 **Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → Template Candidate Preparation → Stage-1 Communication + Template Confirmation → [Template Installation] → Stage-2 Solution → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
@@ -15,34 +17,9 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 - `preset_shape_svg.py` and `shape_boolean_svg.py` may provide only their documented stdout fragment(s) after the main agent chooses the object's role, operands, paint, and z-order; neither helper chooses layout or writes a page.
 - Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
-### Quick Generate Profile Short Circuit
-
-For an explicit quick/fast, skip-strategy, or direct-SVG request, follow
-[`quick-generate.md`](./profiles/quick-generate.md). It runs applicable source
-conversion/research and project-local resource preparation, lets the current
-agent decide content/visual/resource details in one active context, then
-hand-authors SVG, runs any selected capability-specific preparation, passes one
-lockless final checker, and exports the final PPTX. It skips Strategist, Confirm
-UI, Design Spec/lock, the first-page gate, and `finalize_svg.py`; it creates no
-resumable design history, so context loss restarts the Quick run.
-
-Quick never enters Steps 3–4. When the request supplies at most one exact current
-workspace root for each Brand/Style/Layout/Deck kind, or the current
-conversation carries an exact Create Template handoff, Quick runs
-[`apply-template-workspace`](./stages/apply-template-workspace.md) directly and
-uses the installed project-local state during authoring. With no exact root it
-uses free design. It never launches `confirm_ui/server.py`, reads the template
-catalog to choose on the user's behalf, or creates template-selection receipts;
-a bare template name, brand mention, or style description remains brief text.
-
-**Hard rule — no implicit capability downgrade or page cap**: page count neither
-selects nor blocks quick generation. Source preparation, images, icons, native
-shapes, charts/tables, formulas, mode/style references, and their triggered
-operational manifests remain available. All exporter capabilities remain
-available when requested or agent-selected; use their existing prerequisites.
-Structured Master/Layout template compilation still requires the default
-lock-backed pipeline; Quick applies templates while authoring complete flat
-pages.
+**Profile boundary**: Explicit Quick is selected before runtime authority
+loading and never enters this file. Default and Beautify do not load or apply
+the Quick profile.
 
 ### SVG Page-Design Boundary
 

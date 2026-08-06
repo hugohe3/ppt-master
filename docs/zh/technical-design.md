@@ -40,7 +40,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 
 ## Generate PPTX 路线架构
 
-下图描述 Generate PPTX 的默认生命周期，也包含其 `beautify-pptx` profile。显式 `quick-generate` profile 仍属于同一路线，但只绕过独立的规划 / 确认、首屏 gate 与预览终稿化；来源理解和资源准备仍按需运行，一次无锁最终质量门始终保留。Create Template 有独立的工作区生命周期；Fill Native PPTX 与 Enhance Native PPTX 直接操作 OOXML。本文后续路线表会覆盖全部四条顶层路线。
+下图描述 Generate PPTX 的默认生命周期，也包含其 `beautify-pptx` profile。显式 `quick-generate` profile 仍属于同一路线，但只绕过独立的规划 / 确认、首屏 gate 与预览终稿化；来源理解和资源准备仍按需运行，一次无锁最终质量门始终保留。路由会独立加载两套运行时权威：Default/Beautify 读取 `generate-pptx.md`，Quick 只读取 `quick-generate.md`，双方都不加载对方的流程。Create Template 有独立的工作区生命周期；Fill Native PPTX 与 Enhance Native PPTX 直接操作 OOXML。本文后续路线表会覆盖全部四条顶层路线。
 
 ```
 用户输入 (PDF/DOCX/XLSX/PPTX/URL/Markdown/主题文本)
@@ -431,7 +431,7 @@ Stage-1 沟通推荐的编写不得读取这些候选或任何模板内容。UI 
 
 ## 执行纪律
 
-Generate 执行以 [`workflows/generate-pptx.md`](../../skills/ppt-master/workflows/generate-pptx.md) 为权威，该文档拥有默认 Step 1–7、显式快速生成短路与 Generate 专属规则；[`SKILL.md`](../../skills/ppt-master/SKILL.md) 只拥有全局执行纪律，以及交接到 `routing.md` 的强制入口。这些规则整体看起来很官僚，但存在的理由是：LLM 默认行为是“让我在这一 turn 里把整个问题搞定”，而这恰好是串行流水线最不该有的形状——串行流水线要求每一步的输出都是有界、过 checkpoint、被下一步消费的。它们共同关闭了实际反复出现的失败模式：乱序执行、AI 代为做用户设计决策、跨阶段打包、前置条件未满足、投机预先准备、子代理上下文丢失、分批漂移、长 deck 色彩字体漂移、脚本批量生成 SVG 漂移，以及路由歧义。
+Generate 路由会在加载流程前选定一份运行时权威：[`workflows/generate-pptx.md`](../../skills/ppt-master/workflows/generate-pptx.md) 拥有默认 Step 1–7 及其 Beautify 叠加规则，[`quick-generate.md`](../../skills/ppt-master/workflows/profiles/quick-generate.md) 拥有自足的 Quick 生命周期；[`SKILL.md`](../../skills/ppt-master/SKILL.md) 只拥有全局执行纪律，以及交接到 `routing.md` 的强制入口。这些规则整体看起来很官僚，但存在的理由是：LLM 默认行为是“让我在这一 turn 里把整个问题搞定”，而这恰好是串行流水线最不该有的形状——串行流水线要求每一步的输出都是有界、过 checkpoint、被下一步消费的。它们共同关闭了实际反复出现的失败模式：乱序执行、AI 代为做用户设计决策、跨阶段打包、前置条件未满足、投机预先准备、子代理上下文丢失、分批漂移、长 deck 色彩字体漂移、脚本批量生成 SVG 漂移，以及路由歧义。
 
 全路由通用的停止 / 继续规则以 [`failure-recovery.md`](../../skills/ppt-master/workflows/governance/failure-recovery.md) 为准；其中具体故障矩阵与续跑入口目前覆盖 Generate PPTX。本节不复制这些规则。
 

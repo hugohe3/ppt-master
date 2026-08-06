@@ -187,13 +187,12 @@
       "max_tokens": 70000
     },
     "route.generate.quick-generate": {
-      "description": "Explicit one-pass Generate path with active-context mode/style selection, conditional source/resource preparation, and complete flat SVG visual-construction authorities.",
+      "description": "Self-contained one-pass Generate profile with source intake, active-context mode/style selection, conditional resource preparation, and complete flat SVG visual-construction authorities.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
       ],
       "files": [
-        "skills/ppt-master/workflows/generate-pptx.md",
         "skills/ppt-master/workflows/profiles/quick-generate.md",
         "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md",
@@ -1022,9 +1021,14 @@
       "to": "skills/ppt-master/workflows/routing.md"
     },
     {
-      "concern": "generate-workflow",
+      "concern": "default-generate-workflow",
       "from": "skills/ppt-master/workflows/routing.md",
       "to": "skills/ppt-master/workflows/generate-pptx.md"
+    },
+    {
+      "concern": "quick-generate-workflow",
+      "from": "skills/ppt-master/workflows/routing.md",
+      "to": "skills/ppt-master/workflows/profiles/quick-generate.md"
     },
     {
       "concern": "failure-policy",

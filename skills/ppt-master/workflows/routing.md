@@ -8,7 +8,7 @@ Route selection authority for PPT Master. Select exactly one top-level route, th
 
 **Hard rule**: If this file conflicts with a route summary elsewhere in the
 Skill package or in a repository-level user-facing document, this file wins for
-route selection. After selection, the route authority owns execution.
+route selection. After selection, the active runtime authority owns execution.
 
 ---
 
@@ -30,7 +30,7 @@ route selection. After selection, the route authority owns execution.
 
 | Route | Request shape | Authority | Preconditions | Mutation model | Output contract |
 |---|---|---|---|---|---|
-| Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally select a registered library template or supply an explicit workspace | [`generate-pptx`](./generate-pptx.md) | Source facts exist or research can gather them; explicit quick intent activates its profile | Author new SVG pages and export a new PPTX | Default: spec, lock, SVG, validation, and PPTX; Quick: optional source/resource artifacts, no spec/lock, SVG, and one PPTX |
+| Generate PPTX | Create a new presentation; regenerate an existing deck visually; use source material or a topic; optionally select a registered library template or supply an explicit workspace | Default/Beautify: [`generate-pptx`](./generate-pptx.md); explicit Quick: [`quick-generate`](./profiles/quick-generate.md) | Source facts exist or research can gather them; explicit quick intent activates its profile | Author new SVG pages and export a new PPTX | Default: spec, lock, SVG, validation, and PPTX; Quick: optional source/resource artifacts, no spec/lock, SVG, and one PPTX |
 | Create Template | Create a reusable brand/style/layout/deck template from one or more PPTX/SVG files, images/PDFs, direct or file-based text, documents/websites, brand assets, or a mixed reference bundle | [`create-template`](./create-template.md) | A reusable-template request exists; reference material is optional, and project scope additionally requires an initialized target project | Author a new portable workspace; never modify any reference file in place | Workspace with required `templates/`, optional `images/` / `icons/`, and optional review `exports/` |
 | Fill Native PPTX | Use a raw PPTX's native slide shells and replace/fill content | [`template-fill-pptx`](./template-fill-pptx.md) | Source PPTX plus new material/topic | Clone and patch PPTX through OOXML; no SVG pipeline | New filled PPTX in project `exports/` |
 | Enhance Native PPTX | Keep a finished PPTX's visible slides stable while adding notes, audio, timings, or transitions | [`native-enhance-pptx`](./native-enhance-pptx.md) | Finished source PPTX exists | Append/update scoped OOXML parts; no slide regeneration | New enhanced PPTX in project `exports/` |
@@ -41,9 +41,9 @@ route selection. After selection, the route authority owns execution.
 
 | Request condition | Generate-route behavior |
 |---|---|
-| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Activate [`quick-generate`](./profiles/quick-generate.md): prepare sources/resources as needed, let the current agent decide without interaction, directly apply at most one exact workspace root per kind supplied for this run, otherwise use free design, omit Strategist/Confirm UI/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
+| Explicit quick/fast, skip-strategy, or direct SVG-to-PPTX intent | Load [`quick-generate`](./profiles/quick-generate.md) directly without loading `generate-pptx.md`: prepare sources/resources as needed, let the current agent decide without interaction, directly apply at most one exact workspace root per kind supplied for this run, otherwise use free design, omit Strategist/Confirm UI/spec/lock, hand-author SVG, run the lockless final checker, and export the final PPTX |
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
-| Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
+| Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through the selected Generate authority's source intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
 | Default Generate reaches planning | Step 3 prepares template candidates without interaction. Stage 1 then confirms the communication contract and free-design/template choice together; only a confirmed non-free choice runs [`apply-template-workspace`](./stages/apply-template-workspace.md) before Stage 2 |
 | Explicit current brand/style/layout/deck workspace root | Default Generate preserves the exact path as a Stage-1 template candidate; Quick Generate validates and installs it directly without Steps 3–4 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
@@ -65,7 +65,9 @@ count alone never activates or blocks it. Conversion, bounded research, and
 project-local resources remain available. Package capabilities may be requested
 or agent-selected. Quick may consume exact Brand/Style/Layout/Deck workspaces as
 flat authoring inputs; compiling reusable Master/Layout/placeholder structure
-still requires the default lock-backed Generate pipeline.
+still requires the default lock-backed Generate pipeline. Once selected, Quick
+is the complete runtime procedure and never loads `generate-pptx.md`; Default
+and Beautify never load `quick-generate.md`.
 
 ---
 

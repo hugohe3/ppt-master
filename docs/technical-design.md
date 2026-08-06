@@ -48,7 +48,10 @@ The diagram below covers the default Generate PPTX lifecycle, including its
 `beautify-pptx` profile. The explicit `quick-generate` profile stays inside the
 same route but bypasses its separate planning/confirmation, first-page gate,
 and preview finalization. Source understanding and resource preparation still
-run as needed; one lockless final quality gate remains mandatory.
+run as needed; one lockless final quality gate remains mandatory. Routing loads
+these runtime authorities independently: Default/Beautify read
+`generate-pptx.md`, while Quick reads only `quick-generate.md`; neither profile
+loads the other's procedure.
 Create Template has its own workspace lifecycle, while Fill Native PPTX and
 Enhance Native PPTX operate directly on OOXML; the route table later in this
 document covers all four.
@@ -490,7 +493,7 @@ choice.
 
 ## Execution Discipline
 
-Generate execution is governed by [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md), which owns the default Step 1–7 sequence, the explicit quick-generation short circuit, and the generation-specific rules; [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+Generate routing selects one runtime authority before loading its procedure: [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) owns the Default Step 1–7 sequence and its Beautify overlay, while [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) owns the self-contained Quick lifecycle. [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 

@@ -26,17 +26,24 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
    non-zero result stops the Skill immediately; do not inspect, repair, or
    bypass the integrity gate.
 3. Read [`workflows/routing.md`](workflows/routing.md).
-4. Select exactly one top-level route from the routing authority.
-5. Read only that route's authority and its explicitly triggered supporting documents.
+4. Select exactly one top-level route and its active profile from the routing
+   authority.
+5. Read only the resulting runtime authority and its explicitly triggered
+   supporting documents.
 
-| Selected route | Runtime authority |
+| Selected route / profile | Runtime authority |
 |---|---|
-| Generate PPTX | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
+| Generate PPTX — Default or Beautify | [`workflows/generate-pptx.md`](workflows/generate-pptx.md); Beautify additionally loads [`workflows/profiles/beautify-pptx.md`](workflows/profiles/beautify-pptx.md) |
+| Generate PPTX — explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
 | Fill Native PPTX | [`workflows/template-fill-pptx.md`](workflows/template-fill-pptx.md) |
 | Enhance Native PPTX | [`workflows/native-enhance-pptx.md`](workflows/native-enhance-pptx.md) |
 
-**Hard rule — selected authority only**: Do not load another top-level route's procedure after routing. Profiles, stages, governance files, and child workflows refine the selected route; they never compete with it.
+**Hard rule — selected authority only**: Do not load another top-level route's
+procedure after routing. Default/Beautify and Quick are mutually exclusive
+Generate runtime authorities: neither loads the other's procedure. Profiles,
+stages, governance files, and child workflows refine one selected route; they
+never compete with it.
 
 ---
 

@@ -29,6 +29,11 @@ Page count alone never activates or blocks this profile.
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
 
+**Artifact ownership**: follow
+[`artifact-ownership.md`](../../references/artifact-ownership.md) for source,
+fact, author, derived, and regeneration boundaries. Quick changes the planning
+handoff, not those artifact roles.
+
 **Hard rule — speed removes interaction and durable planning, not capability**:
 all ordinary source, research, visual-carrier, resource-preparation, analysis,
 authoring, and export capabilities remain available when they serve the deck.
@@ -68,8 +73,35 @@ point; a before-authoring signal always overrides a before-export-only timing.
 
 ## 2. Source and Resource Preparation
 
-Run [`generate-pptx.md`](../generate-pptx.md) Step 1 when applicable. Before
-initialization, resolve exactly one of these branches:
+Prepare source facts before initialization:
+
+| Input | Action |
+|---|---|
+| Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement plus fact-provenance JSON for import |
+| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
+| CSV / TSV | Read directly as a plain-text table source |
+| Markdown or direct conversation text | Read directly |
+
+The conversion dispatcher writes standard Markdown plus its conversion profile
+beside each local source by default. Use `-t <type>` only when detection is
+ambiguous and `-o` only for a required output path; with several or directory
+inputs, `-o` names an output directory. A PPTX is converted to Markdown here and
+receives its project analysis during the import step below.
+
+After reading every direct and converted source, assess factual sufficiency:
+
+| Material state | Action |
+|---|---|
+| The requested outcome is supported | Continue |
+| A required externally verifiable claim remains unsupported | Run [`topic-research`](../stages/topic-research.md) for those gaps only |
+| Closed corpus / source-only / no external enrichment | Stay within the supplied material |
+
+**Sufficiency test**: research only when the requested outcome would otherwise
+require inventing, omitting, or leaving unsupported an externally verifiable
+claim. File presence or length does not establish sufficiency. Research gathers
+facts only; image acquisition remains part of the resource preparation below.
+
+Before initialization, resolve exactly one template branch:
 
 - **Direct template application**: one or more exact current workspace roots
   were supplied in the request, or Create Template returned an exact validated
@@ -99,14 +131,45 @@ It creates `svg_output/` plus the cold
 this command, run project-scoped Python tools directly; their shared CLI
 bootstrap records command envelopes, material tagged outcomes, bounded status
 samples, and omission counts. A concise manual entry is allowed only for a
-material non-Python audit detail under Generate Step 2's selective policy.
+material stage handoff, rework reason, user-approved exception, or manual
+recovery choice that has no owning command output; do not record routine page
+progress, artifact contents, or private reasoning.
 Never read the log during ordinary Quick execution; open it only for an
 explicit user-requested run review. Add
 capability inputs only when triggered; later tools create `exports/` and the
-default-path `backup/`. With source files, continue with Step 2
-`import-sources`; it creates the triggered input directories. Never scaffold a
-Design Spec or lock. Use a new path, or verify that an existing path's
-`svg_output/` is empty; Quick ignores any existing `design_spec.md` or
+default-path `backup/`.
+
+With file-based sources, import the original inputs, converted outputs, and any
+research pair together:
+
+```bash
+python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
+  <project_path> <source_files_or_dirs...> [<converted_outputs...>] \
+  [projects/<research_slug>.md projects/<research_slug>.facts.json]
+```
+
+Only inputs already under the repository's `projects/` tree move into the
+target project; every external path is copied and remains untouched. Use
+`--copy` when a projects-local input must also remain in place. When conversion
+wrote Markdown beside the original source, pass that source path or directory
+once; when `-o` wrote it elsewhere, pass both locations. Direct supported bitmap
+inputs are archived under `sources/` and copied collision-safely into `images/`.
+
+For each imported PPTX, `import-sources` automatically writes
+`analysis/<stem>.identity.json`, `analysis/<stem>.slide_library.json`, and the
+multi-deck `analysis/source_profile.json` index. Read that index as source facts
+and open a per-deck artifact only when the current task needs its additional
+detail; these facts are recommendations, not replica constraints. Distinct PPTX
+stems may coexist, and re-importing one stem replaces only that deck's entry.
+
+Conversion companion manifests may place extracted SVG/EMF/WMF assets into the
+project resource flow. Preserve EMF/WMF as vector references and never convert
+them to PNG; browser preview may be blank while native PPTX export remains the
+source of truth. Standalone SVG/EMF/WMF inputs remain source assets unless such
+a manifest supplies their display metadata.
+
+Never scaffold a Design Spec or lock. Use a new path, or verify that an existing
+path's `svg_output/` is empty; Quick ignores any existing `design_spec.md` or
 `spec_lock.md`.
 
 The audit log is an operational tool record only. It does not capture direct
@@ -176,6 +239,12 @@ Prepare only the resource paths needed by the decided pages:
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
 | Data chart/table | Keep source values and the chosen page treatment in active context; load the chart/table authorities in §3 before drawing and write native replacement metadata only when selected |
+
+**Image inspection boundary**: acquisition-time suitability review follows the
+owning AI/web/slice reference. Once resources reach terminal status, SVG
+authoring follows `executor-image.md`'s narrow placement inspection: inspect only
+one specifically ambiguous `Existing`/`Sourced` asset and never routinely reopen
+`Generated` outputs.
 
 After image resources change, run `analyze_images.py` so
 `analysis/image_analysis.csv` reflects the files that SVG authoring will use.
