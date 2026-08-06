@@ -1284,8 +1284,8 @@ Recorded narration:
         )
         return 1
 
-    # Native DrawingML is the only PPTX product. ``-s`` remains an explicit
-    # diagnostic source override; standard export always reads svg_output/.
+    # Native DrawingML is the only PPTX product. A non-output ``-s`` remains a
+    # diagnostic source override; default and explicit output use release rules.
     native_source = args.source or 'output'
     native_files, native_source_dir = find_svg_files(
         project_path,
@@ -1311,19 +1311,27 @@ Recorded narration:
             print("Error: No SVG files found", file=sys.stderr)
         return 1
 
-    if args.quick_generate:
+    release_quality_gate = args.quick_generate or args.source in {None, 'output'}
+    if release_quality_gate:
         source_fingerprint = _svg_source_fingerprint(native_files)
         quality = _quality_report_context(project_path, source_fingerprint)
         quality_gate, _ = _quality_gate_status(quality)
         if quality_gate != 'passed':
-            print(
-                "Error: --quick-generate requires a passing final SVG quality "
-                f"report for the current svg_output/; found {quality_gate}.",
-                file=sys.stderr,
+            export_mode = (
+                '--quick-generate'
+                if args.quick_generate
+                else 'default release export'
             )
             print(
+                f"Error: {export_mode} requires a passing final SVG quality "
+                f"report for the current {native_source_dir}/; found "
+                f"{quality_gate}.",
+                file=sys.stderr,
+            )
+            quick_flag = ' --quick-generate' if args.quick_generate else ''
+            print(
                 "Run: python3 skills/ppt-master/scripts/svg_quality_checker.py "
-                f'"{project_path}" --quick-generate --stage final --json',
+                f'"{project_path}"{quick_flag} --stage final --json',
                 file=sys.stderr,
             )
             return 1

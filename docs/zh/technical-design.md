@@ -30,7 +30,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 |---|---|---|
 | 提示词、模板与示例 | 精确表达项目规范写法，从源头减少偏差和 warning | 不作为正确性或安全边界 |
 | `svg_quality_checker.py` | 在作者状态上执行项目合同；error 阻塞，非阻塞 warning 放行 | 不静默改写页面，也不猜测设计意图 |
-| `svg_to_pptx.py` | 对编译映射与 package 执行防御校验；归一化已支持的兼容形式；把前置 SVG 质量报告关联进 postflight | 不重跑完整 `svg_quality_checker.py`，也不以“文件已生成”替代前置质量门 |
+| `svg_to_pptx.py` | 对编译映射与 package 执行防御校验；归一化已支持的兼容形式；正式发布前要求当前匹配的 final 质量报告，并把它关联进 postflight | 不重跑完整 `svg_quality_checker.py`，也不以“文件已生成”替代前置质量门 |
 
 ---
 
@@ -541,12 +541,12 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 
 | 严重性 | 判定条件 | 流水线行为 |
 |---|---|---|
-| `error` | 结构合同被破坏；输入无映射或有歧义；必要 metadata 缺失；数值非法；转换后可能违反 DrawingML / PPTX 约束；或可能导致 PowerPoint 修复文件 | Executor 必须重写并重新校验；Generate 路线不得在 final 报告仍有阻塞错误时进入导出。若导出器读到带阻塞错误的 final 报告，postflight 标记 `quality_gate=failed`，该产物不得被声明为成功交付 |
+| `error` | 结构合同被破坏；输入无映射或有歧义；必要 metadata 缺失；数值非法；转换后可能违反 DrawingML / PPTX 约束；或可能导致 PowerPoint 修复文件 | Executor 必须重写并重新校验；Generate 路线不得在 final 报告仍有阻塞错误时进入导出。正式发布导出还会在创建 PPTX 前独立拒绝这类报告 |
 | `warning` | 已有唯一、安全、合法的转换结果，但输入不是项目规范写法，或存在已知的确定性归一化、保真度下降、视觉质量风险 | 记录诊断后允许发布；不要求逐条确认或强制回改 |
 
 质量门沿用设计哲学中定义的三层职责。这里有意不提供 auto-fix：机械修补可能静默覆盖有效的设计意图，也可能交付一个更差的页面。
 
-**当前实现边界。** `svg_to_pptx.py` 会先生成 PPTX，再写 postflight；`quality_gate=failed` 会得到失败报告，但这一状态目前不会单独让 CLI 返回非零，也不会删除已经生成的文件。缺失、非 final、过期或无法验证的质量报告会以对应 `quality_gate` 出现在回执中，并使报告进入 `passed-with-warnings`；当前 Step 7 允许这类产物在读取回执并披露实质 warning 后完成。因而 PPTX 文件存在或命令退出 `0` 都不等于成功：`failed` 报告绝不能交付，`passed-with-warnings` 则必须结合具体 `quality_gate` 和 warning 判断、披露。导出器尚未把 `quality_gate=failed` 独立收口为非零退出或回滚，这是当前防御缺口，而不是放宽 error 语义。
+**当前实现边界。** 默认正式发布与 `--quick-generate` 会计算精确的 SVG 来源指纹，并在创建 PPTX 前拒绝缺失、不可读、schema 不支持、非 final、含阻塞项、过期或无法验证的 final 报告。既有工程缺少 `validation/svg_quality_report.json` 时会得到 `not-provided` 门状态并非零退出；正式发布前必须先对当前 `svg_output/` 运行 final 检查。匹配报告仍可包含非阻塞 warning；发布继续，postflight 在适用时记录 `passed-with-warnings`。显式指定非 `output` 的 `--source` 仍属于诊断覆盖，会绕过这道发布门，因此诊断产物“文件存在”本身不构成交付证明；postflight 仍记录可验证的报告关联。
 
 如果同一种 warning 持续出现在新生成页面中，应优先修正提示词、模板示例或规范说明，使默认输出回到项目规范写法；这属于生成质量问题，不需要把本来安全的兼容输入升级成阻塞错误。反过来，如果实践证明某个 warning 可能产生非法文件或不确定语义，就必须把合同和 Checker 同步升级为 error。
 
