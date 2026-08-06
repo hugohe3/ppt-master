@@ -50,7 +50,7 @@ Write only the derived values to `spec_lock.md pptx_structure`; omit `template_a
 
 **Mandatory — natural-language Stage-2 plan**: For Layout/Deck, summarize which prototypes are used/skipped/repeated/reordered, what stays literal, and what may be replaced or reorganized. For Brand/Style, summarize the installed identity or Direction / method constraints and state that pages remain freely composed unless another workspace supplies structure. Write the result to top-level `template_application.value` in `recommendations.stage2.json`; omit it without an active template. After Stage 2, re-read the confirmed `result.json` value (or exact chat answer), never the initial recommendation. Blank returns the decision to Strategist. Persist the effective plan on one line as `- **Template Application**: <prose>` in `design_spec.md §I`, then derive internal reuse/adherence values and mappings; never copy the prose to `spec_lock.md`. Do not add a questionnaire, internal controls, or fixed template-use options.
 
-**Three-stage boundary**: An installed template changes the content of Stage 2, never the confirmation sequence. Run Stage 1 → Stage 2 → Stage 3 in order in both Confirm UI and chat fallback; do not skip a stage or treat template inspection as user confirmation. On browser timeout, return to the same stage in chat.
+**Two-stage boundary**: An installed template changes the content of final Stage 2, never the confirmation sequence. Run Stage 1 → final Stage 2 in order in both Confirm UI and chat fallback; do not skip a stage or treat template inspection as user confirmation. On browser timeout, return to the same stage in chat.
 
 ---
 

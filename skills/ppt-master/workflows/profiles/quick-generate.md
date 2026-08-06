@@ -157,7 +157,8 @@ silently replace it with unrelated material.
 
 ## 3. Direct SVG Authoring
 
-Always read
+Always read the following fixed authoring references directly in one batch; do
+not route among them one file at a time:
 [`shared-standards-core.md`](../../references/shared-standards-core.md),
 [`svg-effects.md`](../../references/svg-effects.md), and
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md). Do
@@ -170,6 +171,8 @@ this profile. For any image/formula, always read
 [`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
 web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
 for a non-default canvas.
+
+Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.

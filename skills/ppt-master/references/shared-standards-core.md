@@ -1,14 +1,16 @@
 # Shared SVG Core Standards
 
-Mandatory reference for every route that authors or regenerates slide visuals through SVG. It owns XML validity, the closed generated-authoring surface, basic converter compatibility, page closure, semantic grouping, and shared fidelity vocabulary.
+Mandatory reference for every route that authors or regenerates slide visuals through SVG. It owns XML validity, the closed generated-authoring surface, basic converter compatibility, page closure, semantic grouping, shared visual-quality defaults, and fidelity vocabulary.
 
 **Conditional module routing**:
 
 | Trigger | Load |
 |---|---|
-| Noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
+| Default or Quick Generate; otherwise noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
 | `pptx_structure.mode: structured` | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
+
+**Default — shared aesthetic baseline (may be overridden by explicit user, template / brand, or locked visual-style requirements)**: Required / Forbidden technical contracts remain absolute. Within that valid surface, establish quality through clear hierarchy, typography and leading, alignment, negative space, purposeful imagery / icons, and restrained repetition before decoration. Silence at a higher authority does not disable these defaults. Default and Quick Generate also run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 Visual Job Router before completing each page; apply a compatible technique only for a diagnosed visual job.
 
 **Fidelity labels**:
 
@@ -571,7 +573,7 @@ Semantic markers are minimal compiler hints. Flat pages declare one root `data-p
   [`../templates/icons/README.md`](../templates/icons/README.md).
 - **Local reuse**: ordinary same-document `<use>` follows §1.3.
 
-### 4.2 Conditional Editability and Package Promotion
+### 4.2 Editability, Package Promotion, and Text Leading
 
 These forms are needed only when the stated PPT behavior matters:
 
@@ -582,6 +584,8 @@ These forms are needed only when the stated PPT behavior matters:
 | Native PowerPoint background promotion | Outside structured mode, the first eligible visual layer may be a direct full-canvas `<rect>` or one inside a simple single-child group. Its fill must have a registered native mapping (solid, linear/radial gradient, or preset pattern), and it must have no transform, filter, clip, rounding, or visible stroke. Export writes the fill as Slide `p:bg`; image elements remain pictures. Structured routes use the narrower explicit solid-background ownership contract in [`pptx-structure-interface.md`](./pptx-structure-interface.md). |
 | Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. Quick-generate uses the same flat object ownership but converter-default theme scaffolding because no lock exists. |
 | Reusable template-based PowerPoint Layout | Select one complete authoring SVG per page in `page_layouts`, declare each unique Master/Layout definition once, and assign pages through `page_pptx_layouts`. Strict preserves the prototype contract; adaptive retains its Master and uses a current or new Layout key already declared and assigned by Strategist. Construction cannot extend or mutate that mapping downstream. Non-mirror skin follows `spec_lock`. |
+
+**Default — leading by role and density (may be overridden for user, template, typeface, legibility, or locked visual-style fit)**: For direct positioned `<tspan>` rows, start multiline titles around `1.2–1.3 × font-size`, dense / small body around `1.4–1.5 ×`, ordinary body around `1.5–1.6 ×`, and large / sparse / breathing body around `1.6–2.0 ×`. These are starting ranges, not checker quotas; display headlines may be tighter when the selected style calls for it. Author the spacing as positive relative `dy`, not CSS/SVG `line-height`, which has no registered DrawingML mapping.
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
 

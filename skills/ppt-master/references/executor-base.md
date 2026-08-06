@@ -13,7 +13,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Effective Speaker Notes outcome is enabled after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
-> Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). Technical constraints are in [`shared-standards-core.md`](./shared-standards-core.md).
+> Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). [`shared-standards-core.md`](./shared-standards-core.md) supplies the technical boundary plus the fallback visual-quality and leading defaults when those authorities are silent.
 
 **Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
 
@@ -65,7 +65,7 @@ Consume stdout directly; stop on non-zero exit. The projection is derived, not a
 
 **Hard rule — exact page roster**: `design_spec.md §IX` is the ordered queue: one final slide per entry, with the same id/order. The UI range no longer applies. Never add, drop, merge, split, or reorder; repair/reconfirm the Design Spec first.
 
-**Hard rule — binding selection vs realization**: use Strategist-selected semantic content, resources/paths, chart keys, template/layout routing keys, core fonts, palette anchors, icons, and crop boundaries. Adapt realization, never those binding selections, except sparse local font/color garnish allowed below. A §VIII preferred image pattern is not a template/layout routing key; [`executor-image.md`](./executor-image.md) owns its realization freedom. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Binding selection changes require upstream repair.
+**Hard rule — binding selection vs realization**: use Strategist-selected semantic content, resources/paths, chart keys, template/layout routing keys, core fonts, palette anchors, icon-library/stroke anchors, and crop boundaries. Adapt realization—including which prepared project-local icon, if any, best serves each page—without changing those binding selections, except sparse local font/color garnish allowed below. A §VIII preferred image pattern is not a template/layout routing key; [`executor-image.md`](./executor-image.md) owns its realization freedom. Missing or unresolved material stops execution and returns to Strategist-owned acquisition/failure recovery; never search, generate, download, sync, invent, or substitute it. Binding selection changes require upstream repair.
 
 **Hard rule — content vs expression**: `design_spec.md §IX` owns each page's semantic content and supplies complete preferred wording and block texture; those expression choices are not verbatim requirements unless explicitly literal. Executor may paraphrase, condense repetition, regroup or reorder material within the same page, and switch among prose, bullets, keywords, labels, or visual annotation when fit or readability benefits. The result must remain information-equivalent: preserve the `Core message`, `Audience move`, and every substantive claim, fact, data value, proper name, qualifier or caveat, relationship, key argument or evidence, and literal requirement. Never add a claim, move content across pages, or drop information to make the layout fit; return an unfit or underspecified block for Design Spec repair.
 
@@ -87,7 +87,7 @@ Apply the content-vs-expression contract above within the selected reading mode.
 
 **Default — authored texture (may override when information-equivalent)**: start from each `design_spec.md §IX Content` block's written texture because it is the Strategist's recommended expression. Keep prose when its continuity carries causal, argumentative, narrative, qualification, or emphasis relationships; use bullets or keywords when the material is genuinely parallel or ordered, or another information-equivalent structure is clearer. Never convert solely because a list is easier to lay out or an inherited template exposes a list slot.
 
-- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never sibling `<text>` elements for its visual lines. Keep the first authored line as direct text; later lines use direct `<tspan>` children that repeat parent `x`, retain effective font size, and use positive relative `dy`. An all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` enables reflow. Choose positive line spacing for the typeface, size, density, and reading distance; no fixed ratio overrides legibility or the selected style.
+- **Hard rule — one paragraph, one text frame**: use one `<text>` per prose paragraph, never sibling `<text>` elements for its visual lines. Keep the first authored line as direct text; later lines use direct `<tspan>` children that repeat parent `x`, retain effective font size, and use positive relative `dy`. An all-`<tspan>` form may start at `dy="0"`. Default retains these breaks without PowerPoint wrapping; `--reflow-text` enables reflow. Start from the shared leading ranges in [`shared-standards-core.md`](./shared-standards-core.md) §4.2, then adjust for the typeface, reading distance, explicit user/template requirements, and locked style.
 - **Template precedence**: an inherited slot never overrides the content relationship. If faithful expression needs prose, widen or reflow the container, or drop that card; never convert solely to fill a list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
 
@@ -99,7 +99,7 @@ Apply the content-vs-expression contract above within the selected reading mode.
 
 **Execution anchors and contextual values**:
 
-- Icons may use any SVG already prepared under `<project_path>/icons/`. `icons.library` records the Strategist's primary bundled style choice and `icons.inventory` records its planned selection; neither is an execution whitelist over project-local assets.
+- Icons may use any SVG already prepared under `<project_path>/icons/`. `icons.library` records the Strategist's primary bundled style choice and `icons.inventory` indexes its curated synced pool; neither assigns icons to pages or limits other project-local assets.
 - Core color roles retain their meaning. Derive tints, shades, alpha, gradients, and effects; preserve natural asset colors; and use sparse page-local accents for differentiation/ornament. They must not become a competing or recurring palette.
 - Resolve structural families by role: exact `<role>_family` first, then `title_family` for title roles or `body_family` for other unoverridden roles, then legacy `font_family`. Never flatten declared role overrides. A sparse export-safe accent family may style short non-structural display/ornament only—never title/body/data/annotation. Recurrence requires upstream selection.
 - Font sizes use the named `typography` role values as deck-wide anchors. Map every structural text item to a declared role before drawing; never inherit a template placeholder size. Start from the anchor, then use composition and content fit to adjust that occurrence by at most `±2`px. Keep same-page peers consistent and preserve the role hierarchy; bounded adjustment does not create a new role.
@@ -233,7 +233,7 @@ Strategist chooses at most one primary bundled stylistic library and may select 
 
 > **Prepared-project boundary.** Any SVG already under `<project_path>/icons/<lib>/` is valid execution material, whether selected from a bundled library or supplied by the user, a template, or an import workflow. New authoring must resolve there. The global fallback in `finalize_svg.py embed-icons` is legacy compatibility, not permission for Executor to discover or use an unprepared global icon.
 
-> **Icon identifiers are case-sensitive filenames.** Every `data-icon` value must use the exact project-local relative basename (`tabler-outline/award`, never `tabler-outline/Award`). Strategist records its planned bundled choices in `spec_lock.md`; Executor need not add other already-prepared project-local icons to that inventory. Custom identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
+> **Icon identifiers are case-sensitive filenames.** Every `data-icon` value must use the exact project-local relative basename (`tabler-outline/award`, never `tabler-outline/Award`). Strategist records its curated bundled pool in `spec_lock.md`; Executor need not add other already-prepared project-local icons to that inventory. Custom identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 
 **Built-in icons — Placeholder method (recommended)**:
 
@@ -270,6 +270,8 @@ Strategist chooses at most one primary bundled stylistic library and may select 
 ```bash
 test -f "<project_path>/icons/<lib>/<name>.svg"
 ```
+
+**Default — purposeful icon use**: choose prepared icons per page when they compress a label, distinguish parallel categories, clarify a process / KPI / state, or improve navigation and visual rhythm. Omit them when imagery, charts, or typography already carry the meaning. There is no coverage quota, and the prepared pool need not be exhausted.
 
 **Missing project-local icon** → return to Strategist's preparation / `icon_sync.py` gate. Do not search the global library, select an alternative, or copy a candidate in Executor.
 

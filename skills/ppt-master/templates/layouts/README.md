@@ -46,20 +46,20 @@ kind of rule is never a mirror operation.
 
 ## Trigger and identity boundary
 
-Selection uses the independent phase in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
-fills the Layout dropdown only from `layouts_index.json`; unregistered exact
-roots appear only in the separate specified-root dropdown. It never scans this
-directory or fuzzy-matches a bare ID. An exact supplied root matching a
-registered root may be labelled `library`; otherwise it remains `explicit`.
+Selection follows the parent README's conditional
+[`generate-pptx`](../../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
+contract. Ordinary Default enters Stage 1 with free design; explicit template
+browsing/selection, an exact root, or a current Create Template handoff triggers
+Step 3. Its Layout choices come only from `layouts_index.json`; no directory
+scan or bare-ID/style-phrase match is allowed. Registered exact roots are
+`library`; other exact roots remain `explicit`.
 Choosing and confirming an entry triggers the conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage, which owns path normalization, compatibility checks, installation, and
-fusion before Stage 1. Template-aware reading begins in Stage 2 from the
+fusion before Stage 1. Template-aware reading begins in final Stage 2 from the
 installed project-local copy.
-Quick Generate never opens the selector: an exact Layout root supplied for the
-run enters the same stage directly, while no exact root leaves Quick in free
-design. Quick uses the installed prototypes as flat authoring inputs; reusable
+Quick applies a supplied exact Layout root directly and otherwise uses free
+design. It uses installed prototypes as flat authoring inputs; reusable
 native Master/Layout compilation remains a default lock-backed capability.
 This file owns the Layout schema and its identity/application boundary. Chat
 discovery reads the same index and returns exact roots; a bare ID never resolves

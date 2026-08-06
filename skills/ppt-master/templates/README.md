@@ -39,27 +39,27 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The four indexes are the complete library-discovery source for
-[`generate-pptx`](../workflows/generate-pptx.md) Step 3. The default page shows
-free design, one registered single-select dropdown per kind, and one separate
-single-select dropdown for exact roots supplied for the run; it never scans the
-four directories or fuzzy-matches a bare name. An exact root that matches a
-registered index entry may be displayed in its kind dropdown as `library`; an
-unregistered root remains `explicit` in the specified-root dropdown. After
-confirmation,
+The four indexes are the complete library-discovery source for conditional
+[`generate-pptx`](../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
+Step 3. Ordinary Default Generate reads no index or template page and enters
+Stage 1 with free design. Explicit browse/selection intent, exact workspace
+roots, or a current Create Template handoff triggers Step 3. Its page reads only
+these indexes, never scans directories or fuzzy-matches a bare name/style
+phrase, and accepts one registered choice per kind plus one supplied-root
+choice. A registered exact root is `library`; any other exact root is
+`explicit`. After confirmation,
 [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
 validates, fuses, and installs every selected workspace into the current
-project before Stage 1 starts. Template-aware reading begins in Stage 2 from
-that project-local copy. Quick Generate is the non-interactive exception: it
-never opens this selector, directly applies exact roots supplied for the run,
-and uses free design when no exact root exists.
+project before Stage 1 starts. Template-aware reading begins in final Stage 2 from
+that project-local copy. Quick skips the page, applies supplied exact roots, and
+otherwise uses free design.
 
 ## Orthogonal contracts
 
 | Axis | Values | Meaning |
 |---|---|---|
 | Template kind | `brand` / `style` / `layout` / `deck` | Which reusable contract the package owns: identity, direction/method, brand-neutral structure, or a complete recurring application |
-| Selection source | `library` / `explicit` | Step-3 discovery provenance only: exact index-derived root or exact unregistered root; it does not change template semantics |
+| Selection source | `library` / `explicit` | Conditional Step-3 discovery provenance only: exact index-derived root or exact unregistered root; it does not change template semantics |
 | Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
 | Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
 | PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; Style-only, style-scope, brand-only, and free design remain Slide-local. Style fused with Layout/Deck does not change the non-Style structure plan. |
@@ -89,7 +89,7 @@ Style narrows this shared routing shape to `templates/design_spec.md` only and
 does not carry asset or review payloads; initialized-project sibling scaffolding
 may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion during the default Step-3 selection phase or
+stage owns installation and fusion during an explicitly triggered Default Step-3 selection phase or
 the Quick exact-root branch. Brand/Layout/Deck consume package-owned
 `templates/`, `images/`, and `icons/`; Style consumes only
 `templates/design_spec.md` and ignores sibling project scaffolding. Every kind

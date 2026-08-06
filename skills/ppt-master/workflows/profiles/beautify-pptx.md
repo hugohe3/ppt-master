@@ -166,10 +166,10 @@ This step has two halves:
 **Visual re-confirm — full confirmation seeded from the source**:
 
 Apply [`generate-pptx`](../generate-pptx.md) Step 4's surface decision first. In
-the default UI branch, use the three
-`<project_path>/confirm_ui/recommendations.stageN.json` files at the same staged
-handoffs and launch the same confirm server. In the chat branch, present the
-same three stages and fields without launching the server or requiring
+the default UI branch, use
+`<project_path>/confirm_ui/recommendations.stage1.json` and
+`recommendations.stage2.json` at the same two handoffs and launch the same
+confirm server. In the chat branch, present the same two stages and fields without launching the server or requiring
 `result.json`. The active, unconfirmed UI stage may be overwritten for a
 requested regeneration; normal progression leaves confirmed earlier stages
 intact. Do **not** hide fields: seed **every** targeted-confirmation field with
