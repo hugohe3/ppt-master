@@ -44,14 +44,13 @@ path; it is placed on the same Python command and creates no wrapper process.
 
 ## Generate PPTX Architecture
 
-The diagram below covers the default Generate PPTX lifecycle, including its
-`beautify-pptx` profile. The explicit `quick-generate` profile stays inside the
-same route but bypasses its separate planning/confirmation, first-page gate,
-and preview finalization. Source understanding and resource preparation still
-run as needed; one lockless final quality gate remains mandatory. Routing loads
-these runtime authorities independently: Default/Beautify read
-`generate-pptx.md`, while Quick reads only `quick-generate.md`; neither profile
-loads the other's procedure.
+The diagram below covers the default Generate PPTX lifecycle. The
+`beautify-pptx` profile uses that lifecycle unless the same request explicitly
+asks for Quick, in which case it uses `quick-generate` while keeping the same
+1:1 source constraints. Quick bypasses separate planning/confirmation, the
+first-page gate, and preview finalization; source understanding and resource
+preparation still run as needed, and one lockless final quality gate remains.
+Exactly one runtime procedure is loaded.
 Create Template has its own workspace lifecycle, while Fill Native PPTX and
 Enhance Native PPTX operate directly on OOXML; the route table later in this
 document covers all four.
@@ -180,14 +179,14 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Explicit quick generation | Generate PPTX + `quick-generate` profile | convert/read sources, research factual gaps, and prepare required resources as needed; explicit user requirements are followed and the current agent decides every remaining content, page, visual, and resource question in active context, skips Strategist/confirmation/spec/lock/finalize, hand-authors SVG, passes one lockless final gate, and exports the final PPTX |
 | PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
-| Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | regenerate through SVG; content and pagination are locked |
+| Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | content and pagination stay locked; explicit Quick intent uses Quick, otherwise Default |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
 | User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root as a Generate Stage-1 candidate; structured children may export a review PPTX |
 | Default Generate reaches planning; an exact current-contract workspace root or current Create Template handoff may already be present | Generate PPTX Stage 1 | Step 3 prepares candidates without interaction; Stage 1 confirms communication plus free design/template use together; ordinary requests default to free design, explicit template intent or any root defaults to template mode, and only one root is preselected; selected workspaces are validated/fused before Stage 2 |
 | User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
-Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Both use Generate PPTX; preservation selects the `beautify-pptx` profile, while restructuring uses the normal profile.
+Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Both use Generate PPTX; preservation selects the `beautify-pptx` profile, while restructuring uses the normal profile. In either case, explicit Quick intent selects Quick; otherwise Default applies.
 
 ---
 
@@ -493,7 +492,7 @@ choice.
 
 ## Execution Discipline
 
-Generate routing selects one runtime authority before loading its procedure: [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) owns the Default Step 1–7 sequence and its Beautify overlay, while [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) owns the self-contained Quick lifecycle. [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+Generate routing selects one runtime authority before loading its procedure: [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) owns Default Step 1–7, while [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) owns the self-contained Quick lifecycle. [`beautify-pptx.md`](../skills/ppt-master/workflows/profiles/beautify-pptx.md) selects between them from explicit Quick intent and keeps its 1:1 constraints in either branch. [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
@@ -856,7 +855,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 
 | Class | Runbooks | Owning route |
 |---|---|---|
-| Generation profiles | `beautify-pptx`, `quick-generate` | Generate PPTX with either wording/page invariants or the explicit direct SVG-to-PPTX short circuit |
+| Generation profiles | `beautify-pptx`, `quick-generate` | Beautify preserves wording/pages and selects Default unless Quick is explicit; Quick owns the direct SVG-to-PPTX lifecycle |
 | Template child workflows | `create-brand`, `create-style`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, roster-free direction/method, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
 | Template-input stage | `apply-template-workspace` | Runs after Default Stage 1 confirms at least one workspace and before Stage 2; free design skips installation, while Quick may provide direct exact-root input |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |

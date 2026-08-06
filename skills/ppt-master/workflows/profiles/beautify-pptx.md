@@ -1,14 +1,20 @@
 ---
-description: Main-generation profile for 1:1, content-faithful re-layout of an existing deck through the standard SVG pipeline.
+description: Generate profile for 1:1, content-faithful re-layout of an existing deck through Default or explicit Quick execution.
 ---
 
 # Beautify PPTX (Re-layout) Profile
 
-> Main-pipeline profile, not a top-level route. [`template-fill-pptx.md`](../template-fill-pptx.md) reuses a deck's design and swaps in new content; this profile keeps a deck's content and redoes its layout.
+> Generate profile, not a top-level route. [`template-fill-pptx.md`](../template-fill-pptx.md) reuses a deck's design and swaps in new content; this profile keeps a deck's content and redoes its layout.
 
 Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source deck's visual identity (palette / fonts) is **inherited as truth**, and only layout, hierarchy, and whitespace are redesigned. Output is a brand-new native deck generated through the standard SVG pipeline — not a patch over the original.
 
 **Trigger**: the user supplies a `.pptx` and asks to beautify / re-layout / 重新排版 / 美化 while keeping the content. Explicit intent + a provided file only; never auto-infer.
+
+**Hard rule — select one runtime before continuing**: when the same request
+also meets [`quick-generate.md`](./quick-generate.md)'s explicit trigger, load
+that runtime and do not load `generate-pptx.md`. Otherwise load
+[`generate-pptx.md`](../generate-pptx.md) and do not load Quick. The 1:1
+Beautify constraints in this file apply in either runtime.
 
 ---
 
@@ -22,11 +28,11 @@ Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source 
 
 **Hard rule — content is frozen**: every text string from the source is preserved exactly (no add / remove / reword / reorder). Beautification freedom lives only in layout, hierarchy, spacing, and visual rhythm.
 
-**Hard rule — not a patch, not a fill**: this regenerates a native deck through Strategist → Executor → export ([`generate-pptx`](../generate-pptx.md) Steps 4–7). It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](../template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
+**Hard rule — not a patch, not a fill**: this regenerates a native deck through the selected Default or Quick SVG → PPTX runtime. It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](../template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
 
 **Distinct from mirror templates**: `replication_mode: mirror` ([`executor-structured.md`](../../references/executor-structured.md) §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
 
-**When this profile is wrong — re-architecture belongs to the default main pipeline**: this profile preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — do not activate this profile. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count. Convert the deck with [`ppt_to_md`](../../scripts/source_to_md/ppt_to_md.py) and run the default main pipeline, where the Strategist re-architects the outline freely from the extracted content. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → activate this profile; improve → default main pipeline.
+**When this profile is wrong — re-architecture belongs to ordinary Generate**: this profile preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — do not activate this profile. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count. Convert the deck with [`ppt_to_md`](../../scripts/source_to_md/ppt_to_md.py) and use ordinary Quick when Quick was explicit, otherwise the Default main pipeline. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → activate this profile; improve → ordinary Generate in the selected runtime.
 
 ---
 
@@ -52,9 +58,17 @@ Match the canvas to the source so 1:1 pages and paste-back align. Determine the 
 | other | nearest format in [`canvas-formats.md`](../../references/canvas-formats.md); record the source pixel size in the spec |
 
 ```bash
+# Default runtime:
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+
+# Quick runtime instead:
+python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format> --quick-generate
+
+# Both runtimes then import once:
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source.pptx>
 ```
+
+Run exactly one `init` command: the Quick form only when Quick was selected.
 
 ---
 
@@ -132,12 +146,26 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 - [x] `analysis/<stem>.slide_library.json` holds chart + table data and SmartArt semantic structure for regeneration
 - [x] `analysis/source_profile.json` (multi-deck index) summarizes the source facts in its `decks[]` entry
 - [x] `analysis/beautify_inventory.json` ledgers per-slide text / images / data + ignored + needs-confirmation
-- [ ] **Next**: Step 5 — Beautify Plan (recommend & confirm)
+- [ ] **Next**: Step 5 — resolve Beautify decisions in the selected runtime
 ```
 
 ---
 
-## 5. Beautify Plan — Recommend & Confirm
+## 5. Beautify Decisions
+
+### Quick branch
+
+When Quick was selected, do not run the Default confirmation flow below. Apply
+the same inventory interpretation, source-identity judgment, and body-size
+method documented in this section, but make the decisions directly in the
+active context. Explicit user requirements remain authoritative; otherwise use
+the source identity as the default. Resolve `ignored` and `needs_confirmation`
+without creating a confirmation payload, Design Spec, lock, or substitute
+plan. If a flagged complex object cannot be regenerated without losing frozen
+facts, stop as a hard prerequisite instead of simplifying it. Then continue to
+the Quick branch in §6.
+
+### Default branch — Recommend & Confirm
 
 ⛔ **BLOCKING**: the scope is not hard-coded — same spirit as the Strategist confirmation stage. Recommend each item below from what the deck actually contains (the Step 4 inventory), present the plan, and **wait for the user to confirm or adjust** before writing any spec. Use Generate Step 4's selected surface for the full visual confirmation; keep the structural-scope decisions in chat. Values confirmed through either channel are honored identically.
 
@@ -229,7 +257,15 @@ On confirmation, enter [`generate-pptx`](../generate-pptx.md) Step 4 as Strategi
 
 ---
 
-## 6. Executor + Export
+## 6. Author + Export
+
+**Quick**: follow [`quick-generate.md`](./quick-generate.md) §3–4. The
+Beautify inventory is the exact page roster and frozen-content contract; keep
+its source order, hand-author every page, run the lockless Quick final checker,
+and export with `--quick-generate`. Do not run Confirm UI, write a Design Spec
+or lock, run the Default first-page gate, or call `finalize_svg.py`.
+
+**Default**: run the standard pipeline as follows.
 
 Run the standard pipeline ([`generate-pptx`](../generate-pptx.md) Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using the semantic anchors in `spec_lock.md` plus current page/source/template context; valid page-local colors, gradients, effects, and export-safe display faces need not be added to the lock. It regenerates charts / tables as native SVG from the extracted data and re-lays-out the source pictures.
 
@@ -258,7 +294,7 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 
 - [x] Content + data values verbatim (read-back Markdown matches the source)
 - [x] 1:1 page count preserved
-- [x] Source colors + fonts inherited as locked truth
+- [x] Source-derived or explicitly overridden colors + fonts applied consistently
 - [x] Charts / tables regenerated as native SVG in the inherited style
 - [x] Native PPTX exported to `exports/`
 ```
