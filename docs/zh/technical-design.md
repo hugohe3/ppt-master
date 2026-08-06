@@ -52,9 +52,9 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     ├── 若缺少同 stem 的规范 Markdown，再对该归档 PPTX 运行 ppt_to_md.py
     └── sources/ 内容型文件成为内容契约
     ↓
-[模板选择与安装（Step 3，条件触发）] — 仅在显式浏览 / 选择模板、提供精确工作区 root，或接收本次 Create Template handoff 时进入
-    普通自由设计直接打开 Stage 1，不读取模板索引，也不创建模板选择产物
-    触发后可确认自由设计，或选择索引中的 Brand/Style/Layout/Deck library 条目或精确 explicit 工作区 root；已确认工作区会校验/合成到项目本地 templates/images/icons
+[模板候选准备（Step 3）] — 仅内部执行；不打开 UI、不等待、不选择、不读取或安装模板
+    准备四类索引候选与本次提供的精确 root
+    Stage 1 同时确认沟通契约与自由设计/模板使用；随后才安装所选工作区供 Stage 2 读取
     原生 PPTX 模板请求进入 template-fill；可复用 SVG 模板需先通过 create-template 创建
     ↓
 [Strategist] 策略师 - Stage 1 沟通确认 + 最终 Stage 2 完整方案与生产机制确认 → design_spec.md + spec_lock.md
@@ -159,9 +159,8 @@ narration 标记。
 | 原生 PPTX 模板 + 新材料 / 新主题 | Fill Native PPTX（`template-fill-pptx`） | 克隆并填充原生页面；不生成 SVG |
 | 现有 PPTX，页数 / 页序 / 措辞 1:1 保留，只改善排版 | Generate PPTX + `beautify-pptx` profile | 通过 SVG 重新生成；内容和分页锁定 |
 | 已完成 PPTX，保持内容 / 布局稳定，只加讲稿、音频、计时、转场 | Enhance Native PPTX（`native-enhance-pptx`） | 直接 OOXML patch；不重新设计 |
-| 用户想从一个或多个 PPTX/SVG、图片/PDF、文档/网站、品牌资产、直接文字或混合参考材料包构建可复用模板工作区 | Create Template（`create-template`） | 固定入口读取每个适用证据通道，只分派一个 Create Brand、Create Style、Create Layout 或 Create Deck 子工作流，再返回供 Generate Step 3 使用的工作区根目录；结构型子工作流可导出审阅 PPTX |
-| 没有显式模板浏览 / 选择请求、精确工作区 root 或本次 Create Template handoff | Generate PPTX 自由设计 | 跳过 Step 3，直接打开 Stage 1；不读取模板索引，也不创建模板选择产物 |
-| 用户显式要求发现 / 选择模板、提供符合当前合同的精确工作区 root，或继续使用本次 Create Template handoff | Generate PPTX Step 3 | 条件式 Stage-1 前置阶段确认自由设计或精确 Brand/Style/Layout/Deck root，再把所选工作区校验/合成到项目；只有兼容的旧平铺 Brand/Layout/Deck 根目录可解析直接 `design_spec.md` |
+| 用户想从一个或多个 PPTX/SVG、图片/PDF、文档/网站、品牌资产、直接文字或混合参考材料包构建可复用模板工作区 | Create Template（`create-template`） | 固定入口读取每个适用证据通道，只分派一个 Create Brand、Create Style、Create Layout 或 Create Deck 子工作流，再返回作为 Generate Stage 1 候选的工作区根目录；结构型子工作流可导出审阅 PPTX |
+| Default Generate 进入规划；本次运行可能已带精确工作区 root 或 Create Template handoff | Generate PPTX Stage 1 | Step 3 只准备候选；Stage 1 同时确认沟通与自由设计/模板使用；普通请求默认自由设计，明确模板意图或任意 root 默认模板模式，且只有单 root 会预选；随后才安装供 Stage 2 读取 |
 | 用户要求调整对象级动画顺序 / 效果 / 计时 | Generate PPTX + `customize-animations` 阶段 | 通过 `animations.json` 控制可选导出策略 |
 | 用户要求预览、选择、注解或重导出浏览器编辑 | Generate PPTX + `live-preview` 阶段 | 注解只在规定交接点应用 |
 
@@ -336,7 +335,7 @@ CLI 支持 `--move`、`--copy` 和自动默认，但共享同一条固定的所�
 | PowerPoint 手工“转换为形状”不属于兼容性契约 | `svg_final/` 可以作为 SVG 图片插入，但转换后的结构与视觉结果不做保证，也不反向约束 SVG 允许能力 |
 | 直接 OOXML 路由不进入 SVG 流水线 | 保留型工作流直接 patch 原生 PPTX parts |
 | 图片事实来自重算元数据 | `analysis/image_analysis.csv` 从实时 `images/` 目录重算；默认流程由 Strategist 先用源文上下文，只在图片语义或安全放置仍无法确定时查看那一张具体图片；`quick-generate` 由当前 Agent 在备料时采用同样的有界分析，SVG 创作阶段不重新扫描源图像素 |
-| 原生 PPTX 模板不是 Step 3 模板 | Step 3 只消费可复用模板目录 |
+| 原生 PPTX 模板不是 Step 3 候选 | Step 3 只接受精确的可复用模板工作区 root 作为候选输入 |
 
 ---
 
@@ -348,13 +347,13 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 
 ---
 
-## 模板系统与可选路径
+## 模板系统与选择
 
-模板是**可选项，不会被自动推断**。普通自由设计会跳过 Step 3，不读取模板索引，也不创建模板选择产物，直接打开 Strategist Stage 1。只有用户显式要求浏览 / 选择模板、为本次运行提供精确工作区 root，或继续使用本次 Create Template handoff 时，Step 3 才会出现。触发后的 UI 只列出已注册的 Brand/Style/Layout/Deck 条目与显式提供的精确 root；系统不会根据主题相似度替用户选模板。
+模板使用是**可选项，不会被自动推断**。Default Step 3 只准备候选，不打开 UI、不读模板内容。Stage 1 把不受模板影响的沟通推荐与可切换的自由设计/模板选择同屏确认。普通请求默认自由设计；明确模板意图或提供任意 root 默认模板模式。只有单 root 会预选，多 root 只作为候选。
 
-**为什么默认自由设计。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），所以它一直在；但 AI 不主动去抓，是用户去抓。
+**为什么保留自由设计选项。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），最终选择仍由用户完成。
 
-**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。触发后的页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。服务端解析每个 explicit root 的真实 `kind`，来源标签本身不参与优先级。当前工作区均解析 `templates/design_spec.md`；自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。旧平铺 Brand/Layout/Deck 目录只有在满足当前 kind 合同时，才兼容从根目录读取 `design_spec.md`；Layout/Deck 还必须满足当前 structured SVG 合同。Style 不存在旧平铺形态。目录形态从不授权结构迁移；带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
+**精确选择，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，永远不会 fuzzy-match 到目录。默认页面只从四个 `*_index.json` 列出已注册 Brand/Style/Layout/Deck；聊天发现也读取同一组索引并返回精确 root。显式路径仍有效；若它与某个已注册 canonical root 精确相同，可显示为 `library`，未注册 root 仍是 `explicit`。服务端解析每个 explicit root 的真实 `kind`，来源标签本身不参与优先级。当前工作区均解析 `templates/design_spec.md`；自由文字风格说明仍只是 Stage 2 输入，不会启用 Style 工作区。旧平铺 Brand/Layout/Deck 目录只有在满足当前 kind 合同时，才兼容从根目录读取 `design_spec.md`；Layout/Deck 还必须满足当前 structured SVG 合同。Style 不存在旧平铺形态。目录形态从不授权结构迁移；带旧 Master/Layout/placeholder 语义的包必须先替换为新建的模板工作区。
 
 当前 Brand/Style/Layout/Deck 都采用同一工作区路由合同；Brand 与 Style 不含 SVG roster，空的可选目录直接省略：
 
@@ -370,7 +369,12 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 Style 将这一路由形态收窄为仅 `templates/design_spec.md`，不携带素材或
 审阅 payload；项目中既有的脚手架也不属于 Style 输入。
 
-`<template_workspace>` 可以是 `skills/ppt-master/templates/<kind>/<id>/`，也可以是 `projects/<name>/` 等其他精确 root。触发后，Step 3 会把所选输入校验、合成并安装到当前项目的 `templates/`、`images/`、`icons/`，不复制 `exports/`。Stage 1 完成后，模板感知的 Strategist 及后续角色只读该项目本地副本。源工作区可在不同位置间迁移而不改形；全局索引注册决定它是否作为 library 选项出现。
+`<template_workspace>` 可以是 `skills/ppt-master/templates/<kind>/<id>/`，也
+可以是 `projects/<name>/` 等其他精确 root。Step 3 只把它记录为候选输入，
+不读取模板内容；Stage 1 选中后，apply 阶段才把它校验、合成并安装到当前项目
+的 `templates/`、`images/`、`icons/`，且不复制 `exports/`。模板感知的
+Strategist 及后续角色只读该项目本地副本。源工作区可在不同位置间迁移而不
+改形；全局索引注册决定它是否作为 library 选项出现。
 
 对 Create Layout / Create Deck，`standard` 与 `fidelity` 会重新创作 SVG 和新的 Master/Layout/slot 系统；来源拓扑只作为视觉证据，不保留、也不蒸馏。`mirror` 把来源包内实际存在且已验证的页序、Master/Layout 身份与父子关系、placeholder 事实和受支持视觉物化到新工作区，不做语义归纳或缺口补造。只有被保留的来源本身已经品牌中立且应用中立时，Layout mirror 才合法；否则应重新创作 Layout，或把这些事实保留为 Deck。由于结构层不能是 `<g>`，固定结构层的来源 group wrapper 只允许机械展开成直接原子，同时保持归属、paint order 和视觉一致。Create Brand 只提取身份片段，Create Style 只提取可移植方法/方向；两者都不进入结构复制策略，也不生成 SVG roster。
 
@@ -401,7 +405,10 @@ PPT Master 把拥有 deck 状态的 Strategist、Image_Generator 和 Executor �
 
 **为什么是角色专属 reference 而不是一个超大 prompt。** Strategist 跑的是「跟用户协商」模式（开放式、对话式、可以回退），Executor 跑的是「产出严格 XML」模式：不得重选上游方案或漏掉必需属性，但在 Design Spec 留出的范围内仍拥有几何、构图、层级和视觉处理的实现权。把两者塞进同一个 prompt，强迫模型在同一个 turn 里持守相互矛盾的纪律——所有混合模式的 prompt 工程病灶都会出现。按角色拆开，每个角色只加载它需要的、扔掉其他。
 
-**条件触发的 Step 3 模板选择会在 Strategist 确认阶段前完成。** 普通自由设计跳过 Step 3，直接打开 Stage 1。Step 3 触发后，UI 会确认自由设计或精确的 indexed/explicit 工作区，并在 Stage 1 前完成安装/合成。Stage 1 随后只使用当前请求、源材料事实、对话约束和项目初始化状态确认开放式沟通契约与画布；不得读取选择结果、已安装模板内容或模板画布。Strategist 采用一个按依赖排序的两阶段 gate。`delivery_context` 在同一个开放文本字段中区分演讲者主导、读者主导、混合、录制/自动播放，明确主要场景并记录可选的次要用途；混合场景不能只写“混合”而不说明由哪一种主导。其中的文本框仍承载可编辑推荐，且没有任何一项要求非空：确认时按当前文本原样保存，清空后的值保持为空，不会回退到推荐内容。最终 Stage 2 只从该契约计算一次，同时确认完整 PPT 方案与生产机制：阅读模式、叙事 mode、页数、成套视觉系统、图片来源、生成图渲染、条件式 AI 图片获取路径、公式策略、生成模式、Design Spec 审核开关，以及 Agent 是否主动生成讲稿、自定义动画和旁白音频。仅在 Stage 1 确认后，存在已安装模板时，Strategist 才读取项目本地工作区和当前内容，推导**如何应用**并以可编辑的 `template_application` 自然语言展示；Stage 2 不会重新选模板，内部复用/遵循模式保持隐藏。阅读模式决定信息由页面、视觉、讲者和备注如何共同承担，其选项卡不展示 px 数值。浏览器可以在本地执行确定性的「阅读模式 → 正文基准 → 未锁定角色字号」联动；手动编辑字号即锁定可见值，不会重新计算 Stage 2。三个主动执行值是用户未明确要求时的兜底策略，不是能力禁用开关；优先级固定为「用户最新明确指令 → 最终 Stage 2 → `true / false / false` 默认值」。Strategist 仍可按内容给出非绑定的 Motion suggestion，建议本身不会启动自定义动画执行。生成图直接继承已选 PPT 色彩锚点，不再单设图片调色选择。最终状态有两个等价载体：默认 UI 路径在最终等待返回后只读取一次 `confirm_ui/result.json`；显式 chat-only 或委托路径保留等价的最终确认摘要，并可不产生 `result.json`。两条路径都会先解析并把生产流程的最终有效结果固化到同一份 `design_spec.md`，再完成 Gate 1 fidelity。未开启 refine 时立即进入 lock 编写；`refine_spec: true` 时，流程会在 `spec_lock.md` 之前暂停，用户可以通过正常聊天任意修改这同一份 Design Spec、迭代任意轮次，明确批准后才释放 Gate 2 并编写 lock。流程不会维护第二份 Design Spec 或并行 lock。正常的 lock 编写与下游执行不再回读确认通道。必需人工素材未就绪仍可能引入条件式阻塞点，因此这里不是对所有 runtime gate 的排他声明。项目校验要求 `spec_lock.md ## communication` 下存在紧凑的 `audience` / `objective` / `core_message` 锚点，并要求 §IX 每个 Slide block 都有 `Audience move`。
+**模板选择与沟通契约在 Stage 1 同时确认。** Step 3 只在内部准备候选；
+Stage-1 沟通推荐的编写不得读取这些候选或任何模板内容。UI 在同一次提交中
+确认沟通契约与可切换的自由设计/使用模板选择；只有确认后，Agent 才安装或
+合成非自由设计选择。Strategist 采用一个按依赖排序的两阶段 gate。`delivery_context` 在同一个开放文本字段中区分演讲者主导、读者主导、混合、录制/自动播放，明确主要场景并记录可选的次要用途；混合场景不能只写“混合”而不说明由哪一种主导。其中的文本框仍承载可编辑推荐，且没有任何一项要求非空：确认时按当前文本原样保存，清空后的值保持为空，不会回退到推荐内容。最终 Stage 2 只从该契约计算一次，同时确认完整 PPT 方案与生产机制：阅读模式、叙事 mode、页数、成套视觉系统、图片来源、生成图渲染、条件式 AI 图片获取路径、公式策略、生成模式、Design Spec 审核开关，以及 Agent 是否主动生成讲稿、自定义动画和旁白音频。仅在 Stage 1 确认后，存在已安装模板时，Strategist 才读取项目本地工作区和当前内容，推导**如何应用**并以可编辑的 `template_application` 自然语言展示；Stage 2 不会重新选模板，内部复用/遵循模式保持隐藏。阅读模式决定信息由页面、视觉、讲者和备注如何共同承担，其选项卡不展示 px 数值。浏览器可以在本地执行确定性的「阅读模式 → 正文基准 → 未锁定角色字号」联动；手动编辑字号即锁定可见值，不会重新计算 Stage 2。三个主动执行值是用户未明确要求时的兜底策略，不是能力禁用开关；优先级固定为「用户最新明确指令 → 最终 Stage 2 → `true / false / false` 默认值」。Strategist 仍可按内容给出非绑定的 Motion suggestion，建议本身不会启动自定义动画执行。生成图直接继承已选 PPT 色彩锚点，不再单设图片调色选择。最终状态有两个等价载体：默认 UI 路径在最终等待返回后只读取一次 `confirm_ui/result.json`；显式 chat-only 或委托路径保留等价的最终确认摘要，并可不产生 `result.json`。两条路径都会先解析并把生产流程的最终有效结果固化到同一份 `design_spec.md`，再完成 Gate 1 fidelity。未开启 refine 时立即进入 lock 编写；`refine_spec: true` 时，流程会在 `spec_lock.md` 之前暂停，用户可以通过正常聊天任意修改这同一份 Design Spec、迭代任意轮次，明确批准后才释放 Gate 2 并编写 lock。流程不会维护第二份 Design Spec 或并行 lock。正常的 lock 编写与下游执行不再回读确认通道。必需人工素材未就绪仍可能引入条件式阻塞点，因此这里不是对所有 runtime gate 的排他声明。项目校验要求 `spec_lock.md ## communication` 下存在紧凑的 `audience` / `objective` / `core_message` 锚点，并要求 §IX 每个 Slide block 都有 `Audience move`。
 
 最终 Stage 2 确认的三个主动执行值始终保留为相互独立的原始证据。
 尤其是，启用旁白可以在 Design Spec 中启用 Speaker Notes 的最终有效结果，
@@ -709,7 +716,7 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 
 | 不要合并或新增 | 原因 |
 |---|---|
-| 不要把模板名或风格短语模糊匹配到库路径 | Step 3 必须确定性触发；选错模板比自由设计更难恢复 |
+| 不要把模板名或风格短语模糊匹配到库路径 | 模板选择必须是确定性的；套错工作区比自由设计更难恢复 |
 | 不要把原生 PPTX 模板当作 Step 3 模板 | 作为模板 / 页面壳时应走原生克隆与填充；作为来源、1:1 beautify 或可重构材料时分别走对应 Generate 边界，而不是把 PPTX 直接交给 Step 3 |
 | 不要把 `template-fill-pptx`、`beautify-pptx`、`native-enhance-pptx` 合成一个“PPTX 优化”路线 | 三者的保留契约不同：原生填充、1:1 重排、直接增强是三种操作 |
 | 不要用脚本批量生成 Executor SVG 页面 | 跨页设计判断依赖主代理逐页连续创作 |
@@ -733,7 +740,7 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 |---|---|---|
 | 生成 profile | `beautify-pptx`、`quick-generate` | Generate PPTX；分别负责逐字措辞 / 页数 / 页序不变量与显式 SVG→PPTX 直接短路 |
 | 模板子工作流 | `create-brand`、`create-style`、`create-layout`、`create-deck` | Create Template 在“仅身份 / 无 roster 的方向与方法 / 品牌中立且应用中立的结构 / 应用语境与身份结构一体化”中只分派一个 |
-| 模板输入阶段 | `apply-template-workspace` | 条件式 Generate PPTX Step 3；仅在显式浏览 / 选择请求、精确 root 或本次 Create Template handoff 确认至少一个工作区后运行 |
+| 模板输入阶段 | `apply-template-workspace` | Default Stage 1 确认至少一个工作区后、Stage 2 前运行；自由设计跳过安装，Quick 可直接提供精确 root |
 | 生成阶段 | `topic-research`、`resume-execute`、`refine-spec`、`verify-charts`、`visual-review`、`live-preview`、`customize-animations` | Generate PPTX 中各自定义的 intake、planning、editing、quality 或 post-processing 节点 |
 | 共享阶段 | `generate-audio` | Generate PPTX 后处理，或 Enhance Native PPTX 的旁白集成 |
 | 治理文档 | `failure-recovery` | 四条顶层路线的全局停止 / 继续规则；Generate PPTX 的具体故障矩阵与续跑入口 |

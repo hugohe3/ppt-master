@@ -59,9 +59,9 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── If canonical same-stem Markdown is absent, run ppt_to_md.py against that archived PPTX
     └── Content-type files in sources/ become the content contract
     ↓
-[Template Selection & Installation (Step 3, conditional)] — only for an explicit browse/selection request, an exact workspace root, or the current Create Template handoff
-    Ordinary free-design runs skip this phase and open Stage 1 directly without reading template indexes
-    Triggered runs may confirm free design or choose indexed Brand/Style/Layout/Deck entries or exact explicit workspace roots; confirmed workspaces are validated/fused into project-local templates/images/icons
+[Template Candidate Preparation (Step 3)] — internal only; no UI, wait, selection, template read, or installation
+    Prepare indexed Brand/Style/Layout/Deck candidates and supplied exact roots
+    Stage 1 confirms communication plus free design/template use together; selected workspaces are then validated/fused before Stage 2
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - Stage 1 communication confirmation + final Stage 2 solution/production confirmation → design_spec.md + spec_lock.md
@@ -168,9 +168,8 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | regenerate through SVG; content and pagination are locked |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
-| User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root for Generate Step 3; structured children may export a review PPTX |
-| No explicit template browse/selection request, exact workspace root, or current Create Template handoff | Generate PPTX with free design | skip Step 3 and open Stage 1 directly without reading template indexes or creating template-selection artifacts |
-| User explicitly requests template discovery/selection, supplies an exact current-contract workspace root, or continues from the current Create Template handoff | Generate PPTX Step 3 | the conditional pre-Stage-1 phase confirms free design or exact Brand/Style/Layout/Deck roots, then validates/fuses selected workspaces into the project; only compatible legacy-flat Brand/Layout/Deck roots may resolve direct `design_spec.md` |
+| User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root as a Generate Stage-1 candidate; structured children may export a review PPTX |
+| Default Generate reaches planning; an exact current-contract workspace root or current Create Template handoff may already be present | Generate PPTX Stage 1 | Step 3 prepares candidates without interaction; Stage 1 confirms communication plus free design/template use together; ordinary requests default to free design, explicit template intent or any root defaults to template mode, and only one root is preselected; selected workspaces are validated/fused before Stage 2 |
 | User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
@@ -353,7 +352,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 | PowerPoint Convert to Shape is outside the compatibility contract | `svg_final/` may be inserted as an SVG picture, but the converted structure and visual result are not guaranteed and do not constrain the supported SVG feature set |
 | Direct OOXML routes do not enter the SVG pipeline | preservation workflows patch native PPTX parts directly |
 | Image facts come from regenerated metadata | `analysis/image_analysis.csv` is re-derived from the live `images/` folder; in the default pipeline Strategist uses source context first and inspects only a specifically ambiguous asset when semantics or safe placement cannot otherwise be resolved, while in `quick-generate` the current agent applies the same bounded analysis while preparing resources; SVG authoring does not rescan source pixels |
-| Raw PPTX templates are not Step 3 templates | Step 3 consumes reusable template directories only |
+| Raw PPTX templates are not Step 3 candidates | Step 3 accepts only exact reusable-template workspace roots as candidate input |
 
 ---
 
@@ -365,21 +364,21 @@ The architectural choice worth flagging: **viewBox is in pixels, not absolute un
 
 ---
 
-## Template System & Optional Path
+## Template System & Selection
 
-Templates are **opt-in, not inferred**. An ordinary free-design run skips Step 3,
-does not read template indexes or create template-selection artifacts, and opens
-Strategist Stage 1 directly. Step 3 appears only for an explicit template browse
-or selection request, an exact workspace root supplied for the run, or the
-current Create Template handoff. The triggered UI lists registered Brand / Style /
-Layout / Deck entries and exact supplied roots; the system never chooses a
-template from topic similarity.
+Template use is **opt-in, not inferred**. Default Step 3 only prepares
+candidates; it never opens UI or reads template content. Stage 1 displays its
+template-independent communication recommendation together with a switchable
+free-design/template choice. Ordinary requests default to free design; explicit
+template intent or any supplied root defaults to template mode. Exactly one root
+may be preselected, while multiple roots remain unselected candidates. The
+system never chooses a template from topic similarity.
 
-**Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
+**Why free design remains an explicit option.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly typed scenarios like academic defense or government reports), while the selector keeps the final choice with the user.
 
 **Exact selection, not semantic matching.** A bare name like
 `presentation_core`, a brand mention, or a style phrase such as "McKinsey
-style" is never fuzzy-matched to a directory. The triggered page lists registered
+style" is never fuzzy-matched to a directory. The default page lists registered
 Brand/Style/Layout/Deck entries only from their four `*_index.json` files;
 chat discovery reads the same indexes and returns exact roots. Explicit paths
 remain valid, and an exact path matching a registered canonical root may be
@@ -409,11 +408,12 @@ not carry asset or review payloads. Existing project scaffolding is not Style
 input.
 
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or
-another exact workspace root such as `projects/<name>/`. When triggered, Step 3 validates,
-fuses, and installs selected inputs into the current project's `templates/`,
-`images/`, and `icons/`; it never copies `exports/`. Strategist and later roles
-read only that project-local copy when template-aware planning begins after
-Stage 1. The source workspace remains portable between
+another exact workspace root such as `projects/<name>/`. Step 3 records it as
+candidate input without reading template content. Once Stage 1 selects it, the
+apply stage validates, fuses, and installs it into the current project's
+`templates/`, `images/`, and `icons/`; it never copies `exports/`. Strategist
+and later roles read only that project-local copy when template-aware planning
+begins after Stage 1. The source workspace remains portable between
 locations without reshaping; global index registration controls whether it
 appears as a library choice.
 
@@ -452,7 +452,12 @@ PPT Master keeps deck-state roles—Strategist, Image_Generator, and Executor—
 
 **Why role-specialized references, not one mega prompt.** Strategist runs in "negotiate with user" mode (open-ended, conversational, willing to back up); Executor runs in "produce strict XML" mode: it may not reselect upstream decisions or omit required attributes, but it still owns geometry, composition, hierarchy, and visual treatment inside implementation dimensions the Design Spec leaves open. Mixing both into one prompt forces the model to hold incompatible discipline in the same turn — every prompt-engineering pathology of mode-mixing shows up. Splitting into per-role files lets each role load only what it needs and discard the rest.
 
-**A triggered Step-3 template choice closes before the Strategist confirmation stage.** Ordinary free-design runs skip Step 3 and open Stage 1 directly. When Step 3 is triggered, the UI confirms free design or exact indexed/explicit workspaces and completes installation/fusion before Stage 1. Stage 1 then confirms an open communication contract and canvas using only the current request, source facts, conversation constraints, and project initialization; it must not read the selection, installed template content, or template canvas. Strategist uses one dependency-ordered two-stage gate. Its `delivery_context` recommendation distinguishes presenter-led, reader-led, hybrid, and recorded/self-running use in one prose field, names the primary context, and records any secondary use; hybrid never stands alone without its lead mode. The prose boxes remain editable and none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Final Stage 2 is authored once from that contract and confirms both the complete deck solution and its production mechanics: reading mode, narrative mode, page count, coordinated visual system, image sources, generated-image rendering, conditional AI acquisition, formula policy, generation mode, the Design Spec review toggle, and whether the agent should proactively generate speaker notes, custom animations, or narration audio. Only after Stage 1 is confirmed, when a template is installed, does Strategist read the project-local workspace and current content, derive **how to apply it**, and expose that plan as editable `template_application` prose; Stage 2 never reselects a template, and the internal reuse/adherence modes stay hidden. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. The three proactive values are fallback policies, not capability bans: the latest explicit user instruction wins, then final Stage 2, then the fixed defaults `true / false / false`. Strategist still records non-binding Motion suggestions when useful; a suggestion alone does not activate custom-animation execution. Generated images inherit the selected deck color anchors directly; there is no independent image-palette choice. Final state has two equivalent carriers: the default UI path reads `confirm_ui/result.json` exactly once after the final wait, while an explicit chat-only or delegated path retains an equivalent final confirmation summary and may produce no `result.json`. Both paths first resolve and persist every effective production outcome into one `design_spec.md` and complete Gate 1 fidelity. With refinement off, lock authoring proceeds immediately. With `refine_spec: true`, the pipeline stops before `spec_lock.md`; the user may revise any part of that same Design Spec through normal chat for any number of rounds, and explicit approval then releases Gate 2 lock authoring. No second Design Spec or parallel lock is maintained. Normal lock authoring and downstream execution do not reread either confirmation channel. Required manual assets may still introduce their own conditional blocking points, so this is not an exclusive claim over every runtime gate. Project validation requires the compact `audience` / `objective` / `core_message` anchor set under `spec_lock.md ## communication` plus an `Audience move` in every §IX Slide block.
+**Template choice and communication share Stage 1.** Step 3 prepares candidates
+without interaction, while the Stage-1 communication recommendation is authored
+without reading those candidates or any template content. The UI confirms that
+communication contract and the switchable free-design/template choice together;
+only afterward does the agent install/fuse a non-free selection. Strategist uses
+one dependency-ordered two-stage gate. Its `delivery_context` recommendation distinguishes presenter-led, reader-led, hybrid, and recorded/self-running use in one prose field, names the primary context, and records any secondary use; hybrid never stands alone without its lead mode. The prose boxes remain editable and none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Final Stage 2 is authored once from that contract and confirms both the complete deck solution and its production mechanics: reading mode, narrative mode, page count, coordinated visual system, image sources, generated-image rendering, conditional AI acquisition, formula policy, generation mode, the Design Spec review toggle, and whether the agent should proactively generate speaker notes, custom animations, or narration audio. Only after Stage 1 is confirmed, when a template is installed, does Strategist read the project-local workspace and current content, derive **how to apply it**, and expose that plan as editable `template_application` prose; Stage 2 never reselects a template, and the internal reuse/adherence modes stay hidden. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. The three proactive values are fallback policies, not capability bans: the latest explicit user instruction wins, then final Stage 2, then the fixed defaults `true / false / false`. Strategist still records non-binding Motion suggestions when useful; a suggestion alone does not activate custom-animation execution. Generated images inherit the selected deck color anchors directly; there is no independent image-palette choice. Final state has two equivalent carriers: the default UI path reads `confirm_ui/result.json` exactly once after the final wait, while an explicit chat-only or delegated path retains an equivalent final confirmation summary and may produce no `result.json`. Both paths first resolve and persist every effective production outcome into one `design_spec.md` and complete Gate 1 fidelity. With refinement off, lock authoring proceeds immediately. With `refine_spec: true`, the pipeline stops before `spec_lock.md`; the user may revise any part of that same Design Spec through normal chat for any number of rounds, and explicit approval then releases Gate 2 lock authoring. No second Design Spec or parallel lock is maintained. Normal lock authoring and downstream execution do not reread either confirmation channel. Required manual assets may still introduce their own conditional blocking points, so this is not an exclusive claim over every runtime gate. Project validation requires the compact `audience` / `objective` / `core_message` anchor set under `spec_lock.md ## communication` plus an `Audience move` in every §IX Slide block.
 
 The three proactive values confirmed in final Stage 2 remain independent raw
 evidence. In particular, enabling narration may enable the effective Speaker
@@ -784,7 +789,7 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 
 | Do not collapse or add | Why |
 |---|---|
-| Do not fuzzy-match template names or style phrases to library paths | Step 3 must be deterministic; wrong template selection is harder to recover from than free design |
+| Do not fuzzy-match template names or style phrases to library paths | Template selection must be deterministic; applying the wrong workspace is harder to recover from than free design |
 | Do not treat a raw PPTX template as a Step 3 template | when used as a template/page shell, it belongs to native cloning/filling; source use, 1:1 beautify, and restructuring instead follow their Generate boundaries rather than passing a PPTX directly to Step 3 |
 | Do not merge `template-fill-pptx`, `beautify-pptx`, and `native-enhance-pptx` into one "PPTX optimization" route | their preservation contracts differ: native fill, 1:1 redesign, and direct enhancement are separate operations |
 | Do not script-generate batches of Executor SVG pages | cross-page design judgment depends on sequential main-agent authoring |
@@ -808,7 +813,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 |---|---|---|
 | Generation profiles | `beautify-pptx`, `quick-generate` | Generate PPTX with either wording/page invariants or the explicit direct SVG-to-PPTX short circuit |
 | Template child workflows | `create-brand`, `create-style`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, roster-free direction/method, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
-| Template-input stage | `apply-template-workspace` | Conditional Generate PPTX Step 3; runs only after an explicit browse/selection request, exact root, or current Create Template handoff confirms at least one workspace |
+| Template-input stage | `apply-template-workspace` | Runs after Default Stage 1 confirms at least one workspace and before Stage 2; free design skips installation, while Quick may provide direct exact-root input |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |
 | Shared stage | `generate-audio` | Generate PPTX post-processing or Enhance Native PPTX narration integration |
 | Governance | `failure-recovery` | Global stop/continue policy for all four routes; concrete recovery matrix and resume pointers for Generate PPTX |

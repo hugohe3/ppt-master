@@ -1,7 +1,7 @@
-/* PPT Master - conditional template selection and Strategist confirmation UI
- * Explicit template requests use Generate Step 3 before Stage 1; ordinary free
- * design starts at Stage 1. Stage 2 combines the coherent deck solution and
- * production mechanics, then writes the final result.
+/* PPT Master - Strategist confirmation UI
+ * Stage 1 confirms the communication contract and the free-design/template
+ * choice together. Stage 2 combines the coherent deck solution and production
+ * mechanics, then writes the final result.
  * Finite fields use /static/catalogs.json; coordinated design directions seed
  * color, typography, icons, generated-image rendering, and conditional
  * template-application prose. Final confirm saves result.json.
@@ -14,30 +14,25 @@
         en: {
             page_title: "PPT Master - Confirm Design",
             topbar_hint: "Answer the open questions, or pick and customize recommendations, then continue.",
-            template_stage_title: "Choose a template",
-            template_stage_hint: "Choose free design, or combine one registered template per type plus one specified path. This selection is separate from Stage 1.",
             stage_anchors: "Stage 1 · Communication contract",
             stage_final_plan: "Stage 2 · Final plan & production",
             loading: "Loading…",
             load_error: "Could not load the current recommendation stage. The AI must write it before launch.",
             btn_confirm: "Confirm",
-            btn_confirm_template: "Confirm template & continue →",
             btn_confirm_contract: "Confirm contract & continue →",
             btn_confirm_final_plan: "Confirm final plan →",
             deriving: "Generating the downstream options from your choices…",
-            template_applying: "Applying the template selection and preparing Stage 1…",
-            template_load_error: "Could not load the available templates.",
-            template_submit_error: "Could not confirm the template selection.",
-            template_selection_required: "Choose free design or at least one template.",
-            template_free_selected: "Free design selected",
-            template_count_selected: "{count} template(s) selected",
+            template_selection_required: "Choose free design or use templates. When using templates, select at least one workspace.",
             connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
             lang_toggle_title: "Switch language",
-            sec_template_free: "Free design",
+            sec_template_choice: "Design basis",
+            template_choice_hint: "Choose how this deck should establish its design system.",
             template_free_title: "Design from the current content",
             template_free_desc: "Use no reusable template workspace. The Strategist will derive the visual system from this project.",
+            template_use_title: "Use templates",
+            template_use_desc: "Select one or more reusable Brand, Style, Layout, Deck, or specified workspaces.",
             sec_template_library: "Template combination",
             template_library_hint: "Choose at most one registered template for each type. Brand, Style, Layout, and Deck can be combined.",
             sec_template_explicit: "Specified templates",
@@ -197,30 +192,25 @@
         ja: {
             page_title: "PPT Master - デザイン確認",
             topbar_hint: "自由記述の質問に答えるか、提案を選択・調整して次へ進んでください。",
-            template_stage_title: "テンプレートを選択",
-            template_stage_hint: "自由デザイン、または種類ごとに登録済み1件と指定パス1件までを組み合わせます。この選択はステージ1とは独立しています。",
             stage_anchors: "ステージ 1 · コミュニケーション契約",
             stage_final_plan: "ステージ 2 · 最終プランと制作",
             loading: "読み込み中…",
             load_error: "現在の推奨ステージを読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
-            btn_confirm_template: "テンプレートを確定して次へ →",
             btn_confirm_contract: "契約内容を確定して次へ →",
             btn_confirm_final_plan: "最終プランを確定 →",
             deriving: "選択内容をもとに後続の選択肢を生成しています…",
-            template_applying: "テンプレートの選択を適用し、ステージ1を準備しています…",
-            template_load_error: "利用可能なテンプレートを読み込めませんでした。",
-            template_submit_error: "テンプレートの選択を確定できませんでした。",
-            template_selection_required: "自由デザイン、または1つ以上のテンプレートを選択してください。",
-            template_free_selected: "自由デザインを選択中",
-            template_count_selected: "{count} 件のテンプレートを選択中",
+            template_selection_required: "自由デザインまたはテンプレート利用を選んでください。テンプレート利用時は、1つ以上のワークスペースを選択してください。",
             connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
             confirmed_title: "✓ 確定しました",
             confirmed_hint: "選択内容を保存しました。このページを閉じてチャットに戻ってください。",
             lang_toggle_title: "言語を切り替え",
-            sec_template_free: "自由デザイン",
+            sec_template_choice: "デザインの基準",
+            template_choice_hint: "この資料のデザインシステムをどう決めるか選択します。",
             template_free_title: "現在の内容からデザインする",
             template_free_desc: "再利用テンプレートを使わず、Strategist がこのプロジェクトからビジュアルシステムを組み立てます。",
+            template_use_title: "テンプレートを使用",
+            template_use_desc: "Brand、Style、Layout、Deck、または指定ワークスペースから1つ以上選択します。",
             sec_template_library: "テンプレートの組み合わせ",
             template_library_hint: "登録済みテンプレートは種類ごとに1件まで選択でき、Brand、Style、Layout、Deck を組み合わせられます。",
             sec_template_explicit: "指定テンプレート",
@@ -380,30 +370,25 @@
         zh: {
             page_title: "确认设计方案",
             topbar_hint: "回答开放问题，或选择并调整推荐项，然后继续。",
-            template_stage_title: "选择模板",
-            template_stage_hint: "选择自由设计，或组合每类一个已注册模板与一个指定地址。这个选择独立于 Stage 1。",
             stage_anchors: "第一阶段 · 沟通契约",
             stage_final_plan: "第二阶段 · 最终方案与制作",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
-            btn_confirm_template: "确认模板并继续 →",
             btn_confirm_contract: "确认沟通契约并继续 →",
             btn_confirm_final_plan: "确认最终方案 →",
             deriving: "正在根据你的选择生成下游选项…",
-            template_applying: "正在应用模板选择并准备 Stage 1…",
-            template_load_error: "无法加载可用模板。",
-            template_submit_error: "无法确认模板选择。",
-            template_selection_required: "请选择自由设计或至少一个模板。",
-            template_free_selected: "已选择自由设计",
-            template_count_selected: "已选择 {count} 个模板",
+            template_selection_required: "请选择自由设计或使用模板；选择使用模板时，至少选择一个工作区。",
             connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
             lang_toggle_title: "切换语言",
-            sec_template_free: "自由设计",
+            sec_template_choice: "设计基础",
+            template_choice_hint: "选择这份演示文稿如何建立设计系统。",
             template_free_title: "根据当前内容从零设计",
             template_free_desc: "不使用可复用模板工作区，由 Strategist 根据当前项目推导视觉系统。",
+            template_use_title: "使用模板",
+            template_use_desc: "选择一个或多个 Brand、Style、Layout、Deck 或指定工作区。",
             sec_template_library: "模板组合",
             template_library_hint: "每种已注册模板最多选择一个；Brand、Style、Layout、Deck 可以组合使用。",
             sec_template_explicit: "指定模板",
@@ -693,9 +678,7 @@
     var TEMPLATE_CANDIDATES = [];
     var TEMPLATE_SELECTED_KEYS = [];
     var TEMPLATE_SELECTIONS = { brand: "", style: "", layout: "", deck: "", explicit: "" };
-    var TEMPLATE_MODE = "free_design";
-    var TEMPLATE_PHASE = false;
-    var TEMPLATE_SUBMITTING = false;
+    var TEMPLATE_MODE = "";
     var REC_ALIASES = {
         icons: {
             line: "tabler-outline",
@@ -847,7 +830,7 @@
         note.textContent = text;
     }
 
-    // ---- Step 3 template selection ---------------------------------------
+    // ---- Stage 1 template selection --------------------------------------
     function normalizeTemplateCandidates(raw, source, kind) {
         if (!Array.isArray(raw)) return [];
         return raw.filter(function (candidate) {
@@ -864,8 +847,13 @@
     function initTemplateOptions(data) {
         var library = data && data.library && typeof data.library === "object"
             ? data.library : {};
+        var defaultMode = data && data.default_mode;
+        if (defaultMode !== "free_design" && defaultMode !== "templates") {
+            throw new Error("template_options.default_mode must be free_design or templates");
+        }
         var normalized = {
             lang: data && data.lang,
+            default_mode: defaultMode,
             library: {},
             explicit: [],
             preselected_keys: Array.isArray(data && data.preselected_keys)
@@ -901,6 +889,7 @@
             TEMPLATE_SELECTIONS[slot] = key;
         });
         syncTemplateSelectionState();
+        TEMPLATE_MODE = normalized.default_mode;
         TEMPLATE_OPTIONS = normalized;
     }
 
@@ -931,7 +920,6 @@
         });
         TEMPLATE_SELECTED_KEYS.push(TEMPLATE_SELECTIONS.explicit);
         TEMPLATE_SELECTED_KEYS = TEMPLATE_SELECTED_KEYS.filter(Boolean);
-        TEMPLATE_MODE = TEMPLATE_SELECTED_KEYS.length ? "templates" : "free_design";
     }
 
     function templateCandidateTitle(candidate) {
@@ -949,12 +937,19 @@
     function chooseFreeDesign() {
         TEMPLATE_SELECTIONS = emptyTemplateSelections();
         syncTemplateSelectionState();
+        TEMPLATE_MODE = "free_design";
+        updateTemplateSelectionControls();
+    }
+
+    function chooseTemplateMode() {
+        TEMPLATE_MODE = "templates";
         updateTemplateSelectionControls();
     }
 
     function chooseTemplateForSlot(slot, key) {
         TEMPLATE_SELECTIONS[slot] = String(key || "");
         syncTemplateSelectionState();
+        TEMPLATE_MODE = "templates";
         updateTemplateSelectionControls();
     }
 
@@ -1010,25 +1005,40 @@
         return field;
     }
 
-    function renderTemplateFreeDesign(host) {
-        var sec = section("F", "sec_template_free");
-        var selected = TEMPLATE_MODE === "free_design";
-        var choice = el("button", "template-free-choice" + (selected ? " selected" : ""));
-        choice.id = "template-free-choice";
+    function renderTemplateModeChoice(id, mode, titleKey, descKey, onSelect) {
+        var selected = TEMPLATE_MODE === mode;
+        var choice = el("button", "template-mode-choice" + (selected ? " selected" : ""));
+        choice.id = id;
         choice.type = "button";
         choice.setAttribute("aria-pressed", selected ? "true" : "false");
         choice.appendChild(el("span", "template-choice-radio"));
-        var copy = el("span", "template-free-copy");
-        copy.appendChild(el("span", "template-free-title", t("template_free_title")));
-        copy.appendChild(el("span", "template-free-desc", t("template_free_desc")));
+        var copy = el("span", "template-choice-copy");
+        copy.appendChild(el("span", "template-choice-title", t(titleKey)));
+        copy.appendChild(el("span", "template-choice-desc", t(descKey)));
         choice.appendChild(copy);
-        choice.addEventListener("click", chooseFreeDesign);
-        sec.appendChild(choice);
-        host.appendChild(sec);
+        choice.addEventListener("click", onSelect);
+        return choice;
     }
 
-    function renderTemplateSelectors(host) {
-        var sec = section("L", "sec_template_library", t("template_library_hint"));
+    function renderTemplateSelection(host) {
+        if (!TEMPLATE_OPTIONS) return;
+        var sec = section("T", "sec_template_choice", t("template_choice_hint"));
+        var choices = el("div", "template-mode-choices");
+        choices.appendChild(renderTemplateModeChoice(
+            "template-free-choice", "free_design", "template_free_title",
+            "template_free_desc", chooseFreeDesign
+        ));
+        var useChoice = renderTemplateModeChoice(
+            "template-use-choice", "templates", "template_use_title",
+            "template_use_desc", chooseTemplateMode
+        );
+        useChoice.setAttribute("aria-controls", "template-selector-panel");
+        choices.appendChild(useChoice);
+        sec.appendChild(choices);
+
+        var panel = el("div", "template-selector-panel");
+        panel.id = "template-selector-panel";
+        panel.appendChild(el("div", "template-selector-hint", t("template_library_hint")));
         var grid = el("div", "template-select-grid");
         TEMPLATE_KINDS.forEach(function (kind) {
             var candidates = TEMPLATE_OPTIONS.library[kind] || [];
@@ -1039,8 +1049,10 @@
             t("template_source_explicit"),
             TEMPLATE_OPTIONS.explicit || []
         ));
-        sec.appendChild(grid);
+        panel.appendChild(grid);
+        sec.appendChild(panel);
         host.appendChild(sec);
+        updateTemplateSelectionControls();
     }
 
     function updateTemplateExplicitPath() {
@@ -1056,49 +1068,27 @@
 
     function updateTemplateSelectionControls() {
         var freeChoice = document.getElementById("template-free-choice");
+        var useChoice = document.getElementById("template-use-choice");
+        var selectorPanel = document.getElementById("template-selector-panel");
         var freeSelected = TEMPLATE_MODE === "free_design";
+        var templatesSelected = TEMPLATE_MODE === "templates";
         if (freeChoice) {
             freeChoice.classList.toggle("selected", freeSelected);
             freeChoice.setAttribute("aria-pressed", freeSelected ? "true" : "false");
         }
+        if (useChoice) {
+            useChoice.classList.toggle("selected", templatesSelected);
+            useChoice.setAttribute("aria-pressed", templatesSelected ? "true" : "false");
+            useChoice.setAttribute("aria-expanded", templatesSelected ? "true" : "false");
+        }
+        if (selectorPanel) selectorPanel.hidden = !templatesSelected;
         TEMPLATE_KINDS.concat(["explicit"]).forEach(function (slot) {
             var select = document.getElementById("template-select-" + slot);
             if (select) select.value = TEMPLATE_SELECTIONS[slot] || "";
         });
         updateTemplateExplicitPath();
-        updateTemplateSelectionStatus();
-    }
-
-    function updateTemplateSelectionStatus() {
         var status = document.getElementById("confirm-status");
-        if (!status) return;
-        status.textContent = TEMPLATE_MODE === "free_design"
-            ? t("template_free_selected")
-            : t("template_count_selected").replace("{count}", String(TEMPLATE_SELECTED_KEYS.length));
-    }
-
-    function renderTemplatePhase() {
-        if (!TEMPLATE_OPTIONS) return;
-        TEMPLATE_PHASE = true;
-        var heading = document.querySelector("#topbar .topbar-titles h1");
-        if (heading) heading.textContent = t("template_stage_title");
-        var hint = document.getElementById("topbar-hint");
-        if (hint) hint.textContent = t("template_stage_hint");
-        var previewHost = document.getElementById("topbar-preview");
-        if (previewHost) previewHost.innerHTML = "";
-        var host = document.getElementById("sections");
-        host.innerHTML = "";
-        _secCounter = 0;
-        renderTemplateFreeDesign(host);
-        renderTemplateSelectors(host);
-        document.getElementById("error").style.display = "none";
-        document.getElementById("loading").style.display = "none";
-        host.style.display = "block";
-        document.getElementById("actionbar").style.display = "flex";
-        var btn = document.getElementById("btn-confirm");
-        btn.disabled = false;
-        btn.textContent = t("btn_confirm_template");
-        updateTemplateSelectionControls();
+        if (status) status.textContent = "";
     }
 
     function normalizeRecId(field, value) {
@@ -3277,11 +3267,13 @@
         var previewHost = document.getElementById("topbar-preview");
         if (previewHost) previewHost.innerHTML = "";
         if (stage === 1) {
-            // Scene and communication intent come first; no design tool is
-            // selected before the contract exists.
+            // Stage 1 closes the communication contract and its design basis in
+            // one submission. Detailed template controls stay hidden until the
+            // user explicitly chooses template-backed design.
             renderCommunication(host);
             renderDelivery(host);
             renderCanvas(host);
+            renderTemplateSelection(host);
         } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
             if (previewHost) renderImageStrategyPreview(previewHost);
@@ -3467,74 +3459,6 @@
         ov.style.display = "flex";
     }
 
-    function showTemplateApplying() {
-        TEMPLATE_SUBMITTING = true;
-        document.getElementById("sections").style.display = "none";
-        document.getElementById("actionbar").style.display = "none";
-        var loading = document.getElementById("loading");
-        loading.textContent = t("template_applying");
-        loading.style.display = "block";
-    }
-
-    function pollForTemplateStage1() {
-        fetchJson("/api/session", "session").then(function (session) {
-            var readyStage = Number(session && session.recommendation_stage_number || 0);
-            if (session && (session.status === "error" || session.template_status === "error")) {
-                TEMPLATE_SUBMITTING = false;
-                showError(session.template_error || t("template_load_error"));
-                return null;
-            }
-            if (session && session.template_status === "invalid") {
-                showError(session.template_error || t("template_load_error"));
-                setTimeout(pollForTemplateStage1, 1200);
-                return null;
-            }
-            if (session && session.phase === "template" && session.template_status === "ready_user") {
-                TEMPLATE_SUBMITTING = false;
-                return loadTemplateUi(session).catch(function (err) {
-                    showError(t("template_load_error") + " " +
-                        (err && err.message ? err.message : ""));
-                    return null;
-                });
-            }
-            if (session && session.phase === "strategist" && readyStage >= 1) {
-                return loadStrategistUi(1);
-            }
-            setTimeout(pollForTemplateStage1, 1200);
-            return null;
-        }).catch(function (err) {
-            var loading = document.getElementById("loading");
-            if (loading) {
-                loading.textContent = t("connection_lost") + " " +
-                    (err && err.message ? err.message : "");
-            }
-            setTimeout(pollForTemplateStage1, 1500);
-        });
-    }
-
-    function submitTemplateSelection() {
-        if (TEMPLATE_SUBMITTING) return;
-        if (TEMPLATE_MODE !== "free_design" && !TEMPLATE_SELECTED_KEYS.length) {
-            document.getElementById("confirm-status").textContent = t("template_selection_required");
-            return;
-        }
-        var payload = {
-            mode: TEMPLATE_MODE,
-            selection_keys: TEMPLATE_MODE === "templates" ? TEMPLATE_SELECTED_KEYS.slice() : []
-        };
-        var btn = document.getElementById("btn-confirm");
-        btn.disabled = true;
-        postJson("/api/template-confirm", payload, "template confirmation").then(function () {
-            showTemplateApplying();
-            pollForTemplateStage1();
-        }).catch(function (err) {
-            TEMPLATE_SUBMITTING = false;
-            btn.disabled = false;
-            document.getElementById("confirm-status").textContent =
-                t("template_submit_error") + " " + (err && err.message ? err.message : t("error_retry"));
-        });
-    }
-
     // ---- staged submit + next-stage transitions -------------------------
     function communicationPayload() {
         var payload = {
@@ -3556,6 +3480,11 @@
     function stage1Payload() {
         var payload = communicationPayload();
         payload.stage = "stage1";
+        payload.template_selection = {
+            mode: TEMPLATE_MODE,
+            selection_keys: TEMPLATE_MODE === "templates"
+                ? TEMPLATE_SELECTED_KEYS.slice() : []
+        };
         return payload;
     }
 
@@ -3668,7 +3597,18 @@
         return true;
     }
 
+    function templateSelectionValid() {
+        var valid = TEMPLATE_MODE === "free_design" ||
+            (TEMPLATE_MODE === "templates" && TEMPLATE_SELECTED_KEYS.length > 0);
+        if (!valid) {
+            document.getElementById("confirm-status").textContent =
+                t("template_selection_required");
+        }
+        return valid;
+    }
+
     function submitStage1() {
+        if (!templateSelectionValid()) return;
         submitStage(stage1Payload(), 2);
     }
 
@@ -3789,29 +3729,6 @@
         });
     }
 
-    function postJson(url, payload, label) {
-        return fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        }).then(function (r) {
-            return r.text().then(function (text) {
-                var data = null;
-                if (text) {
-                    try { data = JSON.parse(text); }
-                    catch (e) {
-                        if (r.ok) throw new Error((label || url) + ": invalid JSON");
-                    }
-                }
-                if (!r.ok) {
-                    var serverMsg = data && data.error ? data.error : (text || r.statusText || r.status);
-                    throw new Error((label || url) + ": " + serverMsg);
-                }
-                return data || {};
-            });
-        });
-    }
-
     function loadCatalogs() {
         return fetchJson("/api/catalogs", "catalogs")
             .catch(function () { return fetchJson("/static/catalogs.json", "static catalogs"); });
@@ -3851,26 +3768,17 @@
             ICON_PREVIEWS = res[2] || {};
             AI_IMAGE_COMPARISON = res[3] || {};
             applyServerLanguage(REC);
-            initState();
-            TEMPLATE_PHASE = false;
-            TEMPLATE_SUBMITTING = false;
-            enterStage(REC, forceStage || stageNumber(REC));
-            return REC;
-        });
-    }
-
-    function loadTemplateUi(session) {
-        return fetchJson("/api/template-options", "template options").then(function (options) {
-            applyServerLanguage(options);
-            initTemplateOptions(options);
-            TEMPLATE_PHASE = true;
-            if (session && (session.template_status === "confirmed" || session.status === "waiting_agent")) {
-                showTemplateApplying();
-                pollForTemplateStage1();
-            } else {
-                renderTemplatePhase();
+            var activeStage = forceStage || stageNumber(REC);
+            if (activeStage === 1) {
+                if (!REC.template_options || typeof REC.template_options !== "object" ||
+                        Array.isArray(REC.template_options)) {
+                    throw new Error("Stage 1 recommendations must include template_options");
+                }
+                initTemplateOptions(REC.template_options);
             }
-            return options;
+            initState();
+            enterStage(REC, activeStage);
+            return REC;
         });
     }
 
@@ -3896,12 +3804,7 @@
             try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }
             applyStaticTranslations();
             refreshLangToggle(toggleBtn);
-            if (TEMPLATE_PHASE && TEMPLATE_SUBMITTING) {
-                var loading = document.getElementById("loading");
-                if (loading) loading.textContent = t("template_applying");
-            } else if (TEMPLATE_PHASE && TEMPLATE_OPTIONS) {
-                renderTemplatePhase();
-            } else if (REC && CAT) {
+            if (REC && CAT) {
                 renderAll();   // STATE persists → selections preserved
             }
         };
@@ -3958,15 +3861,14 @@
             if (!langMenu.hidden) setMenuOpen(false);
         });
         document.getElementById("btn-confirm").addEventListener("click", function () {
-            if (TEMPLATE_PHASE) submitTemplateSelection();
-            else if (STAGE === 1) submitStage1();
+            if (STAGE === 1) submitStage1();
             else if (STAGE === 2) submitStage2();
             else confirm();
         });
 
-        // Session is the first network read. Explicit template requests expose
-        // Step 3; ordinary free design reports `strategist` and starts with
-        // Stage 1.
+        // Session remains the first network read so completed runs can close
+        // cleanly. Active runs always load the current Strategist stage; Stage 1
+        // carries its template catalog inside the recommendation payload.
         fetchJson("/api/session", "session").catch(function () {
             return { phase: "strategist" };
         }).then(function (session) {
@@ -3974,13 +3876,6 @@
                 document.getElementById("loading").style.display = "none";
                 showConfirmedOverlay();
                 return null;
-            }
-            if (session && session.phase === "template") {
-                return loadTemplateUi(session).catch(function (err) {
-                    showError(t("template_load_error") + " " +
-                        (err && err.message ? err.message : ""));
-                    return null;
-                });
             }
             return loadStrategistUi().catch(function (err) {
                 showError(t("load_error") + " " + (err && err.message ? err.message : ""));

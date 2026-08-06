@@ -98,7 +98,13 @@ Both roots have the same core shape:
     └── <id>_template_preview.pptx
 ```
 
-Empty optional directories are omitted; do not add placeholder files. A preview PPTX is derived review evidence, not a source template asset. It is generated on request and is mandatory for a multi-Master package gate. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
+Empty optional directories are omitted; do not add placeholder files. A preview
+PPTX is derived review evidence, not a source template asset. It is generated
+on request and is mandatory for a multi-Master package gate. Step 3 records the
+workspace root as candidate input without reading its content. After Stage 1
+selects it, the apply stage consumes `templates/` plus any existing `images/`
+and `icons/`; it ignores `exports/`. Library `exports/` directories are
+Git-ignored.
 
 Imported vectors use `data-icon="imported/<name>"` and have one canonical file
 at `icons/imported/<name>.svg`. Workspace-aware validation and export resolve
@@ -377,10 +383,11 @@ These indexes cover library scope only. A project-root workspace is intentionall
 
 ### Segment ownership (implicit dispatch)
 
-When explicitly triggered Step 3 confirms registered and/or specified workspace roots, it
-parses every root's real `kind`, resolves each template segment independently,
-and writes one `<project>/templates/design_spec.md`. `library` / `explicit`
-records discovery provenance only and never changes ownership:
+When Stage 1 confirms registered and/or specified workspace roots, the
+post-confirmation apply stage parses every root's real `kind`, resolves each
+template segment independently, and writes one
+`<project>/templates/design_spec.md`. `library` / `explicit` records discovery
+provenance only and never changes ownership:
 
 | Segment | Starting owner |
 |---|---|
@@ -431,7 +438,7 @@ Rules:
 - `style × 2`, `layout × 2`, `deck × 2`, `brand × 2` handled the same way
 - Max two of any one kind (more than that — ask the user to converge in chat first)
 
-The explicitly triggered template page already narrows this space: Brand/Style/Layout/Deck each have
+The Default template page already narrows this space: Brand/Style/Layout/Deck each have
 one registered single-select dropdown, and one additional specified-root
 dropdown may contribute a second workspace of its parsed kind. The server
 enforces those limits; chat-based composition retains the general maximum of
@@ -454,9 +461,25 @@ This lets both AI and humans trace which segment came from where.
 
 ---
 
-## 5. Relationship with Generate PPTX Step 3
+## 5. Relationship with Generate PPTX Stage 1
 
-**Step 3 is conditional.** Ordinary Default Generate uses free design, reads no template index, opens no template page, and proceeds directly to Stage 1. Step 3 runs only after an explicit request to browse/select templates, an exact workspace-root path, or an exact validated root handed off by Create Template in the current conversation (see [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)). A bare template/brand name or style phrase never triggers it. Once triggered, Step 3 first resolves `<workspace>/templates/design_spec.md`; for directory-shape compatibility, it also accepts a legacy-flat Brand/Layout/Deck root containing `<workspace>/design_spec.md` when the package satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. Packages using legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers are rejected; `create-template` must produce a new workspace before generation continues. The `kind` field decides **how AI handles the path after triggering**:
+Default Generate [Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-candidate-preparation)
+only prepares candidate input. Stage 1 presents the communication contract and
+the switchable free-design/template choice together. Ordinary requests start in
+free design with detailed controls collapsed; explicit template intent or any
+exact root starts in template mode. Exactly one supplied root is preselected,
+while multiple roots remain unselected candidates. A bare template/brand name
+or style phrase never resolves to or preselects a workspace. For every selected
+workspace, the post-confirmation apply stage resolves
+`<workspace>/templates/design_spec.md`; for directory-shape compatibility, it
+also accepts a legacy-flat Brand/Layout/Deck root containing
+`<workspace>/design_spec.md` when the package satisfies its current kind
+contract. Layout/Deck additionally require current structured SVGs; Style has
+no flat form. Packages using legacy semantics such as
+`native_structure_mode: template`, missing Master identity, direct atomic
+placeholders, or distillation-era markers are rejected; `create-template` must
+produce a new workspace before generation continues. The `kind` field decides
+**how AI handles the selected path**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
@@ -467,11 +490,11 @@ This lets both AI and humans trace which segment came from where.
 | Multi-path | Fuse one `design_spec.md` per the table above, then merge the existing portable roots after resolving collisions |
 | Same-kind multiple | Run the "git-style conflict resolution" prompt above to determine the merge |
 
-Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, Step 3 consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
+Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, the apply stage consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
 
 ### Strategist confirmation stage behavior per kind
 
-Installing a template does not narrow away the communication question. Stage 1 always confirms the same open communication contract independently of the template, using only the current request, source facts, conversation constraints, and project initialization; even template canvas is excluded. Only after Stage 1 closes does final Stage 2 inspect the installed state and confirm the complete solution and production plan. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck contributes descriptive reusable application context for comparison, not the current project's contract. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. For Layout/Deck, it inspects the actual prototypes and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. The Confirm UI exposes no template-mode fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
+Installing a template does not narrow away the communication question. Stage 1 confirms the same open communication contract together with, but independently from, the template choice. The communication recommendation uses only the current request, source facts, conversation constraints, and project initialization; even template canvas is excluded. Only after Stage 1 closes and any selection is installed does final Stage 2 inspect that state and confirm the complete solution and production plan. Brand supplies identity constraints while structure stays free; Style supplies method and visual-default seeds while remaining flat; Layout exposes structural capability; Deck contributes descriptive reusable application context for comparison, not the current project's contract. For Style-only use, Strategist does not look for prototypes and deterministically records `template_reuse_scope: style` with flat structure. For Layout/Deck, it inspects the actual prototypes and current content, then authors one page/prototype plan and records `mirror`, `layout`, or `style` only as internal exporter values. A mirror-authored workspace therefore enables literal reuse but never forces it. Confirm UI exposes Free design / Use templates and candidate selectors, but not internal reuse/adherence fields. Planning semantics live in `references/strategist.md` and `references/strategist-template.md`; `templates/schemas/spec_lock.schema.json` owns the machine structure.
 
 ---
 

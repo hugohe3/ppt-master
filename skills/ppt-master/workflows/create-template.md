@@ -16,7 +16,7 @@ Create one reusable template workspace under either the **global template librar
 
 **Hard rule — one workspace routing contract**: Output scope changes only the workspace parent and index registration. Both scopes use required `templates/`, optional `images/` / `icons/`, and optional on-demand `exports/`, with the same relative asset references and validation command. Create Template must not create an optional directory or placeholder file solely to retain an empty path. An initialized project may already contain empty `images/`, `icons/`, or `exports/` scaffolding; leave it untouched, do not count it as template output, and omit the path from completion unless this workflow wrote or adopted a real file there. Do not maintain a library-only self-contained-flat package branch or a project-only thin-bundle branch.
 
-> **Boundary against template-fill and in-place structure edits**: Create Template does not fill content into a PPTX, add Master/Layout structure to an existing PPTX/SVG, or directly output the user's final generated deck. It authors a separate reusable workspace; an optional PPTX is review evidence only. To generate a deck, return the workspace root to [`generate-pptx`](./generate-pptx.md) Step 3 and author new SVG pages from it. A project-scoped workspace is already installed at that project's Step 3 path and is consumed in place.
+> **Boundary against template-fill and in-place structure edits**: Create Template does not fill content into a PPTX, add Master/Layout structure to an existing PPTX/SVG, or directly output the user's final generated deck. It authors a separate reusable workspace; an optional PPTX is review evidence only. To generate a deck, return the workspace root as an exact candidate to [`generate-pptx`](./generate-pptx.md) Step 3, confirm it with Stage 1, then author new SVG pages from the installed state. A project-scoped workspace selected for its own project is consumed in place after that confirmation.
 
 ## Child Workflow Dispatch
 
@@ -836,18 +836,18 @@ The Layout/Deck completion card's file roster is collected by globbing
 flat Layout/Deck packages still use their root `*.svg` roster.
 
 The index file is the complete **registered-library discovery source** for
-conditional [`generate-pptx`](./generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
-Step 3. Its template-selection page is opened only after an explicit request to
-browse/select templates and reads only the four kind indexes; chat discovery
+Default [`generate-pptx`](./generate-pptx.md#step-3-template-candidate-preparation)
+Stage-1 template controls. Step 3 prepares their candidate input without
+interaction; the controls read only the four kind indexes, while chat discovery
 uses the same entries to list exact workspace-root paths. Neither path scans
-template directories. Ordinary Default Generate reads no index, opens no
-template page, and proceeds directly to Stage 1 with free design. Selecting and
-confirming a registered entry activates installation. An exact unregistered
-workspace supplied by the user, or the exact validated root handed off by this
-route in the current conversation, triggers Step 3 directly but remains
-labelled `explicit` and does not appear in the library catalog. If an explicit
-root exactly matches a registered canonical root, it may be displayed as
-`library`. Bare names and style phrases are never resolved implicitly.
+template directories. Selecting a registered entry and submitting Stage 1
+activates installation. An exact unregistered workspace supplied by the user,
+or the exact validated root handed off by this route in the current
+conversation, appears as a specified candidate and is preselected when it is
+the only supplied root; it remains labelled `explicit` and does not enter the
+library catalog. If an explicit root exactly matches a registered canonical
+root, it may be displayed as `library`. Bare names and style phrases are never
+resolved implicitly or used to preselect a template.
 
 > **Recommended for new templates**: declare a YAML frontmatter block at the top of `design_spec.md`. The registrar prefers it over prose extraction:
 >
@@ -912,8 +912,8 @@ root exactly matches a registered canonical root, it may be displayed as
 > ```
 
 README files describe each kind in prose only — they do not list templates.
-The explicitly triggered Step-3 selector and chat discovery read the JSON index
-files; the registrar does not touch READMEs.
+The Default Stage-1 template controls and chat discovery read the JSON index files; the
+registrar does not touch READMEs.
 
 ---
 
@@ -953,7 +953,20 @@ list only `templates/design_spec.md`. Both completion cards must explicitly
 state `SVG roster: N/A` and `Native structure: N/A`; Style must also state
 `Visual review trigger: N/A (advisory focus only)`.
 
-The exact `<template_workspace>/` root in either scope is the current-conversation handoff to conditional Generate PPTX Step 3; that handoff triggers the stage without a separate discovery request. Step 3 resolves `templates/design_spec.md` and always ignores `exports/`. Brand/Layout/Deck copy or consume package-owned `templates/` plus any existing `images/` and `icons/`; Style consumes only `templates/design_spec.md` and ignores sibling project scaffolding. It then authors new `svg_output/` pages under the template contract and exports a new PPTX. Neither the reference PPTX/SVG nor the template prototypes are upgraded in place. A legacy-flat Brand/Layout/Deck package root remains readable only when it satisfies its current kind contract; for Layout/Deck that includes the structured SVG contract. Style has no legacy-flat form. Otherwise create a new workspace through this route.
+The exact `<template_workspace>/` root in either scope is the
+current-conversation handoff to Default Generate Step 3. It appears as the
+specified candidate, defaults Stage 1 to template mode, and is preselected only
+when it is the sole supplied root. After Stage 1 confirms it, the application
+stage resolves `templates/design_spec.md` and always ignores `exports/`.
+Brand/Layout/Deck copy or consume package-owned `templates/` plus any existing
+`images/` and `icons/`; Style consumes only `templates/design_spec.md` and
+ignores sibling project scaffolding. It then authors new `svg_output/` pages
+under the template contract and exports a new PPTX. Neither the reference
+PPTX/SVG nor the template prototypes are upgraded in place. A legacy-flat
+Brand/Layout/Deck package root remains readable only when it satisfies its
+current kind contract; for Layout/Deck that includes the structured SVG
+contract. Style has no legacy-flat form. Otherwise create a new workspace
+through this route.
 
 ---
 
@@ -974,7 +987,7 @@ The exact `<template_workspace>/` root in either scope is the current-conversati
 2. **Color consistency**: Create Deck SVG files must use the same color scheme as `design_spec.md §II Color Scheme`; Create Layout owns no identity colors, Create Style owns only overrideable visual defaults, and Create Brand/Create Style own no SVG files
 3. **Native-object mapping**: Treat Theme/Master/Layout/Placeholder as compiled PowerPoint objects, not template kinds. Layout owns topology and placement, Brand owns identity values/assets, Style owns portable direction/method defaults, and Deck adds descriptive recurring-application context.
 4. **Placeholder convention**: `{{}}` format only; default names listed in [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). Override per template via `placeholders:` frontmatter when needed.
-5. **Discovery requirement**: A library template appears in the explicitly triggered Step-3 selector and chat discovery only after `register_template.py` has updated its kind index (Step 7). A project-scoped workspace intentionally stays out of the library catalog and is consumed as an exact `explicit` workspace-root handoff. Ordinary Default Generate does not read either catalog; an explicit selection/root or this route's current-conversation handoff triggers Step 3, which installs the workspace before Stage 1.
+5. **Discovery requirement**: A library template appears in the Default Stage-1 template selector and chat discovery only after `register_template.py` has updated its kind index (Step 7). A project-scoped workspace intentionally stays out of the library catalog and is consumed as an exact `explicit` workspace-root candidate. Step 3 only prepares candidates; Stage 1 confirms communication plus free design/template use together, and only a non-free confirmed selection installs a workspace before Stage 2.
 6. **Review output**: Generate `exports/<template_id>_template_preview.pptx` on request and always for a multi-Master template. It is derived local evidence, never a source input during template application, and library exports stay Git-ignored. Brand and Style never generate this preview; Style Review Focus cannot activate visual review.
 
 > **Full role specification**: [template-designer.md](../references/template-designer.md)

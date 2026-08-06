@@ -4,12 +4,12 @@ description: Generate-PPTX runbook for validating, installing, or fusing selecte
 
 # Apply Template Workspace Stage
 
-> Run from [`generate-pptx.md`](../generate-pptx.md) Step 3 only for explicit template browsing/selection, exact roots, or a current Create Template handoff. [`quick-generate`](../profiles/quick-generate.md) enters only for exact roots or that handoff. Never load for free design, bare names, or style descriptions. This stage applies a completed selection; it never chooses one or moves template choice into Stage 1/final Stage 2.
+> Run from [`generate-pptx.md`](../generate-pptx.md) Step 4 only after Stage 1 confirms at least one exact template workspace. [`quick-generate`](../profiles/quick-generate.md) enters only for exact roots or a current Create Template handoff. Never load for free design, bare names, or style descriptions. This stage applies the completed Stage-1 selection; it never chooses a workspace or changes the communication contract.
 
 ## 1. Gate and Normalize Inputs
 
-🚧 **GATE**: Either Default Step 3 was explicitly triggered and its template
-selection is confirmed, or Quick received exact roots directly from the
+🚧 **GATE**: Either Default Stage 1 confirmed a non-free template selection, or
+Quick received exact roots directly from the
 user/current Create Template handoff. In Quick, that explicit input is the complete selection authority: do
 not launch Confirm UI or create `template_options.json`,
 `template_selection.json`, or `template_handoff.json`. Every selected input must
@@ -37,9 +37,9 @@ valid without index membership; exact equality with a registered root may be
 reported as `library`. The label changes discovery provenance only, never schema
 validation, fusion precedence, or installation behavior.
 
-**Selection cardinality**: When Default Step 3 is explicitly triggered, its template page permits one registered root per kind plus one explicit root; its explicit root may pair with a same-kind library root under §5.2. Quick has no page or catalog selection and accepts at most one supplied exact root per declared kind (four roots total). Kinds compose freely in both profiles. Reject larger default receipts server-side; require an oversized or duplicate-kind Quick input to converge in chat before installation, never through Confirm UI.
+**Selection cardinality**: Default Stage 1 permits one registered root per kind plus one explicit root; its explicit root may pair with a same-kind library root under §5.2. Quick has no page or catalog selection and accepts at most one supplied exact root per declared kind (four roots total). Kinds compose freely in both profiles. Reject larger default receipts server-side; require an oversized or duplicate-kind Quick input to converge in chat before installation, never through Confirm UI.
 
-**Hard rule — raw source boundary**: A raw PPTX is not a Step 3 workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first; its validated workspace-root handoff triggers Step 3. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
+**Hard rule — raw source boundary**: A raw PPTX is not a template workspace. Raw PPTX plus new content uses [`template-fill-pptx`](../template-fill-pptx.md). When the user wants reusable SVG/template generation, run [`create-template`](../create-template.md) first; its validated workspace-root handoff becomes a Stage-1 candidate and is preselected only when it is the sole supplied root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
 
 **Compatibility gate**: Reject semantic-legacy or incomplete structured packages, including old baseline/distillation metadata, incomplete Master identity, or legacy direct atomic placeholders. Create a new current workspace through Create Template; use the original PPTX when native topology must be preserved. A legacy-flat Brand/Layout/Deck directory is readable only when it satisfies its current kind contract; Layout/Deck also require a current structured SVG contract. Style has no legacy-flat form and always requires `<root>/templates/design_spec.md`.
 
@@ -112,7 +112,7 @@ SVGs and never writes `page_layouts` or Master/Layout/placeholder metadata.
 
 ## 5. Fuse Multiple Workspace Paths
 
-Fuse different kinds or, in Default only, at most two same-kind roots. Resolve template segment/asset conflicts before writing. Never read, predict, or revise Stage 1 here. Default obtains required conflict decisions through its active confirmation surface. Quick follows explicit conflict instructions; an unresolved material compatibility conflict is a hard prerequisite handled in chat, never by launching Confirm UI or by using path order.
+Fuse different kinds or, in Default only, at most two same-kind roots. Resolve template segment/asset conflicts before writing. Never reinterpret, predict, or revise the confirmed Stage-1 communication contract here. Default obtains any additional material conflict decision through the active chat channel after Stage 1; this conditional resolution does not reopen template selection. Quick follows explicit conflict instructions; an unresolved material compatibility conflict is a hard prerequisite handled in chat, never by launching Confirm UI or by using path order.
 
 ### 5.1 Different Kinds
 
@@ -127,11 +127,11 @@ Resolve four whole template segments. This table selects the installed starting 
 
 Replace each selected segment wholesale; do not mix its fields implicitly. Brand or Deck identity replaces any identity-adjacent defaults carried by Style. A Style direction may adapt to that resolved identity, but cannot relabel its candidates as official brand facts.
 
-Before Layout overrides Deck structure, compare Deck's reusable roles with Layout roles, slots, and capacity. On mismatch, offer exactly three remedies: retain Deck structure, select another Layout, or omit Deck. Default must not invent the current project contract before Stage 1; Quick compares against the current request/content and treats any unresolved material mismatch as a chat hard prerequisite.
+Before Layout overrides Deck structure, compare Deck's reusable roles with Layout roles, slots, and capacity. On mismatch, offer exactly three remedies: retain Deck structure, select another Layout, or omit Deck. Default resolves only this template-to-template conflict and must not reinterpret the confirmed Stage-1 communication contract; Quick compares against the current request/content and treats any unresolved material mismatch as a chat hard prerequisite.
 
 Before Style overlays Deck guidance, verify that its method serves Deck's reusable context and fits the selected structure. On mismatch, require omitting Style or choosing a compatible Style/structure; never silently weaken a segment. Default final Stage 2 separately checks the result against the confirmed project contract; Quick checks it against the current request/content before authoring.
 
-Field-level micro-adjustments such as a primary-color override are not workspace fusion. Default carries them into the normal Strategist confirmation fields; Quick treats explicit adjustments as direct transient authoring constraints.
+Field-level micro-adjustments such as a primary-color override are not workspace fusion. Default carries them into the normal final Stage-2 confirmation fields; Quick treats explicit adjustments as direct transient authoring constraints.
 
 ### 5.2 Same Kind
 
@@ -160,4 +160,4 @@ Single-path installs do not add provenance. Set fused frontmatter `kind` from th
 - [x] Every kind schema passed preflight; structured SVG checks ran only for Layout/Deck inputs
 - [x] All collisions and fusion conflicts were resolved before one atomic install
 - [x] `<project_path>/templates/` and any portable sibling assets are complete and are the only downstream template source
-- [ ] **Next**: Default returns to [`generate-pptx.md`](../generate-pptx.md) Step 4; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2
+- [ ] **Next**: Default completes the template-selection handoff and continues [`generate-pptx.md`](../generate-pptx.md) Step 4 Stage 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2

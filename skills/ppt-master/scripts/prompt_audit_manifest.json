@@ -318,7 +318,7 @@
       "max_tokens": 86000
     },
     "stage.generate.apply-template-workspace": {
-      "description": "Conditional Default Step 3 or Quick exact-root workspace validation, installation, and fusion framework.",
+      "description": "Post-Stage-1 Default or Quick exact-root workspace validation, installation, and fusion framework.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/stages/apply-template-workspace.md",

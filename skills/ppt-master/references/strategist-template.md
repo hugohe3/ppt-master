@@ -4,7 +4,7 @@
 
 Conditional extension for applying an installed Brand/Style/Layout/Deck workspace to Stage 2 recommendations and the execution lock.
 
-**Trigger**: Load only after Stage 1 is confirmed, when Generate Step 3 validated a library or explicit workspace path and either installed it into `<project_path>/templates/` or confirmed that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
+**Trigger**: Load only after Stage 1 confirms a library or explicit workspace selection and the post-confirmation apply stage either installs it into `<project_path>/templates/` or confirms that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
 
 ---
 
@@ -22,7 +22,7 @@ Immediately before authoring the Stage-2 solution, load each relevant template
 resource once per path + SHA and inspect:
 
 - every installed `design_spec.md`; for Layout/Deck only, also inspect the actual Page Roster and relevant SVG prototypes;
-- the resolved Identity, Structure, Reusable Application Context, and Direction / method segment owners from the Step-3 fusion receipt;
+- the resolved Identity, Structure, Reusable Application Context, and Direction / method segment owners from the post-Stage-1 fusion receipt;
 - the confirmed current communication contract, source obligations, planned page count, and content shape of every planned page;
 - the user's natural-language instructions, including any page names/numbers or elements they explicitly require.
 
