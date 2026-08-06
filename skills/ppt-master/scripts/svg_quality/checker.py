@@ -38,7 +38,10 @@ from .xml_support import (
 )
 
 try:
-    from project_utils import CANVAS_FORMATS, validate_communication_trace
+    from project_utils import (
+        CANVAS_FORMATS,
+        validate_communication_trace,
+    )
 except ImportError:
     print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
@@ -5111,7 +5114,6 @@ class SVGQualityChecker:
                 ('error', message)
                 for message in validate_communication_trace(project_path)
             )
-
         return self.results
 
     def _check_pptx_structure_contract(
@@ -6874,6 +6876,8 @@ class SVGQualityChecker:
         print(
             f"  [ERROR] With errors: {self.summary['errors']} ({self._percentage(self.summary['errors'])}%)")
 
+        self._print_provenance_category_summary()
+
         if self.issue_types:
             print(f"\nIssue categories:")
             for issue_type, count in sorted(self.issue_types.items(), key=lambda x: x[1], reverse=True):
@@ -6912,6 +6916,36 @@ class SVGQualityChecker:
             )
             print(f"  4. foreignObject: Use <text> + <tspan> for manual line breaks")
             print(f"  5. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
+
+    def _print_provenance_category_summary(self):
+        """Print compact JSON-equivalent counts for token-safe gate handling."""
+        categories = self._provenance_categories()
+        rows = (
+            (
+                'blocking',
+                len(categories['blocking']),
+                'hard findings; gate also requires exit 0',
+            ),
+            (
+                'introduced',
+                len(categories['introduced']),
+                'advisory; new or changed',
+            ),
+            (
+                'inherited',
+                len(categories['inherited']),
+                'informational; prototype-identical',
+            ),
+            (
+                'source-import',
+                _source_import_warning_count(categories['source_import']),
+                'informational; source-conversion loss',
+            ),
+        )
+
+        print("\nProvenance categories:")
+        for name, count, note in rows:
+            print(f"  {f'{name}: {count}':<20} {note}")
 
     def _print_animation_summary(self):
         """Print animations.json validation issues if present."""
@@ -7166,14 +7200,13 @@ class SVGQualityChecker:
 
         print(f"\n[REPORT] Check report exported: {output_file}")
 
-    def export_json_report(
-        self,
-        output_file: str,
-        *,
-        target: str,
-        stage: str,
-    ) -> None:
-        """Write a machine-readable quality report with provenance classes."""
+    def _provenance_categories(self) -> Dict[str, object]:
+        """Classify every issue by provenance.
+
+        Single source for the JSON report's ``categories`` block and the
+        terminal summary, so the console and the report never disagree about
+        what blocks a release export.
+        """
         self._apply_aggregated_issue_counts()
         introduced: List[Dict[str, str]] = []
         blocking: List[Dict[str, str]] = []
@@ -7230,6 +7263,28 @@ class SVGQualityChecker:
                 else:
                     introduced.append(item)
 
+        return {
+            'blocking': blocking,
+            'introduced': introduced,
+            'inherited': inherited,
+            'project_issues': project_issues,
+            'source_import': dict(self._source_import_summary),
+        }
+
+    def export_json_report(
+        self,
+        output_file: str,
+        *,
+        target: str,
+        stage: str,
+    ) -> None:
+        """Write a machine-readable quality report with provenance classes."""
+        categories = self._provenance_categories()
+        blocking = categories['blocking']
+        introduced = categories['introduced']
+        inherited = categories['inherited']
+        project_issues = categories['project_issues']
+
         # Keep the legacy `drift` JSON field for report compatibility. Its
         # colors/fonts entries are informational anchor comparisons; sparse
         # size entries are informational until their third occurrence.
@@ -7240,7 +7295,7 @@ class SVGQualityChecker:
             }
             for category, values in self._anchor_value_summary.items()
         }
-        source_import = dict(self._source_import_summary)
+        source_import = categories['source_import']
         payload = {
             'schema': 'ppt-master.svg-quality-report.v1',
             'stage': stage,
