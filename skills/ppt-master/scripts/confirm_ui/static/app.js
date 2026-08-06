@@ -1,7 +1,7 @@
-/* PPT Master - template selection and Strategist confirmation UI
- * Generate Step 3 independently selects free design or exact template
- * candidates before Stage 1 captures the communication contract. Stage 2 then
- * confirms a coherent deck solution, and Stage 3 resolves production mechanics.
+/* PPT Master - conditional template selection and Strategist confirmation UI
+ * Explicit template requests use Generate Step 3 before Stage 1; ordinary free
+ * design starts at Stage 1. Stage 2 combines the coherent deck solution and
+ * production mechanics, then writes the final result.
  * Finite fields use /static/catalogs.json; coordinated design directions seed
  * color, typography, icons, generated-image rendering, and conditional
  * template-application prose. Final confirm saves result.json.
@@ -17,14 +17,13 @@
             template_stage_title: "Choose a template",
             template_stage_hint: "Choose free design, or combine one registered template per type plus one specified path. This selection is separate from Stage 1.",
             stage_anchors: "Stage 1 · Communication contract",
-            stage_design: "Stage 2 · Deck direction & visual system",
-            stage_images: "Stage 3 · Resources & production",
+            stage_final_plan: "Stage 2 · Final plan & production",
             loading: "Loading…",
             load_error: "Could not load the current recommendation stage. The AI must write it before launch.",
             btn_confirm: "Confirm",
             btn_confirm_template: "Confirm template & continue →",
             btn_confirm_contract: "Confirm contract & continue →",
-            btn_confirm_solution: "Confirm solution & continue →",
+            btn_confirm_final_plan: "Confirm final plan →",
             deriving: "Generating the downstream options from your choices…",
             template_applying: "Applying the template selection and preparing Stage 1…",
             template_load_error: "Could not load the available templates.",
@@ -33,7 +32,6 @@
             template_free_selected: "Free design selected",
             template_count_selected: "{count} template(s) selected",
             connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
-            already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
             lang_toggle_title: "Switch language",
@@ -122,8 +120,8 @@
             image_strategy_custom_placeholder: "Describe the exact generated-image direction, subjects, composition, style cues, or things to avoid.",
             image_strategy_reference_hint: "Reference images show rendering only. Final AI images inherit the deck color scheme selected above.",
             image_strategy_no_reference: "No reference image for this custom choice.",
-            image_source_summary: "Confirmed image sources",
-            image_production_hint: "Image sources and rendering were confirmed in Stage 2. This stage only resolves the production path.",
+            image_source_summary: "Selected image sources",
+            image_production_hint: "Image sources and rendering are selected above. Resolve only the production path here.",
             image_usage_notes: "Additional image requirements",
             image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
             image_usage_required: "Select at least one image usage option.",
@@ -159,7 +157,6 @@
             size_role_subtitle: "subtitle",
             size_role_annotation: "annotation",
             custom_typography: "Custom typography",
-            custom_typography_repair: "Complete the concrete font names required for this project to continue.",
             custom_color: "Custom color",
             custom_color_placeholder: "Describe your colors in words, e.g. deep navy primary, warm orange accent, white background — or paste HEX values…",
             role_background: "bg",
@@ -203,14 +200,13 @@
             template_stage_title: "テンプレートを選択",
             template_stage_hint: "自由デザイン、または種類ごとに登録済み1件と指定パス1件までを組み合わせます。この選択はステージ1とは独立しています。",
             stage_anchors: "ステージ 1 · コミュニケーション契約",
-            stage_design: "ステージ 2 · 全体方針とビジュアルシステム",
-            stage_images: "ステージ 3 · リソースと制作",
+            stage_final_plan: "ステージ 2 · 最終プランと制作",
             loading: "読み込み中…",
             load_error: "現在の推奨ステージを読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
             btn_confirm_template: "テンプレートを確定して次へ →",
             btn_confirm_contract: "契約内容を確定して次へ →",
-            btn_confirm_solution: "全体方針を確定して次へ →",
+            btn_confirm_final_plan: "最終プランを確定 →",
             deriving: "選択内容をもとに後続の選択肢を生成しています…",
             template_applying: "テンプレートの選択を適用し、ステージ1を準備しています…",
             template_load_error: "利用可能なテンプレートを読み込めませんでした。",
@@ -219,7 +215,6 @@
             template_free_selected: "自由デザインを選択中",
             template_count_selected: "{count} 件のテンプレートを選択中",
             connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
-            already_confirmed: "すでに一度確定済みです。再送信すると前回の選択を上書きします。",
             confirmed_title: "✓ 確定しました",
             confirmed_hint: "選択内容を保存しました。このページを閉じてチャットに戻ってください。",
             lang_toggle_title: "言語を切り替え",
@@ -308,8 +303,8 @@
             image_strategy_custom_placeholder: "生成画像の方向性、被写体、構図、スタイル要素、避けたい要素を具体的に入力してください。",
             image_strategy_reference_hint: "参照画像はレンダリングのみを示します。最終AI画像の色は上で選んだデッキ配色を継承します。",
             image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
-            image_source_summary: "確定済みの画像ソース",
-            image_production_hint: "画像ソースとレンダリングはステージ2で確定済みです。ここでは制作経路だけを決めます。",
+            image_source_summary: "選択中の画像ソース",
+            image_production_hint: "画像ソースとレンダリングは上で選択済みです。ここでは制作経路だけを決めます。",
             image_usage_notes: "画像に関する補足要件",
             image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
             image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
@@ -345,7 +340,6 @@
             size_role_subtitle: "サブタイトル",
             size_role_annotation: "注釈",
             custom_typography: "カスタムタイポグラフィ",
-            custom_typography_repair: "続行するには、このプロジェクトに必要な具体的な書体名を入力してください。",
             custom_color: "カスタム配色",
             custom_color_placeholder: "配色を言葉で説明 — 例：濃紺をメインに暖色オレンジのアクセント、背景は白 — またはHEX値を貼り付け…",
             role_background: "背景",
@@ -389,14 +383,13 @@
             template_stage_title: "选择模板",
             template_stage_hint: "选择自由设计，或组合每类一个已注册模板与一个指定地址。这个选择独立于 Stage 1。",
             stage_anchors: "第一阶段 · 沟通契约",
-            stage_design: "第二阶段 · 完整方案与视觉系统",
-            stage_images: "第三阶段 · 资源与生产执行",
+            stage_final_plan: "第二阶段 · 最终方案与制作",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
             btn_confirm_template: "确认模板并继续 →",
             btn_confirm_contract: "确认沟通契约并继续 →",
-            btn_confirm_solution: "确认完整方案并继续 →",
+            btn_confirm_final_plan: "确认最终方案 →",
             deriving: "正在根据你的选择生成下游选项…",
             template_applying: "正在应用模板选择并准备 Stage 1…",
             template_load_error: "无法加载可用模板。",
@@ -405,7 +398,6 @@
             template_free_selected: "已选择自由设计",
             template_count_selected: "已选择 {count} 个模板",
             connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
-            already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
             lang_toggle_title: "切换语言",
@@ -494,8 +486,8 @@
             image_strategy_custom_placeholder: "描述生成图的具体方向、主体、构图、风格关键词或需要避免的内容。",
             image_strategy_reference_hint: "参考图只展示渲染风格；最终 AI 图片直接继承上方已选的整套 PPT 配色。",
             image_strategy_no_reference: "自定义选择没有参考图。",
-            image_source_summary: "已确认的图片来源",
-            image_production_hint: "图片来源和渲染方向已在第二阶段确认；这里仅决定实际生产路径。",
+            image_source_summary: "已选图片来源",
+            image_production_hint: "图片来源和渲染方向已在上方选择；这里仅决定实际生产路径。",
             image_usage_notes: "图片补充要求",
             image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
             image_usage_required: "请至少选择一种图片使用方式。",
@@ -531,7 +523,6 @@
             size_role_subtitle: "副标题",
             size_role_annotation: "注释",
             custom_typography: "自定义字体方案",
-            custom_typography_repair: "请补全当前项目所需的具体字体名称后继续。",
             custom_color: "自定义配色",
             custom_color_placeholder: "用文字描述配色，如：深蓝主色、暖橙强调、白色背景——或直接粘贴 HEX 值…",
             role_background: "背景",
@@ -2075,6 +2066,9 @@
     var refreshStylePreview = function () {};
     // Replaced when the selected generated-image preview mounts.
     var refreshImageStrategyPreview = function () {};
+    // Replaced when the final plan's image-production section mounts; image-use
+    // edits call it so the conditional AI path stays synchronized on the page.
+    var refreshImageProduction = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
     var refreshBodySizeHint = function () {};
@@ -2384,11 +2378,6 @@
         });
     }
 
-    function typographyNeedsConcreteRepair() {
-        return !!(STATE.typography && STATE.typography.name === "custom" &&
-            !typographyFamiliesComplete(STATE.typography));
-    }
-
     function sampleText(role, field) {
         // Keep comparison copy stable: choices change visual treatment, not content.
         var useEnglish = field === "english" || isEnglishProject();
@@ -2455,9 +2444,6 @@
     function renderTypography(host) {
         var cands = typographyRecommendationCandidates().filter(typographyFamiliesComplete);
         var sec = section(7, "sec_type");
-        if (stageNumber(REC) >= 3 && typographyNeedsConcreteRepair()) {
-            setSectionNote(sec, t("custom_typography_repair"));
-        }
         var grid = el("div", "font-grid");
         var customFields = el("div", "custom-typography-fields font-picker-fields");
         var customInputs = {};
@@ -3133,6 +3119,7 @@
             }
             STATE.image_usage = current;
             refreshUsageChips();
+            refreshImageProduction();
         }
         (CAT.image_usage || []).forEach(function (option) {
             var label = optionLabel(option);
@@ -3166,23 +3153,29 @@
 
     function renderImageProduction(host) {
         var sec = section("P", "sec_image_production", t("image_production_hint"));
-        var summary = el("div", "subfield");
-        summary.appendChild(el("div", "subfield-label", t("image_source_summary")));
-        var chips = el("div", "chips locked-summary-chips");
-        (STATE.image_usage || []).forEach(function (id) {
-            var option = findCatalogOption(CAT.image_usage, id);
-            chips.appendChild(el("div", "chip selected locked-summary-chip",
-                option ? optionLabel(option) : humanizeId(id)));
-        });
-        summary.appendChild(chips);
-        sec.appendChild(summary);
-        if (needsGeneratedImagesForUsage(STATE.image_usage)) {
-            var pathField = el("div", "subfield");
-            pathField.appendChild(el("div", "subfield-label", t("image_ai_path")));
-            enumField(pathField, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
-                function () { return STATE.image_ai_path; }, function (value) { STATE.image_ai_path = value; });
-            sec.appendChild(pathField);
-        }
+        var body = el("div", "image-production-body");
+        sec.appendChild(body);
+        refreshImageProduction = function () {
+            body.innerHTML = "";
+            var summary = el("div", "subfield");
+            summary.appendChild(el("div", "subfield-label", t("image_source_summary")));
+            var chips = el("div", "chips locked-summary-chips");
+            (STATE.image_usage || []).forEach(function (id) {
+                var option = findCatalogOption(CAT.image_usage, id);
+                chips.appendChild(el("div", "chip selected locked-summary-chip",
+                    option ? optionLabel(option) : humanizeId(id)));
+            });
+            summary.appendChild(chips);
+            body.appendChild(summary);
+            if (needsGeneratedImagesForUsage(STATE.image_usage)) {
+                var pathField = el("div", "subfield");
+                pathField.appendChild(el("div", "subfield-label", t("image_ai_path")));
+                enumField(pathField, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
+                    function () { return STATE.image_ai_path; }, function (value) { STATE.image_ai_path = value; });
+                body.appendChild(pathField);
+            }
+        };
+        refreshImageProduction();
         host.appendChild(sec);
     }
 
@@ -3248,25 +3241,20 @@
         host.appendChild(sec);
     }
 
-    // Stage of the staged confirm flow:
-    // 1 = communication contract, 2 = complete deck direction,
-    // 3 = resources + production execution,
-    // "all" = legacy single-pass (the recommendation payload carried no stage).
+    // Two-stage confirmation: communication contract, then complete final plan.
     var STAGE = 1;
 
     function stageNumber(data) {
-        var raw = data && data.stage != null ? data.stage : (data && data.tier);
+        var raw = data && data.stage;
         raw = String(raw == null ? "" : raw).toLowerCase();
-        if (raw === "1" || raw === "stage1" || raw === "tier1") return 1;
-        if (raw === "2" || raw === "stage2" || raw === "tier2") return 2;
-        if (raw === "3" || raw === "stage3" || raw === "tier3") return 3;
-        return "all";
+        if (raw === "stage1") return 1;
+        if (raw === "stage2") return 2;
+        return 0;
     }
 
     function stageTitle(stage) {
         if (stage === 1) return t("stage_anchors");
-        if (stage === 2) return t("stage_design");
-        if (stage === 3) return t("stage_images");
+        if (stage === 2) return t("stage_final_plan");
         return t("page_title");
     }
 
@@ -3283,6 +3271,7 @@
         // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
         refreshImageStrategyPreview = function () {};
+        refreshImageProduction = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
         var previewHost = document.getElementById("topbar-preview");
@@ -3310,40 +3299,6 @@
             renderTypography(styleGroup);
             host.appendChild(styleGroup);
             renderImageDirection(host);
-        } else if (stage === 3) {
-            if (previewHost) renderStylePreview(previewHost);
-            if (previewHost) renderImageStrategyPreview(previewHost);
-            // Stage 3 contains production mechanics only. It summarizes the
-            // confirmed image source and reopens typography only to repair a
-            // legacy prose-only Custom result that cannot be final as-is.
-            if (typographyNeedsConcreteRepair()) {
-                var repairStyleGroup = el("div", "style-group");
-                renderTypography(repairStyleGroup);
-                host.appendChild(repairStyleGroup);
-            }
-            renderImageProduction(host);
-            renderFormulaPolicy(host);
-            renderProactiveExecution(host);
-            renderMode(host);
-            renderRefine(host);
-        } else {
-            // Legacy single-pass: show every section on one page.
-            if (previewHost) renderStylePreview(previewHost);
-            renderCommunication(host);
-            renderDelivery(host);
-            renderCanvas(host);
-            renderTemplateApplication(host);
-            renderDesignDirections(host);
-            renderNarrativeDirection(host);
-            renderVisualDirection(host);
-            renderReadingMode(host);
-            renderPages(host);
-            var legacyStyleGroup = el("div", "style-group");
-            renderColor(legacyStyleGroup);
-            renderIcons(legacyStyleGroup);
-            renderTypography(legacyStyleGroup);
-            host.appendChild(legacyStyleGroup);
-            renderImageDirection(host);
             renderImageProduction(host);
             renderFormulaPolicy(host);
             renderProactiveExecution(host);
@@ -3358,10 +3313,8 @@
     function updateActionBar(stage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = false;
-        // Stage 1/2 both confirm the current values before advancing. Stage 3
-        // and legacy single-pass submit the final result.
         if (stage === 1) btn.textContent = t("btn_confirm_contract");
-        else if (stage === 2) btn.textContent = t("btn_confirm_solution");
+        else if (stage === 2) btn.textContent = t("btn_confirm_final_plan");
         else btn.textContent = t("btn_confirm");
     }
 
@@ -3466,8 +3419,7 @@
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
         // A freshly authored Stage 2 starts from one deterministic reading-mode
-        // baseline. Stage 3 carries the confirmed Stage-2 values and must not
-        // normalize them again.
+        // baseline.
         if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(true);
         var rawImageUsage = recValue("image_usage") || directionField("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
@@ -3492,7 +3444,7 @@
         }
     }
 
-    function initStage3State() {
+    function initProductionState() {
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
         STATE.proactive_speaker_notes = booleanRecommendation("proactive_speaker_notes", true);
@@ -3505,8 +3457,6 @@
 
     function initState() {
         initStage1State();
-        initStage2State();
-        initStage3State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -3688,31 +3638,6 @@
         return !!valid;
     }
 
-    function stage2Payload() {
-        var payload = communicationPayload();
-        payload.stage = "stage2";
-        if (Object.prototype.hasOwnProperty.call(STATE, "template_application")) {
-            payload.template_application = STATE.template_application;
-        }
-        payload.mode = STATE.mode;
-        payload.mode_behavior = STATE.mode_behavior;
-        payload.visual_style = STATE.visual_style;
-        payload.visual_style_behavior = STATE.visual_style_behavior;
-        payload.page_count = STATE.page_count;
-        // Reading mode keeps the legacy delivery_purpose key for compatibility.
-        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
-        payload.color = JSON.parse(JSON.stringify(STATE.color || {}));
-        payload.icons = STATE.icons;
-        payload.typography = JSON.parse(JSON.stringify(STATE.typography || {}));
-        normalizeTypographyForSubmit(payload);
-        payload.image_usage = selectedImageUsageIds(STATE.image_usage);
-        if (String(STATE.image_notes || "").trim()) payload.image_notes = STATE.image_notes;
-        if (needsGeneratedImagesForUsage(payload.image_usage)) {
-            payload.image_strategy = normalizedImageStrategy(STATE.image_strategy);
-        }
-        return normalizeCreativePayload(payload);
-    }
-
     function submitStage(payload, nextStage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = true;
@@ -3748,12 +3673,7 @@
     }
 
     function submitStage2() {
-        var payload = stage2Payload();
-        if (!imageUsageValid(payload.image_usage)) return;
-        if (!imageStrategyValid(payload)) return;
-        if (!designSystemValid(payload)) return;
-        if (!customSelectionsValid(payload)) return;
-        submitStage(payload, 3);
+        confirm();
     }
 
     function showDeriving() {
@@ -3792,8 +3712,10 @@
 
     function enterStage(data, stage) {
         REC = data;
-        if (stage >= 2) initStage2State();
-        if (stage >= 3) initStage3State();
+        if (stage === 2) {
+            initStage2State();
+            initProductionState();
+        }
         STAGE = stage;
         document.getElementById("loading").style.display = "none";
         document.getElementById("sections").style.display = "block";
@@ -3933,9 +3855,6 @@
             TEMPLATE_PHASE = false;
             TEMPLATE_SUBMITTING = false;
             enterStage(REC, forceStage || stageNumber(REC));
-            if (REC._already_confirmed) {
-                document.getElementById("confirm-status").textContent = t("already_confirmed");
-            }
             return REC;
         });
     }
@@ -4045,12 +3964,17 @@
             else confirm();
         });
 
-        // Session is the first network read. New Generate runs expose an
-        // independent Step-3 template phase; old sessions omit it (or report
-        // `strategist`) and retain the existing Stage-1-first behavior.
+        // Session is the first network read. Explicit template requests expose
+        // Step 3; ordinary free design reports `strategist` and starts with
+        // Stage 1.
         fetchJson("/api/session", "session").catch(function () {
             return { phase: "strategist" };
         }).then(function (session) {
+            if (session && session.status === "done") {
+                document.getElementById("loading").style.display = "none";
+                showConfirmedOverlay();
+                return null;
+            }
             if (session && session.phase === "template") {
                 return loadTemplateUi(session).catch(function (err) {
                     showError(t("template_load_error") + " " +

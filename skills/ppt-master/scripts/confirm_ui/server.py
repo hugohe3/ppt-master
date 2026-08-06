@@ -2,9 +2,9 @@
 """
 PPT Master - Template and Strategist confirmation UI Server (Steps 3-4)
 
-Lightweight Flask backend for the independent Step-3 template selection and
-interactive Step-4 Strategist confirmation page. The agent writes template
-input to ``<project>/confirm_ui/template_options.json``; template selection is
+Lightweight Flask backend for conditional Step-3 template selection and the
+interactive Step-4 Strategist confirmation page. When triggered, the agent
+writes ``<project>/confirm_ui/template_options.json``; template selection is
 persisted separately from the Strategist contract. Strategist writes each stage to
 ``<project>/confirm_ui/recommendations.stageN.json``; this server selects the
 current stage from ``result.json`` and renders it as a clickable page (color
@@ -47,7 +47,6 @@ import threading
 import time
 import urllib.error
 import urllib.request
-import uuid
 import webbrowser
 from pathlib import Path
 from typing import Optional
@@ -88,11 +87,9 @@ LOCK_FILE_NAME = '.confirm_ui.lock'
 
 # Round-trip/session files, all under <project_path>/confirm_ui/.
 CONFIRM_DIR_NAME = 'confirm_ui'
-LEGACY_RECOMMENDATIONS_NAME = 'recommendations.json'
 RECOMMENDATION_STAGE_NAMES = {
     1: 'recommendations.stage1.json',
     2: 'recommendations.stage2.json',
-    3: 'recommendations.stage3.json',
 }
 RESULT_NAME = 'result.json'
 SESSION_NAME = 'session.json'
@@ -585,6 +582,12 @@ def _read_template_selection(selection_file: Path) -> dict:
     """Read a selection and revalidate it against current indexed options."""
     data = _read_json_object(selection_file)
     _validate_template_selection(data)
+    options_file = selection_file.parent / TEMPLATE_OPTIONS_NAME
+    if not _is_newer(selection_file, options_file):
+        raise ValueError(
+            f'{TEMPLATE_SELECTION_NAME} must be confirmed after the current '
+            f'{TEMPLATE_OPTIONS_NAME}'
+        )
     options, candidates = _build_template_options(selection_file.parent)
     if data['options_sha256'] != options['options_sha256']:
         raise ValueError(
@@ -639,7 +642,13 @@ def _read_template_handoff(project_path: Path, handoff_file: Path) -> dict:
     """Read a handoff and bind it to the current selection and installed state."""
     data = _read_json_object(handoff_file)
     _validate_template_handoff(data)
-    selection = _read_template_selection(handoff_file.parent / TEMPLATE_SELECTION_NAME)
+    selection_file = handoff_file.parent / TEMPLATE_SELECTION_NAME
+    selection = _read_template_selection(selection_file)
+    if not _is_newer(handoff_file, selection_file):
+        raise ValueError(
+            f'{TEMPLATE_HANDOFF_NAME} must be completed after the current '
+            f'{TEMPLATE_SELECTION_NAME}'
+        )
     if data['mode'] != selection['mode']:
         raise ValueError(f'{TEMPLATE_HANDOFF_NAME} mode does not match selection')
     if data['selection_sha256'] != selection['selection_sha256']:
@@ -705,9 +714,13 @@ def _complete_template_phase(project_path: Path) -> int:
 
 
 def _reset_template_phase(confirm_dir: Path) -> int:
-    """Remove only the two mutable Step-3 receipts so the user may reselect."""
+    """Remove the one-run Step-3 artifacts before a fresh UI lifecycle."""
     removed = []
-    for filename in (TEMPLATE_SELECTION_NAME, TEMPLATE_HANDOFF_NAME):
+    for filename in (
+        TEMPLATE_HANDOFF_NAME,
+        TEMPLATE_SELECTION_NAME,
+        TEMPLATE_OPTIONS_NAME,
+    ):
         path = confirm_dir / filename
         try:
             path.unlink()
@@ -718,9 +731,9 @@ def _reset_template_phase(confirm_dir: Path) -> int:
             logger.error('cannot remove %s: %s', path, exc)
             return 1
     if removed:
-        logger.info('reset template phase receipts: %s', ', '.join(removed))
+        logger.info('reset template phase artifacts: %s', ', '.join(removed))
     else:
-        logger.info('template phase receipts already absent')
+        logger.info('template phase artifacts already absent')
     return 0
 
 
@@ -749,8 +762,8 @@ def _template_stage1_ready_error(project_path: Path, confirm_dir: Path) -> Optio
         stage1_data = _read_json_object(stage1_file)
         if _recommendation_stage(stage1_data) != 1:
             return f'{stage1_file.name} does not declare stage1'
-        if stage1_file.stat().st_mtime_ns < handoff_file.stat().st_mtime_ns:
-            return f'{stage1_file.name} is older than {TEMPLATE_HANDOFF_NAME}'
+        if not _is_newer(stage1_file, handoff_file):
+            return f'{stage1_file.name} must be newer than {TEMPLATE_HANDOFF_NAME}'
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         return f'cannot validate fresh Stage 1 recommendations: {exc}'
     return None
@@ -821,6 +834,40 @@ def _confirmation_launch_error(
 ) -> Optional[str]:
     """Return why neither the template phase nor current Strategist stage can launch."""
     options_file = confirm_dir / TEMPLATE_OPTIONS_NAME
+    result_file = confirm_dir / RESULT_NAME
+    result_stage = _result_stage(result_file)
+    fresh_stage1 = _fresh_stage1_restart(confirm_dir)
+    fresh_template_options = _fresh_template_restart(confirm_dir)
+    if (
+        result_file.exists()
+        and fresh_stage1
+        and options_file.exists()
+        and not fresh_template_options
+    ):
+        return (
+            f'{TEMPLATE_OPTIONS_NAME} belongs to an earlier Confirm UI run — '
+            'run --reset-template-phase before launching fresh Stage 1'
+        )
+    if (
+        result_file.exists()
+        and result_stage is None
+        and not fresh_stage1
+        and not fresh_template_options
+    ):
+        return (
+            f'{RESULT_NAME} is not a current stage1/final receipt — write fresh '
+            f'template options or {RECOMMENDATION_STAGE_NAMES[1]} before '
+            'starting a new run'
+        )
+    if (
+        result_stage == 'final'
+        and not fresh_stage1
+        and not fresh_template_options
+    ):
+        return (
+            'the previous Confirm UI run is complete — write fresh template '
+            f'options or {RECOMMENDATION_STAGE_NAMES[1]} before starting a new one'
+        )
     if options_file.exists():
         try:
             _build_template_options(confirm_dir)
@@ -991,11 +1038,6 @@ def _wait_for_result(
             except OSError:
                 pass
 
-        skip_error = _stage_skip_error(result_file.parent)
-        if skip_error:
-            logger.error('%s', skip_error)
-            return 2
-
         returncode = proc.poll()
         if returncode is not None:
             logger.error('confirm UI exited before a fresh result was written')
@@ -1048,43 +1090,43 @@ def _wait_for_template_selection(
 
 
 def _result_stage(result_file: Path) -> Optional[str]:
-    """Return the canonical ``stage`` field of result.json, or None."""
+    """Return the current result stage (Stage 1 or final), or None."""
     if not result_file.is_file():
         return None
     try:
         data = _read_json_object(result_file)
     except (OSError, json.JSONDecodeError, ValueError):
         return None
-    return _stage_key(data.get('stage'))
+    stage = _stage_key(data.get('stage'))
+    status = data.get('status')
+    if stage == 'stage1' and status == 'stage1-confirmed':
+        return stage
+    if stage == 'final' and status == 'confirmed':
+        return stage
+    return None
 
 
 def _stage_key(value: object) -> Optional[str]:
-    """Normalize current stage names while accepting legacy tier values."""
+    """Normalize the two current recommendation/result stage names."""
     if value is None:
         return None
     raw = str(value).strip().lower()
-    if raw in {'1', 'stage1', 'tier1'}:
+    if raw == 'stage1':
         return 'stage1'
-    if raw in {'2', 'stage2', 'tier2'}:
+    if raw == 'stage2':
         return 'stage2'
-    if raw in {'3', 'stage3', 'tier3'}:
-        return 'stage3'
     if raw == 'final':
         return 'final'
     return None
 
 
 def _recommendation_stage(data: dict) -> int:
-    """Return a recommendation payload's stage, with legacy tier fallback."""
+    """Return a recommendation payload's declared stage."""
     stage = _stage_key(data.get('stage'))
-    if not stage and 'tier' in data:
-        stage = _stage_key(data.get('tier'))
     if stage == 'stage1':
         return 1
     if stage == 'stage2':
         return 2
-    if stage == 'stage3':
-        return 3
     return 0
 
 
@@ -1094,28 +1136,22 @@ def _stage_name(number: Optional[int]) -> Optional[str]:
         return 'stage1'
     if number == 2:
         return 'stage2'
-    if number == 3:
-        return 'stage3'
     return None
 
 
 def _result_stage_number(stage: Optional[str]) -> int:
-    """Return result progression: stage1=1, stage2=2, final=4."""
+    """Return result progression: stage1=1, final=2."""
     if stage == 'stage1':
         return 1
-    if stage == 'stage2':
-        return 2
     if stage == 'final':
-        return 4
+        return 2
     return 0
 
 
 def _expected_recommendation_stage(result_stage: Optional[str]) -> int:
     """Return the recommendation stage that follows the current result."""
-    if result_stage == 'stage1':
+    if result_stage in {'stage1', 'final'}:
         return 2
-    if result_stage in {'stage2', 'final'}:
-        return 3
     return 1
 
 
@@ -1124,31 +1160,36 @@ def _stage_recommendations_path(confirm_dir: Path, stage_number: int) -> Path:
     return confirm_dir / RECOMMENDATION_STAGE_NAMES[stage_number]
 
 
-def _active_recommendations_path(confirm_dir: Path) -> Path:
-    """Resolve the recommendation file for the current confirmation stage.
+def _is_newer(path: Path, baseline: Path) -> bool:
+    """Return whether ``path`` was authored after ``baseline``."""
+    try:
+        return path.stat().st_mtime_ns > baseline.stat().st_mtime_ns
+    except OSError:
+        return False
 
-    Once any stage-specific file exists, the legacy single-file input is ignored.
-    If the expected stage is missing but a later stage exists, return that later
-    file so the existing stage-skip guard can report the ordering error.
-    """
+
+def _fresh_stage1_restart(confirm_dir: Path) -> bool:
+    """Return whether a newly authored Stage 1 starts a fresh UI session."""
+    stage1_file = _stage_recommendations_path(confirm_dir, 1)
+    result_file = confirm_dir / RESULT_NAME
+    return _is_newer(stage1_file, result_file)
+
+
+def _fresh_template_restart(confirm_dir: Path) -> bool:
+    """Return whether fresh template options start a new UI session."""
+    return _is_newer(
+        confirm_dir / TEMPLATE_OPTIONS_NAME,
+        confirm_dir / RESULT_NAME,
+    )
+
+
+def _active_recommendations_path(confirm_dir: Path) -> Path:
+    """Resolve the recommendation file for the current two-stage session."""
+    if _fresh_stage1_restart(confirm_dir) or _fresh_template_restart(confirm_dir):
+        return _stage_recommendations_path(confirm_dir, 1)
     result_stage = _result_stage(confirm_dir / RESULT_NAME)
     expected_stage = _expected_recommendation_stage(result_stage)
-    expected_file = _stage_recommendations_path(confirm_dir, expected_stage)
-    staged_files = {
-        stage_number: _stage_recommendations_path(confirm_dir, stage_number)
-        for stage_number in RECOMMENDATION_STAGE_NAMES
-    }
-    if any(path.exists() for path in staged_files.values()):
-        if expected_file.exists():
-            return expected_file
-        for stage_number in range(expected_stage + 1, 4):
-            candidate = staged_files[stage_number]
-            if candidate.exists():
-                return candidate
-        return expected_file
-
-    legacy_file = confirm_dir / LEGACY_RECOMMENDATIONS_NAME
-    return legacy_file if legacy_file.exists() else expected_file
+    return _stage_recommendations_path(confirm_dir, expected_stage)
 
 
 def _read_active_recommendations(
@@ -1168,50 +1209,16 @@ def _read_active_recommendations(
                 f'{filename} must declare stage={_stage_name(stage_number)}, '
                 f'found {_stage_name(actual_stage) or "absent"}'
             )
+        if stage_number == 2:
+            result_file = confirm_dir / RESULT_NAME
+            if _result_stage(result_file) == 'stage1':
+                if not _is_newer(rec_file, result_file):
+                    raise ValueError(
+                        f'{filename} must be authored after the current '
+                        'Stage-1 confirmation'
+                    )
         break
     return rec_file, data
-
-
-def _stage_skip(rec_stage_number: int, result_stage: Optional[str]) -> bool:
-    """Detect a staged recommendation running ahead of the confirmed progression.
-
-    Stages confirm strictly in order (stage1 → stage2 → stage3): a
-    recommendation may only run one stage past the last confirmed result, so
-    e.g. a ``stage3`` file while only stage 1 is confirmed is a skip — the
-    page must not render it (an active template never exempts stage 2).
-    Legacy single-pass recommendations (no ``stage``) are not staged and are
-    exempt, as is any state after the final confirmation.
-    """
-    if rec_stage_number <= 1 or result_stage == 'final':
-        return False
-    return rec_stage_number > _result_stage_number(result_stage) + 1
-
-
-def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
-    """Return a directive error when the active recommendation skips a stage."""
-    try:
-        rec_file, rec_data = _read_active_recommendations(confirm_dir)
-    except (OSError, json.JSONDecodeError, ValueError):
-        return None
-    rec_stage_number = _recommendation_stage(rec_data)
-    result_stage = _result_stage(confirm_dir / RESULT_NAME)
-    if not _stage_skip(rec_stage_number, result_stage):
-        return None
-    expected = _stage_name(_result_stage_number(result_stage) + 1)
-    reattach = (
-        '--wait-only --wait-stage stage1'
-        if expected == 'stage1'
-        else '--wait-only --wait-stage stage2'
-    )
-    expected_file = RECOMMENDATION_STAGE_NAMES[
-        _expected_recommendation_stage(result_stage)
-    ]
-    return (
-        f'stage skip detected: {rec_file.name} is {_stage_name(rec_stage_number)} but the last '
-        f'confirmed result is {result_stage or "absent"} — the page will not render a skipped stage. '
-        f'Stages confirm in order and an active template does not exempt stage2 (generate-pptx Step 4). '
-        f'Write the missing {expected_file} recommendations, then re-run with {reattach}.'
-    )
 
 
 def _template_confirmation_required(project_path: Path) -> bool:
@@ -1577,14 +1584,7 @@ def _submission_stage_error(
 
     rec_stage_number = _recommendation_stage(recommendations)
     if rec_stage_number == 0:
-        if template_required:
-            return (
-                'an installed template requires the Stage 1 → Stage 2 → Stage 3 '
-                'flow; legacy single-pass confirmation is not allowed'
-            )
-        if submitted_stage not in {None, 'stage3', 'final'}:
-            return 'legacy single-pass recommendations accept only a final submission'
-        return None
+        return 'recommendations must declare stage1 or stage2'
 
     if rec_stage_number == 1:
         language_error = _primary_language_error(recommendations)
@@ -1626,25 +1626,27 @@ def _submission_stage_error(
 
     allowed_submissions = {
         1: {'stage1'},
-        2: {'stage2'},
-        3: {'stage3', 'final'},
+        2: {'final'},
     }
     if submitted_stage not in allowed_submissions[rec_stage_number]:
-        expected = 'final' if rec_stage_number == 3 else _stage_name(rec_stage_number)
+        expected = 'final' if rec_stage_number == 2 else 'stage1'
         return (
             f'confirmation stage mismatch: {rec_file.name} is '
             f'{_stage_name(rec_stage_number)}, so the submitted stage must be '
             f'{expected}'
         )
 
-    previous_stage = _result_stage(confirm_dir / RESULT_NAME)
+    previous_stage = (
+        None
+        if _fresh_stage1_restart(confirm_dir)
+        else _result_stage(confirm_dir / RESULT_NAME)
+    )
     allowed_predecessors = {
-        1: {None, 'stage1', 'stage2', 'final'},
-        2: {'stage1', 'stage2'},
-        3: {'stage2', 'final'},
+        1: {None},
+        2: {'stage1'},
     }
     if previous_stage not in allowed_predecessors[rec_stage_number]:
-        expected_previous = 'stage1' if rec_stage_number == 2 else 'stage2'
+        expected_previous = 'stage1' if rec_stage_number == 2 else 'no prior result'
         return (
             f'confirmation predecessor mismatch: {_stage_name(rec_stage_number)} '
             f'requires a confirmed {expected_previous} result, found '
@@ -1735,8 +1737,7 @@ def _expected_result_stage(confirm_dir: Path) -> str:
         return 'final'
     return {
         1: 'stage1',
-        2: 'stage2',
-        3: 'final',
+        2: 'final',
     }.get(_recommendation_stage(recommendations), 'final')
 
 
@@ -1781,37 +1782,32 @@ def _build_session_state(
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             rec_error = str(exc)
 
-    result_stage = _result_stage(result_file)
+    fresh_restart = (
+        _fresh_stage1_restart(confirm_dir)
+        or _fresh_template_restart(confirm_dir)
+    )
+    result_stage = None if fresh_restart else _result_stage(result_file)
     result_stage_number = _result_stage_number(result_stage)
-    stage_skip = _stage_skip(rec_stage_number, result_stage)
 
-    # A skipped stage is never presented: the page keeps its "deriving…" state
-    # (waiting_agent) until the AI creates the missing stage file.
     if result_stage == 'final':
         expected_stage_number = None
         status = 'done'
         current_stage = 'final'
-    elif result_stage == 'stage2':
-        expected_stage_number = 3
-        status = 'ready_user' if rec_stage_number >= 3 else 'waiting_agent'
-        current_stage = _stage_name(rec_stage_number) if rec_stage_number >= 3 else 'stage2'
     elif result_stage == 'stage1':
         expected_stage_number = 2
-        ready = rec_stage_number >= 2 and not stage_skip
+        ready = rec_stage_number == 2
         status = 'ready_user' if ready else 'waiting_agent'
-        current_stage = _stage_name(rec_stage_number) if ready else 'stage1'
+        current_stage = 'stage2' if ready else 'stage1'
     else:
-        expected_stage_number = 1 if stage_skip else (rec_stage_number or 1)
-        ready = bool(rec_stage_number) and not stage_skip
+        expected_stage_number = 1
+        ready = rec_stage_number == 1
         status = 'ready_user' if ready else 'waiting_agent'
-        current_stage = rec_stage if ready else 'stage1'
+        current_stage = 'stage1'
 
     session = {
-        'session_id': previous.get('session_id') or uuid.uuid4().hex,
         'phase': 'strategist',
         'status': status,
         'current_stage': current_stage,
-        'stage_skip': stage_skip,
         'expected_stage': _stage_name(expected_stage_number),
         'expected_stage_number': expected_stage_number,
         'recommendation_stage': rec_stage,
@@ -1929,9 +1925,9 @@ def _sync_session_state(
 
 
 # Earlier-stage choices are not rendered on later pages, so their values live
-# only in browser STATE and would be lost on refresh. Fold them from result.json
-# into the served recommendations so a refresh / reopen resumes from the user's
-# actual communication contract and complete deck-solution choices.
+# only in browser STATE and would be lost on an in-run refresh. Fold them from
+# result.json into Stage-2 recommendations so the same live run resumes from the
+# user's actual communication contract and complete deck-solution choices.
 _CONTRACT_RECOMMEND_KEYS = (
     'canvas',
 )
@@ -1943,18 +1939,6 @@ _CONTRACT_VALUE_KEYS = (
     'delivery_context',
     'artifact_afterlife',
     'content_divergence',
-)
-_DECK_DIRECTION_RECOMMEND_KEYS = (
-    'delivery_purpose',
-    'mode',
-    'visual_style',
-    'icons',
-    'image_usage',
-)
-_PRODUCTION_RECOMMEND_KEYS = (
-    'formula_policy',
-    'image_ai_path',
-    'generation_mode',
 )
 _PROACTIVE_EXECUTION_DEFAULTS = {
     'proactive_speaker_notes': True,
@@ -2005,6 +1989,8 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
         res = _read_json_object(result_file)
     except (OSError, json.JSONDecodeError, ValueError):
         return
+    if _result_stage(result_file) != 'stage1':
+        return
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
         recommend = data['recommend'] = {}
@@ -2022,78 +2008,25 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     for key in _CONTRACT_VALUE_KEYS:
         if key in res:
             data[key] = {'value': res.get(key) or ''}
-    if _recommendation_stage(data) < 3:
-        return
-    for key in _DECK_DIRECTION_RECOMMEND_KEYS:
-        if res.get(key) not in (None, ''):
-            recommend[key] = res[key]
-    if 'page_count' in res:
-        data['page_count'] = {'value': res.get('page_count') or ''}
-    if 'image_notes' in res:
-        data['image_notes'] = {'value': res.get('image_notes') or ''}
-    if 'template_application' in res:
-        data['template_application'] = {
-            'value': res.get('template_application') or '',
-        }
-    if isinstance(res.get('color'), dict):
-        data['color'] = {'selected': 0, 'candidates': [res['color']]}
-    if isinstance(res.get('typography'), dict):
-        data['typography'] = {'selected': 0, 'candidates': [res['typography']]}
-    if isinstance(res.get('image_strategy'), dict):
-        data['image_strategy'] = {
-            'selected': 0,
-            'candidates': [res['image_strategy']],
-        }
-    custom_candidates = data.get('custom_candidates')
-    if not isinstance(custom_candidates, dict):
-        custom_candidates = {}
-        data['custom_candidates'] = custom_candidates
-    for field, behavior_field in (
-        ('mode', 'mode_behavior'),
-        ('visual_style', 'visual_style_behavior'),
-    ):
-        behavior = res.get(behavior_field)
-        if res.get(field) != 'custom' or not str(behavior or '').strip():
-            continue
-        candidate = custom_candidates.get(field)
-        if not isinstance(candidate, dict):
-            candidate = {}
-        candidate['behavior'] = behavior
-        custom_candidates[field] = candidate
-    image_strategy = res.get('image_strategy')
-    if isinstance(image_strategy, dict) and image_strategy.get('rendering') == 'custom':
-        custom_candidates['image_strategy'] = image_strategy
-    # Stage 3 must retain its own production recommendations until final
-    # confirmation. A final-result reopen reflects those confirmed mechanics.
-    # Legacy single-pass results have no stage but do carry status=confirmed.
-    result_stage = _stage_key(res.get('stage'))
-    is_final = result_stage == 'final' or (
-        result_stage is None and res.get('status') == 'confirmed'
-    )
-    if not is_final:
-        return
-    for key in _PRODUCTION_RECOMMEND_KEYS:
-        if res.get(key) not in (None, ''):
-            recommend[key] = res[key]
-    if 'refine_spec' in res:
-        data['refine_spec'] = {'value': bool(res.get('refine_spec'))}
-    for key, default in _PROACTIVE_EXECUTION_DEFAULTS.items():
-        data[key] = {'value': res.get(key, default)}
 
 
 def _apply_locked_recommendations(
     result: dict,
     recommendations_file: Path,
     previous_result_file: Path,
+    *,
+    carry_previous: bool,
 ) -> dict:
     """Restore profile-locked fields and return locks for staged carry-over."""
     # This marker is server-owned; never accept a client-supplied carry-over map.
     result.pop(_LOCKED_RECOMMENDATIONS_KEY, None)
     locked_values = {}
-    try:
-        previous = _read_json_object(previous_result_file)
-    except (OSError, json.JSONDecodeError, ValueError):
-        previous = {}
+    previous = {}
+    if carry_previous:
+        try:
+            previous = _read_json_object(previous_result_file)
+        except (OSError, json.JSONDecodeError, ValueError):
+            previous = {}
     previous_locks = previous.get(_LOCKED_RECOMMENDATIONS_KEY)
     if isinstance(previous_locks, dict):
         locked_values.update(previous_locks)
@@ -2109,10 +2042,7 @@ def _apply_locked_recommendations(
 
     # Stage 1 starts a new contract and therefore replaces any stale locks left
     # by an earlier run. Later stages inherit those locks across server restarts.
-    if (
-        recommendations_loaded
-        and _recommendation_stage(recommendations) in {0, 1}
-    ):
+    if recommendations_loaded and _recommendation_stage(recommendations) == 1:
         locked_values = {}
     for key, field in recommendations.items():
         if key in _PROACTIVE_EXECUTION_DEFAULTS:
@@ -2146,11 +2076,6 @@ def _wait_only_for_result(
         if result_status is not None:
             return result_status
 
-        skip_error = _stage_skip_error(result_file.parent)
-        if skip_error:
-            logger.error('%s', skip_error)
-            return 2
-
         lock = _read_lock(lock_file)
         pid = _lock_pid(lock)
         if not pid or not _process_alive(pid):
@@ -2172,6 +2097,11 @@ def _wait_result_status(
     target_stage: str,
 ) -> Optional[int]:
     """Return a terminal wait status when the persisted result resolves the target."""
+    if (
+        _fresh_stage1_restart(result_file.parent)
+        or _fresh_template_restart(result_file.parent)
+    ):
+        return None
     current_stage = _result_stage(result_file)
     if current_stage == target_stage:
         logger.info('confirmation stage=%s received: %s', target_stage, result_file)
@@ -2569,6 +2499,18 @@ def create_app(
     @app.route('/api/recommendations')
     def get_recommendations():
         """Serve the Strategist-authored recommendations for this project."""
+        result_file = confirm_dir / RESULT_NAME
+        if (
+            _result_stage(result_file) == 'final'
+            and not _fresh_stage1_restart(confirm_dir)
+            and not _fresh_template_restart(confirm_dir)
+        ):
+            return jsonify({
+                'error': (
+                    'the current Confirm UI run is complete; write a fresh '
+                    f'{RECOMMENDATION_STAGE_NAMES[1]} before starting another'
+                ),
+            }), 409
         rec_file = _active_recommendations_path(confirm_dir)
         if not rec_file.exists():
             return jsonify({'error': f'{rec_file.name} not found'}), 404
@@ -2591,33 +2533,17 @@ def create_app(
                         f'{template_error}'
                     ),
                 }), 409
-        # Report whether a result already exists (re-open after confirm).
-        result_file = confirm_dir / RESULT_NAME
-        if _stage_skip(
-            _recommendation_stage(data),
-            _result_stage(result_file),
-        ):
-            return jsonify({
-                'error': _stage_skip_error(confirm_dir),
-            }), 409
-        data['_already_confirmed'] = result_file.exists()
         # Later stages render only downstream sections, so fold earlier confirmed
-        # choices from result.json back in. A refresh / reopen then re-inits from
+        # choices from result.json back in. An in-run refresh then re-inits from
         # the user's choices instead of catalog defaults.
         if rec_stage_number >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
-        if rec_stage_number > 0:
-            language_error = _canonicalize_primary_language(
-                data,
-                required=True,
-            )
-            if language_error:
-                return jsonify({'error': language_error}), 409
-        else:
-            # Legacy single-pass files remain permissive. Canonicalize only
-            # aliases/tags the shared helper already understands; an old prose
-            # value must never prevent the compatibility UI from opening.
-            _canonicalize_primary_language(data, required=False)
+        language_error = _canonicalize_primary_language(
+            data,
+            required=True,
+        )
+        if language_error:
+            return jsonify({'error': language_error}), 409
         try:
             template_required = _template_confirmation_required(project_path)
         except (OSError, json.JSONDecodeError, ValueError) as exc:
@@ -2639,7 +2565,7 @@ def create_app(
             recommendation_error = _stage2_design_directions_error(data)
             if recommendation_error:
                 return jsonify({'error': recommendation_error}), 409
-        if rec_stage_number in {0, 3}:
+        if rec_stage_number == 2:
             proactive_values, proactive_error = (
                 _resolve_proactive_execution_values(data)
             )
@@ -2734,14 +2660,14 @@ def create_app(
                 result['primary_language'] = main_language
             else:
                 result.pop('primary_language', None)
-        if stage == 'stage2' or rec_stage_number == 3:
+        if rec_stage_number == 2:
             solution_error = _stage2_solution_error(
                 result,
                 main_language=main_language,
             )
             if solution_error:
                 return jsonify({'error': solution_error}), 400
-        if stage not in {'stage1', 'stage2'}:
+        if rec_stage_number == 2:
             proactive_defaults, proactive_recommendation_error = (
                 _resolve_proactive_execution_values(current_recommendations)
             )
@@ -2760,25 +2686,16 @@ def create_app(
             result,
             rec_file,
             result_file,
+            carry_previous=rec_stage_number > 1,
         )
         if not template_required:
             result.pop('template_application', None)
             locked_values.pop('template_application', None)
-        if stage not in {'stage1', 'stage2'}:
-            proactive_result_error = _normalize_proactive_execution_result(
-                result,
-                proactive_defaults,
-            )
-            if proactive_result_error:
-                return jsonify({'error': proactive_result_error}), 400
         result.pop('template_reuse_scope', None)
         result.pop('template_adherence', None)
-        # Staged flow: Stage 1 / Stage 2 submits record intermediate choices but do
-        # NOT close the page. Only a final submit is a full confirmation. A
-        # payload with no stage is a legacy free-design single-pass confirmation.
-        if stage in {'stage1', 'stage2'}:
-            result['stage'] = stage
-            result['status'] = f'{stage}-confirmed'
+        if stage == 'stage1':
+            result['stage'] = 'stage1'
+            result['status'] = 'stage1-confirmed'
             if locked_values:
                 result[_LOCKED_RECOMMENDATIONS_KEY] = locked_values
         else:
@@ -2825,11 +2742,10 @@ def build_parser() -> argparse.ArgumentParser:
              'dead server on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
-        '--wait-stage', default='final', metavar='{template,stage1,stage2,final}',
+        '--wait-stage', default='final', metavar='{template,stage1,final}',
         help='Wait for the Step-3 template selection or this result.json stage '
              '(default: final). Use template after the initial template-phase '
-             'launch, stage1 after its Strategist handoff, and stage2 for the '
-             'direction handoff.',
+             'launch and stage1 after the communication-contract handoff.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
@@ -2853,8 +2769,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--reset-template-phase', action='store_true',
-        help='Agent-only: remove exactly template_selection.json and '
-             'template_handoff.json so the user may select again.',
+        help='Agent-only: remove exactly template_options.json, '
+             'template_selection.json, and template_handoff.json before a '
+             'fresh one-run UI lifecycle.',
     )
     return parser
 
@@ -2882,8 +2799,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 1
     raw_wait_stage = str(args.wait_stage).strip().lower()
     wait_stage = 'template' if raw_wait_stage == 'template' else _stage_key(raw_wait_stage)
-    if wait_stage not in {'template', 'stage1', 'stage2', 'final'}:
-        logger.error('--wait-stage must be template, stage1, stage2, or final')
+    if wait_stage not in {'template', 'stage1', 'final'}:
+        logger.error('--wait-stage must be template, stage1, or final')
         return 2
 
     template_control = args.complete_template_phase or args.reset_template_phase
