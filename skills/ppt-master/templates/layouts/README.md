@@ -44,19 +44,19 @@ kind of rule is never a mirror operation.
 
 ---
 
-## Trigger and identity boundary
+## Selection and identity boundary
 
-Selection follows the parent README's conditional
-[`generate-pptx`](../../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
-contract. Ordinary Default enters Stage 1 with free design; explicit template
-browsing/selection, an exact root, or a current Create Template handoff triggers
-Step 3. Its Layout choices come only from `layouts_index.json`; no directory
-scan or bare-ID/style-phrase match is allowed. Registered exact roots are
-`library`; other exact roots remain `explicit`.
-Choosing and confirming an entry triggers the conditional
+Selection follows the parent README's Default Stage-1
+[`generate-pptx`](../../workflows/generate-pptx.md) template-choice contract.
+Its Layout choices come only from `layouts_index.json`; no
+directory scan or bare-ID/style-phrase match is allowed. A supplied exact root
+appears in the same selector, defaults Stage 1 to template mode, and preselects
+that specific candidate only when it is the sole supplied root. Registered
+exact roots are `library`; other exact roots remain `explicit`.
+Choosing and confirming an entry runs the conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage, which owns path normalization, compatibility checks, installation, and
-fusion before Stage 1. Template-aware reading begins in final Stage 2 from the
+fusion after Stage 1 and before Stage 2. Template-aware reading begins in final Stage 2 from the
 installed project-local copy.
 Quick applies a supplied exact Layout root directly and otherwise uses free
 design. It uses installed prototypes as flat authoring inputs; reusable

@@ -15,16 +15,17 @@ Style is a fourth independent template kind alongside [`brands/`](../brands/), [
 
 These names are separate contracts. Style-only and Style + Brand naturally produce a flat application plan, while Style fused with a Layout or Deck may use structured reuse. `kind: style` therefore never forces the internal reuse scope when another workspace supplies structure.
 
-## Trigger, Precedence, and Fusion
+## Selection, Precedence, and Fusion
 
-Selection follows the parent README's conditional
-[`generate-pptx`](../../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
-contract. Ordinary Default enters Stage 1 with free design; explicit template
-browsing/selection, an exact root, or a current Create Template handoff triggers
-Step 3. Its Style choices come only from `styles_index.json`; no directory scan
-or bare-name match is allowed. A consulting label or visual description remains
-a brief and does not activate this workspace. Confirmation runs the
-common installation/fusion stage before Stage 1; template-aware reading begins
+Selection follows the parent README's Default Stage-1
+[`generate-pptx`](../../workflows/generate-pptx.md) template-choice contract.
+Its Style choices come only from `styles_index.json`; no
+directory scan or bare-name match is allowed. A supplied exact root appears in
+the same selector, defaults Stage 1 to template mode, and preselects that
+specific candidate only when it is the sole supplied root. A
+consulting label or visual description remains a brief and does not activate
+this workspace. A non-free confirmation runs the
+common installation/fusion stage after Stage 1 and before Stage 2; template-aware reading begins
 in final Stage 2 from the project-local copy. Quick applies a supplied exact
 Style root directly and otherwise uses free design; its current agent reads the
 installed copy before authoring flat pages.
@@ -92,7 +93,8 @@ Do not create empty `images/`, `icons/`, or `exports/` directories. Existing ini
 
 The discovery source of truth is [`styles_index.json`](./styles_index.json).
 Each entry is `style_id → { summary, keywords }`; the index never duplicates
-the full method or defaults. The explicitly triggered Step-3 page reads this
-file as its complete registered-Style catalog, and chat discovery returns exact roots from
-the same entries. Choosing and confirming an entry activates installation;
+the full method or defaults. The Default Stage-1 template controls read this
+file as their complete registered-Style catalog, and chat discovery returns
+exact roots from the same entries. Choosing an entry and submitting Stage 1
+activates installation;
 reading a name in ordinary prose does not.

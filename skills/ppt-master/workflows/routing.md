@@ -45,9 +45,8 @@ route selection. After selection, the route authority owns execution.
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
-| Default Generate has no explicit template-discovery/selection request, exact workspace root, or current Create Template handoff | Use free design and proceed directly to Stage 1; do not read template indexes or create template-selection artifacts |
-| Default Generate explicitly requests template discovery/selection, supplies an exact current workspace root, or receives a current Create Template handoff | Run the conditional Step-3 template-selection phase before Stage 1. The UI offers only index-registered library roots plus supplied explicit roots; confirmed non-free selections run [`apply-template-workspace`](./stages/apply-template-workspace.md) |
-| Explicit current brand/style/layout/deck workspace root | Default Generate preserves the exact-path path through Step 3; Quick Generate validates and installs it directly without Step 3 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
+| Default Generate reaches planning | Step 3 prepares template candidates without interaction. Stage 1 then confirms the communication contract and free-design/template choice together; only a confirmed non-free choice runs [`apply-template-workspace`](./stages/apply-template-workspace.md) before Stage 2 |
+| Explicit current brand/style/layout/deck workspace root | Default Generate preserves the exact path as a Stage-1 template candidate; Quick Generate validates and installs it directly without Steps 3–4 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | Existing generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
 | User explicitly requests spec refinement | Run [`refine-spec`](./stages/refine-spec.md) after Design Spec Gate 1 and before lock Gate 2 |
@@ -75,7 +74,7 @@ still requires the default lock-backed Generate pipeline.
 **Hard rule — no direct structure grafting**: An existing PPTX or SVG is never upgraded in place by adding Master/Layout/placeholder structure. If reusable native structure is required:
 
 1. Run [`create-template`](./create-template.md) to produce a separate validated workspace.
-2. Pass that workspace root to [`generate-pptx`](./generate-pptx.md) Step 3.
+2. Pass that workspace root to [`generate-pptx`](./generate-pptx.md) as a Stage-1 template candidate.
 3. Author new structured SVG pages whose Master/Layout contract exists from their first generated draft.
 4. Export a new PPTX from those pages.
 
@@ -87,7 +86,7 @@ When a PPTX already contains native Master/Layout parts, `create-template` mirro
 |---|---|
 | Raw PPTX called a template + new content | Fill Native PPTX unless the user explicitly asks for a reusable template workspace |
 | Any supported reference bundle or direct-text brief + reusable template request | Create Template |
-| Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Step 3 |
+| Current template workspace root + content | [`generate-pptx`](./generate-pptx.md) Stage-1 template choice |
 | Legacy-flat Brand/Layout/Deck root satisfying its current kind contract; Layout/Deck also require current structured SVGs | [`apply-template-workspace`](./stages/apply-template-workspace.md) compatibility reader; Style has no flat form |
 | Semantic-legacy or incomplete structured package | Create a new workspace through Create Template; do not migrate in place |
 | Request to add a master directly to an existing PPTX/SVG | Unsupported; explain the Create Template → Generate PPTX lifecycle |
@@ -130,11 +129,12 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 
 | User input | Behavior |
 |---|---|
-| No explicit template intent/root/handoff | Skip Step 3, use free design, and open Stage 1 directly without reading indexes |
-| Explicit template discovery or selection request | Enter Step 3; offer free design plus registered library workspaces from the four indexes below, then confirm and install before Stage 1 |
-| Explicit current workspace root containing `templates/design_spec.md` | Preserve it as an `explicit` Step-3 candidate; an exact registered-root match may be displayed as `library` |
-| Bare template/brand name or style label | Do not resolve it to a local path; treat it as a style brief |
-| “What templates exist?” in chat | List indexed workspace paths; selection still requires the user to return an exact root |
+| Default Generate | Step 3 prepares candidates only; Stage 1 confirms one communication contract plus either free design or template use in the same interaction |
+| Explicit current workspace root containing `templates/design_spec.md` | Preserve it as a Stage-1 candidate and initialize template mode; preselect that specific candidate only when it is the sole supplied root. An exact registered-root match may be displayed as `library` |
+| No exact workspace root and no explicit template intent | Initialize Stage 1 to free design; the user may switch to template mode and select an indexed workspace |
+| Explicit template intent or any exact workspace root | Initialize Stage 1 to template mode; exactly one root may be preselected, while multiple roots remain unselected candidates |
+| Bare template/brand name or style label without an explicit template-use request | Do not resolve it to a local path or preselect a template; treat it as a style brief. An explicit request to use templates still initializes template mode, but leaves the specific candidate for the user to choose |
+| “What templates exist?” in chat | List indexed workspace paths; Stage 1 still requires an explicit free-design/template choice |
 
 The default UI and chat discovery read only these indexes. Never scan the
 corresponding directories to construct or supplement the catalog:
@@ -146,12 +146,12 @@ corresponding directories to construct or supplement the catalog:
 | Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
 | Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
 
-**Hard rule — triggered selection precedes communication confirmation**: When
-Step 3 is triggered, confirm free design or selected roots and complete
-workspace validation/installation before Stage 1. In an ordinary free-design
-run, no selection phase exists and Stage 1 starts directly. Stage 2
-`template_application` decides how an already installed template is used; it
-never selects a template.
+**Hard rule — one Stage-1 confirmation, delayed template reading**: Author the
+communication recommendation without reading candidate workspaces. Stage 1
+confirms that contract and the template/free-design choice together. Only then
+validate/install selected roots and complete the handoff. Stage 2 waits for that
+handoff, reads only the installed project-local state, and decides how to apply
+it; it never reselects a template.
 
 **Forbidden — fuzzy resolution**: Never resolve a bare name to a local template
 directory on the user's behalf. A library choice comes from an index-derived

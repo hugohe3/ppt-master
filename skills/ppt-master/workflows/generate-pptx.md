@@ -6,7 +6,7 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 
 > Load only after [`routing.md`](./routing.md) selects Generate PPTX. This file owns the route's Step 1–7 sequence, gates, role switching, and mandatory commands.
 
-**Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → [Template Selection & Installation] → Strategist Structured Plan → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
+**Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → Template Candidate Preparation → Stage-1 Communication + Template Confirmation → [Template Installation] → Stage-2 Solution → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 **Generate-specific execution discipline**:
 
@@ -25,7 +25,7 @@ hand-authors SVG, runs one lockless final checker, and exports the final PPTX.
 It skips Strategist, Confirm UI, Design Spec/lock, the first-page gate, and
 `finalize_svg.py`.
 
-Quick never enters Step 3. When the request supplies at most one exact current
+Quick never enters Steps 3–4. When the request supplies at most one exact current
 workspace root for each Brand/Style/Layout/Deck kind, or the current
 conversation carries an exact Create Template handoff, Quick runs
 [`apply-template-workspace`](./stages/apply-template-workspace.md) directly and
@@ -62,7 +62,7 @@ pipeline; Quick applies templates while authoring complete flat pages.
 | Artifact ownership | [`artifact-ownership.md`](../references/artifact-ownership.md) | Owns fact channels, source/derived artifact boundaries, and regeneration rules |
 | Failure recovery | [`failure-recovery.md`](./governance/failure-recovery.md) | Owns stop/continue policy and resume pointers |
 | Confirm UI details | [`confirm_ui.md`](../scripts/docs/confirm_ui.md) | Owns the JSON schema, launcher behavior, staged-result contract, port strategy, and chat fallback details |
-| Step-3 template selection | [`apply-template-workspace.md`](./stages/apply-template-workspace.md) | Owns validation, installation, and fusion after the user confirms library or explicit workspace roots; skip only for confirmed free design |
+| Confirmed template application | [`apply-template-workspace.md`](./stages/apply-template-workspace.md) | Owns validation, installation, and fusion after Stage 1 confirms library or explicit workspace roots; skip for confirmed free design |
 
 ## Workflow
 
@@ -153,85 +153,74 @@ Direct supported bitmap inputs follow both boundaries: the original is archived 
 
 ---
 
-### Step 3: Conditional Template Discovery, Selection, and Installation
+### Step 3: Template Candidate Preparation
 
-**Scope**: Default Generate only, and only when the user explicitly asks to
-browse/select a template for this run, supplies an exact current workspace root,
-or returns an exact Create Template handoff in the current conversation. Quick
-Generate resolves exact supplied roots or free design inside its profile and
-never enters this Step or launches Confirm UI.
+**Scope**: Every Default Generate run. This is internal preparation only: do not
+open a page, ask a question, wait for a receipt, select a workspace, read a
+template spec/prototype, or install anything. Quick resolves exact supplied
+roots or free design inside its profile and skips this Step.
 
-**Default — free design without a stop**: When none of those triggers is present, use free design, do not read the four indexes, do not create any template-phase artifact, and proceed directly to Step 4 Stage 1. A bare template / brand name, style phrase, or vague template preference remains design brief text and never triggers fuzzy lookup or this phase.
-
-🚧 **GATE — only when triggered**: Step 2 complete; the project workspace exists. Finish the selected template path before authoring or confirming Stage 1. Template selection is not part of the Stage-1 communication contract.
-
-**Triggered UI phase**: When the selected confirmation surface is the page, open its template-selection phase first. Show one exclusive free-design choice, four single-select registered-workspace dropdowns (Brand / Style / Layout / Deck), and one single-select specified-root dropdown. Every dropdown has a `None` option. A non-empty dropdown exits free design; choosing free design clears all five dropdowns. Populate the registered dropdowns from exactly these discovery sources:
+Prepare the candidate boundary that Stage 1 will confirm. Registered candidates
+come from exactly these discovery sources:
 
 - `templates/brands/brands_index.json`
 - `templates/styles/styles_index.json`
 - `templates/layouts/layouts_index.json`
 - `templates/decks/decks_index.json`
 
-Derive each library root as `templates/<kind_dir>/<id>/` from its index entry. Never scan kind directories, infer unregistered entries, or resolve a bare name, brand mention, or style phrase to a path. The registered dropdowns may be combined across kinds, with at most one choice from each. The specified dropdown offers the exact roots supplied for this run and allows at most one choice. The server parses that workspace's declared `kind`; the specified choice may therefore coexist with one registered choice of the same kind and enter the existing two-workspace conflict gate. A path the user explicitly supplied remains an `explicit` selection unless its normalized root exactly equals an entry derived from the matching index, in which case the UI may present it as `library`. This source label records discovery provenance only; it never changes segment ownership, fusion precedence, validation, or installation behavior.
+Derive each library root as `templates/<kind_dir>/<id>/` from its index entry.
+Never scan kind directories, infer unregistered entries, or resolve a bare name,
+brand mention, or style phrase to a path. Preserve every exact root supplied for
+this run. A registered-root equality match remains `library`; every other exact
+root remains `explicit`. Candidate provenance never changes later validation,
+fusion, or precedence.
 
-**UI branch — executable sequence**: Resolve the confirmation surface under
-[`confirm_ui.md`](../scripts/docs/confirm_ui.md) before the first command. For
-the default page branch, first clear only the prior one-run template receipts
-(the command is idempotent), then write
+Resolve the confirmation surface under
+[`confirm_ui.md`](../scripts/docs/confirm_ui.md). In the UI branch, run
+`--reset-template-selection`, then write
 `<project_path>/confirm_ui/template_options.json` with schema version `1`,
-`phase: "template"`, the UI language, and every exact user/Create Template root
-as an absolute entry in `explicit_workspace_roots` (use an empty array when
-none were supplied). The server itself reads the four indexes above; do not copy
-library entries into this input. Then launch and wait:
+`phase: "template"`, the UI language, and all supplied exact roots as absolute
+`explicit_workspace_roots`; use an empty array when none were supplied. Also
+write required `default_mode`: `templates` when the user explicitly asks to use
+or browse templates or supplies any exact root, otherwise `free_design`. The
+server reads the four indexes itself. Do not launch it yet. In chat/delegated
+confirmation, retain the same candidate boundary in context and create no UI
+artifact.
 
-```bash
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --reset-template-phase
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
-# Post confirm_ui.md's actual URL + template-selection summary/chat fallback here.
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage template
-```
+Stage 1 initializes from `default_mode`, but the user can switch modes. Template
+mode alone expands the candidates and must eventually select at least one
+workspace. Exactly one supplied root may be preselected as an editable default;
+multiple supplied roots remain unselected candidates. `free_design` selects none.
 
-After the wait, read `confirm_ui/template_selection.json` exactly once and
-require `schema_version: 1`, `phase: "template"`, and `status: "confirmed"`.
-`mode: "free_design"` carries no selections; `mode: "templates"` carries the
-server-resolved exact roots with `source: "library"|"explicit"` and declared
-`kind`. It contains at most one library selection per kind plus at most one
-explicit selection. Keep
-the server live while applying selected workspaces and preparing Stage 1; the
-same page polls for `recommendations.stage1.json`. On a non-zero wait, re-check
-the receipt once, then follow `confirm_ui.md`'s chat fallback/switch contract.
+**Raw PPTX boundary**: A raw PPTX remains valid source material, but it is not a
+template workspace candidate. Raw PPTX plus new content uses
+[`template-fill-pptx`](./template-fill-pptx.md). To create a reusable workspace,
+run [`create-template`](./create-template.md), then return with the generated
+root. Never add Master/Layout/placeholder structure directly to an existing
+PPTX or SVG project.
 
-⛔ **BLOCKING — template selection**: Wait for the user to confirm free design or the selected roots. Do not expose Stage 1 before this choice closes.
-
-**Selected workspace path**: For every non-free selection, load and run [`apply-template-workspace.md`](./stages/apply-template-workspace.md) against the exact roots in the confirmed receipt (or their chat-equivalent selection). It validates all roots, resolves template-to-template segment ownership/collisions, and installs one project-local template state under `<project_path>/templates/` plus any real `<project_path>/images/` and `<project_path>/icons/` assets. It does not judge current-project fit or derive any Stage-1 field. Do not proceed until installation completes. Template-aware Strategist work from Stage 2 onward and later roles read only this installed project-local state, never the library or external source root.
-
-**UI handoff**: After free design closes, or after every selected workspace is
-installed, bind that completed state to the current selection before authoring
-Stage 1:
-
-```bash
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --complete-template-phase
-```
-
-This agent-only command writes `confirm_ui/template_handoff.json`. In template
-mode it refuses to succeed until `<project_path>/templates/design_spec.md`
-exists. Author `recommendations.stage1.json` only after this command returns
-zero; the server also requires Stage 1 to be authored after that handoff. Do
-not write the handoff manually.
-
-**Explicit-path and chat compatibility**: Preserve the exact-workspace-root path. An explicit root supplied in the request, selected in chat, or handed off by Create Template may be applied directly after the user confirms it; no index membership is required. The chat branch mirrors the same root decision without launching the page. A bare name remains ordinary brief text and never triggers slug lookup or fuzzy resolution. When the user explicitly asks what is available for this run in chat, list only the four indexes and require an exact returned root before installation.
-
-**Raw PPTX boundary**: A raw PPTX remains valid source material, but it is not a Step 3 workspace. Raw PPTX plus new content uses [`template-fill-pptx`](./template-fill-pptx.md). To create a reusable workspace, run [`create-template`](./create-template.md), then return with the generated root. Never add Master/Layout/placeholder structure directly to an existing PPTX or SVG project.
-
-**✅ Checkpoint — triggered path**: The user closed the template selector with free design, or every selected workspace passed validation/fusion and its complete consumed state now exists under the target project. In the UI branch, the matching `template_handoff.json` is ready; in the chat/delegated branch, the equivalent selection and installation state is retained in context without fabricating UI receipts. Proceed to Step 4 and author fresh Stage 1. The normal untriggered free-design path reaches Step 4 directly and creates none of these receipts.
+**✅ Checkpoint**: Candidate input is ready for the combined Stage-1
+confirmation. No template has been selected, read, validated, fused, or
+installed. Proceed to Step 4 without a user-visible stop.
 
 ---
 
 ### Step 4: Strategist Phase (MANDATORY in the default pipeline)
 
-🚧 **GATE**: Source preparation is complete. Either the conditional Step 3 was not triggered and free design is the default, or its selection is confirmed and every selected template state is validated and installed in the project. Stage 1 has not started before this point.
+🚧 **GATE**: Source preparation and Step-3 candidate preparation are
+complete. No template content has entered planning context and no template has
+been installed. Stage 1 has not started before this point.
 
-**Hard rule — Stage 1 is template-independent**: Author every Stage-1 recommendation from the user's current request, source facts, conversation constraints, and project-initialization state only. Do not read or use the Step-3 selection, installed template spec/prototypes/assets, fused segment owners, or any template canvas when recommending or confirming Stage 1. The project initialization canvas remains the Stage-1 starting value unless the current user/source context changes it. Template inspection and current-project fit begin only after Stage 1 is confirmed, while authoring Stage 2.
+**Hard rule — Stage 1 is template-independent**: Author every Stage-1
+communication recommendation from the user's current request, source facts,
+conversation constraints, and project-initialization state only. Candidate
+paths, index summaries, template specs/prototypes/assets, and template canvas
+are not recommendation evidence. Author the communication proposal before any
+chat-branch catalog listing. The project initialization canvas remains the
+Stage-1 starting value unless the current user/source context changes it.
+Template inspection and current-project fit begin only after Stage 1 confirms
+both the communication contract and template/free-design choice and any selected
+workspace has been installed.
 
 At Step-4 entry, load the always-required planning context directly in one
 batch: the role core, every canonical content-type source file defined below,
@@ -249,7 +238,7 @@ Then load only the extra role modules triggered by the current plan:
 
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
-| Stage 1 is confirmed and Step 3 installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
+| Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
 | The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
 
 Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Only an installed project-local template state loads the template module, and only after Stage 1 is confirmed; a bare template/style name does not.
@@ -264,62 +253,73 @@ Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after co
 
 **Confirmation orchestration**: field meaning and recommendation logic belong to the active Strategist modules; [`confirm_ui.md`](../scripts/docs/confirm_ui.md) owns the JSON schema, server lifecycle, staged-result contract, port behavior, and equivalent chat fallback.
 
-⛔ **BLOCKING**: The two-stage Strategist confirmation is the remaining always-on user gate unless explicitly delegated: Stage 1 confirms the communication contract, and final Stage 2 confirms the complete deck solution plus production mechanics. A triggered template selection is an earlier independent Step-3 gate, not Stage 1. An enabled `refine_spec` adds the one conditional chat gate after Design Spec Gate 1. In the UI branch, keep the Stage-1 handoff and final Stage-2 handoff in one turn, authoring Stage 2 only after the Stage-1 wait. In the chat branch, wait for an explicit user response at each stage. Author each stage once; submitted values—including blanks or unusual overrides—are authoritative.
+⛔ **BLOCKING**: The two-stage Strategist confirmation is the always-on user
+gate unless explicitly delegated. Stage 1 confirms the communication contract
+and, on the same screen or in the same chat turn, exactly one template mode:
+`free_design` or `templates`. Only `templates` expands the four registered-kind
+selectors plus supplied exact-root candidates, and it requires at least one
+selection. Final Stage 2 confirms the complete deck solution plus production
+mechanics only after the Stage-1 choice is installed or its free-design handoff
+is complete. An enabled `refine_spec` adds the one conditional chat gate after
+Design Spec Gate 1. Author each stage once; submitted values—including blanks or
+unusual overrides—are authoritative.
 
-**Confirmation ownership and surface**: Only the user confirms. Before a
-triggered Step-3 template phase or any confirmation server command, apply
+**Confirmation ownership and surface**: Only the user confirms. Before any
+confirmation server command, apply
 `confirm_ui.md`'s surface
 decision to this run's most recent explicit surface instruction and retain that
 branch as the owner specifies. A natural-language request or agreement to
 personally confirm in chat, or to avoid the page, selects the chat branch without
 a magic keyword; skip UI launch/wait commands and UI-authored result state.
 Explicit delegation is a separate higher-priority branch. With no surface
-instruction, use the default UI branch: a triggered Step 3 closes template
-selection/installation first; ordinary free design launches directly with fresh
-Stage 1 and creates no template-selection artifacts. A chat-question tool alone
-does not replace that default. The agent may author recommendations, operate the
+instruction, use the default UI branch. A chat-question tool alone does not
+replace that default. The agent may author recommendations, operate the
 server, read state, and apply a selected template, but MUST NOT confirm on the
 user's behalf, automate submission, synthesize a payload, or write/replace user
-result state. Delegation applies only to this run: show the complete selection
-plus two-stage summary and never fabricate UI results. Silence confirms nothing.
+result state. Delegation applies only to this run: make the Stage-1 communication
+and template decision, install any selection, then derive and show the complete
+Stage-2 summary without fabricating UI results. Silence confirms nothing.
 
 **UI branch files and completion evidence:**
 
 | Input file (only the active unconfirmed Strategist stage may be overwritten) | Agent writes | Completion evidence |
 |---|---|---|
-| `confirm_ui/template_options.json` *(triggered Step 3 only)* | Step-3 schema/language plus exact explicit roots; library entries remain server-owned index data | User-owned `template_selection.json` with `phase: template`, `status: confirmed` |
-| `confirm_ui/template_handoff.json` *(triggered Step 3 only)* | Only through `--complete-template-phase`, after free-design closure or successful project-local installation | `status: ready`, bound to the current selection hash |
-| `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only | `status: stage1-confirmed` |
+| `confirm_ui/template_options.json` | Candidate schema/language plus supplied exact roots; library entries remain server-owned index data | Stage-1 submission writes user-owned `template_selection.json` with `phase: template`, `status: confirmed` |
+| `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only; no template-derived recommendation | The same submission writes `result.json` with `status: stage1-confirmed` |
+| `confirm_ui/template_handoff.json` | Only through `--complete-template-selection`, after the Stage-1 selection and free-design closure or successful installation | `status: ready`, bound to the current selection hash; prerequisite for Stage 2 |
 | `confirm_ui/recommendations.stage2.json` | `stage: stage2`; complete deck solution plus conditional AI path, formula policy, generation mode, refine-spec, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
 
 If the user rejects the current recommendation before confirming it, regenerate by overwriting that same stage file and have the page refresh; do not create revision-suffixed files. This never authorizes one stage file to carry another stage's payload.
 
-**UI branch only** — If the triggered Step 3 ran, retain its live server and
-bound `template_handoff.json`. On the ordinary free-design path, clear any
-prior one-run template artifacts before authoring Stage 1:
+**UI branch only** — Step 3 wrote `template_options.json` but did not launch or
+wait. Create `confirm_ui/recommendations.stage1.json` without reading template
+candidate content, then launch the combined Stage-1 page and post
+`confirm_ui.md`'s required communication + template-choice summary/fallback:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --reset-template-phase
-```
-
-Then create `confirm_ui/recommendations.stage1.json`. The triggered path is
-already live; the ordinary path now launches directly from Stage 1:
-
-```bash
-# Ordinary free-design path only; triggered Step 3 keeps its existing server.
 python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon
+python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
 ```
 
-Post `confirm_ui.md`'s actual URL plus the required Stage-1 summary and chat
-fallback, then:
+The single Stage-1 submission writes both `result.json` and
+`template_selection.json`; neither replaces the other. Read each exactly once.
+Require a confirmed communication result and either `free_design` with no roots
+or `templates` with at least one server-resolved root.
 
-1. Run in order:
+1. For `templates`, load and run
+   [`apply-template-workspace.md`](./stages/apply-template-workspace.md) against
+   every confirmed exact root. It validates/fuses them and installs one
+   project-local state under `templates/` plus any real `images/` and `icons/`.
+   For `free_design`, skip installation. Then bind the completed state:
 
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
+   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --complete-template-selection
    ```
 
-2. Read Stage 1. Only now inspect the installed template state and apply
+   This agent-only command writes `template_handoff.json`; do not hand-author
+   it. The server requires this handoff before Stage 2.
+
+2. Only now inspect installed template state and apply
    `strategist-template.md` when active. Derive the complete deck solution and
    production defaults, loading the triggered image-planning bundle above.
    Create `confirm_ui/recommendations.stage2.json` without changing Stage 1;
@@ -348,13 +348,19 @@ apply `confirm_ui.md`'s in-run switch procedure. Continue the unresolved current
 stage and all remaining stages in chat; do not enter UI interruption recovery
 or relaunch the server.
 
-**Chat branch** — run the same two stages in chat with explicit user
-responses, retaining one visible cumulative confirmation summary as the
-equivalent final state; do not create or require a UI result. If the user
-explicitly delegated confirmation, consolidate the same two stages into one
-AI-authored summary. Otherwise the no-selection UI branch uses the always-on
-Stage-1 chat handoff, which keeps direct-chat fallback visible without replacing
-UI confirmation.
+**Chat branch** — present the template mode and Stage-1 communication contract
+together and wait for one explicit response. Show registered candidates only
+when the user chooses `templates`; supplied exact roots remain available in that
+expanded choice. Initialize free design for an ordinary request and template
+mode for explicit template intent or any exact root; with exactly one root it
+may also be the preselected candidate, while multiple roots remain unselected.
+Do not create UI receipts
+or call `--complete-template-selection`. After confirmation, install/fuse any
+selected roots (or close free design) and retain that completed state in context
+as the Stage-2 gate. Then run final Stage 2 in chat and retain one visible
+cumulative summary as the equivalent final state. Under explicit delegation,
+make the same Stage-1 decision, install it, derive Stage 2, and present one
+complete AI-authored summary.
 
 ⛔ **GATE — final state → Design Spec → conditional review → lock.** Consume every present final value once into the complete, audited `design_spec.md` under [`strategist.md`](../references/strategist.md) §6.2. Preserve each owning semantic type and all production, typography, image-source, and `image_notes` obligations; acceptance never turns a Reference/Permission into a Literal. Do not reopen `result.json`.
 

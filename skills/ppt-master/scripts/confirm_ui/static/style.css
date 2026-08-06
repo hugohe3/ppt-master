@@ -601,8 +601,13 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 .subfield { margin-top: 14px; }
 .subfield-label { font-size: 12.5px; color: var(--muted); margin-bottom: 7px; }
 
-/* ---- Step 3 template selection ---- */
-.template-free-choice {
+/* ---- Stage 1 template selection ---- */
+.template-mode-choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.template-mode-choice {
     width: 100%;
     display: flex;
     align-items: flex-start;
@@ -616,14 +621,14 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     cursor: pointer;
     transition: border-color .12s ease, background .12s ease, box-shadow .12s ease;
 }
-.template-free-choice:hover {
+.template-mode-choice:hover {
     border-color: var(--accent);
 }
-.template-free-choice:focus-visible {
+.template-mode-choice:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
-.template-free-choice.selected {
+.template-mode-choice.selected {
     border-color: var(--accent);
     background: var(--accent-soft);
     box-shadow: 0 0 0 1px var(--accent);
@@ -638,25 +643,38 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     background: #fff;
     box-shadow: inset 0 0 0 3px #fff;
 }
-.template-free-choice.selected .template-choice-radio {
+.template-mode-choice.selected .template-choice-radio {
     border-color: var(--accent);
     background: var(--accent);
 }
-.template-free-copy {
+.template-choice-copy {
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
-.template-free-title {
+.template-choice-title {
     font-size: 13.5px;
     font-weight: 700;
     line-height: 1.4;
 }
-.template-free-desc {
+.template-choice-desc {
     color: var(--muted);
     font-size: 12.5px;
     line-height: 1.45;
+}
+.template-selector-panel {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+.template-selector-panel[hidden] {
+    display: none;
+}
+.template-selector-hint {
+    margin-bottom: 11px;
+    color: var(--muted);
+    font-size: 12.5px;
 }
 .template-select-grid {
     display: grid;
@@ -1079,5 +1097,8 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     }
     .style-preview-card {
         flex-wrap: wrap;
+    }
+    .template-mode-choices {
+        grid-template-columns: 1fr;
     }
 }

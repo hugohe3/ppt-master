@@ -29,7 +29,7 @@ The short path to your first deck, how to use everything around it — templates
 
 For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
 
-**To build a reusable workspace from an existing PowerPoint, explicitly request the Create Template route.** A raw `.pptx` plus new material otherwise belongs to Fill Native PPTX; it is not a Generate PPTX Step 3 template. Create the workspace first:
+**To build a reusable workspace from an existing PowerPoint, explicitly request the Create Template route.** A raw `.pptx` plus new material otherwise belongs to Fill Native PPTX; it is not a Generate template workspace. Create the workspace first:
 
 ```
 You: Create a reusable Deck template from projects/brand/our_deck.pptx via /create-template
@@ -46,7 +46,7 @@ A created template lives in one of two places:
 | **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
 | **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
-When you explicitly ask to browse or select a template, use a registered result from its kind dropdown in Step 3. To offer another result, supply its exact **workspace-root path** in chat: an unregistered root appears in the specified-root dropdown, while an exact registered match resolves back to its kind dropdown. Either action triggers Step 3; ordinary free design skips it. Step 3 resolves `templates/design_spec.md`; for directory-shape compatibility it also accepts a legacy-flat Brand/Layout/Deck root that satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases require an exact selection; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
+Default Generate shows the template choice inside Stage 1, beside the communication contract. The initial communication recommendation is written without reading any template. Ordinary requests start with free design; explicit template intent or any exact root starts in template mode, and the user can always switch. To offer another result, supply its exact **workspace-root path** in chat: an unregistered root appears in the specified-root dropdown, while an exact registered match resolves back to its kind dropdown. Exactly one supplied root may be preselected; multiple supplied roots remain unselected candidates. One confirmation closes communication and template choice together. Only then are selected workspaces validated and installed; template-aware planning begins in final Stage 2. A bare template name never resolves to a workspace. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
 You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/
@@ -61,20 +61,20 @@ Full guide → [Templates Guide](./templates-guide.md)
 The whole loop is three steps. Install first — you only need Python; see [Quick Start](../README.md#quick-start).
 
 1. **Drop your source material** into `projects/` — a PDF, DOCX, Markdown file, a URL, or just text you'll paste.
-2. **Tell the AI in chat** what to turn into a deck. Ordinary requests use free design and go directly to Stage 1. Ask to browse/select templates or add an exact workspace root only when you want the conditional Step-3 selector:
+2. **Tell the AI in chat** what to turn into a deck. Stage 1 then lets you confirm the communication contract together with free design or template use; add one exact workspace root when you want template mode and that path preselected:
    ```
    You: Make a deck from projects/q3-report/sources/report.pdf
    You: Turn this text into a deck: <paste your text>
    ```
 3. **Get an editable `.pptx`** at `exports/<name>_<timestamp>.pptx` — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
 
-Before generation, Stage 1 confirms the communication contract and canvas/format; final Stage 2 confirms page count, the visual system, any active template application, and production choices. A template selector precedes Stage 1 only when explicitly triggered. From there the AI handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on. To skip interactive confirmation, see [Quick mode](#quick-mode) below.
+Before generation, Stage 1 confirms the communication contract, canvas/format, and free-design/template choice together. The AI then installs any selected workspace; final Stage 2 reads that installed state and confirms page count, the visual system, template application, and production choices. From there it handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on. To skip interactive confirmation, see [Quick mode](#quick-mode) below.
 
 ---
 
 ## Quick mode
 
-The default flow runs its two-stage design confirmation, plus Step 3 only when template selection is explicitly triggered. To skip that interaction, explicitly ask for **quick generation**:
+The default flow runs its combined Stage-1 communication/template choice followed by final Stage 2. To skip that interaction, explicitly ask for **quick generation**:
 
 ```
 You: Quickly generate a deck from sources/report.pdf — no need to confirm with me

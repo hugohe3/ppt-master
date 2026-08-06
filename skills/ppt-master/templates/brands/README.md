@@ -10,17 +10,16 @@ lives in the parent [`README.md`](../README.md).
 
 ## How brands are consumed
 
-Brand application follows the parent README's conditional
-[`generate-pptx`](../../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
-contract. Ordinary Default enters Stage 1 with free design; explicit template
-browsing/selection, an exact root, or a current Create Template handoff triggers
-Step 3. Its Brand choices come only from `brands_index.json`; no directory scan
-or bare-name match is allowed. Registered exact roots are `library`; other exact
-roots remain `explicit`. The
-conditional
+Brand application follows the parent README's Default Stage-1
+[`generate-pptx`](../../workflows/generate-pptx.md) template-choice contract.
+Its Brand choices come only from `brands_index.json`; no
+directory scan or bare-name match is allowed. A supplied exact root appears in
+the same selector, defaults Stage 1 to template mode, and preselects that
+specific candidate only when it is the sole supplied root.
+Registered exact roots are `library`; other exact roots remain `explicit`. The conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage owns path normalization, portable-root installation, multi-kind fusion,
-same-kind conflict resolution, and provenance before Stage 1. Template-aware
+same-kind conflict resolution, and provenance after Stage 1 and before Stage 2. Template-aware
 reading begins in final Stage 2 from the installed project-local copy. This file owns
 only the Brand schema. Quick applies a supplied exact Brand root directly and
 otherwise uses free design.
@@ -58,9 +57,9 @@ Logo filenames are descriptive, not contractual — `templates/design_spec.md` �
 
 [brands_index.json](./brands_index.json) is a slim machine-readable map (`brand_id → { summary, primary_color }`). Refresh it with `register_template.py --kind brand <brand_id>` after a brand is created or edited. Registration rejects incomplete frontmatter, mismatched IDs, page SVGs, missing required identity sections, invalid or inconsistent colors/provenance, and broken workspace-local asset references.
 
-The explicitly triggered Step-3 page reads this index as its complete
+The Default Stage-1 template controls read this index as their complete
 registered-brand catalog; chat discovery reads the same file and returns exact
-workspace roots.
-Choosing an entry and confirming it triggers installation. Exact directory
+workspace roots. Choosing an entry and submitting Stage 1 runs installation.
+Exact directory
 paths and validated Create Template handoffs remain supported, while a bare ID
 never resolves implicitly.
