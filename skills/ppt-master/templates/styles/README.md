@@ -9,27 +9,25 @@ Style is a fourth independent template kind alongside [`brands/`](../brands/), [
 | Axis | Meaning |
 |---|---|
 | Template `kind: style` | A portable workspace that coordinates reusable method and non-binding design defaults |
-| Stage-2 `mode` | The current deck's confirmed narrative and persuasion skeleton |
-| Stage-2 `visual_style` | The current deck's confirmed shape, composition, whitespace, typography-character, and texture lock |
+| Final Stage-2 `mode` | The current deck's confirmed narrative and persuasion skeleton |
+| Final Stage-2 `visual_style` | The current deck's confirmed shape, composition, whitespace, typography-character, and texture lock |
 | Internal `template_reuse_scope: style` | A flat current-project export plan that reuses no Master/Layout structure |
 
 These names are separate contracts. Style-only and Style + Brand naturally produce a flat application plan, while Style fused with a Layout or Deck may use structured reuse. `kind: style` therefore never forces the internal reuse scope when another workspace supplies structure.
 
 ## Trigger, Precedence, and Fusion
 
-Selection uses the independent phase in
-[`generate-pptx`](../../workflows/generate-pptx.md) Step 3. The default page
-fills the Style dropdown only from `styles_index.json`; unregistered exact roots
-appear only in the separate specified-root dropdown. It never scans this
-directory or fuzzy-matches a bare Style name. An exact supplied root matching a
-registered root may be labelled `library`; otherwise it remains `explicit`. A
-consulting label or ordinary visual description remains a brief or catalog
-signal and does not activate this workspace. Confirmation runs the
+Selection follows the parent README's conditional
+[`generate-pptx`](../../workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)
+contract. Ordinary Default enters Stage 1 with free design; explicit template
+browsing/selection, an exact root, or a current Create Template handoff triggers
+Step 3. Its Style choices come only from `styles_index.json`; no directory scan
+or bare-name match is allowed. A consulting label or visual description remains
+a brief and does not activate this workspace. Confirmation runs the
 common installation/fusion stage before Stage 1; template-aware reading begins
-in Stage 2 from the project-local copy. Quick Generate never opens the selector:
-an exact Style root supplied for the run enters the same stage directly, while
-no exact root leaves Quick in free design; its current agent reads the installed
-copy before authoring flat pages.
+in final Stage 2 from the project-local copy. Quick applies a supplied exact
+Style root directly and otherwise uses free design; its current agent reads the
+installed copy before authoring flat pages.
 
 | Decision | Precedence |
 |---|---|
@@ -39,7 +37,7 @@ copy before authoring flat pages.
 | Reusable structure | Compatible Layout, then Deck structure; Style never supplies structure |
 | Recurring application context | Deck, subordinate to the current project's Stage-1 communication contract |
 
-Style fallback values seed the normal Stage-2 solution when the corresponding decision remains open. They are not identity truth and do not bypass confirmation. If a Style method and a Deck application contract materially conflict, surface the mismatch; do not silently weaken either one.
+Style fallback values seed the final Stage-2 solution when the corresponding decision remains open. They are not identity truth and do not bypass confirmation. If a Style method and a Deck application contract materially conflict, surface the mismatch; do not silently weaken either one.
 
 ## `design_spec.md` Contract
 
@@ -94,7 +92,7 @@ Do not create empty `images/`, `icons/`, or `exports/` directories. Existing ini
 
 The discovery source of truth is [`styles_index.json`](./styles_index.json).
 Each entry is `style_id → { summary, keywords }`; the index never duplicates
-the full method or defaults. The default Step-3 page reads this file as its
-complete registered-Style catalog, and chat discovery returns exact roots from
+the full method or defaults. The explicitly triggered Step-3 page reads this
+file as its complete registered-Style catalog, and chat discovery returns exact roots from
 the same entries. Choosing and confirming an entry activates installation;
 reading a name in ordinary prose does not.

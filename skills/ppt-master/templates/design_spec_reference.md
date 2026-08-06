@@ -47,9 +47,9 @@ Start with this exact heading order:
 | AI Image Acquisition Path | <confirmed path or not applicable> |
 | Generation Mode | <continuous or split> |
 | Spec Refinement | <enabled or disabled> |
-| Speaker Notes | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, compatibility default, or enabled Narration Audio dependency> |
-| Custom Animations | <enabled or disabled> — <explicit instruction and object/all-motion scope, Stage 3 proactive policy, or compatibility default> |
-| Narration Audio | <enabled or disabled> — <explicit user instruction, Stage 3 proactive policy, or compatibility default> |
+| Speaker Notes | <enabled or disabled> — <explicit user instruction, final Stage-2 proactive policy, workflow default, or enabled Narration Audio dependency> |
+| Custom Animations | <enabled or disabled> — <explicit instruction and object/all-motion scope, final Stage-2 proactive policy, or workflow default> |
+| Narration Audio | <enabled or disabled> — <explicit user instruction, final Stage-2 proactive policy, or workflow default> |
 | Created Date | <YYYY-MM-DD> |
 
 ## II. Canvas Specification
@@ -133,11 +133,11 @@ Use these exact subsections and field shapes:
 - **Primary bundled library**: <one of chunk-filled / tabler-filled / tabler-outline / phosphor-duotone, or none>
 - **Brand-logo library**: <simple-icons when selected for real brand marks; omit otherwise>
 
-| Purpose | Icon Path | Page |
-| --- | --- | --- |
+| Icon Path | Suitable Scenarios |
+| --- | --- |
 ```
 
-Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when real brand marks were selected. The icon table records planned usage, but user-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that stylistic selection. Leave the §VI table empty when no icons are used.
+Preserve Title/Body characters and resolved stacks; omit blank Typography upgrade and never place it in a stack. For each justified recurring family override, add the role to Font Plan plus `- **<Role> stack**: <complete ordered stack>`. Possible roles are `Annotation`, `Footer`, `Footnote`, `Data`, `Emphasis`, `Quote`, and `Code`; add only recurring, intentional differences. Add non-locked `Role rationale` only for an extra family. Do not collapse distinct Title/Body stacks or discard a declared optional role. Each Font Size Hierarchy value is a role anchor: Executor may vary one occurrence `±2px`; a short non-structural Hero/Display size may stay unlisted only while the same value is planned at most twice, and its third occurrence needs a named row. Add every recurring palette role and typography-size anchor established by the plan; do not enumerate one-off paint or font-family garnish. For confirmed custom directions, add the applicable `Mode References`, `Mode Behavior`, `Visual Style References`, and `Visual Style Behavior` lines under Theme Style. Include `Stroke Width` under §VI only for a stroke library. `simple-icons` may accompany the one primary bundled library and is recorded only when real brand marks were selected. The icon table records the curated synced pool and broad semantic scenarios, not exact page placement or mandatory use. User-provided, template-carried, imported, custom, and other prepared SVGs under the project `icons/` directory remain usable without being forced into that bundled selection. Leave the §VI table empty when no bundled or brand icons are prepared.
 
 When §VIII contains any `Acquire Via: ai` row, add this subsection under §III and preserve the complete confirmed AI direction:
 

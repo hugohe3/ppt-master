@@ -46,7 +46,7 @@ A created template lives in one of two places:
 | **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
 | **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
-Use a registered result from its kind dropdown in Step 3. To offer another result, supply its exact **workspace-root path** in chat: an unregistered root appears in the specified-root dropdown, while an exact registered match resolves back to its kind dropdown. Step 3 resolves `templates/design_spec.md`; for directory-shape compatibility it also accepts a legacy-flat Brand/Layout/Deck root that satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases require an exact selection; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
+When you explicitly ask to browse or select a template, use a registered result from its kind dropdown in Step 3. To offer another result, supply its exact **workspace-root path** in chat: an unregistered root appears in the specified-root dropdown, while an exact registered match resolves back to its kind dropdown. Either action triggers Step 3; ordinary free design skips it. Step 3 resolves `templates/design_spec.md`; for directory-shape compatibility it also accepts a legacy-flat Brand/Layout/Deck root that satisfies its current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases require an exact selection; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
 You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/
@@ -61,20 +61,20 @@ Full guide → [Templates Guide](./templates-guide.md)
 The whole loop is three steps. Install first — you only need Python; see [Quick Start](../README.md#quick-start).
 
 1. **Drop your source material** into `projects/` — a PDF, DOCX, Markdown file, a URL, or just text you'll paste.
-2. **Tell the AI in chat** what to turn into a deck. Step 3 then lets you choose free design or combine registered templates; add an exact unregistered template root in chat when you want it offered in the specified-root dropdown:
+2. **Tell the AI in chat** what to turn into a deck. Ordinary requests use free design and go directly to Stage 1. Ask to browse/select templates or add an exact workspace root only when you want the conditional Step-3 selector:
    ```
    You: Make a deck from projects/q3-report/sources/report.pdf
    You: Turn this text into a deck: <paste your text>
    ```
 3. **Get an editable `.pptx`** at `exports/<name>_<timestamp>.pptx` — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
 
-Before generation, Step 3 first confirms free design or the template combination. Stage 1 then independently confirms the communication contract and canvas/format; Stage 2 confirms page count, the visual system, and template application when active. From there the AI handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on. To skip interactive confirmation, see [Quick mode](#quick-mode) below.
+Before generation, Stage 1 confirms the communication contract and canvas/format; final Stage 2 confirms page count, the visual system, any active template application, and production choices. A template selector precedes Stage 1 only when explicitly triggered. From there the AI handles content analysis, layout, image acquisition, SVG generation, and export — the core loop everything else builds on. To skip interactive confirmation, see [Quick mode](#quick-mode) below.
 
 ---
 
 ## Quick mode
 
-The default flow runs the Step-3 choice and staged design confirmation first. To skip that interaction, explicitly ask for **quick generation**:
+The default flow runs its two-stage design confirmation, plus Step 3 only when template selection is explicitly triggered. To skip that interaction, explicitly ask for **quick generation**:
 
 ```
 You: Quickly generate a deck from sources/report.pdf — no need to confirm with me

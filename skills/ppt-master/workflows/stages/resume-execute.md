@@ -52,7 +52,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 - Read the complete project Design Spec, then the complete `spec_lock.md`, once to establish the fresh execution context
 - Resolve the effective Speaker Notes, Custom Animations, and Narration Audio
-  outcomes from `design_spec.md §I`. Missing legacy outcomes use
+  outcomes from `design_spec.md §I`. Missing outcomes use the workflow defaults
   `enabled` / `disabled` / `disabled`; these production decisions never come
   from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
@@ -71,7 +71,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-If the user gives a newer explicit instruction after Stage 3, update only the
+If the user gives a newer explicit instruction after final Stage 2, update only the
 affected effective outcome and provenance in `design_spec.md §I`, then resume at
 its owning step. Do not reopen Confirm UI or add the decision to
 `spec_lock.md`. Before writing, apply Generate's single notes/audio dependency

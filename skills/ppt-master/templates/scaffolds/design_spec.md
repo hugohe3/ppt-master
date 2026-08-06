@@ -95,9 +95,9 @@
 
 ## VI. Icon Usage Specification
 
-| Purpose | Icon Path | Page |
-| --- | --- | --- |
-| [fill] | [fill] | [fill] |
+| Icon Path | Suitable Scenarios |
+| --- | --- |
+| [fill] | [fill] |
 
 ## VIII. Image Resource List
 

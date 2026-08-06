@@ -45,7 +45,8 @@ route selection. After selection, the route authority owns execution.
 | Topic only, or supplied sources leave planning-critical factual gaps | Run [`topic-research`](./stages/topic-research.md) inside the selected Generate profile's source preparation: immediately for topic-only input, or after conversion and reading for source-backed input; research only the identified gaps |
 | Existing PPTX may be split, merged, dropped, reordered, or re-outlined | Treat the PPTX as source content through [`generate-pptx`](./generate-pptx.md) Step 1 and its PPTX intake; continue the default pipeline unless explicit Quick Generate intent selected that profile |
 | Existing PPTX must preserve wording, page count, and page order 1:1 | Activate the [`beautify-pptx`](./profiles/beautify-pptx.md) profile inside the main pipeline |
-| Default Generate reaches Step 3 | Complete the independent template-selection phase before Stage 1. The UI offers only index-registered library roots plus any user-supplied explicit roots; confirmed non-free selections run [`apply-template-workspace`](./stages/apply-template-workspace.md) |
+| Default Generate has no explicit template-discovery/selection request, exact workspace root, or current Create Template handoff | Use free design and proceed directly to Stage 1; do not read template indexes or create template-selection artifacts |
+| Default Generate explicitly requests template discovery/selection, supplies an exact current workspace root, or receives a current Create Template handoff | Run the conditional Step-3 template-selection phase before Stage 1. The UI offers only index-registered library roots plus supplied explicit roots; confirmed non-free selections run [`apply-template-workspace`](./stages/apply-template-workspace.md) |
 | Explicit current brand/style/layout/deck workspace root | Default Generate preserves the exact-path path through Step 3; Quick Generate validates and installs it directly without Step 3 or Confirm UI. Classify it as `library` only when its normalized root exactly matches a registered index entry; otherwise retain `explicit`. Consume the workspace root, never only its inner `templates/` directory |
 | Split-mode project resumes in a fresh chat | Run [`resume-execute`](./stages/resume-execute.md) inside the active Generate route |
 | Existing generated project needs a deck-wide `colors.*` or universal `typography.font_family` substitution | Stay in Generate; load [`update_spec.py`](../scripts/docs/update_spec.md), honor its supported-key boundary, then rerun the final quality gate and Step 7 export |
@@ -129,7 +130,8 @@ Object animation for generated SVG projects uses the animation stage. Native PPT
 
 | User input | Behavior |
 |---|---|
-| Default UI reaches Step 3 | Offer free design plus registered library workspaces from the four indexes below; confirm and install before Stage 1 |
+| No explicit template intent/root/handoff | Skip Step 3, use free design, and open Stage 1 directly without reading indexes |
+| Explicit template discovery or selection request | Enter Step 3; offer free design plus registered library workspaces from the four indexes below, then confirm and install before Stage 1 |
 | Explicit current workspace root containing `templates/design_spec.md` | Preserve it as an `explicit` Step-3 candidate; an exact registered-root match may be displayed as `library` |
 | Bare template/brand name or style label | Do not resolve it to a local path; treat it as a style brief |
 | “What templates exist?” in chat | List indexed workspace paths; selection still requires the user to return an exact root |
@@ -144,10 +146,11 @@ corresponding directories to construct or supplement the catalog:
 | Layout | [`layouts_index.json`](../templates/layouts/layouts_index.json) |
 | Deck | [`decks_index.json`](../templates/decks/decks_index.json) |
 
-**Hard rule — selection precedes communication confirmation**: Template
-selection is a standalone Step-3 phase. Confirm free design or selected roots,
-run workspace validation/installation, then begin Stage 1. Stage 2
-`template_application` decides how the already installed template is used; it
+**Hard rule — triggered selection precedes communication confirmation**: When
+Step 3 is triggered, confirm free design or selected roots and complete
+workspace validation/installation before Stage 1. In an ordinary free-design
+run, no selection phase exists and Stage 1 starts directly. Stage 2
+`template_application` decides how an already installed template is used; it
 never selects a template.
 
 **Forbidden — fuzzy resolution**: Never resolve a bare name to a local template

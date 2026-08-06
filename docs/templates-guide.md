@@ -19,7 +19,7 @@ Choose the route by the artifact you already have and the result you want:
 | Starting point and goal | Route | Copy-ready request |
 |---|---|---|
 | A raw `.pptx`; keep its existing slide shells and replace content | **Fill Native PPTX** | `Fill projects/source/template.pptx with projects/source/content.md.` |
-| A reusable Brand/Style/Layout/Deck workspace; generate a fresh deck | **Generate PPTX → Step-3 template selector** | `Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/.` |
+| A reusable Brand/Style/Layout/Deck workspace; generate a fresh deck | **Generate PPTX → conditional Step-3 template selector** | `Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/.` |
 | A PPTX, SVG set, brand guide, website, images, or mixed references; first build a reusable system | **Create Template → Generate PPTX** | `Use /create-template to create a reusable Deck workspace from projects/brand/our_deck.pptx.` |
 
 Do not pass a raw `.pptx` as a Generate PPTX template path. Fill it directly when you want its existing pages, or run Create Template first when you want a reusable system.
@@ -29,7 +29,7 @@ Choose the workspace kind by what must be reused:
 | Kind | Reuses | Native PowerPoint result |
 |---|---|---|
 | **Brand** | Color, typography, logo, voice, icon style | Identity constraints only. Generated pages remain Slide-local under one clean project Master and Blank Layout. |
-| **Style** | Communication method, open page-role vocabulary, evidence/data rules, visual defaults, image/icon direction, and advisory review focus | Flat Slide-local pages. Style values seed Stage 2 but do not become brand identity or reusable Layouts. |
+| **Style** | Communication method, open page-role vocabulary, evidence/data rules, visual defaults, image/icon direction, and advisory review focus | Flat Slide-local pages. Style values seed final Stage 2 but do not become brand identity or reusable Layouts. |
 | **Layout** | Brand-neutral page grammar, Master/Layout identities, semantic text roles, slots, and layout roster | A structured deck with reusable native Masters, named Layouts, and placeholders; identity, reading-mode typography, and communication application are resolved separately. |
 | **Deck** | A recurring presentation family: descriptive application context, identity, page structure, and actual prototypes | A deck whose page/prototype application plan is derived by AI from the template and current content. |
 
@@ -43,8 +43,8 @@ stay separate.
 
 The two rules that prevent most mistakes:
 
-1. In the default page, choose free design or an exact registered workspace from [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-selection-and-installation). In chat, use the exact workspace root—not its `templates/` subdirectory or a bare template name.
-2. An explicit path and a Create Template handoff remain valid. Step 3 confirms and installs every selected workspace before Stage 1; template-aware reading begins in Stage 2 from the project-local copy.
+1. Ordinary Default Generate has no template phase: it reads no template index, opens no template page, and goes directly to Stage 1 with free design.
+2. [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation) runs only when you explicitly ask to browse/select templates, provide an exact workspace root, or receive the exact validated root from Create Template in the current conversation. It installs the selection before Stage 1; template-aware reading begins in final Stage 2 from the project-local copy.
 
 ---
 
@@ -52,7 +52,7 @@ The two rules that prevent most mistakes:
 
 ### How to trigger
 
-The default confirmation page opens an independent **Step-3 template-selection phase before Stage 1**. It offers free design, registered Brand/Style/Layout/Deck workspaces, and any exact workspace roots already supplied for the run. It does not infer a recommendation from the topic: the user makes the selection explicitly.
+Ordinary Default Generate does not enter Step 3. It uses free design and opens Stage 1 directly. An independent **Step-3 template-selection phase before Stage 1** opens only after an explicit request to browse/select templates, an exact workspace root, or a current Create Template handoff. The triggered page offers free design, registered Brand/Style/Layout/Deck workspaces, and any exact workspace roots already supplied for the run. It does not infer a recommendation from the topic: the user makes the selection explicitly.
 
 > **Quick Generate exception:** Quick never opens that page. Up to one exact
 > workspace root per kind supplied in the request is validated, installed, and
@@ -62,7 +62,7 @@ The default confirmation page opens an independent **Step-3 template-selection p
 
 ### How to enter the template flow
 
-On the default page, choose free design or compose templates through five compact dropdowns: one each for registered Brand, Style, Layout, and Deck workspaces, plus one for exact roots supplied for this run. Each dropdown is single-select and includes `None`; the four registered kinds can be combined, and the specified-root channel contributes at most one workspace. The registered lists come only from the four kind indexes; the workflow never scans the template directories. You can also send an exact Brand/Style/Layout/Deck workspace root in chat before Step 3. Anywhere in the sentence is fine; the path just has to be unambiguous:
+On the triggered template page, choose free design or compose templates through five compact dropdowns: one each for registered Brand, Style, Layout, and Deck workspaces, plus one for exact roots supplied for this run. Each dropdown is single-select and includes `None`; the four registered kinds can be combined, and the specified-root channel contributes at most one workspace. The registered lists come only from the four kind indexes; the workflow never scans the template directories. You can also trigger Step 3 by sending an exact Brand/Style/Layout/Deck workspace root in chat. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
 > "use this template: `skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "use last deck's template: `projects/last_deck/`" ✅
@@ -70,19 +70,18 @@ On the default page, choose free design or compose templates through five compac
 
 For every current template kind, an explicit path is the **template workspace root**. An exact root matching a registered index entry may be displayed as `library`; an unregistered root remains separately labelled `explicit`. The server parses the latter's actual frontmatter `kind`; `explicit` is provenance, not a fifth kind or a priority tier. Step 3 resolves `templates/design_spec.md`; Brand/Layout/Deck install their package-owned `templates/` plus any real `images/` and `icons/`, while Style installs only its spec and ignores unrelated project scaffolding. It never copies `exports/`. Deck/Layout workspaces additionally validate the structured SVG contract; Brand/Style validate their roster-free specs. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same routing. A Create Template run may hand its exact validated workspace root directly to Step 3 in the same conversation.
 
-Template selection is not part of Stage 1. After confirmation, Step 3 runs the common apply stage and installs/fuses the selected workspaces into the project's `templates/`, `images/`, and `icons/`. Only then does Strategist begin Stage 1, using only the current request, source facts, conversation constraints, and project initialization. Template selection, installed content, and template canvas cannot influence that contract. After Stage 1 is confirmed, Stage 2 compares it with the installed state; `template_application` describes **how** to use that state and never chooses **which** template to use.
+Template selection is not part of Stage 1. When triggered, Step 3 runs the common apply stage after confirmation and installs/fuses the selected workspaces into the project's `templates/`, `images/`, and `icons/`. Only then does Strategist begin Stage 1, using only the current request, source facts, conversation constraints, and project initialization. Template selection, installed content, and template canvas cannot influence that contract. After Stage 1 is confirmed, final Stage 2 compares it with the installed state; `template_application` describes **how** to use that state and never chooses **which** template to use.
 
 > **Compatibility preflight:** Step 3 also accepts a legacy-flat Brand/Layout/Deck workspace with `design_spec.md` directly at the supplied root when it satisfies the current kind contract. Layout/Deck additionally require current structured SVGs; Style has no flat form. Former atomic-placeholder, unmapped Master/Layout, and other semantic-legacy packages are rejected; run `create-template` to create a new workspace, then generate new structured pages from that workspace. Nothing upgrades the old package in place.
 
 ### What does NOT trigger the template flow
 
-- **A bare template name in chat**: "use the presentation_core template" / "use the China Telecom template" does not resolve implicitly. Select the indexed entry on the page or return its exact path in chat.
-- **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" remain design briefs. They never activate a workspace unless the user separately selects one.
-- **Vague intent**: "I want a template" does not authorize fuzzy lookup or directory scanning; the Step-3 choice remains open.
+- **A bare template name in chat**: "presentation_core" / "China Telecom template" does not resolve implicitly or open the template page. Explicitly ask to browse/select templates, or return its exact path in chat.
+- **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" remain design briefs and proceed through free design. They never activate a workspace unless the user separately asks to browse/select one or supplies its exact root.
 
-This is intentional: the AI never makes a fuzzy or interpretive judgment about whether wording maps to a template. Use the indexed page choice or an exact root.
+This is intentional: the AI never makes a fuzzy or interpretive judgment about whether wording maps to a template. Explicit template-browsing/selection intent opens the indexed page; an exact root triggers the same stage directly.
 
-To browse in chat, ask "what templates are available?" The AI lists names and exact paths from the same four indexes. Listing alone does not select anything; return one of those exact paths or make the choice on the Step-3 page.
+To browse, ask "what templates are available?" That explicit request triggers Step 3, whose page and chat listing use the same four indexes. Listing alone does not select anything; return one of those exact paths or make the choice on the page.
 
 ### Copy-ready examples
 
@@ -108,7 +107,7 @@ Make a deck from projects/annual-report/sources/report.md.
 Template workspace: projects/acme_template/
 ```
 
-For chat-based explicit selection, path labels are optional but exact roots are mandatory. Page-based library selection already carries exact roots. The page allows one registered selection per kind and one specified root. If the specified root has the same parsed kind as a registered selection, the workflow stops at the existing two-workspace conflict-resolution gate instead of choosing one silently.
+For chat-based explicit root selection, path labels are optional but exact roots are mandatory. The triggered page's library selection already carries exact roots. The page allows one registered selection per kind and one specified root. If the specified root has the same parsed kind as a registered selection, the workflow stops at the existing two-workspace conflict-resolution gate instead of choosing one silently.
 
 You do not need to choose a template-use mode. For Layout/Deck, Strategist reads the actual Master/Layout/prototype roster and current content, then decides which pages to select, repeat, skip, reorder, or reorganize. Brand instead supplies identity constraints, while Style supplies direction/method defaults; both leave pages freely composed unless another workspace supplies structure. If you care about a specific boundary, state it in ordinary language in the same request—for example, “keep the cover and closing page exactly, choose suitable middle pages yourself” or “use only the visual language”. That explicit sentence wins over AI judgment.
 
@@ -121,7 +120,7 @@ Templates are organized into four kinds, each with a discovery index:
 - [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json) — structure-only workspaces: canvas / page grammar / page types / SVG roster, with identity selected downstream
 - [`decks_index.json`](../skills/ppt-master/templates/decks/decks_index.json) — recurring presentation applications with integrated identity, structure, and factual prototype descriptions
 
-These four indexes are the complete registered-library source for both the default Step-3 page and chat discovery; directories are never scanned. Ask "what templates are available?" for a readable list with exact workspace paths. The kind-specific READMEs define their contracts. Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
+These four indexes are the complete registered-library source for the explicitly triggered Step-3 page and chat discovery; ordinary Default Generate reads none of them, and directories are never scanned. Ask "what templates are available?" for a readable list with exact workspace paths. The kind-specific READMEs define their contracts. Full data model + fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
@@ -131,16 +130,16 @@ Free design is **not** "no structure" or "no style" — the Strategist still pla
 
 ### A style brief is not a Style workspace
 
-A **style brief** is interpretive language ("minimalist" / "Keynote-style" / "editorial") that the Strategist turns into concrete design choices for one deck. A **Style workspace** is a real `kind: style` template with pre-authored communication method and visual defaults, consumed after the user selects its registered Step-3 entry or supplies its exact workspace root.
+A **style brief** is interpretive language ("minimalist" / "Keynote-style" / "editorial") that the Strategist turns into concrete design choices for one deck. A **Style workspace** is a real `kind: style` template with pre-authored communication method and visual defaults, consumed only after the user explicitly opens template selection and chooses its registered entry, supplies its exact workspace root, or receives it through the current Create Template handoff.
 
 | | Style workspace | Style brief |
 |---|---|---|
-| How invoked | Registered Step-3 page selection or exact directory path | Free-form description in your message |
+| How invoked | Explicitly triggered Step-3 page selection, exact directory path, or current Create Template handoff | Free-form description in your message; does not open Step 3 |
 | What it supplies | Reusable method, role/evidence discipline, and visual defaults; no identity truth or page prototypes | Intent that the Strategist interprets into mode, visual style, color, typography, icons, and imagery |
-| Confirmation | Stored values seed Stage 2; Brand/Deck identity and user-confirmed choices remain authoritative | No pre-authored values; the Strategist proposes concrete candidates and the user confirms them |
+| Confirmation | Stored values seed final Stage 2; Brand/Deck identity and user-confirmed choices remain authoritative | No pre-authored values; the Strategist proposes concrete candidates and the user confirms them |
 | Best for | Repeating a design/argument approach across projects without freezing pages | Expressing a desired feel for the current project only |
 
-A style description and a Style workspace still go through different machinery: "minimalist" is interpretive language, while `templates/styles/<id>/` is a real registered workspace selected by exact index entry or exact path. `kind: style`, Stage-2 `visual_style`, and internal `template_reuse_scope: style` are separate axes.
+A style description and a Style workspace still go through different machinery: "minimalist" is interpretive language and stays in free design, while `templates/styles/<id>/` is a real registered workspace selected through explicit template browsing or an exact path. `kind: style`, final Stage-2 `visual_style`, and internal `template_reuse_scope: style` are separate axes.
 
 ### How style briefs are interpreted
 
@@ -247,7 +246,7 @@ After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-maste
 | `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Create Brand/Create Style: N/A; Create Layout/Create Deck: optional for one Master, mandatory for multiple Masters | Register in the matching `brands_index.json`, `styles_index.json`, `layouts_index.json`, or `decks_index.json` after validation |
 | `project` | `projects/<name>/` | Same kind-specific review behavior | Skip global index registration |
 
-Library registration makes the template **selectable** on the default page and discoverable in chat because both read the same index. To use a registered workspace, select it in [Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-template-selection-and-installation). For project scope or an exact handoff, supply the workspace root, for example `use this template: projects/<name>/`; an unregistered root remains labelled `explicit`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in the library catalog.
+Library registration makes the template **selectable** on the explicitly triggered template page and discoverable in chat because both read the same index. To use a registered workspace, ask to browse/select templates and choose it in [conditional Generate PPTX Step 3](../skills/ppt-master/workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation). For project scope or an exact handoff, supply the workspace root, for example `use this template: projects/<name>/`; an unregistered root remains labelled `explicit`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in the library catalog.
 
 When a Deck/Layout template is selected, Strategist automatically authors the page/prototype plan. It may use the whole roster or a subset, repeat or reorder prototypes, and reorganize content where needed. `strict` / `adaptive` remain internal exporter values and do not appear as confirmation options.
 
@@ -308,7 +307,7 @@ nor allowed.
 - **Library scope (`library`, default)** writes the workspace under `skills/ppt-master/templates/<kind>/<id>/` and registers it globally.
 - **Project scope (`project`)** writes the same portable workspace at `projects/<name>/` and skips registration.
 
-The result is not a private or reduced project-only format. You can point Step 3 at either workspace root. Brand/Layout/Deck migrate with `templates/` plus any real package-owned `images/` and `icons/`; Style migrates only `templates/design_spec.md`, and unrelated project scaffolding is ignored. If a workspace moves into the library, run its kind-specific registration so discovery reflects the new location.
+The result is not a private or reduced project-only format. Supplying either exact workspace root triggers Step 3 directly. Brand/Layout/Deck migrate with `templates/` plus any real package-owned `images/` and `icons/`; Style migrates only `templates/design_spec.md`, and unrelated project scaffolding is ignored. If a workspace moves into the library, run its kind-specific registration so discovery reflects the new location.
 
 ---
 

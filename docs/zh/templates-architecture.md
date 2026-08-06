@@ -178,7 +178,7 @@ keywords: [tag1, tag2, tag3]
 Style 不写 SVG，也不拥有 Brand 官方身份、Deck 应用契约、canvas、页数/
 顺序、Master/Layout/placeholder 结构或逐页资源。其色彩与字体只是可覆盖
 fallback：用户最终确认及 Brand/Deck 身份优先。Review Focus 不能启动
-visual review。`kind: style` 表示可复用包类型，区别于 Stage 2 的
+visual review。`kind: style` 表示可复用包类型，区别于最终 Stage 2 的
 `visual_style` 选择和内部 flat 导出值 `template_reuse_scope: style`。
 
 ### Layout schema
@@ -336,16 +336,16 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ### 片段所有权（隐式触发）
 
-用户确认已注册和/或指定工作区根目录后，Step 3 会解析每个 root 的真实
+显式触发的 Step 3 确认已注册和/或指定工作区根目录后，会解析每个 root 的真实
 `kind`，再分片段写入一份 `<project>/templates/design_spec.md`。
 `library` / `explicit` 只记录发现来源，不改变所有权：
 
 | 片段 | 起始所有者 |
 |---|---|
-| 身份 | Brand，其次 Deck，否则留到 Stage 2；Style 只提供 fallback 候选 |
-| 方向/方法 | Style，否则留到 Stage 2；Deck 的真实原型与 Signature 事实只提供兼容性依据 |
-| 结构 | 兼容 Layout，其次 Deck，否则留到 Stage 2 / 自由设计 |
-| 可复用应用语境 | 仅 Deck；保留供 Stage 2 对照，绝不充当当前项目的应用契约 |
+| 身份 | Brand，其次 Deck，否则留到最终 Stage 2；Style 只提供 fallback 候选 |
+| 方向/方法 | Style，否则留到最终 Stage 2；Deck 的真实原型与 Signature 事实只提供兼容性依据 |
+| 结构 | 兼容 Layout，其次 Deck，否则留到最终 Stage 2 / 自由设计 |
+| 可复用应用语境 | 仅 Deck；保留供最终 Stage 2 对照，绝不充当当前项目的应用契约 |
 
 用户当前明确指令和最终确认高于所有起始所有者。Brand 身份高于 Style
 的色彩/字体 fallback。Style-only 或 Style + Brand 使用 flat 创作；Style
@@ -355,7 +355,7 @@ Layout 覆盖 Deck 前，必须把 Deck 的可复用应用角色与 Layout 的�
 槽位类型和容量对照；Style 与 Layout/Deck 合成前，也要确认其沟通方法和
 构图预期能够被该可复用语境与结构兑现。不兼容时显式报告模板片段冲突，
 不能静默混合字段或保留一份当前结构无法兑现的承诺。当前项目的适配只在
-Stage 1 确认后的 Stage 2 开始。
+Stage 1 确认后的最终 Stage 2 开始。
 
 ### 段级整段替换（默认粒度）
 
@@ -383,7 +383,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 - `style × 2`、`layout × 2`、`deck × 2`、`brand × 2` 同处理
 - 每类最多两份（再多让用户先在 chat 里收敛）
 
-默认页面已经把组合空间收窄：Brand/Style/Layout/Deck 各有一个已注册模板
+显式触发的模板页面已经把组合空间收窄：Brand/Style/Layout/Deck 各有一个已注册模板
 单选下拉框，另有一个指定地址下拉框；指定地址按解析出的 kind，最多给该类
 增加第二份。服务端强制同一限制；聊天组合仍保留每类最多两份的通用边界。
 
@@ -406,7 +406,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ## 五、与 Generate PPTX Step 3 的关系
 
-**触发规则仍以精确选择为准**——使用 Step 3 已注册模板下拉选项或显式工作区根目录路径（见 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-template-option)）；裸名称绝不触发。Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md`、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，Step 3 必须拒绝；先由 `create-template` 产出新工作区，再继续生成。唯一的窄例外是当前对话刚完成 `create-template`：验证通过后可把精确的工作区根目录直接交给 Step 3。`kind` 字段决定**触发后 AI 怎么处理**：
+**Step 3 是条件阶段。** 普通 Default Generate 直接走自由设计，不读模板索引、不打开模板页面，并直接进入 Stage 1。只有显式要求浏览/选择模板、提供精确工作区根目录，或接到当前对话中 Create Template 交出的精确已验证 root，才进入 Step 3（见 [Generate PPTX Step 3](../../skills/ppt-master/workflows/generate-pptx.md#step-3-conditional-template-discovery-selection-and-installation)）；裸模板/品牌名称或风格词绝不触发。触发后，Step 3 先解析 `<workspace>/templates/design_spec.md`；为兼容目录形态，也接受根目录直接包含 `<workspace>/design_spec.md`、且满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 工作区。Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。若包仍使用 `native_structure_mode: template`、缺 Master 身份、原子 placeholder 或蒸馏时代标记等旧语义，Step 3 必须拒绝；先由 `create-template` 产出新工作区，再继续生成。`kind` 字段决定**触发后 AI 怎么处理**：
 
 | 用户路径指向 | Step 3 行为（按 kind 分支）|
 |---|---|
@@ -421,7 +421,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ### 策略师确认阶段在不同 kind 下的行为
 
-安装模板不会让沟通问题消失。Stage 1 始终独立确认同一份开放式沟通契约，只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成后，Stage 2 才读取已安装状态。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；Layout/Deck 才读取真实原型和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用；Confirm UI 不显示模板模式字段。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责，机器结构由 `templates/schemas/spec_lock.schema.json` 负责。
+安装模板不会让沟通问题消失。Stage 1 始终独立确认同一份开放式沟通契约，只使用当前请求、源材料事实、对话约束和项目初始化状态，连模板画布也不能参与。Stage 1 完成后，最终 Stage 2 才读取已安装状态，并确认完整方案与制作计划。Brand 提供身份约束、结构仍然自由；Style 提供方法和视觉默认值候选并保持 flat；Layout 提供结构能力；Deck 提供描述性的可复用应用语境供对照，但不充当当前项目契约。Style-only 时 Strategist 不读取原型，固定写入 `template_reuse_scope: style` 与 flat 结构；Layout/Deck 才读取真实原型和当前内容，生成页面/原型计划，并把 `mirror`、`layout` 或 `style` 记录为内部导出值。按 mirror 创建的工作区因此只提供原样复用能力，不会强制使用；Confirm UI 不显示模板模式字段。规划语义由 `references/strategist.md` 与 `references/strategist-template.md` 负责，机器结构由 `templates/schemas/spec_lock.schema.json` 负责。
 
 ---
 
