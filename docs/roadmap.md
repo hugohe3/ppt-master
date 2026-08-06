@@ -12,7 +12,7 @@
 
 The defining axis is **native depth**: author or preserve more of PowerPoint's own object model, behavior, and reusable structure, release after release — converging with PowerPoint itself. The [positioning charter](./project-positioning.md) states the full thesis; the [PowerPoint ↔ SVG Mapping Guide](./powerpoint-svg-mapping.md) records the current boundary honestly, feature by feature.
 
-Today that axis is expressed through four explicit artifact routes: **Generate PPTX** authors newly designed slides through constrained SVG → DrawingML; **Create Template** produces reusable Brand / Layout / Deck workspaces; **Fill Native PPTX** and **Enhance Native PPTX** preserve existing packages through scoped OOXML operations.
+Today that axis is expressed through four explicit artifact routes: **Generate PPTX** authors newly designed slides through constrained SVG → DrawingML; **Create Template** produces reusable Brand / Style / Layout / Deck workspaces; **Fill Native PPTX** and **Enhance Native PPTX** preserve existing packages through scoped OOXML operations.
 
 ---
 

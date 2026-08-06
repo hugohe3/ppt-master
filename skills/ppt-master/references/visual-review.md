@@ -25,9 +25,12 @@ Each review subagent processes a **batch** of pages (see §6.1 for batch sizing)
 2. **Path to this rubric file**
 3. **`<project>/design_spec.md`** (read-only) — §IX outline is the source of truth for "what should this page deliver"
 4. **`<project>/spec_lock.md`** (read-only) — brand-locked values
-5. **`<project>/.review/`** (writable) — where backups and findings JSON go
+5. **Style Review Focus excerpt** (conditional, read-only) — supplied by the orchestrator only when `<project>/templates/design_spec.md` contains an active Style segment; it retains the source path and exact §VII wording
+6. **`<project>/.review/`** (writable) — where backups and findings JSON go
 
-The subagent reads inputs 2–4 **once** at the start of its turn, then iterates over the page batch sequentially (one page at a time): apply the rubric → write `<project>/.review/<page>.json` → move on. This is the core token-saving move — three fixed documents are read N/K times instead of N times.
+The subagent reads inputs 2–5 **once** at the start of its turn (input 5 may be absent), then iterates over the page batch sequentially (one page at a time): apply the rubric → apply any Style supplement → write `<project>/.review/<page>.json` → move on. This is the core token-saving move — fixed context is read N/K times instead of N times.
+
+Style Review Focus is supplemental acceptance context, not a second rubric. It cannot create new Hard rules, weaken §§1–3, or authorize content, identity, or structural edits. Record a clearly unmet focus item as `rule: "STYLE"`: apply a fix only when the existing rubric already permits that atomic edit; otherwise add a `needs_human_items` entry with a concise suggested fix.
 
 ## §1 Hard rules (fix every hit)
 

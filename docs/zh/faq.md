@@ -220,7 +220,9 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 默认推荐**一次性连续生成**——10–15 页的 deck 在 200K 上下文窗口下完全够用，跨页视觉一致性也最好（Executor 看到前几页 SVG 后会主动对齐风格、字号、节奏）。
 
-只有信号偏重的场景（页数 ≥ 18 / 源材料很厚 / 走过 topic-research 累积大量 web 抓取），AI 才会在策略师阶段给出**拆分模式**的可选提示：规划会话（策略师确认阶段 + 图片获取）结束后停止当前对话；你新开聊天窗口，输入 `继续生成 projects/<项目名>` 进入执行会话（SVG 生成 + 导出）。新会话从磁盘重新加载 `design_spec` / `spec_lock` / `sources` / `images` 继续执行。
+当前 AI 编辑器若支持隔离研究子代理，`topic-research` 会把原始网页抓取留在该上下文，主会话只读取落盘的研究摘要和事实来源文件。
+
+只有信号偏重的场景（页数 ≥ 18 / 源材料很厚 / 本地回退研究后主会话仍保留大量研究材料，或导入的研究摘要本身异常庞大），AI 才会在策略师阶段给出**拆分模式**的可选提示：规划会话（策略师确认阶段 + 图片获取）结束后停止当前对话；你新开聊天窗口，输入 `继续生成 projects/<项目名>` 进入执行会话（SVG 生成 + 导出）。新会话从磁盘重新加载 `design_spec` / `spec_lock` / `sources` / `images` 继续执行。
 
 两段式是**折中方案**——新会话需付出重载 Generate 权威文档与必需执行引用的固定成本，但可丢弃规划会话噪声，并把节省下来的窗口空间用于主动重读 `sources/` 做内容增稠。**信号正常时不需要**，提示也不会出现；用户随时可以忽略提示，走默认连续模式。
 
@@ -287,7 +289,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第三步 — 等待完成**
 
-AI 代理会自动完成后续工作——分析参考、构建布局定义并验证模板。如果你明确需要 PowerPoint 审阅文件，它还会按需生成 `exports/<id>_template_preview.pptx`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 与 `exports/`：`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册；空的可选目录直接省略。把这个工作区根目录交给 Step 3 即可，Step 3 不会复制 `exports/`，全局库的预览导出也由 Git 忽略。根目录平铺 `design_spec.md` 的工作区只有在 SVG 已满足当前合同时才兼容；语义旧包必须通过 `create-template` 替换，不能原地升级。
+AI 代理会自动完成后续工作——分析参考、写入 kind 专属规范，仅为 Layout/Deck 构建结构定义，并验证工作区。Brand/Style 不生成预览 PPTX；Layout/Deck 可按请求生成 `exports/<id>_template_preview.pptx`，多 Master 时必须生成。两种范围都要求 `templates/`；Brand/Layout/Deck 可使用包自有 `images/` 和 `icons/`，Style 则只包含 `templates/design_spec.md`。`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册；空的可选目录直接省略。把这个工作区根目录交给 Step 3 即可，Step 3 不会复制 `exports/`，全局库的预览导出也由 Git 忽略。兼容的旧平铺 Brand/Layout/Deck 工作区只有在满足当前 kind 合同时才可读取，Layout/Deck 还必须满足当前 structured SVG 合同；Style 不存在旧平铺形态，语义旧包必须通过 `create-template` 替换，不能原地升级。
 
 > **提示**：对风格和使用场景描述得越具体，生成的模板就越符合你的预期。
 

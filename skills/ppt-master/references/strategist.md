@@ -8,7 +8,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 | Previous Step | Current | Next Step |
 |--------------|---------|-----------|
-| Project creation + Template option confirmed | **Strategist**: Strategist confirmation stage + Design Spec | Image_Generator or Executor |
+| Project creation + independent Step-3 template selection/installation complete | **Strategist**: Stage 1–3 confirmation + Design Spec | Image_Generator or Executor |
 
 ---
 
@@ -24,7 +24,11 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the confirmation fields below and wait for explicit user confirmation.
 
-**Three-stage confirmation (the default Confirm UI flow; chat mirrors it).** The sequence is scene first, complete solution second, production third:
+**Three-stage confirmation (the default Confirm UI flow; chat mirrors it).**
+Generate Step 3 has already confirmed free design or installed the selected
+template into this project. That independent selection is not a Stage-1 field
+and must not be reopened here. The sequence is scene first, complete solution
+second, production third:
 
 | Stage | Items | Role |
 |---|---|---|
@@ -32,13 +36,15 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 | **2 — complete deck solution** (authored once from the user's *actual* Stage 1) | reading mode (`delivery_purpose`, PPT only) · `d` mode + visual style · `b` page count · `e` color · `f` icon · `g` typography · `h` image source + generated-image rendering · conditional natural-language template application | derived from the confirmed contract; internal template exporter modes remain hidden |
 | **3 — resources / production** (authored once from the user's *actual* Stage 1 + Stage 2) | formula policy · conditional AI-image acquisition path · generation mode · refine-spec toggle · proactive speaker notes / custom animations / narration audio | derived from the confirmed solution |
 
-Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, and image direction. With a template, inspect its actual prototypes/content, present one editable application plan, and keep exporter reuse/adherence internal. Present ≥3 coordinated safe / shifted / bold directions so color, type, icons, and generated-image rendering begin coherent; the user may override each component. Generated images inherit deck colors—there is no second image palette. Stage 3 covers production. Its proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
+Do not force communication intent into one catalog label; Stage 1 records composite intent in prose. Editable prose fields are recommendation drafts, not required inputs: confirmation preserves current text and blanks; never repopulate a cleared field. Stage 2 confirms narrative spine, reading density, page budget, visual system, image direction, and how the already installed template should be used. It never chooses or installs a template. Inspect only the project-local template spec/prototypes, present one editable application plan, and keep exporter reuse/adherence internal. Present ≥3 coordinated safe / shifted / bold directions so color, type, icons, and generated-image rendering begin coherent; the user may override each component. Generated images inherit deck colors—there is no second image palette. Stage 3 covers production. Its proactive defaults are speaker notes `true`, custom animations `false`, and narration audio `false`; a prior explicit user instruction overrides the matching recommendation, and effective narration audio requires effective speaker notes. Author each stage once; same-stage edits update only visible browser state through documented deterministic dependencies, without another AI/backend recommendation. Launch/derive/wait mechanics live in [`generate-pptx.md`](../workflows/generate-pptx.md) Step 4; item specs keep `a`–`h`.
 
-> **Execution discipline**: This is the last always-on BLOCKING checkpoint. After confirmation, proceed without another pause unless spec refinement is enabled.
+**Hard rule — Stage-1 source boundary**: Build Stage 1 only from the current user request, source facts, conversation constraints, and project-initialization state. Ignore the selected template roots, installed/fused template state, template assets/prototypes, and template-owned canvas. Do not load or apply [`strategist-template.md`](./strategist-template.md) until the confirmed Stage-1 contract is available for Stage 2. Early installation is storage preparation, not planning evidence for Stage 1.
+
+> **Execution discipline**: Step 3 template selection was the preceding independent BLOCKING checkpoint. This is the last always-on checkpoint. After confirmation, proceed without another pause unless spec refinement is enabled.
 >
 > **One opt-in exception**: present the refinement line with the split-mode note ([`generate-pptx.md`](../workflows/generate-pptx.md) Step 4). Only explicit opt-in runs [`refine-spec`](../workflows/stages/refine-spec.md): write the Design Spec once, pass Gate 1, then stop before the lock for unrestricted chat revision. Never enter it unprompted.
 
-> **Default presentation surface — Confirm UI.** Before launch, apply [`confirm_ui.md`](../scripts/docs/confirm_ui.md)'s sticky per-run surface decision; its explicit chat branch skips every UI command, and a chat selection after UI launch follows its in-run switch procedure. Chat-question tools alone do not select a branch. In the UI branch, use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json`; replace only the active unconfirmed stage, preserve confirmed files, and print the URL plus Stage-1 summary/fallback without treating that handoff as confirmation. Stage 1 writes canonical BCP-47 `primary_language` apart from UI `lang`; Strategist projects it through Design Spec §I to lock communication. Stage 2 carries ≥3 safe / shifted / bold `design_directions`, each bundling visual style, a six-role HEX palette, primary-language heading/body typography plus an English companion only for non-English decks, icons, and conditional image rendering. Step 4 retains final confirmation from the selected channel for Design Spec authoring. `confirm_ui.md` owns schema and lifecycle.
+> **Default presentation surface — Confirm UI.** Before Step 3, apply [`confirm_ui.md`](../scripts/docs/confirm_ui.md)'s sticky per-run surface decision; its explicit chat branch skips every UI command, and a chat selection after UI launch follows its in-run switch procedure. Chat-question tools alone do not select a branch. The UI branch closes template selection/installation before it exposes Stage 1. Then use `<project>/confirm_ui/recommendations.stage1.json`, `.stage2.json`, and `.stage3.json`; replace only the active unconfirmed stage, preserve confirmed files, and print the URL plus Stage-1 summary/fallback without treating that handoff as confirmation. Stage 1 writes canonical BCP-47 `primary_language` apart from UI `lang`; Strategist projects it through Design Spec §I to lock communication. Stage 2 carries ≥3 safe / shifted / bold `design_directions`, each bundling visual style, a six-role HEX palette, primary-language heading/body typography plus an English companion only for non-English decks, icons, and conditional image rendering. Step 4 retains final confirmation from the selected channel for Design Spec authoring. `confirm_ui.md` owns selection-surface and staged-confirmation lifecycle.
 
 **Confirmed-value semantics**: confirmation preserves both the value and the owning field's semantic type. Apply the type to the affected property, not automatically to the whole object:
 
@@ -58,7 +64,7 @@ Explicit *must*, *only*, *exactly*, *verbatim*, *do not*, or `no-crop` wording m
 
 ### a. Canvas Format Confirmation
 
-Recommend format based on scenario (see [`canvas-formats.md`](canvas-formats.md)).
+Recommend format from the current scenario and project initialization (see [`canvas-formats.md`](canvas-formats.md)). A template canvas is not Stage-1 evidence; Stage 2 later checks whether selected structure can serve the confirmed current-project canvas.
 
 ### b. Page Count Confirmation
 
@@ -149,7 +155,7 @@ The deck's **visual aesthetic** — shape language, decoration density, whitespa
 
 Record the confirmed visual style and rationale in `design_spec.md` first, including the exact catalog basis when a selected custom uses one. Then project `- visual_style:` to `spec_lock.md`; for `custom`, also project `- visual_style_behavior:` and, only when catalog material is actually used, `- visual_style_references: <id>, <id>`. Executor reads one file for a preset. For `custom`, it reads every listed reference before applying the behavior; an unreferenced novel custom follows the behavior directly.
 
-**Conditional template workspace**: When Generate Step 3 installed an explicit workspace path into `<project_path>/templates/`, read [`strategist-template.md`](./strategist-template.md) before completing Stage 2. It owns the editable natural-language application plan, confirmed-value consumption, AI-authored prototype selection, internal reuse/adherence derivation, inherited design precedence, and structured-lock planning. Bare names, style words, and free-design projects do not trigger it.
+**Conditional template workspace**: When Generate Step 3 installed a selected workspace into `<project_path>/templates/`, read [`strategist-template.md`](./strategist-template.md) before completing Stage 2. Read the installed project-local spec and prototypes only; never reopen the library/external source root. The module owns the editable natural-language application plan, confirmed-value consumption, AI-authored prototype selection, internal reuse/adherence derivation, inherited design precedence, and structured-lock planning. This plan decides how to use the installed template, never which template to select. Bare names, style words, and free-design projects do not trigger it.
 
 **Downstream effect**: e / f / g / h realize the locked mode + visual style. Example: `showcase` + `dark-tech` → e applies one luminous accent on a dark field; g pairs a clean sans with mono; f minimal glow icons; h the `digital-dashboard` rendering.
 

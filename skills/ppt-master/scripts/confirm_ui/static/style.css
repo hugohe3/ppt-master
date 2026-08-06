@@ -601,6 +601,132 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 .subfield { margin-top: 14px; }
 .subfield-label { font-size: 12.5px; color: var(--muted); margin-bottom: 7px; }
 
+/* ---- Step 3 template selection ---- */
+.template-free-choice {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--card);
+    color: var(--ink);
+    padding: 11px 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .12s ease, background .12s ease, box-shadow .12s ease;
+}
+.template-free-choice:hover {
+    border-color: var(--accent);
+}
+.template-free-choice:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+.template-free-choice.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: 0 0 0 1px var(--accent);
+}
+.template-choice-radio {
+    flex: none;
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    border: 2px solid #aeb5bf;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: inset 0 0 0 3px #fff;
+}
+.template-free-choice.selected .template-choice-radio {
+    border-color: var(--accent);
+    background: var(--accent);
+}
+.template-free-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.template-free-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.template-free-desc {
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+.template-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 13px 16px;
+}
+.template-select-field {
+    min-width: 0;
+}
+.template-select-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 700;
+}
+.template-select {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 34px 0 11px;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 13.5px;
+}
+.template-select:hover:not(:disabled) {
+    border-color: var(--accent);
+}
+.template-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.template-select:disabled {
+    background: #f4f6f8;
+    color: #9aa1aa;
+    cursor: not-allowed;
+}
+.template-select-help {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.45;
+}
+.template-selected-path {
+    margin-top: 7px;
+    min-width: 0;
+}
+.template-selected-path[hidden] {
+    display: none;
+}
+.template-selected-path-label {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+.template-selected-path-value {
+    display: block;
+    color: #475569;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
 /* ---- toggles ---- */
 .toggle-row { display: flex; align-items: center; gap: 12px; }
 .toggle-desc { font-size: 12.5px; color: var(--muted); }

@@ -18,14 +18,14 @@
 
 ## 用模板
 
-**可选。** 默认走**自由设计**——不需要模板,可以直接跳到下一节。只有当 deck 必须复用一套固定版式或品牌时,才需要模板。
+**可选。** 默认走**自由设计**——不需要模板,可以直接跳到下一节。只有当 deck 必须复用品牌身份、沟通与设计方法、固定版式或重复使用的 Deck 应用时,才需要模板。
 
 **复用现成 `.pptx` 有两条路,取决于你想要什么结果:**
 
 | 你想要… | 路径 | 会发生什么 |
 |---|---|---|
 | **用这份 deck 的原生页面壳承载新内容** | Fill Native PPTX | 克隆选中的源页面，并在 OOXML 中直接改写文字 / 表格 / 图表数据。来源设计保持原生；输出是受现有页面壳约束的新回填 deck。 |
-| **先建立可复用设计系统，再生成新 deck** | Create Template → Generate PPTX | 从参考材料创建经过验证的 Brand、Layout 或 Deck 工作区，再创作一份新 deck。新故事、结构与页数都可以不同于来源。 |
+| **先建立可复用设计系统，再生成新 deck** | Create Template → Generate PPTX | 从参考材料创建经过验证的 Brand、Style、Layout 或 Deck 工作区，再创作一份新 deck。新故事、结构与页数都可以不同于来源。 |
 
 前者:把 `.pptx` 连同素材(或一个主题)给 AI,说「套模板」——见 [套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。本节其余部分讲 create-template。
 
@@ -35,7 +35,7 @@
 你：用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 模板
 ```
 
-Create Template 会分析参考材料，确认结果属于 Brand、Layout 还是 Deck，再创作或物化一个经过验证的新工作区。导入器只提供来源证据；最终工作区拥有 `templates/design_spec.md`、所需 SVG 原型与配套素材。如果需要 PowerPoint 评审文件，再显式运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。生成时引用的是工作区根目录。
+Create Template 会分析参考材料，确认结果属于 Brand、Style、Layout 还是 Deck，再创作或物化一个经过验证的新工作区。导入器只提供来源证据；最终工作区拥有 `templates/design_spec.md`，以及该 kind 真正需要的原型和素材。Brand 与 Style 不含 roster；Layout 与 Deck 拥有 structured SVG 原型。如果需要 Layout 或 Deck 的 PowerPoint 评审文件，再显式运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。生成时引用的是工作区根目录。
 
 在 create-template 简报中选择 `library`（沿用原默认）或 `project`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 和按需生成的 `exports/`；空的可选目录直接省略。项目范围要求给出已初始化的目标项目；只有全局库范围会执行注册。
 
@@ -46,7 +46,7 @@ Create Template 会分析参考材料，确认结果属于 Brand、Layout 还是
 | **注册进 skill 库** | `skills/ppt-master/templates/<kind>/<id>/` | 可移植工作区并执行全局注册；问“有哪些模板”时会被列出来 |
 | **放在 projects 下** | `projects/<name>/` | 相同的可移植工作区，不执行全局注册 |
 
-两种结果都通过对话里给出**工作区根目录路径**来引用。Step 3 会解析 `templates/design_spec.md`；为兼容目录形态，也接受 `design_spec.md` 直接位于所给根目录、且 SVG 已满足当前合同的平铺工作区。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
+已注册结果可在 Step 3 对应 kind 的下拉框中选择。若要提供其他结果，在对话里给出精确的**工作区根目录路径**：未注册 root 会进入指定地址下拉框；与注册 canonical root 完全相同的路径会归回对应 kind 下拉框。Step 3 会解析 `templates/design_spec.md`；为兼容目录形态，也接受满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 根目录，Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都要求精确选择，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/presentation_core/
@@ -61,20 +61,20 @@ Create Template 会分析参考材料，确认结果属于 Brand、Layout 还是
 整个流程就三步。先装好环境——只需要 Python,见 [快速开始](../../README_CN.md#快速开始)。
 
 1. **把源材料放进** `projects/` —— PDF、DOCX、Markdown、一个网址,或直接要粘贴的文字。
-2. **在对话里告诉 AI** 要把什么做成 deck(如果上面准备了模板,把它的路径一起给;否则就是自由设计):
+2. **在对话里告诉 AI** 要把什么做成 deck。随后在 Step 3 选择自由设计或组合已注册模板；若要使用未注册模板，把它的精确 root 一并写在对话里，让它出现在指定地址下拉框中：
    ```
    你：用 projects/q3-report/sources/report.pdf 做一份 PPT
    你：把这份内容做成 PPT：<粘贴你的文字>
    ```
 3. **拿回可编辑的 `.pptx`**,位于 `exports/<名称>_<时间戳>.pptx` —— 真正的 DrawingML 形状、文本框、图表,在 PowerPoint / Keynote / WPS / LibreOffice 里点开就能改。
 
-开始前 AI 会先确认一份简短的设计规格(模板、格式、页数……);之后内容分析、排版、配图、SVG 生成、导出都由它完成——这就是其它能力围绕的核心环节。不想走确认这一步,见下方[快速模式](#快速模式)。
+生成前，Step 3 会先确认自由设计或模板组合；Stage 1 再独立确认沟通契约和画布/格式，Stage 2 确认页数、视觉系统，以及启用模板时的应用方式。之后内容分析、排版、配图、SVG 生成、导出都由 AI 完成——这就是其它能力围绕的核心环节。不想走交互确认，见下方[快速模式](#快速模式)。
 
 ---
 
 ## 快速模式
 
-默认流程会先跟你确认一份设计规格。不想经过这一步,就显式要求**快速生成**:
+默认流程会先完成 Step 3 选择和分阶段设计确认。不想经过这些交互，就显式要求**快速生成**：
 
 ```
 你：用 sources/report.pdf 快速生成一份 PPT,不用跟我确认
@@ -82,6 +82,12 @@ Create Template 会分析参考材料，确认结果属于 Brand、Layout 还是
 ```
 
 **你明确提的照做,你没提的 AI 直接定,不再回来问你。** 第二个例子里的页数和风格照样生效——快速模式省掉的是来回确认,不是你的话语权;什么都不提,才是全部交给 AI 决定。
+
+快速模式不会打开 Confirm UI 的模板选择页。每个 kind 最多给出一个精确的
+Brand / Style / Layout / Deck 工作区 root，它会直接校验、安装并使用；没有
+给出精确 root，就直接自由设计。只写模板名或风格词仍然只是设计说明。
+Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创作，但不会
+编译成可复用的原生 Master / Layout 对象。
 
 它不跳过备料:来源转换、事实缺口研究、图片 / 图标 / 公式准备仍按需运行。必需素材缺失时它会停下来跟你要,不会拿无关材料顶替。
 
