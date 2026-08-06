@@ -6,7 +6,7 @@ description: >
   enhancing finished PPTX files. Use when the user asks to create, regenerate,
   template, fill, or enhance a presentation, or mentions ppt-master.
 metadata:
-  version: "4.3.0"
+  version: "4.4.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"
   official_repository: "https://github.com/hugohe3/ppt-master"
