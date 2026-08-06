@@ -1,6 +1,6 @@
 # Chart Candidate Recall
 
-`chart_recall.py` gives the Strategist a bounded deterministic shortlist. It exposes the full live catalog only when the caller explicitly requests semantic review. It reads `templates/charts/charts_index.json` on every invocation, so the catalog remains the only template registry.
+`chart_recall.py` gives Default Strategist or the Quick Generate main agent a bounded deterministic shortlist. It exposes the full live catalog only when the caller explicitly requests semantic review. It reads `templates/charts/charts_index.json` on every invocation, so the catalog remains the only template registry.
 
 ## Recall candidates
 
@@ -28,23 +28,24 @@ Semantically review the bounded candidates. At `high` / `medium`, retain `no-tem
 | `semantic_fallback` | Full live catalog, present only with `--semantic-fallback`; requires semantic comparison |
 | `no_template_match` | Explicit fallback; `allowed` stays false for `low` / `none` until `--semantic-fallback` is used |
 
-The scorer treats the key and the summary's Pick clause as positive evidence and the Skip clause as negative evidence. A term found only in Skip cannot make a candidate eligible, and Skip matches explicitly reduce a candidate's score. Unicode input is NFKC-normalized before matching. The Strategist still applies semantic judgment: inspect the returned candidates, reject candidates whose Skip clause matches, and prefer the most specific valid structure. An empty or low-confidence shortlist requires one `--semantic-fallback` review only when the Strategist is about to keep `no-template-match`.
+The scorer treats the key and the summary's Pick clause as positive evidence and the Skip clause as negative evidence. A term found only in Skip cannot make a candidate eligible, and Skip matches explicitly reduce a candidate's score. Unicode input is NFKC-normalized before matching. The active profile owner still applies semantic judgment: inspect the returned candidates, reject candidates whose Skip clause matches, and prefer the most specific valid structure. An empty or low-confidence shortlist requires one `--semantic-fallback` review only when the owner is about to keep `no-template-match`.
 
 ## Validate selected keys
 
-Validate every selected template key before writing `design_spec.md §VII` or `spec_lock.md page_charts`:
+Validate every selected template key before Default writes `design_spec.md §VII` / `spec_lock.md page_charts` or Quick opens that key for immediate use:
 
 ```bash
 python3 skills/ppt-master/scripts/chart_recall.py validate line_chart quadrant_text_bullets
 ```
 
-The command is read-only. It exits `0` when every key exists and `1` when any key is absent. A `no-template-match` page appears in neither §VII nor `page_charts`; record its chosen fallback in the page's §IX `Visualization` / `Layout` instead.
+The command is read-only. It exits `0` when every key exists and `1` when any key is absent. A Default `no-template-match` page appears in neither §VII nor `page_charts`; record its chosen fallback in the page's §IX `Visualization` / `Layout`. Quick keeps the fallback only in active context and writes no mapping artifact.
 
 ## Selection boundary
 
 - Preserve the two-lens review: numeric/data pages and structural-information pages.
-- Keep §VII as a positive selection list: record `Page | Template | Usage` for each selected key, and omit the whole section when no candidate is selected.
-- Make `Usage` one concise page-local purpose, not geometry or execution instructions; derive `templates/charts/<key>.svg` from the key and keep detailed adaptation in §IX.
+- Default keeps §VII as a positive selection list: record `Page | Template | Usage` for each selected key, and omit the whole section when no candidate is selected.
+- Default makes `Usage` one concise page-local purpose, not geometry or execution instructions; derive `templates/charts/<key>.svg` from the key and keep detailed adaptation in §IX.
+- Quick retains the selected key and immediate page purpose only in active context; do not create §VII, `page_charts`, or a substitute mapping file.
 - Never serialize `no-template-match`, an empty table, or a no-reference explanation into §VII.
 - Do not serialize returned summaries, paths, or runners-up into new §VII tables. Legacy wider tables remain readable.
 - Open the selected `<key>.svg` only as a reference for its mapped page; it does not lock type or geometry. Do not load unrelated catalog SVGs.

@@ -33,7 +33,7 @@ responsibilities and cannot substitute for one another:
 | Prompts, templates, and examples | State the project-canonical spelling precisely and reduce drift and warnings at the source | They are not a correctness or safety boundary |
 | `svg_quality_checker.py` | Enforce the project contract on authoring state; errors block and non-blocking warnings pass | It does not silently rewrite pages or guess design intent |
 | `svg_to_pptx.py` | Defensively validate compiler mappings and the package, normalize supported compatible forms, require a current matching final quality report for formal release, and link it into postflight | It does not rerun the complete `svg_quality_checker.py` or treat file creation as proof that the upstream quality gate passed |
-| `workflow_transcript.py` / `workflow_log.py` | Automatically mirror project-scoped Python text stdout/stderr and explicitly append important non-Python audit events | They do not interpret output, infer readiness, rerun another tool, or alter the owning tool's result |
+| `workflow_transcript.py` / `workflow_log.py` | Record project-scoped Python command envelopes plus bounded material outcomes, and explicitly append important non-Python audit events | They do not retain the full console stream, infer readiness, rerun another tool, or alter the owning tool's result |
 
 The automatic recorder resolves the project from `PPT_MASTER_PROJECT_PATH`, a
 path-bearing argument, or the current working directory, in that order. The
@@ -100,7 +100,7 @@ Output:
     └── <project_name>_<timestamp>_narrated.pptx              ← --recorded-narration or --narration-audio-dir variant
 
     validation/
-    ├── workflow.log                                ← Automatic Python-output transcript + important manual audit events
+    ├── workflow.log                                ← Compact Python command/outcome audit + important manual audit events
     ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
     └── <output_stem>.report.json                    ← Postflight package/resource audit linked to the final SVG quality report
 
@@ -115,16 +115,18 @@ the inputs or resources needed to build the deck:
 ```text
 Source material or topic
     -> convert/read sources and research identified factual gaps as needed
-    -> decide content, page structure, visual system, and resources in active context
-    -> prepare required images/icons/formulas and resource manifests
+    -> resolve mode/style and decide content, page structure, and carriers in active context
+    -> prepare selected images/icons/formulas and operational manifests
     -> hand-author svg_output/ under the shared SVG standards
+    -> verify data-driven chart coordinates when present
     -> svg_quality_checker.py --quick-generate --stage final --json
     -> svg_to_pptx.py --quick-generate
     -> exports/<name>_<timestamp>.pptx
 ```
 
 These decisions are made automatically by the current agent without Strategist,
-Confirm UI, `design_spec.md`, or `spec_lock.md`.
+Confirm UI, `design_spec.md`, `spec_lock.md`, or a substitute plan. They cannot
+be reconstructed or resumed after the active context is lost.
 
 In the default flow, without an explicit `-o`, the native-object and narration
 flags may combine into
@@ -205,9 +207,12 @@ Post-processing scripts convert supported SVG vector elements to DrawingML. Text
 needed by the deck, but skips the separate Strategist planning/confirmation
 phase, first-page gate, and `finalize_svg.py`. The current agent follows every
 explicit user requirement and makes the remaining content, page, visual, and
-resource decisions automatically in active context, then authors under the
-shared SVG standards, runs one lockless final quality gate, and uses the same
-DrawingML converter and postflight.
+resource decisions automatically in one active context. It resolves a mode and
+visual style, considers the complete image/icon/native-shape/chart/table/formula
+carrier menu, then authors under the shared SVG standards, runs any selected
+capability-specific preparation, passes one lockless final quality gate, and
+uses the same DrawingML converter and postflight. It writes no substitute plan
+or resumable design history; context loss restarts the Quick run.
 
 ---
 
@@ -236,9 +241,10 @@ design_spec.md + spec_lock.md + images/ + icons/ + templates/
 Quick Generate:
 source material or topic
     └─> conversion/read + factual-gap research [as needed]
-          └─> active-context content/page/visual/resource decisions
+          └─> active-context mode/style + content/page/carrier decisions
                 └─> images/ + icons/ + formula/resource manifests [as needed]
                       └─> hand-authored svg_output/
+                            ├─> verify-charts [only for data-driven chart geometry]
                             └─> svg_quality_checker.py --quick-generate --stage final --json
                                   └─> svg_to_pptx.py --quick-generate -> exports/*.pptx
                                         + validation/<output_stem>.report.json
@@ -315,14 +321,16 @@ Two converter design choices still shape the system:
 
 `project_manager.py init` creates the standard project working directories;
 `--quick-generate` creates `svg_output/` plus the cold
-`validation/workflow.log` transcript, omits the project README, and leaves
+`validation/workflow.log` audit log, omits the project README, and leaves
 other directories on demand. The explicit
 [`quick-generate`](../skills/ppt-master/workflows/profiles/quick-generate.md)
 profile omits planning artifacts and `svg_final/`, but its project may still
 contain converted sources, analysis, images, icons, rendered formulas, and
 required resource manifests. It hand-authors `svg_output/`, writes a lockless
 final quality report, and retains the ordinary postflight and default-path
-backup around the final PPTX. The default delivery lifecycle is:
+backup around the final PPTX. The audit log and reports preserve tool outcomes,
+not the AI's design reasoning or a resumable stage state. The default delivery
+lifecycle is:
 
 | Directory | Role |
 |---|---|
@@ -335,7 +343,7 @@ backup around the final PPTX. The default delivery lifecycle is:
 | `svg_final/` | mandatory normal-flow derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
 | `live_preview/` | preview server state, edit history, and annotation logs |
 | `notes/` | `total.md` and split per-slide speaker notes |
-| `validation/` | cold workflow transcript, SVG quality reports, and PPTX postflight audit reports |
+| `validation/` | cold workflow audit log, SVG quality reports, and PPTX postflight audit reports |
 | `exports/` | timestamped native PPTX deliverables |
 | `backup/<timestamp>/` | default export creates the timestamped directory, then attempts a frozen `svg_output/` copy; copy failure does not fail export, but directory-creation failure is not currently downgraded |
 
@@ -353,7 +361,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 |---|---|
 | `sources/` content-type files are the Generate content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
 | `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist in the default pipeline and the current agent in `quick-generate`; they do not lock page count/order except in workflows that say so |
-| `design_spec.md` explains the design; `spec_lock.md` executes it in the default pipeline | both remain owning artifacts there; `quick-generate` persists neither, and the current agent follows explicit user requirements while keeping every remaining content, page, visual, and resource decision in active context |
+| `design_spec.md` explains the design; `spec_lock.md` executes it in the default pipeline | both remain owning artifacts there; `quick-generate` persists neither or any substitute plan, and the current agent follows explicit user requirements while keeping every remaining content, page, visual, and resource decision only in active context; context loss restarts Quick |
 | Planning context is retained until invalidated | continuous execution reuses the complete Design Spec, lock, and triggered references; fresh/resumed/restarted or compacted execution reloads them once |
 | `page-context` is on demand | the read-only projector supports diagnostics, deterministic routing checks, and optional usage telemetry; it is not a pre-page gate |
 | `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
@@ -474,7 +482,7 @@ evidence. In particular, enabling narration may enable the effective Speaker
 Notes outcome in the Design Spec, but it never rewrites the raw speaker-notes
 choice.
 
-**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while automatically preparing the resource roster in active context; no Design Spec projection is written. User images, extracted images, web images, AI outputs, formulas, and sliced elements still converge into the same measured fact table.
+**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. User images, extracted images, web images, AI outputs, formulas, and sliced elements still converge into the same measured fact table.
 
 **Retained planning context** carries continuity; the on-demand page projector is only a diagnostic described below.
 
@@ -529,28 +537,31 @@ Strategist and confirmation layer; it does not remove preparation.
 | Cook | Executor | Uses only prepared project-local assets and realizes the plan through geometry, composition, hierarchy, spacing, and treatment without changing the selected “dish” or acquiring/substituting ingredients; chooses suitable prepared icons per page and may adapt fields explicitly labeled as suggestions or References |
 | Quality inspector | `svg_quality_checker.py` | Reads authoring state and reports contract findings; it does not edit pages, own the page roster, or package the deck |
 | Packager | `svg_to_pptx.py` | After a matching final report passes, compiles the authored SVG, validates the package, and publishes the receipt; it does not repair SVG or rerun the checker |
-| Run recorder | `workflow_transcript.py`, `workflow_log.py`, and `validation/workflow.log` | Automatically mirrors project-scoped Python text stdout/stderr and accepts explicitly selected important non-Python events; it does not decide what the output means or whether the workflow may advance |
+| Run recorder | `workflow_transcript.py`, `workflow_log.py`, and `validation/workflow.log` | Records Python command envelopes, material tagged outcomes, bounded status samples, and omission counts, then accepts explicitly selected important non-Python events; it does not decide whether the workflow may advance |
 
 **Quick generation collapses planning into the current agent.** Source conversion,
 factual-gap research, and resource preparation still run when needed. The agent
-automatically selects the content, page roster, visual system, and resource
-needs in active context, prepares supplied/extracted/AI/web/sliced images,
-icons, and formulas with their required manifests or provenance records, and
-then hand-authors SVG. It does not invoke Strategist, Confirm UI,
-`design_spec.md`, or `spec_lock.md`.
+automatically selects the content, page roster, mode, visual style, and resource
+needs in active context; scans images, icons, native shapes, charts/tables,
+formulas, and simple typography/geometry as available carriers; prepares the
+selected supplied/extracted/AI/web/sliced images, icons, and formulas with their
+required operational manifests or provenance records; and then hand-authors
+SVG. It does not invoke Strategist, Confirm UI, `design_spec.md`,
+`spec_lock.md`, or a substitute planning artifact. These decisions are not
+recoverable after context loss.
 One agent may therefore perform several creative stages in sequence, but their
 ownership boundaries do not merge; checker, exporter, and transcript recorder
 remain separate deterministic tools.
 
 **Default preparation has two clocks.** Topic Research supplies facts before final confirmation: it starts immediately for topic-only input, or after supplied material is converted/read when planning-critical factual gaps remain. It supplements only those gaps and acquires no images. When the current AI editor provides an isolated worker with web/fetch access and write access to the declared outputs, the main agent defines the gaps and the worker writes the existing research/provenance artifacts, returning only a receipt; otherwise research runs in the main context. AI / web / slice image acquisition runs only after final confirmation and the completed `design_spec.md §VIII` / `spec_lock.md`, then reaches a terminal status before Executor starts. Strategist also resolves, syncs, and validates a curated project icon pool while authoring the final plan. Image_Generator, Image_Searcher, and icon-sync tooling are preparation mechanisms under Strategist ownership, not independent decision owners. Quick generation uses those preparation mechanisms as needed under the current agent's in-context decisions, without inserting a confirmation gate.
 
-**Prepared project-local assets are the boundary.** In the default pipeline, images and other declared resources remain available only when Strategist has selected them, recorded them in the planning artifacts, and made their project paths resolvable or explicitly `Needs-Manual`. Icons are prepared when their SVG files exist under `<project>/icons/`; `spec_lock.icons.inventory` indexes the Strategist's curated synced bundled pool but neither assigns page usage nor exhaustively whitelists execution. Executor chooses among prepared icons per page. In quick generation, the active-context resource roster and its project-local files/manifests replace that planning projection; the current agent may acquire and prepare those resources before SVG authoring. Files elsewhere on disk are not authorized. Missing material returns to the owning preparation step; SVG authoring never silently substitutes it.
+**Prepared project-local assets are the boundary.** In the default pipeline, images and other declared resources remain available only when Strategist has selected them, recorded them in the planning artifacts, and made their project paths resolvable or explicitly `Needs-Manual`. Icons are prepared when their SVG files exist under `<project>/icons/`; `spec_lock.icons.inventory` indexes the Strategist's curated synced bundled pool but neither assigns page usage nor exhaustively whitelists execution. Executor chooses among prepared icons per page. In quick generation, active-context resource decisions and their project-local files/manifests replace that planning projection; no general roster or page assignment is written. The current agent may acquire and prepare those resources before SVG authoring. Files elsewhere on disk are not authorized. Missing material returns to the owning preparation step; SVG authoring never silently substitutes it.
 
 **Specificity controls freedom.** “Make Mapo tofu” fixes the result's identity: technique and presentation may vary, but tomato-and-eggs or tofu soup is a substitution. “Make a tofu dish” leaves an in-class choice. In the default pipeline, Strategist may resolve that choice; if the Design Spec deliberately leaves a dimension broad, Executor may realize it within that envelope. Once the Design Spec names a binding choice, execution cannot reopen it. In quick generation, the current agent resolves the equivalent choice in active context and keeps it stable while authoring. Fields explicitly labeled as suggestions or References—including a preferred page-local image pattern—remain expression guidance that may be adapted without changing content, resources, identity, or explicit constraints.
 
 **Garnish remains local.** Sparse page-local font or color accents may add hierarchy, differentiation, or atmosphere without becoming a second visual system. In the default pipeline, structural/recurring fonts, palette roles, resources, or recurring cross-page identity patterns remain Strategist decisions and require an upstream Design Spec/lock update before reuse; in quick generation, the current agent establishes those anchors in active context and preserves them across pages. A default-pipeline page-local §VIII image pattern remains a preferred composition reference.
 
-**Prompt-refactor invariant.** In the default pipeline, compression must preserve initial materials, user confirmation, Strategist-owned preparation, planning ownership, and execution freedom as separate layers. Moving acquisition into Executor, turning permission into quota, flexible realization into silent resource/identity reselection, or an exact binding plan into an approximate target is a semantic regression. The explicit quick profile consolidates the first layers under the current agent; it does not erase source or resource work. Default runtime authority lives in [`strategist.md`](../skills/ppt-master/references/strategist.md) and [`executor-base.md`](../skills/ppt-master/references/executor-base.md); Quick runtime authority starts at [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) and conditionally loads the same resource references. Prompt-writing governance lives in [`prompt-style.md`](./rules/prompt-style.md).
+**Prompt-refactor invariant.** In the default pipeline, compression must preserve initial materials, user confirmation, Strategist-owned preparation, planning ownership, and execution freedom as separate layers. Moving acquisition into Executor, turning permission into quota, flexible realization into silent resource/identity reselection, or an exact binding plan into an approximate target is a semantic regression. The explicit quick profile consolidates the first layers under the current agent; it does not erase source, resources, aesthetics, data visualization, or native-shape capability. Default runtime authority lives in [`strategist.md`](../skills/ppt-master/references/strategist.md) and [`executor-base.md`](../skills/ppt-master/references/executor-base.md); Quick runtime authority starts at [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) and directly loads the applicable shared and conditional execution references without inheriting Default's persisted-plan prerequisites. Prompt-writing governance lives in [`prompt-style.md`](./rules/prompt-style.md).
 
 ---
 
@@ -660,13 +671,14 @@ The post-processing and export stages keep authoring, validation, preview, deliv
 | `backup/<ts>/svg_output/` (default output path only; copy is best-effort after directory creation) | re-export from frozen SVG sources without rerunning the LLM | after successful conversion the exporter creates the backup directory and attempts the copy; explicit `-o` creates none, copy failure does not block export, prints a warning outside quiet mode, and leaves postflight `backup_path` empty, while directory-creation failure remains fatal |
 
 Validation JSON files and `validation/workflow.log` are cold audit artifacts,
-not routine model inputs. The workflow transcript is opened only when the user
-explicitly requests a run review. It can reconstruct observed commands and
-their text output, plus selected non-Python details such as a material stage
-handoff or rework reason, user-approved exception, or manual recovery choice.
-These manual entries are optional and never duplicate artifacts, routine
-progress, or private reasoning; current artifacts still establish the stage
-and readiness. The
+not routine model inputs. The workflow log is opened only when the user
+explicitly requests a run review. It reconstructs observed commands and a
+bounded material outcome selection—not the complete console stream—plus
+selected non-Python details such as a material stage handoff or rework reason,
+user-approved exception, or manual recovery choice. Each command footer reports
+how many output lines were retained or omitted. These manual entries are
+optional and never duplicate artifacts, routine progress, or private reasoning;
+current artifacts still establish the stage and readiness. The
 exporter reads the SVG quality report programmatically and, in the default
 non-quiet flow, prints a compact `[POSTFLIGHT]` receipt with the status,
 quality-gate result, Slide count, warning-category counts, and artifact paths.

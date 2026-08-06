@@ -157,15 +157,16 @@ python3 scripts/<tool>.py <project_path> <args...>
 ```
 
 Their shared CLI bootstrap discovers the existing project log from the working
-directory or command arguments. `workflow_transcript.py` mirrors text written
-through configured `sys.stdout` / `sys.stderr` as tagged logical lines under a
-UTC Python-command envelope; no outer launcher or second Python process is
-used. Commands before project initialization are not backfilled. Binary-buffer
-writes, hidden child output, and detached service activity are not copied;
-Confirm UI and live preview retain detailed output in their component
-`server.log` files. Their shared detached-process launcher disables automatic
-workflow transcription in the long-running child while preserving the short
-foreground launcher's own record.
+directory or command arguments. `workflow_transcript.py` records a UTC command
+envelope plus explicit error/failure and receipt/report lines, bounded
+warning/OK/stderr samples, limited summary context, and per-run omission counts;
+no outer launcher or second Python process is used. It leaves full output on
+the original console instead of copying it into the audit log. Commands before
+project initialization are not backfilled. Binary-buffer writes, hidden child
+output, and detached service activity are not recorded; Confirm UI and live
+preview retain detailed output in their component `server.log` files. Their
+shared detached-process launcher disables automatic workflow recording in the
+long-running child while preserving the short foreground launcher's own record.
 
 For a Python helper whose arguments and working directory do not identify the
 active project, set the routing signal on the same command:
@@ -188,11 +189,11 @@ Suitable notes include a material stage handoff or rework reason, a
 user-approved exception, or a manual recovery choice. Do not duplicate
 artifact contents, routine page progress, or private reasoning.
 
-The transcript is append-only audit evidence. It is not a stage, quality, or
-artifact authority and is not read during normal generation or resume. Inspect
-it only when the user explicitly requests a run review. An automatic transcript
-failure emits a warning but does not change the Python tool's result; an
-explicit manual entry that cannot be written exits non-zero.
+The log is append-only audit evidence. It is not a complete console transcript,
+stage, quality, or artifact authority and is not read during normal generation
+or resume. Inspect it only when the user explicitly requests a run review. An
+automatic recording failure emits a warning but does not change the Python
+tool's result; an explicit manual entry that cannot be written exits non-zero.
 
 ## `project_utils.py`
 

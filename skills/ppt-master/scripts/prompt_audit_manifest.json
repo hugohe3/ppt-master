@@ -187,7 +187,7 @@
       "max_tokens": 70000
     },
     "route.generate.quick-generate": {
-      "description": "Explicit non-interactive Generate path with conditional source/resource/template preparation and the complete flat SVG visual-construction authorities.",
+      "description": "Explicit one-pass Generate path with active-context mode/style selection, conditional source/resource preparation, and complete flat SVG visual-construction authorities.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -198,9 +198,30 @@
         "skills/ppt-master/references/artifact-ownership.md",
         "skills/ppt-master/references/shared-standards-core.md",
         "skills/ppt-master/references/svg-effects.md",
-        "skills/ppt-master/references/native-shape-authoring.md"
+        "skills/ppt-master/references/native-shape-authoring.md",
+        "skills/ppt-master/references/semantic-svg.md",
+        "skills/ppt-master/references/modes/_index.md",
+        "skills/ppt-master/references/visual-styles/_index.md",
+        {
+          "glob": "skills/ppt-master/references/modes/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 3,
+          "load_event": "quick-mode",
+          "registry": "modes"
+        },
+        {
+          "glob": "skills/ppt-master/references/visual-styles/*.md",
+          "exclude": [
+            "*/_index.md"
+          ],
+          "select": 3,
+          "load_event": "quick-visual-style",
+          "registry": "visual-styles"
+        }
       ],
-      "max_tokens": 61000
+      "max_tokens": 80000
     },
     "route.generate.quick-generate.template-fusion": {
       "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion loaded for flat authoring.",
@@ -210,7 +231,7 @@
         "stage.generate.template.fusion-brand-style-layout-deck"
       ],
       "files": [],
-      "max_tokens": 80000
+      "max_tokens": 88000
     },
     "route.generate.quick-generate.topic-research": {
       "description": "Quick Generate with gap-targeted factual research before direct resource preparation and SVG authoring.",
@@ -220,7 +241,7 @@
         "stage.generate.topic-research"
       ],
       "files": [],
-      "max_tokens": 63000
+      "max_tokens": 74000
     },
     "route.generate.quick-generate.icon": {
       "description": "Quick Generate with project-local bundled icon selection and synchronization.",
@@ -231,7 +252,7 @@
       "files": [
         "skills/ppt-master/templates/icons/README.md"
       ],
-      "max_tokens": 63000
+      "max_tokens": 74000
     },
     "route.generate.quick-generate.in-hand-image": {
       "description": "Quick Generate with supplied, extracted, or placeholder image resources prepared before SVG authoring.",
@@ -241,7 +262,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 74000
+      "max_tokens": 84000
     },
     "route.generate.quick-generate.formula": {
       "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
@@ -253,7 +274,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/image.md"
       ],
-      "max_tokens": 78000
+      "max_tokens": 87000
     },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
@@ -264,7 +285,7 @@
         "stage.generate.executor.image"
       ],
       "files": [],
-      "max_tokens": 100000
+      "max_tokens": 110000
     },
     "route.generate.quick-generate.web-image": {
       "description": "Quick Generate with web resource preparation, provenance, attribution, and image execution.",
@@ -275,7 +296,22 @@
         "stage.generate.executor.web-image"
       ],
       "files": [],
-      "max_tokens": 83000
+      "max_tokens": 92000
+    },
+    "route.generate.quick-generate.chart": {
+      "description": "Quick Generate with bounded chart recall, chart/table authoring, optional native-data metadata, and in-context coordinate verification before the final checker.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.chart",
+        "stage.generate.executor.native-data",
+        "stage.generate.chart-authoring",
+        "stage.generate.verify-charts"
+      ],
+      "files": [
+        "skills/ppt-master/scripts/docs/chart-recall.md"
+      ],
+      "max_tokens": 105000
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -1296,10 +1332,6 @@
       {
         "glob": "skills/ppt-master/references/shared-standards.md",
         "reason": "Compatibility router only; runtime load sets select the core and triggered modules directly."
-      },
-      {
-        "glob": "skills/ppt-master/scripts/docs/chart-recall.md",
-        "reason": "Maintainer command contract; Strategist core carries the complete runtime recall procedure."
       },
       {
         "glob": "skills/ppt-master/templates/scaffolds/*.md",

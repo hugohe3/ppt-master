@@ -13,14 +13,14 @@ Active when at least one resource row has `Acquire Via: ai` / `web` / `slice`. R
 | Mode | Trigger |
 |---|---|
 | Default Generate | `generate-ppt` workflow, `design_spec.md §VIII` image rows present |
-| Quick Generate | [`quick-generate`](../workflows/profiles/quick-generate.md) is active and its transient resource roster contains image rows |
+| Quick Generate | [`quick-generate`](../workflows/profiles/quick-generate.md) is active and the current main agent has resolved one or more required images in active context |
 | Standalone | Direct request against an existing project |
 
 ---
 
 ## 2. Image Resource List Format
 
-Default Generate uses Strategist-owned `design_spec.md §VIII` plus its lock projection. Quick Generate substitutes a transient active-context roster; it creates neither planning artifact. Status enum: [`svg-image-embedding.md`](svg-image-embedding.md).
+Default Generate uses Strategist-owned `design_spec.md §VIII` plus its lock projection. Quick Generate substitutes active-context resource decisions plus required operational manifests; it creates no planning artifact or general resource roster. Status enum: [`svg-image-embedding.md`](svg-image-embedding.md).
 
 | Filename | Dimensions | Purpose / Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
 |---|---|---|---|---|---|---|---|
@@ -53,7 +53,7 @@ For each row with `Status: Pending`:
 
 Before processing any row:
 
-1. Read the Default Design Spec/lock, or reuse Quick's transient roster and active visual/page decisions
+1. Read the Default Design Spec/lock, or reuse Quick's active-context resource and visual/page decisions
 2. Group resource list rows by `Acquire Via`
 3. Confirm `project/images/` exists
 4. Materialize explicit user assets, render declared formulas, and finish triggered ai/web/slice acquisition before SVG authoring begins
@@ -116,7 +116,7 @@ Executor reads the manifest per slide and renders inline credits when needed —
 
 ## 8. Intent Ownership
 
-The `Reference` field is **intent**, not a query. Strategist owns it by default; Quick's main agent owns it in the transient roster. The receiving role translates without reopening it.
+The `Reference` field is **intent**, not a query. Strategist owns it by default; Quick's main agent resolves it in active context. The receiving role translates without reopening it.
 
 | ✅ Intent | ❌ Pre-processed |
 |---|---|
@@ -127,7 +127,7 @@ The `Reference` field is **intent**, not a query. Strategist owns it by default;
 
 ## 9. Handoff with SVG Authoring
 
-SVG authoring consumes the resource roster plus:
+SVG authoring consumes the active profile's resource authority plus:
 
 | Artifact | Path | Purpose |
 |---|---|---|

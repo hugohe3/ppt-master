@@ -84,7 +84,7 @@ Before copying a Deck or Layout workspace, inspect every SVG root and slot. Bran
 |---|---|
 | `brand` | Install `templates/` plus existing `images/` and `icons/`; ignore `exports/`. Identity is constrained; structure remains free. |
 | `style` | Install `templates/design_spec.md` only. Ignore sibling project scaffolding and reject a library Style carrying asset/review payloads. Expose reusable direction/method without identity truth, page prototypes, or native structure. Default Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. Quick always realizes the resolved combination as flat pages. A Style workspace never activates visual review. |
-| `layout` | Install the same portable roots. Expose the actual reusable structure; Default Strategist later inspects the prototypes, while Quick's current agent uses them to derive its transient flat authoring plan. |
+| `layout` | Install the same portable roots. Expose the actual reusable structure; Default Strategist later inspects the prototypes, while Quick's current agent uses them for immediate flat authoring decisions in active context. |
 | `deck` | Install the same portable roots. Expose descriptive application context, identity, structure, and the actual prototype roster; Default Strategist or Quick's current agent compares them with the current communication contract and content, then derives the applicable plan. |
 
 For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `templates/`, bitmaps to project `images/`, and declared icons to project `icons/`. Do not infer legacy Master/Layout semantics from the flat directory shape.
@@ -131,7 +131,7 @@ Before Layout overrides Deck structure, compare Deck's reusable roles with Layou
 
 Before Style overlays Deck guidance, verify that its method serves Deck's reusable context and fits the selected structure. On mismatch, require omitting Style or choosing a compatible Style/structure; never silently weaken a segment. Default final Stage 2 separately checks the result against the confirmed project contract; Quick checks it against the current request/content before authoring.
 
-Field-level micro-adjustments such as a primary-color override are not workspace fusion. Default carries them into the normal final Stage-2 confirmation fields; Quick treats explicit adjustments as direct transient authoring constraints.
+Field-level micro-adjustments such as a primary-color override are not workspace fusion. Default carries them into the normal final Stage-2 confirmation fields; Quick treats explicit adjustments as direct active-context authoring constraints.
 
 ### 5.2 Same Kind
 

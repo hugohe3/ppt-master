@@ -6,23 +6,49 @@ description: Conditional quality-gate stage for chart coordinate verification.
 
 > Conditional Generate-PPTX quality stage. Run after a deck containing data charts has finished SVG generation, before post-processing & export. Catches the 10–50 px coordinate errors AI models routinely introduce when mapping data to pixel positions.
 
-This stage is **context-independent**: it reads `design_spec.md` and the generated SVGs, then runs the calculator script — no upstream conversation context required. Safe to invoke in a fresh session.
+In Default Generate this stage is **context-independent**: it reads
+`design_spec.md` and the generated SVGs, then runs the calculator script. The
+lockless Quick branch is deliberately context-dependent: run it in the same
+active session from the page decisions just authored. If that context is lost,
+restart Quick rather than inventing a page plan from finished files.
 
 ## When to Run
 
 - The deck contains one or more data visualization charts where source values determine SVG geometry: bar lengths/heights, point positions, arc angles, polygon vertices, connector endpoints, bubble centers/radii, or flow widths/paths.
-- SVGs are generated to `<project_path>/svg_output/` and `svg_quality_checker.py` has passed.
+- SVGs are generated to `<project_path>/svg_output/`. Default enters from its declared quality-gate order; Quick runs this stage before its one lockless final checker.
 - Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not yet** run.
 
 The calculator has direct CLI models for simple bars, lines/scatter, pie/donut, radar, and grid layouts. Composite/derived charts are **not automatically out of scope**: if their geometry reduces to repeated direct calculations, include them as `decomposable-calc`; if the calculator has no layout model but the SVG geometry is still data-driven, include them as `manual-verify` so they are not silently skipped.
 
 ---
 
-## Step 1: Build the page list from the design spec
+## Step 1: Build the page list from the active profile authority
 
-Read `<project_path>/design_spec.md` §IX Content Outline as the authoritative page roster and include every page whose `Visualization` explicitly declares SVG geometry driven by data values. Cross-check §VII when present to resolve a selected catalog key; absence from §VII means only that no reusable reference was selected. For legacy specs, a real §VII data-chart row may enumerate the page when its §IX block predates the explicit data-driven declaration. Classify each included page into exactly one mode:
+| Active profile | Page-list authority |
+|---|---|
+| Default Generate | `design_spec.md §IX` plus the legacy §VII fallback below |
+| Quick Generate | The still-active page decisions that produced the SVGs, cross-checked against every `chart-plot-area` marker; no Design Spec, lock, or substitute planning artifact is created |
 
-Incidental microvisuals not promoted in the §IX page plan are not inferred into this list. If one requires coordinate verification, repair that page's §IX `Visualization` first so the Strategist-owned plan remains authoritative.
+For Default, read `<project_path>/design_spec.md` §IX Content Outline as the
+authoritative page roster and include every page whose `Visualization`
+explicitly declares SVG geometry driven by data values. Cross-check §VII when
+present to resolve a selected catalog key; absence from §VII means only that no
+reusable reference was selected. For legacy specs, a real §VII data-chart row
+may enumerate the page when its §IX block predates the explicit data-driven
+declaration.
+
+For Quick, enumerate every page the current agent just authored with
+value-driven geometry, then search `svg_output/` once for `chart-plot-area` and
+compare the marker pages one-for-one with that active list. Add a missing marker
+before continuing; investigate an unexpected marker instead of silently adding
+or dropping a page. Keep the list in active context only.
+
+Classify each included page into exactly one mode:
+
+Incidental microvisuals not promoted under the active profile authority are not
+inferred into this list. Default repairs that page's §IX `Visualization` first;
+Quick makes the promotion decision immediately in active context and updates
+the SVG marker before verification.
 
 | Mode | `charts_index.json` keys | Notes |
 |------|--------------------------|-------|
@@ -50,9 +76,13 @@ P11 11_share_split.svg   type=pie        mode=direct-calc
 P15 15_pareto.svg        type=pareto     mode=decomposable-calc
 ```
 
-If §VII is absent, continue from §IX; this is the normal state when all chart pages use custom structures. Do NOT guess from SVG content when §IX declares no data-driven page—that reintroduces the silent-skip failure this stage was built to eliminate.
+In Default, if §VII is absent, continue from §IX; this is the normal state when
+all chart pages use custom structures. Do not guess from SVG content when §IX
+declares no data-driven page. In Quick, do not treat marker search as a
+replacement for the still-active authoring decisions; use it as the required
+cross-check.
 
-If the filtered list is empty, output `verify-charts: spec declares no data-driven chart geometry, nothing to verify` and stop.
+If the filtered list is empty, output `verify-charts: active profile declares no data-driven chart geometry, nothing to verify` and stop.
 
 ---
 
@@ -102,11 +132,16 @@ For each page in the Step 1 list:
 
 6. **Scale-aware comparison.** Compare calculator output against the SVG's existing coordinates. Before declaring a mismatch, verify that every calculator invocation used the same axis range, plot area, center/radius, start angle, or size scale that the SVG visually declares. For `calc bar`, the output header must show `Value scale: axis ticks (...)` when the SVG has explicit ticks; if it shows `auto (max*1.1)`, go back to step 4 and re-run with the correct `--value-range`. **Do NOT update the SVG with mismatched-scale output.** Only update SVG attributes when the scale is confirmed to match and coordinates genuinely differ. Update by hand (do NOT use regex / bulk replacement — coordinates are positional and easy to swap incorrectly).
 
-After updating any page, re-run the quality checker on the project to confirm nothing broke:
+After updating any page, follow the active profile's checker order. Default
+reruns its quality checker to confirm nothing broke:
 
 ```bash
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 ```
+
+Quick completes every chart comparison/repair first, then returns to
+`quick-generate.md` §4 and runs its one lockless final checker. Do not insert a
+checker call between Quick chart pages.
 
 ---
 
@@ -211,7 +246,7 @@ python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
 **Bubble chart / quadrant bubble scatter** — partial calculator support:
 
 1. Use `calc line` to verify bubble centers (`cx/cy`) from the X/Y values and axis ticks.
-2. Verify radius only if `design_spec.md`, `spec_lock.md`, or SVG comments declare a size scale such as `radius = sqrt(value) * k` or explicit min/max radius mapping.
+2. Verify radius only if `design_spec.md`, `spec_lock.md`, the Quick active-context decision, or SVG comments declare a size scale such as `radius = sqrt(value) * k` or explicit min/max radius mapping.
 3. If the size scale is missing, record `radius=manual (scale missing)` and inspect relative ordering by hand.
 
 **Progress bar / gauge / funnel — formula-verify** (no calc call needed):
@@ -231,7 +266,9 @@ python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
 
 ## Step 3: Per-page receipt
 
-Output one line per page from the Step 1 list. Receipt count MUST equal Step 1 list length — that is the gate-closing artifact.
+Output one line per page from the Step 1 list. Receipt count MUST equal Step 1
+list length — that is the gate-closing evidence. Quick does not persist these
+lines as a generation plan or resume record.
 
 ```
 verify-charts: 03_market_share.svg | type=bar | mode=direct-calc | scale=0-100 (from ticks) | calc=ran | svg=updated
@@ -258,5 +295,7 @@ verify-charts: 19_flow.svg | type=sankey | mode=manual-verify | link widths cons
 
 ## After verification
 
-Continue with [`generate-pptx`](../generate-pptx.md) Step 7. That authority owns
-the serial commands, gates, and success criteria for post-processing and export.
+Default continues with [`generate-pptx`](../generate-pptx.md) Step 7. Quick
+returns to [`quick-generate`](../profiles/quick-generate.md) §4 for its one final
+checker and direct export. Those authorities own the remaining serial commands,
+gates, and success criteria.
