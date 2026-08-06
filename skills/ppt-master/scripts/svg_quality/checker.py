@@ -343,6 +343,7 @@ _NON_VISUAL_SVG_TAGS = frozenset({
     'title',
 })
 _BOUNDS_ATTR = 'data-pptx-bounds'
+_MORPH_STAGING_ATTR = 'data-pptx-morph-staging'
 _BOUNDS_OVERFLOW_TOLERANCE = 1.0
 _BOUNDS_OVERFLOW_ERROR_RATIO = 0.05
 _PARAGRAPH_LINE_GAP_MIN_RATIO = 0.9
@@ -1483,7 +1484,7 @@ class SVGQualityChecker:
 
         self._check_module_bounds_contract(root, result)
         self._check_text_output_geometry(root, result)
-        self._check_root_module_text_bounds(root, result)
+        self._check_text_bounds(root, result)
         self._check_fragmented_paragraph_text(root, result)
         self._check_unmergeable_leading_text(root, result)
         self._check_nested_positional_tspans(root, result)
@@ -1894,6 +1895,8 @@ class SVGQualityChecker:
         runs: List[Dict],
         font_size: float,
         parent_by_id: Dict[int, ET.Element],
+        *,
+        include_headroom: bool = True,
     ) -> Tuple[float, float, float, float] | None:
         """Estimate one line's transformed visible bounds in SVG coordinates."""
         if any(helper is None for helper in (
@@ -1906,7 +1909,10 @@ class SVGQualityChecker:
         )):
             return None
         try:
-            width = float(_estimate_single_line_text_frame_width(runs))
+            width = float(_estimate_single_line_text_frame_width(
+                runs,
+                include_headroom=include_headroom,
+            ))
             raw_anchor = (
                 _effective_presentation_value(
                     line_el,
@@ -1950,6 +1956,8 @@ class SVGQualityChecker:
         parent_by_id: Dict[int, ET.Element],
         font_sizes: Dict[int, float],
         letter_spacings: Dict[int, float],
+        *,
+        include_headroom: bool = True,
     ) -> Tuple[float, float, float, float] | None:
         """Estimate one single- or multi-line text carrier's visual bounds."""
         lines: List[Tuple[ET.Element, float, float, List[Dict], float]] | None
@@ -1991,6 +1999,7 @@ class SVGQualityChecker:
                 line_runs,
                 font_size,
                 parent_by_id,
+                include_headroom=include_headroom,
             )
             for line_el, x, y, line_runs, font_size in lines
         ]
@@ -2155,6 +2164,36 @@ class SVGQualityChecker:
             axes = 'vertical'
         return axes, horizontal_ratio, vertical_ratio
 
+    @staticmethod
+    def _bounds_are_disjoint(
+        first: Tuple[float, float, float, float],
+        second: Tuple[float, float, float, float],
+    ) -> bool:
+        """Return whether two root-coordinate rectangles do not intersect."""
+        left, top, right, bottom = first
+        other_left, other_top, other_right, other_bottom = second
+        return (
+            right <= other_left
+            or left >= other_right
+            or bottom <= other_top
+            or top >= other_bottom
+        )
+
+    @classmethod
+    def _is_off_canvas_morph_group(
+        cls,
+        group: ET.Element,
+        canvas: Tuple[float, float, float, float],
+    ) -> bool:
+        """Return whether a group declares one wholly off-canvas Morph state."""
+        if group.get(_MORPH_STAGING_ATTR) != 'true':
+            return False
+        resolved = cls._resolved_root_module_bounds(group)
+        return (
+            resolved is not None
+            and cls._bounds_are_disjoint(resolved[1], canvas)
+        )
+
     @classmethod
     def _record_bounds_overflow(
         cls,
@@ -2197,6 +2236,51 @@ class SVGQualityChecker:
             f'{horizontal_ratio:.1%}, vertical {vertical_ratio:.1%}; '
             f'{repair}'
         )
+
+    @classmethod
+    def _record_canvas_text_overflow(
+        cls,
+        result: Dict,
+        *,
+        subject: str,
+        inner: Tuple[float, float, float, float],
+        canvas: Tuple[float, float, float, float],
+    ) -> bool:
+        """Record one page-boundary error and return whether it overflowed."""
+        metrics = cls._bounds_overflow_metrics(inner, canvas)
+        if metrics is None:
+            return False
+        axes, horizontal_ratio, vertical_ratio = metrics
+        left, top, right, bottom = inner
+        canvas_left, canvas_top, canvas_right, canvas_bottom = canvas
+        result['errors'].append(
+            f'{subject} exceeds the root viewBox on the {axes} axis: '
+            f'content ({left:.1f}, {top:.1f})-({right:.1f}, '
+            f'{bottom:.1f}), canvas ({canvas_left:.1f}, '
+            f'{canvas_top:.1f})-({canvas_right:.1f}, '
+            f'{canvas_bottom:.1f}), overflow horizontal '
+            f'{horizontal_ratio:.1%}, vertical {vertical_ratio:.1%}; '
+            'move or reflow the text until its estimated bounds stay on-page'
+        )
+        return True
+
+    @staticmethod
+    def _text_diagnostic_label(text_element: ET.Element) -> str:
+        """Return a locatable label for one SVG text carrier."""
+        label = _element_label(text_element)
+        if (text_element.get('id') or '').strip():
+            return label
+
+        details: List[str] = []
+        raw_x = (text_element.get('x') or '').strip()
+        raw_y = (text_element.get('y') or '').strip()
+        if raw_x or raw_y:
+            details.append(f'x={raw_x or "?"}, y={raw_y or "?"}')
+        snippet = re.sub(r'\s+', ' ', ''.join(text_element.itertext())).strip()
+        if snippet:
+            preview = snippet[:20] + ('…' if len(snippet) > 20 else '')
+            details.append(f'text={preview!r}')
+        return f'{label} ({"; ".join(details)})' if details else label
 
     @staticmethod
     def _is_hidden_element(
@@ -2334,6 +2418,72 @@ class SVGQualityChecker:
                     'only on <g> layout modules'
                 )
 
+        for element in root.iter():
+            raw_staging = element.get(_MORPH_STAGING_ATTR)
+            if raw_staging is None:
+                continue
+            label = _element_label(element)
+            if raw_staging != 'true':
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} must equal "true"; '
+                    'set the exact value or remove the marker'
+                )
+                continue
+            if _local_name(element) != 'g':
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} is valid only on <g>; '
+                    'move it to the enclosing ordinary direct-root group'
+                )
+                continue
+            if parent_by_id.get(id(element)) is not root:
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} requires a direct-root '
+                    '<g>; move the marked group directly under <svg> or remove '
+                    'the marker'
+                )
+                continue
+            if not (element.get('id') or '').strip():
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} requires a stable non-empty '
+                    'id; add an id to the marked direct-root group'
+                )
+                continue
+            incompatible = [
+                attribute
+                for attribute in (
+                    'data-pptx-layer',
+                    'data-pptx-placeholder',
+                )
+                if element.get(attribute) is not None
+            ]
+            if incompatible:
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} cannot be combined with '
+                    f'{", ".join(incompatible)}; use an ordinary Slide-local '
+                    'group or remove the marker'
+                )
+                continue
+            resolved = self._resolved_root_module_bounds(element)
+            if resolved is None:
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} requires valid '
+                    f'{_BOUNDS_ATTR}; add or fix positive root-coordinate '
+                    'x y width height bounds'
+                )
+                continue
+            if canvas is None:
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} cannot verify an off-canvas '
+                    'endpoint without a valid root viewBox; fix the root viewBox'
+                )
+                continue
+            if not self._bounds_are_disjoint(resolved[1], canvas):
+                result['errors'].append(
+                    f'{label} {_MORPH_STAGING_ATTR} requires wholly off-canvas '
+                    f'{_BOUNDS_ATTR}; move the full bounds outside the root '
+                    'viewBox or remove the marker from partially visible content'
+                )
+
         missing: List[str] = []
         root_groups = [
             child
@@ -2366,6 +2516,8 @@ class SVGQualityChecker:
             resolved = self._resolved_root_module_bounds(group)
             if resolved is None or canvas is None:
                 continue
+            if self._is_off_canvas_morph_group(group, canvas):
+                continue
             attribute, bounds = resolved
             self._record_bounds_overflow(
                 result,
@@ -2391,12 +2543,12 @@ class SVGQualityChecker:
                 'data-pptx-frame or native chart/table coordinates'
             )
 
-    def _check_root_module_text_bounds(
+    def _check_text_bounds(
         self,
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Grade visible text against its direct root module subcanvas."""
+        """Validate visible text against page and root-module bounds."""
         helpers = (
             _estimate_single_line_text_frame_width,
             _parse_project_font_weight,
@@ -2422,6 +2574,103 @@ class SVGQualityChecker:
             for child in list(parent)
         }
         unchanged_groups = self._unchanged_txbody_group_ids(root)
+        viewbox = _parse_viewbox_values(root.get('viewBox') or '')
+        canvas = None
+        if viewbox is not None:
+            x, y, width, height = viewbox
+            canvas = (x, y, x + width, y + height)
+
+        estimated_by_id: Dict[
+            int,
+            Tuple[float, float, float, float],
+        ] = {}
+        page_overflow_text_ids: set[int] = set()
+        unverified: List[str] = []
+        for text_element in root.iter(f'{{{SVG_NS}}}text'):
+            if self._has_ancestor_id(
+                text_element,
+                parent_by_id,
+                unchanged_groups,
+            ):
+                continue
+            if self._has_non_visual_ancestor(
+                text_element,
+                root,
+                parent_by_id,
+            ):
+                continue
+            if self._is_hidden_element(text_element, parent_by_id):
+                continue
+            visible_text = ''.join(text_element.itertext())
+            if (
+                not visible_text.strip()
+                or ('{{' in visible_text and '}}' in visible_text)
+            ):
+                continue
+            estimated = self._estimated_text_bounds(
+                text_element,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+                include_headroom=True,
+            )
+            if estimated is not None:
+                estimated_by_id[id(text_element)] = estimated
+
+            if (
+                canvas is None
+                or self._has_zero_opacity(text_element, parent_by_id)
+            ):
+                continue
+
+            page_estimated = self._estimated_text_bounds(
+                text_element,
+                parent_by_id,
+                font_sizes,
+                letter_spacings,
+                include_headroom=False,
+            )
+            if page_estimated is None:
+                unverified.append(self._text_diagnostic_label(text_element))
+                continue
+            direct_child = text_element
+            parent = parent_by_id.get(id(direct_child))
+            while parent is not None and parent is not root:
+                direct_child = parent
+                parent = parent_by_id.get(id(direct_child))
+            morph_staging = (
+                parent is root
+                and _local_name(direct_child) == 'g'
+                and self._is_off_canvas_morph_group(
+                    direct_child,
+                    canvas,
+                )
+                and self._bounds_are_disjoint(page_estimated, canvas)
+            )
+            if (
+                not morph_staging
+                and self._record_canvas_text_overflow(
+                    result,
+                    subject=self._text_diagnostic_label(text_element),
+                    inner=page_estimated,
+                    canvas=canvas,
+                )
+            ):
+                page_overflow_text_ids.add(id(text_element))
+
+        if unverified:
+            sample = ', '.join(unverified[:3])
+            suffix = (
+                ''
+                if len(unverified) <= 3
+                else f', +{len(unverified) - 3} more'
+            )
+            result['warnings'].append(
+                'Cannot verify root viewBox bounds for visible text with '
+                f'unsupported or unresolved geometry: {sample}{suffix}; use '
+                'supported explicit text positioning when page fit matters'
+            )
+
         root_groups = [
             child
             for child in list(root)
@@ -2435,37 +2684,14 @@ class SVGQualityChecker:
                 continue
             boundary_attribute, boundary = resolved_module
             for text_element in module.iter(f'{{{SVG_NS}}}text'):
-                if self._has_ancestor_id(
-                    text_element,
-                    parent_by_id,
-                    unchanged_groups,
-                ):
+                if id(text_element) in page_overflow_text_ids:
                     continue
-                if self._has_non_visual_ancestor(
-                    text_element,
-                    module,
-                    parent_by_id,
-                ):
-                    continue
-                if self._is_hidden_element(text_element, parent_by_id):
-                    continue
-                visible_text = ''.join(text_element.itertext())
-                if (
-                    not visible_text.strip()
-                    or ('{{' in visible_text and '}}' in visible_text)
-                ):
-                    continue
-                estimated = self._estimated_text_bounds(
-                    text_element,
-                    parent_by_id,
-                    font_sizes,
-                    letter_spacings,
-                )
+                estimated = estimated_by_id.get(id(text_element))
                 if estimated is None:
                     continue
                 self._record_bounds_overflow(
                     result,
-                    subject=_element_label(text_element),
+                    subject=self._text_diagnostic_label(text_element),
                     inner=estimated,
                     container=(
                         f'{_element_label(module)} {boundary_attribute}'

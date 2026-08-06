@@ -2091,10 +2091,15 @@ def _estimate_text_runs_width(
 
 def estimate_single_line_text_frame_width(
     runs: list[dict[str, Any]],
+    *,
+    include_headroom: bool = True,
 ) -> float:
-    """Estimate the content width used by one generated DrawingML textbox."""
+    """Estimate one DrawingML textbox width with optional safety headroom."""
     content_runs, bullet = _extract_text_bullet(runs)
-    width = _estimate_text_runs_width(content_runs)
+    width = _estimate_text_runs_width(
+        content_runs,
+        include_headroom=include_headroom,
+    )
     if bullet:
         font_size = (
             float(content_runs[0].get('font_size', 16))
