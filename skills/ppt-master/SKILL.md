@@ -33,17 +33,18 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
 
 | Selected route / profile | Runtime authority |
 |---|---|
-| Generate PPTX — Default or Beautify | [`workflows/generate-pptx.md`](workflows/generate-pptx.md); Beautify additionally loads [`workflows/profiles/beautify-pptx.md`](workflows/profiles/beautify-pptx.md) |
-| Generate PPTX — explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
+| Generate PPTX — Beautify | [`workflows/profiles/beautify-pptx.md`](workflows/profiles/beautify-pptx.md); explicit Quick intent selects Quick, otherwise Default |
+| Generate PPTX — ordinary Default | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
+| Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
 | Create Template | [`workflows/create-template.md`](workflows/create-template.md) |
 | Fill Native PPTX | [`workflows/template-fill-pptx.md`](workflows/template-fill-pptx.md) |
 | Enhance Native PPTX | [`workflows/native-enhance-pptx.md`](workflows/native-enhance-pptx.md) |
 
 **Hard rule — selected authority only**: Do not load another top-level route's
-procedure after routing. Default/Beautify and Quick are mutually exclusive
-Generate runtime authorities: neither loads the other's procedure. Profiles,
-stages, governance files, and child workflows refine one selected route; they
-never compete with it.
+procedure after routing. Beautify selects exactly one Generate runtime from the
+explicit Quick signal; never load both Default and Quick. Profiles, stages,
+governance files, and child workflows refine one selected route; they never
+compete with it.
 
 ---
 

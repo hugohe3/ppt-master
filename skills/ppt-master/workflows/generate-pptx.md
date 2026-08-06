@@ -18,8 +18,8 @@ description: Default Generate PPTX authority for source intake, planning, SVG au
 - Gate checklists are internal verification, not user-facing output. On success, continue automatically and emit at most one compact status line when useful; on failure, report only the blocking items and required recovery.
 
 **Profile boundary**: Explicit Quick is selected before runtime authority
-loading and never enters this file. Default and Beautify do not load or apply
-the Quick profile.
+loading and never enters this file. Beautify enters this file only when its
+request does not explicitly select Quick.
 
 ### SVG Page-Design Boundary
 

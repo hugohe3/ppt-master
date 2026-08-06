@@ -222,6 +222,16 @@
       ],
       "max_tokens": 80000
     },
+    "route.generate.quick-generate.beautify": {
+      "description": "Quick Generate with the shared strict 1:1 Beautify profile.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "profile.generate.beautify-pptx"
+      ],
+      "files": [],
+      "max_tokens": 70000
+    },
     "route.generate.quick-generate.template-fusion": {
       "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion loaded for flat authoring.",
       "scope": "cumulative",
@@ -736,7 +746,7 @@
       "max_tokens": 2000
     },
     "profile.generate.beautify-pptx": {
-      "description": "Strict 1:1 wording, order, and page-count generation profile.",
+      "description": "Strict 1:1 wording, order, and page-count profile with Default and explicit Quick branches.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/workflows/profiles/beautify-pptx.md"
