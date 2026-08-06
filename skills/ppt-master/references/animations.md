@@ -333,7 +333,7 @@ other visible state is expected to change; both endpoints must still resolve to
 one compatible top-level PowerPoint object kind. Automatic Morph without pairs
 is heuristic and may cross-fade instead of tweening.
 
-**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages and be explicitly paired when deterministic identity matters.
+**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. A wholly off-canvas endpoint must be one direct-root `<g id>` with valid `data-pptx-bounds` and `data-pptx-morph-staging="true"`; when Morph remains enabled, pair it explicitly under §2.1. The marker only declares an intentional invisible endpoint; it cannot excuse a partially clipped group or text carrier.
 
 **When Morph refuses to match**: PowerPoint pairs compatible object kinds; a
 shape and a picture will cross-fade instead of tweening. For generated pages,
