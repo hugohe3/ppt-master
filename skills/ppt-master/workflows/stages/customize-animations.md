@@ -27,9 +27,9 @@ description: Optional post-processing stage for per-slide and per-object animati
 | No existing sidecar; user only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
 
-**Decision precedence**: latest explicit instruction → Stage 3 policy →
-compatibility default `false`; provenance stays in Design Spec §I, never the
-lock. Stage 3 `false` blocks creation, not an existing sidecar. Existing
+**Decision precedence**: latest explicit instruction → final Stage-2 policy →
+workflow default `false`; provenance stays in Design Spec §I, never the
+lock. Final Stage-2 `false` blocks creation, not an existing sidecar. Existing
 sidecars enter this stage; explicit disables follow the table without deletion.
 
 ---

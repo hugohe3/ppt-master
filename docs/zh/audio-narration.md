@@ -43,7 +43,7 @@ deck 导出后，在聊天里直接说就行：
 你: Generate narration for this deck and re-export with audio embedded.
 ```
 
-Generate 路线在 Stage 3 把 Narration Audio 的最终有效结果解析为开启时，
+Generate 路线在最终 Stage 2 把 Narration Audio 的有效结果解析为开启时，
 也会主动运行该阶段；后续明确指令仍优先于主动默认值。剩下的 AI 全包。
 
 ## 支持的语言

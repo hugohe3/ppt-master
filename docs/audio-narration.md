@@ -43,7 +43,7 @@ You: Generate narration for this deck and re-export with audio embedded.
 You: Add Japanese voice narration; pick a calm female voice.
 ```
 
-The Generate route also runs this stage when Stage 3 resolves effective
+The Generate route also runs this stage when final Stage 2 resolves effective
 Narration Audio to enabled. A later explicit request still wins over the
 proactive default. The AI handles the rest.
 

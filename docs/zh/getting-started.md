@@ -29,7 +29,7 @@
 
 前者:把 `.pptx` 连同素材(或一个主题)给 AI,说「套模板」——见 [套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。本节其余部分讲 create-template。
 
-**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Fill Native PPTX，并不是 Generate PPTX Step 3 可以直接消费的模板。先创建工作区：
+**想把某份现成 PowerPoint 做成可复用工作区，必须显式请求 Create Template 路线。** 原生 `.pptx` 加新材料默认属于 Fill Native PPTX，并不是 Generate 可以直接消费的模板工作区。先创建工作区：
 
 ```
 你：用 /create-template 从 projects/brand/our_deck.pptx 创建一个可复用 Deck 模板
@@ -46,7 +46,7 @@ Create Template 会分析参考材料，确认结果属于 Brand、Style、Layou
 | **注册进 skill 库** | `skills/ppt-master/templates/<kind>/<id>/` | 可移植工作区并执行全局注册；问“有哪些模板”时会被列出来 |
 | **放在 projects 下** | `projects/<name>/` | 相同的可移植工作区，不执行全局注册 |
 
-已注册结果可在 Step 3 对应 kind 的下拉框中选择。若要提供其他结果，在对话里给出精确的**工作区根目录路径**：未注册 root 会进入指定地址下拉框；与注册 canonical root 完全相同的路径会归回对应 kind 下拉框。Step 3 会解析 `templates/design_spec.md`；为兼容目录形态，也接受满足当前 kind 合同的旧式平铺 Brand/Layout/Deck 根目录，Layout/Deck 还必须带有当前 structured SVG；Style 没有平铺形态。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都要求精确选择，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
+Default Generate 把模板选择放在 Stage 1，与沟通契约同屏确认；沟通推荐在此之前不会读取任何模板。普通请求默认自由设计；用户明确要求模板或提供任意精确 root 时，默认进入模板模式，但界面始终允许切换。未注册 root 会进入指定地址下拉框；与注册 canonical root 完全相同的路径会归回对应 kind 下拉框。只提供一个 root 时可预选它；提供多个 root 时都只作为候选、不预选。一次确认同时闭合沟通与模板选择，随后才校验、安装所选工作区；最终 Stage 2 才读取安装结果。裸模板名不会被解析为工作区。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/presentation_core/
@@ -61,20 +61,20 @@ Create Template 会分析参考材料，确认结果属于 Brand、Style、Layou
 整个流程就三步。先装好环境——只需要 Python,见 [快速开始](../../README_CN.md#快速开始)。
 
 1. **把源材料放进** `projects/` —— PDF、DOCX、Markdown、一个网址,或直接要粘贴的文字。
-2. **在对话里告诉 AI** 要把什么做成 deck。随后在 Step 3 选择自由设计或组合已注册模板；若要使用未注册模板，把它的精确 root 一并写在对话里，让它出现在指定地址下拉框中：
+2. **在对话里告诉 AI** 要把什么做成 deck。Stage 1 会让你同时确认沟通契约与自由设计/模板使用；只附上一个精确工作区 root 时，页面可默认进入模板模式并预选该路径：
    ```
    你：用 projects/q3-report/sources/report.pdf 做一份 PPT
    你：把这份内容做成 PPT：<粘贴你的文字>
    ```
 3. **拿回可编辑的 `.pptx`**,位于 `exports/<名称>_<时间戳>.pptx` —— 真正的 DrawingML 形状、文本框、图表,在 PowerPoint / Keynote / WPS / LibreOffice 里点开就能改。
 
-生成前，Step 3 会先确认自由设计或模板组合；Stage 1 再独立确认沟通契约和画布/格式，Stage 2 确认页数、视觉系统，以及启用模板时的应用方式。之后内容分析、排版、配图、SVG 生成、导出都由 AI 完成——这就是其它能力围绕的核心环节。不想走交互确认，见下方[快速模式](#快速模式)。
+生成前，Stage 1 同时确认沟通契约、画布/格式与自由设计/模板选择。AI 随后安装所选工作区；最终 Stage 2 读取安装结果，并确认页数、视觉系统、模板应用方式与生产选项。之后内容分析、排版、配图、SVG 生成、导出都由 AI 完成——这就是其它能力围绕的核心环节。不想走交互确认，见下方[快速模式](#快速模式)。
 
 ---
 
 ## 快速模式
 
-默认流程会先完成 Step 3 选择和分阶段设计确认。不想经过这些交互，就显式要求**快速生成**：
+默认流程会先进行 Stage 1 的沟通/模板合并确认，再进入最终 Stage 2。不想经过这些交互，就显式要求**快速生成**：
 
 ```
 你：用 sources/report.pdf 快速生成一份 PPT,不用跟我确认
@@ -89,9 +89,9 @@ Brand / Style / Layout / Deck 工作区 root，它会直接校验、安装并使
 Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创作，但不会
 编译成可复用的原生 Master / Layout 对象。
 
-它不跳过备料:来源转换、事实缺口研究、图片 / 图标 / 公式准备仍按需运行。必需素材缺失时它会停下来跟你要,不会拿无关材料顶替。
+它不跳过能力:来源转换、事实缺口研究、共享美学规范，以及图片 / 图标 / 原生形状 / 图表 / 表格 / 公式的准备和创作仍按需运行。必需素材缺失时它会停下来跟你要,不会拿无关材料顶替。
 
-整个规划阶段不再发生(策略师分析、`design_spec.md` / `spec_lock.md` 落盘、分步确认往返),因此 token 消耗明显低于默认流程;逐页 SVG 生成的开销不变,所以这既不是耗时承诺,也不承诺与默认流程质量等价。
+快速模式是一次性生成,不是缩短后的可续接流程。它不产生 Strategist 记录、`design_spec.md`、`spec_lock.md` 或替代性的页面计划;内容、设计和资源决策只存在于 AI 的当前上下文。交付前一旦丢失该上下文,就重新运行 Quick。资源 manifest、质量报告、postflight 与冷 Python 审计日志可以保留,但无法还原 AI 为什么这样设计。该 profile 省掉的是交互和持久规划,不是 PPT 能力或预期质量标准。
 
 完整说明 → [快速模式 profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)
 

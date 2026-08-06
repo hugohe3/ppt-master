@@ -39,20 +39,23 @@ which keeps the fixed route name and dispatches exactly one child workflow:
 [`Create Layout`](../workflows/create-template/create-layout.md), or
 [`Create Deck`](../workflows/create-template/create-deck.md).
 
-The four indexes are the complete library-discovery source for
-[`generate-pptx`](../workflows/generate-pptx.md) Step 3. The default page shows
-free design, one registered single-select dropdown per kind, and one separate
-single-select dropdown for exact roots supplied for the run; it never scans the
-four directories or fuzzy-matches a bare name. An exact root that matches a
-registered index entry may be displayed in its kind dropdown as `library`; an
-unregistered root remains `explicit` in the specified-root dropdown. After
-confirmation,
+The four indexes are the complete library-discovery source for Default
+[`generate-pptx`](../workflows/generate-pptx.md) Stage-1 template selection.
+Step 3 prepares candidate input without interaction or reading template
+content. The Stage-1 page confirms the communication contract together with an
+explicit free-design/template choice; only template mode expands these indexes.
+Exact roots supplied for the run or handed off by Create Template appear as
+specified candidates. Ordinary requests default to free design; explicit
+template intent or any supplied root defaults to template mode. Exactly one root
+may be preselected, while multiple roots remain unselected candidates. The user
+can always switch modes. The page accepts one registered choice per kind plus
+one supplied-root choice. A registered exact root is `library`; any other exact
+root is `explicit`. After that combined confirmation,
 [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
 validates, fuses, and installs every selected workspace into the current
-project before Stage 1 starts. Template-aware reading begins in Stage 2 from
-that project-local copy. Quick Generate is the non-interactive exception: it
-never opens this selector, directly applies exact roots supplied for the run,
-and uses free design when no exact root exists.
+project before Stage 2 starts. Template-aware reading begins in final Stage 2 from
+that project-local copy. Quick skips the page, applies supplied exact roots, and
+otherwise uses free design.
 
 ## Orthogonal contracts
 
@@ -89,8 +92,8 @@ Style narrows this shared routing shape to `templates/design_spec.md` only and
 does not carry asset or review payloads; initialized-project sibling scaffolding
 may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion during the default Step-3 selection phase or
-the Quick exact-root branch. Brand/Layout/Deck consume package-owned
+stage owns installation and fusion after a non-free Default Stage-1 selection or
+on the Quick exact-root branch. Brand/Layout/Deck consume package-owned
 `templates/`, `images/`, and `icons/`; Style consumes only
 `templates/design_spec.md` and ignores sibling project scaffolding. Every kind
 ignores `exports/`. Compatible legacy-flat Brand/Layout/Deck packages remain

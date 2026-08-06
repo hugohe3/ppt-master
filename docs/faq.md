@@ -77,7 +77,7 @@ Be clear on what this buys you: **web search only finds *a* relevant, downloadab
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. With the default output path, both Default Generate and Quick Generate copy the authored `svg_output/` to `backup/<timestamp>/svg_output/`, so the deck can be rebuilt without re-running the LLM.
+Yes. The only PPTX converter in the SVG pipeline is PPT Master's own `svg_output/` → DrawingML conversion. It saves a timestamped native PowerPoint deck to `exports/`, with text, graphics, and colors directly editable as PowerPoint objects. With the default output path, both Default Generate and Quick Generate copy the authored `svg_output/` to `backup/<timestamp>/svg_output/`, so the same authored deck can be re-exported without re-running the LLM. For Quick this is package reconstruction, not a recoverable record of the AI's design decisions.
 
 `finalize_svg.py` remains a mandatory Step 7 operation in the default Generate flow even though native PPTX export reads `svg_output/`. It produces self-contained files in `svg_final/` for visual inspection and for manual insertion into another deck as SVG pictures. The explicit quick-generate profile skips this preview artifact, but still retains the normal postflight report and default-path backup after its lockless final quality check. PowerPoint's manual **Convert to Shape** command is not a supported round-trip path; use the generated native PPTX when you need editable shapes.
 
@@ -219,14 +219,16 @@ decides directly and continues, without coming back for approval.** State
 nothing, and the agent decides everything. It also skips `finalize_svg.py`, so
 Quick creates no `svg_final/` preview.
 
-It does not skip preparation. Source conversion, research on identified factual
-gaps, and every resource the deck needs still run when required: supplied or
-extracted images, AI/web/sliced images, project icons, rendered formulas, and
-the required manifests or provenance records. If a required asset is not ready,
-it still stops and asks you for it instead of substituting unrelated material.
-After preparation, the current agent hand-authors `svg_output/` to the shared
-standards, runs the lockless Quick final quality checker, fixes every blocking
-error, and only then exports the final PPTX.
+It does not skip preparation or design capability. Source conversion, research
+on identified factual gaps, shared aesthetic references, and every resource the
+deck needs still run when required: supplied or extracted images,
+AI/web/sliced images, project icons, native shapes, charts/tables, rendered
+formulas, and the required operational manifests or provenance records. If a
+required asset is not ready, it still stops and asks you for it instead of
+substituting unrelated material. After preparation, the current agent
+hand-authors `svg_output/` to the shared standards, runs the lockless Quick
+final quality checker, fixes every blocking error, and only then exports the
+final PPTX.
 
 Ordinary exporter capabilities remain available as needed, including native
 chart/table replacement, notes, motion, narration, and diagnostics. Notes,
@@ -239,8 +241,10 @@ generation.
 
 Because the whole planning phase no longer happens, token usage is materially
 lower than the default flow; per-page SVG authoring is the dominant cost of a
-run and it does not shrink. So this is a planning shortcut, not a wall-clock or
-default-quality-equivalence promise.
+run and it does not shrink. Quick keeps the same visual/resource authoring
+capabilities and final blocking standard. It does not promise the same design
+decisions or wall-clock time as Default because it has no confirmed design
+contract, first-page calibration, or resumable decision history.
 
 ## Q: Will long decks blow out the context window in one shot?
 

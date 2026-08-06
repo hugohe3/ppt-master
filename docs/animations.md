@@ -18,7 +18,10 @@ sidecar schema, anchor rules, and package validation live in the
 | Page transition | `fade`, 0.4 seconds | Slides change with a restrained visual transition |
 | Element object animation | **`none` (off)** | Each slide appears as a complete page; opt in only when motion helps the presentation |
 
-Changing animation settings does not require regenerating the slides. Rerun `svg_to_pptx.py` against the same `svg_output/`.
+Changing animation settings does not require regenerating the slides. Reuse the
+same `svg_output/`; default release export still requires its current passing
+final SVG quality report. When no current matching passing final report exists,
+run the final checker and resolve its blockers before rerunning `svg_to_pptx.py`.
 
 ## Common Recipes
 

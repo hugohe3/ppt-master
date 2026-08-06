@@ -643,7 +643,7 @@ def save_csv(
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
 
-    print(f"\nCSV saved to: {target}")
+    print(f"\n[REPORT] Image analysis CSV: {target}")
 
 
 def _resolve_canvas_key(images_dir: Path, override: str | None) -> tuple[str, str]:

@@ -40,9 +40,18 @@ this enum.
 
 ## 2. PowerPoint-Native Chart / Table Replacement Markers (Opt-in)
 
-Native PowerPoint tables and Excel-backed charts activate at export time only. Generated pages prepare dormant replacement metadata for independently planned native-ready objects while keeping hand-authored SVG geometry pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
+Native PowerPoint tables and Excel-backed charts activate at export time only. Generated pages prepare dormant replacement metadata for independently selected native-ready objects while keeping hand-authored SVG geometry pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
-**Hard rule — planned-object authoring**: Executor writes the marker and JSON metadata in the same edit only for a supported chart or pure text-grid table whose `design_spec.md §IX` page block says `Native-ready: yes` ([`executor-chart.md`](./executor-chart.md) §2.2). `no` and incidental microvisuals stay on the SVG fallback route. For legacy specs only, a matching §VII value may supply the decision when §IX has no field. Canonical rectangular merged text cells may use the narrow `row_span` / `col_span` contract below; graphical cells stay unmarked. The marker group supplies visible SVG fallback children for browser/live-preview rendering and JSON metadata for `svg_to_pptx` native export.
+**Hard rule — selected-object authoring**: write the marker and JSON metadata in
+the same edit only for a supported chart or pure text-grid table selected as
+native-ready under [`executor-chart.md`](./executor-chart.md) §2.2. Default reads
+`Native-ready: yes` from §IX (legacy §VII fallback only); Quick makes the
+decision in active context before drawing. Default `no`, a Quick decision not to
+use the native object model, and incidental microvisuals stay on the SVG
+fallback route. Canonical rectangular merged text cells may use the narrow
+`row_span` / `col_span` contract below; graphical cells stay unmarked. The
+marker group supplies visible SVG fallback children for browser rendering and
+JSON metadata for `svg_to_pptx` native export.
 
 **Hard rule — activation is the opt-in, dormant unless exported with `--native-charts-and-tables`**: A marker only declares that a group is eligible for PowerPoint-native Chart/Table replacement. Normal `svg_to_pptx.py` runs keep the fallback SVG children and convert them into independently editable DrawingML shapes. Pass `--native-charts-and-tables` only when the data source and chart/table-specific object model matter more than cross-renderer layout fidelity: it emits the PowerPoint Chart/Table object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint Chart/Table object rather than a pixel-identical SVG drawing.
 
@@ -137,8 +146,8 @@ materialized alternating row fills. Native table typography mirrors the
 visible SVG fallback: put `style.font_family` and `style.font_size` on the
 marker from the table text already drawn, then use `style.header_font_size` or
 per-cell `font_size` only when the fallback visibly differs. If the fallback
-has no explicit table font, use the deck body family and declared body anchor from
-`spec_lock.md`.
+has no explicit table font, Default uses the deck body family and declared body
+anchor from `spec_lock.md`; Quick uses its active-context body family and size.
 
 **Hard rule — table metadata is the native source of truth**: Every row,
 summary line, value, and cell-level style that must survive

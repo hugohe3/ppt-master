@@ -1,14 +1,26 @@
 # Shared SVG Core Standards
 
-Mandatory reference for every route that authors or regenerates slide visuals through SVG. It owns XML validity, the closed generated-authoring surface, basic converter compatibility, page closure, semantic grouping, and shared fidelity vocabulary.
+Mandatory reference for every route that authors or regenerates slide visuals through SVG. It owns XML validity, the closed generated-authoring surface, basic converter compatibility, page closure, semantic grouping, shared visual-quality defaults, and fidelity vocabulary.
 
 **Conditional module routing**:
 
 | Trigger | Load |
 |---|---|
-| Noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
+| Default or Quick Generate; otherwise noncanonical/alpha paint, advanced line or text treatment, gradient/filter/effect, transform, freeform/radial geometry, or constructed style | [`svg-effects.md`](./svg-effects.md) |
 | A page will use a preset pattern fill or evaluate native chart/table replacement | [`native-data-interface.md`](./native-data-interface.md) before deciding eligibility or emitting metadata |
 | `pptx_structure.mode: structured` | [`pptx-structure-interface.md`](./pptx-structure-interface.md) |
+
+**Default — shared aesthetic baseline (may be overridden by explicit user, installed template / brand, or locked / Quick-resolved visual-style requirements)**: Required / Forbidden technical contracts remain absolute. When a higher authority is silent, build clear hierarchy through typography and leading, alignment, negative space, purposeful imagery / icons, and restrained repetition before decoration. Deliberate tightness, imbalance, off-axis placement, or container-heavy structure remains valid when that authority calls for it.
+
+| Concern | Shared default |
+|---|---|
+| Text-block rhythm | Use §4.2 leading. Make the baseline step into a new paragraph visibly larger than the intra-paragraph line step; keep the extra gap between list items smaller than paragraph separation but large enough to scan each item. Repeated peer blocks share one rhythm unless their hierarchy differs. |
+| Natural wrapping | Break at semantic phrase or punctuation boundaries where possible. Reflow the text frame or adjust neighboring geometry before using any permitted local size reduction. Let the final line run naturally shorter; avoid mechanically equal lines or a stranded single-character / single-word line when an earlier natural break preserves meaning. |
+| Alignment and proximity | Establish shared axes from the current composition. Align related titles, copy, labels, images, and diagram nodes to those edges, centers, or baselines; group related elements more tightly than unrelated groups so spacing carries hierarchy. Break an axis only when the offset performs hierarchy, direction, or tension. |
+| Visual weight | Judge weight from area, darkness, saturation, density, stroke, image detail, and elevation together. Distribute it to support the focal path; symmetry is optional, and deliberate imbalance may create direction. |
+| Containers | Use a card or panel when it expresses grouping, hierarchy, boundary, capacity, or a distinct material plane. Otherwise prefer spacing, rules, or direct text / geometry; peer containers share treatment unless a semantic difference justifies contrast. |
+
+**Default — active effects vocabulary (may resolve to no added technique when no visual job is diagnosed)**: Default and Quick Generate run the already-loaded [`svg-effects.md`](./svg-effects.md) §6.1 Visual Job Router before completing each page; apply a compatible technique only for a diagnosed visual job.
 
 **Fidelity labels**:
 
@@ -571,7 +583,7 @@ Semantic markers are minimal compiler hints. Flat pages declare one root `data-p
   [`../templates/icons/README.md`](../templates/icons/README.md).
 - **Local reuse**: ordinary same-document `<use>` follows §1.3.
 
-### 4.2 Conditional Editability and Package Promotion
+### 4.2 Editability, Package Promotion, and Text Leading
 
 These forms are needed only when the stated PPT behavior matters:
 
@@ -583,11 +595,13 @@ These forms are needed only when the stated PPT behavior matters:
 | Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. Quick-generate uses the same flat object ownership but converter-default theme scaffolding because no lock exists. |
 | Reusable template-based PowerPoint Layout | Select one complete authoring SVG per page in `page_layouts`, declare each unique Master/Layout definition once, and assign pages through `page_pptx_layouts`. Strict preserves the prototype contract; adaptive retains its Master and uses a current or new Layout key already declared and assigned by Strategist. Construction cannot extend or mutate that mapping downstream. Non-mirror skin follows `spec_lock`. |
 
+**Default — leading by role and density (may be overridden for user, template, typeface, legibility, or locked visual-style fit)**: For direct positioned `<tspan>` rows, start multiline titles around `1.2–1.3 × font-size`, dense / small body around `1.4–1.5 ×`, ordinary body around `1.5–1.6 ×`, and large / sparse / breathing body around `1.6–2.0 ×`. These are starting ranges, not checker quotas; display headlines may be tighter when the selected style calls for it. Author the spacing as positive relative `dy`, not CSS/SVG `line-height`, which has no registered DrawingML mapping.
+
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
 
 ### 4.3 Element Grouping (Mandatory)
 
-**Hard rule — root groups protect body-text layout**: Every visible direct root `<g>` declares positive root-coordinate `data-pptx-bounds="x y width height"`. Keep it when frame/native coordinates size one PowerPoint object; placeholder bounds also supply the slot frame. On flat pages, make each module zone as generous as the canvas and sibling layout allow without overlapping another module zone. Checker validates this subcanvas against the root `viewBox`, then recursively validates only estimable `<text>` descendants against it using the shared SVG-to-PPTX per-run width estimate and safety headroom. Nested groups and all shapes, images, paths, `<use>` instances, effects, and object frames are not content-boundary inputs. Per side, Checker ignores text/bounds overflow through `1px`, warns through `5%` of the containing boundary dimension, and fails above `5%`. Bounds do not clip or reflow.
+**Hard rule — root groups protect body-text layout**: Every visible direct root `<g>` declares positive root-coordinate `data-pptx-bounds="x y width height"`. Keep it when frame/native coordinates size one PowerPoint object; placeholder bounds also supply the slot frame. On flat pages, make each module zone as generous as the canvas and sibling layout allow without overlapping another module zone. Checker validates this subcanvas against the root `viewBox`, then recursively validates only estimable `<text>` descendants against it using the shared SVG-to-PPTX per-run width estimate and DrawingML wrapping headroom. It validates every estimable visible text carrier directly against the root `viewBox` with the same per-run estimate before that headroom. Nested groups and all shapes, images, paths, `<use>` instances, effects, and object frames are not module-boundary inputs. Per side, Checker ignores overflow through `1px`; module-boundary overflow warns through `5%` and fails above `5%`, while any larger root-`viewBox` text overflow fails. Bounds do not clip or reflow; unestimable visible text receives an advisory warning. The only page-boundary exception is a wholly off-canvas direct-root Morph endpoint marked `data-pptx-morph-staging="true"`; its own module bounds still apply, retained Morph uses an explicit pair, and the marker never excuses partial page overflow.
 
 Wrap each logical Slide-local body unit in one descriptive top-level `<g id>`; group count follows the page's semantic units, and each group becomes one stable animation target when animation is enabled. Generic deck-wide animation gives that target one step; an explicit animation sidecar may assign it several ordered effects. Nested implementation groups may remain anonymous and need no bounds; any nested bounds are ignored. Flat pages use ordinary groups; structured slots already qualify, while titles, direct atomic Master/Layout elements, and canvas-level static framing—including background images and full-canvas scrim/decoration rectangles—may remain root primitives. On flat pages, give such static framing a stable `id` plus `data-pptx-role="background"` / `"decoration"`; never add a `<g>` solely to silence an ungrouped-element advisory.
 

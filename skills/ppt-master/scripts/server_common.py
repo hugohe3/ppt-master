@@ -23,6 +23,8 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
+from workflow_transcript import DISABLE_TRANSCRIPT_ENV
+
 
 MIN_PORT = 1
 MAX_PORT = 65535
@@ -75,7 +77,15 @@ def popen_detached(
     caller's Job Object. ``CREATE_BREAKAWAY_FROM_JOB`` lets the local UI server
     survive after the launcher command returns; when that flag is forbidden, the
     function falls back to the previous detached-process flags.
+
+    Detached service output remains in its component log, so the child receives
+    the shared workflow-transcript opt-out environment flag.
     """
+    supplied_env = kwargs.get('env')
+    child_env = dict(os.environ if supplied_env is None else supplied_env)
+    child_env[DISABLE_TRANSCRIPT_ENV] = '1'
+    kwargs['env'] = child_env
+
     if os.name != 'nt':
         return subprocess.Popen(args, start_new_session=True, **kwargs)
 

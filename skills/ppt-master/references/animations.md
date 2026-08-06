@@ -41,7 +41,7 @@ tell; each capability above earns its place per page, not per deck.
 | Page transition | CLI: `fade`, 0.4s | Calm baseline that suits most decks; the public Python builder retains its legacy 0.5s default |
 | Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so object animation is opt-in. Turn on the content-aware canonical entrance policy with `-a auto`, or select one PowerPoint-native `entrance_*`, `emphasis_*`, `path_*`, or `exit_*` key explicitly |
 
-To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` — no need to rerun the LLM. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
+To regenerate a deck with different settings, rerun the final checker when its current matching report is absent or stale, then rerun `svg_to_pptx.py` against the same `svg_output/`; the content-generation LLM need not rerun unless authored SVG requires repair. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
 
 ---
 
@@ -333,7 +333,7 @@ other visible state is expected to change; both endpoints must still resolve to
 one compatible top-level PowerPoint object kind. Automatic Morph without pairs
 is heuristic and may cross-fade instead of tweening.
 
-**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. Objects parked outside the canvas are not rendered but must still exist on both pages and be explicitly paired when deterministic identity matters.
+**Give text somewhere to come from.** Morph tweens objects present on both pages; text that only exists on the second page can only fade in. The standard fix is to place the *next* page's copy on the current page just outside the canvas (below), and the *previous* page's copy just outside the opposite edge (above). Each block then slides through the frame instead of blinking, and the deck reads as one continuous surface being scrolled. A wholly off-canvas endpoint must be one direct-root `<g id>` with valid `data-pptx-bounds` and `data-pptx-morph-staging="true"`; when Morph remains enabled, pair it explicitly under §2.1. The marker only declares an intentional invisible endpoint; it cannot excuse a partially clipped group or text carrier.
 
 **When Morph refuses to match**: PowerPoint pairs compatible object kinds; a
 shape and a picture will cross-fade instead of tweening. For generated pages,

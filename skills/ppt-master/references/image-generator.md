@@ -4,7 +4,7 @@
 
 Role definition for the **AI image generation path**: convert each active `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration sheets.
 
-**Trigger**: the Default Generate resource list or Quick Generate transient roster contains `Acquire Via: ai` or `slice`. The role is loaded only when at least one such row exists.
+**Trigger**: the Default Generate resource list contains `Acquire Via: ai` or `slice`, or Quick Generate has resolved a required AI/sliced image in active context. Load only when at least one such resource exists.
 
 ---
 
@@ -120,11 +120,11 @@ Derive color behavior from the available roles and image context: background / s
 
 ### Step 3 — Per-image type + assembly
 
-For each `Acquire Via: ai` row, use Strategist-owned §VIII/lock by default or the main agent's transient Quick roster. Explicit values remain binding; Quick resolves omissions automatically.
+For each `Acquire Via: ai` row, use Strategist-owned §VIII/lock by default or the main agent's active-context Quick resource decision. Explicit values remain binding; Quick resolves omissions automatically.
 
-`Layout pattern` is a page-realization preference and is not copied wholesale into the bitmap prompt. Any generation-time subject direction, focal placement, quiet region, or overlay-safety requirement must therefore be present in the row's `Reference`, the matching §IX block, or the Quick roster's visual intent.
+`Layout pattern` is a page-realization preference and is not copied wholesale into the bitmap prompt. Any generation-time subject direction, focal placement, quiet region, or overlay-safety requirement must therefore be present in the row's `Reference`, the matching §IX block, or Quick's active-context visual intent.
 
-1. **Determine `page_role`** — the owning row's explicit value wins; a blank or omitted value resolves to `local`. In Default Generate, `hero_page` must be Strategist-explicit; in Quick Generate, the main agent may resolve it while building the transient roster.
+1. **Determine `page_role`** — the owning row's explicit value wins; a blank or omitted value resolves to `local`. In Default Generate, `hero_page` must be Strategist-explicit; in Quick Generate, the main agent may resolve it before acquisition in active context.
 2. **Determine `text_policy`** — the owning row's value wins when set. **Declared-inference fallback for a blank or omitted value**: pick `none` or `embedded` from the row's `Purpose`, `Reference`, and page intent based on whether in-image text serves the page. Long body / data / lists stay in SVG.
 3. **Determine type or free composition** — an Illustration Sheet omits manifest `type` and follows §4.3's grid composition. For another local structural infographic, use one of the 11 types only when the `_index.md` offers a real match; otherwise omit type and author the intended structure directly with §4.1 E. A local single-subject/portrait image omits type and uses §4.1 A/B inside its actual region. A `hero_page` omits type and uses §4.1 A/B/C/D/E.
 4. `read_file references/image-type-templates/<type>.md` only when a type was selected (and only if not already read).
@@ -132,7 +132,7 @@ For each `Acquire Via: ai` row, use Strategist-owned §VIII/lock by default or t
    - The rendering's style paragraph (from Step 2)
    - Color-role instructions anchored by the deck HEX values and refined for the image context (from Step 2)
    - The selected type's structural layout, or the no-type composition prose (from Step 3)
-   - The image's specific `Reference` intent (from `design_spec.md §VIII` or the Quick Generate transient roster)
+   - The image's specific `Reference` intent (from `design_spec.md §VIII` or the Quick Generate active-context decision)
    - Container sizing from the selected type file, or the row's Dimensions for no-type prose
    - The hard rules from §5 below (HEX-not-as-text, rendering-aligned human depiction and likeness authorization, text policy)
 
@@ -254,7 +254,7 @@ An illustration sheet can produce several small **spot illustrations** in one ge
 
 **Default — one sheet for a compatible spot family (may override when separate generation serves the assets better)**: Prefer a sheet when several elements share similar proportions, detail, quality, and semantic precision. Generate elements separately when those needs differ materially; quantity alone neither requires nor forbids a sheet. A single hero/local image stays with the normal one-row-per-image flow (§4.1).
 
-**Hard rule**: a spot sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, mark it generation-only in the transient roster. The sheet is never referenced from SVG. Only sliced element rows are placed.
+**Hard rule**: a spot sheet is a generation source, not a slide asset. In Default Generate, keep the sheet row out of `spec_lock.md images`; in Quick Generate, retain its generation-only status in active context and the operational manifest. The sheet is never referenced from SVG. Only sliced element rows are placed.
 
 **Sheet prompt convention** (one manifest item, `page_role: local`, `text_policy: none`, `image_size` chosen from final placement size):
 
@@ -280,7 +280,7 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 
 If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
 
-**Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists in the active placeable-resource authority: `spec_lock.md images` in Default Generate or the transient roster in Quick Generate. Default Generate keeps both row kinds in §VIII under [`strategist-image.md`](./strategist-image.md); Quick Generate resolves the same distinction in active context without creating planning artifacts:
+**Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists in the active placeable-resource authority: `spec_lock.md images` in Default Generate or the current agent's prepared resource decision in Quick Generate. Default Generate keeps both row kinds in §VIII under [`strategist-image.md`](./strategist-image.md); Quick Generate resolves the same distinction in active context and its operational manifest without creating planning artifacts:
 
 - **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: landscape footer-vignette spot set`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
 - **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in the active placeable-resource authority, normally with `crop=no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (the preparation pass re-runs `analyze_images.py`). Each row carries an owner-resolved layout recommendation; SVG authoring may realize it as a direct cutout or inside an appropriate container while preserving the resource and crop/content constraints.
@@ -593,14 +593,16 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
    - Filenames awaiting manual generation
    - Pointer to `images/image_prompts.md` (paste-ready `### Image N:` block per item) or `image_prompts.json` (`items[].prompt`)
    - Target placement: `project/images/<filename>` matching the resource list exactly
-   - Resume: Default Generate re-runs Step 7; Quick Generate re-runs its resource gate, final checker, then `--quick-generate`
+   - Continuation: Default Generate re-runs Step 7; Quick may validate the supplied file, rerun its resource gate and final checker, then use `--quick-generate` only while the original active context remains available — otherwise start a clean Quick run
 
 **User-initiated**: When Strategist Step 4 captured `manual` in Default Generate, or the user explicitly requested `manual` in the Quick Generate active context, Path A is skipped from the start.
 
 > Default Generate tolerates `Needs-Manual` rows through authoring and resumes
-> at Step 7. Quick Generate preserves the same manifest and handoff but does not
-> run `--quick-generate` while a required row still says `Needs-Manual`; validate
-> a later supplied file and update it to `Generated` first.
+> at Step 7. Quick Generate preserves the same operational manifest and handoff
+> but does not run `--quick-generate` while a required row still says
+> `Needs-Manual`. If the original active context remains available, validate a
+> later supplied file and update it to `Generated`; otherwise start a clean
+> Quick run rather than treating the manifest as a resumable design record.
 
 #### AI-specific Failure Handling (extends image-base.md §6)
 

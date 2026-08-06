@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import TextIO
 
 from attribution_guard import require_skill_integrity
+from workflow_transcript import install_auto_transcript
 
 
 _SKILL_DIR = Path(__file__).resolve().parent.parent
@@ -79,8 +80,9 @@ def _reconfigure_stream(stream: TextIO) -> TextIO:
 
 
 def configure_utf8_stdio() -> None:
-    """Use UTF-8 for CLI stdout/stderr, including Windows non-UTF-8 locales."""
+    """Configure CLI streams and enable project-scoped output recording."""
     require_skill_integrity()
     _require_official_distribution_identity()
     sys.stdout = _reconfigure_stream(sys.stdout)
     sys.stderr = _reconfigure_stream(sys.stderr)
+    install_auto_transcript()

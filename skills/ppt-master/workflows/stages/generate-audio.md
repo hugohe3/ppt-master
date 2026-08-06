@@ -240,7 +240,7 @@ The edge command writes each MP3 and its internal page SRT from the same `edge-t
 | Both are absent | Create no sidecar; inherit the base report's deck motion |
 
 Generate passes the base report through `--inherit-motion-from`: inherited
-`-a none` preserves explicit objects-off, while Stage 3 `false` does not.
+`-a none` preserves explicit objects-off, while final Stage-2 `false` does not.
 Only explicit all-motion-off uses `--no-animations`. Invalid reports block;
 audio duration plus padding owns final advance.
 

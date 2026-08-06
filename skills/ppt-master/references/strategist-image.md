@@ -16,7 +16,7 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Context-first understanding for provided assets**: Do not visually scan `images/`. First infer identity, role, and crop / focus needs from source position and surrounding prose, captions / alt / titles, filename, user notes / confirmed `image_notes`, existing resource records, and CSV geometry. Inspect only one specific image when a remaining ambiguity would change selection, factual identity, page role, crop safety, or focal placement. Never inspect for inspiration, bulk-open the folder, or infer external facts / provenance from pixels. Record the result in §VIII. Leave an optional unresolved asset unused; route an unresolved must-use asset through failure recovery.
 
-**Default — one coherent sheet for compatible same-family spots (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference and use separate sheets for incompatible shapes. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Stage 3 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
+**Default — one coherent sheet for compatible same-family spots (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference and use separate sheets for incompatible shapes. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
 
 ## 2. AI Image Strategy — propose only for recommended `ai`; lock any confirmed `ai`
 
@@ -30,7 +30,7 @@ For specialized or regulated paper-figure subjects, preserve the prompt depth re
 
 ## 3. Formula Asset Policy
 
-Formula rendering is a conditional choice surfaced in Stage 3 production confirmation. Recommend one policy and let the user confirm or override it:
+Formula rendering is a conditional choice surfaced in final Stage 2 production confirmation. Recommend one policy and let the user confirm or override it:
 
 | Policy | Behavior | Use |
 |---|---|---|

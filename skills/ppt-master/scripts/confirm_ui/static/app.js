@@ -1,7 +1,7 @@
-/* PPT Master - template selection and Strategist confirmation UI
- * Generate Step 3 independently selects free design or exact template
- * candidates before Stage 1 captures the communication contract. Stage 2 then
- * confirms a coherent deck solution, and Stage 3 resolves production mechanics.
+/* PPT Master - Strategist confirmation UI
+ * Stage 1 confirms the communication contract and the free-design/template
+ * choice together. Stage 2 combines the coherent deck solution and production
+ * mechanics, then writes the final result.
  * Finite fields use /static/catalogs.json; coordinated design directions seed
  * color, typography, icons, generated-image rendering, and conditional
  * template-application prose. Final confirm saves result.json.
@@ -14,32 +14,25 @@
         en: {
             page_title: "PPT Master - Confirm Design",
             topbar_hint: "Answer the open questions, or pick and customize recommendations, then continue.",
-            template_stage_title: "Choose a template",
-            template_stage_hint: "Choose free design, or combine one registered template per type plus one specified path. This selection is separate from Stage 1.",
             stage_anchors: "Stage 1 · Communication contract",
-            stage_design: "Stage 2 · Deck direction & visual system",
-            stage_images: "Stage 3 · Resources & production",
+            stage_final_plan: "Stage 2 · Final plan & production",
             loading: "Loading…",
             load_error: "Could not load the current recommendation stage. The AI must write it before launch.",
             btn_confirm: "Confirm",
-            btn_confirm_template: "Confirm template & continue →",
             btn_confirm_contract: "Confirm contract & continue →",
-            btn_confirm_solution: "Confirm solution & continue →",
+            btn_confirm_final_plan: "Confirm final plan →",
             deriving: "Generating the downstream options from your choices…",
-            template_applying: "Applying the template selection and preparing Stage 1…",
-            template_load_error: "Could not load the available templates.",
-            template_submit_error: "Could not confirm the template selection.",
-            template_selection_required: "Choose free design or at least one template.",
-            template_free_selected: "Free design selected",
-            template_count_selected: "{count} template(s) selected",
+            template_selection_required: "Choose free design or use templates. When using templates, select at least one workspace.",
             connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
-            already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
             lang_toggle_title: "Switch language",
-            sec_template_free: "Free design",
+            sec_template_choice: "Design basis",
+            template_choice_hint: "Choose how this deck should establish its design system.",
             template_free_title: "Design from the current content",
             template_free_desc: "Use no reusable template workspace. The Strategist will derive the visual system from this project.",
+            template_use_title: "Use templates",
+            template_use_desc: "Select one or more reusable Brand, Style, Layout, Deck, or specified workspaces.",
             sec_template_library: "Template combination",
             template_library_hint: "Choose at most one registered template for each type. Brand, Style, Layout, and Deck can be combined.",
             sec_template_explicit: "Specified templates",
@@ -122,8 +115,8 @@
             image_strategy_custom_placeholder: "Describe the exact generated-image direction, subjects, composition, style cues, or things to avoid.",
             image_strategy_reference_hint: "Reference images show rendering only. Final AI images inherit the deck color scheme selected above.",
             image_strategy_no_reference: "No reference image for this custom choice.",
-            image_source_summary: "Confirmed image sources",
-            image_production_hint: "Image sources and rendering were confirmed in Stage 2. This stage only resolves the production path.",
+            image_source_summary: "Selected image sources",
+            image_production_hint: "Image sources and rendering are selected above. Resolve only the production path here.",
             image_usage_notes: "Additional image requirements",
             image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
             image_usage_required: "Select at least one image usage option.",
@@ -159,7 +152,6 @@
             size_role_subtitle: "subtitle",
             size_role_annotation: "annotation",
             custom_typography: "Custom typography",
-            custom_typography_repair: "Complete the concrete font names required for this project to continue.",
             custom_color: "Custom color",
             custom_color_placeholder: "Describe your colors in words, e.g. deep navy primary, warm orange accent, white background — or paste HEX values…",
             role_background: "bg",
@@ -200,32 +192,25 @@
         ja: {
             page_title: "PPT Master - デザイン確認",
             topbar_hint: "自由記述の質問に答えるか、提案を選択・調整して次へ進んでください。",
-            template_stage_title: "テンプレートを選択",
-            template_stage_hint: "自由デザイン、または種類ごとに登録済み1件と指定パス1件までを組み合わせます。この選択はステージ1とは独立しています。",
             stage_anchors: "ステージ 1 · コミュニケーション契約",
-            stage_design: "ステージ 2 · 全体方針とビジュアルシステム",
-            stage_images: "ステージ 3 · リソースと制作",
+            stage_final_plan: "ステージ 2 · 最終プランと制作",
             loading: "読み込み中…",
             load_error: "現在の推奨ステージを読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
-            btn_confirm_template: "テンプレートを確定して次へ →",
             btn_confirm_contract: "契約内容を確定して次へ →",
-            btn_confirm_solution: "全体方針を確定して次へ →",
+            btn_confirm_final_plan: "最終プランを確定 →",
             deriving: "選択内容をもとに後続の選択肢を生成しています…",
-            template_applying: "テンプレートの選択を適用し、ステージ1を準備しています…",
-            template_load_error: "利用可能なテンプレートを読み込めませんでした。",
-            template_submit_error: "テンプレートの選択を確定できませんでした。",
-            template_selection_required: "自由デザイン、または1つ以上のテンプレートを選択してください。",
-            template_free_selected: "自由デザインを選択中",
-            template_count_selected: "{count} 件のテンプレートを選択中",
+            template_selection_required: "自由デザインまたはテンプレート利用を選んでください。テンプレート利用時は、1つ以上のワークスペースを選択してください。",
             connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
-            already_confirmed: "すでに一度確定済みです。再送信すると前回の選択を上書きします。",
             confirmed_title: "✓ 確定しました",
             confirmed_hint: "選択内容を保存しました。このページを閉じてチャットに戻ってください。",
             lang_toggle_title: "言語を切り替え",
-            sec_template_free: "自由デザイン",
+            sec_template_choice: "デザインの基準",
+            template_choice_hint: "この資料のデザインシステムをどう決めるか選択します。",
             template_free_title: "現在の内容からデザインする",
             template_free_desc: "再利用テンプレートを使わず、Strategist がこのプロジェクトからビジュアルシステムを組み立てます。",
+            template_use_title: "テンプレートを使用",
+            template_use_desc: "Brand、Style、Layout、Deck、または指定ワークスペースから1つ以上選択します。",
             sec_template_library: "テンプレートの組み合わせ",
             template_library_hint: "登録済みテンプレートは種類ごとに1件まで選択でき、Brand、Style、Layout、Deck を組み合わせられます。",
             sec_template_explicit: "指定テンプレート",
@@ -308,8 +293,8 @@
             image_strategy_custom_placeholder: "生成画像の方向性、被写体、構図、スタイル要素、避けたい要素を具体的に入力してください。",
             image_strategy_reference_hint: "参照画像はレンダリングのみを示します。最終AI画像の色は上で選んだデッキ配色を継承します。",
             image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
-            image_source_summary: "確定済みの画像ソース",
-            image_production_hint: "画像ソースとレンダリングはステージ2で確定済みです。ここでは制作経路だけを決めます。",
+            image_source_summary: "選択中の画像ソース",
+            image_production_hint: "画像ソースとレンダリングは上で選択済みです。ここでは制作経路だけを決めます。",
             image_usage_notes: "画像に関する補足要件",
             image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
             image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
@@ -345,7 +330,6 @@
             size_role_subtitle: "サブタイトル",
             size_role_annotation: "注釈",
             custom_typography: "カスタムタイポグラフィ",
-            custom_typography_repair: "続行するには、このプロジェクトに必要な具体的な書体名を入力してください。",
             custom_color: "カスタム配色",
             custom_color_placeholder: "配色を言葉で説明 — 例：濃紺をメインに暖色オレンジのアクセント、背景は白 — またはHEX値を貼り付け…",
             role_background: "背景",
@@ -386,32 +370,25 @@
         zh: {
             page_title: "确认设计方案",
             topbar_hint: "回答开放问题，或选择并调整推荐项，然后继续。",
-            template_stage_title: "选择模板",
-            template_stage_hint: "选择自由设计，或组合每类一个已注册模板与一个指定地址。这个选择独立于 Stage 1。",
             stage_anchors: "第一阶段 · 沟通契约",
-            stage_design: "第二阶段 · 完整方案与视觉系统",
-            stage_images: "第三阶段 · 资源与生产执行",
+            stage_final_plan: "第二阶段 · 最终方案与制作",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
-            btn_confirm_template: "确认模板并继续 →",
             btn_confirm_contract: "确认沟通契约并继续 →",
-            btn_confirm_solution: "确认完整方案并继续 →",
+            btn_confirm_final_plan: "确认最终方案 →",
             deriving: "正在根据你的选择生成下游选项…",
-            template_applying: "正在应用模板选择并准备 Stage 1…",
-            template_load_error: "无法加载可用模板。",
-            template_submit_error: "无法确认模板选择。",
-            template_selection_required: "请选择自由设计或至少一个模板。",
-            template_free_selected: "已选择自由设计",
-            template_count_selected: "已选择 {count} 个模板",
+            template_selection_required: "请选择自由设计或使用模板；选择使用模板时，至少选择一个工作区。",
             connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
-            already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
             lang_toggle_title: "切换语言",
-            sec_template_free: "自由设计",
+            sec_template_choice: "设计基础",
+            template_choice_hint: "选择这份演示文稿如何建立设计系统。",
             template_free_title: "根据当前内容从零设计",
             template_free_desc: "不使用可复用模板工作区，由 Strategist 根据当前项目推导视觉系统。",
+            template_use_title: "使用模板",
+            template_use_desc: "选择一个或多个 Brand、Style、Layout、Deck 或指定工作区。",
             sec_template_library: "模板组合",
             template_library_hint: "每种已注册模板最多选择一个；Brand、Style、Layout、Deck 可以组合使用。",
             sec_template_explicit: "指定模板",
@@ -494,8 +471,8 @@
             image_strategy_custom_placeholder: "描述生成图的具体方向、主体、构图、风格关键词或需要避免的内容。",
             image_strategy_reference_hint: "参考图只展示渲染风格；最终 AI 图片直接继承上方已选的整套 PPT 配色。",
             image_strategy_no_reference: "自定义选择没有参考图。",
-            image_source_summary: "已确认的图片来源",
-            image_production_hint: "图片来源和渲染方向已在第二阶段确认；这里仅决定实际生产路径。",
+            image_source_summary: "已选图片来源",
+            image_production_hint: "图片来源和渲染方向已在上方选择；这里仅决定实际生产路径。",
             image_usage_notes: "图片补充要求",
             image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
             image_usage_required: "请至少选择一种图片使用方式。",
@@ -531,7 +508,6 @@
             size_role_subtitle: "副标题",
             size_role_annotation: "注释",
             custom_typography: "自定义字体方案",
-            custom_typography_repair: "请补全当前项目所需的具体字体名称后继续。",
             custom_color: "自定义配色",
             custom_color_placeholder: "用文字描述配色，如：深蓝主色、暖橙强调、白色背景——或直接粘贴 HEX 值…",
             role_background: "背景",
@@ -702,9 +678,7 @@
     var TEMPLATE_CANDIDATES = [];
     var TEMPLATE_SELECTED_KEYS = [];
     var TEMPLATE_SELECTIONS = { brand: "", style: "", layout: "", deck: "", explicit: "" };
-    var TEMPLATE_MODE = "free_design";
-    var TEMPLATE_PHASE = false;
-    var TEMPLATE_SUBMITTING = false;
+    var TEMPLATE_MODE = "";
     var REC_ALIASES = {
         icons: {
             line: "tabler-outline",
@@ -856,7 +830,7 @@
         note.textContent = text;
     }
 
-    // ---- Step 3 template selection ---------------------------------------
+    // ---- Stage 1 template selection --------------------------------------
     function normalizeTemplateCandidates(raw, source, kind) {
         if (!Array.isArray(raw)) return [];
         return raw.filter(function (candidate) {
@@ -873,8 +847,13 @@
     function initTemplateOptions(data) {
         var library = data && data.library && typeof data.library === "object"
             ? data.library : {};
+        var defaultMode = data && data.default_mode;
+        if (defaultMode !== "free_design" && defaultMode !== "templates") {
+            throw new Error("template_options.default_mode must be free_design or templates");
+        }
         var normalized = {
             lang: data && data.lang,
+            default_mode: defaultMode,
             library: {},
             explicit: [],
             preselected_keys: Array.isArray(data && data.preselected_keys)
@@ -910,6 +889,7 @@
             TEMPLATE_SELECTIONS[slot] = key;
         });
         syncTemplateSelectionState();
+        TEMPLATE_MODE = normalized.default_mode;
         TEMPLATE_OPTIONS = normalized;
     }
 
@@ -940,7 +920,6 @@
         });
         TEMPLATE_SELECTED_KEYS.push(TEMPLATE_SELECTIONS.explicit);
         TEMPLATE_SELECTED_KEYS = TEMPLATE_SELECTED_KEYS.filter(Boolean);
-        TEMPLATE_MODE = TEMPLATE_SELECTED_KEYS.length ? "templates" : "free_design";
     }
 
     function templateCandidateTitle(candidate) {
@@ -958,12 +937,19 @@
     function chooseFreeDesign() {
         TEMPLATE_SELECTIONS = emptyTemplateSelections();
         syncTemplateSelectionState();
+        TEMPLATE_MODE = "free_design";
+        updateTemplateSelectionControls();
+    }
+
+    function chooseTemplateMode() {
+        TEMPLATE_MODE = "templates";
         updateTemplateSelectionControls();
     }
 
     function chooseTemplateForSlot(slot, key) {
         TEMPLATE_SELECTIONS[slot] = String(key || "");
         syncTemplateSelectionState();
+        TEMPLATE_MODE = "templates";
         updateTemplateSelectionControls();
     }
 
@@ -1019,25 +1005,40 @@
         return field;
     }
 
-    function renderTemplateFreeDesign(host) {
-        var sec = section("F", "sec_template_free");
-        var selected = TEMPLATE_MODE === "free_design";
-        var choice = el("button", "template-free-choice" + (selected ? " selected" : ""));
-        choice.id = "template-free-choice";
+    function renderTemplateModeChoice(id, mode, titleKey, descKey, onSelect) {
+        var selected = TEMPLATE_MODE === mode;
+        var choice = el("button", "template-mode-choice" + (selected ? " selected" : ""));
+        choice.id = id;
         choice.type = "button";
         choice.setAttribute("aria-pressed", selected ? "true" : "false");
         choice.appendChild(el("span", "template-choice-radio"));
-        var copy = el("span", "template-free-copy");
-        copy.appendChild(el("span", "template-free-title", t("template_free_title")));
-        copy.appendChild(el("span", "template-free-desc", t("template_free_desc")));
+        var copy = el("span", "template-choice-copy");
+        copy.appendChild(el("span", "template-choice-title", t(titleKey)));
+        copy.appendChild(el("span", "template-choice-desc", t(descKey)));
         choice.appendChild(copy);
-        choice.addEventListener("click", chooseFreeDesign);
-        sec.appendChild(choice);
-        host.appendChild(sec);
+        choice.addEventListener("click", onSelect);
+        return choice;
     }
 
-    function renderTemplateSelectors(host) {
-        var sec = section("L", "sec_template_library", t("template_library_hint"));
+    function renderTemplateSelection(host) {
+        if (!TEMPLATE_OPTIONS) return;
+        var sec = section("T", "sec_template_choice", t("template_choice_hint"));
+        var choices = el("div", "template-mode-choices");
+        choices.appendChild(renderTemplateModeChoice(
+            "template-free-choice", "free_design", "template_free_title",
+            "template_free_desc", chooseFreeDesign
+        ));
+        var useChoice = renderTemplateModeChoice(
+            "template-use-choice", "templates", "template_use_title",
+            "template_use_desc", chooseTemplateMode
+        );
+        useChoice.setAttribute("aria-controls", "template-selector-panel");
+        choices.appendChild(useChoice);
+        sec.appendChild(choices);
+
+        var panel = el("div", "template-selector-panel");
+        panel.id = "template-selector-panel";
+        panel.appendChild(el("div", "template-selector-hint", t("template_library_hint")));
         var grid = el("div", "template-select-grid");
         TEMPLATE_KINDS.forEach(function (kind) {
             var candidates = TEMPLATE_OPTIONS.library[kind] || [];
@@ -1048,8 +1049,10 @@
             t("template_source_explicit"),
             TEMPLATE_OPTIONS.explicit || []
         ));
-        sec.appendChild(grid);
+        panel.appendChild(grid);
+        sec.appendChild(panel);
         host.appendChild(sec);
+        updateTemplateSelectionControls();
     }
 
     function updateTemplateExplicitPath() {
@@ -1065,49 +1068,27 @@
 
     function updateTemplateSelectionControls() {
         var freeChoice = document.getElementById("template-free-choice");
+        var useChoice = document.getElementById("template-use-choice");
+        var selectorPanel = document.getElementById("template-selector-panel");
         var freeSelected = TEMPLATE_MODE === "free_design";
+        var templatesSelected = TEMPLATE_MODE === "templates";
         if (freeChoice) {
             freeChoice.classList.toggle("selected", freeSelected);
             freeChoice.setAttribute("aria-pressed", freeSelected ? "true" : "false");
         }
+        if (useChoice) {
+            useChoice.classList.toggle("selected", templatesSelected);
+            useChoice.setAttribute("aria-pressed", templatesSelected ? "true" : "false");
+            useChoice.setAttribute("aria-expanded", templatesSelected ? "true" : "false");
+        }
+        if (selectorPanel) selectorPanel.hidden = !templatesSelected;
         TEMPLATE_KINDS.concat(["explicit"]).forEach(function (slot) {
             var select = document.getElementById("template-select-" + slot);
             if (select) select.value = TEMPLATE_SELECTIONS[slot] || "";
         });
         updateTemplateExplicitPath();
-        updateTemplateSelectionStatus();
-    }
-
-    function updateTemplateSelectionStatus() {
         var status = document.getElementById("confirm-status");
-        if (!status) return;
-        status.textContent = TEMPLATE_MODE === "free_design"
-            ? t("template_free_selected")
-            : t("template_count_selected").replace("{count}", String(TEMPLATE_SELECTED_KEYS.length));
-    }
-
-    function renderTemplatePhase() {
-        if (!TEMPLATE_OPTIONS) return;
-        TEMPLATE_PHASE = true;
-        var heading = document.querySelector("#topbar .topbar-titles h1");
-        if (heading) heading.textContent = t("template_stage_title");
-        var hint = document.getElementById("topbar-hint");
-        if (hint) hint.textContent = t("template_stage_hint");
-        var previewHost = document.getElementById("topbar-preview");
-        if (previewHost) previewHost.innerHTML = "";
-        var host = document.getElementById("sections");
-        host.innerHTML = "";
-        _secCounter = 0;
-        renderTemplateFreeDesign(host);
-        renderTemplateSelectors(host);
-        document.getElementById("error").style.display = "none";
-        document.getElementById("loading").style.display = "none";
-        host.style.display = "block";
-        document.getElementById("actionbar").style.display = "flex";
-        var btn = document.getElementById("btn-confirm");
-        btn.disabled = false;
-        btn.textContent = t("btn_confirm_template");
-        updateTemplateSelectionControls();
+        if (status) status.textContent = "";
     }
 
     function normalizeRecId(field, value) {
@@ -2075,6 +2056,9 @@
     var refreshStylePreview = function () {};
     // Replaced when the selected generated-image preview mounts.
     var refreshImageStrategyPreview = function () {};
+    // Replaced when the final plan's image-production section mounts; image-use
+    // edits call it so the conditional AI path stays synchronized on the page.
+    var refreshImageProduction = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
     var refreshBodySizeHint = function () {};
@@ -2384,11 +2368,6 @@
         });
     }
 
-    function typographyNeedsConcreteRepair() {
-        return !!(STATE.typography && STATE.typography.name === "custom" &&
-            !typographyFamiliesComplete(STATE.typography));
-    }
-
     function sampleText(role, field) {
         // Keep comparison copy stable: choices change visual treatment, not content.
         var useEnglish = field === "english" || isEnglishProject();
@@ -2455,9 +2434,6 @@
     function renderTypography(host) {
         var cands = typographyRecommendationCandidates().filter(typographyFamiliesComplete);
         var sec = section(7, "sec_type");
-        if (stageNumber(REC) >= 3 && typographyNeedsConcreteRepair()) {
-            setSectionNote(sec, t("custom_typography_repair"));
-        }
         var grid = el("div", "font-grid");
         var customFields = el("div", "custom-typography-fields font-picker-fields");
         var customInputs = {};
@@ -3133,6 +3109,7 @@
             }
             STATE.image_usage = current;
             refreshUsageChips();
+            refreshImageProduction();
         }
         (CAT.image_usage || []).forEach(function (option) {
             var label = optionLabel(option);
@@ -3166,23 +3143,29 @@
 
     function renderImageProduction(host) {
         var sec = section("P", "sec_image_production", t("image_production_hint"));
-        var summary = el("div", "subfield");
-        summary.appendChild(el("div", "subfield-label", t("image_source_summary")));
-        var chips = el("div", "chips locked-summary-chips");
-        (STATE.image_usage || []).forEach(function (id) {
-            var option = findCatalogOption(CAT.image_usage, id);
-            chips.appendChild(el("div", "chip selected locked-summary-chip",
-                option ? optionLabel(option) : humanizeId(id)));
-        });
-        summary.appendChild(chips);
-        sec.appendChild(summary);
-        if (needsGeneratedImagesForUsage(STATE.image_usage)) {
-            var pathField = el("div", "subfield");
-            pathField.appendChild(el("div", "subfield-label", t("image_ai_path")));
-            enumField(pathField, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
-                function () { return STATE.image_ai_path; }, function (value) { STATE.image_ai_path = value; });
-            sec.appendChild(pathField);
-        }
+        var body = el("div", "image-production-body");
+        sec.appendChild(body);
+        refreshImageProduction = function () {
+            body.innerHTML = "";
+            var summary = el("div", "subfield");
+            summary.appendChild(el("div", "subfield-label", t("image_source_summary")));
+            var chips = el("div", "chips locked-summary-chips");
+            (STATE.image_usage || []).forEach(function (id) {
+                var option = findCatalogOption(CAT.image_usage, id);
+                chips.appendChild(el("div", "chip selected locked-summary-chip",
+                    option ? optionLabel(option) : humanizeId(id)));
+            });
+            summary.appendChild(chips);
+            body.appendChild(summary);
+            if (needsGeneratedImagesForUsage(STATE.image_usage)) {
+                var pathField = el("div", "subfield");
+                pathField.appendChild(el("div", "subfield-label", t("image_ai_path")));
+                enumField(pathField, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
+                    function () { return STATE.image_ai_path; }, function (value) { STATE.image_ai_path = value; });
+                body.appendChild(pathField);
+            }
+        };
+        refreshImageProduction();
         host.appendChild(sec);
     }
 
@@ -3248,25 +3231,20 @@
         host.appendChild(sec);
     }
 
-    // Stage of the staged confirm flow:
-    // 1 = communication contract, 2 = complete deck direction,
-    // 3 = resources + production execution,
-    // "all" = legacy single-pass (the recommendation payload carried no stage).
+    // Two-stage confirmation: communication contract, then complete final plan.
     var STAGE = 1;
 
     function stageNumber(data) {
-        var raw = data && data.stage != null ? data.stage : (data && data.tier);
+        var raw = data && data.stage;
         raw = String(raw == null ? "" : raw).toLowerCase();
-        if (raw === "1" || raw === "stage1" || raw === "tier1") return 1;
-        if (raw === "2" || raw === "stage2" || raw === "tier2") return 2;
-        if (raw === "3" || raw === "stage3" || raw === "tier3") return 3;
-        return "all";
+        if (raw === "stage1") return 1;
+        if (raw === "stage2") return 2;
+        return 0;
     }
 
     function stageTitle(stage) {
         if (stage === 1) return t("stage_anchors");
-        if (stage === 2) return t("stage_design");
-        if (stage === 3) return t("stage_images");
+        if (stage === 2) return t("stage_final_plan");
         return t("page_title");
     }
 
@@ -3283,16 +3261,19 @@
         // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
         refreshImageStrategyPreview = function () {};
+        refreshImageProduction = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
         var previewHost = document.getElementById("topbar-preview");
         if (previewHost) previewHost.innerHTML = "";
         if (stage === 1) {
-            // Scene and communication intent come first; no design tool is
-            // selected before the contract exists.
+            // Stage 1 closes the communication contract and its design basis in
+            // one submission. Detailed template controls stay hidden until the
+            // user explicitly chooses template-backed design.
             renderCommunication(host);
             renderDelivery(host);
             renderCanvas(host);
+            renderTemplateSelection(host);
         } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
             if (previewHost) renderImageStrategyPreview(previewHost);
@@ -3310,40 +3291,6 @@
             renderTypography(styleGroup);
             host.appendChild(styleGroup);
             renderImageDirection(host);
-        } else if (stage === 3) {
-            if (previewHost) renderStylePreview(previewHost);
-            if (previewHost) renderImageStrategyPreview(previewHost);
-            // Stage 3 contains production mechanics only. It summarizes the
-            // confirmed image source and reopens typography only to repair a
-            // legacy prose-only Custom result that cannot be final as-is.
-            if (typographyNeedsConcreteRepair()) {
-                var repairStyleGroup = el("div", "style-group");
-                renderTypography(repairStyleGroup);
-                host.appendChild(repairStyleGroup);
-            }
-            renderImageProduction(host);
-            renderFormulaPolicy(host);
-            renderProactiveExecution(host);
-            renderMode(host);
-            renderRefine(host);
-        } else {
-            // Legacy single-pass: show every section on one page.
-            if (previewHost) renderStylePreview(previewHost);
-            renderCommunication(host);
-            renderDelivery(host);
-            renderCanvas(host);
-            renderTemplateApplication(host);
-            renderDesignDirections(host);
-            renderNarrativeDirection(host);
-            renderVisualDirection(host);
-            renderReadingMode(host);
-            renderPages(host);
-            var legacyStyleGroup = el("div", "style-group");
-            renderColor(legacyStyleGroup);
-            renderIcons(legacyStyleGroup);
-            renderTypography(legacyStyleGroup);
-            host.appendChild(legacyStyleGroup);
-            renderImageDirection(host);
             renderImageProduction(host);
             renderFormulaPolicy(host);
             renderProactiveExecution(host);
@@ -3358,10 +3305,8 @@
     function updateActionBar(stage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = false;
-        // Stage 1/2 both confirm the current values before advancing. Stage 3
-        // and legacy single-pass submit the final result.
         if (stage === 1) btn.textContent = t("btn_confirm_contract");
-        else if (stage === 2) btn.textContent = t("btn_confirm_solution");
+        else if (stage === 2) btn.textContent = t("btn_confirm_final_plan");
         else btn.textContent = t("btn_confirm");
     }
 
@@ -3466,8 +3411,7 @@
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
         // A freshly authored Stage 2 starts from one deterministic reading-mode
-        // baseline. Stage 3 carries the confirmed Stage-2 values and must not
-        // normalize them again.
+        // baseline.
         if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(true);
         var rawImageUsage = recValue("image_usage") || directionField("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
@@ -3492,7 +3436,7 @@
         }
     }
 
-    function initStage3State() {
+    function initProductionState() {
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
         STATE.proactive_speaker_notes = booleanRecommendation("proactive_speaker_notes", true);
@@ -3505,8 +3449,6 @@
 
     function initState() {
         initStage1State();
-        initStage2State();
-        initStage3State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -3515,74 +3457,6 @@
         ov.querySelector(".cf-title").textContent = t("confirmed_title");
         ov.querySelector(".cf-hint").textContent = t("confirmed_hint");
         ov.style.display = "flex";
-    }
-
-    function showTemplateApplying() {
-        TEMPLATE_SUBMITTING = true;
-        document.getElementById("sections").style.display = "none";
-        document.getElementById("actionbar").style.display = "none";
-        var loading = document.getElementById("loading");
-        loading.textContent = t("template_applying");
-        loading.style.display = "block";
-    }
-
-    function pollForTemplateStage1() {
-        fetchJson("/api/session", "session").then(function (session) {
-            var readyStage = Number(session && session.recommendation_stage_number || 0);
-            if (session && (session.status === "error" || session.template_status === "error")) {
-                TEMPLATE_SUBMITTING = false;
-                showError(session.template_error || t("template_load_error"));
-                return null;
-            }
-            if (session && session.template_status === "invalid") {
-                showError(session.template_error || t("template_load_error"));
-                setTimeout(pollForTemplateStage1, 1200);
-                return null;
-            }
-            if (session && session.phase === "template" && session.template_status === "ready_user") {
-                TEMPLATE_SUBMITTING = false;
-                return loadTemplateUi(session).catch(function (err) {
-                    showError(t("template_load_error") + " " +
-                        (err && err.message ? err.message : ""));
-                    return null;
-                });
-            }
-            if (session && session.phase === "strategist" && readyStage >= 1) {
-                return loadStrategistUi(1);
-            }
-            setTimeout(pollForTemplateStage1, 1200);
-            return null;
-        }).catch(function (err) {
-            var loading = document.getElementById("loading");
-            if (loading) {
-                loading.textContent = t("connection_lost") + " " +
-                    (err && err.message ? err.message : "");
-            }
-            setTimeout(pollForTemplateStage1, 1500);
-        });
-    }
-
-    function submitTemplateSelection() {
-        if (TEMPLATE_SUBMITTING) return;
-        if (TEMPLATE_MODE !== "free_design" && !TEMPLATE_SELECTED_KEYS.length) {
-            document.getElementById("confirm-status").textContent = t("template_selection_required");
-            return;
-        }
-        var payload = {
-            mode: TEMPLATE_MODE,
-            selection_keys: TEMPLATE_MODE === "templates" ? TEMPLATE_SELECTED_KEYS.slice() : []
-        };
-        var btn = document.getElementById("btn-confirm");
-        btn.disabled = true;
-        postJson("/api/template-confirm", payload, "template confirmation").then(function () {
-            showTemplateApplying();
-            pollForTemplateStage1();
-        }).catch(function (err) {
-            TEMPLATE_SUBMITTING = false;
-            btn.disabled = false;
-            document.getElementById("confirm-status").textContent =
-                t("template_submit_error") + " " + (err && err.message ? err.message : t("error_retry"));
-        });
     }
 
     // ---- staged submit + next-stage transitions -------------------------
@@ -3606,6 +3480,11 @@
     function stage1Payload() {
         var payload = communicationPayload();
         payload.stage = "stage1";
+        payload.template_selection = {
+            mode: TEMPLATE_MODE,
+            selection_keys: TEMPLATE_MODE === "templates"
+                ? TEMPLATE_SELECTED_KEYS.slice() : []
+        };
         return payload;
     }
 
@@ -3688,31 +3567,6 @@
         return !!valid;
     }
 
-    function stage2Payload() {
-        var payload = communicationPayload();
-        payload.stage = "stage2";
-        if (Object.prototype.hasOwnProperty.call(STATE, "template_application")) {
-            payload.template_application = STATE.template_application;
-        }
-        payload.mode = STATE.mode;
-        payload.mode_behavior = STATE.mode_behavior;
-        payload.visual_style = STATE.visual_style;
-        payload.visual_style_behavior = STATE.visual_style_behavior;
-        payload.page_count = STATE.page_count;
-        // Reading mode keeps the legacy delivery_purpose key for compatibility.
-        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
-        payload.color = JSON.parse(JSON.stringify(STATE.color || {}));
-        payload.icons = STATE.icons;
-        payload.typography = JSON.parse(JSON.stringify(STATE.typography || {}));
-        normalizeTypographyForSubmit(payload);
-        payload.image_usage = selectedImageUsageIds(STATE.image_usage);
-        if (String(STATE.image_notes || "").trim()) payload.image_notes = STATE.image_notes;
-        if (needsGeneratedImagesForUsage(payload.image_usage)) {
-            payload.image_strategy = normalizedImageStrategy(STATE.image_strategy);
-        }
-        return normalizeCreativePayload(payload);
-    }
-
     function submitStage(payload, nextStage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = true;
@@ -3743,17 +3597,23 @@
         return true;
     }
 
+    function templateSelectionValid() {
+        var valid = TEMPLATE_MODE === "free_design" ||
+            (TEMPLATE_MODE === "templates" && TEMPLATE_SELECTED_KEYS.length > 0);
+        if (!valid) {
+            document.getElementById("confirm-status").textContent =
+                t("template_selection_required");
+        }
+        return valid;
+    }
+
     function submitStage1() {
+        if (!templateSelectionValid()) return;
         submitStage(stage1Payload(), 2);
     }
 
     function submitStage2() {
-        var payload = stage2Payload();
-        if (!imageUsageValid(payload.image_usage)) return;
-        if (!imageStrategyValid(payload)) return;
-        if (!designSystemValid(payload)) return;
-        if (!customSelectionsValid(payload)) return;
-        submitStage(payload, 3);
+        confirm();
     }
 
     function showDeriving() {
@@ -3792,8 +3652,10 @@
 
     function enterStage(data, stage) {
         REC = data;
-        if (stage >= 2) initStage2State();
-        if (stage >= 3) initStage3State();
+        if (stage === 2) {
+            initStage2State();
+            initProductionState();
+        }
         STAGE = stage;
         document.getElementById("loading").style.display = "none";
         document.getElementById("sections").style.display = "block";
@@ -3867,29 +3729,6 @@
         });
     }
 
-    function postJson(url, payload, label) {
-        return fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        }).then(function (r) {
-            return r.text().then(function (text) {
-                var data = null;
-                if (text) {
-                    try { data = JSON.parse(text); }
-                    catch (e) {
-                        if (r.ok) throw new Error((label || url) + ": invalid JSON");
-                    }
-                }
-                if (!r.ok) {
-                    var serverMsg = data && data.error ? data.error : (text || r.statusText || r.status);
-                    throw new Error((label || url) + ": " + serverMsg);
-                }
-                return data || {};
-            });
-        });
-    }
-
     function loadCatalogs() {
         return fetchJson("/api/catalogs", "catalogs")
             .catch(function () { return fetchJson("/static/catalogs.json", "static catalogs"); });
@@ -3929,29 +3768,17 @@
             ICON_PREVIEWS = res[2] || {};
             AI_IMAGE_COMPARISON = res[3] || {};
             applyServerLanguage(REC);
+            var activeStage = forceStage || stageNumber(REC);
+            if (activeStage === 1) {
+                if (!REC.template_options || typeof REC.template_options !== "object" ||
+                        Array.isArray(REC.template_options)) {
+                    throw new Error("Stage 1 recommendations must include template_options");
+                }
+                initTemplateOptions(REC.template_options);
+            }
             initState();
-            TEMPLATE_PHASE = false;
-            TEMPLATE_SUBMITTING = false;
-            enterStage(REC, forceStage || stageNumber(REC));
-            if (REC._already_confirmed) {
-                document.getElementById("confirm-status").textContent = t("already_confirmed");
-            }
+            enterStage(REC, activeStage);
             return REC;
-        });
-    }
-
-    function loadTemplateUi(session) {
-        return fetchJson("/api/template-options", "template options").then(function (options) {
-            applyServerLanguage(options);
-            initTemplateOptions(options);
-            TEMPLATE_PHASE = true;
-            if (session && (session.template_status === "confirmed" || session.status === "waiting_agent")) {
-                showTemplateApplying();
-                pollForTemplateStage1();
-            } else {
-                renderTemplatePhase();
-            }
-            return options;
         });
     }
 
@@ -3977,12 +3804,7 @@
             try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }
             applyStaticTranslations();
             refreshLangToggle(toggleBtn);
-            if (TEMPLATE_PHASE && TEMPLATE_SUBMITTING) {
-                var loading = document.getElementById("loading");
-                if (loading) loading.textContent = t("template_applying");
-            } else if (TEMPLATE_PHASE && TEMPLATE_OPTIONS) {
-                renderTemplatePhase();
-            } else if (REC && CAT) {
+            if (REC && CAT) {
                 renderAll();   // STATE persists → selections preserved
             }
         };
@@ -4039,24 +3861,21 @@
             if (!langMenu.hidden) setMenuOpen(false);
         });
         document.getElementById("btn-confirm").addEventListener("click", function () {
-            if (TEMPLATE_PHASE) submitTemplateSelection();
-            else if (STAGE === 1) submitStage1();
+            if (STAGE === 1) submitStage1();
             else if (STAGE === 2) submitStage2();
             else confirm();
         });
 
-        // Session is the first network read. New Generate runs expose an
-        // independent Step-3 template phase; old sessions omit it (or report
-        // `strategist`) and retain the existing Stage-1-first behavior.
+        // Session remains the first network read so completed runs can close
+        // cleanly. Active runs always load the current Strategist stage; Stage 1
+        // carries its template catalog inside the recommendation payload.
         fetchJson("/api/session", "session").catch(function () {
             return { phase: "strategist" };
         }).then(function (session) {
-            if (session && session.phase === "template") {
-                return loadTemplateUi(session).catch(function (err) {
-                    showError(t("template_load_error") + " " +
-                        (err && err.message ? err.message : ""));
-                    return null;
-                });
+            if (session && session.status === "done") {
+                document.getElementById("loading").style.display = "none";
+                showConfirmedOverlay();
+                return null;
             }
             return loadStrategistUi().catch(function (err) {
                 showError(t("load_error") + " " + (err && err.message ? err.message : ""));

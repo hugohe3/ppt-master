@@ -16,7 +16,7 @@ and filter/clip contracts.
 | Mode | Resource authority and preparation timing |
 |---|---|
 | Default Generate | `design_spec.md §VIII` plus its lock projection; when user-provided images are selected, run `analyze_images.py` after Strategist confirmation and complete the list before Executor |
-| Quick Generate | Current main agent's transient active-context roster; materialize explicit user paths first, resolve unspecified acquisition decisions automatically, and finish user/ai/web/slice/formula preparation before SVG authoring without confirmation |
+| Quick Generate | Current main agent's active-context resource decisions; materialize explicit user paths first, resolve unspecified acquisition decisions automatically, and finish user/ai/web/slice/formula preparation before SVG authoring without confirmation or a persisted roster |
 
 ```markdown
 | Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
@@ -45,7 +45,7 @@ and filter/clip contracts.
 ```
 1. Resolve image needs:
    - Default Generate → Strategist-owned resource list + lock projection
-   - Quick Generate → current main agent builds a transient roster in active context; explicit user paths/URLs/choices win, unspecified choices use automatic resolution, no interaction
+   - Quick Generate → current main agent resolves the required resource in active context; explicit user paths/URLs/choices win, unspecified choices use automatic resolution, no interaction or persisted roster
 2. Prepare project-local resources before SVG authoring:
    - user → materialize the explicit source under project/images/ → Existing
    - formula → write formula_manifest.json and run latex_render.py → Rendered

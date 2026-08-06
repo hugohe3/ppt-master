@@ -4,7 +4,7 @@
 
 Role definition for the **web image acquisition path**: translate the active resource owner's intent into keyword queries, search openly-licensed providers, download a license-cleared image into `project/images/`, and record provenance + license metadata into `image_sources.json`.
 
-**Trigger**: the Default Generate resource list or Quick Generate transient roster contains `Acquire Via: web`. The role is loaded only when at least one such row exists.
+**Trigger**: the Default Generate resource list contains `Acquire Via: web`, or Quick Generate has resolved a required web image in active context. Load only when at least one such resource exists.
 
 ---
 
@@ -70,12 +70,12 @@ Keep two layers distinct:
 | Layer | Owner and grammar |
 |---|---|
 | Default Generate `design_spec.md §VIII Reference` | Strategist's complete visual intent: exact subject, desired view/mood, focal or quiet region, and crop-safety constraints. Positive quality cues are valid here. |
-| Quick Generate transient `Reference` | Current main agent's active-context intent after honoring explicit user assets, URLs, subjects, and constraints; unspecified choices are resolved automatically without confirmation. |
+| Quick Generate active `Reference` | Current main agent's active-context intent after honoring explicit user assets, URLs, subjects, and constraints; unspecified choices are resolved automatically without confirmation. |
 | `image_queries.json.items[].query` / positional query | Image_Searcher's concrete entity/identity keyword string. Start with the shortest phrase that preserves identity; keep exact multi-word names and necessary disambiguators even when they exceed four words. Omit mood, quality, composition, HEX, and negative wording. |
 
 Web APIs match metadata, not semantic intent. Providers try the original query first, then progressively simplified four/three/two/one-word variants. A pipeline manifest should therefore use a concise query without pre-truncating exact names. For Chinese landmarks, use the precise Chinese name with Wikimedia; for stock providers, use compact English identity terms when they retain the subject.
 
-Image_Searcher consumes the active Reference and never rewrites its owner. In Default Generate, that means no rewrite of `design_spec.md` or `spec_lock.md`; in Quick Generate, the transient Reference remains fixed for the run. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the active intent to manufacture a match.
+Image_Searcher consumes the active Reference and never rewrites its owner. In Default Generate, that means no rewrite of `design_spec.md` or `spec_lock.md`; in Quick Generate, the active-context Reference remains fixed for the run. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the active intent to manufacture a match.
 
 When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
 
@@ -318,7 +318,7 @@ CLI exit: `0` when all attempted rows resolve; `1` while any row remains `Failed
 
 Reference field is **intent description**, not a query. See [`image-base.md`](./image-base.md) §8 for the rule.
 
-Keep it intact as the acceptance contract. In Default Generate the owner is Strategist; in Quick Generate it is the current main agent's transient roster. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
+Keep it intact as the acceptance contract. In Default Generate the owner is Strategist; in Quick Generate it is the current main agent's active-context resource decision. Derive a separate concise provider query that preserves exact names and necessary disambiguation; do not pass the Reference verbatim or rewrite it after search.
 
 ---
 

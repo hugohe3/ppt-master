@@ -8,6 +8,13 @@ description: Main-pipeline control stage for resuming execution in a fresh chat 
 
 This stage is **context-independent**: it owns the execution session starting from a fresh chat — no upstream conversation context required. Persisted project artifacts replace the planning session's confirmation dialogue and image-acquisition history.
 
+`validation/workflow.log` is a cold command/outcome audit log with optional
+important manual entries, not persisted planning state. Do not open or replay
+it while resuming. Use the real artifacts in Step 1 to establish current state;
+inspect the log only when the user explicitly asks to review the prior run. Run
+inherited Python commands normally; their shared CLI bootstrap records a
+bounded material outcome selection automatically, not the full console stream.
+
 ## When to Run
 
 The user opens a new chat and gives a phrase that names a project path and signals continuation. Recognize any of:
@@ -52,7 +59,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 - Read the complete project Design Spec, then the complete `spec_lock.md`, once to establish the fresh execution context
 - Resolve the effective Speaker Notes, Custom Animations, and Narration Audio
-  outcomes from `design_spec.md §I`. Missing legacy outcomes use
+  outcomes from `design_spec.md §I`. Missing outcomes use the workflow defaults
   `enabled` / `disabled` / `disabled`; these production decisions never come
   from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
@@ -71,7 +78,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
 Reload the Generate authority and required execution references; do not reconstruct or replay the earlier planning conversation.
 
-If the user gives a newer explicit instruction after Stage 3, update only the
+If the user gives a newer explicit instruction after final Stage 2, update only the
 affected effective outcome and provenance in `design_spec.md §I`, then resume at
 its owning step. Do not reopen Confirm UI or add the decision to
 `spec_lock.md`. Before writing, apply Generate's single notes/audio dependency

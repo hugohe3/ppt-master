@@ -4,7 +4,7 @@
 
 Conditional extension for applying an installed Brand/Style/Layout/Deck workspace to Stage 2 recommendations and the execution lock.
 
-**Trigger**: Load only after Stage 1 is confirmed, when Generate Step 3 validated a library or explicit workspace path and either installed it into `<project_path>/templates/` or confirmed that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
+**Trigger**: Load only after Stage 1 confirms a library or explicit workspace selection and the post-confirmation apply stage either installs it into `<project_path>/templates/` or confirms that the target project is consuming it in place. Bare template names, style words, and free-design projects do not trigger this module.
 
 ---
 
@@ -22,7 +22,7 @@ Immediately before authoring the Stage-2 solution, load each relevant template
 resource once per path + SHA and inspect:
 
 - every installed `design_spec.md`; for Layout/Deck only, also inspect the actual Page Roster and relevant SVG prototypes;
-- the resolved Identity, Structure, Reusable Application Context, and Direction / method segment owners from the Step-3 fusion receipt;
+- the resolved Identity, Structure, Reusable Application Context, and Direction / method segment owners from the post-Stage-1 fusion receipt;
 - the confirmed current communication contract, source obligations, planned page count, and content shape of every planned page;
 - the user's natural-language instructions, including any page names/numbers or elements they explicitly require.
 
@@ -50,7 +50,7 @@ Write only the derived values to `spec_lock.md pptx_structure`; omit `template_a
 
 **Mandatory — natural-language Stage-2 plan**: For Layout/Deck, summarize which prototypes are used/skipped/repeated/reordered, what stays literal, and what may be replaced or reorganized. For Brand/Style, summarize the installed identity or Direction / method constraints and state that pages remain freely composed unless another workspace supplies structure. Write the result to top-level `template_application.value` in `recommendations.stage2.json`; omit it without an active template. After Stage 2, re-read the confirmed `result.json` value (or exact chat answer), never the initial recommendation. Blank returns the decision to Strategist. Persist the effective plan on one line as `- **Template Application**: <prose>` in `design_spec.md §I`, then derive internal reuse/adherence values and mappings; never copy the prose to `spec_lock.md`. Do not add a questionnaire, internal controls, or fixed template-use options.
 
-**Three-stage boundary**: An installed template changes the content of Stage 2, never the confirmation sequence. Run Stage 1 → Stage 2 → Stage 3 in order in both Confirm UI and chat fallback; do not skip a stage or treat template inspection as user confirmation. On browser timeout, return to the same stage in chat.
+**Two-stage boundary**: An installed template changes the content of final Stage 2, never the confirmation sequence. Run Stage 1 → final Stage 2 in order in both Confirm UI and chat fallback; do not skip a stage or treat template inspection as user confirmation. On browser timeout, return to the same stage in chat.
 
 ---
 
