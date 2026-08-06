@@ -92,8 +92,10 @@ lockless final quality gate, and exports the final PPTX. Because the whole
 planning phase no longer happens — the Strategist reference load, the
 `design_spec.md` / `spec_lock.md` artifacts, and the staged confirmation round
 trip — its token cost disappears with it, while per-page SVG authoring is
-unchanged. It is not a default quality-preserving speed optimization, and it
-makes no wall-clock or quality-equivalence promise.
+unchanged. It keeps the same visual/resource capabilities and final blocking
+standard, but without a confirmed design contract, first-page calibration, or
+resumable decision history it does not promise the same design decisions or
+wall-clock time as Default.
 
 The default Generate pipeline continues to prefer quality over speed.
 

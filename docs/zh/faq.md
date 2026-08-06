@@ -79,7 +79,7 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 ## Q: 生成的 PPT 可以编辑吗？
 
-可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。使用默认输出路径时，Default Generate 与 Quick Generate 都会把作者源 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重建 PPTX，无需再走 LLM。
+可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。使用默认输出路径时，Default Generate 与 Quick Generate 都会把作者源 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重新导出 PPTX，无需再走 LLM。对 Quick 而言，这只是包重建，不是可恢复的 AI 设计决策记录。
 
 默认 Generate 流程的 Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；显式快速生成会跳过这项预览产物，但在无锁最终质量检查通过后，仍保留普通 postflight 报告和默认输出路径下的备份。项目只保证 `svg_final/` 作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
 
@@ -210,11 +210,11 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 **它跳过的是策略师分析、`design_spec.md` / `spec_lock.md` 落盘和分步确认停顿：你明确提出的要求照做；你没提的，当前 Agent 直接决定并继续，不再回来征求同意。** 什么都不提，才是全部由 Agent 决定。它同时跳过 `finalize_svg.py`，因此不生成 `svg_final/` 预览。
 
-它不跳过备料：来源转换、已识别事实缺口的研究，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、渲染公式，以及对应的必要 manifest 或来源记录。必需素材未就绪时它仍会停下来跟你要，不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
+它不跳过备料或设计能力：来源转换、已识别事实缺口的研究、共享美学参考，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、原生形状、图表 / 表格、渲染公式，以及对应的必要运行 manifest 或来源记录。必需素材未就绪时它仍会停下来跟你要，不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
 
 原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。
 
-由于整个规划阶段不再发生，token 消耗明显低于默认流程；逐页 SVG 生成是一次 run 的主要开销，这部分并不减少。因此它是规划阶段的短路，不承诺具体耗时，也不承诺与默认流程质量等价。
+由于整个规划阶段不再发生，token 消耗明显低于默认流程；逐页 SVG 生成是一次 run 的主要开销，这部分并不减少。Quick 保留同一套视觉 / 资源创作能力和最终阻塞标准，但没有已确认的设计契约、首屏校准或可恢复的决策历史，因此不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 

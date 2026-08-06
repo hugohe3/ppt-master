@@ -1,12 +1,13 @@
 ---
-description: Generate profile for agent-decided source and resource preparation, direct SVG authoring, and final PPTX delivery without Strategist or confirmation artifacts.
+description: One-pass Generate profile for agent-decided preparation, direct SVG authoring, and final PPTX delivery without durable planning or confirmation artifacts.
 ---
 
 # Quick Generate Profile
 
-> Generate-PPTX profile, not a top-level route. It removes the separate
-> Strategist and confirmation phase; it does not remove the facts, resources,
-> or export capabilities needed to build the final deck.
+> Generate-PPTX profile, not a top-level route. The current main agent completes
+> one uninterrupted run without a separate Strategist/confirmation handoff or a
+> resumable design record. This removes interaction and traceability, not the
+> facts, resources, or authoring capabilities needed to build the final deck.
 
 **Trigger**: the user explicitly requests quick/fast generation, asks to skip
 strategy/confirmation, or directs the agent to proceed to SVG and export.
@@ -20,16 +21,18 @@ Page count alone never activates or blocks this profile.
 |---|---|
 | Authority | Follow every explicit user requirement as stated; decide every unspecified choice directly without asking |
 | Interaction | The current main agent decides content, design, resources, and implementation without Strategist, Confirm UI, or approval stops |
+| Execution memory | Keep routine page, visual, and resource decisions only in the current active context; losing that context restarts Quick instead of reconstructing a plan from project files |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
 | Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before the referencing SVG is authored |
-| Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or a second persisted strategy; an installed `templates/design_spec.md` remains template input |
+| Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; an installed `templates/design_spec.md` remains template input |
+| Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
 
-**Hard rule — speed removes interaction, not material**: all ordinary source,
-research, resource-preparation, analysis, and export capabilities remain
-available when needed; the missing planning contract relaxes design constraints
-only.
+**Hard rule — speed removes interaction and durable planning, not capability**:
+all ordinary source, research, visual-carrier, resource-preparation, analysis,
+authoring, and export capabilities remain available when they serve the deck.
+This is capability availability, not a requirement to use every carrier.
 
 Explicit user facts, wording, choices, exclusions, and permission boundaries
 still win. For every unspecified routine choice, decide directly and continue;
@@ -92,12 +95,13 @@ python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
 ```
 
 It creates `svg_output/` plus the cold
-`validation/workflow.log` Python-output transcript, and no root README. After
+`validation/workflow.log` command/outcome audit log, and no root README. After
 this command, run project-scoped Python tools directly; their shared CLI
-bootstrap automatically mirrors stdout/stderr into the existing log. A concise
-manual entry is allowed only for a material non-Python audit detail under
-Generate Step 2's selective policy. Never read the transcript during ordinary
-Quick execution; open it only for an explicit user-requested run review. Add
+bootstrap records command envelopes, material tagged outcomes, bounded status
+samples, and omission counts. A concise manual entry is allowed only for a
+material non-Python audit detail under Generate Step 2's selective policy.
+Never read the log during ordinary Quick execution; open it only for an
+explicit user-requested run review. Add
 capability inputs only when triggered; later tools create `exports/` and the
 default-path `backup/`. With source files, continue with Step 2
 `import-sources`; it creates the triggered input directories. Never scaffold a
@@ -105,7 +109,11 @@ Design Spec or lock. Use a new path, or verify that an existing path's
 `svg_output/` is empty; Quick ignores any existing `design_spec.md` or
 `spec_lock.md`.
 
-For the direct-template branch, resume
+The audit log is an operational tool record only. It does not capture direct
+SVG authoring, active-context design choices, or private reasoning and cannot be
+used to resume or reconstruct a Quick run.
+
+For the direct-template branch, continue with
 [`apply-template-workspace`](../stages/apply-template-workspace.md) after
 initialization against only the preflighted roots. The user's request is the
 selection authority; there is no template confirmation receipt or handoff. The
@@ -114,13 +122,17 @@ the project-local asset pools. All later reads use that installed state, never
 the original roots.
 
 Before writing P01, read the installed template spec once and, for Layout/Deck,
-inspect the relevant SVG prototypes. Resolve one transient application plan in
-active context: apply Brand identity, Style direction/method, the selected
-structure owner's useful prototype geometry, and Deck application context under
-the existing segment precedence. Follow explicit instructions about literal or
-visual-only use; otherwise decide which prototypes to use, skip, repeat,
-reorder, or adapt from the current content. Persist no second plan. If no
-template was installed, resolve the same design choices freely.
+inspect the relevant SVG prototypes. Apply Brand identity, Style
+direction/method, the selected structure owner's useful prototype geometry,
+and Deck application context directly in the active context under the existing
+segment precedence. Follow explicit instructions about literal or visual-only
+use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
+while authoring. Persist no separate template-application artifact. If no
+template was installed, make the same design choices freely.
+
+**One-pass decision boundary**: resolve only what is needed to author this deck
+in the current context. Do not print a strategy summary, create a planning
+checkpoint, or persist a page/resource plan.
 
 Before writing P01, resolve in active context:
 
@@ -129,26 +141,41 @@ Before writing P01, resolve in active context:
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
 - when useful, one transient deck-level visual motif with an identity or
-  communication job, a recognizable invariant, and planned variation across
+  communication job, a recognizable invariant, and deliberate variation across
   applicable page roles; omit it when restraint serves the deck better;
-- a transient resource roster with page, filename, purpose, visual intent,
-  acquisition path, crop behavior, and status. For an image/formula, include
-  its page relationship plus any subject position, focus, quiet region, or
-  overlay-safety cue that must exist before SVG authoring;
+- the resource decisions needed for immediate preparation. Required operational
+  image/formula manifests may carry filenames, page relationship, status, and
+  generation/crop/focal cues, but do not create a general resource roster or an
+  icon-to-page assignment;
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
 
-Prepare only the resource paths that the roster triggers:
+**Mandatory — capability scan, not a coverage quota**: for every page, consider
+the complete carrier menu once and choose only the forms that communicate its
+content best. A decision to use none of a carrier is valid; skipping the scan
+because Quick is expected to be faster is not.
+
+| Communication job | Available carrier |
+|---|---|
+| Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
+| A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
+| Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
+| Values encode comparison, trend, distribution, composition, relationship, or a text grid | Data chart or table, with optional native Chart/Table metadata when its object model is useful |
+| Mathematical notation is clearer as typeset math than ordinary text | Rendered formula asset |
+| Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
+
+Prepare only the resource paths needed by the decided pages:
 
 | Resource | Required preparation |
 |---|---|
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
-| Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), resolve the selected SVG under project `icons/`, and use `icon_sync.py` for bundled icons |
+| Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
 | Formula | Follow the [`latex_render.py` contract](../../scripts/docs/image.md), write `images/formula_manifest.json`, run the renderer, and keep the rendered PNG under `images/` |
 | AI image | Follow `image-base.md` + `image-generator.md`; keep `image_prompts.json` and its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
+| Data chart/table | Keep source values and the chosen page treatment in active context; load the chart/table authorities in §3 before drawing and write native replacement metadata only when selected |
 
 After image resources change, run `analyze_images.py` so
 `analysis/image_analysis.csv` reflects the files that SVG authoring will use.
@@ -169,10 +196,20 @@ silently replace it with unrelated material.
 Always read the following fixed authoring references directly in one batch; do
 not route among them one file at a time:
 [`shared-standards-core.md`](../../references/shared-standards-core.md),
-[`svg-effects.md`](../../references/svg-effects.md), and
-[`native-shape-authoring.md`](../../references/native-shape-authoring.md). Do
-not load `executor-base.md`: its persisted-plan prerequisites do not apply to
-this profile. For any image/formula, always read
+[`svg-effects.md`](../../references/svg-effects.md),
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md),
+[`semantic-svg.md`](../../references/semantic-svg.md),
+[`modes/_index.md`](../../references/modes/_index.md), and
+[`visual-styles/_index.md`](../../references/visual-styles/_index.md). Resolve
+one narrative mode and one visual style from explicit user/template requirements
+or the current content, keep that choice only in active context, and read every
+exact preset source actually used once. A genuinely novel custom direction
+follows its resolved behavior without inventing a nearby preset.
+
+Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
+first-page gate, and completion routing. Excluding that file is not a capability
+exclusion; Quick loads the shared and conditional execution authorities here
+directly. For any image/formula, always read
 [`executor-image.md`](../../references/executor-image.md),
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
@@ -181,9 +218,15 @@ this profile. For any image/formula, always read
 web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
 for a non-default canvas.
 
+| Deterministic trigger | Additional authority |
+|---|---|
+| Any data chart or text-grid table, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md); use bounded [`chart_recall.py`](../../scripts/docs/chart-recall.md) only when a reusable visualization reference would help |
+| Preset pattern or selected PowerPoint-native Chart/Table replacement | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing the object |
+| Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
+
 Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
-**Per-page execution anchors**: apply the transient core-message, typography-role, body-frame, density, and composition anchors resolved in §2 throughout the roster; they guide authoring without creating a persisted planning artifact.
+**Per-page execution anchors**: apply the transient core-message, typography-role, body-frame, density, and composition anchors resolved in §2 while authoring; they guide the current run without creating a persisted planning artifact.
 
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.
@@ -216,16 +259,22 @@ order. Use P01 as the visual anchor and continue directly through the remaining
 pages without a first-page checker or confirmation stop. When a motif was
 resolved, reuse it selectively and vary scale, crop, density, position, or
 content interaction instead of cloning one ornament. Keep this choice only in
-active context; create no planning artifact or approval stop. After the complete
-roster exists, run the one final checker below. Apply other supporting tools and
+active context; create no planning artifact or approval stop. After every page
+exists, run the one final checker below. Apply other supporting tools and
 stages only when their capability is actually needed.
+
+This is not a resume protocol. If the active context is lost before delivery,
+start a clean Quick run rather than inferring an unfinished plan from the files
+already present.
 
 ---
 
 ## 4. Export
 
-After every page and required referenced resource exists, run the lockless
-final SVG check:
+After every page and required referenced resource exists, run the Quick branch
+of [`verify-charts`](../stages/verify-charts.md) when any data-driven chart was
+authored. Complete all coordinate repairs first; then run the one lockless final
+SVG check:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
@@ -256,9 +305,11 @@ or lock.
 ## ✅ Quick Generate Complete
 
 - [x] All required source/resource preparation is complete
+- [x] One mode and visual style were resolved, and every catalog source actually used was read
+- [x] Every page considered the complete visual-carrier menu without a coverage quota
 - [x] Resolved SVG pages and their project-local references exist
+- [x] Every triggered capability-specific preparation and pre-checker verification completed
 - [x] The lockless final SVG quality report passes and matches the current SVGs
-- [x] Every selected optional export capability completed
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
 - [ ] **Next**: Report the PPTX path

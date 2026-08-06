@@ -89,9 +89,9 @@ Brand / Style / Layout / Deck 工作区 root，它会直接校验、安装并使
 Quick 保持无锁 flat 导出，因此 Layout / Deck 原型会指导页面创作，但不会
 编译成可复用的原生 Master / Layout 对象。
 
-它不跳过备料:来源转换、事实缺口研究、图片 / 图标 / 公式准备仍按需运行。必需素材缺失时它会停下来跟你要,不会拿无关材料顶替。
+它不跳过能力:来源转换、事实缺口研究、共享美学规范，以及图片 / 图标 / 原生形状 / 图表 / 表格 / 公式的准备和创作仍按需运行。必需素材缺失时它会停下来跟你要,不会拿无关材料顶替。
 
-整个规划阶段不再发生(策略师分析、`design_spec.md` / `spec_lock.md` 落盘、分步确认往返),因此 token 消耗明显低于默认流程;逐页 SVG 生成的开销不变,所以这既不是耗时承诺,也不承诺与默认流程质量等价。
+快速模式是一次性生成,不是缩短后的可续接流程。它不产生 Strategist 记录、`design_spec.md`、`spec_lock.md` 或替代性的页面计划;内容、设计和资源决策只存在于 AI 的当前上下文。交付前一旦丢失该上下文,就重新运行 Quick。资源 manifest、质量报告、postflight 与冷 Python 审计日志可以保留,但无法还原 AI 为什么这样设计。该 profile 省掉的是交互和持久规划,不是 PPT 能力或预期质量标准。
 
 完整说明 → [快速模式 profile](../../skills/ppt-master/workflows/profiles/quick-generate.md)
 

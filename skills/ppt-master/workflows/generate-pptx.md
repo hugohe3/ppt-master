@@ -20,10 +20,11 @@ description: Generate PPTX route authority for source intake, planning, SVG auth
 For an explicit quick/fast, skip-strategy, or direct-SVG request, follow
 [`quick-generate.md`](./profiles/quick-generate.md). It runs applicable source
 conversion/research and project-local resource preparation, lets the current
-agent decide content/visual/resource details in active context, then
-hand-authors SVG, runs one lockless final checker, and exports the final PPTX.
-It skips Strategist, Confirm UI, Design Spec/lock, the first-page gate, and
-`finalize_svg.py`.
+agent decide content/visual/resource details in one active context, then
+hand-authors SVG, runs any selected capability-specific preparation, passes one
+lockless final checker, and exports the final PPTX. It skips Strategist, Confirm
+UI, Design Spec/lock, the first-page gate, and `finalize_svg.py`; it creates no
+resumable design history, so context loss restarts the Quick run.
 
 Quick never enters Steps 3–4. When the request supplies at most one exact current
 workspace root for each Brand/Style/Layout/Deck kind, or the current
@@ -34,12 +35,14 @@ uses free design. It never launches `confirm_ui/server.py`, reads the template
 catalog to choose on the user's behalf, or creates template-selection receipts;
 a bare template name, brand mention, or style description remains brief text.
 
-**Hard rule — no implicit downgrade or page cap**: page count neither selects
-nor blocks quick generation. Source preparation, images, icons, formulas, and
-their manifests remain valid. All exporter capabilities remain available when
-requested or agent-selected; use their existing prerequisites. Structured
-Master/Layout template compilation still requires the default lock-backed
-pipeline; Quick applies templates while authoring complete flat pages.
+**Hard rule — no implicit capability downgrade or page cap**: page count neither
+selects nor blocks quick generation. Source preparation, images, icons, native
+shapes, charts/tables, formulas, mode/style references, and their triggered
+operational manifests remain available. All exporter capabilities remain
+available when requested or agent-selected; use their existing prerequisites.
+Structured Master/Layout template compilation still requires the default
+lock-backed pipeline; Quick applies templates while authoring complete flat
+pages.
 
 ### SVG Page-Design Boundary
 
@@ -129,7 +132,8 @@ python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <fo
 Project initialization creates `<project_path>/validation/workflow.log` and
 records the initialization milestone. After the project exists, run each
 project-scoped Python tool normally. The shared CLI bootstrap automatically
-mirrors its text stdout/stderr into that log; no wrapper command is required.
+records its command envelope and a bounded set of material outcome lines in
+that log; no wrapper command is required. Full console output is not copied.
 Detached Confirm UI and live-preview processes retain their detailed output in
 their existing component logs.
 

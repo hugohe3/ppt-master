@@ -90,9 +90,9 @@ A bare template name or style phrase is still only a design brief. Quick keeps
 its lockless flat export, so Layout / Deck prototypes guide the authored pages
 but do not compile into reusable native Master / Layout objects.
 
-It does not skip preparation: source conversion, research on identified factual gaps, and image / icon / formula preparation still run as needed. If a required asset is missing, it still stops and asks you for it instead of substituting unrelated material.
+It does not skip capabilities: source conversion, research on identified factual gaps, shared aesthetic guidance, and image / icon / native-shape / chart / table / formula preparation and authoring still run as needed. If a required asset is missing, it still stops and asks you for it instead of substituting unrelated material.
 
-Because the whole planning phase no longer happens (Strategist analysis, `design_spec.md` / `spec_lock.md` authoring, the staged confirmation round trip), token usage is materially lower than the default flow. Per-page SVG authoring is unchanged, so this is neither a wall-clock promise nor a promise of quality equivalence with the default flow.
+Quick is a one-pass profile, not a shortened resumable workflow. It creates no Strategist record, `design_spec.md`, `spec_lock.md`, or substitute page plan; its content/design/resource decisions exist only in the active AI context. If that context is lost before delivery, start Quick again. Operational manifests, quality reports, postflight, and the cold Python audit log may remain, but they cannot reconstruct why the AI designed the deck that way. The profile reduces interaction and durable planning, not the available presentation toolbox or the intended quality bar.
 
 Full guide → [quick-generate profile](../skills/ppt-master/workflows/profiles/quick-generate.md)
 

@@ -2,8 +2,8 @@
 """
 PPT Master - Automatic Workflow Transcript
 
-Internal runtime helper that mirrors a project-scoped Python tool's text
-stdout/stderr into an existing project workflow log.
+Internal runtime helper that records a project-scoped Python tool's command
+envelope and material text outcomes in an existing project workflow log.
 
 Dependencies:
     None (standard library only)
@@ -18,6 +18,7 @@ import sys
 import threading
 import time
 import uuid
+from collections import deque
 from collections.abc import Iterable
 from datetime import datetime, timezone
 from pathlib import Path
@@ -27,6 +28,24 @@ WORKFLOW_LOG_RELATIVE_PATH = Path("validation/workflow.log")
 PROJECT_PATH_ENV = "PPT_MASTER_PROJECT_PATH"
 DISABLE_TRANSCRIPT_ENV = "PPT_MASTER_DISABLE_WORKFLOW_TRANSCRIPT"
 _EXCLUDED_ENTRYPOINTS = {"workflow_log.py"}
+_CRITICAL_MARKERS = ("[ERROR]", "[FAIL]")
+_ALWAYS_RETAIN_MARKERS = (
+    "[POSTFLIGHT]",
+    "[PPTX]",
+    "[REPORT]",
+    "[Done]",
+    "[OK] Done",
+)
+_SUMMARY_MARKER = "[SUMMARY]"
+_SUMMARY_STOP_MARKERS = ("[TIP]",)
+_WARNING_MARKERS = ("[WARN]", "[WARNING]")
+_OK_MARKER = "[OK]"
+_WARNING_SAMPLE_LIMIT = 4
+_OK_SAMPLE_LIMIT = 1
+_STDERR_SAMPLE_LIMIT = 8
+_STDERR_TAIL_LIMIT = 4
+_CRITICAL_CONTEXT_LIMIT = 4
+_SUMMARY_CONTEXT_LIMIT = 12
 _ACTIVE_TRANSCRIPT: _AutomaticTranscript | None = None
 
 
@@ -74,7 +93,7 @@ def _find_project_root(argv: list[str]) -> Path | None:
 
 
 class _AutomaticTranscript:
-    """Append tagged logical lines without changing the owning tool."""
+    """Append a bounded command/outcome audit without changing the owning tool."""
 
     def __init__(
         self,
@@ -88,6 +107,16 @@ class _AutomaticTranscript:
         self.run_id = uuid.uuid4().hex[:12]
         self.started_clock = time.monotonic()
         self.pending = {"stdout": "", "stderr": ""}
+        self.observed_lines = 0
+        self.retained_lines = 0
+        self.omitted_lines = 0
+        self.warning_samples = 0
+        self.ok_samples = 0
+        self.stderr_samples = 0
+        self.stderr_tail: deque[str] = deque(maxlen=_STDERR_TAIL_LIMIT)
+        self.critical_context_remaining = 0
+        self.summary_context_remaining = 0
+        self.current_record_stream: str | None = None
         self.lock = threading.RLock()
         self.enabled = True
 
@@ -96,14 +125,14 @@ class _AutomaticTranscript:
         self.enabled = False
         try:
             self.original_stderr.write(
-                f"[WARN] Workflow transcript stopped: {exc}\n"
+                f"[WARN] Workflow audit recording stopped: {exc}\n"
             )
             self.original_stderr.flush()
         except (OSError, ValueError):
             pass
 
     def _write(self, text: str) -> None:
-        """Append and flush one complete transcript record."""
+        """Append and flush one complete audit record."""
         if not self.enabled:
             return
         try:
@@ -120,6 +149,68 @@ class _AutomaticTranscript:
             f"argv: {json.dumps(self.argv, ensure_ascii=False)}\n"
         )
 
+    @staticmethod
+    def _is_decoration(line: str) -> bool:
+        """Return whether a non-empty line is only visual separator glyphs."""
+        stripped = line.strip()
+        return bool(stripped) and set(stripped) <= {"-", "=", "_"}
+
+    def _should_retain(self, stream_name: str, line: str) -> bool:
+        """Select a bounded set of explicit outcomes for the cold audit log."""
+        stripped = line.strip()
+        if not stripped or self._is_decoration(stripped):
+            return False
+
+        if _SUMMARY_MARKER in stripped:
+            self.summary_context_remaining = _SUMMARY_CONTEXT_LIMIT
+            return True
+        if any(marker in stripped for marker in _SUMMARY_STOP_MARKERS):
+            self.summary_context_remaining = 0
+            return False
+        if self.summary_context_remaining > 0:
+            self.summary_context_remaining -= 1
+            return True
+        if any(marker in stripped for marker in _CRITICAL_MARKERS):
+            self.critical_context_remaining = _CRITICAL_CONTEXT_LIMIT
+            return True
+        if self.critical_context_remaining > 0:
+            self.critical_context_remaining -= 1
+            return True
+        if any(marker in stripped for marker in _ALWAYS_RETAIN_MARKERS):
+            return True
+        if any(marker in stripped for marker in _WARNING_MARKERS):
+            if self.warning_samples < _WARNING_SAMPLE_LIMIT:
+                self.warning_samples += 1
+                return True
+            return False
+        if _OK_MARKER in stripped:
+            if self.ok_samples < _OK_SAMPLE_LIMIT:
+                self.ok_samples += 1
+                return True
+            return False
+        if stream_name == "stderr" and self.stderr_samples < _STDERR_SAMPLE_LIMIT:
+            self.stderr_samples += 1
+            return True
+        return False
+
+    def _record_line(self, stream_name: str, line: str) -> None:
+        """Record one material logical line or account for its omission."""
+        if not line.strip():
+            return
+        self.observed_lines += 1
+        if not self._should_retain(stream_name, line):
+            self.omitted_lines += 1
+            if stream_name == "stderr" and not self._is_decoration(line):
+                self.stderr_tail.append(line)
+            return
+        if stream_name == "stderr":
+            self.stderr_tail.clear()
+        self.retained_lines += 1
+        if self.current_record_stream != stream_name:
+            self._write(f"{stream_name}:\n")
+            self.current_record_stream = stream_name
+        self._write(f"  {line}\n")
+
     def write_stream(self, stream_name: str, text: str) -> None:
         """Buffer fragments and write complete logical lines."""
         if not text or not self.enabled:
@@ -128,10 +219,7 @@ class _AutomaticTranscript:
             pending = self.pending[stream_name] + text
             while "\n" in pending:
                 line, pending = pending.split("\n", 1)
-                self._write(
-                    f"{_utc_timestamp()} "
-                    f"[run={self.run_id} {stream_name}] {line}\n"
-                )
+                self._record_line(stream_name, line)
             self.pending[stream_name] = pending
 
     def flush_stream(self, stream_name: str) -> None:
@@ -142,10 +230,7 @@ class _AutomaticTranscript:
                 return
             pending = self.pending[stream_name]
             if pending:
-                self._write(
-                    f"{_utc_timestamp()} "
-                    f"[run={self.run_id} {stream_name}] {pending}\n"
-                )
+                self._record_line(stream_name, pending)
                 self.pending[stream_name] = ""
 
     def close(self) -> None:
@@ -155,10 +240,17 @@ class _AutomaticTranscript:
                 return
             self.flush_stream("stdout")
             self.flush_stream("stderr")
+            if self.stderr_tail:
+                self._write("stderr-tail:\n")
+                for line in self.stderr_tail:
+                    self._write(f"  {line}\n")
+                self.retained_lines += len(self.stderr_tail)
+                self.omitted_lines -= len(self.stderr_tail)
             elapsed_ms = int((time.monotonic() - self.started_clock) * 1000)
             self._write(
                 f"=== {_utc_timestamp()} END run={self.run_id} "
-                f"elapsed_ms={elapsed_ms} ===\n"
+                f"elapsed_ms={elapsed_ms} output_lines={self.observed_lines} "
+                f"retained={self.retained_lines} omitted={self.omitted_lines} ===\n"
             )
             self.enabled = False
             try:
@@ -168,7 +260,7 @@ class _AutomaticTranscript:
 
 
 class _TeeTextIO:
-    """Mirror text writes while preserving the original stream interface."""
+    """Forward text writes while offering them to the audit recorder."""
 
     def __init__(
         self,
@@ -189,7 +281,7 @@ class _TeeTextIO:
         return written
 
     def writelines(self, lines: Iterable[str]) -> None:
-        """Mirror a sequence through the ordinary write path."""
+        """Forward a sequence through the ordinary write path."""
         for line in lines:
             self.write(line)
 
@@ -204,7 +296,7 @@ class _TeeTextIO:
 
 
 def install_auto_transcript(argv: list[str] | None = None) -> Path | None:
-    """Mirror a project-scoped Python command when its project log exists."""
+    """Record a project-scoped Python command when its project log exists."""
     global _ACTIVE_TRANSCRIPT
 
     effective_argv = list(sys.argv if argv is None else argv)
@@ -231,7 +323,7 @@ def install_auto_transcript(argv: list[str] | None = None) -> Path | None:
     except OSError as exc:
         try:
             original_stderr.write(
-                f"[WARN] Workflow transcript unavailable ({log_path}): {exc}\n"
+                f"[WARN] Workflow audit unavailable ({log_path}): {exc}\n"
             )
             original_stderr.flush()
         except (OSError, ValueError):

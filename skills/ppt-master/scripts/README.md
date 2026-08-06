@@ -35,9 +35,10 @@ python3 scripts/animation_config.py scaffold <project_path>  # optional object-l
 python3 scripts/svg_to_pptx.py <project_path>
 ```
 
-After `init`, project-scoped Python CLIs automatically mirror their text
-stdout/stderr into `<project_path>/validation/workflow.log`; invoke them
-directly, without a logging wrapper.
+After `init`, project-scoped Python CLIs automatically record their command
+envelopes and bounded material outcomes in
+`<project_path>/validation/workflow.log`; invoke them directly, without a
+logging wrapper. The log does not copy the full console stream.
 
 Repository update:
 

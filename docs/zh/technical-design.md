@@ -32,7 +32,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 | 提示词、模板与示例 | 精确表达项目规范写法，从源头减少偏差和 warning | 不作为正确性或安全边界 |
 | `svg_quality_checker.py` | 在作者状态上执行项目合同；error 阻塞，非阻塞 warning 放行 | 不静默改写页面，也不猜测设计意图 |
 | `svg_to_pptx.py` | 对编译映射与 package 执行防御校验；归一化已支持的兼容形式；正式发布前要求当前匹配的 final 质量报告，并把它关联进 postflight | 不重跑完整 `svg_quality_checker.py`，也不以“文件已生成”替代前置质量门 |
-| `workflow_transcript.py` / `workflow_log.py` | 自动转录项目级 Python 工具的文本 stdout/stderr，并显式追加重要的非 Python 审计事项 | 不解释输出、推断就绪状态、重跑其他工具，也不改变所属工具的结果 |
+| `workflow_transcript.py` / `workflow_log.py` | 记录项目级 Python 命令信封与有限的重要结果，并显式追加重要的非 Python 审计事项 | 不保留完整控制台输出、不推断就绪状态、不重跑其他工具，也不改变所属工具的结果 |
 
 自动记录器依次从 `PPT_MASTER_PROJECT_PATH`、带路径的命令参数和当前工作目录解析项目。只有不携带项目路径、以 stdout 为主要输出的 helper 才需要在同一条 Python 命令前设置该环境信号；它不会再启动包装进程。
 
@@ -89,7 +89,7 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
     └── <project_name>_<timestamp>_narrated.pptx              ← --recorded-narration 或 --narration-audio-dir 变体
 
     validation/
-    ├── workflow.log                                ← 自动 Python 输出转录与重要人工审计事项
+    ├── workflow.log                                ← 精简的 Python 命令/结果审计与重要人工审计事项
     ├── svg_quality_report.json                      ← blocking / introduced / inherited / source-import 分类结果
     └── <output_stem>.report.json                    ← 关联最终 SVG 质量报告的 package / 资源审计
 
@@ -103,16 +103,17 @@ PPT Master 不以“任意 SVG 都能转成 PPTX”为目标。`svg_output/` 使
 ```text
 来源材料或主题
     -> 按需转换 / 阅读来源，并研究已识别的事实缺口
-    -> 在当前上下文决定内容、页结构、视觉系统和资源
-    -> 准备所需图片 / 图标 / 公式与资源 manifest
+    -> 在当前上下文解析 mode / style，并决定内容、页结构和载体
+    -> 准备实际选中的图片 / 图标 / 公式与操作 manifest
     -> 按共享 SVG 规范手写 svg_output/
+    -> 存在数据驱动图表时校准坐标
     -> svg_quality_checker.py --quick-generate --stage final --json
     -> svg_to_pptx.py --quick-generate
     -> exports/<name>_<timestamp>.pptx
 ```
 
 这些决策由当前 Agent 自动完成，不进入 Strategist、Confirm UI、
-`design_spec.md` 或 `spec_lock.md`。
+`design_spec.md`、`spec_lock.md` 或替代计划。有效上下文丢失后无法重建或续接。
 
 默认流程未显式指定 `-o` 时，native 与 narration 标记可以组合成
 `<project_name>_<timestamp>_native_charts_tables_narrated.pptx`；显式 `-o`
@@ -188,7 +189,7 @@ Executor 角色逐页生成演示文稿的视觉内容，输出为 SVG 文件。
 **第三阶段：工程化转换**
 后处理脚本将受支持的 SVG 向量元素转换为 DrawingML。文本和向量形状会保持为 PowerPoint 原生对象——可点击、可编辑、可改样式；位图资源则复制为 PPT picture media，而不是把整页压平成一张图片。
 
-`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在有效上下文中自动完成其余的内容、页结构、视觉和资源决策，随后仍按共享 SVG 规范创作，运行一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。
+`quick-generate` 保留 deck 所需的来源理解与资源准备，但跳过独立的 Strategist 规划 / 确认阶段、首屏 gate 与 `finalize_svg.py`。当前 Agent 照做用户明确提出的要求，并在一次有效上下文中自动完成其余的内容、页结构、mode、visual style 与资源决策；图片、图标、原生形状、图表 / 表格、公式和纯字体 / 几何都进入同一轮载体判断。随后仍按共享 SVG 规范创作，执行已选能力所需的准备，通过一次无锁最终质量门，并使用同一个 DrawingML 转换器与 postflight。它不写替代计划或可续接的设计历史；上下文丢失后重新运行 Quick。
 
 ---
 
@@ -217,9 +218,10 @@ design_spec.md + spec_lock.md + images/ + icons/ + templates/
 Quick Generate：
 来源材料或主题
     └─> 转换 / 阅读 + 事实缺口研究 [按需]
-          └─> 当前上下文中的内容 / 页结构 / 视觉 / 资源决策
+          └─> 当前上下文中的 mode / style + 内容 / 页结构 / 载体决策
                 └─> images/ + icons/ + 公式 / 资源 manifest [按需]
                       └─> 手写 svg_output/
+                            ├─> verify-charts [仅数据驱动图表几何]
                             └─> svg_quality_checker.py --quick-generate --stage final --json
                                   └─> svg_to_pptx.py --quick-generate -> exports/*.pptx
                                         + validation/<output_stem>.report.json
@@ -295,13 +297,14 @@ SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可�
 ## 项目结构与生命周期
 
 `project_manager.py init` 默认创建标准项目工作目录；使用
-`--quick-generate` 时创建 `svg_output/` 与冷转录
+`--quick-generate` 时创建 `svg_output/` 与冷审计日志
 `validation/workflow.log`，省略项目 README，其他目录按需产生。
 显式
 [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md)
 profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已转换来源、分析结果、
 图片、图标、渲染公式及必要资源 manifest；它会手写 `svg_output/`，生成无锁最终
-质量报告，并围绕最终 PPTX 保留普通 postflight 与默认路径备份。默认交付生命周期如下：
+质量报告，并围绕最终 PPTX 保留普通 postflight 与默认路径备份。审计日志和报告只保留
+工具结果，不记录 AI 的设计理由，也不构成可续接的阶段状态。默认交付生命周期如下：
 
 | 目录 | 职责 |
 |---|---|
@@ -314,7 +317,7 @@ profile 省略规划产物与 `svg_final/`，但项目中仍可按需存在已�
 | `svg_final/` | 强制派生的视觉预览 SVG；尝试内联受支持位图 / SVG，保留 EMF/WMF 外链例外；服务 IDE / 浏览器，也可手动作为 SVG 图片插入 PowerPoint |
 | `live_preview/` | 预览服务状态、直接编辑历史和注解日志 |
 | `notes/` | `total.md` 与拆分后的逐页讲稿 |
-| `validation/` | 冷流程转录、SVG 质量报告与 PPTX postflight 审计报告 |
+| `validation/` | 冷流程审计日志、SVG 质量报告与 PPTX postflight 审计报告 |
 | `exports/` | 带时间戳的 native PPTX 交付物 |
 | `backup/<timestamp>/` | 默认导出先创建时间戳目录，再尝试复制冻结的 `svg_output/`；复制失败不令导出失败，但目录创建失败当前不会降级处理 |
 
@@ -332,7 +335,7 @@ CLI 支持 `--move`、`--copy` 和自动默认，但共享同一条固定的所�
 |---|---|
 | `sources/` 内容型文件是 Generate 内容契约 | 文本、表格和图表数值来自 `sources/` 内容型文件（Markdown 为主，`.txt` / `.csv` / `.json` / `.yaml` 等同样计入）；已知 sidecar（`*.conversion_profile.json`、`*_files/image_manifest.json`）排除在外 |
 | `analysis/` 存机器事实，不存设计契约 | `source_profile.json` 和 intake artifact 在默认流程中辅助 Strategist，在 `quick-generate` 中辅助当前 Agent；除非工作流明确规定，否则不锁定页数 / 页序 |
-| 默认流程由 `design_spec.md` 解释设计、`spec_lock.md` 执行设计 | 两者在默认流程中始终是权威产物；`quick-generate` 不落盘二者，用户明确提出的要求照做，其余内容、页结构、视觉和资源决策由当前 Agent 保留在上下文中 |
+| 默认流程由 `design_spec.md` 解释设计、`spec_lock.md` 执行设计 | 两者在默认流程中始终是权威产物；`quick-generate` 不落盘二者或任何替代计划，用户明确提出的要求照做，其余内容、页结构、视觉和资源决策只由当前 Agent 保留在上下文中；上下文丢失后重新运行 Quick |
 | 规划上下文有效时持续复用 | 连续执行直接使用完整 Design Spec、lock 与已触发引用；fresh/resumed/restarted 或压缩后才重新读取一次 |
 | `page-context` 按需调用 | 只读投影器用于诊断、确定性路由检查和可选的用量统计，不是逐页门禁 |
 | `svg_output/` 是唯一手写 SVG 目录 | 质量检查、手工编辑、重导出和 `update_spec.py` 都面向作者源 |
@@ -420,7 +423,7 @@ Stage-1 沟通推荐的编写不得读取这些候选或任何模板内容。UI 
 尤其是，启用旁白可以在 Design Spec 中启用 Speaker Notes 的最终有效结果，
 但绝不会改写原始的备注选择。
 
-**图片分析以重算元数据为先，只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。默认流程中，Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。`quick-generate` 则由当前 Agent 在上下文中自动准备资源清单时采用同样的有界分析，不写 Design Spec 投影。用户图、抽取图、网络图、AI 图、公式图和切片图仍统一汇入同一张可度量事实表。
+**图片分析以重算元数据为先，只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。默认流程中，Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。`quick-generate` 则由当前 Agent 根据当前上下文决策准备实际选中的资源，并采用同样的有界分析；不写 Design Spec 投影或通用资源清单。用户图、抽取图、网络图、AI 图、公式图和切片图仍统一汇入同一张可度量事实表。
 
 **保留的规划上下文**负责跨页连续性；按需逐页投影只承担下文所述的诊断用途。
 
@@ -473,20 +476,20 @@ Generate 执行以 [`workflows/generate-pptx.md`](../../skills/ppt-master/workfl
 | 厨师 | Executor | 只使用项目中已备好的材料，以几何、构图、层级、间距和视觉处理实现方案；不得改变所选“菜品”，也不得自行找料、换料；按页选择适合的已备图标，并可调整明确标为 suggestion 或 Reference 的字段 |
 | 质检员 | `svg_quality_checker.py` | 只读取作者状态并报告合同问题；不改页面、不拥有页面清单，也不打包 deck |
 | 打包员 | `svg_to_pptx.py` | 匹配的 final 报告通过后，编译已创作 SVG、校验 package 并发布回执；不修 SVG，不重跑 Checker |
-| 运行记录员 | `workflow_transcript.py`、`workflow_log.py` 与 `validation/workflow.log` | 自动转录项目级 Python 工具的文本 stdout/stderr，并接收显式选定的重要非 Python 事项；不解释输出，也不决定流程是否可以前进 |
+| 运行记录员 | `workflow_transcript.py`、`workflow_log.py` 与 `validation/workflow.log` | 记录 Python 命令信封、重要标记结果、有限状态样本和省略计数，并接收显式选定的重要非 Python 事项；不决定流程是否可以前进 |
 
-**快速生成把规划职责合并到当前 Agent。** 来源转换、事实缺口研究和资源准备仍按需运行。当前 Agent 在上下文中自动选择内容、页面清单、视觉系统和资源需求，准备用户提供 / 来源抽取 / AI / 网络 / 切片图片、图标和公式及其必要 manifest 或来源记录，随后手写 SVG；不进入 Strategist、Confirm UI、`design_spec.md` 或 `spec_lock.md`。
+**快速生成把规划职责合并到当前 Agent。** 来源转换、事实缺口研究和资源准备仍按需运行。当前 Agent 在上下文中自动选择内容、页面清单、mode、visual style 和资源需求；把图片、图标、原生形状、图表 / 表格、公式与纯字体 / 几何作为完整载体菜单进行一次判断；准备实际选中的用户提供 / 来源抽取 / AI / 网络 / 切片图片、图标和公式及其必要操作 manifest 或来源记录，随后手写 SVG；不进入 Strategist、Confirm UI、`design_spec.md`、`spec_lock.md`，也不创建替代规划产物。这些决策在上下文丢失后无法恢复。
 因此同一 Agent 可以顺序承担多个创作阶段，但阶段权责不会合并；Checker、Exporter 与运行记录器仍是独立的确定性工具。
 
 **默认备料有两个时点。** Topic Research 在最终确认前补充规划所需的事实：只有主题时立即运行；已有材料时先转换 / 阅读，仅在仍有关键事实缺口时补齐，而且不获取任何图片。当前 AI 编辑器若能提供具备网页检索 / 抓取能力并可写入声明输出路径的隔离研究子代理，由主代理定义缺口，子代理写入现有研究及来源产物并只返回回执；否则研究仍在主上下文运行。AI / web / slice 图片只能在最终确认以及完整的 `design_spec.md §VIII` / `spec_lock.md` 之后获取，并在 Executor 开始前进入终态。Strategist 还会在编写最终方案时解析、同步并验证精选项目图标池。Image_Generator、Image_Searcher 与图标同步工具只是 Strategist 负责的备料机制，不是独立决策者。快速生成则由当前 Agent 根据上下文决策按需使用这些备料机制，不插入确认门禁。
 
-**项目中已备好的材料就是边界。** 默认流程中，图片和其他声明型资源须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 是 Strategist 已同步精选内置图标池的索引，既不分配具体页面，也不是穷尽式执行白名单。Executor 按页从已备图标中选择。快速生成以当前上下文中的资源清单及其项目级文件 / manifest 代替该规划投影；当前 Agent 可以在手写 SVG 前获取并准备这些资源。其他目录中的文件不构成使用许可。缺料必须回到所属备料步骤；SVG 创作阶段不得静默换料。
+**项目中已备好的材料就是边界。** 默认流程中，图片和其他声明型资源须由 Strategist 选定、写入规划产物，并保证项目路径可解析或明确标为 `Needs-Manual`。图标 SVG 只要已位于 `<project>/icons/` 就属于已备材料；`spec_lock.icons.inventory` 是 Strategist 已同步精选内置图标池的索引，既不分配具体页面，也不是穷尽式执行白名单。Executor 按页从已备图标中选择。快速生成以当前上下文中的资源决策及其项目级文件 / manifest 代替该规划投影，不写通用资源清单或逐页分配；当前 Agent 可以在手写 SVG 前获取并准备这些资源。其他目录中的文件不构成使用许可。缺料必须回到所属备料步骤；SVG 创作阶段不得静默换料。
 
 **具体程度决定自由度。** “做麻婆豆腐”锁定成品身份：火候、口感和摆盘可以发挥，但不能换成番茄炒蛋或豆腐汤。“做一道豆腐菜”则保留了品类内选择空间。默认流程中，Strategist 可以把这个开放要求收敛成具体方案；如果 Design Spec 有意保留某个维度的开放性，Executor 可以在该范围内实现。一旦 Design Spec 已经选定具有约束力的结果，执行阶段不得重新打开选择。快速生成则由当前 Agent 在上下文中解决同等选择，并在手写 SVG 时保持稳定。明确标为 suggestion 或 Reference 的字段——包括页面级首选图片 pattern——仍是表达建议；只要不改变内容、资源、身份和显式约束，就可以调整。
 
 **点缀只能保持局部。** 零星的页面级字体或颜色可以用于增加层级、区分和氛围，但不能发展成第二套视觉系统。默认流程中，结构性或重复出现的字体、色板角色、资源与跨页身份 pattern 仍属于 Strategist 决策，复用前必须先更新 Design Spec/lock；快速生成由当前 Agent 在上下文中建立这些锚点，并在跨页创作中保持。默认流程的页面级 §VIII 图片 pattern 仍是首选构图参考。
 
-**提示词重构不变量。** 默认流程压缩提示词时，必须继续区分初始材料、用户确认、Strategist 负责的备料、策略规划和执行自由。把材料获取下放给 Executor、把许可变成配额、把灵活实现变成静默更换资源 / 身份，或把精确的约束计划降级成近似目标，均属于语义回归。显式快速生成 profile 会把前几层合并到当前 Agent，但不会删除来源处理或备料。默认流程的运行时权威位于 [`strategist.md`](../../skills/ppt-master/references/strategist.md) 与 [`executor-base.md`](../../skills/ppt-master/references/executor-base.md)；快速生成从 [`quick-generate.md`](../../skills/ppt-master/workflows/profiles/quick-generate.md) 开始，并按需加载同一组资源参考。提示词编写规则位于 [`prompt-style.md`](../rules/prompt-style.md)。
+**提示词重构不变量。** 默认流程压缩提示词时，必须继续区分初始材料、用户确认、Strategist 负责的备料、策略规划和执行自由。把材料获取下放给 Executor、把许可变成配额、把灵活实现变成静默更换资源 / 身份，或把精确的约束计划降级成近似目标，均属于语义回归。显式快速生成 profile 会把前几层合并到当前 Agent，但不会删除来源、资源、美学、数据可视化或原生形状能力。默认流程的运行时权威位于 [`strategist.md`](../../skills/ppt-master/references/strategist.md) 与 [`executor-base.md`](../../skills/ppt-master/references/executor-base.md)；快速生成从 [`quick-generate.md`](../../skills/ppt-master/workflows/profiles/quick-generate.md) 开始，直接加载适用的共享与条件执行参考，不继承 Default 的持久计划前置条件。提示词编写规则位于 [`prompt-style.md`](../rules/prompt-style.md)。
 
 ---
 
@@ -595,7 +598,7 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 | `exports/<narrated_stem>.mp4`（可选，经 `powerpoint_video.py`） | Windows PowerPoint 2016+ 下保留动画与旁白的视频交付物 | 委托 PowerPoint 原生编码器并等待完成；它是 PPTX 后处理集成，不是第二套 deck 渲染器 |
 | `backup/<ts>/svg_output/`（仅默认输出路径；目录创建后复制为 best-effort） | 在不重跑 LLM 的前提下从冻结 SVG 源重建 pptx | 转换成功后先创建备份目录再尝试复制；显式 `-o` 不创建，复制失败不阻断导出，非 quiet 模式打印 warning，postflight 的 `backup_path` 为空，但目录创建失败仍会中断 |
 
-校验 JSON 与 `validation/workflow.log` 都是冷审计产物，不是常规模型输入。只有用户明确要求复核运行过程时才打开转录。它可以还原项目级 Python 工具及其文本输出，也允许选择性记录重要阶段交接或返工原因、用户批准的例外及人工恢复选择等非 Python 事项；这些人工记录不重复制品内容、常规页面进度或私有推理，也不能替代当前制品对阶段与就绪状态的判定。导出器在程序内部读取 SVG 质量报告，并在默认非 quiet 流程打印紧凑的 `[POSTFLIGHT]` 回执，包含状态、质量门结果、Slide 数量、warning 类别计数和产物路径。成功流程只消费该回执，不加载两份完整 JSON；只有失败排查或用户明确要求审计时才定向提取报告字段。
+校验 JSON 与 `validation/workflow.log` 都是冷审计产物，不是常规模型输入。只有用户明确要求复核运行过程时才打开日志。它可以还原项目级 Python 命令及有限的重要结果，而不是完整控制台输出；每条命令的尾部会记录保留与省略的输出行数。日志也允许选择性记录重要阶段交接或返工原因、用户批准的例外及人工恢复选择等非 Python 事项；这些人工记录不重复制品内容、常规页面进度或私有推理，也不能替代当前制品对阶段与就绪状态的判定。导出器在程序内部读取 SVG 质量报告，并在默认非 quiet 流程打印紧凑的 `[POSTFLIGHT]` 回执，包含状态、质量门结果、Slide 数量、warning 类别计数和产物路径。成功流程只消费该回执，不加载两份完整 JSON；只有失败排查或用户明确要求审计时才定向提取报告字段。
 
 ### SVG 预处理器有**两种使用形态**
 

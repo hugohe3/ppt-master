@@ -314,7 +314,7 @@ class ProjectManager:
                     "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                     "- `sources/`: source materials and normalized markdown\n"
                     "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
-                    "- `validation/`: cold workflow transcript, SVG quality reports, and PPTX postflight audit reports\n"
+                    "- `validation/`: cold workflow audit log, SVG quality reports, and PPTX postflight audit reports\n"
                     "- `exports/`: final native DrawingML pptx deliverables only (timestamped); `_native_charts_tables.pptx` name with `--native-charts-and-tables`, `_narrated.pptx` name when narration audio is embedded\n"
                     "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
                 ),
@@ -1081,7 +1081,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--quick-generate",
         action="store_true",
         help=(
-            "Create svg_output plus the validation workflow transcript and "
+            "Create svg_output plus the validation workflow audit log and "
             "omit README.md"
         ),
     )
@@ -1182,7 +1182,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             except OSError as exc:
                 print(
-                    f"[WARN] Workflow transcript unavailable: {exc}",
+                    f"[WARN] Workflow audit unavailable: {exc}",
                     file=sys.stderr,
                 )
             return 0
