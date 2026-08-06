@@ -450,7 +450,7 @@ def save_csv(results: list[ImageAnalysis], csv_path: str | Path) -> None:
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
 
-    print(f"\nCSV saved to: {target}")
+    print(f"\n[REPORT] Image analysis CSV: {target}")
 
 
 def main(argv: list[str] | None = None) -> int:
