@@ -415,6 +415,13 @@ The common paths — inform / explain / persuade / decide / align / teach / repo
 
 After Stage 1 is confirmed, create `recommendations.stage2.json` with the complete solution; leave Stage 1 unchanged (the server folds confirmed communication fields back in when serving the page):
 
+**Stage-2 production contract**: the server rejects the recommendation file
+unless `recommend.formula_policy`, `recommend.generation_mode`, and boolean
+`refine_spec.value` are present; `recommend.image_ai_path` is additionally
+required when `image_usage` includes `ai`. Final submission must retain the
+corresponding direct values (`formula_policy`, `generation_mode`, boolean
+`refine_spec`, and conditional `image_ai_path`) or confirmation is rejected.
+
 ```json
 {
   "stage": "stage2",
