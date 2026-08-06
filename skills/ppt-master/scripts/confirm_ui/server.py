@@ -1217,6 +1217,9 @@ def _read_active_recommendations(
                         f'{filename} must be authored after the current '
                         'Stage-1 confirmation'
                     )
+            production_error = _stage2_production_recommendations_error(data)
+            if production_error:
+                raise ValueError(production_error)
         break
     return rec_file, data
 
@@ -1270,6 +1273,54 @@ def _uses_ai_images(recommendations: dict) -> bool:
     """Return whether Stage 2 proposes AI-generated images."""
     usage = _recommended_image_usage(recommendations)
     return 'ai' in usage if isinstance(usage, list) else usage == 'ai'
+
+
+def _stage2_production_recommendations_error(
+    recommendations: dict,
+) -> Optional[str]:
+    """Require every production control in current Stage 2 recommendations."""
+    recommend = recommendations.get('recommend')
+    if not isinstance(recommend, dict):
+        recommend = {}
+    for field in ('formula_policy', 'generation_mode'):
+        value = recommend.get(field)
+        if not isinstance(value, str) or not value.strip():
+            return (
+                'Stage 2 recommendations must include non-empty '
+                f'recommend.{field}'
+            )
+    refine_spec = recommendations.get('refine_spec')
+    if (
+        not isinstance(refine_spec, dict)
+        or not isinstance(refine_spec.get('value'), bool)
+    ):
+        return 'Stage 2 recommendations must include refine_spec.value as a boolean'
+    if _uses_ai_images(recommendations):
+        image_ai_path = recommend.get('image_ai_path')
+        if not isinstance(image_ai_path, str) or not image_ai_path.strip():
+            return (
+                'Stage 2 recommendations must include non-empty '
+                'recommend.image_ai_path when image_usage includes ai'
+            )
+    return None
+
+
+def _stage2_production_result_error(result: dict) -> Optional[str]:
+    """Require every user-confirmed production control in the final payload."""
+    for field in ('formula_policy', 'generation_mode'):
+        value = result.get(field)
+        if not isinstance(value, str) or not value.strip():
+            return f'final Stage 2 payload must include non-empty {field}'
+    if not isinstance(result.get('refine_spec'), bool):
+        return 'final Stage 2 payload must include refine_spec as a boolean'
+    if _uses_ai_images(result):
+        image_ai_path = result.get('image_ai_path')
+        if not isinstance(image_ai_path, str) or not image_ai_path.strip():
+            return (
+                'final Stage 2 payload must include non-empty image_ai_path '
+                'when image_usage includes ai'
+            )
+    return None
 
 
 def _palette_error(color: object, label: str) -> Optional[str]:
@@ -1574,14 +1625,11 @@ def _submission_stage_error(
     confirm_dir: Path,
     submitted_stage: Optional[str],
     *,
+    recommendations_file: Path,
+    recommendations: dict,
     template_required: bool,
 ) -> Optional[str]:
     """Reject a confirmation that does not match the staged recommendation."""
-    try:
-        rec_file, recommendations = _read_active_recommendations(confirm_dir)
-    except (OSError, json.JSONDecodeError, ValueError) as exc:
-        return f'cannot confirm without valid current recommendations: {exc}'
-
     rec_stage_number = _recommendation_stage(recommendations)
     if rec_stage_number == 0:
         return 'recommendations must declare stage1 or stage2'
@@ -1631,7 +1679,7 @@ def _submission_stage_error(
     if submitted_stage not in allowed_submissions[rec_stage_number]:
         expected = 'final' if rec_stage_number == 2 else 'stage1'
         return (
-            f'confirmation stage mismatch: {rec_file.name} is '
+            f'confirmation stage mismatch: {recommendations_file.name} is '
             f'{_stage_name(rec_stage_number)}, so the submitted stage must be '
             f'{expected}'
         )
@@ -1679,6 +1727,10 @@ def _stage2_solution_error(
     main_language: object = '',
 ) -> Optional[str]:
     """Reject a Stage 2/final payload with an incomplete design system."""
+    production_error = _stage2_production_result_error(result)
+    if production_error:
+        return production_error
+
     color = result.get('color')
     color_error = _palette_error(color, 'color')
     color_custom = (
@@ -2616,9 +2668,22 @@ def create_app(
             return jsonify({
                 'error': f'cannot determine active template mode: {exc}',
             }), 409
+        try:
+            rec_file, current_recommendations = _read_active_recommendations(
+                confirm_dir,
+            )
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            return jsonify({
+                'error': (
+                    'cannot confirm without valid current recommendations: '
+                    f'{exc}'
+                ),
+            }), 409
         stage_error = _submission_stage_error(
             confirm_dir,
             stage,
+            recommendations_file=rec_file,
+            recommendations=current_recommendations,
             template_required=template_required,
         )
         if stage_error:
@@ -2626,13 +2691,6 @@ def create_app(
         custom_error = _custom_selection_error(result)
         if custom_error:
             return jsonify({'error': custom_error}), 400
-        try:
-            rec_file, current_recommendations = _read_active_recommendations(
-                confirm_dir,
-            )
-        except (OSError, json.JSONDecodeError, ValueError):
-            rec_file = _active_recommendations_path(confirm_dir)
-            current_recommendations = {}
         rec_stage_number = _recommendation_stage(current_recommendations)
         previous_result = {}
         if rec_stage_number >= 2:
