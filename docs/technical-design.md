@@ -24,13 +24,21 @@ The intermediate language distinguishes three input states:
 
 For example, project typography uses SVG px semantics, with finite unitless values such as `font-size="24"` as the canonical spelling. Another unit remains compatible input only when the converter has a deterministic normalization and the checker accepts it as compatible; it must not become a new generated spelling. Compatible reads are a controlled migration boundary, not permission to widen the authoring language.
 
-The three layers have separate responsibilities and cannot substitute for one another:
+The workflow, authoring guidance, and deterministic tool layers have separate
+responsibilities and cannot substitute for one another:
 
 | Layer | Single responsibility | Explicit non-responsibility |
 |---|---|---|
+| Generate workflow | Sequence stages, invoke gates, switch roles, and hand artifacts to their declared consumers | It does not absorb Strategist, Executor, checker, or exporter decisions merely because it coordinates them |
 | Prompts, templates, and examples | State the project-canonical spelling precisely and reduce drift and warnings at the source | They are not a correctness or safety boundary |
 | `svg_quality_checker.py` | Enforce the project contract on authoring state; errors block and non-blocking warnings pass | It does not silently rewrite pages or guess design intent |
 | `svg_to_pptx.py` | Defensively validate compiler mappings and the package, normalize supported compatible forms, require a current matching final quality report for formal release, and link it into postflight | It does not rerun the complete `svg_quality_checker.py` or treat file creation as proof that the upstream quality gate passed |
+| `workflow_transcript.py` / `workflow_log.py` | Automatically mirror project-scoped Python text stdout/stderr and explicitly append important non-Python audit events | They do not interpret output, infer readiness, rerun another tool, or alter the owning tool's result |
+
+The automatic recorder resolves the project from `PPT_MASTER_PROJECT_PATH`, a
+path-bearing argument, or the current working directory, in that order. The
+environment signal is needed only for stdout-oriented helpers with no project
+path; it is placed on the same Python command and creates no wrapper process.
 
 ---
 
@@ -92,6 +100,7 @@ Output:
     └── <project_name>_<timestamp>_narrated.pptx              ← --recorded-narration or --narration-audio-dir variant
 
     validation/
+    ├── workflow.log                                ← Automatic Python-output transcript + important manual audit events
     ├── svg_quality_report.json                      ← Blocking/introduced/inherited/source-import SVG findings
     └── <output_stem>.report.json                    ← Postflight package/resource audit linked to the final SVG quality report
 
@@ -305,8 +314,9 @@ Two converter design choices still shape the system:
 ## Project Structure & Lifecycle
 
 `project_manager.py init` creates the standard project working directories;
-`--quick-generate` creates only `svg_output/`, omits the project README, and
-leaves other directories on demand. The explicit
+`--quick-generate` creates `svg_output/` plus the cold
+`validation/workflow.log` transcript, omits the project README, and leaves
+other directories on demand. The explicit
 [`quick-generate`](../skills/ppt-master/workflows/profiles/quick-generate.md)
 profile omits planning artifacts and `svg_final/`, but its project may still
 contain converted sources, analysis, images, icons, rendered formulas, and
@@ -325,7 +335,7 @@ backup around the final PPTX. The default delivery lifecycle is:
 | `svg_final/` | mandatory normal-flow derived visual-preview SVGs; supported bitmap/SVG resources are inlined when possible, while EMF/WMF retain an external-reference exception; used for IDE/browser preview or manual insertion as SVG pictures |
 | `live_preview/` | preview server state, edit history, and annotation logs |
 | `notes/` | `total.md` and split per-slide speaker notes |
-| `validation/` | SVG quality reports and PPTX postflight audit reports |
+| `validation/` | cold workflow transcript, SVG quality reports, and PPTX postflight audit reports |
 | `exports/` | timestamped native PPTX deliverables |
 | `backup/<timestamp>/` | default export creates the timestamped directory, then attempts a frozen `svg_output/` copy; copy failure does not fail export, but directory-creation failure is not currently downgraded |
 
@@ -514,8 +524,12 @@ Strategist and confirmation layer; it does not remove preparation.
 | Restaurant | PPT Master | Authority |
 |---|---|---|
 | Customer and initial ingredients | User confirmation and supplied sources/assets | Defines facts, intent, exclusions, acquisition permissions, and how specific the requested outcome is |
+| Service coordinator | Generate workflow | Sequences the declared stages, gates, role switches, and handoffs without taking over any role's decisions or deterministic tool's checks |
 | Menu planner and preparation lead | Strategist, `design_spec.md`, `spec_lock.md`, and Strategist-owned acquisition stages | Assesses sufficiency; fills permitted factual gaps; selects the content, resources, page roster, chart-reference/template-layout keys, fonts, palette anchors, icon system and curated pool, and crop boundaries; records optional capability/expression recommendations; readies the complete project-local inventory before execution |
 | Cook | Executor | Uses only prepared project-local assets and realizes the plan through geometry, composition, hierarchy, spacing, and treatment without changing the selected “dish” or acquiring/substituting ingredients; chooses suitable prepared icons per page and may adapt fields explicitly labeled as suggestions or References |
+| Quality inspector | `svg_quality_checker.py` | Reads authoring state and reports contract findings; it does not edit pages, own the page roster, or package the deck |
+| Packager | `svg_to_pptx.py` | After a matching final report passes, compiles the authored SVG, validates the package, and publishes the receipt; it does not repair SVG or rerun the checker |
+| Run recorder | `workflow_transcript.py`, `workflow_log.py`, and `validation/workflow.log` | Automatically mirrors project-scoped Python text stdout/stderr and accepts explicitly selected important non-Python events; it does not decide what the output means or whether the workflow may advance |
 
 **Quick generation collapses planning into the current agent.** Source conversion,
 factual-gap research, and resource preparation still run when needed. The agent
@@ -524,6 +538,9 @@ needs in active context, prepares supplied/extracted/AI/web/sliced images,
 icons, and formulas with their required manifests or provenance records, and
 then hand-authors SVG. It does not invoke Strategist, Confirm UI,
 `design_spec.md`, or `spec_lock.md`.
+One agent may therefore perform several creative stages in sequence, but their
+ownership boundaries do not merge; checker, exporter, and transcript recorder
+remain separate deterministic tools.
 
 **Default preparation has two clocks.** Topic Research supplies facts before final confirmation: it starts immediately for topic-only input, or after supplied material is converted/read when planning-critical factual gaps remain. It supplements only those gaps and acquires no images. When the current AI editor provides an isolated worker with web/fetch access and write access to the declared outputs, the main agent defines the gaps and the worker writes the existing research/provenance artifacts, returning only a receipt; otherwise research runs in the main context. AI / web / slice image acquisition runs only after final confirmation and the completed `design_spec.md §VIII` / `spec_lock.md`, then reaches a terminal status before Executor starts. Strategist also resolves, syncs, and validates a curated project icon pool while authoring the final plan. Image_Generator, Image_Searcher, and icon-sync tooling are preparation mechanisms under Strategist ownership, not independent decision owners. Quick generation uses those preparation mechanisms as needed under the current agent's in-context decisions, without inserting a confirmation gate.
 
@@ -642,7 +659,20 @@ The post-processing and export stages keep authoring, validation, preview, deliv
 | `exports/<narrated_stem>.mp4` (optional via `powerpoint_video.py`) | animation-faithful narrated video on Windows PowerPoint 2016+ | delegates to PowerPoint's native encoder and waits for completion; it is a post-PPTX integration, not a second deck renderer |
 | `backup/<ts>/svg_output/` (default output path only; copy is best-effort after directory creation) | re-export from frozen SVG sources without rerunning the LLM | after successful conversion the exporter creates the backup directory and attempts the copy; explicit `-o` creates none, copy failure does not block export, prints a warning outside quiet mode, and leaves postflight `backup_path` empty, while directory-creation failure remains fatal |
 
-Validation JSON files are cold audit artifacts, not routine model inputs. The exporter reads the SVG quality report programmatically and, in the default non-quiet flow, prints a compact `[POSTFLIGHT]` receipt with the status, quality-gate result, Slide count, warning-category counts, and artifact paths. Successful agents consume that receipt instead of loading either complete JSON; only failure investigation or an explicit audit extracts targeted report fields.
+Validation JSON files and `validation/workflow.log` are cold audit artifacts,
+not routine model inputs. The workflow transcript is opened only when the user
+explicitly requests a run review. It can reconstruct observed commands and
+their text output, plus selected non-Python details such as a material stage
+handoff or rework reason, user-approved exception, or manual recovery choice.
+These manual entries are optional and never duplicate artifacts, routine
+progress, or private reasoning; current artifacts still establish the stage
+and readiness. The
+exporter reads the SVG quality report programmatically and, in the default
+non-quiet flow, prints a compact `[POSTFLIGHT]` receipt with the status,
+quality-gate result, Slide count, warning-category counts, and artifact paths.
+Successful agents consume that receipt instead of loading either complete
+JSON; only failure investigation or an explicit audit extracts targeted report
+fields.
 
 ### SVG preprocessors have TWO usage forms
 

@@ -52,6 +52,7 @@ package postflight as the default profile, but it does not create `svg_final/`.
 | `notes/total.md` | Conditional speaker-note source | Complete notes before splitting | Step 6 writes only when the effective Speaker Notes outcome is enabled; Step 7.1 splits |
 | `notes/slide_*.md` | Conditional split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` only when speaker notes are enabled |
 | `svg_final/` | Default-only derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Default rebuilds it from `svg_output/` with `finalize_svg.py`; Quick omits it. Never use it as a supported PPTX source. |
+| `validation/workflow.log` | Cold workflow transcript | Append-only Python command envelopes with tagged stdout/stderr, plus selective manual entries for important details with no owning Python output | `project_manager.py init` creates the log and records its milestone. Later project-scoped Python tools find that existing log through the shared CLI bootstrap and mirror their own text output without a wrapper command. A helper whose arguments/cwd do not identify the active project receives `PPT_MASTER_PROJECT_PATH=<project_path>` on the same Python command. A role may run `workflow_log.py` once for a material non-Python stage handoff or rework reason, user-approved exception, or manual recovery choice; never duplicate artifacts, routine progress, or private reasoning. Detached services retain detailed output in their component logs. Never read this transcript during normal generation/resume or use it as stage, artifact, or quality authority; inspect it only for an explicit user-requested run review. |
 | `validation/svg_quality_report.json` | Final SVG quality provenance | Final SVG gate split into blocking / introduced / inherited / source-import categories, bound to the checked SVG bytes by SHA-256 | Default runs `svg_quality_checker.py --stage final --json`; Quick adds `--quick-generate` so the checker ignores Design Spec/lock and validates the lockless flat roster. Export links the report only when fingerprints match; Quick requires that link to pass before PPTX creation. |
 | `validation/<output_stem>.report.json` | Published-package audit | PPTX package/resource postflight status, part counts, and quality-gate linkage | Both Generate profiles write it and emit `[POSTFLIGHT]` after package validation. |
 | `exports/` | Delivery artifacts | Native DrawingML PPTX and explicit native-object/narration variants | Default Step 7.3 or Quick direct export writes final deliverables from `svg_output/`. |
@@ -78,6 +79,7 @@ package postflight as the default profile, but it does not create `svg_final/`.
 | Page-design closure | On SVG-authoring routes, every visible exported-slide object exists in the corresponding page SVG or an explicitly referenced visual asset. |
 | Package-behavior separation | Speaker notes, animations, transitions, narration, and direct native-PPTX workflows keep their owning artifacts; do not force them into SVG metadata. |
 | Post-processed SVG | In Default Generate, `svg_final/` is disposable, must be rebuilt in Step 7.2, and serves only as a self-contained visual preview / manually insertable SVG picture. Quick omits it. |
+| Workflow transcript | `validation/workflow.log` automatically records text written through a project-scoped Python tool's configured `sys.stdout` / `sys.stderr`, plus explicitly selected manual audit entries. It does not automatically capture direct file-authoring actions, host-native tools, pre-project conversion, binary-buffer writes, hidden child output, or detached-service activity; absence of a line proves nothing about those stages. Automatic transcript failure is advisory and never changes the owning tool's outcome; a failed explicit manual append reports failure because no entry was recorded. |
 | Export source | The only supported generated-PPTX route reads `svg_output/` through the project SVG-to-DrawingML converter. A diagnostic `-s final` override does not change ownership or create a supported release route. |
 | Shape-conversion boundary | PowerPoint's manual Convert-to-Shape operation on `svg_final/` is outside the project compatibility contract. |
 | Confirmation | Final UI/chat confirmation overrides recommendations and is consumed once into `design_spec.md`. Enabled refinement applies arbitrary revisions there and requires approval; only then may active-decision fidelity release lock authoring. |
@@ -89,6 +91,10 @@ package postflight as the default profile, but it does not create `svg_final/`.
 ---
 
 ## 3. Regeneration Rules
+
+The table names each owning command. Generate profiles invoke these commands
+directly; project-scoped Python stdout/stderr is recorded automatically after
+initialization. Other routes retain their own invocation contract.
 
 | Derived artifact | Regenerate from | Command / owner |
 |---|---|---|

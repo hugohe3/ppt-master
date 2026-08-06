@@ -126,6 +126,35 @@ After reading direct and converted content, assess factual sufficiency:
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
 ```
 
+Project initialization creates `<project_path>/validation/workflow.log` and
+records the initialization milestone. After the project exists, run each
+project-scoped Python tool normally. The shared CLI bootstrap automatically
+mirrors its text stdout/stderr into that log; no wrapper command is required.
+Detached Confirm UI and live-preview processes retain their detailed output in
+their existing component logs.
+
+When a Python helper serves the active deck but neither its arguments nor its
+working directory identifies the project, provide the routing signal on that
+same command — still one Python process:
+
+```bash
+PPT_MASTER_PROJECT_PATH="<project_path>" python3 ${SKILL_DIR}/scripts/<helper>.py <args...>
+```
+
+When an important audit detail has no owning command output — for example a
+material stage handoff or rework reason, a user-approved exception, or a manual
+recovery choice — the active role may append one concise note:
+
+```bash
+python3 ${SKILL_DIR}/scripts/workflow_log.py <project_path> "<material audit detail>"
+```
+
+Notes are selective and non-authoritative. Do not duplicate artifact contents,
+routine page progress, or chain-of-thought; current artifacts and gate results
+still determine stage and readiness. The transcript is cold audit evidence:
+never read it during normal generation; open it only when the user explicitly
+asks to review the run.
+
 Format options must be named with concrete dimensions. Default: `ppt169` = `1280x720`, `viewBox="0 0 1280 720"`. Other examples: `ppt43` = `1024x768`, `story` = `1080x1920`, `banner` = `1920x1080`. For the full format list, see `references/canvas-formats.md`.
 
 Import source content (choose based on the situation):

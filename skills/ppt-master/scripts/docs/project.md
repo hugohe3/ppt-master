@@ -22,7 +22,8 @@ python3 scripts/project_manager.py page-context-report <project_path>
 ```
 
 Notes:
-- `init --quick-generate`: only `svg_output/`; no README
+- `init --quick-generate`: `svg_output/` plus
+  `validation/workflow.log`; no README
 - Files outside `projects/` are always copied into `sources/`
 - `--move` applies only to sources under the repository's `projects/` tree
 - A directly supplied supported bitmap is also copied into `images/` with a
@@ -145,6 +146,53 @@ python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
 python3 scripts/project_manager.py page-context projects/my_presentation_ppt169_20251116 P07 --record-usage
 python3 scripts/project_manager.py page-context-report projects/my_presentation_ppt169_20251116
 ```
+
+## `workflow_transcript.py` and `workflow_log.py`
+
+Project initialization creates `validation/workflow.log` and records its own
+milestone. Run later project-scoped Python tools normally:
+
+```bash
+python3 scripts/<tool>.py <project_path> <args...>
+```
+
+Their shared CLI bootstrap discovers the existing project log from the working
+directory or command arguments. `workflow_transcript.py` mirrors text written
+through configured `sys.stdout` / `sys.stderr` as tagged logical lines under a
+UTC Python-command envelope; no outer launcher or second Python process is
+used. Commands before project initialization are not backfilled. Binary-buffer
+writes, hidden child output, and detached service activity are not copied;
+Confirm UI and live preview retain detailed output in their component
+`server.log` files. Their shared detached-process launcher disables automatic
+workflow transcription in the long-running child while preserving the short
+foreground launcher's own record.
+
+For a Python helper whose arguments and working directory do not identify the
+active project, set the routing signal on the same command:
+
+```bash
+PPT_MASTER_PROJECT_PATH="<project_path>" python3 scripts/<helper>.py <args...>
+```
+
+This variable selects only the destination transcript; it does not authorize
+the helper to read project artifacts or change its ownership.
+
+Append a manual note only when an important audit detail has no owning command
+output:
+
+```bash
+python3 scripts/workflow_log.py <project_path> "<material audit detail>"
+```
+
+Suitable notes include a material stage handoff or rework reason, a
+user-approved exception, or a manual recovery choice. Do not duplicate
+artifact contents, routine page progress, or private reasoning.
+
+The transcript is append-only audit evidence. It is not a stage, quality, or
+artifact authority and is not read during normal generation or resume. Inspect
+it only when the user explicitly requests a run review. An automatic transcript
+failure emits a warning but does not change the Python tool's result; an
+explicit manual entry that cannot be written exits non-zero.
 
 ## `project_utils.py`
 

@@ -52,6 +52,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from attribution_guard import require_skill_integrity  # noqa: E402
+from workflow_log import append_note  # noqa: E402
 
 try:
     from project_utils import (
@@ -313,7 +314,7 @@ class ProjectManager:
                     "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                     "- `sources/`: source materials and normalized markdown\n"
                     "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
-                    "- `validation/`: SVG quality reports and PPTX postflight audit reports\n"
+                    "- `validation/`: cold workflow transcript, SVG quality reports, and PPTX postflight audit reports\n"
                     "- `exports/`: final native DrawingML pptx deliverables only (timestamped); `_native_charts_tables.pptx` name with `--native-charts-and-tables`, `_narrated.pptx` name when narration audio is embedded\n"
                     "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
                 ),
@@ -1079,7 +1080,10 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument(
         "--quick-generate",
         action="store_true",
-        help="Create only the svg_output directory and omit README.md",
+        help=(
+            "Create svg_output plus the validation workflow transcript and "
+            "omit README.md"
+        ),
     )
 
     import_sources = subparsers.add_parser(
@@ -1164,10 +1168,23 @@ def main(argv: list[str] | None = None) -> int:
             if args.quick_generate:
                 print("1. Generate SVG files into svg_output/")
                 print("2. Run the Quick Generate final checker and exporter")
+                profile = "quick"
             else:
                 print("1. Put source files into sources/ (or use import-sources)")
                 print("2. Save your design spec to the project root")
                 print("3. Generate SVG files into svg_output/")
+                profile = "default"
+            try:
+                append_note(
+                    project_path,
+                    f"Project initialized: profile={profile}; "
+                    f"canvas={args.format}; path={project_path}",
+                )
+            except OSError as exc:
+                print(
+                    f"[WARN] Workflow transcript unavailable: {exc}",
+                    file=sys.stderr,
+                )
             return 0
 
         if args.command == "import-sources":

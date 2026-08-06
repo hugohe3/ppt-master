@@ -91,8 +91,14 @@ python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
   --format <format> --quick-generate
 ```
 
-It creates only `svg_output/` and no root README. Add capability inputs only
-when triggered; checker/exporter create `validation/`, `exports/`, and the
+It creates `svg_output/` plus the cold
+`validation/workflow.log` Python-output transcript, and no root README. After
+this command, run project-scoped Python tools directly; their shared CLI
+bootstrap automatically mirrors stdout/stderr into the existing log. A concise
+manual entry is allowed only for a material non-Python audit detail under
+Generate Step 2's selective policy. Never read the transcript during ordinary
+Quick execution; open it only for an explicit user-requested run review. Add
+capability inputs only when triggered; later tools create `exports/` and the
 default-path `backup/`. With source files, continue with Step 2
 `import-sources`; it creates the triggered input directories. Never scaffold a
 Design Spec or lock. Use a new path, or verify that an existing path's
