@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="process_timeline" data-pptx-layout-name="Process Timeline">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="process-timeline-axis" x1="196" y1="280" x2="1084" y2="280" stroke="#CBD5E1"
+    stroke-width="3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="process-timeline-node-one" cx="196" cy="280" r="10" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="process-timeline-node-two" cx="492" cy="280" r="10" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="process-timeline-node-three" cx="788" cy="280" r="10" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="process-timeline-node-four" cx="1084" cy="280" r="10" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="3" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="process-timeline-takeaway-panel" x="48" y="568" width="1184" height="64" rx="8"
+    fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="process-timeline-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="process-timeline-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="process-timeline-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="60 320 272 200">
+    <text id="process-timeline-one-carrier" data-pptx-carrier="true"
+      x="196" y="356" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{STEP_1}}</text>
+  </g>
+  <g id="process-timeline-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="356 320 272 200">
+    <text id="process-timeline-two-carrier" data-pptx-carrier="true"
+      x="492" y="356" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{STEP_2}}</text>
+  </g>
+  <g id="process-timeline-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="652 320 272 200">
+    <text id="process-timeline-three-carrier" data-pptx-carrier="true"
+      x="788" y="356" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{STEP_3}}</text>
+  </g>
+  <g id="process-timeline-four-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="948 320 272 200">
+    <text id="process-timeline-four-carrier" data-pptx-carrier="true"
+      x="1084" y="356" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{STEP_4}}</text>
+  </g>
+  <g id="process-timeline-takeaway-slot" data-pptx-placeholder="body" data-pptx-idx="5"
+    data-pptx-bounds="72 584 1136 32">
+    <text id="process-timeline-takeaway-carrier" data-pptx-carrier="true"
+      x="640" y="608" text-anchor="middle" fill="#475569"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="17">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="process-timeline-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="6"
+    data-pptx-bounds="48 676 900 32">
+    <text id="process-timeline-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="process-timeline-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="7"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="process-timeline-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

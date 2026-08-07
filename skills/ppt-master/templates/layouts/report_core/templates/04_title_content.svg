@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="title_content" data-pptx-layout-name="Title and Content">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="title-content-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="title-content-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="title-content-body-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="48 176 1184 464">
+    <text id="title-content-body-carrier" data-pptx-carrier="true"
+      x="48" y="216" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CONTENT_AREA}}</text>
+  </g>
+  <g id="title-content-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="2"
+    data-pptx-bounds="48 676 900 32">
+    <text id="title-content-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="title-content-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="3"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="title-content-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

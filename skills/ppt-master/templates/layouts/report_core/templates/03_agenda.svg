@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="agenda" data-pptx-layout-name="Agenda">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="agenda-rule-one" x1="48" y1="260" x2="1232" y2="260" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <line id="agenda-rule-two" x1="48" y1="355" x2="1232" y2="355" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <line id="agenda-rule-three" x1="48" y1="450" x2="1232" y2="450" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <line id="agenda-rule-four" x1="48" y1="545" x2="1232" y2="545" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <line id="agenda-rule-five" x1="48" y1="640" x2="1232" y2="640" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <text id="agenda-index-one" x="48" y="216" fill="#94A3B8"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">01</text>
+  <text id="agenda-index-two" x="48" y="311" fill="#94A3B8"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">02</text>
+  <text id="agenda-index-three" x="48" y="406" fill="#94A3B8"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">03</text>
+  <text id="agenda-index-four" x="48" y="501" fill="#94A3B8"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">04</text>
+  <text id="agenda-index-five" x="48" y="596" fill="#94A3B8"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">05</text>
+  <g id="agenda-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="agenda-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="agenda-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="120 176 1112 84">
+    <text id="agenda-one-carrier" data-pptx-carrier="true"
+      x="120" y="216" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{ITEM_1}}</text>
+  </g>
+  <g id="agenda-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="120 271 1112 84">
+    <text id="agenda-two-carrier" data-pptx-carrier="true"
+      x="120" y="311" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{ITEM_2}}</text>
+  </g>
+  <g id="agenda-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="120 366 1112 84">
+    <text id="agenda-three-carrier" data-pptx-carrier="true"
+      x="120" y="406" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{ITEM_3}}</text>
+  </g>
+  <g id="agenda-four-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="120 461 1112 84">
+    <text id="agenda-four-carrier" data-pptx-carrier="true"
+      x="120" y="501" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{ITEM_4}}</text>
+  </g>
+  <g id="agenda-five-slot" data-pptx-placeholder="object" data-pptx-idx="5"
+    data-pptx-bounds="120 556 1112 84">
+    <text id="agenda-five-carrier" data-pptx-carrier="true"
+      x="120" y="596" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{ITEM_5}}</text>
+  </g>
+  <g id="agenda-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="6"
+    data-pptx-bounds="48 676 900 32">
+    <text id="agenda-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="agenda-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="7"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="agenda-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

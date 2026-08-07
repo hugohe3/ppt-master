@@ -64,6 +64,26 @@
       "table_summary"
     ]
   },
+  "report_core": {
+    "summary": "A structure-only 16:9 system with 13 authored PowerPoint Layouts across two Masters, carrying persistent page chrome and page-number placeholders.",
+    "canvas_format": "ppt169",
+    "page_count": 13,
+    "page_types": [
+      "cover",
+      "section_divider",
+      "agenda",
+      "title_content",
+      "two_content",
+      "three_block",
+      "kpi_row",
+      "chart_insight",
+      "table_summary",
+      "process_timeline",
+      "matrix_2x2",
+      "appendix",
+      "closing"
+    ]
+  },
   "story_vertical": {
     "summary": "A structure-only 9:16 system with 9 authored PowerPoint Layouts whose text geometry respects the top and bottom story safe zones.",
     "canvas_format": "story",
