@@ -26,7 +26,8 @@ this stage.
 
 - Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Enhance Native PPTX, the notes module writes numeric files such as `001.md`.
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
-- The stage is page-level only: with edge or MiniMax, one notes file becomes `audio/<stem>.mp3` plus `notes/subtitles/<stem>.srt`; with another cloud provider, it becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
+- The stage is page-level only: with edge or MiniMax, one notes file becomes `audio/<stem>.mp3` plus `audio/<stem>.srt`; with another cloud provider, it becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
+- A fully successful run writes a compact `audio/manifest.json` with only provider/model, audio/subtitle format, relevant voice settings, and a SHA-256 fingerprint instead of the raw cloud voice ID. It has no per-slide inventory, artifact hashes, or API keys and is not a normal generation input. The flat `audio/` directory is the single active narration set; do not create provider subdirectories unless the user explicitly asks to preserve multiple variants.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
 - PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
 - Optional automatic video export requires Windows PowerPoint 2016+ and runs
@@ -225,6 +226,8 @@ The edge command writes each MP3 and its internal page SRT from the same `edge-t
 
 The MiniMax command requests word-level subtitles on the same non-streaming `/v1/t2a_v2` call, downloads the returned JSON timing file, and applies the same punctuation-first, `--subtitle-max-chars`-bounded regrouping as Edge. It publishes the validated MP3/SRT as a rollback-safe pair; the compact cues are the units used for semantic animation mapping. ElevenLabs, Qwen, and CosyVoice commands write audio only.
 
+Before generation starts, `notes_to_audio.py` removes stale `audio/manifest.json` and `audio/total.srt`; an incomplete run therefore cannot claim the previous set's provenance or merged timeline. A successful audio-only provider run also removes same-stem stale SRT files. The new manifest is published atomically only after the complete page roster succeeds.
+
 **Mandatory when `animations.json` is consumed — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
 
 > Active `animations.json` requires `narration_timing.json`; explicit `--no-animations` bypasses both. Without a sidecar, `narration_sync.py animations` maps groups **positionally** (group N → cue N) and warns when later objects may reveal during an earlier topic. Treat that warning as required repair: author the semantic plan and re-derive.
@@ -276,7 +279,7 @@ python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
 }
 ```
 
-`narration_sync.py subtitles` may still write `<project_path>/notes/subtitles/total.srt` as a PPTX-timeline diagnostic. It is not the delivery subtitle for a finished video.
+`narration_sync.py subtitles` may still write `<project_path>/audio/total.srt` as a PPTX-timeline diagnostic. It is not the delivery subtitle for a finished video.
 
 When video export was selected, `powerpoint_video.py` opens the final narrated PPTX through local Windows PowerPoint, requests its native video encoder with recorded timings and narrations enabled, and polls `CreateVideoStatus` until the MP4 succeeds, fails, or times out. The interface is synchronous to its caller even though PowerPoint performs encoding asynchronously. It preserves PowerPoint's own animation and media behavior rather than re-rendering the deck.
 
@@ -306,7 +309,8 @@ For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded t
 Output one summary block listing:
 
 - Number of audio files generated and their location (`<project_path>/audio/*`).
-- For edge or MiniMax subtitles, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
+- For edge or MiniMax subtitles, number of matching page-local SRT files and their location (`<project_path>/audio/*`).
+- Narration provider/model plus the `<project_path>/audio/manifest.json` provenance path.
 - For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
 - For Generate PPTX with page-local SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report inherited base motion or explicit all-motion-off.
 - When video export was selected, the final MP4 path and native PowerPoint export status.

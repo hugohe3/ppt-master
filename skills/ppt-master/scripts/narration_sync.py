@@ -1714,7 +1714,7 @@ def build_parser() -> argparse.ArgumentParser:
     fingerprint.add_argument(
         "--subtitle-dir",
         default=None,
-        help="Page-local SRT directory; default: <project>/notes/subtitles",
+        help="Page-local SRT directory; default: <project>/audio",
     )
 
     animations = subparsers.add_parser(
@@ -1735,7 +1735,7 @@ def build_parser() -> argparse.ArgumentParser:
     animations.add_argument(
         "--subtitle-dir",
         default=None,
-        help="Page-local SRT directory; default: <project>/notes/subtitles",
+        help="Page-local SRT directory; default: <project>/audio",
     )
     animations.add_argument(
         "--audio-dir",
@@ -1779,7 +1779,7 @@ def build_parser() -> argparse.ArgumentParser:
     subtitles.add_argument(
         "--subtitle-dir",
         default=None,
-        help="Page-local SRT directory; default: <project>/notes/subtitles",
+        help="Page-local SRT directory; default: <project>/audio",
     )
     subtitles.add_argument(
         "--video",
@@ -1801,7 +1801,7 @@ def build_parser() -> argparse.ArgumentParser:
         "-o",
         "--output",
         default=None,
-        help="Merged SRT output; default: <project>/notes/subtitles/total.srt",
+        help="Merged SRT output; default: <project>/audio/total.srt",
     )
     subtitles.add_argument(
         "--force",
@@ -1823,7 +1823,7 @@ def main(argv: list[str] | None = None) -> int:
             subtitle_dir = _project_path(
                 project_path,
                 args.subtitle_dir,
-                Path("notes/subtitles"),
+                Path("audio"),
             )
             slide_names = _page_subtitle_names(subtitle_dir)
             for slide_name in slide_names:
@@ -1845,7 +1845,7 @@ def main(argv: list[str] | None = None) -> int:
             subtitle_dir = _project_path(
                 project_path,
                 args.subtitle_dir,
-                Path("notes/subtitles"),
+                Path("audio"),
             )
             audio_dir = _project_path(
                 project_path,
@@ -1881,7 +1881,7 @@ def main(argv: list[str] | None = None) -> int:
         subtitle_dir = _project_path(
             project_path,
             args.subtitle_dir,
-            Path("notes/subtitles"),
+            Path("audio"),
         )
         audio_dir = _project_path(
             project_path,
@@ -1896,7 +1896,7 @@ def main(argv: list[str] | None = None) -> int:
         output_path = _project_path(
             project_path,
             args.output,
-            Path("notes/subtitles/total.srt"),
+            Path("audio/total.srt"),
         )
         result = _merge_subtitles_result(
             project_path,
