@@ -665,13 +665,28 @@ def _read_template_handoff(project_path: Path, handoff_file: Path) -> dict:
             f'{TEMPLATE_HANDOFF_NAME} selection_sha256 does not match selection'
         )
     if data['mode'] == 'templates':
-        installed_spec = project_path / 'templates' / 'design_spec.md'
-        if not installed_spec.is_file():
+        if not _installed_template_specs(project_path):
             raise ValueError(
-                f'{TEMPLATE_HANDOFF_NAME} requires installed template spec: '
-                f'{installed_spec}'
+                f'{TEMPLATE_HANDOFF_NAME} requires at least one installed '
+                f'template spec: {project_path / "templates"}/'
+                'design_spec.<kind>.<id>.md'
             )
     return data
+
+
+def _installed_template_specs(project_path: Path) -> list[Path]:
+    """Return every template spec installed into the project by the apply stage.
+
+    The apply stage installs one file per selected workspace, named
+    ``design_spec.<kind>.<id>.md``. A bare ``design_spec.md`` under
+    ``templates/`` means the project is itself a Create Template workspace and
+    is deliberately excluded here.
+    """
+    return sorted(
+        path
+        for path in (project_path / 'templates').glob('design_spec.*.md')
+        if path.is_file()
+    )
 
 
 def _complete_template_selection(project_path: Path) -> int:
@@ -695,11 +710,11 @@ def _complete_template_selection(project_path: Path) -> int:
         )
         return 1
     if selection['mode'] == 'templates':
-        installed_spec = project_path / 'templates' / 'design_spec.md'
-        if not installed_spec.is_file():
+        if not _installed_template_specs(project_path):
             logger.error(
-                'cannot complete template selection before template apply writes %s',
-                installed_spec,
+                'cannot complete template selection before template apply '
+                'writes %s/design_spec.<kind>.<id>.md',
+                project_path / 'templates',
             )
             return 1
 
@@ -2786,7 +2801,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--complete-template-selection', action='store_true',
         help='Agent-only: after Stage 1, bind its template selection to a ready '
-             'handoff. Template mode requires <project>/templates/design_spec.md.',
+             'handoff. Template mode requires at least one '
+             '<project>/templates/design_spec.<kind>.<id>.md.',
     )
     parser.add_argument(
         '--reset-template-selection', action='store_true',
