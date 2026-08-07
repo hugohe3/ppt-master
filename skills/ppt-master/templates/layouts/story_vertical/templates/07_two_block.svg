@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"
+  data-pptx-master="story_vertical_master" data-pptx-master-name="Story Vertical"
+  data-pptx-layout="two_block" data-pptx-layout-name="Two Block">
+  <rect id="master-background" x="0" y="0" width="1080" height="1920" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="two-block-top" x="80" y="440" width="920" height="560" rx="24" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="two-block-bottom" x="80" y="1060" width="920" height="560" rx="24" fill="#EEF2F6"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="two-block-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 200 920 180">
+    <text id="two-block-title-carrier" data-pptx-carrier="true"
+      x="80" y="306" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="56" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="two-block-top-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="120 480 840 480">
+    <text id="two-block-top-carrier" data-pptx-carrier="true"
+      x="120" y="550" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{BLOCK_1}}</text>
+  </g>
+  <g id="two-block-bottom-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="120 1100 840 480">
+    <text id="two-block-bottom-carrier" data-pptx-carrier="true"
+      x="120" y="1170" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{BLOCK_2}}</text>
+  </g>
+  <g id="two-block-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="3"
+    data-pptx-bounds="80 1660 920 56">
+    <text id="two-block-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1700" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>

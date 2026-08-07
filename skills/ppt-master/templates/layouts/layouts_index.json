@@ -49,6 +49,22 @@
       "table_summary"
     ]
   },
+  "story_vertical": {
+    "summary": "A structure-only 9:16 system with 9 authored PowerPoint Layouts whose text geometry respects the top and bottom story safe zones.",
+    "canvas_format": "story",
+    "page_count": 9,
+    "page_types": [
+      "cover",
+      "statement",
+      "title_content",
+      "numbered_list",
+      "image_full",
+      "image_top_text",
+      "two_block",
+      "step_flow",
+      "ending"
+    ]
+  },
   "xiaohongshu_post": {
     "summary": "A structure-only 3:4 vertical system with 10 authored PowerPoint Layouts for single-column image-text posts on tall social canvases.",
     "canvas_format": "xiaohongshu",
