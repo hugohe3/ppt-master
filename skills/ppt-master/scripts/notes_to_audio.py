@@ -4,7 +4,9 @@
 This script uses provider backends for the same per-slide output contract on
 macOS, Linux, and Windows. `edge-tts` remains the default no-key backend and
 also writes one compact, word-timed SRT file per slide from the same TTS stream.
-MiniMax requests word timings and applies the same compact cue regrouping.
+MiniMax and CosyVoice request word timings; ElevenLabs requests character
+alignment. All four apply the same compact, text-faithful cue regrouping.
+Qwen remains audio-only because its current TTS API exposes no timestamps.
 
 Usage:
     python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
@@ -241,6 +243,7 @@ def _provider_manifest_details(
             "stability": args.elevenlabs_stability,
             "similarity_boost": args.elevenlabs_similarity_boost,
             "style": args.elevenlabs_style,
+            "speed": args.elevenlabs_speed,
             "speaker_boost": args.elevenlabs_speaker_boost,
         }
     if backend.provider == "minimax":
@@ -296,7 +299,9 @@ def _narration_manifest(
     if writes_subtitles:
         manifest["subtitles"] = {
             "format": "srt",
-            "timing": "word",
+            "timing": (
+                "character" if backend.provider == "elevenlabs" else "word"
+            ),
             "max_visible_chars": args.subtitle_max_chars,
         }
     return manifest
@@ -396,7 +401,7 @@ def main() -> int:
         "--subtitle-max-chars",
         type=int,
         default=backend_edge.DEFAULT_SUBTITLE_MAX_CHARS,
-        help="maximum visible characters per Edge/MiniMax subtitle cue (default: 20)",
+        help="maximum visible characters per provider-timed subtitle cue (default: 20)",
     )
     parser.add_argument(
         "--elevenlabs-api-key-env",
@@ -430,6 +435,12 @@ def main() -> int:
         type=float,
         default=None,
         help="optional ElevenLabs style exaggeration override, 0.0-1.0",
+    )
+    parser.add_argument(
+        "--elevenlabs-speed",
+        type=float,
+        default=None,
+        help="optional ElevenLabs speaking speed override, 0.7-1.2",
     )
     parser.add_argument(
         "--elevenlabs-speaker-boost",
@@ -480,6 +491,7 @@ def main() -> int:
     parser.add_argument("--cosyvoice-output-format", default="mp3", choices=["mp3", "wav"],
                         help="CosyVoice audio format for PPT narration (default: mp3)")
     parser.add_argument("--cosyvoice-sample-rate", type=int, default=24000,
+                        choices=[8000, 16000, 22050, 24000, 44100, 48000],
                         help="CosyVoice sample rate (default: 24000)")
     parser.add_argument("--cosyvoice-volume", type=int, default=None,
                         help="optional CosyVoice volume, 0-100")
@@ -491,6 +503,14 @@ def main() -> int:
                         help="optional CosyVoice instruction text for supported voices/models")
     parser.add_argument("--cosyvoice-language-hint", default=None,
                         help="optional CosyVoice language hint, e.g. zh, en, ja")
+    parser.add_argument(
+        "--cosyvoice-audio-only",
+        action="store_true",
+        help=(
+            "skip CosyVoice timestamps/SRT for a model or voice that does not "
+            "support them"
+        ),
+    )
     parser.add_argument("--list-common-voices", action="store_true", help="print a curated voice list and exit")
     parser.add_argument("--list-voices", action="store_true", help="query provider voices and exit")
     parser.add_argument("--locale", default=None, help='filter --list-voices by locale, e.g. "zh-CN"')
@@ -544,6 +564,40 @@ def main() -> int:
         parser.error("--concurrency must be at least 1")
         raise AssertionError("unreachable")
 
+    for option, value, minimum, maximum in (
+        ("--elevenlabs-stability", args.elevenlabs_stability, 0.0, 1.0),
+        (
+            "--elevenlabs-similarity-boost",
+            args.elevenlabs_similarity_boost,
+            0.0,
+            1.0,
+        ),
+        ("--elevenlabs-style", args.elevenlabs_style, 0.0, 1.0),
+        ("--elevenlabs-speed", args.elevenlabs_speed, 0.7, 1.2),
+        ("--cosyvoice-volume", args.cosyvoice_volume, 0, 100),
+        ("--cosyvoice-rate", args.cosyvoice_rate, 0.5, 2.0),
+        ("--cosyvoice-pitch", args.cosyvoice_pitch, 0.5, 2.0),
+    ):
+        if value is not None and not minimum <= value <= maximum:
+            parser.error(f"{option} must be between {minimum} and {maximum}")
+            raise AssertionError("unreachable")
+
+    if args.cosyvoice_audio_only and args.provider != "cosyvoice":
+        parser.error("--cosyvoice-audio-only requires --provider cosyvoice")
+        raise AssertionError("unreachable")
+
+    if args.provider == "qwen" and args.qwen_instructions:
+        if "instruct" not in args.qwen_model:
+            parser.error(
+                "--qwen-instructions requires a Qwen3 TTS Instruct model"
+            )
+            raise AssertionError("unreachable")
+    if args.qwen_optimize_instructions and not args.qwen_instructions:
+        parser.error(
+            "--qwen-optimize-instructions requires --qwen-instructions"
+        )
+        raise AssertionError("unreachable")
+
     if args.provider == "elevenlabs":
         if not voice_id:
             parser.error("--voice-id is required for --provider elevenlabs")
@@ -582,15 +636,31 @@ def main() -> int:
         except Exception as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 1
-        backend = AudioBackend(provider=args.provider, extension=extension, api_key=api_key, voice_id=voice_id)
+        backend = AudioBackend(
+            provider=args.provider,
+            extension=extension,
+            api_key=api_key,
+            voice_id=voice_id,
+        )
     else:
-        backend = AudioBackend(provider=args.provider, extension=backend_edge.edge_output_extension(), voice_id=args.voice)
+        backend = AudioBackend(
+            provider=args.provider,
+            extension=backend_edge.edge_output_extension(),
+            voice_id=args.voice,
+        )
 
     project = args.project_path
     notes_dir = project / "notes"
     output_dir = args.output or (project / "audio")
     subtitle_dir = output_dir
-    writes_subtitles = backend.provider in {"edge", "minimax"}
+    writes_subtitles = backend.provider in {
+        "edge",
+        "elevenlabs",
+        "minimax",
+    } or (
+        backend.provider == "cosyvoice"
+        and not args.cosyvoice_audio_only
+    )
 
     try:
         note_roster = _expected_note_roster(project)
@@ -665,6 +735,8 @@ def main() -> int:
             subtitle_path: Path | None = None
             try:
                 if backend.provider == "elevenlabs":
+                    if writes_subtitles:
+                        subtitle_path = subtitle_dir / f"{output_path.stem}.srt"
                     backend_elevenlabs.generate(
                         text,
                         output_path,
@@ -675,7 +747,10 @@ def main() -> int:
                         stability=args.elevenlabs_stability,
                         similarity_boost=args.elevenlabs_similarity_boost,
                         style=args.elevenlabs_style,
+                        speed=args.elevenlabs_speed,
                         speaker_boost=args.elevenlabs_speaker_boost,
+                        subtitle_path=subtitle_path,
+                        subtitle_max_chars=args.subtitle_max_chars,
                     )
                 elif backend.provider == "minimax":
                     if writes_subtitles:
@@ -711,6 +786,8 @@ def main() -> int:
                         base_url=args.qwen_base_url,
                     )
                 elif backend.provider == "cosyvoice":
+                    if writes_subtitles:
+                        subtitle_path = subtitle_dir / f"{output_path.stem}.srt"
                     backend_cosyvoice.generate(
                         text,
                         output_path,
@@ -725,6 +802,8 @@ def main() -> int:
                         instruction=args.cosyvoice_instruction,
                         language_hint=args.cosyvoice_language_hint,
                         base_url=args.cosyvoice_base_url,
+                        subtitle_path=subtitle_path,
+                        subtitle_max_chars=args.subtitle_max_chars,
                     )
                 _remove_stale_audio_variants(output_path)
                 if not writes_subtitles:
