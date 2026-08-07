@@ -268,11 +268,14 @@ gate unless explicitly delegated. Stage 1 confirms the communication contract
 and, on the same screen or in the same chat turn, exactly one template mode:
 `free_design` or `templates`. Only `templates` expands the four registered-kind
 selectors plus supplied exact-root candidates, and it requires at least one
-selection. Final Stage 2 confirms the complete deck solution plus production
-mechanics only after the Stage-1 choice is installed or its free-design handoff
-is complete. An enabled `refine_spec` adds the one conditional chat gate after
-Design Spec Gate 1. Author each stage once; submitted values—including blanks or
-unusual overrides—are authoritative.
+selection. Stage 1 also records the narration WPS-autoplay preference
+(`wps_narration_autoplay`, default `false`); it is a delivery preference, not a
+deck-design decision — it never changes slide content, only how a later narrated
+export is delivered. Final Stage 2 confirms the complete deck solution plus
+production mechanics only after the Stage-1 choice is installed or its
+free-design handoff is complete. An enabled `refine_spec` adds the one
+conditional chat gate after Design Spec Gate 1. Author each stage once;
+submitted values—including blanks or unusual overrides—are authoritative.
 
 **Confirmation ownership and surface**: Only the user confirms. Before any
 confirmation server command, apply
@@ -295,7 +298,7 @@ Stage-2 summary without fabricating UI results. Silence confirms nothing.
 | Input file (only the active unconfirmed Strategist stage may be overwritten) | Agent writes | Completion evidence |
 |---|---|---|
 | `confirm_ui/template_options.json` | Candidate schema/language plus supplied exact roots; library entries remain server-owned index data | Stage-1 submission writes user-owned `template_selection.json` with `phase: template`, `status: confirmed` |
-| `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, and canvas only; no template-derived recommendation | The same submission writes `result.json` with `status: stage1-confirmed` |
+| `confirm_ui/recommendations.stage1.json` | Communication contract, `content_divergence`, canvas, and the narration WPS-autoplay preference (`wps_narration_autoplay`, default `false`); no template-derived recommendation | The same submission writes `result.json` with `status: stage1-confirmed` |
 | `confirm_ui/template_handoff.json` | Only through `--complete-template-selection`, after the Stage-1 selection and free-design closure or successful installation | `status: ready`, bound to the current selection hash; prerequisite for Stage 2 |
 | `confirm_ui/recommendations.stage2.json` | `stage: stage2`; complete deck solution plus conditional AI path, formula policy, generation mode, refine-spec, proactive speaker notes, custom animations, and narration audio | `stage: final`, `status: confirmed` |
 
@@ -358,8 +361,9 @@ apply `confirm_ui.md`'s in-run switch procedure. Continue the unresolved current
 stage and all remaining stages in chat; do not enter UI interruption recovery
 or relaunch the server.
 
-**Chat branch** — present the template mode and Stage-1 communication contract
-together and wait for one explicit response. Show registered candidates only
+**Chat branch** — present the template mode, Stage-1 communication contract,
+and the narration WPS-autoplay preference (default: no) together and wait for
+one explicit response. Show registered candidates only
 when the user chooses `templates`; supplied exact roots remain available in that
 expanded choice. Initialize free design for an ordinary request and template
 mode for explicit template intent or any exact root; with exactly one root it
@@ -403,6 +407,17 @@ Persist the resolved effective outcomes plus provenance as the `Speaker Notes`,
 `Custom Animations`, and `Narration Audio` rows in `design_spec.md §I`; keep the
 raw proactive fields only as confirmation evidence and do not project either
 form into `spec_lock.md`.
+
+**Stage-1 WPS compatibility preference**: Stage 1 also records
+`wps_narration_autoplay` (`false` default) for narrated decks. `true` leaves the
+PowerPoint-native export untouched and additionally produces a WPS-compatible
+copy whose narration auto-plays first on slide entry (see
+[`generate-audio.md`](stages/generate-audio.md) Step 4 command 2F and
+`scripts/docs/wps-narration-compat.md`). Persist the effective preference plus
+provenance as the `WPS Compatibility` row in `design_spec.md §I`; it is
+inert when the effective Narration Audio outcome is disabled and is not
+projected into `spec_lock.md`. A later explicit request updates only this
+outcome/provenance and resumes the owning step.
 
 **Post-confirmation override**: A later explicit request updates only affected
 §I outcomes/provenance and resumes their owning step; do not reopen Confirm UI.
@@ -728,4 +743,4 @@ Before creating the PPTX, the exporter independently requires the current matchi
 - [x] Notes split completed when enabled; disabled exports used `--no-notes`
 - [x] `svg_final/` preview completed
 - [x] Native PPTX published and postflight report written
-- [ ] **Next**: Report the exported PPTX path; when the effective Narration Audio outcome in `design_spec.md §I` is enabled, run [`generate-audio`](stages/generate-audio.md), otherwise run a supporting post-export stage only when its explicit trigger is present
+- [ ] **Next**: Report the exported PPTX path; when the effective Narration Audio outcome in `design_spec.md §I` is enabled, run [`generate-audio`](stages/generate-audio.md), otherwise run a supporting post-export stage only when its explicit trigger is present. When the effective WPS Compatibility outcome is also enabled, [`generate-audio`](stages/generate-audio.md) Step 4 command 2F produces the `_wps.pptx` copy from the finished narrated export

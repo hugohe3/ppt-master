@@ -85,6 +85,9 @@ python3 skills/ppt-master/scripts/template_preview_pptx.py <template_workspace>
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
 
+# WPS-compatible narration copy — post-process an exported narrated PPTX so narration auto-plays first in WPS (Stage-1 WPS Compatibility outcome / explicit Quick intent)
+python3 skills/ppt-master/scripts/wps_narration_compat.py <narrated.pptx> [--output <path>] [--overwrite]
+
 # Existing PPTX native enhancement workflow — direct OOXML patch, no SVG conversion
 python3 skills/ppt-master/scripts/native_enhance_pptx.py init <PPTX_file> --name <project_slug>
 python3 skills/ppt-master/scripts/native_enhance_pptx.py validate <project_path>

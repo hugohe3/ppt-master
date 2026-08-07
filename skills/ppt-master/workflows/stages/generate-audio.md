@@ -212,6 +212,13 @@ python3 skills/ppt-master/scripts/powerpoint_video.py \
 # 2E. Align the frozen narration text against the finished video's audio track
 python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
   --video <final_video.mp4> --language <language> --force
+
+# 2F. Optional: produce a WPS-compatible copy whose narration auto-plays first
+#     Only for Generate PPTX when the Stage-1 `WPS Compatibility` outcome in
+#     design_spec.md §I is enabled. Runs on the finished narrated export and
+#     writes <final_narrated_pptx stem>-wps.pptx next to it; the
+#     PowerPoint-native export stays untouched as the primary artifact.
+python3 skills/ppt-master/scripts/wps_narration_compat.py <final_narrated_pptx>
 ```
 
 **Default — bounded Edge concurrency (may override)**: Generate up to three
@@ -290,7 +297,7 @@ This stage keeps subtitles as external SRT files. It does not burn subtitles int
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
+| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. When the Stage-1 `WPS Compatibility` outcome in `design_spec.md §I` is enabled, run Step 4 command 2F (`wps_narration_compat.py`) on the finished narrated export and report the `-wps` copy alongside it. |
 | Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export. If video was selected, pass that final PPTX to `powerpoint_video.py`. |
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
@@ -311,4 +318,5 @@ Output one summary block listing:
 - When a finished video exists, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
 - The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
+- When a WPS-compatible copy was produced, its `-wps` path alongside the primary narrated export.
 - For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.

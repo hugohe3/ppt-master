@@ -33,6 +33,25 @@ The shared stage is documented in [`workflows/stages/generate-audio.md`](../skil
 | `--recorded-narration audio` | Prepare PowerPoint's recorded timings and narrations. Requires complete per-slide audio and writes page auto-advance timings. Use this for narrated/video export. The re-export is saved as `exports/<name>_<timestamp>_narrated.pptx`. |
 | `--narration-audio-dir audio` | Lower-level audio embedding. Embeds matched files and allows partial coverage. Use this for testing or manual PowerPoint finishing. Exports get the same `_narrated` name suffix. |
 
+### WPS compatibility
+
+The narrated export uses PowerPoint's recorded-narration serialization:
+narration plays automatically in PowerPoint, but WPS leaves it unplayed (and
+tends to place it after all animations). When the Generate Stage 1 preference
+"narration WPS compatibility" is enabled (or you explicitly ask for it), the
+pipeline keeps the PowerPoint-native export untouched and additionally runs:
+
+```bash
+python3 skills/ppt-master/scripts/wps_narration_compat.py <final_narrated_pptx>
+```
+
+which writes `<name>_narrated-wps.pptx` next to it. In that copy each narrated
+slide's timing carries an explicit `mediacall` playFrom(0.0) effect as the
+first row of the main sequence, so WPS auto-plays narration on slide entry
+before the other effects. Only the slide timing XML changes; the rest of the
+package is byte-identical. See
+[`scripts/docs/wps-narration-compat.md`](../skills/ppt-master/scripts/docs/wps-narration-compat.md).
+
 ## Triggering it
 
 Just say so in chat after the deck has been exported:

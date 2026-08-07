@@ -52,6 +52,7 @@
             sec_audience: "Target audience",
             sec_communication: "What this presentation must accomplish",
             sec_delivery: "How it will be used and what must remain",
+            sec_wps_preference: "Narration delivery",
             sec_narrative: "Narrative direction",
             sec_visual: "Visual direction",
             sec_color: "Color scheme",
@@ -128,6 +129,8 @@
             proactive_custom_animations_desc: "Off by default. Strategist motion suggestions remain available; turn this on to have the agent create custom animations without a separate request.",
             proactive_narration_audio: "Proactively generate narration audio",
             proactive_narration_audio_desc: "Off by default. This raw choice does not rewrite the speaker-notes toggle; the Strategist resolves narration's effective notes dependency in the Design Spec.",
+            wps_narration_autoplay: "Narration WPS compatibility",
+            wps_narration_autoplay_desc: "Off by default. When on, the narrated export also gets a WPS-compatible copy whose narration auto-plays first on slide entry; the PowerPoint-native export stays untouched.",
             font_heading: "Heading",
             font_body: "Body",
             font_selection: "Font selection",
@@ -230,6 +233,7 @@
             sec_audience: "想定読者",
             sec_communication: "このプレゼンで何を実現するか",
             sec_delivery: "どう使い、何を残すか",
+            sec_wps_preference: "ナレーションの配信",
             sec_narrative: "ナラティブ方針",
             sec_visual: "ビジュアル方針",
             sec_color: "配色",
@@ -306,6 +310,8 @@
             proactive_custom_animations_desc: "初期設定はオフです。ストラテジストの動きの提案は維持され、オンにすると個別の依頼がなくてもカスタムアニメーションを作成します。",
             proactive_narration_audio: "ナレーション音声を能動的に生成",
             proactive_narration_audio_desc: "初期設定はオフです。この選択は発表者ノートの設定を書き換えません。ナレーションに必要なノートの有効状態は、ストラテジストが設計仕様で解決します。",
+            wps_narration_autoplay: "ナレーション WPS 互換",
+            wps_narration_autoplay_desc: "既定はオフ。オンにすると、ナレーション付き書き出しに加えて、ナレーションがスライド表示時に先頭で自動再生される WPS 互換コピーも生成します（PowerPoint ネイティブ版はそのまま残ります）。",
             font_heading: "見出し",
             font_body: "本文",
             font_selection: "フォント選択",
@@ -408,6 +414,7 @@
             sec_audience: "目标受众",
             sec_communication: "这份演示要完成什么",
             sec_delivery: "如何使用、之后留下什么",
+            sec_wps_preference: "旁白交付方式",
             sec_narrative: "叙事方向",
             sec_visual: "视觉方向",
             sec_color: "色彩方案",
@@ -484,6 +491,8 @@
             proactive_custom_animations_desc: "默认关闭。策略师的动画建议仍会保留；开启后，Agent 可在没有另行要求时实际制作自定义动画。",
             proactive_narration_audio: "主动生成旁白音频",
             proactive_narration_audio_desc: "默认关闭。这里保留原始选择，不改写演讲者备注开关；策略师会在设计规范中解析旁白所需的最终备注状态。",
+            wps_narration_autoplay: "旁白 WPS 兼容",
+            wps_narration_autoplay_desc: "默认关闭。开启后，除 PowerPoint 原生旁白导出外，还会另生成一版 WPS 兼容副本：旁白随页自动播放并排在首位；PowerPoint 原生版本保持不变。",
             font_heading: "标题",
             font_body: "正文",
             font_selection: "字体选择",
@@ -1018,6 +1027,22 @@
         choice.appendChild(copy);
         choice.addEventListener("click", onSelect);
         return choice;
+    }
+
+    function renderWpsPreference(host) {
+        var sec = section(3, "sec_wps_preference");
+        var opts = [{ id: "off", label: t("off_default") }, { id: "on", label: t("on") }];
+        var field = el("div", "subfield");
+        field.appendChild(el("div", "subfield-label", t("wps_narration_autoplay")));
+        field.appendChild(el("div", "toggle-desc", t("wps_narration_autoplay_desc")));
+        enumField(field, opts,
+            STATE.wps_narration_autoplay ? "on" : "off",
+            function () { return STATE.wps_narration_autoplay ? "on" : "off"; },
+            function (value) {
+                STATE.wps_narration_autoplay = value === "on";
+            });
+        sec.appendChild(field);
+        host.appendChild(sec);
     }
 
     function renderTemplateSelection(host) {
@@ -3273,6 +3298,7 @@
             renderCommunication(host);
             renderDelivery(host);
             renderCanvas(host);
+            renderWpsPreference(host);
             renderTemplateSelection(host);
         } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
@@ -3345,6 +3371,7 @@
         STATE.delivery_context = (REC.delivery_context && REC.delivery_context.value) || "";
         STATE.artifact_afterlife = (REC.artifact_afterlife && REC.artifact_afterlife.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
+        STATE.wps_narration_autoplay = booleanRecommendation("wps_narration_autoplay", false);
     }
 
     // Stage-2 fields are (re-)read from the recommendations. At boot they come from
@@ -3480,6 +3507,7 @@
     function stage1Payload() {
         var payload = communicationPayload();
         payload.stage = "stage1";
+        payload.wps_narration_autoplay = !!STATE.wps_narration_autoplay;
         payload.template_selection = {
             mode: TEMPLATE_MODE,
             selection_keys: TEMPLATE_MODE === "templates"

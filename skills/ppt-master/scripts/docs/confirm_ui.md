@@ -360,7 +360,7 @@ run remains inactive. An existing `result.json` outside the current `stage1` /
 
 | Recommendation file | Declared stage | Page renders | Button | On submit |
 |---|---|---|---|---|
-| `recommendations.stage1.json` + `template_options.json` | `"stage1"` | communication contract — content language; audience; open `communication_intent`; audience outcome; core message / primary delivery context + optional secondary use / artifact afterlife / `content_divergence` (all prose fields may be blank); canvas; free-design/template mode and conditional candidate selectors | **Confirm contract & template choice** | writes Stage-1 `result.json` plus `template_selection.json` in one submission; the page stays open and polls while the agent installs/completes the handoff |
+| `recommendations.stage1.json` + `template_options.json` | `"stage1"` | communication contract — content language; audience; open `communication_intent`; audience outcome; core message / primary delivery context + optional secondary use / artifact afterlife / `content_divergence` (all prose fields may be blank); canvas; narration WPS-autoplay preference (`wps_narration_autoplay`, default `false`); free-design/template mode and conditional candidate selectors | **Confirm contract & template choice** | writes Stage-1 `result.json` plus `template_selection.json` in one submission; the page stays open and polls while the agent installs/completes the handoff |
 | `recommendations.stage2.json` | `"stage2"` | complete deck solution and production — conditional natural-language template application, reading mode, mode, page count, visual direction, color, icons, typography, image usage/rendering, conditional AI acquisition path, formula policy, proactive notes/custom-animation/narration-audio toggles, generation mode, and Design Spec review toggle | **Confirm final plan** | writes `result.json` `{ stage: "final", status: "confirmed", <all fields> }`, then shuts the page down |
 
 In the UI branch, the AI authors Stage 1 without reading template candidates,
@@ -407,6 +407,7 @@ the communication recommendation.
   "recommend": {
     "canvas": "ppt169"
   },
+  "wps_narration_autoplay": false,
   "audience": { "value": "公司管理层，包括财务与产品负责人" },
   "communication_intent": {
     "value": "先汇报进展并暴露交付风险，再推动管理层决定下一阶段投入"
@@ -428,6 +429,8 @@ the communication recommendation.
 ```
 
 All seven Stage-1 prose values may be blank. `primary_language` is required canonical BCP-47. The server normalizes legacy English / Chinese / Japanese / Korean aliases, rejects `und` and Chinese without script/region, and carries it forward; `lang` is UI-only. Prose submits verbatim, including `""`. A profile's `{ "locked": true }` value is read-only, persisted, and stripped of that marker in final `result.json`.
+
+`wps_narration_autoplay` is the narration WPS-autoplay preference (default `false`): when `true` and the deck ends up with narration audio, the Generate PPTX route additionally runs `wps_narration_compat.py` on the narrated export so narration auto-plays first in WPS. It is a delivery preference only and is inert without narration.
 
 The common paths — inform / explain / persuade / decide / align / teach / report and account / mobilize / record and hand off — appear only as help text for `communication_intent`. They are not catalog ids and must not be emitted as a `primary_job` field.
 

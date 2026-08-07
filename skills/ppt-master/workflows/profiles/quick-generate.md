@@ -52,6 +52,13 @@ enable any ordinary capability when the request or deck benefits; use its
 normal inputs, flags, and prerequisites without asking for approval. Quick
 never creates or reads a root project Design Spec or lock to enable it.
 
+**Narration WPS compatibility**: off unless the request explicitly asks for
+WPS-compatible playback (for example "兼容 WPS" / "在 WPS 中自动播放旁白") or the
+current agent's active-context decision selects it. When narration is enabled
+with WPS compatibility, export normally first, then run
+`wps_narration_compat.py` on the finished narrated PPTX; keep the
+PowerPoint-native export as the primary artifact.
+
 **Mandatory — discover motion before deciding whether to load it**: scan this
 compact gate once; do not load the full execution reference when the defaults
 already fit.
