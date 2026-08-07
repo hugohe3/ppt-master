@@ -32,7 +32,7 @@ Create Template is the fixed user-facing entry and common contract. It selects o
 Select Create Brand only for identity-only intent. Select Create Style when the portable value is a communication method, evidence discipline, and visual direction but there is no official identity, page geometry, or prototype roster to retain. Select Create Layout only when identity remains downstream-selectable and the reusable artifact does not prescribe communication objectives, audience outcomes, a required narrative sequence, or scenario-specific starting content. Select Create Deck when structure carries brand identity or reusable application semantics. A complete source PPTX alone does not determine the kind: classify only the stable rules worth reusing. Ask one discriminator question only when the user's requested reusable artifact is genuinely ambiguous; once selected, enter that child workflow and do not repeat route selection inside its confirmation gate.
 
 See [`templates/README.md`](../templates/README.md) for the shared kind and
-workspace model. Downstream template application and fusion remain owned by
+workspace model. Downstream template application and installation remain owned by
 [`generate-pptx.md`](./generate-pptx.md) Step 3.
 
 ## Output scope — library (default) vs project

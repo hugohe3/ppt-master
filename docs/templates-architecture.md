@@ -4,7 +4,7 @@
 
 ---
 
-> This is the **architecture alignment document**. It defines the four template kinds at the data-model layer, the field sets of each `design_spec.md`, and the multi-path fusion + conflict resolution rules. Audience: contributors and AI workflows; answers "what should / shouldn't a template directory contain; how do they combine when multiple are supplied".
+> This is the **architecture alignment document**. It defines the four template kinds at the data-model layer, the field sets of each `design_spec.md`, and the multi-path installation + segment-ownership rules. Audience: contributors and AI workflows; answers "what should / shouldn't a template directory contain; how do they combine when multiple are supplied".
 >
 > For user-facing usage (how to trigger, how to pick), see [`templates-guide.md`](./templates-guide.md); not repeated here.
 
@@ -23,7 +23,7 @@ Every newly created Layout/Deck SVG is a complete preview with root Master/Layou
 
 The four are **parallel reusable-rule bundles**, not PowerPoint package-object types. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
-The fused project-level `design_spec.md` retains the existing capability label: `deck` when both identity and structure are present, `layout` when structure is present without identity, `brand` when identity is present without structure, and `style` only when direction/method is the sole reusable segment. Style combined with another kind does not change that kind label. For a project-local Brand + Layout composition, `kind: deck` means “both capabilities are installed”; it does not promote that composition into a reusable library Deck or invent application context. The current project's Stage-1 communication contract supplies that context. Strategist derives the template application plan internally; the confirmation page exposes no template mode controls.
+Each installed spec keeps its own `kind` and id; there is no merged project spec and no combined capability label. The routing consequence is derived while reading: structure comes from an installed Layout or Deck, identity from an installed Brand or Deck, direction from an installed Style. A project-local Brand + Layout pair therefore has both capabilities installed without being promoted into a reusable library Deck or inventing application context. The current project's Stage-1 communication contract supplies that context. Strategist derives the template application plan internally; the confirmation page exposes no template mode controls.
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -118,7 +118,7 @@ Before any final write, resolve the selected workspace root, require an empty `t
 
 ### Segment partition
 
-To make multi-path fusion override cleanly, every field belongs to a named segment. **Default fusion granularity is whole-segment replacement**:
+To make multi-path ownership resolve cleanly, every field belongs to a named segment. **A resolved segment is applied whole**:
 
 | Segment | Sections it contains | Override owner |
 |---|---|---|
@@ -379,15 +379,39 @@ These indexes cover library scope only. A project-root workspace is intentionall
 
 ---
 
-## 4. Multi-path fusion and conflict resolution
+## 4. Multi-path installation and segment ownership
 
-### Segment ownership (implicit dispatch)
+### Installation copies; it never merges
 
 When Stage 1 confirms registered and/or specified workspace roots, the
-post-confirmation apply stage parses every root's real `kind`, resolves each
-template segment independently, and writes one
-`<project>/templates/design_spec.md`. `library` / `explicit` records discovery
-provenance only and never changes ownership:
+post-confirmation apply stage parses every root's real `kind` and installs each
+selected workspace as **its own** project-local file:
+
+```
+<project>/templates/design_spec.brand.mckinsey.md
+<project>/templates/design_spec.style.consulting-decision.md
+<project>/templates/design_spec.layout.presentation_core.md
+```
+
+The body of each file is copied unchanged; only one provenance line is
+prepended under its H1:
+
+```markdown
+> **Installed from**: `skills/ppt-master/templates/brands/mckinsey/` (library)
+```
+
+There is no merged project spec and no combined capability label. A bare
+`<project>/templates/design_spec.md` means something different: the project is
+itself a template workspace produced by project-scope Create Template, and it
+is never consumed as an installed template.
+
+`library` / `explicit` records discovery provenance only and never changes
+ownership.
+
+### Segment ownership is resolved while reading
+
+The consuming role — Default final Stage 2, or Quick's agent before authoring —
+reads every installed spec and resolves these segments in context:
 
 | Segment | Starting owner |
 |---|---|
@@ -402,6 +426,12 @@ Style alone, or Style with Brand, uses flat page authoring. Style with a Layout
 or Deck follows the selected structural source. A Style never upgrades or
 downgrades structure by itself.
 
+**An owned segment governs visual weight, not only values.** When a segment
+owner declares that a value should dominate, recede, or stay rare, that
+instruction carries the same authority as the value itself — a Style's
+whitespace or composition tendency never demotes a Brand's declared dominant
+color into an incidental accent.
+
 Before applying a Layout override to a Deck, compare the Deck's reusable
 application roles against the Layout's page roles, slot types, and capacity.
 Before combining Style with Layout/Deck, verify that its communication method
@@ -410,54 +440,48 @@ structure. On mismatch, surface the conflicting template segments; do not
 silently mix fields or retain a promise that the selected structure cannot
 satisfy. Current-project fit begins only in final Stage 2 after Stage 1 is confirmed.
 
-### Whole-segment replacement (default granularity)
+### Whole-segment application (default granularity)
 
-Fusion defaults to **whole-segment integer replacement** — e.g. on deck + brand, the entire Color Scheme / Typography / Logo / Voice / Icon Style five sections come from brand. **No implicit field-level mixing** (you will never get "primary from brand, secondary from deck").
+A resolved segment is applied **whole** — e.g. on deck + brand, the entire
+Color Scheme / Typography / Logo / Voice / Icon Style set comes from brand.
+**No implicit field-level mixing** (you will never get "primary from brand,
+secondary from deck").
 
-Field-level micro-adjustment goes through the existing Strategist confirmation stage path — the user says in chat "use the anthropic brand but change primary to #FF0000", and Strategist adjusts fields e/g. Step 3 fusion does not add field-level syntax.
+Field-level micro-adjustment goes through the existing Strategist confirmation
+stage path — the user says in chat "use the anthropic brand but change primary
+to #FF0000", and Strategist adjusts fields e/g. Installation adds no
+field-level syntax.
 
-### Same-kind multiple paths = git-style conflict resolution
+### Same-kind multiple paths
 
-User supplies `brands/anthropic` + `brands/google` (or any same-kind permutation):
+Several roots of one kind install as separate files distinguished by their
+`<id>`, exactly like different kinds:
 
 ```
-AI: You supplied two brands. Detected segment-level conflicts:
-    - Color Scheme (Anthropic orange-red vs Google multi-color)
-    - Typography (Styrene/AnthropicSans vs GoogleSans/Roboto)
-    - Logo (Anthropic mark vs Google mark)
-    - Voice & Tone (restrained vs friendly)
-    - Icon Style (stroke vs filled)
-
-    (a) all from Anthropic / (b) all from Google / (c) pick per segment?
+<project>/templates/design_spec.brand.anthropic.md
+<project>/templates/design_spec.brand.google.md
 ```
 
 Rules:
-- No implicit ordering — every cross-source segment difference is reported as a conflict
-- Only when the user picks `(c)` does AI walk through each segment
+- No implicit ordering, and no path-order priority
+- The consuming role reads all of them and follows the latest explicit user
+  instruction first
+- Where the user gave no instruction and two same-kind specs make materially
+  incompatible claims over the same segment, surface the conflict in chat
+  rather than silently averaging them
 - Field-level conflict resolution is out of scope — segment-level only
-- `style × 2`, `layout × 2`, `deck × 2`, `brand × 2` handled the same way
-- Max two of any one kind (more than that — ask the user to converge in chat first)
+- `style x 2`, `layout x 2`, `deck x 2`, `brand x 2` behave the same way
 
 The Default template page already narrows this space: Brand/Style/Layout/Deck each have
 one registered single-select dropdown, and one additional specified-root
-dropdown may contribute a second workspace of its parsed kind. The server
-enforces those limits; chat-based composition retains the general maximum of
-two per kind.
+dropdown may contribute a second workspace of its parsed kind.
 
-### Provenance
+### Traceability
 
-When fusion happens (any multi-path case), the resulting `<project>/templates/design_spec.md` carries a provenance block immediately under its H1:
-
-```markdown
-> **Fused from:**
-> - deck: `templates/decks/中国电信/` (base)
-> - brand: `templates/brands/anthropic/` (identity override)
-> - style: `templates/styles/consulting_analytical/` (direction/method)
-> - layout: `templates/layouts/presentation_core/` (structure override)
-> - conflicts resolved: Color Scheme from anthropic (user picked a)
-```
-
-This lets both AI and humans trace which segment came from where.
+Because nothing is merged, the installed set is self-describing: the file name
+carries kind and id, the provenance line carries the source root, and the body
+is byte-identical to the source spec. Tracing which segment came from where is
+a directory listing, not a diff.
 
 ---
 
@@ -487,7 +511,7 @@ produce a new workspace before generation continues. The `kind` field decides
 | `kind: style` | Install the spec-only direction/method workspace; require no SVG roster and keep generated pages flat |
 | `kind: layout` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
 | `kind: deck` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
-| Multi-path | Fuse one `design_spec.md` per the table above, then merge the existing portable roots after resolving collisions |
+| Multi-path | Install one `design_spec.<kind>.<id>.md` per selected workspace, then merge the existing portable asset roots after rejecting collisions |
 | Same-kind multiple | Run the "git-style conflict resolution" prompt above to determine the merge |
 
 Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, the apply stage consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
@@ -514,7 +538,7 @@ In library scope, the frontmatter `kind` field determines which workspace parent
 
 ## 7. Non-goals (rejection list paired with this framing)
 
-- **No field-level override syntax in the fusion layer** — field-level adjustment uses the existing Strategist confirmation stage path
+- **No field-level override syntax in the installation layer** — field-level adjustment uses the existing Strategist confirmation stage path
 - **No batch conflict resolution for three or more of the same kind** — ask the user to narrow it down in chat first
 - **No bilingual name mapping table** — templates are named in their brand / scenario's native language (Chinese templates use Chinese names; English templates use snake_case); no forced unification
 - **No output-scope structure fork or CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes declare `native_structure_mode: structured`, while Brand/Style remain roster-free

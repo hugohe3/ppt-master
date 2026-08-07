@@ -4,7 +4,7 @@
 
 ---
 
-> 本文是**架构对齐文档**，定义“模板”在数据模型层面的四种身份、各自的 `design_spec.md` 字段集、以及多路径合成与冲突解决规则。面向贡献者与 AI 工作流，回答“一个模板目录里应该写什么、不写什么；多个模板同时给时怎么合成”。
+> 本文是**架构对齐文档**，定义“模板”在数据模型层面的四种身份、各自的 `design_spec.md` 字段集、以及多路径安装与片段所有权规则。面向贡献者与 AI 工作流，回答“一个模板目录里应该写什么、不写什么；多个模板同时给时怎么协同”。
 >
 > 用户视角的用法（怎么选、怎么提供精确路径）见 [`templates-guide.md`](./templates-guide.md)；本文不重复。
 
@@ -23,7 +23,7 @@
 
 四者是**四种并列的可复用规则包**，不是 PowerPoint 包对象类型。在全局库范围内，物理目录与 frontmatter `kind` 字段双向对齐：
 
-多路径合成后的项目级 `design_spec.md` 沿用能力标签：同时具备身份段和结构段时为 `deck`，只有结构段时为 `layout`，只有身份段时为 `brand`，只有方向/方法段时才为 `style`。Style 与其他 kind 合成时不改变原有能力标签。对于项目内临时组合的 Brand + Layout，`kind: deck` 只表示“已安装两种能力”，不会把组合自动提升为可注册的 Deck，也不会凭空生成应用语境；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 在内部生成模板应用计划，确认页不显示模板模式控件。
+每份已装 spec 各自保留自己的 `kind` 与 id；不存在合并后的项目 spec，也没有组合出来的能力标签。路由结果在读取时推导：结构来自已装的 Layout 或 Deck，身份来自已装的 Brand 或 Deck，方向来自已装的 Style。项目内临时组合的 Brand + Layout 因此只是“两种能力都已安装”，不会被自动提升为可注册的 Deck，也不会凭空生成应用语境；当前项目的 Stage 1 沟通契约负责提供场景。Strategist 在内部生成模板应用计划，确认页不显示模板模式控件。
 
 ```yaml
 # templates/brands/anthropic/templates/design_spec.md
@@ -105,7 +105,7 @@ native_structure_mode: structured
 
 ### 四段的字段切分
 
-为了让多路径合成能干净覆盖，所有字段按段归属，**段级整段替换是默认粒度**：
+为了让多路径所有权干净解析，所有字段按段归属，**片段整段应用是默认粒度**：
 
 | 段 | 包含的章节 | 归属（覆盖优先级）|
 |---|---|---|
@@ -336,73 +336,90 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ---
 
-## 四、多路径合成与冲突解决
+## 四、多路径安装与片段所有权
 
-### 片段所有权（隐式触发）
+### 安装只复制，不合并
 
-Step 3 确认已注册和/或指定工作区根目录后，会解析每个 root 的真实
-`kind`，再分片段写入一份 `<project>/templates/design_spec.md`。
-`library` / `explicit` 只记录发现来源，不改变所有权：
+Step 3 确认已注册和/或指定工作区根目录后，会解析每个 root 的真实 `kind`，
+并把每个选中的工作区安装为**各自独立**的一份项目内文件：
+
+```
+<project>/templates/design_spec.brand.mckinsey.md
+<project>/templates/design_spec.style.consulting-decision.md
+<project>/templates/design_spec.layout.presentation_core.md
+```
+
+正文原样复制，只在 H1 下补一行来源标注：
+
+```markdown
+> **Installed from**: `skills/ppt-master/templates/brands/mckinsey/` (library)
+```
+
+不存在合并后的项目 spec，也没有组合出来的能力标签。裸的
+`<project>/templates/design_spec.md` 含义完全不同：那表示该项目**自身就是**
+project scope 的 Create Template 产物，永远不会被当作已安装模板消费。
+
+`library` / `explicit` 只记录发现来源，不改变所有权。
+
+### 片段所有权在读取时解析
+
+消费方——Default 的最终 Stage 2，或 Quick 在创作前的当前 agent——读取全部已装
+spec，并在上下文中解析下列片段：
 
 | 片段 | 起始所有者 |
 |---|---|
-| 身份 | Brand，其次 Deck，否则留到最终 Stage 2；Style 只提供 fallback 候选 |
-| 方向/方法 | Style，否则留到最终 Stage 2；Deck 的真实原型与 Signature 事实只提供兼容性依据 |
-| 结构 | 兼容 Layout，其次 Deck，否则留到最终 Stage 2 / 自由设计 |
-| 可复用应用语境 | 仅 Deck；保留供最终 Stage 2 对照，绝不充当当前项目的应用契约 |
+| Identity | Brand，其次 Deck；都没有则留到最终 Stage 2；Style 只提供候选回退值 |
+| 方向／方法 | Style；没有则留到最终 Stage 2；Deck 的实际原型与 Signature 事实只用于兼容性判断 |
+| Structure | 兼容的 Layout，其次 Deck；都没有则留到最终 Stage 2 或自由设计 |
+| 可复用应用语境 | 仅 Deck 拥有；保留供最终 Stage 2 比对，绝不作为当前项目的应用契约 |
 
-用户当前明确指令和最终确认高于所有起始所有者。Brand 身份高于 Style
-的色彩/字体 fallback。Style-only 或 Style + Brand 使用 flat 创作；Style
-与 Layout/Deck 合成时沿用所选结构源。Style 自身不升级或降级结构。
+当前用户指令与最终确认覆盖任何起始所有者。Brand 身份对 Style 的色彩／字体回退值
+始终具有权威性。Style 单独、或 Style 加 Brand，走扁平页面创作；Style 与 Layout
+或 Deck 同装时follow所选结构来源。Style 自身不会升级或降级结构。
 
-Layout 覆盖 Deck 前，必须把 Deck 的可复用应用角色与 Layout 的页面角色、
-槽位类型和容量对照；Style 与 Layout/Deck 合成前，也要确认其沟通方法和
-构图预期能够被该可复用语境与结构兑现。不兼容时显式报告模板片段冲突，
-不能静默混合字段或保留一份当前结构无法兑现的承诺。当前项目的适配只在
-Stage 1 确认后的最终 Stage 2 开始。
+**被拥有的片段管的是视觉权重，不只是取值。** 当片段所有者声明某个值应当主导、
+退居次要或保持稀有时，该指令与取值本身具有同等权威——Style 的留白或构图倾向
+绝不能把 Brand 声明的主导色降格为偶然点缀。
 
-### 段级整段替换（默认粒度）
+用 Layout 覆盖 Deck 结构前，先比对 Deck 的可复用应用角色与 Layout 的页面角色、
+槽位类型与容量。把 Style 与 Layout／Deck 组合前，先确认其沟通方法与构图预期
+能够被该可复用语境与结构兑现。不兼容时显式报告模板片段冲突，不能静默混合字段
+或保留一份当前结构无法兑现的承诺。当前项目的适配只在 Stage 1 确认后的最终
+Stage 2 开始。
 
-合成默认是**段级整段替换**——例如 deck + brand 时，整个 Color Scheme / Typography / Logo / Voice / Icon Style 五段从 brand 拿，**不做字段级混搭**（即不会发生"primary 从 brand 拿、secondary 从 deck 拿"这类隐式混合）。
+### 段级整段应用（默认粒度）
 
-字段级微调走 策略师确认阶段这条已有路径——用户在 chat 里说"用 anthropic brand，但 primary 改成 #FF0000"，由 Strategist 在 e/g 现场调整，不在 Step 3 的 fusion 层加字段级语法。
+解析出的片段**整段应用**——例如 deck + brand 时，整个 Color Scheme / Typography /
+Logo / Voice / Icon Style 五段从 brand 拿，**不做字段级混搭**（即不会发生
+"primary 从 brand 拿、secondary 从 deck 拿"这类隐式混合）。
 
-### 同类多份 = git 冲突解决
+字段级微调走策略师确认阶段这条已有路径——用户在 chat 里说"用 anthropic brand，
+但 primary 改成 #FF0000"，由 Strategist 在 e/g 现场调整；安装层不加字段级语法。
 
-用户给 `brands/anthropic` + `brands/google`（同类多份的任意排列组合）：
+### 同类多份
+
+同一 kind 的多个 root 按 `<id>` 区分，各自安装为独立文件，与不同 kind 完全一致：
 
 ```
-AI: 你给了两个 brand，检测到段级冲突：
-    - Color Scheme（Anthropic 橙红 vs Google 多色）
-    - Typography（Styrene/AnthropicSans vs GoogleSans/Roboto）
-    - Logo（Anthropic 标 vs Google 标）
-    - Voice & Tone（restrained vs friendly）
-    - Icon Style（stroke vs filled）
-
-    要 (a) 全部按 Anthropic / (b) 全部按 Google / (c) 逐段挑？
+<project>/templates/design_spec.brand.anthropic.md
+<project>/templates/design_spec.brand.google.md
 ```
 
-- 默认无隐式顺序，所有冲突都问
-- 仅在用户选 (c) 才进入逐段问答；不做字段级冲突解决
+- 无隐式顺序，也不按路径先后定优先级
+- 消费方读取全部，优先遵循最新的明确用户指令
+- 用户未给指令、且两份同类 spec 对同一片段做出实质冲突的主张时，在 chat 中显式
+  提出冲突，而不是静默取中
+- 不做字段级冲突解决——只到片段级
 - `style × 2`、`layout × 2`、`deck × 2`、`brand × 2` 同处理
-- 每类最多两份（再多让用户先在 chat 里收敛）
 
 Default 模板页面已经把组合空间收窄：Brand/Style/Layout/Deck 各有一个已注册模板
 单选下拉框，另有一个指定地址下拉框；指定地址按解析出的 kind，最多给该类
-增加第二份。服务端强制同一限制；聊天组合仍保留每类最多两份的通用边界。
+增加第二份。
 
-### Provenance 记录
+### 可追溯性
 
-合成后的 `<project>/templates/design_spec.md` 顶部必须加：
-
-```markdown
-> **Fused from:**
-> - deck: `templates/decks/中国电信/` （base）
-> - brand: `templates/brands/anthropic/` （identity 段覆盖）
-> - style: `templates/styles/consulting_analytical/` （方向/方法）
-> - layout: `templates/layouts/presentation_core/` （structure 段覆盖）
-> - conflicts resolved: Color Scheme from anthropic（用户选 a）
-```
+因为不做任何合并，已装集合本身即自描述：文件名带 kind 与 id，来源行带源 root，
+正文与源 spec 逐字节一致。追溯哪一段来自哪里，看目录列表即可，不需要做 diff。
 
 让 AI 和人类都能回溯每段来自哪。
 
@@ -423,8 +440,8 @@ apply 阶段解析 `<workspace>/templates/design_spec.md`；为兼容目录形�
 | `kind: style` | 安装仅含 spec 的方向/方法工作区；要求无 SVG roster，并保持生成页面为 flat |
 | `kind: layout` | 把工作区 `templates/` 及实际存在的 `images/`、`icons/` 映射到项目同名目录；忽略 `exports/` |
 | `kind: deck` | 把工作区 `templates/` 及实际存在的 `images/`、`icons/` 映射到项目同名目录；忽略 `exports/` |
-| 多路径 | 按上表合成单份 `design_spec.md`，解决冲突后再合并实际存在的可移植目录 |
-| 同类多份 | 按上节"git 冲突解决"问答，得到合成结果 |
+| 多路径 | 每个选中工作区安装为一份 `design_spec.<kind>.<id>.md`，拒绝碰撞后再合并实际存在的可移植资产目录 |
+| 同类多份 | 按 `<id>` 各自成文件，读取时按上节规则解析所有权 |
 
 位图统一进入工作区 `images/`，模板 SVG 通过 `../images/` 引用。如果显式输入根目录本来就是目标项目根目录，apply 阶段原地消费：不得复制到自身，也不得再次移动素材。除此之外，完整核心工作区是可移植的：可以从项目根复制到全局库根、从全局库复制到项目，或从另一个工作区直接复用，而不改变内部结构。注册是唯一与范围相关的步骤。
 
@@ -450,8 +467,7 @@ apply 阶段解析 `<workspace>/templates/design_spec.md`；为兼容目录形�
 
 ## 七、不做（与本文 framing 配套的拒绝列表）
 
-- **不在 fusion 层支持字段级覆盖语法** —— 字段级微调走 策略师确认阶段这条已有路径
-- **不为同类三份及以上设计批量冲突解决** —— 用户先在 chat 里收敛到两份
+- **不在安装层支持字段级覆盖语法** —— 字段级微调走 策略师确认阶段这条已有路径
 - **不引入双名映射表** —— 模板命名按其品牌/场景母语（中文模板用中文名，英文模板用 snake_case），不强制统一
 - **不为输出范围新增结构分支或 CLI flag** —— 输出范围是 `create-template` 简报里的执行选择；两种范围的 Layout/Deck 都声明 `native_structure_mode: structured`，Brand/Style 均无 roster
 - **不增加 Theme kind** —— Theme 投影 Brand、Deck 或当前项目解析后的身份；Style fallback 不是身份真值

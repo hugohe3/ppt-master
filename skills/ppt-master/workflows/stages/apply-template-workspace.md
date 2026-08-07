@@ -1,5 +1,5 @@
 ---
-description: Generate-PPTX runbook for validating, installing, or fusing selected Brand, Style, Layout, and Deck workspaces.
+description: Generate-PPTX runbook for validating and installing selected Brand, Style, Layout, and Deck workspaces as separate project-local specs.
 ---
 
 # Apply Template Workspace Stage
@@ -35,7 +35,7 @@ Read library choices only from `brands_index.json`, `styles_index.json`,
 promote an unregistered directory into the UI catalog. An explicit root remains
 valid without index membership; exact equality with a registered root may be
 reported as `library`. The label changes discovery provenance only, never schema
-validation, fusion precedence, or installation behavior.
+validation, segment precedence, or installation behavior.
 
 **Selection cardinality**: Default Stage 1 permits one registered root per kind plus one explicit root; its explicit root may pair with a same-kind library root under §5.2. Quick has no page or catalog selection and accepts at most one supplied exact root per declared kind (four roots total). Kinds compose freely in both profiles. Reject larger default receipts server-side; require an oversized or duplicate-kind Quick input to converge in chat before installation, never through Confirm UI.
 
@@ -78,12 +78,32 @@ Before copying a Deck or Layout workspace, inspect every SVG root and slot. Bran
 - A composite region uses an explicit `object` proxy; a zero-slot Layout is valid.
 - The complete SVG contract is current. Reject a legacy semantic contract instead of repairing it in the target project.
 
-## 4. Install a Single Workspace
+## 4. Install Each Workspace Separately
+
+**Hard rule — one installed spec file per source workspace**: Never merge two
+source specs into one file. Install each selected workspace's `design_spec.md`
+as its own project-local file named `design_spec.<kind>.<id>.md`, where `<id>`
+is that spec's frontmatter `brand_id` / `style_id` / `layout_id` / `deck_id`.
+Copy its body unchanged. Several workspaces of the same kind therefore coexist
+as separate files. Segment precedence is resolved by the consuming role while
+reading (§5), never by rewriting spec content at install time.
+
+| Installed file | Meaning |
+|---|---|
+| `templates/design_spec.<kind>.<id>.md` | A template workspace installed into this project |
+| `templates/design_spec.md` | This project *is itself* a template workspace produced by project-scope Create Template; it is not an installed template and is never consumed as one |
+
+Prepend exactly one provenance line under each installed file's H1, then leave
+the rest of the document untouched:
+
+```markdown
+> **Installed from**: `skills/ppt-master/templates/brands/mckinsey/` (library)
+```
 
 | Kind | Install behavior |
 |---|---|
 | `brand` | Install `templates/` plus existing `images/` and `icons/`; ignore `exports/`. Identity is constrained; structure remains free. |
-| `style` | Install `templates/design_spec.md` only. Ignore sibling project scaffolding and reject a library Style carrying asset/review payloads. Expose reusable direction/method without identity truth, page prototypes, or native structure. Default Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. Quick always realizes the resolved combination as flat pages. A Style workspace never activates visual review. |
+| `style` | Install its `design_spec.md` only. Ignore sibling project scaffolding and reject a library Style carrying asset/review payloads. Expose reusable direction/method without identity truth, page prototypes, or native structure. Default Style-only and Style + Brand derive `template_reuse_scope: style` and stay flat; Style + Layout/Deck follows the selected structure plan. Quick always realizes the resolved combination as flat pages. A Style workspace never activates visual review. |
 | `layout` | Install the same portable roots. Expose the actual reusable structure; Default Strategist later inspects the prototypes, while Quick's current agent uses them for immediate flat authoring decisions in active context. |
 | `deck` | Install the same portable roots. Expose descriptive application context, identity, structure, and the actual prototype roster; Default Strategist or Quick's current agent compares them with the current communication contract and content, then derives the applicable plan. |
 
@@ -96,9 +116,9 @@ For a compatible legacy-flat package, route SVG/spec/non-bitmaps to project `tem
 3. Reject every destination collision before writing.
 4. Write the accepted mapping once; never use recursive copy as an implicit conflict policy.
 
-If the normalized source root equals the target project root, consume it in place and copy nothing. An in-place workspace cannot participate in multi-path fusion. Ignore source `exports/`; it contains review artifacts, not portable template inputs. Empty optional roots remain absent.
+If the normalized source root equals the target project root, consume it in place and copy nothing. An in-place workspace cannot be combined with other installed roots. Ignore source `exports/`; it contains review artifacts, not portable template inputs. Empty optional roots remain absent.
 
-**Hard rule — project-local consumer boundary**: After installation/fusion,
+**Hard rule — project-local consumer boundary**: After installation,
 Default template-aware Strategist work in final Stage 2, Quick's current
 agent before direct authoring, and every later role read only
 `<project_path>/templates/` and the project-local `images/` / `icons/` pools. The original library or external root
@@ -110,13 +130,26 @@ Quick instead realizes the selected prototypes into complete flat, Slide-local
 SVGs and never writes `page_layouts` or Master/Layout/placeholder metadata.
 
 
-## 5. Fuse Multiple Workspace Paths
+## 5. Segment Precedence Is Resolved While Reading
 
-Fuse different kinds or, in Default only, at most two same-kind roots. Resolve template segment/asset conflicts before writing. Never reinterpret, predict, or revise the confirmed Stage-1 communication contract here. Default obtains any additional material conflict decision through the active chat channel after Stage 1; this conditional resolution does not reopen template selection. Quick follows explicit conflict instructions; an unresolved material compatibility conflict is a hard prerequisite handled in chat, never by launching Confirm UI or by using path order.
+Installation copies specs; it never merges them. The consuming role — Default
+final Stage 2 through [`strategist-template.md`](../../references/strategist-template.md),
+or Quick's current agent before authoring — reads **every** installed
+`design_spec.<kind>.<id>.md` and resolves the segments below in context. Asset
+collisions are still rejected at install time (§4); segment conflicts are a
+reading decision, not a write-time one.
+
+Never reinterpret, predict, or revise the confirmed Stage-1 communication
+contract here. Default obtains any additional material conflict decision
+through the active chat channel after Stage 1; this does not reopen template
+selection. Quick follows explicit conflict instructions; an unresolved material
+compatibility conflict is a hard prerequisite handled in chat, never by
+launching Confirm UI or by using path order.
 
 ### 5.1 Different Kinds
 
-Resolve four whole template segments. This table selects the installed starting owner; current user instructions and the caller's later consuming plan still govern project use:
+Resolve four whole template segments. This table names the starting owner;
+current user instructions and the consuming plan still govern project use:
 
 | Segment | Starting owner |
 |---|---|
@@ -125,39 +158,48 @@ Resolve four whole template segments. This table selects the installed starting 
 | Reusable application context | Deck only when present. Preserve it for the consuming comparison; it never becomes the current project's application contract. |
 | Direction / method | Style when present, otherwise unresolved until the consuming plan. Actual Deck prototypes and Signature facts may inform compatibility, but Deck does not own the Style-only method segment. |
 
-Replace each selected segment wholesale; do not mix its fields implicitly. Brand or Deck identity replaces any identity-adjacent defaults carried by Style. A Style direction may adapt to that resolved identity, but cannot relabel its candidates as official brand facts.
+Apply each selected segment wholesale; do not mix its fields implicitly. Brand or Deck identity overrides any identity-adjacent defaults carried by Style. A Style direction may adapt to that resolved identity, but cannot relabel its candidates as official brand facts.
+
+**Hard rule — an owned segment governs visual weight, not only values**: when a
+segment owner declares how a value should dominate, recede, or stay rare, that
+instruction carries the same authority as the value itself. A Style's
+composition or whitespace tendency never demotes a Brand's declared dominant
+color to an incidental accent.
 
 Before Layout overrides Deck structure, compare Deck's reusable roles with Layout roles, slots, and capacity. On mismatch, offer exactly three remedies: retain Deck structure, select another Layout, or omit Deck. Default resolves only this template-to-template conflict and must not reinterpret the confirmed Stage-1 communication contract; Quick compares against the current request/content and treats any unresolved material mismatch as a chat hard prerequisite.
 
 Before Style overlays Deck guidance, verify that its method serves Deck's reusable context and fits the selected structure. On mismatch, require omitting Style or choosing a compatible Style/structure; never silently weaken a segment. Default final Stage 2 separately checks the result against the confirmed project contract; Quick checks it against the current request/content before authoring.
 
-Field-level micro-adjustments such as a primary-color override are not workspace fusion. Default carries them into the normal final Stage-2 confirmation fields; Quick treats explicit adjustments as direct active-context authoring constraints.
+Field-level micro-adjustments such as a primary-color override are not a workspace selection. Default carries them into the normal final Stage-2 confirmation fields; Quick treats explicit adjustments as direct active-context authoring constraints.
 
 ### 5.2 Same Kind
 
-Default only: do not use path order as priority. Report every segment-level difference and ask the user to choose workspace A, workspace B, or select per segment. Only the per-segment choice opens a segment-by-segment resolution. Two Style workspaces conflict over the complete Direction / method segment. Do not resolve field-level conflicts here. Three or more same-kind paths require the user to converge to at most two. Quick accepts one root per kind and therefore never enters this subsection.
+Several roots of one kind install as separate files distinguished by their
+`<id>`, exactly like different kinds. Do not merge them and do not use path
+order as priority. The consuming role reads all of them and decides which
+governs each part of the owned segment, following the latest explicit user
+instruction first; where the user gave none and two same-kind specs make
+materially incompatible claims over the same segment, surface the conflict in
+chat rather than silently averaging them. Two Style workspaces contend over the
+complete Direction / method segment; two Brand workspaces contend over
+Identity.
 
-### 5.3 Fused Provenance
+### 5.3 Installed Set
 
-Write one final `<project>/templates/design_spec.md`. Immediately under its H1, record every source kind/path, base or override role, and resolved segment conflict with its explicit authority:
+Each installed file keeps its own frontmatter `kind` and `<id>` from its source
+workspace; nothing is relabelled. There is no combined capability label and no
+merged spec: the installed set is exactly what was selected, and the routing
+consequence is derived while reading — structure comes from an installed Layout
+or Deck, identity from an installed Brand or Deck, direction from an installed
+Style. A project-local Brand + Layout pair does not become a reusable library
+Deck; its application remains current-project context.
 
-```markdown
-> **Fused from:**
-> - deck: `templates/decks/example/` (base)
-> - brand: `templates/brands/example/` (identity override)
-> - style: `templates/styles/example/` (direction/method override)
-> - layout: `templates/layouts/example/` (structure override)
-> - conflicts resolved: Color Scheme from brand (user selected A)
-```
-
-Single-path installs do not add provenance. Set fused frontmatter `kind` from the non-Style capability: `deck` when identity and structure are both present, `layout` for structure only, or `brand` for identity only. Use `kind: style` only for Style-only input. Adding Style to Brand, Layout, Deck, or Brand + Layout does not change that existing capability label; its Direction / method ownership stays explicit in the fused provenance and body. A project-local Brand + Layout fusion uses `kind: deck` for routing but is not automatically a reusable library Deck; its application remains current-project context.
-
-**Completion receipt**: Report `roots=<normalized roots>; sources=<library|explicit per root>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application_context:<owner>,direction:<owner>; install=<in-place|copied>; final_spec=<project_path>/templates/design_spec.md`.
+**Completion receipt**: Report `roots=<normalized roots>; sources=<library|explicit per root>; kinds=<kind per root>; segments=identity:<owner>,structure:<owner>,application_context:<owner>,direction:<owner>; install=<in-place|copied>; installed_specs=<comma-separated design_spec.<kind>.<id>.md>`.
 
 ## ✅ Template Workspace Applied
 
 - [x] Every selected input was an index-derived library root or an exact explicit/Create Template root satisfying a listed workspace contract
 - [x] Every kind schema passed preflight; structured SVG checks ran only for Layout/Deck inputs
-- [x] All collisions and fusion conflicts were resolved before one atomic install
+- [x] All destination collisions were rejected before one atomic install; no two source specs were merged into one file
 - [x] `<project_path>/templates/` and any portable sibling assets are complete and are the only downstream template source
 - [ ] **Next**: Default completes the template-selection handoff and continues [`generate-pptx.md`](../generate-pptx.md) Step 4 Stage 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2

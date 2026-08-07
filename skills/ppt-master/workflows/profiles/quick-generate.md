@@ -25,7 +25,7 @@ Page count alone never activates or blocks this profile.
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
 | Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before the referencing SVG is authored |
-| Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; an installed `templates/design_spec.md` remains template input |
+| Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; installed `templates/design_spec.<kind>.<id>.md` files remain template input |
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
 
@@ -180,15 +180,20 @@ For the direct-template branch, continue with
 [`apply-template-workspace`](../stages/apply-template-workspace.md) after
 initialization against only the preflighted roots. The user's request is the
 selection authority; there is no template confirmation receipt or handoff. The
-stage installs and fuses the workspaces into `<project_path>/templates/` plus
+stage installs each workspace as its own spec file under `<project_path>/templates/` plus
 the project-local asset pools. All later reads use that installed state, never
 the original roots.
 
-Before writing P01, read the installed template spec once and, for Layout/Deck,
-inspect the relevant SVG prototypes. Apply Brand identity, Style
-direction/method, the selected structure owner's useful prototype geometry,
-and Deck application context directly in the active context under the existing
-segment precedence. Follow explicit instructions about literal or visual-only
+Before writing P01, read every installed
+`templates/design_spec.<kind>.<id>.md` once and, for Layout/Deck, inspect the
+relevant SVG prototypes. Apply Brand identity, Style direction/method, the
+selected structure owner's useful prototype geometry, and Deck application
+context directly in the active context under the existing segment precedence
+([`apply-template-workspace`](../stages/apply-template-workspace.md) §5). A
+segment owner's instruction about how a value should dominate, recede, or stay
+rare binds as strongly as the value itself; a Style composition or whitespace
+tendency never demotes a Brand's declared dominant color to an incidental
+accent. Follow explicit instructions about literal or visual-only
 use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
 while authoring. Persist no separate template-application artifact. If no
 template was installed, make the same design choices freely.
@@ -377,6 +382,7 @@ or lock.
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
 - [x] Resolved SVG pages and their project-local references exist
+- [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
 - [x] The lockless final SVG quality report passes and matches the current SVGs
 - [x] One native PPTX exists under `exports/` or the explicit output path

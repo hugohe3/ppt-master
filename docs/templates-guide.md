@@ -90,7 +90,7 @@ separate sidecar decision. The communication recommendation is authored only
 from the current request, source facts, conversation constraints, and project
 initialization; candidate metadata, selected roots, installed content, and
 template canvas cannot influence it. After the combined confirmation, a
-non-free choice runs the common apply stage and installs/fuses the selected
+non-free choice runs the common apply stage and installs the selected
 workspaces into the project's `templates/`, `images/`, and `icons/`. Final
 Stage 2 then compares the confirmed communication contract with that installed
 state; `template_application` describes **how** to use it and never chooses
@@ -148,7 +148,7 @@ These four indexes are the complete registered-library source for the Default
 Stage-1 template controls and chat discovery; directories are never scanned.
 Ask "what templates are available?" for a readable list with exact workspace
 paths. The kind-specific READMEs define their contracts. Full data model +
-fusion / conflict-resolution rules: [`templates-architecture.md`](./templates-architecture.md).
+installation / segment-ownership rules: [`templates-architecture.md`](./templates-architecture.md).
 
 ### Free design vs template
 
@@ -351,7 +351,7 @@ location.
 Common misconceptions to avoid:
 
 - **A reusable template is an explicit workspace, not a packaged source PPTX.** Brand and Style workspaces are roster-free; Layout and Deck workspaces add the structured SVG contract. Authored modes create that contract, while mirror maps validated source ownership facts into it. Export compiles only declared structure
-- **A template is not one undifferentiated "style skin".** Brand, Style, Layout, and Deck deliberately separate identity, direction/method, structure, and application so each segment can be reused or fused under an explicit ownership rule
+- **A template is not one undifferentiated "style skin".** Brand, Style, Layout, and Deck deliberately separate identity, direction/method, structure, and application so each segment can be reused or combined under an explicit ownership rule
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes
 - **`mirror` targets literal supported appearance and source topology, not byte-identical OOXML.** It inherits source import limitations and permits only mechanical normalization such as fixed-layer group expansion. Unsupported native objects keep their available SVG fallback or are reported; mirror never synthesizes replacement ownership.
