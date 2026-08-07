@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="hero_side_scrim" data-pptx-layout-name="Hero with Side Scrim">
+  <defs>
+    <linearGradient id="hero-side-scrim-paint" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.88"/>
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="hero-side-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1280 720">
+    <image id="hero-side-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1280" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="hero-side-scrim" x="0" y="0" width="880" height="720"
+    fill="url(#hero-side-scrim-paint)" data-pptx-role="decoration"/>
+  <g id="hero-side-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 236 640 88">
+    <text id="hero-side-title-carrier" data-pptx-carrier="true"
+      x="80" y="300" fill="#FFFFFF" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="44" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="hero-side-body-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 356 640 200">
+    <text id="hero-side-body-carrier" data-pptx-carrier="true"
+      x="80" y="398" fill="#CBD5E1" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{CONTENT_AREA}}</text>
+  </g>
+</svg>

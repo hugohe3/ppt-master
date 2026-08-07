@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="full_statement" data-pptx-layout-name="Full Statement">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="full-statement-accent" x="80" y="272" width="96" height="8" rx="4" fill="#475569"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="full-statement-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 328 1120 200">
+    <text id="full-statement-message-carrier" data-pptx-carrier="true"
+      x="80" y="408" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="64" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="full-statement-support-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="80 556 880 56">
+    <text id="full-statement-support-carrier" data-pptx-carrier="true"
+      x="80" y="594" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{SUPPORT_TEXT}}</text>
+  </g>
+</svg>

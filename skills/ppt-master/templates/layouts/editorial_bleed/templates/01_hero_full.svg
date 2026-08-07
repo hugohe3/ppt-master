@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="hero_full" data-pptx-layout-name="Hero Full">
+  <defs>
+    <linearGradient id="hero-full-scrim-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="hero-full-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1280 720">
+    <image id="hero-full-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1280" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="hero-full-scrim" x="0" y="240" width="1280" height="480"
+    fill="url(#hero-full-scrim-paint)" data-pptx-role="decoration"/>
+  <g id="hero-full-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 448 1120 96">
+    <text id="hero-full-title-carrier" data-pptx-carrier="true"
+      x="80" y="518" fill="#FFFFFF" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="52" font-weight="700">{{TITLE}}</text>
+  </g>
+  <g id="hero-full-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="2"
+    data-pptx-bounds="80 568 880 56">
+    <text id="hero-full-subtitle-carrier" data-pptx-carrier="true"
+      x="80" y="606" fill="#E2E8F0" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{SUBTITLE}}</text>
+  </g>
+</svg>

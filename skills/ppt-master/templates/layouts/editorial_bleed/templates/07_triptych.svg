@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="triptych" data-pptx-layout-name="Triptych">
+  <defs>
+    <linearGradient id="triptych-top-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="triptych-bottom-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.80"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="triptych-picture-one-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 427 720">
+    <image id="triptych-picture-one-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="427" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="triptych-picture-two-slot" data-pptx-placeholder="picture" data-pptx-idx="2"
+    data-pptx-bounds="427 0 427 720">
+    <image id="triptych-picture-two-carrier" data-pptx-carrier="true"
+      x="427" y="0" width="427" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="triptych-picture-three-slot" data-pptx-placeholder="picture" data-pptx-idx="3"
+    data-pptx-bounds="854 0 426 720">
+    <image id="triptych-picture-three-carrier" data-pptx-carrier="true"
+      x="854" y="0" width="426" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="triptych-top-scrim" x="0" y="0" width="1280" height="200"
+    fill="url(#triptych-top-paint)" data-pptx-role="decoration"/>
+  <rect id="triptych-bottom-scrim" x="0" y="440" width="1280" height="280"
+    fill="url(#triptych-bottom-paint)" data-pptx-role="decoration"/>
+  <g id="triptych-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 64 1120 72">
+    <text id="triptych-title-carrier" data-pptx-carrier="true"
+      x="80" y="118" fill="#FFFFFF" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="triptych-caption-one-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="32 560 363 128">
+    <text id="triptych-caption-one-carrier" data-pptx-carrier="true"
+      x="32" y="604" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CAPTION_1}}</text>
+  </g>
+  <g id="triptych-caption-two-slot" data-pptx-placeholder="object" data-pptx-idx="5"
+    data-pptx-bounds="459 560 363 128">
+    <text id="triptych-caption-two-carrier" data-pptx-carrier="true"
+      x="459" y="604" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CAPTION_2}}</text>
+  </g>
+  <g id="triptych-caption-three-slot" data-pptx-placeholder="object" data-pptx-idx="6"
+    data-pptx-bounds="886 560 362 128">
+    <text id="triptych-caption-three-carrier" data-pptx-carrier="true"
+      x="886" y="604" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CAPTION_3}}</text>
+  </g>
+</svg>

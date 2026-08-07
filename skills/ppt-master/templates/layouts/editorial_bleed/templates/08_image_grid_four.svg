@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="image_grid_four" data-pptx-layout-name="Four-Image Grid">
+  <defs>
+    <linearGradient id="grid-scrim-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.80"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="grid-picture-one-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 640 360">
+    <image id="grid-picture-one-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="640" height="360" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="grid-picture-two-slot" data-pptx-placeholder="picture" data-pptx-idx="2"
+    data-pptx-bounds="640 0 640 360">
+    <image id="grid-picture-two-carrier" data-pptx-carrier="true"
+      x="640" y="0" width="640" height="360" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="grid-picture-three-slot" data-pptx-placeholder="picture" data-pptx-idx="3"
+    data-pptx-bounds="0 360 640 360">
+    <image id="grid-picture-three-carrier" data-pptx-carrier="true"
+      x="0" y="360" width="640" height="360" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="grid-picture-four-slot" data-pptx-placeholder="picture" data-pptx-idx="4"
+    data-pptx-bounds="640 360 640 360">
+    <image id="grid-picture-four-carrier" data-pptx-carrier="true"
+      x="640" y="360" width="640" height="360" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="grid-scrim-one" x="0" y="240" width="640" height="120"
+    fill="url(#grid-scrim-paint)" data-pptx-role="decoration"/>
+  <rect id="grid-scrim-two" x="640" y="240" width="640" height="120"
+    fill="url(#grid-scrim-paint)" data-pptx-role="decoration"/>
+  <rect id="grid-scrim-three" x="0" y="600" width="640" height="120"
+    fill="url(#grid-scrim-paint)" data-pptx-role="decoration"/>
+  <rect id="grid-scrim-four" x="640" y="600" width="640" height="120"
+    fill="url(#grid-scrim-paint)" data-pptx-role="decoration"/>
+  <g id="grid-caption-one-slot" data-pptx-placeholder="object" data-pptx-idx="5"
+    data-pptx-bounds="32 268 576 64">
+    <text id="grid-caption-one-carrier" data-pptx-carrier="true"
+      x="32" y="312" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{CAPTION_1}}</text>
+  </g>
+  <g id="grid-caption-two-slot" data-pptx-placeholder="object" data-pptx-idx="6"
+    data-pptx-bounds="672 268 576 64">
+    <text id="grid-caption-two-carrier" data-pptx-carrier="true"
+      x="672" y="312" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{CAPTION_2}}</text>
+  </g>
+  <g id="grid-caption-three-slot" data-pptx-placeholder="object" data-pptx-idx="7"
+    data-pptx-bounds="32 628 576 64">
+    <text id="grid-caption-three-carrier" data-pptx-carrier="true"
+      x="32" y="672" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{CAPTION_3}}</text>
+  </g>
+  <g id="grid-caption-four-slot" data-pptx-placeholder="object" data-pptx-idx="8"
+    data-pptx-bounds="672 628 576 64">
+    <text id="grid-caption-four-carrier" data-pptx-carrier="true"
+      x="672" y="672" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{CAPTION_4}}</text>
+  </g>
+</svg>
