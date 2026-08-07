@@ -4,6 +4,7 @@
 This script uses provider backends for the same per-slide output contract on
 macOS, Linux, and Windows. `edge-tts` remains the default no-key backend and
 also writes one compact, word-timed SRT file per slide from the same TTS stream.
+MiniMax requests word timings and applies the same compact cue regrouping.
 
 Usage:
     python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
@@ -293,7 +294,7 @@ def main() -> int:
         "--subtitle-max-chars",
         type=int,
         default=backend_edge.DEFAULT_SUBTITLE_MAX_CHARS,
-        help="maximum visible characters per Edge subtitle cue (default: 20)",
+        help="maximum visible characters per Edge/MiniMax subtitle cue (default: 20)",
     )
     parser.add_argument(
         "--elevenlabs-api-key-env",
@@ -487,6 +488,7 @@ def main() -> int:
     notes_dir = project / "notes"
     output_dir = args.output or (project / "audio")
     subtitle_dir = notes_dir / "subtitles"
+    writes_subtitles = backend.provider in {"edge", "minimax"}
 
     try:
         note_roster = _expected_note_roster(project)
@@ -502,7 +504,7 @@ def main() -> int:
         return 2
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    if backend.provider == "edge":
+    if writes_subtitles:
         subtitle_dir.mkdir(parents=True, exist_ok=True)
 
     generated = 0
@@ -553,6 +555,7 @@ def main() -> int:
         for job in jobs:
             output_path = job.output_path
             text = job.text
+            subtitle_path: Path | None = None
             try:
                 if backend.provider == "elevenlabs":
                     backend_elevenlabs.generate(
@@ -568,6 +571,8 @@ def main() -> int:
                         speaker_boost=args.elevenlabs_speaker_boost,
                     )
                 elif backend.provider == "minimax":
+                    if writes_subtitles:
+                        subtitle_path = subtitle_dir / f"{output_path.stem}.srt"
                     backend_minimax.generate(
                         text,
                         output_path,
@@ -583,6 +588,8 @@ def main() -> int:
                         pitch=args.minimax_pitch,
                         language_boost=args.minimax_language_boost,
                         base_url=args.minimax_base_url,
+                        subtitle_path=subtitle_path,
+                        subtitle_max_chars=args.subtitle_max_chars,
                     )
                 elif backend.provider == "qwen":
                     backend_qwen.generate(
@@ -618,8 +625,10 @@ def main() -> int:
                 return 1
             generated += 1
             print(f"[OK] {output_path}")
+            if subtitle_path is not None:
+                print(f"     {subtitle_path}")
 
-    if backend.provider == "edge":
+    if writes_subtitles:
         print(
             f"[Done] Generated {generated}/{len(note_roster)} audio/SRT pair(s): "
             f"{output_dir} + {subtitle_dir}"
