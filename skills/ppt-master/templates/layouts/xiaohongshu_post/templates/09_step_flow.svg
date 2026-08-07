@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="1660" viewBox="0 0 1242 1660"
+  data-pptx-master="xiaohongshu_post_master" data-pptx-master-name="Xiaohongshu Post"
+  data-pptx-layout="step_flow" data-pptx-layout-name="Vertical Step Flow">
+  <rect id="master-background" x="0" y="0" width="1242" height="1660" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="step-flow-axis" x1="176" y1="416" x2="176" y2="1140" stroke="#CBD5E1"
+    stroke-width="6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="step-flow-node-one" cx="176" cy="416" r="20" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="step-flow-node-two" cx="176" cy="778" r="20" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="step-flow-node-three" cx="176" cy="1140" r="20" fill="#FFFFFF" stroke="#94A3B8"
+    stroke-width="6" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="step-flow-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 112 1082 200">
+    <text id="step-flow-title-carrier" data-pptx-carrier="true"
+      x="80" y="232" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="64" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="step-flow-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="256 376 906 340">
+    <text id="step-flow-one-carrier" data-pptx-carrier="true"
+      x="256" y="436" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{STEP_1}}</text>
+  </g>
+  <g id="step-flow-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="256 738 906 340">
+    <text id="step-flow-two-carrier" data-pptx-carrier="true"
+      x="256" y="798" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{STEP_2}}</text>
+  </g>
+  <g id="step-flow-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="256 1100 906 340">
+    <text id="step-flow-three-carrier" data-pptx-carrier="true"
+      x="256" y="1160" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{STEP_3}}</text>
+  </g>
+  <g id="step-flow-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="4"
+    data-pptx-bounds="80 1500 1082 60">
+    <text id="step-flow-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1542" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>
