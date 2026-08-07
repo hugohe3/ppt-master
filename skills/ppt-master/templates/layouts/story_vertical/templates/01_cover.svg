@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"
+  data-pptx-master="story_vertical_master" data-pptx-master-name="Story Vertical"
+  data-pptx-layout="cover" data-pptx-layout-name="Cover">
+  <rect id="master-background" x="0" y="0" width="1080" height="1920" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="cover-accent" x="80" y="560" width="120" height="10" rx="5" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="cover-brand-band" x="0" y="1560" width="1080" height="180" fill="#F4F6F8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="cover-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 620 920 320">
+    <text id="cover-title-carrier" data-pptx-carrier="true"
+      x="80" y="712" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="76" font-weight="700">{{TITLE}}</text>
+  </g>
+  <g id="cover-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="80 990 920 120">
+    <text id="cover-subtitle-carrier" data-pptx-carrier="true"
+      x="80" y="1044" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{SUBTITLE}}</text>
+  </g>
+  <g id="cover-brand-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 1610 920 60">
+    <text id="cover-brand-carrier" data-pptx-carrier="true"
+      x="80" y="1652" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28">{{BRAND_LINE}}</text>
+  </g>
+</svg>
