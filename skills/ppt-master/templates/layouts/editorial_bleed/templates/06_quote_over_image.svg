@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="quote_over_image" data-pptx-layout-name="Quote over Image">
+  <defs>
+    <radialGradient id="quote-vignette-paint" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.72"/>
+    </radialGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="quote-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1280 720">
+    <image id="quote-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1280" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="quote-vignette" x="0" y="0" width="1280" height="720"
+    fill="url(#quote-vignette-paint)" data-pptx-role="decoration"/>
+  <g id="quote-text-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="160 268 960 184">
+    <text id="quote-text-carrier" data-pptx-carrier="true"
+      x="640" y="344" text-anchor="middle" fill="#FFFFFF"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="44" font-weight="700">{{QUOTE_TEXT}}</text>
+  </g>
+  <g id="quote-attribution-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="160 492 960 48">
+    <text id="quote-attribution-carrier" data-pptx-carrier="true"
+      x="640" y="528" text-anchor="middle" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="20">{{ATTRIBUTION}}</text>
+  </g>
+</svg>

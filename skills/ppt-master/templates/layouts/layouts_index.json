@@ -1,4 +1,21 @@
 {
+  "editorial_bleed": {
+    "summary": "A structure-only 16:9 system with 10 authored PowerPoint Layouts whose images bleed to the canvas edge and whose text sits on the image behind a scrim.",
+    "canvas_format": "ppt169",
+    "page_count": 10,
+    "page_types": [
+      "hero_full",
+      "hero_side_scrim",
+      "split_bleed",
+      "split_bleed_reverse",
+      "chapter_full",
+      "quote_over_image",
+      "triptych",
+      "image_grid_four",
+      "full_statement",
+      "closing_full"
+    ]
+  },
   "moments_square": {
     "summary": "A structure-only 1:1 system with 8 authored PowerPoint Layouts that use both horizontal and vertical division on a square canvas.",
     "canvas_format": "moments",
