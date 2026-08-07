@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="1660" viewBox="0 0 1242 1660"
+  data-pptx-master="xiaohongshu_post_master" data-pptx-master-name="Xiaohongshu Post"
+  data-pptx-layout="image_top_text" data-pptx-layout-name="Image over Text">
+  <rect id="master-background" x="0" y="0" width="1242" height="1660" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="image-top-text-image-panel" x="80" y="376" width="1082" height="620" rx="24" fill="#EEF2F6"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="image-top-text-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 112 1082 200">
+    <text id="image-top-text-title-carrier" data-pptx-carrier="true"
+      x="80" y="232" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="64" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="image-top-text-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="80 376 1082 620">
+    <image id="image-top-text-picture-carrier" data-pptx-carrier="true"
+      x="80" y="376" width="1082" height="620" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="image-top-text-body-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 1056 1082 384">
+    <text id="image-top-text-body-carrier" data-pptx-carrier="true"
+      x="80" y="1120" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="34">{{CONTENT_AREA}}</text>
+  </g>
+  <g id="image-top-text-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="3"
+    data-pptx-bounds="80 1500 1082 60">
+    <text id="image-top-text-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1542" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>

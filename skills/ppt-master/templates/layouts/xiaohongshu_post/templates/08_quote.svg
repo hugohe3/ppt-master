@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="1660" viewBox="0 0 1242 1660"
+  data-pptx-master="xiaohongshu_post_master" data-pptx-master-name="Xiaohongshu Post"
+  data-pptx-layout="quote" data-pptx-layout-name="Quote">
+  <rect id="master-background" x="0" y="0" width="1242" height="1660" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <text id="quote-mark" x="80" y="520" fill="#E2E8F0"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="180" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">“</text>
+  <line id="quote-rule" x1="80" y1="1060" x2="280" y2="1060" stroke="#CBD5E1"
+    stroke-width="4" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="quote-text-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 560 1082 480">
+    <text id="quote-text-carrier" data-pptx-carrier="true"
+      x="80" y="660" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="56" font-weight="700">{{QUOTE_TEXT}}</text>
+  </g>
+  <g id="quote-attribution-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="80 1100 1082 80">
+    <text id="quote-attribution-carrier" data-pptx-carrier="true"
+      x="80" y="1152" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="32">{{ATTRIBUTION}}</text>
+  </g>
+  <g id="quote-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="2"
+    data-pptx-bounds="80 1500 1082 60">
+    <text id="quote-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1542" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>

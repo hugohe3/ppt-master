@@ -48,5 +48,22 @@
       "chart_insight",
       "table_summary"
     ]
+  },
+  "xiaohongshu_post": {
+    "summary": "A structure-only 3:4 vertical system with 10 authored PowerPoint Layouts for single-column image-text posts on tall social canvases.",
+    "canvas_format": "xiaohongshu",
+    "page_count": 10,
+    "page_types": [
+      "cover",
+      "statement",
+      "title_content",
+      "numbered_list",
+      "two_card_stack",
+      "image_top_text",
+      "image_full_caption",
+      "quote",
+      "step_flow",
+      "ending"
+    ]
   }
 }
