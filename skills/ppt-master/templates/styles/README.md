@@ -13,9 +13,9 @@ Style is a fourth independent template kind alongside [`brands/`](../brands/), [
 | Final Stage-2 `visual_style` | The current deck's confirmed shape, composition, whitespace, typography-character, and texture lock |
 | Internal `template_reuse_scope: style` | A flat current-project export plan that reuses no Master/Layout structure |
 
-These names are separate contracts. Style-only and Style + Brand naturally produce a flat application plan, while Style fused with a Layout or Deck may use structured reuse. `kind: style` therefore never forces the internal reuse scope when another workspace supplies structure.
+These names are separate contracts. Style-only and Style + Brand naturally produce a flat application plan, while a Style installed alongside a Layout or Deck may use structured reuse. `kind: style` therefore never forces the internal reuse scope when another workspace supplies structure.
 
-## Selection, Precedence, and Fusion
+## Selection, Precedence, and Installation
 
 Selection follows the parent README's Default Stage-1
 [`generate-pptx`](../../workflows/generate-pptx.md) template-choice contract.
@@ -25,7 +25,7 @@ the same selector, defaults Stage 1 to template mode, and preselects that
 specific candidate only when it is the sole supplied root. A
 consulting label or visual description remains a brief and does not activate
 this workspace. A non-free confirmation runs the
-common installation/fusion stage after Stage 1 and before Stage 2; template-aware reading begins
+common installation stage after Stage 1 and before Stage 2; template-aware reading begins
 in final Stage 2 from the project-local copy. Quick applies a supplied exact
 Style root directly and otherwise uses free design; its current agent reads the
 installed copy before authoring flat pages.

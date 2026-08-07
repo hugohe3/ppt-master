@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="chart_insight" data-pptx-layout-name="Chart and Insight">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="chart-insight-chart-panel" x="48" y="176" width="800" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="chart-insight-insight-panel" x="872" y="176" width="360" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="chart-insight-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="chart-insight-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="chart-insight-chart-slot" data-pptx-placeholder="chart" data-pptx-idx="1"
+    data-pptx-bounds="68 196 760 424">
+    <g id="chart-insight-chart-carrier" data-pptx-carrier="true"
+      data-pptx-replace-with="chart">
+      <metadata type="application/json">{"name":"chart_insight","x":68,"y":196,"width":760,"height":424,"type":"column","categories":["Q1","Q2","Q3","Q4"],"series":[{"name":"Actual","values":[42,55,63,78]},{"name":"Plan","values":[48,58,68,74]}],"show_legend":true,"legend_position":"top","style":{"colors":["#64748B","#CBD5E1"],"chart_area_fill":"#F8FAFC","plot_area_fill":"#FFFFFF","text_color":"#475569","axis_color":"#CBD5E1","grid_color":"#E2E8F0","font_family":"Arial"}}</metadata>
+      <rect x="68" y="196" width="760" height="424" rx="6" fill="#FFFFFF"/>
+      <rect x="600" y="224" width="10" height="10" rx="2" fill="#64748B"/>
+      <text x="616" y="233" fill="#64748B" font-family="Arial, sans-serif" font-size="12">Actual</text>
+      <rect x="684" y="224" width="10" height="10" rx="2" fill="#CBD5E1"/>
+      <text x="700" y="233" fill="#64748B" font-family="Arial, sans-serif" font-size="12">Plan</text>
+      <line x1="116" y1="560" x2="800" y2="560" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="116" y1="490" x2="800" y2="490" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="116" y1="420" x2="800" y2="420" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="116" y1="350" x2="800" y2="350" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="116" y1="280" x2="800" y2="280" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="160" y="413" width="40" height="147" rx="2" fill="#64748B"/>
+      <rect x="204" y="392" width="40" height="168" rx="2" fill="#CBD5E1"/>
+      <rect x="331" y="367" width="40" height="193" rx="2" fill="#64748B"/>
+      <rect x="375" y="357" width="40" height="203" rx="2" fill="#CBD5E1"/>
+      <rect x="502" y="339" width="40" height="221" rx="2" fill="#64748B"/>
+      <rect x="546" y="322" width="40" height="238" rx="2" fill="#CBD5E1"/>
+      <rect x="673" y="287" width="40" height="273" rx="2" fill="#64748B"/>
+      <rect x="717" y="301" width="40" height="259" rx="2" fill="#CBD5E1"/>
+      <text x="202" y="588" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="13">Q1</text>
+      <text x="373" y="588" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="13">Q2</text>
+      <text x="544" y="588" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="13">Q3</text>
+      <text x="715" y="588" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="13">Q4</text>
+    </g>
+  </g>
+  <g id="chart-insight-insight-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="896 200 312 336">
+    <text id="chart-insight-insight-carrier" data-pptx-carrier="true"
+      x="896" y="244" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="chart-insight-source-slot" data-pptx-placeholder="body" data-pptx-idx="3"
+    data-pptx-bounds="896 580 312 32">
+    <text id="chart-insight-source-carrier" data-pptx-carrier="true"
+      x="896" y="604" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="13">{{SOURCE}}</text>
+  </g>
+  <g id="chart-insight-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="4"
+    data-pptx-bounds="48 676 900 32">
+    <text id="chart-insight-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="chart-insight-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="5"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="chart-insight-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

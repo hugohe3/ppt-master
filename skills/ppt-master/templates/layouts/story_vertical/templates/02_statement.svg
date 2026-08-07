@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"
+  data-pptx-master="story_vertical_master" data-pptx-master-name="Story Vertical"
+  data-pptx-layout="statement" data-pptx-layout-name="Statement">
+  <rect id="master-background" x="0" y="0" width="1080" height="1920" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="statement-accent" x="490" y="800" width="100" height="8" rx="4" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="statement-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 880 920 400">
+    <text id="statement-message-carrier" data-pptx-carrier="true"
+      x="540" y="980" text-anchor="middle" fill="#1E293B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="64" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="statement-support-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="120 1340 840 120">
+    <text id="statement-support-carrier" data-pptx-carrier="true"
+      x="540" y="1392" text-anchor="middle" fill="#64748B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="32">{{SUPPORT_TEXT}}</text>
+  </g>
+</svg>

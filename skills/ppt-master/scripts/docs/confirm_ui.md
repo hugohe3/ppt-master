@@ -271,9 +271,9 @@ The Stage-1 submission writes this receipt and the Stage-1 `result.json`
 together. Generate reads both exactly once after `--wait-only --wait-stage
 stage1` returns. Free design skips installation. Template mode runs
 `apply-template-workspace` against all selected roots and waits for complete
-project-local installation/fusion. Only then does the agent complete the
-handoff below. Installation resolves template-to-template ownership; Stage 2
-later evaluates current-project fit from the installed copy. Strategist never
+project-local installation. Only then does the agent complete the
+handoff below. Installation copies each selected spec separately; Stage 2
+resolves segment ownership and current-project fit from the installed set. Strategist never
 reads the source roots.
 
 ### Agent handoff — `template_handoff.json`
@@ -395,7 +395,7 @@ Stage 2: its recommendations must include `template_application.value`.
 ### Input — `recommendations.stage1.json` (created beside template options)
 
 Author this file before reading candidate index summaries in chat and without
-reading any template spec, prototype, asset, fused segment owner, or template
+reading any template spec, prototype, asset, segment owner, or template
 canvas. `template_options.json` supplies display state only and never changes
 the communication recommendation.
 

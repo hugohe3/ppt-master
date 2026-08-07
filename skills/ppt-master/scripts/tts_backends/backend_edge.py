@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import os
 import re
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+from tts_backends.backend_common import publish_staged_pair, temporary_path
 
 
 DEFAULT_SUBTITLE_MAX_CHARS = 20
@@ -102,58 +103,6 @@ async def generate(
     await communicate.save(str(output_path))
 
 
-def _temporary_path(target: Path, suffix: str) -> tuple[int, Path]:
-    target.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, raw_path = tempfile.mkstemp(
-        prefix=f".{target.name}.",
-        suffix=suffix,
-        dir=target.parent,
-    )
-    return descriptor, Path(raw_path)
-
-
-def _publish_pair(
-    staged_audio: Path,
-    output_path: Path,
-    staged_subtitle: Path,
-    subtitle_path: Path,
-) -> None:
-    targets = (output_path, subtitle_path)
-    if output_path.resolve() == subtitle_path.resolve():
-        raise ValueError("audio and subtitle outputs must use different paths")
-
-    backups: dict[Path, Path] = {}
-    published: set[Path] = set()
-    try:
-        for target in targets:
-            if not target.exists():
-                continue
-            descriptor, backup = _temporary_path(target, ".bak")
-            os.close(descriptor)
-            backup.unlink()
-            os.replace(target, backup)
-            backups[target] = backup
-
-        for staged, target in (
-            (staged_audio, output_path),
-            (staged_subtitle, subtitle_path),
-        ):
-            os.replace(staged, target)
-            published.add(target)
-    except Exception:
-        for target in published:
-            target.unlink(missing_ok=True)
-        for target, backup in backups.items():
-            if backup.exists():
-                os.replace(backup, target)
-        raise
-    finally:
-        staged_audio.unlink(missing_ok=True)
-        staged_subtitle.unlink(missing_ok=True)
-        for backup in backups.values():
-            backup.unlink(missing_ok=True)
-
-
 def _text_key(text: str) -> str:
     return "".join(character.casefold() for character in text if character.isalnum())
 
@@ -170,13 +119,17 @@ def _source_key_positions(text: str) -> tuple[str, list[int]]:
     return "".join(key), positions
 
 
-def _map_word_boundaries(text: str, boundaries: list[dict]) -> list[_MappedWord]:
+def _map_word_boundaries(
+    text: str,
+    boundaries: list[dict],
+    provider_label: str,
+) -> list[_MappedWord]:
     source_key, source_positions = _source_key_positions(text)
     boundary_keys = [_text_key(boundary["text"]) for boundary in boundaries]
     boundary_key = "".join(boundary_keys)
     if not source_key or source_key != boundary_key:
         raise RuntimeError(
-            "Edge TTS word boundaries could not be aligned with the narration text; "
+            f"{provider_label} word boundaries could not be aligned with the narration text; "
             "subtitle timing was not generated"
         )
 
@@ -335,6 +288,7 @@ def _clamp_small_overlaps(
     cues: list[_SubtitleCue],
     *,
     tolerance_ms: int = DEFAULT_BOUNDARY_OVERLAP_TOLERANCE_MS,
+    provider_label: str,
 ) -> list[_SubtitleCue]:
     tolerance = tolerance_ms * _TICKS_PER_MILLISECOND
     normalized: list[_SubtitleCue] = []
@@ -344,7 +298,7 @@ def _clamp_small_overlaps(
             if overlap > tolerance:
                 overlap_ms = overlap / _TICKS_PER_MILLISECOND
                 raise RuntimeError(
-                    f"Edge TTS returned {overlap_ms:g} ms of overlapping "
+                    f"{provider_label} returned {overlap_ms:g} ms of overlapping "
                     "word-boundary timing; audio and subtitles were not published"
                 )
             cue = _SubtitleCue(
@@ -354,7 +308,7 @@ def _clamp_small_overlaps(
             )
         if cue.end <= cue.start:
             raise RuntimeError(
-                "Edge TTS returned an invalid subtitle timing interval; "
+                f"{provider_label} returned an invalid subtitle timing interval; "
                 "audio and subtitles were not published"
             )
         normalized.append(cue)
@@ -365,10 +319,11 @@ def _subtitle_cues(
     text: str,
     boundaries: list[dict],
     max_chars: int,
+    provider_label: str,
 ) -> list[_SubtitleCue]:
     if max_chars < 1:
         raise ValueError("subtitle_max_chars must be at least 1")
-    words = _map_word_boundaries(text, boundaries)
+    words = _map_word_boundaries(text, boundaries, provider_label)
     spans = [
         span
         for sentence in _sentence_spans(text)
@@ -391,29 +346,29 @@ def _subtitle_cues(
 
     if assigned_word_indexes != list(range(len(words))):
         raise RuntimeError(
-            "Edge TTS word boundaries crossed subtitle split points; "
+            f"{provider_label} word boundaries crossed subtitle split points; "
             "subtitle timing was not generated"
         )
     if not pending:
-        raise RuntimeError("Edge TTS produced no timed subtitle cues")
+        raise RuntimeError(f"{provider_label} produced no timed subtitle cues")
 
     cues: list[_SubtitleCue] = []
     for index, (start, word_end, cue_text) in enumerate(pending):
         next_start = pending[index + 1][0] if index + 1 < len(pending) else None
         end = next_start if next_start is not None and next_start > word_end else word_end
         cues.append(_SubtitleCue(start=start, end=end, text=cue_text))
-    cues = _clamp_small_overlaps(cues)
+    cues = _clamp_small_overlaps(cues, provider_label=provider_label)
 
     source_text = re.sub(r"\s+", "", text)
     subtitle_text = re.sub(r"\s+", "", "".join(cue.text for cue in cues))
     if subtitle_text != source_text:
         raise RuntimeError(
-            "Generated subtitle text does not match the narration text; "
+            f"{provider_label} subtitle text does not match the narration text; "
             "audio and subtitles were not published"
         )
     if any(_display_length(cue.text, 0, len(cue.text)) > max_chars for cue in cues):
         raise RuntimeError(
-            "A single Edge TTS word boundary exceeds the subtitle character limit; "
+            f"A single {provider_label} word boundary exceeds the subtitle character limit; "
             "audio and subtitles were not published"
         )
     return cues
@@ -437,6 +392,24 @@ def _format_srt(cues: list[_SubtitleCue]) -> str:
         for index, cue in enumerate(cues, 1)
     ]
     return "\n\n".join(blocks) + "\n"
+
+
+def format_word_timed_srt(
+    text: str,
+    boundaries: list[dict],
+    max_chars: int = DEFAULT_SUBTITLE_MAX_CHARS,
+    *,
+    provider_label: str = "Edge TTS",
+) -> str:
+    """Regroup provider word timings into compact, text-faithful SRT cues."""
+    return _format_srt(
+        _subtitle_cues(
+            text,
+            boundaries,
+            max_chars,
+            provider_label,
+        )
+    )
 
 
 async def _generate_with_subtitles(
@@ -470,8 +443,8 @@ async def _generate_with_subtitles(
     boundaries: list[dict] = []
     received_audio = False
     try:
-        audio_descriptor, staged_audio = _temporary_path(output_path, ".tmp")
-        subtitle_descriptor, staged_subtitle = _temporary_path(subtitle_path, ".tmp")
+        audio_descriptor, staged_audio = temporary_path(output_path, ".tmp")
+        subtitle_descriptor, staged_subtitle = temporary_path(subtitle_path, ".tmp")
 
         audio_stream = os.fdopen(audio_descriptor, "wb")
         audio_descriptor = -1
@@ -489,7 +462,7 @@ async def _generate_with_subtitles(
             raise RuntimeError("Edge TTS returned no audio data")
         if not boundaries:
             raise RuntimeError("Edge TTS returned no word-boundary timing")
-        subtitle_text = _format_srt(_subtitle_cues(text, boundaries, max_chars))
+        subtitle_text = format_word_timed_srt(text, boundaries, max_chars)
 
         subtitle_stream = os.fdopen(
             subtitle_descriptor,
@@ -504,7 +477,7 @@ async def _generate_with_subtitles(
             os.fsync(subtitle_stream.fileno())
         assert staged_audio is not None
         assert staged_subtitle is not None
-        _publish_pair(
+        publish_staged_pair(
             staged_audio,
             output_path,
             staged_subtitle,

@@ -309,8 +309,8 @@ rules; final font families, weights, colors, and absolute sizes do not.
 Do not prescribe communication objectives, audience outcomes, required
 narrative order, fixed boilerplate, or example-content retention. The
 frontmatter `summary` carries concise structural selection context; the
-deck-only Template Overview remains the application segment used during
-fusion.
+deck-only Template Overview remains the application segment read during
+template application.
 
 Sections to **omit** from template `design_spec.md` (sourced elsewhere — listing them here is noise):
 

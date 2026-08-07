@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="split_bleed" data-pptx-layout-name="Split Bleed">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="split-bleed-accent" x="720" y="168" width="72" height="6" rx="3" fill="#475569"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="split-bleed-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 640 720">
+    <image id="split-bleed-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="640" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="split-bleed-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="720 216 480 88">
+    <text id="split-bleed-title-carrier" data-pptx-carrier="true"
+      x="720" y="280" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="40" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="split-bleed-body-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="720 336 480 240">
+    <text id="split-bleed-body-carrier" data-pptx-carrier="true"
+      x="720" y="378" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="21">{{CONTENT_AREA}}</text>
+  </g>
+</svg>

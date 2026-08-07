@@ -52,8 +52,8 @@ can always switch modes. The page accepts one registered choice per kind plus
 one supplied-root choice. A registered exact root is `library`; any other exact
 root is `explicit`. After that combined confirmation,
 [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-validates, fuses, and installs every selected workspace into the current
-project before Stage 2 starts. Template-aware reading begins in final Stage 2 from
+validates and installs every selected workspace into the current
+project as its own `design_spec.<kind>.<id>.md` before Stage 2 starts. Template-aware reading begins in final Stage 2 from
 that project-local copy. Quick skips the page, applies supplied exact roots, and
 otherwise uses free design.
 
@@ -65,7 +65,7 @@ otherwise uses free design.
 | Selection source | `library` / `explicit` | Step-3 discovery provenance only: exact index-derived root or exact unregistered root; it does not change template semantics |
 | Internal creation strategy | `standard` / `fidelity` / `mirror` | AI-derived Create Layout/Create Deck implementation: newly author a compact or broad roster, or materialize validated source-package facts into a new workspace; persisted for tools, never presented as a required user choice |
 | Internal application plan | `template_reuse_scope` plus optional `template_adherence` | Strategist derives literal, structural, or style-only use and any strict/adaptive exporter behavior after inspecting the installed template and current content |
-| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; Style-only, style-scope, brand-only, and free design remain Slide-local. Style fused with Layout/Deck does not change the non-Style structure plan. |
+| PPTX structure | `flat` / `structured` | Derived application plans that use template structure compile declared Masters and Layouts; Style-only, style-scope, brand-only, and free design remain Slide-local. A Style installed alongside Layout/Deck does not change the non-Style structure plan. |
 
 These axes must not be used as synonyms or exposed as a user mode matrix. In
 particular, a mirror-created deck is still an ordinary reusable `deck` package
@@ -92,7 +92,7 @@ Style narrows this shared routing shape to `templates/design_spec.md` only and
 does not carry asset or review payloads; initialized-project sibling scaffolding
 may exist but is not Style input.
 The conditional [`apply-template-workspace`](../workflows/stages/apply-template-workspace.md)
-stage owns installation and fusion after a non-free Default Stage-1 selection or
+stage owns installation after a non-free Default Stage-1 selection or
 on the Quick exact-root branch. Brand/Layout/Deck consume package-owned
 `templates/`, `images/`, and `icons/`; Style consumes only
 `templates/design_spec.md` and ignores sibling project scaffolding. Every kind

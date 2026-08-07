@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="closing_full" data-pptx-layout-name="Closing Full">
+  <defs>
+    <linearGradient id="closing-full-scrim-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.82"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="closing-full-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1280 720">
+    <image id="closing-full-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1280" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="closing-full-scrim" x="0" y="300" width="1280" height="420"
+    fill="url(#closing-full-scrim-paint)" data-pptx-role="decoration"/>
+  <g id="closing-full-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 468 1120 88">
+    <text id="closing-full-message-carrier" data-pptx-carrier="true"
+      x="80" y="532" fill="#FFFFFF" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="44" font-weight="700">{{CLOSING_MESSAGE}}</text>
+  </g>
+  <g id="closing-full-contact-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 580 880 48">
+    <text id="closing-full-contact-carrier" data-pptx-carrier="true"
+      x="80" y="614" fill="#CBD5E1" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CONTACT_LINE}}</text>
+  </g>
+</svg>
