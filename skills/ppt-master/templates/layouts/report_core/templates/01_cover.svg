@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_divider_master" data-pptx-master-name="Report Core Divider"
+  data-pptx-layout="cover" data-pptx-layout-name="Cover">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#1E293B"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="cover-accent" x="48" y="232" width="88" height="6" rx="3" fill="#64748B"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="cover-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 280 1184 96">
+    <text id="cover-title-carrier" data-pptx-carrier="true"
+      x="48" y="350" fill="#F8FAFC" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="52" font-weight="700">{{TITLE}}</text>
+  </g>
+  <g id="cover-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="48 400 900 48">
+    <text id="cover-subtitle-carrier" data-pptx-carrier="true"
+      x="48" y="436" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{SUBTITLE}}</text>
+  </g>
+  <g id="cover-date-slot" data-pptx-placeholder="date" data-pptx-idx="2"
+    data-pptx-bounds="48 600 400 32">
+    <text id="cover-date-carrier" data-pptx-carrier="true"
+      x="48" y="624" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="16">{{DATE}}</text>
+  </g>
+</svg>

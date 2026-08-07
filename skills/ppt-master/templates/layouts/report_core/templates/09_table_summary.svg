@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="table_summary" data-pptx-layout-name="Table and Summary">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="table-summary-table-panel" x="48" y="176" width="856" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="table-summary-summary-panel" x="928" y="176" width="304" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="table-summary-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="table-summary-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="table-summary-table-slot" data-pptx-placeholder="table" data-pptx-idx="1"
+    data-pptx-bounds="68 196 816 424">
+    <g id="table-summary-table-carrier" data-pptx-carrier="true"
+      data-pptx-replace-with="table">
+        <metadata type="application/json">{"name":"table_summary","x":68,"y":196,"width":816,"height":424,"strict_grid":true,"column_widths":[3,2,2],"row_heights":[1,1,1,1,1],"style":{"font_family":"Arial","font_size":15,"header_font_size":14,"header_fill":"#F1F5F9","header_text":"#334155","body_fill":"#FFFFFF","body_text":"#475569","band_fill":"#F8FAFC","border_color":"#E2E8F0","border_width":1,"padding":{"left":10,"right":10,"top":5,"bottom":5},"valign":"middle"},"columns":[{"text":"Metric","bold":true},{"text":"Current","align":"r","bold":true},{"text":"Target","align":"r","bold":true}],"rows":[[{"text":"Adoption"},{"text":"68%","align":"r","bold":true},{"text":"80%","align":"r"}],[{"text":"Cycle time"},{"text":"12 d","align":"r","bold":true},{"text":"8 d","align":"r"}],[{"text":"Quality"},{"text":"94%","align":"r","bold":true},{"text":"97%","align":"r"}],[{"text":"Cost index"},{"text":"1.08","align":"r","bold":true},{"text":"1.00","align":"r"}]]}</metadata>
+      <rect x="68" y="196" width="816" height="424" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="68" y="196" width="816" height="64" rx="6" fill="#F1F5F9"/>
+      <rect x="68" y="260" width="816" height="90" fill="#FFFFFF"/>
+      <rect x="68" y="350" width="816" height="90" fill="#F8FAFC"/>
+      <rect x="68" y="440" width="816" height="90" fill="#FFFFFF"/>
+      <rect x="68" y="530" width="816" height="90" rx="6" fill="#F8FAFC"/>
+      <line x1="418" y1="196" x2="418" y2="620" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="651" y1="196" x2="651" y2="620" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="68" y1="260" x2="884" y2="260" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="68" y1="350" x2="884" y2="350" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="68" y1="440" x2="884" y2="440" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="68" y1="530" x2="884" y2="530" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="88" y="234" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Metric</text>
+      <text x="631" y="234" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Current</text>
+      <text x="864" y="234" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Target</text>
+      <text x="88" y="312" fill="#475569" font-family="Arial, sans-serif" font-size="15">Adoption</text>
+      <text x="631" y="312" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">68%</text>
+      <text x="864" y="312" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="15">80%</text>
+      <text x="88" y="402" fill="#475569" font-family="Arial, sans-serif" font-size="15">Cycle time</text>
+      <text x="631" y="402" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">12 d</text>
+      <text x="864" y="402" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="15">8 d</text>
+      <text x="88" y="492" fill="#475569" font-family="Arial, sans-serif" font-size="15">Quality</text>
+      <text x="631" y="492" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">94%</text>
+      <text x="864" y="492" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="15">97%</text>
+      <text x="88" y="582" fill="#475569" font-family="Arial, sans-serif" font-size="15">Cost index</text>
+      <text x="631" y="582" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">1.08</text>
+      <text x="864" y="582" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="15">1.00</text>
+    </g>
+  </g>
+  <g id="table-summary-summary-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="952 200 256 336">
+    <text id="table-summary-summary-carrier" data-pptx-carrier="true"
+      x="952" y="244" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="table-summary-source-slot" data-pptx-placeholder="body" data-pptx-idx="3"
+    data-pptx-bounds="952 580 256 32">
+    <text id="table-summary-source-carrier" data-pptx-carrier="true"
+      x="952" y="604" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="13">{{SOURCE}}</text>
+  </g>
+  <g id="table-summary-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="4"
+    data-pptx-bounds="48 676 900 32">
+    <text id="table-summary-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="table-summary-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="5"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="table-summary-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

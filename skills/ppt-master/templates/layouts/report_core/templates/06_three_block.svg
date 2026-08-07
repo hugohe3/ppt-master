@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="three_block" data-pptx-layout-name="Three Block">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="three-block-one-panel" x="48" y="176" width="376" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="three-block-two-panel" x="452" y="176" width="376" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="three-block-three-panel" x="856" y="176" width="376" height="464" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="three-block-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="three-block-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="three-block-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="72 200 328 416">
+    <text id="three-block-one-carrier" data-pptx-carrier="true"
+      x="72" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="19">{{BLOCK_1}}</text>
+  </g>
+  <g id="three-block-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="476 200 328 416">
+    <text id="three-block-two-carrier" data-pptx-carrier="true"
+      x="476" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="19">{{BLOCK_2}}</text>
+  </g>
+  <g id="three-block-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="880 200 328 416">
+    <text id="three-block-three-carrier" data-pptx-carrier="true"
+      x="880" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="19">{{BLOCK_3}}</text>
+  </g>
+  <g id="three-block-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="4"
+    data-pptx-bounds="48 676 900 32">
+    <text id="three-block-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="three-block-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="5"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="three-block-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>

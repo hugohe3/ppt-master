@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="report_core_content_master" data-pptx-master-name="Report Core Content"
+  data-pptx-layout="matrix_2x2" data-pptx-layout-name="Two-by-Two Matrix">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-header-rule" x1="48" y1="64" x2="1232" y2="64" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="master-footer-rule" x1="48" y1="664" x2="1232" y2="664" stroke="#E2E8F0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="matrix-quadrant-one" x="200" y="176" width="392" height="224" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="matrix-quadrant-two" x="608" y="176" width="392" height="224" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="matrix-quadrant-three" x="200" y="416" width="392" height="224" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="matrix-quadrant-four" x="608" y="416" width="392" height="224" rx="8" fill="#F8FAFC"
+    stroke="#E2E8F0" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="matrix-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="48 88 1184 56">
+    <text id="matrix-title-carrier" data-pptx-carrier="true"
+      x="48" y="130" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="matrix-y-axis-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="48 176 144 56">
+    <text id="matrix-y-axis-carrier" data-pptx-carrier="true"
+      x="48" y="208" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="15">{{Y_AXIS}}</text>
+  </g>
+  <g id="matrix-x-axis-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="1016 584 216 56">
+    <text id="matrix-x-axis-carrier" data-pptx-carrier="true"
+      x="1232" y="616" text-anchor="end" fill="#64748B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="15">{{X_AXIS}}</text>
+  </g>
+  <g id="matrix-quadrant-one-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="224 200 344 176">
+    <text id="matrix-quadrant-one-carrier" data-pptx-carrier="true"
+      x="224" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{QUADRANT_1}}</text>
+  </g>
+  <g id="matrix-quadrant-two-slot" data-pptx-placeholder="object" data-pptx-idx="4"
+    data-pptx-bounds="632 200 344 176">
+    <text id="matrix-quadrant-two-carrier" data-pptx-carrier="true"
+      x="632" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{QUADRANT_2}}</text>
+  </g>
+  <g id="matrix-quadrant-three-slot" data-pptx-placeholder="object" data-pptx-idx="5"
+    data-pptx-bounds="224 440 344 176">
+    <text id="matrix-quadrant-three-carrier" data-pptx-carrier="true"
+      x="224" y="480" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{QUADRANT_3}}</text>
+  </g>
+  <g id="matrix-quadrant-four-slot" data-pptx-placeholder="object" data-pptx-idx="6"
+    data-pptx-bounds="632 440 344 176">
+    <text id="matrix-quadrant-four-carrier" data-pptx-carrier="true"
+      x="632" y="480" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="18">{{QUADRANT_4}}</text>
+  </g>
+  <g id="matrix-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="7"
+    data-pptx-bounds="48 676 900 32">
+    <text id="matrix-footer-carrier" data-pptx-carrier="true"
+      x="48" y="698" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="12">{{FOOTER_NOTE}}</text>
+  </g>
+  <g id="matrix-pagenum-slot" data-pptx-placeholder="slide-number" data-pptx-idx="8"
+    data-pptx-bounds="1112 676 120 32">
+    <text id="matrix-pagenum-carrier" data-pptx-carrier="true"
+      x="1232" y="698" text-anchor="end" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+  </g>
+</svg>
