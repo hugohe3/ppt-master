@@ -4,14 +4,14 @@
 
 ---
 
-PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edge-tts`](https://github.com/rany2/edge-tts) —— 微软 Edge 的在线神经网络语音；也可配置 ElevenLabs、MiniMax、Qwen TTS、CosyVoice 使用高质量或复刻音色）。Edge 会从同一次计时流中写出逐页 SRT；MiniMax 则把同步接口返回的字幕时间戳转换为同一套 SRT。音频可继续嵌入 PPTX，供 PowerPoint 使用原生视频导出。
+PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edge-tts`](https://github.com/rany2/edge-tts) —— 微软 Edge 的在线神经网络语音；也可配置 ElevenLabs、MiniMax、Qwen TTS、CosyVoice 使用高质量或复刻音色）。Edge、ElevenLabs、MiniMax，以及支持时间戳的 CosyVoice 音色，都会从同一次合成返回的 provider 计时生成逐页 SRT。Qwen 当前 TTS API 不返回时间戳，因此仍只生成音频。音频可继续嵌入 PPTX，供 PowerPoint 使用原生视频导出。
 
 ## 你会得到什么
 
 - 每页一个音频文件，存放于 `<project_path>/audio/`，文件名与 SVG 对齐（`01_cover.mp3`、`02_market_landscape.mp3` …）。
-- 使用 Edge 或 MiniMax 字幕时，每页还有一个同名字幕文件，与音频一起存放于 `<project_path>/audio/`（`01_cover.srt`、`02_market_landscape.srt` …）。每个文件使用以 `00:00:00,000` 为原点的页内时间轴；两个 provider 的词级时间戳都会重组为同一套紧凑 cue。
+- 使用 provider 原生计时字幕时，每页还有一个同名字幕文件，与音频一起存放于 `<project_path>/audio/`（`01_cover.srt`、`02_market_landscape.srt` …）。每个文件使用以 `00:00:00,000` 为原点的页内时间轴；provider 的词级或字符级时间戳都会重组为同一套紧凑 cue。
 - 完整生成成功后写出精简的 `<project_path>/audio/manifest.json`，只记录 provider、模型、音频/字幕格式、相关音色参数，以及代替云端 voice ID 原文的 SHA-256 指纹；不包含逐页清单、产物哈希或 API Key，正常生成过程也不会读取它。
-- 存在规范的 `animations.json` 时，SVG 到 SRT 的计时计划会派生 `narration_animations.json`，让无点击对象动画等待相关字幕 cue。两个动画 sidecar 都不存在时，旁白导出不会创建 sidecar，而是保留默认 `fade` 页间切换和无逐元素动画。两条路径都可以生成与最终 PPTX 时间轴一致的 `<project_path>/audio/total.srt`；PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
+- 存在规范的 `animations.json` 且已有逐页 SRT 时，SVG 到 SRT 的计时计划会派生 `narration_animations.json`，让无点击对象动画等待相关字幕 cue。两个动画 sidecar 都不存在时，旁白导出不会创建 sidecar，而是保留默认 `fade` 页间切换和无逐元素动画。存在逐页 SRT 时，两条路径都可以生成与最终 PPTX 时间轴一致的 `<project_path>/audio/total.srt`；PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
 - 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
 - Windows 下可选原生视频导出：`powerpoint_video.py` 把最终带旁白 PPTX 交给 PowerPoint 2016+，并等待其原生 MP4 编码成功或失败。
 - 演讲者备注原样保留。
@@ -21,7 +21,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
 2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速/风格也会基于 notes 信息密度给出推荐值。
 3. **一次问完，一次回答**。AI 在一条消息里同时确认 provider、音色、语速、是否嵌入 PPTX，以及是否继续导出视频；每项都标推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
-4. **执行**。使用 Edge 时，脚本从同一次流中把每页 MP3 和 SRT 一起写入 `audio/`。MiniMax 会在生成 MP3 的同一请求中获取服务端时间戳，并把返回的 JSON 转成相同的逐页 SRT；ElevenLabs、Qwen 与 CosyVoice 仍只写音频。完整生成成功后会原子写入 `audio/manifest.json` 记录来源。对于存在规范自定义动画的 Generate PPTX，AI 将当前 SVG 内容组映射到编号后的 SRT cue，并派生无点击的 `narration_animations.json`；没有动画 sidecar 时则跳过派生，保留 `fade` / 无逐元素动画。随后再导出带音频的 PPTX，并从该 PPTX 读回实际计时、合并逐页 SRT。若用户选择自动视频导出且本机 Windows PowerPoint 兼容，则继续调用 PowerPoint 原生编码器，等 MP4 完成后再校准交付字幕。不支持长音频导入或自动拆分。
+4. **执行**。Edge、ElevenLabs、MiniMax，以及支持时间戳的 CosyVoice 音色，会依据同一次合成返回的 provider 计时，把每页音频和 SRT 一起写入 `audio/`；Qwen 和显式 CosyVoice 纯音频模式只写音频。完整生成成功后会原子写入 `audio/manifest.json` 记录来源。对于已有逐页 SRT 且存在规范自定义动画的 Generate PPTX，AI 将当前 SVG 内容组映射到编号后的 SRT cue，并派生无点击的 `narration_animations.json`；没有动画 sidecar 时则跳过派生，保留 `fade` / 无逐元素动画。随后再导出带音频的 PPTX；存在逐页 SRT 时，才从该 PPTX 读回实际计时并合并。若用户选择自动视频导出且本机 Windows PowerPoint 兼容，则继续调用 PowerPoint 原生编码器，等 MP4 完成后再校准可用的交付字幕。不支持长音频导入或自动拆分。
 
 字幕保持为外部 SRT 文件：PPT Master 不把字幕嵌入 PPTX，也不烧录进 MP4。自动视频导出委托给本机 Windows PowerPoint，并不是另一套渲染器。
 
@@ -67,7 +67,7 @@ python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
 
-# 2B. 用 ElevenLabs 生成 MP3（需要 ELEVENLABS_API_KEY）
+# 2B. 用 ElevenLabs 生成 MP3/SRT 对（需要 ELEVENLABS_API_KEY）
 export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider elevenlabs \
@@ -82,7 +82,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice-id <minimax-voice-id> \
   --minimax-model speech-2.8-hd
 
-# 2D. 用 Qwen TTS 生成音频（系统音色或复刻音色）
+# 2D. 用 Qwen TTS 仅生成音频（系统音色或复刻音色）
 export DASHSCOPE_API_KEY="your-dashscope-api-key"
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider qwen \
@@ -90,14 +90,14 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --qwen-model qwen3-tts-flash \
   --qwen-language-type Chinese
 
-# 2E. 用 CosyVoice 生成 MP3（系统音色或复刻/设计音色）
+# 2E. 用支持时间戳的 CosyVoice 音色生成 MP3/SRT 对
 export COSYVOICE_API_KEY="your-dashscope-api-key"
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice \
   --voice-id <cosyvoice-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 3-4. 仅当规范 animations.json 存在时，输出整套 SRT 的指纹，
+# 3-4. 仅当逐页 SRT 与规范 animations.json 都存在时，输出整套 SRT 的指纹，
 #    再对照每页当前 SVG 内容组与 SRT cue，编写
 #    <project_path>/narration_timing.json；没有对应口播的组不写 cue，
 #    后续按正常动画顺序出现。两个动画 sidecar 都不存在时直接跳到第 5 步。
@@ -112,7 +112,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
   --narration-padding 0.5
 
-# 6. 按最终 PowerPoint 计时合并逐页 SRT
+# 6. 存在逐页 SRT 时，按最终 PowerPoint 计时合并
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
@@ -121,7 +121,7 @@ python3 skills/ppt-master/scripts/powerpoint_video.py --check
 python3 skills/ppt-master/scripts/powerpoint_video.py \
   <final_narrated_pptx> -o exports/<final_video>.mp4
 
-# 8. 根据导出音轨校准每页起点，生成与视频同名的外挂 SRT
+# 8. 存在逐页 SRT 时，根据导出音轨校准每页起点，生成与视频同名的外挂 SRT
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
   --pptx <final_narrated_pptx> --video <powerpoint_exported_video> \
   -o exports/<powerpoint_exported_video_stem>.srt --force
@@ -137,7 +137,27 @@ Edge 默认同时生成最多 3 页音频/SRT。可用 `--concurrency <N>` 调�
 
 Edge 命令会从同一次流式请求中生成 `audio/<stem>.mp3` 与 `audio/<stem>.srt`。句末标点必定结束一条字幕；单条超过默认 20 个可见字符时，优先在逗号、分号或冒号处拆分，仍然过长才在最近的词边界拆分。可用 `--subtitle-max-chars` 调整上限。相邻字幕最多允许 100 毫秒的计时重叠：后一句起点会移到前一句终点；超过该范围则报错。每页 SRT 使用从零计时的页内时间基准，并保留 Edge `WordBoundary` 的实际时间（包括首条字幕前的静音）。
 
-MiniMax 会在同一次非流式 T2A 请求中获取词级字幕，下载返回的 JSON 时间戳，再复用 Edge 的标点优先、长度受控重组逻辑。校验通过后成对发布 MP3 与 SRT；`--subtitle-max-chars` 同时控制两个 provider，整理后的紧凑 cue 用于语义动画映射。ElevenLabs、Qwen 与 CosyVoice 仍只生成音频。
+MiniMax 会在同一次非流式 T2A 请求中获取词级字幕并下载返回的 JSON 时间戳。ElevenLabs 使用 `/with-timestamps` 接口，从同一 JSON 响应读取音频和原文字符级对齐。CosyVoice 开启 HTTP 流式响应与 `word_timestamp_enabled`，再使用同次合成返回的完整音频 URL 和词级时间戳。四条 provider 原生计时路径统一使用标点优先、受 `--subtitle-max-chars` 约束的重组逻辑，并原子发布通过校验的音频/SRT 对；整理后的紧凑 cue 用于语义动画映射。
+
+CosyVoice 的时间戳能力取决于模型和音色组合：`cosyvoice-v3.5-plus`、`cosyvoice-v3.5-flash`、`cosyvoice-v3-plus`、`cosyvoice-v3-flash`、`cosyvoice-v2` 的复刻音色支持，[CosyVoice 音色清单](https://help.aliyun.com/zh/model-studio/cosyvoice-voice-list)里明确标记支持时间戳的系统音色也支持。模型与音色家族必须匹配。如果所选音色不能返回计时，而且明确只需要音频，可传入 `--cosyvoice-audio-only`。
+
+Qwen 当前 TTS 的 HTTP 与实时响应都只返回音频，不含词级或字符级对齐。PPT Master 因此保留 Qwen 纯音频路径，不用理论时长估算 SRT。需要逐页字幕时，请选择 Edge、ElevenLabs、MiniMax 或支持时间戳的 CosyVoice 音色。
+
+### Provider 能力与参数选择
+
+| Provider | 逐页 SRT | 原始计时 | 当前默认裁决 |
+|---|---|---|---|
+| Edge | 支持 | 词级 | 保留所选神经网络音色与 `+0%`；只有 notes 密度确实需要时才小幅调速。 |
+| ElevenLabs | 支持 | 原文字符级对齐 | 保留 `eleven_multilingual_v2` 与 `mp3_44100_128`，适合稳定长文旁白。显式调速使用 `--elevenlabs-speed 0.7-1.2`；`eleven_v3` 表现力更强但波动更大，Flash v2.5 更偏延迟与成本。 |
+| MiniMax | 支持 | 词级 | 保留现有 `speech-2.8-hd`、32 kHz 单声道 MP3 默认值，除非所选音色或交付目标另有要求。 |
+| Qwen | 不支持 | 当前 TTS 响应无计时 | 保留稳定版 `qwen3-tts-flash`；单语 deck 明确指定 `--qwen-language-type`。当前接口固定返回 WAV，不提供格式、采样率或数值语速控制；Instruct 模型仍可通过指令控制表达。不为了不存在的时间戳盲目换模型。 |
+| CosyVoice | 有条件支持 | 词级 | 保留兼容系统音色的 `cosyvoice-v3-flash` 与 24 kHz MP3 默认值。复刻/设计音色使用其所属模型；v3.5 音色必须显式选择匹配的 v3.5 模型。 |
+
+CLI 会在发送请求前拒绝超出范围的 ElevenLabs stability/similarity/style、`0.7-1.2` 以外的 ElevenLabs 语速，以及不符合 provider 官方范围的 CosyVoice 音量、语速、音高或采样率。
+
+以上裁决依据当前 [ElevenLabs 带时间戳语音接口](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps)、[ElevenLabs 模型指南](https://elevenlabs.io/docs/overview/capabilities/text-to-speech)、[Qwen TTS API](https://www.alibabacloud.com/help/en/model-studio/qwen-tts-api) 与 [Qwen-Audio-TTS/CosyVoice HTTP API](https://help.aliyun.com/en/model-studio/cosyvoice-tts-http-api)。阿里云目前建议 CosyVoice HTTP 使用北京地域的 workspace 专属域名；有该域名时通过 `--cosyvoice-base-url` 传入，旧域名仍可用。
+
+阿里云当前的 [TTS 模型选型指南](https://www.alibabacloud.com/help/en/model-studio/tts-model/)建议新建的预置/复刻音色工作流优先考虑 Qwen-Audio 3.0。但这些模型使用 Qwen-Audio-TTS/CosyVoice API 和另一套音色契约，仍不返回时间戳。因此 PPT Master 不会静默替换兼容的 `qwen3-tts-flash` 默认值；只有确实为了音质迁移时，才显式更换模型及其匹配音色，而不是为了字幕能力盲目迁移。
 
 `audio/` 是唯一的当前旁白集，来源由 manifest 记录，因此默认不创建 provider 子目录。重新生成前，脚本会移除过期的 `manifest.json` 与 `total.srt`；仅生成音频的 provider 还会移除同名旧逐页 SRT。只有明确需要保留另一套 provider 结果时，才使用单独的显式输出目录。
 
@@ -208,6 +228,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 - **授权** —— 只复刻你自己拥有的、或拿到了明确授权的声音。每个 provider 的服务条款都禁止冒用他人声音。
 - **语言覆盖** —— 复刻出来的音色会继承说话人的口音。对中英混合等多语 deck，建议挑一个对你样本语言组合处理较好的 provider；ElevenLabs `eleven_multilingual_v2` 和 CosyVoice 通常最宽容。
+- **字幕能力** —— ElevenLabs 复刻音色和受支持的 CosyVoice 复刻音色可以生成 provider 原生计时 SRT；Qwen 复刻音色在当前 API 下仍只生成音频。
 - **Provider 保留策略** —— 只要该音色仍存在于你的 provider 账户中，就可以继续复用对应 `voice_id`；保留、删除与过期规则以各平台政策为准。
 
 ## 依赖
@@ -253,7 +274,7 @@ PowerPoint for Mac 可以手动导出 MP4/MOV，但微软明确说明其影片�
 
 **经验值**：
 
-- **不需要麦克风、不需要录制环节**——音频是合成的，重跑可重现。
+- **不需要麦克风、不需要录制环节**——音频是合成的。重跑会复用同一份 notes 与参数，但云端模型仍可能出现轻微的非确定性差异。
 - **Windows 动画保真**：PowerPoint 的 Windows 视频导出会保留 PPT Master 的原生页间转场和无点击对象动画；Mac 影片导出存在上面的限制。详见 [转场与动画](./animations.md)。
 - **单页改音频**：改对应 `notes/<page>.md`，再跑一遍 `notes_to_audio.py` + 嵌入步骤，再重新导出视频——单页迭代通常不到一分钟。
 - **文件大小**：20 页全高清 deck 通常是 30–80 MB，取决于图片量。需要小文件分享时降到高清就行。
