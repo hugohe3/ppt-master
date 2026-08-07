@@ -4,7 +4,7 @@ description: Shared post-processing stage for narration audio, PPTX embedding, a
 
 # Generate Audio Stage
 
-> Shared narration stage. Run from the Generate PPTX route after notes/export readiness, or from the Enhance Native PPTX narration module after its notes step. By default, `edge-tts` produces one audio/SRT pair per slide from the same streaming request. Cloud TTS providers (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) currently produce audio only. The caller owns final PPTX integration.
+> Shared narration stage. Run from the Generate PPTX route after notes/export readiness, or from the Enhance Native PPTX narration module after its notes step. By default, `edge-tts` produces one audio/SRT pair per slide from the same streaming request. MiniMax also produces an audio/SRT pair through its synchronous subtitle response; ElevenLabs, Qwen, and CosyVoice produce audio only. The caller owns final PPTX integration.
 
 This stage is **context-independent**: it reads `notes/*.md` and queries the selected TTS voice catalog, so either owning route may invoke it in a fresh session. It does not choose the top-level route and does not patch slide design.
 
@@ -26,7 +26,7 @@ this stage.
 
 - Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Enhance Native PPTX, the notes module writes numeric files such as `001.md`.
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
-- The stage is page-level only: with edge, one notes file becomes `audio/<stem>.mp3` plus `notes/subtitles/<stem>.srt`; with a cloud provider, it becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
+- The stage is page-level only: with edge or MiniMax, one notes file becomes `audio/<stem>.mp3` plus `notes/subtitles/<stem>.srt`; with another cloud provider, it becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
 - PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
 - Optional automatic video export requires Windows PowerPoint 2016+ and runs
@@ -221,7 +221,9 @@ remain serial.
 
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
 
-The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. SRT cues use the service's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-visible-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary. Override the limit with `--subtitle-max-chars`. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails instead of silently distorting timing. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue. Cloud-provider commands currently write audio only.
+The edge command writes each MP3 and its internal page SRT from the same `edge-tts` stream. SRT cues use the service's `WordBoundary` timing: sentence-ending punctuation always closes a cue; text over the default 20-visible-character limit first splits at commas, semicolons, or colons, then at the nearest word boundary. Override the limit with `--subtitle-max-chars`. Adjacent timing overlap up to 100 ms is tolerated by moving the later cue start to the previous cue end; larger overlap fails instead of silently distorting timing. Each SRT uses a page-local timeline whose origin is `00:00:00,000`, including any leading silence before the first cue.
+
+The MiniMax command requests word-level subtitles on the same non-streaming `/v1/t2a_v2` call, downloads the returned JSON timing file, and applies the same punctuation-first, `--subtitle-max-chars`-bounded regrouping as Edge. It publishes the validated MP3/SRT as a rollback-safe pair; the compact cues are the units used for semantic animation mapping. ElevenLabs, Qwen, and CosyVoice commands write audio only.
 
 **Mandatory when `animations.json` is consumed — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
 
@@ -290,7 +292,7 @@ This stage keeps subtitles as external SRT files. It does not burn subtitles int
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With Edge SRT and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
+| Generate PPTX | With page-local SRT from Edge or MiniMax and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
 | Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export. If video was selected, pass that final PPTX to `powerpoint_video.py`. |
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using audio duration plus padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
@@ -304,9 +306,9 @@ For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded t
 Output one summary block listing:
 
 - Number of audio files generated and their location (`<project_path>/audio/*`).
-- For edge, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
+- For edge or MiniMax subtitles, number of matching page-local SRT files and their location (`<project_path>/notes/subtitles/*`).
 - For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
-- For Generate PPTX with Edge SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report inherited base motion or explicit all-motion-off.
+- For Generate PPTX with page-local SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report inherited base motion or explicit all-motion-off.
 - When video export was selected, the final MP4 path and native PowerPoint export status.
 - When a finished video exists, the final aligned sidecar SRT path.
 - The provider, voice, and rate/settings actually used.
