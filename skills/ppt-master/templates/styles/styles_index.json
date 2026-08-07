@@ -1,4 +1,14 @@
 {
+  "academic-research": {
+    "summary": "Research-reporting method that builds a defensible claim from question, method, and result while keeping limitations visible.",
+    "keywords": [
+      "academic",
+      "research",
+      "thesis-defense",
+      "methodology",
+      "peer-review"
+    ]
+  },
   "consulting-decision": {
     "summary": "Answer-first, evidence-led decision-document method with restrained analytical design defaults.",
     "keywords": [
@@ -7,6 +17,106 @@
       "answer-first",
       "evidence",
       "analytical"
+    ]
+  },
+  "creative-pitch": {
+    "summary": "Creative-work presentation method that grounds one idea in a real insight and shows it living across every place it will appear.",
+    "keywords": [
+      "creative",
+      "advertising",
+      "branding",
+      "campaign",
+      "concept"
+    ]
+  },
+  "incident-postmortem": {
+    "summary": "Blameless incident review method that reconstructs a timeline, separates contributing factors from blame, and commits to verifiable actions.",
+    "keywords": [
+      "postmortem",
+      "incident",
+      "reliability",
+      "root-cause",
+      "blameless"
+    ]
+  },
+  "investor-pitch": {
+    "summary": "Fundraising narrative method that carries an investor from why now to why this team, on evidence rather than adjectives.",
+    "keywords": [
+      "fundraising",
+      "pitch",
+      "startup",
+      "traction",
+      "investor"
+    ]
+  },
+  "narrative-keynote": {
+    "summary": "Story-driven keynote method that earns one idea through tension, turn, and concrete human detail.",
+    "keywords": [
+      "keynote",
+      "storytelling",
+      "narrative",
+      "persuasion",
+      "talk"
+    ]
+  },
+  "operating-review": {
+    "summary": "Recurring business-review method that separates result, variance, cause, and owned commitment without softening bad numbers.",
+    "keywords": [
+      "business-review",
+      "metrics",
+      "variance",
+      "operations",
+      "accountability"
+    ]
+  },
+  "product-launch": {
+    "summary": "Value-first launch method where every capability claim is earned by a demonstrable moment before it is named.",
+    "keywords": [
+      "product",
+      "launch",
+      "positioning",
+      "demo",
+      "capability"
+    ]
+  },
+  "science-explainer": {
+    "summary": "Public-explanation method that builds understanding from familiar ground through visual analogy, without trading accuracy for accessibility.",
+    "keywords": [
+      "explainer",
+      "science-communication",
+      "popular",
+      "analogy",
+      "public"
+    ]
+  },
+  "solution-proposal": {
+    "summary": "Client-facing proposal method that proves understanding first, then earns the work through a specific, costed plan.",
+    "keywords": [
+      "proposal",
+      "presales",
+      "bid",
+      "client",
+      "engagement"
+    ]
+  },
+  "technical-deepdive": {
+    "summary": "Mechanism-first technical explanation method that grounds every claim in constraints, trade-offs, and observable behavior.",
+    "keywords": [
+      "technical",
+      "architecture",
+      "engineering",
+      "mechanism",
+      "trade-off"
+    ]
+  },
+  "workshop-teaching": {
+    "summary": "Learn-by-doing training method that sequences objective, worked demonstration, practice, and honest checks for understanding.",
+    "keywords": [
+      "training",
+      "workshop",
+      "teaching",
+      "practice",
+      "onboarding"
     ]
   }
 }
