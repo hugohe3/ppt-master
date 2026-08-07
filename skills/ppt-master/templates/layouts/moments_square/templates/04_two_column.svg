@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080"
+  data-pptx-master="moments_square_master" data-pptx-master-name="Moments Square"
+  data-pptx-layout="two_column" data-pptx-layout-name="Two Column">
+  <rect id="master-background" x="0" y="0" width="1080" height="1080" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="two-column-left-panel" x="100" y="380" width="420" height="500" rx="20" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="two-column-right-panel" x="560" y="380" width="420" height="500" rx="20" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="two-column-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="100 110 880 210">
+    <text id="two-column-title-carrier" data-pptx-carrier="true"
+      x="100" y="232" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="60" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="two-column-left-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="132 412 356 436">
+    <text id="two-column-left-carrier" data-pptx-carrier="true"
+      x="132" y="468" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28">{{LEFT_CONTENT}}</text>
+  </g>
+  <g id="two-column-right-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="592 412 356 436">
+    <text id="two-column-right-carrier" data-pptx-carrier="true"
+      x="592" y="468" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="28">{{RIGHT_CONTENT}}</text>
+  </g>
+  <g id="two-column-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="3"
+    data-pptx-bounds="100 940 880 56">
+    <text id="two-column-footer-carrier" data-pptx-carrier="true"
+      x="100" y="980" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>
