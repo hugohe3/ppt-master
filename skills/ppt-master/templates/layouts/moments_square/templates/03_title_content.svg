@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080"
+  data-pptx-master="moments_square_master" data-pptx-master-name="Moments Square"
+  data-pptx-layout="title_content" data-pptx-layout-name="Title and Content">
+  <rect id="master-background" x="0" y="0" width="1080" height="1080" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="title-content-rule" x1="100" y1="340" x2="980" y2="340" stroke="#E2E8F0"
+    stroke-width="2" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="title-content-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="100 110 880 210">
+    <text id="title-content-title-carrier" data-pptx-carrier="true"
+      x="100" y="232" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="60" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="title-content-body-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="100 380 880 500">
+    <text id="title-content-body-carrier" data-pptx-carrier="true"
+      x="100" y="436" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="30">{{CONTENT_AREA}}</text>
+  </g>
+  <g id="title-content-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="2"
+    data-pptx-bounds="100 940 880 56">
+    <text id="title-content-footer-carrier" data-pptx-carrier="true"
+      x="100" y="980" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>

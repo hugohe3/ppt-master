@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080"
+  data-pptx-master="moments_square_master" data-pptx-master-name="Moments Square"
+  data-pptx-layout="image_full" data-pptx-layout-name="Full-Bleed Image">
+  <rect id="master-background" x="0" y="0" width="1080" height="1080" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="image-full-caption-band" x="0" y="820" width="1080" height="260" fill="#F4F6F8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="image-full-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1080 820">
+    <image id="image-full-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1080" height="820" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="image-full-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="100 860 880 80">
+    <text id="image-full-title-carrier" data-pptx-carrier="true"
+      x="100" y="918" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="44" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="image-full-caption-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="100 950 880 70">
+    <text id="image-full-caption-carrier" data-pptx-carrier="true"
+      x="100" y="996" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{CAPTION}}</text>
+  </g>
+</svg>

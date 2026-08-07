@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080"
+  data-pptx-master="moments_square_master" data-pptx-master-name="Moments Square"
+  data-pptx-layout="image_center" data-pptx-layout-name="Centered Image">
+  <rect id="master-background" x="0" y="0" width="1080" height="1080" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="image-center-panel" x="290" y="330" width="500" height="500" rx="24" fill="#EEF2F6"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="image-center-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="100 110 880 180">
+    <text id="image-center-title-carrier" data-pptx-carrier="true"
+      x="540" y="222" text-anchor="middle" fill="#1E293B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="56" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="image-center-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="290 330 500 500">
+    <image id="image-center-picture-carrier" data-pptx-carrier="true"
+      x="290" y="330" width="500" height="500" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="image-center-caption-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="140 870 800 70">
+    <text id="image-center-caption-carrier" data-pptx-carrier="true"
+      x="540" y="918" text-anchor="middle" fill="#64748B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28">{{CAPTION}}</text>
+  </g>
+</svg>
