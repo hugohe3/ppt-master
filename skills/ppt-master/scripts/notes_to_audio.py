@@ -27,11 +27,13 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 import os
 import re
 import sys
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
@@ -44,6 +46,7 @@ from tts_backends import (
     backend_minimax,
     backend_qwen,
 )
+from tts_backends.backend_common import temporary_path
 
 configure_utf8_stdio()
 
@@ -219,6 +222,105 @@ def _remove_stale_audio_variants(output_path: Path) -> None:
             and candidate.suffix.lower() in SUPPORTED_AUDIO_EXTENSIONS
         ):
             candidate.unlink()
+
+
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _provider_manifest_details(
+    args: argparse.Namespace,
+    backend: AudioBackend,
+) -> tuple[str, dict[str, object]]:
+    if backend.provider == "edge":
+        return "edge-tts", {
+            "rate": args.rate,
+        }
+    if backend.provider == "elevenlabs":
+        return args.elevenlabs_model, {
+            "stability": args.elevenlabs_stability,
+            "similarity_boost": args.elevenlabs_similarity_boost,
+            "style": args.elevenlabs_style,
+            "speaker_boost": args.elevenlabs_speaker_boost,
+        }
+    if backend.provider == "minimax":
+        return args.minimax_model, {
+            "speed": args.minimax_speed,
+            "volume": args.minimax_volume,
+            "pitch": args.minimax_pitch,
+            "language_boost": args.minimax_language_boost,
+        }
+    if backend.provider == "qwen":
+        return args.qwen_model, {
+            "language_type": args.qwen_language_type,
+            "optimize_instructions": args.qwen_optimize_instructions,
+            "custom_instructions": True if args.qwen_instructions else None,
+        }
+    return args.cosyvoice_model, {
+        "volume": args.cosyvoice_volume,
+        "rate": args.cosyvoice_rate,
+        "pitch": args.cosyvoice_pitch,
+        "language_hint": args.cosyvoice_language_hint,
+        "custom_instruction": True if args.cosyvoice_instruction else None,
+    }
+
+
+def _narration_manifest(
+    args: argparse.Namespace,
+    backend: AudioBackend,
+    *,
+    writes_subtitles: bool,
+) -> dict[str, object]:
+    model, raw_settings = _provider_manifest_details(args, backend)
+    settings = {
+        key: value
+        for key, value in raw_settings.items()
+        if value is not None
+    }
+    voice_ref = backend.voice_id
+    if backend.provider != "edge":
+        voice_ref = f"sha256:{_sha256_text(voice_ref)}"
+
+    manifest: dict[str, object] = {
+        "schema": "ppt-master.narration.v1",
+        "generated_at": datetime.now(timezone.utc).isoformat(
+            timespec="seconds"
+        ).replace("+00:00", "Z"),
+        "provider": backend.provider,
+        "model": model,
+        "voice_ref": voice_ref,
+        "audio_format": backend.extension.lstrip("."),
+    }
+    if settings:
+        manifest["settings"] = settings
+    if writes_subtitles:
+        manifest["subtitles"] = {
+            "format": "srt",
+            "timing": "word",
+            "max_visible_chars": args.subtitle_max_chars,
+        }
+    return manifest
+
+
+def _publish_manifest(path: Path, manifest: dict[str, object]) -> None:
+    descriptor, staged_path = temporary_path(path, ".tmp")
+    try:
+        with os.fdopen(
+            descriptor,
+            "w",
+            encoding="utf-8",
+            newline="\n",
+        ) as stream:
+            descriptor = -1
+            json.dump(manifest, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(staged_path, path)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        staged_path.unlink(missing_ok=True)
 
 
 async def _generate_edge_jobs(
@@ -487,7 +589,7 @@ def main() -> int:
     project = args.project_path
     notes_dir = project / "notes"
     output_dir = args.output or (project / "audio")
-    subtitle_dir = notes_dir / "subtitles"
+    subtitle_dir = output_dir
     writes_subtitles = backend.provider in {"edge", "minimax"}
 
     try:
@@ -504,8 +606,13 @@ def main() -> int:
         return 2
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    if writes_subtitles:
-        subtitle_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = output_dir / "manifest.json"
+    try:
+        manifest_path.unlink(missing_ok=True)
+        (output_dir / "total.srt").unlink(missing_ok=True)
+    except OSError as exc:
+        print(f"error: failed to clear stale narration metadata: {exc}", file=sys.stderr)
+        return 1
 
     generated = 0
     if backend.provider == "edge":
@@ -620,6 +727,8 @@ def main() -> int:
                         base_url=args.cosyvoice_base_url,
                     )
                 _remove_stale_audio_variants(output_path)
+                if not writes_subtitles:
+                    output_path.with_suffix(".srt").unlink(missing_ok=True)
             except Exception as exc:
                 print(f"error: failed to generate {output_path}: {exc}", file=sys.stderr)
                 return 1
@@ -628,13 +737,27 @@ def main() -> int:
             if subtitle_path is not None:
                 print(f"     {subtitle_path}")
 
+    try:
+        _publish_manifest(
+            manifest_path,
+            _narration_manifest(
+                args,
+                backend,
+                writes_subtitles=writes_subtitles,
+            ),
+        )
+    except (OSError, RuntimeError) as exc:
+        print(f"error: failed to publish narration manifest: {exc}", file=sys.stderr)
+        return 1
+
     if writes_subtitles:
         print(
             f"[Done] Generated {generated}/{len(note_roster)} audio/SRT pair(s): "
-            f"{output_dir} + {subtitle_dir}"
+            f"{output_dir}"
         )
     else:
         print(f"[Done] Generated {generated}/{len(note_roster)} audio file(s): {output_dir}")
+    print(f"[REPORT] Narration manifest: {manifest_path}")
     return 0
 
 
