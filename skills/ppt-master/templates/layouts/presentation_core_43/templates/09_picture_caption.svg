@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768"
+  data-pptx-master="presentation_core_43_master" data-pptx-master-name="Presentation Core 4:3"
+  data-pptx-layout="picture_caption" data-pptx-layout-name="Picture with Caption">
+  <rect id="master-background" x="0" y="0" width="1024" height="768" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="picture-caption-image-panel" x="56" y="56" width="616" height="656" rx="12" fill="#EEF2F6"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="picture-caption-rail-panel" x="696" y="56" width="272" height="656" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="picture-caption-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="720 104 224 88">
+    <text id="picture-caption-title-carrier" data-pptx-carrier="true"
+      x="720" y="162" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="30" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="picture-caption-body-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="720 224 224 344">
+    <text id="picture-caption-body-carrier" data-pptx-carrier="true"
+      x="720" y="264" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="19">{{CAPTION}}</text>
+  </g>
+  <g id="picture-caption-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="2"
+    data-pptx-bounds="56 56 616 656">
+    <image id="picture-caption-picture-carrier" data-pptx-carrier="true"
+      x="56" y="56" width="616" height="656" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+</svg>

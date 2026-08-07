@@ -25,5 +25,28 @@
       "chart_insight",
       "table_summary"
     ]
+  },
+  "presentation_core_43": {
+    "summary": "A structure-only 4:3 system with 16 authored PowerPoint Layouts for projector, classroom, academic, and meeting-room presentations.",
+    "canvas_format": "ppt43",
+    "page_count": 16,
+    "page_types": [
+      "title_slide",
+      "title_content",
+      "section_header",
+      "two_content",
+      "comparison",
+      "title_only",
+      "blank",
+      "content_caption",
+      "picture_caption",
+      "hero_statement",
+      "three_card",
+      "kpi_grid",
+      "process_timeline",
+      "stacked_split",
+      "chart_insight",
+      "table_summary"
+    ]
   }
 }
