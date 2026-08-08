@@ -38,6 +38,13 @@ visual job.
 | Surface / select | Name the target, confirm its owning subsection and fidelity, then use the Router. Choose a compatible technique that fully performs the job; prefer simpler/native-stable alternatives only when communication is equal. `Approximate` requires review, not automatic rejection. |
 | Integrate / stop | Align paint, contour, light, hierarchy, and z-order; combine only techniques with different jobs. Check legibility, editability, density, fidelity, and style; simplify failures, use legal alternatives, and bake only the smallest pixel-dependent layer. Keep authoritative text/data native. |
 
+**Default — one dominant composition scaffold (may override when a second
+scaffold performs an independent communication job)**: Integrate the page-scale
+move and every active Structure / Image / Chart / Table branch into one dominant
+system, sharing direction, contour, baseline, and z-order as applicable. Make a
+branch-local system visibly subordinate when it cannot share that scaffold;
+simplify any competing scaffold without a separate communication job.
+
 #### Visual Job Router
 
 **Reference — not a quota**: route diagnosed problems through this table. A

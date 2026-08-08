@@ -73,12 +73,13 @@ Choose the field and map required atoms, then follow:
 
 **Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Prefer containment, alignment, baselines, and proximity; add lines/Connectors only for real edges, never to make a page look process-like.
 
-**Default — visible structural move (may override for naked-text rhythm/style)**:
-Make one relationship-bearing field, spine, node carrier, or directional shape
-the page-scale move; never add geometry merely because Structure is `yes`.
-
-> Note: spatial encoding may remove the need for a new object; any drawn node
-> carrier, spine, or edge still passes §2.
+**Default — visible structural composition (may override for naked-text
+rhythm/style)**: Make one relationship-bearing field, spine, node carrier, or
+directional shape the page-scale move; never add geometry merely because
+Structure is `yes`. When drawn roles interact, resolve relationship-bearing
+parent contour/direction → contact → joint or intentional void →
+z-order/occlusion → canvas-edge behavior before labels/garnish. Skip
+inapplicable operations; implicit/direct roles remain container-free.
 
 ---
 
@@ -93,5 +94,6 @@ the page-scale move; never add geometry merely because Structure is `yes`.
 | Removal | Without color/effects/icons/garnish, placement still communicates |
 | Fidelity | All required units, qualifiers, values, and caveats remain |
 | Construction | Drawn fields/spines/node carriers/edges pass §2; implicit/direct roles need no carrier; freeform follows failed primitive/preset/Boolean tiers |
+| Composition | Every used contact, void, overlap, cutout, occlusion, or canvas-edge crossing maps to an atom/role or remains removable garnish; none obscures ownership or reading path |
 
 Load Chart/Table branches independently for embedded objects. Keep one dominant reading path while allowing secondary atoms whose ownership stays clear.

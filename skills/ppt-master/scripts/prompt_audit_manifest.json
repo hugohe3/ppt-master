@@ -22,7 +22,7 @@
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 3500,
     "skills/ppt-master/references/executor-visualization.md": 1250,
-    "skills/ppt-master/references/executor-structure.md": 1250,
+    "skills/ppt-master/references/executor-structure.md": 1500,
     "skills/ppt-master/references/executor-table.md": 1000,
     "skills/ppt-master/references/executor-image.md": 2000,
     "skills/ppt-master/references/executor-web-image.md": 750,
@@ -914,7 +914,7 @@
       "files": [
         "skills/ppt-master/references/executor-structure.md"
       ],
-      "max_tokens": 1250
+      "max_tokens": 1500
     },
     "stage.generate.executor.table": {
       "description": "Conditional semantic cell-grid construction rules.",
