@@ -6,6 +6,8 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 **Trigger**: load only when the lock selects structured template reuse.
 
+**Hard rule — package structure, not information structure**: this branch owns reusable PowerPoint Master/Layout atoms, placeholders, slots, and prototype topology. [`executor-structure.md`](./executor-structure.md) independently owns page-local qualitative diagrams and layouts. A structure-family reference never activates `pptx_structure.mode: structured`, and structured template reuse never implies a structure-family reference.
+
 ## 1. Template Reuse Rules
 
 ### 1.0 Template Context Load
@@ -60,7 +62,7 @@ When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Execu
 
 **Detecting mirror mode**: read `template_reuse_scope` from the retained lock. `replication_mode: mirror` in the installed template only determines whether that scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
 
-**Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
+**Mirror + visualization pages**: chart, table, and qualitative topology inside a mirror SVG are already drawn. Replace only the permitted visible text values while preserving the prototype geometry and topology; do not redraw any object from a `family/key` catalog SVG. A mirror template's `page_visualizations` entries are normally absent for this reason, and a legacy `page_charts` row does not override mirror fidelity.
 
 **Legacy template boundary**: A template with missing root Master identity, direct atomic placeholders, `data-pptx-layout-kind`, unmapped `baseline`, `preserve`, or `layout_strategy: distill` is not a fallback input. Stop and create a new current workspace through [`create-template`](../workflows/create-template.md) before generation.
 

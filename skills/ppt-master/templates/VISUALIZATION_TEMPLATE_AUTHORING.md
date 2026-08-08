@@ -259,6 +259,11 @@ placeholder 所有权标记。即使 Structure 预览占满整个 `1280×720` �
 
 Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入，不得作为“清理注释”删除。
 
+Catalog 模板本身只有一个主 Chart，可保留上述 unscoped marker 与
+`id="chartArea"`。Executor 在项目页面组合多个已验证 Chart 对象时，改用
+[`executor-chart.md`](../references/executor-chart.md) 定义的 semantic object key
+和 scoped marker；不能在同一 SVG 中复制多个 `chartArea` id。
+
 ### 6.2 Native Chart/Table
 
 **Hard rule**: 只有 [`native-data-interface.md`](../references/native-data-interface.md) 支持的真实 Chart 或纯文本 Table 使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。Structure 永远不使用 Chart/Table replacement marker。

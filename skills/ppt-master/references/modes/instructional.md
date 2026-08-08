@@ -26,7 +26,7 @@ Titles state what the page teaches ("How attention weights are computed") — cl
 - Diagrams that build incrementally; annotate the part currently being explained.
 - Concrete examples anchor abstract points when they improve transfer or comprehension.
 
-> Step / flow / diagram geometry lives in [`templates/charts/`](../../templates/charts/); this mode decides *the learning order and granularity*.
+> Step / flow / diagram topology lives in [`templates/structures/`](../../templates/structures/); value-driven teaching charts remain in [`templates/charts/`](../../templates/charts/). This mode decides *the learning order and granularity*.
 
 ---
 

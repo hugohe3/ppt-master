@@ -312,12 +312,20 @@ def _run_recall(args: argparse.Namespace) -> int:
     return 0
 
 
-def _resolve_validation_value(raw: str, family: str) -> VisualizationEntry:
+def _resolve_validation_value(
+    raw: str,
+    family: str,
+    *,
+    allow_legacy_bare: bool,
+) -> VisualizationEntry:
     if "/" in raw:
         return resolve_visualization_reference(raw)
     if family != "all":
         return resolve_visualization_reference(f"{family}/{raw}")
-    return resolve_visualization_reference(raw, allow_legacy_bare=True)
+    return resolve_visualization_reference(
+        raw,
+        allow_legacy_bare=allow_legacy_bare,
+    )
 
 
 def _run_validate(args: argparse.Namespace) -> int:
@@ -326,7 +334,16 @@ def _run_validate(args: argparse.Namespace) -> int:
     valid_entries: list[tuple[str, VisualizationEntry]] = []
     for value in selected:
         try:
-            valid_entries.append((value, _resolve_validation_value(value, args.family)))
+            valid_entries.append(
+                (
+                    value,
+                    _resolve_validation_value(
+                        value,
+                        args.family,
+                        allow_legacy_bare=args.legacy_bare,
+                    ),
+                )
+            )
         except VisualizationCatalogError:
             invalid.append(value)
 
@@ -348,7 +365,11 @@ def _run_validate(args: argparse.Namespace) -> int:
     result = {"invalid": sorted(invalid), "valid": valid}
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     if invalid:
-        mapping_name = "page_charts" if args.legacy_output else "page_visualizations"
+        mapping_name = (
+            "page_charts"
+            if args.legacy_output or args.legacy_bare
+            else "page_visualizations"
+        )
         print(
             "Error: replace each invalid reference with one returned by recall, or "
             f"keep no-template-match out of Section VII and {mapping_name} while "
@@ -407,6 +428,16 @@ def build_parser(*, legacy_output: bool = False) -> argparse.ArgumentParser:
 
     validate = subparsers.add_parser("validate", help="Validate selected references.")
     validate.add_argument("keys", nargs="+", help="One or more keys or family/key references.")
+    validate.add_argument(
+        "--legacy-bare",
+        action="store_true",
+        default=legacy_output,
+        help=(
+            argparse.SUPPRESS
+            if legacy_output
+            else "Allow unqualified keys from an existing legacy page_charts mapping."
+        ),
+    )
     _add_family_argument(validate)
     validate.set_defaults(handler=_run_validate)
     return parser

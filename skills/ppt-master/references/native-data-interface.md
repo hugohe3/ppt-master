@@ -1,8 +1,8 @@
-> See [`shared-standards-core.md`](./shared-standards-core.md) for the mandatory SVG foundation.
+> See [`executor-base.md`](./executor-base.md) for the Shape-first page authority and [`shared-standards-core.md`](./shared-standards-core.md) for the mandatory SVG foundation.
 
 # Native Data Interface
 
-Conditional interface for preset pattern fills and PowerPoint-native chart/table replacement metadata. Load when either feature appears in the authored SVG.
+Sole conditional interface for preset pattern fills and PowerPoint-native chart/table replacement eligibility, markers, metadata schemas, and export activation. Load only when either feature is selected for the authored SVG.
 
 ## 1. Pattern Fill — `<pattern>` with PPTX preset annotation
 
@@ -40,18 +40,30 @@ this enum.
 
 ## 2. PowerPoint-Native Chart / Table Replacement Markers (Opt-in)
 
-Native PowerPoint tables and Excel-backed charts activate at export time only. Generated pages prepare dormant replacement metadata for independently selected native-ready objects while keeping hand-authored SVG geometry pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
+[`executor-base.md`](./executor-base.md) remains the single Shape-first authoring authority: the complete visible SVG fallback is required regardless of native eligibility. This section only adds dormant replacement metadata to independently selected objects and defines how export may activate it.
 
 **Hard rule — selected-object authoring**: write the marker and JSON metadata in
-the same edit only for a supported chart or pure text-grid table selected as
-native-ready under [`executor-chart.md`](./executor-chart.md) §2.2. Default reads
-`Native-ready: yes` from §IX (legacy §VII fallback only); Quick makes the
-decision in active context before drawing. Default `no`, a Quick decision not to
-use the native object model, and incidental microvisuals stay on the SVG
-fallback route. Canonical rectangular merged text cells may use the narrow
+the same edit only for a supported chart or pure text-grid table independently
+selected as native-ready. Default reads the exact semantic object key from §IX
+`Native-ready: <object-key>=yes|no; ...`; Quick assigns the same page-local
+`kebab-case` key in active context before drawing. Use that key as the marker
+group `id` and metadata `name`. A catalog `family/key`, family name, §VII row,
+numeric content, or another ready object on the page never implies eligibility.
+Default `<object-key>=no`, Quick `no`, and unlisted incidental microvisuals stay
+on the SVG fallback route. Canonical rectangular merged text cells may use the narrow
 `row_span` / `col_span` contract below; graphical cells stay unmarked. The
-marker group supplies visible SVG fallback children for browser rendering and
-JSON metadata for `svg_to_pptx` native export.
+marker group supplies visible fallback children for browser rendering and JSON
+metadata for `svg_to_pptx` native export.
+
+A legacy bare `Native-ready: yes|no` maps only to the page's sole eligible
+object. Zero or multiple eligible objects make it ambiguous and require
+upstream repair.
+
+**MUST — atomic authoring**: treat one object's visible SVG fallback, parent
+`data-pptx-replace-with` marker, and single JSON `<metadata>` child as one
+authoring unit. Write all three while that object's data is in context. Do not
+defer the marker or metadata to `verify-charts`, the final quality gate, or
+export.
 
 **Hard rule — activation is the opt-in, dormant unless exported with `--native-charts-and-tables`**: A marker only declares that a group is eligible for PowerPoint-native Chart/Table replacement. Normal `svg_to_pptx.py` runs keep the fallback SVG children and convert them into independently editable DrawingML shapes. Pass `--native-charts-and-tables` only when the data source and chart/table-specific object model matter more than cross-renderer layout fidelity: it emits the PowerPoint Chart/Table object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint Chart/Table object rather than a pixel-identical SVG drawing.
 
@@ -94,6 +106,7 @@ free of those attributes; use the exact behavior and field index in
   <metadata type="application/json">
     {
       "x": 120, "y": 150, "width": 520, "height": 320,
+      "name": "p03-revenue-chart",
       "type": "column",
       "title": "Revenue by Segment",
       "categories": ["Q1", "Q2", "Q3"],
@@ -105,6 +118,31 @@ free of those attributes; use the exact behavior and field index in
   </metadata>
   <!-- Visible SVG fallback for live preview / non-native export goes here. -->
 </g>
+```
+
+**Hard rule — transcribe the authored object**: metadata is the native object's
+source of truth and must describe the same data and visible chart/table chrome
+as the fallback drawn in that marker group.
+
+| Object | Required projection from the visible fallback |
+|---|---|
+| Chart | Every category/point and series value, the actual x/y/size data where applicable, visible point colors and labels, line/area treatment needed by the schema, visible title/axis/legend chrome, companion text, bounds, and fallback typography/style values that native export cannot infer unambiguously |
+| Table | Every resolved row/column cell, header/summary line, rectangular span, required cell style, alignment, bounds, and visible typography |
+
+Do not simplify the SVG artwork to match the native object model. When the
+closed payload cannot represent an object without losing required data or cell
+topology, Default returns the native-ready decision upstream and Quick revises
+that per-object decision before drawing; only the resolved non-native object
+stays unmarked on its complete SVG fallback. Never silently ignore an explicit
+`<object-key>=yes` declaration.
+
+**Per-page verification**: enumerate every `<object-key>=yes` on the current
+page and confirm a one-to-one key match. Each key identifies one parent marker
+and exactly one JSON metadata child; `<object-key>=no` and unlisted incidental
+objects have no marker. Finding one marker somewhere on a page is insufficient.
+
+```bash
+rg -n 'data-pptx-replace-with="(chart|table)"|<metadata type="application/json">' <project_path>/svg_output/<current_page>.svg
 ```
 
 **Table schema**: Native tables are rectangular DrawingML grids. Use `columns`

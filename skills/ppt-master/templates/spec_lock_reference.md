@@ -29,8 +29,9 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
-Optional data sections: `images`, `page_visualizations`. Existing locks may
-retain legacy `page_charts`; never write both sections for the same page.
+Optional data sections: `images`, `page_visualizations`. New locks never write
+legacy `page_charts`; existing locks may retain it for read-only compatibility.
+Never declare the same page in both sections.
 
 The required universal block is:
 
@@ -74,8 +75,10 @@ Structured section value shapes:
 Project each §VII `Page | Family | Template | Usage` row's Page, Family, and
 Template fields into `page_visualizations` as `<family>/<key>`; Usage stays in
 the Design Spec. The families are `chart`, `structure`, and `table`. This is a
-page-local reference, not a type/geometry lock. The family/key must resolve
-through its live family registry to one SVG; no-match stays in §IX.
+single primary page-local reference, not a type/geometry/native lock. Write at
+most one per page; child visuals stay in §IX. Resolve it through the shared live
+catalog to one SVG; no-match stays in §IX. Structure references remain
+Slide-local and never create Master/Layout/placeholder ownership.
 
 ```markdown
 ## page_visualizations
