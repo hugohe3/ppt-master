@@ -225,6 +225,19 @@ Before writing P01, resolve in active context:
   otherwise choose the registered automatic/default path without another
   interaction.
 
+**Mandatory — whole-roster rhythm check**: During the same active-context
+resolution, compare neighbors and section arcs to judge whether chapter entries
+visibly reset, extended same-density runs are intentional, repeated dominant
+geometry carries a continuity job, each section follows a mode-fitting
+progression—including framework → explanation/evidence → judgment/action when
+it serves the objective—and a genuine ending lowers information load. Repair
+the transient roster, density, and composition choices in place. This is
+judgment, not quota; preserve intentional continuity, legitimately all-`dense`
+material, and 1:1/literal order. Add no filler page: a `breathing` page marks a
+meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and
+must stand alone. Create no artifact, checkpoint, lock, or second
+authoring/review pass.
+
 **Mandatory — capability scan, not a coverage quota**: for every page, consider
 the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
