@@ -561,7 +561,7 @@ Generate a labeled static contact sheet. This command previews the first frame
 after EXIF normalization and does not modify source images:
 
 ```bash
-python3 scripts/rotate_images.py sheet <images_directory>
+python3 ${SKILL_DIR}/scripts/rotate_images.py sheet <images_directory>
 ```
 
 The default output is
@@ -579,9 +579,12 @@ must be `90`, `180`, or `270`:
 Apply the confirmed fixes and regenerate image facts:
 
 ```bash
-python3 scripts/rotate_images.py fix /tmp/orientation_fixes.json
-python3 scripts/analyze_images.py <images_directory>
+python3 ${SKILL_DIR}/scripts/rotate_images.py fix /tmp/orientation_fixes.json
+python3 ${SKILL_DIR}/scripts/analyze_images.py <images_directory>
 ```
+
+GIF files are excluded: `sheet` does not list them, and `fix` rejects a batch
+that references one so all GIF files remain unchanged.
 
 Do not infer a rotation from prose, EXIF, or aspect ratio alone, and do not
 launch the HTML `gen` command in source intake. `auto` remains an in-place EXIF
