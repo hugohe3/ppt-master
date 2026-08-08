@@ -230,7 +230,7 @@
         "required": false,
         "min_entries": 1,
         "entry_key_pattern": "^P[0-9]{2,}$",
-        "value_pattern": "^(?:chart|structure|table)/[a-z0-9]+(?:_[a-z0-9]+)*$"
+        "value_pattern": "^(?:chart|table)/[a-z0-9]+(?:_[a-z0-9]+)*$"
       },
       {
         "id": "page_charts",

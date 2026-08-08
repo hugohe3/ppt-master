@@ -2,7 +2,11 @@
 """
 PPT Master - Visualization Catalog Resolver
 
-Resolve chart, structure, and table references from their live family indexes.
+Resolve chart and table references from their live family indexes.
+
+Historical ``page_charts`` structure keys remain readable as intent-only
+compatibility values. They do not resolve to SVG assets and are never part of
+the live recall catalog.
 
 Usage:
     Import load_visualization_entries() or resolve_visualization_reference().
@@ -29,9 +33,54 @@ _TEMPLATES_DIR = _SCRIPTS_DIR.parent / "templates"
 _KEY_RE = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
 _FAMILY_SPECS = {
     "chart": ("charts", "charts_index.json", "charts"),
-    "structure": ("structures", "structures_index.json", "structures"),
     "table": ("tables", "tables_index.json", "tables"),
 }
+VISUALIZATION_SVG_KIND = "visualization-svg"
+LEGACY_STRUCTURE_INTENT_KIND = "legacy-structure-intent"
+
+# Frozen from the 36 Structure entries published in origin/main's historical
+# broad charts catalog. Keep this exact allowlist: later split-only aliases and
+# generated Structure keys were never part of that public compatibility input.
+_LEGACY_STRUCTURE_INTENT_KEYS = frozenset(
+    {
+        "agenda_list",
+        "arc_anchored_list",
+        "chevron_chain_with_tail",
+        "chevron_process",
+        "circular_stages",
+        "client_server_flow",
+        "comparison_columns",
+        "concentric_circles",
+        "fishbone_diagram",
+        "hub_inward_arrows",
+        "hub_spoke",
+        "icon_grid",
+        "isometric_stairs",
+        "journey_map",
+        "kpi_cards",
+        "labeled_card",
+        "layered_architecture",
+        "mind_map",
+        "module_composition",
+        "numbered_steps",
+        "pipeline_with_stages",
+        "process_flow",
+        "pros_cons_chart",
+        "pyramid_chart",
+        "pyramid_isometric",
+        "quadrant_bubble_scatter",
+        "quadrant_text_bullets",
+        "roadmap_vertical",
+        "segmented_wheel",
+        "snake_flow",
+        "team_roster",
+        "timeline",
+        "top_down_tree",
+        "venn_diagram",
+        "vertical_list",
+        "vertical_pillars",
+    }
+)
 
 
 class VisualizationCatalogError(RuntimeError):
@@ -40,26 +89,30 @@ class VisualizationCatalogError(RuntimeError):
 
 @dataclass(frozen=True)
 class VisualizationEntry:
-    """One canonical family catalog entry and its SVG asset."""
+    """One live SVG entry or one frozen legacy Structure intent."""
 
     family: str
     key: str
     summary: str
-    path: Path
-
-    @property
-    def kind(self) -> str:
-        """Return the page-context reference kind."""
-        return "visualization-svg"
+    path: Path | None
+    kind: str = VISUALIZATION_SVG_KIND
 
     @property
     def reference(self) -> str:
-        """Return the canonical ``family/key`` reference."""
+        """Return the canonical live ``family/key`` reference."""
+        if self.kind != VISUALIZATION_SVG_KIND:
+            raise VisualizationCatalogError(
+                f"legacy Structure intent {self.key!r} has no canonical reference"
+            )
         return f"{self.family}/{self.key}"
 
     @property
     def display_path(self) -> str:
         """Return the Skill-relative SVG path."""
+        if self.path is None:
+            raise VisualizationCatalogError(
+                f"{self.key!r} is a legacy Structure intent without an SVG path"
+            )
         return self.path.relative_to(_SCRIPTS_DIR.parent).as_posix()
 
 
@@ -72,8 +125,13 @@ class VisualizationCatalog:
 
 
 def visualization_families() -> tuple[str, ...]:
-    """Return the stable visualization family order."""
+    """Return the stable live visualization family order."""
     return tuple(_FAMILY_SPECS)
+
+
+def legacy_structure_intent_keys() -> tuple[str, ...]:
+    """Return the frozen legacy ``page_charts`` Structure bare keys."""
+    return tuple(sorted(_LEGACY_STRUCTURE_INTENT_KEYS))
 
 
 def _normalize_families(families: Iterable[str] | None) -> tuple[str, ...]:
@@ -188,6 +246,12 @@ def load_visualization_entries(
 
 
 def _require_svg(entry: VisualizationEntry) -> VisualizationEntry:
+    if entry.kind != VISUALIZATION_SVG_KIND:
+        raise VisualizationCatalogError(
+            f"{entry.family}/{entry.key} has unsupported kind {entry.kind!r}"
+        )
+    if entry.path is None:
+        raise VisualizationCatalogError(f"{entry.reference!r} has no SVG asset path")
     if entry.path.suffix.casefold() != ".svg" or not entry.path.is_file():
         raise VisualizationCatalogError(
             f"{entry.reference!r} has no SVG asset at {entry.path}"
@@ -200,7 +264,11 @@ def resolve_visualization_reference(
     *,
     allow_legacy_bare: bool = False,
 ) -> VisualizationEntry:
-    """Resolve one canonical ``family/key`` or supported legacy bare key."""
+    """Resolve one live ``family/key`` or supported legacy bare key.
+
+    Legacy Structure intents are accepted only when ``allow_legacy_bare`` is
+    true. A qualified ``structure/<key>`` is never a live reference.
+    """
     normalized = str(value).strip().casefold()
     if not normalized:
         raise VisualizationCatalogError("visualization reference must not be empty")
@@ -245,17 +313,43 @@ def resolve_visualization_reference(
         _, alias = alias_reference.split("/", 1)
         if alias == normalized:
             matches.append(catalog.entries[target_reference])
-    unique_matches = {entry.reference: entry for entry in matches}
+    if normalized in _LEGACY_STRUCTURE_INTENT_KEYS:
+        matches.append(
+            VisualizationEntry(
+                family="structure",
+                key=normalized,
+                summary=(
+                    "Frozen legacy page_charts Structure intent; author the "
+                    "page structure from its semantic relationships."
+                ),
+                path=None,
+                kind=LEGACY_STRUCTURE_INTENT_KIND,
+            )
+        )
+    unique_matches = {
+        (entry.kind, entry.family, entry.key): entry
+        for entry in matches
+    }
     if not unique_matches:
         raise VisualizationCatalogError(
             f"legacy visualization key {value!r} is not registered"
         )
     if len(unique_matches) > 1:
-        candidates = ", ".join(sorted(unique_matches))
+        candidates = ", ".join(
+            f"{family}/{key} ({kind})"
+            for kind, family, key in sorted(unique_matches)
+        )
         raise VisualizationCatalogError(
             f"legacy visualization key {value!r} is ambiguous across {candidates}"
         )
-    return _require_svg(next(iter(unique_matches.values())))
+    resolved = next(iter(unique_matches.values()))
+    if resolved.kind == LEGACY_STRUCTURE_INTENT_KIND:
+        if resolved.path is not None:
+            raise VisualizationCatalogError(
+                f"legacy Structure intent {resolved.key!r} must not have an asset path"
+            )
+        return resolved
+    return _require_svg(resolved)
 
 
 if __name__ == "__main__":

@@ -39,6 +39,8 @@ from svg_to_pptx.pptx_package.template_structure import (
     load_pptx_structure_lock,
 )
 from visualization_catalog import (
+    LEGACY_STRUCTURE_INTENT_KIND,
+    VISUALIZATION_SVG_KIND,
     VisualizationCatalogError,
     VisualizationEntry,
     resolve_visualization_reference,
@@ -421,8 +423,8 @@ def _visualization_reference(
     value: str,
     *,
     allow_legacy_bare: bool,
-) -> tuple[dict[str, str], Path, VisualizationEntry]:
-    """Resolve one current or legacy visualization reference."""
+) -> tuple[dict[str, str] | None, Path | None, VisualizationEntry]:
+    """Resolve one live asset or one legacy intent-only Structure key."""
     source_section = "page_charts" if allow_legacy_bare else "page_visualizations"
     try:
         entry = resolve_visualization_reference(
@@ -433,6 +435,18 @@ def _visualization_reference(
         raise PageContextError(
             f"{source_section} value {value!r} cannot resolve a visualization: {exc}"
         ) from exc
+    if entry.kind == LEGACY_STRUCTURE_INTENT_KIND:
+        if not allow_legacy_bare or entry.path is not None:
+            raise PageContextError(
+                f"{source_section} value {value!r} has an invalid legacy "
+                "Structure intent resolution"
+            )
+        return None, None, entry
+    if entry.kind != VISUALIZATION_SVG_KIND or entry.path is None:
+        raise PageContextError(
+            f"{source_section} value {value!r} resolves to unsupported kind "
+            f"{entry.kind!r}"
+        )
     path = Path(entry.path).resolve()
     try:
         display_path = path.relative_to(_SKILL_DIR.resolve()).as_posix()
@@ -590,8 +604,9 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
                 allow_legacy_bare=visualization_value is None,
             )
         )
-        inputs.append(visualization_path)
-        reference_set.append(visualization_reference)
+        if visualization_path is not None and visualization_reference is not None:
+            inputs.append(visualization_path)
+            reference_set.append(visualization_reference)
     mode_fields = _section_fields(lock_sections, "mode")
     visual_style_fields = _section_fields(lock_sections, "visual_style")
     # Each on-demand projection includes bounded lock anchors; large reference
@@ -622,8 +637,16 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         "rhythm": rhythm,
         "image_selection": image_selection,
     }
-    if visualization_entry is not None:
+    if (
+        visualization_entry is not None
+        and visualization_entry.kind == VISUALIZATION_SVG_KIND
+    ):
         current_page["visualization"] = visualization_entry.reference
+    elif (
+        visualization_entry is not None
+        and visualization_entry.kind == LEGACY_STRUCTURE_INTENT_KIND
+    ):
+        current_page["structure_intent"] = visualization_entry.key
     if legacy_chart_key is not None:
         current_page["chart"] = legacy_chart_key
     if selected_images:

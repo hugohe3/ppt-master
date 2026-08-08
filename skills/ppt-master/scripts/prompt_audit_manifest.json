@@ -9,7 +9,6 @@
       "AGENTS.md",
       "skills/ppt-master/**/*.md",
       "skills/ppt-master/templates/charts/charts_index.json",
-      "skills/ppt-master/templates/structures/structures_index.json",
       "skills/ppt-master/templates/tables/tables_index.json",
       "skills/ppt-master/templates/schemas/*.json"
     ],
@@ -204,6 +203,7 @@
         "skills/ppt-master/references/svg-effects.md",
         "skills/ppt-master/references/native-shape-authoring.md",
         "skills/ppt-master/references/semantic-svg.md",
+        "skills/ppt-master/references/executor-structure.md",
         "skills/ppt-master/references/modes/_index.md",
         "skills/ppt-master/references/visual-styles/_index.md",
         {
@@ -313,13 +313,12 @@
       "max_tokens": 92000
     },
     "route.generate.quick-generate.visualization": {
-      "description": "Quick Generate with bounded visualization recall, all three information-model branches, optional native-data metadata, and chart-coordinate verification before the final checker.",
+      "description": "Quick Generate with bounded Chart/Table recall, their data-object branches, optional native-data metadata, and chart-coordinate verification before the final checker; the fixed Quick context already carries Shape Composition Grammar.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
         "stage.generate.executor.visualization",
         "stage.generate.executor.chart",
-        "stage.generate.executor.structure",
         "stage.generate.executor.table",
         "stage.generate.executor.native-data",
         "stage.generate.verify-charts"
@@ -779,12 +778,11 @@
       "max_tokens": 7000
     },
     "maintenance.visualization-authoring": {
-      "description": "Shared chart, structure, and table catalog-template authoring guidance; not a Generate runtime load.",
+      "description": "Shared chart and table catalog-template authoring guidance; not a Generate runtime load.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/templates/VISUALIZATION_TEMPLATE_AUTHORING.md",
         "skills/ppt-master/templates/charts/README.md",
-        "skills/ppt-master/templates/structures/README.md",
         "skills/ppt-master/templates/tables/README.md"
       ],
       "max_tokens": 10000
@@ -1341,26 +1339,6 @@
       ]
     },
     {
-      "name": "structure-templates",
-      "kind": "json_collection",
-      "source": "skills/ppt-master/templates/structures/structures_index.json",
-      "key": "structures",
-      "reference_terms": [
-        "structures_index.json",
-        "structure catalog"
-      ],
-      "claim_nouns": [
-        "structure",
-        "structures",
-        "summary",
-        "summaries",
-        "template",
-        "templates",
-        "type",
-        "types"
-      ]
-    },
-    {
       "name": "table-templates",
       "kind": "json_collection",
       "source": "skills/ppt-master/templates/tables/tables_index.json",
@@ -1489,10 +1467,6 @@
       {
         "glob": "skills/ppt-master/templates/charts/charts_index.json",
         "reason": "Machine-consumed chart-family registry; Strategist receives only bounded visualization-recall candidates."
-      },
-      {
-        "glob": "skills/ppt-master/templates/structures/structures_index.json",
-        "reason": "Machine-consumed structure-family registry; Strategist receives only bounded visualization-recall candidates."
       },
       {
         "glob": "skills/ppt-master/templates/tables/tables_index.json",

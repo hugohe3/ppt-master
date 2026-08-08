@@ -38,7 +38,7 @@ SCQA opening, pyramid body:
 - Decomposition pages (driver tree / MECE breakdown / 2×2 matrix) carry the analytical load.
 - Source attribution on every data page.
 
-> Page structure is a tendency, not a coordinate template. Card / tree / KPI and qualitative 2×2 topology lives in [`templates/structures/`](../../templates/structures/); value-driven charts, including plotted 2×2 matrices, live in [`templates/charts/`](../../templates/charts/); cell grids live in [`templates/tables/`](../../templates/tables/). Adapt the selected reference without treating it as fixed geometry. This mode decides *what argument each page makes*, not pixel positions.
+> Page structure is a tendency, not a coordinate template. Compose qualitative card/tree/KPI/2×2 topology at runtime through [`executor-structure.md`](../executor-structure.md); value-driven charts and cell grids may use their catalogs. This mode decides *what argument each page makes*, not pixel positions.
 
 ---
 

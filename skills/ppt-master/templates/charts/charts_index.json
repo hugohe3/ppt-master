@@ -10,6 +10,9 @@
     "summaryGrammar": "Each chart summary is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'.",
     "updated": "2026-08-08"
   },
+  "aliases": {
+    "project_schedule_table": "gantt_chart"
+  },
   "charts": {
     "area_chart": {
       "summary": "Pick for 1-2 cumulative trend series emphasizing volume over time. Skip for >=3 series (use stacked_area_chart) or pure direction without volume (use line_chart)."
@@ -42,10 +45,10 @@
       "summary": "Pick for before-vs-after or two-state difference across 5-10 items. Skip for single snapshot (use column_chart) or 3+ states (use grouped_bar_chart)."
     },
     "funnel_chart": {
-      "summary": "Pick for 3-5 sequential conversion stages with monotonic drop-off. Skip if flow branches/merges (use sankey_chart) or steps don't entail loss (use process_flow)."
+      "summary": "Pick for 3-5 sequential conversion stages whose values drive a monotonic drop-off. Skip if the stages do not encode loss or qualitative branches and returns carry the message (build a Structure from the page relationships)."
     },
     "gantt_chart": {
-      "summary": "Pick for project schedule with 6-12 tasks, durations, and dependencies. Skip for simple milestones without duration (use timeline) or vertical roadmap (use roadmap_vertical)."
+      "summary": "Pick for project schedule with 6-12 tasks whose dates or durations determine bar position and length, with optional dependencies. Skip for milestones without duration or qualitative lane-stage handoffs (build a Structure from the page relationships)."
     },
     "gauge_chart": {
       "summary": "Pick for one hero metric or single KPI's goal achievement rate. Skip for multiple metrics (use bullet_chart for target+actual or progress_bar_chart for completion %)."
@@ -66,7 +69,7 @@
       "summary": "Pick for 1-3 time-series on a continuous axis showing direction. Skip if cumulative volume matters (use area_chart) or different units (use dual_axis_line_chart)."
     },
     "matrix_2x2": {
-      "summary": "Pick for 4-10 items whose x and y positions encode two dimensions and whose bubble radius encodes a third magnitude inside a 2×2 quadrant frame. Skip for fixed named quadrant text cards (use quadrant_text_cards) or detailed quadrant bullet frameworks without plotted items (use quadrant_text_bullets)."
+      "summary": "Pick for 4-10 items whose x and y positions encode two dimensions and whose bubble radius encodes a third magnitude inside a 2×2 quadrant frame. Skip for fixed qualitative regions with text assigned to zones (build a Structure from the page relationships)."
     },
     "pareto_chart": {
       "summary": "Pick for showing 80/20 contribution with descending bars and a cumulative line. Skip if the cumulative line is not the message (use column_chart)."
@@ -108,7 +111,7 @@
       "summary": "Pick for stepwise additive/subtractive breakdown bridging a starting value to an ending value. Skip if no running total (use column_chart)."
     },
     "word_cloud": {
-      "summary": "Pick for 20-30 keywords sized by frequency/weight. Skip if individual keyword position carries meaning (use icon_grid)."
+      "summary": "Pick for 20-30 keywords whose font size encodes frequency or weight. Skip if items are equal peers without value-driven sizing (build a Structure from the page relationships)."
     }
   }
 }

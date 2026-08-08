@@ -39,12 +39,12 @@ Verify the project's planning-session artifacts before doing anything else:
 | `<project_path>/design_spec.md` | Always | Complete approved design narrative and Section IX page outline; read it completely once in this fresh execution context |
 | `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
 | `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout / mirror prototypes required by execution |
-| Resolver-returned visualization SVG | `spec_lock page_visualizations` or legacy `page_charts` references any | Shared page-local SVG selected through the live family catalogs |
+| Resolver-returned Chart/Table SVG | `spec_lock page_visualizations` or legacy `page_charts` references a live Chart/Table key | Shared page-local SVG selected through the two live catalogs |
 
-Resolve every visualization value through the shared catalog resolver before
-Step 6. The CLI below delegates to that resolver and returns each real family
-path. Validate canonical `family/key` from `page_visualizations` directly; opt
-into bare-key resolution only for values read from legacy `page_charts`:
+Resolve every live Chart/Table value through the shared catalog resolver before
+Step 6. Validate canonical `family/key` from `page_visualizations` directly;
+opt into bare-key resolution only for a live Chart/Table value read from legacy
+`page_charts`:
 
 ```bash
 python3 skills/ppt-master/scripts/visualization_recall.py validate \
@@ -55,7 +55,9 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
 
 Require every returned SVG to exist. Never construct a path from the key,
 guess a family directory, or prefer one registry. Failed, missing, or ambiguous
-resolution is a missing planning dependency and stops this stage.
+live resolution is a missing planning dependency and stops this stage. A
+retired Structure bare key carries semantic intent only and requires no SVG;
+recover its relationship from §IX, or return to Step 4 when §IX is insufficient.
 
 If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
 
@@ -80,6 +82,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
   from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
 - Read the complete Step 6 always-on core exactly as listed in [`generate-pptx.md`](../generate-pptx.md); for custom directions, reload every optional `*_references` file from `spec_lock.md` before applying the behavior, then only the branches selected by the condition table
+- For each page, make the mandatory Structure decision from retained §IX after its content/communication move is established and before any geometry; a `yes` result loads `executor-structure.md` before realization and creates no artifact or lock row
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
 - Generate pages sequentially from the retained planning artifacts. Use `page-context` only for the on-demand diagnostic/telemetry triggers in Executor §2.1, never as a routine pre-page load

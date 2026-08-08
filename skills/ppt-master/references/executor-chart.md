@@ -10,9 +10,9 @@ Conditional Executor authority for value-driven SVG geometry, plot-area markers,
 
 | Information model | Route |
 |---|---|
-| Values determine geometry or another visual variable | This branch |
+| Values, dates, or durations determine geometry or another visual variable | This branch |
 | Qualitative order, grouping, containment, causality, or named zones determine topology | [`executor-structure.md`](./executor-structure.md) |
-| Row/column intersections define a semantic cell grid | [`executor-table.md`](./executor-table.md) |
+| A row header and column header jointly address each body fact | [`executor-table.md`](./executor-table.md) |
 
 ---
 
@@ -29,6 +29,11 @@ Construct the chart in this order:
 5. Apply project typography, palette, effects, and container treatment without changing the encoding.
 
 **Per-object completeness**: preserve every authoritative series, category, point, label, unit, qualifier, source, and scale cue needed to read the chart. When the source cannot determine a required scale or derived value, return the ambiguity upstream in Default or resolve it from explicit source facts in Quick; never fabricate it at draw time.
+
+**Hard rule — schedule geometry**: A schedule is a Gantt chart when dates or
+durations determine each task bar's `x` and `width`, even if the source was a
+PowerPoint table object. A qualitative stage × lane placement without that
+mapping belongs to [`executor-structure.md`](./executor-structure.md).
 
 **Selected reference**: when the page has a `chart/<key>` primary reference, [`executor-visualization.md`](./executor-visualization.md) owns its resolution and flexible adaptation. This branch still owns the actual value-to-geometry calculation. A chart authored from scratch follows the same geometry contract without loading a catalog SVG.
 

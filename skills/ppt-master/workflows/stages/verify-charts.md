@@ -61,13 +61,12 @@ the SVG marker before verification.
 | `manual-verify` | `sankey_chart`, `heatmap_chart`, `treemap_chart`, `word_cloud` | Data-driven geometry or encoding exists, but the current calculator has no complete layout model. Inspect and report; do not silently skip. |
 
 **Family boundary**: this table covers every canonical key in
-`templates/charts/charts_index.json` exactly once. Do not put a Structure or
-Table reference in the chart receipt merely because it contains shapes or
-numbers. A fixed named-quadrant page uses
-`structure/quadrant_text_cards`; `chart/matrix_2x2` is reserved for plotted
-items whose x position, y position, and optional radius encode data. Every
-embedded data chart inside a Structure or Table page is its own object when the
-active §IX `Visualization` decision declares and keys that child chart.
+`templates/charts/charts_index.json` exactly once. Do not put qualitative shape
+composition or a Table reference in the receipt merely because it contains
+shapes or numbers. Named quadrants are composed through
+[`executor-structure.md`](../../references/executor-structure.md);
+`chart/matrix_2x2` is reserved for plotted x/y and optional radius data. Every
+embedded data chart is its own keyed §IX `Visualization` object.
 
 Resulting list:
 
@@ -236,6 +235,11 @@ python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
 3. Median y = `y_axis_top + (axis_max - median) × pixels_per_unit`. Whisker endpoints (min, max) follow the same formula. Compare each against the SVG's `<line>` y1/y2 and `<rect>` y/height.
 
 **Gantt chart** — task bars where each bar's `x` and `x + width` are the start and end positions on a timeline axis:
+
+This remains a Chart even when the source used a physical PowerPoint table for
+the row grid. A qualitative stage/lane plan whose positions are not derived
+from dates or durations uses [`executor-structure.md`](../../references/executor-structure.md)
+and does not enter this verification stage.
 
 1. Read the timeline tick positions (the header row's x coordinates per date unit). Pixels-per-unit = `(x_unit_n - x_unit_1) / (n - 1)`.
 2. Run `calc line` once over `start_index:row_y` per task — output `SVG_X` gives the bar's `x`. Run it again over `end_index:row_y` — output `SVG_X` gives `x + width`. Subtract for width.

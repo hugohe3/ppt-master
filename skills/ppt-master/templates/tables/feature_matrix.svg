@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Grouped capability rows with checks, crosses and concise state text. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Feature Matrix</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Grouped requirements by option with explicit availability states</text>
+    </g>
+
+    <g id="feature-matrix" data-pptx-bounds="80 140 1120 515">
+        <!-- Header, emphasized option and group bands. -->
+        <rect x="80" y="140" width="1120" height="60" fill="#E2E8F0"/>
+        <rect x="500" y="140" width="220" height="515" fill="#EFF6FF"/>
+        <rect x="80" y="200" width="1120" height="44" fill="#F1F5F9"/>
+        <rect x="80" y="356" width="1120" height="44" fill="#F1F5F9"/>
+        <rect x="80" y="512" width="1120" height="44" fill="#F1F5F9"/>
+
+        <!-- Grid preserves row and column intersections. -->
+        <rect x="80" y="140" width="1120" height="515" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="500" y1="140" x2="500" y2="655"/>
+            <line x1="720" y1="140" x2="720" y2="655"/>
+            <line x1="940" y1="140" x2="940" y2="655"/>
+            <line x1="80" y1="200" x2="1200" y2="200"/>
+            <line x1="80" y1="244" x2="1200" y2="244"/>
+            <line x1="80" y1="300" x2="1200" y2="300"/>
+            <line x1="80" y1="356" x2="1200" y2="356"/>
+            <line x1="80" y1="400" x2="1200" y2="400"/>
+            <line x1="80" y1="456" x2="1200" y2="456"/>
+            <line x1="80" y1="512" x2="1200" y2="512"/>
+            <line x1="80" y1="556" x2="1200" y2="556"/>
+            <line x1="80" y1="612" x2="1200" y2="612"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="13" font-weight="700" fill="#475569">
+            <text x="100" y="177">REQUIREMENT</text>
+            <text x="610" y="177" text-anchor="middle" fill="#1D4ED8">OPTION A</text>
+            <text x="830" y="177" text-anchor="middle">OPTION B</text>
+            <text x="1070" y="177" text-anchor="middle">OPTION C</text>
+        </g>
+
+        <!-- Group and requirement labels. -->
+        <g fill="#334155">
+            <g font-size="14" font-weight="700">
+                <text x="100" y="228">CORE ACCESS</text>
+                <text x="100" y="384">OPERATIONS</text>
+                <text x="100" y="540">SUPPORT</text>
+            </g>
+            <g font-size="15">
+                <text x="120" y="279">Single sign-on</text>
+                <text x="120" y="335">Role controls</text>
+                <text x="120" y="435">Automated handoff</text>
+                <text x="120" y="491">Audit history</text>
+                <text x="120" y="591">Extended coverage</text>
+                <text x="120" y="647">Named contact</text>
+            </g>
+        </g>
+
+        <!-- Check and cross marks are authored as shapes, not font glyphs. -->
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <g stroke="#059669" stroke-width="4">
+                <path d="M 599 274 L 607 282 L 622 265"/>
+                <path d="M 819 274 L 827 282 L 842 265"/>
+                <path d="M 599 430 L 607 438 L 622 421"/>
+                <path d="M 599 486 L 607 494 L 622 477"/>
+                <path d="M 819 486 L 827 494 L 842 477"/>
+                <path d="M 599 586 L 607 594 L 622 577"/>
+                <path d="M 599 642 L 607 650 L 622 633"/>
+                <path d="M 1059 642 L 1067 650 L 1082 633"/>
+            </g>
+            <g stroke="#E11D48" stroke-width="4">
+                <line x1="1062" y1="267" x2="1078" y2="283"/>
+                <line x1="1078" y1="267" x2="1062" y2="283"/>
+                <line x1="822" y1="323" x2="838" y2="339"/>
+                <line x1="838" y1="323" x2="822" y2="339"/>
+                <line x1="1062" y1="423" x2="1078" y2="439"/>
+                <line x1="1078" y1="423" x2="1062" y2="439"/>
+                <line x1="1062" y1="479" x2="1078" y2="495"/>
+                <line x1="1078" y1="479" x2="1062" y2="495"/>
+                <line x1="822" y1="579" x2="838" y2="595"/>
+                <line x1="838" y1="579" x2="822" y2="595"/>
+            </g>
+        </g>
+
+        <!-- Text states cover non-binary intersections. -->
+        <g font-size="13" font-weight="700" text-anchor="middle" fill="#D97706">
+            <text x="1070" y="335">Planned</text>
+            <text x="830" y="435">Add-on</text>
+            <text x="1070" y="591">Limited</text>
+            <text x="830" y="647">Shared</text>
+        </g>
+    </g>
+</svg>

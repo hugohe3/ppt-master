@@ -1,14 +1,17 @@
 # Visualization Candidate Recall
 
 `visualization_recall.py` gives Default Strategist or the Quick Generate main
-agent one bounded deterministic shortlist across the live chart, structure, and
-table family registries. It exposes the selected full catalog only when the
+agent one bounded deterministic shortlist across the live Chart and Table
+family registries. It exposes the selected full catalog only when the
 caller explicitly requests semantic review. The tool reads these indexes on
 every invocation and maintains no second category or keyword index:
 
 - `templates/charts/charts_index.json`
-- `templates/structures/structures_index.json`
 - `templates/tables/tables_index.json`
+
+Qualitative Structure does not enter recall. Default records its relationship
+model in §IX; Quick keeps the same decision in active context. Both load
+`executor-structure.md` and compose the shapes for the current page.
 
 ## Recall candidates
 
@@ -24,8 +27,8 @@ python3 skills/ppt-master/scripts/visualization_recall.py recall \
   --limit 6
 ```
 
-Use `--family chart|structure|table` only when the page semantics already make
-that boundary certain; the default `all` preserves unified page-level recall.
+Use `--family chart|table` only when the page semantics already make that
+boundary certain; the default `all` preserves unified Chart/Table recall.
 `--limit` accepts 3-8 and defaults to 6. Read the returned JSON unfiltered:
 `tail`, `head`, `grep`, or another truncator can discard higher-ranked
 candidates. `confidence` reports lexical strength only and never decides fit.
@@ -59,7 +62,7 @@ Validate every selected reference before Default writes Design Spec §VII and
 
 ```bash
 python3 skills/ppt-master/scripts/visualization_recall.py validate \
-  chart/line_chart structure/quadrant_text_bullets table/basic_table
+  chart/line_chart table/record_table
 ```
 
 The command is read-only. It exits `0` when every supplied reference resolves
@@ -73,7 +76,9 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
 ```
 
 A Default `no-template-match` page appears in neither §VII nor
-`page_visualizations`; record its custom fallback in §IX.
+`page_visualizations`; record its custom fallback in §IX. A qualitative
+Structure is not a no-match case: describe its relationships in §IX and build
+it without catalog lookup.
 
 ## Selection boundary
 
@@ -81,6 +86,8 @@ A Default `no-template-match` page appears in neither §VII nor
   selection and projects `family/key` into `page_visualizations`.
 - Usage is one concise page-local purpose; detailed adaptation remains in §IX.
 - Quick keeps the selected reference and purpose only in active context.
+- Structure is a separate runtime information model, never a catalog candidate
+  or `page_visualizations` entry.
 - Never serialize `no-template-match`, empty tables, summaries, paths, or
   runners-up into planning artifacts.
 - Open only the selected SVG for its mapped page. It is a flexible reference,
@@ -89,6 +96,12 @@ A Default `no-template-match` page appears in neither §VII nor
 ## Legacy compatibility
 
 `chart_recall.py` remains a compatibility wrapper for existing callers. It
-uses the same scorer and all-family live registries, preserves bare-key
-validation and the historical JSON shape, and resolves each candidate to its
-current family path. New prompts and automation use `visualization_recall.py`.
+uses the same scorer and live Chart/Table registries, preserves bare-key
+validation and the historical JSON shape, and resolves live candidates to their
+current family paths. New prompts and automation use `visualization_recall.py`.
+
+When `validate --legacy-bare` receives one of the 36 retired canonical Structure
+bare keys, the shared resolver returns `kind=legacy-structure-intent`,
+`family=structure`, and the original key without `path` or `reference`. This
+compatibility result is a semantic hint for old `page_charts`, not a live catalog
+entry, and never participates in recall.
