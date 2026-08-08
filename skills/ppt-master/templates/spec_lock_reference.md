@@ -29,7 +29,8 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
-Optional data sections: `images`, `page_charts`.
+Optional data sections: `images`, `page_visualizations`. Existing locks may
+retain legacy `page_charts`; never write both sections for the same page.
 
 The required universal block is:
 
@@ -70,7 +71,24 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-Project each §VII `Page | Template | Usage` row's first two fields into `page_charts`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Keys must exist in `charts/charts_index.json`; no-match stays in §IX.
+Project each §VII `Page | Family | Template | Usage` row's Page, Family, and
+Template fields into `page_visualizations` as `<family>/<key>`; Usage stays in
+the Design Spec. The families are `chart`, `structure`, and `table`. This is a
+page-local reference, not a type/geometry lock. The family/key must resolve
+through its live family registry to one SVG; no-match stays in §IX.
+
+```markdown
+## page_visualizations
+- P03: chart/line_chart
+- P06: structure/hub_spoke
+- P09: table/basic_table
+```
+
+**Legacy compatibility**: existing `page_charts` rows keep their bare keys.
+Validation resolves each bare key only when it has one unambiguous match across
+the three live family registries and their declared aliases. New locks write
+`page_visualizations`. A page present in both sections is a conflict, even when
+both values resolve to the same SVG.
 
 Typography projection excludes Character/upgrade References:
 
@@ -96,7 +114,12 @@ New locks always write `title_family` and `body_family`, even when their values 
 - Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
-- `page_charts` grammar: `P` + at least two digits followed by a `charts_index` key; the key and `<key>.svg` must both exist.
+- `page_visualizations` grammar: `P` + at least two digits followed by
+  `chart|structure|table`, `/`, and one canonical visualization key; the
+  family/key must resolve to one SVG through the matching live index.
+- Legacy `page_charts` grammar: `P` + at least two digits followed by one bare
+  key; it must resolve uniquely across the three live family registries and
+  their declared aliases. Never add this section to a new lock.
 - `pptx_masters` grammar: `<master_key>: <PowerPoint picker name>`.
 - `pptx_layouts` grammar: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`.
 - `page_pptx_layouts` grammar: `P` + at least two digits followed by a declared Layout key.
