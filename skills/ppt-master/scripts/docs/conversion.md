@@ -550,14 +550,40 @@ Markdown output.
 when the converter derives a title-based filename.
 
 
-## `rotate_images.py`
+## Image Orientation Review
 
-Fix image EXIF orientation in downloaded or imported assets.
+Run this review when the user requests orientation correction, converted text
+asks the reader to rotate the device, or a downloaded asset is visibly
+sideways. EXIF and dimensions may trigger review, but they cannot determine the
+semantic direction of pixels that are already stored sideways.
+
+Generate a labeled static contact sheet. This command previews the first frame
+after EXIF normalization and does not modify source images:
 
 ```bash
-python3 scripts/rotate_images.py auto projects/xxx_files
-python3 scripts/rotate_images.py gen projects/xxx_files
-python3 scripts/rotate_images.py fix fixes.json
+python3 scripts/rotate_images.py sheet <images_directory>
 ```
 
-Use this when extracted photos appear sideways after conversion or import.
+The default output is
+`<images_directory>/../analysis/<directory>_orientation_contact_sheet.jpg`.
+Inspect it with the current multimodal agent, identify only visually confirmed
+rotations, and write a temporary JSON list. `rotation` is clockwise degrees and
+must be `90`, `180`, or `270`:
+
+```json
+[
+  {"path": "/absolute/path/to/sideways.jpg", "rotation": 270}
+]
+```
+
+Apply the confirmed fixes and regenerate image facts:
+
+```bash
+python3 scripts/rotate_images.py fix /tmp/orientation_fixes.json
+python3 scripts/analyze_images.py <images_directory>
+```
+
+Do not infer a rotation from prose, EXIF, or aspect ratio alone, and do not
+launch the HTML `gen` command in source intake. `auto` remains an in-place EXIF
+normalizer. `gen` is a compatibility UI that runs the same normalization before
+writing HTML; neither belongs to source intake.

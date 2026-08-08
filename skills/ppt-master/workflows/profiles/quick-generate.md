@@ -88,6 +88,11 @@ ambiguous and `-o` only for a required output path; with several or directory
 inputs, `-o` names an output directory. A PPTX is converted to Markdown here and
 receives its project analysis during the import step below.
 
+**Source-image orientation trigger**: Before import and initialization, follow
+[`conversion.md`](../../scripts/docs/conversion.md) § Image Orientation Review
+when correction is requested, converted text asks for rotated viewing, or a
+downloaded asset is visibly sideways. Skip the legacy HTML tool.
+
 After reading every direct and converted source, assess factual sufficiency:
 
 | Material state | Action |

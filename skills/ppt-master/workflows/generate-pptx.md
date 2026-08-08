@@ -70,6 +70,11 @@ Use `-o` only when a specific output file/directory is required; with multiple
 inputs or directory inputs, `-o` is an output directory. Backend converter details are documented in
 [`scripts/docs/conversion.md`](../scripts/docs/conversion.md).
 
+**Source-image orientation trigger**: Before Step 2, follow
+[`conversion.md`](../scripts/docs/conversion.md) § Image Orientation Review when
+the user requests correction, converted text asks for rotated viewing, or a
+downloaded asset is visibly sideways. Do not launch its legacy HTML tool.
+
 After reading direct and converted content, assess factual sufficiency:
 
 | Material state | Action |
