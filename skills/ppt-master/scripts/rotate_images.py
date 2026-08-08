@@ -141,7 +141,7 @@ class ImageRotator:
             raise FileNotFoundError(f"Directory not found: {target_path}")
 
         valid_exts = {
-            '.bmp', '.gif', '.jpeg', '.jpg', '.png', '.tif', '.tiff', '.webp'
+            '.bmp', '.jpeg', '.jpg', '.png', '.tif', '.tiff', '.webp'
         }
         files = sorted(
             (
@@ -356,6 +356,19 @@ class ImageRotator:
                     raise ValueError("Invalid input: not a file path nor a valid JSON string")
         elif isinstance(json_source, list):
             tasks = json_source
+
+        gif_paths = []
+        for task in tasks:
+            if not isinstance(task, dict):
+                continue
+            task_path = self._normalize_task_path(task.get('path', ''))
+            if Path(task_path).suffix.lower() == '.gif':
+                gif_paths.append(task_path)
+        if gif_paths:
+            raise ValueError(
+                "GIF rotation is unsupported; preserve GIF files unchanged: "
+                + ", ".join(gif_paths)
+            )
 
         print(f"[WORK] Starting {len(tasks)} manual rotation task(s)...")
         print("=" * 60)
