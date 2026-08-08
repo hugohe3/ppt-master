@@ -56,7 +56,7 @@ exact roots are `library`; other exact roots remain `explicit`.
 Choosing and confirming an entry runs the conditional
 [`apply-template-workspace`](../../workflows/stages/apply-template-workspace.md)
 stage, which owns path normalization, compatibility checks, installation, and
-fusion after Stage 1 and before Stage 2. Template-aware reading begins in final Stage 2 from the
+installation after Stage 1 and before Stage 2. Template-aware reading begins in final Stage 2 from the
 installed project-local copy.
 Quick applies a supplied exact Layout root directly and otherwise uses free
 design. It uses installed prototypes as flat authoring inputs; reusable

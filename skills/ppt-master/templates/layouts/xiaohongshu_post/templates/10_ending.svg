@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="1660" viewBox="0 0 1242 1660"
+  data-pptx-master="xiaohongshu_post_master" data-pptx-master-name="Xiaohongshu Post"
+  data-pptx-layout="ending" data-pptx-layout-name="Ending">
+  <rect id="master-background" x="0" y="0" width="1242" height="1660" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="ending-accent" x="571" y="620" width="100" height="8" rx="4" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="ending-brand-band" x="0" y="1400" width="1242" height="260" fill="#F4F6F8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="ending-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 700 1082 300">
+    <text id="ending-message-carrier" data-pptx-carrier="true"
+      x="621" y="790" text-anchor="middle" fill="#1E293B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="68" font-weight="700">{{CLOSING_MESSAGE}}</text>
+  </g>
+  <g id="ending-cta-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="120 1060 1002 120">
+    <text id="ending-cta-carrier" data-pptx-carrier="true"
+      x="621" y="1112" text-anchor="middle" fill="#64748B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="34">{{CTA_TEXT}}</text>
+  </g>
+  <g id="ending-brand-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 1470 1082 80">
+    <text id="ending-brand-carrier" data-pptx-carrier="true"
+      x="621" y="1522" text-anchor="middle" fill="#475569"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="30">{{BRAND_LINE}}</text>
+  </g>
+</svg>

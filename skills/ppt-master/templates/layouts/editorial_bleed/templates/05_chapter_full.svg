@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="editorial_bleed_master" data-pptx-master-name="Editorial Bleed"
+  data-pptx-layout="chapter_full" data-pptx-layout-name="Chapter Full">
+  <defs>
+    <linearGradient id="chapter-full-wash-paint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.68"/>
+    </linearGradient>
+  </defs>
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#0F172A"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <g id="chapter-full-picture-slot" data-pptx-placeholder="picture" data-pptx-idx="1"
+    data-pptx-bounds="0 0 1280 720">
+    <image id="chapter-full-picture-carrier" data-pptx-carrier="true"
+      x="0" y="0" width="1280" height="720" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <rect id="chapter-full-wash" x="0" y="0" width="1280" height="720"
+    fill="url(#chapter-full-wash-paint)" data-pptx-role="decoration"/>
+  <g id="chapter-full-number-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 232 320 72">
+    <text id="chapter-full-number-carrier" data-pptx-carrier="true"
+      x="80" y="292" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="56" font-weight="700">{{CHAPTER_NUM}}</text>
+  </g>
+  <g id="chapter-full-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 332 1120 96">
+    <text id="chapter-full-title-carrier" data-pptx-carrier="true"
+      x="80" y="402" fill="#FFFFFF" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="52" font-weight="700">{{CHAPTER_TITLE}}</text>
+  </g>
+  <g id="chapter-full-desc-slot" data-pptx-placeholder="body" data-pptx-idx="3"
+    data-pptx-bounds="80 452 880 56">
+    <text id="chapter-full-desc-carrier" data-pptx-carrier="true"
+      x="80" y="490" fill="#CBD5E1" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{CHAPTER_DESC}}</text>
+  </g>
+</svg>

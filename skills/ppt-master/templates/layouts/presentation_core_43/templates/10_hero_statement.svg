@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768"
+  data-pptx-master="presentation_core_43_master" data-pptx-master-name="Presentation Core 4:3"
+  data-pptx-layout="hero_statement" data-pptx-layout-name="Hero Statement">
+  <rect id="master-background" x="0" y="0" width="1024" height="768" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="hero-statement-accent" x="56" y="240" width="88" height="6" rx="3" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="hero-statement-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="56 292 912 168">
+    <text id="hero-statement-message-carrier" data-pptx-carrier="true"
+      x="56" y="364" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="48" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="hero-statement-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-idx="1"
+    data-pptx-bounds="56 484 720 56">
+    <text id="hero-statement-subtitle-carrier" data-pptx-carrier="true"
+      x="56" y="524" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{SUBTITLE}}</text>
+  </g>
+</svg>

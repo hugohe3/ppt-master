@@ -1,11 +1,71 @@
 {
+  "accenture": {
+    "summary": "Accenture-style consulting and technology-services identity — violet accent on black for transformation, technology, and delivery decks",
+    "primary_color": "#A100FF"
+  },
+  "alibaba": {
+    "summary": "Alibaba-style commerce and cloud identity — signature orange on black for platform, merchant, and cloud solution decks",
+    "primary_color": "#FF6A00"
+  },
   "anthropic": {
     "summary": "Anthropic / Claude brand family — AI research, product talks, developer conferences, technical training, and launches",
     "primary_color": "#D97757"
   },
+  "aws": {
+    "summary": "AWS-style cloud identity — signature orange on deep navy for cloud architecture, migration, and well-architected review decks",
+    "primary_color": "#FF9900"
+  },
+  "bain": {
+    "summary": "Bain-style consulting identity — scarlet red on restrained neutrals for results-oriented strategy and performance decks",
+    "primary_color": "#EE3224"
+  },
+  "bcg": {
+    "summary": "BCG-style consulting identity — forest green and warm neutrals for growth strategy, transformation, and advantage decks",
+    "primary_color": "#147B58"
+  },
+  "deloitte": {
+    "summary": "Deloitte-style professional-services identity — signature green on black and neutrals for audit, tax, risk, and advisory decks",
+    "primary_color": "#86BC25"
+  },
   "google": {
     "summary": "Google brand identity — multi-product corporate decks, developer events (Google I/O style), education and training in the Google ecosystem",
     "primary_color": "#4285F4"
+  },
+  "huawei": {
+    "summary": "Huawei-style enterprise identity — restrained red accent on near-black and gray for ICT solution, product, and partner decks",
+    "primary_color": "#CF0A2C"
+  },
+  "ibm": {
+    "summary": "IBM-style enterprise identity — Carbon blue on a disciplined gray scale for hybrid cloud, AI, and enterprise consulting decks",
+    "primary_color": "#0F62FE"
+  },
+  "jpmorgan": {
+    "summary": "JPMorgan Chase-style financial-institution identity — corporate blue on navy and neutrals for research, banking, and internal governance decks",
+    "primary_color": "#117ACA"
+  },
+  "mckinsey": {
+    "summary": "McKinsey-style consulting identity — deep navy and electric blue for strategy, diagnostic, and executive decision decks",
+    "primary_color": "#051C2C"
+  },
+  "microsoft": {
+    "summary": "Microsoft-style enterprise technology identity — four-square product spectrum on neutral grays for Microsoft 365, Azure, and IT program decks",
+    "primary_color": "#00A4EF"
+  },
+  "nvidia": {
+    "summary": "NVIDIA-style accelerated-computing identity — signature green on near-black for AI, GPU, and data-center technical decks",
+    "primary_color": "#76B900"
+  },
+  "pwc": {
+    "summary": "PwC-style professional-services identity — warm orange-to-rose spectrum on black for assurance, tax, and advisory decks",
+    "primary_color": "#DB4E18"
+  },
+  "tencent": {
+    "summary": "Tencent-style internet and cloud identity — measured blue on light neutrals for platform, cloud, and ecosystem decks",
+    "primary_color": "#3458B0"
+  },
+  "xiaomi": {
+    "summary": "Xiaomi-style consumer-technology identity — signature orange on clean white for product launches, ecosystem, and retail decks",
+    "primary_color": "#FF6900"
   },
   "中国电信": {
     "summary": "China Telecom brand identity for digital infrastructure, government-enterprise solutions, transformation planning, and corporate reporting",

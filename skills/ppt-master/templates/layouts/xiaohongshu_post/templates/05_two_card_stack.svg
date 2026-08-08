@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="1660" viewBox="0 0 1242 1660"
+  data-pptx-master="xiaohongshu_post_master" data-pptx-master-name="Xiaohongshu Post"
+  data-pptx-layout="two_card_stack" data-pptx-layout-name="Two-Card Stack">
+  <rect id="master-background" x="0" y="0" width="1242" height="1660" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="two-card-stack-top-card" x="80" y="376" width="1082" height="504" rx="24" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="two-card-stack-bottom-card" x="80" y="936" width="1082" height="504" rx="24" fill="#EEF2F6"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="two-card-stack-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 112 1082 200">
+    <text id="two-card-stack-title-carrier" data-pptx-carrier="true"
+      x="80" y="232" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="64" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="two-card-stack-top-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="120 416 1002 424">
+    <text id="two-card-stack-top-carrier" data-pptx-carrier="true"
+      x="120" y="486" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36">{{CARD_1}}</text>
+  </g>
+  <g id="two-card-stack-bottom-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="120 976 1002 424">
+    <text id="two-card-stack-bottom-carrier" data-pptx-carrier="true"
+      x="120" y="1046" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36">{{CARD_2}}</text>
+  </g>
+  <g id="two-card-stack-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="3"
+    data-pptx-bounds="80 1500 1082 60">
+    <text id="two-card-stack-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1542" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>

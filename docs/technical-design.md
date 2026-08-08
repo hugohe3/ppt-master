@@ -71,7 +71,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 [Template Candidate Preparation (Step 3)] — internal only; no UI, wait, selection, template read, or installation
     Prepare indexed Brand/Style/Layout/Deck candidates and supplied exact roots
-    Stage 1 confirms communication plus free design/template use together; selected workspaces are then validated/fused before Stage 2
+    Stage 1 confirms communication plus free design/template use together; selected workspaces are then validated and installed before Stage 2
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - Stage 1 communication confirmation + final Stage 2 solution/production confirmation → design_spec.md + spec_lock.md
@@ -182,7 +182,7 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | Generate PPTX + `beautify-pptx` profile | content and pagination stay locked; explicit Quick intent uses Quick, otherwise Default |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | Enhance Native PPTX (`native-enhance-pptx`) | direct OOXML patch; no design regeneration |
 | User wants a reusable template workspace from one or more PPTX/SVG files, images/PDFs, documents/websites, brand assets, direct text, or a mixed reference bundle | Create Template (`create-template`) | the fixed entry reads every applicable evidence channel, dispatches one Create Brand, Create Style, Create Layout, or Create Deck child workflow, then returns a workspace root as a Generate Stage-1 candidate; structured children may export a review PPTX |
-| Default Generate reaches planning; an exact current-contract workspace root or current Create Template handoff may already be present | Generate PPTX Stage 1 | Step 3 prepares candidates without interaction; Stage 1 confirms communication plus free design/template use together; ordinary requests default to free design, explicit template intent or any root defaults to template mode, and only one root is preselected; selected workspaces are validated/fused before Stage 2 |
+| Default Generate reaches planning; an exact current-contract workspace root or current Create Template handoff may already be present | Generate PPTX Stage 1 | Step 3 prepares candidates without interaction; Stage 1 confirms communication plus free design/template use together; ordinary requests default to free design, explicit template intent or any root defaults to template mode, and only one root is preselected; selected workspaces are validated and installed before Stage 2 |
 | User asks to tune object-level animation order/effect/timing | Generate PPTX + `customize-animations` stage | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | Generate PPTX + `live-preview` stage | annotations apply only at defined handoff points |
 
@@ -430,7 +430,7 @@ input.
 `<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or
 another exact workspace root such as `projects/<name>/`. Step 3 records it as
 candidate input without reading template content. Once Stage 1 selects it, the
-apply stage validates, fuses, and installs it into the current project's
+apply stage validates and installs it into the current project's
 `templates/`, `images/`, and `icons/`; it never copies `exports/`. Strategist
 and later roles read only that project-local copy when template-aware planning
 begins after Stage 1. The source workspace remains portable between
@@ -444,7 +444,7 @@ The four template kinds own different segments of the design contract:
 | Kind | Owns | Typical contents | Effect on Strategist |
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
-| `style` | direction / method | communication method, open page roles, evidence/data rules, visual defaults, image/icon direction, advisory review focus | seeds Stage 2; Style-only stays flat, while fusion follows the selected Layout/Deck structure; never becomes identity truth or triggers visual review |
+| `style` | direction / method | communication method, open page roles, evidence/data rules, visual defaults, image/icon direction, advisory review focus | seeds Stage 2; Style-only stays flat, while an installed Layout/Deck supplies the structure plan; never becomes identity truth or triggers visual review |
 | `layout` | brand-neutral structure | canvas, page structure, semantic text roles/spatial behavior, page types, SVG roster | exposes structure; identity and communication application remain downstream decisions |
 | `deck` | application + integrated identity/structure | recurring situations, audiences/outcomes, representative page roles, identity, and actual SVG roster | contributes descriptive context and prototypes that Strategist compares with the independently confirmed Stage-1 contract and current content before deriving the application plan |
 
@@ -456,7 +456,7 @@ formatting from those rules plus the confirmed reading mode/type scale;
 `mirror` preserves literal source formatting and text topology. Export may
 place both rule sets into the same native Master/Layout graph.
 
-When several workspaces are selected, fusion is segment-level, not field-level. Brand owns identity, Style owns direction/method defaults, Layout owns compatible structure, and Deck retains descriptive reusable-application context plus any identity/structure not overridden. Library/explicit provenance never changes that order. The current project's application contract comes only from confirmed Stage 1; Deck context is comparison input for Stage 2, not an override. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity; its method/composition expectations must be compatible with the selected Deck context and Layout/Deck structure or fusion surfaces a conflict. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
+When several workspaces are selected, each installs as its own spec file and ownership is resolved segment-level while reading, not field-level. Brand owns identity, Style owns direction/method defaults, Layout owns compatible structure, and Deck retains descriptive reusable-application context plus any identity/structure not overridden. Library/explicit provenance never changes that order. The current project's application contract comes only from confirmed Stage 1; Deck context is comparison input for Stage 2, not an override. User confirmation remains highest. Style palette/type defaults never override Brand/Deck identity; its method/composition expectations must be compatible with the selected Deck context and Layout/Deck structure, or the conflict is surfaced. A project-local Brand + Layout composition gets its application context from Stage 1 and is not automatically promoted into a reusable library Deck. Same-kind conflicts are surfaced rather than resolved by implicit ordering. This keeps template composition debuggable: the installed set is self-describing, since each file names its kind and id and keeps its source body unchanged.
 
 **Raw PPTX files cannot be Step 3 workspaces.** Normal Generate may use a PPTX as source material, and `beautify-pptx` may redesign it while preserving page count, order, and per-page wording 1:1; neither treats the source PPTX as a Step 3 template. When a raw PPTX is used as a template or native slide shell and filled with new material, the default route is Fill Native PPTX. If the request permits splitting, merging, dropping, reordering, or narrative restructuring, it remains Generate. Only a request to create a reusable template workspace and reuse that design system in SVG-route Step 3 first runs Create Template and then supplies the generated workspace root.
 

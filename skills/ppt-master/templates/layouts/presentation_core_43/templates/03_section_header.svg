@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768"
+  data-pptx-master="presentation_core_43_master" data-pptx-master-name="Presentation Core 4:3"
+  data-pptx-layout="section_header" data-pptx-layout-name="Section Header">
+  <rect id="master-background" x="0" y="0" width="1024" height="768" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="section-header-accent" x="56" y="280" width="64" height="6" rx="3" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="section-header-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="56 320 912 96">
+    <text id="section-header-title-carrier" data-pptx-carrier="true"
+      x="56" y="392" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="44" font-weight="700">{{CHAPTER_TITLE}}</text>
+  </g>
+  <g id="section-header-desc-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="56 436 768 72">
+    <text id="section-header-desc-carrier" data-pptx-carrier="true"
+      x="56" y="476" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="20">{{CHAPTER_DESC}}</text>
+  </g>
+</svg>

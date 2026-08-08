@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768"
+  data-pptx-master="presentation_core_43_master" data-pptx-master-name="Presentation Core 4:3"
+  data-pptx-layout="title_only" data-pptx-layout-name="Title Only">
+  <rect id="master-background" x="0" y="0" width="1024" height="768" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="title-only-rule" x1="56" y1="120" x2="968" y2="120" stroke="#E2E8F0"
+    stroke-width="2" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="title-only-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="56 36 912 64">
+    <text id="title-only-title-carrier" data-pptx-carrier="true"
+      x="56" y="82" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="32" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+</svg>

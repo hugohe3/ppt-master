@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"
+  data-pptx-master="story_vertical_master" data-pptx-master-name="Story Vertical"
+  data-pptx-layout="ending" data-pptx-layout-name="Ending">
+  <rect id="master-background" x="0" y="0" width="1080" height="1920" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="ending-accent" x="490" y="800" width="100" height="8" rx="4" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="ending-brand-band" x="0" y="1560" width="1080" height="180" fill="#F4F6F8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="ending-message-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 880 920 320">
+    <text id="ending-message-carrier" data-pptx-carrier="true"
+      x="540" y="970" text-anchor="middle" fill="#1E293B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="64" font-weight="700">{{CLOSING_MESSAGE}}</text>
+  </g>
+  <g id="ending-cta-slot" data-pptx-placeholder="body" data-pptx-idx="1"
+    data-pptx-bounds="120 1260 840 120">
+    <text id="ending-cta-carrier" data-pptx-carrier="true"
+      x="540" y="1312" text-anchor="middle" fill="#64748B"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="32">{{CTA_TEXT}}</text>
+  </g>
+  <g id="ending-brand-slot" data-pptx-placeholder="body" data-pptx-idx="2"
+    data-pptx-bounds="80 1610 920 60">
+    <text id="ending-brand-carrier" data-pptx-carrier="true"
+      x="540" y="1652" text-anchor="middle" fill="#475569"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28">{{BRAND_LINE}}</text>
+  </g>
+</svg>

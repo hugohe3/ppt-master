@@ -1,4 +1,36 @@
 {
+  "editorial_bleed": {
+    "summary": "A structure-only 16:9 system with 10 authored PowerPoint Layouts whose images bleed to the canvas edge and whose text sits on the image behind a scrim.",
+    "canvas_format": "ppt169",
+    "page_count": 10,
+    "page_types": [
+      "hero_full",
+      "hero_side_scrim",
+      "split_bleed",
+      "split_bleed_reverse",
+      "chapter_full",
+      "quote_over_image",
+      "triptych",
+      "image_grid_four",
+      "full_statement",
+      "closing_full"
+    ]
+  },
+  "moments_square": {
+    "summary": "A structure-only 1:1 system with 8 authored PowerPoint Layouts that use both horizontal and vertical division on a square canvas.",
+    "canvas_format": "moments",
+    "page_count": 8,
+    "page_types": [
+      "cover",
+      "statement",
+      "title_content",
+      "two_column",
+      "three_row",
+      "image_center",
+      "image_full",
+      "ending"
+    ]
+  },
   "presentation_core": {
     "summary": "A structure-only 16:9 system with 20 authored PowerPoint Layouts for general, editorial, image, process, and data presentations.",
     "canvas_format": "ppt169",
@@ -24,6 +56,82 @@
       "screenshot_focus",
       "chart_insight",
       "table_summary"
+    ]
+  },
+  "presentation_core_43": {
+    "summary": "A structure-only 4:3 system with 16 authored PowerPoint Layouts for projector, classroom, academic, and meeting-room presentations.",
+    "canvas_format": "ppt43",
+    "page_count": 16,
+    "page_types": [
+      "title_slide",
+      "title_content",
+      "section_header",
+      "two_content",
+      "comparison",
+      "title_only",
+      "blank",
+      "content_caption",
+      "picture_caption",
+      "hero_statement",
+      "three_card",
+      "kpi_grid",
+      "process_timeline",
+      "stacked_split",
+      "chart_insight",
+      "table_summary"
+    ]
+  },
+  "report_core": {
+    "summary": "A structure-only 16:9 system with 13 authored PowerPoint Layouts across two Masters, carrying persistent page chrome and page-number placeholders.",
+    "canvas_format": "ppt169",
+    "page_count": 13,
+    "page_types": [
+      "cover",
+      "section_divider",
+      "agenda",
+      "title_content",
+      "two_content",
+      "three_block",
+      "kpi_row",
+      "chart_insight",
+      "table_summary",
+      "process_timeline",
+      "matrix_2x2",
+      "appendix",
+      "closing"
+    ]
+  },
+  "story_vertical": {
+    "summary": "A structure-only 9:16 system with 9 authored PowerPoint Layouts whose text geometry respects the top and bottom story safe zones.",
+    "canvas_format": "story",
+    "page_count": 9,
+    "page_types": [
+      "cover",
+      "statement",
+      "title_content",
+      "numbered_list",
+      "image_full",
+      "image_top_text",
+      "two_block",
+      "step_flow",
+      "ending"
+    ]
+  },
+  "xiaohongshu_post": {
+    "summary": "A structure-only 3:4 vertical system with 10 authored PowerPoint Layouts for single-column image-text posts on tall social canvases.",
+    "canvas_format": "xiaohongshu",
+    "page_count": 10,
+    "page_types": [
+      "cover",
+      "statement",
+      "title_content",
+      "numbered_list",
+      "two_card_stack",
+      "image_top_text",
+      "image_full_caption",
+      "quote",
+      "step_flow",
+      "ending"
     ]
   }
 }

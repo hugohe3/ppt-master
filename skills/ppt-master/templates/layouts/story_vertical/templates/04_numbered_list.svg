@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"
+  data-pptx-master="story_vertical_master" data-pptx-master-name="Story Vertical"
+  data-pptx-layout="numbered_list" data-pptx-layout-name="Numbered List">
+  <rect id="master-background" x="0" y="0" width="1080" height="1920" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="numbered-list-row-one" x="80" y="440" width="920" height="360" rx="20" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="numbered-list-row-two" x="80" y="850" width="920" height="360" rx="20" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="numbered-list-row-three" x="80" y="1260" width="920" height="360" rx="20" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="numbered-list-marker-one" cx="168" cy="520" r="40" fill="#E2E8F0"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="numbered-list-marker-two" cx="168" cy="930" r="40" fill="#E2E8F0"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="numbered-list-marker-three" cx="168" cy="1340" r="40" fill="#E2E8F0"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <text id="numbered-list-digit-one" x="168" y="534" text-anchor="middle" fill="#64748B"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">1</text>
+  <text id="numbered-list-digit-two" x="168" y="944" text-anchor="middle" fill="#64748B"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">2</text>
+  <text id="numbered-list-digit-three" x="168" y="1354" text-anchor="middle" fill="#64748B"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="36" font-weight="700"
+    data-pptx-layer="layout" data-pptx-editable="false">3</text>
+  <g id="numbered-list-title-slot" data-pptx-placeholder="title"
+    data-pptx-bounds="80 200 920 180">
+    <text id="numbered-list-title-carrier" data-pptx-carrier="true"
+      x="80" y="306" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="56" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="numbered-list-one-slot" data-pptx-placeholder="object" data-pptx-idx="1"
+    data-pptx-bounds="240 464 760 312">
+    <text id="numbered-list-one-carrier" data-pptx-carrier="true"
+      x="240" y="520" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="32">{{ITEM_1}}</text>
+  </g>
+  <g id="numbered-list-two-slot" data-pptx-placeholder="object" data-pptx-idx="2"
+    data-pptx-bounds="240 874 760 312">
+    <text id="numbered-list-two-carrier" data-pptx-carrier="true"
+      x="240" y="930" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="32">{{ITEM_2}}</text>
+  </g>
+  <g id="numbered-list-three-slot" data-pptx-placeholder="object" data-pptx-idx="3"
+    data-pptx-bounds="240 1284 760 312">
+    <text id="numbered-list-three-carrier" data-pptx-carrier="true"
+      x="240" y="1340" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="32">{{ITEM_3}}</text>
+  </g>
+  <g id="numbered-list-footer-slot" data-pptx-placeholder="footer" data-pptx-idx="4"
+    data-pptx-bounds="80 1660 920 56">
+    <text id="numbered-list-footer-carrier" data-pptx-carrier="true"
+      x="80" y="1700" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24">{{FOOTER_NOTE}}</text>
+  </g>
+</svg>
