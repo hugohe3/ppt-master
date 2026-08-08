@@ -1044,6 +1044,228 @@
           "skills/ppt-master/references/ai-image-comparison/type/_manifest.md"
         ],
         "reason": "Generated comparison-asset manifests share an identical header by construction."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "890890f28896",
+        "paths": [
+          "skills/ppt-master/templates/brands/bain/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/mckinsey/templates/design_spec.md"
+        ],
+        "reason": "Consulting brand presets keep the same no-bundled-logo trademark safeguard by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "83e5480404c3",
+        "paths": [
+          "skills/ppt-master/templates/brands/alibaba/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/aws/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/huawei/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/microsoft/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/tencent/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/xiaomi/templates/design_spec.md"
+        ],
+        "reason": "Corporate brand presets share the same proprietary-font fallback contract by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "13dd086d3977",
+        "paths": [
+          "skills/ppt-master/templates/brands/accenture/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bain/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/deloitte/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/mckinsey/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/pwc/templates/design_spec.md"
+        ],
+        "reason": "Consulting brand presets share the same proprietary-font fallback contract by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "f2572d50249b",
+        "paths": [
+          "skills/ppt-master/templates/brands/deloitte/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/pwc/templates/design_spec.md"
+        ],
+        "reason": "Sibling consulting presets share the same evidence-writing convention by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "141b0d6205da",
+        "paths": [
+          "skills/ppt-master/templates/brands/accenture/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bain/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bcg/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/deloitte/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/jpmorgan/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/mckinsey/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/pwc/templates/design_spec.md"
+        ],
+        "reason": "Consulting brand presets share the same restrained icon convention by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "c5b068fe89b0",
+        "paths": [
+          "skills/ppt-master/templates/brands/alibaba/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/huawei/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/ibm/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/microsoft/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/nvidia/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/tencent/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/xiaomi/templates/design_spec.md"
+        ],
+        "reason": "Corporate brand presets share the same consistent icon convention by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "da38ec6c641e",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "fcc902f6644a",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "092a8a1f88e9",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "6a432b0cc1df",
+        "paths": [
+          "skills/ppt-master/templates/decks/README.md",
+          "skills/ppt-master/templates/layouts/README.md"
+        ],
+        "reason": "Sibling Deck and Layout docs keep the shared replication-mode explanation in lockstep."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "aa6e1929dd49",
+        "paths": [
+          "skills/ppt-master/SPONSORS.md",
+          "skills/ppt-master/SPONSORS_CN.md"
+        ],
+        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "286b55cb84d7",
+        "paths": [
+          "skills/ppt-master/templates/styles/academic-research/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/creative-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/incident-postmortem/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/investor-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/narrative-keynote/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/operating-review/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/product-launch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/science-explainer/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/solution-proposal/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/technical-deepdive/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/workshop-teaching/templates/design_spec.md"
+        ],
+        "reason": "Style preset specs share the same explicit-only visual-review trigger by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "ea999949f34d",
+        "paths": [
+          "skills/ppt-master/templates/brands/accenture/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/alibaba/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/anthropic/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/aws/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bain/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bcg/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/deloitte/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/huawei/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/ibm/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/jpmorgan/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/mckinsey/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/microsoft/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/nvidia/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/pwc/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/tencent/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/xiaomi/templates/design_spec.md"
+        ],
+        "reason": "Brand preset specs share the same portable fallback typography table by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "1ad663619aa4",
+        "paths": [
+          "skills/ppt-master/templates/brands/alibaba/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/tencent/templates/design_spec.md"
+        ],
+        "reason": "Sibling corporate brand presets intentionally share the same voice defaults."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "d21d5ba8b91e",
+        "paths": [
+          "skills/ppt-master/templates/brands/aws/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/microsoft/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/nvidia/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/xiaomi/templates/design_spec.md"
+        ],
+        "reason": "Sibling corporate brand presets intentionally share the same voice defaults."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "211e050e37d1",
+        "paths": [
+          "skills/ppt-master/templates/brands/accenture/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bain/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/bcg/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/deloitte/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/huawei/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/ibm/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/jpmorgan/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/mckinsey/templates/design_spec.md",
+          "skills/ppt-master/templates/brands/pwc/templates/design_spec.md"
+        ],
+        "reason": "Sibling formal brand presets intentionally share the same voice defaults."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "1136fd17656e",
+        "paths": [
+          "skills/ppt-master/templates/styles/academic-research/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/consulting-decision/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/creative-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/incident-postmortem/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/investor-pitch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/narrative-keynote/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/operating-review/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/product-launch/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/science-explainer/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/solution-proposal/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/technical-deepdive/templates/design_spec.md",
+          "skills/ppt-master/templates/styles/workshop-teaching/templates/design_spec.md"
+        ],
+        "reason": "Style preset specs share the same method-only scope boundary by design."
+      },
+      {
+        "kind": "exact",
+        "fingerprint": "99d8baf1be58",
+        "paths": [
+          "skills/ppt-master/workflows/create-template/create-brand.md",
+          "skills/ppt-master/workflows/create-template/create-style.md"
+        ],
+        "reason": "Mutually exclusive child workflows share the same resolved-workspace handoff contract."
       }
     ]
   },
@@ -1381,6 +1603,344 @@
         "skills/ppt-master/workflows/*.md",
         "skills/ppt-master/workflows/**/*.md",
         "skills/ppt-master/templates/*.md"
+      ],
+      "accepted": [
+        {
+          "field": "font_family",
+          "owner_fingerprint": "e33850f3053a",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/executor-base.md",
+              "role": "consumer",
+              "fingerprint": "d937b965024b",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist.md",
+              "role": "producer",
+              "fingerprint": "4c133143e2f2",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "90feed81f021",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/routing.md",
+              "role": "consumer",
+              "fingerprint": "a287404b8f1e",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            }
+          ]
+        },
+        {
+          "field": "image_rendering",
+          "owner_fingerprint": "819d948a3087",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/image-generator.md",
+              "role": "compatibility",
+              "fingerprint": "5a6f2f95be38",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "3d0b27f3d979",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        },
+        {
+          "field": "page_charts",
+          "owner_fingerprint": "0edfe64300c1",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "compatibility",
+              "fingerprint": "a6ae3dfb6e6a",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-visualization.md",
+              "role": "compatibility",
+              "fingerprint": "055ab59c533e",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist-template.md",
+              "role": "compatibility",
+              "fingerprint": "b0f9494f710a",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist.md",
+              "role": "compatibility",
+              "fingerprint": "ba50ab71bc88",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "compatibility",
+              "fingerprint": "39d5baf1e189",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/stages/resume-execute.md",
+              "role": "compatibility",
+              "fingerprint": "023cf4d8ecbd",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            }
+          ]
+        },
+        {
+          "field": "page_layouts",
+          "owner_fingerprint": "64d28e112785",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/artifact-ownership.md",
+              "role": "reference",
+              "fingerprint": "be5e3881ee0d",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "consumer",
+              "fingerprint": "f77d8a752b85",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/pptx-structure-interface.md",
+              "role": "reference",
+              "fingerprint": "60f4c8b8d08a",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "c35477d35410",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/create-template.md",
+              "role": "reference",
+              "fingerprint": "b26d839b24b9",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/stages/apply-template-workspace.md",
+              "role": "compatibility",
+              "fingerprint": "1c393e47c311",
+              "reason": "This site documents a legacy or omission compatibility boundary."
+            }
+          ]
+        },
+        {
+          "field": "page_pptx_layouts",
+          "owner_fingerprint": "f436e6ae4bb8",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/artifact-ownership.md",
+              "role": "reference",
+              "fingerprint": "f91ef56378bb",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "consumer",
+              "fingerprint": "70d500bb46dc",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/pptx-structure-interface.md",
+              "role": "reference",
+              "fingerprint": "b4596417aeec",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/shared-standards-core.md",
+              "role": "reference",
+              "fingerprint": "8afb713e37e8",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist-template.md",
+              "role": "producer",
+              "fingerprint": "fb6d05bac6e4",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "a67117d67b3e",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/create-template.md",
+              "role": "reference",
+              "fingerprint": "40b13ab57503",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        },
+        {
+          "field": "page_rhythm",
+          "owner_fingerprint": "9d8344e389b1",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/executor-base.md",
+              "role": "consumer",
+              "fingerprint": "4925a1ead978",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist.md",
+              "role": "producer",
+              "fingerprint": "c326f18fa7c3",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "25aabdb0ee04",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        },
+        {
+          "field": "page_visualizations",
+          "owner_fingerprint": "b3cdf822635a",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "consumer",
+              "fingerprint": "105f5e4ce2ce",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-visualization.md",
+              "role": "consumer",
+              "fingerprint": "8b173848afa7",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist.md",
+              "role": "producer",
+              "fingerprint": "1c8aa960c9e4",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "f45f26b4d11c",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/workflows/profiles/beautify-pptx.md",
+              "role": "producer",
+              "fingerprint": "308c0a3ef9d9",
+              "reason": "This producer projects the owner field into the planning contract."
+            }
+          ]
+        },
+        {
+          "field": "pptx_layouts",
+          "owner_fingerprint": "1037e878eaa1",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/artifact-ownership.md",
+              "role": "reference",
+              "fingerprint": "447cd531facc",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "consumer",
+              "fingerprint": "5174447ee0a8",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/pptx-structure-interface.md",
+              "role": "reference",
+              "fingerprint": "6f93a0561460",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist-template.md",
+              "role": "producer",
+              "fingerprint": "f97c538adf92",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "2d6dba6c449e",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        },
+        {
+          "field": "pptx_masters",
+          "owner_fingerprint": "7cbe6ec7056e",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/artifact-ownership.md",
+              "role": "reference",
+              "fingerprint": "7eba0fa766a6",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/executor-structured.md",
+              "role": "consumer",
+              "fingerprint": "e5dcb49a9a61",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/pptx-structure-interface.md",
+              "role": "reference",
+              "fingerprint": "92a978e5d229",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist-template.md",
+              "role": "producer",
+              "fingerprint": "29a9e58295a9",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "89b01fc1b354",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        },
+        {
+          "field": "stroke_width",
+          "owner_fingerprint": "6683d97fc796",
+          "projections": [
+            {
+              "path": "skills/ppt-master/references/executor-base.md",
+              "role": "consumer",
+              "fingerprint": "96e0f7380de0",
+              "reason": "This consumer needs the field contract for deterministic execution."
+            },
+            {
+              "path": "skills/ppt-master/references/strategist.md",
+              "role": "producer",
+              "fingerprint": "feb2b322c7ce",
+              "reason": "This producer projects the owner field into the planning contract."
+            },
+            {
+              "path": "skills/ppt-master/templates/spec_lock_reference.md",
+              "role": "reference",
+              "fingerprint": "9d35b546fb2d",
+              "reason": "This reference mirrors the owner field grammar or ownership boundary."
+            }
+          ]
+        }
       ]
     },
     {
