@@ -323,18 +323,32 @@ follows its resolved behavior without inventing a nearby preset.
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
 exclusion; Quick loads the shared and conditional execution authorities here
-directly. For any image/formula, always read
+directly. When any image/formula exists, read once before the first affected
+page and reuse throughout the valid execution context:
 [`executor-image.md`](../../references/executor-image.md),
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
 [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
-web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
-for a non-default canvas.
+web image. Reread only after a known file change or context invalidation. Load
+[`canvas-formats.md`](../../references/canvas-formats.md) only for a non-default
+canvas.
 
 `executor-structure.md` is loaded once before all SVG authoring so Quick cannot
 omit shape-composition reasoning. Reuse it throughout the valid execution
 context; reread only after a known file change or context invalidation.
+
+**Mandatory — per-image-page composition decision**: For every page with one
+or more non-formula images, after its content and communication move are
+determined but before choosing geometry, apply
+[`executor-image.md`](../../references/executor-image.md)'s active image-integration
+decision once. Keep its role, direction source, parent
+contour, slot/rhythm system, image/shape action, and any continuity only in
+active context; create no artifact, spec, lock, manifest, or extra pass. A
+deliberate plain or equal-grid result remains valid when it communicates the
+relationship better. Formula-only pages use
+[`image-layout-spec.md`](../../references/image-layout-spec.md) without forcing a
+multi-image system.
 
 **Mandatory — per-page Structure decision**: after the current page's content
 and communication move are determined, but before choosing any geometry or
@@ -444,6 +458,7 @@ or lock.
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
+- [x] Every non-formula image-bearing page made its one pre-geometry composition decision
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
