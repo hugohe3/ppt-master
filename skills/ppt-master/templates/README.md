@@ -116,23 +116,20 @@ effects and PowerPoint interfaces loaded only when triggered.
 
 ## Visualization Templates
 
-The `charts/` directory contains the registered visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, strategic frameworks, and system architecture diagrams:
+Page-local Shape-first references are families, not reusable template kinds:
 
-- KPI Cards
-- Bar Chart / Stacked Bar Chart
-- Line Chart / Dual-Axis Line Chart
-- Donut Chart
-- Radar Chart
-- Funnel Chart
-- Matrix (2x2)
-- Timeline
-- Gantt Chart
-- Process Flow
-- Org Chart
-- Layered Architecture / Module Composition / Hub with Described Spokes / Pipeline with Stages / Client-Server Flow
+| Family | Owns | Directory | Index |
+|---|---|---|---|
+| Chart | Value-driven geometry | [`charts/`](./charts/) | [`charts_index.json`](./charts/charts_index.json) |
+| Structure | Qualitative topology | [`structures/`](./structures/) | [`structures_index.json`](./structures/structures_index.json) |
+| Table | Cell grid | [`tables/`](./tables/) | [`tables_index.json`](./tables/tables_index.json) |
 
-- **Library index (single source of truth)**: [charts/charts_index.json](./charts/charts_index.json)
-- **Directory overview**: [charts/README.md](./charts/README.md)
+[`VISUALIZATION_TEMPLATE_AUTHORING.md`](./VISUALIZATION_TEMPLATE_AUTHORING.md)
+is the shared authoring contract. Each index owns family membership and
+selection rules.
+
+Only [`layouts/`](./layouts/) owns Master/Layout, page types, slots, and
+placeholders; structures stay Slide-local.
 
 ## Icon Library
 

@@ -163,18 +163,12 @@ def _load_family(family: str) -> tuple[dict[str, VisualizationEntry], dict[str, 
 
 def load_visualization_catalog(
     families: Iterable[str] | None = None,
-    *,
-    allow_missing_families: bool = False,
 ) -> VisualizationCatalog:
     """Load selected live family registries."""
     selected = _normalize_families(families)
     entries: dict[str, VisualizationEntry] = {}
     aliases: dict[str, str] = {}
     for family in selected:
-        directory_name, index_name, _object_key = _FAMILY_SPECS[family]
-        index_path = _TEMPLATES_DIR / directory_name / index_name
-        if not index_path.is_file() and allow_missing_families:
-            continue
         family_entries, family_aliases = _load_family(family)
         entries.update(family_entries)
         aliases.update(family_aliases)
@@ -188,14 +182,9 @@ def load_visualization_catalog(
 
 def load_visualization_entries(
     families: Iterable[str] | None = None,
-    *,
-    allow_missing_families: bool = False,
 ) -> dict[str, VisualizationEntry]:
     """Return canonical entries keyed by ``family/key``."""
-    return load_visualization_catalog(
-        families,
-        allow_missing_families=allow_missing_families,
-    ).entries
+    return load_visualization_catalog(families).entries
 
 
 def _require_svg(entry: VisualizationEntry) -> VisualizationEntry:
@@ -216,7 +205,7 @@ def resolve_visualization_reference(
     if not normalized:
         raise VisualizationCatalogError("visualization reference must not be empty")
 
-    catalog = load_visualization_catalog(allow_missing_families=True)
+    catalog = load_visualization_catalog()
     if "/" in normalized:
         family, separator, key = normalized.partition("/")
         if (

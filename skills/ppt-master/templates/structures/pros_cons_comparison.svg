@@ -2,7 +2,7 @@
      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
      font-size="12">
     <!--
-    Pros vs Cons Analysis Chart
+    Pros vs Cons Comparison Template
     Purpose: Dual-sided comparison, advantage/disadvantage evaluation
     Use cases: Product comparison, strategy evaluation, decision support
     Supports: Symmetrical 3 vs 3 layout with central dividing axis
@@ -11,7 +11,7 @@
     <rect width="1280" height="720" fill="#F8FAFC"/>
     <!-- ==================== Header Area ==================== -->
     <g id="header" data-pptx-bounds="40 15 1200 125">
-        <text x="640" y="60" text-anchor="middle" font-size="32" font-weight="800" fill="#0F172A">Pros vs Cons Analysis</text>
+        <text x="640" y="60" text-anchor="middle" font-size="32" font-weight="800" fill="#0F172A">Pros vs Cons Comparison</text>
         <text x="640" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">STRATEGIC EVALUATION · OBJECTIVE DECISION FRAMEWORK</text>
     </g>
     <!-- ==================== Column Headers ==================== -->

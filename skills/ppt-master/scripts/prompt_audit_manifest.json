@@ -9,6 +9,8 @@
       "AGENTS.md",
       "skills/ppt-master/**/*.md",
       "skills/ppt-master/templates/charts/charts_index.json",
+      "skills/ppt-master/templates/structures/structures_index.json",
+      "skills/ppt-master/templates/tables/tables_index.json",
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
@@ -314,7 +316,7 @@
         "route.generate.quick-generate",
         "stage.generate.executor.chart",
         "stage.generate.executor.native-data",
-        "stage.generate.chart-authoring",
+        "stage.generate.visualization-authoring",
         "stage.generate.verify-charts"
       ],
       "files": [
@@ -561,7 +563,7 @@
         "route.generate.flat-no-image",
         "stage.generate.executor.chart",
         "stage.generate.executor.native-data",
-        "stage.generate.chart-authoring",
+        "stage.generate.visualization-authoring",
         "stage.generate.verify-charts"
       ],
       "files": [],
@@ -769,12 +771,14 @@
       ],
       "max_tokens": 7000
     },
-    "stage.generate.chart-authoring": {
-      "description": "Conditional visualization-library authoring guidance.",
+    "stage.generate.visualization-authoring": {
+      "description": "Conditional shared chart, structure, and table template authoring guidance.",
       "scope": "incremental",
       "files": [
+        "skills/ppt-master/templates/VISUALIZATION_TEMPLATE_AUTHORING.md",
         "skills/ppt-master/templates/charts/README.md",
-        "skills/ppt-master/templates/charts/CHART_STYLE_GUIDE.md"
+        "skills/ppt-master/templates/structures/README.md",
+        "skills/ppt-master/templates/tables/README.md"
       ],
       "max_tokens": 10000
     },
@@ -1249,6 +1253,46 @@
         "type",
         "types"
       ]
+    },
+    {
+      "name": "structure-templates",
+      "kind": "json_collection",
+      "source": "skills/ppt-master/templates/structures/structures_index.json",
+      "key": "structures",
+      "reference_terms": [
+        "structures_index.json",
+        "structure catalog"
+      ],
+      "claim_nouns": [
+        "structure",
+        "structures",
+        "summary",
+        "summaries",
+        "template",
+        "templates",
+        "type",
+        "types"
+      ]
+    },
+    {
+      "name": "table-templates",
+      "kind": "json_collection",
+      "source": "skills/ppt-master/templates/tables/tables_index.json",
+      "key": "tables",
+      "reference_terms": [
+        "tables_index.json",
+        "table catalog"
+      ],
+      "claim_nouns": [
+        "table",
+        "tables",
+        "summary",
+        "summaries",
+        "template",
+        "templates",
+        "type",
+        "types"
+      ]
     }
   ],
   "schema_grammars": [
@@ -1257,6 +1301,7 @@
       "fields": [
         "font_family",
         "image_rendering",
+        "page_visualizations",
         "page_charts",
         "page_layouts",
         "page_pptx_layouts",
@@ -1357,7 +1402,15 @@
       },
       {
         "glob": "skills/ppt-master/templates/charts/charts_index.json",
-        "reason": "Machine-consumed chart-recall registry; Strategist receives only the ranked candidate summaries."
+        "reason": "Machine-consumed chart-family registry; Strategist receives only bounded visualization-recall candidates."
+      },
+      {
+        "glob": "skills/ppt-master/templates/structures/structures_index.json",
+        "reason": "Machine-consumed structure-family registry; Strategist receives only bounded visualization-recall candidates."
+      },
+      {
+        "glob": "skills/ppt-master/templates/tables/tables_index.json",
+        "reason": "Machine-consumed table-family registry; Strategist receives only bounded visualization-recall candidates."
       },
       {
         "glob": "skills/ppt-master/templates/schemas/*.json",

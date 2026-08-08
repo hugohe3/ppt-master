@@ -9,7 +9,7 @@
       - Central hub + 6 equal annular sectors (not data-proportional like pie/donut)
       - Wedge = category cell (parallel weight), not a sequential step
       - Dashed connector from wedge outer edge to its description card (3 left + 3 right)
-      - Single hue progression (top-heavy mirrored), per CHART_STYLE_GUIDE §1.2
+      - Single hue progression (top-heavy mirrored), per VISUALIZATION_TEMPLATE_AUTHORING §1.2
     -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
 

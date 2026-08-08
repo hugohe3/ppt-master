@@ -8,10 +8,10 @@
     Design Principles:
       - 4-tier 3D isometric pyramid: each tier = top diamond (shadow facet) + 2 side faces (lit gradients)
       - Light source from upper-left → right faces slightly darker than left faces
-      - Tier numbers tilted along the left slope (CHART_STYLE_GUIDE §11 "semantic-polygon" pattern)
+      - Tier numbers tilted along the left slope (VISUALIZATION_TEMPLATE_AUTHORING §11 "semantic-polygon" pattern)
       - Tier labels tilted along the right slope
       - Twin ground rhombi as 3D shadow base (alternative to ellipse anchor §11.6 for 3D objects)
-    Versus pyramid_chart.svg: choose this for dramatic / presentation tone; choose pyramid_chart for
+    Versus layered_pyramid.svg: choose this for dramatic / presentation tone; choose layered_pyramid for
     formal documentary / consulting tone (flat side view).
     Layer count is FIXED at 4 (geometric parameterization for 3/5/6 layers requires recomputed vertices).
     -->
