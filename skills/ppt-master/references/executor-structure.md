@@ -47,7 +47,13 @@ Combine atoms as needed; never force a named business model. Numbers used only a
 | `region` | Partition, contain, intersect, band, or layer fields |
 | `attach` | Bind labels, badges, annotations, or evidence to an owner |
 
-Choose ordinary primitives → exact Office presets → Boolean results → necessary freeform under [`native-shape-authoring.md`](./native-shape-authoring.md). Shape choice follows semantic duty; decoration cannot invent a relationship.
+**Hard rule — realization enters the construction gate**: Decide whether each
+role is implicit/direct content or drawn geometry. Every drawn field, spine,
+node carrier, or edge uses the first faithful tier under
+[`native-shape-authoring.md`](./native-shape-authoring.md) §1: primitive → exact
+preset → Boolean → necessary freeform. Text styling/rules cannot replace
+required geometry; implicit/direct roles need no container. Decoration cannot
+invent a relationship.
 
 ---
 
@@ -60,12 +66,19 @@ Choose the field and map required atoms, then follow:
 | Layer | Completion evidence |
 |---|---|
 | `spine` | Entry, direction, and organizing path are clear |
-| `nodes` | Every required unit has one home and intentional weight |
-| `connectors` (`edge`) | Only unresolved links receive edges; route/source/target is clear |
+| `nodes` | Every required unit has one home and intentional weight; each is direct content or a §2-approved carrier |
+| `connectors` (`edge`) | Only unresolved links become edges; route/source/target is clear; every drawn edge passes §2 |
 | `labels` | Copy and caveats visibly attach to what they explain |
 | `garnish` | Removing accents leaves all meaning intact |
 
 **Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Prefer containment, alignment, baselines, and proximity; add lines/Connectors only for real edges, never to make a page look process-like.
+
+**Default — visible structural move (may override for naked-text rhythm/style)**:
+Make one relationship-bearing field, spine, node carrier, or directional shape
+the page-scale move; never add geometry merely because Structure is `yes`.
+
+> Note: spatial encoding may remove the need for a new object; any drawn node
+> carrier, spine, or edge still passes §2.
 
 ---
 
@@ -79,5 +92,6 @@ Choose the field and map required atoms, then follow:
 | Attachment | Labels/evidence belong to the correct node, edge, or region |
 | Removal | Without color/effects/icons/garnish, placement still communicates |
 | Fidelity | All required units, qualifiers, values, and caveats remain |
+| Construction | Drawn fields/spines/node carriers/edges pass §2; implicit/direct roles need no carrier; freeform follows failed primitive/preset/Boolean tiers |
 
 Load Chart/Table branches independently for embedded objects. Keep one dominant reading path while allowing secondary atoms whose ownership stays clear.
