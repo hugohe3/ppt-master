@@ -318,7 +318,7 @@
         "stage.generate.verify-charts"
       ],
       "files": [
-        "skills/ppt-master/scripts/docs/chart-recall.md"
+        "skills/ppt-master/scripts/docs/visualization-recall.md"
       ],
       "max_tokens": 105000
     },
@@ -1338,6 +1338,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/update_spec.md",
         "reason": "Maintainer command reference for an optional helper script."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/chart-recall.md",
+        "reason": "Legacy compatibility note; current generation loads visualization-recall.md."
       },
       {
         "glob": "skills/ppt-master/scripts/pptx_shapes/data/NOTICE.md",
