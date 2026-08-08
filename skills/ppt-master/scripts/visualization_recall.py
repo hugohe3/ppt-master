@@ -101,7 +101,6 @@ def load_catalog(family: str = "all") -> dict[str, VisualizationEntry]:
     """Load the selected live family catalogs."""
     return load_visualization_entries(
         _selected_families(family),
-        allow_missing_families=family == "all",
     )
 
 

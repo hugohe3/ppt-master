@@ -116,7 +116,7 @@
         </g>
     </g>
     <!-- ==================== Priority Migration (Diagonal Dashed Arrow) ==================== -->
-    <!-- Demonstrates CHART_STYLE_GUIDE §11.5: diagonal dashed connector to express
+    <!-- Demonstrates VISUALIZATION_TEMPLATE_AUTHORING §11.5: diagonal dashed connector to express
          cross-quadrant trajectory. Migrates work from Thankless → Quick Wins. -->
     <g id="priority-migration" data-pptx-bounds="326 173 583 459">
         <line x1="850" y1="605" x2="385" y2="200" stroke="#475569" stroke-width="2"

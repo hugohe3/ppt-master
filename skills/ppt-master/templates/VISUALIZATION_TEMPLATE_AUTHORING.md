@@ -1,17 +1,31 @@
-# Chart Template Authoring Guide
+# Visualization Template Authoring Guide
 
-`templates/charts/` 的模板负责可视化结构、数据编码和信息关系，不负责最终项目风格。模板必须保持源码可读、独立可渲染，并允许 Executor 根据项目 Design Spec 与 `spec_lock.md` 重做字体、配色和装饰。
+`templates/charts/`、`templates/structures/` 和 `templates/tables/` 共同组成
+page-local Visualization 模板库。模板负责信息结构、数据编码或单元格关系，
+不负责最终项目风格。模板必须保持源码可读、独立可渲染，并允许 Executor
+根据项目 Design Spec 与 `spec_lock.md` 重做字体、配色和装饰。
+
+| Family | 定义 | 判定边界 |
+|---|---|---|
+| `chart` | Value-driven visualization | 数值、类别、时间、权重或持续时间决定 mark 的位置、长度、面积、角度、字号或连接宽度 |
+| `structure` | Page-local qualitative topology | 顺序、层级、角色、分区或关系决定页面内的节点与连接；几何不由数值映射驱动 |
+| `table` | Cell grid | 行、列、单元格、表头、合并、对齐和边界构成主要语义；单元格数值不决定外部 mark 几何 |
+
+**Hard rule — Visualization is not Layout**: `structure` 只拥有一页内可适配的
+qualitative topology，不拥有 `data-pptx-master`、`data-pptx-layout`、
+`data-pptx-layer` 或 `data-pptx-placeholder`。跨页 Master/Layout、page type、
+slot geometry 和 placeholder 合同仍只属于 [`layouts/`](./layouts/) workspace。
 
 ## 0. 上游规范
 
-**Hard rule**: 本指南只定义 Chart 模板库的结构与中性预览合同。通用 SVG 语法、效果、原生数据接口和 PowerPoint 结构分别由以下权威文件定义：
+**Hard rule**: 本指南只定义三个 Visualization family 的结构与中性预览合同。通用 SVG 语法、效果、原生数据接口和 PowerPoint 结构分别由以下权威文件定义：
 
 | 合同 | 权威文件 |
 |---|---|
-| 通用 SVG | [`shared-standards.md`](../../references/shared-standards.md) |
-| 效果与兼容输入 | [`svg-effects.md`](../../references/svg-effects.md) |
-| Native Chart/Table | [`native-data-interface.md`](../../references/native-data-interface.md) |
-| 画布格式 | [`canvas-formats.md`](../../references/canvas-formats.md) |
+| 通用 SVG | [`shared-standards.md`](../references/shared-standards.md) |
+| 效果与兼容输入 | [`svg-effects.md`](../references/svg-effects.md) |
+| Native Chart/Table | [`native-data-interface.md`](../references/native-data-interface.md) |
+| 画布格式 | [`canvas-formats.md`](../references/canvas-formats.md) |
 
 **Forbidden — second SVG specification**: 不在本指南复述或放宽上游语法。发生冲突时以上游权威文件为准。
 
@@ -19,19 +33,28 @@
 
 ## 1. 所有权边界
 
-### 1.1 模板与项目
+### 1.1 作者合同与项目消费
 
-| Chart 模板拥有 | 项目拥有 |
+以下所有权只约束库内单个模板工件的维护，不把该工件变成项目页面的布局锁：
+
+| 单个 Visualization 模板的作者合同 | 项目页面决策拥有 |
 |---|---|
-| 可视化类型与数据到图形的映射 | 项目字体与字号体系 |
-| 节点、连接、轴、系列和标签关系 | 项目调色板与品牌色 |
-| 可视化类型、构图骨架和阅读顺序 | 实际分组、框架数量、项目数量与容量适配 |
+| 该工件的 family 与相应信息模型 | 最终采用的页面级结构、类型与几何 |
+| 该工件内的数据映射、拓扑或单元格关系 | 项目字体、字号、调色板与品牌色 |
+| 该工件的示例骨架和阅读顺序 | 实际分组、框架数量、项目数量、组合方式与容量适配 |
 | 必要的状态与语义区分 | 页面背景、页头、页脚和品牌 chrome |
 | 独立预览所需的中性样式 | 最终强调策略与页面级视觉层级 |
 
-**Hard rule**: Executor 适配模板时保留可视化类型、信息关系和数据准确性；最终视觉必须来自当前项目，而不是继承模板的示例审美。
+**Hard rule — authoring integrity**: 维护某个库模板时必须保持该模板自身的
+family 与信息模型：Chart 的 value mapping、Structure 的 qualitative topology、
+Table 的 cell grid。若修改结果已经属于另一 family，应作为另一 family 的工件
+登记，不能保留错误标签。最终视觉样式仍来自使用它的项目，而不是模板的示例审美。
 
-**Reference — not a constraint**: 模板的分组、框架数、项目数和示例容量用于展示结构，不是项目上限。Executor 可按实际内容调整，但不能改变已选可视化类型、关系或数据语义。
+**Hard rule — flexible project reference**: Executor 选中的 `family/key` 仍只是
+flexible page-local reference。Default 的 §IX 或 Quick 的页面决策拥有最终结构；
+选中引用不会锁死页面的可视化类型、几何、分组数、项目数或组合方式，Executor
+可按已确认的页面意图适配、重组或替换。项目若实际采用某一信息模型，必须保持
+其真实数据与关系准确；仅有引用本身不构成页面结构权威。
 
 ### 1.2 保留判断
 
@@ -174,11 +197,15 @@
 | 顶层组 | 典型内容 |
 |---|---|
 | `header` | 标题与副标题 |
-| `chart-area` / replacement carrier | 轴、数据系列、标签、必要 metadata |
+| `chart-area` / replacement carrier | Chart 的轴、数据系列、标签、必要 metadata |
 | `legend` | 系列或状态说明 |
 | `card-1` / `feature-card-1` | 一个完整信息单元 |
 | `timeline-track` | 时间轴与阶段标签 |
 | `milestone-cards` | 同一结构的一组里程碑卡片 |
+
+**Forbidden — workspace metadata**: 三个 family 都不得写入 Master/Layout/
+placeholder 所有权标记。即使 Structure 预览占满整个 `1280×720` 画布，它仍是
+一页内的 flexible reference，不会因此成为 Layout workspace。
 
 ### 5.2 `data-pptx-bounds`
 
@@ -220,7 +247,7 @@
 
 ---
 
-## 6. 数据图表合同
+## 6. Chart 与 Native Data 合同
 
 ### 6.1 绘图区标记
 
@@ -234,7 +261,7 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 
 ### 6.2 Native Chart/Table
 
-**Hard rule**: 只有 [`native-data-interface.md`](../../references/native-data-interface.md) 支持的真实数据图表或纯文本表格使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。
+**Hard rule**: 只有 [`native-data-interface.md`](../references/native-data-interface.md) 支持的真实 Chart 或纯文本 Table 使用 replacement marker。JSON metadata 与可见 fallback 必须表达同一份数据。Structure 永远不使用 Chart/Table replacement marker。
 
 ```xml
 <g id="line-chart"
@@ -275,9 +302,17 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 
 **Forbidden — placeholder storytelling**: 不写长篇营销文案、部门归属、真实品牌或无法复用的项目背景。
 
-### 7.2 `charts_index.json`
+### 7.2 Family indexes
 
-新增模板必须登记 `<key>.summary`：
+新增模板只登记到其 owning family index：
+
+| Family | Directory | Index object |
+|---|---|---|
+| `chart` | `charts/` | `charts_index.json` → `charts` |
+| `structure` | `structures/` | `structures_index.json` → `structures` |
+| `table` | `tables/` | `tables_index.json` → `tables` |
+
+每个 `<key>.summary` 使用相同的选择句合同：
 
 ```json
 "line_chart": {
@@ -285,13 +320,26 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 }
 ```
 
-**Hard rule**: `summary` 是选型句，使用 `Pick for ... Skip if ...`，不是视觉描述；`key` 与文件名一致，`meta.total` 与 catalog 数量一致。
+**Hard rule**: `summary` 是选型句，使用 `Pick for ... Skip if ...`，不是视觉描述；`key` 与同 family 文件名一致，`meta.total` 与该 family catalog 数量一致。不要建立跨 family 的第二份成员清单。
 
 ---
 
 ## 8. 迁移边界
 
-本指南是新建和修改模板的目标合同。当前目录中的 76 个 SVG 均已纳入该合同；后续不得以历史文件为由恢复无语义装饰，也不得把中性化误解为删除结构边界。
+本指南是新建和修改模板的目标合同。当前三个 family 共 76 个 SVG：
+Chart 33 个、Structure 36 个、Table 7 个。各 live index 是成员清单的唯一权威；
+后续不得以历史文件为由恢复无语义装饰，也不得把中性化误解为删除结构边界。
+
+**Canonical migration aliases**:
+
+| Legacy bare key | Canonical reference |
+|---|---|
+| `pros_cons_chart` | `structure/pros_cons_comparison` |
+| `pyramid_chart` | `structure/layered_pyramid` |
+| `quadrant_bubble_scatter` | `structure/quadrant_text_cards` |
+
+新文档、§VII 和 `page_visualizations` 只写 canonical family/key。Alias 只服务旧
+`page_charts` 读取，不是新模板命名候选。
 
 **Current reference set**:
 
@@ -334,7 +382,7 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `hub_inward_arrows.svg` | 外围输入、向心关系和中心结论 |
 | `treemap_chart.svg` | 层级面积编码、分类色块、标签和解释注记 |
 | `hub_spoke.svg` | 中心枢纽、径向连接、能力节点和参考环 |
-| `matrix_2x2.svg` | 双轴象限、点位分布、象限标签和优先级说明 |
+| `matrix_2x2.svg` | 数据点的 x/y 坐标分别编码两轴数值，半径编码第三指标，并保留象限标签 |
 | `process_flow.svg` | 顺序节点、连接关系、阶段时长和状态图例 |
 | `donut_chart.svg` | 环形占比、中心总值、系列图例和摘要指标 |
 | `grouped_bar_chart.svg` | 多系列并列柱、共用分类轴和系列图例 |
@@ -347,11 +395,11 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `comparison_table.svg` | 多方案表头、横向属性行和结果强调 |
 | `client_server_flow.svg` | 客户端与服务端分区、请求响应和交互方向 |
 | `dumbbell_chart.svg` | 双状态端点、变化连线、差值和项目排序 |
-| `pyramid_chart.svg` | 递进层级、分层容量和层级说明 |
+| `layered_pyramid.svg` | 递进层级、分层容量和层级说明；不以数值映射层高或面积 |
 | `vertical_pillars.svg` | 并列支柱、分类标题、要点列表和底部结论 |
 | `journey_map.svg` | 阶段轨道、用户行动、情绪曲线和痛点卡片 |
 | `consulting_table.svg` | 分层行列、指标数值、数据条和重点结论 |
-| `pros_cons_chart.svg` | 正反双栏、判断轴、论据列表和建议结论 |
+| `pros_cons_comparison.svg` | 正反双栏、判断轴、论据列表和建议结论 |
 | `project_schedule_table.svg` | 任务表格、负责人、状态和横向排期 |
 | `horizontal_bar_chart.svg` | 长标签排名、横向数值条和洞察侧栏 |
 | `funnel_chart.svg` | 递减阶段、转化率、流失关系和摘要指标 |
@@ -369,7 +417,7 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 | `feature_matrix_table.svg` | 功能行、产品列、二元状态和方案对照 |
 | `histogram_chart.svg` | 连续分箱、频数柱、统计标记和分布解释 |
 | `venn_diagram.svg` | 集合边界、交集区域、关系标签和结论说明 |
-| `quadrant_bubble_scatter.svg` | 双轴象限、气泡位置、尺寸编码和项目标签 |
+| `quadrant_text_cards.svg` | 固定 2×2 命名象限，每个象限承载标题与文本条目；不含 value-mapped bubbles |
 | `bar_of_pie_chart.svg` | 主饼占比、长尾聚合、堆叠条明细和连接关系 |
 | `pie_of_pie_chart.svg` | 主饼占比、长尾聚合、次级饼明细和连接关系 |
 | `word_cloud.svg` | 词项权重、字号编码、主题分布和关键词层级 |
@@ -397,18 +445,20 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 - [ ] 颜色差异确实表达 series、state、positive/negative 等语义。
 - [ ] 标题、副标题和来源只用于展示必要结构或容量。
 
-### 9.3 数据与 PowerPoint
+### 9.3 Family 与 PowerPoint
 
-- [ ] 数据图表保留准确 `chart-plot-area` 标记。
-- [ ] Eligible Chart/Table 的 metadata 与可见 fallback 数据一致。
+- [ ] Family 判定正确：Chart 为 value-driven、Structure 为 qualitative topology、Table 为 cell grid。
+- [ ] Structure 不含 Master/Layout/layer/placeholder ownership metadata。
+- [ ] Calculator-supported Chart 保留准确 `chart-plot-area` 标记。
+- [ ] Eligible Chart/Table 的 metadata 与可见 fallback 数据一致；Structure 无 replacement marker。
 - [ ] 默认 Shape-first 导出通过。
 - [ ] 存在 replacement marker 时，显式 native Chart/Table 导出通过。
 - [ ] `svg_quality_checker.py` 无 error；warning 已人工判断。
 
 ### 9.4 Catalog
 
-- [ ] 新模板已登记 `charts_index.json`。
-- [ ] 修改 key/summary 后通过 `chart_recall.py validate` 和 recall 烟测。
+- [ ] 新模板只登记到 owning family index，index object、`meta.total` 与 SVG roster 一致。
+- [ ] 修改 key/summary 后通过 `visualization_recall.py validate` 和 recall 烟测。
 - [ ] 前后可见文本差异已审阅，非重复内容没有意外丢失或改写。
 - [ ] 前后渲染对比确认结构仍可读。
 - [ ] 记录 bytes/tokens 变化，但不以牺牲源码可读性换取数字。
@@ -420,14 +470,15 @@ Pie、Donut、Radar 使用对应中心和半径格式。该注释是工具输入
 ```bash
 # 单文件 SVG 合同
 python3 skills/ppt-master/scripts/svg_quality_checker.py \
-  skills/ppt-master/templates/charts/<key>.svg
+  skills/ppt-master/templates/<family-directory>/<key>.svg
 
-# Catalog key
-python3 skills/ppt-master/scripts/chart_recall.py validate <key>
+# Canonical family/key
+python3 skills/ppt-master/scripts/visualization_recall.py validate \
+  <family>/<key>
 
 # 可安全压缩的页面坐标（默认 dry-run）
 python3 skills/ppt-master/scripts/compact_svg_coordinates.py \
-  skills/ppt-master/templates/charts/<key>.svg
+  skills/ppt-master/templates/<family-directory>/<key>.svg
 ```
 
 **Validation**: 修改后至少完成 XML 解析、独立 SVG 渲染、Checker、默认 Shape-first 导出，以及 marker 模板的 native Chart/Table 导出。

@@ -7,7 +7,7 @@
     Scenarios: Digital transformation phases, capability maturity, strategic milestones
     Supports: 6 Steps (Recommended 4-7)
     Design Principles:
-      - Each step = top parallelogram + front face + side face (3 shades from one Tailwind hue, see CHART_STYLE_GUIDE §1.2)
+      - Each step = top parallelogram + front face + side face (3 shades from one Tailwind hue, see VISUALIZATION_TEMPLATE_AUTHORING §1.2)
       - Step palette walks the spectrum Sky -> Blue -> Indigo -> Violet -> Purple -> Rose
       - Visual weight: thicker top-edge highlight (2.5px), darker side facets, larger numbers (font 34 weight 900),
         each description anchored by a tinted background card so it does not float

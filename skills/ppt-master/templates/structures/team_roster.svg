@@ -25,7 +25,7 @@
             <rect width="270" height="420" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
             <!-- Photo Placeholder -->
             <g transform="translate(55, 40)">
-                <!-- Ground anchor ellipse (CHART_STYLE_GUIDE §11.6) — visually grounds the
+                <!-- Ground anchor ellipse (VISUALIZATION_TEMPLATE_AUTHORING §11.6) — visually grounds the
                      photo on the card surface without using a filter shadow. -->
                 <ellipse cx="80" cy="172" rx="70" ry="5" fill="#0F172A" opacity="0.10"/>
                 <circle cx="80" cy="80" r="80" fill="#E2E8F0"/>
@@ -46,7 +46,7 @@
         <g transform="translate(300, 0)">
             <rect width="270" height="420" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
             <g transform="translate(55, 40)">
-                <!-- Ground anchor ellipse (CHART_STYLE_GUIDE §11.6) — visually grounds the
+                <!-- Ground anchor ellipse (VISUALIZATION_TEMPLATE_AUTHORING §11.6) — visually grounds the
                      photo on the card surface without using a filter shadow. -->
                 <ellipse cx="80" cy="172" rx="70" ry="5" fill="#0F172A" opacity="0.10"/>
                 <circle cx="80" cy="80" r="80" fill="#E2E8F0"/>
@@ -65,7 +65,7 @@
         <g transform="translate(600, 0)">
             <rect width="270" height="420" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
             <g transform="translate(55, 40)">
-                <!-- Ground anchor ellipse (CHART_STYLE_GUIDE §11.6) — visually grounds the
+                <!-- Ground anchor ellipse (VISUALIZATION_TEMPLATE_AUTHORING §11.6) — visually grounds the
                      photo on the card surface without using a filter shadow. -->
                 <ellipse cx="80" cy="172" rx="70" ry="5" fill="#0F172A" opacity="0.10"/>
                 <circle cx="80" cy="80" r="80" fill="#E2E8F0"/>
@@ -84,7 +84,7 @@
         <g transform="translate(900, 0)">
             <rect width="270" height="420" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
             <g transform="translate(55, 40)">
-                <!-- Ground anchor ellipse (CHART_STYLE_GUIDE §11.6) — visually grounds the
+                <!-- Ground anchor ellipse (VISUALIZATION_TEMPLATE_AUTHORING §11.6) — visually grounds the
                      photo on the card surface without using a filter shadow. -->
                 <ellipse cx="80" cy="172" rx="70" ry="5" fill="#0F172A" opacity="0.10"/>
                 <circle cx="80" cy="80" r="80" fill="#E2E8F0"/>
