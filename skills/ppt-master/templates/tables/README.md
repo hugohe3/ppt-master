@@ -37,5 +37,6 @@ family, and catalog rules. Table-specific requirements are:
   contract explicitly supports them.
 
 Selecting a table reference does not itself select native output. Design Spec
-§IX `Native-ready` and explicit `--native-charts-and-tables` export remain
-separate decisions.
+§IX/Quick names independent objects separately and decides
+`<object-key>=yes|no`; explicit `--native-charts-and-tables` export is a second
+opt-in.

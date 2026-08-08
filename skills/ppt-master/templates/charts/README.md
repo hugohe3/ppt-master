@@ -47,5 +47,6 @@ One selected SVG is a flexible reference for one mapped page. Design Spec §IX
 or the Quick active-context decision plus source data owns final semantics.
 Project palette, typography, chrome, grouping, capacity, and geometry remain
 adaptable. Selecting a chart reference does not itself select native output;
-`Native-ready` and explicit `--native-charts-and-tables` export remain separate
-decisions.
+§IX/Quick names independent objects separately and decides
+`<object-key>=yes|no`, while explicit `--native-charts-and-tables` export is a
+second opt-in.

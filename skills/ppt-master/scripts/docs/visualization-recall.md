@@ -62,9 +62,18 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
   chart/line_chart structure/quadrant_text_bullets table/basic_table
 ```
 
-The command is read-only. It exits `0` when every canonical `family/key` exists
-with its SVG and `1` otherwise. A Default `no-template-match` page appears in
-neither §VII nor `page_visualizations`; record its custom fallback in §IX.
+The command is read-only. It exits `0` when every supplied reference resolves
+to a registered SVG and `1` otherwise. New planning supplies canonical
+`family/key`. When validating an existing legacy mapping, opt into bare-key
+resolution explicitly; every key must resolve uniquely:
+
+```bash
+python3 skills/ppt-master/scripts/visualization_recall.py validate \
+  --legacy-bare pros_cons_chart
+```
+
+A Default `no-template-match` page appears in neither §VII nor
+`page_visualizations`; record its custom fallback in §IX.
 
 ## Selection boundary
 

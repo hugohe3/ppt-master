@@ -234,9 +234,40 @@ because Quick is expected to be faster is not.
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
 | A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
 | Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
-| Values encode comparison, trend, distribution, composition, relationship, or a text grid | Data chart or table, with optional native Chart/Table metadata when its object model is useful |
+| Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
+| Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
+| Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
 | Mathematical notation is clearer as typeset math than ordinary text | Rendered formula asset |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
+
+**Visualization recall — optional page-local reference**: When a reusable
+reference would help, run the unified recall with 3–8 English semantic tags.
+Use its default all-family search; add `--family chart|structure|table` only
+when the page's information model is already certain.
+
+```bash
+python3 skills/ppt-master/scripts/visualization_recall.py recall \
+  --page P03 \
+  --tag "time series" \
+  --tag "three metrics" \
+  --tag "direction over time" \
+  --limit 6
+```
+
+Read the result unfiltered and apply
+[`visualization-recall.md`](../../scripts/docs/visualization-recall.md)'s
+low-confidence semantic fallback before retaining `no-template-match`. Choose at most one primary
+`family/key` for a page, validate it with `visualization_recall.py validate`,
+and keep its short purpose only in active context. The reference remains
+flexible: it does not lock final type, geometry, style, or native output.
+Describe an embedded child chart, structure, or table in the page's active
+decision rather than selecting a second primary reference. Actual information
+models determine the loaded execution branches. Give every independent
+Chart/Table a page-local semantic `kebab-case` object key; keep its
+`<object-key>=yes|no` native-ready decision and any promoted chart-verification
+status in active context. A structure-family reference is always Slide-local
+and never becomes a Layout workspace or reusable Master/Layout/placeholder
+contract.
 
 Prepare only the resource paths needed by the decided pages:
 
@@ -248,7 +279,7 @@ Prepare only the resource paths needed by the decided pages:
 | AI image | Follow `image-base.md` + `image-generator.md`; keep `image_prompts.json` and its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
-| Data chart/table | Keep source values and the chosen page treatment in active context; load the chart/table authorities in §3 before drawing and write native replacement metadata only when selected |
+| Visualization | Keep source values, qualitative relationships, cell topology, and the chosen page treatment in active context; load every applicable family authority in §3 before drawing and write native replacement metadata only for an independently selected native-ready Chart/Table object |
 
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
@@ -299,9 +330,16 @@ for a non-default canvas.
 
 | Deterministic trigger | Additional authority |
 |---|---|
-| Any data chart or text-grid table, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md); use bounded [`chart_recall.py`](../../scripts/docs/chart-recall.md) only when a reusable visualization reference would help |
-| Preset pattern or selected PowerPoint-native Chart/Table replacement | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing the object |
+| A selected primary `family/key` | [`executor-visualization.md`](../../references/executor-visualization.md), then the matching chart, structure, or table family authority for interpreting that reference |
+| Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
+| Any actual page-local qualitative topology | [`executor-structure.md`](../../references/executor-structure.md) |
+| Any actual cell grid | [`executor-table.md`](../../references/executor-table.md) |
+| A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
+
+Selected-reference family and final information model are independent loading
+signals: load both applicable authorities when they differ. Family selection
+never makes an object native-ready.
 
 Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 

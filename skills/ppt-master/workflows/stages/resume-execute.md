@@ -39,7 +39,23 @@ Verify the project's planning-session artifacts before doing anything else:
 | `<project_path>/design_spec.md` | Always | Complete approved design narrative and Section IX page outline; read it completely once in this fresh execution context |
 | `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
 | `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout / mirror prototypes required by execution |
-| `skills/ppt-master/templates/charts/` | `spec_lock page_charts` references any | Shared chart SVGs selected by key |
+| Resolver-returned visualization SVG | `spec_lock page_visualizations` or legacy `page_charts` references any | Shared page-local SVG selected through the live family catalogs |
+
+Resolve every visualization value through the shared catalog resolver before
+Step 6. The CLI below delegates to that resolver and returns each real family
+path. Validate canonical `family/key` from `page_visualizations` directly; opt
+into bare-key resolution only for values read from legacy `page_charts`:
+
+```bash
+python3 skills/ppt-master/scripts/visualization_recall.py validate \
+  <family/key> [<family/key> ...]
+python3 skills/ppt-master/scripts/visualization_recall.py validate \
+  --legacy-bare <legacy-key> [<legacy-key> ...]
+```
+
+Require every returned SVG to exist. Never construct a path from the key,
+guess a family directory, or prefer one registry. Failed, missing, or ambiguous
+resolution is a missing planning dependency and stops this stage.
 
 If any required artifact is missing, report it and stop this stage. Do not enter Step 6 or invent a replacement artifact. Recover by artifact owner:
 
