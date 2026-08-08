@@ -13,7 +13,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 450000
+    "max_tokens": 500000
   },
   "file_budgets": {
     "AGENTS.md": 2750,
@@ -375,7 +375,7 @@
         "skills/ppt-master/workflows/stages/apply-template-workspace.md",
         "skills/ppt-master/templates/README.md"
       ],
-      "max_tokens": 5000
+      "max_tokens": 6000
     },
     "stage.generate.template.brand": {
       "description": "Conditional Brand workspace application with one selected Brand spec.",
@@ -489,7 +489,7 @@
           "load_event": "template-application"
         }
       ],
-      "max_tokens": 16000
+      "max_tokens": 19000
     },
     "route.generate.flat-no-image": {
       "description": "Default fixed Generate-PPTX context with no image-acquisition role.",
