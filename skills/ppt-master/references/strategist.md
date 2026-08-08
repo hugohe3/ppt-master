@@ -309,15 +309,17 @@ the effective outcome. Suggestions remain non-binding and never activate the
 custom stage; only an explicit motion requirement or an enabled outcome may
 require visible lifecycle-state preparation.
 
-Review planned pages through the three visualization information models:
+Classify by information model, never source PowerPoint object type:
 
-| Family | Information model |
+| Model | Planning action |
 |---|---|
-| `chart` | Values, categories, time, weights, or duration determine mark geometry |
-| `structure` | Qualitative sequence, hierarchy, role, region, or relationship determines page-local topology |
-| `table` | Rows, columns, cells, headers, merges, alignment, and cell content form a grid |
+| Qualitative `order`, `link`, `parent`, `membership`, `contrast`, or `overlap` | Preserve units, relationship, and reading path as free §IX prose; no catalog key |
+| Values/dates/durations determine geometry | Chart; recall is optional |
+| Row header × column header addresses each fact | Table; recall is optional |
 
-**Reference — not a constraint**: use unified recall when helpful. Supply 3–8 English content-shape tags; use `--family` only when the information model is certain. Skip recall for an already-planned custom visualization/table.
+**Mandatory — relationship handoff**: keep every qualitative relationship in §IX free prose; never serialize grammar atoms, coordinates, or named models. Executor makes the per-page Structure decision at runtime.
+
+**Reference — not a constraint**: recall Chart/Table with 3–8 English tags when useful; add `--family chart|table` only when certain. Skip custom objects and qualitative composition.
 
 ```bash
 python3 skills/ppt-master/scripts/visualization_recall.py recall \
@@ -332,7 +334,7 @@ The command returns a bounded shortlist plus `no-template-match`. Read it unfilt
 
 **Selection**:
 
-1. Choose at most one primary `family/key` per page. It is a flexible page-local reference, not a type/geometry/style/native lock. Keep embedded child visuals in §IX `Visualization`, not a second §VII row.
+1. Choose at most one flexible Chart/Table `family/key` per page; keep children and qualitative relationships in §IX.
 2. If none fits, keep `no-template-match` and plan the fallback only in §IX; never serialize no-match.
 3. Validate every selected canonical reference before the lock:
 
@@ -343,9 +345,9 @@ python3 skills/ppt-master/scripts/visualization_recall.py validate \
 
 Correct failed selections by recall; `no-template-match` never enters `page_visualizations`.
 
-**Section VII selection list**: write `Page | Family | Template | Usage` for each primary reference; Family is `chart`, `structure`, or `table`, while Usage is semantic purpose, not geometry. Omit an empty §VII and path/summary/runners-up/no-match placeholders; §IX remains authoritative. Structure references stay Slide-local—only an installed Layout/Deck workspace owns reusable structure.
+**Section VII selection list**: write `Page | Family | Template | Usage` for each `chart|table` reference; Usage is semantic purpose. Omit empty/no-match detail. Qualitative composition stays in §IX; only Layout/Deck owns reusable PowerPoint structure.
 
-**Native-ready boundary**: Give every independent data chart and pure text-grid table in §IX `Visualization` a unique page-local semantic `kebab-case` key, then write one `Native-ready` map: `<key>=yes|no; ...`. Use `yes` only when an editable native object benefits the confirmed requirement/afterlife. Conceptual structures and incidental microvisuals stay unlisted.
+**Native-ready boundary**: Give every independent data chart and pure text-grid table in §IX `Visualization` a unique page-local semantic `kebab-case` key, then write one `Native-ready` map: `<key>=yes|no; ...`. Use `yes` only when an editable native object benefits the confirmed requirement/afterlife. Qualitative shape compositions and incidental microvisuals stay unlisted.
 
 ```markdown
 | Page | Family | Template | Usage |
@@ -494,7 +496,7 @@ includes transitions.
 
 ⛔ **GATE 2 — lock context fidelity.** After Gate 1 closes, author machine-relevant anchors/routing into `spec_lock.md`. The lock may normalize syntax and add justified recurring roles, but must not change identity, discard a refinement, introduce a direction, or become a field copy/allowlist. On contradiction, return to Gate 1 using retained confirmation by default or the approved revised Design Spec after refinement; fresh recovery reads persisted final evidence once only when active state is absent.
 
-**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, visualization references, and route-specific PowerPoint structure. Name every recurring typography role; a planned short non-structural Hero/Display size may stay omitted only while the same value appears at most twice, and its third occurrence requires a named role. Never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, layout suggestion, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor context policy lives in [executor-base.md](executor-base.md) §2.1. Repair from Gate 2's active decision authority, then re-author affected lock rows.
+**Execution lock content**: `spec_lock.md` compactly carries communication, stable color/type anchors, icons, images, page rhythm, Chart/Table references, and route-specific PowerPoint structure; qualitative relationships stay only in §IX. Name every recurring typography role; a planned short non-structural Hero/Display size may stay omitted only while the same value appears at most twice, and its third occurrence requires a named role. Never re-derive a confirmed anchor. New locks keep `font_family` as the body/default compatibility stack and also write explicit `title_family` + `body_family`; every additional recurring Design Spec role projects to `<role>_family`. Collapsing distinct Design Spec stacks into `font_family`, or dropping an extra role, fails Gate 2. Keep core fonts/palette roles stable; page authoring varies treatment and may add sparse local garnish. Project every placed §VIII image's source, layout suggestion, and crop policy; omit unplaced sheets and planning provenance. Free-design, brand-only, and `template_reuse_scope: style` use `pptx_structure.mode: flat`; the template module owns structured mappings. Executor context policy lives in [executor-base.md](executor-base.md) §2.1. Repair from Gate 2's active decision authority, then re-author affected lock rows.
 
 **Contextual extension**: derived paint or sparse local font/color garnish may stay in one SVG while non-structural and non-recurring. New base/semantic colors, structural/recurring fonts, resources, or recurring cross-page identity patterns require upstream repair; a page-local §VIII preferred image pattern follows [`executor-image.md`](./executor-image.md) and may change during realization. Executor never reverse-projects a local choice as planning fact. Promote recurring garnish upstream before reuse, read back and validate the affected planning fragments, and never add values to silence a comparison.
 
@@ -509,7 +511,7 @@ includes transitions.
    - **pptx_structure is mandatory**: Free-design, brand-only, and `template_reuse_scope: style` routes write `mode: flat`; a style-reference route may also record `template_reuse_scope: style` but omits every structure mapping and `template_adherence`. `template_reuse_scope: mirror|layout` writes `mode: structured` plus `template_adherence: strict|adaptive`. Do not write legacy `baseline`, `template`, `preserve`, `layout_strategy`, or Layout-kind rows into a new project.
    - **Flat-route boundary**: With `mode: flat`, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`. Do not plan native Master/Layout families or reusable placeholder slots. Every generated SVG object remains Slide-local: omit root Master/Layout identity, `data-pptx-layer`, and `data-pptx-placeholder*` metadata. Export materializes one clean project-owned Master plus one Blank Layout from the current color/typography lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks.
    - **Structured template route**: When [`strategist-template.md`](./strategist-template.md) is active and reuse is `mirror|layout`, follow its complete Master/Layout/slot/prototype mapping rules.
-   - **page_visualizations**: project §VII Page/Family/Template as `P<NN>: <family>/<template_key>`, at most once per page. Usage and child visuals stay in the Design Spec; omit no-match/empty sections. The reference does not lock type/geometry/native output. New locks never write legacy `page_charts`; it is read-only compatibility.
+   - **page_visualizations**: project at most one §VII `P<NN>: <chart|table>/<key>` per page. Usage/children/qualitative relationships stay in the Design Spec; omit empty/no-match. It locks no geometry/native output. New locks never write legacy `page_charts`.
 
 ---
 

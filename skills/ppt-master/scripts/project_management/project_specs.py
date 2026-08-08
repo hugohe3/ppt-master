@@ -51,6 +51,8 @@ except ImportError:
 
 try:
     from visualization_catalog import (
+        LEGACY_STRUCTURE_INTENT_KIND,
+        VISUALIZATION_SVG_KIND,
         VisualizationCatalogError,
         resolve_visualization_reference,
     )
@@ -60,6 +62,8 @@ except ImportError:
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
     from visualization_catalog import (  # type: ignore
+        LEGACY_STRUCTURE_INTENT_KIND,
+        VISUALIZATION_SVG_KIND,
         VisualizationCatalogError,
         resolve_visualization_reference,
     )
@@ -1110,11 +1114,30 @@ def _validate_spec_lock_relations(
                     f"cannot resolve visualization {reference!r}: {exc}"
                 )
                 continue
-            if entry.kind != "visualization-svg":
+            if entry.kind == LEGACY_STRUCTURE_INTENT_KIND:
+                if section_id != "page_charts" or not allow_legacy_bare:
+                    errors.append(
+                        f"{markdown_name} schema: {section_id}.{page_key} resolves "
+                        "to a legacy Structure intent outside page_charts"
+                    )
+                if entry.path is not None:
+                    errors.append(
+                        f"{markdown_name} schema: {section_id}.{page_key} legacy "
+                        "Structure intent unexpectedly has an asset path"
+                    )
+                continue
+            if entry.kind != VISUALIZATION_SVG_KIND:
                 errors.append(
                     f"{markdown_name} schema: {section_id}.{page_key} resolves "
                     f"to unsupported kind {entry.kind!r}"
                 )
+                continue
+            if entry.path is None:
+                errors.append(
+                    f"{markdown_name} schema: {section_id}.{page_key} does not "
+                    "resolve to an SVG asset path"
+                )
+                continue
             asset_path = Path(entry.path)
             if asset_path.suffix.casefold() != ".svg" or not asset_path.is_file():
                 errors.append(

@@ -116,20 +116,22 @@ effects and PowerPoint interfaces loaded only when triggered.
 
 ## Visualization Templates
 
-Page-local Shape-first references are families, not reusable template kinds:
+Page-local Shape-first references are catalog families, not reusable template
+kinds:
 
 | Family | Owns | Directory | Index |
 |---|---|---|---|
-| Chart | Value-driven geometry | [`charts/`](./charts/) | [`charts_index.json`](./charts/charts_index.json) |
-| Structure | Qualitative topology | [`structures/`](./structures/) | [`structures_index.json`](./structures/structures_index.json) |
-| Table | Cell grid | [`tables/`](./tables/) | [`tables_index.json`](./tables/tables_index.json) |
+| Chart | Value-driven geometry (33) | [`charts/`](./charts/) | [`charts_index.json`](./charts/charts_index.json) |
+| Table | Row × column fact grid (6) | [`tables/`](./tables/) | [`tables_index.json`](./tables/tables_index.json) |
 
 [`VISUALIZATION_TEMPLATE_AUTHORING.md`](./VISUALIZATION_TEMPLATE_AUTHORING.md)
 is the shared authoring contract. Each index owns family membership and
 selection rules.
 
-Only [`layouts/`](./layouts/) owns Master/Layout, page types, slots, and
-placeholders; structures stay Slide-local.
+Qualitative Structure is a Slide-local Executor method rather than a catalog:
+Default and Quick both derive its relationship model and compose shapes for the
+current page. Only [`layouts/`](./layouts/) owns reusable Master/Layout, page
+types, slots, and placeholders.
 
 ## Icon Library
 

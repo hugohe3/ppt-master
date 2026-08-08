@@ -4,7 +4,7 @@
     <!--
     Matrix 2x2 Chart Template
     Usage: Value-driven 2x2 bubble matrix (X, Y, bubble size)
-    Scenarios: BCG Matrix, risk assessment, priority analysis, strategic evaluation
+    Scenarios: two-axis portfolio positioning, risk assessment, priority analysis
     -->
     <defs>
         <!-- Axis Arrows -->

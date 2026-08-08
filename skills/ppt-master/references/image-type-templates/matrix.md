@@ -1,6 +1,6 @@
 # Type: matrix
 
-A **2×2 quadrant grid** (occasionally 3×3) where each cell carries its own label, color, or icon. The structural backbone of consulting frameworks — SWOT, BCG, Eisenhower, Ansoff, Porter's, Risk/Reward. Used wherever two orthogonal axes divide the page into discrete zones.
+A **2×2 quadrant grid** (occasionally 3×3) where each cell carries its own label, color, or icon. Use it wherever two orthogonal axes divide the image into discrete qualitative zones.
 
 > **What matrix means inside a PPT block**: the canvas is **rigorously divided into equal quadrants** by perpendicular axes. Unlike `framework` (central hub + radiating satellites), matrix has no center — meaning lives in the four cells. Unlike `comparison` (two side-by-side zones), matrix splits **both** horizontally and vertically.
 
@@ -41,12 +41,12 @@ Sample fragment:
 
 ### 3.2 `text_policy: embedded`
 
-When the matrix's identity comes from its in-image lettering — a stylized SWOT poster with the four letters as visuals, or a designer matrix whose axis labels are part of the artwork. Keep labels concise and stable in the required script. Specify a font family that echoes the deck's body typography; move exact/editable labels to SVG instead.
+When the matrix's identity comes from its in-image lettering or its axis labels are part of the artwork, keep labels concise and stable in the required script. Specify a font family that echoes the deck's body typography; move exact/editable labels to SVG instead.
 
 ---
 
 ## 3. Fewshot prompt snippets
 
-**Snippet A — vector-illustration + cool-corporate SWOT matrix, text_policy: none, 800×800**
+**Snippet A — vector-illustration + cool-corporate quadrant matrix, text_policy: none, 800×800**
 
-> Clean flat vector illustration of a 2×2 strategic matrix. Two perpendicular thin lines in primary deep navy `#1E3A5F` cross at the exact canvas center, dividing the canvas into four equal quadrants. Each quadrant has a subtle background tint: upper-left in pale primary navy at 10% opacity, upper-right in pale accent gold `#D4AF37` at 15% opacity, lower-left in pale gray `#F8F9FA`, lower-right in slightly deeper pale navy at 18% opacity. Each quadrant contains one simple iconic symbol in primary navy, centered within its quadrant — a shield (strength), a lightning bolt (opportunity), a target (weakness), an alert triangle (threat). Each icon occupies about 45% of its quadrant. Small accent gold dots sit at the four outer corners. Composed as an 800×800 reference matrix block with 10% padding. NO text, letters, axis labels, or quadrant names anywhere — SVG will overlay all labels. Color values are rendering guidance only.
+> Clean flat vector illustration of a 2×2 qualitative matrix. Two perpendicular thin lines in primary deep navy `#1E3A5F` cross at the exact canvas center, dividing the canvas into four equal quadrants. Each quadrant has a subtle background tint: upper-left in pale primary navy at 10% opacity, upper-right in pale accent gold `#D4AF37` at 15% opacity, lower-left in pale gray `#F8F9FA`, lower-right in slightly deeper pale navy at 18% opacity. Each quadrant contains one simple iconic symbol in primary navy, centered within its quadrant — a compass, a lightning bolt, a target, and an alert triangle. Each icon occupies about 45% of its quadrant. Small accent gold dots sit at the four outer corners. Composed as an 800×800 reference matrix block with 10% padding. NO text, letters, axis labels, or quadrant names anywhere — SVG will overlay all labels. Color values are rendering guidance only.

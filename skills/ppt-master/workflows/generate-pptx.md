@@ -533,19 +533,21 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | Deterministic trigger | Additional references |
 |---|---|
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
-| Selected §VII / `page_visualizations` `family/key`, or legacy `page_charts` row | `executor-visualization.md` + the selected family branch |
+| Selected §VII / `page_visualizations` Chart/Table `family/key`, or a legacy `page_charts` row resolving to a live Chart/Table SVG | `executor-visualization.md` + the selected Chart/Table branch |
 | Actual value-driven geometry, including mini/inset charts and sparklines | `executor-chart.md` |
-| Actual page-local qualitative topology | `executor-structure.md` |
-| Actual cell grid | `executor-table.md` |
+| Mandatory per-page Structure decision from §IX is `yes` | `executor-structure.md` before any geometry for the first applicable page |
+| Actual row × column fact grid | `executor-table.md` |
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
-No branch is loaded by analogy. Evaluate `spec_lock.md`, §VII/§VIII, style, and
-the current page plan. Triggers are additive: a selected family loads its
-reference branch, while each actual information model loads its owner
-independently. Family never locks final type/geometry or implies `Native-ready`.
+No branch is loaded by analogy. For each page, after §IX content/communication
+but before geometry, apply [`executor-base.md`](../references/executor-base.md)'s
+mandatory Structure decision. `no` stays on base; before the first `yes`, read
+`executor-structure.md` completely and reuse it until file/context invalidation.
+Create no catalog/lock/artifact. Chart/Table selection neither replaces this
+decision nor locks geometry/native readiness.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 

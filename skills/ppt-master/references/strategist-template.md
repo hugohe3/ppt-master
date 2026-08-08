@@ -85,13 +85,12 @@ For `mirror` / `layout`, write `pptx_structure.mode: structured` plus `template_
 - **Adaptive refinement**: Initial definitions are complete. If construction shows that reusable framing or slot topology/bounds must change, return to Strategist to add a definition sourced from that page and update its assignment before execution resumes. Executor never mutates or extends the contract; export only compiles declared structure and never discovers or clusters Layouts.
 - **Input prototypes**: Add one `page_layouts` row per page. Strict preserves that SVG's contract; adaptive keeps its Master and may declare a new output Layout; mirror also preserves literal visuals and text-node topology.
 
-**Visualization compatibility**: Use `page_layouts` together with optional
-`page_visualizations` only when the selected prototype shell can carry the
-actual §IX information model. The primary `family/key` is a flexible
-page-local reference and does not change Layout identity, slot topology, or the
-final visualization type. A `structure` family reference remains Slide-local;
-it never becomes a reusable Layout or supplies Master/Layout/placeholder
+**Visualization compatibility**: Use `page_layouts` with optional Chart/Table
+`page_visualizations` only when the prototype shell can carry the actual §IX
+information model. The reference changes neither Layout identity, slot
+topology, nor final visualization type. Qualitative relationships stay in §IX
+and are composed Slide-locally; they never supply Master/Layout/placeholder
 ownership. Without an exact prototype match, adaptive mode starts from the
 closest neutral prototype and declares an output Layout; strict mode selects an
 existing compatible Layout or revises the outline. Never omit `page_layouts`
-on a structured route, and never write legacy `page_charts` in a new lock.
+on a structured route or write legacy `page_charts` in a new lock.

@@ -1,36 +1,41 @@
 {
   "meta": {
-    "total": 7,
+    "total": 6,
     "defaultViewBox": "0 0 1280 720",
     "formats": [
       "ppt169"
     ],
     "filePattern": "{key}.svg",
-    "libraryPositioning": "Row-and-column visualization templates whose primary information structure is a table or comparison grid.",
+    "libraryPositioning": "Core row-and-column grids whose body values are addressed by stable row and column headers.",
     "summaryGrammar": "Each table summary is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'.",
     "updated": "2026-08-08"
   },
+  "aliases": {
+    "basic_table": "record_table",
+    "comparison_table": "comparison_matrix",
+    "consulting_table": "metric_table",
+    "feature_matrix_table": "feature_matrix",
+    "financial_statement_table": "hierarchical_table",
+    "harvey_balls_table": "rating_matrix"
+  },
   "tables": {
-    "basic_table": {
-      "summary": "Pick for plain tabular text/number grid, 3-8 columns. Skip if cells need visual bars (use consulting_table) or qualitative scores (use harvey_balls_table)."
+    "comparison_matrix": {
+      "summary": "Pick for criteria × alternatives with prose, exact values, or mixed facts. Skip if cells encode only feature states (use feature_matrix) or ordinal ratings (use rating_matrix)."
     },
-    "comparison_table": {
-      "summary": "Pick for 2-4 plans/products compared across many feature rows (dense matrix). Skip for pricing-tier marketing layout (use comparison_columns)."
+    "feature_matrix": {
+      "summary": "Pick for capabilities × offerings with supported, unsupported, partial, or exception states. Skip for mixed facts (use comparison_matrix) or ordinal scores (use rating_matrix)."
     },
-    "consulting_table": {
-      "summary": "Pick for high-density tables with embedded micro bar visuals (consulting/financial reports). Skip for plain text data (use basic_table)."
+    "hierarchical_table": {
+      "summary": "Pick for grouped or indented row hierarchies across stable measure columns, including subtotals and totals. Skip for flat records (use record_table) or geometry driven by numeric magnitude (use a chart)."
     },
-    "feature_matrix_table": {
-      "summary": "Pick for competitive feature checklist with checkmarks across products. Skip for qualitative scores (use harvey_balls_table) or pricing tier marketing (use comparison_columns)."
+    "metric_table": {
+      "summary": "Pick for operating metrics by entity with current values, changes, statuses, or target progress inside cells. Skip if marks leave the grid and encode values (use a chart)."
     },
-    "financial_statement_table": {
-      "summary": "Pick for income statement / balance sheet style with right-aligned numbers and strong total rows. Skip for non-financial tabular data (use basic_table)."
+    "rating_matrix": {
+      "summary": "Pick for criteria × alternatives using one repeated ordinal scale. Skip for feature states (use feature_matrix) or exact facts (use comparison_matrix)."
     },
-    "harvey_balls_table": {
-      "summary": "Pick for qualitative scoring grid using 0-100% Harvey balls (vendor/skill assessment). Skip for binary checkmarks (use feature_matrix_table) or numeric values (use basic_table)."
-    },
-    "project_schedule_table": {
-      "summary": "Pick for table-style task tracker (task / owner / status / timeline). Skip for true Gantt with dependencies (use gantt_chart) or schedule without ownership (use roadmap_vertical)."
+    "record_table": {
+      "summary": "Pick for flat records addressed by stable heterogeneous fields. Skip for KPI scanning (use metric_table) or grouped rows and totals (use hierarchical_table)."
     }
   }
 }

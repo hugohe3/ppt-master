@@ -12,13 +12,27 @@ Conditional Executor authority for semantic cell grids whose row/column intersec
 
 | Information model | Route |
 |---|---|
-| Row headers, column headers, body cells, summaries, and optional rectangular spans define meaning by intersection | This branch |
+| A row header and column header jointly address each body fact; summaries and optional rectangular spans preserve the same grid | This branch |
 | Independent visual zones compare categories without a shared row/column grid | [`executor-structure.md`](./executor-structure.md) |
 | Values determine marks, positions, lengths, areas, angles, radii, or color bins | [`executor-chart.md`](./executor-chart.md) |
 
 Graphical indicators may appear inside cells without changing the table family, provided the row/column grid still carries their meaning. A row of metric cards or two prose columns is a qualitative structure, not a table.
 
+**Hard rule — physical grid is insufficient**: A PowerPoint table object or a
+rectangular drawing grid does not establish Table semantics. Exact dates or
+durations that drive task-bar position and length route to
+[`executor-chart.md`](./executor-chart.md); qualitative stage/lane placement
+routes to [`executor-structure.md`](./executor-structure.md).
+
 When a `table/<key>` primary reference exists, [`executor-visualization.md`](./executor-visualization.md) owns resolution and flexible adaptation. A custom cell grid follows this branch without loading a catalog SVG.
+
+**Reference — not a constraint**: `record_table` covers heterogeneous record ×
+field grids; `metric_table` covers entity × KPI scanning;
+`comparison_matrix` covers heterogeneous criterion × alternative facts;
+`feature_matrix` covers capability states; `rating_matrix` covers one repeated
+ordinal scale; and `hierarchical_table` covers grouped/indented rows with detail
+and totals. These keys separate recurring cell grammars without changing the
+shared row/column information-model boundary.
 
 ---
 

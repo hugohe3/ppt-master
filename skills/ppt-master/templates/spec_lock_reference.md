@@ -29,7 +29,7 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
-Optional data sections: `images`, `page_visualizations`. New locks never write
+Optional data sections: `images`, `page_visualizations` (Chart/Table only). New locks never write
 legacy `page_charts`; existing locks may retain it for read-only compatibility.
 Never declare the same page in both sections.
 
@@ -72,26 +72,22 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-Project each §VII `Page | Family | Template | Usage` row's Page, Family, and
-Template fields into `page_visualizations` as `<family>/<key>`; Usage stays in
-the Design Spec. The families are `chart`, `structure`, and `table`. This is a
-single primary page-local reference, not a type/geometry/native lock. Write at
-most one per page; child visuals stay in §IX. Resolve it through the shared live
-catalog to one SVG; no-match stays in §IX. Structure references remain
-Slide-local and never create Master/Layout/placeholder ownership.
+Project each §VII Page/Family/Template into at most one
+`page_visualizations` `<chart|table>/<key>` row per page; Usage, children,
+no-match, and qualitative relationships stay in §IX. Resolve the reference to
+one live SVG. It locks neither type, geometry, nor native output.
 
 ```markdown
 ## page_visualizations
 - P03: chart/line_chart
-- P06: structure/hub_spoke
-- P09: table/basic_table
+- P09: table/record_table
 ```
 
-**Legacy compatibility**: existing `page_charts` rows keep their bare keys.
-Validation resolves each bare key only when it has one unambiguous match across
-the three live family registries and their declared aliases. New locks write
-`page_visualizations`. A page present in both sections is a conflict, even when
-both values resolve to the same SVG.
+**Legacy compatibility**: keep existing `page_charts` bare keys. Live
+Chart/Table keys resolve unambiguously through two registries; retired Structure
+keys are semantic-only, have no SVG, and rely on §IX (repair upstream when
+insufficient). New locks write `page_visualizations`; dual page declarations
+conflict even when they resolve alike.
 
 Typography projection excludes Character/upgrade References:
 
@@ -118,11 +114,11 @@ New locks always write `title_family` and `body_family`, even when their values 
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
 - `page_visualizations` grammar: `P` + at least two digits followed by
-  `chart|structure|table`, `/`, and one canonical visualization key; the
-  family/key must resolve to one SVG through the matching live index.
+  `chart|table`, `/`, and one canonical visualization key; the family/key must
+  resolve to one SVG through the matching live index.
 - Legacy `page_charts` grammar: `P` + at least two digits followed by one bare
-  key; it must resolve uniquely across the three live family registries and
-  their declared aliases. Never add this section to a new lock.
+  key. Chart/Table resolves uniquely across two registries; retired Structure
+  is semantic-only. Never add this section to a new lock.
 - `pptx_masters` grammar: `<master_key>: <PowerPoint picker name>`.
 - `pptx_layouts` grammar: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`.
 - `page_pptx_layouts` grammar: `P` + at least two digits followed by a declared Layout key.

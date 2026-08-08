@@ -1,6 +1,6 @@
 # Type: framework
 
-A central concept surrounded by related sub-concepts, or a multi-component system shown as a relational structure. Used when the image's job is to make a methodology, model, or architecture **legible at a glance**.
+A central concept surrounded by related sub-concepts, or a multi-component system shown as a relational structure. Use it when the image's job is to make a relational system or architecture **legible at a glance**.
 
 > **What framework means inside a PPT block**: the image *itself* is a small relational diagram — central hub + radiating satellites, or a labeled matrix, or a layered stack. The PPT page's slide layout (where this image sits, what text accompanies it) is a separate decision. This file only governs what's *inside* the image rectangle.
 
@@ -34,7 +34,7 @@ Three valid sub-structures. Pick one per image; do not mix.
 ```
 
 | LAYOUT | Equal-sized cells in a grid; each cell carries one concept |
-| ELEMENTS | One icon or symbolic shape per cell; cells are visually equal (no cell dominates unless that's the point — e.g. SWOT, BCG matrices) |
+| ELEMENTS | One icon or symbolic shape per cell; cells are visually equal unless one region is intentionally emphasized |
 | NEGATIVE SPACE | Generous cell padding — internal content occupies the inner 70% of each cell |
 
 ### Sub-structure 3 — Layered stack
