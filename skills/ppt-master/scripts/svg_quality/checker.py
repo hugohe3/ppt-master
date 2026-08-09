@@ -86,6 +86,7 @@ try:
     from svg_to_pptx.drawingml.utils import (
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
         PROJECT_PAINT_PROPERTIES as _PAINT_PROPERTIES,
+        PROJECT_TEXT_IMAGE_FILL_ATTR as _TEXT_IMAGE_FILL_ATTR,
         detect_text_lang as _detect_text_lang,
         matrix_multiply as _matrix_multiply,
         parse_inline_style as _parse_inline_style,
@@ -103,6 +104,7 @@ try:
 except ImportError:
     _IDENTITY_MATRIX = None
     _PAINT_PROPERTIES = None
+    _TEXT_IMAGE_FILL_ATTR = 'data-pptx-text-image-fill'
     _detect_text_lang = None
     _matrix_multiply = None
     _parse_inline_style = None
@@ -3659,7 +3661,9 @@ class SVGQualityChecker:
 
         svg_to_pptx maps <pattern fill> to native <a:pattFill prst="...">. The
         preset name comes from `data-pptx-pattern` (e.g. `lgGrid` / `smGrid` /
-        `dkUpDiag`). Two failure modes worth catching pre-export:
+        `dkUpDiag`). Patterns marked with `data-pptx-text-image-fill` instead
+        map to run-level <a:blipFill> and are validated by converter preflight.
+        Two preset-pattern failure modes are worth catching pre-export:
 
         1. Missing annotation → the converter compatibility fallback chooses
            `ltUpDiag` (diagonal stripes), which is not an authoring contract.
@@ -3691,6 +3695,8 @@ class SVGQualityChecker:
         ):
             pat_id = pattern.get('id', '<unnamed>')
             prst = pattern.get('data-pptx-pattern')
+            if pattern.get(_TEXT_IMAGE_FILL_ATTR) is not None:
+                continue
             if pat_id in referenced_patterns and not prst:
                 result['warnings'].append(
                     f"Fidelity warning: <pattern id=\"{pat_id}\"> has no "
