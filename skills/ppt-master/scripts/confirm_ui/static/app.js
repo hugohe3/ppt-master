@@ -68,7 +68,7 @@
             direction_active: "Applied",
             direction_adjusted: "Adjusted",
             direction_reset_hint: "Click to apply or restore this complete direction.",
-            scheme_component_options: "Projected options from the three complete directions",
+            scheme_component_options: "Project-specific custom choices · select a card to edit",
             sec_template_application: "Template application",
             template_application_hint: "The AI recommends how to apply the installed template to this deck. Revise the plan directly in natural language.",
             placeholder_template_application: "Describe which template pages or prototypes to use, skip, repeat, or reorder; what must stay; and what may be replaced or reorganized.",
@@ -250,7 +250,7 @@
             direction_active: "適用中",
             direction_adjusted: "調整済み",
             direction_reset_hint: "クリックすると、この全体案を適用または元の状態に戻します。",
-            scheme_component_options: "3つの全体案から展開した候補",
+            scheme_component_options: "プロジェクト専用カスタム案 · カードを選んで編集",
             sec_template_application: "テンプレートの適用方法",
             template_application_hint: "AIが現在の内容に合わせたテンプレートの使い方を提案します。自然言語で直接修正できます。",
             placeholder_template_application: "使用・省略・反復・並べ替えするページやプロトタイプ、保持する要素、差し替え・再構成できる内容を記述します。",
@@ -432,7 +432,7 @@
             direction_active: "已应用",
             direction_adjusted: "已调整",
             direction_reset_hint: "点击可应用或恢复这套完整方案。",
-            scheme_component_options: "由三套完整方案分解出的候选",
+            scheme_component_options: "项目专属自定义方案 · 选中卡片后可编辑",
             sec_template_application: "模板应用方式",
             template_application_hint: "AI 会根据当前内容推荐如何使用已安装模板；你可以直接用自然语言修改。",
             placeholder_template_application: "说明使用、跳过、重复或重排哪些模板页面/原型，哪些内容必须保留，哪些可以替换或重组。",
@@ -688,6 +688,7 @@
     var STATE = {};
     var ACTIVE_DIRECTION_ID = "";
     var ACTIVE_DIRECTION_BASELINE = "";
+    var ACTIVE_COMPONENT_DIRECTION_IDS = {};
     var refreshDesignDirectionState = function () {};
     var DIRECTION_COMPONENT_PAINTERS = [];
 
@@ -1966,15 +1967,18 @@
 
     function applyDesignDirection(candidate, index, shouldRender) {
         candidate = candidate || {};
+        var directionId = designDirectionId(candidate, index);
         if (candidate.mode) {
             STATE.mode = candidate.mode;
             STATE.mode_behavior = candidate.mode === "custom" ?
                 directionBehavior(candidate, "mode") : "";
+            ACTIVE_COMPONENT_DIRECTION_IDS.mode = directionId;
         }
         if (candidate.visual_style) {
             STATE.visual_style = candidate.visual_style;
             STATE.visual_style_behavior = candidate.visual_style === "custom" ?
                 directionBehavior(candidate, "visual_style") : "";
+            ACTIVE_COMPONENT_DIRECTION_IDS.visual_style = directionId;
         }
         if (candidate.color) {
             STATE.color = {
@@ -1995,8 +1999,9 @@
         if (candidate.icons) STATE.icons = normalizeRecId("icons", candidate.icons);
         if (candidate.image_strategy) {
             STATE.image_strategy = normalizedImageStrategy(candidate.image_strategy);
+            ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = directionId;
         }
-        ACTIVE_DIRECTION_ID = designDirectionId(candidate, index);
+        ACTIVE_DIRECTION_ID = directionId;
         ACTIVE_DIRECTION_BASELINE = directionStateSignature(candidate);
         if (shouldRender !== false) renderAll();
     }
@@ -2064,7 +2069,7 @@
         host.appendChild(sec);
     }
 
-    function directionComponentSelected(candidate, field) {
+    function directionComponentMatchesAuthored(candidate, field) {
         if (field === "mode") {
             return STATE.mode === candidate.mode &&
                 (candidate.mode !== "custom" ||
@@ -2083,7 +2088,13 @@
         return false;
     }
 
-    function applyDirectionComponent(candidate, field) {
+    function directionComponentSelected(candidate, field, index) {
+        var activeId = ACTIVE_COMPONENT_DIRECTION_IDS[field];
+        if (activeId) return activeId === designDirectionId(candidate, index);
+        return directionComponentMatchesAuthored(candidate, field);
+    }
+
+    function applyDirectionComponent(candidate, field, index) {
         if (field === "mode") {
             STATE.mode = candidate.mode;
             STATE.mode_behavior = candidate.mode === "custom" ?
@@ -2095,7 +2106,30 @@
         } else if (field === "image_strategy") {
             STATE.image_strategy = normalizedImageStrategy(candidate.image_strategy || {});
         }
+        ACTIVE_COMPONENT_DIRECTION_IDS[field] = designDirectionId(candidate, index);
         renderAll();
+    }
+
+    function directionComponentIsCustom(candidate, field) {
+        if (field === "image_strategy") {
+            return candidate && candidate.image_strategy &&
+                candidate.image_strategy.rendering === "custom";
+        }
+        return candidate && candidate[field] === "custom";
+    }
+
+    function setDirectionComponentBehavior(field, value) {
+        if (field === "mode") {
+            STATE.mode = "custom";
+            STATE.mode_behavior = value;
+        } else if (field === "visual_style") {
+            STATE.visual_style = "custom";
+            STATE.visual_style_behavior = value;
+        } else if (field === "image_strategy") {
+            STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy || {});
+            STATE.image_strategy.rendering = "custom";
+            STATE.image_strategy.behavior = value;
+        }
     }
 
     function directionComponentValueLabel(candidate, field) {
@@ -2116,6 +2150,13 @@
         }
         if (candidate[field] === "custom") return directionBehavior(candidate, field);
         return localized(candidate, "note") || "";
+    }
+
+    function directionComponentEditableBehavior(candidate, field) {
+        if (field === "image_strategy") {
+            return normalizedImageStrategy(candidate.image_strategy || {}).behavior || "";
+        }
+        return directionBehavior(candidate, field);
     }
 
     function renderDirectionComponentCandidates(parent, field) {
@@ -2142,18 +2183,60 @@
                 card.appendChild(preview);
             }
             var note = directionComponentNote(candidate, field);
-            if (note) card.appendChild(el("div", "color-note", note));
+            var noteNode = note ? el("div", "color-note", note) : null;
+            if (noteNode) card.appendChild(noteNode);
+            var editor = null;
+            if (directionComponentIsCustom(candidate, field)) {
+                editor = el("textarea", "text-input scheme-component-editor");
+                setNaturalInputDirection(editor);
+                editor.rows = 4;
+                editor.value = directionComponentEditableBehavior(candidate, field);
+                editor.placeholder = t(field === "mode" ? "mode_behavior_placeholder" :
+                    (field === "visual_style" ? "visual_style_behavior_placeholder" :
+                        "image_strategy_custom_placeholder"));
+                editor.style.display = "none";
+                editor.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                });
+                editor.addEventListener("input", function () {
+                    setDirectionComponentBehavior(field, editor.value);
+                    if (field === "image_strategy") refreshImageStrategyPreview();
+                    refreshDesignDirectionState();
+                    refreshDirectionComponentStates();
+                });
+                card.appendChild(editor);
+            }
             card.addEventListener("click", function () {
-                applyDirectionComponent(candidate, field);
+                applyDirectionComponent(candidate, field, index);
             });
-            entries.push({ candidate: candidate, card: card });
+            entries.push({
+                candidate: candidate,
+                index: index,
+                card: card,
+                note: noteNode,
+                editor: editor
+            });
             grid.appendChild(card);
         });
         var paint = function () {
             entries.forEach(function (entry) {
-                entry.card.classList.toggle(
-                    "selected", directionComponentSelected(entry.candidate, field)
+                var selected = directionComponentSelected(
+                    entry.candidate, field, entry.index
                 );
+                var adjusted = selected &&
+                    !directionComponentMatchesAuthored(entry.candidate, field);
+                entry.card.classList.toggle("selected", selected);
+                entry.card.classList.toggle("adjusted", adjusted);
+                if (entry.editor) {
+                    entry.editor.style.display = selected ? "block" : "none";
+                    if (selected && document.activeElement !== entry.editor) {
+                        var current = field === "mode" ? STATE.mode_behavior :
+                            (field === "visual_style" ? STATE.visual_style_behavior :
+                                ((STATE.image_strategy || {}).behavior || ""));
+                        entry.editor.value = current;
+                    }
+                }
+                if (entry.note) entry.note.style.display = selected ? "none" : "block";
             });
         };
         DIRECTION_COMPONENT_PAINTERS.push(paint);
@@ -2172,6 +2255,7 @@
 
     function renderCurrentDirectionCustomEditor(parent, field, stateKey, placeholderKey) {
         if (STATE[field] !== "custom") return null;
+        if (ACTIVE_COMPONENT_DIRECTION_IDS[field]) return null;
         var source = currentDirectionCustomCandidate(field, stateKey);
         if (!source && customCandidateBehavior(field)) return null;
         var block = el("div", "subfield direction-custom-editor");
@@ -2205,7 +2289,10 @@
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
             function () { return STATE.mode; }, function (v) {
                 STATE.mode = v;
+                ACTIVE_COMPONENT_DIRECTION_IDS.mode = "";
                 if (v !== "custom") STATE.mode_behavior = "";
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
                 if (directionCustomEditor) {
                     directionCustomEditor.style.display = v === "custom" ? "block" : "none";
                 }
@@ -2236,7 +2323,10 @@
         enumField(sec, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
             function () { return STATE.visual_style; }, function (v) {
                 STATE.visual_style = v;
+                ACTIVE_COMPONENT_DIRECTION_IDS.visual_style = "";
                 if (v !== "custom") STATE.visual_style_behavior = "";
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
                 if (directionCustomEditor) {
                     directionCustomEditor.style.display = v === "custom" ? "block" : "none";
                 }
@@ -3199,6 +3289,7 @@
         function selectImageStrategy(idx) {
             if (!strategyCands[idx]) return;
             STATE.image_strategy = normalizedImageStrategy(strategyCands[idx]);
+            ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = "";
             presetSelect.value = String(idx);
             if (customCard) customCard.classList.remove("selected");
             if (currentCustomEditor) currentCustomEditor.style.display = "none";
@@ -3297,10 +3388,13 @@
 
             selectCustomImageStrategy = function () {
                 STATE.image_strategy = normalizedImageStrategy(customStrategy);
+                ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = "";
                 presetSelect.value = "";
                 customCard.classList.add("selected");
                 syncCustomStrategy(true);
                 refreshImageStrategyPreview();
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
             };
 
             customInput.addEventListener("click", function (event) { event.stopPropagation(); });
@@ -3317,7 +3411,8 @@
             strategySub.appendChild(customCard);
         }
 
-        if (!customCard && STATE.image_strategy &&
+        if (!customCard && !ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy &&
+                STATE.image_strategy &&
                 STATE.image_strategy.rendering === "custom") {
             var customEditorField = el("div", "subfield image-strategy-current-custom");
             customEditorField.appendChild(el("div", "subfield-label", t("custom")));

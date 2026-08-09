@@ -154,7 +154,7 @@
       "max_tokens": 13000
     },
     "route.generate.planning": {
-      "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring and complete mode, visual-style, and image-rendering decision catalogs; schemas and optional scaffolds are tool-consumed.",
+      "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring, the three compact decision indexes, and a conservative audit envelope for only the exact custom bases selected after those indexes; schemas and optional scaffolds are tool-consumed.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -177,7 +177,7 @@
             "*/_index.md"
           ],
           "select": 5,
-          "load_event": "strategist-mode-catalog",
+          "load_event": "strategist-selected-mode-bases",
           "registry": "modes"
         },
         {
@@ -186,7 +186,7 @@
             "*/_index.md"
           ],
           "select": 18,
-          "load_event": "strategist-visual-style-catalog",
+          "load_event": "strategist-selected-visual-style-bases",
           "registry": "visual-styles"
         },
         {
@@ -195,14 +195,14 @@
             "*/_index.md"
           ],
           "select": 20,
-          "load_event": "strategist-image-rendering-catalog",
+          "load_event": "strategist-selected-image-rendering-bases",
           "registry": "image-renderings"
         }
       ],
       "max_tokens": 110000
     },
     "route.generate.quick-generate": {
-      "description": "Self-contained one-pass Generate profile with source intake, complete design-decision catalogs, conditional resource preparation, and complete flat SVG visual-construction authorities.",
+      "description": "Self-contained one-pass Generate profile with source intake, the three compact decision indexes, a conservative audit envelope for only the resolved preset or exact custom bases, conditional resource preparation, and complete flat SVG visual-construction authorities.",
       "scope": "cumulative",
       "include": [
         "bootstrap.routing"
@@ -224,7 +224,7 @@
             "*/_index.md"
           ],
           "select": 5,
-          "load_event": "quick-mode-catalog",
+          "load_event": "quick-selected-mode-bases",
           "registry": "modes"
         },
         {
@@ -233,7 +233,7 @@
             "*/_index.md"
           ],
           "select": 18,
-          "load_event": "quick-visual-style-catalog",
+          "load_event": "quick-selected-visual-style-bases",
           "registry": "visual-styles"
         },
         {
@@ -242,7 +242,7 @@
             "*/_index.md"
           ],
           "select": 20,
-          "load_event": "quick-image-rendering-catalog",
+          "load_event": "quick-selected-image-rendering-bases",
           "registry": "image-renderings"
         }
       ],
@@ -370,7 +370,7 @@
       "max_tokens": 115000
     },
     "route.generate.planning-ai": {
-      "description": "Generate-PPTX planning after AI imagery is confirmed, adding image-layout and resource-planning authorities to the already-loaded rendering decision catalog.",
+      "description": "Generate-PPTX planning after AI imagery is confirmed, adding image-layout and resource-planning authorities to the rendering index and already-selected rendering bases.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning-image"
@@ -644,7 +644,7 @@
       "max_tokens": 170000
     },
     "stage.generate.executor.flat": {
-      "description": "Incremental flat Executor core with complete visual-construction authorities and complete mode/visual-style execution catalogs.",
+      "description": "Incremental flat Executor core with complete visual-construction authorities, the compact mode/style indexes, and a conservative audit envelope for only the locked preset or exact custom references.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/executor-base.md",
@@ -660,7 +660,7 @@
             "*/_index.md"
           ],
           "select": 5,
-          "load_event": "executor",
+          "load_event": "executor-selected-mode-bases",
           "registry": "modes",
           "allow_repeat": true
         },
@@ -670,7 +670,7 @@
             "*/_index.md"
           ],
           "select": 18,
-          "load_event": "executor",
+          "load_event": "executor-selected-visual-style-bases",
           "registry": "visual-styles",
           "allow_repeat": true
         }

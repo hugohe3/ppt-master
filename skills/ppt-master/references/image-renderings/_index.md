@@ -10,7 +10,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ## 1. Catalog (20 renderings)
 
-Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Before Default Stage 2 or Quick resolves image usage, the design-decision owner reads this index plus all 20 sibling rendering files once as one deterministic batch and prepares three project-relevant rendering candidates. Whether AI imagery is recommended remains a separate source decision. Image_Generator later reads this index plus only the confirmed preset entry or exact `image_rendering_references`; a novel `custom` may omit references.
+Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Read this index alone while choosing a direction. Only after a preset or custom bases are fixed may the active role read the selected sibling files: one file for a preset, every exact `image_rendering_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling. Whether AI imagery is recommended remains a separate source decision; Image_Generator follows the same selected-only rule.
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
@@ -54,7 +54,7 @@ Each rendering keeps its own authoritative file with: style paragraph, line / te
 
 ### 1.5 Escape hatch — `custom`
 
-Every coordinated Stage-2 direction carries one complete image-rendering candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. A candidate may use `rendering: custom` plus a complete behavior paragraph. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
+Every coordinated Stage-2 direction carries one complete `rendering: custom` candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. The 20 fixed renderings remain lower-level single-select alternatives. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
 
 **Hard rule — `rendering_behavior` prose**:
 
@@ -62,7 +62,7 @@ Every coordinated Stage-2 direction carries one complete image-rendering candida
 |---|---|
 | Length | One paragraph, 2-5 sentences |
 | Axes covered | line / texture / depth / material / mood (same as preset files) |
-| Catalog basis | When existing renderings are combined or borrowed, name every exact id and read every named file before synthesis |
+| Catalog basis | Freeze every exact id from this index, then read only those named files before synthesis |
 
 ```yaml
 - image_rendering: custom

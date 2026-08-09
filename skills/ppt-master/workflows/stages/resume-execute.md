@@ -81,7 +81,7 @@ Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
   `enabled` / `disabled` / `disabled`; these production decisions never come
   from `spec_lock.md`
 - If resuming mid-deck, read the latest completed SVG and current image metadata when images are used
-- Read the complete Step 6 always-on core exactly as listed in [`generate-pptx.md`](../generate-pptx.md), including the full mode and visual-style catalogs as one boundary-preserving batch; apply optional `*_references` only as the declared basis of a custom synthesis, then load only the branches selected by the condition table
+- Read the complete Step 6 always-on core exactly as listed in [`generate-pptx.md`](../generate-pptx.md), then read one locked preset file or only the exact `*_references` of a custom synthesis; never glob the mode or visual-style catalogs, and load only the branches selected by the condition table
 - For each page, make the mandatory Structure decision from retained §IX after its content/communication move is established and before any geometry; a `yes` result loads `executor-structure.md` before realization and creates no artifact or lock row
 - Design Parameter Confirmation
 - When structured, read the template Design Spec and each selected prototype once; retain unchanged references in the fresh context. A later bounded repair follows [`executor-base.md`](../../references/executor-base.md) §2.1 only while that context remains valid and uncompacted
