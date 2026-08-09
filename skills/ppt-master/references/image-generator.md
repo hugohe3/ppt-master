@@ -306,6 +306,48 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 
 ---
 
+### 4.4 Registered subject/base pairs
+
+Use this preparation when a person, product, creature, or other foreground
+subject must cross native titles, panels, frames, cards, or shapes while the
+original scene remains behind them. The final pair is one compositional asset:
+
+| Output | Required content |
+|---|---|
+| Clean base | Full original canvas with the foreground subject removed and the hidden background reconstructed |
+| Subject cutout | The same full canvas and subject position, with only the foreground subject visible on RGBA transparency |
+
+**Mandatory — preserve registration**: Start both derivatives from the same
+source. Preserve canvas dimensions, subject pose, scale, and position; do not
+trim or independently crop either final output. Record the shared source and
+pair relationship in the owning §VIII rows or Quick active-context resources.
+
+**Preparation procedure**:
+
+1. Use the active image-editing path to remove the subject and inpaint the clean base.
+2. Use the same source to isolate the subject. Prefer a direct RGBA result.
+3. When the active path cannot return transparency, place the isolated subject on one exact flat key color, then run `slice_images.py` as a `1x1` sheet with `--alpha` and without `--trim` so the full-canvas coordinates remain unchanged.
+4. Save both final files under `<project>/images/` and mark them `no-crop` in the active resource authority.
+
+Path A may use the existing single-image edit mode for each derivative; Path B
+may perform the same edits with the host-native image tool:
+
+```bash
+python3 scripts/image_gen.py "Remove the foreground subject and reconstruct the hidden background; preserve the exact canvas" \
+  --reference-image <project>/images/<source>.png -o <project>/images -f <pair>_base
+python3 scripts/image_gen.py "Isolate the same foreground subject at the exact original pose, scale, and position on a flat #00FF00 background" \
+  --reference-image <project>/images/<source>.png -o <project>/images -f <pair>_subject_key
+python3 scripts/slice_images.py <project>/images/<pair>_subject_key.png --grid 1x1 \
+  --names <pair>_subject --alpha --bg "#00FF00"
+```
+
+The positional edit commands are allowed here as the declared derivation step
+for already-planned pair rows; keep the final pair in the ordinary resource
+authority and operational sidecar. SVG realization follows
+[`image-layout-patterns.md`](./image-layout-patterns.md) `#A2-03`.
+
+---
+
 ## 5. Global Hard Rules
 
 These rules apply to **every** prompt regardless of dimension choices. Append them as a closing sentence to every assembled prompt.
