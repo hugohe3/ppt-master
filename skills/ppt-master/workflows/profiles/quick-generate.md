@@ -227,10 +227,12 @@ Before writing P01, resolve in active context:
 
 **Mandatory — whole-roster rhythm check**: During the same active-context
 resolution, compare neighbors and section arcs to judge whether chapter entries
-visibly reset, extended same-density runs are intentional, repeated dominant
+visibly reset, extended same-density runs are intentional, extended same-carrier
+or same-topology runs form an intentional semantic sub-arc, repeated dominant
 geometry carries a continuity job, each section follows a mode-fitting
 progression—including framework → explanation/evidence → judgment/action when
-it serves the objective—and a genuine ending lowers information load. Repair
+it serves the objective—and the final arc resolves the communication objective
+before a genuine ending lowers information load. Repair
 the transient roster, density, and composition choices in place. This is
 judgment, not quota; preserve intentional continuity, legitimately all-`dense`
 material, and 1:1/literal order. Add no filler page: a `breathing` page marks a
