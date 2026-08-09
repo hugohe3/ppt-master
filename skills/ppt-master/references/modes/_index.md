@@ -8,7 +8,7 @@ A **mode** is the deck's **narrative + persuasion skeleton** — how the argumen
 
 ## 1. Catalog (5 modes)
 
-Each mode has its own file with: narrative skeleton, page-structure tendencies, speaker-notes register, and a page skeleton example. Default reads the locked preset file; Quick reads the preset it resolves in active context. A catalog-based `custom` reads every preset actually used as a basis; a novel `custom` reads none. Never glob the directory.
+Each mode keeps its own authoritative file with: narrative skeleton, page-structure tendencies, speaker-notes register, and a page skeleton example. Every Default and Quick Generate run reads this index plus all five sibling mode files once as one deterministic batch before choosing or realizing a direction. Keep the files separate and preserve their boundaries in the batch; exact `mode_references` identify the sources actually used by a custom direction, not which files enter context.
 
 | Mode | Narrative skeleton | Best for |
 |---|---|---|
@@ -53,8 +53,8 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 | Active profile | Use |
 |---|---|
-| Default Generate | Strategist reads this index at confirmation `d. Layer 1`, authors the required candidate set, records the confirmed mode in `design_spec.md`, and projects it to `spec_lock.md`; Executor reads the locked preset or exact custom references |
-| Quick Generate | The current main agent reads this index, resolves the best-fit preset or one warranted custom behavior without interaction, reads only the exact preset source(s) actually used, and keeps the result in active context without Design Spec/lock |
+| Default Generate | Strategist and Executor each read this index plus every sibling mode file once per valid role context. Strategist authors the candidate directions, records the confirmed mode in `design_spec.md`, and projects it to `spec_lock.md`; Executor applies that selected value from the already-loaded catalog. |
+| Quick Generate | The current main agent reads this index plus every sibling mode file once, resolves the best-fit preset or one warranted custom behavior without interaction, and retains the full catalog in active context without Design Spec/lock. |
 
 **Resolution scope**: deck-wide (one mode per deck). The five are the catalog you select from; if the structure is genuinely mixed, pick the mode of the body pages and let pages vary within it, or use a warranted `custom` blend (§4). Default recommends and confirms; Quick decides directly.
 
@@ -64,11 +64,11 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 
 `custom` holds **any bespoke narrative direction the five don't give as-is** — and what *kind* of thing it is doesn't matter. It might be a nameable cadence (dialectic 正反合, myth-vs-reality, countdown / Top-N, Socratic), a deliberate multi-act fusion of several modes, or the user's own feel for how the deck should carry (confrontational here, detached there). Don't try to taxonomize it.
 
-**Default candidate**: Stage 2 includes one visible, non-empty AI custom proposal beside the five presets, spelling out the cadence / fusion / posture in plain language. It is initially unselected and does not replace the best-fit preset recommendation unless the user already supplied that exact custom direction; with a template, it must fit available prototype capacity. When the user selects it, the editable prose is saved as `mode: custom` plus `mode_behavior`; otherwise it remains recommendation-only. The Strategist crystallizes a selected custom direction in the Design Spec first, then projects the behavior and any actual catalog basis to `spec_lock.md`. The Executor reads every listed basis file before following that prose, or follows it directly when the direction is novel.
+**Default candidate**: Each coordinated Stage-2 direction may use one preset or one visible, non-empty `custom` cadence / fusion / posture. A custom direction carries editable `mode_behavior` and fits any installed template capacity. The Strategist crystallizes the confirmed current value in the Design Spec first, then projects its behavior and actual catalog basis to `spec_lock.md`. The full catalog is already loaded; references preserve provenance and synthesis intent rather than trigger extra reads.
 
-**Quick custom**: do not author or display a candidate set. Use `custom` only when no single preset supplies the dominant spine, resolve its behavior directly in active context, and read every catalog source actually used as a basis. Persist nothing.
+**Quick custom**: do not display a candidate set. Use `custom` only when no single preset supplies the dominant spine, resolve its behavior from the fully loaded catalog in active context, and persist nothing.
 
-**Mandatory — read every catalog source actually used**: If a custom direction combines or borrows an existing mode, name its exact catalog id and read that mode file before writing the synthesis. A `pyramid` + `narrative` fusion therefore reads both [`pyramid.md`](./pyramid.md) and [`narrative.md`](./narrative.md). Default writes `mode_references: pyramid, narrative` beside `mode_behavior`; Quick retains those bases only in active context. Do not add loosely related references after the fact. A genuinely new cadence reads no catalog source.
+**Mandatory — name every catalog source actually used**: If a custom direction combines or borrows existing modes, name their exact ids after comparing the complete catalog. A `pyramid` + `narrative` fusion therefore writes `mode_references: pyramid, narrative` beside `mode_behavior`; Quick retains those bases only in active context. Do not add loosely related references after the fact. A genuinely new cadence names no catalog source.
 
 > **One value per deck — fusion is *one* `custom`, not several modes.** A deck always resolves a single `mode`. A multi-mode blend is expressed as **one** custom behavior whose paragraph describes the acts — never as several simultaneous modes.
 >
