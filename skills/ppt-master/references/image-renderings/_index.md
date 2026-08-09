@@ -10,7 +10,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ## 1. Catalog (20 renderings)
 
-Each rendering has its own file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. A preset lock reads that one file. A catalog-based `custom` reads every preset named in `image_rendering_references`; a novel `custom` may omit references. Never glob the directory.
+Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Before Default Stage 2 or Quick resolves image usage, the design-decision owner reads this index plus all 20 sibling rendering files once as one deterministic batch and prepares three project-relevant rendering candidates. Whether AI imagery is recommended remains a separate source decision. Image_Generator later reads this index plus only the confirmed preset entry or exact `image_rendering_references`; a novel `custom` may omit references.
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
@@ -54,7 +54,7 @@ Each rendering has its own file with: style paragraph, line / texture / depth no
 
 ### 1.5 Escape hatch — `custom`
 
-Whenever proposed image usage includes `ai`, Stage 2 authors one separate, visible custom rendering proposal in addition to the preset cards. It uses `rendering: custom` plus a complete behavior paragraph, remains initially unselected, and enters the confirmed contract only when the user chooses it. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
+Every coordinated Stage-2 direction carries one complete image-rendering candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. A candidate may use `rendering: custom` plus a complete behavior paragraph. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
 
 **Hard rule — `rendering_behavior` prose**:
 
@@ -69,9 +69,9 @@ Whenever proposed image usage includes `ai`, Stage 2 authors one separate, visib
 - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
 ```
 
-**Hard rule**: the custom candidate is mandatory when AI images are proposed; selecting `custom` is a tail-case, not the default. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
+**Hard rule**: three complete rendering candidates are mandatory in every fresh Stage-2 direction set; AI source recommendation remains independent. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
 
-Write `image_rendering_references` only when the custom direction actually uses catalog material. Keep the list exact: a blend of `screen-print` and `watercolor` reads both files and lists both ids. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
+Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. Keep the list exact: a blend of `screen-print` and `watercolor` lists both ids. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
 
 ---
 

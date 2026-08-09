@@ -238,15 +238,21 @@ both the communication contract and template/free-design choice and any selected
 workspace has been installed.
 
 At Step-4 entry, load the always-required planning context directly in one
-batch: the role core, every canonical content-type source file defined below,
-and the compact structured analysis facts already present. These inputs are
-known required reads; do not route or rediscover them one file at a time. For a
-multi-deck `source_profile.json`, read its compact `decks[]` digests in that
-batch and open a deck's larger identity/slide-library files only when the
-specific need below arises.
+batch: the role cores, every canonical content-type source file defined below,
+the compact structured analysis facts already present, and the three complete
+design-decision catalogs. Preserve the boundary of every catalog file inside
+the batch; do not concatenate them into a new artifact, route them one at a
+time, or let later `*_references` decide what enters context. For a multi-deck
+`source_profile.json`, read its compact `decks[]` digests in that batch and open
+a deck's larger identity/slide-library files only when the specific need below
+arises.
 
 ```
 Read references/strategist.md
+Read references/strategist-image.md
+Read references/modes/_index.md + all 5 sibling entry files
+Read references/visual-styles/_index.md + all 18 sibling entry files
+Read references/image-renderings/_index.md + all 20 sibling entry files
 ```
 
 Then load only the extra role modules triggered by the current plan:
@@ -254,9 +260,15 @@ Then load only the extra role modules triggered by the current plan:
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
 | Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
-| The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
+| The confirmed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/image-layout-spec.md` + `references/image-layout-patterns.md` before production detail, formula resources, or §VIII |
 
-Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Only an installed project-local template state loads the template module, and only after Stage 1 is confirmed; a bare template/style name does not.
+The image decision core and complete rendering catalog are already loaded before
+Stage 2 so every direction carries a real rendering candidate. Core chooses
+Stage-2 sources independently. Confirmed non-`none` or formulas load the layout
+references and continue into resource planning; confirmed `none` without
+formulas writes no image rows while retaining recommendation-only rendering
+candidates. Only an installed project-local template state loads the template
+module, and only after Stage 1 is confirmed; a bare template/style name does not.
 
 > ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
@@ -394,7 +406,7 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 
 **Mandatory — spec-refinement note** (not another Confirm UI stage): after confirmation details and any split-mode line, append one localized 💡 line offering review of the complete Design Spec before the lock; any part may be revised in chat until explicit approval. Default OFF; only explicit chat opt-in or `refine_spec: true` runs [`refine-spec`](stages/refine-spec.md) after Gate 1. Confirm UI records the toggle; chat fallback prints the same line.
 
-**Formula policy**: Final Stage 2 confirms `mixed`, `render-all`, or `text-only`. When rendering is required, load the image-planning bundle even if `image_usage` is `none`, then follow [`strategist-image.md`](../references/strategist-image.md)'s formula-resource contract. `text-only` creates no formula image rows.
+**Formula policy**: Final Stage 2 confirms `mixed`, `render-all`, or `text-only`. The image-decision core is already loaded; when rendering is required, load the conditional image-layout references even if `image_usage` is `none`, then follow [`strategist-image.md`](../references/strategist-image.md)'s formula-resource contract. `text-only` creates no formula image rows.
 
 **Proactive production decisions**: Final Stage 2 records
 `proactive_speaker_notes`, `proactive_custom_animations`, and
@@ -515,20 +527,21 @@ Workflow:
 
 Read the execution references for this deck's locked `mode` + `visual_style`
 (from `spec_lock.md`). Load this fixed required block directly as one batch;
-do not route among its files one at a time:
+preserve every file boundary and do not route among catalog entries one at a
+time:
 ```
 Read references/executor-base.md                  # REQUIRED: flat/shared execution core
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
 Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
 Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
-Read references/modes/<resolved-id>.md            # one preset id, or each `mode_references` id
-Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visual_style_references` id
+Read references/modes/_index.md + all 5 sibling entry files
+Read references/visual-styles/_index.md + all 18 sibling entry files
 ```
 
 Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual Job Router active during page authoring; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
-> Read only the always-on references above plus the conditionally triggered modules below. A preset reads its one locked file. For `mode: custom` or `visual_style: custom`, read every exact file named by the optional `mode_references` / `visual_style_references`, then synthesize those sources under the corresponding behavior. If the reference field is absent, the direction is genuinely novel: read no preset file and follow the behavior directly. Never infer adjacent references or glob `modes/` / `visual-styles/`.
+> Read only the always-on references above plus the conditionally triggered modules below. The complete mode and visual-style catalogs are already present once per valid Executor context. Apply the locked preset directly; for `custom`, synthesize only the exact bases named by optional `mode_references` / `visual_style_references` under the corresponding behavior. References express provenance and synthesis intent, not additional load triggers. If absent, treat the direction as genuinely novel. Do not infer adjacent bases or blend unselected catalog identities.
 
 | Deterministic trigger | Additional references |
 |---|---|

@@ -10,7 +10,7 @@ A **visual style** is how the deck **looks** — shape language, decoration dens
 
 ## 1. Catalog
 
-Each style has its own file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. Default reads the locked preset file; Quick reads the preset it resolves in active context. A catalog-based `custom` reads every preset actually used as a basis; a novel `custom` reads none. Never glob the directory. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
+Each style keeps its own authoritative file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. Every Default and Quick Generate run reads this index plus all 18 sibling style files once as one deterministic batch before choosing or realizing a direction. Keep the files separate and preserve their boundaries in the batch; exact `visual_style_references` identify the sources actually used by a custom direction, not which files enter context. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
 
 > The **`visual_style` value is only ever a first-column `id`** (`swiss-minimal`, `editorial`, …). The "Paired rendering" column lists **image-rendering** names (`flat`, `minimalist-swiss`, `digital-dashboard`, …) — never treat one of those as the `visual_style`. Default records rendering under confirmation h; Quick keeps the selected rendering only in active context and any required image manifest.
 >
@@ -92,11 +92,11 @@ Each style has its own file with: shape & decoration, typography character, colo
 
 ## 3. Escape hatch — `custom`
 
-Default Stage 2 always authors one visible, non-empty AI custom proposal beside the preset spectrum. Its paragraph names shape language, composition geometry (page-scale moves), decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. The proposal is initially unselected and remains recommendation-only unless the user chooses it; a template-backed proposal must stay inside the inherited identity and confirmed application plan. When selected, record the edited aesthetic in the Design Spec first, then project `- visual_style: custom` plus `- visual_style_behavior:` to `spec_lock.md`. The candidate is mandatory; selecting `custom` remains a tail-case, not the default.
+Each coordinated Default Stage-2 direction authors one complete visual aesthetic after comparing the full catalog. It may resolve to a preset or to a visible, non-empty `custom` synthesis whose paragraph names shape language, composition geometry, decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. A template-backed synthesis stays inside the inherited identity and confirmed application plan. Record the confirmed current aesthetic in the Design Spec first, then project `- visual_style: custom` plus `- visual_style_behavior:` when applicable. Do not create a separate fourth AI-custom proposal beside the three coordinated directions.
 
-Quick does not author or display a candidate spectrum. It resolves the best-fit preset directly, or one custom behavior only when no preset fits, reads every catalog source actually used as a basis, and persists nothing.
+Quick does not display a candidate spectrum. It compares the fully loaded catalog, resolves the best-fit preset or one warranted custom behavior directly, and persists nothing.
 
-**Mandatory — read every catalog source actually used**: If a custom direction combines or borrows existing styles, name their exact ids and read each corresponding file before synthesizing its shape, composition, typography, whitespace, and texture rules. Default persists those ids as `visual_style_references`; Quick retains them only in active context. Do not attach references merely because they are adjacent in the catalog. A genuinely new aesthetic reads no catalog source.
+**Mandatory — name every catalog source actually used**: If a custom direction combines or borrows existing styles, name their exact ids after comparing the complete catalog. Default persists those ids as `visual_style_references`; Quick retains them only in active context. Do not attach references merely because they are adjacent in the catalog. A genuinely new aesthetic names no catalog source.
 
 ---
 
@@ -104,7 +104,7 @@ Quick does not author or display a candidate spectrum. It resolves the best-fit 
 
 | Active profile | Use |
 |---|---|
-| Default Generate | Strategist reads this index at confirmation `d. Layer 2`, authors the required spectrum/custom candidate, records the confirmed style in `design_spec.md`, and projects it to `spec_lock.md`; Executor reads the locked preset or exact custom references |
-| Quick Generate | The current main agent reads this index, resolves the best-fit preset or one warranted custom behavior without interaction, reads only the exact preset source(s) actually used, and keeps the result in active context without Design Spec/lock |
+| Default Generate | Strategist and Executor each read this index plus every sibling style file once per valid role context. Strategist authors three coordinated project directions, records the confirmed current style in `design_spec.md`, and projects it to `spec_lock.md`; Executor applies that selected value from the already-loaded catalog. |
+| Quick Generate | The current main agent reads this index plus every sibling style file once, resolves one project-specific direction without interaction, and retains the full catalog in active context without Design Spec/lock. |
 
 **Resolution scope**: deck-wide (one style per deck). It anchors taste as a **reference**, not a whitelist — pages may deviate with reason.
