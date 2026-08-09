@@ -135,15 +135,16 @@ types, slots, and placeholders.
 
 ## Icon Library
 
-The `icons/` directory contains 11,600+ vector icons across five libraries:
+The `icons/` directory contains 12,027 vector icons across five libraries:
 
 | Library | Style | Count |
 |---------|-------|-------|
-| `chunk-filled` | fill / straight-line geometry | 640 |
-| `tabler-filled` | fill / bezier-curve forms | 1000+ |
-| `tabler-outline` | stroke / line | 5000+ |
-| `phosphor-duotone` | duotone / single color + 0.2 opacity backplate | 1200+ |
-| `simple-icons` | brand logos (company / product marks) | 3400+ |
+| `chunk-filled` | fill / compact, chunky 16px silhouettes | 641 |
+| `tabler-filled` | fill / bezier-curve forms | 1,055 |
+| `tabler-outline` | stroke / line | 5,138 |
+| `phosphor-duotone` | duotone / single color + 0.2 opacity backplate | 1,518 |
+| `simple-icons` | brand logos (company / product marks) | 3,675 |
 
 - **Usage & style rules**: [icons/README.md](./icons/README.md)
+- **Versions, licenses & attribution**: [icons/THIRD_PARTY_NOTICES.md](./icons/THIRD_PARTY_NOTICES.md)
 - **Search icons**: `rg --files skills/ppt-master/templates/icons/<library>/ | rg <keyword>`

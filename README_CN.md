@@ -396,6 +396,8 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 
 [SVG Repo](https://www.svgrepo.com/) · [Tabler Icons](https://github.com/tabler/tabler-icons) · [Simple Icons](https://github.com/simple-icons/simple-icons) · [Phosphor Icons](https://github.com/phosphor-icons/core) · [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author))（CRAP 设计原则）
 
+固定版本、许可证、署名、兼容层与商标边界详见[第三方图标说明](./skills/ppt-master/templates/icons/THIRD_PARTY_NOTICES.md)。
+
 ## 相关工具
 
 [cc-switch](https://github.com/farion1231/cc-switch) —— 一键切换 Claude Code / Codex / Gemini CLI 等工具的 API 供应商。
