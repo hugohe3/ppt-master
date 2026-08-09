@@ -178,7 +178,7 @@ The following three patterns are topologically different and are not interchange
 
 - **#A2-01 · Transparent sticker or cutout** — use a prepared RGBA asset and preserve its open silhouette.
 - **#A2-02 · Subject breaking out of a container** — register a prepared foreground subject across its frame boundary.
-- **#A2-03 · Registered subject/base pair** — align a base photo with its prepared transparent subject cutout in one coordinate system; optionally place a native title, panel, or shape between them so the subject crosses that middle layer.
+- **#A2-03 · Registered subject/base pair** — align a clean base with its prepared transparent subject cutout in one coordinate system. Draw the base first, the native title/panel/shape second, and the cutout last. Give both images the same `x`, `y`, `width`, `height`, and aspect mapping; never trim or independently crop either layer.
 
 ### 5.3 A3 · Registered Derivatives
 

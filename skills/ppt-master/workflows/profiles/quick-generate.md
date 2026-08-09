@@ -242,6 +242,14 @@ Before writing P01, resolve in active context:
   otherwise choose the registered automatic/default path without another
   interaction.
 
+**Mandatory — subject-layer capability scan**: Before resource preparation,
+inspect the intended layer relationship rather than treating every reference
+visual as one flat image. When a subject crosses a native title, panel, frame,
+card, or shape, prepare a clean full-canvas base plus a same-canvas RGBA subject
+cutout and use `#A2-03`; follow [`image-generator.md`](../../references/image-generator.md)
+§4.4. A subject that only floats independently may use `#A2-01`. Complete this
+decision and both required assets before SVG authoring.
+
 **Mandatory — whole-roster rhythm check**: During the same active-context
 resolution, compare neighbors and section arcs to judge whether chapter entries
 visibly reset, extended same-density runs are intentional, extended same-carrier
@@ -314,6 +322,7 @@ Prepare only the resource paths needed by the decided pages:
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
+| Registered subject/base pair | Follow `image-generator.md` §4.4; keep the clean base and transparent subject on the same full canvas, then place both with `crop=no-crop` |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
 **Image inspection boundary**: acquisition-time suitability review follows the
