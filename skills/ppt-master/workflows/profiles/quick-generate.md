@@ -203,24 +203,22 @@ use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
 while authoring. Persist no separate template-application artifact. If no
 template was installed, make the same design choices freely.
 
-Before resolving the one-pass design, read these three complete catalogs in one
-deterministic, boundary-preserving batch:
+Before resolving the one-pass design, read only these three indexes:
 
 ```
-Read references/modes/_index.md + all 5 sibling entry files
-Read references/visual-styles/_index.md + all 18 sibling entry files
-Read references/image-renderings/_index.md + all 20 sibling entry files
+Read references/modes/_index.md
+Read references/visual-styles/_index.md
+Read references/image-renderings/_index.md
 ```
 
-Do not concatenate the files into a generated bundle or rediscover them one at
-a time. Compare three complete, project-fit solution directions internally,
-including one rendering candidate for each, and then choose the best whole
-solution for direct execution. The three internal directions must all be viable
-and meaningfully distinguishable, but need not use different catalog ids or fit
-safe / shifted / bold archetypes. Decide whether AI images are useful as a
-separate source judgment; even when the answer is no, the rendering comparison
-still informs visual coherence. Keep the chosen mode, style, rendering, and any
-exact custom bases in active context only.
+Resolve the best whole solution from the project brief and index summaries,
+freeze its exact mode/style/rendering ids, then read only those selected preset
+files or custom-basis files. A novel custom reads none. Never open detail files
+to compare candidates, glob a catalog, or let an unselected sibling influence
+the decision. Decide whether AI images are useful as a separate source judgment;
+even when the answer is no, retain the chosen rendering direction for visual
+coherence. Keep the chosen mode, style, rendering, and exact bases in active
+context only.
 
 **One-pass decision boundary**: resolve only what is needed to author this deck
 in the current context. Do not print a strategy summary, create a planning
@@ -346,12 +344,11 @@ not route among them one file at a time:
 [`svg-effects.md`](../../references/svg-effects.md),
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
 [`semantic-svg.md`](../../references/semantic-svg.md),
-and [`executor-structure.md`](../../references/executor-structure.md). Retain the
-complete mode and visual-style catalogs already read during one-pass design
-resolution, and realize only the chosen direction. Exact `*_references` preserve
-the basis of a custom synthesis; they do not trigger another catalog read. A
-genuinely novel custom direction follows its resolved behavior without inventing
-a nearby preset.
+and [`executor-structure.md`](../../references/executor-structure.md). Retain
+only the mode/style detail files selected during one-pass design resolution and
+realize that chosen direction. Exact `*_references` define the complete basis
+of a custom synthesis; a genuinely novel custom follows its resolved behavior
+without reading or inventing a nearby preset.
 
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability

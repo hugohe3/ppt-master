@@ -1520,7 +1520,7 @@ def _stage2_design_directions_error(
     *,
     main_language: object = '',
 ) -> Optional[str]:
-    """Require exactly three complete top-down Stage 2 design systems."""
+    """Require exactly three complete top-down custom Stage 2 design systems."""
     main_language = main_language or _recommendation_language(recommendations)
     directions = recommendations.get('design_directions')
     if isinstance(directions, dict):
@@ -1544,13 +1544,13 @@ def _stage2_design_directions_error(
             for field in ('mode', 'visual_style', 'icons'):
                 if not isinstance(candidate.get(field), str) or not candidate[field].strip():
                     return f'{label}.{field} must be non-empty'
-            if candidate['mode'] == 'custom' and not _localized_text_present(
-                candidate, 'mode_behavior'
-            ):
+            if candidate['mode'] != 'custom':
+                return f'{label}.mode must be custom'
+            if not _localized_text_present(candidate, 'mode_behavior'):
                 return f'{label}.mode=custom requires non-empty localized mode_behavior'
-            if candidate['visual_style'] == 'custom' and not _localized_text_present(
-                candidate, 'visual_style_behavior'
-            ):
+            if candidate['visual_style'] != 'custom':
+                return f'{label}.visual_style must be custom'
+            if not _localized_text_present(candidate, 'visual_style_behavior'):
                 return (
                     f'{label}.visual_style=custom requires non-empty localized '
                     'visual_style_behavior'
@@ -1573,17 +1573,15 @@ def _stage2_design_directions_error(
             rendering = str(image_strategy.get('rendering') or '').strip()
             if not rendering:
                 return f'{label}.image_strategy.rendering must be non-empty'
-            if rendering != 'custom' and rendering not in _ai_rendering_ids():
-                return f'{label}.image_strategy.rendering is not a known preset: {rendering}'
+            if rendering != 'custom':
+                return f'{label}.image_strategy.rendering must be custom'
             for prose_field in ('name', 'visual', 'mood'):
                 if not _localized_text_present(image_strategy, prose_field):
                     return (
                         f'{label}.image_strategy requires non-empty localized '
                         f'{prose_field}'
                     )
-            if rendering == 'custom' and not _localized_text_present(
-                image_strategy, 'behavior'
-            ):
+            if not _localized_text_present(image_strategy, 'behavior'):
                 return (
                     f'{label}.image_strategy.rendering=custom requires non-empty '
                     'localized behavior'
@@ -2206,6 +2204,11 @@ def _wait_result_status(
                 )
                 return 2
         logger.info('confirmation stage=%s received: %s', target_stage, result_file)
+        if target_stage == 'stage1':
+            logger.info(
+                '[NEXT] Stage 1 is intermediate: complete the template handoff, '
+                'author fresh Stage 2, then wait for final confirmation.'
+            )
         return 0
     if _result_stage_number(current_stage) > _result_stage_number(target_stage):
         logger.error(
