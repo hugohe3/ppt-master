@@ -71,7 +71,7 @@ Every coordinated Stage-2 direction carries one complete `rendering: custom` can
 
 **Hard rule**: three complete rendering candidates are mandatory in every fresh Stage-2 direction set; AI source recommendation remains independent. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
 
-Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. Keep the list exact: a blend of `screen-print` and `watercolor` lists both ids. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
+Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. A custom may use zero, one, or many renderings: keep one when it owns the whole specialized treatment, or include every rendering that contributes a distinct executable job across line, texture, depth, material, or mood. Reference count has no fixed cap; count is an outcome, not a target. A four-basis direction may assign `vector-illustration` to silhouette clarity, `minimalist-swiss` to negative-space composition, `screen-print` to restrained halftone texture, and `warm-scene` to light and mood; list all four ids. Omit every rendering whose contribution cannot be stated and never add a second merely to imply synthesis. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
 
 ---
 

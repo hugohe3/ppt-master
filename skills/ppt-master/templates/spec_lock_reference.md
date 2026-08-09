@@ -129,8 +129,8 @@ Catalog-based custom example:
 ```markdown
 ## mode
 - mode: custom
-- mode_references: pyramid, narrative
-- mode_behavior: Lead each act with the decision-first clarity of pyramid, then develop it through a narrative tension-and-resolution arc.
+- mode_references: pyramid, narrative, instructional
+- mode_behavior: Open conclusion-first with pyramid, develop the risk through a narrative tension-and-resolution act, then close with an instructional action sequence.
 ```
 
 ---

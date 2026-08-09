@@ -1520,13 +1520,16 @@ def _stage2_design_directions_error(
     *,
     main_language: object = '',
 ) -> Optional[str]:
-    """Require exactly three complete top-down custom Stage 2 design systems."""
+    """Require three complete custom systems with Recommendation 1 as default."""
     main_language = main_language or _recommendation_language(recommendations)
     directions = recommendations.get('design_directions')
     if isinstance(directions, dict):
         candidates = _candidate_list(directions)
         if len(candidates) != 3:
             return 'Stage 2 design_directions must include exactly 3 candidates'
+        selected = directions.get('selected', 0)
+        if type(selected) is not int or selected != 0:
+            return 'Stage 2 design_directions.selected must be integer 0'
         typography_candidates = []
         direction_ids = set()
         for index, candidate in enumerate(candidates, start=1):

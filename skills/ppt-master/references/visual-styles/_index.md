@@ -96,7 +96,7 @@ Each coordinated Default Stage-2 direction authors one visible, non-empty `custo
 
 Quick does not display a candidate spectrum. It reads this index, resolves one preset or custom behavior, then reads only the selected detail files and persists nothing.
 
-**Mandatory — select before detail reading**: Freeze every catalog source actually used from this index, then read only those exact files before writing the behavior. Default persists those ids as `visual_style_references`; Quick retains them only in active context. Do not open candidates for comparison after this gate or attach references merely because they are adjacent. A genuinely new aesthetic names and reads no catalog source.
+**Mandatory — select before detail reading**: Freeze every catalog source actually used from this index, then read only those exact files before writing the behavior. A custom may use zero, one, or many sources: keep one when it owns the whole specialized aesthetic, or include every style that contributes a distinct executable job across shape language, composition, decoration, whitespace, typography, or texture. Reference count has no fixed cap; count is an outcome, not a target. A coherent three-basis direction may assign `swiss-minimal` to grid and whitespace, `soft-rounded` to selective surface contours and elevation, and `editorial` to evidence hierarchy and rules. Default persists every actual id as `visual_style_references`; Quick retains them only in active context. Omit every source whose contribution cannot be stated, never add a second merely to imply synthesis, and do not open candidates for comparison after this gate. A genuinely new aesthetic names and reads no catalog source.
 
 ---
 
