@@ -88,6 +88,11 @@ ambiguous and `-o` only for a required output path; with several or directory
 inputs, `-o` names an output directory. A PPTX is converted to Markdown here and
 receives its project analysis during the import step below.
 
+**Source-image orientation trigger**: Before import and initialization, follow
+[`conversion.md`](../../scripts/docs/conversion.md) § Image Orientation Review
+when correction is requested, converted text asks for rotated viewing, or a
+downloaded asset is visibly sideways. Skip the legacy HTML tool.
+
 After reading every direct and converted source, assess factual sufficiency:
 
 | Material state | Action |
@@ -198,6 +203,23 @@ use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
 while authoring. Persist no separate template-application artifact. If no
 template was installed, make the same design choices freely.
 
+Before resolving the one-pass design, read only these three indexes:
+
+```
+Read references/modes/_index.md
+Read references/visual-styles/_index.md
+Read references/image-renderings/_index.md
+```
+
+Resolve the best whole solution from the project brief and index summaries,
+freeze its exact mode/style/rendering ids, then read only those selected preset
+files or custom-basis files. A novel custom reads none. Never open detail files
+to compare candidates, glob a catalog, or let an unselected sibling influence
+the decision. Decide whether AI images are useful as a separate source judgment;
+even when the answer is no, retain the chosen rendering direction for visual
+coherence. Keep the chosen mode, style, rendering, and exact bases in active
+context only.
+
 **One-pass decision boundary**: resolve only what is needed to author this deck
 in the current context. Do not print a strategy summary, create a planning
 checkpoint, or persist a page/resource plan.
@@ -208,6 +230,7 @@ Before writing P01, resolve in active context:
 - the canvas, visual direction, palette, wording, and one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses; explicit user, template, or resolved-style requirements may call for a deliberate exception;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
+- for each page, preserve its semantic units, source-stated qualitative relationships, intended entry, and outcome so §3 can make the sole Structure decision before geometry;
 - when useful, one transient deck-level visual motif with an identity or
   communication job, a recognizable invariant, and deliberate variation across
   applicable page roles; omit it when restraint serves the deck better;
@@ -219,6 +242,29 @@ Before writing P01, resolve in active context:
   otherwise choose the registered automatic/default path without another
   interaction.
 
+**Mandatory — subject-layer capability scan**: Before resource preparation,
+inspect the intended layer relationship rather than treating every reference
+visual as one flat image. When a subject crosses a native title, panel, frame,
+card, or shape, prepare a clean full-canvas base plus a same-canvas RGBA subject
+cutout and use `#A2-03`; follow [`image-generator.md`](../../references/image-generator.md)
+§4.4. A subject that only floats independently may use `#A2-01`. Complete this
+decision and both required assets before SVG authoring.
+
+**Mandatory — whole-roster rhythm check**: During the same active-context
+resolution, compare neighbors and section arcs to judge whether chapter entries
+visibly reset, extended same-density runs are intentional, extended same-carrier
+or same-topology runs form an intentional semantic sub-arc, repeated dominant
+geometry carries a continuity job, each section follows a mode-fitting
+progression—including framework → explanation/evidence → judgment/action when
+it serves the objective—and the final arc resolves the communication objective
+before a genuine ending lowers information load. Repair
+the transient roster, density, and composition choices in place. This is
+judgment, not quota; preserve intentional continuity, legitimately all-`dense`
+material, and 1:1/literal order. Add no filler page: a `breathing` page marks a
+meaningful pause—chapter transition, standalone emphasis, or SCQA bridge—and
+must stand alone. Create no artifact, checkpoint, lock, or second
+authoring/review pass.
+
 **Mandatory — capability scan, not a coverage quota**: for every page, consider
 the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
@@ -229,9 +275,42 @@ because Quick is expected to be faster is not.
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
 | A compact semantic cue clarifies a category, process, KPI, state, navigation item, or real brand | Prepared project-local icon |
 | Editable geometry can express a relationship, flow, emphasis, callout, symbol, or diagram | Basic SVG primitive, exact Office preset, Boolean result, then necessary freeform |
-| Values encode comparison, trend, distribution, composition, relationship, or a text grid | Data chart or table, with optional native Chart/Table metadata when its object model is useful |
+| Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
+| Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
+| Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
 | Mathematical notation is clearer as typeset math than ordinary text | Rendered formula asset |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
+
+This carrier menu does not satisfy or replace the per-page Structure decision in §3.
+
+**Visualization recall — optional Chart/Table reference**: When a reusable
+Chart/Table reference would help, run recall with 3–8 English semantic tags.
+Use its default catalog search; add `--family chart|table` only when the page's
+information model is already certain. Do not run recall for qualitative shape
+composition.
+
+```bash
+uvx ppt-master visualization-recall recall \
+  --page P03 \
+  --tag "time series" \
+  --tag "three metrics" \
+  --tag "direction over time" \
+  --limit 6
+```
+
+Read the result unfiltered and apply
+[`visualization-recall.md`](../../scripts/docs/visualization-recall.md)'s
+low-confidence semantic fallback before retaining `no-template-match`. Choose at most one primary
+Chart/Table `family/key` for a page, validate it with `visualization_recall.py validate`,
+and keep its short purpose only in active context. The reference remains
+flexible: it does not lock final type, geometry, style, or native output.
+Describe an embedded child Chart/Table and every qualitative relationship in
+the page's active decision rather than selecting another primary reference.
+Actual information models determine the loaded execution branches. Give every independent
+Chart/Table a page-local semantic `kebab-case` object key; keep its
+`<object-key>=yes|no` native-ready decision and any promoted chart-verification
+status in active context. Qualitative relationships create no catalog key or
+reusable Master/Layout/placeholder contract.
 
 Prepare only the resource paths needed by the decided pages:
 
@@ -240,10 +319,11 @@ Prepare only the resource paths needed by the decided pages:
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
 | Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
 | Formula | Follow the [`latex_render.py` contract](../../scripts/docs/image.md), write `images/formula_manifest.json`, run the renderer, and keep the rendered PNG under `images/` |
-| AI image | Follow `image-base.md` + `image-generator.md`; keep `image_prompts.json` and its human-readable sidecar |
+| AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
-| Data chart/table | Keep source values and the chosen page treatment in active context; load the chart/table authorities in §3 before drawing and write native replacement metadata only when selected |
+| Registered subject/base pair | Follow `image-generator.md` §4.4; keep the clean base and transparent subject on the same full canvas, then place both with `crop=no-crop` |
+| Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
@@ -273,30 +353,66 @@ not route among them one file at a time:
 [`svg-effects.md`](../../references/svg-effects.md),
 [`native-shape-authoring.md`](../../references/native-shape-authoring.md),
 [`semantic-svg.md`](../../references/semantic-svg.md),
-[`modes/_index.md`](../../references/modes/_index.md), and
-[`visual-styles/_index.md`](../../references/visual-styles/_index.md). Resolve
-one narrative mode and one visual style from explicit user/template requirements
-or the current content, keep that choice only in active context, and read every
-exact preset source actually used once. A genuinely novel custom direction
-follows its resolved behavior without inventing a nearby preset.
+and [`executor-structure.md`](../../references/executor-structure.md). Retain
+only the mode/style detail files selected during one-pass design resolution and
+realize that chosen direction. Exact `*_references` define the complete basis
+of a custom synthesis; a genuinely novel custom follows its resolved behavior
+without reading or inventing a nearby preset.
 
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
 exclusion; Quick loads the shared and conditional execution authorities here
-directly. For any image/formula, always read
+directly. When any image/formula exists, read once before the first affected
+page and reuse throughout the valid execution context:
 [`executor-image.md`](../../references/executor-image.md),
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
 [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
-web image. Load [`canvas-formats.md`](../../references/canvas-formats.md) only
-for a non-default canvas.
+web image. Reread only after a known file change or context invalidation. Load
+[`canvas-formats.md`](../../references/canvas-formats.md) only for a non-default
+canvas.
+
+`executor-structure.md` is loaded once before all SVG authoring so Quick cannot
+omit shape-composition reasoning. Reuse it throughout the valid execution
+context; reread only after a known file change or context invalidation.
+
+**Mandatory — per-image-page composition decision**: For every page with one
+or more non-formula images, after its content and communication move are
+determined but before choosing geometry, apply
+[`executor-image.md`](../../references/executor-image.md)'s active image-integration
+decision once. Keep its role, direction source, parent
+contour, slot/rhythm system, image/shape action, and any continuity only in
+active context; create no artifact, spec, lock, manifest, or extra pass. A
+deliberate plain or equal-grid result remains valid when it communicates the
+relationship better. Formula-only pages use
+[`image-layout-spec.md`](../../references/image-layout-spec.md) without forcing a
+multi-image system.
+
+**Mandatory — per-page Structure decision**: after the current page's content
+and communication move are determined, but before choosing any geometry or
+shape, decide whether geometry must carry qualitative `order`, `link`, `parent`,
+`membership`, `contrast`, or `overlap`. Keep the yes/no result and, when yes,
+the relationship meaning and reading path in active context only; create no
+artifact, spec, lock, manifest, or extra pass.
+
+- `no` → use Quick's shared base authoring path in this section.
+- `yes` → apply the already-loaded Shape Composition Grammar before drawing.
+
+This decision is mandatory on every page and cannot be satisfied by the
+capability menu, visualization recall, template geometry, or a later check.
 
 | Deterministic trigger | Additional authority |
 |---|---|
-| Any data chart or text-grid table, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md); use bounded [`chart_recall.py`](../../scripts/docs/chart-recall.md) only when a reusable visualization reference would help |
-| Preset pattern or selected PowerPoint-native Chart/Table replacement | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing the object |
+| A selected primary Chart/Table `family/key` | [`executor-visualization.md`](../../references/executor-visualization.md), then the matching Chart/Table authority |
+| Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
+| Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
+| A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
+
+Chart/Table reference and final information model are independent loading
+signals; load every applicable authority. Selection never makes an object
+native-ready or replaces the per-page Structure decision.
 
 Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §6.1 Visual Job Router active while authoring. Explicit user/template requirements and the resolved style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
@@ -315,7 +431,7 @@ viewBox. Template canvas is a default, not a compatibility gate; an explicit
 user canvas may adapt the installed visual system. The first SVG establishes
 the export canvas; every remaining page must match it exactly.
 
-**Structure**: author flat, Slide-local SVG only, including when a Layout or
+**PPTX structure**: author flat, Slide-local SVG only, including when a Layout or
 Deck workspace is installed. In that branch, visibly realize the resolved
 template rules and prototype geometry in the complete pages; do not fall back to
 free design or merely explain how the template could be used. Include the
@@ -381,6 +497,7 @@ or lock.
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
+- [x] Every non-formula image-bearing page made its one pre-geometry composition decision
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed

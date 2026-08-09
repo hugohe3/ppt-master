@@ -1,0 +1,23 @@
+<!--
+tags: [hula, hoop, fitness, exercise, toy, spin, waist, workout, fun, cardio]
+category: Sport
+unicode: "1024a"
+version: "3.43"
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M4 6l2 1.5l6 .5l6 -.5l2 -1.5" />
+  <path d="M16 21l-4 -8v-5" />
+  <path d="M8 21l4 -8" />
+  <path d="M9.007 10.999c-2.37 .32 -4.007 1.201 -4.007 2.001c0 1.105 3.134 2 7 2s7 -.895 7 -2c0 -.798 -1.636 -1.679 -4 -2" />
+</svg>

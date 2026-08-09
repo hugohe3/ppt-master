@@ -24,7 +24,7 @@ Titles read as beats that advance the arc ("Then the numbers stopped adding up")
 - Visual weight guides the eye through each beat (hero image, one focal number, a pull quote).
 - Continuity within a chapter, variation between chapters.
 
-> Structure serves the arc, not a grid. Layout / chart geometry lives in [`templates/charts/`](../../templates/charts/) and [`executor-base.md`](../executor-base.md); this mode decides *the emotional beat of each page*.
+> Structure serves the arc, not a grid. Compose qualitative topology at runtime through [`executor-structure.md`](../executor-structure.md); Chart/Table references remain in their catalogs, and general composition in [`executor-base.md`](../executor-base.md). This mode decides *the emotional beat of each page*.
 
 ---
 

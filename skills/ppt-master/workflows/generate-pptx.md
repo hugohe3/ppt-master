@@ -72,6 +72,11 @@ Use `-o` only when a specific output file/directory is required; with multiple
 inputs or directory inputs, `-o` is an output directory. Backend converter details are documented in
 [`scripts/docs/conversion.md`](../scripts/docs/conversion.md).
 
+**Source-image orientation trigger**: Before Step 2, follow
+[`conversion.md`](../scripts/docs/conversion.md) § Image Orientation Review when
+the user requests correction, converted text asks for rotated viewing, or a
+downloaded asset is visibly sideways. Do not launch its legacy HTML tool.
+
 After reading direct and converted content, assess factual sufficiency:
 
 | Material state | Action |
@@ -236,11 +241,11 @@ workspace has been installed.
 
 At Step-4 entry, load the always-required planning context directly in one
 batch: the role core, every canonical content-type source file defined below,
-and the compact structured analysis facts already present. These inputs are
-known required reads; do not route or rediscover them one file at a time. For a
-multi-deck `source_profile.json`, read its compact `decks[]` digests in that
-batch and open a deck's larger identity/slide-library files only when the
-specific need below arises.
+and the compact structured analysis facts already present. Do not load any
+mode, visual-style, or image-rendering detail file before Stage 1. For a multi-deck
+`source_profile.json`, read its compact `decks[]` digests in that batch and open
+a deck's larger identity/slide-library files only when the specific need below
+arises.
 
 ```
 Read references/strategist.md
@@ -251,9 +256,18 @@ Then load only the extra role modules triggered by the current plan:
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
 | Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
-| The core's proposed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/strategist-image.md` + `references/image-layout-spec.md` + `references/image-layout-patterns.md` before authoring image renderings, production detail, formula resources, or §VIII |
+| The confirmed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/image-layout-spec.md` + `references/image-layout-patterns.md` before production detail, formula resources, or §VIII |
 
-Core chooses Stage-2 sources. Load it before Stage 2 for non-`none`, or after confirmation if `none` changes; do not backfill candidates. Retain for confirmed non-`none` or formulas; otherwise write no image rows. Only an installed project-local template state loads the template module, and only after Stage 1 is confirmed; a bare template/style name does not.
+After Stage 1 and template handoff, load `strategist-image.md` plus only the
+three `_index.md` files. Author the three whole solution intents before mapping
+any component basis. Freeze every referenced mode/style/rendering id from the
+indexes, then read once only the deduplicated union of those exact detail files
+and finish the three custom behaviors. A novel custom reads no detail file.
+Confirmed non-`none` or formulas load the layout references and continue into
+resource planning; confirmed `none` without formulas writes no image rows while
+retaining recommendation-only rendering candidates. Only an installed
+project-local template state loads the template module, and only after Stage 1
+is confirmed; a bare template/style name does not.
 
 > ⚠️ **Mandatory artifact gates**: after final confirmation, author complete `design_spec.md` from `${SKILL_DIR}/templates/design_spec_reference.md`. After Gate 1 and any refinement approval, author `spec_lock.md` from `${SKILL_DIR}/templates/spec_lock_reference.md` plus approved Design Spec/context. Author each new artifact once without placeholders or `scaffold-*` (manual-only). Schema validity does not prove semantic fidelity.
 
@@ -313,6 +327,13 @@ uvx ppt-master confirm-ui <project_path> --daemon
 uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1
 ```
 
+**Hard rule — Stage 1 is intermediate**: exit `0` from this first wait is an
+instruction to continue, not a route-completion condition. Do not send a final
+chat reply, go idle, or yield the task here. In the same active run, read the two
+Stage-1 receipts, complete the template/free-design handoff, author fresh Stage
+2, and invoke the final wait below. Only `stage: final` + `status: confirmed`
+may close this confirmation flow.
+
 The single Stage-1 submission writes both `result.json` and
 `template_selection.json`; neither replaces the other. Read each exactly once.
 Require a confirmed communication result and either `free_design` with no roots
@@ -330,10 +351,14 @@ or `templates` with at least one server-resolved root.
    it. The server requires this handoff before Stage 2.
 
 2. Only now inspect installed template state and apply
-   `strategist-template.md` when active. Derive the complete deck solution and
-   production defaults, loading the triggered image-planning bundle above.
-   Create `confirm_ui/recommendations.stage2.json` without changing Stage 1;
-   declare `stage: "stage2"`, then wait for the final confirmation:
+   `strategist-template.md` when active. Read `strategist-image.md` plus only
+   `modes/_index.md`, `visual-styles/_index.md`, and
+   `image-renderings/_index.md`; author three whole solution intents, freeze
+   their exact component references from those indexes, then read only the
+   referenced detail files and complete the custom projections. Derive the
+   remaining production defaults and create
+   `confirm_ui/recommendations.stage2.json` without changing Stage 1; declare
+   `stage: "stage2"`, then wait for the final confirmation:
 
    ```bash
    uvx ppt-master confirm-ui <project_path> --wait-only
@@ -389,7 +414,7 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 
 **Mandatory — spec-refinement note** (not another Confirm UI stage): after confirmation details and any split-mode line, append one localized 💡 line offering review of the complete Design Spec before the lock; any part may be revised in chat until explicit approval. Default OFF; only explicit chat opt-in or `refine_spec: true` runs [`refine-spec`](stages/refine-spec.md) after Gate 1. Confirm UI records the toggle; chat fallback prints the same line.
 
-**Formula policy**: Final Stage 2 confirms `mixed`, `render-all`, or `text-only`. When rendering is required, load the image-planning bundle even if `image_usage` is `none`, then follow [`strategist-image.md`](../references/strategist-image.md)'s formula-resource contract. `text-only` creates no formula image rows.
+**Formula policy**: Final Stage 2 confirms `mixed`, `render-all`, or `text-only`. The image-decision core is already loaded; when rendering is required, load the conditional image-layout references even if `image_usage` is `none`, then follow [`strategist-image.md`](../references/strategist-image.md)'s formula-resource contract. `text-only` creates no formula image rows.
 
 **Proactive production decisions**: Final Stage 2 records
 `proactive_speaker_notes`, `proactive_custom_animations`, and
@@ -463,7 +488,7 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
 
-> ⚠️ **In-pipeline ai rows MUST use the manifest contract** — even when only 1 ai row exists. Always write `images/image_prompts.json` first and render `image_prompts.md` with `image_gen.py --render-md`. Then execute the confirmed path from `image-generator.md §7`: `image_gen.py --manifest` is **Path A only**; `host-native` is **Path B** and MUST skip `--manifest`; `manual` writes the prompts and stops for external generation. The positional form (`image_gen.py "prompt" ...`) is reserved for **out-of-pipeline one-off testing / single-image fixups** — it skips manifest + sidecar, leaving no audit trail.
+> ⚠️ **In-pipeline ai rows MUST use the manifest contract** — even when only 1 ai row exists. Always write `images/image_prompts.json` first and render `image_prompts.md` with `image_gen.py --render-md`. Then execute the confirmed path from `image-generator.md §7`: `image_gen.py --manifest` is **Path A only**; `host-native` is **Path B** and MUST skip `--manifest`; `manual` writes the prompts and stops for external generation. The positional form (`image_gen.py "prompt" ...`) is reserved for **out-of-pipeline one-off testing / single-image fixups**, except for the already-planned registered subject/base derivation in `image-generator.md` §4.4. That narrow exception keeps both final rows in the resource authority and operational sidecar; it does not authorize unrelated in-pipeline generation outside the manifest contract.
 
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](../references/image-searcher.md) §5.
 
@@ -509,32 +534,41 @@ Workflow:
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
 Read the execution references for this deck's locked `mode` + `visual_style`
-(from `spec_lock.md`). Load this fixed required block directly as one batch;
-do not route among its files one at a time:
+(from `spec_lock.md`). Load this fixed required block directly as one batch:
 ```
 Read references/executor-base.md                  # REQUIRED: flat/shared execution core
 Read references/shared-standards-core.md          # REQUIRED: SVG compatibility + shared aesthetic/leading baseline
 Read references/svg-effects.md                    # REQUIRED: Visual Job Router + effects/construction vocabulary
 Read references/native-shape-authoring.md         # REQUIRED: native-shape selection and Boolean construction
 Read references/semantic-svg.md                   # REQUIRED: semantic metadata boundary
-Read references/modes/<resolved-id>.md            # one preset id, or each `mode_references` id
-Read references/visual-styles/<resolved-id>.md    # one preset id, or each `visual_style_references` id
+Read references/modes/_index.md
+Read references/visual-styles/_index.md
+Read references/modes/<resolved-id>.md             # one preset id, or each `mode_references` id
+Read references/visual-styles/<resolved-id>.md     # one preset id, or each `visual_style_references` id
 ```
 
 Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual Job Router active during page authoring; they are not passive compatibility reading. Explicit user/template requirements and the locked style override compatible aesthetic defaults, never technical Required / Forbidden boundaries.
 
-> Read only the always-on references above plus the conditionally triggered modules below. A preset reads its one locked file. For `mode: custom` or `visual_style: custom`, read every exact file named by the optional `mode_references` / `visual_style_references`, then synthesize those sources under the corresponding behavior. If the reference field is absent, the direction is genuinely novel: read no preset file and follow the behavior directly. Never infer adjacent references or glob `modes/` / `visual-styles/`.
+> Read only the always-on references above plus the conditionally triggered modules below. The indexes provide routing information, not permission to open siblings. A preset reads its one locked file. For `custom`, read only the exact bases named by optional `mode_references` / `visual_style_references`, then synthesize them under the corresponding behavior. If absent, treat the direction as genuinely novel and read no preset file. Do not infer adjacent bases, glob a catalog, or blend unselected identities.
 
 | Deterministic trigger | Additional references |
 |---|---|
 | `pptx_structure.mode: structured` | `executor-structured.md` + `pptx-structure-interface.md` |
-| Any data chart/table, including mini or inset charts and sparklines | `executor-chart.md` |
-| Preset pattern or supported native chart/table | `native-data-interface.md` before drawing |
+| Selected §VII / `page_visualizations` Chart/Table `family/key`, or a legacy `page_charts` row resolving to a live Chart/Table SVG | `executor-visualization.md` + the selected Chart/Table branch |
+| Actual value-driven geometry, including mini/inset charts and sparklines | `executor-chart.md` |
+| Mandatory per-page Structure decision from §IX is `yes` | `executor-structure.md` before any geometry for the first applicable page |
+| Actual row × column fact grid | `executor-table.md` |
+| Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
 | All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
-No branch is loaded by analogy. Evaluate these triggers from `spec_lock.md`, §VII/§VIII, the selected style, and the current page plan.
+No branch is loaded by analogy. For each page, after §IX content/communication
+but before geometry, apply [`executor-base.md`](../references/executor-base.md)'s
+mandatory Structure decision. `no` stays on base; before the first `yes`, read
+`executor-structure.md` completely and reuse it until file/context invalidation.
+Create no catalog/lock/artifact. Chart/Table selection neither replaces this
+decision nor locks geometry/native readiness.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
@@ -549,7 +583,12 @@ uvx ppt-master svg-editor <project_path> --live --daemon
 - **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/stages/live-preview.md`](stages/live-preview.md).
 - The editor also supports **staged direct edits** (text content + SVG element attributes previewed immediately, then written to `svg_output/` only when the user clicks **Apply changes**; `Ctrl+Z` / Undo drops staged edits) alongside annotation; re-export stays chat-driven. Full scope and editor details: see [`workflows/stages/live-preview.md`](stages/live-preview.md) Notes.
 
-**Conditional reference reads**: Follow `executor-structured.md` for template Design Spec/prototypes and `executor-chart.md` for chart SVGs. Read each selected full reference once per valid context; reread only after a known change or context invalidation. Flat routes skip template reads. Summaries and sidecars never replace full SVGs.
+**Conditional reference reads**: `executor-structured.md` owns template specs
+and prototypes. `executor-visualization.md` resolves a selected canonical or
+legacy value; read only its returned SVG plus applicable family branches. Read
+each full reference once per valid context and reread only after change/context
+invalidation. Flat routes skip template reads; never substitute summaries,
+sidecars, or guessed family paths.
 
 > Image facts: trust the latest `analysis/image_analysis.csv` from the Step 4 inventory read or the Step 5 post-acquisition refresh. If `images/` changed since, re-run `uvx ppt-master analyze-images <project_path>/images` before layout; if the folder is empty, use no image inventory and ignore a stale CSV.
 
@@ -611,7 +650,7 @@ gate-signal: method=<rule resolved, or none> | page-local=<count> | not-exercise
 ```bash
 uvx ppt-master svg-quality-check <project_path> --stage final --json
 ```
-- **MUST**: Before this gate, every chart/table whose Design Spec §IX page block says `Native-ready: yes` already has its own draw-time marker plus JSON metadata. Rows marked `no` and incidental microvisuals remain ordinary SVG. For legacy specs only, a matching §VII value may supply the decision when §IX has no field.
+- **MUST**: Before this gate, every §IX `Native-ready` entry `<object-key>=yes` already has one matching draw-time marker group and JSON metadata child; `=no` and incidental microvisuals remain ordinary SVG. A legacy bare `yes|no` is readable only when that page has exactly one eligible object; it never derives from §VII.
 - Run the command unfiltered—do not pipe it through `tail`, `head`, `grep`, or another output truncator. One invocation already scans every page and reports the complete issue set.
 - On failure, review all `blocking` errors and all advisory warnings from that run before editing. Choose which warnings merit work, fix every blocking error and the selected warnings in one consolidated edit pass, then perform one verification rerun. If it still fails, its complete output begins the next batch cycle; never run the checker between individual fixes or use repeated invocations to discover one next issue at a time. If terminal output is truncated, extract only `categories.blocking.issues` and, when needed, `categories.introduced.issues` from the report written by that same run.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.

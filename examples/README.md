@@ -39,5 +39,5 @@ New or deliberately refreshed examples need (1) the standard structure above and
 
 - [Quick Start](../README.md)
 - [Workflow](../skills/ppt-master/SKILL.md)
-- [Chart Templates](../skills/ppt-master/templates/charts/)
+- [Visualization Templates](../skills/ppt-master/templates/)
 - [Icon Library](../skills/ppt-master/templates/icons/)

@@ -49,6 +49,25 @@ except ImportError:
         validate_communication_trace,
     )
 
+try:
+    from visualization_catalog import (
+        LEGACY_STRUCTURE_INTENT_KIND,
+        VISUALIZATION_SVG_KIND,
+        VisualizationCatalogError,
+        resolve_visualization_reference,
+    )
+except ImportError:
+    import sys
+
+    if str(SCRIPTS_DIR) not in sys.path:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+    from visualization_catalog import (  # type: ignore
+        LEGACY_STRUCTURE_INTENT_KIND,
+        VISUALIZATION_SVG_KIND,
+        VisualizationCatalogError,
+        resolve_visualization_reference,
+    )
+
 
 TOOLS_DIR = SCRIPTS_DIR
 
@@ -1017,6 +1036,8 @@ def _validate_spec_lock_relations(
     layouts = fields("pptx_layouts")
     page_pptx_layouts = fields("page_pptx_layouts")
     page_layouts = fields("page_layouts")
+    page_visualizations = fields("page_visualizations")
+    legacy_page_charts = fields("page_charts")
     structure = fields("pptx_structure")
 
     for layout_key, raw_value in layouts.items():
@@ -1059,13 +1080,70 @@ def _validate_spec_lock_relations(
                     f"pages {', '.join(extra)}"
                 )
 
-    chart_pages = set(fields("page_charts"))
-    unknown_chart_pages = sorted(chart_pages - set(rhythm))
-    if unknown_chart_pages:
+    overlapping_visualization_pages = sorted(
+        set(page_visualizations) & set(legacy_page_charts)
+    )
+    if overlapping_visualization_pages:
         errors.append(
-            f"{markdown_name} schema: page_charts has unknown pages "
-            f"{', '.join(unknown_chart_pages)}"
+            f"{markdown_name} schema: pages "
+            f"{', '.join(overlapping_visualization_pages)} are declared in both "
+            "page_visualizations and legacy page_charts; keep only "
+            "page_visualizations"
         )
+
+    for section_id, mapping, allow_legacy_bare in (
+        ("page_visualizations", page_visualizations, False),
+        ("page_charts", legacy_page_charts, True),
+    ):
+        unknown_pages = sorted(set(mapping) - set(rhythm))
+        if unknown_pages:
+            errors.append(
+                f"{markdown_name} schema: {section_id} has unknown pages "
+                f"{', '.join(unknown_pages)}"
+            )
+        for page_key, raw_reference in mapping.items():
+            reference = _normalize_schema_value(raw_reference)
+            try:
+                entry = resolve_visualization_reference(
+                    reference,
+                    allow_legacy_bare=allow_legacy_bare,
+                )
+            except VisualizationCatalogError as exc:
+                errors.append(
+                    f"{markdown_name} schema: {section_id}.{page_key} "
+                    f"cannot resolve visualization {reference!r}: {exc}"
+                )
+                continue
+            if entry.kind == LEGACY_STRUCTURE_INTENT_KIND:
+                if section_id != "page_charts" or not allow_legacy_bare:
+                    errors.append(
+                        f"{markdown_name} schema: {section_id}.{page_key} resolves "
+                        "to a legacy Structure intent outside page_charts"
+                    )
+                if entry.path is not None:
+                    errors.append(
+                        f"{markdown_name} schema: {section_id}.{page_key} legacy "
+                        "Structure intent unexpectedly has an asset path"
+                    )
+                continue
+            if entry.kind != VISUALIZATION_SVG_KIND:
+                errors.append(
+                    f"{markdown_name} schema: {section_id}.{page_key} resolves "
+                    f"to unsupported kind {entry.kind!r}"
+                )
+                continue
+            if entry.path is None:
+                errors.append(
+                    f"{markdown_name} schema: {section_id}.{page_key} does not "
+                    "resolve to an SVG asset path"
+                )
+                continue
+            asset_path = Path(entry.path)
+            if asset_path.suffix.casefold() != ".svg" or not asset_path.is_file():
+                errors.append(
+                    f"{markdown_name} schema: {section_id}.{page_key} does not "
+                    f"resolve to an SVG asset at {asset_path}"
+                )
 
     info = get_project_info_common(str(markdown_path.parent))
     format_key = str(info.get("format", "unknown"))

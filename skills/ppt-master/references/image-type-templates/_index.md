@@ -24,11 +24,11 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 |---|---|---|
 | [`infographic`](./infographic.md) | 2-5 parallel ordered zones with icons + minimal labels | Data summary / step list / KPI rundown |
 | [`flowchart`](./flowchart.md) | Sequential blocks connected by directional arrows | Process / workflow / pipeline |
-| [`framework`](./framework.md) | Central node + radiating satellites (hub-spoke) | Methodology / model / system architecture |
-| [`matrix`](./matrix.md) | 2×2 quadrant grid with two perpendicular axes | SWOT / BCG / Eisenhower / Ansoff / Porter |
-| [`cycle`](./cycle.md) | Closed loop, 3-6 steps with arrows returning to start | PDCA / flywheel / design thinking / continuous improvement |
+| [`framework`](./framework.md) | Central node + radiating satellites (hub-spoke) | Relational system / architecture |
+| [`matrix`](./matrix.md) | 2×2 quadrant grid with two perpendicular axes | Priority / risk / effort-impact regions |
+| [`cycle`](./cycle.md) | Closed loop, 3-6 steps with arrows returning to start | Iteration / lifecycle / continuous improvement |
 | [`funnel`](./funnel.md) | Top-wide bottom-narrow conversion stack | Marketing funnel / sales pipeline / hiring funnel |
-| [`pyramid`](./pyramid.md) | Bottom-wide top-narrow hierarchical tiers | Maslow / capability stack / value hierarchy |
+| [`pyramid`](./pyramid.md) | Bottom-wide top-narrow hierarchical tiers | Capability stack / value hierarchy |
 | [`comparison`](./comparison.md) | Symmetric split (left vs right, before vs after) | A/B / pros-cons / Before-After |
 | [`timeline`](./timeline.md) | Linear axis with milestone markers | History / roadmap / evolution |
 | [`map`](./map.md) | Stylized geographic outline with annotated markers | Offices / market presence / regional data / supply chain |
@@ -44,11 +44,11 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 |---|---|
 | Data summary / metrics rundown / step list | `infographic` |
 | Process / workflow / pipeline / steps with arrows | `flowchart` |
-| Methodology / model / framework / architecture diagram | `framework` |
-| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` |
-| Closed-loop process / PDCA / flywheel / continuous improvement | `cycle` |
+| Relational system / framework / architecture diagram | `framework` |
+| 2×2 quadrant / priority / risk / effort-impact | `matrix` |
+| Closed-loop process / iteration / lifecycle / continuous improvement | `cycle` |
 | Conversion funnel / sales pipeline / hiring funnel | `funnel` |
-| Hierarchy / Maslow / value stack / capability layer | `pyramid` |
+| Hierarchy / value stack / capability layer | `pyramid` |
 | Comparison / Before-After / A/B / VS | `comparison` |
 | History / evolution / roadmap / timeline | `timeline` |
 | Offices / market presence / regions / supply chain / geography | `map` |

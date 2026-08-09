@@ -1,74 +1,54 @@
-# SVG Visualization Template Library
+# Chart Visualization Templates
 
-This directory contains the standardized SVG visualization templates used by PPT Master — charts, infographics, process diagrams, relationship diagrams, and strategic frameworks. The directory name `charts/` is kept for backward compatibility; the library scope is broader than charts.
+This directory contains 33 canonical value-driven references. A chart belongs here
+when source values, categories, time, weights, or durations determine visual
+mark position, length, area, angle, font size, or connection width.
+
+Qualitative page topology is built as a page-specific Structure by Executor.
+Cell-grid semantics belong in [`tables/`](../tables/). Reusable PowerPoint
+Master/Layout, page-type, slot, and placeholder contracts belong in
+[`layouts/`](../layouts/).
 
 ## Source of truth
 
-[`charts_index.json`](./charts_index.json) is the single source of truth for the library: total count + one selection-rule `summary` per template (format: `"Pick for X. Skip if Y (use other_key)."`). [`chart_recall.py`](../../scripts/chart_recall.py) can recall a bounded candidate set from this live registry without maintaining a second category or keyword index.
+[`charts_index.json`](./charts_index.json) is the sole chart registry. Its
+`charts` object maps each canonical key to one selection-rule `summary` in the
+form `Pick for ... Skip if ...`. The key matches `<key>.svg`; `meta.total`
+matches the canonical SVG roster.
 
-For one page, provide 3-8 English semantic content-shape tags, then inspect the positive-scoring summaries plus the explicit `no-template-match` option. The requested limit is a cap, not a padding target, and lexical confidence never expands the output automatically. At `high` / `medium`, retain `no-template-match` when no bounded candidate fits. At `low` / `none`, a fitting candidate needs no expansion, but rerun the same query once with `--semantic-fallback` before keeping `no-template-match`. In Default Generate, a selected result creates one `Page | Template | Usage` row in §VII and one matching `page_charts` entry; its path is derived from the key, while Usage is concise page-local intent and detailed adaptation remains in §IX. Quick Generate keeps the selected key/purpose only in active context and writes no mapping artifact. A negative result creates no row in either profile. See [`chart-recall.md`](../../scripts/docs/chart-recall.md). The Generate workflow remains the authority for when the active profile uses this helper; maintainers may still open the registry directly when editing or auditing the catalog.
+Use [`visualization_recall.py`](../../scripts/visualization_recall.py) for
+bounded Chart/Table or chart-only recall. New Default planning writes
+`chart/<key>` to `page_visualizations`; Quick keeps the selected reference in
+active context. [`chart_recall.py`](../../scripts/chart_recall.py) and bare keys
+remain legacy compatibility only.
 
 ## Authoring contract
 
-[`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) owns readable standalone SVG, semantic and structural fidelity, root-group bounds, data encoding, and neutral previews. Default Design Spec §IX or the Quick active-context page decision plus source data own the generated page's semantics; Default `spec_lock.md` owns stable project anchors. A selected SVG is a page-local structural reference, while its type, styling, frames, grouping, item count, capacity, and geometry remain adaptable.
+[`VISUALIZATION_TEMPLATE_AUTHORING.md`](../VISUALIZATION_TEMPLATE_AUTHORING.md)
+owns the shared standalone-SVG, neutral-preview, root-boundary, Shape-first,
+family, and catalog rules. Chart-specific requirements are:
 
-## Visualization output model
+- Preserve the exact value-to-mark mapping, labels, units, categories, series,
+  ordering, and source notes required by the information.
+- Keep calculator-supported `chart-plot-area` markers accurate.
+- Default output remains independently editable DrawingML shapes.
+- Add native Chart replacement metadata only for a supported independent data
+  object. The visible fallback and metadata describe the same data.
+- Do not classify a named quadrant, process, hierarchy, or relationship diagram
+  as a chart unless values actually determine its marks.
 
-This library is **Shape-first**. Infographics, process diagrams, architecture
-diagrams, frameworks, and the default rendering of data charts export as
-independently editable PowerPoint shapes:
+`matrix_2x2` is a chart: each item's x/y coordinates encode two values and its
+radius encodes a third metric. A fixed 2×2 set of titled text regions is a
+page-specific Structure. A schedule whose dates or durations determine task-bar
+position and length is `chart/gantt_chart`; a qualitative stage/lane plan is a
+Structure built from those relationships.
 
-- Use ordinary SVG primitives for basic nodes, containers, and straight
-  relationships; they export as editable PowerPoint shapes. A straight
-  directional relationship uses `<line>` with a registered arrow marker.
-- When a bent or curved relationship exactly matches a stock Connector contour,
-  prefer a compact authored `bentConnector*` / `curvedConnector*` preset. It is
-  an unconnected native Connector shape and does not create node attachment or
-  automatic routing.
-- Use a stock PowerPoint preset for a solid block arrow, chevron, or standard
-  flowchart node when it exactly expresses the intended object. A template may
-  retain the complete compact atomic `<g>` generated by `preset_shape_svg.py`,
-  so direct export preserves the native preset identity. The group owns the
-  metadata and base paint once; its direct visible paths are registry-derived
-  layers with only necessary per-layer paint overrides. It has no hidden
-  carrier, preview wrapper, or stored fingerprint. If preset, frame,
-  adjustments, or paint changes, regenerate the whole group instead of editing
-  metadata or paths. PPTX import and `mirror` retain their separate expanded
-  lossless representation; do not copy that transport form into new templates.
-- When no single preset suffices but closed operands can express the object,
-  materialize the Union / Combine / Fragment / Intersect / Subtract result with
-  `shape_boolean_svg.py` before considering a hand-authored contour.
-- Keep a hand-authored `<path>` / `<polygon>` only for branded, data-defined,
-  locked organic / hand-drawn, or other contours that primitives, an exact
-  preset, and Boolean materialization cannot faithfully express. They still
-  export as editable DrawingML shapes.
-- Authored Connector metadata comes only from `preset_shape_svg.py`; never
-  hand-write endpoint attachment metadata. Existing attached Connector topology
-  imported from a source PPTX belongs to the preserve/mirror round-trip
-  contract, not chart-template authoring.
+## Runtime boundary
 
-Data-backed charts retain the separate opt-in replacement route described
-below. Conceptual diagrams and frameworks are never labeled as native charts.
-
-## Native Chart/Table replacement markers
-
-Supported data chart templates include a `<g data-pptx-replace-with="chart">` marker by default, and pure text-grid table templates include the table form. These are capability examples, not project decisions: Default keeps and rewrites the marker only when its Design Spec §IX page block says `Native-ready: yes` (legacy §VII fallback only); Quick makes the same independent-object decision in active context before drawing. Otherwise omit it. The default SVG export path remains shape-based DrawingML. With `--native-charts-and-tables`, prepared groups become native PowerPoint Chart/Table objects from their JSON metadata. The legacy `--native-objects` spelling remains a compatibility alias.
-
-`--native-charts-and-tables` is an explicit native-object opt-in and may be lossy or visually normalized. Replacement-local value labels, center KPIs, callouts, quadrant notes, fixed axis ranges, and custom binning/splits may not survive native replacement unless represented by the payload. ChartEx palette entries do survive when supplied through valid payload colors, but this does not preserve every ChartEx style detail. Detectable information-loss risks should be reported as warnings, not handled by disabling an otherwise supported replacement marker. Review those warnings and compare the native-object export with the default shape-based export before delivery.
-
-Native replacement authoring remains active for all 23 currently supported data-chart templates:
-
-| Family | Active replacement templates | Native output |
-|---|---|---|
-| Category comparison | `column_chart`, `horizontal_bar_chart`, `grouped_bar_chart`, `stacked_bar_chart` | Classic category charts |
-| Time trend | `line_chart`, `area_chart`, `stacked_area_chart`, `dual_axis_line_chart` | Classic line/area/combo charts |
-| Part-to-whole | `pie_chart`, `donut_chart`, `pie_of_pie_chart`, `bar_of_pie_chart`, `treemap_chart`, `sunburst_chart` | Classic pie-family or ChartEx hierarchy charts |
-| Distribution and relationship | `scatter_chart`, `bubble_chart`, `histogram_chart`, `pareto_chart`, `box_plot_chart` | Classic XY or ChartEx distribution charts |
-| Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | ChartEx or classic specialty charts |
-| Text-grid tables | `basic_table`, `financial_statement_table` | Native DrawingML tables |
-
-Replacement payloads must include explicit `name`, `x`, `y`, `width`, and `height` fields so the native frame aligns with the fallback drawing. Keep legends, explanatory cards, source notes, center KPIs, and custom callouts outside the marked group when they must remain separate shapes; otherwise accept and review the native-object export warning. Canonical rectangular merged text cells may use anchor-only `row_span` / `col_span` metadata with blank covered cells; nonrectangular merges and graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route. Per-side borders, plain multi-paragraph cells, and the closed run-rich paragraph schema use the contracts in [`native-data-interface.md`](../../references/native-data-interface.md#2-powerpoint-native-chart--table-replacement-markers-opt-in). Relationship-bearing text, structural line breaks, fields, tabs, bullets, and arbitrary rich-text OOXML stay on the SVG fallback route.
-
-## Usage
-
-Execution loads only selected keys under [`executor-chart.md`](../../references/executor-chart.md) §1 and reuses an unchanged file within the active context. Files are named after the `key` field in `charts_index.json` (e.g. `column_chart.svg`, `quadrant_bubble_scatter.svg`). Templates are named by visual structure, not by business-model name — terms like SWOT, BCG, PEST, OKR, Porter's Five Forces, and Value Chain are translated into semantic content-shape tags before candidate recall.
+One selected SVG is a flexible reference for one mapped page. Design Spec §IX
+or the Quick active-context decision plus source data owns final semantics.
+Project palette, typography, chrome, grouping, capacity, and geometry remain
+adaptable. Selecting a chart reference does not itself select native output;
+§IX/Quick names independent objects separately and decides
+`<object-key>=yes|no`, while explicit `--native-charts-and-tables` export is a
+second opt-in.

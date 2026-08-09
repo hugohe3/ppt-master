@@ -26,7 +26,7 @@ Neutral information delivery. Lay the facts out plainly and completely, organize
 - Even hierarchy within a section; consistent layout across sibling pages so the eye always knows where to look.
 - Where one figure genuinely matters (a total, a status flag, an exception), surface it — but don't invent a punchline the content doesn't have.
 
-> Table / list / dashboard / status-card geometry lives in [`templates/charts/`](../../templates/charts/); this mode decides *that the page informs completely and neutrally*, not pixel positions.
+> Cell-grid tables and value-driven marks may use [`templates/tables/`](../../templates/tables/) and [`templates/charts/`](../../templates/charts/); qualitative topology is composed at runtime through [`executor-structure.md`](../executor-structure.md). A dashboard may combine them. This mode decides *that the page informs completely and neutrally*, not pixel positions.
 
 ## 3. Speaker-notes register
 

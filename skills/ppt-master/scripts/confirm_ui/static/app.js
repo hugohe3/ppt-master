@@ -3,8 +3,9 @@
  * choice together. Stage 2 combines the coherent deck solution and production
  * mechanics, then writes the final result.
  * Finite fields use /static/catalogs.json; coordinated design directions seed
- * color, typography, icons, generated-image rendering, and conditional
- * template-application prose. Final confirm saves result.json.
+ * mode, visual style, color, typography, icons, and generated-image rendering,
+ * while template-application prose stays conditional. Final confirm saves the
+ * flattened current values to result.json.
  */
 (function () {
     "use strict";
@@ -63,7 +64,11 @@
             sec_mode: "Generation mode",
             sec_refine: "Review the Design Spec first",
             sec_design_directions: "Coherent design directions",
-            design_directions_hint: "Each direction coordinates style, color, typography, icons, and generated-image rendering. You can fine-tune every field below.",
+            design_directions_hint: "Choose a complete direction first, then fine-tune the projected fields below. Clicking a direction again restores its authored bundle.",
+            direction_active: "Applied",
+            direction_adjusted: "Adjusted",
+            direction_reset_hint: "Click to apply or restore this complete direction.",
+            scheme_component_options: "Project-specific custom choices · select a card to edit",
             sec_template_application: "Template application",
             template_application_hint: "The AI recommends how to apply the installed template to this deck. Revise the plan directly in natural language.",
             placeholder_template_application: "Describe which template pages or prototypes to use, skip, repeat, or reorder; what must stay; and what may be replaced or reorganized.",
@@ -241,7 +246,11 @@
             sec_mode: "生成モード",
             sec_refine: "先に設計仕様を確認",
             sec_design_directions: "統合デザイン方針",
-            design_directions_hint: "各案はスタイル、配色、書体、アイコン、生成画像のレンダリングを一体で提案します。下の各項目で微調整できます。",
+            design_directions_hint: "まず全体案を選び、その下に反映された各項目を微調整します。同じ全体案をもう一度押すと、元の組み合わせに戻ります。",
+            direction_active: "適用中",
+            direction_adjusted: "調整済み",
+            direction_reset_hint: "クリックすると、この全体案を適用または元の状態に戻します。",
+            scheme_component_options: "プロジェクト専用カスタム案 · カードを選んで編集",
             sec_template_application: "テンプレートの適用方法",
             template_application_hint: "AIが現在の内容に合わせたテンプレートの使い方を提案します。自然言語で直接修正できます。",
             placeholder_template_application: "使用・省略・反復・並べ替えするページやプロトタイプ、保持する要素、差し替え・再構成できる内容を記述します。",
@@ -419,7 +428,11 @@
             sec_mode: "生成模式",
             sec_refine: "先审核设计规范",
             sec_design_directions: "成套设计方向",
-            design_directions_hint: "每套方向会一起协调风格、配色、字体、图标和生成图渲染；你仍可在下方逐项微调。",
+            design_directions_hint: "先选择一套完整方案，再在下方微调各项；再次点击同一方案会恢复它原本的整套预设。",
+            direction_active: "已应用",
+            direction_adjusted: "已调整",
+            direction_reset_hint: "点击可应用或恢复这套完整方案。",
+            scheme_component_options: "项目专属自定义方案 · 选中卡片后可编辑",
             sec_template_application: "模板应用方式",
             template_application_hint: "AI 会根据当前内容推荐如何使用已安装模板；你可以直接用自然语言修改。",
             placeholder_template_application: "说明使用、跳过、重复或重排哪些模板页面/原型，哪些内容必须保留，哪些可以替换或重组。",
@@ -673,6 +686,15 @@
     var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
     var AI_IMAGE_COMPARISON = {};  // /api/ai-image-comparison — preset rendering catalog
     var STATE = {};
+    var ACTIVE_DIRECTION_ID = "";
+    var ACTIVE_DIRECTION_BASELINE = "";
+    var ACTIVE_COMPONENT_DIRECTION_IDS = {};
+    var refreshDesignDirectionState = function () {};
+    var DIRECTION_COMPONENT_PAINTERS = [];
+
+    function refreshDirectionComponentStates() {
+        DIRECTION_COMPONENT_PAINTERS.forEach(function (paint) { paint(); });
+    }
     var TEMPLATE_KINDS = ["brand", "style", "layout", "deck"];
     var TEMPLATE_OPTIONS = null;
     var TEMPLATE_CANDIDATES = [];
@@ -1160,9 +1182,8 @@
         var grouped = list.length && list[0] && list[0].items;
         var flat = grouped ? list.reduce(function (a, g) { return a.concat(g.items || []); }, []) : list;
         var ids = flat.map(function (o) { return o.id; });
-        // Optional personality spectrum: instead of a single ★ recommendation,
-        // the AI marks a few catalog ids (safe / shifted / bold) each with a
-        // temperament tag + a real-world analogy note. Replaces the single badge.
+        // Optional legacy spectrum: marks several catalog ids with localized
+        // tags and notes instead of one recommendation badge.
         var spectrum = (opts2.spectrum && opts2.spectrum.length) ? opts2.spectrum : null;
         var specById = {};
         if (spectrum) spectrum.forEach(function (s) {
@@ -1175,7 +1196,7 @@
         var cur = getVal();
         var isCustom = cur != null && cur !== "" &&
             (cur === customSentinel || ids.indexOf(cur) === -1);
-        if (!allowCustom && isCustom) {
+        if (!allowCustom && isCustom && opts2.preserveCustom !== true) {
             // closed field with an out-of-catalog value → snap to recommended/first
             cur = ids.indexOf(recommendedId) >= 0 ? recommendedId : ids[0];
             setVal(cur);
@@ -1604,6 +1625,11 @@
         return spec.candidates || spec.options || [];
     }
 
+    function designDirectionId(candidate, index) {
+        var value = candidate && candidate.id;
+        return String(value || ("direction-" + (Number(index) + 1)));
+    }
+
     function selectedDesignDirection() {
         var candidates = designDirectionCandidates();
         var selected = Number(designDirectionSpec().selected || 0);
@@ -1614,6 +1640,59 @@
     function directionField(field) {
         var candidate = selectedDesignDirection();
         return candidate[field] != null ? candidate[field] : null;
+    }
+
+    function directionBehavior(candidate, field) {
+        return String(localized(candidate, field + "_behavior") ||
+            (candidate && candidate[field + "_behavior"]) || "");
+    }
+
+    function directionStateSignature(candidate) {
+        candidate = candidate || {};
+        var out = {};
+        if (candidate.mode) {
+            out.mode = STATE.mode || "";
+            out.mode_behavior = STATE.mode === "custom" ? (STATE.mode_behavior || "") : "";
+        }
+        if (candidate.visual_style) {
+            out.visual_style = STATE.visual_style || "";
+            out.visual_style_behavior = STATE.visual_style === "custom" ?
+                (STATE.visual_style_behavior || "") : "";
+        }
+        if (candidate.color) {
+            var palette = normPalette(STATE.color || {});
+            out.color = {
+                custom: (STATE.color && STATE.color.custom) || "",
+                palette: {}
+            };
+            PALETTE_ROLES.forEach(function (role) {
+                out.color.palette[role] = normHex(palette[role]) || "";
+            });
+        }
+        if (candidate.typography) {
+            var typography = normTypography(STATE.typography || {});
+            out.typography = {
+                heading: typography.heading || {},
+                body: typography.body || {},
+                body_size: String(typography.body_size || ""),
+                sizes: {}
+            };
+            ["title", "subtitle", "annotation"].forEach(function (role) {
+                out.typography.sizes[role] = String(
+                    (STATE.typography && STATE.typography.sizes && STATE.typography.sizes[role]) || ""
+                );
+            });
+        }
+        if (candidate.icons) out.icons = STATE.icons || "";
+        if (candidate.image_strategy) {
+            out.image_strategy = comparableImageStrategy(STATE.image_strategy || {});
+        }
+        return JSON.stringify(out);
+    }
+
+    function activeDirectionAdjusted(candidate, index) {
+        return designDirectionId(candidate, index) === ACTIVE_DIRECTION_ID &&
+            directionStateSignature(candidate) !== ACTIVE_DIRECTION_BASELINE;
     }
 
     function customCandidateSpec(field) {
@@ -1703,11 +1782,7 @@
 
     function imageStrategyCustomCandidate() {
         var candidate = customCandidateSpec("image_strategy");
-        if (!customCandidateBehavior("image_strategy")) {
-            candidate = imageStrategyCandidates().filter(function (item) {
-                return item && item.rendering === "custom";
-            })[0] || {};
-        }
+        if (!customCandidateBehavior("image_strategy")) return null;
         if (!candidate || typeof candidate !== "object") candidate = {};
         candidate = Object.assign({}, candidate, { rendering: "custom" });
         return normalizedImageStrategy(candidate);
@@ -1724,6 +1799,16 @@
         var behavior = localized(candidate, "behavior") || candidate.behavior || candidate.custom || "";
         if (behavior) out.behavior = behavior;
         return out;
+    }
+
+    function comparableImageStrategy(candidate) {
+        var strategy = normalizedImageStrategy(candidate);
+        return {
+            rendering: strategy.rendering || "",
+            visual: strategy.visual || "",
+            mood: strategy.mood || "",
+            behavior: strategy.behavior || ""
+        };
     }
 
     function usesCustomImagePlanValue(value) {
@@ -1880,19 +1965,20 @@
         host.appendChild(sec);
     }
 
-    function applyDesignDirection(candidate) {
+    function applyDesignDirection(candidate, index, shouldRender) {
         candidate = candidate || {};
+        var directionId = designDirectionId(candidate, index);
         if (candidate.mode) {
             STATE.mode = candidate.mode;
-            if (candidate.mode === "custom" && candidate.mode_behavior) {
-                STATE.mode_behavior = candidate.mode_behavior;
-            }
+            STATE.mode_behavior = candidate.mode === "custom" ?
+                directionBehavior(candidate, "mode") : "";
+            ACTIVE_COMPONENT_DIRECTION_IDS.mode = directionId;
         }
         if (candidate.visual_style) {
             STATE.visual_style = candidate.visual_style;
-            if (candidate.visual_style === "custom" && candidate.visual_style_behavior) {
-                STATE.visual_style_behavior = candidate.visual_style_behavior;
-            }
+            STATE.visual_style_behavior = candidate.visual_style === "custom" ?
+                directionBehavior(candidate, "visual_style") : "";
+            ACTIVE_COMPONENT_DIRECTION_IDS.visual_style = directionId;
         }
         if (candidate.color) {
             STATE.color = {
@@ -1902,27 +1988,22 @@
         }
         if (candidate.typography) {
             var typography = normTypography(candidate.typography);
-            var previousTypography = STATE.typography || {};
-            STATE.typography = {
-                name: localized(typography, "name") || typography.name || "",
-                heading: typography.heading || {},
-                body: typography.body || {},
-                // A direction changes font character, not the already-visible
-                // reading-mode sizing state.
-                body_size: previousTypography.body_size ||
-                    defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose),
-                sizes: Object.assign({}, previousTypography.sizes || {})
-            };
+            resetTypographySizeOverrides();
+            STATE.typography = typography;
+            STATE.typography.name = localized(candidate.typography, "name") || typography.name || "";
+            STATE.typography.body_size = typography.body_size ||
+                defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
+            STATE.typography.sizes = Object.assign({}, typography.sizes || {});
+            syncUnpinnedTypographySizes(true);
         }
         if (candidate.icons) STATE.icons = normalizeRecId("icons", candidate.icons);
         if (candidate.image_strategy) {
             STATE.image_strategy = normalizedImageStrategy(candidate.image_strategy);
+            ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = directionId;
         }
-        if (candidate.image_usage) {
-            var usage = selectedImageUsageIds(candidate.image_usage);
-            if (usage.length) STATE.image_usage = usage;
-        }
-        renderAll();
+        ACTIVE_DIRECTION_ID = directionId;
+        ACTIVE_DIRECTION_BASELINE = directionStateSignature(candidate);
+        if (shouldRender !== false) renderAll();
     }
 
     function renderDesignDirections(host) {
@@ -1930,11 +2011,16 @@
         if (!candidates.length) return;
         var sec = section("B", "sec_design_directions", t("design_directions_hint"));
         var grid = el("div", "font-grid design-direction-grid");
+        var cardStates = [];
         candidates.forEach(function (candidate, idx) {
             var card = el("div", "font-card design-direction-card");
+            card.title = t("direction_reset_hint");
             var head = el("div", "font-card-head");
             head.appendChild(el("span", "font-card-name",
                 localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
+            var status = el("span", "rec-badge direction-status");
+            status.style.display = "none";
+            head.appendChild(status);
             card.appendChild(head);
             if (candidate.visual_style) {
                 var preview = el("div", "design-direction-preview");
@@ -1942,7 +2028,10 @@
                 card.appendChild(preview);
             }
             var meta = [];
-            if (candidate.visual_style) meta.push(humanizeId(candidate.visual_style));
+            if (candidate.mode) meta.push(directionComponentValueLabel(candidate, "mode"));
+            if (candidate.visual_style) {
+                meta.push(directionComponentValueLabel(candidate, "visual_style"));
+            }
             if (candidate.icons) meta.push(humanizeId(candidate.icons));
             if (candidate.image_strategy && candidate.image_strategy.rendering) {
                 meta.push(comparisonValueLabel("rendering", candidate.image_strategy.rendering));
@@ -1961,76 +2050,301 @@
             if (swatches.childElementCount) card.appendChild(swatches);
             var note = localized(candidate, "note");
             if (note) card.appendChild(el("div", "color-note", note));
-            card.addEventListener("click", function () { applyDesignDirection(candidate); });
+            card.addEventListener("click", function () { applyDesignDirection(candidate, idx); });
+            cardStates.push({ candidate: candidate, index: idx, card: card, status: status });
             grid.appendChild(card);
         });
+        refreshDesignDirectionState = function () {
+            cardStates.forEach(function (entry) {
+                var active = designDirectionId(entry.candidate, entry.index) === ACTIVE_DIRECTION_ID;
+                var adjusted = active && activeDirectionAdjusted(entry.candidate, entry.index);
+                entry.card.classList.toggle("selected", active && !adjusted);
+                entry.card.classList.toggle("adjusted", adjusted);
+                entry.status.style.display = active ? "inline-block" : "none";
+                entry.status.textContent = adjusted ? t("direction_adjusted") : t("direction_active");
+            });
+        };
+        refreshDesignDirectionState();
         sec.appendChild(grid);
         host.appendChild(sec);
     }
 
+    function directionComponentMatchesAuthored(candidate, field) {
+        if (field === "mode") {
+            return STATE.mode === candidate.mode &&
+                (candidate.mode !== "custom" ||
+                    String(STATE.mode_behavior || "") === directionBehavior(candidate, "mode"));
+        }
+        if (field === "visual_style") {
+            return STATE.visual_style === candidate.visual_style &&
+                (candidate.visual_style !== "custom" ||
+                    String(STATE.visual_style_behavior || "") ===
+                        directionBehavior(candidate, "visual_style"));
+        }
+        if (field === "image_strategy") {
+            return JSON.stringify(comparableImageStrategy(STATE.image_strategy || {})) ===
+                JSON.stringify(comparableImageStrategy(candidate.image_strategy || {}));
+        }
+        return false;
+    }
+
+    function directionComponentSelected(candidate, field, index) {
+        var activeId = ACTIVE_COMPONENT_DIRECTION_IDS[field];
+        if (activeId) return activeId === designDirectionId(candidate, index);
+        return directionComponentMatchesAuthored(candidate, field);
+    }
+
+    function applyDirectionComponent(candidate, field, index) {
+        if (field === "mode") {
+            STATE.mode = candidate.mode;
+            STATE.mode_behavior = candidate.mode === "custom" ?
+                directionBehavior(candidate, "mode") : "";
+        } else if (field === "visual_style") {
+            STATE.visual_style = candidate.visual_style;
+            STATE.visual_style_behavior = candidate.visual_style === "custom" ?
+                directionBehavior(candidate, "visual_style") : "";
+        } else if (field === "image_strategy") {
+            STATE.image_strategy = normalizedImageStrategy(candidate.image_strategy || {});
+        }
+        ACTIVE_COMPONENT_DIRECTION_IDS[field] = designDirectionId(candidate, index);
+        renderAll();
+    }
+
+    function directionComponentIsCustom(candidate, field) {
+        if (field === "image_strategy") {
+            return candidate && candidate.image_strategy &&
+                candidate.image_strategy.rendering === "custom";
+        }
+        return candidate && candidate[field] === "custom";
+    }
+
+    function setDirectionComponentBehavior(field, value) {
+        if (field === "mode") {
+            STATE.mode = "custom";
+            STATE.mode_behavior = value;
+        } else if (field === "visual_style") {
+            STATE.visual_style = "custom";
+            STATE.visual_style_behavior = value;
+        } else if (field === "image_strategy") {
+            STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy || {});
+            STATE.image_strategy.rendering = "custom";
+            STATE.image_strategy.behavior = value;
+        }
+    }
+
+    function directionComponentValueLabel(candidate, field) {
+        var value = candidate && candidate[field];
+        if (field === "image_strategy") {
+            value = value && value.rendering;
+            return comparisonValueLabel("rendering", value);
+        }
+        var catalog = field === "mode" ? CAT.modes : CAT.visual_styles;
+        var option = findCatalogOption(catalog, value);
+        return option ? optionLabel(option) : (value === "custom" ? t("custom") : humanizeId(value));
+    }
+
+    function directionComponentNote(candidate, field) {
+        if (field === "image_strategy") {
+            var strategy = normalizedImageStrategy(candidate.image_strategy || {});
+            return [strategy.visual, strategy.mood, strategy.behavior].filter(Boolean).join(" · ");
+        }
+        if (candidate[field] === "custom") return directionBehavior(candidate, field);
+        return localized(candidate, "note") || "";
+    }
+
+    function directionComponentEditableBehavior(candidate, field) {
+        if (field === "image_strategy") {
+            return normalizedImageStrategy(candidate.image_strategy || {}).behavior || "";
+        }
+        return directionBehavior(candidate, field);
+    }
+
+    function renderDirectionComponentCandidates(parent, field) {
+        var candidates = designDirectionCandidates().filter(function (candidate) {
+            return candidate && candidate[field];
+        });
+        if (!candidates.length) return;
+        var block = el("div", "subfield scheme-component-options");
+        block.appendChild(el("div", "subfield-label", t("scheme_component_options")));
+        var grid = el("div", "font-grid scheme-component-grid");
+        var entries = [];
+        candidates.forEach(function (candidate, index) {
+            var card = el("div", "font-card scheme-component-card");
+            card.dataset.candidateId = designDirectionId(candidate, index) + ":" + field;
+            var head = el("div", "font-card-head");
+            head.appendChild(el("span", "font-card-name",
+                localized(candidate, "name") || (t("option_prefix") + " " + (index + 1))));
+            head.appendChild(el("span", "font-card-meta",
+                directionComponentValueLabel(candidate, field)));
+            card.appendChild(head);
+            if (field === "visual_style" && candidate.visual_style !== "custom") {
+                var preview = el("div", "design-direction-preview");
+                appendVisualStyleImage(preview, candidate.visual_style);
+                card.appendChild(preview);
+            }
+            var note = directionComponentNote(candidate, field);
+            var noteNode = note ? el("div", "color-note", note) : null;
+            if (noteNode) card.appendChild(noteNode);
+            var editor = null;
+            if (directionComponentIsCustom(candidate, field)) {
+                editor = el("textarea", "text-input scheme-component-editor");
+                setNaturalInputDirection(editor);
+                editor.rows = 4;
+                editor.value = directionComponentEditableBehavior(candidate, field);
+                editor.placeholder = t(field === "mode" ? "mode_behavior_placeholder" :
+                    (field === "visual_style" ? "visual_style_behavior_placeholder" :
+                        "image_strategy_custom_placeholder"));
+                editor.style.display = "none";
+                editor.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                });
+                editor.addEventListener("input", function () {
+                    setDirectionComponentBehavior(field, editor.value);
+                    if (field === "image_strategy") refreshImageStrategyPreview();
+                    refreshDesignDirectionState();
+                    refreshDirectionComponentStates();
+                });
+                card.appendChild(editor);
+            }
+            card.addEventListener("click", function () {
+                applyDirectionComponent(candidate, field, index);
+            });
+            entries.push({
+                candidate: candidate,
+                index: index,
+                card: card,
+                note: noteNode,
+                editor: editor
+            });
+            grid.appendChild(card);
+        });
+        var paint = function () {
+            entries.forEach(function (entry) {
+                var selected = directionComponentSelected(
+                    entry.candidate, field, entry.index
+                );
+                var adjusted = selected &&
+                    !directionComponentMatchesAuthored(entry.candidate, field);
+                entry.card.classList.toggle("selected", selected);
+                entry.card.classList.toggle("adjusted", adjusted);
+                if (entry.editor) {
+                    entry.editor.style.display = selected ? "block" : "none";
+                    if (selected && document.activeElement !== entry.editor) {
+                        var current = field === "mode" ? STATE.mode_behavior :
+                            (field === "visual_style" ? STATE.visual_style_behavior :
+                                ((STATE.image_strategy || {}).behavior || ""));
+                        entry.editor.value = current;
+                    }
+                }
+                if (entry.note) entry.note.style.display = selected ? "none" : "block";
+            });
+        };
+        DIRECTION_COMPONENT_PAINTERS.push(paint);
+        paint();
+        block.appendChild(grid);
+        parent.appendChild(block);
+    }
+
+    function currentDirectionCustomCandidate(field, stateKey) {
+        if (STATE[field] !== "custom") return null;
+        return designDirectionCandidates().filter(function (candidate) {
+            return candidate && candidate[field] === "custom" &&
+                directionBehavior(candidate, field) === String(STATE[stateKey] || "");
+        })[0];
+    }
+
+    function renderCurrentDirectionCustomEditor(parent, field, stateKey, placeholderKey) {
+        if (STATE[field] !== "custom") return null;
+        if (ACTIVE_COMPONENT_DIRECTION_IDS[field]) return null;
+        var source = currentDirectionCustomCandidate(field, stateKey);
+        if (!source && customCandidateBehavior(field)) return null;
+        var block = el("div", "subfield direction-custom-editor");
+        var label = t("custom");
+        if (source && localized(source, "name")) {
+            label = localized(source, "name") + " · " + label;
+        }
+        block.appendChild(el("div", "subfield-label", label));
+        var input = el("textarea", "text-input custom-input");
+        setNaturalInputDirection(input);
+        input.rows = 4;
+        input.placeholder = t(placeholderKey);
+        input.value = STATE[stateKey] || "";
+        input.style.display = "block";
+        input.addEventListener("input", function () {
+            STATE[stateKey] = input.value;
+            refreshDesignDirectionState();
+            refreshDirectionComponentStates();
+        });
+        block.appendChild(input);
+        parent.appendChild(block);
+        return block;
+    }
+
     function renderNarrativeDirection(host) {
         var sec = section(4, "sec_narrative");
-        var custom = creativeCustomOptions("mode", "mode_behavior", "mode_behavior_placeholder");
+        renderDirectionComponentCandidates(sec, "mode");
+        var directionCustomEditor = null;
+        var custom = currentDirectionCustomCandidate("mode", "mode_behavior") ? null :
+            creativeCustomOptions("mode", "mode_behavior", "mode_behavior_placeholder");
         enumField(sec, CAT.modes, recOrFirst("mode", CAT.modes),
-            function () { return STATE.mode; }, function (v) { STATE.mode = v; },
+            function () { return STATE.mode; }, function (v) {
+                STATE.mode = v;
+                ACTIVE_COMPONENT_DIRECTION_IDS.mode = "";
+                if (v !== "custom") STATE.mode_behavior = "";
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
+                if (directionCustomEditor) {
+                    directionCustomEditor.style.display = v === "custom" ? "block" : "none";
+                }
+            },
             {
                 allowCustom: !!custom,
                 customOnOwnRow: true,
                 customSentinel: "custom",
+                preserveCustom: true,
                 placeholder: t("mode_behavior_placeholder"),
                 aiCustom: custom
             });
+        directionCustomEditor = renderCurrentDirectionCustomEditor(
+            sec, "mode", "mode_behavior", "mode_behavior_placeholder"
+        );
         host.appendChild(sec);
-    }
-
-    function visualStyleRecommendationSpectrum() {
-        var raw = (REC && Array.isArray(REC.visual_style_spectrum)) ? REC.visual_style_spectrum : [];
-        if (!raw.length) {
-            raw = designDirectionCandidates().map(function (candidate) {
-                return {
-                    id: candidate && candidate.visual_style,
-                    tag_zh: candidate && candidate.name_zh,
-                    tag_en: candidate && candidate.name_en,
-                    tag_ja: candidate && candidate.name_ja,
-                    note_zh: candidate && candidate.note_zh,
-                    note_en: candidate && candidate.note_en,
-                    note_ja: candidate && candidate.note_ja
-                };
-            });
-        }
-        var spectrum = [];
-        var seen = {};
-        raw.some(function (item) {
-            var id = normalizeRecId("visual_style", item && item.id);
-            if (!id || seen[id]) return false;
-            seen[id] = true;
-            spectrum.push(Object.assign({}, item, { id: id }));
-            return spectrum.length === 3;
-        });
-        if (!spectrum.length) {
-            var fallbackId = recId("visual_style") || normalizeRecId("visual_style", directionField("visual_style"));
-            if (fallbackId) spectrum.push({ id: fallbackId });
-        }
-        return spectrum;
     }
 
     function renderVisualDirection(host) {
         var sec = section(5, "sec_visual");
-        var custom = creativeCustomOptions(
-            "visual_style", "visual_style_behavior", "visual_style_behavior_placeholder"
+        renderDirectionComponentCandidates(sec, "visual_style");
+        var directionCustomEditor = null;
+        var custom = currentDirectionCustomCandidate(
+            "visual_style", "visual_style_behavior"
+        ) ? null : creativeCustomOptions(
+                "visual_style", "visual_style_behavior", "visual_style_behavior_placeholder"
         );
         enumField(sec, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
-            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
+            function () { return STATE.visual_style; }, function (v) {
+                STATE.visual_style = v;
+                ACTIVE_COMPONENT_DIRECTION_IDS.visual_style = "";
+                if (v !== "custom") STATE.visual_style_behavior = "";
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
+                if (directionCustomEditor) {
+                    directionCustomEditor.style.display = v === "custom" ? "block" : "none";
+                }
+            },
             {
                 allowCustom: !!custom,
                 customOnOwnRow: true,
                 customSentinel: "custom",
+                preserveCustom: true,
                 placeholder: t("visual_style_behavior_placeholder"),
                 aiCustom: custom,
-                spectrum: visualStyleRecommendationSpectrum(),
                 preview: "visual_style",
                 chipsClass: "visual-style-grid"
             });
+        directionCustomEditor = renderCurrentDirectionCustomEditor(
+            sec, "visual_style", "visual_style_behavior",
+            "visual_style_behavior_placeholder"
+        );
         host.appendChild(sec);
     }
 
@@ -2960,6 +3274,7 @@
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
         strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
+        renderDirectionComponentCandidates(strategySub, "image_strategy");
         var recommendedStrategies = imageStrategyRecommendationCandidates();
         var strategyCands = imageStrategySelectableCandidates();
         var hasRecommendedStrategies = recommendedStrategies.length > 0;
@@ -2967,22 +3282,32 @@
         var presetPicker = el("div", "image-strategy-picker");
         var presetSelect = el("select", "font-select image-strategy-select");
         var customCard = null;
+        var currentCustomEditor = null;
         var syncCustomStrategy = function () {};
         var selectCustomImageStrategy = function () {};
 
         function selectImageStrategy(idx) {
             if (!strategyCands[idx]) return;
             STATE.image_strategy = normalizedImageStrategy(strategyCands[idx]);
+            ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = "";
             presetSelect.value = String(idx);
             if (customCard) customCard.classList.remove("selected");
+            if (currentCustomEditor) currentCustomEditor.style.display = "none";
             syncCustomStrategy(false);
             refreshImageStrategyPreview();
+            refreshDesignDirectionState();
+            refreshDirectionComponentStates();
         }
 
         function imageStrategyCandidateIndex(strategy) {
             if (!strategy) return -1;
+            var normalized = JSON.stringify(comparableImageStrategy(strategy));
             for (var i = 0; i < strategyCands.length; i += 1) {
-                if (strategyCands[i] && strategyCands[i].rendering === strategy.rendering) return i;
+                if (JSON.stringify(comparableImageStrategy(strategyCands[i])) === normalized) return i;
+            }
+            for (var fallback = 0; fallback < strategyCands.length; fallback += 1) {
+                if (strategyCands[fallback] &&
+                        strategyCands[fallback].rendering === strategy.rendering) return fallback;
             }
             return -1;
         }
@@ -3063,10 +3388,13 @@
 
             selectCustomImageStrategy = function () {
                 STATE.image_strategy = normalizedImageStrategy(customStrategy);
+                ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy = "";
                 presetSelect.value = "";
                 customCard.classList.add("selected");
                 syncCustomStrategy(true);
                 refreshImageStrategyPreview();
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
             };
 
             customInput.addEventListener("click", function (event) { event.stopPropagation(); });
@@ -3081,6 +3409,26 @@
             });
             syncCustomStrategy(false);
             strategySub.appendChild(customCard);
+        }
+
+        if (!customCard && !ACTIVE_COMPONENT_DIRECTION_IDS.image_strategy &&
+                STATE.image_strategy &&
+                STATE.image_strategy.rendering === "custom") {
+            var customEditorField = el("div", "subfield image-strategy-current-custom");
+            customEditorField.appendChild(el("div", "subfield-label", t("custom")));
+            currentCustomEditor = el("textarea", "text-input image-strategy-custom-input");
+            setNaturalInputDirection(currentCustomEditor);
+            currentCustomEditor.rows = 4;
+            currentCustomEditor.placeholder = t("image_strategy_custom_placeholder");
+            currentCustomEditor.value = STATE.image_strategy.behavior || "";
+            currentCustomEditor.addEventListener("input", function () {
+                STATE.image_strategy.behavior = currentCustomEditor.value;
+                refreshImageStrategyPreview();
+                refreshDesignDirectionState();
+                refreshDirectionComponentStates();
+            });
+            customEditorField.appendChild(currentCustomEditor);
+            strategySub.appendChild(customEditorField);
         }
 
         var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
@@ -3129,11 +3477,17 @@
         sec.appendChild(usageNote);
         sec.appendChild(strategySub);
 
+        var currentStrategyIndex = imageStrategyCandidateIndex(STATE.image_strategy);
         if (STATE.image_strategy && STATE.image_strategy.rendering === "custom" && customCard) {
             selectCustomImageStrategy();
-        } else if (STATE.image_strategy && imageStrategyCandidateIndex(STATE.image_strategy) >= 0) {
-            selectImageStrategy(imageStrategyCandidateIndex(STATE.image_strategy));
-        } else if (needsGeneratedImagesForUsage(STATE.image_usage) &&
+        } else if (STATE.image_strategy && STATE.image_strategy.rendering === "custom") {
+            presetSelect.value = "";
+        } else if (currentStrategyIndex >= 0) {
+            presetSelect.value = String(currentStrategyIndex);
+            if (customCard) customCard.classList.remove("selected");
+            syncCustomStrategy(false);
+        } else if ((!STATE.image_strategy || !STATE.image_strategy.rendering) &&
+                needsGeneratedImagesForUsage(STATE.image_usage) &&
                 hasRecommendedStrategies && strategyCands.length) {
             selectImageStrategy(imageStrategySelectedIndex());
         }
@@ -3264,6 +3618,7 @@
         refreshImageProduction = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
+        DIRECTION_COMPONENT_PAINTERS = [];
         var previewHost = document.getElementById("topbar-preview");
         if (previewHost) previewHost.innerHTML = "";
         if (stage === 1) {
@@ -3296,6 +3651,15 @@
             renderProactiveExecution(host);
             renderMode(host);
             renderRefine(host);
+            var refreshDirectionIndicators = function () {
+                window.setTimeout(function () {
+                    refreshDesignDirectionState();
+                    refreshDirectionComponentStates();
+                }, 0);
+            };
+            host.oninput = refreshDirectionIndicators;
+            host.onchange = refreshDirectionIndicators;
+            host.onclick = refreshDirectionIndicators;
         }
         updateActionBar(stage);
     }
@@ -3413,7 +3777,7 @@
         // A freshly authored Stage 2 starts from one deterministic reading-mode
         // baseline.
         if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(true);
-        var rawImageUsage = recValue("image_usage") || directionField("image_usage");
+        var rawImageUsage = recValue("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {
             STATE.image_usage = [defaultImageUsageId()];
@@ -3423,16 +3787,21 @@
         var strategyCandidates = imageStrategyRecommendationCandidates();
         var directionStrategy = directionField("image_strategy");
         var customStrategyRecommended = recId("image_strategy") === "custom";
-        if ((customStrategyRecommended ||
-                (directionStrategy && directionStrategy.rendering === "custom")) &&
-                STATE.image_strategy_custom) {
+        if (customStrategyRecommended && STATE.image_strategy_custom) {
             STATE.image_strategy = normalizedImageStrategy(STATE.image_strategy_custom);
+        } else if (directionStrategy) {
+            STATE.image_strategy = normalizedImageStrategy(directionStrategy);
         } else if (strategyCandidates.length) {
             STATE.image_strategy = normalizedImageStrategy(
                 strategyCandidates[imageStrategySelectedIndex()] || strategyCandidates[0]
             );
-        } else if (directionStrategy) {
-            STATE.image_strategy = normalizedImageStrategy(directionStrategy);
+        }
+        var directions = designDirectionCandidates();
+        if (directions.length) {
+            var selected = Number(designDirectionSpec().selected || 0);
+            if (!isFinite(selected) || selected < 0) selected = 0;
+            selected = Math.min(selected, directions.length - 1);
+            applyDesignDirection(directions[selected], selected, false);
         }
     }
 

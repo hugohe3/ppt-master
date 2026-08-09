@@ -1540,23 +1540,44 @@ def _stage2_design_directions_error(
     *,
     main_language: object = '',
 ) -> Optional[str]:
-    """Require three complete coordinated Stage 2 design systems."""
+    """Require three complete custom systems with Recommendation 1 as default."""
     main_language = main_language or _recommendation_language(recommendations)
     directions = recommendations.get('design_directions')
     if isinstance(directions, dict):
         candidates = _candidate_list(directions)
-        if len(candidates) < 3:
-            return 'Stage 2 design_directions must include at least 3 candidates'
+        if len(candidates) != 3:
+            return 'Stage 2 design_directions must include exactly 3 candidates'
+        selected = directions.get('selected', 0)
+        if type(selected) is not int or selected != 0:
+            return 'Stage 2 design_directions.selected must be integer 0'
         typography_candidates = []
+        direction_ids = set()
         for index, candidate in enumerate(candidates, start=1):
             label = f'design_directions.candidates[{index - 1}]'
             if not isinstance(candidate, dict):
                 return f'{label} must be an object'
+            direction_id = str(candidate.get('id') or '').strip()
+            if not direction_id:
+                return f'{label}.id must be non-empty'
+            if direction_id in direction_ids:
+                return f'{label}.id must be unique'
+            direction_ids.add(direction_id)
             if not _localized_text_present(candidate, 'name'):
                 return f'{label} requires a non-empty localized name'
-            for field in ('visual_style', 'icons'):
+            for field in ('mode', 'visual_style', 'icons'):
                 if not isinstance(candidate.get(field), str) or not candidate[field].strip():
                     return f'{label}.{field} must be non-empty'
+            if candidate['mode'] != 'custom':
+                return f'{label}.mode must be custom'
+            if not _localized_text_present(candidate, 'mode_behavior'):
+                return f'{label}.mode=custom requires non-empty localized mode_behavior'
+            if candidate['visual_style'] != 'custom':
+                return f'{label}.visual_style must be custom'
+            if not _localized_text_present(candidate, 'visual_style_behavior'):
+                return (
+                    f'{label}.visual_style=custom requires non-empty localized '
+                    'visual_style_behavior'
+                )
             error = _palette_error(candidate.get('color'), f'{label}.color')
             if error:
                 return error
@@ -1569,12 +1590,25 @@ def _stage2_design_directions_error(
             if error:
                 return error
             typography_candidates.append(candidate['typography'])
-            if _uses_ai_images(recommendations):
-                image_strategy = candidate.get('image_strategy')
-                if not isinstance(image_strategy, dict) or not str(
-                    image_strategy.get('rendering') or ''
-                ).strip():
-                    return f'{label}.image_strategy.rendering must be non-empty'
+            image_strategy = candidate.get('image_strategy')
+            if not isinstance(image_strategy, dict):
+                return f'{label}.image_strategy must be an object'
+            rendering = str(image_strategy.get('rendering') or '').strip()
+            if not rendering:
+                return f'{label}.image_strategy.rendering must be non-empty'
+            if rendering != 'custom':
+                return f'{label}.image_strategy.rendering must be custom'
+            for prose_field in ('name', 'visual', 'mood'):
+                if not _localized_text_present(image_strategy, prose_field):
+                    return (
+                        f'{label}.image_strategy requires non-empty localized '
+                        f'{prose_field}'
+                    )
+            if not _localized_text_present(image_strategy, 'behavior'):
+                return (
+                    f'{label}.image_strategy.rendering=custom requires non-empty '
+                    'localized behavior'
+                )
         return _typography_candidates_fixed_error(
             typography_candidates,
             main_language=main_language,
@@ -1612,13 +1646,17 @@ def _stage2_design_directions_error(
 
 
 def _stage2_custom_candidates_error(recommendations: dict) -> Optional[str]:
-    """Require visible AI-authored custom alternatives in new Stage 2 files."""
+    """Validate optional legacy standalone custom alternatives."""
     candidates = recommendations.get('custom_candidates')
+    if candidates is None:
+        return None
     if not isinstance(candidates, dict):
-        return 'Stage 2 recommendations must include custom_candidates'
+        return 'custom_candidates must be an object when present'
 
     for field in ('mode', 'visual_style'):
         candidate = candidates.get(field)
+        if candidate is None:
+            continue
         if not isinstance(candidate, dict):
             return f'custom_candidates.{field} must be an object'
         for prose_field in ('name', 'behavior'):
@@ -1628,12 +1666,11 @@ def _stage2_custom_candidates_error(recommendations: dict) -> Optional[str]:
                     f'{prose_field}'
                 )
 
-    if not _uses_ai_images(recommendations):
-        return None
-
     image_candidate = candidates.get('image_strategy')
+    if image_candidate is None:
+        return None
     if not isinstance(image_candidate, dict):
-        return 'custom_candidates.image_strategy must be an object when image_usage includes ai'
+        return 'custom_candidates.image_strategy must be an object'
     if image_candidate.get('rendering') != 'custom':
         return 'custom_candidates.image_strategy.rendering must be custom'
     for prose_field in ('name', 'visual', 'mood', 'behavior'):
@@ -2190,6 +2227,11 @@ def _wait_result_status(
                 )
                 return 2
         logger.info('confirmation stage=%s received: %s', target_stage, result_file)
+        if target_stage == 'stage1':
+            logger.info(
+                '[NEXT] Stage 1 is intermediate: complete the template handoff, '
+                'author fresh Stage 2, then wait for final confirmation.'
+            )
         return 0
     if _result_stage_number(current_stage) > _result_stage_number(target_stage):
         logger.error(

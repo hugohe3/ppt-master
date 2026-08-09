@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Comparable facts at criterion by option intersections. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Comparison Matrix</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Options compared through the same stable criteria and units</text>
+    </g>
+
+    <g id="comparison-matrix" data-pptx-bounds="60 145 1160 510">
+        <!-- Header, row-label band and one emphasized option column. -->
+        <rect x="60" y="145" width="1160" height="64" fill="#E2E8F0"/>
+        <rect x="60" y="209" width="320" height="446" fill="#F8FAFC"/>
+        <rect x="660" y="145" width="280" height="510" fill="#EFF6FF"/>
+
+        <!-- Stable fact grid. -->
+        <rect x="60" y="145" width="1160" height="510" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="380" y1="145" x2="380" y2="655"/>
+            <line x1="660" y1="145" x2="660" y2="655"/>
+            <line x1="940" y1="145" x2="940" y2="655"/>
+            <line x1="60" y1="209" x2="1220" y2="209"/>
+            <line x1="60" y1="291" x2="1220" y2="291"/>
+            <line x1="60" y1="373" x2="1220" y2="373"/>
+            <line x1="60" y1="455" x2="1220" y2="455"/>
+            <line x1="60" y1="537" x2="1220" y2="537"/>
+            <line x1="60" y1="601" x2="1220" y2="601"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="14" font-weight="700" fill="#334155">
+            <text x="80" y="185">EVALUATION CRITERION</text>
+            <text x="520" y="185" text-anchor="middle">OPTION A</text>
+            <text x="800" y="185" text-anchor="middle" fill="#1D4ED8">OPTION B</text>
+            <text x="1080" y="185" text-anchor="middle">OPTION C</text>
+        </g>
+
+        <!-- Row labels. -->
+        <g font-size="15" font-weight="700" fill="#334155">
+            <text x="80" y="258">Annual capacity</text>
+            <text x="80" y="340">Implementation time</text>
+            <text x="80" y="422">Support coverage</text>
+            <text x="80" y="504">Operating model</text>
+            <text x="80" y="578">Estimated total</text>
+            <text x="80" y="632">Overall fit</text>
+        </g>
+
+        <!-- Comparable facts use the same unit and alignment within each row. -->
+        <g font-size="16" fill="#0F172A" text-anchor="middle">
+            <text x="520" y="258">120 units</text>
+            <text x="800" y="258" font-weight="700">160 units</text>
+            <text x="1080" y="258">140 units</text>
+
+            <text x="520" y="340">12 weeks</text>
+            <text x="800" y="340" font-weight="700">8 weeks</text>
+            <text x="1080" y="340">10 weeks</text>
+
+            <text x="520" y="422">Business hours</text>
+            <text x="800" y="422" font-weight="700">24 × 5</text>
+            <text x="1080" y="422">24 × 7</text>
+
+            <text x="520" y="504">Managed</text>
+            <text x="800" y="504" font-weight="700">Hybrid</text>
+            <text x="1080" y="504">Self-service</text>
+
+            <text x="520" y="578">$240K</text>
+            <text x="800" y="578" font-weight="700">$210K</text>
+            <text x="1080" y="578">$225K</text>
+
+            <text x="520" y="632" font-weight="700" fill="#475569">Conditional</text>
+            <text x="800" y="632" font-weight="700" fill="#1D4ED8">Preferred</text>
+            <text x="1080" y="632" font-weight="700" fill="#475569">Alternative</text>
+        </g>
+    </g>
+</svg>

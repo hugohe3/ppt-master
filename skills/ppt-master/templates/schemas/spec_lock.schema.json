@@ -62,6 +62,7 @@
     "pptx_layouts": {"type": "object"},
     "page_pptx_layouts": {"type": "object"},
     "page_layouts": {"type": "object"},
+    "page_visualizations": {"type": "object"},
     "page_charts": {"type": "object"},
     "forbidden": {"type": "string"}
   },
@@ -224,16 +225,20 @@
         "value_pattern": "^[A-Za-z0-9._-]+$"
       },
       {
+        "id": "page_visualizations",
+        "pattern": "^page_visualizations$",
+        "required": false,
+        "min_entries": 1,
+        "entry_key_pattern": "^P[0-9]{2,}$",
+        "value_pattern": "^(?:chart|table)/[a-z0-9]+(?:_[a-z0-9]+)*$"
+      },
+      {
         "id": "page_charts",
         "pattern": "^page_charts$",
         "required": false,
         "min_entries": 1,
         "entry_key_pattern": "^P[0-9]{2,}$",
-        "value_catalog": {
-          "path": "../charts/charts_index.json",
-          "pointer": ["charts"],
-          "asset_path_pattern": "../charts/{value}.svg"
-        }
+        "value_pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$"
       },
       {"id": "forbidden", "pattern": "^forbidden$", "required": true, "min_body_chars": 1}
     ],

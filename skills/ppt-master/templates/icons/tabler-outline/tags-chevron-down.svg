@@ -1,0 +1,20 @@
+<!--
+tags: [label, price, tags, chevron, down, shopping, store, purchase, retail, business]
+category: E-commerce
+unicode: "10286"
+version: "3.46"
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 3v13.446c0 .345 .155 .665 .411 .848l6.125 4.375a.78 .78 0 0 0 .928 0l6.125 -4.375a1.04 1.04 0 0 0 .411 -.848v-13.446l-7 5l-7 -5" />
+  <path d="M5 10l6.536 4.669a.78 .78 0 0 0 .928 0l6.536 -4.669" />
+</svg>

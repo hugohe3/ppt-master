@@ -29,7 +29,9 @@ After Generate Step 4 Gate 1, read the completed Design Spec and current page/re
 | `pptx_structure` | `mode` | Values: `flat`, `structured` |
 | `forbidden` | Literal list items | General standards stay in their owning reference |
 
-Optional data sections: `images`, `page_charts`.
+Optional data sections: `images`, `page_visualizations` (Chart/Table only). New locks never write
+legacy `page_charts`; existing locks may retain it for read-only compatibility.
+Never declare the same page in both sections.
 
 The required universal block is:
 
@@ -70,7 +72,22 @@ Structured section value shapes:
 - P01: 03_content
 ```
 
-Project each §VII `Page | Template | Usage` row's first two fields into `page_charts`; Usage stays in the Design Spec. This is a page-local reference, not a type/geometry lock. Keys must exist in `charts/charts_index.json`; no-match stays in §IX.
+Project each §VII Page/Family/Template into at most one
+`page_visualizations` `<chart|table>/<key>` row per page; Usage, children,
+no-match, and qualitative relationships stay in §IX. Resolve the reference to
+one live SVG. It locks neither type, geometry, nor native output.
+
+```markdown
+## page_visualizations
+- P03: chart/line_chart
+- P09: table/record_table
+```
+
+**Legacy compatibility**: keep existing `page_charts` bare keys. Live
+Chart/Table keys resolve unambiguously through two registries; retired Structure
+keys are semantic-only, have no SVG, and rely on §IX (repair upstream when
+insufficient). New locks write `page_visualizations`; dual page declarations
+conflict even when they resolve alike.
 
 Typography projection excludes Character/upgrade References:
 
@@ -96,7 +113,12 @@ New locks always write `title_family` and `body_family`, even when their values 
 - Custom reference grammar: comma-separated exact catalog ids with no duplicates. Reference fields are valid only for `custom`; omit them for a genuinely novel direction.
 - `stroke_width` grammar: `1.5`, `2`, or `3`; present only for `tabler-outline`.
 - `page_rhythm` grammar: `P` + at least two digits (`P01`, `P100`) followed by `anchor|dense|breathing`.
-- `page_charts` grammar: `P` + at least two digits followed by a `charts_index` key; the key and `<key>.svg` must both exist.
+- `page_visualizations` grammar: `P` + at least two digits followed by
+  `chart|table`, `/`, and one canonical visualization key; the family/key must
+  resolve to one SVG through the matching live index.
+- Legacy `page_charts` grammar: `P` + at least two digits followed by one bare
+  key. Chart/Table resolves uniquely across two registries; retired Structure
+  is semantic-only. Never add this section to a new lock.
 - `pptx_masters` grammar: `<master_key>: <PowerPoint picker name>`.
 - `pptx_layouts` grammar: `<layout_key>: <master_key> | <PowerPoint layout name> | <prototype source>`.
 - `page_pptx_layouts` grammar: `P` + at least two digits followed by a declared Layout key.
@@ -107,8 +129,8 @@ Catalog-based custom example:
 ```markdown
 ## mode
 - mode: custom
-- mode_references: pyramid, narrative
-- mode_behavior: Lead each act with the decision-first clarity of pyramid, then develop it through a narrative tension-and-resolution arc.
+- mode_references: pyramid, narrative, instructional
+- mode_behavior: Open conclusion-first with pyramid, develop the risk through a narrative tension-and-resolution act, then close with an instructional action sequence.
 ```
 
 ---

@@ -149,7 +149,56 @@ Use weighted tracks when one item is primary. A spanning item receives the sum o
 
 ### 4.3 Free multi-item composition
 
-For montage, arc, overlap, or another non-grid arrangement, assign one explicit region to every item and verify the union against `(W,H)`. Reuse one gap/rhythm system where separation is intended; overlap is explicit geometry, not a negative-gap accident.
+**Mandatory**: For montage, arc, overlap, or another non-grid arrangement, give
+every carrier a finite center and positive size, give every intended overlap an
+unambiguous front item, and verify the visible union against `(W,H)`.
+
+**Default — shared direction (may override when deliberate disorder serves the
+communication job)**: Select one direction generator and derive related carriers
+from shared geometry. An override still declares a bounded placement/angle rule
+so disorder is authored rather than accidental. Use the following state:
+
+| State | Definition |
+|---|---|
+| `p[i] = (cx[i], cy[i])` | Explicit center of item `i` |
+| `(w[i], h[i])` | Explicit positive carrier size |
+| `s[i] > 0` | Optional shared size rhythm: `(w[i], h[i]) = s[i] × (w0, h0)` |
+| `P` (optional) | Parent contour controlling the outer silhouette, shared seam, reveal, or attachment path |
+| `V[i]` | Visible carrier after applying its clip and, when `P` is a silhouette, intersecting it with `P` |
+| `z[i]` | Stacking rank required for carriers that overlap |
+
+For a straight shared direction `θ`, calculate centers in its local frame:
+
+```text
+d = (cos(θ), sin(θ))
+n = (-sin(θ), cos(θ))
+p[i] = p0 + t[i] × d + e[i] × n
+```
+
+Choose `t[i]` and transverse offset `e[i]` as explicit sequences; add `s[i]`
+when scale carries the rhythm. Reuse a progression when rhythm is intended; do
+not substitute unrelated per-item values.
+
+| Generator | Executable rule |
+|---|---|
+| `vector` | Use the straight-frame equation with ordered `t[i]`; set `t[i+1] = t[i] + advance[i]`, where each `advance[i] > 0`. Control overlap through `advance[i]`, not an accidental negative gap. |
+| `shared-baseline` | Choose baseline `B(t) = b + t × d`. If `r[i]` is the carrier's half-extent along `n`, place `p[i] = B(t[i]) + r[i] × n`; this keeps one carrier edge on the same baseline while sizes vary. |
+| `curve-spine` | Choose ordered parameters `u[i]` on `C(u)` with `||C'(u[i])|| > 0`. Set `d[i] = normalize(C'(u[i]))`, `n[i] = (-d[i].y, d[i].x)`, and `p[i] = C(u[i]) + e[i] × n[i]`; at a zero derivative, use the secant between nearest distinct samples or another generator. |
+| `panel` | Define one convex 2D quadrilateral `A,B,C,D` in consistent winding and `F(u,v) = (1-u)(1-v)A + u(1-v)B + uvC + (1-u)vD`. Split monotone `u`/`v` intervals; each cell uses its four `F` corners. |
+
+For each intended overlap, calculate `area(V[i] ∩ V[j]) > 0` and assign the
+front item through `z[i]` and `z[j]`. `P` must visibly control at least one
+listed structural role; otherwise use the selected region boundary and omit it.
+
+**Reference — not a constraint**: Use one of these angle mechanisms according to the selected composition:
+
+| Mechanism | Geometry |
+|---|---|
+| Clip-shape angle | Keep the bitmap upright and angle only the carrier contour or clip path. |
+| Parent-group rotation | Build the complete arrangement first, then rotate its carriers, frames, and attached labels together around one pivot. |
+| Tangent rotation | On `curve-spine`, rotate item `i` around `p[i]` by `atan2(d[i].y, d[i].x)` when the carriers should follow the path. |
+
+**Forbidden — unsupported image deformation**: Do not use shear, skew, or true perspective mapping. A `panel` is a set of 2D quadrilateral clips/crops; it does not warp the image plane.
 
 ---
 
@@ -178,6 +227,11 @@ Contain each formula independently in its lane. When formulas are visual peers, 
 | Adjacent text/content region cannot carry its material | Reweight or change the selected relationship |
 | Equal cells imply equality that the content does not have | Use weighted tracks or a free composition |
 | Peer images use inconsistent visual scale without meaning | Normalize their regions or make the hierarchy explicit |
+| A free carrier lacks an explicit center or positive size, or an intended overlap lacks stacking order | Supply the missing geometry or z-order before drawing |
+| Items intended as one system lack both a shared direction and a deliberate-disorder rule | Derive them from one vector, baseline, curve, panel, or bounded override |
+| Per-item angles vary without a shared direction or deliberate-disorder rule | Use one parent-group angle, a shared clip-shape direction, curve tangents, or a bounded angle rhythm |
+| The parent contour does not affect silhouette, seam, reveal, or attachment | Remove it or reconstruct the carriers from that contour |
+| A panel depends on shear, skew, or perspective warping | Replace it with 2D quadrilateral carriers and focal-safe crops |
 | Formula symbols become unreadable at the intended viewing size | Enlarge its region or restructure the page |
 | Gaps, alignments, or overlaps drift without purpose | Recalculate from the shared region and gap values |
 

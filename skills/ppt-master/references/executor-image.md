@@ -30,20 +30,39 @@ Handle images by status; enum and lifecycle: [`svg-image-embedding.md`](svg-imag
 **Default — active image integration (may override when plain placement is
 stronger)**: Treat loaded [`image-layout-patterns.md`](./image-layout-patterns.md)
 as vocabulary and [`image-layout-spec.md`](./image-layout-spec.md) as math, not
-a quota or lock. Run the catalog's §7 playbook before drawing; its combinations
-are recall aids, not coverage targets. A `#P...` suggestion completes only the
-page skeleton; omitted `M`, effect, Boolean, or native overlay leaves
-realization open and never means “keep plain.” For every image-bearing page,
-derive the image/content or image/shape relationship from its communication job,
-hierarchy, copy, asset ratio/focus, and deck rhythm. Before drawing, form one
-relevant treatment candidate, compare it with `P`-only, implement the stronger
-legal composition, and realize any adopted treatment through the already-loaded
-[`svg-effects.md`](./svg-effects.md) and
-[`native-shape-authoring.md`](./native-shape-authoring.md). This is an opportunity
-pass, not an effect quota. Deepen, simplify, replace, or combine suggestions;
-plain placement remains valid when it communicates better. Preserve role/source,
+a quota or lock. A `#P...` suggestion is only a skeleton; deepen, simplify, or
+combine it through the already-loaded [`svg-effects.md`](./svg-effects.md) and
+[`native-shape-authoring.md`](./native-shape-authoring.md). Plain placement or a
+regular grid remains valid when it communicates better. Preserve role/source,
 must-use, crop/content, and explicit user/template constraints; expression-only
 changes need no upstream rewrite.
+
+**Mandatory — per-page image composition decision**: Using this already-loaded
+branch, decide once immediately before geometry on every page containing a
+non-formula image and keep the result only in active context:
+`role → direction generator → parent contour → slots/rhythm → crop →
+image-shape action → labels/overlays → depth/continuity`. Derive the relationship
+from the communication job, hierarchy, copy, asset ratio/focus, and deck rhythm;
+use `anchor`, `continue`, `bridge`, `overlap`, `reveal`, `echo`, or `register`
+only when useful. Compare the resulting candidate with plain/`P`-only placement
+and implement the stronger legal composition. Create no artifact or extra pass,
+and do not reread the branch while its active context remains valid.
+
+**Reference — direction generators, not templates**:
+
+| Generator | Behavior |
+|---|---|
+| `vector` | Progress slots along one shared movement vector |
+| `shared-baseline` | Share a baseline while size, offset, or overlap changes systematically |
+| `curve-spine` | Derive slots and turns from one continuous curve or folded path |
+| `panel` | Subdivide one coherent tilted, stepped, or polygonal parent panel |
+| `none/grid` | Retain calm plain placement or a regular grid |
+
+**Default — coherent multi-image direction (may override when deliberate disorder
+serves the communication job)**: Within one image group, derive slot positions,
+crop edges, overlap, and any rotation from one primary direction generator.
+Varied angles need one declared rhythm or collision rule; they are not a shortcut
+to variety.
 
 **Reference — motion-ready image layering, not a constraint**: For adopted §IX or an explicit focus, comparison, evidence, reveal-order, or cross-page requirement, decide during SVG authoring whether the final composition needs separate visible units. Keep ordinary stable framing/background static and wrap each independently revealed or continuing Slide-local unit in a descriptive direct-root `<g id>`; structured atoms/slots retain their boundaries. Existing units or a page transition may suffice. The motion stage owns effects, pairing, order, and timing.
 

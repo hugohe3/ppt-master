@@ -269,7 +269,7 @@ Template Overview 写明可重复演示类型、目标受众与结果、交付/�
 
 ## 三、四套 index 文件
 
-每个 index 跟物理目录一一对应，字段按需精简，沿用 [`charts_index.json`](../../skills/ppt-master/templates/charts/charts_index.json) 的紧凑“meta + summary”模式，同时保留对 Strategist 选型有用的结构化元数据。
+每个 index 跟物理目录一一对应，字段按需精简，沿用 Visualization catalog 索引（[Chart](../../skills/ppt-master/templates/charts/charts_index.json) 和 [Table](../../skills/ppt-master/templates/tables/tables_index.json)）的紧凑“meta + summary”模式，同时保留对 Strategist 选型有用的结构化元数据。定性 Structure 没有 index，因为 Executor 会根据当前页关系现场生成。
 
 四套索引只覆盖全局库范围。项目根工作区有意不进入任何索引，仍可通过显式 `projects/<name>/` 路径使用。因为两种范围采用相同工作区形态，完整核心工作区可在两者之间移动或复制，不需要重写素材路径；只有全局库注册不同。
 

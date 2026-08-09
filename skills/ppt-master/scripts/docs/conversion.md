@@ -137,6 +137,7 @@ pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
 ```
 
 All paths produce the same output convention: `<input>.md` plus a sibling `<input>_files/` directory containing extracted images with relative references.
+On success, a sibling `<input>.conversion_profile.json` is also written.
 
 ## `source_to_md/excel_to_md.py`
 
@@ -164,6 +165,7 @@ Behavior:
 - trims empty outer rows and columns
 - propagates merged-cell labels for readable Markdown tables
 - exports formula cells as cached values; it does not recalculate formulas
+- writes `<input>.conversion_profile.json` after successful conversion
 
 Dependency:
 
@@ -199,6 +201,7 @@ Behavior:
 - transcribes SmartArt semantic nodes as hierarchical Markdown; unreadable diagram data emits an explicit placeholder and conversion warning
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
+- writes `<input>.conversion_profile.json` after successful conversion
 
 Dependency:
 
@@ -418,7 +421,7 @@ shape.text = "PPTX import smoke check"
 presentation.save("/tmp/ppt-master-smoke-healthy.pptx")
 PY
 
-uvx ppt-master pptx-to-svg \
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
   "/tmp/ppt-master-smoke-healthy.pptx" \
   --inheritance-mode flat \
   -o "/tmp/ppt-master-smoke-healthy"
@@ -480,7 +483,7 @@ print(target)
 Run tolerant import and verify both the recovery report and the visible SVG:
 
 ```bash
-uvx ppt-master pptx-to-svg \
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
   "/tmp/ppt-master-color-smoke.pptx" \
   --inheritance-mode flat \
   -o "/tmp/ppt-master-smoke-color-tolerant"
@@ -510,7 +513,7 @@ Expected: both commands exit `0`; the importer reports one
 Run the same probe in strict mode:
 
 ```bash
-uvx ppt-master pptx-to-svg \
+python3 "skills/ppt-master/scripts/pptx_to_svg.py" \
   "/tmp/ppt-master-color-smoke.pptx" \
   --inheritance-mode flat \
   --strict \
@@ -532,6 +535,7 @@ uvx ppt-master web-to-md https://example.com/article
 uvx ppt-master web-to-md https://url1.com https://url2.com
 uvx ppt-master web-to-md -f urls.txt
 uvx ppt-master web-to-md https://example.com -o output.md
+uvx ppt-master web-to-md https://example.com --emit-result /tmp/result.json
 ```
 
 When `curl_cffi` is installed (included in `requirements.txt`), this script
@@ -540,15 +544,49 @@ fetch WeChat Official Accounts (`mp.weixin.qq.com`) and other sites that
 block Python's default TLS fingerprint. No extra flags needed. If
 `curl_cffi` is not available, it falls back to plain `requests`.
 
+On success, the converter writes `<output>.conversion_profile.json` beside the
+Markdown output.
+`--emit-result` is for wrapper scripts that need the actual saved Markdown path
+when the converter derives a title-based filename.
 
-## `rotate_images.py`
 
-Fix image EXIF orientation in downloaded or imported assets.
+## Image Orientation Review
+
+Run this review when the user requests orientation correction, converted text
+asks the reader to rotate the device, or a downloaded asset is visibly
+sideways. EXIF and dimensions may trigger review, but they cannot determine the
+semantic direction of pixels that are already stored sideways.
+
+Generate a labeled static contact sheet. This command previews the first frame
+after EXIF normalization and does not modify source images:
 
 ```bash
-uvx ppt-master rotate-images auto projects/xxx_files
-uvx ppt-master rotate-images gen projects/xxx_files
-uvx ppt-master rotate-images fix fixes.json
+uvx ppt-master rotate-images sheet <images_directory>
 ```
 
-Use this when extracted photos appear sideways after conversion or import.
+The default output is
+`<images_directory>/../analysis/<directory>_orientation_contact_sheet.jpg`.
+Inspect it with the current multimodal agent, identify only visually confirmed
+rotations, and write a temporary JSON list. `rotation` is clockwise degrees and
+must be `90`, `180`, or `270`:
+
+```json
+[
+  {"path": "/absolute/path/to/sideways.jpg", "rotation": 270}
+]
+```
+
+Apply the confirmed fixes and regenerate image facts:
+
+```bash
+uvx ppt-master rotate-images fix /tmp/orientation_fixes.json
+uvx ppt-master analyze-images <images_directory>
+```
+
+GIF files are excluded: `sheet` does not list them, and `fix` rejects a batch
+that references one so all GIF files remain unchanged.
+
+Do not infer a rotation from prose, EXIF, or aspect ratio alone, and do not
+launch the HTML `gen` command in source intake. `auto` remains an in-place EXIF
+normalizer. `gen` is a compatibility UI that runs the same normalization before
+writing HTML; neither belongs to source intake.

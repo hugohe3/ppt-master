@@ -3,8 +3,8 @@
      font-size="12">
     <!--
     Matrix 2x2 Chart Template
-    Usage: Four-quadrant analysis
-    Scenarios: BCG Matrix, risk assessment, priority analysis, strategic evaluation
+    Usage: Value-driven 2x2 bubble matrix (X, Y, bubble size)
+    Scenarios: two-axis portfolio positioning, risk assessment, priority analysis
     -->
     <defs>
         <!-- Axis Arrows -->
@@ -31,7 +31,7 @@
               font-size="14" font-weight="500" fill="#94A3B8">Business Impact vs Implementation Effort · Bubble size represents resource cost</text>
     </g>
     <!-- Matrix Main Area -->
-    <g id="matrixArea" data-pptx-bounds="0 128 1137 592">
+    <g id="chartArea" data-pptx-bounds="0 128 1137 592">
         <!-- Quadrants -->
         <!-- Q1: Top Right (Stars) -->
         <rect x="565" y="170" width="480" height="240" fill="#ECFDF5" stroke="#FFFFFF" stroke-width="4" rx="4"/>
@@ -44,6 +44,7 @@
         <!-- Axes -->
         <line x1="85" y1="410" x2="1055" y2="410" stroke="#0F172A" stroke-width="3" marker-end="url(#arrowX)"/>
         <line x1="565" y1="160" x2="565" y2="650" stroke="#0F172A" stroke-width="3" marker-start="url(#arrowY)"/>
+        <!-- chart-plot-area: 85,170,1045,650 -->
         <!-- X-Axis Labels -->
         <text x="565" y="685"
               font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle">Implementation Effort</text>
@@ -116,7 +117,7 @@
         </g>
     </g>
     <!-- ==================== Priority Migration (Diagonal Dashed Arrow) ==================== -->
-    <!-- Demonstrates CHART_STYLE_GUIDE §11.5: diagonal dashed connector to express
+    <!-- Demonstrates VISUALIZATION_TEMPLATE_AUTHORING §11.5: diagonal dashed connector to express
          cross-quadrant trajectory. Migrates work from Thankless → Quick Wins. -->
     <g id="priority-migration" data-pptx-bounds="326 173 583 459">
         <line x1="850" y1="605" x2="385" y2="200" stroke="#475569" stroke-width="2"
