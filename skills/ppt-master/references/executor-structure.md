@@ -32,17 +32,17 @@ Combine atoms as needed; never force a named business model. Numbers used only a
 | Role | Job |
 |---|---|
 | `field` | Page/local region where a relationship operates |
-| `node` | Semantic unit, state, actor, item, or group |
-| `spine` | Explicit/implied scaffold establishing reading direction |
-| `edge` | Necessary connection, branch, dependency, or transition |
-| `label` | Text attached to a node, edge, region, or relationship |
+| `node` | Semantic unit, state, actor, item, or group; may punctuate a drawn carrier as a stop, turn, junction, or bridge |
+| `spine` | Explicit/implied scaffold or continuous carrier establishing reading direction |
+| `edge` | Necessary semantic connection, branch, dependency, or transition |
+| `label` | Text/evidence attached directly or by a non-relational leader/tether to a node, edge, region, or relationship |
 | `garnish` | Non-semantic accent added after the relationship works |
 
 | Operation | Job |
 |---|---|
-| `repeat` | Create peers from one role |
+| `repeat` | Create peers from one visual family; clone the full contour only when their structural states match |
 | `arrange` | Establish order, alignment, rhythm, rank, comparison |
-| `transform` | Vary scale, rotation, crop, fill, or emphasis meaningfully |
+| `transform` | Vary scale, rotation, crop, fill, emphasis, or entry/continuation/turn/terminal port state meaningfully |
 | `connect` | Add an edge when layout/containment is insufficient |
 | `region` | Partition, contain, intersect, band, or layer fields |
 | `attach` | Bind labels, badges, annotations, or evidence to an owner |
@@ -61,14 +61,14 @@ invent a relationship.
 
 Choose the field and map required atoms, then follow:
 
-**Mandatory — spine → nodes → connectors → labels → garnish**:
+**Mandatory — spine/topology → nodes → connectors → labels → garnish**:
 
 | Layer | Completion evidence |
 |---|---|
-| `spine` | Entry, direction, and organizing path are clear |
-| `nodes` | Every required unit has one home and intentional weight; each is direct content or a §2-approved carrier |
-| `connectors` (`edge`) | Only unresolved links become edges; route/source/target is clear; every drawn edge passes §2 |
-| `labels` | Copy and caveats visibly attach to what they explain |
+| `spine` | Entry, direction, and organizing path are clear; reversal, cycle, split/merge, or stage change reshapes a continuous carrier before node placement |
+| `nodes` | Every required unit has one home and intentional weight; each is direct content or a §2-approved carrier; carrier-crossing nodes intentionally continue, stop, turn, join, or bridge its visible path |
+| `connectors` (`edge`) | Only unresolved semantic links become edges; route/source/target is clear; every drawn edge passes §2 |
+| `labels` | Copy and caveats visibly attach directly or by leader/tether to what they explain; when a node has multiple text roles, cue → claim/value → support → note remains perceptibly descending and absent roles stay absent |
 | `garnish` | Removing accents leaves all meaning intact |
 
 **Hard rule — relationship before styling**: establish atoms, field, spine, nodes, and necessary edges before palette, type, effects, or containers. Prefer containment, alignment, baselines, and proximity; add lines/Connectors only for real edges, never to make a page look process-like.
