@@ -227,6 +227,8 @@ PROJECT_DEFINITION_TAGS = frozenset({
     'radialGradient',
 })
 PROJECT_GRADIENT_TAGS = frozenset({'linearGradient', 'radialGradient'})
+PROJECT_TEXT_IMAGE_FILL_ATTR = 'data-pptx-text-image-fill'
+PROJECT_TEXT_IMAGE_FILL_MODES = frozenset({'stretch', 'tile'})
 # PPTX angle projection can overshoot a unit box by at most ~0.1036.
 PROJECT_LINEAR_GRADIENT_COORDINATE_MIN = -0.105
 PROJECT_LINEAR_GRADIENT_COORDINATE_MAX = 1.105
@@ -2157,6 +2159,51 @@ def project_marker_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def resolve_project_text_image_fill(pattern: ET.Element) -> tuple[str, ET.Element]:
+    """Resolve the controlled one-image pattern used for native text picture fills."""
+    if _svg_element_tag(pattern) != 'pattern':
+        raise ValueError('definition must be an SVG <pattern>')
+
+    mode = pattern.get(PROJECT_TEXT_IMAGE_FILL_ATTR, '')
+    if mode not in PROJECT_TEXT_IMAGE_FILL_MODES:
+        supported = ', '.join(sorted(PROJECT_TEXT_IMAGE_FILL_MODES))
+        raise ValueError(f'{PROJECT_TEXT_IMAGE_FILL_ATTR} must be one of: {supported}')
+    preset_attributes = [
+        name
+        for name in ('data-pptx-pattern', 'data-pptx-fg', 'data-pptx-bg')
+        if pattern.get(name) is not None
+    ]
+    if preset_attributes:
+        raise ValueError(
+            'text image fill must not combine preset-pattern attributes: '
+            f'{", ".join(preset_attributes)}'
+        )
+    if pattern.get('patternTransform') is not None:
+        raise ValueError('pattern must not use patternTransform')
+
+    children = list(pattern)
+    if len(children) != 1 or children[0].tag != f'{{{SVG_NS}}}image':
+        raise ValueError('pattern must contain exactly one direct SVG <image> child')
+
+    image = children[0]
+    unsupported = [
+        name
+        for name in (
+            'clip-path',
+            'filter',
+            'fill-opacity',
+            'mask',
+            'opacity',
+            'style',
+            'transform',
+        )
+        if image.get(name) is not None
+    ]
+    if unsupported:
+        raise ValueError(f"pattern image must not use {', '.join(unsupported)}")
+    return mode, image
+
+
 def project_paint_reference_errors(root: ET.Element) -> list[str]:
     """Validate local paint-server references and their native contexts."""
     definitions, _duplicates = project_definition_index(root)
@@ -2215,7 +2262,11 @@ def project_paint_reference_errors(root: ET.Element) -> list[str]:
             elif property_name == 'stroke' and elem_tag_lower in stroke_shape_tags:
                 allowed_tags = ('lineargradient', 'radialgradient')
             elif property_name == 'fill' and elem_tag_lower in {'text', 'tspan'}:
-                allowed_tags = ('lineargradient', 'radialgradient')
+                target_tag = (_svg_element_tag(target) or str(target.tag)).lower()
+                if target_tag == 'pattern' and target.get(PROJECT_TEXT_IMAGE_FILL_ATTR) is not None:
+                    allowed_tags = ('lineargradient', 'radialgradient', 'pattern')
+                else:
+                    allowed_tags = ('lineargradient', 'radialgradient')
             elif property_name == 'fill' and elem_tag_lower == 'g':
                 allowed_tags = (
                     ('lineargradient', 'radialgradient')
@@ -2239,6 +2290,19 @@ def project_paint_reference_errors(root: ET.Element) -> list[str]:
                 continue
 
             target_tag = (_svg_element_tag(target) or str(target.tag)).lower()
+            is_text_image_fill = (
+                target_tag == 'pattern'
+                and target.get(PROJECT_TEXT_IMAGE_FILL_ATTR) is not None
+            )
+            if is_text_image_fill and not (
+                property_name == 'fill'
+                and elem_tag_lower in {'text', 'tspan'}
+            ):
+                errors.add(
+                    f'<{elem_tag}> {property_name}=url(#{reference_id}) uses a '
+                    'text image fill pattern outside <text>/<tspan>'
+                )
+                continue
             if target_tag not in allowed_tags:
                 tag_labels = {
                     'lineargradient': 'linearGradient',
@@ -2251,6 +2315,16 @@ def project_paint_reference_errors(root: ET.Element) -> list[str]:
                     f'to <{_svg_element_tag(target) or target.tag}>; expected '
                     f'{expected}'
                 )
+                continue
+
+            if property_name == 'fill' and elem_tag_lower in {'text', 'tspan'} and target_tag == 'pattern':
+                try:
+                    resolve_project_text_image_fill(target)
+                except ValueError as exc:
+                    errors.add(
+                        f'<{elem_tag}> fill=url(#{reference_id}) has an invalid '
+                        f'text image fill: {exc}'
+                    )
     return sorted(errors)
 
 
