@@ -150,9 +150,10 @@ Unknown or unmapped declarations fail Checker preflight and native export.
 > **PPT preset patterns and native chart/table/template metadata are
 > conditional** — see [`native-data-interface.md`](./native-data-interface.md) and [`pptx-structure-interface.md`](./pptx-structure-interface.md).
 
-DrawingML has no arbitrary per-pixel alpha-compositing path. Effects that rely
-on one, including text-knockout image fills and arbitrary alpha composites,
-must be baked into a raster asset before SVG export.
+DrawingML has no arbitrary per-pixel alpha-compositing path. A registered
+single-image text picture/texture fill follows [`svg-effects.md`](./svg-effects.md)
+§6.3; arbitrary text-knockout composites, multi-layer image text, and arbitrary
+alpha composites remain bake-required before SVG export.
 
 ---
 
