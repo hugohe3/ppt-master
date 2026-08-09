@@ -1,0 +1,21 @@
+<!--
+tags: [audiobook, audio, books, listening, amazon, subscription, digital, brand, audible, logo]
+category: Brand
+unicode: "10252"
+version: "3.43"
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M18.46 9.75a9 9 0 0 0 -12.92 0" />
+  <path d="M14.34 11.58a5 5 0 0 0 -4.68 0" />
+  <path d="M22 13l-10 4l-10 -4" />
+</svg>

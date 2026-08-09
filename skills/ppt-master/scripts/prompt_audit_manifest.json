@@ -2017,6 +2017,10 @@
         "reason": "License notice; never loaded as prompt context."
       },
       {
+        "glob": "skills/ppt-master/templates/icons/THIRD_PARTY_NOTICES.md",
+        "reason": "Third-party icon license and provenance notice; distributed for compliance, never loaded as prompt context."
+      },
+      {
         "glob": "skills/ppt-master/references/shared-standards.md",
         "reason": "Compatibility router only; runtime load sets select the core and triggered modules directly."
       },
