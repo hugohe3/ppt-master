@@ -19,6 +19,7 @@ Maintainer-only inventory for adding, moving, or removing workflow documents. Ru
 
 | ID | Class | Path | Parent / lifecycle slot |
 |---|---|---|---|
+| `image-to-pptx` | Generation profile | [`profiles/image-to-pptx.md`](./profiles/image-to-pptx.md) | Codex-supported, Quick-only page-frame normalization plus layered reconstruction |
 | `beautify-pptx` | Generation profile | [`profiles/beautify-pptx.md`](./profiles/beautify-pptx.md) | Generate PPTX |
 | `quick-generate` | Generation profile | [`profiles/quick-generate.md`](./profiles/quick-generate.md) | Generate PPTX direct SVG-to-PPTX short circuit |
 | `apply-template-workspace` | Template-input stage | [`stages/apply-template-workspace.md`](./stages/apply-template-workspace.md) | Non-free Default Stage-1 selection after confirmation, or Quick direct exact-root input |

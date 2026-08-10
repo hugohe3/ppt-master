@@ -18,6 +18,12 @@ Create one reusable template workspace under either the **global template librar
 
 > **Boundary against template-fill and in-place structure edits**: Create Template does not fill content into a PPTX, add Master/Layout structure to an existing PPTX/SVG, or directly output the user's final generated deck. It authors a separate reusable workspace; an optional PPTX is review evidence only. To generate a deck, return the workspace root as an exact candidate to [`generate-pptx`](./generate-pptx.md) Step 3, confirm it with Stage 1, then author new SVG pages from the installed state. A project-scoped workspace selected for its own project is consumed in place after that confirmation.
 
+> **Boundary against page-image reconstruction**: screenshots and page visuals
+> in this route are evidence for reusable rules and prototypes. When the user
+> instead wants each supplied page image reconstructed into one final editable
+> slide, use the Codex-supported [`image-to-pptx.md`](./profiles/image-to-pptx.md);
+> do not turn a final-deck request into a template workspace.
+
 ## Child Workflow Dispatch
 
 Create Template is the fixed user-facing entry and common contract. It selects one child workflow, then that child owns the kind-specific lifecycle. Do not execute two children for one workspace or blend their schemas.

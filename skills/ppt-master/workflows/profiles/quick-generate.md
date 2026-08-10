@@ -78,6 +78,7 @@ Prepare source facts before initialization:
 | Input | Action |
 |---|---|
 | Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement plus fact-provenance JSON for import |
+| One or more PNG / JPEG / WebP files representing page frames under Image to PPTX | Do not call `source_to_md.py`; normalize single-page files and multi-frame contact sheets into the canonical ordered frame roster through that profile, then import the originals below |
 | PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as a plain-text table source |
 | Markdown or direct conversation text | Read directly |
@@ -97,6 +98,7 @@ After reading every direct and converted source, assess factual sufficiency:
 
 | Material state | Action |
 |---|---|
+| Image to PPTX page surface | Treat as a closed visible corpus; unreadable/occluded regions become `manual_required`, never external research |
 | The requested outcome is supported | Continue |
 | A required externally verifiable claim remains unsupported | Run [`topic-research`](../stages/topic-research.md) for those gaps only |
 | Closed corpus / source-only / no external enrichment | Stay within the supplied material |
@@ -114,6 +116,11 @@ roster, SVG, notes, and motion decisions. This changes neither the Quick profile
 nor its artifacts.
 
 Before initialization, resolve exactly one template branch:
+
+When [`image-to-pptx.md`](./image-to-pptx.md) is active, its canonical page
+surface owns the design: select **Free design** directly and do not inspect,
+install, or apply a supplied template workspace. The branches below apply to
+ordinary Quick and other compatible profiles.
 
 - **Direct template application**: one or more exact current workspace roots
   were supplied in the request, or Create Template returned an exact validated
@@ -166,6 +173,10 @@ target project; every external path is copied and remains untouched. Use
 wrote Markdown beside the original source, pass that source path or directory
 once; when `-o` wrote it elsewhere, pass both locations. Direct supported bitmap
 inputs are archived under `sources/` and copied collision-safely into `images/`.
+When [`image-to-pptx.md`](./image-to-pptx.md) is active, its
+normalized frame roster is canonical page-surface input and the current main
+agent writes the source-evidence-only `analysis/reconstruction_inventory.json`
+before deciding the layer stack in active context.
 
 For each imported PPTX, `import-sources` automatically writes
 `analysis/<stem>.identity.json`, `analysis/<stem>.slide_library.json`, and the
@@ -334,19 +345,24 @@ Prepare only the resource paths needed by the decided pages:
 | Resource | Required preparation |
 |---|---|
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
+| Image-to-PPTX reconstruction asset | In Codex, preserve identity graphics through an exact vector, deterministic redraw, sufficient source asset, or reference-based high-resolution reconstruction; keep data graphics native-and-verified or exact. For scene imagery, build the minimum registered clean-base/midground/subject/foreground group; batch padded-bbox-disjoint objects into one shared plate, then split them with grid slicing or independent nested-SVG bbox crops |
 | Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
 | Formula | Follow the [`latex_render.py` contract](../../scripts/docs/image.md), write `images/formula_manifest.json`, run the renderer, and keep the rendered PNG under `images/` |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
-| Registered subject/base pair | Follow `image-generator.md` §4.4; keep the clean base and transparent subject on the same full canvas, then place both with `crop=no-crop` |
+| Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
 **Image inspection boundary**: acquisition-time suitability review follows the
 owning AI/web/slice reference. Once resources reach terminal status, SVG
 authoring follows `executor-image.md`'s narrow placement inspection: inspect only
 one specifically ambiguous `Existing`/`Sourced` asset and never routinely reopen
-`Generated` outputs.
+`Generated` outputs. Image to PPTX is the narrow fidelity exception: inspect
+every normalized page once for its inventory, inspect every generated
+reconstruction layer or shared plate once, and inspect the final recomposition
+against the canonical frame. Reopen only the current page or one unresolved
+region after that required comparison.
 
 After image resources change, run `analyze_images.py` so
 `analysis/image_analysis.csv` reflects the files that SVG authoring will use.
@@ -405,6 +421,13 @@ deliberate plain or equal-grid result remains valid when it communicates the
 relationship better. Formula-only pages use
 [`image-layout-spec.md`](../../references/image-layout-spec.md) without forcing a
 multi-image system.
+
+Image to PPTX replaces this open composition decision for its canonical page
+frame: preserve the source geometry, restore text natively, preserve
+source-graphic identity through the prepared exact or reconstructed asset, and
+use the active-context registered layer/plate stack for scene imagery. Run the
+ordinary decision only for an additional non-source image whose placement is
+not already fixed by that surface.
 
 **Mandatory — per-page Structure decision**: after the current page's content
 and communication move are determined, but before choosing any geometry or

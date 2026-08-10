@@ -77,6 +77,12 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 要清楚一点：**网络搜索只负责「找到一张相关、可下载、授权合规的图」，并不保证它在这一页里好看或贴切**——排序只看文字元数据，看不到画面。生成时多模态模型会读一份缩略图自查、不合适会重搜；但**要真正高质量，最可靠的还是你自己去搜**：在任何来源找到更合适的图，把链接给 AI，它会用 `image_search.py --from-url <链接>` 直接下载替换（记为手动来源、版权由你把关）。换图随时能做——生成途中或在实时预览里都行，不会打断流程。简而言之：把网络搜索当「兜底占位」，把人工挑图当「精修」。
 
+## Q: 能把 AI 生成的 PPT 效果图或截图还原成可编辑 PowerPoint 吗？
+
+可以。提供一张或多张图片，并要求把其中的页面还原为可编辑 PPTX，PPT Master 就会把请求路由到**图片还原为 PPTX**（[`image-to-pptx`](../../skills/ppt-master/workflows/profiles/image-to-pptx.md)）profile。该 profile 当前要求在 Codex 中使用；其他 Agent host 尚未适配，不对其行为作支持或承诺。图片还原为 PPTX 始终直接启用 Quick，不需要另行说明“快速模式”。它会先把所有输入规范化为一份有序页面画面清单，所以最终页数由实际页面画面决定，而不是由文件数决定。
+
+普通可见文字会还原为原生可编辑文本。Logo、图标、徽标和装饰图形在原图足够清晰时直接使用；像素过低时可由 Codex 根据参考图重建，但必须锁定身份、轮廓、比例、颜色和字标，禁止换成仅仅相似的替代物。Chart、table 和 data graphic 禁止生成式重建：必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。照片和插画场景至少拆成干净背景层与人物 / 前景层。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成 PowerPoint 中的独立图片对象。AI 可以补全拆层后露出的隐藏场景像素，但不能改掉可见构图。把整页截图铺底、只叠少量可编辑元素，不算还原成功。
+
 ## Q: 生成的 PPT 可以编辑吗？
 
 可以。SVG 管线统一由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。使用默认输出路径时，Default Generate 与 Quick Generate 都会把作者源 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重新导出 PPTX，无需再走 LLM。对 Quick 而言，这只是包重建，不是可恢复的 AI 设计决策记录。
@@ -273,7 +279,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，并作为载荷后备留在临时分析工作区且保持不可变。模板创建使用带文档内 source ref 和紧凑路径/hash manifest 的轻量可编辑 IR。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从 IR 物化最终模板，只为未改且 hash 匹配的 Slide-local/slot ref 重新接入转换器已经支持的载荷；不支持或已修改的对象保留当前 SVG fallback。
 
-没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
+没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。这里提取的是可复用模板系统；如果目标是把每个页面画面还原成分层可编辑输出页，应改用图片还原为 PPTX（`image-to-pptx`）。
 
 **第二步 — 让 AI 创建模板**
 
