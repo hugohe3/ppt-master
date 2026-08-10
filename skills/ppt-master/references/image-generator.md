@@ -306,43 +306,94 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 
 ---
 
-### 4.4 Registered subject/base pairs
+### 4.4 Registered reconstruction groups and shared plates
 
-Use this preparation when a person, product, creature, or other foreground
-subject must cross native titles, panels, frames, cards, or shapes while the
-original scene remains behind them. The final pair is one compositional asset:
+Use this preparation when a person, product, creature, effect, or other scene
+element must cross native titles, panels, frames, cards, or shapes while the
+original scene remains behind it. A clean base plus one subject/foreground
+output is the minimum group; add layers only when overlap or independent
+editing requires them:
 
 | Output | Required content |
 |---|---|
-| Clean base | Full original canvas with the foreground subject removed and the hidden background reconstructed |
-| Subject cutout | The same full canvas and subject position, with only the foreground subject visible on RGBA transparency |
+| Clean base | Full original canvas with every planned removable scene element removed and the hidden background reconstructed |
+| Optional midground | Full canvas with only the scene content that must sit between the base and primary subjects |
+| Subject / foreground | Full canvas with one subject or one z-order-compatible set visible on RGBA transparency |
+| Shared layer plate | Several mutually non-overlapping objects isolated together in one full-canvas or regular-cell output |
 
-**Mandatory — preserve registration**: Start both derivatives from the same
-source. Preserve canvas dimensions, subject pose, scale, and position; do not
-trim or independently crop either final output. Record the shared source and
-pair relationship in the owning §VIII rows or Quick active-context resources.
+**Mandatory — preserve registration**: derive every full-canvas member
+independently from the same canonical source. Preserve canvas dimensions,
+subject pose, scale, position, lighting, and visible style; do not trim or
+independently crop registered final outputs. Record the shared source and group
+relationship in the owning §VIII rows or Quick active-context resources.
+
+**Image to PPTX override — Codex required**: when
+[`image-to-pptx.md`](../workflows/profiles/image-to-pptx.md) is active, use
+Codex's native reference-image generation/editing capability and inspect every
+derived member plus the final recomposition. Do not adapt `image_gen.py`, its
+generic manifest, or provider backends for this profile. Other hosts are not a
+supported execution target. The ordinary Path A / Path B procedure below
+continues to apply outside this profile.
 
 **Preparation procedure**:
 
-1. Use the active image-editing path to remove the subject and inpaint the clean base.
-2. Use the same source to isolate the subject. Prefer a direct RGBA result.
-3. When the active path cannot return transparency, place the isolated subject on one exact flat key color, then run `slice_images.py` as a `1x1` sheet with `--alpha` and without `--trim` so the full-canvas coordinates remain unchanged.
-4. Save both final files under `<project>/images/` and mark them `no-crop` in the active resource authority.
+1. From the canonical reference, remove every planned separate subject,
+   foreground object, source/data graphic, and editable text, then inpaint one
+   clean base without redesigning visible background content.
+2. From that same reference, isolate the subject/foreground content. Never
+   derive a layer from the generated base or another generated layer.
+3. Prefer one shared plate when several objects do not overlap and use the same
+   isolation treatment. Their padded bboxes, including visible shadows and
+   effects, must be pairwise disjoint. One object does not imply one generation
+   call.
+4. For a registered plate, retain the original full-canvas positions and use
+   one nested-SVG picture crop per recorded bbox under
+   [`svg-effects.md`](./svg-effects.md) §6.5. For a rearranged regular-cell
+   plate, follow §4.3 and run
+   `slice_images.py --grid ... --names ... --trim --alpha`; place each
+   resulting asset at its recorded source bbox.
+5. Prefer direct RGBA. When transparency is unavailable, use one exact flat
+   key color for the whole layer/plate, then run `slice_images.py` once as a
+   `1x1` sheet with `--alpha` and without `--trim` so full-canvas coordinates
+   remain unchanged. Do not generate one keyed image per object.
+6. Save final files under `<project>/images/`. Mark registered full-canvas
+   members `no-crop`; ordinary trimmed cell slices retain their own measured
+   dimensions.
 
-Path A may use the existing single-image edit mode for each derivative; Path B
-may perform the same edits with the host-native image tool:
+Objects that overlap one another or require different z-order use separate
+plates/layers. A shared output is valid only when every required final object
+still becomes an independent SVG/PPT picture object.
+
+**Shared registered-plate prompt core**:
+
+> Using the supplied canonical page as the only visual reference, isolate the
+> following foreground objects together on one full-canvas extraction plate:
+> {stable object ids/descriptions}. Preserve each object's visible identity,
+> silhouette, pose, scale, rotation, lighting, shadow, and exact original canvas
+> position. Keep the original aspect ratio and canvas registration. Retain only
+> those listed objects; remove the background and every unlisted element. Do not
+> rearrange, resize, merge, duplicate, or let the listed objects touch one
+> another. Retain an explicitly listed source graphic or wordmark exactly when
+> it is one of the requested objects; remove editable slide text and every
+> unlisted logo/source graphic. Return RGBA transparency if supported;
+> otherwise use one uniform exact {key HEX} matte with no gradient, texture,
+> spill, or extra marks.
+
+Outside Image to PPTX, Path A may use the existing single-image edit mode for
+each registered derivative; Path B may perform the same edits with the
+host-native image tool:
 
 ```bash
-python3 scripts/image_gen.py "Remove the foreground subject and reconstruct the hidden background; preserve the exact canvas" \
-  --reference-image <project>/images/<source>.png -o <project>/images -f <pair>_base
-python3 scripts/image_gen.py "Isolate the same foreground subject at the exact original pose, scale, and position on a flat #00FF00 background" \
-  --reference-image <project>/images/<source>.png -o <project>/images -f <pair>_subject_key
-python3 scripts/slice_images.py <project>/images/<pair>_subject_key.png --grid 1x1 \
-  --names <pair>_subject --alpha --bg "#00FF00"
+python3 scripts/image_gen.py "Remove the planned foreground subjects and reconstruct the hidden background; preserve the exact canvas" \
+  --reference-image <project>/images/<source>.png -o <project>/images -f <group>_base
+python3 scripts/image_gen.py "Isolate the planned non-overlapping foreground objects at their exact original positions on one flat #00FF00 plate" \
+  --reference-image <project>/images/<source>.png -o <project>/images -f <group>_plate_key
+python3 scripts/slice_images.py <project>/images/<group>_plate_key.png --grid 1x1 \
+  --names <group>_plate --alpha --bg "#00FF00"
 ```
 
-The positional edit commands are allowed here as the declared derivation step
-for already-planned pair rows; keep the final pair in the ordinary resource
+These positional edit commands remain the declared derivation exception for
+already-planned group rows. Keep every final member in the ordinary resource
 authority and operational sidecar. SVG realization follows
 [`image-layout-patterns.md`](./image-layout-patterns.md) `#A2-03`.
 

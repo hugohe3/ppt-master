@@ -32,6 +32,13 @@ Beautify constraints in this file apply in either runtime.
 
 **Distinct from mirror templates**: `replication_mode: mirror` ([`executor-structured.md`](../../references/executor-structured.md) §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
 
+**Distinct from page-image reconstruction**: when the authoritative input is
+an ordered raster page roster and the user wants its visible layout preserved,
+activate the Codex-supported, Quick-only
+[`image-to-pptx.md`](./image-to-pptx.md) instead.
+Beautify requires a semantic source PPTX and deliberately redesigns layout; the
+two fidelity profiles never compose.
+
 **When this profile is wrong — re-architecture belongs to ordinary Generate**: this profile preserves the source's page count and page order 1:1. It is for "keep this deck, just lay it out better". When the user instead wants the original page breakdown reconsidered — merge / split / reorder pages, re-outline the structure, build a *better deck* from the same content rather than a prettier version of the same pages — do not activate this profile. This includes re-pagination for fit: "keep every word but split a crowded page so it reads better" changes page count. Convert the deck with [`ppt_to_md`](../../scripts/source_to_md/ppt_to_md.py) and use ordinary Quick when Quick was explicit, otherwise the Default main pipeline. The deciding question: is the source's page split information to preserve, or just the previous author's structure to improve? Preserve → activate this profile; improve → ordinary Generate in the selected runtime.
 
 ---

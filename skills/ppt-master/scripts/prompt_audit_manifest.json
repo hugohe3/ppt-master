@@ -140,7 +140,7 @@
       "files": [
         "skills/ppt-master/workflows/native-enhance-pptx.md"
       ],
-      "max_tokens": 11000
+      "max_tokens": 13000
     },
     "route.fill-native-pptx": {
       "description": "Raw-PPTX native fill route.",
@@ -257,6 +257,19 @@
       ],
       "files": [],
       "max_tokens": 100000
+    },
+    "route.generate.quick-generate.image-to-pptx": {
+      "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate.in-hand-image",
+        "profile.generate.image-to-pptx"
+      ],
+      "files": [
+        "skills/ppt-master/references/image-base.md",
+        "skills/ppt-master/references/image-generator.md"
+      ],
+      "max_tokens": 130000
     },
     "route.generate.quick-generate.video-design": {
       "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery.",
@@ -571,7 +584,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 17000
+      "max_tokens": 19000
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -797,6 +810,14 @@
         "skills/ppt-master/workflows/profiles/beautify-pptx.md"
       ],
       "max_tokens": 7750
+    },
+    "profile.generate.image-to-pptx": {
+      "description": "Codex-supported, Quick-only profile for reconstructing raster page frames as layered editable PPTX.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/profiles/image-to-pptx.md"
+      ],
+      "max_tokens": 4000
     },
     "stage.generate.video-design": {
       "description": "Conditional recorded/self-running delivery design and prepared final-script handling shared by Default and Quick.",
