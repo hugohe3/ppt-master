@@ -88,8 +88,9 @@ blocked until the current agent resolves one explicit whole-deck treatment.
 
 **Mandatory — inspect every canonical page**: ordinary image-resource
 inspection limits do not apply to this page roster. Inspect each normalized
-page once to identify text, source graphics, scene-image regions, overlap, and
-the minimum useful layer stack. Reopen only the current page or a specifically
+page once to identify text, source graphics, scene-image regions, overlap,
+region-level source sufficiency, boundary completeness, occlusion, and the
+minimum useful layer stack. Reopen only the current page or a specifically
 unresolved region afterward.
 
 ---
@@ -106,6 +107,21 @@ Classify visible regions by what they are, not by how easy they are to crop.
 | Simple exact geometry | `native_shape` | Use a native shape only when fill, stroke, geometry, and layering can be matched faithfully; otherwise prepare an identity-faithful source-graphic asset |
 | Scene image | `image_layer` | Photos, people, characters, products, environmental backgrounds, textures, and complex illustrations may be reference-edited or regenerated as registered layers |
 | Unreadable or unsafe region | `manual_required` | Block rather than invent wording, identity, values, or a visually different replacement |
+
+**Hard rule — separate layer need from realization**: source clarity never
+decides whether a required editable, movable, or overlapping object becomes a
+separate layer; it decides only how that layer is prepared.
+
+**Mandatory — assess source sufficiency per region**: judge each region at final
+display size without a page-wide score or threshold. Inspect detail,
+contamination/occlusion, and whether identity, geometry, lettering, or data
+remain verifiable.
+
+| Source evidence for a required independent image layer | Realization |
+|---|---|
+| Complete, cleanly separable, and sufficient at final display size | Prepare a source-derived crop or RGBA layer at the recorded geometry |
+| Contaminated, occluded, incomplete, or too low-resolution; identity and geometry remain verifiable | Reference-edit or reconstruct the layer and exposed background from that evidence |
+| Required identity, wording, values, or geometry cannot be verified | Mark `manual_required`; do not invent authoritative content |
 
 **Graphic identity is authoritative; source pixel bytes are not**: use an exact
 known vector when available. Deterministically redraw a simple, fully legible
@@ -146,21 +162,25 @@ Typical bottom-to-top order:
    their visible z-order.
 6. `native-text-*` and exact native shapes.
 
-**Registered-group rule**: every Codex-derived base/midground/subject/
-foreground layer in a group starts independently from the same canonical page
-or scene bbox. Preserve its canvas dimensions, position, scale, pose, lighting,
-and visible style. Full-canvas registered layers are not trimmed independently;
+**Registered-group rule**: every base/midground/subject/foreground layer in a
+group stays registered to the same canonical page or scene bbox. A
+source-derived member retains recorded geometry; every Codex-derived member
+starts from that canonical source. Preserve canvas, position, scale,
+pose, lighting, and style. Do not trim registered full-canvas layers;
 transparent pixels retain alignment.
 
-Use [`image-generator.md`](../../references/image-generator.md) §4.4's
-registered reconstruction group as the primitive:
+When one or more scene layers require reference editing or reconstruction, use
+[`image-generator.md`](../../references/image-generator.md) §4.4's registered
+reconstruction group as the primitive:
 
 - create one clean base by removing **all** scene subjects/foreground objects,
   source/data graphics, and editable text planned for separate realization,
   then reconstruct only the newly exposed background;
 - create at least one independent subject/foreground output from the same
-  canonical source whenever the page contains separable scene content; the
-  base plus that output are the minimum two newly generated images;
+  canonical source whenever the page contains scene content that must be
+  independently editable; the base plus that output are the minimum two
+  independently prepared image layers, while §3 decides whether each layer
+  retains sufficient source pixels or requires reference reconstruction;
 - derive every additional layer independently from the canonical source, never
   from the base or another generated layer;
 - preserve the original pose, scale, and coordinates on RGBA transparency;
@@ -191,10 +211,12 @@ registration group has the same final pixel canvas. In SVG, place the base and
 all full-canvas layers at identical `x`, `y`, `width`, and `height` with
 `no-crop` behavior.
 
-**Reconstruct for final resolution**: retaining complete source pixels is valid
-only when they remain sharp enough at final display size. Otherwise use Codex
-reference reconstruction for scene content and the source-graphic quality
-ladder above; interpolation alone does not recover detail.
+**Reconstruct for final resolution**: apply the §3 source-sufficiency decision
+per region. Retaining complete source pixels is valid only when they remain
+sharp enough at final display size; a clear source may still require reference
+reconstruction when separation needs hidden or uncontaminated pixels. When
+detail is insufficient, use Codex reference reconstruction; interpolation alone
+does not recover detail.
 
 **Reference-edit, not reinterpretation**: reconstruction prompts name the
 canonical source page/region and ask to preserve the visible composition and
@@ -225,6 +247,8 @@ plan. Keep it limited to:
 - visible regions with stable ids, source bboxes, observed family
   (`text`, `graphic`, `image`, or `unknown`), verbatim text when applicable,
   and confidence;
+- observed source sufficiency, boundary completeness, occlusion/contamination,
+  and identity/data verifiability at final placement;
 - overlap/z-order observations and unresolved evidence.
 
 Do **not** put final layer choices, generation prompts, output filenames, or SVG
@@ -253,9 +277,10 @@ backends for this profile.
   source graphic; ordinary slide text always remains native.
 - Exhaust the available Codex image path automatically; block before export if a
   required layer remains `Needs-Manual`.
-- Preserve each generated layer's source page/region, source hash, operation,
-  prompt, backend/model when available, output path/hash, registration group,
-  and z-order in the applicable operational evidence.
+- Preserve each prepared image layer's source page/region, source hash,
+  realization method, operation, output path/hash, registration group, and
+  z-order in the applicable operational evidence; include prompt and
+  backend/model when the layer was reference-edited or reconstructed.
 - Re-run `analyze_images.py` after assets change.
 - A generated candidate is not usable until its expected file exists, it has
   been inspected once, and its registration group or plate has been checked

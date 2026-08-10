@@ -328,20 +328,23 @@ independently crop registered final outputs. Record the shared source and group
 relationship in the owning §VIII rows or Quick active-context resources.
 
 **Image to PPTX override — Codex required**: when
-[`image-to-pptx.md`](../workflows/profiles/image-to-pptx.md) is active, use
-Codex's native reference-image generation/editing capability and inspect every
-derived member plus the final recomposition. Do not adapt `image_gen.py`, its
-generic manifest, or provider backends for this profile. Other hosts are not a
-supported execution target. The ordinary Path A / Path B procedure below
-continues to apply outside this profile.
+[`image-to-pptx.md`](../workflows/profiles/image-to-pptx.md) is active, follow
+its §3 per-region decision. A complete, separable, final-resolution-sufficient
+region may remain source-derived. Otherwise use Codex's native reference-image
+capability for required editing or reconstruction. Inspect every prepared
+member plus the final recomposition. Do not adapt `image_gen.py`, its manifest,
+or provider backends for this profile. Other hosts are unsupported. The
+ordinary Path A / Path B procedure below applies outside this profile.
 
 **Preparation procedure**:
 
 1. From the canonical reference, remove every planned separate subject,
    foreground object, source/data graphic, and editable text, then inpaint one
    clean base without redesigning visible background content.
-2. From that same reference, isolate the subject/foreground content. Never
-   derive a layer from the generated base or another generated layer.
+2. From that same reference, prepare the subject/foreground content as an
+   exact source-derived layer or a reference reconstruction according to the
+   selected profile's source-sufficiency decision. Never derive a layer from
+   the generated base or another generated layer.
 3. Prefer one shared plate when several objects do not overlap and use the same
    isolation treatment. Their padded bboxes, including visible shadows and
    effects, must be pairwise disjoint. One object does not imply one generation
