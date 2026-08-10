@@ -99,10 +99,12 @@ from .narration import (
     AUDIO_CONTENT_TYPES,
     AUDIO_REL_TYPE,
     AUDIO_MARKER_PNG_BYTES,
+    DEFAULT_NARRATION_START_FLOOR,
     IMAGE_REL_TYPE,
     MEDIA_REL_TYPE,
     apply_recorded_timing,
     inject_narration,
+    narration_lead_in_seconds,
     next_shape_id,
     probe_audio_duration,
 )
@@ -4683,6 +4685,7 @@ def create_pptx_with_native_svg(
     transition_effect_options: dict[str, object] | None = None,
     text_flow: str | None = None,
     primary_language: str | None = None,
+    narration_start_floor: float = DEFAULT_NARRATION_START_FLOOR,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
@@ -4723,6 +4726,8 @@ def create_pptx_with_native_svg(
         narration_audio: Optional dict mapping SVG stem to narration audio file.
         use_narration_timings: Whether to set slide auto-advance from audio duration.
         narration_padding: Extra seconds added after each narration before advancing.
+        narration_start_floor: Minimum seconds from transition start to narration
+            start. Any remainder after the transition becomes silent lead-in.
         merge_paragraphs: Legacy compatibility option. True selects reflow;
             False selects split. Do not combine with ``text_flow``.
         text_flow: Positional-tspan policy: preserve authored line breaks in
@@ -5586,6 +5591,15 @@ def create_pptx_with_native_svg(
 
                     slide_xml = slide_xml_path.read_text(encoding='utf-8')
                     narration_shape_id = next_shape_id(slide_xml)
+                    narration_transition_duration = (
+                        slide_transition_duration
+                        if slide_transition is not None
+                        else 0.0
+                    )
+                    narration_lead_in = narration_lead_in_seconds(
+                        narration_transition_duration,
+                        start_floor=narration_start_floor,
+                    )
                     slide_xml = inject_narration(
                         slide_xml,
                         shape_id=narration_shape_id,
@@ -5593,6 +5607,7 @@ def create_pptx_with_native_svg(
                         audio_rid=audio_rid,
                         media_rid=media_rid,
                         poster_rid=poster_rid,
+                        start_delay=narration_lead_in,
                     )
 
                     if use_narration_timings:
@@ -5601,13 +5616,16 @@ def create_pptx_with_native_svg(
                             raise RuntimeError(
                                 f"Unable to read narration duration with ffprobe: {audio_path}"
                             )
+                        narration_advance_after = (
+                            narration_lead_in + duration + narration_padding
+                        )
                         slide_xml = apply_recorded_timing(
                             slide_xml,
-                            advance_after=duration + narration_padding,
+                            advance_after=narration_advance_after,
                             transition_duration=slide_transition_duration,
                             transition_effect=slide_transition,
                         )
-                        resolved_advance_after = duration + narration_padding
+                        resolved_advance_after = narration_advance_after
                         resolved_advance_on_click = False
                         package_uses_timings = True
                     slide_xml_path.write_text(slide_xml, encoding='utf-8')
