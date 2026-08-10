@@ -221,9 +221,11 @@ use; otherwise decide which prototypes to use, skip, repeat, reorder, or adapt
 while authoring. Persist no separate template-application artifact. If no
 template was installed, make the same design choices freely.
 
-Before resolving the one-pass design, read only these three indexes:
+Before resolving the one-pass design, read the canvas authority and only these
+three choice indexes:
 
 ```
+Read references/canvas-formats.md
 Read references/modes/_index.md
 Read references/visual-styles/_index.md
 Read references/image-renderings/_index.md
@@ -246,7 +248,7 @@ Before writing P01, resolve in active context:
 
 - the exact slide roster and one compact core message for every page, used to choose its composition and hierarchy;
 - the effective Speaker Notes, Custom Animations, and Narration Audio outcomes; generated narration requires notes, while video purpose alone forces neither audio nor object animation;
-- the canvas, visual direction, wording, intended viewing distance, and effective reading mode: choose `presentation` for distance-first projected or recorded viewing, `balanced` for mixed viewing, or `text` for close content-heavy reading. On default `ppt169`, start the body anchor at `32`, `24`, or `20` px respectively, then resolve one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses. When content does not fit, preserve its core message and apply only fitting actions the source/profile invariants permit—restructure, shorten, or split; if none is permitted, surface the unresolved fit instead of shrinking a recurring role. Explicit user, template, fidelity-profile, or resolved-style requirements may call for a deliberate exception;
+- the canvas, visual direction, wording, intended viewing distance, and effective reading mode: choose `presentation` for distance-first projected or recorded viewing, `balanced` for mixed viewing, or `text` for close content-heavy reading. Take the initial body anchor and sanity band from [`canvas-formats.md`](../../references/canvas-formats.md) § "Typography Scale Start" for the resolved canvas—PPT remains reading-mode-driven, while registered/custom non-PPT canvases use their canvas-derived start—then resolve one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses. When content does not fit, preserve its core message and apply only fitting actions the source/profile invariants permit—restructure, shorten, or split; if none is permitted, surface the unresolved fit instead of shrinking a recurring role. Explicit user, template, fidelity-profile, or resolved-style requirements may call for a deliberate exception;
 - the semantic color roles actually needed by the roster, each with a concrete active-context color anchor, including background/surface, primary/secondary text, dominant/accent, and status roles as applicable. Honor explicit user, installed template/brand, fidelity-profile source-identity, and resolved-style color semantics before deriving only the missing roles that the active profile permits; decide which roles dominate, support, or remain rare, and preserve sufficient contrast for meaning-bearing text. Pair newly authored color-coded states, categories, or relationships with a label, symbol, line, or geometry cue; when fidelity forbids adding one, preserve the source encoding;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
@@ -403,9 +405,7 @@ page and reuse throughout the valid execution context:
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
 [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
 [`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
-web image. Reread only after a known file change or context invalidation. Load
-[`canvas-formats.md`](../../references/canvas-formats.md) only for a non-default
-canvas.
+web image. Reread only after a known file change or context invalidation.
 
 `executor-structure.md` is loaded once before all SVG authoring so Quick cannot
 omit shape-composition reasoning. Reuse it throughout the valid execution

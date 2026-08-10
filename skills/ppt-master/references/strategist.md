@@ -229,13 +229,13 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Size anchors — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
 
-| Reading mode on PPT | Initial body | Information posture |
-|---|---:|---|
-| `text` | 20 | read-close / dense |
-| `balanced` | 24 | mixed reading + presentation |
-| `presentation` | 32 | projected / sparse |
-
-Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed role-anchor values always win: take Confirm UI `body_size` / `sizes` verbatim as anchors; a manually edited anchor remains pinned, and changing canvas does not secretly rescale it.
+**Mandatory — canvas-owned body start**: Read
+[`canvas-formats.md`](canvas-formats.md) § "Typography Scale Start" before
+authoring size candidates. It owns the initial body anchor and sanity band for
+PPT reading modes plus registered/custom non-PPT canvases; do not reproduce or
+rederive them here. The confirmed role-anchor values always win: take Confirm UI
+`body_size` / `sizes` verbatim as anchors; a manually edited anchor remains
+pinned, and changing canvas does not secretly rescale it.
 
 | Recurring role | Ratio to body |
 |---|---:|
