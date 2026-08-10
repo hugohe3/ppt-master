@@ -27,6 +27,8 @@ this stage.
 - Per-page narration files exist at `notes/*.md`. In Generate PPTX, split `notes/total.md` during Step 7.1. In Enhance Native PPTX, the notes module writes numeric files such as `001.md`.
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
 - The stage is page-level only: one note becomes `audio/<stem>.<audio-ext>` plus `audio/<stem>.srt` on provider-timed paths, or one audio file with Qwen / explicit CosyVoice audio-only mode. Never substitute one long track or automatic splitting.
+- Final/literal script notes are synthesized verbatim. Source SRT timecodes are pacing evidence only; new provider timing owns the generated audio/SRT set.
+- SRT bound to an authoritative existing recording does not enter TTS. Recorded narration requires page-level audio or an explicit page/time map; automatic long-track splitting is unsupported.
 - A fully successful run writes a compact `audio/manifest.json` with only provider/model, audio/subtitle format, relevant voice settings, and a SHA-256 fingerprint instead of the raw cloud voice ID. It has no per-slide inventory, artifact hashes, or API keys and is not a normal generation input. The flat `audio/` directory is the single active narration set; do not create provider subdirectories unless the user explicitly asks to preserve multiple variants.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
 - PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.

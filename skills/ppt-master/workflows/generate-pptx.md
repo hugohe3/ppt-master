@@ -254,6 +254,7 @@ Then load only the extra role modules triggered by the current plan:
 | Deterministic trigger | Additional Strategist reference |
 |---|---|
 | Stage 1 is confirmed and its template choice installed a selected Brand/Style/Layout/Deck workspace into this project | `references/strategist-template.md` before Stage 2 |
+| The confirmed Stage-1 `delivery_context` identifies recorded/self-running/video delivery, or input is an explicit final/literal narration script | `references/video-design.md` before the three Stage-2 whole solutions and page roster |
 | The confirmed Stage 2 `image_usage` contains a source other than `none`, the user supplied an explicit non-`none` image constraint, or formula-worthy content activates formula planning | `references/image-layout-spec.md` + `references/image-layout-patterns.md` before production detail, formula resources, or §VIII |
 
 After Stage 1 and template handoff, load `strategist-image.md` plus only the
@@ -448,6 +449,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 **Output**:
 - `<project_path>/design_spec.md` — complete human-readable design narrative and durable confirmed production state
 - `<project_path>/spec_lock.md` — machine-readable stable execution anchors/routing, authored after conditional review approval
+- `<project_path>/notes/total.md` — only when the prepared final narration branch is active; frozen verbatim production input
 
 For a new project, use the reference-first whole-document sequence:
 
@@ -458,6 +460,13 @@ For a new project, use the reference-first whole-document sequence:
 5. Compare lock anchors/routing to the Design Spec; run `python3 ${SKILL_DIR}/scripts/project_manager.py validate <project_path>`.
 
 Final state → initial Design Spec mismatch, approved Design Spec/context → lock mismatch, or an unapplied revision blocks despite schema validity. `validate` does not prove fidelity. Repair from retained confirmation before refinement; during it, preserve unaffected values and apply explicit revisions. After approval, derive the lock from that Design Spec/context. Resume/refine edits existing files, never scaffolds. Fresh recovery alone may reread persisted final evidence once.
+
+**Prepared final narration branch**: follow `video-design.md` §1 and §3 when an
+explicit final/literal script will become notes or generated audio. Segment it
+by semantic scene during Stage 2; §IX gives each segment a supporting visible
+state and §X records its source/verbatim policy. After Gate 2, before Step 5 or
+split handoff, write the exact segments once to `notes/total.md`; split them only
+in Step 7.1. This is frozen production input, not a third planning artifact.
 
 **✅ Internal checkpoint — Phase deliverables complete**: facts read; confirmation consumed once; final Stage-2 production fields resolved (formula policy, generation mode, refine-spec, proactive choices, and conditional AI path); Design Spec passed Gate 1; enabled refinement approved; lock derived from it; split handling resolved; communication and every §IX `Audience move` validated. Do not print this checklist; auto-proceed.
 
@@ -529,6 +538,10 @@ Workflow:
 
 **Page content**: §IX is preferred wording and semantic authority. Use it when it works; adapt it when presentation benefits while preserving intent, facts, and explicit literal requirements. Read sources only to verify requested evidence; return incomplete blocks to Step 4 instead of enriching them during execution.
 
+**Prepared final narration**: when §X records a literal script, read the frozen
+`notes/total.md` once before P01 and design each visible state/semantic group
+around its exact segment; never edit or pad it.
+
 **Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
 
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
@@ -561,6 +574,7 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
+| §I records recorded/self-running/video delivery, or §X records a final/literal narration script | `video-design.md` before the first SVG; retain it through notes/motion handling |
 | All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
 No branch is loaded by analogy. For each page, after §IX content/communication
@@ -661,10 +675,13 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> --stage final
 
 **Logic Construction Phase (conditional)**: after the SVG quality gate passes,
 when the effective Speaker Notes outcome in `design_spec.md §I` is enabled, load
-[`executor-notes.md`](../references/executor-notes.md), ground each page's
-narration in all information-bearing content in its final SVG, and generate
-speaker notes → `<project_path>/notes/total.md`. When the outcome is `disabled`,
-do not load the notes branch and do not require or create `notes/total.md`.
+[`executor-notes.md`](../references/executor-notes.md). When the prepared final
+narration branch already created `notes/total.md`, validate its exact segments
+against every information-bearing final SVG group and repair the visual page or
+upstream plan on mismatch; never rewrite the script. Otherwise ground each
+page's narration in its final SVG and generate complete speaker notes →
+`<project_path>/notes/total.md`. When the outcome is `disabled`, do not load the
+notes branch and do not require or create `notes/total.md`.
 
 **✅ Internal checkpoint — execution complete**: verify live preview timing,
 the P01 method gate, uninterrupted remaining-page generation, consolidated
