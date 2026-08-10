@@ -904,7 +904,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/generate-audio.md"
       ],
-      "max_tokens": 6000
+      "max_tokens": 7000
     },
     "governance.failure-recovery": {
       "description": "Global stop, retry, and resume policy.",

@@ -12,7 +12,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 - With provider-timed subtitles, one matching subtitle file per slide in the same `<project_path>/audio/` directory (`01_cover.srt`, `02_market_landscape.srt`, …). Each file uses a page-local timeline with a `00:00:00,000` origin. Provider word/character timings are regrouped into the same compact cue format.
 - One compact `<project_path>/audio/manifest.json` after a complete successful run. It records only provider/model, audio/subtitle format, relevant voice settings, and a SHA-256 fingerprint instead of a raw cloud voice ID. It contains no per-slide inventory, artifact hashes, or API keys and is not loaded during normal generation.
 - When canonical `animations.json` exists and page-local SRT is available, an SVG-to-SRT timing plan derives `narration_animations.json` whose click-free object animations wait for the relevant subtitle cue. When neither animation sidecar exists, narrated export creates no sidecar and keeps the default `fade` page transition with no per-element builds. With page-local SRT, both paths can produce a deck-wide `<project_path>/audio/total.srt` aligned to the final PPTX timeline; after PowerPoint exports a video, the same command can calibrate page starts against its audio track for frame-accurate sidecar subtitles.
-- Optional re-export: a new PPTX in `exports/` with each `m4a` / `mp3` / `wav` file embedded into the matching slide and slide auto-advance timings set to the audio length, so kiosk/auto-play and video export work without manual timing.
+- Optional re-export: a new PPTX in `exports/` with each `m4a` / `mp3` / `wav` file embedded into the matching slide and slide auto-advance timings set from the configurable page-start floor, audio length, and page-tail padding, so kiosk/auto-play and video export work without manual timing. Narration never starts before the page transition finishes.
 - Optional native video export on Windows: `powerpoint_video.py` delegates the final narrated PPTX to PowerPoint 2016+ and waits until its native MP4 encoder succeeds or fails.
 - The original speaker notes are preserved.
 
@@ -33,6 +33,10 @@ The shared stage is documented in [`workflows/stages/generate-audio.md`](../skil
 |---|---|
 | `--recorded-narration audio` | Prepare PowerPoint's recorded timings and narrations. Requires complete per-slide audio and writes page auto-advance timings. Use this for narrated/video export. The re-export is saved as `exports/<name>_<timestamp>_narrated.pptx`. |
 | `--narration-audio-dir audio` | Lower-level audio embedding. Embeds matched files and allows partial coverage. Use this for testing or manual PowerPoint finishing. Exports get the same `_narrated` name suffix. |
+| `--narration-start-floor 0.8` | Optional minimum seconds from the start of the destination-page transition to narration. The default is `0.8`; `0` means start as soon as the transition completes. |
+| `--narration-padding 0.5` | Optional silent hold after narration finishes and before the slide advances. The default is `0.5`. |
+
+Both timing options may be omitted or overridden independently. The actual silence after a transition is `max(0, narration_start_floor - transition_duration)`; changing the floor never stretches the transition itself.
 
 ## Triggering it
 
@@ -108,12 +112,12 @@ python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
 
 # 4. Derive click-free narration_animations.json from canonical animations.json
 python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
-  --narration-padding 0.5 --force
+  --narration-start-floor 0.8 --narration-padding 0.5 --force
 
 # 5. Re-export PPTX with audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
-  --narration-padding 0.5
+  --narration-start-floor 0.8 --narration-padding 0.5
 
 # 6. When page-local SRT exists, merge it using the final PowerPoint timings
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
@@ -167,7 +171,7 @@ Alibaba Cloud's current [TTS model guide](https://www.alibabacloud.com/help/en/m
 
 `audio/` is the single active narration set. The manifest records its source, so provider subdirectories are not created by default. Before regeneration, the script removes stale `manifest.json` and `total.srt`; audio-only providers also remove same-stem stale page SRT files. Use a separate explicit output directory only when you intentionally need to preserve an alternate provider run.
 
-When canonical custom animation exists, `narration_timing.json` remains deliberately separate from read-only `animations.json`. It records the ordered SRT-set SHA-256, narration padding, ordered SVG group IDs, and optional 1-based cue numbers. `narration_sync.py animations` rejects a stale fingerprint, validates the group IDs against the current SVGs, and writes the derived `narration_animations.json` with only supported PowerPoint fields. A group with `effects[]` still maps to one cue: its first active row is anchored to that cue, while later rows retain their relative delay. With no animation sidecars, skip that derivation. `narration_sync.py subtitles` reads the final PPTX's actual presentation order plus millisecond slide-advance and transition values, so `total.srt` follows the native PPTX timeline. A relative `--pptx` path is resolved under `<project_path>`.
+When canonical custom animation exists, `narration_timing.json` remains deliberately separate from read-only `animations.json`. It records the ordered SRT-set SHA-256, optional narration start floor, narration padding, ordered SVG group IDs, and optional 1-based cue numbers. `narration_sync.py animations` rejects a stale fingerprint, validates the group IDs against the current SVGs, and writes the derived `narration_animations.json` with only supported PowerPoint fields. Cue-bound animation starts use the same page-start floor as the embedded audio; uncued title or decorative animation keeps its canonical relative timing. A group with `effects[]` still maps to one cue: its first active row is anchored to that cue, while later rows retain their relative delay. With no animation sidecars, skip that derivation. `narration_sync.py subtitles` reads the final PPTX's actual presentation order plus millisecond transition, narration-delay, and slide-advance values, so `total.srt` follows the native PPTX timeline. A relative `--pptx` path is resolved under `<project_path>`.
 
 PowerPoint's video encoder can quantize each slide/media segment to its output frame clock. Those small per-page differences may accumulate even when the PPTX timing values are correct. Passing the finished `.mp4` / `.wmv` / `.mov` with `--video` uses normalized audio correlation to locate each original page narration in the exported audio track. It changes only the page-level offsets: the provider's cue text and page-local timing remain untouched. This is a post-export subtitle calibration step and does not rewrite the video.
 
@@ -177,6 +181,7 @@ Use the default text-flow mode for the final narrated SVG export. It keeps autho
 {
   "version": 1,
   "srt_sha256": "<sha256 of the ordered page-local SRT set>",
+  "narration_start_floor": 0.8,
   "narration_padding": 0.5,
   "slides": {
     "01_title": {
