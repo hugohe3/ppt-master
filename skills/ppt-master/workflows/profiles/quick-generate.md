@@ -106,6 +106,13 @@ require inventing, omitting, or leaving unsupported an externally verifiable
 claim. File presence or length does not establish sufficiency. Research gathers
 facts only; image acquisition remains part of the resource preparation below.
 
+**Conditional video-delivery context**: when the intended use is recorded,
+self-running, or video-directed—or an explicit final/literal narration script
+will become notes/audio—read
+[`video-design.md`](../../references/video-design.md) now and retain it through
+roster, SVG, notes, and motion decisions. This changes neither the Quick profile
+nor its artifacts.
+
 Before initialization, resolve exactly one template branch:
 
 - **Direct template application**: one or more exact current workspace roots
@@ -227,6 +234,7 @@ checkpoint, or persist a page/resource plan.
 Before writing P01, resolve in active context:
 
 - the exact slide roster and one compact core message for every page, used to choose its composition and hierarchy;
+- the effective Speaker Notes, Custom Animations, and Narration Audio outcomes; generated narration requires notes, while video purpose alone forces neither audio nor object animation;
 - the canvas, visual direction, palette, wording, and one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses; explicit user, template, or resolved-style requirements may call for a deliberate exception;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
 - for each page not bound to literal supplied geometry, a primary visual zone and page-scale composition direction tied to its core message; use cards or equal grids when the content relationship calls for them, not as the automatic page grammar;
@@ -241,6 +249,15 @@ Before writing P01, resolve in active context:
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
+
+**Prepared final narration**: when the user explicitly marks a script as
+final/literal and intends it for notes or generated audio, segment it by semantic
+scene while resolving the roster and preserve every spoken word. Before writing
+P01, write the ordered segments once to `notes/total.md` with
+`# Slide <number>` headings and `---` separators. Keep that file as exact
+production input for page design; it is not a planning checkpoint. Do not split
+it until the SVG roster exists. Draft narration instead remains source material
+and uses the ordinary post-SVG notes branch when notes are enabled.
 
 **Mandatory — subject-layer capability scan**: Before resource preparation,
 inspect the intended layer relationship rather than treating every reference
@@ -418,6 +435,11 @@ Keep the core's shared visual-quality / leading defaults and `svg-effects.md` §
 
 **Per-page execution anchors**: apply the transient core-message, typography-role, body-frame, density, and composition anchors resolved in §2 while authoring; they guide the current run without creating a persisted planning artifact.
 
+When `notes/total.md` was frozen from a final script, retain its corresponding
+segment while authoring each page. The visible state and real direct-root
+semantic groups must support that spoken segment without duplicating the full
+script as body copy or changing its wording.
+
 Use one zero-padded filename width sized for the resolved roster, such as
 `01_cover.svg` through `12_end.svg` or `001_cover.svg` through `120_end.svg`.
 Never reuse pages from another run: the exporter publishes every SVG discovered
@@ -473,15 +495,37 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
 
 Fix every blocking error and rerun the same command. Then export:
 
+When Speaker Notes is enabled, load
+[`executor-notes.md`](../../references/executor-notes.md) after the passing final
+check. Validate an already frozen final script without rewriting it; otherwise
+generate `notes/total.md` from the final SVG roster. Then run:
+
 ```bash
+python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
+```
+
+Run [`customize-animations`](../stages/customize-animations.md) after that notes
+pass when the active-context outcome or an existing sidecar triggers it. Resolve
+deck-wide-only motion through the selected exporter flags instead.
+
+Choose exactly one notes mode for the base export:
+
+```bash
+# Speaker Notes enabled
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate
+
+# Speaker Notes disabled
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
+  --quick-generate --no-notes
 ```
 
 `--quick-generate` reads `svg_output/` as the page source and resolves the
 project-local assets referenced by those SVGs. It infers one consistent canvas,
 uses a lockless flat PowerPoint package, and does not force-disable ordinary
 export options. Notes, custom object animation, and narration remain off unless
-selected by the agent. Do not run `finalize_svg.py`.
+selected by the agent. Do not run `finalize_svg.py`. After the validated base
+export, run [`generate-audio`](../stages/generate-audio.md) when Narration Audio
+is enabled; it owns page audio/SRT, narrated PPTX, and optional native MP4.
 
 The exporter requires a passing `final` report whose SVG fingerprint matches
 the current `svg_output/`; missing, blocking, non-final, or stale reports stop
@@ -502,7 +546,8 @@ or lock.
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
 - [x] The lockless final SVG quality report passes and matches the current SVGs
+- [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the PPTX path
+- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX/MP4 outputs
 ```
