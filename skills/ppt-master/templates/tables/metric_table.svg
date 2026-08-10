@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Operational metrics with graphical status, change and progress cells. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Metric Table</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Operating measures with current value, change, status and target progress</text>
+    </g>
+
+    <g id="metric-table" data-pptx-bounds="80 145 1120 500">
+        <!-- Header and alternating row bands. -->
+        <rect x="80" y="145" width="1120" height="60" fill="#E2E8F0"/>
+        <rect x="80" y="293" width="1120" height="74" fill="#F8FAFC"/>
+        <rect x="80" y="441" width="1120" height="74" fill="#F8FAFC"/>
+        <rect x="80" y="589" width="1120" height="56" fill="#EFF6FF"/>
+
+        <!-- Cell grid. -->
+        <rect x="80" y="145" width="1120" height="500" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="430" y1="145" x2="430" y2="645"/>
+            <line x1="620" y1="145" x2="620" y2="645"/>
+            <line x1="800" y1="145" x2="800" y2="645"/>
+            <line x1="980" y1="145" x2="980" y2="645"/>
+            <line x1="80" y1="205" x2="1200" y2="205"/>
+            <line x1="80" y1="293" x2="1200" y2="293"/>
+            <line x1="80" y1="367" x2="1200" y2="367"/>
+            <line x1="80" y1="441" x2="1200" y2="441"/>
+            <line x1="80" y1="515" x2="1200" y2="515"/>
+            <line x1="80" y1="589" x2="1200" y2="589"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="13" font-weight="700" fill="#475569">
+            <text x="100" y="182">METRIC</text>
+            <text x="600" y="182" text-anchor="end">CURRENT</text>
+            <text x="710" y="182" text-anchor="middle">CHANGE</text>
+            <text x="890" y="182" text-anchor="middle">STATUS</text>
+            <text x="1090" y="182" text-anchor="middle">TARGET PROGRESS</text>
+        </g>
+
+        <!-- Metric names and values. -->
+        <g font-size="15" fill="#0F172A">
+            <text x="100" y="258" font-weight="700">Service availability</text>
+            <text x="600" y="258" text-anchor="end" font-size="18" font-weight="700">99.4%</text>
+            <text x="710" y="258" text-anchor="middle" font-weight="700" fill="#059669">▲ 0.8</text>
+
+            <text x="100" y="340" font-weight="700">Response time</text>
+            <text x="600" y="340" text-anchor="end" font-size="18" font-weight="700">1.8 h</text>
+            <text x="710" y="340" text-anchor="middle" font-weight="700" fill="#059669">▼ 0.4</text>
+
+            <text x="100" y="414" font-weight="700">Open exceptions</text>
+            <text x="600" y="414" text-anchor="end" font-size="18" font-weight="700">18</text>
+            <text x="710" y="414" text-anchor="middle" font-weight="700" fill="#E11D48">▲ 3</text>
+
+            <text x="100" y="488" font-weight="700">Plan completion</text>
+            <text x="600" y="488" text-anchor="end" font-size="18" font-weight="700">76%</text>
+            <text x="710" y="488" text-anchor="middle" font-weight="700" fill="#059669">▲ 6</text>
+
+            <text x="100" y="562" font-weight="700">Capacity used</text>
+            <text x="600" y="562" text-anchor="end" font-size="18" font-weight="700">88%</text>
+            <text x="710" y="562" text-anchor="middle" font-weight="700" fill="#D97706">▲ 4</text>
+
+            <text x="100" y="625" font-weight="700" fill="#1D4ED8">Portfolio summary</text>
+            <text x="600" y="625" text-anchor="end" font-size="18" font-weight="700" fill="#1D4ED8">On plan</text>
+            <text x="710" y="625" text-anchor="middle" font-weight="700" fill="#059669">Improving</text>
+        </g>
+
+        <!-- Status cells. -->
+        <g font-size="13" font-weight="700" text-anchor="middle">
+            <circle cx="842" cy="252" r="7" fill="#059669"/>
+            <text x="902" y="258" fill="#059669">On target</text>
+
+            <circle cx="842" cy="334" r="7" fill="#059669"/>
+            <text x="902" y="340" fill="#059669">On target</text>
+
+            <circle cx="842" cy="408" r="7" fill="#E11D48"/>
+            <text x="902" y="414" fill="#E11D48">Off target</text>
+
+            <circle cx="842" cy="482" r="7" fill="#2563EB"/>
+            <text x="902" y="488" fill="#2563EB">In progress</text>
+
+            <circle cx="842" cy="556" r="7" fill="#D97706"/>
+            <text x="902" y="562" fill="#D97706">Watch</text>
+
+            <circle cx="842" cy="619" r="7" fill="#2563EB"/>
+            <text x="902" y="625" fill="#1D4ED8">Stable</text>
+        </g>
+
+        <!-- In-cell target bars. -->
+        <g>
+            <rect x="1015" y="245" width="140" height="14" rx="7" fill="#E2E8F0"/>
+            <rect x="1015" y="245" width="132" height="14" rx="7" fill="#059669"/>
+            <text x="1175" y="260" text-anchor="end" font-size="13" font-weight="700" fill="#475569">94%</text>
+
+            <rect x="1015" y="327" width="140" height="14" rx="7" fill="#E2E8F0"/>
+            <rect x="1015" y="327" width="119" height="14" rx="7" fill="#059669"/>
+            <text x="1175" y="342" text-anchor="end" font-size="13" font-weight="700" fill="#475569">85%</text>
+
+            <rect x="1015" y="401" width="140" height="14" rx="7" fill="#E2E8F0"/>
+            <rect x="1015" y="401" width="72" height="14" rx="7" fill="#E11D48"/>
+            <text x="1175" y="416" text-anchor="end" font-size="13" font-weight="700" fill="#475569">51%</text>
+
+            <rect x="1015" y="475" width="140" height="14" rx="7" fill="#E2E8F0"/>
+            <rect x="1015" y="475" width="106" height="14" rx="7" fill="#2563EB"/>
+            <text x="1175" y="490" text-anchor="end" font-size="13" font-weight="700" fill="#475569">76%</text>
+
+            <rect x="1015" y="549" width="140" height="14" rx="7" fill="#E2E8F0"/>
+            <rect x="1015" y="549" width="123" height="14" rx="7" fill="#D97706"/>
+            <text x="1175" y="564" text-anchor="end" font-size="13" font-weight="700" fill="#475569">88%</text>
+
+            <rect x="1015" y="612" width="140" height="14" rx="7" fill="#BFDBFE"/>
+            <rect x="1015" y="612" width="112" height="14" rx="7" fill="#2563EB"/>
+            <text x="1175" y="627" text-anchor="end" font-size="13" font-weight="700" fill="#1D4ED8">80%</text>
+        </g>
+    </g>
+</svg>

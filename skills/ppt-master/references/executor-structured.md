@@ -6,6 +6,8 @@ Conditional Executor authority for `template_reuse_scope: mirror|layout` with `p
 
 **Trigger**: load only when the lock selects structured template reuse.
 
+**Hard rule — package structure, not information structure**: this branch owns reusable PowerPoint Master/Layout atoms, placeholders, slots, and prototype topology. [`executor-structure.md`](./executor-structure.md) independently owns Slide-local qualitative shape composition. Neither one activates or implies the other.
+
 ## 1. Template Reuse Rules
 
 ### 1.0 Template Context Load
@@ -60,7 +62,7 @@ When `spec_lock.md` records the AI-derived `template_reuse_scope: mirror`, Execu
 
 **Detecting mirror mode**: read `template_reuse_scope` from the retained lock. `replication_mode: mirror` in the installed template only determines whether that scope is legal; it must never force mirror behavior when the lock records `layout` or `style`.
 
-**Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
+**Mirror + visualization pages**: Chart, Table, and qualitative topology inside a mirror SVG are already drawn. Replace only permitted text while preserving prototype geometry; do not redraw from a catalog SVG or runtime grammar. A mirror template normally omits `page_visualizations`, and legacy `page_charts` never overrides fidelity.
 
 **Legacy template boundary**: A template with missing root Master identity, direct atomic placeholders, `data-pptx-layout-kind`, unmapped `baseline`, `preserve`, or `layout_strategy: distill` is not a fallback input. Stop and create a new current workspace through [`create-template`](../workflows/create-template.md) before generation.
 
@@ -106,7 +108,7 @@ This section applies only when a deck/layout template's AI-derived lock records 
 
 **Layout identity**: Different keys differ in fixed Layout atoms or slot topology/default bounds/binding modes. Identical contracts should share one key. Current wording, imagery, crop, and Slide-local geometry never define identity.
 
-**Template adherence**: Strict preserves reusable Master/Layout atoms and slot ids/types/indices/default bounds/bindings. Under `layout`, the application plan may still change current text/tspans, line height, crop, and carrier-local geometry inside those bounds; `mirror` remains topology-frozen. Adaptive keeps the prototype Master and changes reusable atoms or slots only under a new explicit Layout key/name, written to `spec_lock.md pptx_layouts` while authoring the first affected page. Changing only content is not a new Layout.
+**Template adherence**: Strict preserves reusable Master/Layout atoms and slot ids/types/indices/default bounds/bindings. Under `layout`, the application plan may still change current text/tspans, line height, crop, and carrier-local geometry inside those bounds; `mirror` remains topology-frozen. Adaptive keeps the prototype Master and realizes only the Layout definition and page assignment already declared in `spec_lock.md`. If reusable atoms or slot topology/default bounds/bindings must change, stop before completing the page and return to Strategist to declare a new Layout key/name, update its definition and affected assignments, then read back and validate those planning fragments before resuming. Changing only content is not a new Layout.
 
 **Layout-content boundary**: Mark only genuinely reusable fixed framing as a Master/Layout atom. Concrete titles, body copy, metrics, chart marks, images, and page-specific groups remain inside slot groups or ordinary Slide-local content groups. The exporter never infers or clusters structure.
 

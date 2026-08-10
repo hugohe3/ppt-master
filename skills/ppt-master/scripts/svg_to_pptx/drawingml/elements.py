@@ -56,7 +56,7 @@ from .utils import (
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     combine_opacity, parse_hex_color, parse_svg_color,
-    resolve_url_id, get_effective_filter_id,
+    resolve_project_text_image_fill, resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char,
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
     resolve_text_run_fonts, split_project_text_clusters,
@@ -2463,14 +2463,32 @@ def _build_text_fill_xml(
     if fill_raw.strip().lower() in ('none', 'transparent'):
         return '<a:noFill/>'
 
-    grad_id = resolve_url_id(fill_raw)
-    if grad_id and ctx and grad_id in ctx.defs:
-        return build_gradient_fill(
-            ctx.defs[grad_id],
-            opacity,
-            ctx.theme_color_spec,
-            "text",
-        )
+    paint_id = resolve_url_id(fill_raw)
+    if paint_id and ctx and paint_id in ctx.defs:
+        paint = ctx.defs[paint_id]
+        paint_tag = paint.tag.rsplit('}', 1)[-1]
+        if paint_tag in {'linearGradient', 'radialGradient'}:
+            return build_gradient_fill(
+                paint,
+                opacity,
+                ctx.theme_color_spec,
+                "text",
+            )
+        if paint_tag == 'pattern':
+            mode, image = resolve_project_text_image_fill(paint)
+            source = load_project_image_source(image, ctx.svg_dir)
+            r_id = _register_image_media(
+                ctx,
+                source.img_format,
+                source.img_data,
+                reuse_text_fill=True,
+            )
+            blip_xml = _build_image_blip_xml(r_id, opacity)
+            if mode == 'stretch':
+                fill_mode_xml = '<a:stretch><a:fillRect/></a:stretch>'
+            else:
+                fill_mode_xml = '<a:tile/>'
+            return f'<a:blipFill>{blip_xml}{fill_mode_xml}</a:blipFill>'
 
     parsed_color, color_alpha = parse_svg_color(fill_raw)
     fill = parsed_color or fill
@@ -4267,6 +4285,34 @@ def _build_image_blip_xml(r_id: str, opacity: float | None) -> str:
     )
 
 
+def _register_image_media(
+    ctx: ConvertContext,
+    img_format: str,
+    img_data: bytes,
+    *,
+    reuse_text_fill: bool = False,
+) -> str:
+    """Register image bytes and return a DrawingML relationship id."""
+    cache_key: tuple[str, str] | None = None
+    if reuse_text_fill:
+        cache_key = (img_format, hashlib.sha256(img_data).hexdigest())
+        if cache_key in ctx.text_image_fill_cache:
+            return ctx.text_image_fill_cache[cache_key]
+
+    img_idx = len(ctx.media_files) + 1
+    img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
+    ctx.media_files[img_filename] = img_data
+    r_id = ctx.next_rel_id()
+    ctx.rel_entries.append({
+        'id': r_id,
+        'type': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
+        'target': f'../media/{img_filename}',
+    })
+    if cache_key is not None:
+        ctx.text_image_fill_cache[cache_key] = r_id
+    return r_id
+
+
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <image> to DrawingML picture element.
 
@@ -4342,16 +4388,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         visible_source_fraction=visible_source_fraction,
     )
 
-    img_idx = len(ctx.media_files) + 1
-    img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
-    ctx.media_files[img_filename] = img_data
-
-    r_id = ctx.next_rel_id()
-    ctx.rel_entries.append({
-        'id': r_id,
-        'type': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
-        'target': f'../media/{img_filename}',
-    })
+    r_id = _register_image_media(ctx, img_format, img_data)
 
     # Resolve clip-path → DrawingML geometry
     clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
@@ -4965,16 +5002,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
         ),
     )
 
-    img_idx = len(ctx.media_files) + 1
-    img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
-    ctx.media_files[img_filename] = img_data
-
-    r_id = ctx.next_rel_id()
-    ctx.rel_entries.append({
-        'id': r_id,
-        'type': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
-        'target': f'../media/{img_filename}',
-    })
+    r_id = _register_image_media(ctx, img_format, img_data)
 
     shape_id = _claim_element_shape_id(elem, ctx)
     xfrm_attr, off_x, off_y, ext_cx, ext_cy, bounds_emu = _picture_xfrm_from_svg_rect(

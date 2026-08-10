@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Generic grouped table with indentation, subtotals and a grand total. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Hierarchical Table</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Groups, indented items, subtotals and a grand total across stable measure columns</text>
+    </g>
+
+    <g id="hierarchical-table"
+       data-pptx-bounds="80 145 1120 500"
+       data-pptx-replace-with="table">
+        <metadata type="application/json">
+            {
+              "name": "hierarchical-table",
+              "x": 80,
+              "y": 145,
+              "width": 1120,
+              "height": 500,
+              "strict_grid": true,
+              "column_widths": [400, 180, 180, 180, 180],
+              "row_heights": [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+              "style": {
+                "font_family": "Arial",
+                "font_size": 15,
+                "header_font_size": 13,
+                "header_fill": "#E2E8F0",
+                "header_text": "#334155",
+                "body_fill": "#FFFFFF",
+                "body_text": "#0F172A",
+                "band_row": false,
+                "border_color": "#CBD5E1",
+                "border_width": 1,
+                "padding": {"left": 12, "right": 12, "top": 5, "bottom": 5},
+                "valign": "middle"
+              },
+              "columns": [
+                {"text": "ITEM", "bold": true},
+                {"text": "PERIOD 1", "align": "r", "bold": true},
+                {"text": "PERIOD 2", "align": "r", "bold": true},
+                {"text": "TOTAL", "align": "r", "bold": true},
+                {"text": "CHANGE", "align": "r", "bold": true}
+              ],
+              "rows": [
+                [
+                  {"text": "Group A", "bold": true, "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"}
+                ],
+                [
+                  {"text": "Item A1", "color": "#475569", "padding": {"left": 36, "right": 12, "top": 5, "bottom": 5}},
+                  {"text": "120", "align": "r"},
+                  {"text": "138", "align": "r"},
+                  {"text": "258", "align": "r", "bold": true},
+                  {"text": "+15%", "align": "r", "color": "#059669", "bold": true}
+                ],
+                [
+                  {"text": "Item A2", "color": "#475569", "padding": {"left": 36, "right": 12, "top": 5, "bottom": 5}},
+                  {"text": "80", "align": "r"},
+                  {"text": "92", "align": "r"},
+                  {"text": "172", "align": "r", "bold": true},
+                  {"text": "+15%", "align": "r", "color": "#059669", "bold": true}
+                ],
+                [
+                  {"text": "Subtotal A", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "200", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "230", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "430", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "+15%", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#059669"}
+                ],
+                [
+                  {"text": "Group B", "bold": true, "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"},
+                  {"text": "", "fill": "#F8FAFC"}
+                ],
+                [
+                  {"text": "Item B1", "color": "#475569", "padding": {"left": 36, "right": 12, "top": 5, "bottom": 5}},
+                  {"text": "140", "align": "r"},
+                  {"text": "126", "align": "r"},
+                  {"text": "266", "align": "r", "bold": true},
+                  {"text": "-10%", "align": "r", "color": "#E11D48", "bold": true}
+                ],
+                [
+                  {"text": "Item B2", "color": "#475569", "padding": {"left": 36, "right": 12, "top": 5, "bottom": 5}},
+                  {"text": "60", "align": "r"},
+                  {"text": "72", "align": "r"},
+                  {"text": "132", "align": "r", "bold": true},
+                  {"text": "+20%", "align": "r", "color": "#059669", "bold": true}
+                ],
+                [
+                  {"text": "Subtotal B", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "200", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "198", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "398", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#1D4ED8"},
+                  {"text": "-1%", "align": "r", "bold": true, "fill": "#EFF6FF", "color": "#E11D48"}
+                ],
+                [
+                  {"text": "Grand Total", "bold": true, "fill": "#2563EB", "color": "#FFFFFF"},
+                  {"text": "400", "align": "r", "bold": true, "fill": "#2563EB", "color": "#FFFFFF"},
+                  {"text": "428", "align": "r", "bold": true, "fill": "#2563EB", "color": "#FFFFFF"},
+                  {"text": "828", "align": "r", "bold": true, "fill": "#2563EB", "color": "#FFFFFF"},
+                  {"text": "+7%", "align": "r", "bold": true, "fill": "#2563EB", "color": "#FFFFFF"}
+                ]
+              ]
+            }
+        </metadata>
+
+        <!-- Row treatments. -->
+        <rect x="80" y="145" width="1120" height="50" fill="#E2E8F0"/>
+        <rect x="80" y="195" width="1120" height="50" fill="#F8FAFC"/>
+        <rect x="80" y="345" width="1120" height="50" fill="#EFF6FF"/>
+        <rect x="80" y="395" width="1120" height="50" fill="#F8FAFC"/>
+        <rect x="80" y="545" width="1120" height="50" fill="#EFF6FF"/>
+        <rect x="80" y="595" width="1120" height="50" fill="#2563EB"/>
+
+        <!-- Stable grid. -->
+        <rect x="80" y="145" width="1120" height="500" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="480" y1="145" x2="480" y2="645"/>
+            <line x1="660" y1="145" x2="660" y2="645"/>
+            <line x1="840" y1="145" x2="840" y2="645"/>
+            <line x1="1020" y1="145" x2="1020" y2="645"/>
+            <line x1="80" y1="195" x2="1200" y2="195"/>
+            <line x1="80" y1="245" x2="1200" y2="245"/>
+            <line x1="80" y1="295" x2="1200" y2="295"/>
+            <line x1="80" y1="345" x2="1200" y2="345"/>
+            <line x1="80" y1="395" x2="1200" y2="395"/>
+            <line x1="80" y1="445" x2="1200" y2="445"/>
+            <line x1="80" y1="495" x2="1200" y2="495"/>
+            <line x1="80" y1="545" x2="1200" y2="545"/>
+            <line x1="80" y1="595" x2="1200" y2="595"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="13" font-weight="700" fill="#334155">
+            <text x="100" y="177">ITEM</text>
+            <text x="640" y="177" text-anchor="end">PERIOD 1</text>
+            <text x="820" y="177" text-anchor="end">PERIOD 2</text>
+            <text x="1000" y="177" text-anchor="end">TOTAL</text>
+            <text x="1180" y="177" text-anchor="end">CHANGE</text>
+        </g>
+
+        <!-- Group A. -->
+        <g font-size="15">
+            <text x="100" y="227" font-weight="700" fill="#0F172A">Group A</text>
+            <text x="130" y="277" fill="#475569">Item A1</text>
+            <text x="640" y="277" text-anchor="end">120</text>
+            <text x="820" y="277" text-anchor="end">138</text>
+            <text x="1000" y="277" text-anchor="end" font-weight="700">258</text>
+            <text x="1180" y="277" text-anchor="end" font-weight="700" fill="#059669">+15%</text>
+            <text x="130" y="327" fill="#475569">Item A2</text>
+            <text x="640" y="327" text-anchor="end">80</text>
+            <text x="820" y="327" text-anchor="end">92</text>
+            <text x="1000" y="327" text-anchor="end" font-weight="700">172</text>
+            <text x="1180" y="327" text-anchor="end" font-weight="700" fill="#059669">+15%</text>
+            <g font-weight="700" fill="#1D4ED8">
+                <text x="100" y="377">Subtotal A</text>
+                <text x="640" y="377" text-anchor="end">200</text>
+                <text x="820" y="377" text-anchor="end">230</text>
+                <text x="1000" y="377" text-anchor="end">430</text>
+                <text x="1180" y="377" text-anchor="end" fill="#059669">+15%</text>
+            </g>
+        </g>
+
+        <!-- Group B. -->
+        <g font-size="15">
+            <text x="100" y="427" font-weight="700" fill="#0F172A">Group B</text>
+            <text x="130" y="477" fill="#475569">Item B1</text>
+            <text x="640" y="477" text-anchor="end">140</text>
+            <text x="820" y="477" text-anchor="end">126</text>
+            <text x="1000" y="477" text-anchor="end" font-weight="700">266</text>
+            <text x="1180" y="477" text-anchor="end" font-weight="700" fill="#E11D48">-10%</text>
+            <text x="130" y="527" fill="#475569">Item B2</text>
+            <text x="640" y="527" text-anchor="end">60</text>
+            <text x="820" y="527" text-anchor="end">72</text>
+            <text x="1000" y="527" text-anchor="end" font-weight="700">132</text>
+            <text x="1180" y="527" text-anchor="end" font-weight="700" fill="#059669">+20%</text>
+            <g font-weight="700" fill="#1D4ED8">
+                <text x="100" y="577">Subtotal B</text>
+                <text x="640" y="577" text-anchor="end">200</text>
+                <text x="820" y="577" text-anchor="end">198</text>
+                <text x="1000" y="577" text-anchor="end">398</text>
+                <text x="1180" y="577" text-anchor="end" fill="#E11D48">-1%</text>
+            </g>
+        </g>
+
+        <!-- Grand total. -->
+        <g font-size="16" font-weight="700" fill="#FFFFFF">
+            <text x="100" y="627">Grand Total</text>
+            <text x="640" y="627" text-anchor="end">400</text>
+            <text x="820" y="627" text-anchor="end">428</text>
+            <text x="1000" y="627" text-anchor="end">828</text>
+            <text x="1180" y="627" text-anchor="end">+7%</text>
+        </g>
+    </g>
+</svg>

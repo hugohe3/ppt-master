@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Generic ordinal rating matrix using repeated dots and partial fills. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Rating Matrix</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Ordinal assessments shown through a common five-step scale</text>
+    </g>
+
+    <g id="rating-matrix" data-pptx-bounds="80 145 1120 430">
+        <!-- Header, row-label band and emphasized option. -->
+        <rect x="80" y="145" width="1120" height="60" fill="#E2E8F0"/>
+        <rect x="80" y="205" width="400" height="370" fill="#F8FAFC"/>
+        <rect x="720" y="145" width="240" height="430" fill="#EFF6FF"/>
+
+        <!-- Grid. -->
+        <rect x="80" y="145" width="1120" height="430" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="480" y1="145" x2="480" y2="575"/>
+            <line x1="720" y1="145" x2="720" y2="575"/>
+            <line x1="960" y1="145" x2="960" y2="575"/>
+            <line x1="80" y1="205" x2="1200" y2="205"/>
+            <line x1="80" y1="279" x2="1200" y2="279"/>
+            <line x1="80" y1="353" x2="1200" y2="353"/>
+            <line x1="80" y1="427" x2="1200" y2="427"/>
+            <line x1="80" y1="501" x2="1200" y2="501"/>
+        </g>
+
+        <!-- Column and row labels. -->
+        <g font-size="13" font-weight="700" fill="#475569">
+            <text x="100" y="182">EVALUATION CRITERION</text>
+            <text x="600" y="182" text-anchor="middle">OPTION A</text>
+            <text x="840" y="182" text-anchor="middle" fill="#1D4ED8">OPTION B</text>
+            <text x="1080" y="182" text-anchor="middle">OPTION C</text>
+        </g>
+        <g font-size="15" font-weight="700" fill="#334155">
+            <text x="100" y="251">Ease of use</text>
+            <text x="100" y="325">Configuration</text>
+            <text x="100" y="399">Reliability</text>
+            <text x="100" y="473">Service quality</text>
+            <text x="100" y="547">Overall value</text>
+        </g>
+
+        <!-- Base dot scales. -->
+        <g fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5">
+            <!-- Option A -->
+            <circle cx="552" cy="245" r="9"/><circle cx="576" cy="245" r="9"/><circle cx="600" cy="245" r="9"/><circle cx="624" cy="245" r="9"/><circle cx="648" cy="245" r="9"/>
+            <circle cx="552" cy="319" r="9"/><circle cx="576" cy="319" r="9"/><circle cx="600" cy="319" r="9"/><circle cx="624" cy="319" r="9"/><circle cx="648" cy="319" r="9"/>
+            <circle cx="552" cy="393" r="9"/><circle cx="576" cy="393" r="9"/><circle cx="600" cy="393" r="9"/><circle cx="624" cy="393" r="9"/><circle cx="648" cy="393" r="9"/>
+            <circle cx="552" cy="467" r="9"/><circle cx="576" cy="467" r="9"/><circle cx="600" cy="467" r="9"/><circle cx="624" cy="467" r="9"/><circle cx="648" cy="467" r="9"/>
+            <circle cx="552" cy="541" r="9"/><circle cx="576" cy="541" r="9"/><circle cx="600" cy="541" r="9"/><circle cx="624" cy="541" r="9"/><circle cx="648" cy="541" r="9"/>
+            <!-- Option B -->
+            <circle cx="792" cy="245" r="9"/><circle cx="816" cy="245" r="9"/><circle cx="840" cy="245" r="9"/><circle cx="864" cy="245" r="9"/><circle cx="888" cy="245" r="9"/>
+            <circle cx="792" cy="319" r="9"/><circle cx="816" cy="319" r="9"/><circle cx="840" cy="319" r="9"/><circle cx="864" cy="319" r="9"/><circle cx="888" cy="319" r="9"/>
+            <circle cx="792" cy="393" r="9"/><circle cx="816" cy="393" r="9"/><circle cx="840" cy="393" r="9"/><circle cx="864" cy="393" r="9"/><circle cx="888" cy="393" r="9"/>
+            <circle cx="792" cy="467" r="9"/><circle cx="816" cy="467" r="9"/><circle cx="840" cy="467" r="9"/><circle cx="864" cy="467" r="9"/><circle cx="888" cy="467" r="9"/>
+            <circle cx="792" cy="541" r="9"/><circle cx="816" cy="541" r="9"/><circle cx="840" cy="541" r="9"/><circle cx="864" cy="541" r="9"/><circle cx="888" cy="541" r="9"/>
+            <!-- Option C -->
+            <circle cx="1032" cy="245" r="9"/><circle cx="1056" cy="245" r="9"/><circle cx="1080" cy="245" r="9"/><circle cx="1104" cy="245" r="9"/><circle cx="1128" cy="245" r="9"/>
+            <circle cx="1032" cy="319" r="9"/><circle cx="1056" cy="319" r="9"/><circle cx="1080" cy="319" r="9"/><circle cx="1104" cy="319" r="9"/><circle cx="1128" cy="319" r="9"/>
+            <circle cx="1032" cy="393" r="9"/><circle cx="1056" cy="393" r="9"/><circle cx="1080" cy="393" r="9"/><circle cx="1104" cy="393" r="9"/><circle cx="1128" cy="393" r="9"/>
+            <circle cx="1032" cy="467" r="9"/><circle cx="1056" cy="467" r="9"/><circle cx="1080" cy="467" r="9"/><circle cx="1104" cy="467" r="9"/><circle cx="1128" cy="467" r="9"/>
+            <circle cx="1032" cy="541" r="9"/><circle cx="1056" cy="541" r="9"/><circle cx="1080" cy="541" r="9"/><circle cx="1104" cy="541" r="9"/><circle cx="1128" cy="541" r="9"/>
+        </g>
+
+        <!-- Filled whole-step dots. -->
+        <g stroke="none">
+            <g fill="#64748B">
+                <circle cx="552" cy="245" r="9"/><circle cx="576" cy="245" r="9"/><circle cx="600" cy="245" r="9"/><circle cx="624" cy="245" r="9"/>
+                <circle cx="552" cy="319" r="9"/><circle cx="576" cy="319" r="9"/><circle cx="600" cy="319" r="9"/>
+                <circle cx="552" cy="393" r="9"/><circle cx="576" cy="393" r="9"/><circle cx="600" cy="393" r="9"/><circle cx="624" cy="393" r="9"/>
+                <circle cx="552" cy="467" r="9"/><circle cx="576" cy="467" r="9"/><circle cx="600" cy="467" r="9"/>
+                <circle cx="552" cy="541" r="9"/><circle cx="576" cy="541" r="9"/><circle cx="600" cy="541" r="9"/><circle cx="624" cy="541" r="9"/>
+            </g>
+            <g fill="#2563EB">
+                <circle cx="792" cy="245" r="9"/><circle cx="816" cy="245" r="9"/><circle cx="840" cy="245" r="9"/><circle cx="864" cy="245" r="9"/>
+                <circle cx="792" cy="319" r="9"/><circle cx="816" cy="319" r="9"/><circle cx="840" cy="319" r="9"/><circle cx="864" cy="319" r="9"/>
+                <circle cx="792" cy="393" r="9"/><circle cx="816" cy="393" r="9"/><circle cx="840" cy="393" r="9"/><circle cx="864" cy="393" r="9"/><circle cx="888" cy="393" r="9"/>
+                <circle cx="792" cy="467" r="9"/><circle cx="816" cy="467" r="9"/><circle cx="840" cy="467" r="9"/><circle cx="864" cy="467" r="9"/>
+                <circle cx="792" cy="541" r="9"/><circle cx="816" cy="541" r="9"/><circle cx="840" cy="541" r="9"/><circle cx="864" cy="541" r="9"/>
+            </g>
+            <g fill="#64748B">
+                <circle cx="1032" cy="245" r="9"/><circle cx="1056" cy="245" r="9"/><circle cx="1080" cy="245" r="9"/>
+                <circle cx="1032" cy="319" r="9"/><circle cx="1056" cy="319" r="9"/><circle cx="1080" cy="319" r="9"/><circle cx="1104" cy="319" r="9"/>
+                <circle cx="1032" cy="393" r="9"/><circle cx="1056" cy="393" r="9"/><circle cx="1080" cy="393" r="9"/><circle cx="1104" cy="393" r="9"/>
+                <circle cx="1032" cy="467" r="9"/><circle cx="1056" cy="467" r="9"/><circle cx="1080" cy="467" r="9"/>
+                <circle cx="1032" cy="541" r="9"/><circle cx="1056" cy="541" r="9"/><circle cx="1080" cy="541" r="9"/><circle cx="1104" cy="541" r="9"/>
+            </g>
+        </g>
+
+        <!-- Partial final steps show half increments without naming a proprietary method. -->
+        <g fill="#64748B">
+            <path d="M 648 236 A 9 9 0 0 0 648 254 L 648 236 Z"/>
+            <path d="M 624 310 A 9 9 0 0 0 624 328 L 624 310 Z"/>
+            <path d="M 1128 310 A 9 9 0 0 0 1128 328 L 1128 310 Z"/>
+            <path d="M 1104 384 A 9 9 0 0 0 1104 402 L 1104 384 Z"/>
+            <path d="M 1080 458 A 9 9 0 0 0 1080 476 L 1080 458 Z"/>
+        </g>
+        <g fill="#2563EB">
+            <path d="M 888 236 A 9 9 0 0 0 888 254 L 888 236 Z"/>
+            <path d="M 888 458 A 9 9 0 0 0 888 476 L 888 458 Z"/>
+            <path d="M 888 532 A 9 9 0 0 0 888 550 L 888 532 Z"/>
+        </g>
+    </g>
+
+    <g id="legend" data-pptx-bounds="80 600 1120 46">
+        <circle cx="98" cy="623" r="8" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5"/>
+        <circle cx="224" cy="623" r="8" fill="#64748B"/>
+        <text x="116" y="628" font-size="13" fill="#64748B">Lower</text>
+        <text x="242" y="628" font-size="13" fill="#64748B">Higher</text>
+        <text x="1200" y="628" text-anchor="end" font-size="13" fill="#64748B">Whole and half-step ordinal ratings</text>
+    </g>
+</svg>

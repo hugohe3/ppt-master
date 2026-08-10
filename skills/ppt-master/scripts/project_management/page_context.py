@@ -26,7 +26,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 
-from .paths import CHARTS_DIR as _CHARTS_DIR
 from .paths import SKILL_DIR as _SKILL_DIR
 from .project_specs import (
     default_spec_lock_forbidden,
@@ -38,6 +37,13 @@ from svg_to_pptx.pptx_package.template_structure import (
     PptxStructureLock,
     TemplateStructureError,
     load_pptx_structure_lock,
+)
+from visualization_catalog import (
+    LEGACY_STRUCTURE_INTENT_KIND,
+    VISUALIZATION_SVG_KIND,
+    VisualizationCatalogError,
+    VisualizationEntry,
+    resolve_visualization_reference,
 )
 
 
@@ -413,24 +419,55 @@ def _reference_payload(
     return payload
 
 
-def _chart_reference(chart_key: str) -> tuple[dict[str, str], Path]:
-    """Resolve one locked chart key to the shared Skill catalog."""
-    if Path(chart_key).name != chart_key or not chart_key:
-        raise PageContextError(f"invalid page_charts key: {chart_key!r}")
-    chart_path = (_CHARTS_DIR / f"{chart_key}.svg").resolve()
-    if not chart_path.is_file():
-        raise PageContextError(
-            f"page_charts key {chart_key!r} has no shared SVG reference"
+def _visualization_reference(
+    value: str,
+    *,
+    allow_legacy_bare: bool,
+) -> tuple[dict[str, str] | None, Path | None, VisualizationEntry]:
+    """Resolve one live asset or one legacy intent-only Structure key."""
+    source_section = "page_charts" if allow_legacy_bare else "page_visualizations"
+    try:
+        entry = resolve_visualization_reference(
+            value,
+            allow_legacy_bare=allow_legacy_bare,
         )
-    return (
-        _reference_payload(
-            "chart-svg",
-            chart_path,
-            scope="skill",
-            display_path=f"templates/charts/{chart_path.name}",
-        ),
-        chart_path,
+    except VisualizationCatalogError as exc:
+        raise PageContextError(
+            f"{source_section} value {value!r} cannot resolve a visualization: {exc}"
+        ) from exc
+    if entry.kind == LEGACY_STRUCTURE_INTENT_KIND:
+        if not allow_legacy_bare or entry.path is not None:
+            raise PageContextError(
+                f"{source_section} value {value!r} has an invalid legacy "
+                "Structure intent resolution"
+            )
+        return None, None, entry
+    if entry.kind != VISUALIZATION_SVG_KIND or entry.path is None:
+        raise PageContextError(
+            f"{source_section} value {value!r} resolves to unsupported kind "
+            f"{entry.kind!r}"
+        )
+    path = Path(entry.path).resolve()
+    try:
+        display_path = path.relative_to(_SKILL_DIR.resolve()).as_posix()
+    except ValueError as exc:
+        raise PageContextError(
+            f"{source_section} value {value!r} resolves outside the Skill: {path}"
+        ) from exc
+    payload = _reference_payload(
+        entry.kind,
+        path,
+        scope="skill",
+        display_path=display_path,
     )
+    payload.update(
+        {
+            "reference": entry.reference,
+            "family": entry.family,
+            "key": entry.key,
+        }
+    )
+    return payload, path, entry
 
 
 def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
@@ -475,7 +512,16 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
     if rhythm is None:
         rhythm = "dense"
         warnings.append(f"page_rhythm has no {page}; using compatibility default dense")
-    chart_key = _section_fields(lock_sections, "page_charts").get(page)
+    visualization_value = _section_fields(
+        lock_sections,
+        "page_visualizations",
+    ).get(page)
+    legacy_chart_key = _section_fields(lock_sections, "page_charts").get(page)
+    if visualization_value is not None and legacy_chart_key is not None:
+        raise PageContextError(
+            f"{page} is declared in both page_visualizations and legacy "
+            "page_charts; keep only page_visualizations"
+        )
     try:
         structure_lock = load_pptx_structure_lock(project_path)
     except TemplateStructureError as exc:
@@ -545,10 +591,22 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
                 display_path=_relative_project_path(project_path, prototype_path),
             )
         )
-    if chart_key is not None:
-        chart_reference, chart_path = _chart_reference(chart_key)
-        inputs.append(chart_path)
-        reference_set.append(chart_reference)
+    visualization_entry: VisualizationEntry | None = None
+    selected_visualization = (
+        visualization_value
+        if visualization_value is not None
+        else legacy_chart_key
+    )
+    if selected_visualization is not None:
+        visualization_reference, visualization_path, visualization_entry = (
+            _visualization_reference(
+                selected_visualization,
+                allow_legacy_bare=visualization_value is None,
+            )
+        )
+        if visualization_path is not None and visualization_reference is not None:
+            inputs.append(visualization_path)
+            reference_set.append(visualization_reference)
     mode_fields = _section_fields(lock_sections, "mode")
     visual_style_fields = _section_fields(lock_sections, "visual_style")
     # Each on-demand projection includes bounded lock anchors; large reference
@@ -579,8 +637,18 @@ def build_page_context(project: str | Path, raw_page: str) -> PageContextResult:
         "rhythm": rhythm,
         "image_selection": image_selection,
     }
-    if chart_key is not None:
-        current_page["chart"] = chart_key
+    if (
+        visualization_entry is not None
+        and visualization_entry.kind == VISUALIZATION_SVG_KIND
+    ):
+        current_page["visualization"] = visualization_entry.reference
+    elif (
+        visualization_entry is not None
+        and visualization_entry.kind == LEGACY_STRUCTURE_INTENT_KIND
+    ):
+        current_page["structure_intent"] = visualization_entry.key
+    if legacy_chart_key is not None:
+        current_page["chart"] = legacy_chart_key
     if selected_images:
         current_page["images"] = selected_images
     if template is not None:

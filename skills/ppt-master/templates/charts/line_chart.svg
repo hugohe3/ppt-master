@@ -14,7 +14,7 @@
        data-pptx-replace-with="chart">
         <metadata type="application/json">
             {
-              "name": "line_chart",
+              "name": "line-chart",
               "x": 120,
               "y": 141,
               "width": 1063.1,

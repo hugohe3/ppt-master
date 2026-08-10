@@ -36,6 +36,8 @@ Use every supplied reference only as evidence for reusable method and design def
 | Brand or organization material | A lower-priority fallback direction when the user explicitly wants it generalized | Official identity truth, logos, proprietary palettes, brand voice, or trademarked presentation rules |
 | Existing mode, visual-style, or image-rendering catalog entry | A preferred catalog seed plus a concise Style-owned overlay | A duplicated copy of the catalog file |
 
+**Mandatory — series-aware PPTX analysis**: Before inferring cross-page cadence from a composite PPTX reference, distinguish coherent finished-deck series from page/layout libraries. Infer cadence only within each coherent series; treat library pages as independent composition evidence, never as one ordered narrative run.
+
 Preserve source provenance in `Style Overview`. Keep exact user-authored method decisions distinct from AI-derived defaults. Reject organization-confidential examples and do not generalize proprietary frameworks into a reusable Style.
 
 **Reference — not a constraint**: A Style may prefer a catalog mode, visual style, image rendering, fallback palette, or fallback font stack. These values seed the normal Stage-2 solution; they are not execution locks and never bypass user confirmation.

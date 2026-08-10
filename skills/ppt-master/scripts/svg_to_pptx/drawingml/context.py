@@ -127,6 +127,8 @@ class ConvertContext:
     # Canonical BCP-47 content language from spec_lock.md. ``None`` preserves
     # the legacy per-run script heuristic for older projects and lockless quick generation.
     primary_language: str | None = None
+    # Reuse media relationships when the same image fills multiple text runs.
+    text_image_fill_cache: dict[tuple[str, str], str] = field(default_factory=dict)
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -277,6 +279,7 @@ class ConvertContext:
             theme_font_spec=self.theme_font_spec,
             theme_color_spec=self.theme_color_spec,
             primary_language=self.primary_language,
+            text_image_fill_cache=self.text_image_fill_cache,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

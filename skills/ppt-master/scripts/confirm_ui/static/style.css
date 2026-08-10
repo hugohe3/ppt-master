@@ -478,6 +478,34 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
     flex: 1 0 calc((100% - 20px) / 3);
     min-width: 200px;
 }
+.design-direction-card.adjusted {
+    border-color: #d97706;
+    background: #fffbeb;
+}
+.direction-status { margin-left: auto; }
+.scheme-component-options { margin-bottom: 14px; }
+.scheme-component-grid {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+.scheme-component-card {
+    flex: 1 0 calc((100% - 20px) / 3);
+    min-width: 190px;
+}
+.scheme-component-card.adjusted {
+    border-color: #d97706;
+    background: #fffbeb;
+}
+.scheme-component-editor {
+    margin-top: 8px;
+    min-height: 84px;
+    resize: vertical;
+    cursor: text;
+}
+.scheme-component-card .design-direction-preview { margin-top: 8px; }
 .design-direction-preview {
     width: 100%;
     aspect-ratio: 16 / 9;

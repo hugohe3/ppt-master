@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"
+     font-family="Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12">
+    <!-- Generic record-by-field grid. The native payload mirrors the visible fallback. -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <g id="header" data-pptx-bounds="60 35 1160 80">
+        <text x="80" y="72" font-size="32" font-weight="700" fill="#0F172A">Record Table</text>
+        <text x="80" y="102" font-size="14" fill="#64748B">Records by stable fields with explicit text, status and numeric alignment</text>
+    </g>
+
+    <g id="record-table"
+       data-pptx-bounds="80 150 1120 420"
+       data-pptx-replace-with="table">
+        <metadata type="application/json">
+            {
+              "name": "record-table",
+              "x": 80,
+              "y": 150,
+              "width": 1120,
+              "height": 420,
+              "strict_grid": true,
+              "column_widths": [200, 420, 180, 140, 180],
+              "row_heights": [60, 60, 60, 60, 60, 60, 60],
+              "style": {
+                "font_family": "Arial",
+                "font_size": 15,
+                "header_font_size": 13,
+                "header_fill": "#F1F5F9",
+                "header_text": "#475569",
+                "body_fill": "#FFFFFF",
+                "body_text": "#0F172A",
+                "band_row": true,
+                "band_fill": "#F8FAFC",
+                "border_color": "#CBD5E1",
+                "border_width": 1,
+                "padding": {"left": 12, "right": 12, "top": 6, "bottom": 6},
+                "valign": "middle"
+              },
+              "columns": [
+                {"text": "RECORD", "bold": true},
+                {"text": "DESCRIPTION", "bold": true},
+                {"text": "OWNER", "bold": true},
+                {"text": "STATUS", "align": "ctr", "bold": true},
+                {"text": "CAPACITY", "align": "r", "bold": true}
+              ],
+              "rows": [
+                [
+                  {"text": "REC-001", "color": "#475569"},
+                  {"text": "Primary work item", "bold": true},
+                  {"text": "Team A", "color": "#475569"},
+                  {"text": "Active", "align": "ctr", "color": "#059669", "bold": true},
+                  {"text": "120", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "REC-002", "color": "#475569"},
+                  {"text": "Secondary work item", "bold": true},
+                  {"text": "Team B", "color": "#475569"},
+                  {"text": "Review", "align": "ctr", "color": "#D97706", "bold": true},
+                  {"text": "96", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "REC-003", "color": "#475569"},
+                  {"text": "Shared service item", "bold": true},
+                  {"text": "Team C", "color": "#475569"},
+                  {"text": "Active", "align": "ctr", "color": "#059669", "bold": true},
+                  {"text": "84", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "REC-004", "color": "#475569"},
+                  {"text": "Planned work item", "bold": true},
+                  {"text": "Team A", "color": "#475569"},
+                  {"text": "Planned", "align": "ctr", "color": "#2563EB", "bold": true},
+                  {"text": "72", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "REC-005", "color": "#475569"},
+                  {"text": "Pending work item", "bold": true},
+                  {"text": "Team D", "color": "#475569"},
+                  {"text": "Pending", "align": "ctr", "color": "#64748B", "bold": true},
+                  {"text": "48", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "REC-006", "color": "#475569"},
+                  {"text": "Exception work item", "bold": true},
+                  {"text": "Team B", "color": "#475569"},
+                  {"text": "Blocked", "align": "ctr", "color": "#E11D48", "bold": true},
+                  {"text": "24", "align": "r", "bold": true}
+                ]
+              ]
+            }
+        </metadata>
+
+        <!-- Header and alternating row bands. -->
+        <rect x="80" y="150" width="1120" height="60" fill="#F1F5F9"/>
+        <rect x="80" y="270" width="1120" height="60" fill="#F8FAFC"/>
+        <rect x="80" y="390" width="1120" height="60" fill="#F8FAFC"/>
+        <rect x="80" y="510" width="1120" height="60" fill="#F8FAFC"/>
+
+        <!-- Stable grid. -->
+        <rect x="80" y="150" width="1120" height="420" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+        <g stroke="#CBD5E1" stroke-width="1">
+            <line x1="280" y1="150" x2="280" y2="570"/>
+            <line x1="700" y1="150" x2="700" y2="570"/>
+            <line x1="880" y1="150" x2="880" y2="570"/>
+            <line x1="1020" y1="150" x2="1020" y2="570"/>
+            <line x1="80" y1="210" x2="1200" y2="210"/>
+            <line x1="80" y1="270" x2="1200" y2="270"/>
+            <line x1="80" y1="330" x2="1200" y2="330"/>
+            <line x1="80" y1="390" x2="1200" y2="390"/>
+            <line x1="80" y1="450" x2="1200" y2="450"/>
+            <line x1="80" y1="510" x2="1200" y2="510"/>
+        </g>
+
+        <!-- Column headers. -->
+        <g font-size="13" font-weight="700" fill="#475569">
+            <text x="100" y="187">RECORD</text>
+            <text x="300" y="187">DESCRIPTION</text>
+            <text x="720" y="187">OWNER</text>
+            <text x="950" y="187" text-anchor="middle">STATUS</text>
+            <text x="1180" y="187" text-anchor="end">CAPACITY</text>
+        </g>
+
+        <!-- Records. -->
+        <g font-size="15" fill="#0F172A">
+            <g>
+                <text x="100" y="247" fill="#475569">REC-001</text>
+                <text x="300" y="247" font-weight="700">Primary work item</text>
+                <text x="720" y="247" fill="#475569">Team A</text>
+                <text x="950" y="247" text-anchor="middle" font-weight="700" fill="#059669">Active</text>
+                <text x="1180" y="247" text-anchor="end" font-weight="700">120</text>
+            </g>
+            <g>
+                <text x="100" y="307" fill="#475569">REC-002</text>
+                <text x="300" y="307" font-weight="700">Secondary work item</text>
+                <text x="720" y="307" fill="#475569">Team B</text>
+                <text x="950" y="307" text-anchor="middle" font-weight="700" fill="#D97706">Review</text>
+                <text x="1180" y="307" text-anchor="end" font-weight="700">96</text>
+            </g>
+            <g>
+                <text x="100" y="367" fill="#475569">REC-003</text>
+                <text x="300" y="367" font-weight="700">Shared service item</text>
+                <text x="720" y="367" fill="#475569">Team C</text>
+                <text x="950" y="367" text-anchor="middle" font-weight="700" fill="#059669">Active</text>
+                <text x="1180" y="367" text-anchor="end" font-weight="700">84</text>
+            </g>
+            <g>
+                <text x="100" y="427" fill="#475569">REC-004</text>
+                <text x="300" y="427" font-weight="700">Planned work item</text>
+                <text x="720" y="427" fill="#475569">Team A</text>
+                <text x="950" y="427" text-anchor="middle" font-weight="700" fill="#2563EB">Planned</text>
+                <text x="1180" y="427" text-anchor="end" font-weight="700">72</text>
+            </g>
+            <g>
+                <text x="100" y="487" fill="#475569">REC-005</text>
+                <text x="300" y="487" font-weight="700">Pending work item</text>
+                <text x="720" y="487" fill="#475569">Team D</text>
+                <text x="950" y="487" text-anchor="middle" font-weight="700" fill="#64748B">Pending</text>
+                <text x="1180" y="487" text-anchor="end" font-weight="700">48</text>
+            </g>
+            <g>
+                <text x="100" y="547" fill="#475569">REC-006</text>
+                <text x="300" y="547" font-weight="700">Exception work item</text>
+                <text x="720" y="547" fill="#475569">Team B</text>
+                <text x="950" y="547" text-anchor="middle" font-weight="700" fill="#E11D48">Blocked</text>
+                <text x="1180" y="547" text-anchor="end" font-weight="700">24</text>
+            </g>
+        </g>
+    </g>
+</svg>

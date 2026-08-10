@@ -1,0 +1,23 @@
+<!--
+tags: [regular, expression, regex, code, programming, coding, pattern, text, end, finish, anchor, dollar, termination]
+category: Text
+unicode: "1026d"
+version: "3.45"
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 8v6a2 2 0 1 0 4 0v-1a2 2 0 1 0 -4 0v1" />
+  <path d="M7 16v-3a2 2 0 1 0 -4 0v1a2 2 0 0 0 3.726 1.01" />
+  <path d="M21 10h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5" />
+  <path d="M19 10v-1" />
+  <path d="M19 16v1" />
+</svg>

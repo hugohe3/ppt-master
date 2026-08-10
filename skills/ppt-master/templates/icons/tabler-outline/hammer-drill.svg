@@ -1,0 +1,23 @@
+<!--
+tags: [hammer, drill, power tool, electric, hardware, equipment, construction, diy, repair, building]
+category: Devices
+unicode: "10238"
+version: "3.42"
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 15v6" />
+  <path d="M16 5h4" />
+  <path d="M8 5h-4" />
+  <path d="M15 11h-6a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1" />
+  <path d="M14 11h-4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1 -1v-3" />
+</svg>

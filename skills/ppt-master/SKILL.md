@@ -6,7 +6,7 @@ description: >
   enhancing finished PPTX files. Use when the user asks to create, regenerate,
   template, fill, or enhance a presentation, or mentions ppt-master.
 metadata:
-  version: "4.4.0"
+  version: "4.5.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"
   official_repository: "https://github.com/hugohe3/ppt-master"
@@ -57,6 +57,7 @@ compete with it.
 5. **No speculative execution** — Do not prepare later-phase artifacts before their owning step.
 6. **Deterministic routing** — Do not add a route-choice question when [`routing.md`](workflows/routing.md) resolves the request. If a route prerequisite is missing, state it and stop that route.
 7. **Owning-source recovery** — On failure, repair or regenerate the owning source artifact and resume from the route's declared pointer. Do not silently downgrade a required artifact.
+8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD.
 
 ## Global Communication Rules
 

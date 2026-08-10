@@ -25,12 +25,10 @@ uvx ppt-master source-to-md <file-or-url-or-dir> [<file-or-url-or-dir> ...]
 # or direct backend calls:
 uvx ppt-master pdf-to-md <file.pdf>
 # or
-uvx ppt-master pdf-to-md <file.pdf>
-# or
 uvx ppt-master ppt-to-md <deck.pptx>
 uvx ppt-master excel-to-md <workbook.xlsx>
 uvx ppt-master project init <project_name> --format ppt169
-uvx ppt-master project import-sources <project_path> <source_files_or_dirs...> --move
+uvx ppt-master project import-sources <project_path> <source_files_or_dirs...>
 uvx ppt-master total-md-split <project_path>
 uvx ppt-master finalize-svg <project_path>
 uvx ppt-master animation-config scaffold <project_path>  # optional object-level animation overrides
@@ -57,7 +55,7 @@ uvx ppt-master update-repo
 | SVG pipeline | `preset_shape_svg.py`, `shape_boolean_svg.py`, `svg_authoring_view.py`, `compact_svg_coordinates.py`, `mirror_template_materialize.py`, `finalize_svg.py`, `svg_to_pptx.py`, `template_preview_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `extract_svg_pictures.py`, `animation_config.py`, `notes_to_audio.py`, `narration_sync.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native shape authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
-| Spec maintenance | `update_spec.py`, `chart_recall.py` | [docs/update_spec.md](./docs/update_spec.md); [docs/chart-recall.md](./docs/chart-recall.md) |
+| Spec maintenance | `update_spec.py`, `visualization_recall.py`; legacy `chart_recall.py` | [docs/update_spec.md](./docs/update_spec.md); [docs/visualization-recall.md](./docs/visualization-recall.md) |
 | Image tools | `image_gen.py`, `latex_render.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
 | Maintenance smokes | Inline temporary-project commands | [advanced image and motion](./docs/advanced-image-motion-smoke.md); [mask and gradient](./docs/mask-gradient-smoke.md); [multilingual text](./docs/multilingual-text-smoke.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
@@ -81,11 +79,11 @@ Project setup:
 
 ```bash
 uvx ppt-master project init <project_name> --format ppt169
-uvx ppt-master project import-sources <project_path> <source_files_or_dirs...> --move
+uvx ppt-master project import-sources <project_path> <source_files_or_dirs...>
 uvx ppt-master project scaffold-spec <project_path>  # optional manual helper
 uvx ppt-master project scaffold-lock <project_path>  # optional manual helper
 uvx ppt-master project validate <project_path>
-uvx ppt-master project page-context <project_path> P07 --bundle --record-usage
+uvx ppt-master project page-context <project_path> P07 --record-usage
 uvx ppt-master project page-context-report <project_path>
 ```
 
@@ -93,17 +91,17 @@ uvx ppt-master project page-context-report <project_path>
 routing checks, or context measurement; normal generation retains the complete
 Design Spec and lock once per valid execution context. Each invocation includes
 the global lock projection as a continuity anchor set, not a color/font allowlist; large Design Specs,
-prototype, and `templates/charts/` references are emitted only as scoped
+prototype, and selected family visualization references are emitted only as scoped
 path/SHA fingerprints and are read once per execution context. `--bundle` is a
 deprecated compatibility no-op. `--record-usage` writes one derived snapshot
 under `analysis/page-context/`; exact `o200k_base` token counts are optional and
 degrade to `tokens: null` when `tiktoken` is absent. Telemetry may be partial.
 
-Chart candidate recall:
+Visualization candidate recall:
 
 ```bash
-uvx ppt-master chart-recall recall --page P03 --tag "time series" --tag "three metrics" --tag "direction over time"
-uvx ppt-master chart-recall validate line_chart
+uvx ppt-master visualization-recall recall --page P03 --tag "time series" --tag "three metrics" --tag "direction over time"
+uvx ppt-master visualization-recall validate chart/line_chart
 ```
 
 Template source import:
@@ -183,7 +181,7 @@ uvx ppt-master template-fill-pptx apply <project_path>/sources/<source.pptx> <pr
 uvx ppt-master template-fill-pptx validate <project_path>
 ```
 
-`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It applies a `fade` page transition by default; `--transition <effect>` accepts a canonical effect in the shared native gallery registry documented by [`docs/pptx-transitions.md`](docs/pptx-transitions.md), while old names remain accepted only as compatibility inputs, and `--transition-duration <seconds>` changes its duration. `--transition none` removes the visual effect, `--transition keep` preserves the source transitions, and a per-slide `transition` field in the plan overrides whatever the CLI selects. The object form accepts effect-specific native `effect_options`.
+`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It preserves source page transitions by default; `--transition <effect>` accepts a canonical effect in the shared native gallery registry documented by [`docs/pptx-transitions.md`](docs/pptx-transitions.md), while old names remain accepted only as compatibility inputs, and `--transition-duration <seconds>` changes a replacement effect's duration. `--transition none` removes the visual effect, `--transition keep` states the preservation policy explicitly, and a per-slide `transition` field in the plan overrides whatever the CLI selects. The object form accepts effect-specific native `effect_options`.
 
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
@@ -263,12 +261,17 @@ the existing references without progressively wrapping more parent geometry.
 Post-processing and export:
 
 ```bash
+# Run only when the Design Spec's effective Speaker Notes outcome is enabled.
 uvx ppt-master total-md-split <project_path>
 uvx ppt-master finalize-svg <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 ```
 
-`finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: oversized full sources normally reduce toward `2560px`, but cropped or stretched placements (including imported picture crops) retain enough source pixels to avoid undersupplying the visible frame. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
+When Speaker Notes is disabled, skip `total_md_split.py` and append
+`--no-notes` to `svg_to_pptx.py` so stale files under `notes/` cannot be
+embedded.
+
+`finalize_svg.py` optimizes ordinary raster images by default using `2x` display pixels and max `2560px`; validated nested crop transports retain source pixel dimensions because their inner `1×1` image is source-unit geometry rather than a rendered-pixel budget. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: images that need neither resizing nor EXIF geometry normalization retain their original bytes, while oversized single-frame raster sources are re-encoded after resizing toward `2560px`. Cropped or stretched placements (including imported picture crops) retain enough source pixels to avoid undersupplying the visible frame. Use `svg_to_pptx.py --image-sizing display --image-scale 2 --image-quality 85` for an explicit compact export, or `--no-image-optimize` to force original image bytes.
 
 `finalize_svg.py` remains mandatory because it creates the self-contained `svg_final/` visual preview. Those SVGs may be opened directly or inserted into PowerPoint as SVG pictures. The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter; `-s final` is diagnostic-only, and PowerPoint's manual Convert-to-Shape operation is unsupported.
 

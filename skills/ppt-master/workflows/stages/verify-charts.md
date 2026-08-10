@@ -1,10 +1,10 @@
 ---
-description: Conditional quality-gate stage for chart coordinate verification.
+description: Conditional quality-gate stage for data-chart geometry and encoding verification.
 ---
 
 # Verify Charts Stage
 
-> Conditional Generate-PPTX quality stage. Run after a deck containing data charts has finished SVG generation, before post-processing & export. Catches the 10–50 px coordinate errors AI models routinely introduce when mapping data to pixel positions.
+> Conditional Generate-PPTX quality stage. Run after a deck containing data charts has finished SVG generation, before post-processing & export. Catches coordinate and visual-encoding errors introduced while mapping source values into SVG marks.
 
 In Default Generate this stage is **context-independent**: it reads
 `design_spec.md` and the generated SVGs, then runs the calculator script. The
@@ -14,7 +14,7 @@ restart Quick rather than inventing a page plan from finished files.
 
 ## When to Run
 
-- The deck contains one or more data visualization charts where source values determine SVG geometry: bar lengths/heights, point positions, arc angles, polygon vertices, connector endpoints, bubble centers/radii, or flow widths/paths.
+- The deck contains one or more data visualization charts where source values determine SVG geometry or visual encoding: bar lengths/heights, point positions, arc angles, polygon vertices, connector endpoints, bubble centers/radii, flow widths/paths, cell colors, or word sizes.
 - SVGs are generated to `<project_path>/svg_output/`. Default enters from its declared quality-gate order; Quick runs this stage before its one lockless final checker.
 - Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not yet** run.
 
@@ -22,80 +22,84 @@ The calculator has direct CLI models for simple bars, lines/scatter, pie/donut, 
 
 ---
 
-## Step 1: Build the page list from the active profile authority
+## Step 1: Build the chart-object list from the active profile authority
 
-| Active profile | Page-list authority |
+| Active profile | Object-list authority |
 |---|---|
 | Default Generate | `design_spec.md §IX` plus the legacy §VII fallback below |
-| Quick Generate | The still-active page decisions that produced the SVGs, cross-checked against every `chart-plot-area` marker; no Design Spec, lock, or substitute planning artifact is created |
+| Quick Generate | The still-active semantic object keys and page decisions that produced the SVGs, cross-checked against every `chart-plot-area` marker; no Design Spec, lock, or substitute planning artifact is created |
 
 For Default, read `<project_path>/design_spec.md` §IX Content Outline as the
-authoritative page roster and include every page whose `Visualization`
-explicitly declares SVG geometry driven by data values. Cross-check §VII when
-present to resolve a selected catalog key; absence from §VII means only that no
-reusable reference was selected. For legacy specs, a real §VII data-chart row
-may enumerate the page when its §IX block predates the explicit data-driven
-declaration.
+authoritative roster and include every semantic object key whose
+`Visualization` entry declares SVG geometry driven by data values. Cross-check
+§VII only to resolve a selected catalog reference; absence means no reusable
+reference was selected. For a legacy spec whose §IX predates object keys, one
+real §VII data-chart row may supply one legacy chart object for that page.
 
-For Quick, enumerate every page the current agent just authored with
-value-driven geometry, then search `svg_output/` once for `chart-plot-area` and
-compare the marker pages one-for-one with that active list. Add a missing marker
-before continuing; investigate an unexpected marker instead of silently adding
-or dropping a page. Keep the list in active context only.
+For Quick, enumerate every promoted chart object's semantic key and page, then
+search `svg_output/` once for `chart-plot-area`. Compare objects and marker
+wrappers one-for-one. Add a missing scoped marker before continuing;
+investigate an unexpected marker instead of silently adding or dropping an
+object. Keep the list in active context only.
 
-Classify each included page into exactly one mode:
+Classify each included chart object into exactly one mode:
 
 Incidental microvisuals not promoted under the active profile authority are not
-inferred into this list. Default repairs that page's §IX `Visualization` first;
+inferred into this list. Default repairs that object's §IX `Visualization` first;
 Quick makes the promotion decision immediately in active context and updates
 the SVG marker before verification.
 
 | Mode | `charts_index.json` keys | Notes |
 |------|--------------------------|-------|
-| `direct-calc` | `column_chart`, `horizontal_bar_chart` | Use `calc bar`; add `--horizontal` for horizontal bars. |
+| `direct-calc` | `column_chart`, `horizontal_bar_chart`, `histogram_chart` | Use `calc bar`; add `--horizontal` for horizontal bars. Histogram bins use contiguous bars on the numeric x-axis. |
 | `direct-calc` | `line_chart`, `area_chart`, `scatter_chart` | Use `calc line`; area uses line output as the top boundary, then closes to `y_max`. |
 | `direct-calc` | `pie_chart`, `donut_chart` | Use `calc pie`; donut passes `--inner-radius`. |
 | `direct-calc` | `radar_chart` | Use `calc radar`; separate subcommand, not under `calc pie`. |
-| `decomposable-calc` | `stacked_bar_chart`, `stacked_area_chart`, `grouped_bar_chart`, `dumbbell_chart`, `pareto_chart`, `dual_axis_line_chart`, `bullet_chart`, `butterfly_chart`, `waterfall_chart`, `box_plot_chart`, `gantt_chart` | Verify by repeated direct calculations; see recipes below. |
-| `partial-calc` | `bubble_chart` | Use `calc line` for `cx/cy`; verify radius only when a size scale is explicit. |
-| `formula-verify` | `progress_bar_chart`, `gauge_chart`, `funnel_chart` | One-line math; record the formula and resulting length/angle/width in the receipt, no calculator call needed. |
-| `manual-verify` | `sankey_chart`, `heatmap_chart`, `treemap_chart` | Data-driven geometry exists, but the current calculator has no complete layout model. Inspect and report; do not silently skip. |
+| `decomposable-calc` | `stacked_bar_chart`, `stacked_area_chart`, `grouped_bar_chart`, `dumbbell_chart`, `pareto_chart`, `dual_axis_line_chart`, `bullet_chart`, `butterfly_chart`, `waterfall_chart`, `box_plot_chart`, `gantt_chart`, `bar_of_pie_chart`, `pie_of_pie_chart`, `stock_chart` | Verify by repeated direct calculations; see recipes below. |
+| `partial-calc` | `bubble_chart`, `matrix_2x2` | Use `calc line` for x/y-driven `cx/cy`; verify radius only when a size scale is explicit. |
+| `formula-verify` | `progress_bar_chart`, `gauge_chart`, `funnel_chart`, `sunburst_chart` | Record the formula and resulting length/angle/width in the receipt; sunburst verifies each ring's value-derived arc lengths and offsets. |
+| `manual-verify` | `sankey_chart`, `heatmap_chart`, `treemap_chart`, `word_cloud` | Data-driven geometry or encoding exists, but the current calculator has no complete layout model. Inspect and report; do not silently skip. |
 
-**Out of scope** (do not include in the receipt unless the page uses a data-driven sub-chart inside the layout):
-
-- Pure text/number dashboards: `kpi_cards`.
-- Tables: `comparison_table`, `basic_table`, `consulting_table`, `project_schedule_table`, `financial_statement_table`, `feature_matrix_table`, `harvey_balls_table`.
-- Information graphics / frameworks / diagrams whose positions are layout-driven rather than value-driven: e.g. `hub_spoke`, `hub_inward_arrows`, `quadrant_text_bullets`, `quadrant_bubble_scatter` (BCG-style four-quadrant text grid — the visual bubbles are decoration, not value-mapped points), `matrix_2x2` (fixed quadrant cells with text cards), `mind_map`, `process_flow`, `numbered_steps`, `timeline`, `roadmap_vertical`, `layered_architecture`, `module_composition`, `pipeline_with_stages`, `client_server_flow`, `top_down_tree`, `journey_map`, `agenda_list`. If a deck genuinely uses these as data-driven scatter (rare — values mapped to actual `cx/cy`), promote to `partial-calc` and explain in the receipt.
+**Family boundary**: this table covers every canonical key in
+`templates/charts/charts_index.json` exactly once. Do not put qualitative shape
+composition or a Table reference in the receipt merely because it contains
+shapes or numbers. Named quadrants are composed through
+[`executor-structure.md`](../../references/executor-structure.md);
+`chart/matrix_2x2` is reserved for plotted x/y and optional radius data. Every
+embedded data chart is its own keyed §IX `Visualization` object.
 
 Resulting list:
 
 ```
-P03 03_market_share.svg  type=bar        mode=direct-calc
-P07 07_growth.svg        type=line       mode=direct-calc
-P11 11_share_split.svg   type=pie        mode=direct-calc
-P15 15_pareto.svg        type=pareto     mode=decomposable-calc
+P03 market-share   03_market_share.svg  type=bar     mode=direct-calc
+P03 margin-trend   03_market_share.svg  type=line    mode=direct-calc
+P11 share-split    11_share_split.svg   type=pie     mode=direct-calc
+P15 pareto-causes  15_pareto.svg        type=pareto  mode=decomposable-calc
 ```
 
 In Default, if §VII is absent, continue from §IX; this is the normal state when
-all chart pages use custom structures. Do not guess from SVG content when §IX
-declares no data-driven page. In Quick, do not treat marker search as a
-replacement for the still-active authoring decisions; use it as the required
-cross-check.
+all chart objects use custom structures. Do not guess from SVG content when §IX
+declares no data-driven object. In Quick, marker search is only the required
+cross-check, never a replacement for active authoring decisions.
 
-If the filtered list is empty, output `verify-charts: active profile declares no data-driven chart geometry, nothing to verify` and stop.
+If the filtered list is empty, output `verify-charts: active profile declares no data-driven chart objects, nothing to verify` and stop.
 
 ---
 
-## Step 2: Per page — read SVG, run calculator, compare, update
+## Step 2: Per object — read its SVG scope, calculate, compare, update
 
-For each page in the Step 1 list:
+For each object in the Step 1 list:
 
 1. Read `<project_path>/svg_output/<page>.svg`.
-2. Locate the plot-area definition:
-   - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-chart.md §2.1](../../references/executor-chart.md)). Read coordinates directly.
-   - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
-3. Read the data series from the SVG's `<text>` label/value elements.
-4. **Read axis tick labels for every axis-based chart.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Use the attached `--*-range=min,max` form, which also keeps a negative minimum from being parsed as another option. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
+2. Locate `<g id="<object-key>">` and its one plot-area marker. The marker
+   payload starts `chart-plot-area: object=<object-key> |` and belongs inside
+   `<g id="<object-key>-chartArea">`. Accept a legacy unscoped marker and
+   `id="chartArea"` only when the page has exactly one verified chart. A
+   multi-chart page may not mix scoped and unscoped markers. If a marker is
+   missing, derive it from that object's axes or center/radius and add the
+   scoped marker before continuing.
+3. Read only that object's data series and label/value elements.
+4. **Read axis tick labels for every axis-based chart inside the same object scope.** Locate the `<text>` elements along the value axis — X-axis labels for horizontal bars, Y-axis labels for vertical bars, and Y-axis labels for line-like charts. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range`, `--y-range`, or `--x-range` as appropriate. Use the attached `--*-range=min,max` form, which also keeps a negative minimum from being parsed as another option. Radar uses `--max-value` instead of a range: read the outermost ring's tick value and pass it as `--max-value`. If the SVG has no explicit tick labels (data labels only, no grid), omit the range and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
 
    **Local vs absolute coordinates.** Many chart templates wrap chart content in `<g transform="translate(cx, cy)">` or similar, so child `<circle>`/`<polygon>`/`<rect>` coords are relative to that origin (e.g. radar polygon at `0,-198`, donut paths starting from `0,0` inside a translated `<g>`, dumbbell circles at `cy="0"` inside a per-row translated `<g>`). The calculator outputs **absolute** SVG coordinates. Before comparing, either add the wrapping translate's offset to the SVG coords or subtract it from the calculator's output — pick one direction and apply it consistently.
 5. Run the matching calculator command:
@@ -232,6 +236,11 @@ uvx ppt-master svg-position-calc calc line \
 
 **Gantt chart** — task bars where each bar's `x` and `x + width` are the start and end positions on a timeline axis:
 
+This remains a Chart even when the source used a physical PowerPoint table for
+the row grid. A qualitative stage/lane plan whose positions are not derived
+from dates or durations uses [`executor-structure.md`](../../references/executor-structure.md)
+and does not enter this verification stage.
+
 1. Read the timeline tick positions (the header row's x coordinates per date unit). Pixels-per-unit = `(x_unit_n - x_unit_1) / (n - 1)`.
 2. Run `calc line` once over `start_index:row_y` per task — output `SVG_X` gives the bar's `x`. Run it again over `end_index:row_y` — output `SVG_X` gives `x + width`. Subtract for width.
 3. Compare each task rect's `(x, width)` against the calculated start and end. Row y can be read directly (categories are not value-driven).
@@ -243,52 +252,57 @@ uvx ppt-master svg-position-calc calc line \
 3. Compare each waterfall rect's `(x, y, width, height)` against the calculated pair. Connector lines should run from `(x + width, top_or_bot[i].Y)` to `(x_next, top_or_bot[i+1].Y)` at the matching shared cumulative value.
 4. Total bars (full-height start/end) use `bot = 0` and the calc reduces to the standard `calc bar` recipe.
 
-**Bubble chart / quadrant bubble scatter** — partial calculator support:
+**Bubble chart / plotted 2×2 matrix** — partial calculator support:
 
 1. Use `calc line` to verify bubble centers (`cx/cy`) from the X/Y values and axis ticks.
-2. Verify radius only if `design_spec.md`, `spec_lock.md`, the Quick active-context decision, or SVG comments declare a size scale such as `radius = sqrt(value) * k` or explicit min/max radius mapping.
-3. If the size scale is missing, record `radius=manual (scale missing)` and inspect relative ordering by hand.
+2. For `matrix_2x2`, verify that the axis midpoint matches the quadrant split. If the visible axes say only Low/High, read the explicit numeric mapping from the active §IX decision or SVG comment; without one, record `xy=manual (scale missing)` instead of inventing a range.
+3. Verify radius only if `design_spec.md`, the Quick active-context decision, or SVG comments declare a size scale such as `radius = sqrt(value) * k` or explicit min/max radius mapping. `spec_lock.md` carries only the primary family/key reference and is not a size-scale authority.
+4. If the size scale is missing, record `radius=manual (scale missing)` and inspect relative ordering by hand.
 
-**Progress bar / gauge / funnel — formula-verify** (no calc call needed):
+**Bar-of-pie / pie-of-pie** — decompose the primary and expanded views:
+
+1. Replace the expanded tail in the primary data with one aggregate tail value, then run `calc pie` for the main pie.
+2. For `pie_of_pie_chart`, run `calc pie` again on the tail values at the secondary center/radius. For `bar_of_pie_chart`, verify each stacked detail height as `tail_value / sum(tail_values) × detail_height` and confirm the segments fill the declared detail bar without gaps or overlap.
+3. Verify that the aggregate tail slice equals the sum of the expanded values and that connector endpoints touch the two declared plot regions.
+
+**Stock chart** — decompose each OHLC observation into four y-values:
+
+1. Read the shared price-axis range and ordered date positions.
+2. Run `calc line` for open, high, low, and close using the same plot area and ranges. For each date, the wick spans `high_y` to `low_y`; the body spans `min(open_y, close_y)` to `max(open_y, close_y)`.
+3. Verify the body color/direction against `close >= open`, and verify that every body stays within its wick.
+
+**Progress bar / gauge / funnel / sunburst — formula-verify** (no calc call needed):
 
 - Progress bar: `fill_width = value / max × track_width`. Read `value`, `max`, and `track_width` from the SVG; compute and compare against the fill rect's `width`.
 - Gauge: `needle_angle = start_angle + value / max × sweep_angle`. Read `start_angle` and `sweep_angle` from the SVG's arc path (e.g. half-circle `start_angle=-180`, `sweep_angle=180`). Compare against the needle's `transform="rotate(α ...)"` value (the most common form), or against endpoint `(cx + L·cos α, cy + L·sin α)` when the needle is drawn as an explicit line/path.
 - Funnel: each trapezoid's `top_width = prev.bottom_width`, `bottom_width = top_width × next_value / curr_value`. Verify by walking the segments: for segment `i`, `(top_left_x, top_right_x) → bottom_x_inset = (top_width - bottom_width) / 2`. The first segment's top width comes from the design's outer frame.
+- Sunburst: for each ring, `circumference = 2πr` and each node's arc length is `node_value / root_total × circumference`; offsets follow cumulative sibling values plus any explicitly declared separator gap. Verify that child arcs remain inside their parent span and that sibling values sum to the parent.
 - Receipt should quote the formula and resulting value (e.g. `formula=value/max×track_width=0.92×700=644px`, or `formula=600×850/1000=510 bottom width`).
 
-**Sankey / heatmap / treemap — manual verification:**
+**Sankey / heatmap / treemap / word cloud — manual verification:**
 
 - Sankey: no layout model for node stacking, link routing, or flow-width normalization. Verify that link widths are proportional to flow values and that node-side totals match (in = out).
 - Heatmap: cell positions are a fixed grid (not value-driven); the value-to-color binning is what's data-driven. Verify that the color of each cell falls in the bin matching the cell's number, and that high/low extremes use the legend's high/low colors.
 - Treemap: rectangle areas reflect value proportions but the recursive squarify layout has no calculator equivalent. Verify each rect's `width × height ≈ total_area × value / sum(values)` for top-level cells, and that nested cells sum to their parent.
+- Word cloud: verify that keyword font sizes are monotonic with their declared weights (or match the declared weight bins), then inspect the final text bounds for overlap and clipping. Position is layout-driven; do not invent a coordinate formula.
 
 ---
 
-## Step 3: Per-page receipt
+## Step 3: Per-object receipt
 
-Output one line per page from the Step 1 list. Receipt count MUST equal Step 1
+Output one line per chart object from the Step 1 list. Include its semantic key;
+receipt count MUST equal Step 1
 list length — that is the gate-closing evidence. Quick does not persist these
 lines as a generation plan or resume record.
 
 ```
-verify-charts: 03_market_share.svg | type=bar | mode=direct-calc | scale=0-100 (from ticks) | calc=ran | svg=updated
-verify-charts: 07_growth.svg | type=line | mode=direct-calc | scale=0-120 (from ticks) | calc=ran | svg=unchanged (already accurate)
-verify-charts: 11_share_split.svg | type=pie | mode=direct-calc | scale=N/A | calc=ran | svg=updated | marker=added (was missing)
-verify-charts: 14_revenue_mix.svg | type=stacked-bar | mode=decomposable-calc | scale=0-200 (from ticks) | calc=ran×3 | svg=updated (per stacked recipe)
-verify-charts: 15_unit_economics.svg | type=stacked-area | mode=manual-verify | scale=N/A | reason=percent-stacked, recipe does not apply
-verify-charts: 16_before_after.svg | type=dumbbell | mode=decomposable-calc | scale=0-100 (from ticks) | calc=ran×2 | svg=unchanged
-verify-charts: 17_drivers_pareto.svg | type=pareto | mode=decomposable-calc | scale=left 0-80 / right 0-100 | calc=ran×2 | svg=updated
-verify-charts: 18_market_bubbles.svg | type=bubble | mode=partial-calc | xy=ran | radius=manual (scale missing) | svg=unchanged
-verify-charts: 20_quota_attainment.svg | type=bullet | mode=decomposable-calc | scale=0-120 (from ticks) | calc=ran×3 (bands+actual+target) | svg=updated
-verify-charts: 21_inflow_outflow.svg | type=butterfly | mode=decomposable-calc | scale=0-500 (from ticks) | calc=ran×2 + mirror | svg=unchanged
-verify-charts: 22_profit_bridge.svg | type=waterfall | mode=decomposable-calc | scale=0-500 (from ticks) | calc=ran×2 (top/bot) | svg=updated
-verify-charts: 23_quarterly_progress.svg | type=progress | mode=formula-verify | formula=68/100×800=544px | svg=unchanged
-verify-charts: 24_capacity_gauge.svg | type=gauge | mode=formula-verify | formula=-180+72/100×180=-50.4° | svg=updated
-verify-charts: 25_conversion_funnel.svg | type=funnel | mode=formula-verify | formula=600×850/1000=510 (seg2 bottom width) | svg=unchanged
-verify-charts: 26_regional_compare.svg | type=grouped-bar | mode=decomposable-calc | scale=0-500 (from ticks) | calc=ran×3 | svg=updated
-verify-charts: 27_release_plan.svg | type=gantt | mode=decomposable-calc | scale=Week1-Week24 (24 ticks, 40px/unit) | calc=ran×2 (start/end) | svg=unchanged
-verify-charts: 28_score_distribution.svg | type=boxplot | mode=decomposable-calc | scale=0-100 (from ticks) | calc=ran×4 (Q1/Q3/whiskers) | svg=updated
-verify-charts: 19_flow.svg | type=sankey | mode=manual-verify | link widths consistent with values | svg=unchanged
+verify-charts: 03_market_share.svg | object=market-share | type=bar | mode=direct-calc | scale=0-100 (from ticks) | calc=ran | svg=updated
+verify-charts: 03_market_share.svg | object=margin-trend | type=line | mode=direct-calc | scale=0-120 (from ticks) | calc=ran | svg=unchanged
+verify-charts: 11_share_split.svg | object=share-split | type=pie | mode=direct-calc | scale=N/A | calc=ran | svg=updated | marker=added
+verify-charts: 14_revenue_mix.svg | object=revenue-mix | type=stacked-bar | mode=decomposable-calc | scale=0-200 (from ticks) | calc=ran×3 | svg=updated
+verify-charts: 18_market_bubbles.svg | object=market-bubbles | type=bubble | mode=partial-calc | xy=ran | radius=manual (scale missing) | svg=unchanged
+verify-charts: 23_quarterly_progress.svg | object=quarterly-progress | type=progress | mode=formula-verify | formula=68/100×800=544px | svg=unchanged
+verify-charts: 19_flow.svg | object=flow | type=sankey | mode=manual-verify | link widths consistent with values | svg=unchanged
 ```
 
 ---

@@ -10,7 +10,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ## 1. Catalog (20 renderings)
 
-Each rendering has its own file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. A preset lock reads that one file. A catalog-based `custom` reads every preset named in `image_rendering_references`; a novel `custom` may omit references. Never glob the directory.
+Each rendering keeps its own authoritative file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. Read this index alone while choosing a direction. Only after a preset or custom bases are fixed may the active role read the selected sibling files: one file for a preset, every exact `image_rendering_references` file for a catalog-based custom, and none for a novel custom. Never glob the directory or read an unselected sibling. Whether AI imagery is recommended remains a separate source decision; Image_Generator follows the same selected-only rule.
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
@@ -54,7 +54,7 @@ Each rendering has its own file with: style paragraph, line / texture / depth no
 
 ### 1.5 Escape hatch — `custom`
 
-Whenever proposed image usage includes `ai`, Stage 2 authors one separate, visible custom rendering proposal in addition to the preset cards. It uses `rendering: custom` plus a complete behavior paragraph, remains initially unselected, and enters the confirmed contract only when the user chooses it. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
+Every coordinated Stage-2 direction carries one complete `rendering: custom` candidate even when `recommend.image_usage` does not include `ai`. The UI keeps rendering controls hidden until the current source selection includes AI, then exposes the three already-authored project candidates without another backend recommendation. The 20 fixed renderings remain lower-level single-select alternatives. A template-backed proposal must honor inherited identity and the confirmed template-application plan.
 
 **Hard rule — `rendering_behavior` prose**:
 
@@ -62,16 +62,16 @@ Whenever proposed image usage includes `ai`, Stage 2 authors one separate, visib
 |---|---|
 | Length | One paragraph, 2-5 sentences |
 | Axes covered | line / texture / depth / material / mood (same as preset files) |
-| Catalog basis | When existing renderings are combined or borrowed, name every exact id and read every named file before synthesis |
+| Catalog basis | Freeze every exact id from this index, then read only those named files before synthesis |
 
 ```yaml
 - image_rendering: custom
 - image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
 ```
 
-**Hard rule**: the custom candidate is mandatory when AI images are proposed; selecting `custom` is a tail-case, not the default. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
+**Hard rule**: three complete rendering candidates are mandatory in every fresh Stage-2 direction set; AI source recommendation remains independent. See [`strategist-image.md`](../strategist-image.md) for the Stage-2 carrier and downstream lock behavior.
 
-Write `image_rendering_references` only when the custom direction actually uses catalog material. Keep the list exact: a blend of `screen-print` and `watercolor` reads both files and lists both ids. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
+Write `image_rendering_references` only when the confirmed custom direction actually uses catalog material. A custom may use zero, one, or many renderings: keep one when it owns the whole specialized treatment, or include every rendering that contributes a distinct executable job across line, texture, depth, material, or mood. Reference count has no fixed cap; count is an outcome, not a target. A four-basis direction may assign `vector-illustration` to silhouette clarity, `minimalist-swiss` to negative-space composition, `screen-print` to restrained halftone texture, and `warm-scene` to light and mood; list all four ids. Omit every rendering whose contribution cannot be stated and never add a second merely to imply synthesis. A genuinely new rendering with no catalog source omits the field and proceeds from its standalone behavior; never invent a reference merely to legitimize `custom`.
 
 ---
 
