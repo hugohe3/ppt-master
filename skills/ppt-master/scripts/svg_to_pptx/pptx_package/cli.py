@@ -70,7 +70,12 @@ from ..drawingml.theme_fonts import (
     load_theme_font_spec,
 )
 from ..drawingml.utils import unsafe_exported_font_faces
-from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
+from .narration import (
+    DEFAULT_NARRATION_START_FLOOR,
+    NARRATION_EXTENSIONS,
+    find_narration_files,
+    probe_audio_duration,
+)
 from .template_structure import (
     TemplateStructureError,
     load_pptx_structure_lock,
@@ -1097,6 +1102,16 @@ Recorded narration:
     parser.add_argument('--narration-padding', type=non_negative_float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
     parser.add_argument(
+        '--narration-start-floor',
+        type=non_negative_float,
+        default=DEFAULT_NARRATION_START_FLOOR,
+        help=(
+            'Minimum seconds from slide-transition start to narration start; '
+            'set 0 to start immediately after the transition '
+            f'(default: {DEFAULT_NARRATION_START_FLOOR})'
+        ),
+    )
+    parser.add_argument(
         '--inherit-motion-from',
         type=str,
         default=None,
@@ -1706,6 +1721,22 @@ Recorded narration:
                 "transition auto_advance",
                 allow_zero=True,
             )
+        transition_sound = (
+            None
+            if args.no_animations
+            else (
+                inherited_transition['sound']
+                if 'sound' in inherited_transition
+                else transition_defaults.get('sound')
+            )
+        )
+        if transition_sound is not None and not isinstance(
+            transition_sound,
+            str,
+        ):
+            raise ValueError(
+                'transition sound must be a project-relative .wav path or null'
+            )
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -1798,6 +1829,7 @@ Recorded narration:
             args.auto_advance is not None
             or inherited_overrides.get('auto_advance') is True
         ),
+        'transition_sound': 'sound' in inherited_transition,
         'animation': (
             args.animation is not None
             or inherited_overrides.get('animation') is True
@@ -1822,6 +1854,7 @@ Recorded narration:
             'effect_options': transition_effect_options,
             'duration': transition_duration,
             'auto_advance': auto_advance,
+            'sound': transition_sound,
         },
         'animation': {
             'effect': normalized_animation or 'none',
@@ -1885,6 +1918,7 @@ Recorded narration:
         verbose=verbose,
         transition=transition,
         transition_effect_options=transition_effect_options,
+        transition_sound=transition_sound,
         transition_duration=transition_duration,
         auto_advance=auto_advance,
         notes=notes,
@@ -1899,6 +1933,7 @@ Recorded narration:
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
         narration_padding=args.narration_padding,
+        narration_start_floor=args.narration_start_floor,
         text_flow=args.text_flow,
         image_optimize=not args.no_image_optimize,
         image_max_dimension=args.image_max_dimension,

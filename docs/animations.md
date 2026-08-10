@@ -124,6 +124,59 @@ spokes. Run
 categorized list. The four media playback commands are handled by the
 audio/video workflows because they require media or bookmark targets.
 
+## Add Sound After Choosing Motion
+
+Sound effects are off by default. PPT Master includes a global CC0 discovery
+library, but it is not copied during strategy or ordinary project setup. First
+finish the SVG pages and choose the visual transition/object motion. Only when
+one of those resolved beats has a specific auditory job should you discover and
+sync a cue:
+
+```bash
+python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
+python3 skills/ppt-master/scripts/sound_sync.py \
+  <project> bigsoundbank/1797 kenney-interface/click_001
+```
+
+The second command copies only the selected files into
+`<project>/sounds/<namespace>/`. With no selected cue, PPT Master creates no
+project sound directory and copies nothing. The `recommended` catalog flag is
+a discovery shortlist, not an automatic choice:
+
+```bash
+python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+```
+
+Configuration always references the copied project-local path, never the
+global `templates/sounds/` path or a library id:
+
+```json
+{
+  "version": 1,
+  "slides": {
+    "02_process": {
+      "transition": {
+        "effect": "push",
+        "sound": "sounds/bigsoundbank/1797.wav"
+      },
+      "groups": {
+        "next-step": {
+          "effect": "entrance_fade",
+          "sound": "sounds/kenney-interface/click_001.wav"
+        }
+      }
+    }
+  }
+}
+```
+
+`transition.sound` uses WAV. Object-animation `sound` also accepts an existing
+project-relative or absolute `.m4a`, `.mp3`, or `.wav` input; bundled choices
+are WAV and should use the copied project-relative path. A transition-only cue
+may use a sparse `animations.json`; a slide-level `transition.sound: null`
+clears an inherited default sound. Validate before export. Do not add sound
+merely to demonstrate that the feature exists.
+
 ## Customize Specific Objects
 
 Use `animations.json` only when deck-wide settings are not enough—for example,
@@ -182,7 +235,8 @@ Common row fields are:
 | `effect_options` | Set effect-specific `direction`, `amount`, `color`, `font_name`, `relative`, or `size` |
 | `trigger_shape` | Trigger this row when another top-level group is clicked (PowerPoint **On Click of**) |
 | Timing modifiers | `repeat_count`/`repeat_duration`, `auto_reverse`, `rewind`, `accelerate`, `decelerate`, `bounce_end`, and `restart` |
-| Completion | `after_effect` (dim/hide) and a `.m4a`/`.mp3`/`.wav` `sound` path |
+| Completion | `after_effect` (`none`, dim, hide, or hide on next click) |
+| Sound cue | Optional project-local `sound` path; bundled choices follow the on-demand sync above |
 
 `order`, `delay`, `duration`, `trigger`, and `trigger_shape` are resolved per
 row. The slide-level animation trigger is inheritance only. `trigger_shape`

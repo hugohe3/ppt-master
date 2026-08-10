@@ -6,7 +6,7 @@
 
 ## Design Philosophy — AI-Directed Workflow, Human-Controlled Draft
 
-PPT Master produces a **high-quality editable PowerPoint draft**, not a sealed final deck. The workflow reasons about the message, designs the pages, and authors or preserves native PowerPoint objects under an explicit route contract. The user reviews the direction and owns the final-mile judgment in PowerPoint. Remaining work should be refinement of a real deck, not reconstruction from slide images or a thin editable skin.
+PPT Master produces a **high-quality editable PowerPoint draft**, not a sealed final deck. The workflow reasons about the message, designs the pages, and authors or preserves native PowerPoint objects under an explicit route contract. The user reviews the direction and owns the final-mile judgment in PowerPoint. Ordinary Generate should leave refinement of a real deck rather than reconstruction from slide images or a thin editable skin. The **Image to PPTX** [`image-to-pptx`](../skills/ppt-master/workflows/profiles/image-to-pptx.md) profile is the narrow exception: it currently requires Codex, always activates Quick, normalizes one or more input images into an ordered page-frame roster, restores ordinary text natively, reconstructs low-resolution identity or decorative graphics under strict visual locks when needed, and rebuilds scene imagery as registered layers. It still rejects a whole-slide screenshot skin as editable reconstruction.
 
 The workflow supplies presentation-specific reasoning, state, contracts, and quality gates; deterministic tools handle conversion, validation, packaging, and repeatable file operations. **The selected model still sets the quality ceiling**, while the user's taste and judgment guide review and finishing.
 
@@ -45,12 +45,26 @@ path; it is placed on the same Python command and creates no wrapper process.
 ## Generate PPTX Architecture
 
 The diagram below covers the default Generate PPTX lifecycle. The
-`beautify-pptx` profile uses that lifecycle unless the same request explicitly
-asks for Quick, in which case it uses `quick-generate` while keeping the same
-1:1 source constraints. Quick bypasses separate planning/confirmation, the
-first-page gate, and preview finalization; source understanding and resource
-preparation still run as needed, and one lockless final quality gate remains.
-Exactly one runtime procedure is loaded.
+`beautify-pptx` fidelity profile uses that lifecycle unless the same request
+explicitly asks for Quick. Image to PPTX is a separate fidelity profile inside
+Generate: it currently requires Codex and always activates `quick-generate`, so
+it never loads the Default runtime and needs no separate Quick request. Other
+agent hosts have not been adapted for the profile, and their behavior is not
+supported or promised. Image to PPTX maps each normalized page frame to one
+slide and treats visible pixels as surface truth. It restores ordinary text
+natively. A low-resolution logo, icon, badge, or decorative graphic may be
+reconstructed by Codex from the reference, but identity, silhouette,
+proportions, colors, and wordmark must remain locked where applicable; a merely
+similar substitute is forbidden. Charts, tables, and data graphics must never
+be reconstructed generatively: use native objects with verifiable values, an
+exact source asset, or mark the item `manual_required`. Photo and illustration scenes use at least a clean
+base plus subject or foreground layers. Multiple non-overlapping objects with
+padded bounding boxes may share one generated plate, then be separated into
+independent objects through grid slicing or SVG bounding-box crops. A
+whole-slide screenshot skin remains forbidden. Quick bypasses separate
+planning/confirmation, the first-page gate, and preview finalization; source
+understanding and resource preparation still run as needed, and one lockless
+final quality gate remains. Exactly one runtime procedure is loaded.
 Create Template has its own workspace lifecycle, while Fill Native PPTX and
 Enhance Native PPTX operate directly on OOXML; the route table later in this
 document covers all four.
@@ -176,6 +190,7 @@ Use this table before reasoning about implementation details. Most failed runs s
 |---|---|---|
 | Topic only, or supplied material lacks facts required by the requested outcome | Generate PPTX + `topic-research` inside Step 1 | topic-only research starts immediately; source-backed research follows conversion/read and fills only identified factual gaps |
 | Source files or conversation text, deck structure may be rethought | Generate PPTX | Strategist may split, merge, drop, reorder, and redesign |
+| One or more images contain page frames that must become layered editable slides | Generate PPTX + Image to PPTX (`image-to-pptx`) profile | Codex is currently required and the profile always activates Quick; normalize all represented frames first and map each frame to one slide; restore ordinary text natively; reference-reconstruct low-resolution logos/icons/decorative graphics only with identity, silhouette, proportions, colors, and wordmarks locked where applicable; charts/tables/data graphics require native objects with verifiable values, exact source assets, or `manual_required`; build scenes as at least a clean base plus subject/foreground layers; non-overlapping padded-bbox objects may share one generation plate before grid slicing or SVG bounding-box cropping; no similar substitute or whole-slide screenshot skin |
 | Explicit quick generation | Generate PPTX + `quick-generate` profile | convert/read sources, research factual gaps, and prepare required resources as needed; explicit user requirements are followed and the current agent decides every remaining content, page, visual, and resource question in active context, skips Strategist/confirmation/spec/lock/finalize, hand-authors SVG, passes one lockless final gate, and exports the final PPTX |
 | PPTX as source material, user allows a new story/page structure | Generate PPTX via `ppt_to_md` + `pptx_intake` | PPTX identity/geometry are facts and candidates, not replica constraints |
 | Raw PPTX template plus new material/topic | Fill Native PPTX (`template-fill-pptx`) | clone/fill native slides; no SVG generation |
@@ -363,7 +378,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 | Invariant | Practical consequence |
 |---|---|
 | `sources/` content-type files are the Generate content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
-| `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist in the default pipeline and the current agent in `quick-generate`; they do not lock page count/order except in workflows that say so |
+| `analysis/` stores machine facts and bounded profile ledgers, not design contracts | `source_profile.json` and intake artifacts inform Strategist in the default pipeline and the current agent in `quick-generate`; Image to PPTX additionally owns source-evidence-only `reconstruction_inventory.json` for source-container/frame mapping, hashes, visible regions, and uncertainty. Its final layer choices stay in Quick active context. These artifacts do not lock page count/order except in workflows that say so |
 | `design_spec.md` explains the design; `spec_lock.md` executes it in the default pipeline | both remain owning artifacts there; `quick-generate` persists neither or any substitute plan, and the current agent follows explicit user requirements while keeping every remaining content, page, visual, and resource decision only in active context; context loss restarts Quick |
 | Planning context is retained until invalidated | continuous execution reuses the complete Design Spec, lock, and triggered references; fresh/resumed/restarted or compacted execution reloads them once |
 | `page-context` is on demand | the read-only projector supports diagnostics, deterministic routing checks, and optional usage telemetry; it is not a pre-page gate |
@@ -485,7 +500,7 @@ evidence. In particular, enabling narration may enable the effective Speaker
 Notes outcome in the Design Spec, but it never rewrites the raw speaker-notes
 choice.
 
-**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. User images, extracted images, web images, AI outputs, formulas, and sliced elements still converge into the same measured fact table.
+**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. Image to PPTX's normalized page frames are the narrow exception: every frame is inspected once to build source evidence and identify ordinary text, identity or decorative graphics, charts/tables/data graphics, scene regions, and overlap. Later reads stay page/region-local while the current Codex agent prepares registered clean-base and subject/foreground assets through the existing reference-image path. Low-resolution logos, icons, and decorative graphics may be reconstructed only with identity, silhouette, proportions, colors, and wordmarks locked where applicable. Charts, tables, and data graphics cannot use generative reconstruction; they require native objects with verifiable values, exact source assets, or `manual_required`. Multiple non-overlapping objects with padded bounding boxes may share one generation plate before grid slicing or SVG bounding-box cropping creates independent objects. User images, extracted images, web images, AI outputs, formulas, and sliced elements still converge into the same measured fact table.
 
 **Retained planning context** carries continuity; the on-demand page projector is only a diagnostic described below.
 
@@ -493,7 +508,7 @@ choice.
 
 ## Execution Discipline
 
-Generate routing selects one runtime authority before loading its procedure: [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) owns Default Step 1–7, while [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) owns the self-contained Quick lifecycle. [`beautify-pptx.md`](../skills/ppt-master/workflows/profiles/beautify-pptx.md) selects between them from explicit Quick intent and keeps its 1:1 constraints in either branch. [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+Generate routing selects one runtime authority before loading its procedure: [`workflows/generate-pptx.md`](../skills/ppt-master/workflows/generate-pptx.md) owns Default Step 1–7, while [`quick-generate.md`](../skills/ppt-master/workflows/profiles/quick-generate.md) owns the self-contained Quick lifecycle. [`image-to-pptx.md`](../skills/ppt-master/workflows/profiles/image-to-pptx.md) and [`beautify-pptx.md`](../skills/ppt-master/workflows/profiles/beautify-pptx.md) are mutually exclusive fidelity profiles. Image to PPTX currently requires Codex and activates Quick directly without a separate Quick signal; other agent hosts are not adapted or supported. Beautify continues to select between Default and Quick from explicit Quick intent. [`SKILL.md`](../skills/ppt-master/SKILL.md) owns only global execution discipline and the mandatory handoff to `routing.md`. Together, these rules may look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. They close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
 
 Global stop/continue policy is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/governance/failure-recovery.md); its concrete recovery matrix and resume pointers currently cover Generate PPTX. This section does not duplicate those rules.
 
@@ -857,7 +872,7 @@ Supporting files stay separate only to keep route contracts focused and load opt
 
 | Class | Runbooks | Owning route |
 |---|---|---|
-| Generation profiles | `beautify-pptx`, `quick-generate` | Beautify preserves wording/pages and selects Default unless Quick is explicit; Quick owns the direct SVG-to-PPTX lifecycle |
+| Generation profiles | `image-to-pptx`, `beautify-pptx`, `quick-generate` | Image to PPTX currently requires Codex, always activates Quick, normalizes page frames, restores ordinary text natively, reconstructs low-resolution identity/decorative graphics under strict visual locks when needed, keeps charts/tables/data graphics native and verifiable, exact-source, or `manual_required`, and rebuilds scenes as at least clean-base plus subject/foreground layers; Beautify preserves wording/pages while redesigning layout and selects Quick only from explicit intent; Quick owns the direct SVG-to-PPTX lifecycle |
 | Template child workflows | `create-brand`, `create-style`, `create-layout`, `create-deck` | Create Template dispatches exactly one for identity-only, roster-free direction/method, brand-neutral/application-neutral structure, or a recurring application with integrated identity/structure |
 | Template-input stage | `apply-template-workspace` | Runs after Default Stage 1 confirms at least one workspace and before Stage 2; free design skips installation, while Quick may provide direct exact-root input |
 | Generation stages | `topic-research`, `resume-execute`, `refine-spec`, `verify-charts`, `visual-review`, `live-preview`, `customize-animations` | Generate PPTX at their defined intake, planning, editing, quality, or post-processing points |

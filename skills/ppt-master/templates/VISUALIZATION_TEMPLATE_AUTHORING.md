@@ -351,6 +351,12 @@ grammar 和构形思维，而不是页面示例清单。先还原顺序、层级
 两条路径都不依赖 `structure/<key>` 或固定 SVG，不能因 Quick 跳过 §VII/lock 就跳过
 Structure 载体判断。
 
+**已批准的图表容量迁移**：
+
+| Canonical key | 已批准边界 | 兼容处理 |
+|---|---|---|
+| `gauge_chart` | 2026-08-10：中性预览从三个并列 Gauge 重组为一个有界域、明确目标或阈值的 KPI；多个同级 KPI 改用 `bullet_chart` 或 `progress_bar_chart` | canonical key 保持不变；旧三指标示例不再作为可读取容量合同，无需 alias |
+
 **Canonical Table set**:
 
 | Canonical key | 核心信息关系 |
@@ -388,7 +394,7 @@ Table；日期或持续时间决定 `x`/`width` 的排期是 `chart/gantt_chart`
 
 **Hard rule**: 修改一个仍属 canonical 的模板时先冻结可见文本、数据和结构层级，
 再简化确认无语义的效果、补齐直属根 bounds，并完成文本差异、独立渲染与双路线
-验证。经本节明确登记的 catalog 合并/退役不要求保留旧示例文案；除此之外，未经
+验证。经本节明确登记的 catalog 合并/重组/退役不要求保留旧示例文案；除此之外，未经
 说明的文本删除、改写或结构边界丢失都会阻断变更。
 
 ---

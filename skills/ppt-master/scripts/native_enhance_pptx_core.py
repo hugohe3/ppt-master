@@ -59,6 +59,7 @@ from pptx_transitions import (  # noqa: E402
     NATIVE_TRANSITION_KEYS,
     apply_slide_motion_xml,
     normalize_transition_effect_request,
+    read_slide_transition_xml,
     set_directory_use_timings,
     validate_pptx_transition_package,
     validate_seconds,
@@ -72,10 +73,12 @@ from svg_to_pptx.pptx_package.narration import (  # noqa: E402
     AUDIO_CONTENT_TYPES,
     AUDIO_MARKER_PNG_BYTES,
     AUDIO_REL_TYPE,
+    DEFAULT_NARRATION_START_FLOOR,
     IMAGE_REL_TYPE,
     MEDIA_REL_TYPE,
     NARRATION_EXTENSIONS,
     inject_narration,
+    narration_lead_in_seconds,
     next_shape_id,
     probe_audio_duration,
 )
@@ -902,6 +905,7 @@ def _apply_audio(
     enter: EnterUpdate,
     timings_enabled: bool,
     narration_padding: float,
+    narration_start_floor: float,
     audio_duration: float | None = None,
 ) -> bool:
     media_dir = extract_dir / "ppt" / "media"
@@ -925,6 +929,24 @@ def _apply_audio(
     slide_xml_path = extract_dir / slide.part_name
     slide_xml = slide_xml_path.read_text(encoding="utf-8")
     source_animation_fingerprint = object_animation_fingerprint(slide_xml)
+    source_transition = read_slide_transition_xml(slide_xml)
+    if enter.policy == "replace":
+        transition_duration = enter.duration
+    elif enter.policy == "none":
+        transition_duration = 0.0
+    else:
+        # Legacy spd-only transitions expose no exact milliseconds. Treat
+        # those as unknown and keep the full configured floor after the
+        # preserved transition rather than guessing an application duration.
+        transition_duration = (
+            source_transition.duration_ms / 1000
+            if source_transition.duration_ms is not None
+            else 0.0
+        )
+    narration_lead_in = narration_lead_in_seconds(
+        transition_duration,
+        start_floor=narration_start_floor,
+    )
     shape_id = next_shape_id(slide_xml)
     slide_xml = inject_narration(
         slide_xml,
@@ -933,18 +955,38 @@ def _apply_audio(
         audio_rid=audio_rid,
         media_rid=media_rid,
         poster_rid=poster_rid,
+        start_delay=narration_lead_in,
     )
 
     advance = AdvanceUpdate(mode="preserve")
-    if timings_enabled:
-        duration = audio_duration
+    duration = audio_duration
+    if duration is None and (
+        timings_enabled or source_transition.advance_after_ms is not None
+    ):
+        duration = probe_audio_duration(audio_path)
+    if (
+        not timings_enabled
+        and source_transition.advance_after_ms is not None
+    ):
         if duration is None:
-            duration = probe_audio_duration(audio_path)
+            raise RuntimeError(
+                f"Unable to validate narration against slide {slide.index} "
+                f"auto-advance with ffprobe: {audio_path}"
+            )
+        required_playback_ms = round((narration_lead_in + duration) * 1000)
+        if source_transition.advance_after_ms < required_playback_ms:
+            raise RuntimeError(
+                f"Slide {slide.index} advances after "
+                f"{source_transition.advance_after_ms} ms, before delayed "
+                f"narration can finish at {required_playback_ms} ms; enable "
+                "timings or lengthen the source auto-advance"
+            )
+    if timings_enabled:
         if duration is None:
             raise RuntimeError(f"Unable to read narration duration with ffprobe: {audio_path}")
         advance = AdvanceUpdate(
             mode="narration",
-            after=duration + narration_padding,
+            after=narration_lead_in + duration + narration_padding,
         )
 
     wrote_advance = False
@@ -1223,6 +1265,7 @@ def _build_enhancement_plan(
     transition: str | None,
     transition_duration: float | None,
     narration_padding: float | None,
+    narration_start_floor: float | None,
     apply_transition_without_audio: bool | None,
     existing_plan: dict | None = None,
 ) -> dict:
@@ -1239,6 +1282,19 @@ def _build_enhancement_plan(
     resolved_padding = validate_seconds(
         raw_padding,
         "narration padding",
+        allow_zero=True,
+    )
+    raw_start_floor: object
+    if narration_start_floor is not None:
+        raw_start_floor = narration_start_floor
+    else:
+        raw_start_floor = previous_timings.get(
+            "narration_start_floor",
+            DEFAULT_NARRATION_START_FLOOR,
+        )
+    resolved_start_floor = validate_seconds(
+        raw_start_floor,
+        "narration start floor",
         allow_zero=True,
     )
     transitions_enabled, transition_config = _resolved_draft_transition_config(
@@ -1297,6 +1353,7 @@ def _build_enhancement_plan(
                 ),
                 "source": "audio_duration",
                 "narration_padding": resolved_padding,
+                "narration_start_floor": resolved_start_floor,
             },
             "transitions": {
                 "enabled": transitions_enabled,
@@ -1729,6 +1786,7 @@ def init_project(args: argparse.Namespace) -> int:
         transition=args.transition,
         transition_duration=args.transition_duration,
         narration_padding=args.narration_padding,
+        narration_start_floor=args.narration_start_floor,
         apply_transition_without_audio=args.apply_transition_without_audio,
     )
     _write_json(_plan_path(project_path), plan)
@@ -1813,6 +1871,7 @@ def plan_project(args: argparse.Namespace) -> int:
             transition=args.transition,
             transition_duration=args.transition_duration,
             narration_padding=args.narration_padding,
+            narration_start_floor=args.narration_start_floor,
             apply_transition_without_audio=args.apply_transition_without_audio,
             existing_plan=existing_plan,
         )
@@ -1912,6 +1971,25 @@ def apply_project(args: argparse.Namespace) -> int:
             )
         else:
             narration_padding = 0.4
+    except ValueError as exc:
+        return fail_preflight([str(exc)])
+
+    if args.narration_start_floor is not None:
+        raw_narration_start_floor = args.narration_start_floor
+    elif "narration_start_floor" in timings_cfg:
+        raw_narration_start_floor = timings_cfg["narration_start_floor"]
+    else:
+        raw_narration_start_floor = DEFAULT_NARRATION_START_FLOOR
+
+    try:
+        if "audio" in modules:
+            narration_start_floor = validate_seconds(
+                raw_narration_start_floor,
+                "narration start floor",
+                allow_zero=True,
+            )
+        else:
+            narration_start_floor = DEFAULT_NARRATION_START_FLOOR
     except ValueError as exc:
         return fail_preflight([str(exc)])
 
@@ -2034,6 +2112,7 @@ def apply_project(args: argparse.Namespace) -> int:
                     enter=enter_update,
                     timings_enabled="timings" in modules,
                     narration_padding=narration_padding,
+                    narration_start_floor=narration_start_floor,
                     audio_duration=readiness.audio_durations.get(slide.index),
                 ) or wrote_auto_advance
                 audio_exts.add(audio.suffix.lower())
@@ -2331,6 +2410,12 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
     init.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
     init.add_argument(
+        "--narration-start-floor",
+        type=_non_negative_seconds_arg,
+        default=DEFAULT_NARRATION_START_FLOOR,
+        help="minimum seconds from transition start to narration start",
+    )
+    init.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
         help=(
@@ -2362,6 +2447,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
     )
     plan.add_argument(
+        "--narration-start-floor",
+        type=_non_negative_seconds_arg,
+        default=None,
+        help="replace the saved narration start floor; omitted values preserve it",
+    )
+    plan.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
         default=None,
@@ -2387,6 +2478,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     apply.add_argument("--transition-duration", type=_positive_seconds_arg, default=None)
     apply.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=None)
+    apply.add_argument(
+        "--narration-start-floor",
+        type=_non_negative_seconds_arg,
+        default=None,
+        help="override the confirmed narration start floor for this export",
+    )
     apply.add_argument("--force", action="store_true", help="apply without a confirmed enhancement plan")
     apply.add_argument(
         "--apply-transition-without-audio",

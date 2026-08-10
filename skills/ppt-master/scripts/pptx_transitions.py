@@ -44,6 +44,9 @@ P159_NS = "http://schemas.microsoft.com/office/powerpoint/2015/09/main"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 CONTENT_TYPES_NS = "http://schemas.openxmlformats.org/package/2006/content-types"
+RELATIONSHIPS_NS = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
 
 PRESENTATION_PROPS_PART = "ppt/presProps.xml"
 PRESENTATION_RELS_PART = "ppt/_rels/presentation.xml.rels"
@@ -54,6 +57,10 @@ PRESENTATION_PROPS_REL_TYPE = (
 PRESENTATION_PROPS_CONTENT_TYPE = (
     "application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"
 )
+AUDIO_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
+)
+WAV_CONTENT_TYPES = frozenset({"audio/wav", "audio/x-wav"})
 
 DEFAULT_TRANSITION = "fade"
 DEFAULT_TRANSITION_DURATION = 0.4
@@ -882,6 +889,7 @@ TRANSITION_NAMESPACES = {
 for _prefix, _uri in (
     *TRANSITION_NAMESPACES.items(),
     ("mc", MC_NS),
+    ("r", RELATIONSHIPS_NS),
 ):
     try:
         ET.register_namespace(_prefix, _uri)
@@ -924,6 +932,10 @@ class TransitionSummary:
     effect_attributes: Mapping[str, str] = field(default_factory=dict)
     canonical_effect: str | None = None
     effect_options: Mapping[str, object] = field(default_factory=dict)
+    sound_relationship_id: str | None = None
+    sound_name: str | None = None
+    fallback_sound_relationship_id: str | None = None
+    fallback_sound_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -1125,6 +1137,7 @@ def describe_transition_effect(effect: object) -> dict[str, Any]:
             "duration": "positive seconds",
             "auto_advance": "non-negative seconds",
         },
+        "sound": "project-relative .wav path or null in animations.json",
     }
 
 
@@ -1215,18 +1228,67 @@ def _transition_attributes(
     return " " + " ".join(attrs) if attrs else ""
 
 
+def _normalize_transition_sound(
+    sound: Mapping[str, object] | None,
+) -> dict[str, str] | None:
+    """Validate one packaged transition-sound relationship descriptor."""
+    if sound is None:
+        return None
+    if not isinstance(sound, Mapping):
+        raise ValueError("transition sound must be a relationship descriptor")
+    unknown = set(sound) - {"relationship_id", "name"}
+    if unknown:
+        raise ValueError(
+            "transition sound has unknown field(s): "
+            + ", ".join(sorted(str(field) for field in unknown))
+        )
+    relationship_id = sound.get("relationship_id")
+    name = sound.get("name")
+    if not isinstance(relationship_id, str) or not relationship_id.strip():
+        raise ValueError(
+            "transition sound relationship_id must be a non-empty string"
+        )
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError("transition sound name must be a non-empty string")
+    return {
+        "relationship_id": relationship_id,
+        "name": name,
+    }
+
+
+def _transition_sound_xml(
+    sound: Mapping[str, str] | None,
+    *,
+    indent: str,
+) -> str:
+    """Return the optional p:sndAc payload at one indentation level."""
+    if sound is None:
+        return ""
+    relationship_id = quoteattr(sound["relationship_id"])
+    name = quoteattr(sound["name"])
+    return (
+        f"{indent}<p:sndAc>\n"
+        f"{indent}  <p:stSnd>\n"
+        f"{indent}    <p:snd r:embed={relationship_id} name={name}/>\n"
+        f"{indent}  </p:stSnd>\n"
+        f"{indent}</p:sndAc>\n"
+    )
+
+
 def create_transition_xml(
     effect: str | None = DEFAULT_TRANSITION,
     duration: float = 0.5,
     advance_after: float | None = None,
     advance_on_click: bool | None = None,
     effect_options: Mapping[str, object] | None = None,
+    sound: Mapping[str, object] | None = None,
 ) -> str:
     """Build a direct or MCE-backed p:transition XML fragment."""
     normalized_effect, normalized_options = normalize_transition_effect_request(
         effect,
         effect_options,
     )
+    normalized_sound = _normalize_transition_sound(sound)
     duration_ms = None
     if normalized_effect is not None:
         duration_ms = _seconds_to_ms(
@@ -1251,6 +1313,7 @@ def create_transition_xml(
         normalized_effect is None
         and advance_ms is None
         and advance_on_click is None
+        and normalized_sound is None
     ):
         return ""
 
@@ -1261,7 +1324,13 @@ def create_transition_xml(
         declare_p14=normalized_effect is not None,
     )
     if normalized_effect is None:
-        return f"  <p:transition{attr_text}/>"
+        if normalized_sound is None:
+            return f"  <p:transition{attr_text}/>"
+        return (
+            f"  <p:transition{attr_text}>\n"
+            + _transition_sound_xml(normalized_sound, indent="    ")
+            + "  </p:transition>"
+        )
 
     prefix, element_name, effect_attrs = _effect_xml(
         normalized_effect,
@@ -1282,24 +1351,36 @@ def create_transition_xml(
             advance_on_click=advance_on_click,
             declare_p14=False,
         )
+        choice_sound_xml = _transition_sound_xml(
+            normalized_sound,
+            indent="        ",
+        )
+        fallback_sound_xml = _transition_sound_xml(
+            normalized_sound,
+            indent="        ",
+        )
         return (
             f'  <mc:AlternateContent xmlns:mc="{MC_NS}">\n'
             f'    <mc:Choice xmlns:{prefix}="{TRANSITION_NAMESPACES[prefix]}" '
             f'Requires="{prefix}">\n'
             f"      <p:transition{attr_text}>\n"
             f"        <{prefix}:{element_name}{effect_attrs}/>\n"
+            f"{choice_sound_xml}"
             "      </p:transition>\n"
             "    </mc:Choice>\n"
             "    <mc:Fallback>\n"
             f"      <p:transition{fallback_attr_text}>\n"
             f"        <{fallback_prefix}:{fallback_name}{fallback_attrs}/>\n"
+            f"{fallback_sound_xml}"
             "      </p:transition>\n"
             "    </mc:Fallback>\n"
             "  </mc:AlternateContent>"
         )
+    sound_xml = _transition_sound_xml(normalized_sound, indent="    ")
     return (
         f"  <p:transition{attr_text}>\n"
         f"    <{prefix}:{element_name}{effect_attrs}/>\n"
+        f"{sound_xml}"
         "  </p:transition>"
     )
 
@@ -1493,6 +1574,45 @@ def _effect_identity(
     return None, None, {}
 
 
+def _sound_identity(
+    transition: Any | None,
+) -> tuple[str | None, str | None]:
+    """Return one embedded transition sound relationship and display name."""
+    if transition is None:
+        return None, None
+    sound_action = next(
+        (
+            child
+            for child in list(transition)
+            if child.tag == _qn(PML_NS, "sndAc")
+        ),
+        None,
+    )
+    if sound_action is None:
+        return None, None
+    start_sound = next(
+        (
+            child
+            for child in list(sound_action)
+            if child.tag == _qn(PML_NS, "stSnd")
+        ),
+        None,
+    )
+    if start_sound is None:
+        return None, None
+    sound = next(
+        (
+            child
+            for child in list(start_sound)
+            if child.tag == _qn(PML_NS, "snd")
+        ),
+        None,
+    )
+    if sound is None:
+        return None, None
+    return sound.get(_qn(RELATIONSHIPS_NS, "embed")), sound.get("name")
+
+
 def _effective_transition_options(
     effect: str,
     options: Mapping[str, object] | None = None,
@@ -1573,6 +1693,10 @@ def read_slide_transition(slide_root: Any) -> TransitionSummary:
     fallback_effect, fallback_namespace, _fallback_attributes = _effect_identity(
         fallback
     )
+    sound_relationship_id, sound_name = _sound_identity(primary)
+    fallback_sound_relationship_id, fallback_sound_name = _sound_identity(
+        fallback
+    )
     canonical_effect, effect_options = _identify_native_transition(
         effect,
         effect_namespace,
@@ -1607,6 +1731,10 @@ def read_slide_transition(slide_root: Any) -> TransitionSummary:
             else None
         ),
         advance_after_ms=advance_after_ms,
+        sound_relationship_id=sound_relationship_id,
+        sound_name=sound_name,
+        fallback_sound_relationship_id=fallback_sound_relationship_id,
+        fallback_sound_name=fallback_sound_name,
     )
 
 
@@ -1806,6 +1934,10 @@ def _visual_identity(summary: TransitionSummary) -> tuple[Any, ...]:
         summary.fallback_effect_namespace,
         summary.duration_ms,
         summary.speed,
+        summary.sound_relationship_id,
+        summary.sound_name,
+        summary.fallback_sound_relationship_id,
+        summary.fallback_sound_name,
     )
 
 
@@ -1908,6 +2040,11 @@ def _validate_applied_motion(
     elif enter.policy == "none":
         if after.effect is not None or after.fallback_effect is not None:
             errors.append("none policy retained a visual transition")
+        if (
+            after.sound_relationship_id is not None
+            or after.fallback_sound_relationship_id is not None
+        ):
+            errors.append("none policy retained a transition sound")
 
     preserved_click = (
         before.advance_on_click
@@ -2181,6 +2318,7 @@ def validate_generated_transition_xml(
     advance_on_click: bool | None,
     advance_after: object | None,
     effect_options: Mapping[str, object] | None = None,
+    sound: Mapping[str, object] | None = None,
 ) -> TransitionSummary:
     """Validate a generated transition against its resolved settings."""
     data = slide_xml.encode("utf-8") if isinstance(slide_xml, str) else slide_xml
@@ -2191,6 +2329,7 @@ def validate_generated_transition_xml(
         effect,
         effect_options,
     )
+    normalized_sound = _normalize_transition_sound(sound)
     expected_click = True if advance_on_click is None else advance_on_click
     if not isinstance(expected_click, bool):
         errors.append("transition advance_on_click must be a boolean or None")
@@ -2207,6 +2346,7 @@ def validate_generated_transition_xml(
         normalized_effect is not None
         or expected_after_ms is not None
         or expected_click is False
+        or normalized_sound is not None
     )
 
     if not expects_carrier:
@@ -2228,6 +2368,18 @@ def validate_generated_transition_xml(
         expected_fallback = None
         expected_fallback_namespace = None
         expected_attrs: dict[str, Any] = {}
+        expected_sound_relationship_id = (
+            normalized_sound["relationship_id"]
+            if normalized_sound is not None
+            else None
+        )
+        expected_sound_name = (
+            normalized_sound["name"]
+            if normalized_sound is not None
+            else None
+        )
+        expected_fallback_sound_relationship_id = None
+        expected_fallback_sound_name = None
         if normalized_effect is not None:
             (
                 expected_carrier,
@@ -2244,6 +2396,11 @@ def validate_generated_transition_xml(
                 normalized_effect,
                 normalized_options,
             )
+            if expected_carrier == "alternate-content":
+                expected_fallback_sound_relationship_id = (
+                    expected_sound_relationship_id
+                )
+                expected_fallback_sound_name = expected_sound_name
         else:
             expected_effect_options = {}
         if (
@@ -2258,6 +2415,11 @@ def validate_generated_transition_xml(
             or summary.duration_ms != expected_duration_ms
             or summary.advance_on_click != expected_click
             or summary.advance_after_ms != expected_after_ms
+            or summary.sound_relationship_id != expected_sound_relationship_id
+            or summary.sound_name != expected_sound_name
+            or summary.fallback_sound_relationship_id
+            != expected_fallback_sound_relationship_id
+            or summary.fallback_sound_name != expected_fallback_sound_name
         ):
             errors.append("generated transition read-back does not match its settings")
         if normalized_effect is not None:
@@ -2282,6 +2444,177 @@ def validate_generated_transition_xml(
     if errors:
         raise ValueError("; ".join(errors))
     return summary
+
+
+def _slide_relationships_part(slide_part: str) -> str:
+    directory = posixpath.dirname(slide_part)
+    filename = posixpath.basename(slide_part)
+    return posixpath.join(directory, "_rels", f"{filename}.rels")
+
+
+def _resolve_slide_relationship_target(
+    slide_part: str,
+    target: str,
+) -> str | None:
+    normalized_target = target.replace("\\", "/")
+    if not normalized_target:
+        return None
+    if normalized_target.startswith("/"):
+        resolved = posixpath.normpath(normalized_target.lstrip("/"))
+    else:
+        resolved = posixpath.normpath(
+            posixpath.join(posixpath.dirname(slide_part), normalized_target)
+        )
+    if resolved == ".." or resolved.startswith("../"):
+        return None
+    return resolved
+
+
+def _transition_sound_elements(slide_root: Any) -> list[Any]:
+    sounds: list[Any] = []
+    for carrier in transition_carriers(slide_root):
+        for transition in _transition_elements(carrier):
+            for sound_action in list(transition):
+                if sound_action.tag != _qn(PML_NS, "sndAc"):
+                    continue
+                for start_sound in list(sound_action):
+                    if start_sound.tag != _qn(PML_NS, "stSnd"):
+                        continue
+                    sounds.extend(
+                        child
+                        for child in list(start_sound)
+                        if child.tag == _qn(PML_NS, "snd")
+                    )
+    return sounds
+
+
+def _package_part_content_type(
+    package: zipfile.ZipFile,
+    target_part: str,
+) -> str | None:
+    """Resolve one package part's MIME type from defaults or overrides."""
+    content_types_root = ET.fromstring(package.read(CONTENT_TYPES_PART))
+    normalized_target = "/" + target_part.lstrip("/")
+    for entry in content_types_root:
+        if (
+            entry.tag == _qn(CONTENT_TYPES_NS, "Override")
+            and entry.get("PartName") == normalized_target
+        ):
+            return entry.get("ContentType")
+    extension = Path(target_part).suffix.lstrip(".").lower()
+    for entry in content_types_root:
+        if (
+            entry.tag == _qn(CONTENT_TYPES_NS, "Default")
+            and str(entry.get("Extension") or "").lower() == extension
+        ):
+            return entry.get("ContentType")
+    return None
+
+
+def _validate_transition_sound_package_parts(
+    package: zipfile.ZipFile,
+    package_names: set[str],
+    slide_part: str,
+    slide_xml: bytes,
+) -> list[str]:
+    """Validate transition-sound relationships and embedded WAV targets."""
+    errors: list[str] = []
+    slide_root = (
+        LET.fromstring(slide_xml)
+        if LET is not None
+        else parse_source_xml(slide_xml)
+    )
+    sounds = _transition_sound_elements(slide_root)
+    if not sounds:
+        return errors
+
+    if CONTENT_TYPES_PART not in package_names:
+        return ["transition sound is missing [Content_Types].xml"]
+
+    relationships_part = _slide_relationships_part(slide_part)
+    if relationships_part not in package_names:
+        return [
+            f"transition sound is missing slide relationships: "
+            f"{relationships_part}"
+        ]
+    try:
+        relationships_root = ET.fromstring(package.read(relationships_part))
+    except (KeyError, ET.ParseError) as exc:
+        return [f"unable to read {relationships_part}: {exc}"]
+
+    relationships: dict[str, Any] = {}
+    duplicate_ids: set[str] = set()
+    for relationship in relationships_root:
+        relationship_id = str(relationship.get("Id") or "")
+        if not relationship_id:
+            continue
+        if relationship_id in relationships:
+            duplicate_ids.add(relationship_id)
+        relationships[relationship_id] = relationship
+    if duplicate_ids:
+        errors.append(
+            f"{relationships_part} contains duplicate relationship id(s): "
+            + ", ".join(sorted(duplicate_ids))
+        )
+
+    for sound in sounds:
+        relationship_id = sound.get(_qn(RELATIONSHIPS_NS, "embed"))
+        if not relationship_id:
+            errors.append("p:snd must declare a non-empty r:embed")
+            continue
+        relationship = relationships.get(relationship_id)
+        if relationship is None:
+            errors.append(
+                f"p:snd references missing slide relationship: "
+                f"{relationship_id}"
+            )
+            continue
+        if relationship.get("Type") != AUDIO_REL_TYPE:
+            errors.append(
+                f"transition sound relationship {relationship_id} must use "
+                "the OOXML audio relationship type"
+            )
+        if relationship.get("TargetMode") == "External":
+            errors.append(
+                f"transition sound relationship {relationship_id} must be internal"
+            )
+            continue
+        target = str(relationship.get("Target") or "")
+        target_part = _resolve_slide_relationship_target(slide_part, target)
+        if target_part is None:
+            errors.append(
+                f"transition sound relationship {relationship_id} has an "
+                f"invalid target: {target!r}"
+            )
+            continue
+        if Path(target_part).suffix.lower() != ".wav":
+            errors.append(
+                f"transition sound relationship {relationship_id} must target "
+                f"a .wav part: {target_part}"
+            )
+        if target_part not in package_names:
+            errors.append(
+                f"transition sound relationship {relationship_id} target is "
+                f"missing: {target_part}"
+            )
+            continue
+        content_type = _package_part_content_type(package, target_part)
+        if str(content_type or "").lower() not in WAV_CONTENT_TYPES:
+            errors.append(
+                f"transition sound target {target_part} must declare a WAV "
+                f"content type; found {content_type!r}"
+            )
+        payload = package.read(target_part)
+        if not (
+            len(payload) >= 12
+            and payload[:4] in {b"RIFF", b"RF64"}
+            and payload[8:12] == b"WAVE"
+        ):
+            errors.append(
+                f"transition sound target {target_part} is not RIFF/RF64 WAVE"
+            )
+
+    return errors
 
 
 def validate_pptx_transition_package(
@@ -2311,6 +2644,7 @@ def validate_pptx_transition_package(
                     "duplicate package parts: " + ", ".join(duplicate_names)
                 )
 
+            package_names = set(names)
             slide_names = sorted(
                 name
                 for name in names
@@ -2325,6 +2659,20 @@ def validate_pptx_transition_package(
                     summaries[slide_name] = read_slide_transition_xml(slide_xml)
                 except Exception as exc:
                     errors.append(f"{slide_name}: transition read-back failed: {exc}")
+                try:
+                    sound_errors = _validate_transition_sound_package_parts(
+                        package,
+                        package_names,
+                        slide_name,
+                        slide_xml,
+                    )
+                except Exception as exc:
+                    errors.append(
+                        f"{slide_name}: transition sound read-back failed: {exc}"
+                    )
+                else:
+                    for problem in sound_errors:
+                        errors.append(f"{slide_name}: {problem}")
 
             if require_use_timings:
                 errors.extend(_validate_package_use_timings(package, names))
@@ -2587,6 +2935,39 @@ def validate_slide_transition_structure(slide_root: Any) -> list[str]:
                 errors.append(f"transition carrier must precede p:{tag}")
 
     for carrier in carriers:
+        for transition in _transition_elements(carrier):
+            sound_actions = [
+                child
+                for child in list(transition)
+                if child.tag == _qn(PML_NS, "sndAc")
+            ]
+            if len(sound_actions) > 1:
+                errors.append(
+                    "p:transition must contain at most one p:sndAc; "
+                    f"found {len(sound_actions)}"
+                )
+            if sound_actions:
+                start_sounds = [
+                    child
+                    for child in list(sound_actions[0])
+                    if child.tag == _qn(PML_NS, "stSnd")
+                ]
+                if len(start_sounds) > 1:
+                    errors.append(
+                        "p:sndAc must contain at most one p:stSnd; "
+                        f"found {len(start_sounds)}"
+                    )
+                if start_sounds:
+                    sounds = [
+                        child
+                        for child in list(start_sounds[0])
+                        if child.tag == _qn(PML_NS, "snd")
+                    ]
+                    if len(sounds) != 1:
+                        errors.append(
+                            "p:stSnd must contain exactly one p:snd; "
+                            f"found {len(sounds)}"
+                        )
         if carrier.tag != _qn(MC_NS, "AlternateContent"):
             continue
         choices = [

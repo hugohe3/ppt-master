@@ -42,36 +42,60 @@ Content purpose?
     └── Print → 1240x1754
 ```
 
-## Layout Principles
+## Platform Keep-clear
 
-### Landscape (16:9, 4:3, 2.35:1)
-- Visual flow: Z-pattern, left to right
-- Margins: 40-80px
-- Layouts: multi-column, left-right split, grid
-- Card dimensions (16:9): single-row 530-600px, double-row 265-295px
+Canvas dimensions do not imply a title band, content topology, or recurring
+chrome. Reserve space only for a real output obstruction. For `story`, keep
+meaning-bearing text, identity, and calls to action within `y=120..1740` by
+default because common mobile story controls occupy the top and bottom; images,
+backgrounds, and nonessential texture may remain full bleed. An exact target-
+platform overlay guide or installed template overrides this advisory band.
 
-### Portrait (3:4, 9:16)
-- Visual flow: top to bottom
-- Margins: 60-120px
-- Layouts: single-column, top-bottom split, card stacking
-- Card dimensions (3:4): height 400-600px, gap 40-60px
+## Typography Scale Start
 
-### Square (1:1)
-- Visual flow: center-radiating
-- Margins: 60-100px
-- Core area: ~800x800px
+**Hard rule — normative owner**: This section owns the initial body-size anchor
+and sanity band for every registered or custom canvas. Strategist and Quick
+consume it directly. Confirm UI maintains an exact executable mirror and must
+not infer alternate canvas classes or values. All values are unitless SVG px.
 
-## Format-specific Design
+**PPT reading modes**:
 
-| Format | Title Area | Content Area | Special Notes |
-|--------|-----------|--------------|---------------|
-| PPT | 80-100px | Full width utilization | Page number bottom-right |
-| Xiaohongshu (RED) | 180-240px (bold) | Generous top/bottom whitespace | Brand area at bottom 120-160px |
-| WeChat Moments | 200-280px | Center 500-600px | QR code area at bottom 150-200px |
-| Story | — | Middle 1500px | Top safe zone 120px, bottom 180px |
-| WeChat Article Header | Center/left-aligned 48-72px | — | Image on right or as background |
+| Canvas | Reading mode | Advisory body band | Initial body |
+|---|---|---:|---:|
+| `ppt169` / `ppt43` | `text` | 18–21 | 20 |
+| `ppt169` / `ppt43` | `balanced` | 22–25 | 24 |
+| `ppt169` / `ppt43` | `presentation` | 28–32 | 32 |
 
-> **Body font baseline scales with canvas and reading mode** — a PPT 16:9 baseline confirmed for read-close / business / projection cannot be carried onto tall canvases (Xiaohongshu / Story / A4). Pick the baseline from the confirmed canvas, not the recommended one; see the per-canvas px anchors in [`strategist.md`](strategist.md) §g "Typography Plan Confirmation" (the system is px-only — all sizes are unitless px on every canvas).
+**Non-PPT registered and custom canvases**: derive one effective canvas span
+from the canonical or custom `W x H`, then calculate the advisory band and
+initial body anchor:
+
+```text
+short = min(W, H)
+long = max(W, H)
+span = min(long, 3 * short)
+low = round(span * 0.025)
+start = round(span * 0.029)
+high = round(span * 0.033)
+```
+
+| Canvas | Effective span | Advisory body band | Initial body |
+|---|---:|---:|---:|
+| `wechat` | 900 | 23–30 | 26 |
+| `moments` | 1080 | 27–36 | 31 |
+| `xiaohongshu` | 1660 | 42–55 | 48 |
+| `story` | 1920 | 48–63 | 56 |
+| `banner` | 1920 | 48–63 | 56 |
+| `a4` | 1754 | 44–58 | 51 |
+
+**Default — starting anchor, not a floor (may override when confirmed identity,
+source fidelity, or target viewing conditions require it)**: Start from the
+table or formula, then resolve the complete role ramp and page density from the
+active content and delivery context. The advisory band only surfaces unusual
+values; falling outside it is not a validation failure. Apply the
+viewing-distance baseline in
+[`shared-standards-core.md`](./shared-standards-core.md) instead of silently
+shrinking a recurring role to make content fit.
 
 ## ViewBox Examples
 
