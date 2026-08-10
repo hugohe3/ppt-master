@@ -804,7 +804,7 @@
       "files": [
         "skills/ppt-master/references/video-design.md"
       ],
-      "max_tokens": 2250
+      "max_tokens": 2500
     },
     "stage.generate.refine-spec": {
       "description": "Explicit post-confirmation spec refinement runbook.",
