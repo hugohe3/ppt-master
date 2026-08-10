@@ -498,6 +498,16 @@ active context; create no planning artifact or approval stop. After every page
 exists, run the one final checker below. Apply other supporting tools and
 stages only when their capability is actually needed.
 
+**Hard rule — direct page authoring stays with the current main agent**: write
+every page SVG directly in the active context. Do not delegate page generation
+to another agent, and do not run a Python, Node, shell, or other generator that
+writes slide files into `svg_output/`. Documented fragment-only helpers remain
+allowed after the current main agent chooses the object's role, operands,
+paint, and z-order and integrates the fragment itself. This boundary does not
+restrict resource preparation, inspection, checker, verification,
+post-processing, or export tools; a run fails this profile only when a delegated
+agent or generator authors a page SVG on the main agent's behalf.
+
 This is not a resume protocol. If the active context is lost before delivery,
 start a clean Quick run rather than inferring an unfinished plan from the files
 already present.
