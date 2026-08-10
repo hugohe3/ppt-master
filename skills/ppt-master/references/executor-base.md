@@ -124,9 +124,10 @@ completing P05, P10, P15, … and only when another page follows, read
 `spec_lock.md` in full once before starting the next page. This is a pure
 context re-anchor for the locked palette, typography, icon style, and
 `page_rhythm` values under long context. No checker runs, no per-page
-self-check output, no pause, and no mid-deck repair loop; generation
-continues directly after the re-read. Compaction, resume, or restart still
-follows the full recovery reads above. Quick Generate has no project root
+self-check output, no pause, and no mid-deck repair loop. If the re-read
+reveals an external/unknown change, follow the Invalid recovery branch above;
+otherwise continue directly. Compaction, resume, or restart still follows the
+full recovery reads above. Quick Generate does not read a project-root
 `spec_lock.md` and does not use this rule.
 
 **Per-page layout rhythm — `page_rhythm` section**:

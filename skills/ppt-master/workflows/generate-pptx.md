@@ -544,7 +544,7 @@ around its exact segment; never edit or pad it.
 
 **Planning context**: follow [`executor-base.md`](../references/executor-base.md) §2.1. Reuse the complete Design Spec and lock in an unchanged, uncompacted context. Fresh/resumed/restarted, compacted/summary-only, or externally/unknown changed execution reads both once and reloads triggered inputs. For a local question, consult the retained lock first, then only the owning Design Spec fragment; do not poll files merely to prove validity.
 
-**Scheduled lock re-read (Default Generate only)**: re-read `spec_lock.md` once after P05/P10/P15/… per [`executor-base.md`](../references/executor-base.md) §2.1.
+**Scheduled lock re-read (Default Generate only)**: when another page follows, re-read `spec_lock.md` once after P05/P10/P15/… per [`executor-base.md`](../references/executor-base.md) §2.1.
 
 **Artifact ownership**: `svg_output/` is the author source, `svg_final/` is derived, and image facts come from the regenerated `analysis/image_analysis.csv`; see [`references/artifact-ownership.md`](../references/artifact-ownership.md).
 
