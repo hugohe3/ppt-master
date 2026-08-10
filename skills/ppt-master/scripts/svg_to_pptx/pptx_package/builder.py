@@ -19,7 +19,7 @@ import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
@@ -4002,13 +4002,15 @@ def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dic
 
 
 def _slide_transition_settings(
+    default_transition_cfg: dict[str, Any],
     slide_cfg: dict[str, Any],
     transition: str | None,
     transition_effect_options: dict[str, object] | None,
     duration: float,
     auto_advance: float | None,
+    transition_sound: str | None,
     cli_overrides: dict[str, bool],
-) -> tuple[str | None, dict[str, object], float, float | None]:
+) -> tuple[str | None, dict[str, object], float, float | None, str | None]:
     trans_value = slide_cfg.get('transition', {})
     if not isinstance(trans_value, dict):
         raise ValueError('animations.json slide transition must be an object')
@@ -4043,7 +4045,19 @@ def _slide_transition_settings(
             "transition auto_advance",
             allow_zero=True,
         )
-    return effect, effect_options, duration, auto_advance
+    raw_sound = transition_sound
+    if raw_sound is None and not cli_overrides.get('transition_sound'):
+        raw_sound = default_transition_cfg.get('sound')
+    if 'sound' in trans_cfg:
+        raw_sound = trans_cfg['sound']
+    if raw_sound is not None and (
+        not isinstance(raw_sound, str) or not raw_sound.strip()
+    ):
+        raise ValueError(
+            'animations.json transition sound must be a non-empty '
+            'project-relative .wav path or null'
+        )
+    return effect, effect_options, duration, auto_advance, raw_sound
 
 
 def _slide_animation_settings(
@@ -4366,63 +4380,134 @@ def _next_relationship_id(rel_entries: list[dict[str, str]]) -> str:
     return f'rId{candidate}'
 
 
+def _materialize_slide_sound(
+    project_path: Path,
+    raw_sound: str,
+    media_files: dict[str, bytes],
+    rel_entries: list[dict[str, str]],
+    audio_exts_used: set[str],
+    packaged_by_source: dict[Path, tuple[str, str]],
+    *,
+    label: str,
+    media_prefix: str,
+    require_project_relative_wav: bool,
+) -> dict[str, str]:
+    """Package one slide sound and return its relationship descriptor."""
+    if not isinstance(raw_sound, str) or not raw_sound.strip():
+        raise ValueError(f'{label} sound must be a non-empty path string')
+    sound_path = Path(raw_sound)
+    if require_project_relative_wav:
+        if sound_path.is_absolute() or PureWindowsPath(raw_sound).drive:
+            raise ValueError(f'{label} sound must be project-relative: {raw_sound!r}')
+        extension = sound_path.suffix.lower()
+        if extension != '.wav':
+            raise ValueError(f'{label} sound must use .wav')
+        project_root = project_path.resolve()
+        sound_path = (project_root / sound_path).resolve()
+        try:
+            sound_path.relative_to(project_root)
+        except ValueError as exc:
+            raise ValueError(
+                f'{label} sound escapes the project root: {raw_sound!r}'
+            ) from exc
+    else:
+        if not sound_path.is_absolute():
+            sound_path = project_path / sound_path
+        sound_path = sound_path.resolve()
+        extension = sound_path.suffix.lower()
+
+    if not sound_path.is_file():
+        raise ValueError(f'{label} sound file not found: {sound_path}')
+    if extension not in AUDIO_CONTENT_TYPES:
+        valid = ', '.join(sorted(AUDIO_CONTENT_TYPES))
+        raise ValueError(
+            f'unsupported {label} sound format {extension or "(none)"}; '
+            f'valid formats: {valid}'
+        )
+
+    packaged = packaged_by_source.get(sound_path)
+    if packaged is None:
+        payload = sound_path.read_bytes()
+        if require_project_relative_wav and not (
+            len(payload) >= 12
+            and payload[:4] in {b'RIFF', b'RF64'}
+            and payload[8:12] == b'WAVE'
+        ):
+            raise ValueError(f'{label} sound is not a valid WAV file: {sound_path}')
+        digest = hashlib.sha256(payload).hexdigest()[:16]
+        media_name = f'{media_prefix}_{digest}{extension}'
+        relationship_id = _next_relationship_id(rel_entries)
+        media_files.setdefault(media_name, payload)
+        rel_entries.append(
+            {
+                'id': relationship_id,
+                'type': AUDIO_REL_TYPE,
+                'target': f'../media/{media_name}',
+            }
+        )
+        packaged = (relationship_id, media_name)
+        packaged_by_source[sound_path] = packaged
+        audio_exts_used.add(extension)
+
+    relationship_id, _media_name = packaged
+    return {
+        'relationship_id': relationship_id,
+        'name': sound_path.name,
+    }
+
+
+def _materialize_transition_sound(
+    project_path: Path,
+    raw_sound: str | None,
+    media_files: dict[str, bytes],
+    rel_entries: list[dict[str, str]],
+    audio_exts_used: set[str],
+    packaged_by_source: dict[Path, tuple[str, str]],
+) -> dict[str, str] | None:
+    """Package one optional project-local WAV for a slide transition."""
+    if raw_sound is None:
+        return None
+    return _materialize_slide_sound(
+        project_path,
+        raw_sound,
+        media_files,
+        rel_entries,
+        audio_exts_used,
+        packaged_by_source,
+        label='transition',
+        media_prefix='transition_sound',
+        require_project_relative_wav=True,
+    )
+
+
 def _materialize_animation_sounds(
     project_path: Path,
     targets: list[dict[str, Any]],
     media_files: dict[str, bytes],
     rel_entries: list[dict[str, str]],
     audio_exts_used: set[str],
+    packaged_by_source: dict[Path, tuple[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
     """Package sidecar sound files and replace paths with OOXML relationships."""
     materialized: list[dict[str, Any]] = []
-    packaged_by_source: dict[Path, tuple[str, str]] = {}
+    packaged_by_source = packaged_by_source if packaged_by_source is not None else {}
     for index, raw_target in enumerate(targets, 1):
         target = dict(raw_target)
         raw_sound = target.pop('_sound_path', None)
         if raw_sound is None:
             materialized.append(target)
             continue
-        if not isinstance(raw_sound, str) or not raw_sound.strip():
-            raise ValueError(
-                f'animation target {index} sound must be a non-empty path string'
-            )
-        sound_path = Path(raw_sound)
-        if not sound_path.is_absolute():
-            sound_path = project_path / sound_path
-        sound_path = sound_path.resolve()
-        if not sound_path.is_file():
-            raise ValueError(f'animation sound file not found: {sound_path}')
-        extension = sound_path.suffix.lower()
-        if extension not in AUDIO_CONTENT_TYPES:
-            valid = ', '.join(sorted(AUDIO_CONTENT_TYPES))
-            raise ValueError(
-                f'unsupported animation sound format {extension or "(none)"}; '
-                f'valid formats: {valid}'
-            )
-
-        packaged = packaged_by_source.get(sound_path)
-        if packaged is None:
-            payload = sound_path.read_bytes()
-            digest = hashlib.sha256(payload).hexdigest()[:16]
-            media_name = f'animation_sound_{digest}{extension}'
-            relationship_id = _next_relationship_id(rel_entries)
-            media_files.setdefault(media_name, payload)
-            rel_entries.append(
-                {
-                    'id': relationship_id,
-                    'type': AUDIO_REL_TYPE,
-                    'target': f'../media/{media_name}',
-                }
-            )
-            packaged = (relationship_id, media_name)
-            packaged_by_source[sound_path] = packaged
-            audio_exts_used.add(extension)
-
-        relationship_id, _media_name = packaged
-        target['sound'] = {
-            'relationship_id': relationship_id,
-            'name': sound_path.name,
-        }
+        target['sound'] = _materialize_slide_sound(
+            project_path,
+            raw_sound,
+            media_files,
+            rel_entries,
+            audio_exts_used,
+            packaged_by_source,
+            label=f'animation target {index}',
+            media_prefix='animation_sound',
+            require_project_relative_wav=False,
+        )
         materialized.append(target)
     return materialized
 
@@ -4683,6 +4768,7 @@ def create_pptx_with_native_svg(
     expected_viewbox: str | None = None,
     animation_resource_root: Path | None = None,
     transition_effect_options: dict[str, object] | None = None,
+    transition_sound: str | None = None,
     text_flow: str | None = None,
     primary_language: str | None = None,
     narration_start_floor: float = DEFAULT_NARRATION_START_FLOOR,
@@ -4698,12 +4784,15 @@ def create_pptx_with_native_svg(
         canvas_format: Canvas format key.
         expected_viewbox: Optional project/template-lock canvas contract. Every
             public page and internal Layout definition must match it.
-        animation_resource_root: Base directory for relative animation sound
-            paths. Defaults to the parent of the SVG source directory.
+        animation_resource_root: Project root for sidecar sound paths. Object
+            animation sounds retain existing absolute-path compatibility;
+            transition sounds must remain project-relative WAV files.
         verbose: Whether to output detailed information.
         transition: Transition effect name.
         transition_effect_options: PowerPoint Effect Options for the selected
             native page transition.
+        transition_sound: Optional project-relative WAV path used by the
+            generated page transition.
         transition_duration: Transition duration in seconds.
         auto_advance: Auto-advance interval in seconds.
         use_compat_mode: Retained for API compatibility; ignored in native mode.
@@ -5085,9 +5174,14 @@ def create_pptx_with_native_svg(
         audio_exts_used: set[str] = set()
         package_uses_timings = False
         mixed_animation_offset = 0
-        animation_defaults_value = _as_dict(
-            _as_dict(animation_config).get('defaults')
-        ).get('animation', {})
+        config_defaults = _as_dict(_as_dict(animation_config).get('defaults'))
+        transition_defaults_value = config_defaults.get('transition', {})
+        if not isinstance(transition_defaults_value, dict):
+            raise ValueError(
+                'animations.json defaults transition must be an object'
+            )
+        default_transition_cfg = transition_defaults_value
+        animation_defaults_value = config_defaults.get('animation', {})
         if not isinstance(animation_defaults_value, dict):
             raise ValueError(
                 'animations.json defaults animation must be an object'
@@ -5123,6 +5217,7 @@ def create_pptx_with_native_svg(
             expected_animation_targets: list[dict[str, Any]] = []
             expected_animation_duration = animation_duration
             expected_animation_trigger = normalize_animation_trigger(animation_trigger)
+            expected_transition_sound: dict[str, str] | None = None
 
             try:
                 # ---- Native shapes mode ----
@@ -5137,6 +5232,7 @@ def create_pptx_with_native_svg(
                         slide_transition_effect_options = {}
                         slide_transition_duration = transition_duration
                         slide_auto_advance = None
+                        slide_transition_sound_path = None
                         slide_animation = None
                         slide_animation_duration = animation_duration
                         slide_animation_stagger = animation_stagger
@@ -5148,12 +5244,15 @@ def create_pptx_with_native_svg(
                             slide_transition_effect_options,
                             slide_transition_duration,
                             slide_auto_advance,
+                            slide_transition_sound_path,
                         ) = _slide_transition_settings(
+                            default_transition_cfg,
                             slide_cfg,
                             transition,
                             transition_effect_options,
                             transition_duration,
                             auto_advance,
+                            transition_sound,
                             animation_cli_overrides,
                         )
                         (
@@ -5295,12 +5394,30 @@ def create_pptx_with_native_svg(
                     # to precede <p:timing> inside <p:sld>. Both use the same
                     # </p:sld> string-replace anchor, so transition must be
                     # injected first and timing second.
-                    if slide_transition is not None or slide_auto_advance is not None:
+                    packaged_sounds_by_source: dict[Path, tuple[str, str]] = {}
+                    expected_transition_sound = _materialize_transition_sound(
+                        (
+                            animation_resource_root
+                            if animation_resource_root is not None
+                            else svg_files[0].parent.parent
+                        ),
+                        slide_transition_sound_path,
+                        media_files_dict,
+                        rel_entries,
+                        audio_exts_used,
+                        packaged_sounds_by_source,
+                    )
+                    if (
+                        slide_transition is not None
+                        or slide_auto_advance is not None
+                        or expected_transition_sound is not None
+                    ):
                         transition_fragment = create_transition_xml(
                             effect=slide_transition,
                             duration=slide_transition_duration,
                             advance_after=slide_auto_advance,
                             effect_options=slide_transition_effect_options,
+                            sound=expected_transition_sound,
                         )
                         if transition_fragment:
                             slide_xml = slide_xml.replace(
@@ -5338,6 +5455,7 @@ def create_pptx_with_native_svg(
                             media_files_dict,
                             rel_entries,
                             audio_exts_used,
+                            packaged_sounds_by_source,
                         )
                         expected_animation_targets = seq_targets
                         if mixed_count:
@@ -5447,13 +5565,16 @@ def create_pptx_with_native_svg(
                         slide_transition_effect_options,
                         slide_transition_duration,
                         slide_auto_advance,
+                        slide_transition_sound_path,
                     ) = (
                         _slide_transition_settings(
+                            default_transition_cfg,
                             slide_cfg,
                             transition,
                             transition_effect_options,
                             transition_duration,
                             auto_advance,
+                            transition_sound,
                             animation_cli_overrides,
                         )
                     )
@@ -5640,6 +5761,7 @@ def create_pptx_with_native_svg(
                         duration=slide_transition_duration,
                         advance_on_click=resolved_advance_on_click,
                         advance_after=resolved_advance_after,
+                        sound=expected_transition_sound,
                     )
                 except ValueError as exc:
                     raise RuntimeError(

@@ -44,7 +44,7 @@ One resolved row contains these fields:
 | Order | Positive integer sidecar order; ties retain stable SVG group order, then `effects[]` index |
 | Effect options | Effect-specific `direction`, `amount`, `color`, `font_name` (one installed PowerPoint face, required for Change Font; not a CSS list), `relative`, or `size` values from PowerPoint `EffectParameters` |
 | Timing options | Repeat count/span, auto-reverse, rewind, accelerate/decelerate, bounce-end ratio, and restart policy |
-| Completion | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
+| Completion / cue | Optional dim/hide behavior and packaged `.m4a`/`.mp3`/`.wav` sound |
 
 Modes resolve before XML writing:
 
@@ -61,6 +61,15 @@ can be audited without replaying the resolver.
 
 `animation_config.py scaffold` is neutral: object defaults are `none`, and
 empty `{}` group placeholders inherit no motion until populated.
+
+Bundled sound discovery/materialization is a workflow concern, not part of the
+animation core. After the SVG and object-motion solution are complete,
+`sound_sync.py` may copy only selected namespaced ids into
+`<project>/sounds/`; new sidecars then reference those project-relative WAV
+paths. Existing low-level project-relative/absolute `.m4a`, `.mp3`, and `.wav`
+inputs remain compatible. The core never resolves a library id or reads
+`templates/sounds/` directly; see [`animations.md`](../../references/animations.md)
+§2.2.
 
 ---
 

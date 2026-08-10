@@ -182,9 +182,9 @@ auto` or inherited fixed stagger is not semantic synchronization. For
 static/page-transition-only or narration-independent deck-wide motion, omit
 these sidecars and the object-sync claim.
 
-**Sound effects**: add them only on explicit request and only from prepared,
-project-local assets. Do not introduce sound search, trimming, or normalization
-as an implicit video step.
+**Sound effects**: exclude them from this pass and planning artifacts. After
+final SVG/motion, animation post-processing owns on-demand sync; otherwise
+remain silent.
 
 **Production sequence**: after the final SVG check, validate any pre-SVG
 narration against the visible pages; ordinary draft-source runs instead use the

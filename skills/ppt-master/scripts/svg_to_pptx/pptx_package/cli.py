@@ -1721,6 +1721,22 @@ Recorded narration:
                 "transition auto_advance",
                 allow_zero=True,
             )
+        transition_sound = (
+            None
+            if args.no_animations
+            else (
+                inherited_transition['sound']
+                if 'sound' in inherited_transition
+                else transition_defaults.get('sound')
+            )
+        )
+        if transition_sound is not None and not isinstance(
+            transition_sound,
+            str,
+        ):
+            raise ValueError(
+                'transition sound must be a project-relative .wav path or null'
+            )
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -1813,6 +1829,7 @@ Recorded narration:
             args.auto_advance is not None
             or inherited_overrides.get('auto_advance') is True
         ),
+        'transition_sound': 'sound' in inherited_transition,
         'animation': (
             args.animation is not None
             or inherited_overrides.get('animation') is True
@@ -1837,6 +1854,7 @@ Recorded narration:
             'effect_options': transition_effect_options,
             'duration': transition_duration,
             'auto_advance': auto_advance,
+            'sound': transition_sound,
         },
         'animation': {
             'effect': normalized_animation or 'none',
@@ -1900,6 +1918,7 @@ Recorded narration:
         verbose=verbose,
         transition=transition,
         transition_effect_options=transition_effect_options,
+        transition_sound=transition_sound,
         transition_duration=transition_duration,
         auto_advance=auto_advance,
         notes=notes,

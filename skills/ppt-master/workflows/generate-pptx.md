@@ -711,6 +711,10 @@ above.
 > reference. Strategist owns the communication purpose; Executor owns exact
 > native effects, options, order, timing, and whether a non-literal suggestion
 > should simplify to `none`. Never add motion for coverage or variation.
+> Sound is not a Strategist resource: do not select or sync it during Steps
+> 3–6 and never write a sound id/path into `design_spec.md` or `spec_lock.md`.
+> Any optional cue is selected only after the visual motion solution is final,
+> under [`animations.md`](../references/animations.md) §2.2.
 
 ---
 
@@ -771,6 +775,16 @@ Animations disable keeps the sidecar and appends `-a none`; final Stage-2 `false
 does neither. Only explicit all-motion disable uses `--no-animations`.
 Otherwise do not mix deck-wide flags with a sidecar. With no motion input or
 sidecar, preserve `fade` / `none`.
+
+After the transition/object-motion solution above is final, perform the
+optional sound pass in [`animations.md`](../references/animations.md) §2.2.
+If no concrete cue is selected, do not create `<project_path>/sounds/` or copy
+anything from the global library. If a cue is selected, run `sound_sync.py`
+for only its namespaced id(s), reference the resulting project-relative `.wav`
+path from the sidecar, and validate the sidecar before export. A
+transition-sound-only choice may create a sparse `animations.json` here without
+activating object choreography; the exporter never reads
+`templates/sounds/` directly.
 
 **Success criterion**: The command exits successfully and produces:
 

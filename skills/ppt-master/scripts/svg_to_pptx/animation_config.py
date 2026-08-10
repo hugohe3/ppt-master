@@ -6,7 +6,7 @@ import json
 import math
 import re
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -541,7 +541,13 @@ def _transition_scope_errors(
 
     errors = _unknown_field_errors(
         transition,
-        frozenset({'effect', 'effect_options', 'duration', 'auto_advance'}),
+        frozenset({
+            'effect',
+            'effect_options',
+            'duration',
+            'auto_advance',
+            'sound',
+        }),
         f'{label} transition',
     )
     effect = transition.get('effect', inherited_effect)
@@ -576,6 +582,24 @@ def _transition_scope_errors(
             )
         except ValueError as exc:
             errors.append(str(exc))
+    if 'sound' in transition:
+        sound = transition['sound']
+        if sound is None:
+            return errors
+        if not isinstance(sound, str) or not sound.strip():
+            errors.append(
+                f'animations.json {label} transition sound must be a '
+                'non-empty project-relative .wav path or null'
+            )
+        elif Path(sound).is_absolute() or PureWindowsPath(sound).drive:
+            errors.append(
+                f'animations.json {label} transition sound must be '
+                f'project-relative: {sound!r}'
+            )
+        elif Path(sound).suffix.lower() != '.wav':
+            errors.append(
+                f'animations.json {label} transition sound must use .wav'
+            )
     return errors
 
 
@@ -1252,6 +1276,77 @@ def _animation_sound_path_errors(
     return errors
 
 
+def _declared_transition_sounds(
+    config: dict[str, Any],
+) -> tuple[tuple[str, object], ...]:
+    """Return explicitly declared non-null transition sound values."""
+    sounds: list[tuple[str, object]] = []
+    defaults = config.get('defaults', {})
+    if isinstance(defaults, dict):
+        transition = defaults.get('transition', {})
+        if (
+            isinstance(transition, dict)
+            and transition.get('sound') is not None
+        ):
+            sounds.append(('defaults transition', transition['sound']))
+
+    slides = config.get('slides', {})
+    if not isinstance(slides, dict):
+        return tuple(sounds)
+    for slide_name, slide_cfg in slides.items():
+        if not isinstance(slide_cfg, dict):
+            continue
+        transition = slide_cfg.get('transition', {})
+        if (
+            isinstance(transition, dict)
+            and transition.get('sound') is not None
+        ):
+            sounds.append(
+                (f'slide "{slide_name}" transition', transition['sound'])
+            )
+    return tuple(sounds)
+
+
+def _transition_sound_path_errors(
+    project_path: Path,
+    config: dict[str, Any],
+) -> list[str]:
+    """Validate transition sounds as project-contained WAV files."""
+    errors: list[str] = []
+    project_root = project_path.resolve()
+    for label, raw_sound in _declared_transition_sounds(config):
+        if not isinstance(raw_sound, str) or not raw_sound.strip():
+            continue
+        sound_path = Path(raw_sound)
+        if sound_path.is_absolute() or PureWindowsPath(raw_sound).drive:
+            errors.append(
+                f'animations.json {label} sound must be project-relative: '
+                f'{raw_sound!r}'
+            )
+            continue
+        if sound_path.suffix.lower() != '.wav':
+            continue
+        resolved_path = (project_root / sound_path).resolve()
+        try:
+            resolved_path.relative_to(project_root)
+        except ValueError:
+            errors.append(
+                f'animations.json {label} sound escapes the project root: '
+                f'{raw_sound!r}'
+            )
+            continue
+        if not resolved_path.exists():
+            errors.append(
+                f'animations.json {label} sound file not found: {resolved_path}'
+            )
+        elif not resolved_path.is_file():
+            errors.append(
+                f'animations.json {label} sound path is not a regular file: '
+                f'{resolved_path}'
+            )
+    return errors
+
+
 def validate_animation_config(
     project_path: Path,
     config: dict[str, Any] | None = None,
@@ -1273,6 +1368,7 @@ def validate_animation_config(
         return []
 
     warnings = _animation_sound_path_errors(project_path, config)
+    warnings.extend(_transition_sound_path_errors(project_path, config))
     targets_by_slide, anonymous_groups = scan_project_targets(
         project_path,
         svg_files=svg_files,
@@ -1431,7 +1527,11 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
     to remind the editor that deck-wide overrides exist and most pages should
     inherit them.
     """
-    transition_defaults = {'effect': 'fade', 'duration': 0.4}
+    transition_defaults = {
+        'effect': 'fade',
+        'duration': 0.4,
+        'sound': None,
+    }
     animation_defaults = {
         'effect': 'none',
         'duration': 0.4,
@@ -1448,7 +1548,10 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
                 continue
             groups[target.group_id] = {}
         slides[slide_name] = {
-            'transition': dict(transition_defaults),
+            'transition': {
+                'effect': transition_defaults['effect'],
+                'duration': transition_defaults['duration'],
+            },
             'animation': dict(animation_defaults),
             'groups': groups,
         }

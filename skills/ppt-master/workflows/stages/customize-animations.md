@@ -25,6 +25,8 @@ description: Optional post-processing stage for per-slide and per-object animati
 | §IX contains `Motion suggestion`, but no trigger above is active | Do not run; retain the suggestion as Strategist advice and keep normal export defaults |
 | No motion request, enabled outcome, or existing sidecar; user only wants the default deck | Do not run; normal export keeps page transitions and no element builds |
 | No existing sidecar; user only wants deck-wide page transitions, auto-advance, or one per-element object animation policy | Do not run; apply [`animations.md`](../../references/animations.md) with exporter flags such as `-a auto` or `-a emphasis_spin` |
+| Only a page-transition sound is requested, with no object-specific motion or existing sidecar | Do not run the full stage solely for sound; resolve a sparse transition sidecar through [`animations.md`](../../references/animations.md) §2.2 at export time |
+| An object-animation sound is requested | Run this stage because the cue must bind to a resolved animation row and real object target |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
 
 **Decision precedence**: latest explicit instruction → final Stage-2 policy →
@@ -244,6 +246,7 @@ while allowing timed advance to remain.
 | `effect_options` | Optional object containing only the selected native effect's PowerPoint Effect Options; requires an explicit `effect` |
 | `duration` | Finite transition duration in seconds; must be greater than zero |
 | `auto_advance` | Optional finite non-negative seconds before automatic slide advance; click remains enabled, and this field is valid with `effect: none` |
+| `sound` | Optional project-relative `.wav` cue; select and sync it only after the transition solution is resolved |
 
 Run
 `python3 skills/ppt-master/scripts/pptx_animations.py --describe-transition <effect>`
@@ -300,6 +303,30 @@ entrance treatment is sufficient.
 | `with-previous` | One coordinated beat together |
 | `on-click` | Controlled semantic reveal |
 
+### 3.3 Optional Sound Pass
+
+Run this pass only after the visual transition, object lifecycle, effect,
+order, and timing decisions above are complete. Sound selection is
+post-processing state: do not recover it from or write it back to
+`design_spec.md` / `spec_lock.md`, and do not treat it as a pre-SVG resource.
+
+| Need | Action |
+|---|---|
+| No resolved cue needs sound | Omit every `sound` field; do not create `<project_path>/sounds/` |
+| A bundled cue fits one resolved transition or animation row | Discover with `sound_sync.py list [--query <term>]`, then sync only the chosen namespaced id(s) into the project |
+| The project already contains user-provided audio | Use its project-relative path when its format is valid; no library sync is required |
+
+```bash
+python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
+python3 skills/ppt-master/scripts/sound_sync.py \
+  <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]
+```
+
+Use the corresponding `sounds/<namespace>/<file>.wav` path in
+`transition.sound`, `animation.sound`, or the selected group/effect row. Never
+reference `skills/ppt-master/templates/sounds/` from `animations.json`. The
+global library is a selection source, not an exporter fallback.
+
 ---
 
 ## 4. Edit `animations.json`
@@ -327,6 +354,7 @@ explicit structural layer, role, or placeholder marker.
 | `transition.effect` | Slide-specific page transition effect |
 | `transition.effect_options` | Effect-specific native PowerPoint options; requires an explicit slide-specific `transition.effect` |
 | `transition.duration` | Slide-specific page transition duration |
+| `transition.sound` | Optional project-relative `.wav` cue copied during §3.3; valid with `effect: none`; set a slide override to `null` to clear an inherited default sound |
 | `morph.from` | Immediately preceding SVG stem for an explicit deterministic Morph transition |
 | `morph.pairs.<key>.from` / `.to` | Unique source/destination direct-root group ids that receive the shared PowerPoint name `!!<key>` |
 | `animation.effect` | Slide-specific default object animation effect |
@@ -346,7 +374,7 @@ explicit structural layer, role, or placeholder marker.
 | `accelerate`, `decelerate`, `bounce_end` | `0..1` timing ratios; acceleration plus deceleration must not exceed `1`; bounce requires an interpolated effect and cannot combine with deceleration |
 | `restart` | `always`, `when-not-active`, or `never` |
 | `after_effect` | `none`, `dim` with `color`, `hide`, or `hide-on-next-click` |
-| `sound` | Project-relative or absolute `.m4a`, `.mp3`, or `.wav` path |
+| `sound` | Object-animation cue. Existing low-level inputs accept project-relative or absolute `.m4a`, `.mp3`, or `.wav`; bundled selections use the synced project-relative `.wav` path from §3.3 |
 
 **Hard rule — one group representation**: A populated
 `groups.<id>` object uses either the backward-compatible single-effect fields
