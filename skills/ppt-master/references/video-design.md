@@ -120,13 +120,14 @@ A pre-SVG `notes/total.md` is an enabled production artifact, not a forbidden
 planning checkpoint; Quick still creates no root Design Spec, lock,
 confirmation payload, or storyboard.
 
-**Hard rule — Quick direct video input**: when Quick must deliver a narrated
+**Mandatory — Quick direct video input**: when Quick must deliver a narrated
 video or MP4 rather than only a deck for later recording, enable Speaker Notes,
-Custom Animations, Narration Audio, and video export. Before P01, write the
-complete per-scene narration to `notes/total.md` even when the agent authored
-it. Treat it as page-design input; validate/finalize agent-authored wording after
-the SVG roster and before audio. A supplied final/literal script remains
-verbatim and requires visual repair instead.
+Narration Audio, and video export; write the complete per-scene narration to
+`notes/total.md` before P01 and use it as page-design input. After the SVG
+roster, only agent-authored wording may be finalized; final/literal input remains
+verbatim. Before audio, choose static/page-transition-only,
+narration-independent deck-wide exporter motion, or page/object-specific Custom
+Animations; for the last, decide whether narration governs any group timing.
 
 **Production outcomes**:
 
@@ -135,12 +136,13 @@ verbatim and requires visual repair instead.
 | Spoken delivery or a supplied final script | Enable Speaker Notes |
 | User asks the workflow to synthesize narration | Enable Narration Audio; Speaker Notes is its dependency |
 | Progressive reveal, continuing geometry, or timed emphasis materially aids explanation | Enable/load the appropriate animation capability |
-| Quick directly delivers a narrated video or MP4 | Enable Speaker Notes, Custom Animations, Narration Audio, and video export; require timestamped page-local SRT |
+| Quick directly delivers a narrated video or MP4 | Enable Speaker Notes, Narration Audio, and video export; resolve motion before audio, requiring timestamped page-local SRT only for narration-cue sync or subtitle delivery |
 | Video is manually narrated or static playback is sufficient | Keep Narration Audio and/or object animation off as applicable |
 
 **Capability boundary**: a deck intended for later video use does not force
 object animation or generated audio. Direct Quick narrated-video delivery uses
-the mandatory row above. Explicit user instructions remain authoritative.
+the mandatory row above but may intentionally remain static or
+page-transition-only. Explicit user instructions remain authoritative.
 
 ---
 
@@ -170,14 +172,15 @@ named communication job. There is no motion-coverage quota, and `effect: none`
 remains valid. Auto-running narration uses `after-previous` / `with-previous`,
 never `on-click`.
 
-**Hard rule — Quick direct video synchronization**: load `animations.md` before
-SVG authoring and create/validate canonical `animations.json` from real semantic
-groups. After notes validation, export the base PPTX/report, use a
-timestamp-capable provider to generate page audio/SRT, map each timed group in
-`narration_timing.json`, derive `narration_animations.json`, re-export the
-narrated PPTX, then export MP4. Author object identity, effect, and order before
-audio; only narration-derived triggers/delays wait for SRT timing. An audio-only
-provider cannot satisfy this branch.
+**Mandatory when narration governs object motion**: before SVG authoring, load
+`animations.md` and preserve real semantic groups; before audio, create and
+validate canonical `animations.json`. After the base PPTX/report and timestamped
+page audio/SRT, map timed groups in `narration_timing.json`, derive
+`narration_animations.json`, and export the narrated PPTX/MP4. Only derived
+triggers/delays wait for SRT; object identity, effect, and order do not. `-a
+auto` or inherited fixed stagger is not semantic synchronization. For
+static/page-transition-only or narration-independent deck-wide motion, omit
+these sidecars and the object-sync claim.
 
 **Sound effects**: add them only on explicit request and only from prepared,
 project-local assets. Do not introduce sound search, trimming, or normalization
@@ -185,9 +188,12 @@ as an implicit video step.
 
 **Production sequence**: after the final SVG check, validate any pre-SVG
 narration against the visible pages; ordinary draft-source runs instead use the
-final-SVG-grounded notes generation. Split notes, run triggered custom animation,
-and export the canonical editable PPTX. Direct Quick video continues through
-timestamped audio/SRT, narration synchronization, narrated PPTX, and MP4.
+final-SVG-grounded notes generation. Split notes, execute the resolved motion
+path, and export the editable PPTX. Direct Quick video continues
+through audio and, when required, timestamped SRT. Custom Animations use the
+narrated-sidecar flow when narration governs group timing;
+narration-independent custom motion exports its canonical timing without an
+object-sync claim before the narrated PPTX and MP4.
 
 ---
 

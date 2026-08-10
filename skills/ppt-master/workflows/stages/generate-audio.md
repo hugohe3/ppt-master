@@ -107,11 +107,20 @@ For each candidate, write a **one-line Chinese description** covering: 性别 ·
 
 ---
 
-## Step 3: One-shot user interaction (mandatory)
+## Step 3: Resolve generation settings
 
-Send a single message to the user that resolves all five configuration decisions at once and provides a recommended value for each. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
+**Quick exception**: do not pause. Apply explicit user values, then resolve
+unspecified provider, voice, rate, and embed choices from the recommended-value
+rules below. Keep video off unless the caller selected direct video; then embed
+the narrated PPTX and continue to native video only when
+`powerpoint_video.py --check` succeeds. Require a timestamp-capable provider
+only when narration-cue sync or subtitle delivery needs page-local SRT.
 
-**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the provider to whichever the user named (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`), pin the `voice_id` they gave you, and only confirm rate + embed + video.
+**Default / Enhance Native — one-shot interaction (mandatory)**:
+
+For Default or Enhance Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
+
+**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the named provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) and pin that `voice_id`. Quick applies its exception above; Default and Enhance Native confirm only rate + embed + video.
 
 **Message template** (Chinese; translate to user's chat language if different). “Embed” means caller-specific integration: SVG re-export for Generate PPTX, or native OOXML application for Enhance Native PPTX.
 
@@ -181,8 +190,8 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2A. Only when page-local SRT exists and animations.json is active, author or
-#     refresh narration_timing.json
+# 2A. Only when narration-cue sync is selected and page SRT + animations.json
+#     exist, author or refresh narration_timing.json
 #     by matching SVG group semantics to SRT topics, then derive the narrated
 #     sidecar. Reuse current SVG semantics when complete; otherwise read only
 #     the missing or stale svg_output pages.
@@ -191,6 +200,7 @@ python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
 
 # 2B. Re-export with audio embedded
 #     Use the base export's [REPORT] path to preserve source-bound deck motion.
+#     Quick Generate adds --quick-generate --with-notes to every re-export below.
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
@@ -239,11 +249,17 @@ Provider-timed paths share punctuation-first, `--subtitle-max-chars`-bounded reg
 
 Before generation starts, `notes_to_audio.py` removes stale `audio/manifest.json` and `audio/total.srt`; an incomplete run therefore cannot claim the previous set's provenance or merged timeline. A successful audio-only provider run also removes same-stem stale SRT files. The new manifest is published atomically only after the complete page roster succeeds.
 
-**Mandatory when `animations.json` is consumed — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
+**Mandatory when narration-cue sync is selected — semantic animation context**: Before writing or refreshing `<project_path>/narration_timing.json`, determine whether the active context already contains the current top-level SVG group IDs and visible group-content semantics for every affected page. Reuse that context without rereading SVG when it is complete and still matches the current `svg_output/`. If any page is missing, stale, or represented only by group IDs/order without content meaning, read only that page's SVG as a read-only source and extract the missing group semantics. Always combine those semantics with the page SRT topics/timestamps and `animations.json`; group order alone is not a semantic narration mapping.
 
-> Active `animations.json` requires `narration_timing.json`; explicit `--no-animations` bypasses both. Without a sidecar, `narration_sync.py animations` maps groups **positionally** (group N → cue N) and warns when later objects may reveal during an earlier topic. Treat that warning as required repair: author the semantic plan and re-derive.
+> Narration-cue sync with `animations.json` requires `narration_timing.json`.
+> Narration-independent custom motion instead passes `--animation-config animations.json`
+> and makes no object-sync claim. Explicit `--no-animations`
+> bypasses both. Without a timing sidecar, `narration_sync.py animations` maps
+> groups **positionally** (group N → cue N) and warns when later objects may
+> reveal during an earlier topic. Treat that warning as required repair: author
+> the semantic plan and re-derive.
 
-**Narration animation ownership**: When `animations.json` is consumed, it remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group—not each effect row—to the SRT cue that speaks about that content. For `effects[]`, the cue anchors the group's first active row; later rows keep global order and their relative delay. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
+**Narration animation ownership**: When narration-cue sync is selected, `animations.json` remains read-only. The audio stage deep-copies it to `narration_animations.json`, preserves transitions, effects, durations, order, and explicit `effect: none`, then changes only the derived trigger/delay values needed for click-free narration playback. The authored `narration_timing.json` maps each animated content group—not each effect row—to the SRT cue that speaks about that content. For `effects[]`, the cue anchors the group's first active row; later rows keep global order and their relative delay. The command may still read an affected SVG page to resolve structural group order when a sparse sidecar cannot identify every effective group; this structural fallback does not replace the semantic-context step and never edits SVG, notes, or `animations.json`. Unmatched groups keep their canonical relative delay.
 
 **Title timing handoff when canonical animation exists**: preserve the title reveal decision already made by the custom-animation pass. Assign a title group to an SRT cue only when the user's request or the active motion plan explicitly chose `narration-cued`; otherwise leave its `cue` omitted in `narration_timing.json` so it keeps the canonical relative delay from `animations.json`. Do not infer `narration-cued` merely because speaker notes mention the title.
 
@@ -251,8 +267,9 @@ Before generation starts, `notes_to_audio.py` removes stale `audio/manifest.json
 
 | Sidecar state | Behavior |
 |---|---|
-| `narration_animations.json` exists | Use it by default |
-| Only canonical `animations.json` exists | Block until narration synchronization creates the derived sidecar |
+| `narration_animations.json` exists and narration-cue sync is selected | Use it |
+| Only canonical `animations.json` exists and narration-cue sync is selected | Block until narration synchronization creates the derived sidecar |
+| Canonical `animations.json` exists and motion is narration-independent, whether or not a derived sidecar also exists | Pass `--animation-config animations.json`; do not claim object sync |
 | Both are absent | Create no sidecar; inherit the base report's deck motion |
 
 Generate passes the base report through `--inherit-motion-from`: inherited
@@ -319,10 +336,10 @@ This stage keeps subtitles as external SRT files. It does not burn subtitles int
 
 | Caller | After audio generation |
 |---|---|
-| Generate PPTX | With page-local SRT from Edge, ElevenLabs, MiniMax, or timestamp-capable CosyVoice and an existing `animations.json`, derive `narration_animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`, optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
+| Generate PPTX | When narration-cue sync is selected, combine page-local SRT with `animations.json` and derive `narration_animations.json`; narration-independent custom motion passes `--animation-config animations.json`; with no sidecar, inherit the base report's resolved motion, while explicit all-motion-off uses `--no-animations`. Export with `--recorded-narration audio`; Quick also passes `--quick-generate --with-notes`. Optionally continue through `powerpoint_video.py`, then generate the delivery SRT from the finished video. |
 | Enhance Native PPTX | Return to [`native-enhance-pptx`](../native-enhance-pptx.md) Step 9; its `apply` command owns audio relationships, timings, transitions, and the enhanced export. If video was selected, pass that final PPTX to `powerpoint_video.py`. |
 
-For Qwen or explicit CosyVoice audio-only mode, embed/export the audio normally but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and final-video subtitle alignment. Never present those missing subtitle artifacts as generated.
+For Qwen or explicit CosyVoice audio-only mode, embed/export the audio normally but skip `narration_timing.json`, `narration_sync.py animations`, SRT merge, and final-video subtitle alignment. Pass canonical narration-independent custom motion explicitly when present. Never present those missing subtitle artifacts or object sync as generated.
 
 For Generate PPTX, `--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export. Narration changes the slide-advance layer only: the resolved page-transition effect remains unchanged, `-t none` remains visually transition-free, and narration advance disables click while using page-start lead-in plus audio duration plus page-tail padding. The re-export is saved as `exports/<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports.
 
@@ -338,9 +355,11 @@ Output one summary block listing:
 - For provider-timed subtitles, number of matching page-local SRT files and their location (`<project_path>/audio/*`); for Qwen or explicit CosyVoice audio-only mode, report that no page-local SRT was generated.
 - Narration provider/model plus the `<project_path>/audio/manifest.json` provenance path.
 - For narrated object animation, whether current SVG semantics were reused or which missing/stale pages were reread, plus semantic mapping coverage and fallback count.
-- For Generate PPTX with page-local SRT and canonical custom animation, derived narration animation group count and `narration_animations.json` path; otherwise report inherited base motion or explicit all-motion-off.
+- For Generate PPTX, report derived narration animation coverage/path when cue sync ran, the canonical config path for narration-independent custom motion, or inherited/all-motion-off state.
 - When video export was selected, the final MP4 path and native PowerPoint export status.
-- When a finished video exists, the final aligned sidecar SRT path.
+- When page-local SRT was merged, the PPTX-timeline `audio/total.srt` path.
+- When final-video subtitle alignment ran, the aligned delivery SRT path;
+  otherwise do not claim a video-aligned subtitle.
 - The provider, voice, and rate/settings actually used.
 - The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
 - For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.

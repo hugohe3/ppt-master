@@ -69,6 +69,14 @@ defaults when no row supplies a concrete communication job. When several
 signals apply, perform every required action and use the earliest required load
 point; a before-authoring signal always overrides a before-export-only timing.
 
+**Direct-video application**: when [`video-design.md`](../../references/video-design.md)
+is active for Quick direct delivery, use this gate as the required pre-audio
+motion choice, not an animation quota. The page/object-specific row activates
+Custom Animations; when narration should govern those semantic reveals, it also
+activates narration-cue synchronization. The deck-wide row remains independent
+of narration and must not be reported as synchronized; static or
+page-transition-only motion remains valid.
+
 ---
 
 ## 2. Source and Resource Preparation
@@ -247,7 +255,7 @@ checkpoint, or persist a page/resource plan.
 Before writing P01, resolve in active context:
 
 - the exact slide roster and one compact core message for every page, used to choose its composition and hierarchy;
-- the effective Speaker Notes, Custom Animations, and Narration Audio outcomes; generated narration requires notes, while video purpose alone forces neither audio nor object animation;
+- the effective Speaker Notes, Custom Animations, and Narration Audio outcomes; generated narration requires notes. A deck intended only for later recording forces neither audio nor object animation. Quick direct video follows [`video-design.md`](../../references/video-design.md): enable notes/narration/video delivery, decide motion before audio, and enable Custom Animations only for narration-cued or other page/object-specific motion;
 - the canvas, visual direction, wording, intended viewing distance, and effective reading mode: choose `presentation` for distance-first projected or recorded viewing, `balanced` for mixed viewing, or `text` for close content-heavy reading. Take the initial body anchor and sanity band from [`canvas-formats.md`](../../references/canvas-formats.md) § "Typography Scale Start" for the resolved canvas—PPT remains reading-mode-driven, while registered/custom non-PPT canvases use their canvas-derived start—then resolve one concrete typography plan using installed font families, with stable size anchors for title, body, annotation, and every other recurring role the roster uses. When content does not fit, preserve its core message and apply only fitting actions the source/profile invariants permit—restructure, shorten, or split; if none is permitted, surface the unresolved fit instead of shrinking a recurring role. Explicit user, template, fidelity-profile, or resolved-style requirements may call for a deliberate exception;
 - the semantic color roles actually needed by the roster, each with a concrete active-context color anchor, including background/surface, primary/secondary text, dominant/accent, and status roles as applicable. Honor explicit user, installed template/brand, fidelity-profile source-identity, and resolved-style color semantics before deriving only the missing roles that the active profile permits; decide which roles dominate, support, or remain rare, and preserve sufficient contrast for meaning-bearing text. Pair newly authored color-coded states, categories, or relationships with a label, symbol, line, or geometry cue; when fidelity forbids adding one, preserve the source encoding;
 - an ordinary body-content frame and a density judgment for every page, adapted to the canvas and any user / template / style geometry; use `anchor`, `dense`, `breathing`, or an equivalent active-context distinction instead of one uniform fill level;
@@ -531,8 +539,9 @@ Fix every blocking error and rerun the same command. Then export:
 
 When Speaker Notes is enabled, load
 [`executor-notes.md`](../../references/executor-notes.md) after the passing final
-check. Validate an already frozen final script without rewriting it; otherwise
-generate `notes/total.md` from the final SVG roster. Then run:
+check. Validate an already frozen final script or direct-video pre-SVG narration
+without regenerating it; otherwise generate `notes/total.md` from the final SVG
+roster. Then run:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
@@ -542,11 +551,20 @@ Run [`customize-animations`](../stages/customize-animations.md) after that notes
 pass when the active-context outcome or an existing sidecar triggers it. Resolve
 deck-wide-only motion through the selected exporter flags instead.
 
+For Quick direct video, preserve the motion choice made under
+[`video-design.md`](../../references/video-design.md). A static,
+page-transition-only, or narration-independent deck-wide choice may export
+without `animations.json` and does not claim object-level audio sync. Any
+page/object-specific choice completes the custom stage before base export;
+`generate-audio` derives cue timing only for narration-governed groups and
+otherwise exports canonical timing without an object-sync claim.
+
 Choose exactly one notes mode for the base export:
 
 ```bash
 # Speaker Notes enabled
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> --quick-generate
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
+  --quick-generate --with-notes
 
 # Speaker Notes disabled
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
