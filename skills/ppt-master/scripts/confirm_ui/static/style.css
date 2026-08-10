@@ -520,7 +520,11 @@ textarea.text-input { resize: vertical; line-height: 1.5; }
 .scheme-component-editor {
     margin-top: 8px;
     min-height: 84px;
-    resize: vertical;
+    max-height: 380px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    resize: none;
     cursor: text;
 }
 .scheme-component-card .design-direction-preview { margin-top: 8px; }

@@ -727,6 +727,16 @@
         return node;
     }
 
+    function fitTextareaToContent(input) {
+        if (!input) return;
+        window.requestAnimationFrame(function () {
+            if (!input.isConnected || input.offsetParent === null) return;
+            input.style.height = "auto";
+            var borderHeight = input.offsetHeight - input.clientHeight;
+            input.style.height = (input.scrollHeight + borderHeight) + "px";
+        });
+    }
+
     function previewNode(kind, id) {
         var node = el("div", "option-preview option-preview-" + kind);
         node.setAttribute("aria-hidden", "true");
@@ -2302,6 +2312,7 @@
                                 ((STATE.image_strategy || {}).behavior || ""));
                         entry.editor.value = current;
                     }
+                    if (selected) fitTextareaToContent(entry.editor);
                 }
                 if (entry.note) entry.note.style.display = selected ? "none" : "block";
             });
