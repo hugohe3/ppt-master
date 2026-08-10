@@ -49,7 +49,7 @@ Before the first SVG page, output a confirmation listing: the compact communicat
 
 ### 2.1 Execution context validity (Mandatory)
 
-- **Valid**: if the exact complete Design Spec and lock remain in the unchanged, uncompacted active context, reuse both for every page. Do not reread or poll them.
+- **Valid**: if the exact complete Design Spec and lock remain in the unchanged, uncompacted active context, reuse both for every page. Do not reread or poll them. The one scheduled exception is the five-page lightweight lock re-read defined below.
 - **Invalid**: fresh/resumed/restarted execution, compaction/summary-only recovery, or an external/unknown change requires one complete read of `design_spec.md`, then `spec_lock.md`, plus triggered references/template inputs. Mid-deck recovery also reads the latest completed SVG and, when images are used, current image metadata.
 - **Uncertain**: consult the retained lock first, then only the owning Design Spec fragment; use sources only for facts. Design Spec remains upstream on conflict.
 
@@ -111,6 +111,16 @@ Apply the content-vs-expression contract above within the selected reading mode.
 - Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
 
 Return upstream before any derived/accent identity becomes recurring or structural, or when an undeclared display size reaches its third occurrence, then update the retained context under §2.1. Local garnish, same-role `±2`px adjustments, and at most two sparse display-size occurrences need no lock row. Never expand the lock to silence a comparison. New icon acquisition, images, structural fonts, role anchors, and resources keep their preparation/role rules.
+
+**Five-page lightweight lock re-read (Default Generate only)**: after
+completing P05, P10, P15, … and only when another page follows, read
+`spec_lock.md` in full once before starting the next page. This is a pure
+context re-anchor for the locked palette, typography, icon style, and
+`page_rhythm` values under long context. No checker runs, no per-page
+self-check output, no pause, and no mid-deck repair loop; generation
+continues directly after the re-read. Compaction, resume, or restart still
+follows the full recovery reads above. Quick Generate has no project root
+`spec_lock.md` and does not use this rule.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
