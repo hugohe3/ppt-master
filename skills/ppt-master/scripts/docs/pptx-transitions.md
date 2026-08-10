@@ -43,7 +43,7 @@ Advance mode:
 | click | Click advance only |
 | after | Timed advance only |
 | both | Click or timed advance, whichever occurs first |
-| narration | Timed advance from audio duration plus padding; click disabled |
+| narration | Timed advance from narration lead-in, audio duration, and page-tail padding; click disabled |
 
 **Hard rule**: enter=none may coexist with a timed advance. The valid result is
 a timing-only p:transition with no visual-effect child.

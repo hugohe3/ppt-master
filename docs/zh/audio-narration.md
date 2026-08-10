@@ -12,7 +12,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 - 使用 provider 原生计时字幕时，每页还有一个同名字幕文件，与音频一起存放于 `<project_path>/audio/`（`01_cover.srt`、`02_market_landscape.srt` …）。每个文件使用以 `00:00:00,000` 为原点的页内时间轴；provider 的词级或字符级时间戳都会重组为同一套紧凑 cue。
 - 完整生成成功后写出精简的 `<project_path>/audio/manifest.json`，只记录 provider、模型、音频/字幕格式、相关音色参数，以及代替云端 voice ID 原文的 SHA-256 指纹；不包含逐页清单、产物哈希或 API Key，正常生成过程也不会读取它。
 - 存在规范的 `animations.json` 且已有逐页 SRT 时，SVG 到 SRT 的计时计划会派生 `narration_animations.json`，让无点击对象动画等待相关字幕 cue。两个动画 sidecar 都不存在时，旁白导出不会创建 sidecar，而是保留默认 `fade` 页间切换和无逐元素动画。存在逐页 SRT 时，两条路径都可以生成与最终 PPTX 时间轴一致的 `<project_path>/audio/total.srt`；PowerPoint 导出视频后，还可用同一命令根据视频音轨校准每页起点，得到帧级对齐的外挂字幕。
-- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
+- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面推进时间根据可配置的页前起始下限、音频长度和页尾停留自动设置——无人值守自动播放和视频导出都不用再手动调时间。旁白不会早于页面转场结束时启动。
 - Windows 下可选原生视频导出：`powerpoint_video.py` 把最终带旁白 PPTX 交给 PowerPoint 2016+，并等待其原生 MP4 编码成功或失败。
 - 演讲者备注原样保留。
 
@@ -33,6 +33,10 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 |---|---|
 | `--recorded-narration audio` | 准备 PowerPoint 的"录制的计时和旁白"。要求每页都有音频，并写入页面自动推进时间。用于旁白视频导出。重导出文件保存为 `exports/<name>_<timestamp>_narrated.pptx`。 |
 | `--narration-audio-dir audio` | 底层音频嵌入能力。只嵌入匹配到的文件，允许部分页面有音频。用于测试或后续手工整理。导出文件同样带 `_narrated` 后缀。 |
+| `--narration-start-floor 0.8` | 可选的页前参数：从目标页转场开始计，到旁白启动的最短秒数。默认 `0.8`；设为 `0` 表示转场结束后立即开始。 |
+| `--narration-padding 0.5` | 可选的页尾参数：旁白结束后、页面推进前的静默停留秒数。默认 `0.5`。 |
+
+两个计时参数都可以省略，也可以独立覆盖。转场结束后的实际静默时间为 `max(0, narration_start_floor - transition_duration)`；调整起始下限不会拉长转场本身。
 
 ## 怎么触发
 
@@ -105,12 +109,12 @@ python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
 
 # 4. 从规范 animations.json 派生无点击的 narration_animations.json
 python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
-  --narration-padding 0.5 --force
+  --narration-start-floor 0.8 --narration-padding 0.5 --force
 
 # 5. 重新导出 PPTX 嵌入音频
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
-  --narration-padding 0.5
+  --narration-start-floor 0.8 --narration-padding 0.5
 
 # 6. 存在逐页 SRT 时，按最终 PowerPoint 计时合并
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
@@ -161,7 +165,7 @@ CLI 会在发送请求前拒绝超出范围的 ElevenLabs stability/similarity/s
 
 `audio/` 是唯一的当前旁白集，来源由 manifest 记录，因此默认不创建 provider 子目录。重新生成前，脚本会移除过期的 `manifest.json` 与 `total.srt`；仅生成音频的 provider 还会移除同名旧逐页 SRT。只有明确需要保留另一套 provider 结果时，才使用单独的显式输出目录。
 
-存在规范自定义动画时，`narration_timing.json` 与只读的 `animations.json` 刻意分离：前者记录整套有序 SRT 的 SHA-256、旁白 padding、有序 SVG 组 ID 和可选的 1-based cue 编号。`narration_sync.py animations` 会拒绝过期的 SRT 指纹，用当前 SVG 校验组 ID，并把 PowerPoint 支持的字段写入派生的 `narration_animations.json`。包含 `effects[]` 的分组仍只映射一条 cue：第一条有效动画行锚定该 cue，后续动画行保留相对延迟。没有动画 sidecar 时跳过该派生步骤。`narration_sync.py subtitles` 从最终 PPTX 读取真实页面关系顺序、毫秒级页面推进与转场时间，因此 `total.srt` 使用原生 PPTX 时间轴。相对 `--pptx` 路径按 `<project_path>` 解析。
+存在规范自定义动画时，`narration_timing.json` 与只读的 `animations.json` 刻意分离：前者记录整套有序 SRT 的 SHA-256、可选的旁白起始下限、页尾 padding、有序 SVG 组 ID 和可选的 1-based cue 编号。`narration_sync.py animations` 会拒绝过期的 SRT 指纹，用当前 SVG 校验组 ID，并把 PowerPoint 支持的字段写入派生的 `narration_animations.json`。与 cue 绑定的动画使用和嵌入音频相同的页前起始下限；未绑定 cue 的标题或装饰动画保留规范相对时间。包含 `effects[]` 的分组仍只映射一条 cue：第一条有效动画行锚定该 cue，后续动画行保留相对延迟。没有动画 sidecar 时跳过该派生步骤。`narration_sync.py subtitles` 从最终 PPTX 读取真实页面关系顺序、毫秒级转场、旁白延迟与页面推进时间，因此 `total.srt` 使用原生 PPTX 时间轴。相对 `--pptx` 路径按 `<project_path>` 解析。
 
 PowerPoint 的视频编码器可能把每个页面 / 媒体段落量化到输出帧时钟；即使 PPTX 计时值正确，这些很小的分页误差仍可能逐页累积。把最终 `.mp4` / `.wmv` / `.mov` 通过 `--video` 传入后，脚本会用归一化音频相关性在视频音轨中定位每页原始旁白。它只改页级偏移，provider 返回的字幕文本和页内时间保持不变；这是视频导出后的字幕校准步骤，不会改写视频。
 
@@ -171,6 +175,7 @@ PowerPoint 的视频编码器可能把每个页面 / 媒体段落量化到输出
 {
   "version": 1,
   "srt_sha256": "<sha256 of the ordered page-local SRT set>",
+  "narration_start_floor": 0.8,
   "narration_padding": 0.5,
   "slides": {
     "01_title": {
