@@ -104,13 +104,6 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 
 > Note: `theme` is what the deck declares; `observed` is a frequency sample of run-level overrides (not a complete style resolution — it misses `schemeClr` and master/layout inheritance, and counts chart/gradient fills). A hand-edited deck can diverge from `theme` — Step 5 recommends which to inherit and the user confirms.
 
-**Chart + table data (for regeneration)**: read `<project_path>/analysis/<stem>.slide_library.json`. It contains the source chart and table *data* so they can be redrawn natively in the inherited style:
-
-| `<stem>.slide_library.json` field | Use |
-|---|---|
-| `slides[].charts[]` (`chart_type` / `categories` / `series[].values`) | regenerate as a native SVG chart; use the §VII catalog key only when recall selects a real reference, otherwise plan the custom chart in §IX |
-| `slides[].tables[]` (`row_count` / `column_count` / cell text) | regenerate as a native SVG table |
-
 **Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the inherited style, never spliced in byte-for-byte. This keeps the deck style-consistent and natively editable. **Data values are frozen** (categories / series / cell text / numbers unchanged); only their rendering is the deck's own. Pictures (`ppt_to_md`-extracted files) are reused but re-laid-out — position / crop / size follow the new layout, not the source slot. A user who wants an original element verbatim copies it across themselves.
 
 **Optional source-SVG visual reference**: when the source deck has complex vector decoration, distinctive page chrome, or a visual language that cannot be captured by `<stem>.identity.json` colors/fonts alone, create a read-only SVG reference package under `analysis/`. This is for understanding style only; it is not a carry-over asset path.
@@ -127,7 +120,13 @@ Use the cleaned `analysis/source_svg_import/svg-flat/slide_*.svg` files plus `an
 
 Default: do **not** copy these candidates into the project `icons/`, do **not** list them as reusable output assets, and do **not** preserve original vector decorations byte-for-byte in the beautified deck. The Executor still regenerates fresh native shapes from the confirmed plan.
 
-Optional reuse gate: if a candidate is a non-text brand/logo/motif/decorative asset that should survive the beautification, list it in the Step 5 plan with source slide, candidate filename, intended reuse, and dependency notes from the inventory. Wait for user confirmation. Only confirmed candidates may be promoted into `<project_path>/icons/imported/` and referenced from generated SVGs with `<use data-icon="imported/<name>"/>`; `finalize_svg.py` then re-inlines them as native shapes. Never promote text-bearing groups, charts/tables, source page layouts, or dense slide composites as reusable assets.
+**Optional reuse gate**: retain source slide, filename, use, and dependencies
+for a non-text brand/logo/motif/decorative candidate. Default lists it in Step 5
+and waits; only confirmed candidates are promoted. Quick's current main agent
+decides directly and stops only when frozen facts lack a lossless preservation
+path. Promote to `<project_path>/icons/imported/` and reference with
+`<use data-icon="imported/<name>"/>`; Quick never runs `finalize_svg.py`. Never
+promote text-bearing groups, charts/tables, page layouts, or dense composites.
 
 **Assemble the inventory** — the deterministic join into one per-slide ledger, `analysis/beautify_inventory.json`, the contract Step 5 confirms and Step 7 verifies against:
 
@@ -142,6 +141,21 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 |---|---|
 | `ignored` | hidden slides / shapes, master-only text, image crop / opacity / rotation / mask (not captured upstream) |
 | `needs_confirmation` | unreadable SmartArt data; combo / dual-axis / waterfall charts; merged-cell or multi-header tables; density-outlier pages — **either** overcrowded **or** near-empty / title-only |
+
+**Mandatory — bounded inventory reads**: the complete inventory is the Step 7
+validation ledger, not the default authoring prompt. Read its compact roster,
+then the current page; add geometry only for structural ambiguity:
+
+```bash
+python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+  <project_path>/analysis/beautify_inventory.json --summary
+python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+  <project_path>/analysis/beautify_inventory.json --page <N>
+python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+  <project_path>/analysis/beautify_inventory.json --page <N> --with-geometry
+```
+
+During authoring, do not bulk-read either complete file.
 
 **SmartArt output boundary**: Preserve its extracted wording and semantic relationships, then redraw it through SVG as ordinary editable PowerPoint shapes. Do not attempt to regenerate a native SmartArt object or reuse persisted-drawing text as a second content source.
 
@@ -169,8 +183,22 @@ active context. Explicit user requirements remain authoritative; otherwise use
 the source identity as the default. Resolve `ignored` and `needs_confirmation`
 without creating a confirmation payload, Design Spec, lock, or substitute
 plan. If a flagged complex object cannot be regenerated without losing frozen
-facts, stop as a hard prerequisite instead of simplifying it. Then continue to
-the Quick branch in §6.
+facts, stop as a hard prerequisite instead of simplifying it.
+
+**Mandatory — close the transient Quick state before authoring**: before
+entering §6 and [`quick-generate.md`](./quick-generate.md) §3, resolve every
+row below in the active context:
+
+| Transient state | Required closure |
+|---|---|
+| Roster and message | Exact source-order roster and one core message per page |
+| Identity and type | Source identity, palette, fonts, body size, and type-role anchors |
+| Page geometry | Per-page density, body frame, primary zone, and composition direction |
+| Meaning and rhythm | Frozen relationships, reading path, neighbor/section rhythm, and ending |
+| Resources and capabilities | Required local resources are usable; triggered notes, motion, audio, image, icon, formula, Chart/Table, and verification outcomes are decided |
+
+Keep it transient: create no page/resource plan, Design Spec, lock,
+confirmation payload, or substitute artifact. Then continue to §6 Quick.
 
 ### Default branch — Recommend & Confirm
 
@@ -271,6 +299,12 @@ Beautify inventory is the exact page roster and frozen-content contract; keep
 its source order, hand-author every page, run the lockless Quick final checker,
 and export with `--quick-generate`. Do not run Confirm UI, write a Design Spec
 or lock, run the Default first-page gate, or call `finalize_svg.py`.
+
+**Quick — lightweight long-deck review cadence (may adapt for a short deck or
+semantic boundary)**: after about five pages or at a section
+boundary, reread only the inventory summary/current-page views and cross-page
+anchors. Do not run a checker; this is neither a gate nor an approval stop. Send
+one `authored/total` status after each batch.
 
 **Default**: run the standard pipeline as follows.
 
