@@ -64,10 +64,11 @@
             sec_mode: "Generation mode",
             sec_refine: "Review the Design Spec first",
             sec_design_directions: "Coherent design directions",
-            design_directions_hint: "Choose a complete direction first, then fine-tune the projected fields below. Clicking a direction again restores its authored bundle.",
+            design_directions_hint: "The recommended complete direction is applied first. Choose another or fine-tune the projected fields below; use Restore to return an adjusted direction to its authored bundle.",
             direction_active: "Applied",
             direction_adjusted: "Adjusted",
-            direction_reset_hint: "Click to apply or restore this complete direction.",
+            direction_apply_hint: "Click to apply this complete direction.",
+            direction_restore: "Restore authored direction",
             scheme_component_options: "Project-specific custom choices · select a card to edit",
             sec_template_application: "Template application",
             template_application_hint: "The AI recommends how to apply the installed template to this deck. Revise the plan directly in natural language.",
@@ -246,10 +247,11 @@
             sec_mode: "生成モード",
             sec_refine: "先に設計仕様を確認",
             sec_design_directions: "統合デザイン方針",
-            design_directions_hint: "まず全体案を選び、その下に反映された各項目を微調整します。同じ全体案をもう一度押すと、元の組み合わせに戻ります。",
+            design_directions_hint: "おすすめの全体案が最初に適用されています。別案を選ぶか、下の各項目を微調整できます。調整後は「元の案に戻す」で最初の組み合わせを復元できます。",
             direction_active: "適用中",
             direction_adjusted: "調整済み",
-            direction_reset_hint: "クリックすると、この全体案を適用または元の状態に戻します。",
+            direction_apply_hint: "クリックすると、この全体案を適用します。",
+            direction_restore: "元の案に戻す",
             scheme_component_options: "プロジェクト専用カスタム案 · カードを選んで編集",
             sec_template_application: "テンプレートの適用方法",
             template_application_hint: "AIが現在の内容に合わせたテンプレートの使い方を提案します。自然言語で直接修正できます。",
@@ -428,10 +430,11 @@
             sec_mode: "生成模式",
             sec_refine: "先审核设计规范",
             sec_design_directions: "成套设计方向",
-            design_directions_hint: "先选择一套完整方案，再在下方微调各项；再次点击同一方案会恢复它原本的整套预设。",
+            design_directions_hint: "AI 最倾向的成套方案已默认应用；你可以改选其他方案，或在下方微调各项。调整后可用“恢复原方案”还原整套预设。",
             direction_active: "已应用",
             direction_adjusted: "已调整",
-            direction_reset_hint: "点击可应用或恢复这套完整方案。",
+            direction_apply_hint: "点击应用这套完整方案。",
+            direction_restore: "恢复原方案",
             scheme_component_options: "项目专属自定义方案 · 选中卡片后可编辑",
             sec_template_application: "模板应用方式",
             template_application_hint: "AI 会根据当前内容推荐如何使用已安装模板；你可以直接用自然语言修改。",
@@ -1625,6 +1628,13 @@
         return spec.candidates || spec.options || [];
     }
 
+    function selectedDesignDirectionIndex() {
+        var candidates = designDirectionCandidates();
+        var selected = Number(designDirectionSpec().selected);
+        if (!isFinite(selected) || selected < 0) selected = 0;
+        return Math.min(Math.floor(selected), Math.max(candidates.length - 1, 0));
+    }
+
     function designDirectionId(candidate, index) {
         var value = candidate && candidate.id;
         return String(value || ("direction-" + (Number(index) + 1)));
@@ -1632,9 +1642,7 @@
 
     function selectedDesignDirection() {
         var candidates = designDirectionCandidates();
-        var selected = Number(designDirectionSpec().selected || 0);
-        if (!isFinite(selected) || selected < 0) selected = 0;
-        return candidates[Math.min(selected, Math.max(candidates.length - 1, 0))] || {};
+        return candidates[selectedDesignDirectionIndex()] || {};
     }
 
     function directionField(field) {
@@ -1811,6 +1819,19 @@
         };
     }
 
+    function directionCardSummary(candidate) {
+        candidate = candidate || {};
+        var strategy = normalizedImageStrategy(candidate.image_strategy || {});
+        return String(
+            localized(candidate, "note") ||
+            directionBehavior(candidate, "visual_style") ||
+            directionBehavior(candidate, "mode") ||
+            strategy.visual ||
+            strategy.behavior ||
+            ""
+        );
+    }
+
     function usesCustomImagePlanValue(value) {
         var ids = (CAT.image_usage || []).map(function (item) { return item.id; });
         if (Array.isArray(value)) return false;
@@ -1849,8 +1870,12 @@
     function imageStrategySelectedIndex() {
         var spec = imageStrategySpec();
         var direct = spec.candidates || spec.options || [];
-        var idx = direct.length ? (spec.selected || 0) : (designDirectionSpec().selected || 0);
-        return Math.min(idx, Math.max(imageStrategyRecommendationCandidates().length - 1, 0));
+        var idx = direct.length ? Number(spec.selected || 0) : selectedDesignDirectionIndex();
+        if (!isFinite(idx) || idx < 0) idx = 0;
+        return Math.min(
+            Math.floor(idx),
+            Math.max(imageStrategyRecommendationCandidates().length - 1, 0)
+        );
     }
 
     // ---- section renderers ----------------------------------------------
@@ -2012,28 +2037,51 @@
         var sec = section("B", "sec_design_directions", t("design_directions_hint"));
         var grid = el("div", "font-grid design-direction-grid");
         var cardStates = [];
+        var recommendedIndex = selectedDesignDirectionIndex();
         candidates.forEach(function (candidate, idx) {
             var card = el("div", "font-card design-direction-card");
-            card.title = t("direction_reset_hint");
+            card.title = t("direction_apply_hint");
             var head = el("div", "font-card-head");
             head.appendChild(el("span", "font-card-name",
                 localized(candidate, "name") || (t("option_prefix") + " " + (idx + 1))));
+            if (idx === recommendedIndex) {
+                head.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
+            }
             var status = el("span", "rec-badge direction-status");
             status.style.display = "none";
             head.appendChild(status);
             card.appendChild(head);
+            var customVisual = candidate.visual_style === "custom";
             if (candidate.visual_style) {
                 var preview = el("div", "design-direction-preview");
-                appendVisualStyleImage(preview, candidate.visual_style);
+                if (customVisual) {
+                    preview.classList.add("design-direction-custom-preview");
+                    preview.appendChild(
+                        el("div", "design-direction-custom-label", t("custom"))
+                    );
+                    preview.appendChild(el(
+                        "div",
+                        "design-direction-custom-copy",
+                        directionCardSummary(candidate) || t("custom")
+                    ));
+                } else {
+                    appendVisualStyleImage(preview, candidate.visual_style);
+                }
                 card.appendChild(preview);
             }
             var meta = [];
-            if (candidate.mode) meta.push(directionComponentValueLabel(candidate, "mode"));
-            if (candidate.visual_style) {
+            if (candidate.mode && candidate.mode !== "custom") {
+                meta.push(directionComponentValueLabel(candidate, "mode"));
+            }
+            if (candidate.visual_style && !customVisual) {
                 meta.push(directionComponentValueLabel(candidate, "visual_style"));
             }
+            var typographyName = candidate.typography &&
+                (localized(candidate.typography, "name") || candidate.typography.name);
+            if (typographyName) meta.push(typographyName);
             if (candidate.icons) meta.push(humanizeId(candidate.icons));
-            if (candidate.image_strategy && candidate.image_strategy.rendering) {
+            if (candidate.image_strategy && candidate.image_strategy.rendering &&
+                    candidate.image_strategy.rendering !== "custom") {
                 meta.push(comparisonValueLabel("rendering", candidate.image_strategy.rendering));
             }
             if (meta.length) card.appendChild(el("div", "font-card-meta", meta.join(" · ")));
@@ -2049,9 +2097,26 @@
             });
             if (swatches.childElementCount) card.appendChild(swatches);
             var note = localized(candidate, "note");
-            if (note) card.appendChild(el("div", "color-note", note));
-            card.addEventListener("click", function () { applyDesignDirection(candidate, idx); });
-            cardStates.push({ candidate: candidate, index: idx, card: card, status: status });
+            if (note && !customVisual) card.appendChild(el("div", "color-note", note));
+            var restore = el("button", "direction-reset-button", t("direction_restore"));
+            restore.type = "button";
+            restore.hidden = true;
+            restore.addEventListener("click", function (event) {
+                event.stopPropagation();
+                applyDesignDirection(candidate, idx);
+            });
+            card.appendChild(restore);
+            card.addEventListener("click", function () {
+                if (designDirectionId(candidate, idx) === ACTIVE_DIRECTION_ID) return;
+                applyDesignDirection(candidate, idx);
+            });
+            cardStates.push({
+                candidate: candidate,
+                index: idx,
+                card: card,
+                status: status,
+                restore: restore
+            });
             grid.appendChild(card);
         });
         refreshDesignDirectionState = function () {
@@ -2062,6 +2127,8 @@
                 entry.card.classList.toggle("adjusted", adjusted);
                 entry.status.style.display = active ? "inline-block" : "none";
                 entry.status.textContent = adjusted ? t("direction_adjusted") : t("direction_active");
+                entry.restore.hidden = !(active && adjusted);
+                entry.card.title = active ? "" : t("direction_apply_hint");
             });
         };
         refreshDesignDirectionState();
@@ -3746,7 +3813,7 @@
         initCreativeSelection("visual_style", CAT.visual_styles, "visual_style_behavior");
         var cc = colorRecommendationCandidates();
         var csel = (REC.color && REC.color.selected != null) ? REC.color.selected :
-            (designDirectionSpec().selected || 0);
+            selectedDesignDirectionIndex();
         var c0 = cc[Math.min(csel, Math.max(cc.length - 1, 0))] || {};
         STATE.color = {
             name: localized(c0, "name") || c0.name || "",
@@ -3757,7 +3824,7 @@
 
         var tc = typographyRecommendationCandidates();
         var tsel = (REC.typography && REC.typography.selected != null) ? REC.typography.selected :
-            (designDirectionSpec().selected || 0);
+            selectedDesignDirectionIndex();
         var t0 = normTypography(tc[Math.min(tsel, Math.max(tc.length - 1, 0))] || {});
         STATE.typography = {
             name: localized(t0, "name") || t0.name || "",
@@ -3798,9 +3865,7 @@
         }
         var directions = designDirectionCandidates();
         if (directions.length) {
-            var selected = Number(designDirectionSpec().selected || 0);
-            if (!isFinite(selected) || selected < 0) selected = 0;
-            selected = Math.min(selected, directions.length - 1);
+            var selected = selectedDesignDirectionIndex();
             applyDesignDirection(directions[selected], selected, false);
         }
     }
