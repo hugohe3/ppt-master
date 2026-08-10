@@ -58,7 +58,7 @@ The renderer (`visual_review.py`) does **not** auto-start the live-preview serve
 python3 skills/ppt-master/scripts/visual_review.py <project_path>
 ```
 
-This writes one PNG per page to `<project_path>/.preview/<page>.png` at 1280×720, with `<use data-icon>` inlined and `<image href>` resolved exactly as the live-preview browser sees them. Renders are serialized via a project-local file lock — safe to invoke concurrently.
+This writes one PNG per page to `<project_path>/.preview/<page>.png`, sized from that SVG root's `viewBox`, with `<use data-icon>` inlined and `<image href>` resolved exactly as the live-preview browser sees them. Each successful page record in the JSON summary includes the exact canvas plus its raster dimensions. Renders are serialized via a project-local file lock — safe to invoke concurrently.
 
 Exit codes:
 
@@ -68,6 +68,15 @@ Exit codes:
 - `4` — one or more page-level render failures (see stderr; partial output is on disk)
 
 If any page comes back with `"all_background": true` in the JSON summary, that page rendered to a blank surface — investigate before continuing (broken `<use>` reference, missing image asset, etc.).
+
+**Mandatory — normalize partial renders before dispatch**: parse the renderer
+summary before Step 2. Dispatch only records with `"ok": true`,
+`"all_background": false`, and a complete `canvas` object. For every other page,
+the main agent adds a `render_failed` row directly to the aggregate with the
+renderer error or blank-surface reason; no per-page `.review/<page>.json` is
+expected until that page renders successfully. Exit `2` or `3` stops dispatch
+entirely. Exit `4` may still review the successful subset, but the stage cannot
+finish cleanly until every failed page is retried or handed off per Step 4.
 
 ---
 
@@ -90,7 +99,7 @@ Agent(
 The orchestrator prompt must be self-contained and is the **single** place where dispatch shape, batch size, and forbid lists are stated — the rubric (`references/visual-review.md`) defines the contract those prompts must satisfy. Required fields (all absolute paths):
 
 - `<project_path>` — project root
-- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; **fixed compatibility default**: if an existing `design_spec.md` lacks §IX, use `content` for every page and flag this in the final report; if `design_spec.md` itself is missing, restore it through [`failure-recovery.md`](../governance/failure-recovery.md) §3 before dispatch)
+- Full page list with `page_role` and the successful renderer record's `canvas` per page (parse `<project>/design_spec.md` §IX outline; **fixed compatibility default**: if an existing `design_spec.md` lacks §IX, use `content` for every page and flag this in the final report; if `design_spec.md` itself is missing, restore it through [`failure-recovery.md`](../governance/failure-recovery.md) §3 before dispatch). Pass `canvas` through verbatim; do not assume a fixed slide size.
 - Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
 - Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`

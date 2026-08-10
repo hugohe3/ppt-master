@@ -8,7 +8,7 @@
     "filePattern": "{key}.svg",
     "libraryPositioning": "Data-driven visualization templates whose source values determine geometry or visual encoding.",
     "summaryGrammar": "Each chart summary is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'.",
-    "updated": "2026-08-08"
+    "updated": "2026-08-10"
   },
   "aliases": {
     "project_schedule_table": "gantt_chart"
@@ -51,7 +51,7 @@
       "summary": "Pick for project schedule with 6-12 tasks whose dates or durations determine bar position and length, with optional dependencies. Skip for milestones without duration or qualitative lane-stage handoffs (build a Structure from the page relationships)."
     },
     "gauge_chart": {
-      "summary": "Pick for one hero metric or single KPI's goal achievement rate. Skip for multiple metrics (use bullet_chart for target+actual or progress_bar_chart for completion %)."
+      "summary": "Pick for one bounded metric against an explicit target or threshold on a known domain. Skip for an unbounded hero number (build a KPI-led Structure) or multiple metrics (use bullet_chart for target+actual or progress_bar_chart for completion %)."
     },
     "grouped_bar_chart": {
       "summary": "Pick for 2-4 series side-by-side across the same categories (e.g. YoY/QoQ). Skip if showing composition within each category (use stacked_bar_chart)."
@@ -75,7 +75,7 @@
       "summary": "Pick for showing 80/20 contribution with descending bars and a cumulative line. Skip if the cumulative line is not the message (use column_chart)."
     },
     "pie_chart": {
-      "summary": "Pick for simple 3-6 part proportions of one whole. Skip for >=7 parts (use donut_chart or treemap_chart) or hierarchical composition (use treemap_chart)."
+      "summary": "Pick for simple 3-6 part proportions of one whole. Skip for >=7 flat parts (use horizontal_bar_chart) or hierarchical composition (use treemap_chart)."
     },
     "pie_of_pie_chart": {
       "summary": "Pick for pie composition where small slices need a secondary pie detail. Skip if the secondary detail is easier to compare as bars (use bar_of_pie_chart) or hierarchy matters (use sunburst_chart)."

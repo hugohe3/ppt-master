@@ -74,6 +74,15 @@ idea)**: several elements may change together only when they communicate one
 unit. Do not change unrelated title, diagram, annotation, and footer regions at
 the same moment merely to make the frame busier.
 
+**Default — scene chrome earns its place (may override for navigation, identity,
+attribution, or fidelity)**: for newly authored recorded, self-running, or video
+scenes, do not carry a report-style fixed header, footer, or page number merely
+by deck convention. Let the semantic title participate in the scene composition,
+and omit nonessential running chrome especially on cover, ending, and breathing
+scenes. Retain source or template chrome when the active profile's fidelity
+boundary requires it, and retain new chrome when it genuinely orients the
+audience or carries required identity or attribution.
+
 **Default — screen for orientation, notes for speech (may override for literal
 on-screen copy)**: place keywords, structure, evidence, and relationships on the
 slide; keep full explanation in notes. Do not duplicate the narration script as
