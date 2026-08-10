@@ -25,6 +25,7 @@ must not build, replace, or patch a transition with route-local XML or regex.
 | Layer | Meaning | OOXML |
 |---|---|---|
 | Enter | How the current slide appears from the preceding slide | Native effect, Effect Options, and duration |
+| Sound | Optional cue played with the current slide's transition | `p:sndAc/p:stSnd/p:snd` with an embedded WAV relationship |
 | Advance | How the current slide leaves for the next slide | advClick and advTm |
 
 Enter policy:
@@ -45,8 +46,9 @@ Advance mode:
 | both | Click or timed advance, whichever occurs first |
 | narration | Timed advance from narration lead-in, audio duration, and page-tail padding; click disabled |
 
-**Hard rule**: enter=none may coexist with a timed advance. The valid result is
-a timing-only p:transition with no visual-effect child.
+**Hard rule**: enter=none may coexist with a sound and/or timed advance. The
+valid result is a non-visual `p:transition` with `p:sndAc`, advance attributes,
+or both, and no visual-effect child.
 
 ---
 
@@ -177,10 +179,18 @@ Example:
       "direction": "left",
       "pages": "double"
     },
-    "duration": 0.6
+    "duration": 0.6,
+    "sound": "sounds/bigsoundbank/<file>.wav"
   }
 }
 ~~~
+
+`transition.sound` is optional and accepts a `.wav` path resolved by the
+generated-project adapter. A bundled-library choice is synced on demand only
+after the visual transition plan is complete, then referenced by its
+project-relative `sounds/<namespace>/<file>.wav` path. The adapter packages the
+file and passes the shared core an embedded relationship id/name; the core
+never reads `templates/sounds/` or resolves library ids.
 
 Inspect the exact contract, including compatibility desugaring:
 
@@ -232,7 +242,7 @@ continue to preserve existing object names and transition XML.
 
 | Route | Default enter | Default advance | Compatibility note |
 |---|---|---|---|
-| Generated PPTX CLI | fade, 0.4s | click | auto-advance maps to both |
+| Generated PPTX CLI | fade, 0.4s; no sound | click | auto-advance maps to both; an optional sidecar sound is project-local |
 | Recorded narration | Preserve resolved enter | narration | none remains visually none |
 | Template Fill | preserve source | preserve source | explicit effects replace; legacy advance_after maps to both |
 | Native Enhance | Confirmed global/per-slide plan effect | Confirmed timing module | With audio off, an enabled global transition or explicit global `none` applies to all pages; with audio on, the scope flag controls non-narrated pages |
@@ -269,7 +279,14 @@ Mutation rules:
 | preserve | Leave unchanged | Leave wrapper and branches unchanged |
 | advance-only | Patch direct attributes | Patch Choice and Fallback identically |
 | replace | Replace the direct carrier | Remove the whole wrapper, then write one carrier |
-| none | Remove visual carrier; retain timing-only carrier when needed | Remove the whole wrapper; retain timing-only carrier when needed |
+| none | Remove visual effect; retain a non-visual carrier when sound or timing is needed | Remove the whole wrapper; write a non-visual carrier when sound or timing is needed |
+
+**Sound placement**: for a direct transition, append `p:sndAc` inside
+`p:transition` after the visual-effect child, when present. For
+`mc:AlternateContent`, write the same sound action into both Choice and
+Fallback transition carriers so older Office consumers do not lose the cue.
+The slide relationship targets one packaged WAV part; replacing or removing a
+requested generated sound must not leave a dangling relationship.
 
 **MCE prefix rule**: Requires and Ignorable values contain textual prefix
 names. Serialization must retain bindings for those exact names. Renaming an
@@ -290,6 +307,8 @@ Reject:
 - unknown option fields or values for the selected effect;
 - non-finite values, including NaN and Infinity;
 - duration less than or equal to zero;
+- a missing/non-file transition sound, a non-WAV transition sound, or an
+  unresolved/dangling sound relationship;
 - negative advance or narration padding;
 - booleans passed as numeric API values;
 - multiple logical transition carriers;
@@ -300,8 +319,8 @@ Reject:
 Read-back must report the canonical native effect and complete effective
 options, while keeping the primary Choice child separate from the fallback. It
 must also report raw effect attributes, carrier type, duration, click mode, and
-automatic advance time. Package validation must run after writing, not only
-before mutation.
+automatic advance time, plus the transition sound relationship/name when
+present. Package validation must run after writing, not only before mutation.
 
 Use inline smoke commands and gitignored projects/_smoke_* artifacts. Do not
 add a tests directory or test_*.py files.

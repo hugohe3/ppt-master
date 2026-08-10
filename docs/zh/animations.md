@@ -113,6 +113,55 @@ Wipe 方向名统一映射到 `entrance_wipe`；方向会保留为参数，而�
 `python3 skills/ppt-master/scripts/pptx_animations.py --list` 可查看完整分类清单。
 4 个媒体播放命令需要媒体或书签目标，仍由音视频工作流负责。
 
+## 在确定动效后添加声音
+
+音效默认关闭。PPT Master 内置了全局 CC0 音效检索库，但不会在策略阶段或普通
+项目初始化时把它复制进项目。先完成 SVG 页面并确定视觉转场 / 对象动画；只有
+其中一个已确定的节拍确实需要听觉提示时，才检索并同步声音：
+
+```bash
+python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
+python3 skills/ppt-master/scripts/sound_sync.py \
+  <project> bigsoundbank/1797 kenney-interface/click_001
+```
+
+第二条命令只会把选中的文件复制到 `<project>/sounds/<namespace>/`。没有选中
+声音时，PPT Master 不创建项目 `sounds/` 目录，也不复制任何文件。
+`recommended` 只是便于检索的保守推荐集合，不会自动添加声音：
+
+```bash
+python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+```
+
+配置始终引用复制后的项目相对路径，不直接引用全局 `templates/sounds/` 路径，
+也不把声音库 id 写进 sidecar：
+
+```json
+{
+  "version": 1,
+  "slides": {
+    "02_process": {
+      "transition": {
+        "effect": "push",
+        "sound": "sounds/bigsoundbank/1797.wav"
+      },
+      "groups": {
+        "next-step": {
+          "effect": "entrance_fade",
+          "sound": "sounds/kenney-interface/click_001.wav"
+        }
+      }
+    }
+  }
+}
+```
+
+`transition.sound` 使用 WAV。对象动画 `sound` 仍兼容已有的项目相对或绝对
+`.m4a`、`.mp3`、`.wav` 输入；内置库统一为 WAV，应使用同步后的项目相对路径。
+只有转场声音时可以使用稀疏 `animations.json`；页面级
+`transition.sound: null` 可清除继承的默认转场声音。导出前仍须校验。
+不要为了展示项目具备音效能力而强行添加声音。
+
 ## 自定义具体对象
 
 只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如让同一对象
@@ -166,7 +215,8 @@ shape target 锚点，不等同于 Animation Pane 中的一行。兼容的单效
 | `effect_options` | 设置效果适用的 `direction`、`amount`、`color`、`font_name`、`relative` 或 `size` |
 | `trigger_shape` | 单击另一个顶层内容组时触发本行（PowerPoint“单击下列对象时”） |
 | 计时修饰 | `repeat_count`/`repeat_duration`、`auto_reverse`、`rewind`、`accelerate`、`decelerate`、`bounce_end` 与 `restart` |
-| 播放完成 | `after_effect`（变暗/隐藏）和 `.m4a`/`.mp3`/`.wav` `sound` 路径 |
+| 播放完成 | `after_effect`（`none`、变暗、隐藏或下次单击时隐藏） |
+| 声音提示 | 可选的项目级 `sound` 路径；内置库声音按上面的流程按需同步 |
 
 `order`、`delay`、`duration`、`trigger` 与 `trigger_shape` 都按动画行独立解析。
 页面级动画 trigger 只负责提供继承值。`trigger_shape` 隐含 `on-click`；若同一行

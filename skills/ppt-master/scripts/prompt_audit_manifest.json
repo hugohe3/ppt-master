@@ -2086,6 +2086,14 @@
         "reason": "Third-party icon license and provenance notice; distributed for compliance, never loaded as prompt context."
       },
       {
+        "glob": "skills/ppt-master/templates/sounds/README.md",
+        "reason": "Bundled sound-library usage and metadata reference; not loaded as runtime prompt context."
+      },
+      {
+        "glob": "skills/ppt-master/templates/sounds/THIRD_PARTY_NOTICES.md",
+        "reason": "Third-party sound license and provenance notice; distributed for compliance, never loaded as prompt context."
+      },
+      {
         "glob": "skills/ppt-master/references/shared-standards.md",
         "reason": "Compatibility router only; runtime load sets select the core and triggered modules directly."
       },

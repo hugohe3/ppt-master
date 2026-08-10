@@ -18,6 +18,7 @@ before the page plan is frozen, not only when a deck is already exported.
 | A static full-bleed page that should stop looking frozen | Consider slow `path_*` motion on a visually subordinate image or atmospheric layer; §4.1 gives one starting recipe | Post-processing; §4.1 |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
 | Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
+| A transition or object animation needs an audible cue | Optional `transition.sound` or object-animation `sound`; select it only after the visual motion solution is complete, then sync the chosen global-library ids into the project | Post-motion; §2.2 |
 | Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
 
 **Hard rule — Morph geometry is an authoring decision; pairing is a later
@@ -40,6 +41,7 @@ tell; each capability above earns its place per page, not per deck.
 |---|---|---|
 | Page transition | CLI: `fade`, 0.4s | Calm baseline that suits most decks; the public Python builder retains its legacy 0.5s default |
 | Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so object animation is opt-in. Turn on the content-aware canonical entrance policy with `-a auto`, or select one PowerPoint-native `entrance_*`, `emphasis_*`, `path_*`, or `exit_*` key explicitly |
+| Sound effects | **`none` (off)** | No global sound is copied and no `<project>/sounds/` directory is created unless a resolved transition or object-animation cue actually selects one |
 
 To regenerate a deck with different settings, rerun the final checker when its current matching report is absent or stale, then rerun `svg_to_pptx.py` against the same `svg_output/`; the content-generation LLM need not rerun unless authored SVG requires repair. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
 
@@ -155,7 +157,9 @@ Rules:
   `decelerate`; `restart` is `always`, `when-not-active`, or `never`;
   `after_effect` is `none`, `dim` (with `color`), `hide`, or
   `hide-on-next-click`; `sound` is a project-relative or absolute `.m4a`,
-  `.mp3`, or `.wav` path.
+  `.mp3`, or `.wav` path. New generated configurations use a project-relative
+  path. A bundled library choice first follows §2.2 and resolves to a
+  project-local `.wav`; never point new output at `templates/sounds/`.
 - `Speed` and smooth start/end are not duplicate sidecar fields: they are
   derived from `duration` and `accelerate`/`decelerate`.
 - This is the complete parameter surface for the generated top-level-group
@@ -238,6 +242,42 @@ The generated names follow Microsoft's
   OOXML object types. Missing, structural, moved, ambiguous, or mismatched
   targets fail instead of falling back to automatic Morph matching.
 
+### 2.2 On-Demand Sound Selection
+
+**Hard rule — select after motion, materialize after selection**: sound is not a
+Strategist resource and does not belong in `design_spec.md`, `spec_lock.md`, or
+pre-SVG resource preparation. First complete the SVG roster and resolve the
+transition/object-motion solution. Only when a specific cue is then selected,
+copy its global-library file into the project and reference that local copy.
+
+| Source | Action |
+|---|---|
+| Bundled CC0 library | Discover ids with `sound_sync.py list`, sync only the selected ids, then use the corresponding `sounds/<namespace>/<file>.wav` paths |
+| User-provided audio already inside the project | Reference its existing project-relative `.m4a`, `.mp3`, or `.wav` path for object animation; a transition sound uses `.wav` |
+| External absolute file | The low-level object-animation path remains compatible, but new generated projects should copy or sync the intended file into the project and use a relative path |
+| No concrete auditory cue job | Keep `sound` omitted; do not create `<project>/sounds/` and do not copy the library |
+
+```bash
+# Inspect ids only after the visual motion solution exists
+python3 skills/ppt-master/scripts/sound_sync.py list
+python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
+
+# Materialize only the chosen ids
+python3 skills/ppt-master/scripts/sound_sync.py \
+  <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]
+```
+
+`sound_sync.py` is the only bundled-library materialization path. Stable ids
+include their namespace; copied files remain under
+`<project_path>/sounds/<namespace>/`. The exporter never reads the global
+`templates/sounds/` library directly, and sidecars store paths rather than
+library ids.
+
+**Default — silence (may override for a specific cue)**: do not add sound to
+demonstrate capability or spread it across a deck for coverage. A sound may
+support a named transition, reveal, confirmation, warning, or drawn/moving
+gesture after the corresponding visual behavior is already selected.
+
 ---
 
 ## 3. Page Transitions
@@ -303,6 +343,13 @@ effect-specific contract; unknown or inapplicable options fail validation.
 carry a real PowerPoint effect in `mc:Choice` and a `fade` fallback for older
 consumers; validation requires the requested primary effect and never accepts
 the fallback as a silent substitute.
+
+An optional `transition.sound` adds one `.wav` cue to the transition. It is a
+sidecar field rather than a CLI flag. Bundled choices must first be synced by
+§2.2 and referenced through their project-relative path. `effect: none` may
+still carry a transition sound and/or automatic advance without restoring a
+visual effect. A slide-level `transition.sound: null` explicitly clears an
+inherited default transition sound for that page.
 
 Flags:
 

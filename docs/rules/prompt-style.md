@@ -107,6 +107,14 @@ Constraint strength and decision ownership are independent. Preserve this chain 
 
 **Preparation timing**: In the default pipeline, fact research required for planning may run before final confirmation. AI / web / slice acquisition runs only from the completed `design_spec.md §VIII` and `spec_lock.md`, after final confirmation and before Executor. Image_Generator, Image_Searcher, and icon-sync tooling execute Strategist-owned preparation; they are not independent decision owners.
 
+**Post-motion sound exception**: optional transition/object sound is not a
+page-authoring ingredient and never enters Strategist planning,
+`design_spec.md`, or `spec_lock.md`. After the SVG roster and visual motion
+solution are complete, the active animation/export stage may discover bundled
+sound ids and sync only a concretely selected cue into the project. With no
+selected cue, it creates no `<project>/sounds/` directory. This exception does
+not permit Executor to acquire visual resources.
+
 **Hard rule — default pipeline**: downstream freedom exists only in dimensions left open upstream, including fields explicitly labeled `suggestion` or Reference. A named binding outcome retains identity; a broad semantic request or expression recommendation permits in-class choice. Once the plan resolves a binding choice, execution cannot reopen or substitute it. For icons, library/stroke and the prepared-project boundary bind, while per-page choice within the prepared pool is realization. Executor never searches, generates, downloads, syncs, invents, or replaces a resource; missing material returns to Strategist-owned preparation or upstream repair.
 
 **Explicit Quick Generate exception**: [`quick-generate`](../../skills/ppt-master/workflows/profiles/quick-generate.md) removes the separate Strategist/confirmation handoff. The current main agent therefore owns both its active-context decisions and the preparation of project-local sources, images, icons, formulas, and provenance before it begins SVG realization. This exception does not move acquisition into a default-pipeline Executor and does not permit resource reselection while a page is being realized. Explicit user facts, choices, exclusions, and permissions remain upstream authority; unspecified routine choices are resolved automatically without a confirmation stop.

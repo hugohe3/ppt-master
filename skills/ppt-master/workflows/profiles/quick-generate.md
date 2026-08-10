@@ -24,7 +24,7 @@ Page count alone never activates or blocks this profile.
 | Execution memory | Keep routine page, visual, and resource decisions only in the current active context; losing that context restarts Quick instead of reconstructing a plan from project files |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
-| Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before the referencing SVG is authored |
+| Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before its SVG; sound waits for §4 |
 | Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; installed `templates/design_spec.<kind>.<id>.md` files remain template input |
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
@@ -550,6 +550,10 @@ python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 Run [`customize-animations`](../stages/customize-animations.md) after that notes
 pass when the active-context outcome or an existing sidecar triggers it. Resolve
 deck-wide-only motion through the selected exporter flags instead.
+
+After visual motion is final, sync a selected cue per
+[`animations.md`](../../references/animations.md) §2.2; otherwise create no
+`sounds/`. Sidecars never use `templates/sounds/`.
 
 For Quick direct video, preserve the motion choice made under
 [`video-design.md`](../../references/video-design.md). A static,
