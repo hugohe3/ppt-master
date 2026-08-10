@@ -133,8 +133,8 @@ one of those resolved beats has a specific auditory job should you discover and
 sync a cue:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
-python3 skills/ppt-master/scripts/sound_sync.py \
+uvx ppt-master sound-sync list --query whoosh
+uvx ppt-master sound-sync \
   <project> bigsoundbank/1797 kenney-interface/click_001
 ```
 
@@ -144,7 +144,7 @@ project sound directory and copies nothing. The `recommended` catalog flag is
 a discovery shortlist, not an automatic choice:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+uvx ppt-master sound-sync list --query recommended
 ```
 
 Configuration always references the copied project-local path, never the

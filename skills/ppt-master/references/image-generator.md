@@ -290,7 +290,7 @@ For traceability, add optional `slice_grid` and `slice_names` fields to the shee
 **Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`. With `--alpha` they become transparent elements suitable for direct cutout placement or for composition inside a card, evidence frame, label, or other container. Recommended flags: `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop each cell so imprecise placement inside a cell doesn't leave lopsided margins), `--alpha` (knock the flat background out to transparency so an element can sit on any slide color or container):
 
 ```bash
-python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
+uvx ppt-master slice-images <project>/images/illus_sheet.png --grid 2x3 \
     --names team,product,customer,growth,risk,vision --trim --alpha
 ```
 
@@ -387,11 +387,11 @@ each registered derivative; Path B may perform the same edits with the
 host-native image tool:
 
 ```bash
-python3 scripts/image_gen.py "Remove the planned foreground subjects and reconstruct the hidden background; preserve the exact canvas" \
+uvx ppt-master image-gen "Remove the planned foreground subjects and reconstruct the hidden background; preserve the exact canvas" \
   --reference-image <project>/images/<source>.png -o <project>/images -f <group>_base
-python3 scripts/image_gen.py "Isolate the planned non-overlapping foreground objects at their exact original positions on one flat #00FF00 plate" \
+uvx ppt-master image-gen "Isolate the planned non-overlapping foreground objects at their exact original positions on one flat #00FF00 plate" \
   --reference-image <project>/images/<source>.png -o <project>/images -f <group>_plate_key
-python3 scripts/slice_images.py <project>/images/<group>_plate_key.png --grid 1x1 \
+uvx ppt-master slice-images <project>/images/<group>_plate_key.png --grid 1x1 \
   --names <group>_plate --alpha --bg "#00FF00"
 ```
 
@@ -606,7 +606,7 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 ### Path A — `image_gen.py --manifest` (Default)
 
 ```bash
-python3 scripts/image_gen.py \
+uvx ppt-master image-gen \
   --manifest project/images/image_prompts.json \
   --output project/images
 ```
@@ -668,7 +668,7 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
 - Do **not** run `image_gen.py --manifest` in Path B. That command is Path A and may use configured API/proxy backends even when the user confirmed host-native.
-- Still run `python3 scripts/image_gen.py --render-md project/images/image_prompts.json` so the human-readable sidecar exists without touching any backend.
+- Still run `uvx ppt-master image-gen --render-md project/images/image_prompts.json` so the human-readable sidecar exists without touching any backend.
 - **Batch for speed, mind the rate**: when the host can run independent tool calls in parallel (e.g. Claude Code issues independent calls concurrently), fire several generations together in modest groups — a few rows at a time (~3–4), not the whole manifest at once — so their latency overlaps without flooding the host's image quota. When the host only runs tools serially, generate one row at a time. This mirrors Path A's default concurrency of 3.
 - Outputs **must** land at `project/images/<filename-from-resource-list>`. Match the Image Resource List dimensions when the host supports arbitrary sizes. Hosts with **fixed native resolutions** (common — e.g. ~1672x941 landscape / ~1086x1448 portrait) generate at the closest native size and backfill the actual pixels into the resource list `Dimensions` column — same convention as formula rows ("actual dimensions from formula manifest") and slice rows ("dimensions filled after slicing"). Do **not** upscale the file to fake the requested size (interpolation adds no detail); minor display-side upscaling (up to ~1.3x in practice) may surface as a non-blocking quality-checker warning and requires no acknowledgement.
 - Mark each item's `status` `Generated` in the manifest the moment its file lands — as each completes, not in one pass at the end (so an interrupted batch leaves accurate state)

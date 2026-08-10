@@ -120,8 +120,8 @@ Wipe 方向名统一映射到 `entrance_wipe`；方向会保留为参数，而�
 其中一个已确定的节拍确实需要听觉提示时，才检索并同步声音：
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
-python3 skills/ppt-master/scripts/sound_sync.py \
+uvx ppt-master sound-sync list --query whoosh
+uvx ppt-master sound-sync \
   <project> bigsoundbank/1797 kenney-interface/click_001
 ```
 
@@ -130,7 +130,7 @@ python3 skills/ppt-master/scripts/sound_sync.py \
 `recommended` 只是便于检索的保守推荐集合，不会自动添加声音：
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+uvx ppt-master sound-sync list --query recommended
 ```
 
 配置始终引用复制后的项目相对路径，不直接引用全局 `templates/sounds/` 路径，

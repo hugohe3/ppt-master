@@ -259,11 +259,11 @@ copy its global-library file into the project and reference that local copy.
 
 ```bash
 # Inspect ids only after the visual motion solution exists
-python3 skills/ppt-master/scripts/sound_sync.py list
-python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
+uvx ppt-master sound-sync list
+uvx ppt-master sound-sync list --query <term>
 
 # Materialize only the chosen ids
-python3 skills/ppt-master/scripts/sound_sync.py \
+uvx ppt-master sound-sync \
   <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]
 ```
 

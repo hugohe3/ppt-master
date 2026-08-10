@@ -147,11 +147,11 @@ validation ledger, not the default authoring prompt. Read its compact roster,
 then the current page; add geometry only for structural ambiguity:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+uvx ppt-master beautify-inventory \
   <project_path>/analysis/beautify_inventory.json --summary
-python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+uvx ppt-master beautify-inventory \
   <project_path>/analysis/beautify_inventory.json --page <N>
-python3 ${SKILL_DIR}/scripts/beautify_inventory.py \
+uvx ppt-master beautify-inventory \
   <project_path>/analysis/beautify_inventory.json --page <N> --with-geometry
 ```
 

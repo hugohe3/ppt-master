@@ -46,55 +46,55 @@ Convenience summary only — route selection starts in [`SKILL.md`](skills/ppt-m
 
 ```bash
 # Source content conversion
-python3 skills/ppt-master/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]
+uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]
 
 # Project management
-python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
-python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs_or_URLs...>
-python3 skills/ppt-master/scripts/project_manager.py scaffold-spec <project_path>  # optional manual helper
-python3 skills/ppt-master/scripts/project_manager.py scaffold-lock <project_path>  # optional manual helper
-python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
+uvx ppt-master project init <project_name> --format ppt169
+uvx ppt-master project import-sources <project_path> <source_files_or_dirs_or_URLs...>
+uvx ppt-master project scaffold-spec <project_path>  # optional manual helper
+uvx ppt-master project scaffold-lock <project_path>  # optional manual helper
+uvx ppt-master project validate <project_path>
 
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
-python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
+uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name>...]
 
 # Sounds
-python3 skills/ppt-master/scripts/sound_sync.py list [--query term]
-python3 skills/ppt-master/scripts/sound_sync.py <project_path> <namespace>/<id>...
+uvx ppt-master sound-sync list [--query term]
+uvx ppt-master sound-sync <project_path> <namespace>/<id>...
 
-python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon
-python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage1
+uvx ppt-master confirm-ui <project_path> --daemon
+uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage1
 
 # Image tools and SVG quality check
-python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
+uvx ppt-master analyze-images <project_path>/images
 # Formula rendering — manifest written by Default Strategist after confirmation or by the Quick main agent during resource preparation:
-python3 skills/ppt-master/scripts/latex_render.py <project_path>
-python3 skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
-python3 skills/ppt-master/scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
+uvx ppt-master latex-render <project_path>
+uvx ppt-master latex-render <project_path> --dry-run
+uvx ppt-master latex-render <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
-python3 skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
-python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
+uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
+uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
-python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 # Spot illustrations — slice one AI grid sheet into individual elements (see image-generator.md §4.3):
-python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
-python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
+uvx ppt-master svg-editor <project_path> --live --daemon
+uvx ppt-master svg-quality-check <project_path>
 # Shared create-template coordinate compaction before template validation
-python3 skills/ppt-master/scripts/compact_svg_coordinates.py "<template_workspace>/templates" --inplace --keep-native-frames
+uvx ppt-master compact-svg-coordinates "<template_workspace>/templates" --inplace --keep-native-frames
 # Explicit create-template normalization: selected complex <g> -> one SVG picture asset / <image>
-python3 skills/ppt-master/scripts/extract_svg_pictures.py "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
+uvx ppt-master extract-svg-pictures "<svg_file>" --select "<group_id>" --resource-root "<workspace>" --images-dir "<workspace>/picture-assets" --inplace
 # Type A create-template mirror: validated authoring IR -> deterministic structured template workspace
-python3 skills/ppt-master/scripts/mirror_template_materialize.py "<import_workspace>" "<empty_template_workspace>"
+uvx ppt-master mirror-template-materialize "<import_workspace>" "<empty_template_workspace>"
 # create-template review deck (workspace root may be global or project-scoped)
-python3 skills/ppt-master/scripts/template_preview_pptx.py <template_workspace>
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
+uvx ppt-master template-preview-pptx <template_workspace>
+uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
+uvx ppt-master animation-config validate <project_path>  # optional, before re-export
 
 # Existing PPTX native enhancement workflow — direct OOXML patch, no SVG conversion
-python3 skills/ppt-master/scripts/native_enhance_pptx.py init <PPTX_file> --name <project_slug>
-python3 skills/ppt-master/scripts/native_enhance_pptx.py validate <project_path>
-python3 skills/ppt-master/scripts/native_enhance_pptx.py apply <project_path>
+uvx ppt-master native-enhance-pptx init <PPTX_file> --name <project_slug>
+uvx ppt-master native-enhance-pptx validate <project_path>
+uvx ppt-master native-enhance-pptx apply <project_path>
 ```
 
 For serial post-processing and export, follow [`generate-pptx.md`](skills/ppt-master/workflows/generate-pptx.md) Step 7 exactly. See [`svg-pipeline.md`](skills/ppt-master/scripts/docs/svg-pipeline.md) for tool flags and behavior.

@@ -72,21 +72,21 @@ Default to **edge** unless the user explicitly asks for a cloud provider / highe
 **edge backend**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+uvx ppt-master notes-to-audio --list-voices --locale <locale>
 ```
 
 **ElevenLabs backend**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+uvx ppt-master notes-to-audio --provider elevenlabs --list-voices
 ```
 
 **Cloud providers using explicit voice IDs/names**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
+uvx ppt-master notes-to-audio --provider minimax --list-voices
+uvx ppt-master notes-to-audio --provider qwen --list-voices
+uvx ppt-master notes-to-audio --provider cosyvoice --list-voices
 ```
 
 The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
@@ -118,7 +118,7 @@ only when narration-cue sync or subtitle delivery needs page-local SRT.
 
 **Default / Enhance Native — one-shot interaction (mandatory)**:
 
-For Default or Enhance Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `python3 skills/ppt-master/scripts/powerpoint_video.py --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
+For Default or Enhance Native, send one message that resolves all five configuration decisions and recommends each value. Before offering automatic video export, run `uvx ppt-master powerpoint-video --check`; do not present an unavailable local capability as executable. Do NOT split into multiple rounds.
 
 **Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the named provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) and pin that `voice_id`. Quick applies its exception above; Default and Enhance Native confirm only rate + embed + video.
 
@@ -166,27 +166,27 @@ Run sequentially — do NOT bundle:
 
 ```bash
 # 1A. Generate audio with edge (default)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --voice <chosen-ShortName> --rate <chosen-rate>
 
 # 1B. Or generate audio/SRT pairs with ElevenLabs
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider elevenlabs --voice-id <chosen-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
 
 # 1C. Or generate audio with MiniMax
 # Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax --voice-id <chosen-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 1D. Or generate audio only with Qwen TTS (the API returns no timestamps)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider qwen --voice-id <chosen-voice> \
   --qwen-model qwen3-tts-flash --qwen-language-type Chinese
 
 # 1E. Or generate audio/SRT pairs with a timestamp-capable CosyVoice voice
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
@@ -195,42 +195,42 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 #     by matching SVG group semantics to SRT topics, then derive the narrated
 #     sidecar. Reuse current SVG semantics when complete; otherwise read only
 #     the missing or stale svg_output pages.
-python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
+uvx ppt-master narration-sync animations <project_path> \
   --narration-start-floor 0.8 --narration-padding 0.5 --force
 
 # 2B. Re-export with audio embedded
 #     Use the base export's [REPORT] path to preserve source-bound deck motion.
 #     Quick Generate adds --quick-generate --with-notes to every re-export below.
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --inherit-motion-from "<base_postflight_report>"
 
 # Optional: use the canonical presentation animation instead
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --animation-config animations.json \
   --inherit-motion-from "<base_postflight_report>"
 
 # Optional: export narration with no object or page-transition animation
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --no-animations
 
 # 2C. Only when page-local SRT exists, merge it against timing values read
 #     from the final PPTX
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
+uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
 # 2D. Optional: export through installed Windows PowerPoint and wait for completion
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o <final_video.mp4>
 
 # 2E. Only when page-local SRT exists, align the frozen narration text against
 #     the finished video's audio track
-python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
+uvx ppt-master video-subtitles <project_path> \
   --video <final_video.mp4> --language <language> --force
 ```
 
@@ -300,7 +300,7 @@ changed.
 Get the exact fingerprint value with:
 
 ```bash
-python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
+uvx ppt-master narration-sync fingerprint <project_path>
 ```
 
 ```json
@@ -362,4 +362,4 @@ Output one summary block listing:
   otherwise do not claim a video-aligned subtitle.
 - The provider, voice, and rate/settings actually used.
 - The caller-owned integration result: narrated SVG export path, enhanced native PPTX path, or “audio only”.
-- For Generate PPTX when embedding was skipped, one-line hint: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+- For Generate PPTX when embedding was skipped, one-line hint: `uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio`.

@@ -20,8 +20,8 @@ does not create a `sounds/` directory or copy the library. Copy only the sounds
 explicitly selected for a deck:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query whoosh
-python3 skills/ppt-master/scripts/sound_sync.py projects/deck bigsoundbank/1797 kenney-interface/click_001
+uvx ppt-master sound-sync list --query whoosh
+uvx ppt-master sound-sync projects/deck bigsoundbank/1797 kenney-interface/click_001
 ```
 
 The second command copies only those files to:
@@ -43,9 +43,9 @@ selected library ID; the tool never silently overwrites that conflict.
 List the full catalog or filter it by stable ID, label, tag, or context:
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list
-python3 skills/ppt-master/scripts/sound_sync.py list --query transition
-python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
+uvx ppt-master sound-sync list
+uvx ppt-master sound-sync list --query transition
+uvx ppt-master sound-sync list --query recommended
 ```
 
 The `recommended` flag is a conservative discovery shortlist for presentation

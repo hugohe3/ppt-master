@@ -87,7 +87,7 @@ Prepare source facts before initialization:
 |---|---|
 | Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement plus fact-provenance JSON for import |
 | One or more PNG / JPEG / WebP files representing page frames under Image to PPTX | Do not call `source_to_md.py`; normalize single-page files and multi-frame contact sheets into the canonical ordered frame roster through that profile, then import the originals below |
-| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
+| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as a plain-text table source |
 | Markdown or direct conversation text | Read directly |
 
@@ -149,7 +149,7 @@ Neither branch creates anything under `confirm_ui/` or executes
 `confirm_ui/server.py`. Initialize the minimal workspace with:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> \
+uvx ppt-master project init <project_name> \
   --format <format> --quick-generate
 ```
 
@@ -170,7 +170,7 @@ With file-based sources, import the original inputs, converted outputs, and any
 research pair together:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
+uvx ppt-master project import-sources \
   <project_path> <source_files_or_dirs...> [<converted_outputs...>] \
   [projects/<research_slug>.md projects/<research_slug>.facts.json]
 ```
@@ -329,7 +329,7 @@ information model is already certain. Do not run recall for qualitative shape
 composition.
 
 ```bash
-python3 skills/ppt-master/scripts/visualization_recall.py recall \
+uvx ppt-master visualization-recall recall \
   --page P03 \
   --tag "time series" \
   --tag "three metrics" \
@@ -531,7 +531,7 @@ authored. Complete all coordinate repairs first; then run the one lockless final
 SVG check:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path> \
+uvx ppt-master svg-quality-check <project_path> \
   --quick-generate --stage final --json
 ```
 
@@ -544,7 +544,7 @@ without regenerating it; otherwise generate `notes/total.md` from the final SVG
 roster. Then run:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 ```
 
 Run [`customize-animations`](../stages/customize-animations.md) after that notes
@@ -567,11 +567,11 @@ Choose exactly one notes mode for the base export:
 
 ```bash
 # Speaker Notes enabled
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --quick-generate --with-notes
 
 # Speaker Notes disabled
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --quick-generate --no-notes
 ```
 

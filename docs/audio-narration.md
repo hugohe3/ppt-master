@@ -57,7 +57,7 @@ proactive default. The AI handles the rest.
 Anything `edge-tts` supports — roughly 90 locales including all major Chinese variants (`zh-CN` / `zh-TW` / `zh-HK` Cantonese), English (US/UK/AU/IN), Japanese, Korean, French, German, Spanish, Portuguese, Russian, Arabic, etc. List voices for any locale yourself with:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
+uvx ppt-master notes-to-audio --list-voices --locale ja-JP
 ```
 
 ## Manual usage (advanced)
@@ -66,15 +66,15 @@ If you want to skip the AI flow and call the script directly:
 
 ```bash
 # 1. Make sure speaker notes are split (post-processing Step 7.1):
-python3 skills/ppt-master/scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 
 # 2A. Generate MP3/SRT pairs with edge-tts (default, no API key)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
 
 # 2B. Or generate MP3/SRT pairs with ElevenLabs (requires ELEVENLABS_API_KEY)
 export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider elevenlabs \
   --voice-id <elevenlabs-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
@@ -82,14 +82,14 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 # 2C. Or generate MP3/SRT pairs with MiniMax (supports system and cloned voice_id)
 export MINIMAX_API_KEY="your-minimax-api-key"
 # Defaults to the China endpoint. For overseas access, set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2.
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax \
   --voice-id <minimax-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 2D. Or generate audio only with Qwen TTS (system voice or cloned voice)
 export DASHSCOPE_API_KEY="your-dashscope-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider qwen \
   --voice-id <qwen-voice> \
   --qwen-model qwen3-tts-flash \
@@ -97,7 +97,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 # 2E. Or generate MP3/SRT pairs with a timestamp-capable CosyVoice voice
 export COSYVOICE_API_KEY="your-dashscope-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider cosyvoice \
   --voice-id <cosyvoice-voice> \
   --cosyvoice-model cosyvoice-v3-flash
@@ -108,28 +108,28 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 #    SVG content group with the numbered cues in that page's SRT. A missing
 #    cue means the group has no spoken counterpart and uses normal sequencing.
 #    For narration-independent custom motion or no sidecar, skip to step 5.
-python3 skills/ppt-master/scripts/narration_sync.py fingerprint <project_path>
+uvx ppt-master narration-sync fingerprint <project_path>
 
 # 4. Derive click-free narration_animations.json from canonical animations.json
-python3 skills/ppt-master/scripts/narration_sync.py animations <project_path> \
+uvx ppt-master narration-sync animations <project_path> \
   --narration-start-floor 0.8 --narration-padding 0.5 --force
 
 # 5A. Cue-synchronized custom motion: use the derived sidecar
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --animation-config narration_animations.json \
   --inherit-motion-from "<base_postflight_report>"
 
 # 5B. Narration-independent custom motion: use canonical timing
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --animation-config animations.json \
   --inherit-motion-from "<base_postflight_report>"
 
 # 5C. No animation sidecar: inherit resolved base motion, including -a auto
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   -o <final_narrated_pptx> --recorded-narration audio \
   --narration-start-floor 0.8 --narration-padding 0.5 \
   --inherit-motion-from "<base_postflight_report>"
@@ -137,17 +137,17 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 # Quick Generate appends --quick-generate --with-notes to the selected command.
 
 # 6. When page-local SRT exists, merge it using the final PowerPoint timings
-python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
+uvx ppt-master narration-sync subtitles <project_path> \
   --pptx <final_narrated_pptx> --force
 
 # 7. Optional on Windows: export through PowerPoint and wait for completion
-python3 skills/ppt-master/scripts/powerpoint_video.py --check
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video --check
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o exports/<final_video>.mp4
 
 # 8. When page-local SRT exists, align the frozen narration text against the
 #    exported video's audio track and write a same-stem delivery SRT
-python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
+uvx ppt-master video-subtitles <project_path> \
   --video "<powerpoint_exported_video>" --language <language> --force
 ```
 
@@ -214,7 +214,7 @@ For ElevenLabs, `--voice-id` is required. List voices from your ElevenLabs accou
 
 ```bash
 export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+uvx ppt-master notes-to-audio --provider elevenlabs --list-voices
 ```
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
@@ -244,7 +244,7 @@ You: Generate the narration with my cloned ElevenLabs voice id abc123
 Or call the script directly:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax --voice-id <your-cloned-voice-id> \
   --minimax-model speech-2.8-hd
 ```
@@ -287,7 +287,7 @@ python3 -m pip install stable-ts
 Once the narrated PPTX is in `exports/`, Windows PowerPoint 2016+ can export it automatically through:
 
 ```bash
-python3 skills/ppt-master/scripts/powerpoint_video.py \
+uvx ppt-master powerpoint-video \
   <final_narrated_pptx> -o <final_video.mp4>
 ```
 

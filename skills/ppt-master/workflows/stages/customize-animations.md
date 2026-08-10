@@ -317,8 +317,8 @@ post-processing state: do not recover it from or write it back to
 | The project already contains user-provided audio | Use its project-relative path when its format is valid; no library sync is required |
 
 ```bash
-python3 skills/ppt-master/scripts/sound_sync.py list --query <term>
-python3 skills/ppt-master/scripts/sound_sync.py \
+uvx ppt-master sound-sync list --query <term>
+uvx ppt-master sound-sync \
   <project_path> <namespace>/<sound_id> [<namespace>/<sound_id> ...]
 ```
 
