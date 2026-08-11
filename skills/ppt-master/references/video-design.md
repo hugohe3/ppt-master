@@ -120,14 +120,22 @@ A pre-SVG `notes/total.md` is an enabled production artifact, not a forbidden
 planning checkpoint; Quick still creates no root Design Spec, lock,
 confirmation payload, or storyboard.
 
+**Hard rule — Quick video Custom Animations**: when Quick generates a PPTX for
+recorded, self-running, or video delivery, enable Custom Animations before SVG
+authoring and complete the custom-animation stage before base export. Use
+semantic groups and page-specific choreography; deck-wide `-a auto` and page
+transitions do not satisfy this requirement. Individual pages or groups may
+remain static, so this is not an animation-coverage quota. A validated
+`animations.json` is required unless the user explicitly requests static or
+page-transition-only playback.
+
 **Mandatory — Quick direct video input**: when Quick must deliver a narrated
 video or MP4 rather than only a deck for later recording, enable Speaker Notes,
 Narration Audio, and video export; write the complete per-scene narration to
 `notes/total.md` before P01 and use it as page-design input. After the SVG
 roster, only agent-authored wording may be finalized; final/literal input remains
-verbatim. Before audio, choose static/page-transition-only,
-narration-independent deck-wide exporter motion, or page/object-specific Custom
-Animations; for the last, decide whether narration governs any group timing.
+verbatim. Before audio, complete the required Custom Animations configuration
+and decide whether narration governs any group timing.
 
 **Production outcomes**:
 
@@ -136,13 +144,16 @@ Animations; for the last, decide whether narration governs any group timing.
 | Spoken delivery or a supplied final script | Enable Speaker Notes |
 | User asks the workflow to synthesize narration | Enable Narration Audio; Speaker Notes is its dependency |
 | Progressive reveal, continuing geometry, or timed emphasis materially aids explanation | Enable/load the appropriate animation capability |
-| Quick directly delivers a narrated video or MP4 | Enable Speaker Notes, Narration Audio, and video export; resolve motion before audio, requiring timestamped page-local SRT only for narration-cue sync or subtitle delivery |
-| Video is manually narrated or static playback is sufficient | Keep Narration Audio and/or object animation off as applicable |
+| Quick generates a PPTX for recorded, self-running, or video delivery | Enable Custom Animations before SVG authoring and validate `animations.json` before base export |
+| Quick directly delivers a narrated video or MP4 | Also enable Speaker Notes, Narration Audio, and video export; resolve narration-governed timing before audio, requiring timestamped page-local SRT for cue sync or subtitle delivery |
+| The user explicitly requests static playback or disables object motion | Keep object animation off; retain the remaining notes/audio/video outcomes as requested |
 
-**Capability boundary**: a deck intended for later video use does not force
-object animation or generated audio. Direct Quick narrated-video delivery uses
-the mandatory row above but may intentionally remain static or
-page-transition-only. Explicit user instructions remain authoritative.
+**Capability boundary**: Default generation does not force object animation or
+generated audio merely because a deck may later be recorded. Quick with an
+effective recorded/self-running/video delivery purpose does require Custom
+Animations, while explicit user instructions for static or
+page-transition-only playback remain authoritative. This requirement selects
+the capability, not motion coverage or one effect for every page.
 
 ---
 
@@ -178,9 +189,10 @@ validate canonical `animations.json`. After the base PPTX/report and timestamped
 page audio/SRT, map timed groups in `narration_timing.json`, derive
 `narration_animations.json`, and export the narrated PPTX/MP4. Only derived
 triggers/delays wait for SRT; object identity, effect, and order do not. `-a
-auto` or inherited fixed stagger is not semantic synchronization. For
-static/page-transition-only or narration-independent deck-wide motion, omit
-these sidecars and the object-sync claim.
+auto` or inherited fixed stagger is not semantic synchronization. For an
+explicit user-selected static/page-transition-only Quick exception, or for
+ordinary Default narration-independent deck-wide motion, omit these sidecars
+and the object-sync claim.
 
 **Sound effects**: exclude them from this pass and planning artifacts. After
 final SVG/motion, animation post-processing owns on-demand sync; otherwise
