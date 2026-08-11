@@ -1,6 +1,6 @@
 > See [`image-generator.md`](./image-generator.md) and [`image-searcher.md`](./image-searcher.md) for path-specific behavior.
 
-# Image Acquisition Common Reference
+# Image Acquisition and Preparation Common Reference
 
 Shared baseline for both acquisition paths. Path-specific behavior lives in the path's own reference.
 
@@ -8,7 +8,7 @@ Shared baseline for both acquisition paths. Path-specific behavior lives in the 
 
 ## 1. Trigger Condition
 
-Active when at least one resource row has `Acquire Via: ai` / `web` / `slice`. Rows with `user` / `formula` / `placeholder` are tracked but skipped by these acquisition roles.
+Active when at least one resource row has `Acquire Via: ai` / `web` / `slice`, or when any §VIII / Quick active-context resource is a pending prepared derivative. Canonical rows with `user` / `formula` / `placeholder` are tracked but skipped by acquisition roles.
 
 | Mode | Trigger |
 |---|---|
@@ -26,18 +26,43 @@ Default Generate uses Strategist-owned `design_spec.md §VIII` plus its lock pro
 |---|---|---|---|---|---|---|---|
 | `<planned file>` | `<planned size>` | `<planned role>` | `<owner-resolved recommendation>` | `adaptive` / `no-crop` | `ai` / `web` / `slice` | Pending | `<acquisition brief>` |
 
-**Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row and every newly authored `ai` row. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
+**Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row, every newly authored `ai` row, and every prepared derivative regardless of source class. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
 
 **Quick Generate ownership**: explicit user assets, URLs, and path instructions win. Otherwise the main agent chooses required `user` / `ai` / `web` / `slice` / `formula` rows and AI path `auto`, without interaction.
+
+**Mandatory — consume the resolved path**: Default consumes Strategist-chosen §VIII rows; Quick resolves once in active context before preparation. This phase never adds or reselects a treatment:
+
+| Path | Behavior |
+|---|---|
+| `none` | Use the canonical bitmap unchanged |
+| `native` | No new file; SVG owns crop/clip, transform, opacity, frame/shadow/scrim/vignette, and overlap |
+| `prepared derivative` | Separate file only for pixel blur, desaturation/grayscale, duotone, brightness/contrast, or existing cutout/registered-layer preparation |
+
+Choosing `none` is valid. Never bake a native treatment into a derivative.
+
+**Reference — exact pattern mapping, not activation**: An adopted pattern may use this mapping; its id alone creates nothing.
+
+| Pattern | Preparation |
+|---|---|
+| `P*`, `M*`, `C*` | Use existing assets with native SVG/PPT composition; no automatic derivative |
+| `A1-02` / `A1-03` | `image_treat.py` blur / duotone |
+| `A1-01` / `A1-04` | Existing prepared composite or host/AI path; `image_treat.py` does not blend |
+| `A2-01` | Existing/host-prepared RGBA or flat-key AI/slice asset; when source-scene registration is required, use `A2-02` / `A2-03` + [`image-generator.md`](./image-generator.md) §4.4 |
+| `A2-02` / `A2-03` | [`image-generator.md`](./image-generator.md) §4.4 registered layers |
+| `A3-01` | Original/subject plus registered `image_treat.py` blur/tone/desaturate derivative |
+| `A3-02` | Registered full-canvas `image_treat.py` blur derivative; crop panels natively |
+| `A3-03` | `image_treat.py` desaturated base plus existing/§4.4 color subject layer |
 
 ---
 
 ## 3. Path Dispatch
 
-For each row with `Status: Pending`:
+Classify `Reference: Derived from <canonical bare filename>; treatment=<operation>; ...` before `Acquire Via`. Its distinct, non-derived parent must be `user`, `web`, `ai`, or `slice`; reject formula/placeholder parents, chains, cycles, and self-reference. For each Pending row:
 
-| Acquire Via | Load reference | Run | Success status |
+| Row kind / Acquire Via | Load reference | Run | Success status |
 |---|---|---|---|
+| Deterministic prepared derivative | This common reference | After parent is usable, run `image_treat.py` to a distinct `.png`; preserve source | Inherit parent: `user → Existing`, `web → Sourced`, `ai/slice → Generated` |
+| Registered-layer derivative | [`image-generator.md`](./image-generator.md) §4.4 | After parent is usable, run §4.4 | Supplied final: `user → Existing`; generated/reconstructed: `ai → Generated` |
 | `ai` | [`image-generator.md`](./image-generator.md) | `image_gen.py` | `Generated` |
 | `web` | [`image-searcher.md`](./image-searcher.md) | `image_search.py` | `Sourced` |
 | `slice` | [`image-generator.md`](./image-generator.md) §4.3 | `slice_images.py` after parent AI sheet is `Generated` | `Generated` |
@@ -51,12 +76,10 @@ For each row with `Status: Pending`:
 
 ## 4. Analysis Phase
 
-Before processing any row:
-
-1. Read the Default Design Spec/lock, or reuse Quick's active-context resource and visual/page decisions
-2. Group resource list rows by `Acquire Via`
-3. Confirm `project/images/` exists
-4. Materialize explicit user assets, render declared formulas, and finish triggered ai/web/slice acquisition before SVG authoring begins
+1. Read the Default Design Spec/lock, or reuse Quick's active-context resource/page decisions.
+2. Separate derivatives before grouping canonical rows by `Acquire Via`; ensure `project/images/` exists.
+3. Finish user/formula and triggered ai/web/slice canonical preparation.
+4. Materialize only declared derivatives from usable parents, preserve originals, then run `analyze_images.py` once before SVG.
 
 ---
 
@@ -65,6 +88,7 @@ Before processing any row:
 After all rows reach terminal status:
 
 - Every non-skipped row has a file at `project/images/<filename>`, or is marked `Needs-Manual`
+- Each derivative has its distinct file and usable parent; web provenance is copied in `image_sources.json`
 - Every `slice` row has a generated element file, or is marked `Needs-Manual` because its parent sheet is not available
 - No `Pending` or `Failed` rows remain
 - `image_prompts.json` exists when ≥1 ai row processed; every entry has `status ∈ {Generated, Needs-Manual}` (no `Pending` or `Failed` remaining)
@@ -72,7 +96,7 @@ After all rows reach terminal status:
 
 > `Needs-Manual` is terminal for acquisition, not export readiness. A later
 > supplied/replaced file must be validated and its row reconciled to
-> `Generated`, `Sourced`, or `Rendered` with the matching manifest evidence.
+> `Existing`, `Generated`, `Sourced`, or `Rendered` with matching evidence.
 > Quick blocks every required row that still says `Needs-Manual`, regardless of
 > whether an unverified candidate file happens to exist. See
 > [`image-generator.md`](./image-generator.md) §7.
@@ -118,6 +142,8 @@ Executor reads the manifest per slide and renders inline credits when needed —
 
 The `Reference` field is **intent**, not a query. Strategist owns it by default; Quick's main agent resolves it in active context. The receiving role translates without reopening it.
 
+For derivatives, the required lineage/treatment prefix is intent metadata, not a provider query.
+
 | ✅ Intent | ❌ Pre-processed |
 |---|---|
 | `"Diverse engineering team in modern office, natural light"` | `"team office light"` |
@@ -132,11 +158,11 @@ SVG authoring consumes the active profile's resource authority plus:
 | Artifact | Path | Purpose |
 |---|---|---|
 | Image files | `project/images/*.{jpg,png,webp}` | `<image>` references |
-| Manifest | `project/images/image_sources.json` | `license_tier` per Sourced image |
+| Manifest | `project/images/image_sources.json` | License/provenance for sourced images and their derivatives |
 
-**Default Generate boundary**: Executor does NOT invoke `image_gen.py` / `image_search.py` / `slice_images.py`; missing material returns to Strategist-owned preparation.
+**Default Generate boundary**: Executor does NOT invoke `image_gen.py` / `image_search.py` / `slice_images.py` / `image_treat.py`; missing material returns to Strategist-owned preparation.
 
-**Quick Generate boundary**: the main agent finishes acquisition before SVG authoring, then neither acquires nor reselects while drawing.
+**Quick Generate boundary**: the main agent finishes acquisition and planned derivation before SVG authoring, then neither acquires, derives, nor reselects while drawing.
 
 ---
 
