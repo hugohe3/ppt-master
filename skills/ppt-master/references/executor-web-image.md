@@ -2,13 +2,13 @@
 
 # Executor Web-image Attribution Branch
 
-Conditional Executor authority for inline attribution on web-sourced images.
+Conditional Executor authority for inline attribution on web-sourced images and their prepared derivatives.
 
-**Trigger**: load for any placed `Status: Sourced` image. Quick Generate uses the same `image_sources.json` contract without interaction.
+**Trigger**: load for any placed `Status: Sourced` image or any placed prepared derivative whose filename has a copied `image_sources.json` record. Quick Generate uses the same manifest contract without interaction.
 
 ## 1. Inline Attribution for Sourced Images
 
-Whenever the slide uses an image with `Status: Sourced`, look up the corresponding entry in `project/images/image_sources.json` and act on `license_tier`:
+Whenever the slide uses a `Status: Sourced` image or a prepared derivative backed by `image_sources.json`, look up the corresponding filename entry and act on `license_tier`:
 
 | `license_tier` | Action on this slide |
 |---|---|

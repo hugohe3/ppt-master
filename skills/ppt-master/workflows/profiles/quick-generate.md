@@ -283,13 +283,13 @@ production input for page design; it is not a planning checkpoint. Do not split
 it until the SVG roster exists. Draft narration instead remains source material
 and uses the ordinary post-SVG notes branch when notes are enabled.
 
-**Mandatory — subject-layer capability scan**: Before resource preparation,
-inspect the intended layer relationship rather than treating every reference
-visual as one flat image. When a subject crosses a native title, panel, frame,
-card, or shape, prepare a clean full-canvas base plus a same-canvas RGBA subject
-cutout and use `#A2-03`; follow [`image-generator.md`](../../references/image-generator.md)
-§4.4. A subject that only floats independently may use `#A2-01`. Complete this
-decision and both required assets before SVG authoring.
+**Mandatory — image treatment / subject layers**: Before preparation choose per
+image: `none`; native SVG crop/transform/depth; or prepared
+blur/tone/cutout/registered layers. `none` is valid. A subject crossing native
+content requires a clean full-canvas base plus registered RGBA cutout
+(`#A2-03`; [`image-generator.md`](../../references/image-generator.md) §4.4);
+a floating cutout may use `#A2-01`. Finish assets before SVG per
+[`image-base.md`](../../references/image-base.md) §2–3.
 
 **Mandatory — whole-roster rhythm check**: During the same active-context
 resolution, compare neighbors and section arcs to judge whether chapter entries
@@ -382,12 +382,11 @@ After image resources change, run `analyze_images.py` so
 Operational manifests and provenance are resource truth, not a hidden design
 strategy.
 
-Every required resource must reach a usable terminal state before the
-referencing page is authored. A required `Needs-Manual` resource blocks Quick
-delivery even when an unverified candidate file exists. After a manual supply
-or replacement, validate the file/provenance and reconcile the row to
-`Generated`, `Sourced`, or `Rendered`; do not use file presence as a bypass or
-silently replace it with unrelated material.
+Every required resource must reach a usable terminal state before its page.
+`Needs-Manual` blocks Quick even when an unverified file exists. After manual
+supply/replacement, validate evidence and reconcile to `Existing`, `Generated`,
+`Sourced`, or `Rendered`; never bypass status by file presence or substitute
+unrelated material.
 
 ---
 
