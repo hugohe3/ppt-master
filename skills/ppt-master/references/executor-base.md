@@ -13,7 +13,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | Any semantic cell grid, including a table-family reference | [`executor-table.md`](./executor-table.md) |
 | A page will use a preset pattern fill or an independent object is explicitly selected as native-ready | [`native-data-interface.md`](./native-data-interface.md) before emitting the pattern or replacement metadata |
 | Any image/formula | [`executor-image.md`](./executor-image.md) + [`image-layout-spec.md`](./image-layout-spec.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) + [`svg-image-embedding.md`](./svg-image-embedding.md) |
-| Any `Status: Sourced` web image | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
+| Any placed image is `Status: Sourced` or its filename has an `image_sources.json` record | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Effective Speaker Notes outcome is enabled after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
 Evaluate branches from each object's actual information model, not only from a Chart/Table reference. A catalog family selects construction guidance but never native readiness; `Native-ready` is an independent object-level decision. Page-local qualitative geometry also never implies package-level `pptx_structure.mode: structured`.

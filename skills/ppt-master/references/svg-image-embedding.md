@@ -29,12 +29,12 @@ and filter/clip contracts.
 
 | Status | Meaning | Executor Handling |
 |--------|---------|-------------------|
-| **Pending** | Acquisition needed (`Acquire Via: ai` / `web`) or derivation needed (`Acquire Via: slice`); not yet attempted | Image Acquisition Phase (Step 5) consumes this; must not remain after Step 5 |
+| **Pending** | Acquisition or declared derivation is needed; not yet attempted | Step 5 consumes this; must not remain afterward |
 | **Failed** | The latest automatic acquisition attempt failed; this is retryable and non-terminal | Step 5 reruns the owning manifest or explicitly resolves the row to `Needs-Manual`; Executor must never treat `Failed` as usable content |
-| **Generated** | AI-generated file exists at expected path, or sliced element file exists at expected path | Reference from `../images/`; no on-slide credit needed. **Exception**: an `Illustration Sheet` row is only a slice source — it lives in §VIII but never in `spec_lock.md images`, so the Executor never places it |
+| **Generated** | AI/slice output exists | Reference from `../images/`; manifest records govern attribution. An `Illustration Sheet` stays in §VIII only as an unplaced slice source |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7 for the attribution contract) |
 | **Rendered** | Deterministic formula PNG exists at expected path (`Acquire Via: formula`) | Reference from `../images/`; use a legal anchor with `meet` for the complete placement (centered default: `xMidYMid meet`) and do not crop |
-| **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Generated`, `Sourced`, or `Rendered` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
+| **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, `Sourced`, or `Rendered` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
 | **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
 
@@ -49,6 +49,7 @@ and filter/clip contracts.
 2. Prepare project-local resources before SVG authoring:
    - user → materialize the explicit source under project/images/ → Existing
    - formula → write formula_manifest.json and run latex_render.py → Rendered
+   - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §3 before ordinary `Acquire Via` dispatch
    - Pending / Failed + ai  → Image_Generator runs image_gen.py     → Generated
    - Pending / Failed + web → Image_Searcher runs image_search.py   → Sourced
    - Pending + slice → after parent AI sheet is Generated, slice_images.py cuts element files → Generated

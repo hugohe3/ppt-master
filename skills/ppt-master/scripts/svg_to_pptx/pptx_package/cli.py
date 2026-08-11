@@ -875,9 +875,10 @@ Recorded narration:
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
     - Requires one m4a/mp3/wav file per slide
-    - Uses narration_animations.json when animation sidecars exist
-    - Inherits source-bound deck motion from the base postflight report
-    - Use --animation-config animations.json for the canonical animation
+    - Unless --no-animations is set, recorded narration without an explicit
+      config selects narration_animations.json when either sidecar exists
+    - With no sidecar, --inherit-motion-from may restore base-report deck motion
+    - Use --animation-config animations.json for narration-independent custom motion
     - Use --no-animations for narration and timings without animation motion
     - Embeds per-slide audio matched by SVG filename / slide number
     - Sets slide auto-advance from audio duration so video export can use
@@ -1064,9 +1065,11 @@ Recorded narration:
         type=str,
         default=None,
         help=(
-            'Per-slide/per-object animation config. Recorded narration uses '
-            '<project>/narration_animations.json when an animation sidecar exists, '
-            'or may inherit base postflight motion with --inherit-motion-from. '
+            'Per-slide/per-object animation config. While motion remains enabled, '
+            'recorded narration without an explicit config selects '
+            '<project>/narration_animations.json when either animation sidecar '
+            'exists, or may inherit base postflight motion with '
+            '--inherit-motion-from when neither exists. '
             'Other exports default to <project>/animations.json when present.'
         ),
     )

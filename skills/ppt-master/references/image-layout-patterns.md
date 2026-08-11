@@ -165,7 +165,7 @@ The following three patterns are topologically different and are not interchange
 
 ## 5. Asset-Dependent Treatments
 
-**Prepared-asset gate**: every treatment below consumes its named project-local asset; it does not authorize creation during SVG realization. Embedded lettering belongs to the artwork only when deliberately fixed; authoritative or editable labels remain native SVG. If a required asset is absent, return to the active workflow's preparation owner or choose a native treatment.
+**Prepared-asset gate**: every treatment below consumes its named project-local asset; it does not authorize creation during SVG realization. Embedded lettering belongs to the artwork only when deliberately fixed; authoritative or editable labels remain native SVG. If a required asset is absent, return to the active workflow's preparation owner or choose a native treatment. [`image-base.md`](./image-base.md) §2 maps these ids to preparation paths without auto-triggering them.
 
 ### 5.1 A1 · Prepared Composites and Appearance
 
