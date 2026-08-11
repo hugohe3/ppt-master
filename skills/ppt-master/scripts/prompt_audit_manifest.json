@@ -1183,48 +1183,12 @@
       },
       {
         "kind": "exact",
-        "fingerprint": "da38ec6c641e",
-        "paths": [
-          "skills/ppt-master/SPONSORS.md",
-          "skills/ppt-master/SPONSORS_CN.md"
-        ],
-        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
-      },
-      {
-        "kind": "exact",
-        "fingerprint": "fcc902f6644a",
-        "paths": [
-          "skills/ppt-master/SPONSORS.md",
-          "skills/ppt-master/SPONSORS_CN.md"
-        ],
-        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
-      },
-      {
-        "kind": "exact",
-        "fingerprint": "092a8a1f88e9",
-        "paths": [
-          "skills/ppt-master/SPONSORS.md",
-          "skills/ppt-master/SPONSORS_CN.md"
-        ],
-        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
-      },
-      {
-        "kind": "exact",
         "fingerprint": "6a432b0cc1df",
         "paths": [
           "skills/ppt-master/templates/decks/README.md",
           "skills/ppt-master/templates/layouts/README.md"
         ],
         "reason": "Sibling Deck and Layout docs keep the shared replication-mode explanation in lockstep."
-      },
-      {
-        "kind": "exact",
-        "fingerprint": "aa6e1929dd49",
-        "paths": [
-          "skills/ppt-master/SPONSORS.md",
-          "skills/ppt-master/SPONSORS_CN.md"
-        ],
-        "reason": "English and Chinese sponsor pages intentionally reuse the same sponsor badge markup."
       },
       {
         "kind": "exact",
