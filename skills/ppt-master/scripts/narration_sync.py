@@ -127,6 +127,7 @@ class AnimationGroupState:
     source_index: int
     duration_ms: int
     original_delay_ms: int
+    trigger: str
 
 
 @dataclass(frozen=True)
@@ -1010,6 +1011,7 @@ def _resolve_animation_groups(
                 source_index=source_index,
                 duration_ms=playback_duration_ms,
                 original_delay_ms=original_delay_ms,
+                trigger=effect_trigger,
             )
         )
     return states, use_svg
@@ -1216,7 +1218,11 @@ def rebuild_animations(
                 f'Derived animation slide "{slide_name}" groups must be an object'
             )
 
-        previous_end_ms = 0
+        # Start modes are row-relative; slide completion spans overlapping rows.
+        previous_start_ms = 0
+        previous_row_end_ms = 0
+        timeline_end_ms = 0
+        has_previous_row = False
         referenced_cues: set[int] = set()
         seen_groups: set[str] = set()
         for state in states:
@@ -1227,20 +1233,24 @@ def rebuild_animations(
                 if first_group_effect
                 else None
             )
+            if not has_previous_row:
+                sequence_base_ms = 0
+            elif state.trigger == "with-previous":
+                sequence_base_ms = previous_start_ms
+            else:
+                sequence_base_ms = previous_row_end_ms
             if cue_number is None:
                 if first_group_effect:
                     fallback_count += 1
                 delay_ms = state.original_delay_ms
-                actual_start_ms = previous_end_ms + delay_ms
+                actual_start_ms = sequence_base_ms + delay_ms
             else:
                 anchored_count += 1
                 referenced_cues.add(cue_number)
                 cue_start_ms = cues[cue_number - 1].start_ms
-                desired_start_ms = (
-                    narration_lead_in_ms + cue_start_ms
-                )
-                actual_start_ms = max(desired_start_ms, previous_end_ms)
-                delay_ms = actual_start_ms - previous_end_ms
+                desired_start_ms = narration_lead_in_ms + cue_start_ms
+                actual_start_ms = max(desired_start_ms, sequence_base_ms)
+                delay_ms = actual_start_ms - sequence_base_ms
                 drift_ms = actual_start_ms - desired_start_ms
                 if drift_ms > 500:
                     drift_warnings.append(
@@ -1248,7 +1258,8 @@ def rebuild_animations(
                         f"starts at {_seconds_from_ms(cue_start_ms):.3f}s after "
                         f"a {_seconds_from_ms(narration_lead_in_ms):.3f}s lead-in; "
                         f"animation starts at {_seconds_from_ms(actual_start_ms):.3f}s "
-                        f"(after-previous drift {_seconds_from_ms(drift_ms):.3f}s)"
+                        f"({state.trigger} drift "
+                        f"{_seconds_from_ms(drift_ms):.3f}s)"
                     )
 
             group_value = groups_value.setdefault(state.group_id, {})
@@ -1271,8 +1282,11 @@ def rebuild_animations(
                 effect_value = derived_effect_entries[state.effect_index][1]
             effect_value["order"] = state.order
             effect_value["delay"] = _seconds_from_ms(delay_ms)
-            effect_value["trigger"] = "after-previous"
-            previous_end_ms = actual_start_ms + state.duration_ms
+            effect_value["trigger"] = state.trigger
+            previous_start_ms = actual_start_ms
+            previous_row_end_ms = actual_start_ms + state.duration_ms
+            timeline_end_ms = max(timeline_end_ms, previous_row_end_ms)
+            has_previous_row = True
 
         ignored_cue_count += len(cues) - len(referenced_cues)
 
@@ -1284,10 +1298,10 @@ def rebuild_animations(
             )
             * 1000
         )
-        if previous_end_ms > advance_ms:
+        if timeline_end_ms > advance_ms:
             raise ValueError(
                 f'Animations on slide "{slide_name}" end at '
-                f"{_seconds_from_ms(previous_end_ms):.3f}s, after the recorded "
+                f"{_seconds_from_ms(timeline_end_ms):.3f}s, after the recorded "
                 f"slide advance at {_seconds_from_ms(advance_ms):.3f}s"
             )
 
