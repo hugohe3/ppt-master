@@ -163,6 +163,39 @@ MINIMAX_API_KEY=your-api-key
 # MINIMAX_MODEL=image-01
 ```
 
+## `image_treat.py`
+
+Create a non-destructive PNG derivative from one bitmap already prepared under
+`<project_path>/images/`. Use this only when a slide needs a baked bitmap effect;
+crop, mask, rotation, mirror, opacity, shadow, scrim, outline, and overlap remain
+native SVG/PPT treatments. This tool does not perform semantic background
+removal: use `slice_images.py --alpha` for flat-color keys, an already prepared
+RGBA asset or the active host image editor for a standalone cutout, and
+[`image-generator.md`](../../references/image-generator.md) §4.4 only for
+registered subject/base layers.
+
+```bash
+python3 scripts/image_treat.py projects/demo hero.jpg \
+  --output hero_soft.png --brightness 0.9 --contrast 1.1 --blur 12
+
+python3 scripts/image_treat.py projects/demo hero.jpg \
+  --output hero_duotone.png --duotone "#14213D" "#FCA311"
+```
+
+Supported operations are brightness, contrast, desaturation/grayscale,
+duotone, and Gaussian blur. They compose in a fixed order: brightness →
+contrast → tone treatment → blur. Desaturation, grayscale, and duotone are
+mutually exclusive. At least one option must produce a real change; animated
+or multi-frame sources are rejected rather than reduced to one frame.
+
+Both input and output are bare filenames directly under `images/`; output must
+be a new `.png` file. The tool keeps the EXIF-corrected display dimensions,
+leaves any alpha mask unchanged, and never overwrites the source or an existing
+derivative. If `images/image_sources.json` contains the source filename, the
+new record inherits that legal provenance and records `derived_from` plus the
+ordered `treatments`. Run `analyze_images.py` after all planned derivatives are
+ready so the inventory reflects the files that SVG authoring will consume.
+
 ## `analyze_images.py`
 
 Analyze objective image-file facts in a project directory before writing the
