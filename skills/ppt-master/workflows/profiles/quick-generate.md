@@ -413,8 +413,9 @@ page and reuse throughout the valid execution context:
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
 [`image-layout-patterns.md`](../../references/image-layout-patterns.md), and
 [`svg-image-embedding.md`](../../references/svg-image-embedding.md); add
-[`executor-web-image.md`](../../references/executor-web-image.md) for a sourced
-web image. Reread only after a known file change or context invalidation.
+[`executor-web-image.md`](../../references/executor-web-image.md) for a placed
+`Status: Sourced` image or filename recorded in `image_sources.json`.
+Reread only after a known file change or context invalidation.
 
 `executor-structure.md` is loaded once before all SVG authoring so Quick cannot
 omit shape-composition reasoning. Reuse it throughout the valid execution

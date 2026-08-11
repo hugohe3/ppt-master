@@ -577,7 +577,7 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | Actual row × column fact grid | `executor-table.md` |
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | `spec_lock.md images` / §VIII has an image/formula row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
-| At least one placed image has `Status: Sourced` | `executor-web-image.md` after the image branch |
+| At least one placed image is `Status: Sourced` or its filename has an `image_sources.json` record | `executor-web-image.md` after the image branch |
 | §I records recorded/self-running/video delivery, or §X records a final/literal narration script | `video-design.md` before the first SVG; retain it through notes/motion handling |
 | All SVG pages and SVG quality gates are complete, and the effective Speaker Notes outcome in `design_spec.md §I` is enabled | `executor-notes.md` before generating speaker notes |
 
