@@ -197,9 +197,10 @@ and the object-sync claim.
 **Sound effects**: exclude them from this pass and planning artifacts. After
 final SVG/motion, animation post-processing owns on-demand selection and native
 PPTX configuration; otherwise remain silent. For direct narrated MP4 delivery,
-`generate-audio` additionally owns the triggered post-export mix when the final
-resolved motion contains sound cues. Video gain and limiting never enter
-`animations.json`.
+`generate-audio` owns the selected sound-delivery branch: native PowerPoint
+encoding plus triggered post-export mix, or an explicitly requested real-time
+PowerPoint slideshow capture. Video gain and limiting never enter
+`animations.json`; capture uses the balance actually heard during Slide Show.
 
 **Production sequence**: after the final SVG check, validate any pre-SVG
 narration against the visible pages; ordinary draft-source runs instead use the
@@ -217,20 +218,27 @@ object-sync claim before the narrated PPTX and MP4.
 **Canonical artifact**: the editable PPTX remains canonical. `generate-audio`
 owns provider/voice/rate selection, page audio/SRT generation, semantic
 narration timing, narrated PPTX export, optional native PowerPoint video export,
-and the triggered sound-effects mix for direct MP4 delivery.
+the explicit slideshow-capture handoff, and the triggered sound-effects mix for
+direct MP4 delivery.
 
-**Conditional MP4**: run `powerpoint_video.py --check` only when MP4 delivery is
-selected. If native Windows PowerPoint export is unavailable, keep the narrated
-PPTX as the successful upstream artifact; do not substitute screenshots, HTML,
-or a third-party renderer and call it equivalent.
+**Conditional MP4**: run `powerpoint_video.py --check` only for the native-export
+branch. If native Windows PowerPoint export is unavailable, keep the narrated
+PPTX as the successful upstream artifact. An explicit slideshow-capture choice
+may hand that artifact to a user-operated Windows PowerPoint recorder; it is not
+complete until the capture is returned and accepted. Do not substitute
+screenshots, HTML, or a third-party renderer and call it equivalent.
 
-**Hard rule — native MP4 sound boundary**: PowerPoint's native encoder is the
-visual-animation and narration source, but it does not reliably include
-transition or object-animation sounds in the MP4 audio track. When the final
-narrated trace and PPTX contain sound cues, treat that native MP4 as a raw
-intermediate and run `video_sound_mix.py`; only its verified mixed MP4 is the
-sound-enabled video deliverable. Keep the native cue configuration in the
-canonical PPTX.
+**Hard rule — choose one PowerPoint video sound boundary**:
+
+| Delivery branch | Sound contract |
+|---|---|
+| Native encoder | PowerPoint supplies visual animation and narration but may omit transition/object sounds. With resolved cues, treat its MP4 as raw and require the verified `video_sound_mix.py` output. |
+| Real-time slideshow capture | PowerPoint remains the renderer and audio player; a recorder captures the full-screen Slide Show and exactly one application/system-audio source. The accepted capture must contain narration and every configured cue once, and must not enter `video_sound_mix.py`. |
+
+The branches are mutually exclusive because mixing a capture would duplicate
+its cues. Keep the native cue configuration in the canonical PPTX. Slideshow
+capture is explicit and human-audited; it does not inherit the native mix
+receipt or become an automatic fallback.
 
 **Current boundary**: importing and automatically splitting one long finished
 recording is unsupported. Require page-level audio or an explicit page/time map;

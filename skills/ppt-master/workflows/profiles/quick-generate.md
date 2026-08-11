@@ -564,8 +564,9 @@ deck-wide-only motion through the selected exporter flags instead.
 After visual motion is final, sync a selected cue per
 [`animations.md`](../../references/animations.md) §2.2; otherwise create no
 `sounds/`. Sidecars never use `templates/sounds/`. This configures the native
-PPTX only; direct narrated MP4 delivery with resolved cues completes the
-verified post-export mix in `generate-audio`.
+PPTX only; `generate-audio` completes direct narrated MP4 delivery with either
+the verified native-export mix or an explicitly selected real-time PowerPoint
+slideshow capture. Those sound branches are mutually exclusive.
 
 For Quick recorded/self-running/video delivery, complete the mandatory Custom
 Animations stage and validate `animations.json` before the base export unless
@@ -594,7 +595,8 @@ selected by the agent or required by the Quick video rule above. Do not run
 `finalize_svg.py`. After the validated base export, run
 [`generate-audio`](../stages/generate-audio.md) when Narration Audio is enabled;
 it owns page audio/SRT, narrated PPTX, the optional raw native MP4, and the
-final mixed MP4 when resolved animation sound cues trigger that branch.
+final mixed or captured MP4. When a selected manual capture has not yet been
+returned, it owns the capture-ready narrated PPTX handoff instead.
 
 The exporter requires a passing `final` report whose SVG fingerprint matches
 the current `svg_output/`; missing, blocking, non-final, or stale reports stop
@@ -618,5 +620,5 @@ or lock.
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX/raw or mixed MP4 outputs
+- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff
 ```

@@ -14,7 +14,8 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 - When narration-cue synchronization is selected, canonical `animations.json` and page-local SRT derive `narration_animations.json`, whose click-free object animations wait for the relevant subtitle cue. Narration-independent custom motion keeps canonical timing instead. When neither animation sidecar exists, narrated export creates no sidecar and inherits the base export's resolved motion. With page-local SRT, these paths can produce a deck-wide `<project_path>/audio/total.srt` aligned to the final PPTX timeline; after PowerPoint exports a video, `video_subtitles.py` can align the frozen narration text against its actual audio track for a delivery sidecar SRT.
 - Optional re-export: a new PPTX in `exports/` with each `m4a` / `mp3` / `wav` file embedded into the matching slide and slide auto-advance timings set from the configurable page-start floor, audio length, and page-tail padding, so kiosk/auto-play and video export work without manual timing. Narration never starts before the page transition finishes.
 - Optional native video export on Windows: `powerpoint_video.py` delegates the final narrated PPTX to PowerPoint 2016+ and waits until its native MP4 encoder succeeds or fails. This raw MP4 preserves the visual animation/narration path, but PowerPoint does not reliably include native transition or object-animation sounds in its audio track.
-- When direct MP4 delivery has resolved animation sound cues, `video_sound_mix.py` produces an independent float SFX WAV, a final mixed MP4, and a JSON receipt proving the stem reached the actual final audio while the video stream stayed unchanged.
+- On the native-export path, when direct MP4 delivery has resolved animation sound cues, `video_sound_mix.py` produces an independent float SFX WAV, a final mixed MP4, and a JSON receipt proving the stem reached the actual final audio while the video stream stayed unchanged.
+- As an explicit manual alternative, desktop Windows PowerPoint can play the final narrated deck full-screen while a recorder captures the presentation picture and one application/system-audio source. This records the narration and native cues PowerPoint actually plays, so it must not be followed by `video_sound_mix.py`.
 - The original speaker notes are preserved.
 
 ## How it works
@@ -22,7 +23,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "steady male voice for financial reporting"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **Settings resolve once.** Default Generate and Enhance Native ask once for provider, voice, rate, embedding, and optional video export. Quick uses explicit values and automatically resolves unspecified provider, voice, rate, and embedding choices; video remains off unless direct video delivery was requested.
-4. **Generation runs.** Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice voices write each page's audio and SRT from provider timing returned by the same synthesis; Qwen and explicit CosyVoice audio-only mode write audio only. A complete run atomically writes `audio/manifest.json` for provenance. For Generate PPTX with narration-cue synchronization, page-local SRT and canonical custom animation let the AI map current SVG content groups to numbered SRT cues and derive click-free `narration_animations.json`; narration-independent custom motion keeps canonical timing, while no animation sidecar inherits the base export's resolved motion. It then re-exports the deck with audio attached and, when page-local SRT exists, merges it using timing values read from that final PPTX. When automatic video export was selected and compatible Windows PowerPoint is available, it continues through PowerPoint's native encoder. If the final narrated trace and PPTX contain sound cues, the raw MP4 is then calibrated by page narration, mixed with the exact embedded cue bytes, limited, and verified before any delivery SRT is aligned against the final video. Long-audio import and automatic long-audio splitting are not supported.
+4. **Generation runs.** Edge, ElevenLabs, MiniMax, and timestamp-capable CosyVoice voices write each page's audio and SRT from provider timing returned by the same synthesis; Qwen and explicit CosyVoice audio-only mode write audio only. A complete run atomically writes `audio/manifest.json` for provenance. For Generate PPTX with narration-cue synchronization, page-local SRT and canonical custom animation let the AI map current SVG content groups to numbered SRT cues and derive click-free `narration_animations.json`; narration-independent custom motion keeps canonical timing, while no animation sidecar inherits the base export's resolved motion. It then re-exports the deck with audio attached and, when page-local SRT exists, merges it using timing values read from that final PPTX. Automatic video delivery continues through PowerPoint's native encoder and, when cues exist, the verified sound mix. An explicitly selected slideshow capture instead records PowerPoint's real-time full-screen picture and system audio, skips that mixer, and aligns any delivery SRT against the accepted capture. Long-audio import and automatic long-audio splitting are not supported.
 
 Subtitles remain external artifacts: PPT Master does not embed them into the PPTX or burn them into the MP4. Automatic video export delegates to installed Windows PowerPoint; it is not a separate renderer.
 
@@ -136,8 +137,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --inherit-motion-from "<base_postflight_report>"
 
 # Quick Generate appends --quick-generate --with-notes to the selected command.
-# For direct MP4 delivery with resolved sound cues, also append
-# --conversion-trace <final_narrated_trace> to that selected export command.
+# For the native-export mix branch with resolved sound cues, also append
+# --conversion-trace <final_narrated_trace>. Slideshow capture does not need
+# that trace for sound delivery.
 
 # 6. When page-local SRT exists, merge it using the final PowerPoint timings
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
@@ -149,9 +151,9 @@ python3 skills/ppt-master/scripts/powerpoint_video.py --check
 python3 skills/ppt-master/scripts/powerpoint_video.py \
   <final_narrated_pptx> -o exports/<raw_powerpoint_video>.mp4
 
-# 8. When final resolved motion has sound cues, build the independent SFX stem
-#    and verified mixed video. Defaults: transitions about 35%, object cues
-#    about 25%, final limiter -1 dBFS.
+# 8. On the native-export branch, when final resolved motion has sound cues,
+#    build the independent SFX stem and verified mixed video. Defaults:
+#    transitions about 35%, object cues about 25%, final limiter -1 dBFS.
 python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> \
   --pptx <final_narrated_pptx> \
   --trace <final_narrated_trace> \
@@ -159,7 +161,8 @@ python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> \
   -o exports/<final_mixed_video>.mp4 --force
 
 # 9. When page-local SRT exists, align the frozen narration text against the
-#    final video's audio track: mixed when step 8 ran, otherwise raw.
+#    final video's audio track: mixed when step 8 ran, accepted capture when
+#    slideshow recording was selected, otherwise raw.
 python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
   --video "<final_delivery_video>" --language <language> --force
 ```
@@ -283,6 +286,12 @@ Cloud TTS providers do not require extra Python packages; they use HTTPS directl
 
 Automatic MP4 export adds no Python package. It requires Windows PowerPoint 2016+ and Windows PowerShell; macOS and systems without compatible PowerPoint keep the narrated PPTX and use manual export.
 
+Real-time slideshow capture adds no PPT Master package. It requires desktop
+Windows PowerPoint plus a recorder that can capture the presentation picture
+and application/system audio. [OBS Studio](https://obsproject.com/kb/quick-start-guide)
+and [Windows Game Bar](https://support.microsoft.com/en-us/accessibility/windows/use-a-screen-reader-to-record-your-screen-with-xbox-game-bar)
+are examples, not project dependencies.
+
 Post-export animation-sound mixing requires `ffmpeg` / `ffprobe` on `PATH` and
 `numpy`. Final-video subtitle alignment separately requires `stable-ts`:
 
@@ -297,6 +306,14 @@ python3 -m pip install numpy stable-ts
 - **Mixed-language decks** (Chinese with English technical terms etc.): `edge-tts` neural voices handle the embedded foreign words reasonably well in most locales — pick the dominant language voice and try one slide first.
 
 ## Export as video
+
+Choose one delivery path:
+
+| Path | Use it when | Sound result |
+|---|---|---|
+| Native `CreateVideo` | You want the automated, reproducible path | Narration is native; resolved transition/object cues require `video_sound_mix.py`. |
+| Real-time PowerPoint slideshow capture | You explicitly want the video to contain exactly what PowerPoint plays | The capture already contains narration and native cues; never run `video_sound_mix.py` on it. |
+| Manual **Create a Video** UI | Automation is unavailable but PowerPoint's encoder is acceptable | Same sound boundary as native `CreateVideo`; this is not screen recording. |
 
 Once the narrated PPTX is in `exports/`, Windows PowerPoint 2016+ can export it automatically through:
 
@@ -316,7 +333,26 @@ unity with reduced cue levels, applies a peak limiter, and publishes an
 independent SFX stem plus a machine-readable verification receipt. Align
 subtitles against the mixed MP4, not the raw intermediate.
 
-**Manual PowerPoint fallback (Windows / Mac, Office 2016+)**:
+### Record the live PowerPoint slideshow
+
+This is an explicit real-time capture path. PowerPoint remains the renderer and
+audio player; the recorder only captures its output.
+
+1. Open the final narrated PPTX in desktop Windows PowerPoint and start Slide Show from the beginning. Use the deck's automatic slide and click-free object timings; do not capture edit or Presenter View.
+2. Capture only the full-screen presentation at the deck aspect ratio. Hide notifications and keep the pointer out of frame. The normal target is 1920x1080 at a stable 30 fps.
+3. Enable exactly one application/system-audio capture source and disable the microphone unless live speech was explicitly requested. Do not capture both desktop and application audio, which creates echo; 48 kHz is a preferred recorder setting, not a requirement.
+4. Start before the first slide and stop after the final sound tail. Preserve that raw capture, then trim only the leading and trailing handles.
+5. Confirm that the final file has video and audio streams, narration is intelligible, every configured cue is audible exactly once, animations/transitions completed, and no dropped frames or desktop UI are visible.
+6. When page-local SRT exists, run `video_subtitles.py` against the final trimmed capture. It aligns the frozen narration text to the actual recorded audio.
+
+The current capture acceptance is human-audited; PPT Master does not claim a
+machine cue receipt for it. If cue levels mask narration or clip, repair the
+PPTX/cue assets and record again, or use native export plus the deterministic
+gain/limiter mix. A Linux host can prepare the complete narrated PPTX, audio,
+timings, and subtitles, but this capture step still needs a real desktop
+Windows PowerPoint playback endpoint.
+
+### Manual Create a Video fallback (Windows / Mac, Office 2016+)
 
 1. Open the narrated `.pptx` from `exports/`.
 2. **File → Export → Create a Video**.
@@ -333,7 +369,7 @@ path when animation fidelity matters.
 
 **Tips**:
 
-- **No mic, no recording session needed** — the audio is generated, not recorded. Re-runs reuse the same notes and settings, but cloud models may still produce small nondeterministic differences.
-- **Animation fidelity on Windows** — PowerPoint's Windows video export preserves PPT Master's native visual page transitions and click-free object animation. Animation sound is a separate audio-delivery boundary handled by the post-export mix. Mac movie export has the limitation noted above. See [Animations & Transitions](./animations.md).
+- **Generated narration does not need a microphone** — native export needs no recording session. Real-time slideshow capture records application/system audio with the microphone disabled. Re-runs reuse the same notes and settings, but cloud models may still produce small nondeterministic differences.
+- **Animation fidelity on Windows** — PowerPoint's Windows video export preserves PPT Master's native visual page transitions and click-free object animation. Animation sound uses either the verified post-export mix or the mutually exclusive real-time slideshow capture above. Mac movie export has the limitation noted above. See [Animations & Transitions](./animations.md).
 - **Want to tweak just one slide's audio?** Edit `notes/<page>.md`, re-run `notes_to_audio.py` and the embedding step, then re-export the video — total turnaround is usually under a minute per slide.
 - **File size**: a 20-page deck at Full HD typically lands at 30–80 MB depending on imagery. Drop to HD if you need a smaller file for sharing.
