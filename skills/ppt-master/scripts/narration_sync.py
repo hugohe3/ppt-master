@@ -22,8 +22,8 @@ Examples:
         --pptx exports/demo.pptx --video exports/demo.mp4 --force
 
 Dependencies:
-    ffprobe for animation-window validation. Optional exported-video calibration
-    additionally requires ffmpeg and numpy.
+    ffprobe for animation-window validation. Optional exported-video timeline
+    calibration additionally requires ffmpeg and numpy.
 """
 
 from __future__ import annotations
@@ -173,6 +173,31 @@ class PowerPointTiming:
     transition_ms: int
     narration_delay_ms: int
     advance_ms: int
+
+
+@dataclass(frozen=True)
+class VideoSlideTiming:
+    """One slide mapped from the PPTX clock to an exported-video clock."""
+
+    slide_name: str
+    transition_ms: int
+    narration_delay_ms: int
+    advance_ms: int
+    powerpoint_slide_start_ms: int
+    powerpoint_narration_start_ms: int
+    video_slide_start_ms: int
+    video_narration_start_ms: int
+    adjustment_ms: int
+    correlation: float
+    audio_path: Path
+
+
+@dataclass(frozen=True)
+class VideoTimelineCalibration:
+    """Page-level calibration between one narrated PPTX and exported video."""
+
+    slides: tuple[VideoSlideTiming, ...]
+    powerpoint_timeline_ms: int
 
 
 def _timestamp_to_ms(value: str) -> int:
@@ -1361,7 +1386,8 @@ def rebuild_animations(
     )
 
 
-def _presentation_slide_members(package: zipfile.ZipFile) -> list[str]:
+def presentation_slide_members(package: zipfile.ZipFile) -> list[str]:
+    """Return slide package members in presentation order."""
     try:
         presentation_root = ET.fromstring(package.read("ppt/presentation.xml"))
         relationships_root = ET.fromstring(
@@ -1414,7 +1440,7 @@ def _read_powerpoint_timings(
 ) -> list[PowerPointTiming]:
     timings: list[PowerPointTiming] = []
     with zipfile.ZipFile(pptx_path) as package:
-        slide_members = _presentation_slide_members(package)
+        slide_members = presentation_slide_members(package)
         if len(slide_members) != slide_count:
             raise ValueError(
                 f"Narrated PPTX has {len(slide_members)} slides, "
@@ -1481,7 +1507,7 @@ def _require_numpy() -> Any:
         import numpy as np
     except ImportError as exc:
         raise RuntimeError(
-            "Exported-video subtitle calibration requires numpy. "
+            "Exported-video timeline calibration requires numpy. "
             "Install it with: python3 -m pip install numpy"
         ) from exc
     return np
@@ -1569,11 +1595,15 @@ def _best_correlation(search: Any, template: Any) -> tuple[int, float]:
 
 def _alignment_template_bounds(
     fine_envelope: Any,
-    cues: list[SubtitleCue],
+    cues: list[SubtitleCue] | None,
 ) -> tuple[int, int]:
     duration_ms = len(fine_envelope)
-    start_ms = min(cues[0].start_ms, max(0, duration_ms - 500))
-    cue_end_ms = min(cues[-1].end_ms, duration_ms)
+    if cues:
+        start_ms = min(cues[0].start_ms, max(0, duration_ms - 500))
+        cue_end_ms = min(cues[-1].end_ms, duration_ms)
+    else:
+        start_ms = 0
+        cue_end_ms = duration_ms
     end_ms = min(duration_ms, start_ms + _ALIGNMENT_TEMPLATE_MAX_MS)
     end_ms = min(end_ms, max(start_ms + 1000, cue_end_ms))
     if end_ms - start_ms < 500:
@@ -1586,7 +1616,7 @@ def _locate_audio_start(
     video_coarse: Any,
     audio_fine: Any,
     audio_coarse: Any,
-    cues: list[SubtitleCue],
+    cues: list[SubtitleCue] | None,
     predicted_start_ms: int,
 ) -> tuple[int, float]:
     """Locate one page narration near its predicted exported-video position."""
@@ -1638,7 +1668,7 @@ def _locate_audio_start(
 def _align_audio_starts_to_video(
     *,
     slide_names: list[str],
-    local_cues: dict[str, list[SubtitleCue]],
+    local_cues: dict[str, list[SubtitleCue] | None],
     theoretical_starts: list[int],
     audio_dir: Path,
     video_path: Path,
@@ -1649,7 +1679,7 @@ def _align_audio_starts_to_video(
     ffmpeg_path = shutil.which("ffmpeg")
     if ffmpeg_path is None:
         raise RuntimeError(
-            "Exported-video subtitle calibration requires ffmpeg. "
+            "Exported-video timeline calibration requires ffmpeg. "
             "Install ffmpeg and make it available on PATH."
         )
 
@@ -1662,13 +1692,15 @@ def _align_audio_starts_to_video(
         audio_path = _find_audio(audio_dir, slide_name)
         audio_paths.append(audio_path)
         audio_fine, audio_coarse = _decode_audio_envelopes(audio_path, ffmpeg_path)
+        slide_cues = local_cues.get(slide_name)
         if (
-            local_cues[slide_name][-1].end_ms
+            slide_cues
+            and slide_cues[-1].end_ms
             > len(audio_fine) + _ALIGNMENT_END_TOLERANCE_MS
         ):
             raise ValueError(
                 f"{slide_name}.srt ends after its narration audio: "
-                f"cue end={_seconds_from_ms(local_cues[slide_name][-1].end_ms):.3f}s, "
+                f"cue end={_seconds_from_ms(slide_cues[-1].end_ms):.3f}s, "
                 f"decoded audio={_seconds_from_ms(len(audio_fine)):.3f}s"
             )
         if index == 0:
@@ -1684,7 +1716,7 @@ def _align_audio_starts_to_video(
             video_coarse,
             audio_fine,
             audio_coarse,
-            local_cues[slide_name],
+            slide_cues,
             predicted_start_ms,
         )
         if correlation < _ALIGNMENT_MIN_CORRELATION:
@@ -1697,22 +1729,120 @@ def _align_audio_starts_to_video(
             raise ValueError(
                 f"Exported-video audio order is invalid at slide {slide_name}"
             )
-        final_cue_end_ms = (
-            aligned_start_ms + local_cues[slide_name][-1].end_ms
-        )
+        final_audio_end_ms = aligned_start_ms + len(audio_fine)
         if (
-            final_cue_end_ms
+            final_audio_end_ms
             > len(video_fine) + _ALIGNMENT_END_TOLERANCE_MS
         ):
             raise ValueError(
-                f"Exported video ends before the final cue on slide {slide_name}: "
-                f"cue end={_seconds_from_ms(final_cue_end_ms):.3f}s, "
+                f"Exported video ends before the narration on slide {slide_name}: "
+                f"audio end={_seconds_from_ms(final_audio_end_ms):.3f}s, "
                 f"decoded video audio={_seconds_from_ms(len(video_fine)):.3f}s"
             )
         aligned_starts.append(aligned_start_ms)
         correlations.append(correlation)
 
     return aligned_starts, correlations, audio_paths
+
+
+def calibrate_video_timeline(
+    *,
+    slide_names: list[str],
+    pptx_path: Path,
+    audio_dir: Path,
+    video_path: Path,
+    subtitle_dir: Path | None = None,
+) -> VideoTimelineCalibration:
+    """Calibrate PPTX slide starts against narration in an exported video.
+
+    Page-local SRT improves the correlation template when available. Audio-only
+    narration remains supported by matching each complete page track.
+    """
+    if not slide_names:
+        raise ValueError("Video timeline calibration requires at least one slide")
+    if len(set(slide_names)) != len(slide_names):
+        raise ValueError("Video timeline calibration slide names must be unique")
+
+    timings = _read_powerpoint_timings(pptx_path, len(slide_names))
+    theoretical_starts, timeline_ms = _powerpoint_audio_starts(timings)
+    local_cues: dict[str, list[SubtitleCue] | None] = {}
+    for slide_name in slide_names:
+        subtitle_path = (
+            subtitle_dir / f"{slide_name}.srt"
+            if subtitle_dir is not None
+            else None
+        )
+        local_cues[slide_name] = (
+            _parse_srt(subtitle_path)
+            if subtitle_path is not None and subtitle_path.is_file()
+            else None
+        )
+
+    aligned_starts, correlations, audio_paths = _align_audio_starts_to_video(
+        slide_names=slide_names,
+        local_cues=local_cues,
+        theoretical_starts=theoretical_starts,
+        audio_dir=audio_dir,
+        video_path=video_path,
+    )
+
+    slides: list[VideoSlideTiming] = []
+    powerpoint_slide_start_ms = 0
+    previous_video_slide_start_ms = -1
+    for (
+        slide_name,
+        timing,
+        powerpoint_narration_start_ms,
+        video_narration_start_ms,
+        correlation,
+        audio_path,
+    ) in zip(
+        slide_names,
+        timings,
+        theoretical_starts,
+        aligned_starts,
+        correlations,
+        audio_paths,
+    ):
+        raw_video_slide_start_ms = (
+            video_narration_start_ms
+            - timing.transition_ms
+            - timing.narration_delay_ms
+        )
+        if raw_video_slide_start_ms < -_ALIGNMENT_END_TOLERANCE_MS:
+            raise ValueError(
+                f"Exported-video calibration places slide {slide_name} before "
+                f"the video start: {raw_video_slide_start_ms}ms"
+            )
+        video_slide_start_ms = max(0, raw_video_slide_start_ms)
+        if video_slide_start_ms <= previous_video_slide_start_ms:
+            raise ValueError(
+                f"Exported-video slide order is invalid at {slide_name}"
+            )
+        slides.append(
+            VideoSlideTiming(
+                slide_name=slide_name,
+                transition_ms=timing.transition_ms,
+                narration_delay_ms=timing.narration_delay_ms,
+                advance_ms=timing.advance_ms,
+                powerpoint_slide_start_ms=powerpoint_slide_start_ms,
+                powerpoint_narration_start_ms=powerpoint_narration_start_ms,
+                video_slide_start_ms=video_slide_start_ms,
+                video_narration_start_ms=video_narration_start_ms,
+                adjustment_ms=(
+                    video_narration_start_ms - powerpoint_narration_start_ms
+                ),
+                correlation=correlation,
+                audio_path=audio_path,
+            )
+        )
+        previous_video_slide_start_ms = video_slide_start_ms
+        powerpoint_slide_start_ms += timing.transition_ms + timing.advance_ms
+
+    return VideoTimelineCalibration(
+        slides=tuple(slides),
+        powerpoint_timeline_ms=timeline_ms,
+    )
 
 
 def _merge_subtitles_result(
@@ -1754,13 +1884,21 @@ def _merge_subtitles_result(
         audio_starts = theoretical_starts
     else:
         resolved_audio_dir = audio_dir or project_path / "audio"
-        audio_starts, correlations, audio_paths = _align_audio_starts_to_video(
+        calibration = calibrate_video_timeline(
             slide_names=slide_names,
-            local_cues=local_cues,
-            theoretical_starts=theoretical_starts,
+            pptx_path=pptx_path,
             audio_dir=resolved_audio_dir,
             video_path=video_path,
+            subtitle_dir=subtitle_dir,
         )
+        if calibration.powerpoint_timeline_ms != timeline_ms:
+            raise ValueError("Video calibration and subtitle timelines differ")
+        audio_starts = [
+            slide.video_narration_start_ms
+            for slide in calibration.slides
+        ]
+        correlations = [slide.correlation for slide in calibration.slides]
+        audio_paths = [slide.audio_path for slide in calibration.slides]
         _reject_output_alias(
             output_path,
             audio_paths,

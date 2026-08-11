@@ -20,7 +20,7 @@ before the page plan is frozen, not only when a deck is already exported.
 | A static full-bleed page that should stop looking frozen | Consider slow `path_*` motion on a visually subordinate image or atmospheric layer; §4.1 gives one starting recipe | Post-processing; §4.1 |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
 | Kiosk or unattended playback | `--auto-advance <seconds>`, optionally with `-t none` | Export; §3 |
-| A transition or object animation needs an audible cue | Optional `transition.sound` or object-animation `sound`; select it only after the visual motion solution is complete, then sync the chosen global-library ids into the project | Post-motion; §2.2 |
+| A transition or object animation needs an audible cue | Optional `transition.sound` or object-animation `sound`; select it only after the visual motion solution is complete, then sync the chosen global-library ids into the project. Direct narrated MP4 delivery uses the separate verified mix in [`generate-audio`](../workflows/stages/generate-audio.md) | Post-motion; §2.2 |
 | Nothing should move | `-t none`, and leave per-element animation at its default `none` | Export; §1 |
 
 **Hard rule — Morph geometry is an authoring decision; pairing is a later
@@ -279,6 +279,13 @@ library ids.
 demonstrate capability or spread it across a deck for coverage. A sound may
 support a named transition, reveal, confirmation, warning, or drawn/moving
 gesture after the corresponding visual behavior is already selected.
+
+**Hard rule — PPTX and MP4 are separate sound deliveries**: sound fields and
+package read-back prove the editable PPTX contains the intended native cue;
+they do not prove PowerPoint's video encoder placed it in the MP4 audio track.
+For direct narrated MP4 delivery with resolved cues, follow `generate-audio`
+and mix from the final narrated trace plus final PPTX. Keep post-production
+gain and limiter settings out of `animations.json`.
 
 ---
 
@@ -586,6 +593,10 @@ object-animation timing before and after their allowed edits, then run
 structural package validation; they do not author or normalize animation
 effects.
 
+**Validation boundary**: these checks prove PPTX timing, relationships, and
+embedded sound parts. They are not final-video audio acceptance; a triggered
+`video_sound_mix.py` receipt owns that evidence.
+
 ---
 
 ## 7. Video Adaptation Contract
@@ -596,6 +607,11 @@ locks identity, order, effect, direction, and timing; video may refine only its
 declared renderer parameters. Unsupported families fail visibly. See
 [`video-motion-plan.md`](../scripts/docs/video-motion-plan.md).
 
+Direct narrated video sound uses the final resolved trace for cue order and
+offsets, the final PPTX relationships for the exact embedded audio bytes, and
+page-level narration correlation for the exported-video clock. It never reads
+sound timing from a raw sidecar or filename.
+
 ---
 
 ## 8. Limitations
@@ -605,6 +621,9 @@ declared renderer parameters. Unsupported families fail visibly. See
   not create object anchors.
 - PowerPoint OOXML is the compatibility target; other presentation apps may
   reinterpret individual native behavior trees.
+- PowerPoint's native MP4 encoder may omit transition and object-animation
+  sounds even when the PPTX package is valid; direct sound-enabled MP4 delivery
+  therefore uses the post-export mix owned by `generate-audio`.
 - Direct-PPTX routes preserve unknown transition `AlternateContent`; timing
   edits keep Choice and Fallback advance attributes synchronized.
 

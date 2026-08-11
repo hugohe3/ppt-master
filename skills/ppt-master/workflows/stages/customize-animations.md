@@ -327,6 +327,11 @@ Use the corresponding `sounds/<namespace>/<file>.wav` path in
 reference `skills/ppt-master/templates/sounds/` from `animations.json`. The
 global library is a selection source, not an exporter fallback.
 
+This pass owns only native PPTX cue selection and configuration. When direct
+narrated MP4 delivery is active, leave gain, limiting, and video mixing to
+[`generate-audio`](./generate-audio.md) after the final narrated export; do not
+write those post-production values into `animations.json`.
+
 ---
 
 ## 4. Edit `animations.json`
@@ -440,6 +445,10 @@ ambiguous direct-root groups, conflicting or undeclared shared keys, non-object
 Morph, and any target that does not remain one compatible Slide-local object
 after structure processing.
 
+**Validation boundary**: a passing sidecar, timing-tree read-back, and sound
+relationship check proves the PPTX configuration only. It does not prove the
+PowerPoint-exported MP4 audio track contains those cues.
+
 Generate Step 7 export reads back row order, including repeated rows targeting
 one shape, trigger, target, resolved effect, duration, offset, timing placement,
 IDs, and shape references. Narration
@@ -461,9 +470,12 @@ python3 skills/ppt-master/scripts/video_motion_plan.py \
   --force
 ```
 
-For narrated output, use the final `--recorded-narration` trace. The video plan
-locks identity, effect, direction, order, bounds, and timing; it may refine
-renderer parameters but cannot replace the source effect. See
+For narrated output, use the final `--recorded-narration` trace. When resolved
+sound cues exist and direct MP4 delivery is selected, that same final trace and
+the final narrated PPTX feed `video_sound_mix.py`; never infer cue timing from
+the raw sidecar or filenames. The video plan locks identity, effect, direction,
+order, bounds, and timing; it may refine renderer parameters but cannot replace
+the source effect. See
 [`video-motion-plan.md`](../../scripts/docs/video-motion-plan.md).
 
 ---

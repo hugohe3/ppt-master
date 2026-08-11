@@ -373,7 +373,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/visualization-recall.md"
       ],
-      "max_tokens": 105000
+      "max_tokens": 120000
     },
     "route.generate.planning-image": {
       "description": "Generate-PPTX planning context after a non-none image source is proposed or confirmed, including the compact layout math and vocabulary.",
@@ -825,7 +825,7 @@
       "files": [
         "skills/ppt-master/references/video-design.md"
       ],
-      "max_tokens": 2500
+      "max_tokens": 3250
     },
     "stage.generate.refine-spec": {
       "description": "Explicit post-confirmation spec refinement runbook.",
@@ -896,7 +896,7 @@
       "files": [
         "skills/ppt-master/references/animations.md"
       ],
-      "max_tokens": 9000
+      "max_tokens": 11000
     },
     "stage.shared.generate-audio": {
       "description": "Shared narration-audio stage.",
@@ -904,7 +904,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/generate-audio.md"
       ],
-      "max_tokens": 7000
+      "max_tokens": 8000
     },
     "governance.failure-recovery": {
       "description": "Global stop, retry, and resume policy.",
