@@ -499,8 +499,9 @@ the lockless Quick exporter and must use the default lock-backed profile.
 on a lock or generated font asset.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
-order. Use P01 as the visual anchor and continue directly through the remaining
-pages without a first-page checker or confirmation stop. When a motif was
+order. Use P01 as the visual-system calibration baseline and continue
+directly through the remaining pages without a first-page checker or
+confirmation stop. When a motif was
 resolved, reuse it selectively and vary scale, crop, density, position, or
 content interaction instead of cloning one ornament. Keep this choice only in
 active context; create no planning artifact or approval stop. After every page

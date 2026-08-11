@@ -13,7 +13,9 @@ before the page plan is frozen, not only when a deck is already exported.
 
 | What the deck needs | Reach for | Decided at |
 |---|---|---|
-| Reveal content in step with the narration | Per-element object animation — `-a auto` for generic entrance reveals, or an `animations.json` sidecar for explicit enter/emphasize/move/exit/static lifecycle choreography | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
+| A generic deck-wide entrance build | `-a auto`; with the default `after-previous` Start mode, groups use fixed `--animation-stagger` timing rather than narration cues | Post-processing; §2, §4 |
+| Explicit object lifecycle choreography | An `animations.json` sidecar for selected enter/emphasize/move/exit/static duties, order, Start mode, and timing | Post-processing; §2, §4, [`customize-animations`](../workflows/stages/customize-animations.md) |
+| Object reveals semantically synchronized to recorded narration | Narration-cue sync derives `narration_animations.json` from canonical `animations.json`, page-local SRT, and `narration_timing.json`; `-a auto` alone does not provide this mapping | Audio stage; [`generate-audio`](../workflows/stages/generate-audio.md) |
 | A continuous action — slide-in, flip, camera push-in, progressive reveal, camera pan | **Morph: author the action as two static pages, then select Morph and add explicit pairs when identity must be deterministic.** There is no keyframe timeline anywhere in this pipeline; the difference between two ordinary editable slides *is* the animation | **Page authoring (Step 6), then motion post-processing** — §2.1, §3.1 |
 | A static full-bleed page that should stop looking frozen | Consider slow `path_*` motion on a visually subordinate image or atmospheric layer; §4.1 gives one starting recipe | Post-processing; §4.1 |
 | Carousel, counting numerals, parallax depth, click-to-reveal flip card | Four recurring recipes assembled from the mechanisms above | §4.2 — the carousel and odometer both need paired pages |
@@ -488,7 +490,7 @@ Flags: `-a/--animation` selects effect/mode; `--animation-trigger` selects Start
 `--animation-config` selects a sidecar; `--no-animations` disables page/object
 motion but preserves narration audio and recorded advance timing.
 
-> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. When either animation sidecar exists, narrated export selects `narration_animations.json`; canonical `animations.json` without that derived file remains a synchronization error. Without sidecars, pass `--inherit-motion-from <base_postflight_report>` for the base deck motion. Pass `--animation-config animations.json` for canonical animation, or `--no-animations` to remove page and object motion.
+> Note: `--recorded-narration` rejects `on-click` and `trigger_shape`. Narration-cue sync uses `narration_animations.json` and blocks when only canonical `animations.json` exists. Narration-independent custom motion explicitly passes `--animation-config animations.json`, even when a derived sidecar also exists. With no sidecar, pass `--inherit-motion-from <base_postflight_report>`; explicit all-motion-off uses `--no-animations`.
 
 ### 4.1 Slow ambient motion — the page that breathes
 

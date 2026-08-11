@@ -52,22 +52,22 @@ SVG roster exists.
 
 ## 2. Scene and Page Planning
 
-Judge quality by reduced audience understanding cost, not spectacle. Resolve the
-spoken argument, visible evidence, mental map, and motion job together before
-choosing effects.
+**Default — quality follows purpose (may override)**: explanation prioritizes
+understanding; promotion or brand work may prioritize emotion, recall, or
+impact. Give every change a communication job.
 
 | Narrative relationship | Page treatment |
 |---|---|
 | Several lines explain one idea | Keep one page/scene and reveal only the semantic units needed for that explanation |
-| One process or system persists | Retain its main roles and relative positions as a stable visual anchor |
-| New evidence expands one part of a known map | Keep the map, enlarge or emphasize the active region, and de-emphasize context only as needed |
+| One process or system persists | Keep only the roles, relationships, or spatial cues needed for orientation; adapt the rest as needed |
+| New evidence expands a known map | Retain orienting cues; adapt the active region and context as needed |
 | The same object changes position, scale, containment, or state | Author compatible adjacent endpoints and use the Morph contract when motion is active |
 | The audience must adopt a genuinely new mental map | Start a new composition and make the transition explicit |
 
-**Default — stable visual anchors (may override when the subject resets)**:
-within one explanation, keep recurring roles, relative positions, and governing
-structure stable. Prefer moving, enlarging, revealing, or dimming within that
-map over replacing the entire layout at every beat.
+**Default — stable visual anchors (may override when the mental map resets)**:
+within a continuous explanation, preserve recognizable roles,
+relationships, or spatial cues. Exact coordinates, scale, and styling may
+change if identity and orientation remain legible; reset with a new mental map.
 
 **Default — one semantic focus change per beat (may override for one inseparable
 idea)**: several elements may change together only when they communicate one
