@@ -596,7 +596,9 @@ SVG 与 DrawingML 的表达模型并不等价，因此主编译路径不把“�
 | `validation/<output_stem>.report.json` | 已发布 PPTX 的 postflight 与资源审计 | 记录实际 ZIP/package part 数量；重新检查 ZIP 与正式页数；把内部关系、结构化包、转场和动画如实标为构建期强制校验；只有 SHA-256 指纹与导出输入一致时才接受质量报告关联，同时暴露未解析变量、外部图片和纯通用字体栈 |
 | `exports/<name>_<ts>_native_charts_tables.pptx`（需 `--native-charts-and-tables` 显式开启） | 让带 `data-pptx-replace-with` 标记的 SVG 派生形状图表/表格替换为 PowerPoint 原生 Chart/Table 对象 | 带数据源和图表/表格专属控制的对象；默认 DrawingML shape 本身仍可独立编辑 |
 | `exports/<name>_<ts>_narrated.pptx`（经 `--recorded-narration` 或 `--narration-audio-dir` 生成） | 嵌入匹配到的旁白音频；完整录制模式可直接服务自动放映与 PowerPoint 视频导出 | `--recorded-narration` 要求每页匹配音频，并写入“时长 + padding”的自动推进；低层 `--narration-audio-dir` 允许部分或零覆盖，只有另加 `--use-narration-timings` 才写自动推进 |
-| `exports/<narrated_stem>.mp4`（可选，经 `powerpoint_video.py`） | Windows PowerPoint 2016+ 下保留动画与旁白的视频交付物 | 委托 PowerPoint 原生编码器并等待完成；它是 PPTX 后处理集成，不是第二套 deck 渲染器 |
+| `exports/<narrated_stem>.mp4`（可选，经 `powerpoint_video.py`） | Windows PowerPoint 2016+ 下保留原生视觉动画与旁白的 raw 视频 | 委托 PowerPoint 原生编码器并等待完成；没有原生动画音效 cue 时它就是最终视频，但编码器不保证把这些 cue 写入音轨 |
+| `exports/<raw_stem>_sfx.wav`、`<raw_stem>_mixed.mp4`、`<raw_stem>_sound_mix.json`（触发式，经 `video_sound_mix.py`） | 最终 motion 含转场 / 对象音效时的带音效 MP4 交付物 | 依据最终 narrated trace 与 raw 视频逐页校准确定时间，从 PPTX relationship 提取准确字节，复制视频流，并验收实际 mixed 音轨，而不是把 PPTX 配置校验当成 MP4 验收 |
+| `exports/<capture_name>.mp4`（显式由操作者提供的实时放映录屏） | PowerPoint 实时画面，以及经唯一一路应用 / 系统音频实际播放的旁白和原生 cue | 绕过 `CreateVideo` 但不绕过 PowerPoint；依赖人工画面 / 音频 / 全部 cue 验收，没有混音回执，并且不得再进入 `video_sound_mix.py` |
 | `backup/<ts>/svg_output/`（仅默认输出路径；目录创建后复制为 best-effort） | 在不重跑 LLM 的前提下从冻结 SVG 源重建 pptx | 转换成功后先创建备份目录再尝试复制；显式 `-o` 不创建，复制失败不阻断导出，非 quiet 模式打印 warning，postflight 的 `backup_path` 为空，但目录创建失败仍会中断 |
 
 校验 JSON 与 `validation/workflow.log` 都是冷审计产物，不是常规模型输入。只有用户明确要求复核运行过程时才打开日志。它可以还原项目级 Python 命令及有限的重要结果，而不是完整控制台输出；每条命令的尾部会记录保留与省略的输出行数。日志也允许选择性记录重要阶段交接或返工原因、用户批准的例外及人工恢复选择等非 Python 事项；这些人工记录不重复制品内容、常规页面进度或私有推理，也不能替代当前制品对阶段与就绪状态的判定。导出器在程序内部读取 SVG 质量报告，并在默认非 quiet 流程打印紧凑的 `[POSTFLIGHT]` 回执，包含状态、质量门结果、Slide 数量、warning 类别计数和产物路径。成功流程只消费该回执，不加载两份完整 JSON；只有失败排查或用户明确要求审计时才定向提取报告字段。
@@ -721,7 +723,7 @@ ChartEx 导入被有意限制为 7 个已验证数据模型：`treemap`、`sunbu
 （`after-previous` 或 `with-previous`）；该要求按每条解析后的动画行检查，也排除
 `trigger_shape`。
 
-**为什么原生视频导出保持独立命令。** 音频合成和 PPTX 打包属于跨平台项目操作；PowerPoint 视频编码则是 Windows 桌面集成。`powerpoint_video.py` 接收最终带旁白 PPTX，调用 `CreateVideo` 并轮询 `CreateVideoStatus`，对调用方呈现同步结果，同时避免把 Office 自动化耦合进 TTS backend。
+**为什么原生视频导出保持独立命令。** 音频合成和 PPTX 打包属于跨平台项目操作；PowerPoint 视频编码则是 Windows 桌面集成。`powerpoint_video.py` 接收最终带旁白 PPTX，调用 `CreateVideo` 并轮询 `CreateVideoStatus`，对调用方呈现同步结果，同时避免把 Office 自动化耦合进 TTS backend。存在原生转场 / 对象音效时，`video_sound_mix.py` 仍保持第二个显式边界，因为 PowerPoint 可能从编码音轨中省略它们；该工具校准 raw MP4、生成可复用 SFX stem，并在不改变规范 PPTX 的前提下发布 mixed 输出验收回执。显式选择实时放映录制时则进入另一条人工边界：桌面版 PowerPoint 仍负责渲染和播放规范 deck，外部录屏器只捕获画面与唯一一路系统音频。这不是跨平台或无头自动化，而且录屏已经包含 cue，不能再交给导出后混音器。
 
 ---
 

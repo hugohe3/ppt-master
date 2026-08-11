@@ -686,7 +686,9 @@ The post-processing and export stages keep authoring, validation, preview, deliv
 | `validation/<output_stem>.report.json` | published-PPTX postflight and resource audit | records actual ZIP/package part counts; reruns ZIP and Slide-count checks; labels relationship, structured-package, transition, and animation validation as build-time enforcement; accepts quality-report linkage only when its SHA-256 fingerprint matches the export inputs; and surfaces unresolved tokens, external images, and generic-only font stacks |
 | `exports/<name>_<ts>_native_charts_tables.pptx` (opt-in via `--native-charts-and-tables`) | when `data-pptx-replace-with` markers should replace SVG-derived, shape-based charts/tables with PowerPoint-native Chart/Table objects | data-backed objects with chart/table-specific controls; the default DrawingML shapes remain independently editable |
 | `exports/<name>_<ts>_narrated.pptx` (via `--recorded-narration` or `--narration-audio-dir`) | embeds matched narration audio; complete recorded mode directly supports auto-play and PowerPoint video export | `--recorded-narration` requires matching audio for every slide and writes duration-plus-padding auto-advance; low-level `--narration-audio-dir` permits partial or zero coverage and writes auto-advance only with `--use-narration-timings` |
-| `exports/<narrated_stem>.mp4` (optional via `powerpoint_video.py`) | animation-faithful narrated video on Windows PowerPoint 2016+ | delegates to PowerPoint's native encoder and waits for completion; it is a post-PPTX integration, not a second deck renderer |
+| `exports/<narrated_stem>.mp4` (optional via `powerpoint_video.py`) | raw native visual-animation and narration video on Windows PowerPoint 2016+ | delegates to PowerPoint's native encoder and waits for completion; it is final when no native animation sound cues exist, but the encoder does not reliably include those cues in the audio track |
+| `exports/<raw_stem>_sfx.wav`, `<raw_stem>_mixed.mp4`, `<raw_stem>_sound_mix.json` (triggered via `video_sound_mix.py`) | sound-enabled direct MP4 delivery when final resolved motion contains transition/object cues | derives timing from the final narrated trace plus page-level raw-video calibration, extracts exact PPTX relationship bytes, copies the video stream, and verifies the actual mixed audio rather than treating PPTX configuration as MP4 acceptance |
+| `exports/<capture_name>.mp4` (explicit operator-supplied slideshow capture) | real-time PowerPoint picture plus the narration and native cues actually played through one application/system-audio path | bypasses `CreateVideo` but not PowerPoint; requires human picture/audio/all-cue acceptance, has no sound-mix receipt, and must never enter `video_sound_mix.py` |
 | `backup/<ts>/svg_output/` (default output path only; copy is best-effort after directory creation) | re-export from frozen SVG sources without rerunning the LLM | after successful conversion the exporter creates the backup directory and attempts the copy; explicit `-o` creates none, copy failure does not block export, prints a warning outside quiet mode, and leaves postflight `backup_path` empty, while directory-creation failure remains fatal |
 
 Validation JSON files and `validation/workflow.log` are cold audit artifacts,
@@ -841,6 +843,15 @@ packaging are cross-platform project operations; PowerPoint video encoding is a
 Windows desktop integration. `powerpoint_video.py` therefore accepts the final
 narrated PPTX, invokes `CreateVideo`, and polls `CreateVideoStatus` to present a
 synchronous CLI result without coupling Office automation to the TTS backends.
+When native transition/object sounds exist, `video_sound_mix.py` remains a
+second explicit boundary because PowerPoint may omit them from the encoded
+audio. It calibrates the raw MP4, renders a reusable SFX stem, and publishes a
+receipt that verifies the mixed output while leaving the canonical PPTX intact.
+An explicitly selected real-time slideshow capture is a separate manual
+boundary: desktop PowerPoint still renders and plays the canonical deck while
+an external recorder captures its picture and one system-audio path. It is not
+cross-platform or headless automation, and its already captured cues make the
+post-export mixer invalid for that file.
 
 ---
 
