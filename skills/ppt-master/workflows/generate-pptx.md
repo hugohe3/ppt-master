@@ -788,13 +788,19 @@ transition-sound-only choice may create a sparse `animations.json` here without
 activating object choreography; the exporter never reads
 `templates/sounds/` directly.
 
+When downstream delivery is a narrated MP4 and the resolved final motion has
+sound cues, `generate-audio` owns a final narrated export with
+`--conversion-trace`, native PowerPoint raw-video export, and the verified
+post-export sound mix. Do not enable conversion trace on every base export only
+for this possible downstream branch.
+
 **Success criterion**: The command exits successfully and produces:
 
 - `exports/<project_name>_<timestamp>.pptx`
 - `validation/<project_name>_<timestamp>.report.json` with `passed` or `passed-with-warnings` package/resource postflight status
 - `validation/<project_name>_<timestamp>.trace.json` when bare `--conversion-trace` is enabled; an explicit `--conversion-trace <path>` uses that destination instead
 
-Before creating the PPTX, the exporter independently requires the current matching `final` quality report; a missing, unreadable, unsupported, non-final, blocking, stale, or unverifiable report exits nonzero. The compact `[POSTFLIGHT]` receipt prints `status`, `quality_gate`, Slide count, warning-category counts, and PPTX/report paths. Disclose material warnings. Do not open or `cat` the complete report on routine success; use targeted field extraction only for failure investigation, an explicit audit request, or information absent from the receipt. A failed report or missing PPTX is not success. Retain its report path for later Generate narration (`deck_motion` handoff).
+Before creating the PPTX, the exporter independently requires the current matching `final` quality report; a missing, unreadable, unsupported, non-final, blocking, stale, or unverifiable report exits nonzero. The compact `[POSTFLIGHT]` receipt prints `status`, `quality_gate`, Slide count, warning-category counts, and PPTX/report paths. Disclose material warnings. Do not open or `cat` the complete report on routine success; use targeted field extraction only for failure investigation, an explicit audit request, or information absent from the receipt. A failed report or missing PPTX is not success. Retain its report path for later Generate narration (`deck_motion` handoff). This postflight proves the PPTX package, including native sound relationships; it is not acceptance evidence for a later MP4 audio track. `generate-audio` owns that triggered delivery check.
 
 ## ✅ Generate PPTX Complete
 

@@ -195,8 +195,11 @@ ordinary Default narration-independent deck-wide motion, omit these sidecars
 and the object-sync claim.
 
 **Sound effects**: exclude them from this pass and planning artifacts. After
-final SVG/motion, animation post-processing owns on-demand sync; otherwise
-remain silent.
+final SVG/motion, animation post-processing owns on-demand selection and native
+PPTX configuration; otherwise remain silent. For direct narrated MP4 delivery,
+`generate-audio` additionally owns the triggered post-export mix when the final
+resolved motion contains sound cues. Video gain and limiting never enter
+`animations.json`.
 
 **Production sequence**: after the final SVG check, validate any pre-SVG
 narration against the visible pages; ordinary draft-source runs instead use the
@@ -211,14 +214,23 @@ object-sync claim before the narrated PPTX and MP4.
 
 ## 5. Delivery Boundary
 
-**Canonical artifact**: the editable PPTX remains canonical. `generate-audio` owns provider/voice/rate
-selection, page audio/SRT generation, semantic narration timing, narrated PPTX
-export, and optional native PowerPoint video export.
+**Canonical artifact**: the editable PPTX remains canonical. `generate-audio`
+owns provider/voice/rate selection, page audio/SRT generation, semantic
+narration timing, narrated PPTX export, optional native PowerPoint video export,
+and the triggered sound-effects mix for direct MP4 delivery.
 
 **Conditional MP4**: run `powerpoint_video.py --check` only when MP4 delivery is
 selected. If native Windows PowerPoint export is unavailable, keep the narrated
 PPTX as the successful upstream artifact; do not substitute screenshots, HTML,
 or a third-party renderer and call it equivalent.
+
+**Hard rule — native MP4 sound boundary**: PowerPoint's native encoder is the
+visual-animation and narration source, but it does not reliably include
+transition or object-animation sounds in the MP4 audio track. When the final
+narrated trace and PPTX contain sound cues, treat that native MP4 as a raw
+intermediate and run `video_sound_mix.py`; only its verified mixed MP4 is the
+sound-enabled video deliverable. Keep the native cue configuration in the
+canonical PPTX.
 
 **Current boundary**: importing and automatically splitting one long finished
 recording is unsupported. Require page-level audio or an explicit page/time map;
