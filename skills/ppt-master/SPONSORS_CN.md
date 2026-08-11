@@ -36,9 +36,9 @@ PPT Master 始终免费开源。以下赞助方共同支持项目的持续维护
 
 ### RunAPI
 
-<a href="https://runapi.co/register?aff=WMLJ"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a>
+<a href="https://runapi.host/register?aff=WMLJ"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a>
 
-[RunAPI](https://runapi.co/register?aff=WMLJ) 通过一个 API Key 提供 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型。通过专属链接注册并联系管理员，即可领取 **¥7 免费额度**。
+[RunAPI](https://runapi.host/register?aff=WMLJ) 通过一个 API Key 提供 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型。通过专属链接注册并联系管理员，即可领取 **¥7 免费额度**。
 
 ### 优云智算
 
