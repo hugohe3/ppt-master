@@ -29,10 +29,18 @@ import os
 import re
 import sys
 import tempfile
+from io import BytesIO
 from pathlib import Path
 from typing import Optional
 
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps, UnidentifiedImageError
+from PIL import (
+    Image,
+    ImageCms,
+    ImageEnhance,
+    ImageFilter,
+    ImageOps,
+    UnidentifiedImageError,
+)
 
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -141,7 +149,7 @@ def build_parser() -> argparse.ArgumentParser:
         nargs=2,
         type=_hex_color,
         metavar=("SHADOW", "HIGHLIGHT"),
-        help="Map luminance between two #RRGGBB colors.",
+        help="Map sRGB luminance between two sRGB #RRGGBB colors.",
     )
     parser.add_argument(
         "--blur",
@@ -245,6 +253,47 @@ def _treatment_plan(args: argparse.Namespace) -> list[dict]:
     return plan
 
 
+def _validate_blur_radius(radius: Optional[float], width: int, height: int) -> None:
+    if radius is None or radius <= 0:
+        return
+    effective_maximum = max(width, height)
+    if radius > effective_maximum:
+        raise ValueError(
+            f"blur radius {radius:g} exceeds the effective maximum "
+            f"{effective_maximum} for a {width}x{height} image; choose --blur "
+            f"at or below {effective_maximum}"
+        )
+
+
+def _convert_duotone_source_to_srgb(image: Image.Image) -> tuple[Image.Image, bytes]:
+    output_profile = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB"))
+    output_icc = output_profile.tobytes()
+    source_icc = image.info.get("icc_profile")
+    if not source_icc:
+        return image.convert("RGB"), output_icc
+    if not isinstance(source_icc, bytes):
+        raise ValueError(
+            "source ICC profile has an unsupported representation; convert the "
+            "source to sRGB or remove the invalid profile, then retry"
+        )
+    try:
+        input_profile = ImageCms.ImageCmsProfile(BytesIO(source_icc))
+        converted = ImageCms.profileToProfile(
+            image,
+            input_profile,
+            output_profile,
+            outputMode="RGB",
+        )
+    except (ImageCms.PyCMSError, OSError, TypeError, ValueError) as exc:
+        raise ValueError(
+            "source ICC profile is invalid or incompatible with the image mode; "
+            "convert the source to sRGB or remove the invalid profile, then retry"
+        ) from exc
+    if converted is None:
+        raise RuntimeError("ICC conversion did not produce an image")
+    return converted, output_icc
+
+
 def _has_alpha(image: Image.Image) -> bool:
     return "A" in image.getbands() or "transparency" in image.info
 
@@ -264,12 +313,16 @@ def _apply_treatments(
             try:
                 oriented.load()
                 width, height = oriented.size
-                keep_icc = oriented.mode in {"RGB", "RGBA"}
-                icc_profile = oriented.info.get("icc_profile") if keep_icc else None
+                _validate_blur_radius(args.blur, width, height)
                 has_alpha = _has_alpha(oriented)
                 rgba = oriented.convert("RGBA") if has_alpha else None
                 alpha = rgba.getchannel("A") if rgba is not None else None
-                rgb = rgba.convert("RGB") if rgba is not None else oriented.convert("RGB")
+                if args.duotone is not None:
+                    rgb, icc_profile = _convert_duotone_source_to_srgb(oriented)
+                else:
+                    keep_icc = oriented.mode in {"RGB", "RGBA"}
+                    icc_profile = oriented.info.get("icc_profile") if keep_icc else None
+                    rgb = rgba.convert("RGB") if rgba is not None else oriented.convert("RGB")
 
                 if args.brightness is not None and args.brightness != 1:
                     rgb = ImageEnhance.Brightness(rgb).enhance(args.brightness)
