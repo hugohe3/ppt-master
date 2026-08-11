@@ -36,9 +36,9 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring PPT M
 
 ### RunAPI
 
-<a href="https://runapi.co/register?aff=WMLJ"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a>
+<a href="https://runapi.host/register?aff=WMLJ"><img src="https://raw.githubusercontent.com/hugohe3/ppt-master/main/docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a>
 
-[RunAPI](https://runapi.co/register?aff=WMLJ) provides access to 150+ models, including OpenAI, Claude, Gemini, DeepSeek, and Grok, through one API key. Register through the dedicated link and contact an administrator to claim **¥7 in free credit**.
+[RunAPI](https://runapi.host/register?aff=WMLJ) provides access to 150+ models, including OpenAI, Claude, Gemini, DeepSeek, and Grok, through one API key. Register through the dedicated link and contact an administrator to claim **¥7 in free credit**.
 
 ### YouYun ZhiSuan
 

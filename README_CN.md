@@ -13,7 +13,7 @@
 [English](./README.md) | 中文
 
 <details open>
-<summary>本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
+<summary>本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.ai/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.host/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
 
 <p align="center">
   <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
@@ -35,8 +35,8 @@
     <td>感谢 APIKEY.FUN 赞助了本项目！APIKEY.FUN 是一家专业的企业级 AI 中转站，致力于为企业和开发者提供稳定、高效、低成本的 AI 中转服务。平台支持 Claude、OpenAI、Gemini 等主流热门模型，价格低至官方原价的 <strong>7%</strong>。通过<a href="https://apikey.fun/register?aff=PPT-MASTER">本项目专属链接</a>注册，还可享受最高 <strong>永久充值 95 折</strong> 专属优惠。</td>
   </tr>
   <tr>
-    <td width="180"><a href="https://runapi.co/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a></td>
-    <td>感谢 RunAPI 赞助了本项目！RunAPI 是一个高效稳定的 API 平台，一个 API Key 即可访问 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型，价格低至官方原价的 <strong>1 折</strong>，极其稳定，可无缝兼容 Claude Code 等工具。RunAPI 为 PPT Master 用户提供专属福利：通过<a href="https://runapi.co/register?aff=WMLJ">本项目专属链接</a>注册并联系管理员，即可领取 <strong>￥7 的免费额度</strong>。</td>
+    <td width="180"><a href="https://runapi.host/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a></td>
+    <td>感谢 RunAPI 赞助了本项目！RunAPI 是一个高效稳定的 API 平台，一个 API Key 即可访问 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型，价格低至官方原价的 <strong>1 折</strong>，极其稳定，可无缝兼容 Claude Code 等工具。RunAPI 为 PPT Master 用户提供专属福利：通过<a href="https://runapi.host/register?aff=WMLJ">本项目专属链接</a>注册并联系管理员，即可领取 <strong>￥7 的免费额度</strong>。</td>
   </tr>
   <tr>
     <td width="180"><a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624"><img src="docs/assets/sponsors/youyun.png" alt="优云智算" width="150"></a></td>
@@ -239,7 +239,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 > **模型推荐**：追求最佳效果，语言模型选 **[Kimi K3](https://www.kimi.com/code/?aff=ppt-master)**（或 Claude）驱动流程，搭配 AI 生图 —— **`gpt-image-2`**（OpenAI）或 **`gemini-3.1-flash-image`**（Google）。本项目赞助商 Kimi Code 支持按量调用，很适合上手。
 
-**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
+**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.ai/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.host/register?aff=WMLJ)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
 
 **🔀 手上有多个渠道？** 拿到多家的 API Key 后，[cc-switch](https://github.com/farion1231/cc-switch)（跨平台桌面应用）可以一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商，免去手动改配置。
 
@@ -423,7 +423,7 @@ PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文�
 &nbsp;
 <a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" height="40" /></a>
 &nbsp;
-<a href="https://runapi.co/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" height="40" /></a>
+<a href="https://runapi.host/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" height="40" /></a>
 &nbsp;
 <a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624"><img src="docs/assets/sponsors/youyun.png" alt="优云智算" height="40" /></a>
 &nbsp;
