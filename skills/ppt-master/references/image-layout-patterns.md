@@ -46,7 +46,7 @@ Compact composition vocabulary for prepared images, illustrations, and rendered 
 | Several visuals should read as one system | `#P3-05` grid, `#P3-14` mosaic with text cell, `#P3-20` tessellation, `#P3-21` split tiling, `#P3-22` curve array, `#P3-23` depth row |
 | A foreground needs an opening or reveal | `#M1-06` true hole, `#M1-07` cut scrim, `#M1-08` background-registered fill, `#M1-05` text subtraction |
 | Text needs contrast without discarding the visual | `#M2-01` directional scrim, `#M2-05` spotlight, `#A3-02` prepared frosted panel, `#M2-09` grid scrim |
-| A subject should cross or re-layer around native content | `#A2-02` frame breakout or `#A2-03` registered subject/base pair |
+| A subject should cross or re-layer around native content | `#A2-02` frame breakout or `#A2-03` registered reconstruction group |
 | A cover, divider, or promotional page needs image-led structure | `#P1-01`, `#P1-04`, `#P1-13`, or `#P3-15`–`#P3-19` |
 | Consecutive pages should share one visual world | `#C1-01` persistent state, `#C2-01` pan, `#C2-02` push/pull, or `#C3-01` matched framing |
 
@@ -178,7 +178,7 @@ The following three patterns are topologically different and are not interchange
 
 - **#A2-01 · Transparent sticker or cutout** — use a prepared RGBA asset and preserve its open silhouette.
 - **#A2-02 · Subject breaking out of a container** — register a prepared foreground subject across its frame boundary.
-- **#A2-03 · Registered subject/base pair** — align a clean base with its prepared transparent subject cutout in one coordinate system. Draw the base first, the native title/panel/shape second, and the cutout last. Give both images the same `x`, `y`, `width`, `height`, and aspect mapping; never trim or independently crop either layer.
+- **#A2-03 · Registered reconstruction group** — align a clean base with one or more prepared transparent midground/subject/foreground layers in one coordinate system. Draw each member at its required z-order. Give every full-canvas member the same `x`, `y`, `width`, `height`, and aspect mapping; never trim or independently crop it. Several padded-bbox-disjoint objects may share one prepared plate while remaining separate nested-SVG picture crops.
 
 ### 5.3 A3 · Registered Derivatives
 

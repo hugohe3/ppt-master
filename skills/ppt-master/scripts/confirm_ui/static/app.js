@@ -148,7 +148,7 @@
             body_size_unit_relation: "SVG px to PPT pt: 1px = 0.75pt.",
             body_size_pt_hint: "Approximately {pt} pt (1px = 0.75pt; saved as px).",
             role_size_pt_hint: "≈ {pt} pt",
-            body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
+            body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (from its effective canvas span).",
             body_size_hint_purpose: "This reading mode recommends {def}px — one fixed size, not a range.",
             body_size_hint_oor: "(Current value is outside the usual range for this canvas — check the unit is right and that it fits.)",
             delivery_purpose: "Reading mode",
@@ -331,7 +331,7 @@
             body_size_unit_relation: "SVG px と PPT pt の換算：1px = 0.75pt。",
             body_size_pt_hint: "約 {pt} pt（1px = 0.75pt 換算、保存は px）。",
             role_size_pt_hint: "約 {pt} pt",
-            body_size_hint_canvas: "このキャンバスの目安は約{lo}–{hi}px（キャンバスの高さに応じて変化）。",
+            body_size_hint_canvas: "このキャンバスの目安は約{lo}–{hi}px（有効キャンバス尺度から算出）。",
             body_size_hint_purpose: "この閲覧モードの推奨は{def}px — 範囲ではなく固定値です。",
             body_size_hint_oor: "（現在の値はこのキャンバスの通常範囲外です — 単位とサイズ感を確認してください。）",
             delivery_purpose: "閲覧モード",
@@ -514,7 +514,7 @@
             body_size_unit_relation: "SVG px 与 PPT pt 的换算：1px = 0.75pt。",
             body_size_pt_hint: "约 {pt} pt（按 1px = 0.75pt 换算；提交仍保存 px）。",
             role_size_pt_hint: "约 {pt} pt",
-            body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
+            body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（按有效画布跨度计算）。",
             body_size_hint_purpose: "该阅读模式推荐 {def}px（单一固定值，非区间）。",
             body_size_hint_oor: "（当前数值超出该画布的常用范围——请确认单位无误、是否合适。）",
             delivery_purpose: "阅读模式",
@@ -2029,7 +2029,7 @@
             STATE.typography.body_size = typography.body_size ||
                 defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
             STATE.typography.sizes = Object.assign({}, typography.sizes || {});
-            syncUnpinnedTypographySizes(true);
+            syncUnpinnedTypographySizes(false);
         }
         if (candidate.icons) STATE.icons = normalizeRecId("icons", candidate.icons);
         if (candidate.image_strategy) {
@@ -2452,7 +2452,7 @@
     // edits call it so the conditional AI path stays synchronized on the page.
     var refreshImageProduction = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
-    // the body-size hint tracks the chosen canvas height.
+    // the body-size hint tracks the chosen canvas dimensions.
     var refreshBodySizeHint = function () {};
     // Replaced when the typography section mounts; body-size / reading-mode
     // changes call it so unpinned per-role values update locally.
@@ -2485,42 +2485,25 @@
         return Math.round(raw);
     }
 
-    // Canvas height (viewBox user units) parsed from a catalog `dim` like
+    // Canvas dimensions (viewBox user units) parsed from a catalog `dim` like
     // "1242×1660" or from a custom canvas string containing WxH; null if unknown.
-    function canvasHeight(canvasVal) {
+    function canvasDimensions(canvasVal) {
         var dim = null;
         (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
         var m = String(dim || canvasVal || "").match(/(\d{2,5})\s*[×xX*]\s*(\d{2,5})/);
-        return m ? parseInt(m[2], 10) : null;
-    }
-
-    function bodySizeRatioBand(canvasVal) {
-        var dim = null;
-        (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
-        var raw = String(dim || canvasVal || "");
-        var id = String(canvasVal || "").toLowerCase();
-        var isPpt = id === "ppt169" || id === "ppt43" ||
-            /1280\s*[×xX*]\s*720/.test(raw) ||
-            /1024\s*[×xX*]\s*768/.test(raw);
-        return isPpt ? { lo: 0.031, hi: 0.047 } : { lo: 0.025, hi: 0.033 };
+        return m ? { width: parseInt(m[1], 10), height: parseInt(m[2], 10) } : null;
     }
 
     // PPT canvases (16:9 / 4:3) take the fixed per-reading-mode body px;
-    // social / print canvases scale the body px by canvas height instead.
+    // other canvases use the canvas-owned effective-span rule below.
     function isPptCanvas(canvasVal) {
-        var dim = null;
-        (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
-        var raw = String(dim || canvasVal || "");
         var id = String(canvasVal || "").toLowerCase();
-        return id === "ppt169" || id === "ppt43" ||
-            /1280\s*[×xX*]\s*720/.test(raw) ||
-            /1024\s*[×xX*]\s*768/.test(raw);
+        return id === "ppt169" || id === "ppt43";
     }
 
     // Body baseline in **px** per reading mode (legacy key:
-    // delivery_purpose; see strategist.md §g). The
-    // system is px-only — these are the SVG/execution px values, recalibrated for
-    // the 1280×720 PPT canvas. No pt layer, no conversion. `def` is the fixed
+    // delivery_purpose). The system is px-only — these mirror the registered-PPT
+    // values in references/canvas-formats.md. No pt layer, no conversion. `def` is the fixed
     // recommendation; lo/hi are a sanity envelope for the out-of-range flag only.
     function deliveryBodyPx(purposeId) {
         if (purposeId === "text") return { lo: 18, hi: 21, def: 20 };
@@ -2528,12 +2511,25 @@
         return { lo: 22, hi: 25, def: 24 }; // balanced — the default
     }
 
+    // Mirrors references/canvas-formats.md § "Typography Scale Start". The
+    // 3× short-side cap keeps extreme aspect ratios from inflating the scale;
+    // lo/hi remain advisory and def is the initial anchor, never a hard floor.
+    function bodySizeBandForCanvas(canvasVal, purposeId) {
+        if (isPptCanvas(canvasVal)) return deliveryBodyPx(purposeId);
+        var dims = canvasDimensions(canvasVal);
+        if (!dims) return { lo: 32, hi: 48, def: 40 }; // legacy invalid-custom fallback
+        var shortSide = Math.min(dims.width, dims.height);
+        var longSide = Math.max(dims.width, dims.height);
+        var span = Math.min(longSide, 3 * shortSide);
+        return {
+            lo: Math.round(span * 0.025),
+            hi: Math.round(span * 0.033),
+            def: Math.round(span * 0.029)
+        };
+    }
+
     function defaultBodySizeForCanvas(canvasVal, purposeId) {
-        if (isPptCanvas(canvasVal)) return deliveryBodyPx(purposeId).def;
-        var h = canvasHeight(canvasVal);
-        if (!h) return 40;
-        var band = bodySizeRatioBand(canvasVal);
-        return Math.round(h * (band.lo + band.hi) / 2);
+        return bodySizeBandForCanvas(canvasVal, purposeId).def;
     }
 
     // Resolve the only deterministic same-stage size dependency locally. The
@@ -3000,10 +2996,12 @@
         var sizeInput = el("input", "num-input font-size-input");
         sizeInput.type = "number";
         sizeInput.min = "8";
-        sizeInput.max = "96";
+        sizeInput.max = "256";
         sizeInput.step = "1";
         sizeInput.value = (STATE.typography && STATE.typography.body_size) || "";
-        sizeInput.placeholder = isPptCanvas(STATE.canvas) ? "20 / 24 / 32" : "40 / 48";
+        sizeInput.placeholder = isPptCanvas(STATE.canvas)
+            ? "20 / 24 / 32"
+            : String(bodySizeBandForCanvas(STATE.canvas, STATE.delivery_purpose).def);
         sizeInput.addEventListener("input", function () {
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
             STATE.typography.body_size = sizeInput.value;
@@ -3017,7 +3015,7 @@
         var sizePtHint = el("div", "toggle-desc body-size-pt");
         var sizeHint = el("div", "toggle-desc body-size-hint");
         // PPT body is one fixed px value per reading mode (not a range); non-PPT
-        // canvases scale px to canvas height. A manually pinned value is never
+        // canvases use the canvas-owned effective span. A manually pinned value is never
         // overwritten by later reading-mode changes.
         // Everything is px — lo/hi are only a sanity envelope for the OOR flag.
         refreshBodySizeHint = function () {
@@ -3028,13 +3026,10 @@
                 lo = pb.lo; hi = pb.hi;
                 txt += " " + t("body_size_hint_purpose").replace("{def}", pb.def);
             } else {
-                var h = canvasHeight(STATE.canvas);
-                var band = bodySizeRatioBand(STATE.canvas);
-                if (h) {
-                    lo = Math.round(h * band.lo); hi = Math.round(h * band.hi);
-                    txt += " " + t("body_size_hint_canvas")
-                        .replace("{lo}", lo).replace("{hi}", hi);
-                }
+                var band = bodySizeBandForCanvas(STATE.canvas, STATE.delivery_purpose);
+                lo = band.lo; hi = band.hi;
+                txt += " " + t("body_size_hint_canvas")
+                    .replace("{lo}", lo).replace("{hi}", hi);
             }
             // Flag (hint only) a value far outside the
             // canvas's usual px range, so an accidental extreme value is visible
@@ -3078,7 +3073,7 @@
             wrap.appendChild(el("div", "hex-cell-label", t("size_role_" + role)));
             var inputLine = el("div", "role-size-line");
             var inp = document.createElement("input");
-            inp.type = "number"; inp.min = "6"; inp.max = "200"; inp.step = "1";
+            inp.type = "number"; inp.min = "6"; inp.max = "512"; inp.step = "1";
             inp.addEventListener("input", function () {
                 if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
                 if (!STATE.typography.sizes) STATE.typography.sizes = {};
@@ -3105,7 +3100,7 @@
             if (!STATE.typography.sizes) STATE.typography.sizes = {};
             sizeInput.value = STATE.typography.body_size || "";
             var bodyVal = parseFloat(STATE.typography.body_size) ||
-                (isPptCanvas(STATE.canvas) ? deliveryBodyPx(STATE.delivery_purpose).def : 40);
+                defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
             SIZE_ROLES.forEach(function (role) {
                 var cur = STATE.typography.sizes[role];
                 var hasVal = cur !== undefined && cur !== null && cur !== "";
@@ -3207,7 +3202,8 @@
             var sacc = hexOr(pal.secondary_accent, acc);
             var txt = hexOr(pal.body_text, "#1d2430");
             // body_size is px everywhere — preview it directly, no conversion.
-            var rawSize = parseFloat(typ.body_size) || (isPptCanvas(STATE.canvas) ? 24 : 18);
+            var rawSize = parseFloat(typ.body_size) ||
+                defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
             var bodyPx = Math.max(12, Math.min(34, rawSize));
             var headPrimaryStack = previewFontStack(head.primary, head.css);
             var headEnglishStack = previewFontStack(head.english, head.css);
@@ -3847,14 +3843,14 @@
         if (t0.custom) STATE.typography.custom = t0.custom;
 
         // Guarantee a body baseline even when a candidate omitted body_size, on
-        // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
+        // any canvas (PPT → px default by purpose, non-PPT → px from effective span),
         // so role sizes never derive from an empty anchor.
         if (STATE.typography && !STATE.typography.body_size) {
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
-        // A freshly authored Stage 2 starts from one deterministic reading-mode
-        // baseline.
-        if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(true);
+        // Preserve an authored positive candidate anchor; derive only the roles
+        // that remain unpinned. A user reading-mode change may reset it later.
+        if (stageNumber(REC) === 2) syncUnpinnedTypographySizes(false);
         var rawImageUsage = recValue("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {

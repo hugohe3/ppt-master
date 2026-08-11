@@ -11,10 +11,14 @@ to fill with judgment (hidden shapes, combo charts, overcrowded pages, ...).
 
 Usage:
     python3 scripts/beautify_inventory.py <slide_library.json> [--images <image_manifest.json>] [-o inventory.json]
+    python3 scripts/beautify_inventory.py <inventory.json> --summary
+    python3 scripts/beautify_inventory.py <inventory.json> --page N [--with-geometry]
 
 Examples:
     python3 scripts/beautify_inventory.py projects/x/analysis/<stem>.slide_library.json \
         --images projects/x/images/image_manifest.json -o projects/x/analysis/beautify_inventory.json
+    python3 scripts/beautify_inventory.py projects/x/analysis/beautify_inventory.json --summary
+    python3 scripts/beautify_inventory.py projects/x/analysis/beautify_inventory.json --page 7
 
 Dependencies:
     None (standard library only).
@@ -28,11 +32,21 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from console_encoding import configure_utf8_stdio
 
 configure_utf8_stdio()
+
+
+_GEOMETRY_KEYS = {
+    "geometry",
+    "display_ratio",
+    "display_left_emu",
+    "display_top_emu",
+    "display_width_emu",
+    "display_height_emu",
+}
 
 
 def _images_by_slide(manifest: list) -> dict[int, list[dict]]:
@@ -138,35 +152,172 @@ def build_inventory(slide_library: dict, images_by_slide: dict[int, list[dict]])
     }
 
 
+def _view_payload(inventory: dict, view: str, slides: list[dict]) -> dict:
+    """Wrap projected slides with the canonical deck-level facts."""
+    return {
+        "schema": "beautify_inventory.view.v1",
+        "inventory_schema": inventory.get("schema", "beautify_inventory.v1"),
+        "view": view,
+        "source": inventory.get("source"),
+        "slide_count": inventory.get("slide_count", len(inventory.get("slides", []))),
+        "canvas_px": inventory.get("canvas_px"),
+        "slides": slides,
+    }
+
+
+def _summary_view(inventory: dict) -> dict:
+    """Project the whole roster into compact per-slide counts and review flags."""
+    slides = []
+    for slide in inventory.get("slides", []):
+        slides.append({
+            "slide_index": slide.get("slide_index"),
+            "page_type": slide.get("page_type"),
+            "text_block_count": len(slide.get("text_blocks", [])),
+            "table_count": len(slide.get("tables", [])),
+            "chart_count": len(slide.get("charts", [])),
+            "diagram_count": len(slide.get("diagrams", [])),
+            "image_count": len(slide.get("images", [])),
+            "ignored": slide.get("ignored", []),
+            "needs_confirmation": slide.get("needs_confirmation", []),
+        })
+    return _view_payload(inventory, "summary", slides)
+
+
+def _without_geometry(value: Any) -> Any:
+    """Remove explicit source-layout geometry while preserving content and data."""
+    if isinstance(value, dict):
+        return {
+            key: _without_geometry(item)
+            for key, item in value.items()
+            if key not in _GEOMETRY_KEYS
+        }
+    if isinstance(value, list):
+        return [_without_geometry(item) for item in value]
+    return value
+
+
+def _page_view(inventory: dict, slide_index: int, with_geometry: bool) -> Optional[dict]:
+    """Project one slide by its canonical slide_index."""
+    for slide in inventory.get("slides", []):
+        if slide.get("slide_index") != slide_index:
+            continue
+        projected = slide if with_geometry else _without_geometry(slide)
+        return _view_payload(inventory, "page", [projected])
+    return None
+
+
+def _positive_int(value: str) -> int:
+    """Parse a positive slide index for argparse."""
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("page must be a positive integer")
+    return parsed
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Merge slide_library.json + image_manifest.json into a per-slide beautify inventory.",
+        description=(
+            "Build a beautify inventory from a slide library, or print a read-only "
+            "model view from a canonical beautify inventory."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("slide_library", help="slide_library.json from `template_fill_pptx.py analyze`")
-    parser.add_argument("--images", help="image_manifest.json from `ppt_to_md.py` (optional)")
-    parser.add_argument("-o", "--output", help="Write JSON here (default: stdout)")
+    parser.add_argument(
+        "input_json",
+        help="slide_library.json in builder mode, or beautify_inventory.v1 JSON in a view mode",
+    )
+    parser.add_argument(
+        "--images",
+        help="image_manifest.json for a slide_library input (optional)",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Write the full built inventory here (builder mode only; default: stdout)",
+    )
+    view_group = parser.add_mutually_exclusive_group()
+    view_group.add_argument(
+        "--summary",
+        action="store_true",
+        help="Print deck facts, per-slide object counts, and review flags to stdout",
+    )
+    view_group.add_argument(
+        "--page",
+        type=_positive_int,
+        metavar="N",
+        help="Print one slide's frozen content/data by slide_index to stdout",
+    )
+    parser.add_argument(
+        "--with-geometry",
+        action="store_true",
+        help="Retain source-layout geometry in a --page view",
+    )
     return parser
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
-    lib_path = Path(args.slide_library)
-    if not lib_path.is_file():
-        print(f"[ERROR] slide_library not found: {lib_path}", file=sys.stderr)
+    view_requested = args.summary or args.page is not None
+    if view_requested and args.output:
+        parser.error("--summary/--page write to stdout and cannot be combined with --output")
+    if args.with_geometry and args.page is None:
+        parser.error("--with-geometry requires --page")
+
+    input_path = Path(args.input_json)
+    if not input_path.is_file():
+        print(f"[ERROR] input JSON not found: {input_path}", file=sys.stderr)
         return 1
-    slide_library = json.loads(lib_path.read_text(encoding="utf-8"))
+    input_data = json.loads(input_path.read_text(encoding="utf-8"))
+
+    input_schema = input_data.get("schema")
+    if input_schema == "beautify_inventory.view.v1":
+        parser.error(
+            "beautify_inventory.view.v1 is a read-only stdout projection and "
+            "cannot be used as input"
+        )
+    is_inventory = input_schema == "beautify_inventory.v1"
+    if is_inventory and not view_requested:
+        parser.error(
+            "beautify_inventory.v1 input requires --summary or --page; "
+            "builder mode requires slide_library.json"
+        )
+    if is_inventory and args.images:
+        parser.error("--images cannot be combined with a beautify_inventory.v1 input")
+    if view_requested and not is_inventory:
+        parser.error("--summary/--page require a canonical beautify_inventory.v1 input")
 
     manifest: list = []
-    if args.images:
+    if args.images and not is_inventory:
         img_path = Path(args.images)
         if not img_path.is_file():
             print(f"[ERROR] image manifest not found: {img_path}", file=sys.stderr)
             return 1
         manifest = json.loads(img_path.read_text(encoding="utf-8"))
 
-    inventory = build_inventory(slide_library, _images_by_slide(manifest))
+    inventory = input_data if is_inventory else build_inventory(
+        input_data,
+        _images_by_slide(manifest),
+    )
+
+    if args.summary:
+        print(json.dumps(_summary_view(inventory), ensure_ascii=False, indent=2))
+        return 0
+    if args.page is not None:
+        page_view = _page_view(inventory, args.page, args.with_geometry)
+        if page_view is None:
+            available = ", ".join(
+                str(slide.get("slide_index"))
+                for slide in inventory.get("slides", [])
+            )
+            print(
+                f"[ERROR] slide_index {args.page} not found; available: {available or 'none'}",
+                file=sys.stderr,
+            )
+            return 1
+        print(json.dumps(page_view, ensure_ascii=False, indent=2))
+        return 0
 
     payload = json.dumps(inventory, ensure_ascii=False, indent=2)
     if args.output:

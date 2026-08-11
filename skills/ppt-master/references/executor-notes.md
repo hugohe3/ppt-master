@@ -2,7 +2,7 @@
 
 # Executor Speaker-notes Branch
 
-Conditional late-stage authority for generating the complete speaker-notes document.
+Conditional late-stage authority for generating or validating the complete speaker-notes document.
 
 **Trigger**: Default Generate loads this after the final quality check when the
 effective Speaker Notes outcome in `design_spec.md §I` is enabled. Quick
@@ -15,6 +15,13 @@ create `notes/total.md`.
 
 Write the complete deck to `notes/total.md` in one batch for coherent transitions. Use `# <number>_<page_title>` per page and `---` between pages; only the heading is stripped before TTS.
 
+**Pre-SVG narration branch**: when `notes/total.md` already exists because the
+user supplied a final/literal script or Quick is directly delivering narrated
+video, validate it instead of regenerating it. Retain every word and segment of
+a final/literal script. Agent-authored Quick narration may be repaired only for
+final-SVG inconsistency and before audio generation. A `# Slide <number>`
+heading remains valid until Generate Step 7.1 resolves the authored roster.
+
 **Pure spoken narration**: `notes_to_audio.py` reads the body verbatim. Write prose only; never add Markdown list/bullet markup, stage markers, key-point labels, duration lines, or other metadata.
 
 **Length follows content**: size natural sentences to semantic burden. Two to five is typical, not a cap; anchor pages may use less and dense pages more. Honor the active Design Spec or Quick context plus source rules. Duration is pacing guidance only: never pad, repeat, compress, or omit meaning to hit it.
@@ -24,6 +31,13 @@ Write the complete deck to `notes/total.md` in one batch for coherent transition
 **Hard rule — the final SVG is the visible page authority**: read every finalized `svg_output/<slide>.svg` in slide order. Use the active plan/context and approved sources; never write from the outline or core message alone.
 
 Before drafting, internally inventory the visible title/subtitle and every information-bearing direct-root `<g id>`; structured placeholder content still counts. Coverage requires its unique claim, evidence, example, relationship, qualifier, or implication—not merely its label—to enter the narration.
+
+For a pre-SVG narration branch, apply the same inventory in reverse: every
+independent visible claim or relationship must be supported by its script
+segment. Repair the visual page or return to planning for final/literal input;
+for agent-authored Quick narration, repair the narration before audio without
+inventing unsupported claims. Every spoken idea that requires orientation must
+likewise have a visible state or an explicit speech-only role in the active plan.
 
 - Text blocks, comparisons, and processes retain every independent fact or relationship; combine related short groups causally or comparatively.
 - Charts, tables, and KPIs state the takeaway, decisive values or trend, comparison basis, implication, and material uncertainty—not every axis, row, or cell.

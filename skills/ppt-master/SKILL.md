@@ -1,10 +1,12 @@
 ---
 name: ppt-master
 description: >
-  AI-driven presentation workflow for generating editable PPTX decks, creating
-  reusable Brand/Style/Layout/Deck workspaces, filling native PPTX templates, and
-  enhancing finished PPTX files. Use when the user asks to create, regenerate,
-  template, fill, or enhance a presentation, or mentions ppt-master.
+  AI-driven presentation workflow for generating editable PPTX decks,
+  reconstructing page visuals, creating reusable Brand/Style/Layout/Deck
+  workspaces, filling native PPTX templates, and enhancing finished PPTX files.
+  Use when the user asks to create, reconstruct, regenerate, template, fill, or
+  enhance a presentation, requests a presentation-authored narrated/self-running
+  video, or mentions ppt-master.
 metadata:
   version: "4.5.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
@@ -33,6 +35,7 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
 
 | Selected route / profile | Runtime authority |
 |---|---|
+| Generate PPTX — Image to PPTX | [`workflows/profiles/image-to-pptx.md`](workflows/profiles/image-to-pptx.md); Codex-supported, always Quick |
 | Generate PPTX — Beautify | [`workflows/profiles/beautify-pptx.md`](workflows/profiles/beautify-pptx.md); explicit Quick intent selects Quick, otherwise Default |
 | Generate PPTX — ordinary Default | [`workflows/generate-pptx.md`](workflows/generate-pptx.md) |
 | Generate PPTX — ordinary explicit Quick | [`workflows/profiles/quick-generate.md`](workflows/profiles/quick-generate.md) |
@@ -41,10 +44,10 @@ PPT Master is a routed presentation workflow. This entry owns global execution d
 | Enhance Native PPTX | [`workflows/native-enhance-pptx.md`](workflows/native-enhance-pptx.md) |
 
 **Hard rule — selected authority only**: Do not load another top-level route's
-procedure after routing. Beautify selects exactly one Generate runtime from the
-explicit Quick signal; never load both Default and Quick. Profiles, stages,
-governance files, and child workflows refine one selected route; they never
-compete with it.
+procedure after routing. Image to PPTX and Beautify are mutually exclusive;
+Image to PPTX activates Quick, while Beautify selects from explicit Quick
+intent. Never load both runtimes. Supporting documents refine one route; they
+never compete with it.
 
 ---
 

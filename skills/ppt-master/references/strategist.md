@@ -229,13 +229,13 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Size anchors — px only**: Every authoring layer carries bare px numbers. PowerPoint's displayed pt is an export result (`px × 0.75`), never an input or confirmation value.
 
-| Reading mode on PPT | Initial body | Information posture |
-|---|---:|---|
-| `text` | 20 | read-close / dense |
-| `balanced` | 24 | mixed reading + presentation |
-| `presentation` | 32 | projected / sparse |
-
-Other canvases use the body baseline in [`canvas-formats.md`](canvas-formats.md). The confirmed role-anchor values always win: take Confirm UI `body_size` / `sizes` verbatim as anchors; a manually edited anchor remains pinned, and changing canvas does not secretly rescale it.
+**Mandatory — canvas-owned body start**: Read
+[`canvas-formats.md`](canvas-formats.md) § "Typography Scale Start" before
+authoring size candidates. It owns the initial body anchor and sanity band for
+PPT reading modes plus registered/custom non-PPT canvases; do not reproduce or
+rederive them here. The confirmed role-anchor values always win: take Confirm UI
+`body_size` / `sizes` verbatim as anchors; a manually edited anchor remains
+pinned, and changing canvas does not secretly rescale it.
 
 | Recurring role | Ratio to body |
 |---|---:|
@@ -384,6 +384,13 @@ When enabled, match SVG names where possible (`01_cover.svg` →
 `notes/01_cover.md`); `notes/slide01.md` remains compatible. Split files contain
 no `#` heading lines; `notes/total.md` uses `#` headings.
 
+**Prepared final narration**: when the user explicitly marks a script as
+final/literal and intends it for notes or generated audio, preserve its wording
+and order. Segment it by semantic scene while resolving §IX, record its source
+and verbatim policy in §X `Content`, and let Generate write the frozen
+`notes/total.md` only after the final roster and lock pass their gates. Do not
+copy the full script into on-slide `Content` or rewrite it as visible body text.
+
 ---
 
 ## 2. Mode & Visual-Style Catalogs (Reference for Confirmation Item d)
@@ -491,6 +498,7 @@ includes transitions.
 | Natural-language template application | §I records it and the relevant layout/prototype choices realize it without silently dropping a requested use or exclusion |
 | Formula policy, AI-image acquisition path, generation mode, refine-spec toggle | §I records them as production mechanics; their owning Generate stage consumes the Design Spec, and formula policy also shapes §VIII when formula-worthy content exists |
 | Proactive speaker notes, custom animations, and narration audio | §I records the three resolved effective outcomes with provenance, while §X records enabled note requirements or `Generation: disabled`; they remain outside `spec_lock.md`. §IX Motion suggestions remain optional advice regardless of the animation outcome |
+| Explicit final/literal narration script | §IX segments the argument by semantic scene and gives each segment a supporting visible state; §X records the source plus verbatim policy, and Generate freezes the actual segments in `notes/total.md` after Gate 2 |
 
 ⛔ **GATE 1 — active-decision fidelity.** Do not create `spec_lock.md` until the initial Design Spec passes the comparison above and any enabled refinement is explicitly approved. Before Gate 2, every requested revision must be present and every unaffected decision intact. Missing/substituted values, unapplied revisions, or silently changed semantic types block despite schema validity; bounded Reference adaptation and unused Permission remain valid.
 

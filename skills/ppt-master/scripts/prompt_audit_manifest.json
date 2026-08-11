@@ -37,7 +37,7 @@
     "skills/ppt-master/references/strategist-template.md": 3000,
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
     "skills/ppt-master/templates/spec_lock_reference.md": 2750,
-    "skills/ppt-master/workflows/generate-pptx.md": 16000,
+    "skills/ppt-master/workflows/generate-pptx.md": 18000,
     "skills/ppt-master/workflows/stages/apply-template-workspace.md": 3500
   },
   "load_sets": {
@@ -49,7 +49,7 @@
         "skills/ppt-master/SKILL.md",
         "skills/ppt-master/workflows/routing.md"
       ],
-      "max_tokens": 6750
+      "max_tokens": 7750
     },
     "support.sponsor-recommendation.en": {
       "description": "English sponsor context for explicit user requests for model, AI image model, API/provider, or hosted-service recommendations.",
@@ -140,7 +140,7 @@
       "files": [
         "skills/ppt-master/workflows/native-enhance-pptx.md"
       ],
-      "max_tokens": 11000
+      "max_tokens": 13000
     },
     "route.fill-native-pptx": {
       "description": "Raw-PPTX native fill route.",
@@ -257,6 +257,32 @@
       ],
       "files": [],
       "max_tokens": 100000
+    },
+    "route.generate.quick-generate.image-to-pptx": {
+      "description": "Codex-supported Quick-only Image to PPTX with registered reference-image layers and shared plates.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate.in-hand-image",
+        "profile.generate.image-to-pptx"
+      ],
+      "files": [
+        "skills/ppt-master/references/image-base.md",
+        "skills/ppt-master/references/image-generator.md"
+      ],
+      "max_tokens": 130000
+    },
+    "route.generate.quick-generate.video-design": {
+      "description": "Quick Generate with conditional video-delivery design, frozen-script notes, custom animation, and narration/audio delivery.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.video-design",
+        "stage.generate.executor.notes",
+        "stage.generate.customize-animations",
+        "stage.shared.generate-audio"
+      ],
+      "files": [],
+      "max_tokens": 140000
     },
     "route.generate.quick-generate.template-fusion": {
       "description": "Quick Generate with the maximum Brand, Style, Layout, and Deck exact-root fusion loaded for flat authoring.",
@@ -558,7 +584,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 17000
+      "max_tokens": 19000
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
@@ -569,6 +595,18 @@
       ],
       "files": [],
       "max_tokens": 175000
+    },
+    "route.generate.flat-no-image.video-design": {
+      "description": "Default flat Generate-PPTX path with conditional video-delivery design, custom animation, and narration/audio delivery.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.flat-no-image",
+        "stage.generate.video-design",
+        "stage.generate.customize-animations",
+        "stage.shared.generate-audio"
+      ],
+      "files": [],
+      "max_tokens": 215000
     },
     "route.generate.flat-no-image-visualization": {
       "description": "Default flat Generate-PPTX path with visualization-reference consumption, all three information-model branches, optional native-data replacement, and chart verification.",
@@ -773,6 +811,22 @@
       ],
       "max_tokens": 7750
     },
+    "profile.generate.image-to-pptx": {
+      "description": "Codex-supported, Quick-only profile for reconstructing raster page frames as layered editable PPTX.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/profiles/image-to-pptx.md"
+      ],
+      "max_tokens": 4000
+    },
+    "stage.generate.video-design": {
+      "description": "Conditional recorded/self-running delivery design and prepared final-script handling shared by Default and Quick.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/video-design.md"
+      ],
+      "max_tokens": 2500
+    },
     "stage.generate.refine-spec": {
       "description": "Explicit post-confirmation spec refinement runbook.",
       "scope": "incremental",
@@ -850,7 +904,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/generate-audio.md"
       ],
-      "max_tokens": 6000
+      "max_tokens": 7000
     },
     "governance.failure-recovery": {
       "description": "Global stop, retry, and resume policy.",
@@ -2030,6 +2084,14 @@
       {
         "glob": "skills/ppt-master/templates/icons/THIRD_PARTY_NOTICES.md",
         "reason": "Third-party icon license and provenance notice; distributed for compliance, never loaded as prompt context."
+      },
+      {
+        "glob": "skills/ppt-master/templates/sounds/README.md",
+        "reason": "Bundled sound-library usage and metadata reference; not loaded as runtime prompt context."
+      },
+      {
+        "glob": "skills/ppt-master/templates/sounds/THIRD_PARTY_NOTICES.md",
+        "reason": "Third-party sound license and provenance notice; distributed for compliance, never loaded as prompt context."
       },
       {
         "glob": "skills/ppt-master/references/shared-standards.md",

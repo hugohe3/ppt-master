@@ -21,7 +21,7 @@ If the static checker has not been run or has failed, the subagent must abort wi
 
 Each review subagent processes a **batch** of pages (see §6.1 for batch sizing). The inputs are:
 
-1. **Page batch** — a list of `(svg_path, png_path, page_role)` tuples, one per assigned page. `svg_path` resolves under `<project>/svg_output/<page>.svg`, `png_path` under `<project>/.preview/<page>.png`. `page_role` is one of `cover` / `chapter` / `tldr` / `content` / `data` / `closing` / `breathing`, parsed from `design_spec.md §IX` by the orchestrator — subagents do **not** guess.
+1. **Page batch** — a list of `(svg_path, png_path, page_role, canvas)` records, one per assigned page. `svg_path` resolves under `<project>/svg_output/<page>.svg`, `png_path` under `<project>/.preview/<page>.png`. `page_role` is one of `cover` / `chapter` / `tldr` / `content` / `data` / `closing` / `breathing`, parsed from `design_spec.md §IX` by the orchestrator — subagents do **not** guess. `canvas` is copied verbatim from that page's successful renderer record and contains the root-SVG `view_box`, exact `width` / `height`, and raster `png_width` / `png_height`; subagents never assume a fixed canvas or recompute it from the PNG.
 2. **Path to this rubric file**
 3. **`<project>/design_spec.md`** (read-only) — §IX outline is the source of truth for "what should this page deliver"
 4. **`<project>/spec_lock.md`** (read-only) — brand-locked values
@@ -36,13 +36,13 @@ Style Review Focus is supplemental acceptance context, not a second rubric. It c
 
 | # | Category | Trigger | Permitted fix |
 |---|----------|---------|---------------|
-| H1 | Out-of-bounds | element bbox falls outside `0,0,1280,720` | shrink or reposition into canvas |
+| H1 | Out-of-bounds | element bbox falls outside the bounds declared by `canvas.view_box` | shrink or reposition into canvas |
 | H2 | Text overflow | text bbox extends past its visual container | reduce font-size or line-break |
 | H3 | Text overlap | two `<text>` elements' bboxes intersect (tspans within one text excluded) | reposition or resize |
 | H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | if **neither** the foreground nor the background color is a brand token: position-only escape — add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. If **either** color is a brand token: do not edit the SVG → goto §1.1 escalation. |
 | ~~H5~~ | Font-ramp drift | *covered by `svg_quality_checker.py` — see §0 prerequisites* | n/a (do not re-check) |
 | H6 | Element collision | rect/circle/path bboxes overlap with z-order violating semantics | open spacing |
-| H7 | Anchored element displaced | page number / header / footer covered, missing, or out of canvas | restore to anchor position |
+| H7 | Declared page chrome displaced | page number / header / footer is explicitly declared by `design_spec §IX`, `spec_lock.md`, or the installed template with a concrete anchor, but is covered, missing, or outside `canvas.view_box` | restore only that declared chrome to its declared anchor; never invent undeclared chrome |
 | H8 | Image rendering broken | `<image>` empty / broken-image / severe distortion | fix `href`; for `adaptive`, choose `meet` or a safer crop; a new complete-display requirement returns to §VIII `Crop Policy` and lock projection |
 | H9 | Missing key element | element required by `design_spec §IX` outline is absent from rendered slide | recreate from spec |
 
@@ -73,11 +73,11 @@ Subagents must apply the **明显** ("clearly bad") threshold — when in doubt,
 |---|----------|---------|---------------|
 | S1 | Vertical rhythm tight | Within the **same logical text block**, consecutive baselines have gap < 1.05× larger font-size | open to 1.15–1.3× |
 | S2 | Vertical rhythm hollow | Within one logical block, > 150 px non-decorative whitespace; `breathing` pages exempt | tighten |
-| S3 | Visual centroid off | hero/title block centroid offset from canvas center exceeds threshold by `page_role`: `cover` > 35%, `chapter` > 25%, `tldr`/`closing`/`breathing` > 25%, `content`/`data` > 20% | shift toward intended anchor |
+| S3 | Intended anchor missed | hero/title block is clearly displaced from a concrete anchor explicitly declared by `design_spec §IX`, `spec_lock.md`, or the installed template. Canvas center counts only when the plan explicitly calls for centered placement; intentional asymmetry, negative space, and image-focal placement are exempt. | restore toward the declared anchor |
 | S4 | Alignment drift | same-column elements differ in `x` by > 4 px (or same-row baselines by > 4 px) **and** are semantically meant to be on the same grid line | snap to grid |
 | S5 | Grid non-uniform | N-card row: neighbor `x`-spacing differs by > 5% of the average | re-distribute |
 | S6 | CJK letter-spacing | CJK characters with `letter-spacing / font-size > 5%` | reduce to ≤ 2% |
-| S7 | Accent overload | > 2 accent colors across ≥ 3 distinct elements | collapse to 1 primary + 1 secondary |
+| S7 | Decorative accents compete | multiple unlocked colors with no semantic role visibly compete with one another and with the intended primary emphasis. Brand colors, natural-media colors, data-series/category colors, status encoding, and other semantic colors are exempt. | consolidate only the competing decorative colors into existing page/deck accents; never recolor locked or semantic elements |
 | S8 | Emphasis mismatch | most visually prominent element ≠ the element `design_spec §IX` declares as the page's primary | rescale to match intent |
 | S9 | Image-text relationship | caption > 60 px from its image; text on busy image without scrim; image clearly purposeless | tighten / add scrim / remove |
 | S10 | Breathing violation | only when `page_role = breathing`: ≥3 rounded card grid | replace with naked text / single hero |
@@ -101,7 +101,7 @@ If a "violation" requires reinterpreting `design_spec.md` to fix → mark `needs
 Run before applying any rule:
 
 - PNG file exists and is non-zero bytes
-- PNG dimensions = 1280 × 720
+- PNG dimensions = that page record's `canvas.png_width` × `canvas.png_height`
 - PNG is **not** all-background (a histogram check: count of background-color pixels < 99% of total) — guards against blank/white-out renders only, **does not** filter sparse dark layouts
 
 Any check fails → status = `render_failed`, abort without scanning rules.
@@ -145,6 +145,13 @@ Each subagent writes exactly one file to `<project>/.review/<page>.json`:
 {
   "page": "02_three_steps.svg",
   "page_role": "content",
+  "canvas": {
+    "view_box": [0, 0, 1242, 1660],
+    "width": 1242,
+    "height": 1660,
+    "png_width": 1242,
+    "png_height": 1660
+  },
   "status": "ok" | "fixed" | "needs_human" | "render_failed" | "prereq_failed",
   "iterations_run": 1,
   "screenshot_paths": [
@@ -198,7 +205,7 @@ This rubric is consumed by subagents spawned via the `visual-review` stage. Mand
 The orchestrator partitions the N pages into `ceil(N/K)` batches of ≤ K pages each (default **K = 5**; configurable per run via the orchestrator prompt) and spawns one subagent per batch.
 
 - Spawn all batch subagents in **one assistant message** (parallel `Agent` calls). Sequential dispatch breaks pipelining.
-- Each subagent prompt is **self-contained** — no prior conversation context. Inline the absolute paths for §0.1 inputs 1–5 explicitly, plus the full `(svg_path, png_path, page_role)` list for that batch. Do not assume the subagent knows the project root.
+- Each subagent prompt is **self-contained** — no prior conversation context. Inline the absolute paths for §0.1 inputs 1–5 explicitly, plus the full `(svg_path, png_path, page_role, canvas)` records for that batch. Do not assume the subagent knows the project root.
 - `subagent_type: general-purpose`. Tool restrictions: Read, Edit, Bash (for `cp` backups), Write (for JSON output). MCP playwright is **not** required by subagents — orchestrator pre-renders PNGs.
 - `name` / `team_name` parameters may be unavailable from nested teammate context. Dispatch must remain functional with anonymous subagents — do not require named addressing.
 
@@ -232,7 +239,8 @@ Larger K is **not** always better: subagent context fills with prior pages' SVG 
 `visual_review.py <project> [pages...]` must guarantee:
 
 - Output PNG matches what the user would see in the live-preview browser (inlined `<use data-icon>`, resolved `<image href>`)
-- Output dimensions = 1280 × 720
+- The root SVG `viewBox` is the canvas source of truth; each successful page record includes its exact `view_box`, `width` / `height`, and raster `png_width` / `png_height`
+- Output dimensions = that page record's `png_width` × `png_height`
 - File-lock serialization at `<project>/.preview/.render.lock`
 - Clean exit codes:
   - `0` — all requested pages rendered

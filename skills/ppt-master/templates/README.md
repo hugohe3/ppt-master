@@ -148,3 +148,8 @@ The `icons/` directory contains 12,027 vector icons across five libraries:
 - **Usage & style rules**: [icons/README.md](./icons/README.md)
 - **Versions, licenses & attribution**: [icons/THIRD_PARTY_NOTICES.md](./icons/THIRD_PARTY_NOTICES.md)
 - **Search icons**: `rg --files skills/ppt-master/templates/icons/<library>/ | rg <keyword>`
+
+## Sound Library
+
+[`sounds/`](./sounds/) is post-motion discovery, not a template or
+Strategist resource. Sync selected cues only; see [usage](./sounds/README.md).

@@ -216,6 +216,10 @@ When Speaker Notes is disabled, keep §X with only
 `- **Generation**: disabled`; do not write filename, duration, style, or purpose
 placeholders. An explicit notes-off/audio-on conflict blocks before authoring.
 
+When an explicit final/literal narration script will become notes or generated
+audio, make §X `Content` name that source and say `preserve verbatim`; keep the
+full segmented script in `notes/total.md`, not in §IX or this Design Spec.
+
 Append either or both optional lines only when the capability earns a place;
 never write an empty or `none` placeholder:
 
