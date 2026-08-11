@@ -789,10 +789,13 @@ activating object choreography; the exporter never reads
 `templates/sounds/` directly.
 
 When downstream delivery is a narrated MP4 and the resolved final motion has
-sound cues, `generate-audio` owns a final narrated export with
-`--conversion-trace`, native PowerPoint raw-video export, and the verified
-post-export sound mix. Do not enable conversion trace on every base export only
-for this possible downstream branch.
+sound cues, `generate-audio` owns the final sound-delivery choice. Its default
+automated branch uses a final narrated export with `--conversion-trace`, native
+PowerPoint raw-video export, and the verified post-export sound mix. An
+explicit real-time slideshow capture instead records PowerPoint playback with
+system audio and skips both conversion-trace-only work and sound mixing. Do not
+enable conversion trace on every base export only for a possible downstream
+branch.
 
 **Success criterion**: The command exits successfully and produces:
 

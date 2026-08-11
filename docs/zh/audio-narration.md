@@ -14,7 +14,8 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 - 选择旁白 cue 同步时，规范的 `animations.json` 与逐页 SRT 会派生 `narration_animations.json`，让无点击对象动画等待相关字幕 cue；与旁白无关的自定义动画则保留规范配置中的原始计时。两个动画 sidecar 都不存在时，旁白导出不会创建 sidecar，而是继承基础导出的已解析 motion。存在逐页 SRT 时，这些路径都可以生成与最终 PPTX 时间轴一致的 `<project_path>/audio/total.srt`；PowerPoint 导出视频后，`video_subtitles.py` 可把冻结的旁白文本与实际视频音轨对齐，生成交付用外挂字幕。
 - 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面推进时间根据可配置的页前起始下限、音频长度和页尾停留自动设置——无人值守自动播放和视频导出都不用再手动调时间。旁白不会早于页面转场结束时启动。
 - Windows 下可选原生视频导出：`powerpoint_video.py` 把最终带旁白 PPTX 交给 PowerPoint 2016+，并等待其原生 MP4 编码成功或失败。该 raw MP4 保留视觉动画与旁白路径，但 PowerPoint 不保证把原生转场音效或对象动画音效写入视频音轨。
-- 直接 MP4 交付存在已解析动画音效时，`video_sound_mix.py` 会生成独立的 float SFX WAV、最终混音 MP4 和 JSON 回执，证明 stem 已进入实际成片音轨，同时视频流保持不变。
+- 原生导出路径直接交付 MP4 且存在已解析动画音效时，`video_sound_mix.py` 会生成独立的 float SFX WAV、最终混音 MP4 和 JSON 回执，证明 stem 已进入实际成片音轨，同时视频流保持不变。
+- 也可以显式选择人工实时录制：用桌面版 Windows PowerPoint 全屏播放最终带旁白 deck，再由录屏器捕获放映画面和唯一一路应用 / 系统音频。它会录下 PowerPoint 实际播放的旁白与原生 cue，因此不能再运行 `video_sound_mix.py`。
 - 演讲者备注原样保留。
 
 ## 它是怎么做到的
@@ -22,7 +23,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
 2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速/风格也会基于 notes 信息密度给出推荐值。
 3. **配置一次确定**。Default Generate 和 Enhance Native 会一次确认 provider、音色、语速、是否嵌入 PPTX，以及是否继续导出视频。Quick 直接采用明确值，并自动补齐未指定的 provider、音色、语速和嵌入方式；只有明确要求直接交付视频时才开启视频导出。
-4. **执行**。Edge、ElevenLabs、MiniMax，以及支持时间戳的 CosyVoice 音色，会依据同一次合成返回的 provider 计时，把每页音频和 SRT 一起写入 `audio/`；Qwen 和显式 CosyVoice 纯音频模式只写音频。完整生成成功后会原子写入 `audio/manifest.json` 记录来源。对于选择旁白 cue 同步的 Generate PPTX，逐页 SRT 与规范自定义动画会让 AI 将当前 SVG 内容组映射到编号后的 SRT cue，并派生无点击的 `narration_animations.json`；与旁白无关的自定义动画保留规范计时，没有动画 sidecar 时则继承基础导出的已解析 motion。随后再导出带音频的 PPTX；存在逐页 SRT 时，才从该 PPTX 读回实际计时并合并。若用户选择自动视频导出且本机 Windows PowerPoint 兼容，则继续调用 PowerPoint 原生编码器。最终 narrated trace 与 PPTX 含音效 cue 时，再按逐页旁白校准 raw MP4，混入 PPTX 中实际嵌入的 cue 字节，限幅并验收，最后才对齐交付字幕。不支持长音频导入或自动拆分。
+4. **执行**。Edge、ElevenLabs、MiniMax，以及支持时间戳的 CosyVoice 音色，会依据同一次合成返回的 provider 计时，把每页音频和 SRT 一起写入 `audio/`；Qwen 和显式 CosyVoice 纯音频模式只写音频。完整生成成功后会原子写入 `audio/manifest.json` 记录来源。对于选择旁白 cue 同步的 Generate PPTX，逐页 SRT 与规范自定义动画会让 AI 将当前 SVG 内容组映射到编号后的 SRT cue，并派生无点击的 `narration_animations.json`；与旁白无关的自定义动画保留规范计时，没有动画 sidecar 时则继承基础导出的已解析 motion。随后再导出带音频的 PPTX；存在逐页 SRT 时，才从该 PPTX 读回实际计时并合并。自动视频交付继续调用 PowerPoint 原生编码器，存在 cue 时再完成验收后的混音；显式选择实时放映录制时，则捕获 PowerPoint 实际全屏画面与系统音频、跳过混音，并将交付字幕对齐到验收后的录屏。不支持长音频导入或自动拆分。
 
 字幕保持为外部 SRT 文件：PPT Master 不把字幕嵌入 PPTX，也不烧录进 MP4。自动视频导出委托给本机 Windows PowerPoint，并不是另一套渲染器。
 
@@ -134,8 +135,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --inherit-motion-from "<base_postflight_report>"
 
 # Quick Generate 在所选命令后追加 --quick-generate --with-notes。
-# 直接 MP4 交付且存在已解析音效 cue 时，还需在所选导出命令中追加
-# --conversion-trace <final_narrated_trace>。
+# 原生导出混音分支存在已解析音效 cue 时，还需在所选导出命令中追加
+# --conversion-trace <final_narrated_trace>；实时放映录制不依赖该 trace 交付声音。
 
 # 6. 存在逐页 SRT 时，按最终 PowerPoint 计时合并
 python3 skills/ppt-master/scripts/narration_sync.py subtitles <project_path> \
@@ -146,8 +147,8 @@ python3 skills/ppt-master/scripts/powerpoint_video.py --check
 python3 skills/ppt-master/scripts/powerpoint_video.py \
   <final_narrated_pptx> -o exports/<raw_powerpoint_video>.mp4
 
-# 8. 最终 motion 存在音效 cue 时，生成独立 SFX stem 与验收后的混音成片。
-#    默认：转场音约 35%，对象音约 25%，最终限幅 -1 dBFS。
+# 8. 原生导出分支的最终 motion 存在音效 cue 时，生成独立 SFX stem 与
+#    验收后的混音成片。默认：转场音约 35%，对象音约 25%，最终限幅 -1 dBFS。
 python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> \
   --pptx <final_narrated_pptx> \
   --trace <final_narrated_trace> \
@@ -155,7 +156,7 @@ python3 skills/ppt-master/scripts/video_sound_mix.py <project_path> \
   -o exports/<final_mixed_video>.mp4 --force
 
 # 9. 存在逐页 SRT 时，把冻结的旁白文本与最终视频音轨对齐；
-#    第 8 步执行过就使用 mixed，否则使用 raw。
+#    第 8 步执行过就使用 mixed，选择录屏则使用验收后的 capture，否则使用 raw。
 python3 skills/ppt-master/scripts/video_subtitles.py <project_path> \
   --video "<final_delivery_video>" --language <language> --force
 ```
@@ -275,6 +276,11 @@ python3 -m pip install edge-tts
 
 自动 MP4 导出不增加 Python 依赖，但要求 Windows PowerPoint 2016+ 与 Windows PowerShell；macOS 或没有兼容 PowerPoint 的机器保留带旁白 PPTX，改用手动导出。
 
+实时放映录制不增加 PPT Master 依赖，但需要桌面版 Windows PowerPoint 和能
+捕获放映画面及应用 / 系统音频的录屏器。[OBS Studio](https://obsproject.com/kb/quick-start-guide)
+和 [Windows Game Bar](https://support.microsoft.com/en-us/accessibility/windows/use-a-screen-reader-to-record-your-screen-with-xbox-game-bar)
+只是可选工具示例，不是项目依赖。
+
 导出后混入动画音效需要系统 `PATH` 中可用的 `ffmpeg` / `ffprobe` 以及
 `numpy`；最终视频字幕对齐另需 `stable-ts`：
 
@@ -292,6 +298,14 @@ python3 -m pip install numpy stable-ts
 
 ## 导出为视频
 
+只选择一条交付路径：
+
+| 路径 | 适用情况 | 声音结果 |
+|---|---|---|
+| 原生 `CreateVideo` | 需要自动、可重复的流程 | 原生包含旁白；存在已解析转场 / 对象 cue 时必须运行 `video_sound_mix.py`。 |
+| PowerPoint 实时放映录制 | 明确希望成片包含 PowerPoint 实际播放的全部声音 | 录屏已经包含旁白和原生 cue，不能再运行 `video_sound_mix.py`。 |
+| 手工执行“创建视频” | 自动化不可用，但可以接受 PowerPoint 编码器 | 声音边界与原生 `CreateVideo` 相同；这不是录屏。 |
+
 带旁白的 PPTX 在 `exports/` 里就绪后，Windows PowerPoint 2016+ 可通过下面的接口自动导出：
 
 ```bash
@@ -308,7 +322,24 @@ narrated trace 含这些 cue 时，按上面的命令运行 `video_sound_mix.py`
 与旁白混合，最终经过峰值限幅，并输出独立 SFX stem 与机器可读验收回执。字幕应
 基于 mixed MP4 对齐，而不是 raw 中间产物。
 
-**PowerPoint 手动回退（Windows / Mac，Office 2016+）**：
+### 录制 PowerPoint 实时放映
+
+这是显式选择的实时采集路径。PowerPoint 仍是渲染器和音频播放器，录屏器只负责
+捕获其输出。
+
+1. 用桌面版 Windows PowerPoint 打开最终带旁白 PPTX，从第一页开始全屏放映。使用 deck 已有的自动翻页和无点击对象计时，不录编辑界面或演讲者视图。
+2. 只捕获与 deck 宽高比一致的全屏放映画面，关闭通知，并让鼠标指针离开画面。常规目标为 1920×1080、稳定 30fps。
+3. 只开启一路应用 / 系统音频捕获；除非明确需要现场讲话，否则关闭麦克风。不能同时捕获桌面音频和应用音频，否则会产生回声。48kHz 是推荐录制设置，不是硬要求。
+4. 第一页开始前提前录制，最终声音拖尾结束后再停止。保留原始录屏，然后只裁去首尾缓冲。
+5. 验收最终文件确实包含视频流和音频流，旁白清楚，所有已配置 cue 各出现一次，动画与转场完整，并且没有掉帧、通知或桌面 UI。
+6. 存在逐页 SRT 时，对最终裁切后的录屏运行 `video_subtitles.py`，把冻结旁白文本对齐到真实录制音轨。
+
+当前录屏验收依赖人工检查，PPT Master 不会声称它具有机器化 cue 回执。如果 cue
+盖住旁白或发生削波，应调整 PPTX / cue 素材后重新录制，或改用带确定性增益和限幅
+的原生导出加混音路径。Linux 可以准备完整的带旁白 PPTX、音频、计时和字幕，但
+这一步仍需要真实的桌面版 Windows PowerPoint 播放端。
+
+### 手工“创建视频”回退（Windows / Mac，Office 2016+）
 
 1. 打开 `exports/` 里那份带旁白的 `.pptx`。
 2. **文件 → 导出 → 创建视频**。
@@ -323,7 +354,7 @@ PowerPoint for Mac 可以手动导出 MP4/MOV，但微软明确说明其影片�
 
 **经验值**：
 
-- **不需要麦克风、不需要录制环节**——音频是合成的。重跑会复用同一份 notes 与参数，但云端模型仍可能出现轻微的非确定性差异。
-- **Windows 动画保真**：PowerPoint 的 Windows 视频导出会保留 PPT Master 的原生视觉页间转场和无点击对象动画；动画音效属于独立音频交付边界，由导出后混音处理。Mac 影片导出存在上面的限制。详见 [转场与动画](./animations.md)。
+- **生成旁白不需要麦克风**：原生导出也不需要录制环节；实时放映录制捕获应用 / 系统音频，并关闭麦克风。重跑会复用同一份 notes 与参数，但云端模型仍可能出现轻微的非确定性差异。
+- **Windows 动画保真**：PowerPoint 的 Windows 视频导出会保留 PPT Master 的原生视觉页间转场和无点击对象动画；动画音效采用验收后的导出后混音，或与其互斥的实时放映录制。Mac 影片导出存在上面的限制。详见 [转场与动画](./animations.md)。
 - **单页改音频**：改对应 `notes/<page>.md`，再跑一遍 `notes_to_audio.py` + 嵌入步骤，再重新导出视频——单页迭代通常不到一分钟。
 - **文件大小**：20 页全高清 deck 通常是 30–80 MB，取决于图片量。需要小文件分享时降到高清就行。

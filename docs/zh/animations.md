@@ -164,7 +164,8 @@ python3 skills/ppt-master/scripts/sound_sync.py list --query recommended
 
 上述校验只能证明可编辑 PPTX 含有原生 cue，不能证明 PowerPoint 导出的 MP4
 音轨含有它。直接交付带旁白且含音效 cue 的视频时，应按
-[音频旁白与视频导出](./audio-narration.md)执行导出后混音。
+[音频旁白与视频导出](./audio-narration.md)选择验收后的原生导出混音，或显式采用
+捕获系统音频的 PowerPoint 实时放映录制；两条路径不能叠加。
 
 ## 自定义具体对象
 

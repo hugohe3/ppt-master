@@ -471,11 +471,13 @@ python3 skills/ppt-master/scripts/video_motion_plan.py \
 ```
 
 For narrated output, use the final `--recorded-narration` trace. When resolved
-sound cues exist and direct MP4 delivery is selected, that same final trace and
-the final narrated PPTX feed `video_sound_mix.py`; never infer cue timing from
-the raw sidecar or filenames. The video plan locks identity, effect, direction,
-order, bounds, and timing; it may refine renderer parameters but cannot replace
-the source effect. See
+sound cues exist and the native-export mix branch is selected, that same final
+trace and the final narrated PPTX feed `video_sound_mix.py`; never infer cue
+timing from the raw sidecar or filenames. An explicit slideshow capture already
+records PowerPoint's native cue playback and does not use the trace for sound
+mixing. The video plan locks identity, effect, direction, order, bounds, and
+timing; it may refine renderer parameters but cannot replace the source effect.
+See
 [`video-motion-plan.md`](../../scripts/docs/video-motion-plan.md).
 
 ---

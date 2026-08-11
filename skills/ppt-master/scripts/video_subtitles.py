@@ -2,10 +2,10 @@
 """
 PPT Master - Final Video Subtitles
 
-Align the exact narration text frozen in page-local narration SRT files against the
-audio track of a finished PowerPoint-exported video. This produces a delivery
-SRT from the actual video timeline without rewriting speaker notes or relying
-on theoretical slide offsets.
+Align the exact narration text frozen in page-local narration SRT files against
+the audio track of a finished PowerPoint-exported or slideshow-captured video.
+This produces a delivery SRT from the actual video timeline without rewriting
+speaker notes or relying on theoretical slide offsets.
 
 Usage:
     python3 scripts/video_subtitles.py <project_path> --video <video> --language <language>
@@ -311,7 +311,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--video",
         required=True,
-        help="Finished PowerPoint-exported video; relative paths are project-relative",
+        help=(
+            "Finished PowerPoint-exported or slideshow-captured video; "
+            "relative paths are project-relative"
+        ),
     )
     parser.add_argument(
         "--language",
