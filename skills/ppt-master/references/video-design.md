@@ -59,20 +59,19 @@ impact. Give every change a communication job.
 | Narrative relationship | Page treatment |
 |---|---|
 | Several lines explain one idea | Keep one page/scene and reveal only the semantic units needed for that explanation |
-| One process or system persists | Keep only the roles, relationships, or spatial cues needed for orientation; adapt the rest as needed |
+| One system persists | Before roster/notes freeze, derive states from the prior composition; keep orienting cues and change the semantic delta |
 | New evidence expands a known map | Retain orienting cues; adapt the active region and context as needed |
-| The same object changes position, scale, containment, or state | Author compatible adjacent endpoints and use the Morph contract when motion is active |
+| The same object changes position, scale, containment, or state | Consider compatible Morph endpoints when movement improves orientation |
 | The audience must adopt a genuinely new mental map | Start a new composition and make the transition explicit |
 
 **Default — stable visual anchors (may override when the mental map resets)**:
-within a continuous explanation, preserve recognizable roles,
-relationships, or spatial cues. Exact coordinates, scale, and styling may
-change if identity and orientation remain legible; reset with a new mental map.
+within one explanation, preserve recognizable roles, relationships, or spatial
+cues. Position, scale, and style may change while identity and orientation
+remain legible; reset for a new map.
 
 **Default — one semantic focus change per beat (may override for one inseparable
-idea)**: several elements may change together only when they communicate one
-unit. Do not change unrelated title, diagram, annotation, and footer regions at
-the same moment merely to make the frame busier.
+idea)**: change several elements together only for one communication unit. Do
+not alter unrelated regions merely for busyness.
 
 **Default — scene chrome earns its place (may override for navigation, identity,
 attribution, or fidelity)**: for newly authored recorded, self-running, or video
@@ -88,9 +87,10 @@ on-screen copy)**: place keywords, structure, evidence, and relationships on the
 slide; keep full explanation in notes. Do not duplicate the narration script as
 body copy.
 
-**Page-count rule**: derive page count from semantic scenes, visual-state
-endpoints, and target duration. Never derive it from subtitle-cue or sentence
-count.
+**Page-count rule**: derive page/notes boundaries from scenes, mental-map arcs,
+endpoints, and duration—not cues or sentences. Profile-fixed count/order/content,
+including 1:1/fidelity, permits only existing-neighbor evaluation; never alter
+those invariants for motion.
 
 ---
 
