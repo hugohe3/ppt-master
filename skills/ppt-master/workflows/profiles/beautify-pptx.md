@@ -240,7 +240,7 @@ the inherited / source-derived default so the user sees the recommendation and
 keeps the place to change it. Schema →
 [`scripts/docs/confirm_ui.md`](../../scripts/docs/confirm_ui.md).
 
-The typography rows below show the non-English shape; omit `english` for an English source.
+Rows are abbreviated; follow Confirm UI's four-locale contract and omit `english` for English sources.
 
 ```json
 {
