@@ -1258,7 +1258,7 @@ def _localized_text_present(candidate: dict, field: str) -> bool:
     """Return whether a candidate carries non-empty localized prose."""
     return any(
         isinstance(candidate.get(key), str) and bool(candidate[key].strip())
-        for key in (field, f'{field}_zh', f'{field}_en', f'{field}_ja')
+        for key in (field, f'{field}_zh', f'{field}_zh_tw', f'{field}_en', f'{field}_ja')
     )
 
 
