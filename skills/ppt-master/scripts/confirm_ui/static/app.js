@@ -560,16 +560,204 @@
             on: "开",
             option_prefix: "方案",
             error_retry: "出错，请重试"
+        },
+        "zh-TW": {
+            page_title: "確認設計方案",
+            topbar_hint: "回答開放問題，或選擇並調整推薦項，然後繼續。",
+            stage_anchors: "第一階段 · 溝通契約",
+            stage_final_plan: "第二階段 · 最終方案與製作",
+            loading: "載入中…",
+            load_error: "無法載入推薦檔案，需在啟動前寫入。",
+            btn_confirm: "確認",
+            btn_confirm_contract: "確認溝通契約並繼續 →",
+            btn_confirm_final_plan: "確認最終方案 →",
+            deriving: "正在根據你的選擇生成下游選項…",
+            template_selection_required: "請選擇自由設計或使用範本；選擇使用範本時，至少選擇一個工作區。",
+            connection_lost: "確認頁服務連線中斷，正在重試；如果持續失敗，請回到聊天視窗走聊天確認。",
+            confirmed_title: "✓ 已確認",
+            confirmed_hint: "選擇已儲存，可關閉此頁並回到聊天視窗。",
+            lang_toggle_title: "切換語言",
+            sec_template_choice: "設計基礎",
+            template_choice_hint: "選擇這份簡報如何建立設計系統。",
+            template_free_title: "根據目前內容從零設計",
+            template_free_desc: "不使用可重複使用的範本工作區，由 Strategist 根據目前專案推導視覺系統。",
+            template_use_title: "使用範本",
+            template_use_desc: "選擇一個或多個 Brand、Style、Layout、Deck 或指定工作區。",
+            sec_template_library: "範本組合",
+            template_library_hint: "每種已註冊範本最多選擇一個；Brand、Style、Layout、Deck 可以組合使用。",
+            sec_template_explicit: "指定範本",
+            template_explicit_hint: "本次執行明確提供的精確工作區最多選擇一個；顯示來源路徑供你核對。",
+            template_kind_brand: "Brand",
+            template_kind_style: "Style",
+            template_kind_layout: "Layout",
+            template_kind_deck: "Deck",
+            template_source_library: "範本庫",
+            template_source_explicit: "指定地址",
+            template_source_path: "來源路徑",
+            template_select_none: "無",
+            template_none_registered: "尚無已註冊範本",
+            template_none_explicit: "本次執行沒有指定範本",
+            sec_canvas: "畫布格式",
+            sec_pages: "頁數",
+            sec_audience: "目標受眾",
+            sec_communication: "這份簡報要完成什麼",
+            sec_delivery: "如何使用、之後留下什麼",
+            sec_narrative: "敘事方向",
+            sec_visual: "視覺方向",
+            sec_color: "色彩方案",
+            sec_icons: "圖示使用",
+            sec_type: "字型方案",
+            sec_images: "圖片使用",
+            sec_image_production: "圖片產製",
+            sec_proactive_execution: "主動執行",
+            sec_mode: "生成模式",
+            sec_refine: "先審閱設計規範",
+            sec_design_directions: "成套設計方向",
+            design_directions_hint: "AI 最傾向的成套方案已預設套用；你可以改選其他方案，或在下方微調各項。調整後可用「還原原始方案」還原整套預設。",
+            direction_active: "已套用",
+            direction_adjusted: "已調整",
+            direction_apply_hint: "按一下即可套用這套完整方案。",
+            direction_restore: "還原原始方案",
+            scheme_component_options: "專案專屬自訂方案 · 選取卡片後可編輯",
+            sec_template_application: "範本套用方式",
+            template_application_hint: "AI 會根據目前內容推薦如何使用已安裝範本；你可以直接用自然語言修改。",
+            placeholder_template_application: "說明使用、跳過、重複或重排哪些範本頁面/原型，哪些內容必須保留，哪些可以替換或重組。",
+            sub_mode: "敘事模式",
+            sub_visual: "視覺風格",
+            sub_divergence: "材料發散度（多大程度重塑，還是貼近源材料）",
+            placeholder_divergence: "用你自己的話寫，例如「嚴格貼著文件來」/「在源材料範圍內自由重組並展開」。留空則按平衡處理。",
+            communication_intent: "這份簡報需要完成什麼？",
+            communication_intent_hint: "開放回答，可按需組合：告知、解釋、說服、決策、對齊、教學、報告與問責、動員、留檔與交接。必要時說明主次或先後，不需要選擇標籤。",
+            placeholder_communication_intent: "例如：先報告進展並暴露風險，再推動管理階層決定下一階段投入。",
+            audience_outcome: "期望的受眾變化 / 成功條件",
+            placeholder_audience_outcome: "結束後，受眾應該知道、理解、相信、決定或採取什麼行動？",
+            core_message: "核心資訊 / 決策請求 / 行動",
+            placeholder_core_message: "即使其他內容沒有被記住，受眾至少需要接住哪些主張、請求或行動？",
+            delivery_context: "傳遞場景（明確主要模式）",
+            delivery_context_hint: "區分演講者主導、讀者主導、混合、錄製/自動播放；混合場景要說明哪一種主導，以及還要兼顧什麼次要用途。",
+            placeholder_delivery_context: "例如：主要為有主講的 20 分鐘管理階層現場評審；次要為會後獨立閱讀的簽核文件。",
+            artifact_afterlife: "簡報後的成果用途",
+            placeholder_artifact_afterlife: "例如：簽核、評審、稽核、留檔、交接或重複使用；沒有後續用途時可留空。",
+            stage1_current_value_hint: "可編輯欄位中是推薦內容。你可以保留、修改或清空；確認時會按目前內容原樣儲存，空白也會保持為空。",
+            content_divergence_locked_hint: "目前流程要求原文和頁面結構保持不變，因此該欄位已鎖定。",
+            custom: "自訂",
+            custom_placeholder: "輸入自訂內容…",
+            ai_custom_candidate: "AI 自訂方案",
+            ai_custom_candidate_hint: "始終展示完整內容用於比較；預設不選取，選擇後可編輯。",
+            custom_behavior_required: "已選擇的 AI 自訂方案不能為空。",
+            custom_color_required: "請先填寫自訂配色說明，再繼續確認。",
+            design_system_required: "請先選擇完整的配色與字型方案，再繼續確認。",
+            mode_behavior_placeholder: "描述敘事階段、標題語氣、頁面節奏和表達姿態。",
+            visual_style_behavior_placeholder: "描述形狀語言、構圖、裝飾密度、留白、字型氣質和紋理。",
+            recommended: "推薦",
+            placeholder_audience: "這份簡報面向誰？",
+            placeholder_pages: "如：12-15",
+            hex_override: "自訂色值覆蓋：",
+            formula_policy: "公式渲染策略",
+            image_ai_path: "生成配圖來源",
+            image_strategy: "生成圖風格",
+            image_strategy_empty: "目前沒有可用的預設風格參考，仍可使用自訂風格。",
+            image_strategy_required: "請選擇一種生成圖預設，或填寫自訂風格。",
+            image_strategy_invalid: "所選生成圖預設目前不可用。",
+            image_strategy_select_placeholder: "選擇生成圖預設…",
+            image_strategy_recommended_group: "本專案推薦",
+            image_strategy_all_group: "全部預設風格",
+            image_strategy_rendering: "渲染風格",
+            image_strategy_visual: "視覺",
+            image_strategy_mood: "情緒",
+            image_strategy_ai_custom: "AI 自訂方案",
+            image_strategy_ai_custom_desc: "一套全新或綜合多個已有風格的渲染方案；選擇後可以編輯。",
+            image_strategy_custom_placeholder: "描述生成圖的具體方向、主體、構圖、風格關鍵字或需要避免的內容。",
+            image_strategy_reference_hint: "參考圖只展示渲染風格；最終 AI 圖片直接繼承上方已選的整套 PPT 配色。",
+            image_strategy_no_reference: "自訂選擇沒有參考圖。",
+            image_source_summary: "已選圖片來源",
+            image_production_hint: "圖片來源和渲染方向已在上方選擇；這裡僅決定實際產製路徑。",
+            image_usage_notes: "圖片補充要求",
+            image_usage_notes_placeholder: "例如：優先真實洗手場景；不要卡通病菌；產品照片保持原樣。",
+            image_usage_required: "請至少選擇一種圖片使用方式。",
+            image_usage_none_exclusive: "「不使用圖片」不能和其他圖片選項同時選擇。",
+            proactive_execution_hint: "這些預設開關只在你沒有明確要求時生效；你最新的明確指令始終優先。",
+            proactive_speaker_notes: "主動生成演講者備註",
+            proactive_speaker_notes_desc: "預設開啟。無需另行要求，Agent 也會生成演講者備註。",
+            proactive_custom_animations: "主動生成自訂動畫",
+            proactive_custom_animations_desc: "預設關閉。策略師的動畫建議仍會保留；開啟後，Agent 可在沒有另行要求時實際製作自訂動畫。",
+            proactive_narration_audio: "主動生成旁白音訊",
+            proactive_narration_audio_desc: "預設關閉。這裡保留原始選擇，不改寫演講者備註開關；策略師會在設計規範中解析旁白所需的最終備註狀態。",
+            font_heading: "標題",
+            font_body: "正文",
+            font_selection: "字型選擇",
+            primary_language_font: "主要語言字型",
+            english_font: "英文字型",
+            font_picker_hint: "選擇推薦方案會同步下方字型；修改任一下拉或手動字型後會標記為已自訂。",
+            other_installed_font: "其他已安裝字型…",
+            other_font_placeholder: "輸入精確的已安裝字型名稱",
+            customized: "已自訂",
+            font_body_size: "正文基準字級",
+            font_body_size_hint: "所有字級按這個正文基準推導。",
+            body_size_unit_relation: "SVG px 與 PPT pt 的換算：1px = 0.75pt。",
+            body_size_pt_hint: "約 {pt} pt（按 1px = 0.75pt 換算；提交仍儲存 px）。",
+            role_size_pt_hint: "約 {pt} pt",
+            body_size_hint_canvas: "目前畫布建議 ~{lo}–{hi}px（依有效畫布跨距計算）。",
+            body_size_hint_purpose: "該閱讀模式推薦 {def}px（單一固定值，非區間）。",
+            body_size_hint_oor: "（目前數值超出該畫布的常用範圍——請確認單位無誤、是否合適。）",
+            delivery_purpose: "閱讀模式",
+            delivery_purpose_hint: "決定資訊主要由頁面還是講者承擔：近讀型用完整句、短段落和細節自洽；演講型一頁一意，以簡短主張和視覺證據為主。",
+            size_override: "逐角色字級覆蓋：",
+            size_role_title: "標題",
+            size_role_subtitle: "副標題",
+            size_role_annotation: "註解",
+            custom_typography: "自訂字型方案",
+            custom_color: "自訂配色",
+            custom_color_placeholder: "用文字描述配色，如：深藍主色、暖橙強調、白色背景——或直接貼上 HEX 值…",
+            role_background: "背景",
+            role_secondary_bg: "次級背景",
+            role_primary: "主色",
+            role_accent: "強調",
+            role_secondary_accent: "次強調",
+            role_body_text: "正文文字",
+            cjk: "中文",
+            latin: "西文",
+            sample_heading_cjk: "主題方案標題",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "關鍵資訊摘要",
+            sample_body_latin: "Key message summary",
+            style_preview_label: "整體形象（配色 + 字型 + 圖示）",
+            style_preview_body: "· 僅大致形象，非實際版式",
+            no_icons: "無圖示",
+            preview_big_title: "大標題",
+            preview_section_title: "章節標題",
+            preview_latin_title: "Section Title",
+            preview_body_intro: "正文內容用於判斷基礎字級、行距和顏色對比。",
+            preview_latin_body: "Body text sample for checking Latin typography.",
+            preview_point_1_title: "正文內容",
+            preview_point_1_text: "這裡展示普通段落的密度和閱讀節奏。",
+            preview_point_2_title: "要點說明",
+            preview_point_2_text: "圖示和文字放在一起，判斷真實使用效果。",
+            preview_point_3_title: "結論建議",
+            preview_point_3_text: "組合效果需要在簡報場景下保持清晰可讀。",
+            mode_continuous_desc: "一次性連續生成整份簡報。",
+            mode_split_desc: "寫完設計規範後停止，另開視窗繼續生成頁面。",
+            refine_off_desc: "依次生成設計規範和執行鎖，然後自動繼續。",
+            refine_on_desc: "生成設計規範後暫停；你可在聊天中修改任何部分，明確確認後再生成執行鎖並繼續製作。",
+            off_default: "關",
+            on: "開",
+            option_prefix: "方案",
+            error_retry: "出錯，請重試"
         }
     };
 
     var LANG = (function () {
         try {
             var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
+            if (stored === "zh" || stored === "en" || stored === "ja" ||
+                    stored === "zh-TW") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("zh") === 0) {
+            if (/\bhans\b/.test(nav)) return "zh";
+            if (/\bhant\b/.test(nav) || /\b(tw|hk|mo)\b/.test(nav)) return "zh-TW";
+            return "zh";
+        }
         if (nav.indexOf("ja") === 0) return "ja";
         return "en";
     })();
@@ -579,37 +767,50 @@
         return dict[key] != null ? dict[key] : key;
     }
 
-    // Fallback stays LANG-relative: zh/en users never see Japanese labels,
-    // ja pages fall back ja → en → zh.
-    var LANG_FALLBACK = { zh: ["zh", "en", "ja"], en: ["en", "zh", "ja"], ja: ["ja", "en", "zh"] };
+    // Preserve the existing locale order, then accept zh_tw-only candidate
+    // prose from any persisted UI language so browser and server validation agree.
+    // Entries are FIELD SUFFIXES, not BCP-47 tags: "zh-TW" data lives in
+    // `<base>_zh_tw` keys, so a hyphenless suffix is used here and in langField().
+    var LANG_FALLBACK = {
+        zh: ["zh", "en", "ja", "zh_tw"],
+        en: ["en", "zh", "ja", "zh_tw"],
+        ja: ["ja", "en", "zh", "zh_tw"],
+        "zh-TW": ["zh_tw", "zh", "en", "ja"]
+    };
+    // Suffix used to look up localized catalog/recommendation fields.
+    var LANG_FIELD = { "zh-TW": "zh_tw" };
+
+    function langField(lang) {
+        return LANG_FIELD[lang] || lang;
+    }
     var IMAGE_COMPARISON_LABELS = {
         rendering: {
-            "vector-illustration": { zh: "矢量插画", en: "Vector illustration", ja: "ベクターイラスト" },
-            flat: { zh: "扁平插画", en: "Flat illustration", ja: "フラットイラスト" },
-            "3d-isometric": { zh: "3D 等距", en: "3D isometric", ja: "3Dアイソメトリック" },
-            "digital-dashboard": { zh: "数字仪表盘", en: "Digital dashboard", ja: "デジタルダッシュボード" },
-            "corporate-photo": { zh: "企业摄影", en: "Corporate photo", ja: "企業写真" },
-            blueprint: { zh: "蓝图线稿", en: "Blueprint", ja: "ブループリント" },
-            editorial: { zh: "编辑杂志", en: "Editorial", ja: "エディトリアル" },
-            "sketch-notes": { zh: "手绘笔记", en: "Sketch notes", ja: "スケッチノート" },
-            "ink-notes": { zh: "墨线笔记", en: "Ink notes", ja: "インクノート" },
-            chalkboard: { zh: "粉笔黑板", en: "Chalkboard", ja: "チョークボード" },
-            watercolor: { zh: "水彩", en: "Watercolor", ja: "水彩" },
-            "warm-scene": { zh: "暖调场景", en: "Warm scene", ja: "暖色シーン" },
-            "screen-print": { zh: "丝网印刷", en: "Screen print", ja: "スクリーンプリント" },
-            "fantasy-animation": { zh: "幻想动画", en: "Fantasy animation", ja: "ファンタジーアニメ" },
-            "pixel-art": { zh: "像素艺术", en: "Pixel art", ja: "ピクセルアート" },
-            nature: { zh: "自然有机", en: "Nature", ja: "自然・オーガニック" },
-            "minimalist-swiss": { zh: "瑞士极简", en: "Minimalist Swiss", ja: "スイスミニマル" },
-            glassmorphism: { zh: "玻璃拟态", en: "Glassmorphism", ja: "グラスモーフィズム" },
-            "vintage-poster": { zh: "复古海报", en: "Vintage poster", ja: "ヴィンテージポスター" },
-            "paper-cut": { zh: "剪纸拼贴", en: "Paper cut", ja: "ペーパーカット" }
+            "vector-illustration": { zh: "矢量插画", zh_tw: "向量插畫", en: "Vector illustration", ja: "ベクターイラスト" },
+            flat: { zh: "扁平插画", zh_tw: "扁平插畫", en: "Flat illustration", ja: "フラットイラスト" },
+            "3d-isometric": { zh: "3D 等距", zh_tw: "3D 等距", en: "3D isometric", ja: "3Dアイソメトリック" },
+            "digital-dashboard": { zh: "数字仪表盘", zh_tw: "數位儀表板", en: "Digital dashboard", ja: "デジタルダッシュボード" },
+            "corporate-photo": { zh: "企业摄影", zh_tw: "企業攝影", en: "Corporate photo", ja: "企業写真" },
+            blueprint: { zh: "蓝图线稿", zh_tw: "藍圖線稿", en: "Blueprint", ja: "ブループリント" },
+            editorial: { zh: "编辑杂志", zh_tw: "編輯雜誌", en: "Editorial", ja: "エディトリアル" },
+            "sketch-notes": { zh: "手绘笔记", zh_tw: "手繪筆記", en: "Sketch notes", ja: "スケッチノート" },
+            "ink-notes": { zh: "墨线笔记", zh_tw: "墨線筆記", en: "Ink notes", ja: "インクノート" },
+            chalkboard: { zh: "粉笔黑板", zh_tw: "粉筆黑板", en: "Chalkboard", ja: "チョークボード" },
+            watercolor: { zh: "水彩", zh_tw: "水彩", en: "Watercolor", ja: "水彩" },
+            "warm-scene": { zh: "暖调场景", zh_tw: "暖調場景", en: "Warm scene", ja: "暖色シーン" },
+            "screen-print": { zh: "丝网印刷", zh_tw: "絲網印刷", en: "Screen print", ja: "スクリーンプリント" },
+            "fantasy-animation": { zh: "幻想动画", zh_tw: "幻想動畫", en: "Fantasy animation", ja: "ファンタジーアニメ" },
+            "pixel-art": { zh: "像素艺术", zh_tw: "像素藝術", en: "Pixel art", ja: "ピクセルアート" },
+            nature: { zh: "自然有机", zh_tw: "自然有機", en: "Nature", ja: "自然・オーガニック" },
+            "minimalist-swiss": { zh: "瑞士极简", zh_tw: "瑞士極簡", en: "Minimalist Swiss", ja: "スイスミニマル" },
+            glassmorphism: { zh: "玻璃拟态", zh_tw: "玻璃擬態", en: "Glassmorphism", ja: "グラスモーフィズム" },
+            "vintage-poster": { zh: "复古海报", zh_tw: "復古海報", en: "Vintage poster", ja: "ヴィンテージポスター" },
+            "paper-cut": { zh: "剪纸拼贴", zh_tw: "剪紙拼貼", en: "Paper cut", ja: "ペーパーカット" }
         }
     };
 
     function localized(obj, base) {
         if (!obj) return "";
-        var langKey = base + "_" + LANG;
+        var langKey = base + "_" + langField(LANG);
         if (obj[langKey] != null) return obj[langKey];
         var order = LANG_FALLBACK[LANG] || LANG_FALLBACK.en;
         var i;
@@ -663,13 +864,13 @@
     }
 
     function applyStaticTranslations() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "zh-TW" ? "zh-TW" : (LANG === "ja" ? "ja" : "en")));
         document.querySelectorAll("[data-i18n]").forEach(function (node) {
             node.textContent = t(node.getAttribute("data-i18n"));
         });
     }
 
-    var LANG_NAMES = { zh: "中文", en: "English", ja: "日本語" };
+    var LANG_NAMES = { zh: "中文", en: "English", ja: "日本語", "zh-TW": "繁體中文" };
 
     function refreshLangToggle(toggleBtn) {
         // Custom dropdown (OS-independent): button shows the CURRENT language.
@@ -1447,7 +1648,7 @@
     }
 
     function setUiLanguageAttributes(node) {
-        node.lang = LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja-JP" : "en-US");
+        node.lang = LANG === "zh" ? "zh-CN" : (LANG === "zh-TW" ? "zh-TW" : (LANG === "ja" ? "ja-JP" : "en-US"));
         node.dir = "ltr";
     }
 
@@ -3117,7 +3318,7 @@
         var signatureMatch = -1;
         var stateSignature = typographySignature(STATE.typography || {});
         if (STATE.typography && STATE.typography.name !== "custom") cands.forEach(function (c, i) {
-            var sameName = [localized(c, "name"), c.name_zh, c.name_en, c.name_ja]
+            var sameName = [localized(c, "name"), c.name_zh, c.name_zh_tw, c.name_en, c.name_ja]
                 .some(function (name) { return name === STATE.typography.name; });
             if (!sameName && c.name && typeof c.name === "object") {
                 sameName = Object.keys(c.name).some(function (key) {
@@ -4187,7 +4388,8 @@
 
     function applyServerLanguage(data) {
         var requested = data && data.lang;
-        if (requested !== "zh" && requested !== "en" && requested !== "ja") return;
+        if (requested !== "zh" && requested !== "en" && requested !== "ja" &&
+                requested !== "zh-TW") return;
         var hasStored = false;
         try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
         if (hasStored) return;
@@ -4239,7 +4441,7 @@
         var chooseLang = function (v) {
             setMenuOpen(false);
             toggleBtn.focus();
-            if (v !== "ja" && v !== "en" && v !== "zh") return;
+            if (v !== "ja" && v !== "en" && v !== "zh" && v !== "zh-TW") return;
             if (v === LANG) return;
             LANG = v;
             try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }

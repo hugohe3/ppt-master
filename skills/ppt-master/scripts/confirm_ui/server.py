@@ -1258,7 +1258,7 @@ def _localized_text_present(candidate: dict, field: str) -> bool:
     """Return whether a candidate carries non-empty localized prose."""
     return any(
         isinstance(candidate.get(key), str) and bool(candidate[key].strip())
-        for key in (field, f'{field}_zh', f'{field}_en', f'{field}_ja')
+        for key in (field, f'{field}_zh', f'{field}_zh_tw', f'{field}_en', f'{field}_ja')
     )
 
 
@@ -2270,8 +2270,8 @@ def _build_catalogs() -> dict:
     """Return the static catalog set with the canvas list synced live from
     ``config.CANVAS_FORMATS`` — the single source of truth for canvas formats —
     so the confirm page can never drift from the pipeline's real formats. The
-    set of formats and their dimensions come from config; trilingual labels and
-    use text are kept from catalogs.json (with a plain fallback for any new id).
+    set of formats and their dimensions come from config; four-language labels
+    and use text are kept from catalogs.json (with a plain fallback for new ids).
     """
     data = json.loads(_CATALOGS_PATH.read_text(encoding='utf-8'))
     try:
