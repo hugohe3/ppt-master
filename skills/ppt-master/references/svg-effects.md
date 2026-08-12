@@ -669,6 +669,18 @@ least two.
 [`paths.py`](../scripts/svg_to_pptx/drawingml/paths.py); native-object fallback
 bounds reuse its normalized commands rather than a second path grammar.
 
+**Reference — not a constraint**: use the fewest curve segments and control
+points that preserve the intended silhouette. Set endpoints and tangent
+directions first; use `S` after `C` or `T` after `Q` when reflected controls
+preserve deliberate tangent continuity.
+
+```xml
+<path d="M80 300 C180 180 300 180 400 300 S620 420 720 300"
+      fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+<path d="M80 520 Q240 400 400 520 T720 520"
+      fill="none" stroke="#0F766E" stroke-width="4" stroke-linecap="round"/>
+```
+
 Command identity, relative coordinates, shorthand, arc parameters, and original
 handles are not retained. Geometry needs non-zero bounds. Before authoring a
 freeform, apply [`native-shape-authoring.md`](./native-shape-authoring.md):
