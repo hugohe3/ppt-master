@@ -1090,7 +1090,7 @@
           "label_en": "soft-rounded",
           "label_ja": "ソフト・ラウンド",
           "desc_zh": "圆角卡片、柔和投影、亲和现代。",
-          "desc_zh_tw": "圓角卡片、柔和投影、親和現代。",
+          "desc_zh_tw": "圓角卡片、柔和陰影、親和現代。",
           "desc_en": "Rounded cards, soft shadows, and a friendly modern tone.",
           "desc_ja": "角丸のカード、柔らかい影、親しみやすいモダンな雰囲気。"
         },
@@ -1228,7 +1228,7 @@
           "label_en": "vintage-poster",
           "label_ja": "ヴィンテージポスター",
           "desc_zh": "中世纪扁平色块、半调、复古几何暖意。",
-          "desc_zh_tw": "中世紀扁平色塊、半色調、復古幾何暖意。",
+          "desc_zh_tw": "二十世紀中期的扁平色塊、半色調與暖調復古幾何。",
           "desc_en": "Mid-century flat color blocks, halftones, and warm vintage geometry.",
           "desc_ja": "ミッドセンチュリー調のフラットな色面、ハーフトーン、温かみのあるレトロな幾何学模様。"
         },

@@ -753,8 +753,11 @@
                     stored === "zh-TW") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        if (/^zh\b/.test(nav) && /\b(tw|hk|mo|hant)\b/.test(nav)) return "zh-TW";
-        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("zh") === 0) {
+            if (/\bhans\b/.test(nav)) return "zh";
+            if (/\bhant\b/.test(nav) || /\b(tw|hk|mo)\b/.test(nav)) return "zh-TW";
+            return "zh";
+        }
         if (nav.indexOf("ja") === 0) return "ja";
         return "en";
     })();
@@ -764,14 +767,14 @@
         return dict[key] != null ? dict[key] : key;
     }
 
-    // Fallback stays LANG-relative: zh/en users never see Japanese labels,
-    // ja pages fall back ja → en → zh.
+    // Preserve the existing locale order, then accept zh_tw-only candidate
+    // prose from any persisted UI language so browser and server validation agree.
     // Entries are FIELD SUFFIXES, not BCP-47 tags: "zh-TW" data lives in
     // `<base>_zh_tw` keys, so a hyphenless suffix is used here and in langField().
     var LANG_FALLBACK = {
-        zh: ["zh", "en", "ja"],
-        en: ["en", "zh", "ja"],
-        ja: ["ja", "en", "zh"],
+        zh: ["zh", "en", "ja", "zh_tw"],
+        en: ["en", "zh", "ja", "zh_tw"],
+        ja: ["ja", "en", "zh", "zh_tw"],
         "zh-TW": ["zh_tw", "zh", "en", "ja"]
     };
     // Suffix used to look up localized catalog/recommendation fields.
