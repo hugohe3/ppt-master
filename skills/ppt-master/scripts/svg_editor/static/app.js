@@ -316,8 +316,11 @@
                 stored === "zh-TW") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        if (/^zh\b/.test(nav) && /\b(tw|hk|mo|hant)\b/.test(nav)) return "zh-TW";
-        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("zh") === 0) {
+            if (/\bhans\b/.test(nav)) return "zh";
+            if (/\bhant\b/.test(nav) || /\b(tw|hk|mo)\b/.test(nav)) return "zh-TW";
+            return "zh";
+        }
         if (nav.indexOf("ja") === 0) return "ja";
         return "en";
     })();
