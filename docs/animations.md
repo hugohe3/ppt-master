@@ -177,6 +177,12 @@ may use a sparse `animations.json`; a slide-level `transition.sound: null`
 clears an inherited default sound. Validate before export. Do not add sound
 merely to demonstrate that the feature exists.
 
+This validation proves the editable PPTX contains the native cue; it does not
+prove PowerPoint's MP4 audio track contains it. For direct narrated video with
+resolved cues, follow [Audio Narration & Video Export](./audio-narration.md)
+and choose either the verified native-export sound mix or an explicit
+PowerPoint slideshow capture with system audio. Do not combine the two paths.
+
 ## Customize Specific Objects
 
 Use `animations.json` only when deck-wide settings are not enough—for example,

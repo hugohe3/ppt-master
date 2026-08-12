@@ -162,6 +162,11 @@ uvx ppt-master sound-sync list --query recommended
 `transition.sound: null` 可清除继承的默认转场声音。导出前仍须校验。
 不要为了展示项目具备音效能力而强行添加声音。
 
+上述校验只能证明可编辑 PPTX 含有原生 cue，不能证明 PowerPoint 导出的 MP4
+音轨含有它。直接交付带旁白且含音效 cue 的视频时，应按
+[音频旁白与视频导出](./audio-narration.md)选择验收后的原生导出混音，或显式采用
+捕获系统音频的 PowerPoint 实时放映录制；两条路径不能叠加。
+
 ## 自定义具体对象
 
 只有当整份 deck 的统一设置不够用时才需要 `animations.json`，例如让同一对象
