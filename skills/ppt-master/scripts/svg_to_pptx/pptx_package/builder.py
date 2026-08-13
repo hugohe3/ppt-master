@@ -19,10 +19,10 @@ import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from pathlib import Path, PureWindowsPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 from xml.etree import ElementTree as ET
-from xml.sax.saxutils import escape
+from xml.sax.saxutils import escape, quoteattr
 
 from pptx import Presentation
 from pptx.util import Emu
@@ -55,6 +55,10 @@ from pptx_opc_validation import (
     verify_internal_relationships,
 )
 from language_tags import normalize_language_tag
+from hyperlink_contract import (
+    HYPERLINK_REL_TYPE,
+    trigger_shape_hyperlink_errors,
+)
 
 from ..animation_config import (
     MorphPair,
@@ -251,10 +255,15 @@ def _find_relationship_id(
     rels_path: Path,
     rel_type: str,
     target: str,
+    target_mode: str | None = None,
 ) -> str | None:
     """Find an existing relationship by type and target."""
     for rel_id, attrs in _read_relationships(rels_path).items():
-        if attrs.get("Type") == rel_type and attrs.get("Target") == target:
+        if (
+            attrs.get("Type") == rel_type
+            and attrs.get("Target") == target
+            and attrs.get("TargetMode") == target_mode
+        ):
             return rel_id
     return None
 
@@ -653,15 +662,20 @@ def _shape_relationships_supported(
     elem: ET.Element,
     rels: dict[str, dict[str, str]],
 ) -> bool:
-    """Only image relationships are safe to copy into a slide master here."""
+    """Return whether every shape relation can move to Master/Layout parts."""
     for rel_id in _relationship_ids_in_shape(elem):
         attrs = rels.get(rel_id)
         if not attrs:
             return False
-        if attrs.get("TargetMode"):
-            return False
-        if attrs.get("Type") != IMAGE_REL_TYPE:
-            return False
+        rel_type = attrs.get("Type")
+        target_mode = attrs.get("TargetMode")
+        if rel_type == IMAGE_REL_TYPE and not target_mode:
+            continue
+        if rel_type == HYPERLINK_REL_TYPE and target_mode == "External":
+            continue
+        if rel_type == SLIDE_REL_TYPE and not target_mode:
+            continue
+        return False
     return True
 
 
@@ -691,7 +705,8 @@ def _canonical_shape_xml(
             attrs = rels.get(value, {})
             node.set(
                 attr_name,
-                f"{attrs.get('Type', '')}|{attrs.get('Target', '')}",
+                f"{attrs.get('Type', '')}|{attrs.get('Target', '')}|"
+                f"{attrs.get('TargetMode', '')}",
             )
     return ET.tostring(clone, encoding="utf-8")
 
@@ -700,11 +715,37 @@ def _ensure_relationship(
     rels_path: Path,
     rel_type: str,
     target: str,
+    target_mode: str | None = None,
 ) -> str:
-    existing = _find_relationship_id(rels_path, rel_type, target)
+    existing = _find_relationship_id(
+        rels_path,
+        rel_type,
+        target,
+        target_mode,
+    )
     if existing:
         return existing
-    return _append_relationship(rels_path, rel_type, target)
+    return _append_relationship(
+        rels_path,
+        rel_type,
+        target,
+        target_mode=target_mode,
+    )
+
+
+def _part_name_for_relationships_path(rels_path: Path) -> str:
+    """Recover one ``ppt/...`` package part from its relationship sidecar."""
+    if rels_path.parent.name != "_rels" or not rels_path.name.endswith(".rels"):
+        raise RuntimeError(f"Invalid PPTX relationship path: {rels_path}")
+    part_path = rels_path.parent.parent / rels_path.name.removesuffix(".rels")
+    parts = part_path.parts
+    try:
+        ppt_index = len(parts) - 1 - tuple(reversed(parts)).index("ppt")
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Relationship path is not under a ppt package: {rels_path}"
+        ) from exc
+    return PurePosixPath(*parts[ppt_index:]).as_posix()
 
 
 def _copy_shape_relationships_to_part(
@@ -714,6 +755,7 @@ def _copy_shape_relationships_to_part(
 ) -> ET.Element:
     """Clone a shape and retarget supported relationship ids to another part."""
     clone = ET.fromstring(ET.tostring(elem, encoding="utf-8"))
+    target_part = _part_name_for_relationships_path(target_rels_path)
     for node in clone.iter():
         for attr_name, value in list(node.attrib.items()):
             if attr_name not in _REL_ATTRS:
@@ -721,10 +763,22 @@ def _copy_shape_relationships_to_part(
             rel = slide_rels.get(value)
             if not rel:
                 raise RuntimeError(f"Missing slide relationship for {value}")
+            target_mode = rel.get("TargetMode")
+            relationship_target = rel["Target"]
+            if target_mode != "External":
+                resolved_target = _resolve_package_target(
+                    "ppt/slides/source.xml",
+                    relationship_target,
+                )
+                relationship_target = posixpath.relpath(
+                    resolved_target,
+                    posixpath.dirname(target_part),
+                )
             new_rid = _ensure_relationship(
                 target_rels_path,
                 rel["Type"],
-                rel["Target"],
+                relationship_target,
+                target_mode,
             )
             node.set(attr_name, new_rid)
     return clone
@@ -2144,7 +2198,7 @@ def _move_template_static_shape(
         if not _shape_relationships_supported(shape, state.rels):
             raise TemplateStructureError(
                 f"{state.spec.svg_path.name}: structure element {item.element_id!r} "
-                "uses a non-image or external relationship"
+                "uses a relationship that cannot move to a template part"
             )
 
     prototype_state = states[0]
@@ -3776,6 +3830,8 @@ def _append_relationship(
     rels_path: Path,
     rel_type: str,
     target: str,
+    *,
+    target_mode: str | None = None,
 ) -> str:
     """Append a relationship entry with the next available rId."""
     with open(rels_path, 'r', encoding='utf-8') as f:
@@ -3783,9 +3839,14 @@ def _append_relationship(
 
     rid_numbers = [int(match) for match in re.findall(r'Id="rId(\d+)"', rels_content)]
     next_rid = f'rId{max(rid_numbers, default=0) + 1}'
+    mode_attr = (
+        f" TargetMode={quoteattr(target_mode)}"
+        if target_mode is not None
+        else ""
+    )
     rel_xml = (
-        f'  <Relationship Id="{next_rid}" '
-        f'Type="{rel_type}" Target="{target}"/>'
+        f"  <Relationship Id={quoteattr(next_rid)} "
+        f"Type={quoteattr(rel_type)} Target={quoteattr(target)}{mode_attr}/>"
     )
     rels_content = rels_content.replace(
         '</Relationships>', rel_xml + '\n</Relationships>',
@@ -5341,6 +5402,13 @@ def create_pptx_with_native_svg(
                     explicit_animation_groups = frozenset(
                         explicit_group_ids | trigger_group_ids
                     )
+                    if trigger_group_ids:
+                        hyperlink_trigger_errors = trigger_shape_hyperlink_errors(
+                            ET.parse(svg_path).getroot(),
+                            trigger_group_ids,
+                        )
+                        if hyperlink_trigger_errors:
+                            raise ValueError('; '.join(hyperlink_trigger_errors))
                     converter_group_overrides = (
                         explicit_animation_groups
                         | frozenset(
@@ -5359,7 +5427,9 @@ def create_pptx_with_native_svg(
                         content_type_overrides,
                     ) = (
                         convert_svg_to_slide_shapes(
-                            svg_path, slide_num=slide_num, verbose=verbose,
+                            svg_path, slide_num=slide_num,
+                            slide_count=public_slide_count,
+                            verbose=verbose,
                             text_flow=text_flow,
                             image_optimize=image_optimize,
                             image_max_dimension=image_max_dimension,
@@ -5544,9 +5614,16 @@ def create_pptx_with_native_svg(
 
                     extra_rels = ''
                     for rel in rel_entries:
+                        target_mode = rel.get('target_mode')
+                        mode_attr = (
+                            f" TargetMode={quoteattr(target_mode)}"
+                            if target_mode is not None
+                            else ''
+                        )
                         extra_rels += (
-                            f'\n  <Relationship Id="{rel["id"]}" '
-                            f'Type="{rel["type"]}" Target="{rel["target"]}"/>'
+                            f"\n  <Relationship Id={quoteattr(rel['id'])} "
+                            f"Type={quoteattr(rel['type'])} "
+                            f"Target={quoteattr(rel['target'])}{mode_attr}/>"
                         )
 
                     rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

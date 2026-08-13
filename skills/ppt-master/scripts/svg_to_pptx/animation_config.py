@@ -10,6 +10,8 @@ from pathlib import Path, PureWindowsPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from hyperlink_contract import SHAPE_HYPERLINK_ATTR
+
 from pptx_animations import (
     ANIMATIONS,
     ANIMATION_AFTER_EFFECTS,
@@ -77,6 +79,7 @@ class GroupTarget:
     order: int
     chrome: bool = False
     structurally_static: bool = False
+    has_hyperlink: bool = False
 
 
 @dataclass(frozen=True)
@@ -156,6 +159,11 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
                 order=visual_index,
                 chrome=chrome,
                 structurally_static=structurally_static,
+                has_hyperlink=any(
+                    _tag_name(descendant) == 'a'
+                    or descendant.get(SHAPE_HYPERLINK_ATTR) is not None
+                    for descendant in child.iter()
+                ),
             )
         )
 
@@ -1491,6 +1499,12 @@ def validate_animation_config(
                         f'animations.json {effect_path}.trigger_shape '
                         f'references non-triggerable structural group '
                         f'{trigger_shape!r}'
+                    )
+                elif trigger_target.has_hyperlink:
+                    warnings.append(
+                        f'animations.json {effect_path}.trigger_shape '
+                        f'references hyperlink-bearing group {trigger_shape!r}; '
+                        'use an ordinary animation or a separate trigger'
                     )
 
     morph_pairs, morph_errors = _resolve_morph_pairs(

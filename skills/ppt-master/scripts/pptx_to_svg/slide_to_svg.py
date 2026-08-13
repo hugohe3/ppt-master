@@ -42,6 +42,7 @@ from pptx_effects import (
     txbody_has_run_effects,
     unsupported_effect_metadata,
 )
+from hyperlink_contract import SHAPE_HYPERLINK_ATTR
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
@@ -57,6 +58,7 @@ from .import_diagnostics import (
     ImportDiagnostic,
     append_diagnostic,
 )
+from .hyperlinks import resolve_click_hyperlink
 from .ln_to_svg import StrokeResult, resolve_stroke
 from .ooxml_loader import (
     OoxmlPackage,
@@ -167,6 +169,30 @@ def _diagnose_picture_result(
             diagnostic.message,
             diagnostic.fallback,
         )
+
+
+def _resolve_svg_hyperlink(
+    ctx: AssemblyContext,
+    relationship_id: str,
+    action: str,
+) -> str | None:
+    """Resolve one source-part click link or record its explicit loss."""
+    resolution = resolve_click_hyperlink(
+        ctx.slide_part.rels,
+        relationship_id,
+        action,
+        slide_index_by_part=ctx.pkg.slide_index_by_part,
+    )
+    if resolution.error is None:
+        return resolution.href
+    if ctx.strict:
+        raise ValueError(resolution.error)
+    ctx.diagnose(
+        "hyperlink-omitted",
+        resolution.error,
+        "retain the object and omit only its unsupported click link",
+    )
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -532,6 +558,11 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                 fallback_lst_styles=node.inherited_lst_styles,
                 id_prefix=f"{ctx.group_id_prefix}txt",
                 id_seq=ctx.grad_seq,
+                hyperlink_resolver=lambda rid, action: _resolve_svg_hyperlink(
+                    ctx,
+                    rid,
+                    action,
+                ),
             )
         else:
             text_result = convert_txbody(
@@ -543,6 +574,11 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                 fallback_lst_styles=node.inherited_lst_styles,
                 id_prefix=f"{ctx.group_id_prefix}txt",
                 id_seq=ctx.grad_seq,
+                hyperlink_resolver=lambda rid, action: _resolve_svg_hyperlink(
+                    ctx,
+                    rid,
+                    action,
+                ),
             ) if tx_body is not None else TextResult()
     except ValueError as exc:
         if ctx.strict:
@@ -1222,6 +1258,11 @@ def _render_graphic_table(
         id_prefix=f"tbl{ctx.shape_seq[0]}",
         grad_seq=ctx.grad_seq,
         marker_seq=ctx.marker_seq,
+        hyperlink_resolver=lambda rid, action: _resolve_svg_hyperlink(
+            ctx,
+            rid,
+            action,
+        ),
     )
     if result.defs:
         ctx.defs.extend(result.defs)
@@ -1573,7 +1614,21 @@ def _wrap_shape_group(
             )
     if transform:
         attrs.append(f'transform="{transform}"')
-    return f"<g {' '.join(attrs)}>\n{inner}\n</g>"
+    group_xml = f"<g {' '.join(attrs)}>\n{inner}\n</g>"
+    if node.hyperlink_rid or node.hyperlink_action:
+        href = _resolve_svg_hyperlink(
+            ctx,
+            node.hyperlink_rid,
+            node.hyperlink_action,
+        )
+        if href is not None and '<a href=' in inner:
+            attrs.append(
+                f'{SHAPE_HYPERLINK_ATTR}="{_xml_escape(href)}"'
+            )
+            return f"<g {' '.join(attrs)}>\n{inner}\n</g>"
+        if href is not None:
+            return f'<a href="{_xml_escape(href)}">{group_xml}</a>'
+    return group_xml
 
 
 def _attrs_to_xml(attrs: dict[str, str]) -> str:

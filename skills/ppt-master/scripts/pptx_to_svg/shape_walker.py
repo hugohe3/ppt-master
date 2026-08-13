@@ -71,6 +71,8 @@ class ShapeNode:
     name: str = ""
     spid: str = ""
     hidden: bool = False
+    hyperlink_rid: str = ""
+    hyperlink_action: str = ""
     placeholder: PlaceholderInfo | None = None
     inherited_lst_styles: tuple[ET.Element, ...] = ()
     inherited_body_properties: tuple[ET.Element, ...] = ()
@@ -85,7 +87,10 @@ class ShapeNode:
 # Walker
 # ---------------------------------------------------------------------------
 
-def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, PlaceholderInfo | None]:
+def _read_nv_sp_pr(
+    parent: ET.Element,
+    nv_tag: str,
+) -> tuple[str, str, bool, PlaceholderInfo | None, str, str]:
     """Extract name/id/hidden/placeholder from an nvXXXPr container.
 
     nv_tag is one of nvSpPr / nvPicPr / nvCxnSpPr / nvGrpSpPr / nvGraphicFramePr.
@@ -95,8 +100,10 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
     spid = ""
     hidden = False
     ph: PlaceholderInfo | None = None
+    hyperlink_rid = ""
+    hyperlink_action = ""
     if container is None:
-        return name, spid, hidden, ph
+        return name, spid, hidden, ph, hyperlink_rid, hyperlink_action
 
     cnv = container.find("p:cNvPr", NS)
     if cnv is not None:
@@ -104,6 +111,10 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
         spid = cnv.attrib.get("id", "")
         if ooxml_bool(cnv.attrib.get("hidden")):
             hidden = True
+        hyperlink = cnv.find("a:hlinkClick", NS)
+        if hyperlink is not None:
+            hyperlink_rid = hyperlink.attrib.get(f"{{{NS['r']}}}id", "")
+            hyperlink_action = hyperlink.attrib.get("action", "")
 
     nv_pr = container.find("p:nvPr", NS)
     if nv_pr is not None:
@@ -116,7 +127,7 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
                 orient=ph_elem.attrib.get("orient"),
             )
 
-    return name, spid, hidden, ph
+    return name, spid, hidden, ph, hyperlink_rid, hyperlink_action
 
 
 def _resolve_xfrm(shape: ET.Element, kind: str) -> ET.Element | None:
@@ -248,7 +259,14 @@ def _walk_container(
             continue
         kind, nv_tag = kind_info
 
-        name, spid, hidden, ph = _read_nv_sp_pr(child, nv_tag)
+        (
+            name,
+            spid,
+            hidden,
+            ph,
+            hyperlink_rid,
+            hyperlink_action,
+        ) = _read_nv_sp_pr(child, nv_tag)
         xfrm = parse_xfrm(_resolve_xfrm(child, kind))
         effective_rotation = (ancestor_rotation + xfrm.rot) % 360.0
 
@@ -288,6 +306,8 @@ def _walk_container(
         node = ShapeNode(
             kind=kind, xml=child, xfrm=xfrm,
             name=name, spid=spid, hidden=hidden, placeholder=ph,
+            hyperlink_rid=hyperlink_rid,
+            hyperlink_action=hyperlink_action,
             inherited_lst_styles=inherited_lst_styles,
             inherited_body_properties=inherited_body_properties,
             effective_rotation=effective_rotation,
