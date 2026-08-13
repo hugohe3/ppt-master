@@ -36,7 +36,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 |---|---|---|
 | Text | Systematized | Role anchors deck-wide, bounded per-occurrence adjustment, hierarchy and paragraph rules, natively editable runs |
 | Vector shapes | Systematized | primitive → Office preset → Boolean → freeform construction ladder, with native conversion rules |
-| Lines & connectors | Bounded by design | Authoring creates unconnected `p:cxnSp`; hand-written endpoint/site metadata is not accepted |
+| Lines & connectors | Asymmetric by design | Native `p:cxnSp` export is implemented, and endpoint attachment is restored on the preserve/mirror round-trip from a source deck. Newly authored connectors deliberately stay unconnected, and hand-written endpoint/site metadata is not accepted |
 | Icons | Systematized | Bundled libraries with per-project sync; project icons are prepared material |
 | Logo | Bounded by design | Brand workspaces describe how to install officially supplied artwork; no workspace bundles a logo |
 | Images | Systematized | Acquisition, generation, treatment, cropping, layout, composition, embedding, provenance |
@@ -45,7 +45,8 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
 | Formulas | Implemented | Standalone block formulas and same-paragraph inline formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG previews are authoring-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
 | Audio & video | Covered / Signal-driven | Narration audio embeds per slide today; arbitrary video, background music, and media compression are planned modules in the Enhance route |
-| SmartArt, 3D models, OLE objects | Signal-driven | No current authoring path |
+| SmartArt | Asymmetric by design | Source diagram parts are read for their content and structure; generated decks redraw that content through the ordinary shape pipeline. DiagramML is never edited and native SmartArt regeneration is not promised |
+| 3D models, OLE objects | Signal-driven | No read or authoring path today |
 
 *Illustration* is deliberately absent from this table. It is a composite result — an image, an SVG, or a group of shapes — not a seventh carrier, and listing it beside *Images* would reintroduce the category confusion this layering removes.
 
