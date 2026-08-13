@@ -37,7 +37,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 |---|---|---|
 | Text | Systematized | Role anchors deck-wide, bounded per-occurrence adjustment, hierarchy and paragraph rules, natively editable runs |
 | Vector shapes | Systematized | primitive → Office preset → Boolean → freeform construction ladder, with native conversion rules |
-| Lines & connectors | Asymmetric by design | Native `p:cxnSp` export is implemented, and endpoint attachment is restored on the preserve/mirror round-trip from a source deck. Newly authored connectors deliberately stay unconnected, and hand-written endpoint/site metadata is not accepted |
+| Lines & connectors | Asymmetric by design | Native `p:cxnSp` export is implemented, and endpoint attachment is restored on the preserve/mirror round-trip from a source deck. Newly authored connectors stay unconnected. Binding them would first require deciding which lines are real edges and which are decoration — an intent judgment that no geometric threshold settles, and one that is made by the AI wherever it is placed, so moving it upstream to authoring buys no reliability. The result would be some arrows in a diagram following their node and others not |
 | Icons | Systematized | Bundled libraries with per-project sync; project icons are prepared material |
 | Logo | Bounded by design | Brand workspaces describe how to install officially supplied artwork; no workspace bundles a logo |
 | Images | Systematized | Acquisition, generation, treatment, cropping, layout, composition, embedding, provenance |
