@@ -121,7 +121,7 @@
 | 2026-05 | **可视化编辑 + AI 图片体系化** — Live Preview 确定性原位编辑（基于 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85)）、从 PPTX 创建模板工作区、rendering × palette × type 图片体系、旧版栅格 LaTeX 渲染器 |
 | 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/ZhaoZuohong) 的 [PR #155](https://github.com/hugohe3/ppt-master/pull/155)） |
 | 2026-07 | **定位章程 + 原生母版 / 版式 + token 效率**（[v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)）— 三段式分步确认 UI、真 `p:sldMaster` / `p:sldLayout` 导出、`--native-charts-and-tables` opt-in、动效导出加固、图表模板库压缩 |
-| 2026-08 | **模板库 + 页面图重建 + 原生公式与链接**（[v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0)、[v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)）— brand / style / layout 工作区库、可视化按信息模型拆分且结构改为组合语法、Codex 支持的 `image-to-pptx` profile、带原生动画音效的视频交付、三条可编辑整体设计方向、可编辑 OMML 公式、原生超链接创作，以及四层能力覆盖地图 |
+| 2026-08 | **模板库 + 页面图重建 + 原生公式与链接**（[v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0)、[v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)、[v4.7.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.7.0)）— brand / style / layout 工作区库、可视化按信息模型拆分且结构改为组合语法、Codex 支持的 `image-to-pptx` profile、带原生动画音效的视频交付、三条可编辑整体设计方向、可编辑 OMML 公式、原生超链接创作，以及四层能力覆盖地图 |
 
 ---
 
