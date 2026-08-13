@@ -54,7 +54,7 @@ source.pptx
 | `narration.timings` | Enabled | Set narrated slides to auto-advance from page-start lead-in, audio duration, and page-tail padding |
 | `narration.transitions` | Enabled | Add page-level transitions for narrated/selected slides |
 | `delivery.check` | Enabled | Read-only package/font/media/hidden-slide/file-size and existing-motion audit |
-| `media` | Planned | Background music, video, media compression |
+| `delivery.compress` | Planned | Reduce embedded media size for oversized packages; the audit above already reports them |
 | `presenter` | Planned | Q&A notes, speaker cues, rehearsal artifacts |
 | `animation` | Planned | Explicit object-level animation only |
 | `visible-stamp` | Planned | Watermark/footer/logo; requires explicit confirmation |

@@ -20,15 +20,16 @@ Today that axis is expressed through four explicit artifact routes: **Generate P
 
 A presentation is four layers: what is on the slide, how it is arranged, how it behaves, and how the document itself is structured. The tables below map each layer against what PPT Master does today.
 
-**Read this as a map, not a backlog.** *Bounded by design* and *Not on the path* are settled end states, not unfinished cells — a blank there is a decision, not a debt. Only *Signal-driven* rows are open, and their reasoning lives in [Future directions](#future-directions--signal-driven) rather than being repeated here.
+**Read this as a map, not a backlog.** *Bounded by design* and *Asymmetric by design* are settled shapes, not unfinished cells — a blank there is a decision, not a debt. *Not planned* rows say in the row why they are not being worked on. Only *Signal-driven* rows lean open, and their reasoning lives in [Future directions](#future-directions--signal-driven) rather than being repeated here. Positions that have actually been argued out live in [Non-goals](#non-goals); this map describes, it does not adjudicate.
 
 | Status | Meaning |
 |---|---|
-| **Systematized** | Has its own authoring contract and checker coverage; actively refined |
+| **Systematized** | Has its own authoring contract and validation; actively refined |
 | **Covered** | Works today without a dedicated specification system |
 | **Bounded by design** | Deliberately stops where it stops; the reason is recorded |
+| **Asymmetric by design** | Supported on one side only — typically reading or preserving a source deck, but not authoring |
 | **Signal-driven** | Worth doing when real demand shows; not a commitment |
-| **Not on the path** | Evaluated and declined — see [Non-goals](#non-goals) |
+| **Not planned** | Not being considered right now; the reason is in the row |
 
 ### Layer 1 — Visible objects
 
@@ -43,10 +44,11 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Charts | Systematized | Dedicated authoring reference; SVG by default, native Chart replacement available as an explicit opt-in |
 | Tables | Systematized | Dedicated authoring reference; six cell-grid grammars, native Table replacement on the same opt-in |
 | Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
-| Formulas | Implemented | Standalone block formulas and same-paragraph inline formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG previews are authoring-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
-| Audio & video | Covered / Signal-driven | Narration audio embeds per slide today; arbitrary video, background music, and media compression are planned modules in the Enhance route |
+| Formulas | Systematized | Standalone block formulas and same-paragraph inline formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG previews are authoring-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
+| Narration & animation audio | Systematized | Per-slide narration audio, plus native transition and object sounds drawn from the bundled CC0 catalog |
+| Arbitrary video & background music | Not planned | A one-off, content-specific insert that is faster to place by hand in PowerPoint, and the AI cannot pick the file for you. Background music additionally pulls in narration-mixing decisions that are out of scope. Media already present in a source deck is preserved unchanged through the Fill and Enhance routes |
 | SmartArt | Asymmetric by design | Source diagram parts are read for their content and structure; generated decks redraw that content through the ordinary shape pipeline. DiagramML is never edited and native SmartArt regeneration is not promised |
-| 3D models, OLE objects | Signal-driven | No read or authoring path today |
+| 3D models, OLE objects | Not planned | Both need the host application or a recent Office build on the opening machine and fall back to a still preview elsewhere — the cross-renderer problem this project avoids by design. Inserting one by hand takes seconds. Objects already present in a source deck are preserved unchanged |
 
 *Illustration* is deliberately absent from this table. It is a composite result — an image, an SVG, or a group of shapes — not a seventh carrier, and listing it beside *Images* would reintroduce the category confusion this layering removes.
 
@@ -69,9 +71,9 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Page transitions | Systematized | Includes on-demand transition sounds from a bundled CC0 catalog |
 | Object animation | Systematized | Off by default and opt-in; per-object configuration is explicit |
 | Auto-advance | Covered | Derived from narration lead-in, audio duration, and page-tail padding |
-| Media playback | Covered | Narration audio; arbitrary embedded media follows the Layer 1 row above |
+| Media playback | Covered | Narration audio and animation sounds play natively; media already present in a source deck keeps its playback settings |
 | Hyperlinks | Systematized | Whole-object and inline-text links author through standard SVG `<a href>`, export as native external or same-deck click relationships, and reconstruct on supported PPTX import |
-| Actions & navigation | Bounded by design | An `actionButton*` preset maps visual geometry only — preset appearance never invents action behavior or navigation targets |
+| Actions & navigation | Systematized | Navigation is authored explicitly by wrapping the target in a hyperlink anchor, including same-deck slide jumps. An `actionButton*` preset contributes visual geometry only — appearance alone never implies an action. Mouse-over triggers, custom shows, macro or program execution, and raw `ppaction://` injection stay outside the contract |
 
 ### Layer 4 — Document structure
 
@@ -85,7 +87,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Subtitles | Systematized | Word-timed regrouping across supported providers into shared compact SRT |
 | Document metadata | Covered | Set at export rather than left to the packaging library |
 | Accessibility (alt text, reading order) | Signal-driven | Image manifests already carry `alt_text`, but it is not yet written to DrawingML `descr` — this is wiring, not a missing specification |
-| Comments, revisions, collaboration state | Not on the path | Office collaboration surface, outside the authoring product |
+| Comments, revisions, collaboration state | Not planned | Office collaboration surface, outside the authoring product |
 
 ---
 
@@ -120,6 +122,7 @@ One line per month. Full detail lives in the [release notes](https://github.com/
 | 2026-05 | **Visual editing + AI-image systematization** — Live Preview with deterministic in-place editing (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)), template workspaces from PPTX, the rendering × palette × type image system, and the legacy raster LaTeX renderer |
 | 2026-06 | **Mode & visual-style dual catalogs + intake expansion** — 5 narrative modes × 18 visual styles (+ `custom`), content-faithful beautify profile, multi-deck intake, spot-illustration pipeline, web-image quality gates, source-conversion fidelity gains (caption recognition from [@suay1113](https://github.com/suay1113)'s [PR #191](https://github.com/hugohe3/ppt-master/pull/191), hyperlink preservation distilled from [@ZhaoZuohong](https://github.com/ZhaoZuohong)'s [PR #155](https://github.com/hugohe3/ppt-master/pull/155)) |
 | 2026-07 | **Positioning charter + native masters & layouts + token efficiency** ([v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)) — three-pass staged confirmation UI, real `p:sldMaster` / `p:sldLayout` export, `--native-charts-and-tables` opt-in, motion-export hardening, chart template library compacted |
+| 2026-08 | **Template library + page-image reconstruction + native math and links** ([v4.5.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.5.0), [v4.6.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.6.0)) — brand / style / layout workspace library, visualizations split by information model with structure as a composition grammar, the Codex-supported `image-to-pptx` profile, video delivery carrying native animation sound, three editable whole-solution design directions, editable OMML formulas, native hyperlink authoring, and the four-layer coverage map |
 
 ---
 
