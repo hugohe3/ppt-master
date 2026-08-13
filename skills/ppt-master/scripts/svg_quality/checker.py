@@ -120,6 +120,15 @@ except ImportError:
     _validate_dml_shape_matrix = None
 
 try:
+    from hyperlink_contract import (
+        SHAPE_HYPERLINK_ATTR as _SHAPE_HYPERLINK_ATTR,
+        project_hyperlink_errors as _project_hyperlink_errors,
+    )
+except ImportError:
+    _SHAPE_HYPERLINK_ATTR = 'data-pptx-shape-hyperlink'
+    _project_hyperlink_errors = None
+
+try:
     from svg_to_pptx.drawingml.converter import (
         SvgNativeConversionError as _SvgNativeConversionError,
         collect_unsupported_visuals as _collect_unsupported_visuals,
@@ -1058,6 +1067,7 @@ class SVGQualityChecker:
         self._communication_trace_issues: List[Tuple[str, str]] = []
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._has_incomplete_page_roster = False
+        self._active_slide_count: int | None = None
         self._prototype_by_output: Dict[Path, Path] = {}
         self._active_prototype_path: Path | None = None
         self._active_template_reuse_scope: str | None = None
@@ -1222,6 +1232,9 @@ class SVGQualityChecker:
 
                 # 5. Check text wrapping methods
                 self._check_text_elements(content, root, result)
+
+                # 5b. Validate native hyperlink targets and carrier structure.
+                self._check_hyperlinks(root, result)
 
                 # 6. Check image references (file existence and resolution)
                 self._check_image_references(root, svg_path, result)
@@ -1497,6 +1510,32 @@ class SVGQualityChecker:
         self._check_fragmented_paragraph_text(root, result)
         self._check_unmergeable_leading_text(root, result)
         self._check_nested_positional_tspans(root, result)
+
+    def _check_hyperlinks(self, root: ET.Element, result: Dict) -> None:
+        """Validate the standard SVG anchor surface shared with export."""
+        anchors = [
+            elem for elem in root.iter()
+            if _local_name(elem) == 'a'
+        ]
+        transports = [
+            elem for elem in root.iter()
+            if elem.get(_SHAPE_HYPERLINK_ATTR) is not None
+        ]
+        if not anchors and not transports:
+            return
+        result['info']['hyperlinks'] = len(anchors) + len(transports)
+        if _project_hyperlink_errors is None:
+            result['errors'].append(
+                'Unable to import hyperlink validator; cannot verify SVG links'
+            )
+            return
+        result['errors'].extend(
+            f'Invalid SVG hyperlink: {error}'
+            for error in _project_hyperlink_errors(
+                root,
+                slide_count=self._active_slide_count,
+            )
+        )
 
     def _check_nested_positional_tspans(
         self,
@@ -5045,6 +5084,8 @@ class SVGQualityChecker:
             self.summary['errors'] += 1
             self.issue_types['Input issues'] += 1
             return []
+
+        self._active_slide_count = len(svg_files)
 
         self._configure_prototype_context(dir_path, svg_files)
         if not self.template_mode:

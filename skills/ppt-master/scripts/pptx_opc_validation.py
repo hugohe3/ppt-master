@@ -9,12 +9,27 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
+from hyperlink_contract import (
+    HYPERLINK_REL_TYPE,
+    SLIDE_JUMP_ACTION,
+    SLIDE_REL_TYPE,
+)
+
 
 PACKAGE_REL_NS = (
     "http://schemas.openxmlformats.org/package/2006/relationships"
 )
 _RELATIONSHIPS_TAG = f"{{{PACKAGE_REL_NS}}}Relationships"
 _RELATIONSHIP_TAG = f"{{{PACKAGE_REL_NS}}}Relationship"
+_DRAWINGML_NS = (
+    "http://schemas.openxmlformats.org/drawingml/2006/main"
+)
+_PRESENTATIONML_NS = (
+    "http://schemas.openxmlformats.org/presentationml/2006/main"
+)
+_OFFICE_REL_NS = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
 _OPC_UNRESERVED = frozenset(
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
 )
@@ -127,6 +142,126 @@ def resolve_internal_opc_target(
     return canonical_opc_part_path(resolved)
 
 
+def _relationships_path_for_part(part_path: Path) -> Path:
+    return part_path.parent / "_rels" / f"{part_path.name}.rels"
+
+
+def _relationship_attrs_by_id(rels_path: Path) -> dict[str, dict[str, str]]:
+    if not rels_path.is_file():
+        return {}
+    root = ET.parse(rels_path).getroot()
+    return {
+        elem.attrib["Id"]: dict(elem.attrib)
+        for elem in root.findall(_RELATIONSHIP_TAG)
+        if elem.attrib.get("Id")
+    }
+
+
+def _presentation_slide_roster(extract_dir: Path) -> set[str]:
+    """Return canonical slide parts reachable from ``p:sldIdLst``."""
+    presentation = extract_dir / "ppt" / "presentation.xml"
+    presentation_rels = _relationships_path_for_part(presentation)
+    if not presentation.is_file() or not presentation_rels.is_file():
+        return set()
+    rels = _relationship_attrs_by_id(presentation_rels)
+    root = ET.parse(presentation).getroot()
+    roster: set[str] = set()
+    rels_rel = presentation_rels.relative_to(extract_dir).as_posix()
+    for slide_id in root.findall(
+        f"{{{_PRESENTATIONML_NS}}}sldIdLst/"
+        f"{{{_PRESENTATIONML_NS}}}sldId"
+    ):
+        relationship_id = slide_id.attrib.get(f"{{{_OFFICE_REL_NS}}}id")
+        relationship = rels.get(relationship_id or "")
+        if relationship is None or relationship.get("Type") != SLIDE_REL_TYPE:
+            continue
+        target = relationship.get("Target", "")
+        resolved = resolve_internal_opc_target(rels_rel, target)
+        if resolved is not None:
+            roster.add(resolved)
+    return roster
+
+
+def verify_hyperlink_relationships(extract_dir: Path) -> list[str]:
+    """Return hyperlink/action mismatches and slide jumps outside the roster."""
+    roster = _presentation_slide_roster(extract_dir)
+    problems: list[str] = []
+    source_patterns = (
+        "ppt/slides/slide*.xml",
+        "ppt/slideLayouts/slideLayout*.xml",
+        "ppt/slideMasters/slideMaster*.xml",
+    )
+    for pattern in source_patterns:
+        for part_path in sorted(extract_dir.glob(pattern)):
+            rels_path = _relationships_path_for_part(part_path)
+            rels = _relationship_attrs_by_id(rels_path)
+            part_rel = part_path.relative_to(extract_dir).as_posix()
+            rels_rel = rels_path.relative_to(extract_dir).as_posix()
+            try:
+                root = ET.parse(part_path).getroot()
+            except ET.ParseError:
+                continue
+            for link in root.iter(f"{{{_DRAWINGML_NS}}}hlinkClick"):
+                action = (link.attrib.get("action") or "").strip()
+                if action == "ppaction://media":
+                    continue
+                relationship_id = (
+                    link.attrib.get(f"{{{_OFFICE_REL_NS}}}id") or ""
+                ).strip()
+                if not relationship_id:
+                    if action == SLIDE_JUMP_ACTION:
+                        problems.append(
+                            f"{part_rel} -> <slide jump without relationship id>"
+                        )
+                    continue
+                relationship = rels.get(relationship_id)
+                if relationship is None:
+                    problems.append(
+                        f"{part_rel} -> <missing hyperlink relationship "
+                        f"{relationship_id!r}>"
+                    )
+                    continue
+                rel_type = relationship.get("Type", "")
+                target_mode = relationship.get("TargetMode", "")
+                target = relationship.get("Target", "")
+                if rel_type == HYPERLINK_REL_TYPE:
+                    if target_mode.lower() != "external":
+                        problems.append(
+                            f"{part_rel} -> <hyperlink relationship "
+                            f"{relationship_id!r} is not External>"
+                        )
+                    if action == SLIDE_JUMP_ACTION:
+                        problems.append(
+                            f"{part_rel} -> <slide jump {relationship_id!r} "
+                            "uses an external hyperlink relationship>"
+                        )
+                    continue
+                if rel_type == SLIDE_REL_TYPE:
+                    if target_mode:
+                        problems.append(
+                            f"{part_rel} -> <slide relationship "
+                            f"{relationship_id!r} cannot be External>"
+                        )
+                    if action != SLIDE_JUMP_ACTION:
+                        problems.append(
+                            f"{part_rel} -> <slide relationship "
+                            f"{relationship_id!r} lacks hlinksldjump action>"
+                        )
+                    resolved = resolve_internal_opc_target(rels_rel, target)
+                    if resolved is not None and resolved not in roster:
+                        problems.append(
+                            f"{part_rel} -> <slide jump {relationship_id!r} "
+                            f"targets non-roster part {resolved}>"
+                        )
+                    continue
+                if action == SLIDE_JUMP_ACTION:
+                    problems.append(
+                        f"{part_rel} -> <slide jump {relationship_id!r} uses "
+                        f"relationship type {rel_type!r}>"
+                    )
+    return problems
+
+
 def verify_internal_relationships(extract_dir: Path) -> list[str]:
     """Return invalid or dangling internal relationships in an OPC package."""
     package_parts: set[str] = set()
@@ -207,4 +342,5 @@ def verify_internal_relationships(extract_dir: Path) -> list[str]:
                 )
             elif resolved not in package_parts:
                 problems.append(f"{rels_rel} -> {resolved}")
+    problems.extend(verify_hyperlink_relationships(extract_dir))
     return problems

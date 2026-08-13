@@ -28,12 +28,16 @@ from .formula_compiler import (
 
 SVG_NS = "http://www.w3.org/2000/svg"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+OFFICE_REL_NS = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
 MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
 A14_NS = "http://schemas.microsoft.com/office/drawing/2010/main"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 INLINE_FORMULA_ATTR = "data-pptx-inline-formula"
 _SVG_TEXT = f"{{{SVG_NS}}}text"
 _SVG_TSPAN = f"{{{SVG_NS}}}tspan"
+_SVG_A = f"{{{SVG_NS}}}a"
 _MATH_RUN = f"{{{MATH_NS}}}r"
 _MATH_RUN_PROPERTIES = f"{{{MATH_NS}}}rPr"
 _DML_RUN_PROPERTIES = f"{{{DML_NS}}}rPr"
@@ -165,7 +169,7 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
                 text_owner = parent
             elif (
                 text_owner is None
-                and parent.tag != _SVG_TSPAN
+                and parent.tag not in {_SVG_A, _SVG_TSPAN}
                 and invalid_inline_container is None
             ):
                 invalid_inline_container = parent_tag
@@ -202,7 +206,7 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
             errors.append(f"{label} must be inside an SVG <text> element")
         elif invalid_inline_container is not None:
             errors.append(
-                f"{label} can only be nested through <tspan> elements before "
+                f"{label} can only be nested through <tspan>/<a> elements before "
                 f"its owning <text>, found <{invalid_inline_container}>"
             )
         if non_output_ancestor is not None:
@@ -246,7 +250,8 @@ def _apply_run_properties(omml: str, run_properties_xml: str) -> str:
     try:
         root = ET.fromstring(omml)
         wrapper = ET.fromstring(
-            f'<root xmlns:a="{DML_NS}">{run_properties_xml}</root>'
+            f'<root xmlns:a="{DML_NS}" xmlns:r="{OFFICE_REL_NS}">'
+            f"{run_properties_xml}</root>"
         )
     except (ET.ParseError, RecursionError) as exc:
         raise RuntimeError(f"Invalid inline formula XML: {exc}") from exc

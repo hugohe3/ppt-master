@@ -24,6 +24,7 @@ from pptx_shapes import (
     validate_ooxml_xfrm,
 )
 from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
+from hyperlink_contract import svg_hyperlink_href
 from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
 from resource_paths import (
     resolve_external_image_reference,
@@ -35,6 +36,12 @@ from .context import (
     TEXT_FLOW_SPLIT,
     ConvertContext,
     ShapeResult,
+)
+from .hyperlinks import (
+    HYPERLINK_ACTION_KEY,
+    HYPERLINK_RID_KEY,
+    hyperlink_click_xml,
+    hyperlink_run_metadata,
 )
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
@@ -2175,7 +2182,10 @@ def _extract_text_bullet(
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     """Convert a leading text bullet marker into paragraph metadata."""
     first_nonspace = _first_nonspace_run(runs)
-    if first_nonspace and first_nonspace.get(_INLINE_FORMULA_KEY) is not None:
+    if first_nonspace and (
+        first_nonspace.get(_INLINE_FORMULA_KEY) is not None
+        or first_nonspace.get(HYPERLINK_RID_KEY) is not None
+    ):
         return runs, None
     full_text = ''.join(str(run.get('text', '')) for run in runs)
     match = _TEXT_BULLET_RE.match(full_text)
@@ -2390,37 +2400,68 @@ def _collect_tspan_runs(
     ctx: ConvertContext,
     inherited_xml_space: str = 'default',
 ) -> list[dict[str, Any]]:
-    """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
+    """Recursively turn one inline SVG subtree into DrawingML text runs."""
+    return _collect_inline_runs(
+        tspan,
+        inherited_attrs,
+        ctx,
+        inherited_xml_space,
+    )
 
-    Order: tspan.text → (each nested child tspan's runs → that child's tail under THIS tspan's attrs).
-    """
+
+def _collect_inline_runs(
+    container: ET.Element,
+    inherited_attrs: dict[str, Any],
+    ctx: ConvertContext,
+    inherited_xml_space: str = 'default',
+    inherited_hyperlink: dict[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """Collect nested ``tspan``/``a`` content with style and link inheritance."""
     runs: list[dict[str, Any]] = []
-    own_attrs = _override_run_attrs(inherited_attrs, tspan, ctx)
-    own_xml_space = resolve_project_xml_space(tspan, inherited_xml_space)
+    own_attrs = _override_run_attrs(inherited_attrs, container, ctx)
+    own_xml_space = resolve_project_xml_space(container, inherited_xml_space)
+    container_tag = container.tag.replace(f'{{{SVG_NS}}}', '')
+    own_hyperlink = inherited_hyperlink
+    if container_tag == 'a':
+        own_hyperlink = hyperlink_run_metadata(
+            ctx,
+            svg_hyperlink_href(container),
+        )
 
-    if tspan.text:
+    if container.text:
         run = {
             **own_attrs,
-            'text': tspan.text,
+            'text': container.text,
             '_xml_space': own_xml_space,
         }
-        inline_formula = tspan.get(_INLINE_FORMULA_ATTR)
+        if own_hyperlink is not None:
+            run.update(own_hyperlink)
+        inline_formula = container.get(_INLINE_FORMULA_ATTR)
         if inline_formula is not None:
             run[_INLINE_FORMULA_KEY] = inline_formula
         runs.append(run)
 
-    for child in tspan:
+    for child in container:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if child_tag == 'tspan':
+        if child_tag in {'tspan', 'a'}:
             runs.extend(
-                _collect_tspan_runs(child, own_attrs, ctx, own_xml_space)
+                _collect_inline_runs(
+                    child,
+                    own_attrs,
+                    ctx,
+                    own_xml_space,
+                    own_hyperlink,
+                )
             )
             if child.tail:
-                runs.append({
+                tail_run = {
                     **own_attrs,
                     'text': child.tail,
                     '_xml_space': own_xml_space,
-                })
+                }
+                if own_hyperlink is not None:
+                    tail_run.update(own_hyperlink)
+                runs.append(tail_run)
 
     return runs
 
@@ -2448,10 +2489,13 @@ def _build_text_runs(
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if child_tag == 'tspan':
-            runs.extend(
-                _collect_tspan_runs(child, parent_attrs, ctx, xml_space)
-            )
+        if child_tag in {'tspan', 'a'}:
+            runs.extend(_collect_inline_runs(
+                child,
+                parent_attrs,
+                ctx,
+                xml_space,
+            ))
             if child.tail:
                 runs.append({
                     **parent_attrs,
@@ -2603,6 +2647,17 @@ def _build_run_properties_xml(
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
+    relationship_id = run.get(HYPERLINK_RID_KEY)
+    hyperlink_xml = (
+        hyperlink_click_xml(
+            str(relationship_id),
+            str(run.get(HYPERLINK_ACTION_KEY))
+            if run.get(HYPERLINK_ACTION_KEY) is not None
+            else None,
+        )
+        if relationship_id is not None
+        else ''
+    )
 
     return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
 {outline_xml}
@@ -2610,7 +2665,8 @@ def _build_run_properties_xml(
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>{rtl_xml}
+<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
+{hyperlink_xml}{rtl_xml}
 </a:rPr>'''
 
 
@@ -2638,6 +2694,8 @@ def _coalesce_text_runs(
         if (
             merged
             and merged[-1].get(_INLINE_FORMULA_KEY) is None
+            and merged[-1].get(HYPERLINK_RID_KEY) == run.get(HYPERLINK_RID_KEY)
+            and merged[-1].get(HYPERLINK_ACTION_KEY) == run.get(HYPERLINK_ACTION_KEY)
             and properties == previous_properties
         ):
             candidate = {
@@ -2865,6 +2923,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                         'letter_spacing': 0.0,
                     }
                     joining_space.pop(_INLINE_FORMULA_KEY, None)
+                    joining_space.pop(HYPERLINK_RID_KEY, None)
+                    joining_space.pop(HYPERLINK_ACTION_KEY, None)
                     prev.append(joining_space)
                 prev.extend(line_runs)
             else:

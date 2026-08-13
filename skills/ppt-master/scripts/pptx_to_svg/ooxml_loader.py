@@ -424,6 +424,11 @@ class OoxmlPackage:
             return self._slides[index - 1]
         return None
 
+    @property
+    def slide_index_by_part(self) -> dict[str, int]:
+        """Return final presentation-order indices keyed by slide part path."""
+        return {slide.part.path: slide.index for slide in self._slides}
+
     def iter_all_masters(self) -> Iterator[PartRef]:
         """Yield every slideMaster declared in presentation.xml, regardless of
         whether any slide currently uses it.
