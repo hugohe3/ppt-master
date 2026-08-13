@@ -50,6 +50,7 @@ PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 )
@@ -79,6 +80,7 @@ _TOP_LEVEL_VISIBLE_TAGS = frozenset({
     f"{{{PML_NS}}}graphicFrame",
     f"{{{PML_NS}}}grpSp",
     f"{{{PML_NS}}}cxnSp",
+    f"{{{MC_NS}}}AlternateContent",
 })
 
 

@@ -117,11 +117,11 @@ def _hydrate_native_payloads(root: ET.Element, svg_path: Path) -> int:
         ) from exc
 
 
-def _require_chart_table_marker_attributes(
+def _require_native_marker_attributes(
     root: ET.Element,
     svg_path: Path | str,
 ) -> None:
-    """Reject contradictory chart/table marker aliases before either route."""
+    """Reject contradictory native marker aliases before conversion."""
     errors: list[str] = []
     for elem in root.iter():
         if elem.tag.rsplit('}', 1)[-1] == 'metadata':
@@ -147,8 +147,28 @@ def _require_chart_table_marker_attributes(
     preview = '; '.join(errors[:8])
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
-        f'{Path(svg_path).name}: invalid chart/table replacement metadata: '
+        f'{Path(svg_path).name}: invalid native replacement metadata: '
         f'{preview}{suffix}'
+    )
+
+
+def _native_replacement_enabled(elem: ET.Element, ctx: ConvertContext) -> bool:
+    """Return whether this marker is active under the current export policy."""
+    kind = native_replacement_kind(elem)
+    if kind == 'formula':
+        return True
+    return ctx.native_objects_enabled and kind in {'chart', 'table'}
+
+
+def _contains_enabled_native_replacement(
+    elem: ET.Element,
+    ctx: ConvertContext,
+) -> bool:
+    """Return whether one subtree contains an active native replacement."""
+    return any(
+        descendant.tag.replace(f'{{{SVG_NS}}}', '') != 'metadata'
+        and _native_replacement_enabled(descendant, ctx)
+        for descendant in elem.iter()
     )
 
 
@@ -693,11 +713,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     keep their absolute slide coordinates unchanged.
     """
     transform = elem.get('transform', '')
-    native_subtree_active = ctx.native_objects_enabled and any(
-        native_replacement_kind(descendant)
-        and descendant.tag.replace(f'{{{SVG_NS}}}', '') != 'metadata'
-        for descendant in elem.iter()
-    )
+    native_subtree_active = _contains_enabled_native_replacement(elem, ctx)
     if native_subtree_active:
         dx, dy, sx, sy = native_marker_transform(transform)
         angle_deg = 0.0
@@ -789,12 +805,12 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     if native_subtree_active and child_ctx.opacity_multiplier < 1.0:
         raise SvgNativeConversionError(
-            "Group opacity cannot be applied to data-pptx-replace-with chart/table "
-            "objects; export without --native-charts-and-tables to use the "
-            "shape-based SVG fallback"
+            "Group opacity cannot be applied to an active native replacement; "
+            "remove the group opacity or remove data-pptx-replace-with to keep "
+            "the subtree as ordinary SVG"
         )
 
-    if child_ctx.native_objects_enabled:
+    if _native_replacement_enabled(elem, child_ctx):
         native_result = convert_native_object(elem, child_ctx)
         if native_result:
             ctx.sync_from_child(child_ctx)
@@ -1188,6 +1204,8 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
         return {'output_geometry': 'picture', 'fidelity': 'native-normalized'}
     if xml.startswith('<p:graphicFrame>'):
         return {'output_geometry': 'native-object', 'fidelity': 'native-normalized'}
+    if xml.startswith('<mc:AlternateContent'):
+        return {'output_geometry': 'native-formula', 'fidelity': 'exact'}
 
     preset_match = re.search(r'<a:prstGeom prst="([^"]+)"', xml)
     if preset_match is not None:
@@ -1413,7 +1431,8 @@ def convert_svg_to_slide_shapes(
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert explicit ``data-pptx-replace-with`` chart/table
-            markers to native PowerPoint Chart/Table objects. Default off.
+            markers to native PowerPoint Chart/Table objects. Formula markers
+            are intrinsically native and do not use this opt-in. Default off.
         animation_group_overrides: Explicit top-level SVG group ids from
             ``animations.json`` that override the legacy chrome-name fallback.
             Explicit structural layer/role/placeholder markers remain excluded.
@@ -1455,7 +1474,7 @@ def convert_svg_to_slide_shapes(
         )
     except CanvasContractError as exc:
         raise SvgNativeConversionError(str(exc)) from exc
-    _require_chart_table_marker_attributes(root, svg_path)
+    _require_native_marker_attributes(root, svg_path)
     _require_project_nested_svg_crops(root, svg_path)
     _require_project_clip_paths(root, svg_path)
     authored_errors = validate_authored_preset_tree(root)

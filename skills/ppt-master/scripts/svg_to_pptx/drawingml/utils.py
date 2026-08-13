@@ -1026,7 +1026,7 @@ def _contains_native_marker(elem: ET.Element) -> bool:
     from ..native_objects.marker_attributes import native_replacement_kind
 
     return any(
-        native_replacement_kind(descendant) in {'table', 'chart'}
+        native_replacement_kind(descendant) in {'table', 'chart', 'formula'}
         for descendant in _iter_visual_transform_tree(elem)
     )
 
@@ -1177,7 +1177,7 @@ def _transform_semantic_error(
             if all(name in {'translate', 'scale'} for name in names):
                 return None
             return (
-                f'{label} native table/chart marker transforms support only '
+                f'{label} native replacement marker transforms support only '
                 'translate and scale'
             )
         if _contains_thick_circle(elem, thick_circle_ids):

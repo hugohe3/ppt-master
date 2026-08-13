@@ -144,8 +144,19 @@ PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+A14_NS = "http://schemas.microsoft.com/office/drawing/2010/main"
+MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
 
-for _prefix, _uri in (("p", PML_NS), ("a", DML_NS), ("r", REL_NS), ("p14", P14_NS)):
+for _prefix, _uri in (
+    ("p", PML_NS),
+    ("a", DML_NS),
+    ("r", REL_NS),
+    ("p14", P14_NS),
+    ("mc", MC_NS),
+    ("a14", A14_NS),
+    ("m", MATH_NS),
+):
     try:
         ET.register_namespace(_prefix, _uri)
     except (ValueError, AttributeError):
@@ -423,6 +434,7 @@ _TOP_LEVEL_SHAPE_TAGS = {
     f"{{{PML_NS}}}pic",
     f"{{{PML_NS}}}cxnSp",
     f"{{{PML_NS}}}graphicFrame",
+    f"{{{MC_NS}}}AlternateContent",
 }
 _FLAT_SYSTEM_PLACEHOLDER_TYPES = frozenset({"dt", "ftr", "sldNum"})
 _REL_ATTRS = {

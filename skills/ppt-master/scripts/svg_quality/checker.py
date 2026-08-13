@@ -1238,7 +1238,7 @@ class SVGQualityChecker:
                 # 8b. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(root, result)
 
-                # 8c. Check opt-in native table/chart markers before export.
+                # 8c. Check explicit native replacement markers before export.
                 self._check_native_object_markers(root, result)
 
                 # 8d. Validate explicit master/layout/placeholder metadata.
@@ -3726,7 +3726,7 @@ class SVGQualityChecker:
                 )
 
     def _check_native_object_markers(self, root: ET.Element, result: Dict) -> None:
-        """Validate opt-in native table/chart markers before PPTX export."""
+        """Validate explicit native replacement markers before PPTX export."""
         invalid_status_elements: set[ET.Element] = set()
         for elem in root.iter():
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
