@@ -340,6 +340,12 @@ def _chart_text_entry(value: Any) -> tuple[str, dict[str, Any]] | None:
     return str(value).strip(), {}
 
 
+def _chart_title_is_bounded(payload: dict[str, Any]) -> bool:
+    """Return whether the classic title requests an explicit companion box."""
+    title = payload.get("title")
+    return isinstance(title, dict) and _chart_companion_box(title) is not None
+
+
 def _chart_text_entry_font_size(item: dict[str, Any], fallback: int) -> int:
     raw = _first_present(item.get("font_size"), item.get("fontSize"))
     if raw is None:
@@ -777,6 +783,16 @@ def _validate_chart_companion_boxes(
     include_subtitle_as_caption: bool,
 ) -> None:
     """Validate companion boxes without allocating shapes or relationships."""
+    title_bounded = _chart_title_is_bounded(payload)
+    if (
+        title_bounded
+        and not include_subtitle_as_caption
+        and _chart_text_entry(payload.get("subtitle")) is not None
+    ):
+        raise RuntimeError(
+            "Native PPTX classic chart bounded title does not support subtitle; "
+            "use a separately bounded caption"
+        )
     _, chart_off_y, _, chart_ext_cy = chart_bounds
     below_index = 0
     for item in _chart_companion_entries(
@@ -808,6 +824,8 @@ def _chart_companion_text_xml(
     include_title: bool,
     include_subtitle_as_caption: bool,
 ) -> str:
+    if _chart_title_is_bounded(payload):
+        include_title = True
     entries = _chart_companion_entries(
         payload,
         include_title=include_title,

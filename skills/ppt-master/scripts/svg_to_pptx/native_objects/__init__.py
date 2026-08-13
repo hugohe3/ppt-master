@@ -8,12 +8,13 @@ from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import _xml_escape
-from .chart_data import _chart_data
+from .chart_data import _chart_data, _chart_plot_area_layout
 from .chart_style import (
     _axis_titles,
     _chart_companion_entries,
     _chart_companion_text_xml,
     _chart_text_sizes,
+    _chart_title_is_bounded,
     _classic_chart_style,
     _native_chart_chrome_errors,
     _native_chart_chrome_warnings,
@@ -159,6 +160,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             chart_data=chart_data,
             inherited_styles=ctx.inherited_styles,
             primary_language=ctx.primary_language,
+            chart_bounds=(off_x, off_y, ext_cx, ext_cy),
         )
         ctx.package_files[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
         if chart_data["kind"] == "xy":
@@ -190,7 +192,10 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         chart_style=chart_style,
         note_font_size=text_sizes["note"],
         title_font_size=text_sizes["title"],
-        include_title=chart_data["kind"] == "chartex",
+        include_title=(
+            chart_data["kind"] == "chartex"
+            or _chart_title_is_bounded(payload)
+        ),
         include_subtitle_as_caption=chart_data["kind"] == "chartex",
     )
     xml = chart_frame_xml + companion_xml
@@ -238,10 +243,17 @@ def _validate_native_object_marker_payload(
             )
     elif kind == "chart":
         chart_data = _chart_data(payload)
+        _chart_plot_area_layout(
+            chart_data,
+            (off_x, off_y, ext_cx, ext_cy),
+        )
         _validate_chart_companion_boxes(
             payload,
             chart_bounds=(off_x, off_y, ext_cx, ext_cy),
-            include_title=chart_data["kind"] == "chartex",
+            include_title=(
+                chart_data["kind"] == "chartex"
+                or _chart_title_is_bounded(payload)
+            ),
             include_subtitle_as_caption=chart_data["kind"] == "chartex",
         )
         if validate_chrome and native_import_source(elem) != "pptx":
