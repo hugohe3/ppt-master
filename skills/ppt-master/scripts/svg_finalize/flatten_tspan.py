@@ -189,6 +189,7 @@ PARAGRAPH_SOFT_BREAK_ATTR = "data-paragraph-soft-break"
 # Marks an authored visual line boundary that remains a hard DrawingML break
 # in the default single-frame preserve mode.
 PARAGRAPH_LINE_BREAK_ATTR = "data-paragraph-line-break"
+INLINE_FORMULA_ATTR = "data-pptx-inline-formula"
 
 # Tolerance for detecting "base line-height" vs "paragraph gap": dy values
 # within ±DY_TOLERANCE_PX of each other are considered the same line-height.
@@ -741,6 +742,7 @@ def _create_text_element_from_line(
         and len(tspans) == 1
         and not _has_tspan_children(tspans[0])
         and not tspans[0].tail
+        and tspans[0].get(INLINE_FORMULA_ATTR) is None
     ):
         tspan = tspans[0]
         content = collect_text_content(tspan)

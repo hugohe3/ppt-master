@@ -2,10 +2,11 @@
 r"""
 PPT Master - Native Formula Compiler
 
-Compile a strict, block-only LaTeX subset into editable Office Math XML.
+Compile a strict LaTeX subset into editable block or inline Office Math XML.
 
 Usage:
-    Import compile_latex_to_omml() from the SVG-to-PPTX native-object pipeline.
+    Import compile_latex_to_omml() or compile_latex_to_inline_omml() from the
+    SVG-to-PPTX native-object pipeline.
 
 Examples:
     compile_latex_to_omml(r"\frac{-b \pm \sqrt{b^2-4ac}}{2a}")
@@ -1294,6 +1295,33 @@ def validate_omml_fragment(xml: str) -> str:
 
 def compile_latex_to_omml(latex: str) -> str:
     """Compile one standalone block formula into canonical m:oMathPara XML."""
+    expression = _parse_latex_formula(latex)
+
+    root = ET.Element(_math_tag("oMathPara"))
+    properties = _math_element(root, "oMathParaPr")
+    _math_element(properties, "jc", val="center")
+    math = _math_element(root, "oMath")
+    _append_node(math, expression)
+
+    ET.register_namespace("m", MATH_NS)
+    xml = ET.tostring(root, encoding="unicode", short_empty_elements=True)
+    return validate_omml_fragment(xml)
+
+
+def compile_latex_to_inline_omml(latex: str) -> str:
+    """Compile one inline formula into canonical m:oMath XML."""
+    expression = _parse_latex_formula(latex)
+
+    root = ET.Element(_math_tag("oMath"))
+    _append_node(root, expression)
+
+    ET.register_namespace("m", MATH_NS)
+    xml = ET.tostring(root, encoding="unicode", short_empty_elements=True)
+    return validate_omml_fragment(xml)
+
+
+def _parse_latex_formula(latex: str) -> _Node:
+    """Validate and parse the shared formula-source contract once."""
     if not isinstance(latex, str):
         raise FormulaCompileError("LaTeX formula must be a string")
     if len(latex) > _MAX_LATEX_LENGTH:
@@ -1310,20 +1338,12 @@ def compile_latex_to_omml(latex: str) -> str:
 
     expression = _LatexParser(source).parse()
     _formula_node_count(expression)
-
-    root = ET.Element(_math_tag("oMathPara"))
-    properties = _math_element(root, "oMathParaPr")
-    _math_element(properties, "jc", val="center")
-    math = _math_element(root, "oMath")
-    _append_node(math, expression)
-
-    ET.register_namespace("m", MATH_NS)
-    xml = ET.tostring(root, encoding="unicode", short_empty_elements=True)
-    return validate_omml_fragment(xml)
+    return expression
 
 
 __all__ = [
     "FormulaCompileError",
+    "compile_latex_to_inline_omml",
     "compile_latex_to_omml",
     "validate_omml_fragment",
 ]

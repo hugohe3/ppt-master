@@ -209,13 +209,17 @@ except ImportError:
 
 try:
     from svg_to_pptx.native_objects import (
+        INLINE_FORMULA_ATTR as _INLINE_FORMULA_ATTR,
         native_fallback_kind as _native_fallback_kind,
+        inline_formula_marker_errors as _inline_formula_marker_errors,
         native_marker_legacy_warnings as _native_marker_legacy_warnings,
         native_replacement_kind as _native_replacement_kind,
         native_replacement_status as _native_replacement_status,
     )
 except ImportError:
+    _INLINE_FORMULA_ATTR = 'data-pptx-inline-formula'
     _native_fallback_kind = None
+    _inline_formula_marker_errors = None
     _native_marker_legacy_warnings = None
     _native_replacement_kind = None
     _native_replacement_status = None
@@ -3727,6 +3731,19 @@ class SVGQualityChecker:
 
     def _check_native_object_markers(self, root: ET.Element, result: Dict) -> None:
         """Validate explicit native replacement markers before PPTX export."""
+        inline_formula_markers = [
+            elem for elem in root.iter()
+            if elem.get(_INLINE_FORMULA_ATTR) is not None
+        ]
+        if inline_formula_markers and _inline_formula_marker_errors is None:
+            result['errors'].append(
+                "Unable to import inline-formula validator; cannot verify "
+                f"{_INLINE_FORMULA_ATTR} markers"
+            )
+        elif _inline_formula_marker_errors is not None:
+            for error in _inline_formula_marker_errors(root):
+                result['errors'].append(f"Invalid inline formula marker: {error}")
+
         invalid_status_elements: set[ET.Element] = set()
         for elem in root.iter():
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'

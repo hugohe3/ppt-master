@@ -92,8 +92,10 @@ from ..canvas_contract import (
     parse_project_viewbox,
 )
 from ..native_objects import (
+    INLINE_FORMULA_ATTR,
     NativeMarkerAttributeError,
     convert_native_object,
+    inline_formula_marker_errors,
     native_metadata_payload_matches,
     native_replacement_kind,
     native_marker_transform,
@@ -148,6 +150,22 @@ def _require_native_marker_attributes(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid native replacement metadata: '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_inline_formula_markers(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject malformed inline formula runs before text lowering."""
+    errors = inline_formula_marker_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid {INLINE_FORMULA_ATTR} marker(s): '
         f'{preview}{suffix}'
     )
 
@@ -1205,6 +1223,16 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
     if xml.startswith('<p:graphicFrame>'):
         return {'output_geometry': 'native-object', 'fidelity': 'native-normalized'}
     if xml.startswith('<mc:AlternateContent'):
+        if elem.tag.replace(f'{{{SVG_NS}}}', '') == 'text':
+            inline_formula_count = sum(
+                1 for child in elem.iter()
+                if child.get(INLINE_FORMULA_ATTR) is not None
+            )
+            return {
+                'output_geometry': 'text',
+                'inline_formula_count': inline_formula_count,
+                'fidelity': 'native-normalized',
+            }
         return {'output_geometry': 'native-formula', 'fidelity': 'exact'}
 
     preset_match = re.search(r'<a:prstGeom prst="([^"]+)"', xml)
@@ -1475,6 +1503,7 @@ def convert_svg_to_slide_shapes(
     except CanvasContractError as exc:
         raise SvgNativeConversionError(str(exc)) from exc
     _require_native_marker_attributes(root, svg_path)
+    _require_inline_formula_markers(root, svg_path)
     _require_project_nested_svg_crops(root, svg_path)
     _require_project_clip_paths(root, svg_path)
     authored_errors = validate_authored_preset_tree(root)
@@ -1616,6 +1645,8 @@ def convert_svg_to_slide_shapes(
         if verbose:
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
+    _require_inline_formula_markers(root, svg_path)
+
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
     _require_project_nested_svg_crops(root, svg_path)
     _require_project_images(root, svg_path)
@@ -1639,6 +1670,11 @@ def convert_svg_to_slide_shapes(
         raise SvgNativeConversionError(
             f'{svg_path.name}: text-metric materialization failed: {exc}'
         ) from exc
+
+    inline_formula_count_before_text_lowering = sum(
+        1 for elem in root.iter()
+        if elem.get(INLINE_FORMULA_ATTR) is not None
+    )
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent
     # <text> elements. DrawingML runs cannot reposition mid-paragraph, so a
@@ -1664,6 +1700,21 @@ def convert_svg_to_slide_shapes(
         })
         if verbose:
             print(f'  Lowered positional <tspan> using {text_flow} text flow')
+
+    inline_formula_count_after_text_lowering = sum(
+        1 for elem in root.iter()
+        if elem.get(INLINE_FORMULA_ATTR) is not None
+    )
+    if (
+        inline_formula_count_after_text_lowering
+        != inline_formula_count_before_text_lowering
+    ):
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: positional text lowering changed inline formula '
+            f'marker count from {inline_formula_count_before_text_lowering} '
+            f'to {inline_formula_count_after_text_lowering}'
+        )
+    _require_inline_formula_markers(root, svg_path)
 
     _require_project_text_properties(root, svg_path)
     try:
