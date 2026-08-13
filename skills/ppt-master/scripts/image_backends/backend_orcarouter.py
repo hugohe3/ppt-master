@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+"""
+OrcaRouter image generation backend.
+
+OrcaRouter is an OpenAI-compatible AI gateway (https://www.orcarouter.ai).
+It routes image requests to an image-capable upstream model and runs
+gateway-level, zero-trust security on the same endpoint.
+
+Configuration keys:
+  ORCAROUTER_API_KEY   (required)
+  ORCAROUTER_BASE_URL  (optional)
+  ORCAROUTER_MODEL     (optional)
+"""
+
+import sys
+from pathlib import Path
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
+
+if __name__ == "__main__":
+    print(__doc__)
+    print("Use via: python3 skills/ppt-master/scripts/image_gen.py \"prompt\" --backend orcarouter")
+    raise SystemExit(0 if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]) else 1)
+
+import os
+import time
+import threading
+import requests
+
+from image_backends.backend_common import (
+    MAX_RETRIES,
+    decode_data_uri,
+    find_data_uri,
+    is_rate_limit_error,
+    normalize_image_size,
+    resolve_output_path,
+    retry_delay,
+    save_image_bytes,
+)
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Constants                                                      ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+VALID_ASPECT_RATIOS = [
+    "1:1", "1:4", "1:8",
+    "2:3", "3:2", "3:4", "4:1", "4:3",
+    "4:5", "5:4", "8:1", "9:16", "16:9", "21:9"
+]
+
+VALID_IMAGE_SIZES = ["1K", "2K", "4K", "0.5K"]
+
+# The per-request virtual router `orcarouter/auto` currently steers image
+# requests toward text-capable models, so we default to an image-capable
+# model that OrcaRouter exposes; override with ORCAROUTER_MODEL.
+DEFAULT_MODEL = "google/gemini-2.5-flash-image"
+DEFAULT_ENDPOINT = "https://api.orcarouter.ai/v1"
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Image Generation                                               ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+def _resolve_url(base_url: str) -> str:
+    """Resolve the OrcaRouter generation endpoint."""
+    return base_url.rstrip("/") + "/chat/completions"
+
+def _message_image_uri(message: dict) -> str | None:
+    """
+    Locate the generated image in a chat completion message.
+
+    Some gateways return it in a dedicated `images` array; OrcaRouter inlines
+    the image in the message text instead (as `![image](data:image/png;base64,...)`).
+    """
+    images = message.get("images")
+    if images:
+        url = images[0].get("image_url")
+        if isinstance(url, dict):
+            url = url.get("url")
+        if url:
+            return url
+
+    return find_data_uri(message.get("content"))
+
+
+def _generate_image(api_key: str, prompt: str,
+                    aspect_ratio: str = "1:1", image_size: str = "1K",
+                    output_dir: str = None, filename: str = None,
+                    model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
+    """
+    Image generation via OrcaRouter's API.
+    """
+
+    url = _resolve_url(base_url)
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "modalities": ["image", "text"],
+        "image_config": {
+            "aspect_ratio": aspect_ratio,
+            "image_size": image_size
+        }
+    }
+
+    print(f"[OrcaRouter]")
+    print(f"  Model:        {model}")
+    print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
+    print(f"  Aspect Ratio: {aspect_ratio}")
+    print(f"  Image Size:   {image_size}")
+    print()
+
+    start_time = time.time()
+    print(f"  [..] Generating...", end="", flush=True)
+
+    # Heartbeat thread
+    heartbeat_stop = threading.Event()
+
+    def _heartbeat():
+        while not heartbeat_stop.is_set():
+            heartbeat_stop.wait(5)
+            if not heartbeat_stop.is_set():
+                elapsed = time.time() - start_time
+                print(f" {elapsed:.0f}s...", end="", flush=True)
+
+    hb_thread = threading.Thread(target=_heartbeat, daemon=True)
+    hb_thread.start()
+
+    try:
+        result = requests.post(url, headers=headers, json=payload, timeout=300).json()
+    finally:
+        heartbeat_stop.set()
+        hb_thread.join(timeout=1)
+
+    elapsed = time.time() - start_time
+    print(f"\n  [DONE] Image generated ({elapsed:.1f}s)")
+
+    if result.get("choices"):
+        message = result["choices"][0]["message"]
+        image_uri = _message_image_uri(message)
+        if image_uri:
+            image_data, content_type = decode_data_uri(image_uri)
+            path = resolve_output_path(prompt, output_dir, filename, ".png")
+            return save_image_bytes(image_data, path, content_type)
+
+    raise RuntimeError("No image was generated. The server may have refused the request.")
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Public Entry Point                                             ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+def generate(prompt: str,
+             aspect_ratio: str = "1:1", image_size: str = "1K",
+             output_dir: str = None, filename: str = None,
+             model: str = None, max_retries: int = MAX_RETRIES) -> str:
+    """
+    OrcaRouter image generation with automatic retry.
+
+    Reads credentials from the current process environment or a `.env` file:
+      ORCAROUTER_API_KEY
+      ORCAROUTER_BASE_URL
+      ORCAROUTER_MODEL (optional override)
+    """
+    api_key = os.environ.get("ORCAROUTER_API_KEY")
+    base_url = os.environ.get("ORCAROUTER_BASE_URL") or DEFAULT_ENDPOINT
+
+    if not api_key:
+        raise ValueError(
+            "No API key found. Set ORCAROUTER_API_KEY in the current environment or a .env file."
+        )
+
+    if model is None:
+        model = os.environ.get("ORCAROUTER_MODEL") or DEFAULT_MODEL
+
+    image_size = normalize_image_size(image_size)
+
+    if aspect_ratio not in VALID_ASPECT_RATIOS:
+        raise ValueError(f"Invalid aspect ratio '{aspect_ratio}'. Valid: {VALID_ASPECT_RATIOS}")
+
+    if image_size not in VALID_IMAGE_SIZES:
+        raise ValueError(f"Invalid image size '{image_size}'. Valid: {VALID_IMAGE_SIZES}")
+
+    last_error = None
+    for attempt in range(max_retries + 1):
+        try:
+            return _generate_image(api_key, prompt,
+                                   aspect_ratio, image_size, output_dir,
+                                   filename, model, base_url)
+        except Exception as e:
+            last_error = e
+            if attempt < max_retries and is_rate_limit_error(e):
+                delay = retry_delay(attempt, rate_limited=True)
+                print(f"\n  [WARN] Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
+                      f"Waiting {delay}s before retry...")
+                time.sleep(delay)
+            elif attempt < max_retries:
+                delay = retry_delay(attempt, rate_limited=False)
+                print(f"\n  [WARN] Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                      f"Retrying in {delay}s...")
+                time.sleep(delay)
+            else:
+                break
+
+    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")

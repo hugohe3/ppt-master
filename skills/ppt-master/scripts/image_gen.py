@@ -19,6 +19,7 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=fal         -> fal.ai backend
   IMAGE_BACKEND=replicate   -> Replicate backend
   IMAGE_BACKEND=openrouter  -> OpenRouter backend
+  IMAGE_BACKEND=orcarouter  -> OrcaRouter backend
 
 Configuration source (process env wins, `.env` is the fallback layer):
   1. Current process environment variables
@@ -80,6 +81,7 @@ IMAGE_ENV_PREFIXES = (
     "FAL_",
     "REPLICATE_",
     "OPENROUTER_",
+    "ORCAROUTER_",
 )
 DEPRECATED_IMAGE_KEYS = {
     "IMAGE_API_KEY",
@@ -206,6 +208,13 @@ BACKEND_REGISTRY = {
         "label": "OpenRouter",
         "default_model": "google/gemini-3.1-flash-image-preview",
         "key_hint": "OPENROUTER_API_KEY",
+    },
+    "orcarouter": {
+        "module": "backend_orcarouter",
+        "tier": "experimental",
+        "label": "OrcaRouter",
+        "default_model": "google/gemini-2.5-flash-image",
+        "key_hint": "ORCAROUTER_API_KEY",
     },
 }
 
