@@ -110,7 +110,9 @@ _SLIDE_CACHE: dict = {}  # path -> (mtime, (content, warnings))
 _LIST_CACHE_LOCK = threading.Lock()
 _LIST_CACHE: dict = {}  # path -> (mtime, annotation_count_on_disk)
 
-DEFAULT_PORT = 5050
+# Keep live preview on a separate range from Confirm UI so a stale preview tab
+# cannot send ``/api/shutdown`` to a later Confirm UI process.
+DEFAULT_PORT = 6060
 PUBLIC_HOST = '127.0.0.1'
 STARTUP_TIMEOUT = 15
 

@@ -130,9 +130,9 @@ _ICON_PREVIEW_SAMPLES = {
     'phosphor-duotone': ('house', 'chart-line', 'users', 'target'),
 }
 
-# Prefer the same memorable entry port as live preview. Normal single-project
-# execution releases it between Step 4 and Step 6; concurrent projects advance
-# from this base while explicit ``--port`` remains exact.
+# Keep the long-standing Confirm UI entry port. Live preview uses a separate
+# base range so stale preview tabs cannot address a later Confirm UI process.
+# Concurrent Confirm UI sessions advance while explicit ``--port`` remains exact.
 DEFAULT_PORT = 5050
 PUBLIC_HOST = '127.0.0.1'
 STARTUP_TIMEOUT = 10
