@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M160 0V720 M240 0V720 M320 0V720 M400 0V720 M480 0V720 M560 0V720 M640 0V720 M720 0V720 M800 0V720 M880 0V720 M960 0V720 M1040 0V720 M1120 0V720 M1200 0V720 M0 80H1280 M0 160H1280 M0 240H1280 M0 320H1280 M0 400H1280 M0 480H1280 M0 560H1280 M0 640H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">设备链路呈“10→9→6→5→3→1”收敛，瓶颈已转向联调验收</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">EQUIPMENT PIPELINE · PROCUREMENT TO ACCEPTANCE</text>
+  </g>
+  <g id="chartArea" data-pptx-bounds="56 156 708 490" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="60" y="180" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">10个设备包的阶段收敛</text>
+    <line x1="88" y1="600" x2="742" y2="600" stroke="#87D9F5" stroke-width="2"/>
+    <!-- chart-plot-area: 90,205,740,585 -->
+    <polygon points="90,210 740,210 707.5,260 122.5,260" fill="#12364A" stroke="#87D9F5" stroke-width="2"/>
+    <text x="415" y="244" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">采购启动 · 10</text>
+    <polygon points="122.5,275 707.5,275 610,325 220,325" fill="#12364A" stroke="#87D9F5" stroke-width="2"/>
+    <text x="415" y="309" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">合同生效 · 9</text>
+    <polygon points="220,340 610,340 577.5,390 252.5,390" fill="#0D3445" stroke="#87D9F5" stroke-width="2"/>
+    <text x="415" y="374" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">到场 · 6</text>
+    <polygon points="252.5,405 577.5,405 512.5,455 317.5,455" fill="#0D3D46" stroke="#32E0C4" stroke-width="2"/>
+    <text x="415" y="439" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">安装完成 · 5</text>
+    <polygon points="317.5,470 512.5,470 447.5,520 382.5,520" fill="#17413E" stroke="#FFB454" stroke-width="2"/>
+    <text x="415" y="504" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">进入联调 · 3</text>
+    <polygon points="382.5,535 447.5,535 447.5,585 382.5,585" fill="#18493F" stroke="#32E0C4" stroke-width="3"/>
+    <text x="415" y="569" font-size="20" font-weight="700" fill="#EAF7FF" text-anchor="middle">阶段验收 · 1</text>
+    <text x="95" y="630" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#FFB454">主要损失发生在“到场→联调→验收”转化段</text>
+  </g>
+  <g id="equipment-e02" data-pptx-bounds="800 168 420 130">
+    <line x1="808" y1="174" x2="808" y2="290" stroke="#32E0C4" stroke-width="5"/>
+    <text x="834" y="202" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#32E0C4">E02 · PVD</text>
+    <text x="834" y="240" font-size="22" fill="#EAF7FF">联调完成度 80%</text>
+    <text x="834" y="276" font-size="20" fill="#8BA9B8">下一节点：8月22日厚度均匀性复测</text>
+  </g>
+  <g id="equipment-e03" data-pptx-bounds="800 318 420 130">
+    <line x1="808" y1="324" x2="808" y2="440" stroke="#FFB454" stroke-width="5"/>
+    <text x="834" y="352" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">E03 · CVD</text>
+    <text x="834" y="390" font-size="22" fill="#EAF7FF">安装完成，等待特气联锁</text>
+    <text x="834" y="426" font-size="20" fill="#8BA9B8">下一节点：8月29日启动带片联调</text>
+  </g>
+  <g id="equipment-e10" data-pptx-bounds="800 468 420 130">
+    <line x1="808" y1="474" x2="808" y2="590" stroke="#FF6B6B" stroke-width="5"/>
+    <text x="834" y="502" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FF6B6B">E10 · DATA PLATFORM</text>
+    <text x="834" y="540" font-size="22" fill="#EAF7FF">合同谈判 90%，核心接口待锁定</text>
+    <text x="834" y="576" font-size="20" fill="#8BA9B8">决策节点：8月18日分段交付</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 650 1168 32">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜设备包、状态、日期和阻塞均为案例设定</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">06 / 11</text>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M160 0V720 M240 0V720 M320 0V720 M400 0V720 M480 0V720 M560 0V720 M640 0V720 M720 0V720 M800 0V720 M880 0V720 M960 0V720 M1040 0V720 M1120 0V720 M1200 0V720 M0 80H1280 M0 160H1280 M0 240H1280 M0 320H1280 M0 400H1280 M0 480H1280 M0 560H1280 M0 640H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">当前仅40%方法可执行，量测与数据链是共同瓶颈</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">CAPABILITY COVERAGE · 8 AVAILABLE / 5 COMMISSIONING / 7 MISSING</text>
+  </g>
+  <g id="chartArea" data-pptx-bounds="56 158 720 438" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="60" y="180" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">20类测试方法覆盖矩阵</text>
+    <text x="330" y="210" font-size="18" fill="#32E0C4" text-anchor="middle">可执行</text><text x="480" y="210" font-size="18" fill="#FFB454" text-anchor="middle">联调中</text><text x="630" y="210" font-size="18" fill="#FF6B6B" text-anchor="middle">未具备</text>
+    <rect x="250" y="224" width="455" height="360" fill="none" stroke="#87D9F5" stroke-width="2"/>
+    <!-- chart-plot-area: 250,224,705,584 -->
+    <text x="72" y="260" font-size="20" fill="#EAF7FF">等离子刻蚀</text><rect x="265" y="238" width="130" height="34" fill="#17483F"/><text x="330" y="262" font-size="18" fill="#32E0C4" text-anchor="middle">3</text><rect x="405" y="238" width="130" height="34" fill="#0D2538"/><text x="470" y="262" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="545" y="238" width="145" height="34" fill="#0D2538"/><text x="618" y="262" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text>
+    <text x="72" y="304" font-size="20" fill="#EAF7FF">薄膜沉积</text><rect x="265" y="282" width="130" height="34" fill="#17483F"/><text x="330" y="306" font-size="18" fill="#32E0C4" text-anchor="middle">2</text><rect x="405" y="282" width="130" height="34" fill="#4A3B24"/><text x="470" y="306" font-size="18" fill="#FFB454" text-anchor="middle">2</text><rect x="545" y="282" width="145" height="34" fill="#0D2538"/><text x="618" y="306" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text>
+    <text x="72" y="348" font-size="20" fill="#EAF7FF">热处理</text><rect x="265" y="326" width="130" height="34" fill="#17483F"/><text x="330" y="350" font-size="18" fill="#32E0C4" text-anchor="middle">1</text><rect x="405" y="326" width="130" height="34" fill="#4A3B24"/><text x="470" y="350" font-size="18" fill="#FFB454" text-anchor="middle">1</text><rect x="545" y="326" width="145" height="34" fill="#0D2538"/><text x="618" y="350" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text>
+    <text x="72" y="392" font-size="20" fill="#EAF7FF">湿法清洗</text><rect x="265" y="370" width="130" height="34" fill="#0D2538"/><text x="330" y="394" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="405" y="370" width="130" height="34" fill="#4A3B24"/><text x="470" y="394" font-size="18" fill="#FFB454" text-anchor="middle">1</text><rect x="545" y="370" width="145" height="34" fill="#4B2630"/><text x="618" y="394" font-size="18" fill="#FF6B6B" text-anchor="middle">1</text>
+    <text x="72" y="436" font-size="20" fill="#EAF7FF">真空诊断</text><rect x="265" y="414" width="130" height="34" fill="#0D2538"/><text x="330" y="438" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="405" y="414" width="130" height="34" fill="#0D2538"/><text x="470" y="438" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="545" y="414" width="145" height="34" fill="#4B2630"/><text x="618" y="438" font-size="18" fill="#FF6B6B" text-anchor="middle">2</text>
+    <text x="72" y="480" font-size="20" fill="#EAF7FF">膜厚量测</text><rect x="265" y="458" width="130" height="34" fill="#17483F"/><text x="330" y="482" font-size="18" fill="#32E0C4" text-anchor="middle">1</text><rect x="405" y="458" width="130" height="34" fill="#0D2538"/><text x="470" y="482" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="545" y="458" width="145" height="34" fill="#4B2630"/><text x="618" y="482" font-size="18" fill="#FF6B6B" text-anchor="middle">2</text>
+    <text x="72" y="524" font-size="20" fill="#EAF7FF">电学测试</text><rect x="265" y="502" width="130" height="34" fill="#0D2538"/><text x="330" y="526" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="405" y="502" width="130" height="34" fill="#0D2538"/><text x="470" y="526" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text><rect x="545" y="502" width="145" height="34" fill="#4B2630"/><text x="618" y="526" font-size="18" fill="#FF6B6B" text-anchor="middle">2</text>
+    <text x="72" y="568" font-size="20" fill="#EAF7FF">数据追溯</text><rect x="265" y="546" width="130" height="34" fill="#17483F"/><text x="330" y="570" font-size="18" fill="#32E0C4" text-anchor="middle">1</text><rect x="405" y="546" width="130" height="34" fill="#4A3B24"/><text x="470" y="570" font-size="18" fill="#FFB454" text-anchor="middle">1</text><rect x="545" y="546" width="145" height="34" fill="#0D2538"/><text x="618" y="570" font-size="18" fill="#8BA9B8" text-anchor="middle">0</text>
+  </g>
+  <g id="closed-loop" data-pptx-bounds="808 160 410 290">
+    <text x="820" y="180" font-size="24" font-weight="700" fill="#EAF7FF">已形成的最小能力闭环</text>
+    <rect x="820" y="210" width="350" height="54" fill="#0D2538" stroke="#32E0C4" stroke-width="2"/><text x="842" y="244" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">E01 · 等离子刻蚀</text>
+    <line x1="995" y1="264" x2="995" y2="298" stroke="#87D9F5" stroke-width="3"/>
+    <rect x="820" y="298" width="350" height="54" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/><text x="842" y="332" font-size="20" fill="#EAF7FF">临时膜厚量测</text>
+    <line x1="995" y1="352" x2="995" y2="386" stroke="#87D9F5" stroke-width="3"/>
+    <rect x="820" y="386" width="350" height="54" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/><text x="842" y="420" font-size="20" fill="#EAF7FF">批次日志与结果归档</text>
+  </g>
+  <g id="capability-evidence" data-pptx-bounds="808 452 410 150">
+    <line x1="816" y1="460" x2="816" y2="590" stroke="#32E0C4" stroke-width="5"/>
+    <text x="842" y="486" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">18 BATCHES · 216 SAMPLES</text>
+    <text x="842" y="524" font-size="22" fill="#EAF7FF">E01 已验证 3 类案例配方</text>
+    <text x="842" y="560" font-size="22" fill="#EAF7FF">自动归档字段覆盖率 92%</text>
+    <text x="842" y="594" font-size="18" fill="#FFB454">下一目标：覆盖率 40% → 85%</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 650 1168 32">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜方法数、批次、样品数和覆盖率均为案例设定</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">07 / 11</text>
+  </g>
+</svg>

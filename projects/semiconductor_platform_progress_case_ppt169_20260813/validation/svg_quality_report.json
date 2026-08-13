@@ -1,0 +1,506 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "final",
+  "target": "/workspace/projects/semiconductor_platform_progress_case_ppt169_20260813",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "517e7b6c55320c9eb298230f0db950d3048ab97ad343228ca9fd772db7ac28ce",
+    "file_count": 11,
+    "files": [
+      {
+        "file": "01_cover.svg",
+        "sha256": "d383110cceed99dad5a404a09a6bb253548425ce3527a705d664c5310b95146d"
+      },
+      {
+        "file": "02_executive_summary.svg",
+        "sha256": "1759998696b6970dea3538e2b0943e95afa1914a1ed752781d101bc34c0e198e"
+      },
+      {
+        "file": "03_capability_architecture.svg",
+        "sha256": "3c2f5546449fe2b1f0786b902559c549ff160bf7ef7aa7f4dd9dc992fd3ac2bc"
+      },
+      {
+        "file": "04_progress_milestones.svg",
+        "sha256": "64c832d3e04fd318fe8d865330a779e22cdc82cd767ac3c9b1efcaf4a56fee32"
+      },
+      {
+        "file": "05_facilities_readiness.svg",
+        "sha256": "650b0f53f71ee610b2a9d7b6a28687f83637a8c32f6c1c7d56ee8a261a04e353"
+      },
+      {
+        "file": "06_equipment_funnel.svg",
+        "sha256": "20abdd3468fe630326ae35ab8f4a49a9577bfa241c0f7a29380429ffe033c7bd"
+      },
+      {
+        "file": "07_capability_heatmap.svg",
+        "sha256": "5a8623c2b6e0ff9a700f0c6b46df2b9e0511a36396fa68fc7925bf36ec91f081"
+      },
+      {
+        "file": "08_validation_readiness.svg",
+        "sha256": "d889d248ee24d4345c64932b52102b858d543e2bce323065ba96b89515c4bf2a"
+      },
+      {
+        "file": "09_risk_critical_path.svg",
+        "sha256": "add274fe4339befd1728ce23b6389135778022052900bbfb7d0c3a8a7c639011"
+      },
+      {
+        "file": "10_ninety_day_roadmap.svg",
+        "sha256": "c2d3c8d989b6e9e7a7f98b5bb4b3eb80f0268484a0273db0077fbec70f9082bf"
+      },
+      {
+        "file": "11_management_decisions.svg",
+        "sha256": "e22c9662fa633e180e7cff715cd95e67792a835cd54db1261cfb0d16e792003c"
+      }
+    ]
+  },
+  "summary": {
+    "total": 11,
+    "passed": 6,
+    "warnings": 5,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 5,
+      "issues": [
+        {
+          "file": "01_cover.svg",
+          "message": "Cannot verify root viewBox bounds for visible text with unsupported or unresolved geometry: <text> (x=60, y=132; text='半导体设备实验平台能力建设项目阶段汇报'); use supported explicit text positioning when page fit matters"
+        },
+        {
+          "file": "02_executive_summary.svg",
+          "message": "Detected 2 paragraph-like line run(s) split across sibling <text> elements (<g id=\"signal-progress\"> x=426.0, y=238.0..276.0, 2 lines; <g id=\"signal-capability\"> x=840.0, y=238.0..276.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+        },
+        {
+          "file": "07_capability_heatmap.svg",
+          "message": "Detected 1 paragraph-like line run(s) split across sibling <text> elements (<g id=\"capability-evidence\"> x=842.0, y=524.0..560.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+        },
+        {
+          "file": "08_validation_readiness.svg",
+          "message": "Detected 2 paragraph-like line run(s) split across sibling <text> elements (<g id=\"readiness-summary\"> x=1020.0, y=268.0..306.0, 2 lines; <g id=\"readiness-sop\"> x=850.0, y=438.0..468.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+        },
+        {
+          "file": "11_management_decisions.svg",
+          "message": "Detected 1 paragraph-like line run(s) split across sibling <text> elements (<g id=\"management-principles\"> x=840.0, y=452.0..520.0, 3 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+        }
+      ]
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {
+      "#0A2031": [
+        "01_cover.svg",
+        "03_capability_architecture.svg"
+      ],
+      "#0B2B3D": [
+        "01_cover.svg"
+      ],
+      "#0D3445": [
+        "06_equipment_funnel.svg"
+      ],
+      "#0D3D46": [
+        "06_equipment_funnel.svg"
+      ],
+      "#12364A": [
+        "01_cover.svg",
+        "05_facilities_readiness.svg",
+        "06_equipment_funnel.svg"
+      ],
+      "#17413E": [
+        "06_equipment_funnel.svg"
+      ],
+      "#17483F": [
+        "07_capability_heatmap.svg",
+        "09_risk_critical_path.svg"
+      ],
+      "#18493F": [
+        "06_equipment_funnel.svg"
+      ],
+      "#4A3B24": [
+        "07_capability_heatmap.svg"
+      ],
+      "#4B2630": [
+        "07_capability_heatmap.svg",
+        "09_risk_critical_path.svg"
+      ]
+    },
+    "fonts": {
+      "Consolas, Microsoft YaHei, monospace": [
+        "01_cover.svg",
+        "02_executive_summary.svg",
+        "03_capability_architecture.svg",
+        "04_progress_milestones.svg",
+        "05_facilities_readiness.svg",
+        "06_equipment_funnel.svg",
+        "07_capability_heatmap.svg",
+        "08_validation_readiness.svg",
+        "09_risk_critical_path.svg",
+        "10_ninety_day_roadmap.svg",
+        "11_management_decisions.svg"
+      ],
+      "Microsoft YaHei, Arial, sans-serif": [
+        "01_cover.svg",
+        "02_executive_summary.svg",
+        "03_capability_architecture.svg",
+        "04_progress_milestones.svg",
+        "05_facilities_readiness.svg",
+        "06_equipment_funnel.svg",
+        "07_capability_heatmap.svg",
+        "08_validation_readiness.svg",
+        "09_risk_critical_path.svg",
+        "10_ninety_day_roadmap.svg",
+        "11_management_decisions.svg"
+      ]
+    },
+    "sizes": {
+      "64": [
+        "02_executive_summary.svg",
+        "08_validation_readiness.svg"
+      ],
+      "72": [
+        "11_management_decisions.svg"
+      ],
+      "88": [
+        "01_cover.svg"
+      ]
+    }
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "01_cover.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/01_cover.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Cannot verify root viewBox bounds for visible text with unsupported or unresolved geometry: <text> (x=60, y=132; text='半导体设备实验平台能力建设项目阶段汇报'); use supported explicit text positioning when page fit matters"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 13,
+        "tspan_elements": 1,
+        "contextual_values": {
+          "colors": [
+            "#0A2031",
+            "#0B2B3D",
+            "#12364A"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        },
+        "sparse_typography_sizes": {
+          "88": 1
+        }
+      },
+      "passed": true,
+      "source_sha256": "d383110cceed99dad5a404a09a6bb253548425ce3527a705d664c5310b95146d"
+    },
+    {
+      "file": "02_executive_summary.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/02_executive_summary.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Detected 2 paragraph-like line run(s) split across sibling <text> elements (<g id=\"signal-progress\"> x=426.0, y=238.0..276.0, 2 lines; <g id=\"signal-capability\"> x=840.0, y=238.0..276.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 29,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        },
+        "sparse_typography_sizes": {
+          "64": 2
+        }
+      },
+      "passed": true,
+      "source_sha256": "1759998696b6970dea3538e2b0943e95afa1914a1ed752781d101bc34c0e198e"
+    },
+    {
+      "file": "03_capability_architecture.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/03_capability_architecture.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 22,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#0A2031"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "3c2f5546449fe2b1f0786b902559c549ff160bf7ef7aa7f4dd9dc992fd3ac2bc"
+    },
+    {
+      "file": "04_progress_milestones.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/04_progress_milestones.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 33,
+        "tspan_elements": 2,
+        "contextual_values": {
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "64c832d3e04fd318fe8d865330a779e22cdc82cd767ac3c9b1efcaf4a56fee32"
+    },
+    {
+      "file": "05_facilities_readiness.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/05_facilities_readiness.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 29,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#12364A"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "650b0f53f71ee610b2a9d7b6a28687f83637a8c32f6c1c7d56ee8a261a04e353"
+    },
+    {
+      "file": "06_equipment_funnel.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/06_equipment_funnel.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 21,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#0D3445",
+            "#0D3D46",
+            "#12364A",
+            "#17413E",
+            "#18493F"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "20abdd3468fe630326ae35ab8f4a49a9577bfa241c0f7a29380429ffe033c7bd"
+    },
+    {
+      "file": "07_capability_heatmap.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/07_capability_heatmap.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Detected 1 paragraph-like line run(s) split across sibling <text> elements (<g id=\"capability-evidence\"> x=842.0, y=524.0..560.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 48,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "colors": [
+            "#17483F",
+            "#4A3B24",
+            "#4B2630"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "5a8623c2b6e0ff9a700f0c6b46df2b9e0511a36396fa68fc7925bf36ec91f081"
+    },
+    {
+      "file": "08_validation_readiness.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/08_validation_readiness.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Detected 2 paragraph-like line run(s) split across sibling <text> elements (<g id=\"readiness-summary\"> x=1020.0, y=268.0..306.0, 2 lines; <g id=\"readiness-sop\"> x=850.0, y=438.0..468.0, 2 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 42,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        },
+        "sparse_typography_sizes": {
+          "64": 2
+        }
+      },
+      "passed": true,
+      "source_sha256": "d889d248ee24d4345c64932b52102b858d543e2bce323065ba96b89515c4bf2a"
+    },
+    {
+      "file": "09_risk_critical_path.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/09_risk_critical_path.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 28,
+        "tspan_elements": 2,
+        "contextual_values": {
+          "colors": [
+            "#17483F",
+            "#4B2630"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "add274fe4339befd1728ce23b6389135778022052900bbfb7d0c3a8a7c639011"
+    },
+    {
+      "file": "10_ninety_day_roadmap.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/10_ninety_day_roadmap.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 36,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        }
+      },
+      "passed": true,
+      "source_sha256": "c2d3c8d989b6e9e7a7f98b5bb4b3eb80f0268484a0273db0077fbec70f9082bf"
+    },
+    {
+      "file": "11_management_decisions.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/11_management_decisions.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Detected 1 paragraph-like line run(s) split across sibling <text> elements (<g id=\"management-principles\"> x=840.0, y=452.0..520.0, 3 lines). If each run is one prose paragraph, combine it into one <text>: keep its first line as direct text and use direct <tspan> children with the parent x and positive relative dy values for later lines. An all-<tspan> form may start with dy=\"0\". Keep semantically independent text frames separate."
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 27,
+        "tspan_elements": 0,
+        "contextual_values": {
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        },
+        "sparse_typography_sizes": {
+          "72": 1
+        }
+      },
+      "passed": true,
+      "source_sha256": "e22c9662fa633e180e7cff715cd95e67792a835cd54db1261cfb0d16e792003c"
+    }
+  ]
+}

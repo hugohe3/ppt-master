@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="ending" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M160 0V720 M240 0V720 M320 0V720 M400 0V720 M480 0V720 M560 0V720 M640 0V720 M720 0V720 M800 0V720 M880 0V720 M960 0V720 M1040 0V720 M1120 0V720 M1200 0V720 M0 80H1280 M0 160H1280 M0 240H1280 M0 320H1280 M0 400H1280 M0 480H1280 M0 560H1280 M0 640H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.5"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">五项决策须在8月21日前完成，才能守住阶段验收</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">MANAGEMENT DECISION BOARD · APPROVE / ADJUST / RETURN</text>
+  </g>
+  <g id="decision-rails" data-pptx-bounds="56 158 724 446">
+    <line x1="90" y1="190" x2="90" y2="570" stroke="#FFB454" stroke-width="4"/>
+    <circle cx="90" cy="205" r="12" fill="#FFB454"/><text x="120" y="196" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">D01 · 08/16</text><text x="120" y="230" font-size="24" fill="#EAF7FF">UPS配电屏扩容｜追加120万元</text><text x="120" y="258" font-size="18" fill="#8BA9B8">不决策：多机联调延后8–12天</text>
+    <circle cx="90" cy="295" r="12" fill="#FFB454"/><text x="120" y="286" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">D02 · 08/18</text><text x="120" y="320" font-size="24" fill="#EAF7FF">数据平台分段交付｜首阶段260万元</text><text x="120" y="348" font-size="18" fill="#8BA9B8">不决策：数据链验收延后10–15天</text>
+    <circle cx="90" cy="385" r="12" fill="#FFB454"/><text x="120" y="376" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">D03 · 08/19</text><text x="120" y="410" font-size="24" fill="#EAF7FF">8周临时量测与校准服务｜35万元</text><text x="120" y="438" font-size="18" fill="#8BA9B8">不决策：验证排队日均增加6小时</text>
+    <circle cx="90" cy="475" r="12" fill="#FFB454"/><text x="120" y="466" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">D04 · 08/20</text><text x="120" y="500" font-size="24" fill="#EAF7FF">E09加急物流＋临时通道｜18万元</text><text x="120" y="528" font-size="18" fill="#8BA9B8">不决策：电学能力覆盖延至9月下旬</text>
+    <circle cx="90" cy="565" r="12" fill="#32E0C4"/><text x="120" y="556" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#32E0C4">D05 · 08/21</text><text x="120" y="590" font-size="24" fill="#EAF7FF">调配6名全职人员，持续10周</text>
+  </g>
+  <g id="decision-window" data-pptx-bounds="830 164 390 200" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="840" y="190" font-size="18" letter-spacing="2" fill="#8BA9B8">DECISION WINDOW</text>
+    <text x="840" y="282" font-size="72" font-weight="700" fill="#FFB454">5 DAYS</text>
+    <line x1="840" y1="310" x2="1180" y2="310" stroke="#FFB454" stroke-width="3"/>
+    <text x="840" y="348" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" fill="#EAF7FF">8月16日 → 8月21日</text>
+  </g>
+  <g id="management-principles" data-pptx-bounds="830 392 390 140">
+    <text x="840" y="412" font-size="24" font-weight="700" fill="#EAF7FF">管理原则</text>
+    <text x="840" y="452" font-size="20" fill="#EAF7FF">阶段验收优先，允许分层放行</text>
+    <text x="840" y="486" font-size="20" fill="#EAF7FF">EHS红线不豁免</text>
+    <text x="840" y="520" font-size="20" fill="#EAF7FF">延期&gt;5天或预算偏差&gt;10%自动升级</text>
+  </g>
+  <g id="approval-box" data-pptx-bounds="830 558 390 76">
+    <rect x="840" y="562" width="370" height="68" fill="#0D2538" stroke="#32E0C4" stroke-width="2"/>
+    <use data-icon="tabler-outline/checklist" x="860" y="578" width="34" height="34" fill="#32E0C4" stroke-width="2"/>
+    <text x="916" y="602" font-size="24" font-weight="700" fill="#EAF7FF">批准　/　调整　/　退回</text>
+    <text x="1190" y="620" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">TARGET · 2026-12-15</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 654 1168 28">
+    <text x="60" y="676" font-size="16" fill="#8BA9B8">演示用虚构数据｜金额、日期、资源和后果不构成真实投资或采购建议</text>
+    <text x="1220" y="676" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">11 / 11</text>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M240 0V720 M400 0V720 M560 0V720 M720 0V720 M880 0V720 M1040 0V720 M1200 0V720 M0 120H1280 M0 280H1280 M0 440H1280 M0 600H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">四项高关注风险共同挤压关键路径，最坏可造成15天延期</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">CRITICAL PATH RISK · MANAGEMENT INTERVENTION REQUIRED</text>
+  </g>
+  <g id="critical-path" data-pptx-bounds="54 160 626 420">
+    <text x="60" y="182" font-size="24" font-weight="700" fill="#EAF7FF">四个风险杠杆</text>
+    <line x1="110" y1="232" x2="110" y2="540" stroke="#FFB454" stroke-width="4"/>
+    <circle cx="110" cy="240" r="13" fill="#FF6B6B"/><circle cx="110" cy="340" r="13" fill="#FF6B6B"/><circle cx="110" cy="440" r="13" fill="#FFB454"/><circle cx="110" cy="540" r="13" fill="#FFB454"/>
+    <line x1="123" y1="240" x2="650" y2="240" stroke="#16384C" stroke-width="2"/>
+    <text x="150" y="226" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FF6B6B">R01 · 70%</text><text x="280" y="226" font-size="22" fill="#EAF7FF">UPS容量不足</text><text x="150" y="258" font-size="18" fill="#8BA9B8">多机联调延后8–12天｜动作：夜间切换扩容</text>
+    <line x1="123" y1="340" x2="650" y2="340" stroke="#16384C" stroke-width="2"/>
+    <text x="150" y="326" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FF6B6B">R02 · 60%</text><text x="280" y="326" font-size="22" fill="#EAF7FF">数据平台合同未锁定</text><text x="150" y="358" font-size="18" fill="#8BA9B8">数据验收延后10–15天｜动作：核心接口先行</text>
+    <line x1="123" y1="440" x2="650" y2="440" stroke="#16384C" stroke-width="2"/>
+    <text x="150" y="426" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">R04 · 65%</text><text x="280" y="426" font-size="22" fill="#EAF7FF">E09物流晚于基线10天</text><text x="150" y="458" font-size="18" fill="#8BA9B8">电学覆盖延至9月下旬｜动作：加急＋临时通道</text>
+    <line x1="123" y1="540" x2="650" y2="540" stroke="#16384C" stroke-width="2"/>
+    <text x="150" y="526" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" font-weight="700" fill="#FFB454">R06 · 55%</text><text x="280" y="526" font-size="22" fill="#EAF7FF">量测资源不足</text><text x="150" y="558" font-size="18" fill="#8BA9B8">日均等待增加6小时｜动作：8周临时租用</text>
+  </g>
+  <g id="chartArea" data-pptx-bounds="680 162 540 420" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="730" y="182" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">概率 × 影响</text>
+    <line x1="760" y1="520" x2="1180" y2="520" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="760" y1="520" x2="760" y2="210" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="970" y1="210" x2="970" y2="520" stroke="#16384C" stroke-width="2" stroke-dasharray="6 3"/>
+    <line x1="760" y1="365" x2="1180" y2="365" stroke="#16384C" stroke-width="2" stroke-dasharray="6 3"/>
+    <circle cx="1070" cy="260" r="30" fill="#FF6B6B" fill-opacity="0.85"/><text x="1070" y="267" font-size="20" font-weight="700" fill="#071827" text-anchor="middle">R01</text>
+    <circle cx="1010" cy="238" r="34" fill="#FF6B6B" fill-opacity="0.85"/><text x="1010" y="245" font-size="20" font-weight="700" fill="#071827" text-anchor="middle">R02</text>
+    <circle cx="1040" cy="330" r="26" fill="#FFB454" fill-opacity="0.9"/><text x="1040" y="337" font-size="20" font-weight="700" fill="#071827" text-anchor="middle">R04</text>
+    <circle cx="980" cy="352" r="24" fill="#FFB454" fill-opacity="0.9"/><text x="980" y="359" font-size="20" font-weight="700" fill="#071827" text-anchor="middle">R06</text>
+    <text x="760" y="550" font-size="18" fill="#8BA9B8">低概率</text><text x="1180" y="550" font-size="18" fill="#8BA9B8" text-anchor="end">高概率</text>
+    <text x="744" y="520" font-size="18" fill="#8BA9B8" text-anchor="end">低影响</text><text x="744" y="220" font-size="18" fill="#8BA9B8" text-anchor="end">高影响</text>
+  </g>
+  <g id="intervention-result" data-pptx-bounds="54 596 1168 48">
+    <rect x="60" y="600" width="520" height="40" fill="#4B2630" stroke="#FF6B6B" stroke-width="2"/><text x="82" y="628" font-size="20" fill="#EAF7FF">不干预：关键路径最大延误 <tspan font-family="Consolas, Microsoft YaHei, monospace" font-weight="700" fill="#FF6B6B">15天</tspan></text>
+    <rect x="620" y="600" width="600" height="40" fill="#17483F" stroke="#32E0C4" stroke-width="2"/><text x="642" y="628" font-size="20" fill="#EAF7FF">按节点决策：预计追回 <tspan font-family="Consolas, Microsoft YaHei, monospace" font-weight="700" fill="#32E0C4">7–10天</tspan></text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 654 1168 28">
+    <text x="60" y="676" font-size="16" fill="#8BA9B8">演示用虚构数据｜风险、概率、影响和追回天数均为案例设定</text>
+    <text x="1220" y="676" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">09 / 11</text>
+  </g>
+</svg>

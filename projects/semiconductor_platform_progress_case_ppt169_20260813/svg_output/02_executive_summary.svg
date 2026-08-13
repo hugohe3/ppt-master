@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M40 0V720 M200 0V720 M360 0V720 M520 0V720 M680 0V720 M840 0V720 M1000 0V720 M1160 0V720 M0 120H1280 M0 280H1280 M0 440H1280 M0 600H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.55"/>
+  <g id="header" data-pptx-bounds="50 30 1180 98">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">项目仍可守住12月验收，但四项高关注风险必须立即升级</text>
+    <text x="60" y="111" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">EXECUTIVE SIGNAL BOARD · DATA DATE 2026-08-12</text>
+  </g>
+  <g id="overall-signal" data-pptx-bounds="54 154 330 430" font-family="Consolas, Microsoft YaHei, monospace">
+    <rect x="60" y="160" width="292" height="410" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <use data-icon="tabler-outline/chart-dots-3" x="84" y="184" width="40" height="40" fill="#32E0C4" stroke-width="2"/>
+    <text x="84" y="256" font-size="18" letter-spacing="2" fill="#8BA9B8">OVERALL PROGRESS</text>
+    <text x="84" y="342" font-size="64" font-weight="700" fill="#32E0C4">68.6%</text>
+    <line x1="84" y1="370" x2="324" y2="370" stroke="#87D9F5" stroke-width="2"/>
+    <text x="84" y="412" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" fill="#EAF7FF">较基线落后 4.1 个百分点</text>
+    <text x="84" y="460" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#FFB454">关键路径最大风险：15天</text>
+    <text x="84" y="500" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#32E0C4">及时决策可追回：7–10天</text>
+    <text x="84" y="544" font-size="18" fill="#8BA9B8">TARGET · 2026-12-15</text>
+  </g>
+  <g id="signal-progress" data-pptx-bounds="396 154 386 178">
+    <line x1="402" y1="168" x2="402" y2="314" stroke="#32E0C4" stroke-width="5"/>
+    <use data-icon="tabler-outline/tools" x="426" y="168" width="34" height="34" fill="#32E0C4" stroke-width="2"/>
+    <text x="478" y="192" font-size="30" font-weight="700" fill="#EAF7FF">进展</text>
+    <text x="426" y="238" font-size="22" fill="#EAF7FF">6 个设备包已到场，5 个完成安装</text>
+    <text x="426" y="276" font-size="22" fill="#EAF7FF">3 个进入联调，1 个阶段验收通过</text>
+    <text x="426" y="310" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">10 → 9 → 6 → 5 → 3 → 1</text>
+  </g>
+  <g id="signal-capability" data-pptx-bounds="810 154 420 178">
+    <line x1="816" y1="168" x2="816" y2="314" stroke="#87D9F5" stroke-width="5"/>
+    <use data-icon="tabler-outline/circuit-resistor" x="840" y="168" width="34" height="34" fill="#87D9F5" stroke-width="2"/>
+    <text x="892" y="192" font-size="30" font-weight="700" fill="#EAF7FF">能力</text>
+    <text x="840" y="238" font-size="22" fill="#EAF7FF">已打通首条“处理—量测—归档”闭环</text>
+    <text x="840" y="276" font-size="22" fill="#EAF7FF">20 类方法中 8 类可执行，覆盖率 40%</text>
+    <text x="840" y="310" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">MINIMUM CLOSED LOOP · E01</text>
+  </g>
+  <g id="signal-risk" data-pptx-bounds="396 354 400 156">
+    <line x1="402" y1="364" x2="402" y2="492" stroke="#FFB454" stroke-width="5"/>
+    <use data-icon="tabler-outline/alert-triangle" x="426" y="364" width="34" height="34" fill="#FFB454" stroke-width="2"/>
+    <text x="478" y="388" font-size="30" font-weight="700" fill="#EAF7FF">风险</text>
+    <text x="426" y="434" font-size="22" fill="#EAF7FF">UPS｜数据合同｜物流｜量测</text>
+    <text x="426" y="472" font-size="22" fill="#FFB454">R01 / R02 / R04 / R06 管理升级</text>
+  </g>
+  <g id="signal-decision" data-pptx-bounds="810 354 410 156">
+    <line x1="816" y1="364" x2="816" y2="492" stroke="#FFB454" stroke-width="5"/>
+    <use data-icon="tabler-outline/checklist" x="840" y="364" width="34" height="34" fill="#FFB454" stroke-width="2"/>
+    <text x="892" y="388" font-size="30" font-weight="700" fill="#EAF7FF">决策</text>
+    <text x="840" y="434" font-size="22" fill="#EAF7FF">D01–D05｜8月16–21日完成</text>
+    <text x="840" y="472" font-size="22" fill="#32E0C4">按时确认即可维持阶段验收目标</text>
+  </g>
+  <g id="decision-rail" data-pptx-bounds="360 536 860 82" font-family="Consolas, Microsoft YaHei, monospace">
+    <line x1="420" y1="566" x2="1190" y2="566" stroke="#87D9F5" stroke-width="2"/>
+    <circle cx="430" cy="566" r="11" fill="#FFB454"/><circle cx="610" cy="566" r="11" fill="#FFB454"/><circle cx="790" cy="566" r="11" fill="#FFB454"/><circle cx="970" cy="566" r="11" fill="#FFB454"/><circle cx="1150" cy="566" r="11" fill="#FFB454"/>
+    <text x="430" y="602" font-size="18" fill="#EAF7FF" text-anchor="middle">D01 · 08/16</text><text x="610" y="602" font-size="18" fill="#EAF7FF" text-anchor="middle">D02 · 08/18</text><text x="790" y="602" font-size="18" fill="#EAF7FF" text-anchor="middle">D03 · 08/19</text><text x="970" y="602" font-size="18" fill="#EAF7FF" text-anchor="middle">D04 · 08/20</text><text x="1150" y="602" font-size="18" fill="#EAF7FF" text-anchor="middle">D05 · 08/21</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 648 1168 34">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实项目或行业标准</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">02 / 11</text>
+  </g>
+</svg>

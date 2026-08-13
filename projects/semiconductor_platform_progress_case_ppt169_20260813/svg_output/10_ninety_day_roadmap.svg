@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M240 0V720 M400 0V720 M560 0V720 M720 0V720 M880 0V720 M1040 0V720 M1200 0V720 M0 120H1280 M0 280H1280 M0 440H1280 M0 600H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">未来13周按设施放行、设备收口、多机验证、预验收推进</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">90-DAY EXECUTION ROADMAP · SEVEN EXIT GATES</text>
+  </g>
+  <g id="chartArea" data-pptx-bounds="38 154 776 470">
+    <text x="60" y="178" font-size="24" font-weight="700" fill="#EAF7FF">13周执行路线</text>
+    <line x1="150" y1="210" x2="150" y2="585" stroke="#87D9F5" stroke-width="4"/>
+    <line x1="150" y1="585" x2="760" y2="585" stroke="#16384C" stroke-width="2"/>
+    <!-- chart-plot-area: 110,200,780,595 -->
+    <circle cx="150" cy="220" r="12" fill="#32E0C4"/><text x="112" y="226" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4" text-anchor="end">W1–2</text><text x="185" y="214" font-size="20" font-weight="700" fill="#EAF7FF">关闭9个设施整改项，完成E04安装</text><text x="185" y="240" font-size="18" fill="#8BA9B8">出口：除UPS外，G1设施可用条件满足</text>
+    <circle cx="150" cy="280" r="12" fill="#32E0C4"/><text x="112" y="286" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4" text-anchor="end">W3–4</text><text x="185" y="274" font-size="20" font-weight="700" fill="#EAF7FF">特气联锁关闭，3台设备联调，UPS达到600 kVA</text><text x="185" y="300" font-size="18" fill="#8BA9B8">出口：关键联锁100%通过</text>
+    <circle cx="150" cy="340" r="12" fill="#87D9F5"/><text x="112" y="346" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5" text-anchor="end">W5–6</text><text x="185" y="334" font-size="20" font-weight="700" fill="#EAF7FF">E07/E08/E09安装完成，新增4类可执行方法</text><text x="185" y="360" font-size="18" fill="#8BA9B8">出口：9台设备安装检查100%关闭</text>
+    <circle cx="150" cy="400" r="12" fill="#87D9F5"/><text x="112" y="406" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5" text-anchor="end">W7–8</text><text x="185" y="394" font-size="20" font-weight="700" fill="#EAF7FF">打通4台设备、2套量测与1套数据平台</text><text x="185" y="420" font-size="18" fill="#8BA9B8">出口：连续300条记录无断链</text>
+    <circle cx="150" cy="460" r="12" fill="#FFB454"/><text x="112" y="466" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454" text-anchor="end">W9–10</text><text x="185" y="454" font-size="20" font-weight="700" fill="#EAF7FF">10台设备安装收口，至少8项核心指标通过</text><text x="185" y="480" font-size="18" fill="#8BA9B8">出口：M6核心设备安装完成</text>
+    <circle cx="150" cy="520" r="12" fill="#FFB454"/><text x="112" y="526" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454" text-anchor="end">W11–12</text><text x="185" y="514" font-size="20" font-weight="700" fill="#EAF7FF">4台核心设备完成72小时稳定性验证</text><text x="185" y="540" font-size="18" fill="#8BA9B8">出口：核心指标一次通过率≥80%</text>
+    <circle cx="150" cy="580" r="14" fill="#32E0C4"/><text x="112" y="586" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4" text-anchor="end">W13</text><text x="185" y="574" font-size="20" font-weight="700" fill="#EAF7FF">形成预验收报告，冻结重大未决项</text><text x="185" y="600" font-size="18" fill="#8BA9B8">出口：具备M7多机联调验收条件</text>
+  </g>
+  <g id="outcome-panel" data-pptx-bounds="840 158 380 438" font-family="Consolas, Microsoft YaHei, monospace">
+    <rect x="844" y="162" width="376" height="430" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <use data-icon="tabler-outline/route" x="870" y="188" width="42" height="42" fill="#32E0C4" stroke-width="2"/>
+    <text x="930" y="218" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">90天预期结果</text>
+    <line x1="870" y1="250" x2="1190" y2="250" stroke="#16384C" stroke-width="2"/>
+    <text x="870" y="294" font-size="18" fill="#8BA9B8">INSTALLATION</text><text x="1190" y="294" font-size="24" font-weight="700" fill="#32E0C4" text-anchor="end">50% → 100%</text>
+    <text x="870" y="354" font-size="18" fill="#8BA9B8">METHOD COVERAGE</text><text x="1190" y="354" font-size="24" font-weight="700" fill="#32E0C4" text-anchor="end">40% → 85%</text>
+    <text x="870" y="414" font-size="18" fill="#8BA9B8">FIRST-PASS RATE</text><text x="1190" y="414" font-size="24" font-weight="700" fill="#32E0C4" text-anchor="end">40% → ≥80%</text>
+    <text x="870" y="474" font-size="18" fill="#8BA9B8">CERTIFIED STAFF</text><text x="1190" y="474" font-size="24" font-weight="700" fill="#32E0C4" text-anchor="end">31 → 42</text>
+    <line x1="870" y1="510" x2="1190" y2="510" stroke="#16384C" stroke-width="2"/>
+    <text x="870" y="550" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#FFB454">四项结果均依赖D01–D05按期决策</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 650 1168 32">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜时间窗、任务、交付和目标均为案例设定</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">10 / 11</text>
+  </g>
+</svg>

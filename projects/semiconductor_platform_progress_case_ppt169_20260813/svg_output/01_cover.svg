@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="cover" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="cover-title" data-pptx-bounds="56 48 760 168">
+    <text x="60" y="82" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" letter-spacing="2" fill="#87D9F5">PROJECT REVIEW · 2026-08-12</text>
+    <text x="60" y="132" font-size="42" font-weight="700" fill="#EAF7FF">半导体设备实验平台<tspan x="60" dy="50">能力建设项目阶段汇报</tspan></text>
+    <line x1="60" y1="207" x2="525" y2="207" stroke="#32E0C4" stroke-width="3"/>
+  </g>
+  <g id="hero-progress" data-pptx-bounds="58 256 480 292" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="60" y="300" font-size="18" letter-spacing="2" fill="#8BA9B8">OVERALL COMPLETION</text>
+    <text x="60" y="405" font-size="88" font-weight="700" fill="#32E0C4">68.6%</text>
+    <line x1="60" y1="432" x2="430" y2="432" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="60" y1="422" x2="60" y2="442" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="430" y1="422" x2="430" y2="442" stroke="#87D9F5" stroke-width="2"/>
+    <text x="60" y="474" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" fill="#EAF7FF">设施收口｜设备集中安装｜首批能力验证</text>
+    <text x="60" y="516" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#FFB454">较基线计划落后 4.1 个百分点</text>
+  </g>
+  <g id="platform-schematic" data-pptx-bounds="548 228 668 350">
+    <polygon points="646,318 860,250 1115,324 895,398" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <polygon points="646,318 646,422 895,500 895,398" fill="#0A2031" stroke="#87D9F5" stroke-width="2"/>
+    <polygon points="895,398 1115,324 1115,427 895,500" fill="#0B2B3D" stroke="#87D9F5" stroke-width="2"/>
+    <polygon points="718,329 828,294 924,323 812,359" fill="#16384C" stroke="#32E0C4" stroke-width="2"/>
+    <polygon points="718,329 718,389 812,419 812,359" fill="#0D2538" stroke="#32E0C4" stroke-width="2"/>
+    <polygon points="812,359 924,323 924,383 812,419" fill="#12364A" stroke="#32E0C4" stroke-width="2"/>
+    <polygon points="945,341 1025,316 1080,334 1000,360" fill="#16384C" stroke="#87D9F5" stroke-width="2"/>
+    <polygon points="945,341 945,393 1000,411 1000,360" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <polygon points="1000,360 1080,334 1080,386 1000,411" fill="#12364A" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="605" y1="278" x2="880" y2="190" stroke="#87D9F5" stroke-width="1.5"/>
+    <line x1="605" y1="268" x2="605" y2="288" stroke="#87D9F5" stroke-width="1.5"/>
+    <line x1="880" y1="180" x2="880" y2="200" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="630" y="250" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">FACILITY / EQUIPMENT / DATA</text>
+    <path d="M600 530H790V470H930V445H1160" fill="none" stroke="#FFB454" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="600" cy="530" r="8" fill="#FFB454"/>
+    <circle cx="790" cy="470" r="8" fill="#FFB454"/>
+    <circle cx="930" cy="445" r="8" fill="#FFB454"/>
+    <circle cx="1160" cy="445" r="10" fill="#32E0C4"/>
+    <text x="600" y="564" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">FACILITY</text>
+    <text x="770" y="455" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">INSTALL</text>
+    <text x="915" y="430" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">VERIFY</text>
+    <text x="1085" y="430" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">ACCEPT</text>
+  </g>
+  <g id="cover-footer" data-pptx-bounds="58 642 1164 42">
+    <rect x="60" y="646" width="190" height="30" fill="#FFB454"/>
+    <text x="155" y="668" font-size="18" font-weight="700" fill="#071827" text-anchor="middle">演示用虚构案例</text>
+    <text x="1220" y="668" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. LAB-PLATFORM-PR-01</text>
+  </g>
+</svg>

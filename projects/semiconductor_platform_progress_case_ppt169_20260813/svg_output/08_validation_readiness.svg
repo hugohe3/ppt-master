@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M240 0V720 M400 0V720 M560 0V720 M720 0V720 M880 0V720 M1040 0V720 M1200 0V720 M0 120H1280 M0 280H1280 M0 440H1280 M0 600H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">一次通过率仅40%，参数、设施与数据规则需并行收敛</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">ACCEPTANCE SCOREBOARD · 4 PASS / 6 FAIL</text>
+  </g>
+  <g id="acceptance-rails" data-pptx-bounds="54 154 736 462" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="60" y="180" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">10项阶段验收指标</text>
+    <text x="440" y="180" font-size="18" fill="#8BA9B8">门槛 / 实测</text><text x="744" y="180" font-size="18" fill="#8BA9B8" text-anchor="end">状态</text>
+    <line x1="60" y1="192" x2="760" y2="192" stroke="#87D9F5" stroke-width="2"/>
+    <text x="70" y="224" font-size="18" fill="#EAF7FF">刻蚀重复性</text><text x="440" y="224" font-size="18" fill="#8BA9B8">≤2.0% / 1.6%</text><circle cx="730" cy="218" r="9" fill="#32E0C4"/>
+    <text x="70" y="264" font-size="18" fill="#EAF7FF">沉积重复性</text><text x="440" y="264" font-size="18" fill="#8BA9B8">≤2.5% / 2.2%</text><circle cx="730" cy="258" r="9" fill="#32E0C4"/>
+    <text x="70" y="304" font-size="18" fill="#EAF7FF">刻蚀72h可用率</text><text x="440" y="304" font-size="18" fill="#8BA9B8">≥95% / 96.2%</text><circle cx="730" cy="298" r="9" fill="#32E0C4"/>
+    <text x="70" y="344" font-size="18" fill="#EAF7FF">报警响应</text><text x="440" y="344" font-size="18" fill="#8BA9B8">≤3min / 2.4min</text><circle cx="730" cy="338" r="9" fill="#32E0C4"/>
+    <text x="70" y="384" font-size="18" fill="#EAF7FF">沉积72h可用率</text><text x="440" y="384" font-size="18" fill="#FFB454">≥95% / 93.8%</text><circle cx="730" cy="378" r="9" fill="#FF6B6B"/>
+    <text x="70" y="424" font-size="18" fill="#EAF7FF">刻蚀吞吐量</text><text x="440" y="424" font-size="18" fill="#FFB454">≥18 / 17.2 个·h⁻¹</text><circle cx="730" cy="418" r="9" fill="#FF6B6B"/>
+    <text x="70" y="464" font-size="18" fill="#EAF7FF">真空恢复时间</text><text x="440" y="464" font-size="18" fill="#FFB454">≤12 / 13.5 min</text><circle cx="730" cy="458" r="9" fill="#FF6B6B"/>
+    <text x="70" y="504" font-size="18" fill="#EAF7FF">热处理温度稳定性</text><text x="440" y="504" font-size="18" fill="#FFB454">≤±0.5℃ / ±0.7℃</text><circle cx="730" cy="498" r="9" fill="#FF6B6B"/>
+    <text x="70" y="544" font-size="18" fill="#EAF7FF">数据链完整率</text><text x="440" y="544" font-size="18" fill="#FFB454">≥99.5% / 98.8%</text><circle cx="730" cy="538" r="9" fill="#FF6B6B"/>
+    <text x="70" y="584" font-size="18" fill="#EAF7FF">样品身份匹配</text><text x="440" y="584" font-size="18" fill="#FFB454">100% / 99.6%</text><circle cx="730" cy="578" r="9" fill="#FF6B6B"/>
+  </g>
+  <g id="readiness-summary" data-pptx-bounds="816 156 406 190">
+    <rect x="820" y="160" width="400" height="180" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="842" y="196" font-size="24" font-weight="700" fill="#EAF7FF">一次通过率</text>
+    <text x="842" y="274" font-family="Consolas, Microsoft YaHei, monospace" font-size="64" font-weight="700" fill="#FFB454">40%</text>
+    <text x="1020" y="228" font-size="20" fill="#8BA9B8">当前 4 / 10</text>
+    <text x="1020" y="268" font-size="20" fill="#32E0C4">10/31 目标 ≥80%</text>
+    <text x="1020" y="306" font-size="20" fill="#32E0C4">12/10 目标 ≥90%</text>
+  </g>
+  <g id="readiness-sop" data-pptx-bounds="816 366 406 110">
+    <line x1="824" y1="372" x2="824" y2="468" stroke="#FFB454" stroke-width="5"/>
+    <text x="850" y="400" font-size="24" font-weight="700" fill="#EAF7FF">SOP 与人员</text>
+    <text x="850" y="438" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#FFB454">19 / 28 SOP APPROVED</text>
+    <text x="850" y="468" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#FFB454">31 / 46 OPERATORS CERTIFIED</text>
+  </g>
+  <g id="readiness-ehs" data-pptx-bounds="816 494 406 122">
+    <line x1="824" y1="500" x2="824" y2="596" stroke="#32E0C4" stroke-width="5"/>
+    <use data-icon="tabler-outline/shield-check" x="850" y="510" width="38" height="38" fill="#32E0C4" stroke-width="2"/>
+    <text x="904" y="538" font-size="24" font-weight="700" fill="#EAF7FF">EHS 放行</text>
+    <text x="850" y="578" font-size="20" fill="#EAF7FF">开放问题 7 项｜高风险 0 项</text>
+    <text x="850" y="606" font-size="18" fill="#8BA9B8">特气、排风与报警联锁必须100%通过</text>
+  </g>
+  <g id="closure-paths" data-pptx-bounds="54 614 1168 34">
+    <text x="60" y="636" font-size="20" fill="#EAF7FF">关闭路径：</text><text x="174" y="636" font-size="20" fill="#32E0C4">参数优化 3项</text><text x="360" y="636" font-size="20" fill="#87D9F5">设施整改 2项</text><text x="546" y="636" font-size="20" fill="#FFB454">数据规则修订 1项</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 654 1168 28">
+    <text x="60" y="676" font-size="16" fill="#8BA9B8">演示用虚构数据｜门槛与实测值均为案例内部管理口径</text>
+    <text x="1220" y="676" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">08 / 11</text>
+  </g>
+</svg>

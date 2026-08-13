@@ -1,0 +1,118 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "first-page",
+  "target": "/workspace/projects/semiconductor_platform_progress_case_ppt169_20260813",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "6b424f5d28ae0cede60c682127d2075b7650916677e9b289dc440b88949fa944",
+    "file_count": 1,
+    "files": [
+      {
+        "file": "01_cover.svg",
+        "sha256": "d383110cceed99dad5a404a09a6bb253548425ce3527a705d664c5310b95146d"
+      }
+    ]
+  },
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "warnings": 1,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 1,
+      "issues": [
+        {
+          "file": "01_cover.svg",
+          "message": "Cannot verify root viewBox bounds for visible text with unsupported or unresolved geometry: <text> (x=60, y=132; text='半导体设备实验平台能力建设项目阶段汇报'); use supported explicit text positioning when page fit matters"
+        }
+      ]
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {
+      "#0A2031": [
+        "01_cover.svg"
+      ],
+      "#0B2B3D": [
+        "01_cover.svg"
+      ],
+      "#12364A": [
+        "01_cover.svg"
+      ]
+    },
+    "fonts": {
+      "Consolas, Microsoft YaHei, monospace": [
+        "01_cover.svg"
+      ],
+      "Microsoft YaHei, Arial, sans-serif": [
+        "01_cover.svg"
+      ]
+    },
+    "sizes": {
+      "88": [
+        "01_cover.svg"
+      ]
+    }
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "01_cover.svg",
+      "path": "projects/semiconductor_platform_progress_case_ppt169_20260813/svg_output/01_cover.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "Cannot verify root viewBox bounds for visible text with unsupported or unresolved geometry: <text> (x=60, y=132; text='半导体设备实验平台能力建设项目阶段汇报'); use supported explicit text positioning when page fit matters"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "fonts": [
+          "Consolas, Microsoft YaHei, monospace",
+          "Microsoft YaHei, Arial, sans-serif"
+        ],
+        "text_elements": 13,
+        "tspan_elements": 1,
+        "contextual_values": {
+          "colors": [
+            "#0A2031",
+            "#0B2B3D",
+            "#12364A"
+          ],
+          "font_families": [
+            "Consolas, Microsoft YaHei, monospace",
+            "Microsoft YaHei, Arial, sans-serif"
+          ]
+        },
+        "sparse_typography_sizes": {
+          "88": 1
+        }
+      },
+      "passed": true,
+      "source_sha256": "d383110cceed99dad5a404a09a6bb253548425ce3527a705d664c5310b95146d"
+    }
+  ]
+}

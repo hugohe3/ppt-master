@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M160 0V720 M240 0V720 M320 0V720 M400 0V720 M480 0V720 M560 0V720 M640 0V720 M720 0V720 M800 0V720 M880 0V720 M960 0V720 M1040 0V720 M1120 0V720 M1200 0V720 M0 80H1280 M0 160H1280 M0 240H1280 M0 320H1280 M0 400H1280 M0 480H1280 M0 560H1280 M0 640H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.5"/>
+  <g id="header" data-pptx-bounds="54 32 1168 102">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">平台能力由设施、设备、量测数据与四级放行共同闭环</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">SYSTEM ARCHITECTURE · CAPABILITY IS MORE THAN EQUIPMENT ARRIVAL</text>
+  </g>
+  <g id="facility-layer" data-pptx-bounds="56 492 888 118">
+    <rect x="60" y="500" width="880" height="102" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <use data-icon="tabler-outline/building-factory-2" x="82" y="526" width="42" height="42" fill="#87D9F5" stroke-width="2"/>
+    <text x="142" y="540" font-size="30" font-weight="700" fill="#EAF7FF">设施底座</text>
+    <text x="142" y="578" font-size="20" fill="#8BA9B8">洁净环境 · 中央真空 · 特气 · 冷却水 · 普通/UPS供电 · 排风监测</text>
+    <line x1="400" y1="515" x2="400" y2="588" stroke="#16384C" stroke-width="2"/>
+    <text x="430" y="548" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">G1 · FACILITY READY</text>
+    <text x="430" y="580" font-size="18" fill="#8BA9B8">高风险整改项 = 0</text>
+  </g>
+  <g id="process-layer" data-pptx-bounds="56 332 888 132">
+    <rect x="60" y="340" width="880" height="116" fill="#0A2031" stroke="#32E0C4" stroke-width="2"/>
+    <use data-icon="tabler-outline/circuit-resistor" x="82" y="374" width="42" height="42" fill="#32E0C4" stroke-width="2"/>
+    <text x="142" y="384" font-size="30" font-weight="700" fill="#EAF7FF">工艺与设备能力</text>
+    <text x="142" y="424" font-size="20" fill="#8BA9B8">刻蚀 · PVD · CVD · ALD · 热处理 · 湿法清洗</text>
+    <line x1="560" y1="355" x2="560" y2="442" stroke="#16384C" stroke-width="2"/>
+    <text x="590" y="382" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">G2 · TOOL READY</text>
+    <text x="590" y="414" font-size="18" fill="#8BA9B8">安装检查 100%｜空载 24h</text>
+    <text x="590" y="442" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">G3 · PROCESS READY</text>
+  </g>
+  <g id="measurement-layer" data-pptx-bounds="56 174 888 132">
+    <rect x="60" y="182" width="880" height="116" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <use data-icon="tabler-outline/database" x="82" y="216" width="42" height="42" fill="#87D9F5" stroke-width="2"/>
+    <text x="142" y="226" font-size="30" font-weight="700" fill="#EAF7FF">量测、诊断与数据追溯</text>
+    <text x="142" y="266" font-size="20" fill="#8BA9B8">膜厚量测 · 真空诊断 · 电学测试 · 样品流转 · 数据归档</text>
+    <line x1="630" y1="197" x2="630" y2="284" stroke="#16384C" stroke-width="2"/>
+    <text x="660" y="228" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">G4 · PLATFORM READY</text>
+    <text x="660" y="262" font-size="18" fill="#8BA9B8">数据链 ≥99.5%｜一次通过 ≥90%</text>
+  </g>
+  <g id="vertical-flow" data-pptx-bounds="930 174 292 460" font-family="Consolas, Microsoft YaHei, monospace">
+    <line x1="1000" y1="555" x2="1000" y2="225" stroke="#FFB454" stroke-width="4"/>
+    <circle cx="1000" cy="555" r="14" fill="#FFB454"/><circle cx="1000" cy="420" r="14" fill="#FFB454"/><circle cx="1000" cy="285" r="14" fill="#32E0C4"/>
+    <text x="1040" y="560" font-size="20" fill="#EAF7FF">INFRASTRUCTURE</text>
+    <text x="1040" y="425" font-size="20" fill="#EAF7FF">EQUIPMENT</text>
+    <text x="1040" y="290" font-size="20" fill="#EAF7FF">CAPABILITY</text>
+    <text x="980" y="210" font-size="18" fill="#32E0C4" text-anchor="middle">RELEASE</text>
+    <line x1="980" y1="225" x2="1020" y2="225" stroke="#32E0C4" stroke-width="3"/>
+    <text x="970" y="610" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" fill="#FFB454">设备到场 ≠ 平台可用</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 648 1168 34">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜能力范围和G1–G4门槛均为案例设定</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">03 / 11</text>
+  </g>
+</svg>
