@@ -1,4 +1,4 @@
-"""Validate chart/table replacement fallback and release-route attributes."""
+"""Validate native replacement fallback and release-route attributes."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from .marker_attributes import (
 
 VISUAL_STATUSES = frozenset({"source-preview", "normalized", "placeholder"})
 ROUTE_STATUSES = frozenset({"reconstruction-only"})
-REPLACEMENT_KINDS = frozenset({"chart", "table"})
+REPLACEMENT_KINDS = frozenset({"chart", "formula", "table"})
 # Closed importer outputs from chart_to_svg, chartex_to_svg, and tbl_to_svg.
 # This includes codes forwarded through their dynamic ``status`` parameters.
 REPLACEMENT_STATUS_CODES = frozenset({
@@ -126,7 +126,9 @@ def native_marker_status_errors(elem: ET.Element) -> list[str]:
         and canonical_kind_raw == canonical_kind_raw.strip()
         and canonical_kind_raw != canonical_kind_raw.lower()
     ):
-        errors.append(f"{REPLACE_WITH_ATTR} must use lowercase chart or table")
+        errors.append(
+            f"{REPLACE_WITH_ATTR} must use lowercase chart, formula, or table"
+        )
     if visual_raw is not None and visual_raw != visual_raw.strip():
         errors.append(f"{FALLBACK_KIND_ATTR} must not contain surrounding whitespace")
     if legacy_visual_raw is not None and legacy_visual_raw != legacy_visual_raw.strip():

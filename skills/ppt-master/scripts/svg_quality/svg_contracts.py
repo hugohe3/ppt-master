@@ -387,7 +387,7 @@ def check_reference_spelling(root: ET.Element, result: Dict) -> None:
     labels = []
     xlink_href = f'{{{XLINK_NS}}}href'
     for elem in root.iter():
-        if _local_name(elem).lower() not in {'image', 'use'}:
+        if _local_name(elem).lower() not in {'a', 'image', 'use'}:
             continue
         if elem.get(xlink_href) is not None:
             labels.append(_element_label(elem))

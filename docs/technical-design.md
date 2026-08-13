@@ -132,7 +132,7 @@ the inputs or resources needed to build the deck:
 Source material or topic
     -> convert/read sources and research identified factual gaps as needed
     -> resolve mode/style and decide content, page structure, and carriers in active context
-    -> prepare selected images/icons/formulas and operational manifests
+    -> prepare selected images/icons and operational manifests; retain formula LaTeX in active context
     -> hand-author svg_output/ under the shared SVG standards
     -> verify data-driven chart coordinates when present
     -> svg_quality_checker.py --quick-generate --stage final --json
@@ -260,7 +260,7 @@ Quick Generate:
 source material or topic
     └─> conversion/read + factual-gap research [as needed]
           └─> active-context mode/style + content/page/carrier decisions
-                └─> images/ + icons/ + formula/resource manifests [as needed]
+                └─> images/ + icons/ + resource manifests [as needed]
                       └─> hand-authored svg_output/
                             ├─> verify-charts [only for data-driven chart geometry]
                             └─> svg_quality_checker.py --quick-generate --stage final --json
@@ -343,8 +343,9 @@ Two converter design choices still shape the system:
 other directories on demand. The explicit
 [`quick-generate`](../skills/ppt-master/workflows/profiles/quick-generate.md)
 profile omits planning artifacts and `svg_final/`, but its project may still
-contain converted sources, analysis, images, icons, rendered formulas, and
-required resource manifests. It hand-authors `svg_output/`, writes a lockless
+contain converted sources, analysis, images, icons, and required resource
+manifests. It hand-authors `svg_output/`, including any native formula markers,
+writes a lockless
 final quality report, and retains the ordinary postflight and default-path
 backup around the final PPTX. The audit log and reports preserve tool outcomes,
 not the AI's design reasoning or a resumable stage state. The default delivery
@@ -354,7 +355,7 @@ lifecycle is:
 |---|---|
 | `sources/` | archived originals, normalized Markdown, and converter companion files |
 | `analysis/` | machine-extracted facts: PPTX intake bundles and regenerated image analysis |
-| `images/` | single runtime image pool for user, extracted, formula, web, AI, sliced, EMF/WMF assets |
+| `images/` | single runtime image pool for user, extracted, web, AI, sliced, and EMF/WMF assets |
 | `icons/` | project-local icon set copied by `icon_sync.py`; global library fallback at export exists only for legacy compatibility |
 | `templates/` | copied template specs / SVG references / non-image template assets |
 | `svg_output/` | the only hand-authored SVG source directory |
@@ -493,14 +494,41 @@ without interaction, while the Stage-1 communication recommendation is authored
 without reading those candidates or any template content. The UI confirms that
 communication contract and the switchable free-design/template choice together;
 only afterward does the agent install/fuse a non-free selection. Strategist uses
-one dependency-ordered two-stage gate. Its `delivery_context` recommendation distinguishes presenter-led, reader-led, hybrid, and recorded/self-running use in one prose field, names the primary context, and records any secondary use; hybrid never stands alone without its lead mode. The prose boxes remain editable and none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Final Stage 2 is authored once from that contract. Strategist first creates exactly three complete, viable, project-fit solutions, then projects each into a custom mode, custom visual style, color, typography, icon, and custom generated-image rendering; the fixed catalogs remain conservative lower-level single-select alternatives. It does not assemble the three solutions afterward from independent component picks or force them into safe / shifted / bold archetypes. After all three bundles are complete, it compares them against the confirmed contract and source, records the strongest overall fit as zero-based `design_directions.selected`, and gives array order no preference meaning. Before reference selection it reads only the three catalog indexes; after each solution's bases are frozen, it reads only the deduplicated selected detail files and completes the custom behaviors. Image source remains an independent judgment, so every solution already has a rendering candidate even when AI imagery is initially not recommended. The preferred top card is marked and applied initially. An inactive top card applies its immutable bundle, each projected custom card becomes editable in place after selection, and all lower controls may diverge; the adjusted active card exposes an explicit restore action, while final state stores only the edited current components. The same stage confirms reading mode, page count, conditional AI acquisition, formula policy, generation mode, the Design Spec review toggle, and whether the agent should proactively generate speaker notes, custom animations, or narration audio. Only after Stage 1 is confirmed, when a template is installed, does Strategist read the project-local workspace and current content, derive **how to apply it**, and expose that plan as editable `template_application` prose; Stage 2 never reselects a template, and the internal reuse/adherence modes stay hidden. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. The three proactive values are fallback policies, not capability bans: the latest explicit user instruction wins, then final Stage 2, then the fixed defaults `true / false / false`. Strategist still records non-binding Motion suggestions when useful; a suggestion alone does not activate custom-animation execution. Generated images inherit the selected deck color anchors directly; there is no independent image-palette choice. Final state has two equivalent carriers: the default UI path reads `confirm_ui/result.json` exactly once after the final wait, while an explicit chat-only or delegated path retains an equivalent final confirmation summary and may produce no `result.json`. Both paths first resolve and persist every effective production outcome into one `design_spec.md` and complete Gate 1 fidelity. With refinement off, lock authoring proceeds immediately. With `refine_spec: true`, the pipeline stops before `spec_lock.md`; the user may revise any part of that same Design Spec through normal chat for any number of rounds, and explicit approval then releases Gate 2 lock authoring. No second Design Spec or parallel lock is maintained. Normal lock authoring and downstream execution do not reread either confirmation channel. Required manual assets may still introduce their own conditional blocking points, so this is not an exclusive claim over every runtime gate. Project validation requires the compact `audience` / `objective` / `core_message` anchor set under `spec_lock.md ## communication` plus an `Audience move` in every §IX Slide block.
+one dependency-ordered two-stage gate. Its `delivery_context` recommendation distinguishes presenter-led, reader-led, hybrid, and recorded/self-running use in one prose field, names the primary context, and records any secondary use; hybrid never stands alone without its lead mode. The prose boxes remain editable and none requires a non-empty answer: confirmation persists the current text exactly, and a cleared value stays empty instead of falling back to the recommendation. Final Stage 2 is authored once from that contract. Strategist first creates exactly three complete, viable, project-fit solutions, then projects each into a custom mode, custom visual style, color, typography, icon, and custom generated-image rendering; the fixed catalogs remain conservative lower-level single-select alternatives. It does not assemble the three solutions afterward from independent component picks or force them into safe / shifted / bold archetypes. After all three bundles are complete, it compares them against the confirmed contract and source, records the strongest overall fit as zero-based `design_directions.selected`, and gives array order no preference meaning. Before reference selection it reads only the three catalog indexes; after each solution's bases are frozen, it reads only the deduplicated selected detail files and completes the custom behaviors. Image source remains an independent judgment, so every solution already has a rendering candidate even when AI imagery is initially not recommended. The preferred top card is marked and applied initially. An inactive top card applies its immutable bundle, each projected custom card becomes editable in place after selection, and all lower controls may diverge; the adjusted active card exposes an explicit restore action, while final state stores only the edited current components. The same stage confirms reading mode, page count, conditional AI acquisition, generation mode, the Design Spec review toggle, and whether the agent should proactively generate speaker notes, custom animations, or narration audio. Formula handling is not a user-selectable production policy: structural mathematics becomes a native formula marker during authoring. Only after Stage 1 is confirmed, when a template is installed, does Strategist read the project-local workspace and current content, derive **how to apply it**, and expose that plan as editable `template_application` prose; Stage 2 never reselects a template, and the internal reuse/adherence modes stay hidden. Reading mode decides how meaning is carried by page, visuals, presenter, and notes; its cards do not present px values. The browser may apply the deterministic `reading mode → body baseline → unpinned role sizes` dependency locally, while manual size edits pin visible values. It never regenerates Stage 2. The three proactive values are fallback policies, not capability bans: the latest explicit user instruction wins, then final Stage 2, then the fixed defaults `true / false / false`. Strategist still records non-binding Motion suggestions when useful; a suggestion alone does not activate custom-animation execution. Generated images inherit the selected deck color anchors directly; there is no independent image-palette choice. Final state has two equivalent carriers: the default UI path reads `confirm_ui/result.json` exactly once after the final wait, while an explicit chat-only or delegated path retains an equivalent final confirmation summary and may produce no `result.json`. Both paths first resolve and persist every effective production outcome into one `design_spec.md` and complete Gate 1 fidelity. With refinement off, lock authoring proceeds immediately. With `refine_spec: true`, the pipeline stops before `spec_lock.md`; the user may revise any part of that same Design Spec through normal chat for any number of rounds, and explicit approval then releases Gate 2 lock authoring. No second Design Spec or parallel lock is maintained. Normal lock authoring and downstream execution do not reread either confirmation channel. Required manual assets may still introduce their own conditional blocking points, so this is not an exclusive claim over every runtime gate. Project validation requires the compact `audience` / `objective` / `core_message` anchor set under `spec_lock.md ## communication` plus an `Audience move` in every §IX Slide block.
 
 The three proactive values confirmed in final Stage 2 remain independent raw
 evidence. In particular, enabling narration may enable the effective Speaker
 Notes outcome in the Design Spec, but it never rewrites the raw speaker-notes
 choice.
 
-**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. Image to PPTX's normalized page frames are the narrow exception: every frame is inspected once to build source evidence and identify ordinary text, identity or decorative graphics, charts/tables/data graphics, scene regions, and overlap. Later reads stay page/region-local while the current Codex agent prepares registered clean-base and subject/foreground assets through the existing reference-image path. Low-resolution logos, icons, and decorative graphics may be reconstructed only with identity, silhouette, proportions, colors, and wordmarks locked where applicable. Charts, tables, and data graphics cannot use generative reconstruction; they require native objects with verifiable values, exact source assets, or `manual_required`. Multiple non-overlapping objects with padded bounding boxes may share one generation plate before grid slicing or SVG bounding-box cropping creates independent objects. User images, extracted images, web images, AI outputs, formulas, and sliced elements still converge into the same measured fact table.
+**Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. Image to PPTX's normalized page frames are the narrow exception: every frame is inspected once to build source evidence and identify ordinary text, identity or decorative graphics, charts/tables/data graphics, scene regions, and overlap. Later reads stay page/region-local while the current Codex agent prepares registered clean-base and subject/foreground assets through the existing reference-image path. Low-resolution logos, icons, and decorative graphics may be reconstructed only with identity, silhouette, proportions, colors, and wordmarks locked where applicable. Charts, tables, and data graphics cannot use generative reconstruction; they require native objects with verifiable values, exact source assets, or `manual_required`. Multiple non-overlapping objects with padded bounding boxes may share one generation plate before grid slicing or SVG bounding-box cropping creates independent objects. User images, extracted images, web images, AI outputs, and sliced elements still converge into the same measured fact table.
+
+**Native formulas are authored page objects, not image resources.** A standalone
+block stores source LaTeX in a `data-pptx-replace-with="formula"` group and
+exports `m:oMathPara`; a leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` inside ordinary text
+exports `m:oMath` in that same DrawingML paragraph. Inline math inherits the
+text run's size and visible solid fill, then uses the project text language and
+Cambria Math; matrices,
+multiline derivations, and other high-structure expressions remain blocks. Both
+forms keep ordinary SVG preview content because raw LaTeX does not render in
+SVG. PowerPoint 2010+ is the target, with no formula PNG, media relationship,
+or image fallback for non-PowerPoint clients.
+
+**Native hyperlinks use one SVG authoring truth plus package relationships.**
+Standard `<a href>` wraps either a complete visible object/group or one or more
+inline `<tspan>` runs. Absolute external URIs become external hyperlink
+relationships; exact 1-based `#slide-N` targets become internal Slide
+relationships with `ppaction://hlinksldjump`. The PPTX importer reconstructs
+the same anchors for supported shape and run clicks. Fill Native remaps an
+internal jump only when its output target is unambiguous, while Enhance Native
+leaves existing hyperlink XML and relationships untouched. Mouse-over, custom
+show, navigation-command, program/macro/OLE/file, and arbitrary action settings
+remain outside the contract. One source-only transport exception preserves a
+PowerPoint shape that has both a whole-shape click and inner run links:
+PPTX-to-SVG writes `data-pptx-shape-hyperlink` on the logical group and keeps
+the standard inline anchors, because SVG cannot nest the two `<a>` levels.
+Generated authoring never writes that attribute.
 
 **Retained planning context** carries continuity; the on-demand page projector is only a diagnostic described below.
 
@@ -563,9 +591,9 @@ automatically selects the content, page roster, mode, visual style, and resource
 needs in active context; scans images, icons, qualitative Structure, native
 shapes, charts/tables, formulas, and simple typography/geometry as available
 carriers; prepares the
-selected supplied/extracted/AI/web/sliced images, icons, and formulas with their
-required operational manifests or provenance records; and then hand-authors
-SVG. It does not invoke Strategist, Confirm UI, `design_spec.md`,
+selected supplied/extracted/AI/web/sliced images and icons with their required
+operational manifests or provenance records; and then hand-authors SVG plus any
+native formula markers. It does not invoke Strategist, Confirm UI, `design_spec.md`,
 `spec_lock.md`, or a substitute planning artifact. These decisions are not
 recoverable after context loss.
 One agent may therefore perform several creative stages in sequence, but their
@@ -608,7 +636,7 @@ Several architectural decisions shape this phase:
 
 ## Image-Text Composition: P / M / A / C
 
-Whenever the image/formula branch is active, its compact placement vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md) is read alongside the layout math. Its current patterns are organized by composition responsibility:
+Whenever the image branch is active, its compact placement vocabulary in [`references/image-layout-patterns.md`](../skills/ppt-master/references/image-layout-patterns.md) is read alongside the layout math. Native formulas use ordinary page composition plus their marker bounds, not image-resource patterns. The current image patterns are organized by composition responsibility:
 
 - **P · Primary Structures** — single-visual, image-as-canvas, and multi-visual page skeletons.
 - **M · Modifier Layers** — crop/reveal, tone/focus, and framing/placement/depth treatments applied to an existing skeleton.

@@ -118,6 +118,12 @@ The number of markers must equal the number of promoted chart objects, and each
 marker must sit under its matching object wrapper. One marker somewhere on a
 multi-chart page is insufficient.
 
+**Native layout handoff**: for a native-ready classic chart whose authored plot
+rectangle must remain fixed, copy that final absolute slide rectangle into
+metadata `plot_area`; omit it only for PowerPoint automatic layout. The marker
+comment alone does not affect export; the closed schema stays in
+[`native-data-interface.md`](./native-data-interface.md) §2.
+
 Technical SVG/PPT constraints remain in [`shared-standards-core.md`](./shared-standards-core.md).
 
 ---

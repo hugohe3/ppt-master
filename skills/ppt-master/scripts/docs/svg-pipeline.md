@@ -524,6 +524,21 @@ It aggregates:
 
 Convert project SVGs into PPTX.
 
+Native formulas use the two markers owned by
+[`native-formula.md`](../../references/native-formula.md). A standalone block
+stores delimiter-free LaTeX in the JSON metadata of
+`<g data-pptx-replace-with="formula">` and exports `m:oMathPara`. A leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` inside ordinary text
+exports `m:oMath` in the same DrawingML paragraph as its surrounding runs; it
+inherits computed size and visible solid fill, then uses the project text
+language and Cambria Math.
+Matrices, multiline derivations, and other high-structure expressions remain
+blocks. Formula replacement is always active, independent of
+`--native-charts-and-tables`: export replaces only the registered SVG preview
+and writes editable PowerPoint 2010+ Office Math. It emits no formula PNG, media
+relationship, or compatibility fallback, and makes no rendering/editability
+promise for Keynote, WPS, LibreOffice, or another non-PowerPoint client.
+
 ```bash
 uvx ppt-master svg-to-pptx <project_path>
 # Explicit compact image export:
@@ -563,8 +578,8 @@ explicit current structured contract remains blocking.
 Explicit direct generation may use the
 [`quick-generate`](../../workflows/profiles/quick-generate.md) profile after the
 current agent has converted/read sources, researched identified factual gaps,
-and prepared the required images, icons, formulas, and resource manifests as
-needed. That profile skips Strategist, Confirm UI, `design_spec.md`, and
+prepared the required images, icons, and resource manifests as needed, and
+retained any source LaTeX for direct native-marker authoring. That profile skips Strategist, Confirm UI, `design_spec.md`, and
 `spec_lock.md`; it does not skip the resources required by the authored pages.
 After the complete SVG roster exists, run its lockless final checker, then
 export:
@@ -584,8 +599,8 @@ custom object animation, and narration start off in Quick and may be enabled
 when needed. The exporter refuses a missing, blocking, non-final, or stale
 Quick final report before PPTX creation. Default-path output retains the normal
 postflight report and `backup/` snapshot; explicit `-o` retains the ordinary
-no-backup behavior. Existing source, analysis, image/icon/formula, and
-resource-manifest artifacts remain untouched.
+no-backup behavior. Existing source, analysis, image/icon, and resource-manifest
+artifacts remain untouched; formula source stays inside its authored SVG marker.
 
 For generated-project narration, follow the
 [`generate-audio`](../../workflows/stages/generate-audio.md) stage. It owns voice

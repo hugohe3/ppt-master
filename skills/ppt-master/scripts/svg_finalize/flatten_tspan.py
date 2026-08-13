@@ -189,6 +189,7 @@ PARAGRAPH_SOFT_BREAK_ATTR = "data-paragraph-soft-break"
 # Marks an authored visual line boundary that remains a hard DrawingML break
 # in the default single-frame preserve mode.
 PARAGRAPH_LINE_BREAK_ATTR = "data-paragraph-line-break"
+INLINE_FORMULA_ATTR = "data-pptx-inline-formula"
 
 # Tolerance for detecting "base line-height" vs "paragraph gap": dy values
 # within ±DY_TOLERANCE_PX of each other are considered the same line-height.
@@ -676,8 +677,42 @@ def flatten_text_with_tspans(
 
 
 def _has_tspan_children(elem: ET.Element) -> bool:
-    """Return True if elem contains any nested <tspan> children (inline runs)."""
-    return any(c.tag == f"{{{SVG_NS}}}tspan" for c in list(elem))
+    """Return True when one inline subtree has nested runs or hyperlinks."""
+    return any(
+        c.tag in {
+            f"{{{SVG_NS}}}a",
+            f"{{{SVG_NS}}}tspan",
+        }
+        for c in list(elem)
+    )
+
+
+def _copy_inline_element(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
+    """Deep-copy one supported inline ``tspan`` or hyperlink subtree."""
+    local = src.tag.rsplit("}", 1)[-1]
+    if local not in {"a", "tspan"}:
+        raise ValueError(f"Unsupported inline text child <{local}>")
+    new = ET.Element(f"{{{SVG_NS}}}{local}")
+    consumed_dx = (
+        local == "tspan"
+        and strip_line_attrs
+        and _positional_tspan_attribute(src) is not None
+    )
+    for k, v in src.attrib.items():
+        if strip_line_attrs and k in ("x", "y", "dy"):
+            continue
+        if k == "dx" and consumed_dx:
+            continue
+        new.set(k, v)
+    new.text = src.text
+    for child in list(src):
+        if child.tag in {
+            f"{{{SVG_NS}}}a",
+            f"{{{SVG_NS}}}tspan",
+        }:
+            new.append(_copy_inline_element(child, strip_line_attrs=False))
+    new.tail = src.tail
+    return new
 
 
 def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
@@ -689,23 +724,7 @@ def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
     dx on later inline runs.
     Nested tspans are copied recursively without stripping (they are already inline-only).
     """
-    new = ET.Element(f"{{{SVG_NS}}}tspan")
-    consumed_dx = (
-        strip_line_attrs
-        and _positional_tspan_attribute(src) is not None
-    )
-    for k, v in src.attrib.items():
-        if strip_line_attrs and k in ("x", "y", "dy"):
-            continue
-        if k == "dx" and consumed_dx:
-            continue
-        new.set(k, v)
-    new.text = src.text
-    for child in list(src):
-        if child.tag == f"{{{SVG_NS}}}tspan":
-            new.append(_copy_inline_tspan(child, strip_line_attrs=False))
-    new.tail = src.tail
-    return new
+    return _copy_inline_element(src, strip_line_attrs)
 
 
 def _create_text_element_from_line(
@@ -741,6 +760,7 @@ def _create_text_element_from_line(
         and len(tspans) == 1
         and not _has_tspan_children(tspans[0])
         and not tspans[0].tail
+        and tspans[0].get(INLINE_FORMULA_ATTR) is None
     ):
         tspan = tspans[0]
         content = collect_text_content(tspan)

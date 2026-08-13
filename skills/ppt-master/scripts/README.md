@@ -57,7 +57,7 @@ uvx ppt-master update-repo
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Animation resources | `sound_sync.py` | [sound catalog](../templates/sounds/README.md); [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py`, `visualization_recall.py`; legacy `chart_recall.py` | [docs/update_spec.md](./docs/update_spec.md); [docs/visualization-recall.md](./docs/visualization-recall.md) |
-| Image tools | `image_gen.py`, `image_treat.py`, `latex_render.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
+| Image tools | `image_gen.py`, `image_treat.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
 | Maintenance smokes | Inline temporary-project commands | [advanced image and motion](./docs/advanced-image-motion-smoke.md); [mask and gradient](./docs/mask-gradient-smoke.md); [multilingual text](./docs/multilingual-text-smoke.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
 | Troubleshooting | validation, preview, export, dependency issues | [docs/troubleshooting.md](./docs/troubleshooting.md) |
@@ -309,6 +309,11 @@ uvx ppt-master image-gen "A modern futuristic workspace"
 uvx ppt-master image-gen --list-backends
 uvx ppt-master analyze-images <project_path>/images
 ```
+
+Generated-deck formulas do not use an image command. Author a native formula
+marker in the page SVG; `svg_to_pptx.py` compiles its LaTeX metadata to editable
+PowerPoint OMML. The retained `latex_render.py` utility is standalone legacy
+rasterization only and is not connected to either Generate profile.
 
 Repository update:
 

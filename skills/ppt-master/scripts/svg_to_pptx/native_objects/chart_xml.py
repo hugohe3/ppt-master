@@ -15,6 +15,7 @@ from .chart_data import (
     _DEFAULT_CHART_COLORS,
     _category_axis_is_date,
     _chart_list,
+    _chart_plot_area_layout,
     _data_label_position,
     _data_label_point_items,
     _data_labels_config,
@@ -30,6 +31,7 @@ from .chart_style import (
     _chart_text_entry_font_size,
     _chart_text_entry,
     _chart_text_sizes,
+    _chart_title_is_bounded,
     _chart_tx_pr_xml,
     _classic_chart_style,
     _font_face_xml,
@@ -495,8 +497,27 @@ def _chart_title_xml(
     return (
         "<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/>"
         f"{''.join(paragraphs)}"
-        "</c:rich></c:tx><c:layout/></c:title>"
+        "</c:rich></c:tx><c:layout/><c:overlay val=\"0\"/></c:title>"
         '<c:autoTitleDeleted val="0"/>'
+    )
+
+
+def _plot_area_layout_xml(
+    chart_data: dict[str, Any],
+    chart_bounds: tuple[int, int, int, int],
+) -> str:
+    layout = _chart_plot_area_layout(chart_data, chart_bounds)
+    if layout is None:
+        return "<c:layout/>"
+    x, y, width, height = layout
+    return (
+        "<c:layout><c:manualLayout>"
+        '<c:layoutTarget val="inner"/>'
+        '<c:xMode val="edge"/><c:yMode val="edge"/>'
+        '<c:wMode val="factor"/><c:hMode val="factor"/>'
+        f'<c:x val="{x:.12g}"/><c:y val="{y:.12g}"/>'
+        f'<c:w val="{width:.12g}"/><c:h val="{height:.12g}"/>'
+        "</c:manualLayout></c:layout>"
     )
 
 
@@ -1181,7 +1202,8 @@ def _chart_plot_xml(
         return (
             '<c:doughnutChart><c:varyColors val="1"/>'
             f"{ser_xml}"
-            '<c:firstSliceAng val="0"/><c:holeSize val="75"/>'
+            '<c:firstSliceAng val="0"/>'
+            f'<c:holeSize val="{chart_data["hole_size"]}"/>'
             "</c:doughnutChart>"
         )
     if chart_type == "of_pie":
@@ -1399,6 +1421,7 @@ def _chart_xml(
     *,
     chart_rels_id: str,
     chart_data: dict[str, Any],
+    chart_bounds: tuple[int, int, int, int],
     inherited_styles: dict[str, str] | None = None,
     primary_language: str | None = None,
 ) -> bytes:
@@ -1420,11 +1443,12 @@ def _chart_xml(
         axis_titles=axis_titles,
         chart_style=chart_style,
     )
+    bounded_title = _chart_title_is_bounded(payload)
     title_xml = _chart_title_xml(
-        payload.get("title"),
+        None if bounded_title else payload.get("title"),
         font_size=text_sizes["title"],
         color=chart_style.get("text_color"),
-        subtitle=payload.get("subtitle"),
+        subtitle=None if bounded_title else payload.get("subtitle"),
         subtitle_font_size=text_sizes["subtitle"],
         font_face=chart_style.get("font_face"),
         primary_language=primary_language,
@@ -1451,7 +1475,7 @@ def _chart_xml(
 <c:lang val="{_xml_escape(chart_language)}"/>
 <c:chart>
 {title_xml}
-<c:plotArea><c:layout/>{plot_xml}{_chart_area_sp_pr_xml(chart_style.get("plot_fill"))}</c:plotArea>
+<c:plotArea>{_plot_area_layout_xml(chart_data, chart_bounds)}{plot_xml}{_chart_area_sp_pr_xml(chart_style.get("plot_fill"))}</c:plotArea>
 {legend_xml}
 <c:plotVisOnly val="1"/>
 <c:dispBlanksAs val="gap"/>
