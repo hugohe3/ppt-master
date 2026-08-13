@@ -1,0 +1,29 @@
+{
+  "stage": "stage1",
+  "lang": "zh",
+  "primary_language": "zh-CN",
+  "recommend": {
+    "canvas": "ppt169"
+  },
+  "audience": {
+    "value": "公司管理层，重点关注收入质量、现金回收、业务线差异和下半年责任闭环"
+  },
+  "communication_intent": {
+    "value": "先用结论和证据复盘上半年经营表现，再暴露现金与交付短板，最后推动管理层对下半年五项行动、责任人和验收指标形成一致"
+  },
+  "audience_outcome": {
+    "value": "管理层能够在汇报结束时说清增长来自哪里、风险卡在哪里，并认可下半年目标和责任分工"
+  },
+  "core_message": {
+    "value": "增长和盈利质量总体向好，但现金转化与交付复用是下半年必须优先修复的两项经营短板"
+  },
+  "delivery_context": {
+    "value": "主要用于有主讲人的 15 分钟管理层经营会；次要用于会后独立阅读和行动跟踪"
+  },
+  "artifact_afterlife": {
+    "value": "作为经营会复盘材料、行动责任记录和后续月度跟踪的基线案例"
+  },
+  "content_divergence": {
+    "value": "可在不改变虚构数据口径的前提下自由重组、提炼和可视化"
+  }
+}
