@@ -8,7 +8,7 @@
 
 This guide answers one question from the PowerPoint user's point of view: **for a PowerPoint feature, what project representation owns it, and what survives export or import?** PowerPoint semantics are therefore the primary index. SVG elements appear only as the implementation of a specific PowerPoint capability.
 
-This is a public capability and import-behavior map, not a second generated-SVG syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The canonical generated-authoring contract is the authority set selected through [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md); when generated syntax differs, the applicable module wins. PPTX import recovery modes and user-visible degradation belong to §11 here and to the [conversion command reference](../skills/ppt-master/scripts/docs/conversion.md), while the parser implementation remains the exact source of truth. A feature not listed here is not implicitly supported.
+This is a public capability and import-behavior map, not a second generated-SVG syntax specification and not a promise to convert arbitrary SVG or arbitrary OOXML. The canonical generated-authoring contract is the authority set selected through [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md); when generated syntax differs, the applicable module wins. PPTX import recovery modes and user-visible degradation belong to §12 here and to the [conversion command reference](../skills/ppt-master/scripts/docs/conversion.md), while the parser implementation remains the exact source of truth. A feature not listed here is not implicitly supported.
 
 The main route compiles **project-canonical SVG**, not general browser SVG:
 
@@ -205,7 +205,21 @@ Imported chart groups classify their visible fallback with `data-pptx-fallback-k
 
 The exhaustive chart/table schemas and supported family list intentionally remain in the [Native Data Interface replacement contract](../skills/ppt-master/references/native-data-interface.md#2-powerpoint-native-chart--table-replacement-markers-opt-in).
 
-## 9. PowerPoint playback and package features
+## 9. PowerPoint formulas
+
+| PowerPoint feature | Project representation | PPTX result | Compatibility | Validation boundary |
+|---|---|---|---|---|
+| Editable block equation | One `<g data-pptx-replace-with="formula">` with explicit bounds, source LaTeX in `<metadata type="application/json">`, and visible SVG preview children | PowerPoint text shape containing `a14:m` plus editable OMML | PowerPoint 2010+ | Independent block formulas and the registered LaTeX subset only; unsupported input fails closed |
+| Browser / live preview | Ordinary SVG text and shapes inside the marker group | Discarded when the complete group is replaced by the native equation | Raw LaTeX does not render in SVG | Preview children must express the same equation; they are not a PPTX fallback |
+| Non-PowerPoint formula playback | The same native marker; no picture branch | No compatibility fallback is added | Keynote, WPS, LibreOffice, and other clients are outside the formula contract | Do not claim cross-client rendering or editability |
+
+Formula replacement is always active and does not use
+`--native-charts-and-tables`. It creates no `formula_manifest.json`, formula
+PNG, media relationship, or `mc:Fallback` picture. The JSON LaTeX payload is the
+native formula source; SVG children exist only so the authored page remains
+visible in browsers before export.
+
+## 10. PowerPoint playback and package features
 
 These capabilities belong to PPTX package semantics. Their absence from page SVG is deliberate.
 
@@ -232,19 +246,18 @@ media playback commands.
 
 See [Animations & Transitions](./animations.md) (technical source: [`references/animations.md`](../skills/ppt-master/references/animations.md)) and [`audio-narration.md`](./audio-narration.md) for the sidecar workflows.
 
-## 10. Other PowerPoint-native features
+## 11. Other PowerPoint-native features
 
 | PowerPoint feature | Main-route status | Supported alternative | Boundary |
 |---|---|---|---|
 | SmartArt / DiagramML | No native SVG compiler mapping | Reconstruct meaning with shapes, or preserve through a native/template route | A screenshot or fallback must be explicit |
 | OLE or embedded Office object | Unsupported in the SVG route | Direct preservation or a rendered preview | Do not manufacture package relationships from SVG metadata |
-| Native equation / OMML | Unsupported in the SVG route | Render a formula asset or preserve native OOXML directly | A rendered formula is a picture, not an editable equation |
 | Video | Unsupported as an SVG-authored media object | Direct preservation or an explicit poster/link workflow outside this contract | A `media` placeholder does not create video |
 | 3D model | Unsupported | Direct preservation or baked preview | No browser-SVG approximation is treated as native 3D |
 | Macro / VBA | Unsupported | Preserve only through a macro-aware direct workflow | The normal generated `.pptx` route does not synthesize VBA |
 | Arbitrary Office extension XML | Unsupported | Direct preservation by an owning native workflow | The SVG compiler has no generic OOXML passthrough |
 
-## 11. Reverse mapping: PPTX to project SVG
+## 12. Reverse mapping: PPTX to project SVG
 
 The importer reconstructs supported PowerPoint semantics into the same project vocabulary used by export:
 
@@ -276,7 +289,7 @@ This is semantic projection, not a syntax round trip. Preserving validated sourc
 
 Every successful run writes `<output>/conversion-report.json`. The report records the mode, slide and warning counts, stable reason code, source message, chosen fallback, package part, and—when available—slide index plus shape id/name/kind. Tolerant import is therefore not silent: it maximizes usable output while making every contract recovery reviewable.
 
-## 12. Validation ownership
+## 13. Validation ownership
 
 The four layers have deliberately different jobs:
 
@@ -289,7 +302,7 @@ The four layers have deliberately different jobs:
 
 A generated-SVG warning is not permission to guess. It is reserved for a deterministic supported mapping whose spelling or fidelity deserves attention. Missing mappings, invalid units, malformed metadata, broken structure contracts, and potentially repair-triggering generated DrawingML remain errors. Import diagnostics describe explicit loss or normalization of source-owned content; they never authorize the importer to invent unsupported semantics.
 
-## 13. Adding or changing a mapping
+## 14. Adding or changing a mapping
 
 Treat a mapping change as a compiler change, not as a permissive SVG parser tweak:
 

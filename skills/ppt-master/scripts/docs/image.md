@@ -5,43 +5,25 @@
 > inputs while delivery writes self-contained SVG previews and native PPTX
 > media.
 
-Image tools cover formula rendering, prompt-based AI generation, web image search, image inspection, and Gemini watermark removal.
+Image tools cover prompt-based AI generation, web image search, image inspection,
+and Gemini watermark removal. Native formula authoring belongs to the SVG
+pipeline, not the image pipeline.
 
-## `latex_render.py`
+## Legacy standalone `latex_render.py`
 
-Manifest-driven LaTeX formula renderer. Default Generate has Strategist write
-`images/formula_manifest.json` after Typography confirmation; Quick Generate
-has the current agent write the same resource manifest without confirmation.
-This script renders only those declared formulas to transparent PNGs and writes
-dimensions back into the manifest.
+This retained standalone utility renders a user-authored
+`images/formula_manifest.json` to PNG. Neither Default nor Quick Generate calls
+it, and new projects do not create formula manifests or formula images. The
+supported generated-deck path authors a native formula marker in SVG and lets
+`svg_to_pptx.py` compile its LaTeX payload to editable PowerPoint OMML.
 
 ```bash
 python3 scripts/latex_render.py <project_path>
 python3 scripts/latex_render.py <project_path> --dry-run
-python3 scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 ```
 
-Manifest shape:
-
-```json
-{
-  "providers": ["codecogs", "quicklatex", "mathpad", "wikimedia"],
-  "items": [
-    {
-      "id": "formula_001",
-      "latex": "E = mc^2",
-      "display": "block",
-      "color": "#1D1D1F",
-      "background": "#FFFFFF",
-      "transparent": true,
-      "dpi": 300,
-      "filename": "formula_001.png"
-    }
-  ]
-}
-```
-
-Output files land directly under `project/images/`. Formula filenames should use a shared `formula_` prefix, e.g. `formula_001.png`. The default provider chain is `codecogs,quicklatex,mathpad,wikimedia`; each provider is tried automatically until one succeeds, and the winning provider is recorded back into the manifest. `--providers` or manifest-level `providers` may override the order, but all four are available as no-key fallbacks. Formula PNGs are transparent by default. `background` is the temporary render matte and local background-removal reference; set `transparent: false` only when an opaque final formula asset is intentional. The script does not scan `spec_lock.md` or source documents for `$...$`; formula selection belongs to the active resource owner.
+Use it only for an explicitly requested external raster workflow. It is not a
+compatibility fallback for Keynote, WPS, LibreOffice, or another client.
 
 ## `image_gen.py`
 

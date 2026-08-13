@@ -38,7 +38,7 @@ Verify the project's planning-session artifacts before doing anything else:
 | `<project_path>/spec_lock.md` | Always | Strategist's execution anchors and routing contract; read it completely once in this fresh execution context |
 | `<project_path>/design_spec.md` | Always | Complete approved design narrative and Section IX page outline; read it completely once in this fresh execution context |
 | `<project_path>/notes/total.md` | Design Spec §X records a supplied final/literal narration script | Frozen verbatim narration input; read it once before SVG authoring and never reconstruct it from the planning chat |
-| `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` / `Rendered` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
+| `<project_path>/images/` plus files whose row status requires existence | `spec_lock images` references any image | `Existing` / `Generated` / `Sourced` files must exist; an absent `Needs-Manual` file remains allowed until the Step 7 readiness gate |
 | `<project_path>/templates/` | `spec_lock page_layouts` references any | Layout / mirror prototypes required by execution |
 | Resolver-returned Chart/Table SVG | `spec_lock page_visualizations` or legacy `page_charts` references a live Chart/Table key | Shared page-local SVG selected through the two live catalogs |
 
@@ -64,7 +64,7 @@ If any required artifact is missing, report it and stop this stage. Do not enter
 
 - Missing `design_spec.md` / `spec_lock.md` → use [`failure-recovery.md`](../governance/failure-recovery.md) §3.
 - Missing frozen `notes/total.md` when §X declares a final/literal script → return to Generate Step 4's prepared final narration branch; never rewrite the script from memory.
-- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to [`generate-pptx`](../generate-pptx.md) Step 3 to restore the selected workspace; an AI, web, formula, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire, rerender, or derive it. An absent `Needs-Manual` file is not a Step 1 failure.
+- Missing `images/`, or a file whose status requires existence → recover by provenance: an `Acquire Via: user` / `Status: Existing` file is a required manual artifact, so use `failure-recovery.md` §2 and wait for the user to restore that exact file; a template-bundled bitmap returns to [`generate-pptx`](../generate-pptx.md) Step 3 to restore the selected workspace; an AI, web, or slice output uses its matching row in `failure-recovery.md` §1 to reacquire or derive it. An absent `Needs-Manual` file is not a Step 1 failure. Formula markers are SVG authoring content and never create a required image file.
 - Missing `templates/` inputs → restore the selected workspace through [`generate-pptx`](../generate-pptx.md) Step 3 and [`apply-template-workspace`](apply-template-workspace.md). If the workspace is unavailable or invalid, run Create Template again rather than reconstructing a template inside this stage.
 
 ---

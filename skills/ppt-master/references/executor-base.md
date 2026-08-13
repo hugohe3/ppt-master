@@ -12,7 +12,8 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | The mandatory per-page Structure decision finds qualitative geometry | [`executor-structure.md`](./executor-structure.md) |
 | Any semantic cell grid, including a table-family reference | [`executor-table.md`](./executor-table.md) |
 | A page will use a preset pattern fill or an independent object is explicitly selected as native-ready | [`native-data-interface.md`](./native-data-interface.md) before emitting the pattern or replacement metadata |
-| Any image/formula | [`executor-image.md`](./executor-image.md) + [`image-layout-spec.md`](./image-layout-spec.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) + [`svg-image-embedding.md`](./svg-image-embedding.md) |
+| Any image | [`executor-image.md`](./executor-image.md) + [`image-layout-spec.md`](./image-layout-spec.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) + [`svg-image-embedding.md`](./svg-image-embedding.md) |
+| Any structural standalone mathematical expression | [`native-formula.md`](./native-formula.md) before authoring its marker |
 | Any placed image is `Status: Sourced` or its filename has an `image_sources.json` record | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Effective Speaker Notes outcome is enabled after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 
@@ -20,7 +21,7 @@ Evaluate branches from each object's actual information model, not only from a C
 
 > Narrative skeleton and visual aesthetic come from the locked values routed through the [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md) indexes. Executor reads one locked preset file or only the exact `*_references` of a custom synthesis; an unreferenced novel custom reads none. [`shared-standards-core.md`](./shared-standards-core.md) supplies the technical boundary plus the fallback visual-quality and leading defaults when those authorities are silent.
 
-**Hard rule — Shape-first page authority**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content. Optional native Chart/Table metadata belongs to an independently selected object and never replaces this visible fallback during authoring; [`native-data-interface.md`](./native-data-interface.md) alone defines that metadata and its export activation.
+**Hard rule — Shape-first page authority**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content. Optional native Chart/Table metadata belongs to an independently selected object and never replaces this visible fallback during authoring; [`native-data-interface.md`](./native-data-interface.md) alone defines that metadata and its export activation. Native formulas still require an ordinary SVG preview inside the explicit marker; export replaces only that subtree under [`native-formula.md`](./native-formula.md).
 
 **Hard rule — flat PowerPoint structure**: Free-design, brand-only, Style-only, and every `template_reuse_scope: style` project use `pptx_structure.mode: flat`: write no root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder`; every visible object remains Slide-local, and the root declares exactly one canonical `data-pptx-page-role` (`cover` / `toc` / `section` / `content` / `ending`). A Style workspace supplies reusable communication/design direction, composition rhythm, and information-expression defaults without page prototypes. Its identity-adjacent color, typography, icon, and image defaults yield to the final Brand/Deck identity and confirmed project lock. When a Style is installed alongside Layout/Deck, it changes only Direction / method and follows the resolved non-Style structure route. Export materializes one clean project-owned Master plus one Blank Layout from the current lock. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by specialized metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
 
@@ -115,7 +116,7 @@ Apply the content-vs-expression contract above within the selected reading mode.
 - **Sparse display-size exception**: a short non-structural Hero/Display element may use one undeclared size outside all anchor bands at most twice across the deck without a lock row. The third occurrence makes that size recurring: stop and return to Strategist to name the role in the Design Spec and `spec_lock.md`, then read back and validate the affected fragments before reuse. This exception never applies to titles, body copy, subtitles, annotations, footnotes, captions, data labels, or card copy, and nearby sizes must not be introduced to imitate one recurring treatment.
 - **Outside-band recovery**: for structural text, reflow geometry and use the declared role band locally. For a sparse display occurrence, keep the unitless value and verify that its deck-wide count remains at most two. Never flatten a justified distinction or add a role merely to silence the checker. Mirror pages preserve exact source typography as inherited input.
 - Images MUST reference files listed under `images`; no invented filenames
-- Formula PNGs are images with `Acquire Via: formula`; place a `Rendered` file only from its listed path, use the normal placeholder for `Needs-Manual`, and never recreate the formula as text.
+- Keep short inline notation as editable text. For structural block mathematics, load [`native-formula.md`](./native-formula.md), then author exact LaTeX metadata, the marker, and its SVG preview; this is not image acquisition.
 
 Return upstream before any derived/accent identity becomes recurring or structural, or when an undeclared display size reaches its third occurrence, then update the retained context under §2.1. Local garnish, same-role `±2`px adjustments, and at most two sparse display-size occurrences need no lock row. Never expand the lock to silence a comparison. New icon acquisition, images, structural fonts, role anchors, and resources keep their preparation/role rules.
 
@@ -298,7 +299,7 @@ test -f "<project_path>/icons/<lib>/<name>.svg"
 
 ## 5. Font Usage
 
-Read typography from `spec_lock.md`: `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1 and LaTeX stays PNG.
+Read typography from `spec_lock.md`: `<role>_family` → `title_family` / `body_family` → legacy `font_family`; sparse accents follow §2.1. A native formula's SVG preview follows the page treatment, while the exported Office Math object uses its marker style under [`native-formula.md`](./native-formula.md).
 
 **Default — locked-stack realization (may vary treatment)**: Express the Design Spec Character Reference through scale, weight, spacing, color, and composition; keep the locked family. Put the common stack on root `<svg>`, omit matching descendants, and override at the nearest clear `<g>`, `<text>`, or `<tspan>`.
 

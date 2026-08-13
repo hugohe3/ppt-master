@@ -146,6 +146,18 @@ By default, charts are rendered as **custom-designed SVG graphics** converted to
 
 If your workflow specifically requires Excel-driven data editing or PowerPoint's chart/table-specific controls, export with `--native-charts-and-tables`: supported data charts and pure text-grid tables then ship as **PowerPoint-native Chart / Table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts_tables.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The default SVG fallback also becomes editable DrawingML shapes, but it has no chart data workbook or table/chart object model. Native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, so the shape-based route remains the visual-stability default.
 
+## Q: Are formulas editable?
+
+Yes, in PowerPoint. Formula-bearing SVG groups carry source LaTeX and export as
+editable PowerPoint OMML block equations; they are not formula screenshots or
+picture assets. Raw LaTeX does not render by itself in SVG, so the group also
+contains ordinary SVG text/shapes for browser and live preview. Export discards
+those preview children when it replaces the group with the native equation.
+
+The native target is PowerPoint 2010+. Formula display and editability in
+Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;
+PPT Master does not add an image fallback for them.
+
 ## Q: Can I change page transitions and element animations?
 
 Yes. Page transitions are on by default (`fade` 0.4s); per-element object
@@ -228,10 +240,11 @@ Quick creates no `svg_final/` preview.
 It does not skip preparation or design capability. Source conversion, research
 on identified factual gaps, shared aesthetic references, and every resource the
 deck needs still run when required: supplied or extracted images,
-AI/web/sliced images, project icons, native shapes, charts/tables, rendered
-formulas, and the required operational manifests or provenance records. If a
-required asset is not ready, it still stops and asks you for it instead of
-substituting unrelated material. After preparation, the current agent
+AI/web/sliced images, project icons, native shapes, charts/tables, and the
+required operational manifests or provenance records. Formulas are authored
+directly as PowerPoint-native markers in the affected SVG, not prepared as
+image assets. If a required asset is not ready, it still stops and asks you for
+it instead of substituting unrelated material. After preparation, the current agent
 hand-authors `svg_output/` to the shared standards, runs the lockless Quick
 final quality checker, fixes every blocking error, and only then exports the
 final PPTX.

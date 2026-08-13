@@ -8,7 +8,7 @@
 
 本指南从 PowerPoint 使用者的视角回答一个问题：**对于某项 PowerPoint 功能，项目中由什么表达承载，导出或回导时能保留什么？** 因此，PowerPoint 语义是唯一主索引，SVG 元素只作为某项 PowerPoint 能力的具体实现出现。
 
-这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同由 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由到拆分权威集；生成语法出现差异时，以适用模块为准。PPTX 导入的容错模式与用户可见降级由本文 §11 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
+这是一份公开的能力与导入行为映射表，不是第二份生成 SVG 语法规范，也不承诺转换任意 SVG 或任意 OOXML。规范生成合同由 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) 路由到拆分权威集；生成语法出现差异时，以适用模块为准。PPTX 导入的容错模式与用户可见降级由本文 §12 和[转换命令文档](../../skills/ppt-master/scripts/docs/conversion.md)负责，精确 parser 行为仍以实现代码为真值。本指南未列出的功能不会因此被默认为受支持。
 
 主路线编译的是**项目规范化 SVG**，而不是通用浏览器 SVG：
 
@@ -199,7 +199,20 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 
 完整图表/表格 schema 和受支持 family 列表有意仅保留在[原生数据接口替换合同](../../skills/ppt-master/references/native-data-interface.md#2-powerpoint-native-chart--table-replacement-markers-opt-in)中。
 
-## 9. PowerPoint 播放与打包功能
+## 9. PowerPoint 公式
+
+| PowerPoint 功能 | 项目表达 | PPTX 结果 | 兼容性 | 校验边界 |
+|---|---|---|---|---|
+| 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m` 与可编辑 OMML 的 PowerPoint 文本 shape | PowerPoint 2010+ | 仅支持独立块级公式和已登记 LaTeX 子集；不支持的输入直接失败 |
+| 浏览器 / 实时预览 | marker 组内的普通 SVG 文字与形状 | 整组被原生公式替换时丢弃 | 原始 LaTeX 不能直接在 SVG 中渲染 | 预览子元素必须表达同一公式；它们不是 PPTX 兜底 |
+| 非 PowerPoint 客户端播放 | 同一个原生 marker；没有图片分支 | 不附加兼容兜底 | Keynote、WPS、LibreOffice 等客户端不在公式合同内 | 不宣称跨客户端显示或编辑能力 |
+
+公式替换始终启用，不使用 `--native-charts-and-tables`。该路径不会创建
+`formula_manifest.json`、公式 PNG、media relationship 或作为图片的
+`mc:Fallback`。JSON 中的 LaTeX payload 是原生公式源；SVG 子元素只负责让
+导出前的作者页面可以在浏览器中看见。
+
+## 10. PowerPoint 播放与打包功能
 
 这些能力属于 PPTX 包语义。它们不出现在页面 SVG 中是有意设计。
 
@@ -223,19 +236,18 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 
 sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`references/animations.md`](../../skills/ppt-master/references/animations.md)）与 [`audio-narration.md`](./audio-narration.md)。
 
-## 10. 其他 PowerPoint 原生功能
+## 11. 其他 PowerPoint 原生功能
 
 | PowerPoint 功能 | 主路线状态 | 受支持的替代方案 | 边界 |
 |---|---|---|---|
 | SmartArt / DiagramML | 无原生 SVG 编译器映射 | 使用 shape 重建语义，或通过原生/模板路线保留 | 截图或 fallback 必须是显式的 |
 | OLE 或嵌入 Office 对象 | SVG 路线不支持 | 直接保留或渲染 preview | 不得通过 SVG metadata 制造包 relationship |
-| 原生公式 / OMML | SVG 路线不支持 | 渲染公式资产或直接保留原生 OOXML | 渲染公式是图片，不是可编辑公式 |
 | 视频 | 不支持作为 SVG 创作媒体对象 | 直接保留，或本合同之外的显式封面/链接工作流 | `media` 占位符不创建视频 |
 | 3D 模型 | 不支持 | 直接保留或烘焙 preview | 不将浏览器 SVG 近似当作原生 3D |
 | 宏 / VBA | 不支持 | 仅通过感知宏的直接工作流保留 | 普通生成 `.pptx` 路线不生成 VBA |
 | 任意 Office 扩展 XML | 不支持 | 由拥有该语义的原生工作流直接保留 | SVG 编译器不提供通用 OOXML 透传 |
 
-## 11. 反向映射：PPTX 到项目 SVG
+## 12. 反向映射：PPTX 到项目 SVG
 
 导入器将受支持的 PowerPoint 语义重建为与导出相同的项目词汇：
 
@@ -267,7 +279,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 
 每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
 
-## 12. 校验职责
+## 13. 校验职责
 
 四层有意承担不同职责：
 
@@ -280,7 +292,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 
 生成 SVG 的 warning 不是猜测许可。它只适用于拥有唯一结果的受支持映射，但其拼法或保真度值得注意的情况。缺失映射、非法单位、格式错误 metadata、破损的结构合同，以及可能触发 PowerPoint 修复的生成 DrawingML 仍是 error。导入诊断描述对源内容的显式丢失或规范化，绝不授权导入器虚构不支持的语义。
 
-## 13. 新增或修改映射
+## 14. 新增或修改映射
 
 应将映射变更视为编译器变更，而不是宽松 SVG parser 调整：
 

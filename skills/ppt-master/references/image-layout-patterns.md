@@ -1,6 +1,6 @@
-# Image and Formula Layout Pattern Catalog
+# Image Layout Pattern Catalog
 
-Compact composition vocabulary for prepared images, illustrations, and rendered formula assets. Use the patterns as options, not as a checklist.
+Compact composition vocabulary for prepared images and illustrations. Use the patterns as options, not as a checklist.
 
 ---
 
@@ -238,12 +238,10 @@ If motion is enabled, [`animations.md`](./animations.md) owns its implementation
 | A prepared subject should re-layer over its source | `#A2-03`; keep the base and cutout registered, and insert a native middle layer only when it has a distinct job |
 | A busy visual needs one focal region | `#M2-05`, or prepared `#A3-01` / `#A3-03` when a native contrast treatment is insufficient |
 | A visual argument should build across pages | `#C1-01` + `#P2-01` or `#P2-05`; keep the underlying source and frame stable |
-| Formula or technical figure needs explanation | `#P1-12` + `#P2-07` / `#P2-03`; use `#P2-04` only when a second cropped detail is useful, and keep explanatory labels native |
+| Technical figure needs explanation | `#P1-12` + `#P2-07` / `#P2-03`; use `#P2-04` only when a second cropped detail is useful, and keep explanatory labels native |
 
 **Registration boundary**: registration-dependent effects succeed only when their declared coordinate relationship remains exact. Preserve registration for `#M1-10`, `#A2-02`, `#A3-01`, `#M1-08`, `#A2-03`, `#A3-02`, `#A3-03`, and `#M1-11`; `#M1-09` is the intentional exception.
 
 **Source-correspondence boundary**: `#P2-04` reuses one exact source but intentionally changes the detail crop, scale, and placement; preserve the selected-region correspondence instead of forcing page-space registration.
-
-**Formula placement**: treat a rendered formula as a prepared visual asset. Use whitespace patterns such as `#P1-11` or `#P1-12` for isolated derivations, `#P1-07`, `#P2-07`, `#P2-03`, or `#P2-04` for annotated formulas, and `#P3-04` or `#P3-03` for comparisons; keep editable explanatory text native.
 
 All compatibility details remain owned by [`shared-standards-core.md`](./shared-standards-core.md) and its routed references.

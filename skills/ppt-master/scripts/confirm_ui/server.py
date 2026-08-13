@@ -1286,13 +1286,12 @@ def _stage2_production_recommendations_error(
     recommend = recommendations.get('recommend')
     if not isinstance(recommend, dict):
         recommend = {}
-    for field in ('formula_policy', 'generation_mode'):
-        value = recommend.get(field)
-        if not isinstance(value, str) or not value.strip():
-            return (
-                'Stage 2 recommendations must include non-empty '
-                f'recommend.{field}'
-            )
+    generation_mode = recommend.get('generation_mode')
+    if not isinstance(generation_mode, str) or not generation_mode.strip():
+        return (
+            'Stage 2 recommendations must include non-empty '
+            'recommend.generation_mode'
+        )
     refine_spec = recommendations.get('refine_spec')
     if (
         not isinstance(refine_spec, dict)
@@ -1311,10 +1310,9 @@ def _stage2_production_recommendations_error(
 
 def _stage2_production_result_error(result: dict) -> Optional[str]:
     """Require every user-confirmed production control in the final payload."""
-    for field in ('formula_policy', 'generation_mode'):
-        value = result.get(field)
-        if not isinstance(value, str) or not value.strip():
-            return f'final Stage 2 payload must include non-empty {field}'
+    generation_mode = result.get('generation_mode')
+    if not isinstance(generation_mode, str) or not generation_mode.strip():
+        return 'final Stage 2 payload must include non-empty generation_mode'
     if not isinstance(result.get('refine_spec'), bool):
         return 'final Stage 2 payload must include refine_spec as a boolean'
     if _uses_ai_images(result):
@@ -2765,6 +2763,10 @@ def create_app(
             result_file,
             carry_previous=rec_stage_number > 1,
         )
+        # Formula realization is Executor-owned. Accept the retired field from
+        # older recommendations/clients, but never persist it in a new receipt.
+        result.pop('formula_policy', None)
+        locked_values.pop('formula_policy', None)
         if rec_stage_number == 1 or not template_required:
             result.pop('template_application', None)
             locked_values.pop('template_application', None)

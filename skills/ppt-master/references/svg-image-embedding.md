@@ -16,13 +16,12 @@ and filter/clip contracts.
 | Mode | Resource authority and preparation timing |
 |---|---|
 | Default Generate | `design_spec.md §VIII` plus its lock projection; when user-provided images are selected, run `analyze_images.py` after Strategist confirmation and complete the list before Executor |
-| Quick Generate | Current main agent's active-context resource decisions; materialize explicit user paths first, resolve unspecified acquisition decisions automatically, and finish user/ai/web/slice/formula preparation before SVG authoring without confirmation or a persisted roster |
+| Quick Generate | Current main agent's active-context resource decisions; materialize explicit user paths first, resolve unspecified acquisition decisions automatically, and finish user/ai/web/slice preparation before SVG authoring without confirmation or a persisted roster |
 
 ```markdown
 | Filename | Dimensions | Purpose | Type | Layout pattern | Crop Policy | Acquire Via | Status | Reference |
 |----------|------------|---------|------|----------------|-------------|-------------|--------|-----------|
 | team.jpg | 800x600 | Team photo | Photography | `#P1-02 image left, copy right` | adaptive | web | Pending | Diverse engineering team in modern office |
-| formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | no-crop | formula | Rendered | `E = mc^2` |
 ```
 
 ### Image Status Enum
@@ -33,8 +32,7 @@ and filter/clip contracts.
 | **Failed** | The latest automatic acquisition attempt failed; this is retryable and non-terminal | Step 5 reruns the owning manifest or explicitly resolves the row to `Needs-Manual`; Executor must never treat `Failed` as usable content |
 | **Generated** | AI/slice output exists | Reference from `../images/`; manifest records govern attribution. An `Illustration Sheet` stays in §VIII only as an unplaced slice source |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7 for the attribution contract) |
-| **Rendered** | Deterministic formula PNG exists at expected path (`Acquire Via: formula`) | Reference from `../images/`; use a legal anchor with `meet` for the complete placement (centered default: `xMidYMid meet`) and do not crop |
-| **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, `Sourced`, or `Rendered` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
+| **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, or `Sourced` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
 | **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
 
@@ -48,7 +46,6 @@ and filter/clip contracts.
    - Quick Generate → current main agent resolves the required resource in active context; explicit user paths/URLs/choices win, unspecified choices use automatic resolution, no interaction or persisted roster
 2. Prepare project-local resources before SVG authoring:
    - user → materialize the explicit source under project/images/ → Existing
-   - formula → write formula_manifest.json and run latex_render.py → Rendered
    - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §3 before ordinary `Acquire Via` dispatch
    - Pending / Failed + ai  → Image_Generator runs image_gen.py     → Generated
    - Pending / Failed + web → Image_Searcher runs image_search.py   → Sourced
@@ -58,7 +55,6 @@ and filter/clip contracts.
    ├── Sourced + license_tier=no-attribution → <image href=...> only
    ├── Sourced + license_tier=attribution-required → <image href=...> + small <text> credit element on the slide
    ├── Sourced + license_tier=manual → <image href=...> only (user-supplied --from-url; rights/credit are user responsibility)
-   ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual → Dashed border + description text until a supplied file is validated and status is reconciled
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Export:
