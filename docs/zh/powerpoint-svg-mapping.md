@@ -216,7 +216,8 @@ SVG 预览内容只负责让导出前的作者页面保持可见。
 
 ## 10. PowerPoint 播放与打包功能
 
-这些能力属于 PPTX 包语义。它们不出现在页面 SVG 中是有意设计。
+这些能力要么从规范页面 SVG 编译，要么由表中点名的包级 sidecar 提供。
+当所有者一栏写的是 SVG 时，不另设 sidecar。
 
 | PowerPoint 功能 | 项目中的所有者 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
@@ -225,7 +226,11 @@ SVG 预览内容只负责让导出前的作者页面保持可见。
 | 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为 shape target 锚点 | 静态结构层与占位符不可动画 |
 | 旁白音频 | `audio/` 资产加 recorded-narration 导出选项 | media relationship、audio carrier 与 timing | `Sidecar/package` | 必须校验资产、Slide 关联与时序 |
 | 幻灯片自动换页 | 显式 transition timing 或旁白派生时长 | `advTm`/换页行为 | `Sidecar/package` | 单击驱动动画与录制旁白不兼容 |
-| 超链接或动作 | 无主 SVG 编译器映射 | 不由页面 SVG 创建 | 原生路线保留源 OOXML 时为 `Direct preservation` | action-button preset 只提供可见几何 |
+| 整体对象超链接 | 标准 SVG `<a href="...">` 包裹一个可见元素或组 | 每个可点击叶子上的 `p:cNvPr/a:hlinkClick`，共用一个 relationship | 受支持外链与 deck 内目标为 `Native-stable`；PPTX 回导重建 anchor | 多对象卡片 / 按钮的间隙也要可点时，需显式加入背景形状 |
+| 行内文字超链接 | 普通 SVG 文字中的 `<a href="..."><tspan>可见文字或行内公式 marker</tspan></a>` | 同一 DrawingML 段落或 Office Math 叶子 run 中的 `a:rPr/a:hlinkClick` | 受支持外链与 deck 内目标为 `Native-stable` | anchor 不承载位置属性；嵌套链接会失败 |
+| deck 内跳转 | 任一受支持 carrier 使用精确的 1-based `href="#slide-N"` | 内部 Slide relationship 加 `ppaction://hlinksldjump` | 按最终 presentation roster 重建 | 缺失、越界、孤儿或歧义目标直接失败 |
+| 导入形状 click 与内部 run link 并存 | 仅供 importer 使用的逻辑 `<g data-pptx-shape-hyperlink="...">`，内部仍保留标准行内 anchor | 同时还原 `p:cNvPr/a:hlinkClick` 与 run 级 click | 这一 source-only 重叠可无损运输 | 作者不得写该 metadata；标准 SVG 禁止嵌套 `<a>`，因此 checker/export 仅在 group 内确有真实行内 anchor 时接受 |
+| 其他动作设置 | 无 SVG 创作映射 | 不创建 | 仅当拥有它的原生路线不改源 OOXML 时为 `Direct preservation` | 鼠标悬停、custom show、导航命令、程序 / macro / OLE / file 与任意 `ppaction://` 动作不在超链接合同内；action-button preset 仍只提供可见几何 |
 | 批注或审阅线程 | 无 SVG 或生成侧映射 | 不编写 | 仅在其他路线明确拥有时为 `Direct preservation` | 不自动将审阅 metadata 转为可见 Slide 内容 |
 | 不属于已映射功能的 relationship | 无通用 SVG 逃生口 | 不生成 | 适用时为 `Direct preservation` | 不支持任意 relationship 注入 |
 
@@ -244,7 +249,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 |---|---|---|---|
 | SmartArt / DiagramML | 无原生 SVG 编译器映射 | 使用 shape 重建语义，或通过原生/模板路线保留 | 截图或 fallback 必须是显式的 |
 | OLE 或嵌入 Office 对象 | SVG 路线不支持 | 直接保留或渲染 preview | 不得通过 SVG metadata 制造包 relationship |
-| 视频 | 不支持作为 SVG 创作媒体对象 | 直接保留，或本合同之外的显式封面/链接工作流 | `media` 占位符不创建视频 |
+| 视频 | 不支持作为 SVG 创作媒体对象 | 直接保留，或使用带普通受支持超链接的显式封面 | `media` 占位符不创建视频 |
 | 3D 模型 | 不支持 | 直接保留或烘焙 preview | 不将浏览器 SVG 近似当作原生 3D |
 | 宏 / VBA | 不支持 | 仅通过感知宏的直接工作流保留 | 普通生成 `.pptx` 路线不生成 VBA |
 | 任意 Office 扩展 XML | 不支持 | 由拥有该语义的原生工作流直接保留 | SVG 编译器不提供通用 OOXML 透传 |
@@ -258,6 +263,9 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 预设形状 | 受支持时重建为含原生 carrier 与可见 preview 证据的 expanded preset 组 |
 | 自定义几何 | `<path>` |
 | 文本体 | `<text>` 与 `<tspan>` run/段落 |
+| 受支持文字 run 超链接 | 包含已链接 `<tspan>` run 的行内 `<a href>` |
+| 受支持形状 / 图片 / group 超链接 | 包裹重建后可见对象的规范 `<a href>` |
+| 同一形状同时有 shape click 与内部 run link | 逻辑 `<g data-pptx-shape-hyperlink="...">` transport 加规范行内 anchor；生成侧创作不输出该例外 |
 | 图片 | `<image>`，或已登记嵌套 crop 表达 |
 | 同时带栅格兼容预览的 SVG 图片 | 优先使用 `asvg:svgBlip` relationship 重建 `<image>`；仅当 SVG relationship 或 media part 不可用时才使用普通 `a:blip` relationship |
 | 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |

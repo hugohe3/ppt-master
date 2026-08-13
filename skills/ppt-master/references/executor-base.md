@@ -14,6 +14,7 @@ Always-loaded Executor authority for flat SVG page authoring and behavior shared
 | A page will use a preset pattern fill or an independent object is explicitly selected as native-ready | [`native-data-interface.md`](./native-data-interface.md) before emitting the pattern or replacement metadata |
 | Any image | [`executor-image.md`](./executor-image.md) + [`image-layout-spec.md`](./image-layout-spec.md) + [`image-layout-patterns.md`](./image-layout-patterns.md) + [`svg-image-embedding.md`](./svg-image-embedding.md) |
 | Any nontrivial mathematical expression | [`native-formula.md`](./native-formula.md) |
+| Any external or same-deck click hyperlink | [`native-hyperlinks.md`](./native-hyperlinks.md) |
 | Any placed image is `Status: Sourced` or its filename has an `image_sources.json` record | [`executor-web-image.md`](./executor-web-image.md), after `executor-image.md` |
 | Effective Speaker Notes outcome is enabled after all SVG pages pass | [`executor-notes.md`](./executor-notes.md) |
 

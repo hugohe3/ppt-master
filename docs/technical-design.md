@@ -515,6 +515,21 @@ forms keep ordinary SVG preview content because raw LaTeX does not render in
 SVG. PowerPoint 2010+ is the target, with no formula PNG, media relationship,
 or image fallback for non-PowerPoint clients.
 
+**Native hyperlinks use one SVG authoring truth plus package relationships.**
+Standard `<a href>` wraps either a complete visible object/group or one or more
+inline `<tspan>` runs. Absolute external URIs become external hyperlink
+relationships; exact 1-based `#slide-N` targets become internal Slide
+relationships with `ppaction://hlinksldjump`. The PPTX importer reconstructs
+the same anchors for supported shape and run clicks. Fill Native remaps an
+internal jump only when its output target is unambiguous, while Enhance Native
+leaves existing hyperlink XML and relationships untouched. Mouse-over, custom
+show, navigation-command, program/macro/OLE/file, and arbitrary action settings
+remain outside the contract. One source-only transport exception preserves a
+PowerPoint shape that has both a whole-shape click and inner run links:
+PPTX-to-SVG writes `data-pptx-shape-hyperlink` on the logical group and keeps
+the standard inline anchors, because SVG cannot nest the two `<a>` levels.
+Generated authoring never writes that attribute.
+
 **Retained planning context** carries continuity; the on-demand page projector is only a diagnostic described below.
 
 ---

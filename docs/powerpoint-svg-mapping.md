@@ -223,7 +223,9 @@ content exists only so the authored page remains visible before export.
 
 ## 10. PowerPoint playback and package features
 
-These capabilities belong to PPTX package semantics. Their absence from page SVG is deliberate.
+These capabilities compile either from canonical page SVG or from the named
+package-level sidecar. A sidecar remains absent when the table names SVG as the
+owner.
 
 | PowerPoint feature | Owning project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
@@ -232,7 +234,11 @@ These capabilities belong to PPTX package semantics. Their absence from page SVG
 | Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the shape-target anchor | Static structural layers and placeholders cannot be animated |
 | Narration audio | `audio/` asset plus recorded-narration export option | Media relationship, audio carrier, and timing | `Sidecar/package` | Asset, slide association, and timing must validate |
 | Automatic slide advance | Explicit transition timing or narration-derived duration | `advTm`/advance behavior | `Sidecar/package` | Click-driven animation is incompatible with recorded narration |
-| Hyperlink or action | No main SVG compiler mapping | Not created by page SVG | `Direct preservation` where a native route retains source OOXML | An action-button preset supplies visual geometry only |
+| Whole-object hyperlink | Standard SVG `<a href="...">` around one visual element or group | `p:cNvPr/a:hlinkClick` on each clickable leaf plus one shared relationship | `Native-stable` for supported external and same-deck targets; PPTX import reconstructs the anchor | Add an explicit background shape when gaps inside a multi-object card/button must be clickable |
+| Inline-text hyperlink | `<a href="..."><tspan>visible text or an inline-formula marker</tspan></a>` inside ordinary SVG text | `a:rPr/a:hlinkClick` in the same DrawingML paragraph or Office Math leaf runs | `Native-stable` for supported external and same-deck targets | The anchor owns no positional attributes; nested links fail |
+| Same-deck slide jump | Either supported carrier with exact 1-based `href="#slide-N"` | Internal slide relationship plus `ppaction://hlinksldjump` | Reconstructed against the final presentation roster | Missing, out-of-range, orphaned, or ambiguous slide targets fail closed |
+| Imported shape click plus inner run links | Importer-only `data-pptx-shape-hyperlink="..."` on the logical `<g>`, with standard inline anchors retained inside | Restores both `p:cNvPr/a:hlinkClick` and the run-level clicks | Lossless transport for this source-only overlap | Authors never write this metadata; checker/export accept it only when the group contains a real inline anchor, because standard SVG forbids nested `<a>` |
+| Other action setting | No SVG authoring mapping | Not created | `Direct preservation` only where an owning native route leaves source OOXML unchanged | Mouse-over, custom-show, navigation-command, program/macro/OLE/file, and arbitrary `ppaction://` actions are outside the hyperlink contract; an action-button preset supplies visual geometry only |
 | Comment or review thread | No SVG or generation-side mapping | Not authored | `Direct preservation` only when explicitly owned by another route | Do not convert review metadata into visible slide content automatically |
 | Relationship not owned by a mapped feature | No generic SVG escape hatch | Not generated | `Direct preservation` where applicable | Arbitrary relationship injection is unsupported |
 
@@ -254,7 +260,7 @@ See [Animations & Transitions](./animations.md) (technical source: [`references/
 |---|---|---|---|
 | SmartArt / DiagramML | No native SVG compiler mapping | Reconstruct meaning with shapes, or preserve through a native/template route | A screenshot or fallback must be explicit |
 | OLE or embedded Office object | Unsupported in the SVG route | Direct preservation or a rendered preview | Do not manufacture package relationships from SVG metadata |
-| Video | Unsupported as an SVG-authored media object | Direct preservation or an explicit poster/link workflow outside this contract | A `media` placeholder does not create video |
+| Video | Unsupported as an SVG-authored media object | Direct preservation or an explicit poster carrying an ordinary supported hyperlink | A `media` placeholder does not create video |
 | 3D model | Unsupported | Direct preservation or baked preview | No browser-SVG approximation is treated as native 3D |
 | Macro / VBA | Unsupported | Preserve only through a macro-aware direct workflow | The normal generated `.pptx` route does not synthesize VBA |
 | Arbitrary Office extension XML | Unsupported | Direct preservation by an owning native workflow | The SVG compiler has no generic OOXML passthrough |
@@ -268,6 +274,9 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Preset shape | Expanded preset group with native carrier and visible preview evidence when supported |
 | Custom geometry | `<path>` |
 | Text body | `<text>` and `<tspan>` runs/paragraphs |
+| Supported text-run hyperlink | Inline `<a href>` containing the linked `<tspan>` run |
+| Supported shape/picture/group hyperlink | Canonical `<a href>` around the reconstructed visual object |
+| One shape with both a shape click and inner run links | Logical `<g data-pptx-shape-hyperlink="...">` transport plus canonical inline anchors; generated authoring never emits this exception |
 | Picture | `<image>`, or the registered nested crop representation |
 | SVG picture with raster compatibility fallback | `<image>` sourced from the `asvg:svgBlip` relationship; the ordinary `a:blip` relationship is used only when the SVG relationship or media part is unavailable |
 | Connector | Expanded line/path preview plus connector/frame/topology evidence |

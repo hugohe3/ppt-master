@@ -18,7 +18,7 @@
   "file_budgets": {
     "AGENTS.md": 2750,
     "skills/ppt-master/SKILL.md": 1250,
-    "skills/ppt-master/references/executor-base.md": 9250,
+    "skills/ppt-master/references/executor-base.md": 10000,
     "skills/ppt-master/references/executor-structured.md": 5500,
     "skills/ppt-master/references/executor-chart.md": 3500,
     "skills/ppt-master/references/executor-visualization.md": 1250,
@@ -335,6 +335,16 @@
       "files": [],
       "max_tokens": 110000
     },
+    "route.generate.quick-generate.hyperlink": {
+      "description": "Quick Generate with direct PowerPoint-native external and same-deck hyperlink authoring.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.quick-generate",
+        "stage.generate.executor.hyperlink"
+      ],
+      "files": [],
+      "max_tokens": 110000
+    },
     "route.generate.quick-generate.ai-two-types": {
       "description": "Quick Generate with AI resource preparation, representative rendering inputs, and two local image types.",
       "scope": "cumulative",
@@ -542,6 +552,18 @@
         "route.generate.planning-formula",
         "stage.generate.executor.flat",
         "stage.generate.executor.formula",
+        "stage.generate.executor.notes"
+      ],
+      "files": [],
+      "max_tokens": 170000
+    },
+    "route.generate.flat-hyperlink": {
+      "description": "Default flat Generate-PPTX context with PowerPoint-native external and same-deck hyperlink authoring.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning",
+        "stage.generate.executor.flat",
+        "stage.generate.executor.hyperlink",
         "stage.generate.executor.notes"
       ],
       "files": [],
@@ -1029,6 +1051,14 @@
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-formula.md"
+      ],
+      "max_tokens": 1250
+    },
+    "stage.generate.executor.hyperlink": {
+      "description": "Conditional direct authoring contract for PowerPoint-native external and same-deck click hyperlinks.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/native-hyperlinks.md"
       ],
       "max_tokens": 1250
     },

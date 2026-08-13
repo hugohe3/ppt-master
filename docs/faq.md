@@ -161,6 +161,20 @@ The native target is PowerPoint 2010+. Formula display and editability in
 Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;
 PPT Master does not add an image fallback for them.
 
+## Q: Can generated slides contain clickable links?
+
+Yes. PPT Master supports PowerPoint-native links on a whole object or an inline
+text run. External targets use an absolute URI such as `https:` or `mailto:`;
+same-deck jumps use the exact 1-based `#slide-N` form. Both compile from
+standard SVG `<a href>` anchors to native click relationships, and supported
+PPTX import reconstructs the same SVG form.
+
+This is a hyperlink contract, not a general PowerPoint action API. Mouse-over,
+custom-show, navigation-command, program/macro/OLE/file, and arbitrary action
+settings are not authored. See the [PowerPoint ↔ SVG Mapping
+Guide](./powerpoint-svg-mapping.md#10-powerpoint-playback-and-package-features)
+for the carrier and preservation boundaries.
+
 ## Q: Can I change page transitions and element animations?
 
 Yes. Page transitions are on by default (`fade` 0.4s); per-element object

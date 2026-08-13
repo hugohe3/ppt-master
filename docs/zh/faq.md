@@ -161,6 +161,17 @@ marker 都携带普通可见预览；原生导出会替换该预览，不增加�
 客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些客户端附加
 公式图片兜底。
 
+## Q: 生成的页面可以带可点击链接吗？
+
+可以。PPT Master 支持整体对象或行内文字 run 上的 PowerPoint 原生链接。
+外部目标使用 `https:`、`mailto:` 等绝对 URI；deck 内跳转使用精确的 1-based
+`#slide-N`。两类链接都从标准 SVG `<a href>` anchor 编译为原生 click
+relationship，受支持的 PPTX 回导也会重建同一种 SVG 表达。
+
+这是超链接合同，不是通用 PowerPoint action API。鼠标悬停、custom show、
+导航命令、程序 / macro / OLE / file 以及任意 action setting 不会被创作。
+carrier 与保留边界见 [PowerPoint ↔ SVG 映射指南](./powerpoint-svg-mapping.md)。
+
 ## Q: 页面切换和元素动画可以调吗？
 
 可以。页间转场默认开（`fade` 0.4s），页内元素对象动画**默认关**——翻到

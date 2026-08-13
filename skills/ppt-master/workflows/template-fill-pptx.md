@@ -298,6 +298,12 @@ The script:
 | Adds timestamp to PPTX filename | Matches the main SVG-to-PPTX export convention |
 | Drops orphaned source parts | Output carries only the selected pages and the layouts / media / charts they still reference (reachability prune) |
 
+**Hyperlink preservation**: External hyperlinks remain unchanged. A same-deck
+slide jump is retargeted only when its source destination maps unambiguously to
+one output slide; a self-link maps to the current clone. If the destination was
+omitted or reused into multiple output slides, `apply` fails instead of linking
+to an orphan or choosing a target silently.
+
 **Animation policy**: Template-fill preserves each cloned slide's existing
 object animation XML (the SVG pipeline's generated object animation defaults
 are not applied here). It also preserves source page transitions by default.

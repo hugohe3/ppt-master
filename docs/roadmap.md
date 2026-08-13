@@ -70,7 +70,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Object animation | Systematized | Off by default and opt-in; per-object configuration is explicit |
 | Auto-advance | Covered | Derived from narration lead-in, audio duration, and page-tail padding |
 | Media playback | Covered | Narration audio; arbitrary embedded media follows the Layer 1 row above |
-| Hyperlinks | Asymmetric by design | Links already present in a source deck survive conversion; authoring **new** links in generated decks is signal-driven |
+| Hyperlinks | Systematized | Whole-object and inline-text links author through standard SVG `<a href>`, export as native external or same-deck click relationships, and reconstruct on supported PPTX import |
 | Actions & navigation | Bounded by design | An `actionButton*` preset maps visual geometry only — preset appearance never invents action behavior or navigation targets |
 
 ### Layer 4 — Document structure
@@ -104,7 +104,6 @@ Candidates already evaluated as "worth doing when real demand shows", listed so 
 
 - **Keep closing the native-coverage gaps** recorded in the [mapping guide](./powerpoint-svg-mapping.md) — release after release, move more "SVG-only" cells toward native PowerPoint structure and behavior.
 - **Effects on authored preset shapes** (e.g. a native drop-shadow) — waits for a precise preset-effect contract plus checker coverage; until then, a stock shape that needs a shadow conservatively stays ordinary SVG.
-- **Hyperlink authoring in generated decks** — hyperlinks already present in source decks survive conversion today; letting the Strategist author new links waits for demand.
 - **Picture slide backgrounds as native background fill** — solid/gradient page backgrounds already export as PowerPoint-native slide backgrounds; the picture case is demand-driven.
 - **Accessibility delivery** — image manifests already carry `alt_text` for planning and confirmation, so alt text and reading order are a matter of connecting existing data to DrawingML `descr` and shape order, not of designing a new contract. Cheaper than the other open items on the map; waits for demand all the same.
 
