@@ -425,6 +425,14 @@ derivations, and other high-structure expressions remain blocks.
 No formula manifest, §VIII resource row, or `spec_lock.md images` entry is
 created.
 
+**Native hyperlink content**: Hyperlinks are not a confirmation field or a
+resource-acquisition path. Strategist records the linked text/object intent and
+exact absolute URI or 1-based same-deck slide target in the applicable §IX page
+block. Executor chooses an inline or whole-object carrier and authors the
+canonical SVG `<a href>` under
+[`native-hyperlinks.md`](../references/native-hyperlinks.md). Unknown targets
+return upstream; no hyperlink manifest or `spec_lock.md` entry is created.
+
 **Proactive production decisions**: Final Stage 2 records
 `proactive_speaker_notes`, `proactive_custom_animations`, and
 `proactive_narration_audio`. They control only what the agent initiates when the
@@ -585,6 +593,7 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | Actual row × column fact grid | `executor-table.md` |
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
 | §IX or current page content contains mathematical notation that may require native math | `native-formula.md` before choosing ordinary text, inline native math, or block native math |
+| §IX or current page content requires an external or same-deck click hyperlink | `native-hyperlinks.md` before authoring its inline or whole-object SVG anchor |
 | `spec_lock.md images` / §VIII has an image row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image is `Status: Sourced` or its filename has an `image_sources.json` record | `executor-web-image.md` after the image branch |
 | §I records recorded/self-running/video delivery, or §X records a final/literal narration script | `video-design.md` before the first SVG; retain it through notes/motion handling |

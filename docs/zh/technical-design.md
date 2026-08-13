@@ -436,6 +436,19 @@ Cambria Math；矩阵、多行推导等高结构表达仍使用块级形式。�
 2010+，不生成公式 PNG、media relationship，也不为非 PowerPoint 客户端提供
 图片兜底。
 
+**原生超链接采用一份 SVG 创作真值，再编译为包内 relationship。** 标准
+`<a href>` 包裹完整可见对象 / group，或一个以上的行内 `<tspan>` run。
+绝对外部 URI 会成为 external hyperlink relationship；精确的 1-based
+`#slide-N` 会成为内部 Slide relationship，并写入
+`ppaction://hlinksldjump`。PPTX 回导器会把受支持的形状点击与文字 run 点击重建
+为同一种 anchor。Fill Native 只在输出目标唯一时重映射内部跳转；Enhance
+Native 则不改既有 hyperlink XML 与 relationship。鼠标悬停、custom show、
+导航命令、程序 / macro / OLE / file 以及任意 action setting 仍在合同外。
+唯一的 source-only transport 例外用于同一 PowerPoint shape 同时具有整体 click
+与内部 run link 的情况：PPTX→SVG 在逻辑 group 上写
+`data-pptx-shape-hyperlink`，并保留标准行内 anchor，因为 SVG 不能嵌套两层
+`<a>`。生成侧创作永远不写该属性。
+
 **保留的规划上下文**负责跨页连续性；按需逐页投影只承担下文所述的诊断用途。
 
 ---

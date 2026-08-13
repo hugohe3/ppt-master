@@ -265,6 +265,14 @@ the text-versus-native-formula decision and its authoring; if the supported
 LaTeX subset cannot preserve the planned content, return here for a
 content-level correction.
 
+#### Hyperlink Content Planning
+
+Preserve every explicit or source-backed link intent. In the applicable §IX
+page block, record the linked text/object and its exact absolute URI or final
+1-based same-deck slide target. Never guess an external destination, select the
+inline/whole-object carrier, or create a link manifest or lock entry. Executor
+owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
+
 ### h. Image Source Recommendation
 
 | Source id | Approach | Use when |

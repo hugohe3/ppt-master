@@ -24,7 +24,7 @@ Page count alone never activates or blocks this profile.
 | Execution memory | Keep routine page, visual, and resource decisions only in the current active context; losing that context restarts Quick instead of reconstructing a plan from project files |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
-| Resources | Prepare every project-local image, icon, and required provenance/manifest artifact before its SVG; author native formula markers directly in the affected SVG; sound waits for §4 |
+| Resources | Prepare every project-local image, icon, and required provenance/manifest artifact before its SVG; author native formula markers and hyperlink anchors directly in the affected SVG; sound waits for §4 |
 | Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; installed `templates/design_spec.<kind>.<id>.md` files remain template input |
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
@@ -277,7 +277,8 @@ the roster after the whole-roster check:
   image manifests may carry filenames, page relationship, status, and
   generation/crop/focal cues, but do not create a general resource roster or an
   icon-to-page assignment. Keep each selected formula's source LaTeX in active
-  context for direct marker authoring; create no formula manifest or image;
+  context for direct marker authoring; retain each selected hyperlink's exact
+  absolute URI or 1-based same-deck target; create no formula/link manifest;
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
@@ -445,6 +446,12 @@ retain exact LaTeX in active context, then choose ordinary text, same-paragraph
 native inline math, or a standalone native block and author its matching SVG
 preview under [`native-formula.md`](../../references/native-formula.md).
 
+**Mandatory — native hyperlinks**: Quick creates no hyperlink resource or
+manifest. For every selected link, retain the exact target, choose an inline or
+whole-object carrier, and author canonical SVG `<a href>` under
+[`native-hyperlinks.md`](../../references/native-hyperlinks.md). Never guess an
+unknown destination.
+
 Image to PPTX replaces this open composition decision for its canonical page
 frame: preserve the source geometry, restore text natively, preserve
 source-graphic identity through the prepared exact or reconstructed asset, and
@@ -471,6 +478,7 @@ capability menu, visualization recall, template geometry, or a later check.
 | Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
 | Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
 | Any mathematical notation that may require native math | [`native-formula.md`](../../references/native-formula.md) before choosing ordinary text, inline native math, or block native math |
+| Any external or same-deck click hyperlink | [`native-hyperlinks.md`](../../references/native-hyperlinks.md) before authoring its inline or whole-object SVG anchor |
 | A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
 
@@ -620,6 +628,7 @@ or lock.
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
 - [x] Every image-bearing page made its one pre-geometry composition decision
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
+- [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed
