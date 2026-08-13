@@ -524,6 +524,15 @@ It aggregates:
 
 Convert project SVGs into PPTX.
 
+Native block formulas use an explicit replacement marker owned by
+[`native-formula.md`](../../references/native-formula.md). The marker stores
+source LaTeX in JSON metadata and keeps ordinary SVG text/shapes as its browser
+preview. Formula replacement is always active, independent of
+`--native-charts-and-tables`: export discards the preview children and writes an
+editable PowerPoint 2010+ Office Math object. It emits no formula PNG, media
+relationship, or compatibility fallback, and makes no rendering/editability
+promise for Keynote, WPS, LibreOffice, or another non-PowerPoint client.
+
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
 # Explicit compact image export:
@@ -563,8 +572,8 @@ explicit current structured contract remains blocking.
 Explicit direct generation may use the
 [`quick-generate`](../../workflows/profiles/quick-generate.md) profile after the
 current agent has converted/read sources, researched identified factual gaps,
-and prepared the required images, icons, formulas, and resource manifests as
-needed. That profile skips Strategist, Confirm UI, `design_spec.md`, and
+prepared the required images, icons, and resource manifests as needed, and
+retained any source LaTeX for direct native-marker authoring. That profile skips Strategist, Confirm UI, `design_spec.md`, and
 `spec_lock.md`; it does not skip the resources required by the authored pages.
 After the complete SVG roster exists, run its lockless final checker, then
 export:
@@ -584,8 +593,8 @@ custom object animation, and narration start off in Quick and may be enabled
 when needed. The exporter refuses a missing, blocking, non-final, or stale
 Quick final report before PPTX creation. Default-path output retains the normal
 postflight report and `backup/` snapshot; explicit `-o` retains the ordinary
-no-backup behavior. Existing source, analysis, image/icon/formula, and
-resource-manifest artifacts remain untouched.
+no-backup behavior. Existing source, analysis, image/icon, and resource-manifest
+artifacts remain untouched; formula source stays inside the authored SVG marker.
 
 For generated-project narration, follow the
 [`generate-audio`](../../workflows/stages/generate-audio.md) stage. It owns voice

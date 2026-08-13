@@ -43,7 +43,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Charts | Systematized | Dedicated authoring reference; SVG by default, native Chart replacement available as an explicit opt-in |
 | Tables | Systematized | Dedicated authoring reference; six cell-grid grammars, native Table replacement on the same opt-in |
 | Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
-| Formulas | Bounded by design | Rendered as image assets with `Acquire Via: formula`; never recreated as text. Natively editable formulas are signal-driven |
+| Formulas | Implemented with a narrow target | Independent block formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG children are preview-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
 | Audio & video | Covered / Signal-driven | Narration audio embeds per slide today; arbitrary video, background music, and media compression are planned modules in the Enhance route |
 | SmartArt, 3D models, OLE objects | Signal-driven | No current authoring path |
 
@@ -117,7 +117,7 @@ One line per month. Full detail lives in the [release notes](https://github.com/
 |---|---|
 | 2026-03 | **Native PPTX route takes shape** — the SVG → DrawingML chain becomes usable; chart/layout template indexes ship |
 | 2026-04 | **Pipeline at scale** — topic-only generation, 70 chart templates + three icon libraries, the `spec_lock` cross-page consistency contract, per-element animation and narration/video export |
-| 2026-05 | **Visual editing + AI-image systematization** — Live Preview with deterministic in-place editing (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)), template workspaces from PPTX, the rendering × palette × type image system, LaTeX formula rendering |
+| 2026-05 | **Visual editing + AI-image systematization** — Live Preview with deterministic in-place editing (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)), template workspaces from PPTX, the rendering × palette × type image system, and the legacy raster LaTeX renderer |
 | 2026-06 | **Mode & visual-style dual catalogs + intake expansion** — 5 narrative modes × 18 visual styles (+ `custom`), content-faithful beautify profile, multi-deck intake, spot-illustration pipeline, web-image quality gates, source-conversion fidelity gains (caption recognition from [@suay1113](https://github.com/suay1113)'s [PR #191](https://github.com/hugohe3/ppt-master/pull/191), hyperlink preservation distilled from [@ZhaoZuohong](https://github.com/ZhaoZuohong)'s [PR #155](https://github.com/hugohe3/ppt-master/pull/155)) |
 | 2026-07 | **Positioning charter + native masters & layouts + token efficiency** ([v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)) — three-pass staged confirmation UI, real `p:sldMaster` / `p:sldLayout` export, `--native-charts-and-tables` opt-in, motion-export hardening, chart template library compacted |
 

@@ -326,15 +326,13 @@
       "max_tokens": 110000
     },
     "route.generate.quick-generate.formula": {
-      "description": "Quick Generate with manifest-driven formula rendering and formula-image realization.",
+      "description": "Quick Generate with direct PowerPoint-native formula marker authoring.",
       "scope": "cumulative",
       "include": [
         "route.generate.quick-generate",
-        "stage.generate.executor.image"
+        "stage.generate.executor.formula"
       ],
-      "files": [
-        "skills/ppt-master/scripts/docs/image.md"
-      ],
+      "files": [],
       "max_tokens": 110000
     },
     "route.generate.quick-generate.ai-two-types": {
@@ -386,14 +384,13 @@
       "max_tokens": 115000
     },
     "route.generate.planning-formula": {
-      "description": "Formula-only planning context, including the shared image/formula layout math and vocabulary.",
+      "description": "Formula-bearing planning context; Strategist records exact mathematics without loading image-layout or formula-rendering resources.",
       "scope": "cumulative",
       "include": [
-        "route.generate.planning",
-        "stage.generate.strategist.image"
+        "route.generate.planning"
       ],
       "files": [],
-      "max_tokens": 115000
+      "max_tokens": 110000
     },
     "route.generate.planning-ai": {
       "description": "Generate-PPTX planning after AI imagery is confirmed, adding image-layout and resource-planning authorities to the rendering index and already-selected rendering bases.",
@@ -538,6 +535,18 @@
       "files": [],
       "max_tokens": 165000
     },
+    "route.generate.flat-formula": {
+      "description": "Default flat Generate-PPTX context with direct PowerPoint-native formula marker authoring and no image branch.",
+      "scope": "cumulative",
+      "include": [
+        "route.generate.planning-formula",
+        "stage.generate.executor.flat",
+        "stage.generate.executor.formula",
+        "stage.generate.executor.notes"
+      ],
+      "files": [],
+      "max_tokens": 170000
+    },
     "route.generate.flat-ai-two-types": {
       "description": "Generate-PPTX context with AI images, the selected preset or exact custom rendering bases, and two local types.",
       "scope": "cumulative",
@@ -552,7 +561,7 @@
       "max_tokens": 205000
     },
     "route.generate.flat-in-hand-image": {
-      "description": "Generate-PPTX context with provided, placeholder, or formula images and no acquisition role.",
+      "description": "Generate-PPTX context with provided or placeholder images and no acquisition role.",
       "scope": "cumulative",
       "include": [
         "route.generate.planning-image",
@@ -991,7 +1000,7 @@
       "max_tokens": 1000
     },
     "stage.generate.strategist.image": {
-      "description": "Conditional Strategist image/formula layout math and compact composition vocabulary; the rendering decision core is already in base planning.",
+      "description": "Conditional Strategist image layout math and compact composition vocabulary; the rendering decision core is already in base planning.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/image-layout-spec.md",
@@ -1014,6 +1023,14 @@
         "skills/ppt-master/references/native-data-interface.md"
       ],
       "max_tokens": 6750
+    },
+    "stage.generate.executor.formula": {
+      "description": "Conditional direct authoring contract for PowerPoint-native block formulas.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/references/native-formula.md"
+      ],
+      "max_tokens": 1250
     },
     "stage.generate.executor.image": {
       "description": "Conditional image embedding and execution rules with the always-read layout math and compact composition vocabulary.",
@@ -2020,6 +2037,10 @@
       {
         "glob": "skills/ppt-master/scripts/docs/prompt_audit.md",
         "reason": "Maintainer-only documentation for this audit tool."
+      },
+      {
+        "glob": "skills/ppt-master/scripts/docs/image.md",
+        "reason": "Standalone image-tool command reference; generation roles load the owning image contracts directly, and its formula renderer section is legacy-only."
       },
       {
         "glob": "skills/ppt-master/scripts/docs/mask-gradient-smoke.md",

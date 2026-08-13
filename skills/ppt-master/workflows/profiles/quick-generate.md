@@ -24,7 +24,7 @@ Page count alone never activates or blocks this profile.
 | Execution memory | Keep routine page, visual, and resource decisions only in the current active context; losing that context restarts Quick instead of reconstructing a plan from project files |
 | Inputs | Any supported Generate input; convert/import sources and run bounded factual research when the input requires them |
 | Templates | Directly validate and install at most one exact workspace root per kind supplied for this run; when none are supplied, use free design without catalog selection or Confirm UI |
-| Resources | Prepare every project-local image, icon, formula, and required provenance/manifest artifact before its SVG; sound waits for §4 |
+| Resources | Prepare every project-local image, icon, and required provenance/manifest artifact before its SVG; author native formula markers directly in the affected SVG; sound waits for §4 |
 | Planning artifacts | Do not author a root project `design_spec.md`, `spec_lock.md`, confirmation payloads, or any substitute planning artifact; installed `templates/design_spec.<kind>.<id>.md` files remain template input |
 | Traceability | Operational resource manifests, checker reports, postflight, and bounded Python command/outcome audit entries may remain, but they do not record the AI's design reasoning or form a resumable generation history |
 | Delivery | Hand-author the resolved SVG roster, run one lockless final checker, skip `finalize_svg.py`, and export the final native PPTX through `--quick-generate` |
@@ -274,9 +274,10 @@ the roster after the whole-roster check:
   communication job, a recognizable invariant, and deliberate variation across
   applicable page roles; omit it when restraint serves the deck better;
 - the resource decisions needed for immediate preparation. Required operational
-  image/formula manifests may carry filenames, page relationship, status, and
+  image manifests may carry filenames, page relationship, status, and
   generation/crop/focal cues, but do not create a general resource roster or an
-  icon-to-page assignment;
+  icon-to-page assignment. Keep each selected formula's source LaTeX in active
+  context for direct marker authoring; create no formula manifest or image;
 - the implementation path for each resource. An explicit user path wins;
   otherwise choose the registered automatic/default path without another
   interaction.
@@ -326,7 +327,7 @@ because Quick is expected to be faster is not.
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
-| Mathematical notation is clearer as typeset math than ordinary text | Rendered formula asset |
+| Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native block formula |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
@@ -367,7 +368,7 @@ Prepare only the resource paths needed by the decided pages:
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
 | Image-to-PPTX reconstruction asset | In Codex, preserve identity graphics through an exact vector, deterministic redraw, sufficient source asset, or reference-based high-resolution reconstruction; keep data graphics native-and-verified or exact. For scene imagery, build the minimum registered clean-base/midground/subject/foreground group; batch padded-bbox-disjoint objects into one shared plate, then split them with grid slicing or independent nested-SVG bbox crops |
 | Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
-| Formula | Follow the [`latex_render.py` contract](../../scripts/docs/image.md), write `images/formula_manifest.json`, run the renderer, and keep the rendered PNG under `images/` |
+| Formula | Create no resource file. Retain the exact source LaTeX and author one native formula marker under §3; ordinary SVG children provide the browser preview and are discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
@@ -389,11 +390,12 @@ After image resources change, run `analyze_images.py` so
 Operational manifests and provenance are resource truth, not a hidden design
 strategy.
 
-Every required resource must reach a usable terminal state before its page.
-`Needs-Manual` blocks Quick even when an unverified file exists. After manual
-supply/replacement, validate evidence and reconcile to `Existing`, `Generated`,
-`Sourced`, or `Rendered`; never bypass status by file presence or substitute
-unrelated material.
+Every required file-backed resource must reach a usable terminal state before
+its page. `Needs-Manual` blocks Quick even when an unverified file exists. After
+manual supply/replacement, validate evidence and reconcile to `Existing`,
+`Generated`, or `Sourced`; never bypass status by file presence or substitute
+unrelated material. Native formula markers are authored page content, not
+file-backed resources or terminal-status rows.
 
 ---
 
@@ -414,7 +416,7 @@ without reading or inventing a nearby preset.
 Do not load `executor-base.md`: it owns Default's persisted-plan handoff,
 first-page gate, and completion routing. Excluding that file is not a capability
 exclusion; Quick loads the shared and conditional execution authorities here
-directly. When any image/formula exists, read once before the first affected
+directly. When any image exists, read once before the first affected
 page and reuse throughout the valid execution context:
 [`executor-image.md`](../../references/executor-image.md),
 [`image-layout-spec.md`](../../references/image-layout-spec.md),
@@ -429,16 +431,18 @@ omit shape-composition reasoning. Reuse it throughout the valid execution
 context; reread only after a known file change or context invalidation.
 
 **Mandatory — per-image-page composition decision**: For every page with one
-or more non-formula images, after its content and communication move are
+or more images, after its content and communication move are
 determined but before choosing geometry, apply
 [`executor-image.md`](../../references/executor-image.md)'s active image-integration
 decision once. Keep its role, direction source, parent
 contour, slot/rhythm system, image/shape action, and any continuity only in
 active context; create no artifact, spec, lock, manifest, or extra pass. A
 deliberate plain or equal-grid result remains valid when it communicates the
-relationship better. Formula-only pages use
-[`image-layout-spec.md`](../../references/image-layout-spec.md) without forcing a
-multi-image system.
+relationship better.
+
+**Mandatory — native block formulas**: Quick creates no formula resource or
+manifest; retain exact LaTeX in active context and author the marker plus SVG
+preview directly under [`native-formula.md`](../../references/native-formula.md).
 
 Image to PPTX replaces this open composition decision for its canonical page
 frame: preserve the source geometry, restore text natively, preserve
@@ -465,6 +469,7 @@ capability menu, visualization recall, template geometry, or a later check.
 | A selected primary Chart/Table `family/key` | [`executor-visualization.md`](../../references/executor-visualization.md), then the matching Chart/Table authority |
 | Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
 | Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
+| Any structural mathematical notation | [`native-formula.md`](../../references/native-formula.md) before authoring its marker |
 | A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
 
@@ -612,7 +617,8 @@ or lock.
 - [x] All required source/resource preparation is complete
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
-- [x] Every non-formula image-bearing page made its one pre-geometry composition decision
+- [x] Every image-bearing page made its one pre-geometry composition decision
+- [x] Every selected formula is one checker-valid native marker with a matching visible SVG preview and no formula image resource
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed

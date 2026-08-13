@@ -8,7 +8,7 @@ Shared baseline for both acquisition paths. Path-specific behavior lives in the 
 
 ## 1. Trigger Condition
 
-Active when at least one resource row has `Acquire Via: ai` / `web` / `slice`, or when any §VIII / Quick active-context resource is a pending prepared derivative. Canonical rows with `user` / `formula` / `placeholder` are tracked but skipped by acquisition roles.
+Active when at least one resource row has `Acquire Via: ai` / `web` / `slice`, or when any §VIII / Quick active-context resource is a pending prepared derivative. Canonical rows with `user` / `placeholder` are tracked but skipped by acquisition roles.
 
 | Mode | Trigger |
 |---|---|
@@ -28,7 +28,7 @@ Default Generate uses Strategist-owned `design_spec.md §VIII` plus its lock pro
 
 **Required per non-skipped row**: `Acquire Via` and `Status`. `Reference` is required for every `web` / `slice` row, every newly authored `ai` row, and every prepared derivative regardless of source class. An existing `ai` row whose `Reference` is omitted or blank may continue only through the declared inference in [`image-generator.md`](./image-generator.md) §8; no other path may infer it.
 
-**Quick Generate ownership**: explicit user assets, URLs, and path instructions win. Otherwise the main agent chooses required `user` / `ai` / `web` / `slice` / `formula` rows and AI path `auto`, without interaction.
+**Quick Generate ownership**: explicit user assets, URLs, and path instructions win. Otherwise the main agent chooses required `user` / `ai` / `web` / `slice` rows and AI path `auto`, without interaction.
 
 **Mandatory — consume the resolved path**: Default consumes Strategist-chosen §VIII rows; Quick resolves once in active context before preparation. This phase never adds or reselects a treatment:
 
@@ -57,7 +57,7 @@ Choosing `none` is valid. Never bake a native treatment into a derivative.
 
 ## 3. Path Dispatch
 
-Classify `Reference: Derived from <canonical bare filename>; treatment=<operation>; ...` before `Acquire Via`. Its distinct, non-derived parent must be `user`, `web`, `ai`, or `slice`; reject formula/placeholder parents, chains, cycles, and self-reference. For each Pending row:
+Classify `Reference: Derived from <canonical bare filename>; treatment=<operation>; ...` before `Acquire Via`. Its distinct, non-derived parent must be `user`, `web`, `ai`, or `slice`; reject placeholder parents, chains, cycles, and self-reference. For each Pending row:
 
 | Row kind / Acquire Via | Load reference | Run | Success status |
 |---|---|---|---|
@@ -67,7 +67,6 @@ Classify `Reference: Derived from <canonical bare filename>; treatment=<operatio
 | `web` | [`image-searcher.md`](./image-searcher.md) | `image_search.py` | `Sourced` |
 | `slice` | [`image-generator.md`](./image-generator.md) §4.3 | `slice_images.py` after parent AI sheet is `Generated` | `Generated` |
 | `user` | — | — | (already `Existing`) |
-| `formula` | — | — | (already `Rendered`) |
 | `placeholder` | — | — | (already `Placeholder`) |
 
 > Lazy load: an all-`web` deck never reads `image-generator.md`, and vice versa.
@@ -78,7 +77,7 @@ Classify `Reference: Derived from <canonical bare filename>; treatment=<operatio
 
 1. Read the Default Design Spec/lock, or reuse Quick's active-context resource/page decisions.
 2. Separate derivatives before grouping canonical rows by `Acquire Via`; ensure `project/images/` exists.
-3. Finish user/formula and triggered ai/web/slice canonical preparation.
+3. Finish user and triggered ai/web/slice canonical preparation.
 4. Materialize only declared derivatives from usable parents, preserve originals, then run `analyze_images.py` once before SVG.
 
 ---
@@ -96,7 +95,7 @@ After all rows reach terminal status:
 
 > `Needs-Manual` is terminal for acquisition, not export readiness. A later
 > supplied/replaced file must be validated and its row reconciled to
-> `Existing`, `Generated`, `Sourced`, or `Rendered` with matching evidence.
+> `Existing`, `Generated`, or `Sourced` with matching evidence.
 > Quick blocks every required row that still says `Needs-Manual`, regardless of
 > whether an unverified candidate file happens to exist. See
 > [`image-generator.md`](./image-generator.md) §7.

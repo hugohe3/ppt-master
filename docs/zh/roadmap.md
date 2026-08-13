@@ -43,7 +43,7 @@
 | 图表 | 系统化 | 有专属创作 reference；默认 SVG，原生 Chart 替换为显式 opt-in |
 | 表格 | 系统化 | 有专属创作 reference；六种单元格网格语法，原生 Table 替换走同一 opt-in |
 | 关系图 | 系统化 | 六个关系原子——`order`、`link`、`parent`、`membership`、`contrast`、`overlap` |
-| 公式 | 有意边界 | 以 `Acquire Via: formula` 渲染为图片资源，绝不还原成文字；原生可编辑公式属信号驱动 |
+| 公式 | 窄范围已实现 | 独立块级公式可从严格 LaTeX 子集编译为可编辑 PowerPoint OMML；SVG 子元素仅供预览，不生成公式图片兜底。支持 PowerPoint 2010+，非 PowerPoint 客户端不在合同内 |
 | 音视频 | 已覆盖 / 信号驱动 | 旁白音频今天逐页嵌入；任意视频、背景音乐与媒体压缩是 Enhance 路线中的 planned 模块 |
 | SmartArt、3D 模型、OLE 对象 | 信号驱动 | 目前没有创作路径 |
 
@@ -117,7 +117,7 @@
 |---|---|
 | 2026-03 | **原生 PPTX 路线成形** — SVG → DrawingML 链路可用；图表 / 版式模板索引上线 |
 | 2026-04 | **管线规模化** — 仅凭主题生成、70 个图表模板 + 三套图标库、`spec_lock` 跨页一致性契约、逐元素动画与旁白 / 视频导出 |
-| 2026-05 | **可视化编辑 + AI 图片体系化** — Live Preview 确定性原位编辑（基于 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85)）、从 PPTX 创建模板工作区、rendering × palette × type 图片体系、LaTeX 公式渲染 |
+| 2026-05 | **可视化编辑 + AI 图片体系化** — Live Preview 确定性原位编辑（基于 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85)）、从 PPTX 创建模板工作区、rendering × palette × type 图片体系、旧版栅格 LaTeX 渲染器 |
 | 2026-06 | **mode 与 visual-style 双 catalog + intake 扩展** — 5 种叙事 mode × 18 种视觉风格（+ `custom`）、内容忠实的美化 profile、多 deck 合并 intake、插画切片管线、网络图片质量闸门、源转换保真提升（图注识别基于 [@suay1113](https://github.com/suay1113) 的 [PR #191](https://github.com/hugohe3/ppt-master/pull/191)，超链接保留提炼自 [@ZhaoZuohong](https://github.com/ZhaoZuohong) 的 [PR #155](https://github.com/hugohe3/ppt-master/pull/155)） |
 | 2026-07 | **定位章程 + 原生母版 / 版式 + token 效率**（[v4.0.0](https://github.com/hugohe3/ppt-master/releases/tag/v4.0.0)）— 三段式分步确认 UI、真 `p:sldMaster` / `p:sldLayout` 导出、`--native-charts-and-tables` opt-in、动效导出加固、图表模板库压缩 |
 

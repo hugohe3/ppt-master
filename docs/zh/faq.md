@@ -148,6 +148,17 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 如果你的工作流明确需要 Excel 驱动的数据编辑或 PowerPoint 的图表/表格专属控制，导出时加 `--native-charts-and-tables`：受支持的数据图表和纯文本表格会以**带数据源的 PowerPoint 原生 Chart / Table 对象**形式导出（保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`，并保留这份 deck 自己的配色，而不是套用 PowerPoint 默认主题）。默认 SVG fallback 同样会转换成可编辑 DrawingML shape，但不具备图表数据工作簿或图表/表格对象模型。原生对象在 PowerPoint / Keynote / LibreOffice / WPS 间可能略有差异，因此形状路线仍是视觉稳定性的默认选择。
 
+## Q: 公式可以编辑吗？
+
+可以，但支持目标是 PowerPoint。含公式的 SVG 组会携带源 LaTeX，并在导出时
+转换为可编辑的 PowerPoint OMML 块级公式，而不是公式截图或图片资源。原始
+LaTeX 不能直接在 SVG 中显示，因此该组还会包含普通 SVG 文字 / 形状，供浏览器
+和实时预览使用；导出器用原生公式替换整个组时会丢弃这些预览子元素。
+
+原生目标为 PowerPoint 2010+。Keynote、WPS、LibreOffice 等非 PowerPoint
+客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些客户端附加
+公式图片兜底。
+
 ## Q: 页面切换和元素动画可以调吗？
 
 可以。页间转场默认开（`fade` 0.4s），页内元素对象动画**默认关**——翻到
@@ -216,7 +227,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-t
 
 **它跳过的是策略师分析、`design_spec.md` / `spec_lock.md` 落盘和分步确认停顿：你明确提出的要求照做；你没提的，当前 Agent 直接决定并继续，不再回来征求同意。** 什么都不提，才是全部由 Agent 决定。它同时跳过 `finalize_svg.py`，因此不生成 `svg_final/` 预览。
 
-它不跳过备料或设计能力：来源转换、已识别事实缺口的研究、共享美学参考，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、原生形状、图表 / 表格、渲染公式，以及对应的必要运行 manifest 或来源记录。必需素材未就绪时它仍会停下来跟你要，不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
+它不跳过备料或设计能力：来源转换、已识别事实缺口的研究、共享美学参考，以及生成 deck 所需的资源仍按需准备——用户提供或源文件抽取的图片、AI / 网络 / 切片图片、项目图标、原生形状、图表 / 表格，以及对应的必要运行 manifest 或来源记录。公式由当前 Agent 直接写成受影响 SVG 中的 PowerPoint 原生 marker，不再作为图片资源准备。必需素材未就绪时它仍会停下来跟你要，不会拿无关材料顶替。备料完成后，当前 Agent 按共享规范手写 `svg_output/`，运行无锁的 Quick 最终质量检查并修复所有阻塞错误，之后才导出最终 PPTX。
 
 原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。
 

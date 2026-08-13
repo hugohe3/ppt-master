@@ -67,10 +67,6 @@ python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --wait-onl
 
 # Image tools and SVG quality check
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
-# Formula rendering — manifest written by Default Strategist after confirmation or by the Quick main agent during resource preparation:
-python3 skills/ppt-master/scripts/latex_render.py <project_path>
-python3 skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
-python3 skills/ppt-master/scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
 python3 skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
 python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json

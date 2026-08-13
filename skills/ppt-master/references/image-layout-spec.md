@@ -2,9 +2,9 @@
 
 # Image Layout Specification
 
-Neutral geometry and review rules for every image or rendered-formula placement. This file calculates the selected composition; it never chooses a resource, pattern, or automatic left/right or top/bottom layout.
+Neutral geometry and review rules for every image placement. This file calculates the selected composition; it never chooses a resource, pattern, or automatic left/right or top/bottom layout.
 
-**When to run**: whenever an image or rendered formula will be placed. Use the current page composition to select its region first, then apply the relevant single-item, adjacent, overlay, or multi-item calculation below.
+**When to run**: whenever an image will be placed. Use the current page composition to select its region first, then apply the relevant single-item, adjacent, overlay, or multi-item calculation below.
 
 ---
 
@@ -78,18 +78,18 @@ Centered fill uses `ax = ay = 0.5`. SVG realization normally maps this to a lega
 
 | Need | Geometry |
 |---|---|
-| Complete source, formula, evidence, or edge content | Contain |
+| Complete source, evidence, or edge content | Contain |
 | Region coverage with a focal-safe crop | Fill |
 | Complete source plus a detail view | One contain placement plus a separately justified crop |
 | Irregular or repeated source windows | Apply the selected region math first, then load the owning crop/shape reference |
 
 ---
 
-## 3. Single Image or Formula
+## 3. Single Image
 
 Place a standalone item by applying §2 to its selected region. The region itself comes from the page hierarchy; source ratio determines the item geometry inside it, not the page structure.
 
-For an item adjacent to another region, divide only the available selected region. Let `q_item` and `q_other` be positive visual weights for the image/formula and the other content.
+For an item adjacent to another region, divide only the available selected region. Let `q_item` and `q_other` be positive visual weights for the image and the other content.
 
 ### 3.1 Horizontal adjacency
 
@@ -202,22 +202,7 @@ listed structural role; otherwise use the selected region boundary and omit it.
 
 ---
 
-## 5. Rendered Formula Geometry
-
-Treat a rendered formula as an aspect-ratio source and apply contain within its selected mathematical region. Centering is the default geometric anchor; align to a nearby baseline or relation only when the page composition defines that relationship.
-
-For `n` vertically stacked formula regions with equal lanes:
-
-```text
-lane_height = (H - (n - 1) × g) / n
-lane_y[i]   = y0 + i × (lane_height + g)
-```
-
-Contain each formula independently in its lane. When formulas are visual peers, a common effective scale may improve comparison; otherwise let their selected regions reflect their semantic weight and source ratios.
-
----
-
-## 6. Composition Checks
+## 5. Composition Checks
 
 | Check | Required response |
 |---|---|
@@ -232,7 +217,6 @@ Contain each formula independently in its lane. When formulas are visual peers, 
 | Per-item angles vary without a shared direction or deliberate-disorder rule | Use one parent-group angle, a shared clip-shape direction, curve tangents, or a bounded angle rhythm |
 | The parent contour does not affect silhouette, seam, reveal, or attachment | Remove it or reconstruct the carriers from that contour |
 | A panel depends on shear, skew, or perspective warping | Replace it with 2D quadrilateral carriers and focal-safe crops |
-| Formula symbols become unreadable at the intended viewing size | Enlarge its region or restructure the page |
 | Gaps, alignments, or overlaps drift without purpose | Recalculate from the shared region and gap values |
 
 The final geometry must express the active page hierarchy, preserve the selected resource relationships, and remain valid under the conditionally loaded technical contracts.
