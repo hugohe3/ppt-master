@@ -1025,7 +1025,7 @@
       "max_tokens": 6750
     },
     "stage.generate.executor.formula": {
-      "description": "Conditional direct authoring contract for PowerPoint-native block formulas.",
+      "description": "Conditional direct authoring contract for PowerPoint-native inline and block formulas.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/native-formula.md"

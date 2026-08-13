@@ -503,13 +503,17 @@ choice.
 
 **Image analysis is metadata-first, with a narrow visual fallback.** When images exist, `analyze_images.py` supplies the regenerated measured facts in `analysis/image_analysis.csv`; the CSV is a view over the live `images/` folder, not a durable cache. In the default pipeline, Strategist first resolves supplied images from source placement and nearby prose, captions / alt text / titles, filenames, user notes, existing resource records, and that metadata. It may inspect one specific image only when a material ambiguity remains about selection, factual identity, page role, crop safety, or focal placement—never as a bulk inventory scan. The answer is written into Design Spec §VIII, after which Executor uses the plan and measured geometry without reopening source pixels for semantic discovery. In `quick-generate`, the current agent applies the same bounded analysis while preparing the selected resources from active-context decisions; no Design Spec projection or general resource roster is written. Image to PPTX's normalized page frames are the narrow exception: every frame is inspected once to build source evidence and identify ordinary text, identity or decorative graphics, charts/tables/data graphics, scene regions, and overlap. Later reads stay page/region-local while the current Codex agent prepares registered clean-base and subject/foreground assets through the existing reference-image path. Low-resolution logos, icons, and decorative graphics may be reconstructed only with identity, silhouette, proportions, colors, and wordmarks locked where applicable. Charts, tables, and data graphics cannot use generative reconstruction; they require native objects with verifiable values, exact source assets, or `manual_required`. Multiple non-overlapping objects with padded bounding boxes may share one generation plate before grid slicing or SVG bounding-box cropping creates independent objects. User images, extracted images, web images, AI outputs, and sliced elements still converge into the same measured fact table.
 
-**Native formulas are authored page objects, not image resources.** The SVG
-group stores source LaTeX in a `data-pptx-replace-with="formula"` marker and
-contains ordinary SVG text/shapes so browser preview remains visible; raw LaTeX
-itself does not render in SVG. Native export discards those children and writes
-editable OMML in a PowerPoint text shape. The current contract is independent
-block formulas for PowerPoint 2010+ only, with no formula PNG, media
-relationship, or image fallback for non-PowerPoint clients.
+**Native formulas are authored page objects, not image resources.** A standalone
+block stores source LaTeX in a `data-pptx-replace-with="formula"` group and
+exports `m:oMathPara`; a leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` inside ordinary text
+exports `m:oMath` in that same DrawingML paragraph. Inline math inherits the
+text run's size and visible solid fill, then uses the project text language and
+Cambria Math; matrices,
+multiline derivations, and other high-structure expressions remain blocks. Both
+forms keep ordinary SVG preview content because raw LaTeX does not render in
+SVG. PowerPoint 2010+ is the target, with no formula PNG, media relationship,
+or image fallback for non-PowerPoint clients.
 
 **Retained planning context** carries continuity; the on-demand page projector is only a diagnostic described below.
 

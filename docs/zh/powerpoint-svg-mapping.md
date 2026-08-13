@@ -203,14 +203,16 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 兼容性 | 校验边界 |
 |---|---|---|---|---|
-| 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m` 与可编辑 OMML 的 PowerPoint 文本 shape | PowerPoint 2010+ | 仅支持独立块级公式和已登记 LaTeX 子集；不支持的输入直接失败 |
-| 浏览器 / 实时预览 | marker 组内的普通 SVG 文字与形状 | 整组被原生公式替换时丢弃 | 原始 LaTeX 不能直接在 SVG 中渲染 | 预览子元素必须表达同一公式；它们不是 PPTX 兜底 |
-| 非 PowerPoint 客户端播放 | 同一个原生 marker；没有图片分支 | 不附加兼容兜底 | Keynote、WPS、LibreOffice 等客户端不在公式合同内 | 不宣称跨客户端显示或编辑能力 |
+| 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m > m:oMathPara > m:oMath` 的 PowerPoint 文本 shape | PowerPoint 2010+ | 矩阵、多行推导等独立高结构公式使用块级合同；不支持的输入直接失败 |
+| 可编辑行内公式 | 普通文本 run 中的叶子 `<tspan data-pptx-inline-formula="无定界符 LaTeX">preview text</tspan>` | 同一 DrawingML `a:p` 保留前后 run，并插入 `a14:m > m:oMath` | PowerPoint 2010+ | 只允许非空直接预览文本；禁止子元素、`x/y/dx/dy`、结构化 placeholder / Master / Layout 归属、保留的导入 `txBody` 或原生替换祖先 |
+| 浏览器 / 实时预览 | 块级 marker 内的普通 SVG 子元素，或行内 marker 的直接文本 | 写入原生公式时只丢弃已登记预览 | 原始 LaTeX 不能直接在 SVG 中渲染 | 预览必须表达同一公式；它不是 PPTX 兜底 |
+| 公式字体 | 块级 payload 样式，或行内文本 run 的计算样式 | 行内公式继承字号与可见纯色填充，并使用项目文本语言和 Cambria Math | PowerPoint 2010+ | 高结构或多行数学内容仍使用块级形式 |
+| 非 PowerPoint 客户端播放 | 同一类原生 marker；没有图片分支 | 不附加兼容兜底 | Keynote、WPS、LibreOffice 等客户端不在公式合同内 | 不宣称跨客户端显示或编辑能力 |
 
 公式替换始终启用，不使用 `--native-charts-and-tables`。该路径不会创建
 `formula_manifest.json`、公式 PNG、media relationship 或作为图片的
-`mc:Fallback`。JSON 中的 LaTeX payload 是原生公式源；SVG 子元素只负责让
-导出前的作者页面可以在浏览器中看见。
+`mc:Fallback`。块级 JSON 和行内 `data-pptx-inline-formula` 的值是原生公式源；
+SVG 预览内容只负责让导出前的作者页面保持可见。
 
 ## 10. PowerPoint 播放与打包功能
 

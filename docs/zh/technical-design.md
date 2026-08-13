@@ -426,12 +426,15 @@ Stage-1 沟通推荐的编写不得读取这些候选或任何模板内容。UI 
 
 **图片分析以重算元数据为先，只保留小范围视觉兜底。** 当项目里存在图片时，`analyze_images.py` 把可度量事实重算到 `analysis/image_analysis.csv`；该 CSV 是实时 `images/` 目录的派生视图，不是持久缓存。默认流程中，Strategist 先根据图片在源文中的位置与前后文、图注 / alt / 标题、文件名、用户说明、已有资源记录和这些元数据判断。只有当某一张具体图片在选用、事实身份、页面角色、裁剪安全或焦点放置上仍有实质歧义时，才可单独查看它，绝不得扫描整个图片目录。结论写入 Design Spec §VIII 后，Executor 只消费该计划与几何数据，不会重新打开源图进行语义探索。`quick-generate` 则由当前 Agent 根据当前上下文决策准备实际选中的资源，并采用同样的有界分析；不写 Design Spec 投影或通用资源清单。图片还原为 PPTX 的规范页面画面是窄例外：每个画面会完整检查一次，以建立源证据并区分普通文字、身份 / 装饰图形、chart / table / data graphic、场景图片与遮挡关系。之后只重开当前页 / 当前区域，并由当前 Codex Agent 通过现有参考图路径准备注册的干净背景层与人物 / 前景层。低清 Logo、图标和装饰只能在锁定身份、轮廓、比例、颜色和字标的前提下参考重建。Chart、table 和 data graphic 禁止生成式重建，必须使用可核对数值的原生对象、精确源资产，或标记 `manual_required`。多个带 padding 包围盒且互不重叠的对象可共用一次生成 plate，再通过 grid slice 或 SVG bbox crop 拆成独立对象。用户图、抽取图、网络图、AI 图和切片图仍统一汇入同一张可度量事实表。
 
-**原生公式是页面创作对象，不是图片资源。** SVG group 在
-`data-pptx-replace-with="formula"` marker 中保存源 LaTeX，并包含普通 SVG
-文字 / 形状，让浏览器预览保持可见；原始 LaTeX 本身不能在 SVG 中显示。原生
-导出会丢弃这些子元素，并在 PowerPoint 文本 shape 中写入可编辑 OMML。当前
-合同仅支持面向 PowerPoint 2010+ 的独立块级公式，不生成公式 PNG、media
-relationship，也不为非 PowerPoint 客户端提供图片兜底。
+**原生公式是页面创作对象，不是图片资源。** 独立块级公式在
+`data-pptx-replace-with="formula"` group 中保存源 LaTeX，并导出
+`m:oMathPara`；普通文本中的叶子
+`<tspan data-pptx-inline-formula="...">preview</tspan>` 则在同一 DrawingML
+段落中导出 `m:oMath`。行内公式继承文本 run 的字号与可见纯色填充，并使用项目文本语言和
+Cambria Math；矩阵、多行推导等高结构表达仍使用块级形式。两种形式都保留
+普通 SVG 预览，因为原始 LaTeX 本身不能在 SVG 中显示。原生目标为 PowerPoint
+2010+，不生成公式 PNG、media relationship，也不为非 PowerPoint 客户端提供
+图片兜底。
 
 **保留的规划上下文**负责跨页连续性；按需逐页投影只承担下文所述的诊断用途。
 

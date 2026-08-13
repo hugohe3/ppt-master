@@ -327,7 +327,7 @@ because Quick is expected to be faster is not.
 | Values, categories, time, weights, or duration determine mark geometry | Value-driven chart |
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
-| Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native block formula |
+| Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native inline or block math |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
@@ -368,7 +368,7 @@ Prepare only the resource paths needed by the decided pages:
 | Supplied/extracted image | Copy the selected file into `images/`; preserve its factual/provenance context and use the measured file rather than an invented substitute |
 | Image-to-PPTX reconstruction asset | In Codex, preserve identity graphics through an exact vector, deterministic redraw, sufficient source asset, or reference-based high-resolution reconstruction; keep data graphics native-and-verified or exact. For scene imagery, build the minimum registered clean-base/midground/subject/foreground group; batch padded-bbox-disjoint objects into one shared plate, then split them with grid slicing or independent nested-SVG bbox crops |
 | Bundled/custom icon | Follow the [icon library contract](../../templates/icons/README.md), choose one coherent primary library, sync a useful project pool covering recurring semantics and likely page-local needs without assigning icons to pages, and choose from that prepared pool during SVG authoring |
-| Formula | Create no resource file. Retain the exact source LaTeX and author one native formula marker under §3; ordinary SVG children provide the browser preview and are discarded by native export |
+| Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
 | Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
@@ -440,9 +440,10 @@ active context; create no artifact, spec, lock, manifest, or extra pass. A
 deliberate plain or equal-grid result remains valid when it communicates the
 relationship better.
 
-**Mandatory — native block formulas**: Quick creates no formula resource or
-manifest; retain exact LaTeX in active context and author the marker plus SVG
-preview directly under [`native-formula.md`](../../references/native-formula.md).
+**Mandatory — native formulas**: Quick creates no formula resource or manifest;
+retain exact LaTeX in active context, then choose ordinary text, same-paragraph
+native inline math, or a standalone native block and author its matching SVG
+preview under [`native-formula.md`](../../references/native-formula.md).
 
 Image to PPTX replaces this open composition decision for its canonical page
 frame: preserve the source geometry, restore text natively, preserve
@@ -469,7 +470,7 @@ capability menu, visualization recall, template geometry, or a later check.
 | A selected primary Chart/Table `family/key` | [`executor-visualization.md`](../../references/executor-visualization.md), then the matching Chart/Table authority |
 | Any actual value-driven geometry, including mini/inset charts and sparklines | [`executor-chart.md`](../../references/executor-chart.md) |
 | Any actual row × column fact grid | [`executor-table.md`](../../references/executor-table.md) |
-| Any structural mathematical notation | [`native-formula.md`](../../references/native-formula.md) before authoring its marker |
+| Any mathematical notation that may require native math | [`native-formula.md`](../../references/native-formula.md) before choosing ordinary text, inline native math, or block native math |
 | A used preset pattern fill, or one independent Chart/Table object selected as native-ready in active context | [`native-data-interface.md`](../../references/native-data-interface.md) before drawing that object |
 | Any data-driven chart geometry | [`verify-charts.md`](../stages/verify-charts.md) after the complete roster and before the one final checker |
 
@@ -618,7 +619,7 @@ or lock.
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
 - [x] Every image-bearing page made its one pre-geometry composition decision
-- [x] Every selected formula is one checker-valid native marker with a matching visible SVG preview and no formula image resource
+- [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
 - [x] Resolved SVG pages and their project-local references exist
 - [x] Every role declared by an installed template spec is locatable in the finished pages, or its non-use is deliberate — checked per installed spec, not from memory
 - [x] Every triggered capability-specific preparation and pre-checker verification completed

@@ -148,11 +148,14 @@ If your workflow specifically requires Excel-driven data editing or PowerPoint's
 
 ## Q: Are formulas editable?
 
-Yes, in PowerPoint. Formula-bearing SVG groups carry source LaTeX and export as
-editable PowerPoint OMML block equations; they are not formula screenshots or
-picture assets. Raw LaTeX does not render by itself in SVG, so the group also
-contains ordinary SVG text/shapes for browser and live preview. Export discards
-those preview children when it replaces the group with the native equation.
+Yes, in PowerPoint. PPT Master exports both standalone block equations and
+same-paragraph inline formulas as editable OMML, not screenshots or picture
+assets. A block uses a formula group; inline math uses a leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` among ordinary text
+runs. Matrices, multiline derivations, and other high-structure expressions
+remain blocks. Raw LaTeX does not render in SVG, so each marker carries an
+ordinary visible preview that native export replaces without adding an image
+fallback.
 
 The native target is PowerPoint 2010+. Formula display and editability in
 Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;

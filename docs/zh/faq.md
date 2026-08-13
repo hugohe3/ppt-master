@@ -150,10 +150,12 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 ## Q: 公式可以编辑吗？
 
-可以，但支持目标是 PowerPoint。含公式的 SVG 组会携带源 LaTeX，并在导出时
-转换为可编辑的 PowerPoint OMML 块级公式，而不是公式截图或图片资源。原始
-LaTeX 不能直接在 SVG 中显示，因此该组还会包含普通 SVG 文字 / 形状，供浏览器
-和实时预览使用；导出器用原生公式替换整个组时会丢弃这些预览子元素。
+可以，但支持目标是 PowerPoint。PPT Master 会把独立块级公式和同段行内
+公式都导出为可编辑 OMML，而不是截图或图片资源。块级公式使用 formula
+group；行内公式使用夹在普通文本 run 中的叶子
+`<tspan data-pptx-inline-formula="...">preview</tspan>`。矩阵、多行推导等
+高结构表达仍使用块级形式。原始 LaTeX 不能直接在 SVG 中显示，因此每个
+marker 都携带普通可见预览；原生导出会替换该预览，不增加图片兜底。
 
 原生目标为 PowerPoint 2010+。Keynote、WPS、LibreOffice 等非 PowerPoint
 客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些客户端附加

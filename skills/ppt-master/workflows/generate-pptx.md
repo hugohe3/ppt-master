@@ -25,9 +25,9 @@ request does not explicitly select Quick.
 
 | Scope | Contract |
 |---|---|
-| Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, native-formula preview, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
+| Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, block/inline native-formula preview, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
-| Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. Chart/table markers preserve their visible SVG fallback; a formula marker carries exact LaTeX and explicitly replaces only its own ordinary SVG preview subtree with editable Office Math during PPTX export. |
+| Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. Chart/table markers preserve their visible SVG fallback; block and inline formula markers carry exact LaTeX and replace only their registered ordinary SVG preview with editable Office Math during PPTX export. |
 | `svg_final/` | Mandatory derived, self-contained SVG visual preview in the default pipeline. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. Quick-generate skips it. |
 | SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It compiles only the selected route's explicit structure contract: `flat` keeps represented content Slide-local, while `structured` may place explicitly scoped content in Master/Layout/Slide parts. It MUST NOT infer structure, upgrade `flat`, or invent new visible page content. |
 | Native PPTX routes and presentation-behavior stages | Remain outside SVG page-design closure. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
@@ -418,9 +418,10 @@ For the normal/default `continuous` path, print no split-mode reminder and proce
 **Native formula content**: Formula handling is not a confirmation field or an
 image-acquisition path. Strategist records exact mathematical content as a
 delimiter-free LaTeX expression body in the applicable §IX page block without
-classifying its implementation. Executor independently keeps simple inline
-notation as text and writes every structural block expression as a native
-formula marker under [`native-formula.md`](../references/native-formula.md).
+classifying its implementation. Executor independently chooses ordinary text,
+same-paragraph native inline math, or a standalone native block under
+[`native-formula.md`](../references/native-formula.md); matrices, multiline
+derivations, and other high-structure expressions remain blocks.
 No formula manifest, §VIII resource row, or `spec_lock.md images` entry is
 created.
 
@@ -583,7 +584,7 @@ Keep the core's shared visual-quality defaults and `svg-effects.md` §6.1 Visual
 | Mandatory per-page Structure decision from §IX is `yes` | `executor-structure.md` before any geometry for the first applicable page |
 | Actual row × column fact grid | `executor-table.md` |
 | Used preset pattern fill, or independent Chart/Table with §IX `<object-key>=yes` | `native-data-interface.md` before that object |
-| §IX or current page content contains a structural standalone mathematical expression | `native-formula.md` before authoring its marker |
+| §IX or current page content contains mathematical notation that may require native math | `native-formula.md` before choosing ordinary text, inline native math, or block native math |
 | `spec_lock.md images` / §VIII has an image row, or the template has bundled images | `executor-image.md` + `image-layout-spec.md` + `image-layout-patterns.md` + `svg-image-embedding.md` |
 | At least one placed image is `Status: Sourced` or its filename has an `image_sources.json` record | `executor-web-image.md` after the image branch |
 | §I records recorded/self-running/video delivery, or §X records a final/literal narration script | `video-design.md` before the first SVG; retain it through notes/motion handling |

@@ -43,7 +43,7 @@
 | 图表 | 系统化 | 有专属创作 reference；默认 SVG，原生 Chart 替换为显式 opt-in |
 | 表格 | 系统化 | 有专属创作 reference；六种单元格网格语法，原生 Table 替换走同一 opt-in |
 | 关系图 | 系统化 | 六个关系原子——`order`、`link`、`parent`、`membership`、`contrast`、`overlap` |
-| 公式 | 已实现 | 独立块级公式可从严格 LaTeX 子集编译为可编辑 PowerPoint OMML；SVG 子元素仅供预览，不生成公式图片兜底。支持 PowerPoint 2010+，非 PowerPoint 客户端不在合同内 |
+| 公式 | 已实现 | 独立块级公式与同段行内公式都可从严格 LaTeX 子集编译为可编辑 PowerPoint OMML；SVG 预览仅供创作阶段使用，不生成公式图片兜底。支持 PowerPoint 2010+，非 PowerPoint 客户端不在合同内 |
 | 音视频 | 已覆盖 / 信号驱动 | 旁白音频今天逐页嵌入；任意视频、背景音乐与媒体压缩是 Enhance 路线中的 planned 模块 |
 | SmartArt、3D 模型、OLE 对象 | 信号驱动 | 目前没有创作路径 |
 
