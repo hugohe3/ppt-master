@@ -34,6 +34,10 @@ from .fallback_hash import (
     stamp_native_fallback_baseline,
 )
 from .formula import FormulaSpec, build_native_formula, validate_formula_payload
+from .inline_formula import (
+    INLINE_FORMULA_ATTR,
+    inline_formula_marker_errors,
+)
 from .marker_common import (
     CHART_CONTENT_TYPE,
     CHARTEX_CONTENT_TYPE,
@@ -74,6 +78,7 @@ from .workbook import (
 
 __all__ = [
     "convert_native_object",
+    "INLINE_FORMULA_ATTR",
     "NativeMarkerAttributeError",
     "native_fallback_kind",
     "native_import_source",
@@ -83,6 +88,7 @@ __all__ = [
     "native_replacement_kind",
     "native_replacement_status",
     "native_marker_transform",
+    "inline_formula_marker_errors",
     "snapshot_native_fallback_freshness",
     "stamp_native_fallback_baseline",
     "validate_native_object_marker",
