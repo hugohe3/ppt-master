@@ -268,7 +268,7 @@ pip install -r requirements.txt
 **方式 B — 下载 ZIP**（无需安装 Git，适合快速体验）：
 [GitHub](https://github.com/hugohe3/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（中国大陆地区访问 GitHub 下载不便时用这个，网速更快）；解压后同样用 `pip install -r requirements.txt` 装依赖。ZIP 没有 Git 历史，不能自动 `git pull`（更新见下）。
 
-如果完整仓库下载失败、或嫌体积太大，可以改到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载纯技能包 `ppt-master-skill-*.zip`（约 50 MB，功能完整，但不含内置示例 deck）。
+如果完整仓库下载失败、或嫌体积太大，可以改到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载纯技能包 `ppt-master-skill-*.zip`（约 56 MB，功能完整，但不含内置示例 deck）。
 
 #### 日常更新
 

@@ -258,7 +258,7 @@ Then install dependencies:
 pip install -r requirements.txt
 ```
 
-**Option B — Download ZIP** (no Git required; best for a quick trial): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip, and install dependencies with `pip install -r requirements.txt`. A ZIP has no Git history, so it can't `git pull` — see Updating Later. If that download is too large or fails, grab the skill-only package `ppt-master-skill-*.zip` (~50 MB, fully functional but without the bundled example decks) from the [Releases](https://github.com/hugohe3/ppt-master/releases) page instead.
+**Option B — Download ZIP** (no Git required; best for a quick trial): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip, and install dependencies with `pip install -r requirements.txt`. A ZIP has no Git history, so it can't `git pull` — see Updating Later. If that download is too large or fails, grab the skill-only package `ppt-master-skill-*.zip` (~56 MB, fully functional but without the bundled example decks) from the [Releases](https://github.com/hugohe3/ppt-master/releases) page instead.
 
 #### Updating Later
 
