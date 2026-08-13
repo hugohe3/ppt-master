@@ -55,7 +55,11 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
   <a href="./docs/roadmap.md"><strong>Roadmap</strong></a>
 </p>
 
-<h3 align="center">Download the new <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">narrated <em>Attention Is All You Need</em> deck</a> — play it in PowerPoint and every slide reads itself out loud. That's just the tip of what PPT Master can do.</h3>
+<p align="center">
+  <sub>The narrated deck and gallery below were generated in <strong>May 2026</strong> with Claude Opus 4.7 + <code>gpt-image-2</code> — one pass each, no manual polish.</sub>
+</p>
+
+<h3 align="center">Download the <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">narrated <em>Attention Is All You Need</em> deck</a> — play it in PowerPoint and every slide reads itself out loud. That's just the tip of what PPT Master can do.</h3>
 
 <table>
   <tr>
@@ -95,7 +99,7 @@ Thanks to [Kimi](https://www.kimi.com/code/?aff=ppt-master) for sponsoring this 
 </table>
 
 <p align="center">
-  <sub>All examples above were generated in a single pass, with no manual polish (Claude Opus 4.7 + <code>gpt-image-2</code>). Downloading any .pptx and opening it in PowerPoint is the fastest way to see what it can really do.<br/><a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
+  <sub>Downloading any .pptx and opening it in PowerPoint is the fastest way to see what it can really do.<br/><a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
 </p>
 
 ---
