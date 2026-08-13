@@ -86,7 +86,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Narration | Systematized | Per-slide audio with provider provenance |
 | Subtitles | Systematized | Word-timed regrouping across supported providers into shared compact SRT |
 | Document metadata | Covered | Set at export rather than left to the packaging library |
-| Accessibility (alt text, reading order) | Signal-driven | Image manifests already carry `alt_text`, but it is not yet written to DrawingML `descr` — this is wiring, not a missing specification |
+| Accessibility (alt text, reading order) | Not planned | Only AI-generated images carry an `alt_text` field today, so writing it to DrawingML `descr` would cover one source and leave web-sourced images, shapes, charts, and diagrams without a description to write — full coverage means authoring descriptions for every non-text object, not connecting existing data. Reading order is not a separate property in PowerPoint: it is the shape order, which carries the page's visual layering and is not set independently of it |
 | Comments, revisions, collaboration state | Not planned | Office collaboration surface, outside the authoring product |
 
 ---
@@ -107,7 +107,6 @@ Candidates already evaluated as "worth doing when real demand shows", listed so 
 - **Keep closing the native-coverage gaps** recorded in the [mapping guide](./powerpoint-svg-mapping.md) — release after release, move more "SVG-only" cells toward native PowerPoint structure and behavior.
 - **Effects on authored preset shapes** (e.g. a native drop-shadow) — waits for a precise preset-effect contract plus checker coverage; until then, a stock shape that needs a shadow conservatively stays ordinary SVG.
 - **Picture slide backgrounds as native background fill** — solid/gradient page backgrounds already export as PowerPoint-native slide backgrounds; the picture case is demand-driven.
-- **Accessibility delivery** — image manifests already carry `alt_text` for planning and confirmation, so alt text and reading order are a matter of connecting existing data to DrawingML `descr` and shape order, not of designing a new contract. Cheaper than the other open items on the map; waits for demand all the same.
 
 ---
 
