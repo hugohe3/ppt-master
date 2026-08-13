@@ -43,7 +43,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Charts | Systematized | Dedicated authoring reference; SVG by default, native Chart replacement available as an explicit opt-in |
 | Tables | Systematized | Dedicated authoring reference; six cell-grid grammars, native Table replacement on the same opt-in |
 | Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
-| Formulas | Implemented with a narrow target | Independent block formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG children are preview-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
+| Formulas | Implemented | Independent block formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG children are preview-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
 | Audio & video | Covered / Signal-driven | Narration audio embeds per slide today; arbitrary video, background music, and media compression are planned modules in the Enhance route |
 | SmartArt, 3D models, OLE objects | Signal-driven | No current authoring path |
 
