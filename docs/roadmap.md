@@ -16,6 +16,78 @@ Today that axis is expressed through four explicit artifact routes: **Generate P
 
 ---
 
+## Coverage map
+
+A presentation is four layers: what is on the slide, how it is arranged, how it behaves, and how the document itself is structured. The tables below map each layer against what PPT Master does today.
+
+**Read this as a map, not a backlog.** *Bounded by design* and *Not on the path* are settled end states, not unfinished cells — a blank there is a decision, not a debt. Only *Signal-driven* rows are open, and their reasoning lives in [Future directions](#future-directions--signal-driven) rather than being repeated here.
+
+| Status | Meaning |
+|---|---|
+| **Systematized** | Has its own authoring contract and checker coverage; actively refined |
+| **Covered** | Works today without a dedicated specification system |
+| **Bounded by design** | Deliberately stops where it stops; the reason is recorded |
+| **Signal-driven** | Worth doing when real demand shows; not a commitment |
+| **Not on the path** | Evaluated and declined — see [Non-goals](#non-goals) |
+
+### Layer 1 — Visible objects
+
+| Object | Status | Notes |
+|---|---|---|
+| Text | Systematized | Role anchors deck-wide, bounded per-occurrence adjustment, hierarchy and paragraph rules, natively editable runs |
+| Vector shapes | Systematized | primitive → Office preset → Boolean → freeform construction ladder, with native conversion rules |
+| Lines & connectors | Bounded by design | Authoring creates unconnected `p:cxnSp`; hand-written endpoint/site metadata is not accepted |
+| Icons | Systematized | Bundled libraries with per-project sync; project icons are prepared material |
+| Logo | Bounded by design | Brand workspaces describe how to install officially supplied artwork; no workspace bundles a logo |
+| Images | Systematized | Acquisition, generation, treatment, cropping, layout, composition, embedding, provenance |
+| Charts | Systematized | Dedicated authoring reference; SVG by default, native Chart replacement available as an explicit opt-in |
+| Tables | Systematized | Dedicated authoring reference; six cell-grid grammars, native Table replacement on the same opt-in |
+| Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
+| Formulas | Bounded by design | Rendered as image assets with `Acquire Via: formula`; never recreated as text. Natively editable formulas are signal-driven |
+| Audio & video | Covered / Signal-driven | Narration audio embeds per slide today; arbitrary video, background music, and media compression are planned modules in the Enhance route |
+| SmartArt, 3D models, OLE objects | Signal-driven | No current authoring path |
+
+*Illustration* is deliberately absent from this table. It is a composite result — an image, an SVG, or a group of shapes — not a seventh carrier, and listing it beside *Images* would reintroduce the category confusion this layering removes.
+
+### Layer 2 — Composition
+
+| Concern | Status | Notes |
+|---|---|---|
+| Background | Systematized | Solid and gradient page backgrounds export as PowerPoint-native slide backgrounds; the picture case is signal-driven |
+| Layering & grouping | Systematized | Explicit z-order and group contracts, including registered base/subject layer pairs |
+| Grid, alignment, whitespace | Systematized | Composition-geometry vocabulary carried by every visual style |
+| Palette | Systematized | Declared HEX values are the truth source; anchors locked deck-wide |
+| Typography | Systematized | One size per structural role, locked across the deck |
+| Visual effects | Systematized | Dedicated effects reference; native effects on authored preset shapes remain signal-driven |
+| Reading path | Systematized | Entry, progression, hierarchy, and endpoint are validated per page |
+
+### Layer 3 — Behavior
+
+| Concern | Status | Notes |
+|---|---|---|
+| Page transitions | Systematized | Includes on-demand transition sounds from a bundled CC0 catalog |
+| Object animation | Systematized | Off by default and opt-in; per-object configuration is explicit |
+| Auto-advance | Covered | Derived from narration lead-in, audio duration, and page-tail padding |
+| Media playback | Covered | Narration audio; arbitrary embedded media follows the Layer 1 row above |
+| Hyperlinks | Asymmetric by design | Links already present in a source deck survive conversion; authoring **new** links in generated decks is signal-driven |
+| Actions & navigation | Bounded by design | An `actionButton*` preset maps visual geometry only — preset appearance never invents action behavior or navigation targets |
+
+### Layer 4 — Document structure
+
+| Concern | Status | Notes |
+|---|---|---|
+| Theme | Covered | Generated per deck from the locked palette and typography |
+| Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
+| Placeholders | Systematized | Template workspace contracts, with strict/adaptive exporter behavior derived per deck |
+| Speaker notes | Systematized | Exported with a real notes master |
+| Narration | Systematized | Per-slide audio with provider provenance |
+| Subtitles | Systematized | Word-timed regrouping across supported providers into shared compact SRT |
+| Document metadata | Covered | Set at export rather than left to the packaging library |
+| Accessibility (alt text, reading order) | Signal-driven | Image manifests already carry `alt_text`, but it is not yet written to DrawingML `descr` — this is wiring, not a missing specification |
+| Comments, revisions, collaboration state | Not on the path | Office collaboration surface, outside the authoring product |
+
+---
+
 ## In progress / Next
 
 Actively underway or up next — no committed timeline.
@@ -33,6 +105,7 @@ Candidates already evaluated as "worth doing when real demand shows", listed so 
 - **Effects on authored preset shapes** (e.g. a native drop-shadow) — waits for a precise preset-effect contract plus checker coverage; until then, a stock shape that needs a shadow conservatively stays ordinary SVG.
 - **Hyperlink authoring in generated decks** — hyperlinks already present in source decks survive conversion today; letting the Strategist author new links waits for demand.
 - **Picture slide backgrounds as native background fill** — solid/gradient page backgrounds already export as PowerPoint-native slide backgrounds; the picture case is demand-driven.
+- **Accessibility delivery** — image manifests already carry `alt_text` for planning and confirmation, so alt text and reading order are a matter of connecting existing data to DrawingML `descr` and shape order, not of designing a new contract. Cheaper than the other open items on the map; waits for demand all the same.
 
 ---
 
