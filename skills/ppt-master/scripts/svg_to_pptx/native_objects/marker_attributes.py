@@ -1,4 +1,4 @@
-"""Canonical and compatible attribute access for chart/table replacements."""
+"""Canonical and compatible attribute access for native replacements."""
 
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def _resolved_alias(
 
 
 def native_replacement_kind(elem: ET.Element) -> str:
-    """Return the requested chart/table replacement kind, or an empty string."""
+    """Return the requested native replacement kind, or an empty string."""
     return _resolved_alias(elem, REPLACE_WITH_ATTR, LEGACY_REPLACE_WITH_ATTR) or ""
 
 
