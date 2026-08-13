@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M40 0V720 M200 0V720 M360 0V720 M520 0V720 M680 0V720 M840 0V720 M1000 0V720 M1160 0V720 M0 120H1280 M0 280H1280 M0 440H1280 M0 600H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="header" data-pptx-bounds="54 30 1170 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">设计已闭环，当前落后集中在公用工程、设备安装与联调</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">WORK PACKAGE PROGRESS · CRITICAL MILESTONES M5–M8</text>
+  </g>
+  <g id="chartArea" data-pptx-bounds="58 140 800 450">
+    <text x="60" y="166" font-size="24" font-weight="700" fill="#EAF7FF">工作包完成率</text>
+    <line x1="320" y1="180" x2="320" y2="548" stroke="#87D9F5" stroke-width="2"/>
+    <line x1="320" y1="548" x2="790" y2="548" stroke="#87D9F5" stroke-width="2"/>
+    <!-- chart-plot-area: 320,180,790,548 -->
+    <text x="60" y="214" font-size="20" fill="#EAF7FF">需求与方案</text><rect x="320" y="194" width="470" height="16" fill="#32E0C4"/><text x="804" y="209" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">100%</text>
+    <text x="60" y="258" font-size="20" fill="#EAF7FF">详细设计与安全评审</text><rect x="320" y="238" width="470" height="16" fill="#32E0C4"/><text x="804" y="253" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">100%</text>
+    <text x="60" y="302" font-size="20" fill="#EAF7FF">场地与洁净环境</text><rect x="320" y="282" width="432.4" height="16" fill="#32E0C4"/><text x="804" y="297" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">92%</text>
+    <text x="60" y="346" font-size="20" fill="#EAF7FF">公用工程系统</text><rect x="320" y="326" width="366.6" height="16" fill="#FFB454"/><text x="804" y="341" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454">78%</text>
+    <text x="60" y="390" font-size="20" fill="#EAF7FF">设备采购与物流</text><rect x="320" y="370" width="333.7" height="16" fill="#87D9F5"/><text x="804" y="385" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">71%</text>
+    <text x="60" y="434" font-size="20" fill="#EAF7FF">设备安装</text><rect x="320" y="414" width="225.6" height="16" fill="#FFB454"/><text x="804" y="429" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454">48%</text>
+    <text x="60" y="478" font-size="20" fill="#EAF7FF">系统联调</text><rect x="320" y="458" width="103.4" height="16" fill="#FF6B6B"/><text x="804" y="473" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FF6B6B">22%</text>
+    <text x="60" y="522" font-size="20" fill="#EAF7FF">能力验证与验收</text><rect x="320" y="502" width="56.4" height="16" fill="#FF6B6B"/><text x="804" y="517" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FF6B6B">12%</text>
+  </g>
+  <g id="milestone-track" data-pptx-bounds="850 140 370 450" font-family="Consolas, Microsoft YaHei, monospace">
+    <text x="860" y="166" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700" fill="#EAF7FF">关键里程碑</text>
+    <line x1="900" y1="205" x2="900" y2="548" stroke="#87D9F5" stroke-width="3"/>
+    <circle cx="900" cy="230" r="11" fill="#32E0C4"/><text x="930" y="236" font-size="20" fill="#EAF7FF">M4 · 首批6包到场</text><text x="1190" y="236" font-size="18" fill="#32E0C4" text-anchor="end">完成 +3d</text>
+    <circle cx="900" cy="310" r="11" fill="#FFB454"/><text x="930" y="316" font-size="20" fill="#EAF7FF">M5 · 全部10包到场</text><text x="1190" y="316" font-size="18" fill="#FFB454" text-anchor="end">预测 +10d</text>
+    <circle cx="900" cy="390" r="11" fill="#FFB454"/><text x="930" y="396" font-size="20" fill="#EAF7FF">M6 · 核心安装完成</text><text x="1190" y="396" font-size="18" fill="#FFB454" text-anchor="end">预测 +7d</text>
+    <circle cx="900" cy="470" r="11" fill="#FFB454"/><text x="930" y="476" font-size="20" fill="#EAF7FF">M7 · 多机联调完成</text><text x="1190" y="476" font-size="18" fill="#FFB454" text-anchor="end">预测 +5d</text>
+    <circle cx="900" cy="548" r="13" fill="#32E0C4"/><text x="930" y="554" font-size="20" fill="#EAF7FF">M8 · 阶段能力验收</text><text x="1190" y="554" font-size="18" fill="#32E0C4" text-anchor="end">12/15 维持</text>
+  </g>
+  <g id="overall-callout" data-pptx-bounds="54 592 1166 44">
+    <rect x="60" y="596" width="1160" height="38" fill="#0D2538" stroke="#FFB454" stroke-width="2"/>
+    <text x="82" y="622" font-size="20" fill="#EAF7FF">总体完成度 <tspan font-family="Consolas, Microsoft YaHei, monospace" font-weight="700" fill="#32E0C4">68.6%</tspan>　｜　落后基线 <tspan font-family="Consolas, Microsoft YaHei, monospace" font-weight="700" fill="#FFB454">4.1个百分点</tspan>　｜　关键路径已由采购转向安装与联调</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 650 1168 32">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜完成率、日期和偏差均为案例设定</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">04 / 11</text>
+  </g>
+</svg>

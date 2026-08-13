@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="grid" data-pptx-role="decoration" d="M80 0V720 M160 0V720 M240 0V720 M320 0V720 M400 0V720 M480 0V720 M560 0V720 M640 0V720 M720 0V720 M800 0V720 M880 0V720 M960 0V720 M1040 0V720 M1120 0V720 M1200 0V720 M0 80H1280 M0 160H1280 M0 240H1280 M0 320H1280 M0 400H1280 M0 480H1280 M0 560H1280 M0 640H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.5"/>
+  <g id="header" data-pptx-bounds="54 30 1168 104">
+    <text x="60" y="78" font-size="40" font-weight="700" fill="#EAF7FF">三机并行已具备，UPS与特气决定下一阶段放量上限</text>
+    <text x="60" y="112" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">FACILITY READINESS MAP · CURRENT PARALLEL LIMIT = 3 TOOLS</text>
+  </g>
+  <g id="platform-core" data-pptx-bounds="452 242 376 290">
+    <polygon points="520,300 640,260 760,300 640,340" fill="#16384C" stroke="#32E0C4" stroke-width="2"/>
+    <polygon points="520,300 520,400 640,440 640,340" fill="#0D2538" stroke="#32E0C4" stroke-width="2"/>
+    <polygon points="640,340 760,300 760,400 640,440" fill="#12364A" stroke="#32E0C4" stroke-width="2"/>
+    <!-- icon: tabler-outline/building-factory-2 -->
+  <g transform="translate(612, 322) scale(2.33333)" fill="none" stroke="#32E0C4" stroke-width="2">
+    <path d="M3 21h18" />
+    <path d="M5 21v-12l5 4v-4l5 4h4" />
+    <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
+    <path d="M9 17h1" />
+    <path d="M14 17h1" />
+  </g>
+    <text x="640" y="474" font-size="30" font-weight="700" fill="#EAF7FF" text-anchor="middle">实验平台核心区</text>
+    <text x="640" y="506" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4" text-anchor="middle">3 TOOLS PARALLEL</text>
+  </g>
+  <g id="cleanroom" data-pptx-bounds="54 152 330 108">
+    <line x1="382" y1="230" x2="520" y2="320" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="60" y="160" width="320" height="94" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="82" y="194" font-size="24" font-weight="700" fill="#EAF7FF">洁净环境</text>
+    <text x="82" y="226" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">94.2% PASS</text>
+    <text x="226" y="226" font-size="18" fill="#FFB454">2个回风口待整改</text>
+  </g>
+  <g id="vacuum" data-pptx-bounds="54 286 330 108">
+    <line x1="382" y1="340" x2="520" y2="360" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="60" y="294" width="320" height="94" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="82" y="328" font-size="24" font-weight="700" fill="#EAF7FF">中央真空</text>
+    <text x="82" y="360" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">BACKUP TEST 60%</text>
+    <text x="238" y="360" font-size="18" fill="#FFB454">1支路压降+18%</text>
+  </g>
+  <g id="special-gas" data-pptx-bounds="54 420 330 108">
+    <line x1="382" y1="470" x2="520" y2="400" stroke="#FFB454" stroke-width="2"/>
+    <rect x="60" y="428" width="320" height="94" fill="#0D2538" stroke="#FFB454" stroke-width="2"/>
+    <text x="82" y="462" font-size="24" font-weight="700" fill="#EAF7FF">特气系统</text>
+    <text x="82" y="494" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454">8 / 14 POINTS</text>
+    <text x="220" y="494" font-size="18" fill="#FF6B6B">2项联锁待复核</text>
+  </g>
+  <g id="cooling-water" data-pptx-bounds="54 554 330 78">
+    <line x1="382" y1="582" x2="560" y2="440" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="60" y="562" width="320" height="64" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="82" y="590" font-size="22" font-weight="700" fill="#EAF7FF">工艺冷却水</text>
+    <text x="238" y="590" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">9 / 12 READY</text>
+    <text x="82" y="616" font-size="18" fill="#8BA9B8">3个支路待二次平衡</text>
+  </g>
+  <g id="normal-power" data-pptx-bounds="896 152 330 108">
+    <line x1="896" y1="230" x2="760" y2="320" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="900" y="160" width="320" height="94" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="922" y="194" font-size="24" font-weight="700" fill="#EAF7FF">普通供电</text>
+    <text x="922" y="226" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#32E0C4">16 / 18 LIVE</text>
+    <text x="1050" y="226" font-size="18" fill="#8BA9B8">2回路待复核</text>
+  </g>
+  <g id="ups-power" data-pptx-bounds="896 286 330 108">
+    <line x1="896" y1="340" x2="760" y2="360" stroke="#FFB454" stroke-width="3"/>
+    <rect x="900" y="294" width="320" height="94" fill="#0D2538" stroke="#FFB454" stroke-width="2"/>
+    <text x="922" y="328" font-size="24" font-weight="700" fill="#EAF7FF">UPS 供电</text>
+    <text x="922" y="360" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#FFB454">420 / 600 kVA</text>
+    <text x="1062" y="360" font-size="18" fill="#FF6B6B">限制并行</text>
+  </g>
+  <g id="monitoring" data-pptx-bounds="896 420 330 108">
+    <line x1="896" y1="470" x2="760" y2="400" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="900" y="428" width="320" height="94" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/>
+    <text x="922" y="462" font-size="24" font-weight="700" fill="#EAF7FF">监控与数据采集</text>
+    <text x="922" y="494" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">118 / 126</text>
+    <text x="1038" y="494" font-size="18" fill="#8BA9B8">接入率93.7%</text>
+  </g>
+  <g id="release-limit" data-pptx-bounds="896 554 330 78">
+    <line x1="896" y1="582" x2="720" y2="440" stroke="#FFB454" stroke-width="2"/>
+    <rect x="900" y="562" width="320" height="64" fill="#FFB454"/>
+    <text x="922" y="590" font-size="20" font-weight="700" fill="#071827">当前放量上限</text>
+    <text x="922" y="616" font-size="18" fill="#071827">1台高负载＋2台低负载设备</text>
+  </g>
+  <g id="footer" data-pptx-bounds="56 650 1168 32">
+    <text x="60" y="674" font-size="16" fill="#8BA9B8">演示用虚构数据｜设施参数与门槛为案例内部管理口径</text>
+    <text x="1220" y="674" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">05 / 11</text>
+  </g>
+</svg>
