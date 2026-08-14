@@ -489,14 +489,18 @@ other value is invalid; the converter must not replace it with a default.
 | `font-style` | `normal` or `italic` | None | `italic` maps to `i="1"`; oblique, angle, relative, and CSS-wide values are invalid |
 | `text-anchor` | `start`, `middle`, or `end` on `<svg>`, `<g>`, or `<text>` | None | Maps to left/center/right paragraph alignment plus normalized frame position; it is invalid on `<tspan>` because run-level anchoring has no mapping |
 | `text-decoration` | `none`, `underline`, `line-through`, or `underline line-through` | `line-through underline` → canonical order | Maps to the single underline and strike run properties; unknown, repeated, or substring-like tokens are invalid |
+| `baseline-shift` | Exact direct `super` or `sub` on `<tspan>` | None | Maps to editable ordinary-text `a:rPr@baseline` at `30000` or `-25000`; it does not resize the run, is invalid as inline style or on any other element, and cannot combine with an inline formula marker |
 | `letter-spacing` | Finite unitless ordinary decimal SVG px | The same ordinary decimal with `px`, `pt`, or `em`; normalize to unitless px | Maps to `a:rPr@spc`; the final value must fit DrawingML `-400000..400000`, and negative tracking must leave every generated DrawingML run with a positive estimated advance and its text frame with a positive extent; keywords, percentages, exponents, leading plus signs, trailing decimal points, non-finite values, and other units are invalid |
 
-The registered text properties follow SVG inheritance, including declarations
-on the root `<svg>`: inline `style` overrides the same element's direct
-attribute, which overrides its ancestor. Relative font sizes and `em` tracking
-resolve against the same effective inherited size in Checker and converter.
-Every declaration is validated even when a later declaration overrides it, so
-hidden garbage cannot bypass preflight.
+The registered inheritable text properties follow SVG inheritance, including
+declarations on the root `<svg>`: inline `style` overrides the same element's
+direct attribute, which overrides its ancestor. `baseline-shift` is the narrow
+exception: declare it directly on the owning `<tspan>`; nested inline content
+inherits that run shift, while surrounding text keeps its own baseline.
+Relative font sizes and `em` tracking resolve against the same effective
+inherited size in Checker and converter. Every declaration is validated even
+when a later declaration overrides it, so hidden garbage cannot bypass
+preflight.
 
 The DrawingML character-spacing range is necessary but not sufficient for
 negative tracking. After run assembly, each output run must retain a positive
@@ -529,9 +533,10 @@ runs or a text frame from the SVG estimate.
   `transform`, `xml:space`, `id`, and project `data-*` metadata.
 - `<tspan>` accepts `x`, `y`, `dx`, `dy`, registered paint/alpha/run
   properties, `font-family`, `font-size`, `font-weight`, `font-style`,
-  `letter-spacing`, `text-decoration`, `xml:space`, `id`, and project `data-*`
-  metadata. It does not accept `text-anchor`, `filter`, or `transform`.
-- `word-spacing`, `dominant-baseline`, `alignment-baseline`, `baseline-shift`,
+  `letter-spacing`, `text-decoration`, direct `baseline-shift`, `xml:space`,
+  `id`, and project `data-*` metadata. It does not accept `text-anchor`,
+  `filter`, or `transform`.
+- `word-spacing`, `dominant-baseline`, `alignment-baseline`,
   font shorthand/variant/stretch/feature/variation/synthesis controls,
   `font-kerning`/`kerning`, `font-size-adjust`, `line-height`, text alignment,
   indent/shadow/rendering controls, white-space/word-break/hyphenation
@@ -569,6 +574,7 @@ respective sections; they do not weaken those contracts.
 |---|---|---|
 | Underline / strike / both | `text-decoration="underline"`, `line-through`, or both | `Native-stable`; both emits both run properties |
 | Mixed runs | Non-positional `<tspan>` | One `Native-normalized` editable frame; §4.2 |
+| Superscript / subscript | Direct `baseline-shift="super|sub"` on `<tspan>` | Editable ordinary-text run at PowerPoint's native baseline offset; set `font-size` on the same run when a smaller glyph is intended |
 | Font size | Generated default is a finite unitless SVG px value; compatible `px`, `pt`, `pc`/`pica`, `in`, `cm`, `mm`, `q`, `em`, and `rem` values receive a recommendation warning only | Converted to SVG px, then editable DrawingML point size; unsupported units/percentages error |
 | Tracking | §6.7 closed `letter-spacing` grammar | `Native-normalized`; compatible units normalize to SVG px before DrawingML conversion |
 | Transparency | `opacity` / `fill-opacity` on text/run | `Native-normalized` run alpha, not isolated compositing |
@@ -580,6 +586,8 @@ respective sections; they do not weaken those contracts.
 ```xml
 <text x="100" y="200" font-size="20" xml:space="preserve">Current <tspan
   fill="#999999" text-decoration="line-through">old</tspan> value</text>
+<text x="100" y="240" font-size="20">CO<tspan
+  baseline-shift="sub" font-size="14">2</tspan></text>
 ```
 
 Use strikethrough for removed/former values; it is ordinary notation, not a

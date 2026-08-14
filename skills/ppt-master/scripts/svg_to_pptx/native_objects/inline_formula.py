@@ -160,6 +160,7 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
         inside_preserved_text = False
         inside_placeholder = False
         inside_skipped_transport = False
+        inside_baseline_shift = marker.get("baseline-shift") is not None
         invalid_inline_container: str | None = None
         non_output_ancestor: str | None = None
         fixed_structure_layer: str | None = None
@@ -177,6 +178,8 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
                 non_output_ancestor = parent_tag
             if parent.get(INLINE_FORMULA_ATTR) is not None:
                 nested_marker = True
+            if parent.get("baseline-shift") is not None:
+                inside_baseline_shift = True
             replacement = (
                 parent.get("data-pptx-replace-with") or ""
             ).strip().lower()
@@ -216,6 +219,10 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
             )
         if nested_marker:
             errors.append(f"{label} cannot be nested inside another inline formula marker")
+        if inside_baseline_shift:
+            errors.append(
+                f"{label} cannot combine baseline-shift with an inline formula"
+            )
         if inside_block_formula:
             errors.append(
                 f"{label} cannot be placed inside a block formula preview"

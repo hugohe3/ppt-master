@@ -48,6 +48,7 @@ from .theme_fonts import theme_font_tokens
 from .text_properties import (
     drawingml_letter_spacing,
     normalize_project_text_segments,
+    parse_project_baseline_shift,
     parse_project_font_style,
     parse_project_font_weight,
     parse_project_letter_spacing,
@@ -2349,6 +2350,11 @@ def _override_run_attrs(
         run_attrs['font_weight'] = parse_project_font_weight(
             tspan_attr('font-weight')
         ).canonical
+    raw_baseline_shift = tspan.get('baseline-shift')
+    if raw_baseline_shift is not None:
+        run_attrs['baseline_shift'] = int(
+            parse_project_baseline_shift(raw_baseline_shift).value
+        )
     if tspan_attr('fill'):
         child_fill = tspan_attr('fill')
         run_attrs['fill_raw'] = child_fill
@@ -2473,9 +2479,9 @@ def _build_text_runs(
 ) -> list[dict[str, Any]]:
     """Build a list of text runs from a <text> element, handling <tspan> children.
 
-    Each run is a dict with keys: text, fill, fill_raw, font_weight,
-    font_style, font_family, font_size, letter_spacing. Nested tspans are walked
-    recursively so inline format changes inside a tspan still produce distinct runs.
+    Each run carries text plus resolved paint, typography, tracking, and baseline
+    shift. Nested tspans are walked recursively so inline format changes still
+    produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
     xml_space = resolve_project_xml_space(elem)
@@ -2604,6 +2610,7 @@ def _build_run_properties_xml(
     fstyle = run.get('font_style', '')
     ff = run.get('font_family', '')
     letter_spacing_px = float(run.get('letter_spacing', 0.0) or 0.0)
+    baseline_shift = int(run.get('baseline_shift', 0) or 0)
     opacity = run.get('opacity')
 
     text_dec = run.get('text_decoration', '')
@@ -2621,6 +2628,7 @@ def _build_run_properties_xml(
     u_attr = ' u="sng"' if underline else ''
     strike_attr = ' strike="sngStrike"' if strike else ''
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
+    baseline_attr = f' baseline="{baseline_shift}"' if baseline_shift else ''
 
     fonts = parse_font_family(ff) if ff else default_fonts
     run_fonts = (
@@ -2659,7 +2667,7 @@ def _build_run_properties_xml(
         else ''
     )
 
-    return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
+    return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr}{baseline_attr} dirty="0">
 {outline_xml}
 {fill_xml}
 {effect_xml}
@@ -2853,6 +2861,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'font_style': font_style,
         'text_decoration': text_decoration,
         'letter_spacing': letter_spacing_px,
+        'baseline_shift': 0,
         '_scale_x': ctx.scale_x or 1.0,
         '_object_opacity': object_opacity,
         '_fill_opacity': fill_opacity,
