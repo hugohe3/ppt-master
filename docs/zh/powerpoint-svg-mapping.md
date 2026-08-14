@@ -120,7 +120,7 @@ PowerPoint 意图
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
 | 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
-| 普通文本上标与下标 | 没有已登记的生成 SVG 控制；`baseline-shift` 为非法属性。Unicode 上下标字形与公式 marker 是另外两种创作选择 | 主生成路线不在普通 run 上创作 `a:rPr@baseline` | 源保留型原生工作流在不改所属文本体时为 `Direct preservation`；SVG 往返仅通过未修改的导入 `txBody` metadata 达到 `Native-stable`，PPTX-to-SVG 不在可见 SVG 中重建 baseline shift | 结构化数学使用可编辑 OMML；Unicode 字形仍是字面文字，不会变成原生 baseline shift |
+| 普通文本上标与下标 | `<tspan>` 上精确的直接属性 `baseline-shift="super|sub"`；显式 run `font-size` 与之独立 | 可编辑普通文本 `a:rPr@baseline`，取值为 `30000` / `-25000`；不会自动缩小字号 | 前向导出为原生能力。PPTX-to-SVG 不在可见 SVG 中重建 baseline shift；未修改的导入 `txBody` metadata 与源保留型原生工作流仍可保留来源 run | 拒绝 inline style、其他元素、数值偏移及与行内公式 marker 组合；结构化数学使用可编辑 OMML，Unicode 字形仍是字面文字 |
 | 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
 | 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
