@@ -74,6 +74,7 @@ IMAGE_ENV_PREFIXES = (
     "ZHIPU_",
     "BIGMODEL_",
     "VOLCENGINE_",
+    "LAS_",
     "ARK_",
     "MODELSCOPE_",
     "SILICONFLOW_",
@@ -90,9 +91,10 @@ DEPRECATED_IMAGE_KEYS = {
 # All aspect ratios accepted by the unified CLI
 # (each backend validates its own subset internally)
 ALL_ASPECT_RATIOS = [
-    "1:1", "1:4", "1:8",
-    "2:3", "3:2", "3:4", "4:1", "4:3",
-    "4:5", "5:4", "8:1", "9:16", "16:9", "21:9"
+    "1:1", "1:2", "1:3", "1:4", "1:8",
+    "2:1", "2:3", "3:1", "3:2", "3:4", "4:1", "4:3",
+    "4:5", "5:4", "8:1", "9:16", "9:21", "10:16",
+    "16:9", "16:10", "21:9",
 ]
 
 ALL_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
@@ -102,7 +104,8 @@ BACKEND_REGISTRY = {
         "module": "backend_gemini",
         "tier": "core",
         "label": "Google Gemini",
-        "default_model": "gemini-3.1-flash-image-preview",
+        "default_model": "gemini-3.1-flash-image",
+        "default_image_size": "1K",
         "key_hint": "GEMINI_API_KEY",
         "aliases": ["google"],
     },
@@ -111,6 +114,7 @@ BACKEND_REGISTRY = {
         "tier": "core",
         "label": "OpenAI / OpenAI-compatible",
         "default_model": "gpt-image-2",
+        "default_image_size": "1K",
         "key_hint": "OPENAI_API_KEY",
         "aliases": ["openai-compatible", "openai_compatible"],
     },
@@ -119,6 +123,7 @@ BACKEND_REGISTRY = {
         "tier": "experimental",
         "label": "MiniMax Image",
         "default_model": "image-01",
+        "default_image_size": "1K",
         "key_hint": "MINIMAX_API_KEY",
         "aliases": ["minimaxi"],
     },
@@ -127,6 +132,7 @@ BACKEND_REGISTRY = {
         "tier": "core",
         "label": "Alibaba Qwen Image",
         "default_model": "qwen-image-2.0-pro",
+        "default_image_size": "1K",
         "key_hint": "QWEN_API_KEY / DASHSCOPE_API_KEY",
         "aliases": ["alibaba", "dashscope"],
     },
@@ -135,6 +141,7 @@ BACKEND_REGISTRY = {
         "tier": "core",
         "label": "Zhipu GLM-Image",
         "default_model": "glm-image",
+        "default_image_size": "1K",
         "key_hint": "ZHIPU_API_KEY / BIGMODEL_API_KEY",
         "aliases": ["bigmodel", "glm", "glm-image"],
     },
@@ -143,14 +150,17 @@ BACKEND_REGISTRY = {
         "tier": "core",
         "label": "Volcengine Seedream",
         "default_model": "doubao-seedream-4-5-251128",
-        "key_hint": "VOLCENGINE_API_KEY / ARK_API_KEY",
+        "default_image_size": "2K",
+        "key_hint": "LAS_API_KEY / VOLCENGINE_API_KEY / ARK_API_KEY",
         "aliases": ["ark", "doubao", "seedream"],
     },
     "modelscope": {
         "module": "backend_modelscope",
         "tier": "experimental",
         "label": "ModelScope",
-        "default_model": "Tongyi-MAI/Z-Image-Turbo",
+        "default_model": None,
+        "model_hint": "MODELSCOPE_MODEL",
+        "default_image_size": "1K",
         "key_hint": "MODELSCOPE_API_KEY",
         "aliases": ["modelscope", "model-scope"]
     },
@@ -159,6 +169,7 @@ BACKEND_REGISTRY = {
         "tier": "extended",
         "label": "Stability AI",
         "default_model": "stable-image-core",
+        "default_image_size": "1K",
         "key_hint": "STABILITY_API_KEY",
         "aliases": ["stabilityai", "stability-ai"],
     },
@@ -167,6 +178,7 @@ BACKEND_REGISTRY = {
         "tier": "extended",
         "label": "Black Forest Labs FLUX",
         "default_model": "flux-pro-1.1-ultra",
+        "default_image_size": "1K",
         "key_hint": "BFL_API_KEY",
         "aliases": ["flux", "black-forest-labs", "black_forest_labs"],
     },
@@ -175,6 +187,7 @@ BACKEND_REGISTRY = {
         "tier": "extended",
         "label": "Ideogram",
         "default_model": "ideogram-v3",
+        "default_image_size": "1K",
         "key_hint": "IDEOGRAM_API_KEY",
     },
     "siliconflow": {
@@ -182,6 +195,7 @@ BACKEND_REGISTRY = {
         "tier": "experimental",
         "label": "SiliconFlow",
         "default_model": "Qwen/Qwen-Image",
+        "default_image_size": "1K",
         "key_hint": "SILICONFLOW_API_KEY",
         "aliases": ["silicon"],
     },
@@ -189,7 +203,8 @@ BACKEND_REGISTRY = {
         "module": "backend_fal",
         "tier": "experimental",
         "label": "fal.ai",
-        "default_model": "fal-ai/imagen3/fast",
+        "default_model": "fal-ai/nano-banana-2",
+        "default_image_size": "1K",
         "key_hint": "FAL_KEY / FAL_API_KEY",
         "aliases": ["fal-ai"],
     },
@@ -198,13 +213,15 @@ BACKEND_REGISTRY = {
         "tier": "experimental",
         "label": "Replicate",
         "default_model": "black-forest-labs/flux-1.1-pro",
+        "default_image_size": "1K",
         "key_hint": "REPLICATE_API_TOKEN / REPLICATE_API_KEY",
     },
     "openrouter": {
         "module": "backend_openrouter",
         "tier": "experimental",
         "label": "OpenRouter",
-        "default_model": "google/gemini-3.1-flash-image-preview",
+        "default_model": "google/gemini-3.1-flash-image",
+        "default_image_size": "1K",
         "key_hint": "OPENROUTER_API_KEY",
     },
 }
@@ -299,8 +316,14 @@ def _print_backend_list() -> None:
         ):
             if info["tier"] != tier:
                 continue
+            if info["default_model"]:
+                model_label = f"default={info['default_model']}"
+            else:
+                model_label = f"model=required via {info['model_hint']}"
             print(
-                f"  {name:<12} {info['label']} | default={info['default_model']} | keys={info['key_hint']}"
+                f"  {name:<12} {info['label']} | "
+                f"{model_label} | "
+                f"size={info['default_image_size']} | keys={info['key_hint']}"
             )
         print()
     print("Recommendation: prefer CORE backends for everyday PPT generation.")
@@ -1122,8 +1145,11 @@ def main() -> None:
         help=f"Aspect ratio. Default: 1:1."
     )
     parser.add_argument(
-        "--image_size", default="1K",
-        help=f"Image size. Choices: {ALL_IMAGE_SIZES}. Default: 1K. (case-insensitive)"
+        "--image_size", default=None,
+        help=(
+            f"Image size. Choices: {ALL_IMAGE_SIZES}. Default depends on the "
+            "backend and is shown by --list-backends. (case-insensitive)"
+        ),
     )
     parser.add_argument(
         "--output", "-o", default=None,
@@ -1261,6 +1287,10 @@ def main() -> None:
         os.environ["IMAGE_BACKEND"] = args.backend
 
     backend, backend_name = _resolve_backend()
+    image_size = (
+        args.image_size
+        or BACKEND_REGISTRY[backend_name]["default_image_size"]
+    )
     print(f"Using backend: {backend_name}\n")
 
     if args.manifest:
@@ -1269,7 +1299,7 @@ def main() -> None:
             _, failed, _ = _run_manifest(
                 manifest, args.manifest, backend,
                 initial_concurrency=concurrency,
-                image_size=args.image_size,
+                image_size=image_size,
                 output_dir=str(manifest_output_dir),
                 model=args.model,
             )
@@ -1288,7 +1318,7 @@ def main() -> None:
     gen_kwargs = {
         "prompt": prompt,
         "aspect_ratio": args.aspect_ratio,
-        "image_size": args.image_size,
+        "image_size": image_size,
         "output_dir": args.output,
         "filename": args.filename,
         "model": args.model,
