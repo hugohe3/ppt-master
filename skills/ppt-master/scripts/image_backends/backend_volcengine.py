@@ -3,9 +3,9 @@
 Volcengine Seedream image generation backend.
 
 Configuration keys:
-  VOLCENGINE_API_KEY / ARK_API_KEY   (required)
+  LAS_API_KEY / VOLCENGINE_API_KEY / ARK_API_KEY   (required)
   VOLCENGINE_BASE_URL                (optional)
-  VOLCENGINE_MODEL                   (optional)
+  VOLCENGINE_MODEL                   (optional; Seedream 4.5 only)
 """
 
 import sys
@@ -43,57 +43,41 @@ from image_backends.backend_common import (
 
 DEFAULT_ENDPOINT = "https://operator.las.cn-beijing.volces.com/api/v1/images/generations"
 DEFAULT_MODEL = "doubao-seedream-4-5-251128"
+DEFAULT_IMAGE_SIZE = "2K"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 ASPECT_RATIO_SIZE_MAP = {
-    "512px": {
-        "1:1": "1024x1024",
-        "2:3": "1024x1536",
-        "3:2": "1536x1024",
-        "3:4": "1024x1365",
-        "4:3": "1365x1024",
-        "4:5": "1024x1280",
-        "5:4": "1280x1024",
-        "9:16": "1024x1820",
-        "16:9": "1820x1024",
-        "21:9": "2048x878",
-    },
-    "1K": {
-        "1:1": "1536x1536",
-        "2:3": "1344x2016",
-        "3:2": "2016x1344",
-        "3:4": "1440x1920",
-        "4:3": "1920x1440",
-        "4:5": "1536x1920",
-        "5:4": "1920x1536",
-        "9:16": "1152x2048",
-        "16:9": "2048x1152",
-        "21:9": "2048x878",
-    },
     "2K": {
         "1:1": "2048x2048",
-        "2:3": "1536x2048",
-        "3:2": "2048x1536",
-        "3:4": "1536x2048",
-        "4:3": "2048x1536",
-        "4:5": "1638x2048",
-        "5:4": "2048x1638",
-        "9:16": "1152x2048",
-        "16:9": "2048x1152",
-        "21:9": "2048x878",
+        "2:3": "1664x2496",
+        "3:2": "2496x1664",
+        "3:4": "1728x2304",
+        "4:3": "2304x1728",
+        "9:16": "1600x2848",
+        "16:9": "2848x1600",
+        "21:9": "3136x1344",
     },
     "4K": {
-        "1:1": "2048x2048",
-        "2:3": "1536x2048",
-        "3:2": "2048x1536",
-        "3:4": "1536x2048",
-        "4:3": "2048x1536",
-        "4:5": "1638x2048",
-        "5:4": "2048x1638",
-        "9:16": "1152x2048",
-        "16:9": "2048x1152",
-        "21:9": "2048x878",
+        "1:1": "4096x4096",
+        "2:3": "3328x4992",
+        "3:2": "4992x3328",
+        "3:4": "3520x4704",
+        "4:3": "4704x3520",
+        "9:16": "3040x5504",
+        "16:9": "5504x3040",
+        "21:9": "6240x2656",
     },
 }
+
+
+def _validate_model(model: str) -> str:
+    """Limit the backend to the Seedream 4.5 contract implemented below."""
+    resolved = model.strip()
+    if resolved not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported Volcengine model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    return resolved
 
 
 def _resolve_url(base_url: str) -> str:
@@ -101,15 +85,24 @@ def _resolve_url(base_url: str) -> str:
     base = base_url.rstrip("/")
     if base.endswith("/images/generations"):
         return base
+    if base.endswith("/api/v1"):
+        return base + "/images/generations"
     return base + "/api/v1/images/generations"
 
 
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
-    size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
+    sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
+    if sizes is None:
+        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for Volcengine backend. "
+            f"Seedream 4.5 supports these sizes: {supported_sizes}."
+        )
+    size = sizes.get(aspect_ratio)
     if not size:
-        supported = sorted(ASPECT_RATIO_SIZE_MAP["1K"])
+        supported = sorted(sizes)
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for Volcengine backend. "
             f"Supported: {supported}"
@@ -118,10 +111,11 @@ def _resolve_size(aspect_ratio: str, image_size: str) -> str:
 
 
 def _generate_image(api_key: str, prompt: str,
-                    aspect_ratio: str = "1:1", image_size: str = "1K",
+                    aspect_ratio: str = "1:1", image_size: str = DEFAULT_IMAGE_SIZE,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the Volcengine backend."""
+    model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size)
     url = _resolve_url(base_url)
     headers = {
@@ -162,17 +156,24 @@ def _generate_image(api_key: str, prompt: str,
 
 
 def generate(prompt: str,
-             aspect_ratio: str = "1:1", image_size: str = "1K",
+             aspect_ratio: str = "1:1", image_size: str = DEFAULT_IMAGE_SIZE,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Volcengine backend."""
+    resolved_model = model or os.environ.get("VOLCENGINE_MODEL") or DEFAULT_MODEL
+    _validate_model(resolved_model)
+    normalized_size = normalize_image_size(image_size)
+    _resolve_size(aspect_ratio, normalized_size)
     api_key = require_api_key(
+        "LAS_API_KEY",
         "VOLCENGINE_API_KEY",
         "ARK_API_KEY",
-        message="No API key found. Set VOLCENGINE_API_KEY or ARK_API_KEY in the current environment or a .env file.",
+        message=(
+            "No API key found. Set LAS_API_KEY, VOLCENGINE_API_KEY, or "
+            "ARK_API_KEY in the current environment or a .env file."
+        ),
     )
     base_url = os.environ.get("VOLCENGINE_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("VOLCENGINE_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
@@ -181,7 +182,7 @@ def generate(prompt: str,
                 api_key=api_key,
                 prompt=prompt,
                 aspect_ratio=aspect_ratio,
-                image_size=image_size,
+                image_size=normalized_size,
                 output_dir=output_dir,
                 filename=filename,
                 model=resolved_model,

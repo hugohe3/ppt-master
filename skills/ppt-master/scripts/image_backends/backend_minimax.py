@@ -5,7 +5,7 @@ MiniMax image generation backend.
 Configuration keys:
   MINIMAX_API_KEY   (required)
   MINIMAX_BASE_URL  (optional)
-  MINIMAX_MODEL     (optional)
+  MINIMAX_MODEL     (optional; image-01 only)
 """
 
 import sys
@@ -45,19 +45,20 @@ from image_backends.backend_common import (
 
 DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/image_generation"
 DEFAULT_MODEL = "image-01"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 # International fallback: set MINIMAX_BASE_URL=https://api.minimax.io if needed
 
 ASPECT_RATIO_SIZE_MAP = {
     "512px": {
         "1:1": (512, 512),
-        "16:9": (640, 360),
-        "4:3": (576, 432),
-        "3:2": (624, 416),
-        "2:3": (416, 624),
-        "3:4": (432, 576),
-        "9:16": (360, 640),
-        "21:9": (672, 288),
+        "16:9": (912, 512),
+        "4:3": (680, 512),
+        "3:2": (768, 512),
+        "2:3": (512, 768),
+        "3:4": (512, 680),
+        "9:16": (512, 912),
+        "21:9": (1192, 512),
     },
     "1K": {
         "1:1": (1024, 1024),
@@ -79,17 +80,17 @@ ASPECT_RATIO_SIZE_MAP = {
         "9:16": (1152, 2048),
         "21:9": (2048, 880),
     },
-    "4K": {
-        "1:1": (2048, 2048),
-        "16:9": (2048, 1152),
-        "4:3": (2048, 1536),
-        "3:2": (2048, 1368),
-        "2:3": (1368, 2048),
-        "3:4": (1536, 2048),
-        "9:16": (1152, 2048),
-        "21:9": (2048, 880),
-    },
 }
+
+
+def _validate_model(model: str) -> str:
+    """Limit the backend to the model contract implemented below."""
+    resolved = model.strip()
+    if resolved not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported MiniMax model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    return resolved
 
 
 def _resolve_url(base_url: str) -> str:
@@ -111,9 +112,16 @@ def _resolve_url(base_url: str) -> str:
 def _resolve_dimensions(aspect_ratio: str, image_size: str) -> tuple[int, int]:
     """Resolve width and height from the unified aspect_ratio/image_size pair."""
     normalized = normalize_image_size(image_size)
-    dimensions = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
+    sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
+    if sizes is None:
+        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for MiniMax backend. "
+            f"image-01 supports these logical sizes: {supported_sizes}."
+        )
+    dimensions = sizes.get(aspect_ratio)
     if not dimensions:
-        supported = sorted(ASPECT_RATIO_SIZE_MAP["1K"])
+        supported = sorted(sizes)
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for MiniMax backend. "
             f"Supported: {supported}"
@@ -135,6 +143,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the MiniMax backend."""
+    model = _validate_model(model)
     width, height = _resolve_dimensions(aspect_ratio, image_size)
     url = _resolve_url(base_url)
 
@@ -185,13 +194,15 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the MiniMax backend."""
+    resolved_model = model or os.environ.get("MINIMAX_MODEL") or DEFAULT_MODEL
+    _validate_model(resolved_model)
+    normalized_size = normalize_image_size(image_size)
+    _resolve_dimensions(aspect_ratio, normalized_size)
     api_key = require_api_key(
         "MINIMAX_API_KEY",
         message="No API key found. Set MINIMAX_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("MINIMAX_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("MINIMAX_MODEL") or DEFAULT_MODEL
-    normalized_size = normalize_image_size(image_size)
 
     last_error = None
     for attempt in range(max_retries + 1):

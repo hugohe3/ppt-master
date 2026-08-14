@@ -57,7 +57,48 @@ VALID_ASPECT_RATIOS = [
 
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
-DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
+DEFAULT_MODEL = "gemini-3.1-flash-image"
+
+GEMINI_2_5_FLASH_IMAGE_MODELS = {
+    "gemini-2.5-flash-image",
+    "gemini-2.5-flash-image-preview",
+}
+GEMINI_2_5_VALID_ASPECT_RATIOS = [
+    "1:1", "2:3", "3:2", "3:4", "4:3",
+    "4:5", "5:4", "9:16", "16:9", "21:9",
+]
+GEMINI_2_5_VALID_IMAGE_SIZES = ["1K"]
+
+MINIMAL_THINKING_MODELS = {
+    "gemini-3.1-flash-image",
+    "gemini-3.1-flash-image-preview",
+}
+
+
+def _model_id(model: str) -> str:
+    """Return the final model path component for official capability checks."""
+    return (model or "").strip().lower().rsplit("/", 1)[-1]
+
+
+def _request_image_size(image_size: str) -> str:
+    """Map the public 512px preset to Gemini's API value."""
+    return "512" if image_size == "512px" else image_size
+
+
+def _validate_model_options(model: str, aspect_ratio: str, image_size: str) -> None:
+    """Enforce limits only for Gemini models with a known narrower contract."""
+    if _model_id(model) not in GEMINI_2_5_FLASH_IMAGE_MODELS:
+        return
+    if aspect_ratio not in GEMINI_2_5_VALID_ASPECT_RATIOS:
+        raise ValueError(
+            f"Invalid aspect ratio '{aspect_ratio}' for {model}. "
+            f"Valid: {GEMINI_2_5_VALID_ASPECT_RATIOS}"
+        )
+    if image_size not in GEMINI_2_5_VALID_IMAGE_SIZES:
+        raise ValueError(
+            f"Invalid image size '{image_size}' for {model}. "
+            f"Valid: {GEMINI_2_5_VALID_IMAGE_SIZES}"
+        )
 
 
 # ╔══════���═══════════════════════════════════════════════��═══════════╗
@@ -86,10 +127,10 @@ def _generate_image(api_key: str, prompt: str,
         "response_modalities": ["IMAGE"],
         "image_config": types.ImageConfig(
             aspect_ratio=aspect_ratio,
-            image_size=image_size,
+            image_size=_request_image_size(image_size),
         ),
     }
-    if "flash" in model.lower():
+    if _model_id(model) in MINIMAL_THINKING_MODELS:
         config_kwargs["thinking_config"] = types.ThinkingConfig(
             thinking_level="MINIMAL",
         )
@@ -186,7 +227,7 @@ def generate(prompt: str,
         image_size: Image size ("512px", "1K", "2K", "4K", case-insensitive)
         output_dir: Output directory
         filename: Output filename (without extension)
-        model: Model name (default: gemini-3.1-flash-image-preview)
+        model: Model name (default: gemini-3.1-flash-image)
         max_retries: Maximum number of retries
 
     Returns:
@@ -210,6 +251,8 @@ def generate(prompt: str,
 
     if image_size not in VALID_IMAGE_SIZES:
         raise ValueError(f"Invalid image size '{image_size}'. Valid: {VALID_IMAGE_SIZES}")
+
+    _validate_model_options(model, aspect_ratio, image_size)
 
     last_error = None
     for attempt in range(max_retries + 1):

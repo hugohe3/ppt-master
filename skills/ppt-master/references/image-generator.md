@@ -619,7 +619,7 @@ The CLI validates the file behind every `Generated` row before skipping it, iter
 |---|---|---|---|
 | `--manifest` | - | Path to `image_prompts.json` | — |
 | `--concurrency` | - | Max concurrent requests; halves on rate-limit, min 1 | `IMAGE_CONCURRENCY` env or `3` |
-| `--image_size` | - | Default size (`512px`/`1K`/`2K`/`4K`); per-item `image_size` wins | `1K` |
+| `--image_size` | - | Default size (`512px`/`1K`/`2K`/`4K`); per-item `image_size` wins | Backend default; see `--list-backends` |
 | `--output` | `-o` | Output directory | Manifest's parent dir |
 | `--backend` | `-b` | Override `IMAGE_BACKEND` for this run | env |
 | `--model` | `-m` | Default model; per-item `model` wins | Backend default |

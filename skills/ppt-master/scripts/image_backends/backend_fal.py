@@ -5,7 +5,7 @@ fal.ai image generation backend.
 Configuration keys:
   FAL_KEY / FAL_API_KEY   (required)
   FAL_BASE_URL            (optional)
-  FAL_MODEL               (optional)
+  FAL_MODEL               (optional; nano-banana-2 only)
 """
 
 import sys
@@ -34,15 +34,53 @@ from image_backends.backend_common import (
     download_image,
     http_error,
     is_rate_limit_error,
+    normalize_image_size,
     require_api_key,
     resolve_output_path,
     retry_delay,
 )
 
 
-VALID_ASPECT_RATIOS = ["1:1", "16:9", "9:16", "3:4", "4:3"]
+VALID_ASPECT_RATIOS = [
+    "1:1", "1:4", "1:8", "2:3", "3:2", "3:4", "4:1",
+    "4:3", "4:5", "5:4", "8:1", "9:16", "16:9", "21:9",
+]
 DEFAULT_ENDPOINT = "https://fal.run"
-DEFAULT_MODEL = "fal-ai/imagen3/fast"
+DEFAULT_MODEL = "fal-ai/nano-banana-2"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
+
+IMAGE_SIZE_TO_RESOLUTION = {
+    "512px": "0.5K",
+    "1K": "1K",
+    "2K": "2K",
+    "4K": "4K",
+}
+
+
+def _resolve_request_options(
+    aspect_ratio: str,
+    image_size: str,
+    model: str,
+) -> tuple[str, str]:
+    """Validate request options and return normalized model and resolution values."""
+    resolved_model = model.strip()
+    if resolved_model not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported fal model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    if aspect_ratio not in VALID_ASPECT_RATIOS:
+        raise ValueError(
+            f"Unsupported aspect ratio '{aspect_ratio}' for fal backend. "
+            f"Supported: {VALID_ASPECT_RATIOS}"
+        )
+    normalized_size = normalize_image_size(image_size)
+    resolution = IMAGE_SIZE_TO_RESOLUTION.get(normalized_size)
+    if not resolution:
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for fal backend. "
+            f"Supported: {list(IMAGE_SIZE_TO_RESOLUTION)}"
+        )
+    return resolved_model, resolution
 
 
 def _resolve_url(base_url: str, model: str) -> str:
@@ -58,13 +96,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the fal.ai backend."""
-    del image_size
-
-    if aspect_ratio not in VALID_ASPECT_RATIOS:
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for fal backend. "
-            f"Supported: {VALID_ASPECT_RATIOS}"
-        )
+    model, resolution = _resolve_request_options(aspect_ratio, image_size, model)
 
     url = _resolve_url(base_url, model)
     headers = {
@@ -75,12 +107,14 @@ def _generate_image(api_key: str, prompt: str,
         "prompt": prompt,
         "aspect_ratio": aspect_ratio,
         "num_images": 1,
+        "resolution": resolution,
     }
 
     print("[fal.ai]")
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
+    print(f"  Resolution:   {resolution}")
     print()
     print("  [..] Generating...", end="", flush=True)
     start = time.time()
@@ -106,13 +140,14 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the fal.ai backend."""
+    resolved_model = model or os.environ.get("FAL_MODEL") or DEFAULT_MODEL
+    _resolve_request_options(aspect_ratio, image_size, resolved_model)
     api_key = require_api_key(
         "FAL_KEY",
         "FAL_API_KEY",
         message="No API key found. Set FAL_KEY or FAL_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("FAL_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("FAL_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
