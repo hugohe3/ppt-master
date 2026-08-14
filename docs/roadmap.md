@@ -64,7 +64,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Palette | Systematized | Declared HEX values are the truth source for named semantic roles; reusable role anchors stay stable deck-wide, while contextual derivatives and sparse page-local accents remain available |
 | Typography | Systematized | One deck-wide size anchor per structural role, with bounded `±2px` per-occurrence adjustment and a sparse non-structural Hero/Display exception |
 | Visual effects | Systematized | Dedicated effects reference; one registered outer shadow or glow compiles to one editable native effect on supported basic objects and compact authored preset shapes |
-| Reading path | Systematized | Entry, progression, hierarchy, and endpoint are planned and qualitatively reviewed per page |
+| Reading path | Systematized | Each page plan declares one primary emphasis anchoring entry, progression, hierarchy, and endpoint; visual review checks the most prominent element and anchor placement against that declaration |
 
 ### Layer 3 — Behavior
 
