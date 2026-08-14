@@ -21,6 +21,7 @@
 | [音频旁白](./audio-narration.md) | 从演讲者备注到逐页旁白：服务商、声音复刻、时序、PPTX 嵌入 |
 | [转场与动画](./animations.md) | 页间转场与页内元素动画的默认行为和自定义方式 |
 | [模板使用指南](./templates-guide.md) | 品牌 / 风格 / 版式 / 成品模板的创建与套用 |
+| [模板制作与校验](./template-authoring.md) | 自定义 `.pptx` 模板的制作清单，以及用只读 intake / manifest 报告进行校验 |
 
 ## 架构与原理
 
