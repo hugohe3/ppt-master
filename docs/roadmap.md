@@ -93,7 +93,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Narration | Systematized | Per-slide audio with provider provenance |
 | Subtitles | Systematized | Word-timed regrouping across supported providers into shared compact SRT |
 | Document metadata | Covered | Set at export rather than left to the packaging library |
-| Accessibility (alt text, reading order) | Not planned | Only AI-generated images carry an `alt_text` field today, so writing it to DrawingML `descr` would cover one source and leave web-sourced images, shapes, charts, and diagrams without a description to write — full coverage means authoring descriptions for every non-text object, not connecting existing data. Reading order is not a separate property in PowerPoint: it is the shape order, which carries the page's visual layering and is not set independently of it |
+| Accessibility (alt text, reading order) | Not planned | AI-generated images carry an `alt_text` field and web-scraped images record the page's often-empty `alt` attribute, but shapes, charts, diagrams, and user-supplied images have no description at all — full coverage means authoring descriptions for every non-text object, not connecting existing data. Reading order is not a separate property in PowerPoint: it is the shape order, which carries the page's visual layering and is not set independently of it |
 | Macros & Office extension XML | Asymmetric by design | Never authored — the generated route does not synthesize VBA; existing macro or extension parts persist only where a macro-aware source-preserving workflow keeps the owning package parts unchanged |
 | Comments, revisions, collaboration state | Not planned | Office collaboration surface, outside the authoring product |
 
