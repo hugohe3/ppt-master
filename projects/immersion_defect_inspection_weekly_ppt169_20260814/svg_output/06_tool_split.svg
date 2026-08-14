@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-INSP · 2026-W33  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">只有 S02 的 D0 与 PWP 同时漂移</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P06 / 08</text>
+  </g>
+  <g id="grouped" data-pptx-bounds="64 160 720 480">
+    <text x="72" y="184" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">D0 /cm²   vs   PWP #/wafer</text>
+    <line x1="80" y1="540" x2="720" y2="540" stroke="#87D9F5" stroke-width="1.5"/>
+    <rect x="120" y="478" width="48" height="62" fill="none" stroke="#32E0C4" stroke-width="2"/><rect x="184" y="454" width="48" height="86" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="144" y="470" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#32E0C4" text-anchor="middle">0.17</text><text x="208" y="446" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">9</text><text x="176" y="572" font-size="20" fill="#EAF7FF" text-anchor="middle">S01</text><rect x="320" y="280" width="48" height="260" fill="none" stroke="#FF6B6B" stroke-width="2"/><rect x="384" y="280" width="48" height="260" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="344" y="272" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#FF6B6B" text-anchor="middle">0.71</text><text x="408" y="272" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">27</text><text x="376" y="572" font-size="20" fill="#EAF7FF" text-anchor="middle">S02</text><rect x="520" y="471" width="48" height="69" fill="none" stroke="#32E0C4" stroke-width="2"/><rect x="584" y="435" width="48" height="105" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="544" y="463" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#32E0C4" text-anchor="middle">0.19</text><text x="608" y="427" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">11</text><text x="576" y="572" font-size="20" fill="#EAF7FF" text-anchor="middle">S03</text>
+    <rect x="80" y="600" width="18" height="18" fill="none" stroke="#FFB454" stroke-width="2"/>
+    <text x="108" y="616" font-size="16" fill="#8BA9B8">D0</text>
+    <rect x="168" y="600" width="18" height="18" fill="none" stroke="#87D9F5" stroke-width="2"/>
+    <text x="196" y="616" font-size="16" fill="#8BA9B8">PWP</text>
+  </g>
+  <g id="adder" data-pptx-bounds="800 180 420 440">
+    <use data-icon="tabler-outline/layers-intersect" x="816" y="188" width="32" height="32" fill="#FFB454"/>
+    <text x="860" y="212" font-size="24" fill="#EAF7FF">当层 adder</text>
+    <text x="816" y="280" font-family="Consolas, Microsoft YaHei, monospace" font-size="48" font-weight="700" fill="#FFB454">+0.24</text>
+    <text x="816" y="320" font-size="20" fill="#8BA9B8">/cm²  vs  前层</text>
+    <line x1="816" y1="352" x2="1180" y2="352" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="816" y="400" font-size="24" fill="#32E0C4">S01  0.17  基线内</text>
+    <text x="816" y="448" font-size="24" fill="#FF6B6B">S02  0.71  超限</text>
+    <text x="816" y="496" font-size="24" fill="#32E0C4">S03  0.19  基线内</text>
+    <text x="816" y="560" font-size="20" fill="#EAF7FF">动作收到 S02，不是全浸没线</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-INSP-W33-06</text>
+  </g>
+</svg>

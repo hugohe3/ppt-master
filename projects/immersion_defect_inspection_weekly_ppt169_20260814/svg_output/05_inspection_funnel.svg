@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-INSP · 2026-W33  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">检测漏斗收敛到 4 个 S02 killer lot</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P05 / 08</text>
+  </g>
+  <g id="funnel" data-pptx-bounds="140 160 1000 420">
+    <rect x="150.0" y="190" width="1000" height="64" fill="#0D2538" stroke="#87D9F5" stroke-width="2"/><text x="640" y="218" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#87D9F5" text-anchor="middle">36</text><text x="640" y="242" font-size="18" fill="#EAF7FF" text-anchor="middle">送检 lot</text><line x1="640" y1="254" x2="640" y2="282" stroke="#87D9F5" stroke-width="1.5"/><rect x="260.0" y="282" width="514" height="64" fill="#0D2538" stroke="#FFB454" stroke-width="2"/><text x="640" y="310" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454" text-anchor="middle">11</text><text x="640" y="334" font-size="18" fill="#EAF7FF" text-anchor="middle">光学超限</text><line x1="640" y1="346" x2="640" y2="374" stroke="#87D9F5" stroke-width="1.5"/><rect x="330.0" y="374" width="436" height="64" fill="#0D2538" stroke="#FFB454" stroke-width="2"/><text x="640" y="402" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454" text-anchor="middle">7</text><text x="640" y="426" font-size="18" fill="#EAF7FF" text-anchor="middle">SEM 复核</text><line x1="640" y1="438" x2="640" y2="466" stroke="#87D9F5" stroke-width="1.5"/><rect x="400.0" y="466" width="378" height="64" fill="#0D2538" stroke="#FF6B6B" stroke-width="2"/><text x="640" y="494" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FF6B6B" text-anchor="middle">4</text><text x="640" y="518" font-size="18" fill="#EAF7FF" text-anchor="middle">killer lot</text>
+  </g>
+  <g id="lot-track" data-pptx-bounds="80 580 1120 80">
+    <use data-icon="tabler-outline/chart-funnel" x="80" y="590" width="28" height="28" fill="#FF6B6B"/>
+    <text x="120" y="612" font-size="20" fill="#EAF7FF">L33-S02-07  ·  L33-S02-09  ·  L33-S02-12  ·  L33-S02-18</text>
+    <text x="120" y="644" font-size="18" fill="#8BA9B8">同一浸没头周期。动作是关 S02 残液，不是全线停。</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-INSP-W33-05</text>
+  </g>
+</svg>

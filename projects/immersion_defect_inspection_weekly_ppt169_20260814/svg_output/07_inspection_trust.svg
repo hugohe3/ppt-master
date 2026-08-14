@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-INSP · 2026-W33  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">总数上升被 nuisance 放大，不要先收阈值</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P07 / 08</text>
+  </g>
+  <g id="tracks" data-pptx-bounds="56 160 1180 420">
+    <g>
+    <text x="72" y="200" font-size="24" fill="#EAF7FF">Capture rate</text>
+    <text x="72" y="232" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">91%   基线 93%</text>
+    <rect x="520" y="182" width="400" height="14" fill="none" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="940" y="200" font-size="18" fill="#8BA9B8">DOI 捕获稳定</text>
+  </g>
+    <g>
+    <text x="72" y="320" font-size="24" fill="#EAF7FF">Nuisance</text>
+    <text x="72" y="352" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#FFB454">18%   基线 9%</text>
+    <rect x="520" y="302" width="400" height="14" fill="none" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="940" y="320" font-size="18" fill="#8BA9B8">recipe 偏热</text>
+  </g>
+    <g>
+    <text x="72" y="440" font-size="24" fill="#EAF7FF">SNV</text>
+    <text x="72" y="472" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#FFB454">22%   基线 11%</text>
+    <rect x="520" y="422" width="400" height="14" fill="none" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="940" y="440" font-size="18" fill="#8BA9B8">前层 + 视场，不全是假点</text>
+  </g>
+    <text x="72" y="540" font-size="24" fill="#EAF7FF">False  0.8%  （基线 0.6%，仍低于 1%）</text>
+  </g>
+  <g id="ban" data-pptx-bounds="56 560 1180 90">
+    <rect x="56" y="568" width="1168" height="72" fill="none" stroke="#FF6B6B" stroke-width="2"/>
+    <use data-icon="tabler-outline/alert-triangle" x="80" y="588" width="32" height="32" fill="#FF6B6B"/>
+    <text x="128" y="614" font-size="24" fill="#FF6B6B">红线：本周冻结 recipe 阈值。收热会同时打掉捕获率，造成假回收。</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-INSP-W33-07</text>
+  </g>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-193I-24  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">窗口超前，关键路径在 hood 与边缘</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P02 / 08</text>
+  </g>
+  <g id="hero-panel" data-pptx-bounds="48 148 360 500">
+    <rect x="48" y="148" width="360" height="500" fill="#0D2538" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="72" y="200" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">COMPLETION</text>
+    <text x="72" y="300" font-family="Consolas, Microsoft YaHei, monospace" font-size="56" font-weight="700" fill="#32E0C4">61.4%</text>
+    <text x="72" y="360" font-size="20" fill="#FFB454">落后 3.8 个百分点</text>
+    <line x1="72" y1="392" x2="360" y2="392" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="72" y="450" font-size="24" fill="#EAF7FF">按时决策可追回约 6 天</text>
+    <text x="72" y="500" font-size="20" fill="#8BA9B8">守住 12 月 15 日资格包</text>
+  </g>
+  <g id="signals" data-pptx-bounds="432 148 800 500">
+    <line x1="448" y1="148" x2="448" y2="648" stroke="#87D9F5" stroke-width="2"/>
+    <circle cx="448" cy="200" r="8" fill="#32E0C4"/>
+    <text x="480" y="208" font-size="24" fill="#EAF7FF">进展  工艺窗口 88% 超前</text>
+    <text x="480" y="244" font-size="20" fill="#8BA9B8">物料规格 81% 按期</text>
+    <circle cx="448" cy="320" r="8" fill="#FFB454"/>
+    <text x="480" y="328" font-size="24" fill="#EAF7FF">能力  检测策略 58%</text>
+    <text x="480" y="364" font-size="20" fill="#8BA9B8">非图形与 ADI 相关 0.62，目标 0.80</text>
+    <circle cx="448" cy="440" r="8" fill="#FF6B6B"/>
+    <text x="480" y="448" font-size="24" fill="#EAF7FF">风险  设备 44% / 边缘 39%</text>
+    <text x="480" y="484" font-size="20" fill="#8BA9B8">S02 PWP 27，PM 窗口被产能挤占</text>
+    <circle cx="448" cy="560" r="8" fill="#FFB454"/>
+    <text x="480" y="568" font-size="24" fill="#EAF7FF">决策  D01–D05 须在 8 月 21 日前</text>
+    <text x="480" y="604" font-size="20" fill="#8BA9B8">冻结阈值，并给出 8 小时 PM</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-193I-24-02</text>
+  </g>
+</svg>

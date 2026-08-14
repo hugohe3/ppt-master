@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="cover" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="cover-title" data-pptx-bounds="48 44 780 150">
+    <text x="56" y="72" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" letter-spacing="2" fill="#87D9F5">PROJECT REVIEW  ·  2026-08-13</text>
+    <text x="56" y="128" font-size="42" font-weight="700" fill="#EAF7FF">浸没缺陷能力建设项目进展</text>
+    <text x="56" y="172" font-size="24" fill="#8BA9B8">DEF-193I-24 ｜ 阶段验收 2026-12-15</text>
+    <line x1="56" y1="190" x2="640" y2="190" stroke="#32E0C4" stroke-width="3"/>
+  </g>
+  <g id="hero" data-pptx-bounds="48 230 500 300">
+    <text x="56" y="262" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">OVERALL COMPLETION</text>
+    <text x="56" y="372" font-family="Consolas, Microsoft YaHei, monospace" font-size="72" font-weight="700" fill="#32E0C4">61.4%</text>
+    <text x="56" y="430" font-size="24" fill="#EAF7FF">较基线落后 3.8 个百分点</text>
+    <text x="56" y="474" font-size="20" fill="#FFB454">关键路径：hood PM 与边缘工程</text>
+  </g>
+  <g id="path" data-pptx-bounds="600 250 620 300">
+    <path d="M620 480H780V420H960V380H1160" fill="none" stroke="#FFB454" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="620" cy="480" r="8" fill="#32E0C4"/>
+    <circle cx="780" cy="420" r="8" fill="#32E0C4"/>
+    <circle cx="960" cy="380" r="8" fill="#FFB454"/>
+    <circle cx="1160" cy="380" r="10" fill="#87D9F5"/>
+    <text x="600" y="520" font-size="18" fill="#32E0C4">窗口</text>
+    <text x="750" y="400" font-size="18" fill="#32E0C4">物料</text>
+    <text x="930" y="360" font-size="18" fill="#FFB454">hood</text>
+    <text x="1100" y="360" font-size="18" fill="#87D9F5">资格</text>
+  </g>
+  <g id="cover-footer" data-pptx-bounds="48 640 1184 48">
+    <rect x="56" y="648" width="190" height="30" fill="#FFB454"/>
+    <text x="151" y="670" font-size="18" font-weight="700" fill="#071827" text-anchor="middle">演示用虚构案例</text>
+    <text x="1232" y="670" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-193I-24-01</text>
+  </g>
+</svg>

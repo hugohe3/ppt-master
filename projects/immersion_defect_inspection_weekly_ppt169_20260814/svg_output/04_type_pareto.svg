@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-INSP · 2026-W33  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">按杀伤比加权后，水印优先于颗粒柱</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P04 / 08</text>
+  </g>
+  <g id="pareto" data-pptx-bounds="56 150 680 500">
+    <text x="64" y="176" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">SEM CLASS  n=280</text>
+    <line x1="72" y1="560" x2="700" y2="560" stroke="#87D9F5" stroke-width="1.5"/>
+    <line x1="72" y1="240" x2="72" y2="560" stroke="#87D9F5" stroke-width="1.5"/>
+    <rect x="80" y="312" width="64" height="248" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="112" y="304" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">31%</text><text x="112" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">颗粒</text><rect x="166" y="336" width="64" height="224" fill="none" stroke="#FF6B6B" stroke-width="2"/><text x="198" y="328" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#FF6B6B" text-anchor="middle">28%</text><text x="198" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">水印</text><rect x="252" y="448" width="64" height="112" fill="none" stroke="#FFB454" stroke-width="2"/><text x="284" y="440" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#FFB454" text-anchor="middle">14%</text><text x="284" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">微桥</text><rect x="338" y="464" width="64" height="96" fill="none" stroke="#8BA9B8" stroke-width="2"/><text x="370" y="456" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="middle">12%</text><text x="370" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">SNV</text><rect x="424" y="504" width="64" height="56" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="456" y="496" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">7%</text><text x="456" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">气泡</text><rect x="510" y="528" width="64" height="32" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="542" y="520" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">4%</text><text x="542" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">反气泡</text><rect x="596" y="528" width="64" height="32" fill="none" stroke="#87D9F5" stroke-width="2"/><text x="628" y="520" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5" text-anchor="middle">4%</text><text x="628" y="588" font-size="16" fill="#8BA9B8" text-anchor="middle">其他</text><circle cx="112" cy="461" r="4" fill="#32E0C4"/><circle cx="198" cy="371" r="4" fill="#32E0C4"/><circle cx="284" cy="326" r="4" fill="#32E0C4"/><circle cx="370" cy="288" r="4" fill="#32E0C4"/><circle cx="456" cy="266" r="4" fill="#32E0C4"/><circle cx="542" cy="253" r="4" fill="#32E0C4"/><circle cx="628" cy="240" r="4" fill="#32E0C4"/>
+    <polyline points="112,461 198,371 284,326 370,288 456,266 542,253 628,240" fill="none" stroke="#32E0C4" stroke-width="2"/>
+    <text x="640" y="230" font-size="16" fill="#32E0C4">累计</text>
+  </g>
+  <g id="kill-ratio" data-pptx-bounds="760 168 460 470">
+    <text x="776" y="196" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">KILL RATIO</text>
+    <line x1="776" y1="214" x2="1200" y2="214" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="776" y="268" font-size="24" fill="#FF6B6B">水印  0.62   优先 1</text>
+    <rect x="776" y="284" width="310" height="10" fill="none" stroke="#FF6B6B" stroke-width="2"/>
+    <rect x="776" y="284" width="192" height="10" fill="#FF6B6B"/>
+    <text x="776" y="340" font-size="24" fill="#FFB454">微桥  0.41   优先 2</text>
+    <rect x="776" y="356" width="310" height="10" fill="none" stroke="#FFB454" stroke-width="2"/>
+    <rect x="776" y="356" width="127" height="10" fill="#FFB454"/>
+    <text x="776" y="412" font-size="24" fill="#87D9F5">气泡  0.35   优先 4</text>
+    <rect x="776" y="428" width="310" height="10" fill="none" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="776" y="428" width="108" height="10" fill="#87D9F5"/>
+    <text x="776" y="484" font-size="24" fill="#8BA9B8">颗粒  0.18   优先 3</text>
+    <rect x="776" y="500" width="310" height="10" fill="none" stroke="#8BA9B8" stroke-width="2"/>
+    <rect x="776" y="500" width="56" height="10" fill="#8BA9B8"/>
+    <text x="776" y="560" font-size="18" fill="#FFB454">SNV 12% 不进杀伤排序</text>
+    <text x="776" y="600" font-size="20" fill="#EAF7FF">不要按颗数最高柱打颗粒</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-INSP-W33-04</text>
+  </g>
+</svg>

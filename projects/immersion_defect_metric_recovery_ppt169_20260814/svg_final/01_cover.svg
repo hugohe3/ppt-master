@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="cover" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="cover-title" data-pptx-bounds="48 44 760 150">
+    <text x="56" y="72" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" letter-spacing="2" fill="#87D9F5">METRIC RECOVERY  ·  2026-W31–W33</text>
+    <text x="56" y="128" font-size="42" font-weight="700" fill="#EAF7FF">浸没式光刻缺陷指标回收</text>
+    <text x="56" y="172" font-size="24" fill="#8BA9B8">L28 水印 D0 ｜ 目标关闭 W35</text>
+    <line x1="56" y1="190" x2="560" y2="190" stroke="#32E0C4" stroke-width="3"/>
+  </g>
+  <g id="hero" data-pptx-bounds="48 230 620 300">
+    <text x="56" y="262" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#8BA9B8">D0  /cm²</text>
+    <text x="56" y="360" font-family="Consolas, Microsoft YaHei, monospace" font-size="64" font-weight="700" fill="#FFB454">0.51</text>
+    <text x="280" y="340" font-size="32" fill="#8BA9B8">→</text>
+    <text x="340" y="360" font-family="Consolas, Microsoft YaHei, monospace" font-size="64" font-weight="700" fill="#32E0C4">0.29</text>
+    <text x="56" y="420" font-size="24" fill="#EAF7FF">目标 0.20 ｜ 剩余 0.09</text>
+    <text x="56" y="464" font-size="20" fill="#FFB454">真实工艺回收约 0.16，不含阈值假象</text>
+  </g>
+  <g id="gap-bar" data-pptx-bounds="720 250 500 280">
+    <text x="740" y="280" font-family="Consolas, Microsoft YaHei, monospace" font-size="18" fill="#87D9F5">REMAINING GAP</text>
+    <rect x="740" y="320" width="440" height="28" fill="none" stroke="#87D9F5" stroke-width="2"/>
+    <rect x="740" y="320" width="198" height="28" fill="#32E0C4"/>
+    <rect x="938" y="320" width="154" height="28" fill="#FFB454"/>
+    <text x="740" y="390" font-size="20" fill="#32E0C4">已回收 0.22 表观 / 0.16 真实</text>
+    <text x="740" y="430" font-size="20" fill="#FFB454">剩余挂在后淋洗与 hood 气帘</text>
+    <text x="740" y="490" font-size="20" fill="#FF6B6B">禁止把 recipe 收热算作回收</text>
+  </g>
+  <g id="cover-footer" data-pptx-bounds="48 640 1184 48">
+    <rect x="56" y="648" width="190" height="30" fill="#FFB454"/>
+    <text x="151" y="670" font-size="18" font-weight="700" fill="#071827" text-anchor="middle">演示用虚构案例</text>
+    <text x="1232" y="670" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-REC-W33-01</text>
+  </g>
+</svg>

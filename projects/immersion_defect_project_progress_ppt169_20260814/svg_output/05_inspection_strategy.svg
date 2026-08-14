@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-193I-24  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">非图形监控尚未锁住 ADI 水印</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P05 / 08</text>
+  </g>
+  <g id="corr" data-pptx-bounds="56 168 1180 470">
+    <text x="72" y="210" font-size="24" fill="#EAF7FF">非图形 vs ADI 水印相关</text>
+    <text x="72" y="300" font-family="Consolas, Microsoft YaHei, monospace" font-size="56" font-weight="700" fill="#FFB454">0.62</text>
+    <text x="72" y="350" font-size="24" fill="#8BA9B8">目标 0.80 ｜ M6 预测延后 7 天</text>
+    <line x1="72" y1="390" x2="600" y2="390" stroke="#87D9F5" stroke-width="1.5"/>
+    <text x="72" y="440" font-size="24" fill="#EAF7FF">SNV 28% → 22%（坐标补偿试点）</text>
+    <text x="72" y="488" font-size="24" fill="#FFB454">内控仍要 &lt;15%</text>
+    <text x="72" y="548" font-size="20" fill="#8BA9B8">DSA 当层/前层规则已草稿，未进 SPC</text>
+    <rect x="720" y="200" width="480" height="360" fill="#0D2538" stroke="#87D9F5" stroke-width="1.5"/>
+    <use data-icon="tabler-outline/zoom-scan" x="748" y="224" width="32" height="32" fill="#87D9F5"/>
+    <text x="792" y="248" font-size="24" fill="#EAF7FF">监测缺口</text>
+    <text x="748" y="310" font-size="20" fill="#EAF7FF">图形 ADI 捕获 91%</text>
+    <text x="748" y="358" font-size="20" fill="#FFB454">非图形相关未锁</text>
+    <text x="748" y="406" font-size="20" fill="#FFB454">SNV 治理停在试点</text>
+    <text x="748" y="454" font-size="20" fill="#8BA9B8">DUV 小缺陷能力未铺开</text>
+    <text x="748" y="520" font-size="20" fill="#32E0C4">需要增补 SEM 机时 20%</text>
+  </g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-193I-24-05</text>
+  </g>
+</svg>

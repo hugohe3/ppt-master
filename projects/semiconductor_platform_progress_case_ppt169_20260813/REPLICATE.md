@@ -2,7 +2,15 @@
 
 本文件面向公司内网 Agent。当前参考模型是 **DeepSeek V4 Flash 0731**，无生图能力。不要把材料上传到公网。
 
-**结论先行**：复刻的是工程蓝图这套**视觉语言**，不是把新内容填进这 11 页现成骨架。页数、信息架构和每页构图必须按你提供的材料重新规划；配色、字体、网格、线框语法和质量门不可改。无生图不是障碍——这份案例本来就禁止配图。
+**结论先行**：复刻的是工程蓝图这套**视觉语言**，不是把新内容填进现成骨架。页数、信息架构和每页构图必须按你提供的材料重新规划；配色、字体、网格、线框语法和质量门不可改。无生图不是障碍——这些样板本来就禁止配图。
+
+浸没式光刻缺陷周报请优先对照这三份专项样板，而不是半导体设备平台那 11 页：
+
+| 周会类型 | 项目目录 | 导出 PPTX |
+| --- | --- | --- |
+| 缺陷检测结果 | `projects/immersion_defect_inspection_weekly_ppt169_20260814/` | `exports/immersion_defect_inspection_weekly_20260814_024226.pptx` |
+| 指标回收 | `projects/immersion_defect_metric_recovery_ppt169_20260814/` | `exports/immersion_defect_metric_recovery_20260814_024240.pptx` |
+| 项目进展 | `projects/immersion_defect_project_progress_ppt169_20260814/` | `exports/immersion_defect_project_progress_20260814_024250.pptx` |
 
 ---
 

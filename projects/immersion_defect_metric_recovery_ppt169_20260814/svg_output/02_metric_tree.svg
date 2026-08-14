@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+  <rect id="background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#071827"/>
+  <path id="blueprint-grid" data-pptx-role="decoration" d="M40 0V720 M80 0V720 M120 0V720 M160 0V720 M200 0V720 M240 0V720 M280 0V720 M320 0V720 M360 0V720 M400 0V720 M440 0V720 M480 0V720 M520 0V720 M560 0V720 M600 0V720 M640 0V720 M680 0V720 M720 0V720 M760 0V720 M800 0V720 M840 0V720 M880 0V720 M920 0V720 M960 0V720 M1000 0V720 M1040 0V720 M1080 0V720 M1120 0V720 M1160 0V720 M1200 0V720 M1240 0V720 M1280 0V720 M0 40H1280 M0 80H1280 M0 120H1280 M0 160H1280 M0 200H1280 M0 240H1280 M0 280H1280 M0 320H1280 M0 360H1280 M0 400H1280 M0 440H1280 M0 480H1280 M0 520H1280 M0 560H1280 M0 600H1280 M0 640H1280 M0 680H1280 M0 720H1280" fill="none" stroke="#16384C" stroke-width="1" stroke-opacity="0.45"/>
+  <g id="page-header" data-pptx-bounds="40 20 1240 112">
+    <text x="48" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" letter-spacing="2" fill="#87D9F5">DEF-REC · 2026-W33  ·  2026-08-13</text>
+    <text x="48" y="108" font-size="42" font-weight="700" fill="#EAF7FF">主指标在回收，捕获率已从阈值假象拉回</text>
+    <text x="1232" y="50" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">P02 / 08</text>
+  </g>
+  <g id="cols" data-pptx-bounds="56 140 1180 40">
+    <text x="72" y="156" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5">METRIC</text>
+    <text x="360" y="156" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5">W31</text>
+    <text x="560" y="156" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5">W33</text>
+    <text x="780" y="156" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5">TARGET</text>
+    <text x="1000" y="156" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#87D9F5">ROLE</text>
+  </g>
+  <g id="tree" data-pptx-bounds="48 160 1184 490"><g>
+      <line x1="56" y1="168" x2="1224" y2="168" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="216" font-size="24" fill="#EAF7FF">D0 /cm²</text>
+      <text x="360" y="216" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">0.51</text>
+      <text x="560" y="216" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454">0.29</text>
+      <text x="780" y="216" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">0.20</text>
+      <text x="1000" y="216" font-size="20" fill="#8BA9B8">主指标</text>
+    </g><g>
+      <line x1="56" y1="246" x2="1224" y2="246" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="294" font-size="24" fill="#EAF7FF">Capture</text>
+      <text x="360" y="294" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">92%</text>
+      <text x="560" y="294" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#32E0C4">91%</text>
+      <text x="780" y="294" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">≥90%</text>
+      <text x="1000" y="294" font-size="20" fill="#8BA9B8">监控</text>
+    </g><g>
+      <line x1="56" y1="324" x2="1224" y2="324" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="372" font-size="24" fill="#EAF7FF">Nuisance</text>
+      <text x="360" y="372" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">21%</text>
+      <text x="560" y="372" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454">18%</text>
+      <text x="780" y="372" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">≤12%</text>
+      <text x="1000" y="372" font-size="20" fill="#8BA9B8">监控</text>
+    </g><g>
+      <line x1="56" y1="402" x2="1224" y2="402" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="450" font-size="24" fill="#EAF7FF">SNV</text>
+      <text x="360" y="450" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">28%</text>
+      <text x="560" y="450" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454">22%</text>
+      <text x="780" y="450" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">≤15%</text>
+      <text x="1000" y="450" font-size="20" fill="#8BA9B8">监控</text>
+    </g><g>
+      <line x1="56" y1="480" x2="1224" y2="480" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="528" font-size="24" fill="#EAF7FF">PWP S02</text>
+      <text x="360" y="528" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">41</text>
+      <text x="560" y="528" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FF6B6B">27</text>
+      <text x="780" y="528" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">≤12</text>
+      <text x="1000" y="528" font-size="20" fill="#8BA9B8">设备</text>
+    </g><g>
+      <line x1="56" y1="558" x2="1224" y2="558" stroke="#16384C" stroke-width="1"/>
+      <text x="72" y="606" font-size="24" fill="#EAF7FF">Adder</text>
+      <text x="360" y="606" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#8BA9B8">+0.38</text>
+      <text x="560" y="606" font-family="Consolas, Microsoft YaHei, monospace" font-size="24" fill="#FFB454">+0.24</text>
+      <text x="780" y="606" font-family="Consolas, Microsoft YaHei, monospace" font-size="20" fill="#32E0C4">+0.07</text>
+      <text x="1000" y="606" font-size="20" fill="#8BA9B8">当层</text>
+    </g></g>
+  <g id="page-footer" data-pptx-bounds="40 668 1200 36">
+    <text x="48" y="694" font-size="16" fill="#8BA9B8">演示用虚构数据｜不代表真实工厂成绩</text>
+    <text x="1232" y="694" font-family="Consolas, Microsoft YaHei, monospace" font-size="16" fill="#8BA9B8" text-anchor="end">DWG NO. DEF-REC-W33-02</text>
+  </g>
+</svg>

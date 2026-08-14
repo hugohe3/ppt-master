@@ -1,0 +1,406 @@
+{
+  "schema": "ppt-master.fact-provenance.v1",
+  "topic": "浸没式光刻（immersion lithography）缺陷工程周报样板：行业事实词汇与机制基线",
+  "facts": [
+    {
+      "fact_id": "F001",
+      "claim": "IMEC 在 ASML XT:1250Di 上与 ASML、TEL、KLA-Tencor、抗蚀剂供应商及 IC 制造商联合研究，将浸没特有缺陷模式归纳为空气气泡、水印、晶圆边缘膜剥离与颗粒输运，并配套表征抗蚀剂溶出与吸水。",
+      "source_title": "Immersion specific defect mechanisms: findings and recommendations for their control (SPIE 6154/6153, 2006)",
+      "source_url": "https://doi.org/10.1117/12.660432",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F002",
+      "claim": "ASML 指出：高速晶圆台上的浸没水塘引入两类量产缺陷源——透镜下气泡劣化成像，逃逸水滴与光刻胶不可控相互作用；不能靠大幅降速来换缺陷，否则系统不经济。",
+      "source_title": "How immersion lithography saved Moore’s Law (ASML Stories, 2023)",
+      "source_url": "https://www.asml.com/en/news/stories/2023/how-immersion-lithography-saved-moores-law",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F003",
+      "claim": "ASML 用环绕末镜的 immersion hood 约束水塘；Jos Benschop 称该机构工业化后可把晶圆速度提高约三倍，同时把缺陷率降低一个数量级。这是设备工程叙述，不是某晶圆厂量产周报成绩。",
+      "source_title": "How immersion lithography saved Moore’s Law (ASML Stories, 2023)",
+      "source_url": "https://www.asml.com/en/news/stories/2023/how-immersion-lithography-saved-moores-law",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F004",
+      "claim": "TWINSCAN NXT:2050i 产品说明将新 immersion hood 减少失水、改善缺陷性能列为量产特性，并称这有助于良率与减少因缺陷导致的降速。",
+      "source_title": "TWINSCAN NXT:2050i (ASML product page)",
+      "source_url": "https://www.asml.com/en/products/duv-lithography-systems/twinscan-nxt2050i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F005",
+      "claim": "气泡与水印是 193i 特有缺陷；反气泡、颗粒、微桥在干法中也可出现，但浸没增加额外来源。气泡由扫描机引入，水印/颗粒/微桥与材料相关，边缘颗粒与反气泡也可由工艺引入。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F006",
+      "claim": "贴附于抗蚀剂表面的空气气泡起微透镜作用：中心欠曝、线距被放大、周围可出现过曝与剂量条纹；自由漂浮气泡离焦、寿命短，威胁主要来自贴附气泡。直径大于约 2 μm 的气泡较易辨认；约 100 nm 气泡可仅表现为小桥。",
+      "source_title": "Bubble and antibubble defects in 193i lithography (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0975-bubble-and-antibubble-defects-in-193i-lithography",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F007",
+      "claim": "气泡来源包括未优化曝光头夹带、供水气泡、曝光时抗蚀剂放气与表面夹带；完全脱气与低放气抗蚀剂有助于进一步降气泡。扫描机供应商曾宣称经新曝光头设计可实现“无气泡”工艺。",
+      "source_title": "Bubble and antibubble defects in 193i lithography (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0975-bubble-and-antibubble-defects-in-193i-lithography",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F008",
+      "claim": "水印由扫描后残留水滴改变局部抗蚀剂感度形成：PAG 等溶入水滴、水渗入膜，若带入 PEB 则反应加剧。SEM 上圆形轮廓、中心线变粗甚至桥连，但线距不变；截面可见表面 T-top。与气泡的关键鉴别是有无 pitch 放大与条纹。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F009",
+      "claim": "反气泡由透明 topcoat 颗粒或鼓包引起：topcoat 折射率约 1.55（高于水）会聚曝光光，中心过曝、边缘因大入射角反射形成欠曝环、线距缩小。来源包括溶液久置析出、涂布碗壁干膜再吸，以及针孔吸水鼓包。",
+      "source_title": "Bubble and antibubble defects in 193i lithography (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0975-bubble-and-antibubble-defects-in-193i-lithography",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F010",
+      "claim": "弯月面可从晶圆台与晶圆边缘拾取松散碎片并输运到曝光区，造成交叉污染。抗蚀剂/topcoat 超出 BARC 切边、对裸 Si 附着力差时易起片；氧化物、氮化物、low-k 等弱附着膜同样可剥离。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F011",
+      "claim": "浸没水中的颗粒或溶质干燥后可在晶圆上析出。文献示例：1 mL 水中 2 ppt 铁（当时 Fe 检出限）含约 2.2×10^10 个 Fe 原子，干燥后更可能形成数十颗 100–200 nm 量级颗粒。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F012",
+      "claim": "光酸发生剂（PAG）、淬灭剂等小分子可溶入浸没水，污染水、末镜与晶圆台，并可能劣化抗蚀剂性能。弯月面随曝光头移动，峰值扫描速度约 500 mm/s，残液可形成圆形缺陷，故需要低溶出且疏水的叠层。",
+      "source_title": "Mastering the resist-leaching and aqueous-contact-angle challenges (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195352/https://spie.org/news/0758-immersion2-mastering-the-resist-leaching-and-aqueous-contact-angle-challenges",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F013",
+      "claim": "溶出是非线性过程：接触水后数秒内快速饱和（快过程，与镜头污染相关）；慢过程可持续约 5–20 分钟，并可能参与水印形成。全场扫描机曝光头在单场仅停留数秒，故动态溶出速率比饱和溶出量更贴近镜头附近浓度。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 3 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F014",
+      "claim": "Blob defect（亦称 satellite spot defect）多见于低图形密度区，直径文献范围约 10–50 μm，多为显影与淋洗时 topcoat 再沉积；机制与显影不均匀及 DI 水淋洗导致的 pH 突变有关。多数 topcoat 在显影液中的溶解速率约 100–1000 nm/s。",
+      "source_title": "Immersion lithography: topcoat and resist processes (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195355/https://spie.org/news/0825-immersion-lithography-topcoat-and-resist-processes",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F015",
+      "claim": "微桥是相邻抗蚀剂线被通常小于约 500 nm 的桥连接。干法已有 BARC 与不透明颗粒挡光等来源；浸没额外来源包括约 80 nm 气泡挡光、水中颗粒局部欠曝，以及抗蚀剂–topcoat 互混层。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F016",
+      "claim": "IEEE 良率综述：泊松模型 Y=exp(−D0·A)，D0 为平均缺陷密度（缺陷/cm²），A 为管芯面积。缺陷常在设备颗粒、工艺异常或边缘效应处聚集，泊松往往偏悲观；负二项模型引入聚集参数。缺陷预算把目标缺陷密度分配到各工艺模块。",
+      "source_title": "Integrated circuit yield (IEEE Technology Navigator)",
+      "source_url": "https://technav.ieee.org/topic/integrated-circuit-yield/",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F017",
+      "claim": "IEEE IRDS Yield Enhancement（2024）将 inline 缺陷检测作为量产中发现良率相关缺陷的主要手段，并把各层目标缺陷密度（可用每 300 mm 晶圆缺陷数 Dx 表述）与 More Moore 产品良率模型对接。",
+      "source_title": "2024 IRDS Yield Enhancement",
+      "source_url": "https://irds.ieee.org/images/files/pdf/2024/2024IRDS%5FYE.pdf",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F018",
+      "claim": "ITRS Yield Enhancement（2003）将“对多种 killer 缺陷类型同时保持高捕获率与高产能”列为检测难题，并把 killing-defect 检测概率称为 capture rate。",
+      "source_title": "International Technology Roadmap for Semiconductors — Yield Enhancement (2003)",
+      "source_url": "https://www.semiconductors.org/wp-content/uploads/2018/08/YieldEnhanc2003.pdf",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F019",
+      "claim": "IEEE TSM（2005）将 inline 检测的 killing-defect detection probability 与 capture rate 等同，并提出两类量化方法：用良率冲击与 kill ratio 相对临界面积理论的偏差，估计已检出缺陷所解释的良率份额；用干净管芯良率对比缺陷–良率相关所解释的冲击，估计未检出缺陷的良率冲击。",
+      "source_title": "Methods to quantify the detection probability of killing defects (IEEE TSM, 2005)",
+      "source_url": "https://doi.org/10.1109/tsm.2005.852122",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F020",
+      "claim": "ITRS 定义：nuisance 是工具报了事件且晶圆上确有缺陷，但不是当前关注类型；false 是工具报了事件但用检测工具自身 review 光学路径看不见缺陷。路线图表述：图形晶圆 nuisance 在各阶段宜低于 5%；false 在研发 <5%，在良率爬坡与量产 <1%。这是路线图目标，不是某厂实测。",
+      "source_title": "International Technology Roadmap for Semiconductors — Yield Enhancement (2003)",
+      "source_url": "https://www.semiconductors.org/wp-content/uploads/2018/08/YieldEnhanc2003.pdf",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F021",
+      "claim": "KLA 指出：nuisance 来自真实物理现象（如 dummy 或孤立区颗粒、线边粗糙度被 die-to-die 算法报出）但不影响器件性能或良率；系统毛刺才是 false。高灵敏度（hot）扫描会抬高 nuisance，需用光学模式与分类把 DOI 与 nuisance 分开。",
+      "source_title": "Wafer Defect Inspection and Review Advances (Nikon Precision newsletter reprint of KLA, 2009)",
+      "source_url": "https://www.nikonprecision.com/newsletter/fall_2009/article_04.html",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F022",
+      "claim": "Kill ratio 是某类缺陷导致管芯失效的估计比例，由历史生产中 inline 缺陷图与终测 bin 图对准得到。KLA 术语：clean die 无被检出的 adder，dirty die 含 adder；应按杀伤 DOI 而非总缺陷数做 SPC，因为总缺陷数常与终测良率相关性差。",
+      "source_title": "Improve LED manufacturing via in-line monitoring and SPC (LEDs Magazine / KLA methodology, 2013)",
+      "source_url": "https://www.buildings.com/home/article/55259243/improve-led-manufacturing-via-in-line-monitoring-and-spc-magazine",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F023",
+      "claim": "PWP（particles per wafer pass）是评估浸没扫描机清洁度的常规方法：预检极干净的空白片走浸没 track/scanner（不曝光图形）后再检，判断浸没头是否向晶圆添加缺陷图案；多次 PWP 平均以提高信噪比。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 6 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F024",
+      "claim": "SEM Non-Visual（SNV，有的厂称 Not Found）指光学检测已报点、SEM 复核未再看见。原因包括：检测毛刺/假点、检测与 SEM 坐标不准导致视场外、前层缺陷（对光学透明、对电子束不透明）以及 nuisance variation（如 LER）。高 SNV 会污染 Pareto 并掩盖 DOI。",
+      "source_title": "Process Watch: The dangerous disappearing defect (Semiconductor Digest / KLA-Tencor, 2012)",
+      "source_url": "https://sst.semiconductor-digest.com/2012/05/process-watch-the-dangerous-disappearing-defect/",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F025",
+      "claim": "IEEE TSM（IBM/KLA, 2013）提出：光刻层 SEM non-visual 率可作为含光刻在内的前段膜质量指示，缺陷可能位于光刻前沉积膜中或光刻膜内，而不应一律忽略。",
+      "source_title": "Use of 22 nm Litho SEM Non-visual Defect Data as a Process Quality Indicator (IEEE TSM, 2013)",
+      "source_url": "https://doi.org/10.1109/tsm.2013.2273294",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F026",
+      "claim": "传统检测配方常把 nuisance 压到约 10% 以便数据量可管理，但节点缩小后会牺牲 DOI 灵敏度。Applied Materials 与 GLOBALFOUNDRIES 的做法是优先保证灵敏度、接受更高 nuisance，并加强 SEM 复核方法。",
+      "source_title": "Enhanced defect of interest [DOI] monitoring by utilizing sensitive inspection and ADRTrue SEM review (SPIE, 2011)",
+      "source_url": "https://doi.org/10.1117/12.881479",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F027",
+      "claim": "KLA 晶圆检测配方专利把 DOI capture、nuisance rate、稳定性与可分性作为评价光学模式与检测阈值/分段的统计量；检测参数包括算法阈值与 segment break，分类参数包括 nuisance filter。",
+      "source_title": "Wafer inspection recipe setup (KLA-Tencor, US9714905)",
+      "source_url": "https://www.freepatentsonline.com/9714905.html",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F028",
+      "claim": "标准洁净室 DI 水电阻率 >18.2 MΩ·cm 仍需再抛光才能作浸没水。处理链包括过滤（去除 >30 nm 颗粒）、控温、脱气与 UV 杀菌。溶解氧从室温饱和约 10 ppm 降到 <70 ppb；有机物需从 ppb 降到 ppt，否则在镜头上形成 haze 并吸收 193 nm 光。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 6 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F029",
+      "claim": "SPIE 专著给出的浸没水出水示例：电阻率 >18 MΩ·cm，阴阳离子元素污染约 10–30 ppt，TOC <50 ppt；水温目标 20.5 °C、精度 <0.01 °C；供水管路需定期消毒以防细菌。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 6 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F030",
+      "claim": "ASML 专利 US7733459B2 给出浸没液规格窗口示例：电导率约 0.055–0.5 μS/cm；有机物 ≤5 ppb（优选 ≤1 ppb）；≥50 nm 颗粒 ≤2 个/mL（优选 ≤0.5 个/mL）；溶解氧 ≤15 ppb（优选 ≤5 ppb）；硅 ≤500 ppt（优选 ≤100 ppt）。这是设备/流体规格，不是某厂周报实绩。",
+      "source_title": "US7733459B2 Lithographic apparatus and device manufacturing method (ASML Netherlands)",
+      "source_url": "https://patents.google.com/patent/US7733459B2/en",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F031",
+      "claim": "后退接触角（RCA）与拖尾水滴数量强相关；RCA 趋近 0° 时曝光头留下水膜（film pulling）。全扫描速度下，文献广泛采用 RCA 约 70° 作为避免拖尾水滴的经验门槛；缺陷数在临界角附近随 RCA 非线性下降。",
+      "source_title": "Mastering the resist-leaching and aqueous-contact-angle challenges (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195352/https://spie.org/news/0758-immersion2-mastering-the-resist-leaching-and-aqueous-contact-angle-challenges",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F032",
+      "claim": "University of Wisconsin 与 SEMATECH 的弯月面研究表明：扫描速度升高时动态后退角下降、前进角上升；后退界面的 film pulling 与 meniscus overflow 会留下残液。",
+      "source_title": "Control of the receding meniscus in immersion lithography (J. Vac. Sci. Technol. B)",
+      "source_url": "https://doi.org/10.1116/1.2090968",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F033",
+      "claim": "曝光前 DI 预淋洗可冲掉大量易溶出组分：文献中预淋洗晶圆的溶出水平约为未淋洗的 12%，时间常数约降一半。10–30 s 预淋洗对比曲线显示对抗蚀剂感度影响很小，因为曝光头在曝光前有约 1–2 s 固有冲洗。",
+      "source_title": "Mastering the resist-leaching and aqueous-contact-angle challenges (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195352/https://spie.org/news/0758-immersion2-mastering-the-resist-leaching-and-aqueous-contact-angle-challenges",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F034",
+      "claim": "曝光后立即 DI 淋洗可减少水印，但若水滴停留过久则无效。淋洗效果强烈依赖抗蚀剂叠层：SPIE Newsroom 报道有的材料缺陷数下降约 60%，有的不足 5%，并归因于吸水。该范围只说明材料依赖性，不是可承诺的回收百分比。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F035",
+      "claim": "193i 相对干法可增加的 track 步骤包括：topcoat 涂布与烘烤、曝光前淋洗（去溶出组分）、曝光后淋洗（减水印），以及溶剂可溶 topcoat 的单独去除。显影液可溶 topcoat 的去除可并入显影模块。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 2 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F036",
+      "claim": "193i 有三条抗蚀剂路径：溶剂可溶 topcoat、显影液可溶 topcoat、无 topcoat。量产主流曾是显影液可溶 topcoat。Topcoat 折射率宜约 1.55 以匹配水（1.44）与典型 193 nm 抗蚀剂（约 1.7）；推荐厚度多在 30–90 nm。疏水（高 RCA）减水滴，但与 blob（疏水膜在水系显影中溶解慢）存在权衡。",
+      "source_title": "Immersion lithography: topcoat and resist processes (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195355/https://spie.org/news/0825-immersion-lithography-topcoat-and-resist-processes",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F037",
+      "claim": "无通用 topcoat 能与所有 193 nm 抗蚀剂良好匹配。不兼容组合可导致断线、无工艺窗口、显著膜损。Bake DOE 显示抗蚀剂 PAB 与 topcoat PAB 需重新匹配，不能直接沿用干法 POR，否则 PAG 被过多赶到界面造成额外膜损。",
+      "source_title": "Immersion lithography: topcoat and resist processes (SPIE Newsroom, 2007)",
+      "source_url": "https://web.archive.org/web/20230719195355/https://spie.org/news/0825-immersion-lithography-topcoat-and-resist-processes",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F038",
+      "claim": "EBR 去除松散边珠、WEE 可整形膜边，使边缘更能抵抗弯月面；最佳 EBR 依赖材料，需实验。例行清洁晶圆台可降低颗粒被弯月面拾取并交叉污染。过滤 topcoat 溶液与经常清洁涂布碗可减少反气泡。",
+      "source_title": "Non-lensing defects and defect reduction for 193i (SPIE Newsroom, 2008)",
+      "source_url": "https://web.archive.org/web/20230719195354/https://spie.org/news/0976-non-lensing-defects-and-defect-reduction-for-193i",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F039",
+      "claim": "溶出可污染末镜（flare、透过率下降）。文献实践包括浸没系统 in-situ cleaning（清洗溶剂随水流过，或向水中通 CO₂ 等），并用清洗前后的透过率或 PWP 验证恢复。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 3 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F040",
+      "claim": "Nikon 与 TEL 联合工作：topcoat 在浸没曝光中可因附着力弱而剥落并污染曝光机；TEL 发展晶圆边缘淋洗与各膜切边位置控制，Nikon 建立机上周期淋洗以降低缺陷。",
+      "source_title": "Immersion-cluster uptime enhancement technology toward high-volume manufacturing (SPIE, 2009)",
+      "source_url": "https://doi.org/10.1117/12.814112",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F041",
+      "claim": "颗粒主要来源之一是进片颗粒与边缘残渣。Nikon 等指出：附着促进（如 HMDS 的温度与时间）、曝光前淋洗、降低切边位置与改善切线粗糙度、提高 RCA，均被用作颗粒/剥膜抑制手段；TC-less 在剥膜实验中附着常优于 topcoat。",
+      "source_title": "Control and reduction of immersion defectivity for yield enhancement at high volume production (SPIE, 2009)",
+      "source_url": "https://doi.org/10.1117/12.814238",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F042",
+      "claim": "若已排除前层，缺陷工程师可将 nuisance variation 单独分箱，或调整检测配方的孔径、波段或偏振，以降低对此类 SNV 的捕获。Recipe 变更与工艺/设备变更在周报中应分列。",
+      "source_title": "Process Watch: The dangerous disappearing defect (Semiconductor Digest / KLA-Tencor, 2012)",
+      "source_url": "https://sst.semiconductor-digest.com/2012/05/process-watch-the-dangerous-disappearing-defect/",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F043",
+      "claim": "拆因方法：以稳定干法为基线，在 topcoat 涂布、PAB、浸没曝光、topcoat 去除、显影等每个新增步骤后做检测与 SEM 复核，用步骤间差分定位浸没相关缺陷来源。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 6 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F044",
+      "claim": "Nikon 量产浸没缺陷研究强调：缺陷受曝光机、track、材料与晶圆环境共同影响；特征缩小要求更高灵敏度（如 KLA-Tencor 2800 与 Surfscan SP2 的图形/非图形检测）；需确认非图形监控与图形缺陷的相关（DSA）；并建立意外污染后的液体 in-situ 清洗。",
+      "source_title": "Immersion defectivity study with volume production immersion lithography tool (SPIE, 2007)",
+      "source_url": "https://doi.org/10.1117/12.711464",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F045",
+      "claim": "Applied Materials 在 ASML 浸没机台上用 DUV 检测表明：部分缺陷类型与 topcoat 厚度、抗蚀剂烘烤温度等浸没工艺参数相关；DUV 可比可见光抓住更小缺陷，用于工艺优化与量产资格。",
+      "source_title": "Immersion lithography defectivity analysis at DUV inspection wavelength (SPIE, 2007)",
+      "source_url": "https://doi.org/10.1117/12.712400",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F046",
+      "claim": "IBM 指出：控制水–抗蚀剂界面是同时实现高扫描速率（减少 film pulling）与抑制 PAG 抽出的关键；防护 topcoat 曾是 193i 的关键使能材料，后续发展出用于无 topcoat 抗蚀剂的含氟界面策略。",
+      "source_title": "Fluoroalcohol materials with tailored interfacial properties for immersion lithography (IBM Research / SPIE 2007)",
+      "source_url": "https://research.ibm.com/publications/fluoroalcohol-materials-with-tailored-interfacial-properties-for-immersion-lithography",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F047",
+      "claim": "ASML、Canon 与 Nikon 均公布过动态溶出速率规格，且规格随曝光头设计与水流而异。Nikon 因水流从镜头流向抗蚀剂（污染在镜头下游）曾将早期溶出规格放宽约 15 倍。具体 ng/cm²/s 数值本次未能从专著插表可靠抄出，样板勿填未核验规格。",
+      "source_title": "Advanced Processes for 193-nm Immersion Lithography, Ch. 3 (SPIE Press, 2009)",
+      "source_url": "https://doi.org/10.1117/3.820233",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F048",
+      "claim": "KLA 产品说明将 after develop inspection（ADI）与 photo cell monitoring（PCM）列为光刻单元缺陷监控应用，并用深度学习把 DOI 与图形 nuisance 分开以提高“真正要紧缺陷”的捕获率。",
+      "source_title": "Defect Inspection & Review | Chip Manufacturing | KLA",
+      "source_url": "https://www.kla.com/products/chip-manufacturing/defect-inspection-review",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F049",
+      "claim": "前层缺陷可用 defect source analysis（DSA）把当前层检测结果与前层结果对位，以区分真正的当层 adder 与应归为 SEM non-visual 的前层点。",
+      "source_title": "Process Watch: The dangerous disappearing defect (Semiconductor Digest / KLA-Tencor, 2012)",
+      "source_url": "https://sst.semiconductor-digest.com/2012/05/process-watch-the-dangerous-disappearing-defect/",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    },
+    {
+      "fact_id": "F050",
+      "claim": "未检索到 SEMI 或 IEEE 规定的“浸没缺陷项目周报 WBS 标准模板”。文献中反复出现、可供项目进展栏目使用的工作包是：工艺窗口与抗蚀剂/topcoat 兼容、浸没头/台面/cluster 清洁、检测灵敏度与 DSA/SEM 策略、UPW 与化学品/物料、晶圆边缘 EBR/WEE，以及长期 HVM 稳定性。",
+      "source_title": "Immersion defectivity study with volume production immersion lithography tool (SPIE, 2007)",
+      "source_url": "https://doi.org/10.1117/12.711464",
+      "classification": "external",
+      "retrieved_at": "2026-08-14"
+    }
+  ]
+}
