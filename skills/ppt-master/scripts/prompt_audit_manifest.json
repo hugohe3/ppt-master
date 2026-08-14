@@ -13,7 +13,7 @@
       "skills/ppt-master/templates/schemas/*.json"
     ],
     "exclude": [],
-    "max_tokens": 500000
+    "max_tokens": 555000
   },
   "file_budgets": {
     "AGENTS.md": 2750,
@@ -1052,7 +1052,7 @@
       "files": [
         "skills/ppt-master/references/native-formula.md"
       ],
-      "max_tokens": 1250
+      "max_tokens": 2000
     },
     "stage.generate.executor.hyperlink": {
       "description": "Conditional direct authoring contract for PowerPoint-native external and same-deck click hyperlinks.",
