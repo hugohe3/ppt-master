@@ -45,7 +45,7 @@ PowerPoint 意图
 | 对象位置与尺寸 | SVG 绝对坐标与元素边界 | `a:xfrm` 偏移和范围 | 经坐标换算后为 `Native-normalized` | 数值必须有限，并使用已登记坐标语法 |
 | Z 顺序 | SVG 源码顺序，由后到前 | PowerPoint shape tree 顺序 | 按 shape tree 顺序重建 | 不得依赖浏览器专属堆叠行为 |
 | 旋转、缩放、平移与镜像 | 受支持的 SVG transform 形式 | DrawingML transform 或归一化几何 | `Native-normalized`；matrix 可能被分解 | 已登记 transform 合同以外的倾斜与错切不可接受 |
-| 主题颜色与字体 | `spec_lock.md` 锁定的角色；规范 SVG 使用解析后的值 | 当精确匹配锁定角色时保留 theme token，否则写直接 DrawingML 值 | 已登记角色为 `Native-stable` | 新页面不得自行发明未锁定颜色、字体或字号 |
+| 主题颜色与字体 | Default 使用 `spec_lock.md` 锚定的稳定角色；Quick 在当前上下文维持临时设计锚点，但不持久化 lock | Default 派生包内 Theme，并在精确匹配锚点角色时保留 theme token，否则写直接 DrawingML 值；Quick 使用转换器默认 Theme 脚手架，并把 SVG 派生的页面颜色与字体写成直接值 | 已登记角色与直接值为 `Native-stable` | Default 校验 lock 对齐，Quick 跳过该比较；两者都拒绝非法值，字体可移植性与目标系统可用性仅作提示；情境色和 export-safe 一次性字体仍然允许 |
 | PowerPoint 包身份 | `spec_lock.md` 结构声明与打包器 | Presentation、Master、Layout、relationship 与 content type 注册 | 从包结构读回，不从页面外观推断 | 最终包读回必须与声明的 roster 一致 |
 
 受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards-core.md` §4.1](../../skills/ppt-master/references/shared-standards-core.md#41-semantic-svg-marker-contract)。
@@ -120,10 +120,12 @@ PowerPoint 意图
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
 | 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
+| 普通文本上标与下标 | 没有已登记的生成 SVG 控制；`baseline-shift` 为非法属性。Unicode 上下标字形与公式 marker 是另外两种创作选择 | 主生成路线不在普通 run 上创作 `a:rPr@baseline` | 源保留型原生工作流在不改所属文本体时为 `Direct preservation`；SVG 往返仅通过未修改的导入 `txBody` metadata 达到 `Native-stable`，PPTX-to-SVG 不在可见 SVG 中重建 baseline shift | 结构化数学使用可编辑 OMML；Unicode 字形仍是字面文字，不会变成原生 baseline shift |
 | 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
 | 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
-| 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的垂直文本可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
+| 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的文本框垂直锚定可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
+| 东亚竖排文字 | 没有已登记的生成 SVG 控制；`writing-mode` 为非法属性 | 主生成路线不创作 `a:bodyPr@vert` | PPTX-to-SVG 回导把 `eaVert`、`vert`、`wordArtVert` 与 `wordArtVertRtl` 归一化为正立字形逐字堆叠的 SVG 文本；源保留型原生工作流在不改所属 OOXML 时为 `Direct preservation` | 手工堆叠字形可以近似单列外观，但不会产生原生标点朝向、自动续排或多栏行为；封闭文法见 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 按 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) 拒绝不受支持的 CSS 排版、超出 DrawingML 范围的间距，以及导致生成 run advance 或文本框 extent 非正的负字距 |
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
