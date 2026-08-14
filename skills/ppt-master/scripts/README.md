@@ -310,8 +310,11 @@ python3 scripts/analyze_images.py <project_path>/images
 
 Generated-deck formulas do not use an image command. Author a native formula
 marker in the page SVG; `svg_to_pptx.py` compiles its LaTeX metadata to editable
-PowerPoint OMML. The retained `latex_render.py` utility is standalone legacy
-rasterization only and is not connected to either Generate profile.
+PowerPoint OMML. Forward compilation covers the explicitly documented Microsoft
+365 LaTeX and mhchem input profiles and fails closed outside them; it does not
+implement OMML-to-LaTeX build-down. The retained `latex_render.py` utility is
+standalone legacy rasterization only and is not connected to either Generate
+profile.
 
 Repository update:
 

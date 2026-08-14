@@ -509,11 +509,23 @@ exports `m:oMathPara`; a leaf
 `<tspan data-pptx-inline-formula="...">preview</tspan>` inside ordinary text
 exports `m:oMath` in that same DrawingML paragraph. Inline math inherits the
 text run's size and visible solid fill, then uses the project text language and
-Cambria Math; matrices,
-multiline derivations, and other high-structure expressions remain blocks. Both
-forms keep ordinary SVG preview content because raw LaTeX does not render in
-SVG. PowerPoint 2010+ is the target, with no formula PNG, media relationship,
-or image fallback for non-PowerPoint clients.
+Cambria Math; compiler-owned local color and `\boldsymbol` / `\bm` control
+emphasis also reach non-selectable structural controls, while ordinary text
+weight/style or math alphabet overrides only the corresponding inherited run
+property. A closed Microsoft
+365 profile table feeds one parser and shared AST, then one emitter produces and
+structurally validates the narrow OMML vocabulary used by both block and inline
+paths. The forward compiler covers every explicitly documented input and native
+normalization in the pinned Microsoft 365 LaTeX and mhchem profiles; unknown,
+explicitly unsupported, invalid, or resource-overflow input fails closed, and
+PPT Master does not build OMML back down to LaTeX. Matrices, multiline
+derivations, and other high-structure expressions remain blocks. Both forms
+keep ordinary SVG preview content because raw LaTeX does not render in SVG.
+PowerPoint 2010+ is the package target, with no formula PNG, media relationship,
+or image fallback for non-PowerPoint clients. The executable profile is pinned
+to the stated Microsoft 365 documentation versions; repository verification is
+compiler-, OMML-, and package-level, not complete Microsoft 365 UI
+rendering/editability certification.
 
 **Native hyperlinks use one SVG authoring truth plus package relationships.**
 Standard `<a href>` wraps either a complete visible object/group or one or more

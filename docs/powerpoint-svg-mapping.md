@@ -211,10 +211,11 @@ The exhaustive chart/table schemas and supported family list intentionally remai
 
 | PowerPoint feature | Project representation | PPTX result | Compatibility | Validation boundary |
 |---|---|---|---|---|
-| Editable block equation | One `<g data-pptx-replace-with="formula">` with explicit bounds, source LaTeX in `<metadata type="application/json">`, and visible SVG preview children | PowerPoint text shape containing `a14:m > m:oMathPara > m:oMath` | PowerPoint 2010+ | Matrices, multiline derivations, and other standalone high-structure formulas use the registered block contract; unsupported input fails closed |
-| Editable inline formula | A leaf `<tspan data-pptx-inline-formula="delimiter-free LaTeX">preview text</tspan>` among ordinary text runs | The same DrawingML `a:p` retains surrounding runs and inserts `a14:m > m:oMath` | PowerPoint 2010+ | Direct non-empty preview text only; no child element, positional `x/y/dx/dy`, structured placeholder/Master/Layout ownership, preserved imported `txBody`, or native-replacement ancestor |
+| LaTeX input profile | Canonical marker sources omit outer delimiters; one complete `$...$`, `$$...$$`, `\(...\)`, or `\[...\]` pair is also accepted | Every explicitly named input in the pinned Microsoft 365 2606 / Mac 16.110 profile, plus the 2605 / 16.109 mhchem profile, compiles to editable OMML | The profile is pinned to those Microsoft documentation versions; emitted OMML retains the PowerPoint 2010+ package target. Repository verification is compiler/OMML/package-level, not complete Microsoft 365 UI certification | Explicit native normalizations are preserved; unknown or explicitly unsupported input fails closed rather than leaking as literal LaTeX |
+| Editable block equation | One `<g data-pptx-replace-with="formula">` with explicit bounds, source LaTeX in `<metadata type="application/json">`, and visible SVG preview children | PowerPoint text shape containing `a14:m > m:oMathPara > m:oMath` | See the input-profile row | Matrices, multiline derivations, and other standalone high-structure formulas use the registered block contract |
+| Editable inline formula | A leaf `<tspan data-pptx-inline-formula="canonical LaTeX body">preview text</tspan>` among ordinary text runs | The same DrawingML `a:p` retains surrounding runs and inserts `a14:m > m:oMath` | See the input-profile row | Direct non-empty preview text only; no child element, positional `x/y/dx/dy`, structured placeholder/Master/Layout ownership, preserved imported `txBody`, or native-replacement ancestor |
 | Browser / live preview | Ordinary SVG children inside a block marker, or the inline marker's direct text | Only the registered preview is discarded when native math is written | Raw LaTeX does not render in SVG | Preview content must express the same formula; it is not a PPTX fallback |
-| Formula typography | Block payload style, or computed inline text-run style | Inline math inherits size and visible solid fill, then uses the project text language and Cambria Math | PowerPoint 2010+ | High-structure or multiline math remains block-level |
+| Formula typography | Block payload style, or computed inline text-run style | Math inherits size and visible solid fill, then uses the project text language and Cambria Math; local `\color` / `\textcolor` scopes override the inherited fill on selectable runs and structural controls, while `\boldsymbol` / `\bm` also styles structural control glyphs | PowerPoint 2010+ OMML | High-structure or multiline math remains block-level |
 | Non-PowerPoint formula playback | The same native markers; no picture branch | No compatibility fallback is added | Keynote, WPS, LibreOffice, and other clients are outside the formula contract | Do not claim cross-client rendering or editability |
 
 Formula replacement is always active and does not use
@@ -222,6 +223,10 @@ Formula replacement is always active and does not use
 PNG, media relationship, or `mc:Fallback` picture. Block JSON and inline
 `data-pptx-inline-formula` values are the native formula sources; SVG preview
 content exists only so the authored page remains visible before export.
+Compilation is forward-only: PPT Master does not build OMML back down to LaTeX.
+The executable closed vocabulary and pinned Microsoft source revisions live in
+`formula_profile.py`; Microsoft's open-ended “etc.” does not make undisclosed
+relation aliases part of this contract.
 
 ## 10. PowerPoint playback and package features
 

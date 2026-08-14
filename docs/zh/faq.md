@@ -157,9 +157,17 @@ group；行内公式使用夹在普通文本 run 中的叶子
 高结构表达仍使用块级形式。原始 LaTeX 不能直接在 SVG 中显示，因此每个
 marker 都携带普通可见预览；原生导出会替换该预览，不增加图片兜底。
 
-原生目标为 PowerPoint 2010+。Keynote、WPS、LibreOffice 等非 PowerPoint
-客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些客户端附加
-公式图片兜底。
+前向编译覆盖 Microsoft 文档中 Microsoft 365 2606 / Mac 16.110 LaTeX
+档位与 2605 / 16.109 mhchem 档位明确点名的全部输入，包括符号、结构、环境、
+宏、化学式、公式局部颜色及文档规定的原生归一化。未知或明确不支持的输入直接
+失败，不会以原始 LaTeX 混进页面。PPT Master 不实现 OMML 到 LaTeX 的反向
+build-down。
+
+生成的 OMML 仍以 PowerPoint 2010+ 包为目标，可执行输入档位锁定到上述
+Microsoft 文档版本。仓库验证覆盖编译器行为、OMML 结构与 PPTX 打包，不等同于
+完整的 Microsoft 365 UI 显示 / 编辑认证。Keynote、WPS、LibreOffice 等非
+PowerPoint 客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些
+客户端附加公式图片兜底。
 
 ## Q: 生成的页面可以带可点击链接吗？
 
