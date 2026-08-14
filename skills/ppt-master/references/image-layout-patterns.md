@@ -233,6 +233,7 @@ If motion is enabled, [`animations.md`](./animations.md) owns its implementation
 | Scene-backed evidence or metrics | `#P2-01` / `#P2-05` + `#M2-01` or `#M2-03`; let the image carry context and native SVG carry information |
 | One selected region needs explanation | Use `#P2-03` for an outline and caption on one picture; use `#P2-04` when a second same-source picture must magnify the region |
 | Several sources should read as one object | `#P3-21` + restrained `#M3-01`, or `#P3-20` + a native text/color cell |
+| Several mixed-ratio photos need one visual rhythm | Use `#P3-06` + `#M1-01` + `#M2-01`; repeat equal-size parallelogram carriers on one horizontal `vector` with fixed positive advance and alternating transverse offsets, fill-crop each upright bitmap, overlay each carrier with a same-contour directional gradient, and keep labels native |
 | One continuous scene should span detached shapes | `#M1-10` + optional `#M3-05`; combine `#P1-08` for a triangular image-and-copy split, and keep one-picture topology |
 | Same-source windows must remain independent | `#M1-11`; add `#C2-01` or `#C2-02` only when consecutive pages use the relationship |
 | A prepared subject should re-layer over its source | `#A2-03`; keep the base and cutout registered, and insert a native middle layer only when it has a distinct job |

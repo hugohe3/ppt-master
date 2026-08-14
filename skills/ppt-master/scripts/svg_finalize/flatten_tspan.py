@@ -687,6 +687,14 @@ def _has_tspan_children(elem: ET.Element) -> bool:
     )
 
 
+def _declares_baseline_shift(elem: ET.Element) -> bool:
+    """Keep tspan ownership for the project-only baseline-shift contract."""
+    return (
+        elem.get("baseline-shift") is not None
+        or "baseline-shift" in parse_style(elem.get("style"))
+    )
+
+
 def _copy_inline_element(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
     """Deep-copy one supported inline ``tspan`` or hyperlink subtree."""
     local = src.tag.rsplit("}", 1)[-1]
@@ -761,6 +769,7 @@ def _create_text_element_from_line(
         and not _has_tspan_children(tspans[0])
         and not tspans[0].tail
         and tspans[0].get(INLINE_FORMULA_ATTR) is None
+        and not _declares_baseline_shift(tspans[0])
     ):
         tspan = tspans[0]
         content = collect_text_content(tspan)

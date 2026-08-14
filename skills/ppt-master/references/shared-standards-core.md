@@ -125,8 +125,10 @@ remain valid input and receive recommendation warnings rather than errors.
 
 Conditional properties with a required XML form stay out of inline style:
 write `filter="url(#id)"`, `clip-path="url(#id)"`, and
-`marker-start` / `marker-end` as direct attributes. `!important`, unknown CSS
-properties, blend modes, isolation, and backdrop filters fail quality check.
+`marker-start` / `marker-end` as direct attributes. Ordinary-text superscript
+and subscript likewise use only direct `baseline-shift="super|sub"` on
+`<tspan>`. `!important`, unknown CSS properties, blend modes, isolation, and
+backdrop filters fail quality check.
 
 The table registers property names, not arbitrary CSS values. Ordinary generated
 text uses a non-empty `font-family`, a finite positive unitless-px `font-size`,

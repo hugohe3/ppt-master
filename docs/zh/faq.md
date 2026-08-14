@@ -157,9 +157,17 @@ group；行内公式使用夹在普通文本 run 中的叶子
 高结构表达仍使用块级形式。原始 LaTeX 不能直接在 SVG 中显示，因此每个
 marker 都携带普通可见预览；原生导出会替换该预览，不增加图片兜底。
 
-原生目标为 PowerPoint 2010+。Keynote、WPS、LibreOffice 等非 PowerPoint
-客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些客户端附加
-公式图片兜底。
+前向编译覆盖 Microsoft 文档中 Microsoft 365 2606 / Mac 16.110 LaTeX
+档位与 2605 / 16.109 mhchem 档位明确点名的全部输入，包括符号、结构、环境、
+宏、化学式、公式局部颜色及文档规定的原生归一化。未知或明确不支持的输入直接
+失败，不会以原始 LaTeX 混进页面。PPT Master 不实现 OMML 到 LaTeX 的反向
+build-down。
+
+生成的 OMML 仍以 PowerPoint 2010+ 包为目标，可执行输入档位锁定到上述
+Microsoft 文档版本。仓库验证覆盖编译器行为、OMML 结构与 PPTX 打包，不等同于
+完整的 Microsoft 365 UI 显示 / 编辑认证。Keynote、WPS、LibreOffice 等非
+PowerPoint 客户端中的公式显示与编辑能力不在支持范围内；PPT Master 不为这些
+客户端附加公式图片兜底。
 
 ## Q: 生成的页面可以带可点击链接吗？
 
@@ -244,7 +252,7 @@ uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # �
 
 原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时自动启用，不会打开确认流程。使用默认输出路径时会生成普通 postflight 报告，并把 `svg_output/` 备份到 `backup/`；显式指定输出路径时沿用普通流程不创建备份的行为。页数本身既不会自动触发，也不会阻止快速生成。
 
-由于整个规划阶段不再发生，token 消耗明显低于默认流程；逐页 SVG 生成是一次 run 的主要开销，这部分并不减少。Quick 保留同一套视觉 / 资源创作能力和最终阻塞标准，但没有已确认的设计契约、首屏校准或可恢复的决策历史，因此不承诺与 Default 作出相同设计，也不承诺具体耗时。
+由于整个规划阶段不再发生，token 消耗明显低于默认流程；逐页 SVG 生成是一次 run 的主要开销，这部分并不减少。Quick 保留同一套页面级视觉与资源创作能力，以及共享的 SVG / 资源阻塞标准；它不运行 Spec Lock 对齐检查，包内保留转换器默认 Theme 脚手架，而不是从 lock 派生主题色、字体与 Master 标题/正文默认字号。由于没有已确认的设计契约、首屏校准或可恢复的决策历史，它不承诺与 Default 作出相同设计，也不承诺具体耗时。
 
 ## Q: 长 PPT 一次生成会不会上下文爆掉？
 
@@ -290,6 +298,30 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 可以——这就是 **套模板（template fill）** 路径，独立于 SVG 生成管线。把你现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把你的 deck 当作原生页面库，只挑适合新内容的页面（可乱序、可重复），把新文字——以及原生表格单元格、图表数据——直接写回原始 OOXML。
 
 输出仍是 100% 原生可编辑的 PowerPoint：原设计、母版、图片、动画都保留，且只导出选中的页面。它刻意**不**改版式、不加页、不换图——一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若需要全新结构或不同页数，请改用 create-template（见下一问）。完整步骤：[套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+
+---
+
+## Q: 内容填到了意料之外的位置——怎么查看 PPT Master 到底识别到了什么？
+
+两条消费 PPTX 的路径都会在生成之前先写出一份只读分析报告，读它就能确认哪些图形被识别到了。
+
+**套模板（Fill Native PPTX）**：
+
+```bash
+python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+```
+
+`<stem>.slide_library.json` 会逐页列出每个可填充槽位的几何、段落数与文字度量，并单独给出 `tables` 与 `charts`。带样式的普通文本框同样算槽位——图形不必是真正的占位符才能被填充。
+
+**Create Template**：
+
+```bash
+python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest-only -o <workspace>
+```
+
+`manifest.json` 逐页报告 layout / master 路径、占位符（`type`、`idx`、`semanticRole`、`shapeName`）、图片资源、文字数量与页面类型；`native_structure.json` 另外给出源结构评估。`--manifest-only` 跳过 SVG 导出，只是查看时开销很小。
+
+注意 Create Template 产出的是可复用的模板工作区，而不是填好内容的 deck：后续页面由 Generate 重新创作，因此源文件的正文与备注不会被搬运过去。如果你预期可用的某个图形没有出现在上述报告里，这才是值得写进 issue 的具体事实。
 
 ---
 

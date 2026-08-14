@@ -256,13 +256,13 @@ Scan §IX before locking. Declare every recurring role, including `lead`, `footn
 
 Preserve every source-backed equation and its mathematical meaning. In each
 applicable §IX page block, record the exact expression under `Mathematical
-content` as a LaTeX body without `$...$`, `$$...$$`, `\(...\)`, or `\[...\]`
-source delimiters. This field may cover any mathematics that needs exact
+content` in the canonical form: a LaTeX body without `$...$`, `$$...$$`,
+`\(...\)`, or `\[...\]` source delimiters. This field may cover any mathematics that needs exact
 preservation; do not classify it as inline or structural or choose its
 implementation. Never invent an equation for decoration or create a formula
 policy, manifest, PNG, §VIII row, or `spec_lock.md images` entry. Executor owns
-the text-versus-native-formula decision and its authoring; if the supported
-LaTeX subset cannot preserve the planned content, return here for a
+the text-versus-native-formula decision and its authoring; if the documented
+Microsoft 365 input profile cannot preserve the planned content, return here for a
 content-level correction.
 
 #### Hyperlink Content Planning

@@ -25,6 +25,7 @@ _SVG_TEXT_PROPERTIES = frozenset({
 })
 
 _TEXT_DECLARATION_PROPERTIES = _SVG_TEXT_PROPERTIES | {
+    'baseline-shift',
     'font-family',
     'font-size',
 }
@@ -33,7 +34,6 @@ _TEXT_INHERITANCE_TARGETS = frozenset({'svg', 'g', 'text', 'tspan'})
 
 _UNSUPPORTED_TEXT_PROPERTIES = frozenset({
     'alignment-baseline',
-    'baseline-shift',
     'direction',
     'dominant-baseline',
     'font-kerning',
@@ -86,6 +86,7 @@ _TEXT_DIRECT_ATTRIBUTES = frozenset({
 })
 
 _TSPAN_DIRECT_ATTRIBUTES = frozenset({
+    'baseline-shift',
     'dx',
     'dy',
     'fill',
@@ -315,6 +316,17 @@ def parse_project_text_decoration(raw: str) -> ParsedTextProperty:
     )
 
 
+def parse_project_baseline_shift(raw: str) -> ParsedTextProperty:
+    """Map the closed superscript/subscript grammar to DrawingML baseline."""
+    values = {
+        'super': 30_000,
+        'sub': -25_000,
+    }
+    if raw not in values:
+        raise ValueError("expected exactly 'super' or 'sub'")
+    return ParsedTextProperty(values[raw], raw)
+
+
 def parse_project_letter_spacing(
     raw: str,
     *,
@@ -385,6 +397,7 @@ def parse_project_text_property(
 ) -> ParsedTextProperty:
     """Parse one declaration from the shared text-property value contract."""
     parsers = {
+        'baseline-shift': parse_project_baseline_shift,
         'font-weight': parse_project_font_weight,
         'font-style': parse_project_font_style,
         'text-anchor': parse_project_text_anchor,
@@ -621,6 +634,26 @@ def _diagnose_text_declaration(
                 'error', label, source, name, raw,
                 f'{label} attribute xml:space={raw!r}: expected exactly '
                 "'default' or 'preserve'",
+            )
+        return True, None
+    if name == 'baseline-shift':
+        if source != 'attribute':
+            return True, TextPropertyDiagnostic(
+                'error', label, source, name, raw,
+                f'{label} must declare baseline-shift as a direct attribute; '
+                'inline style is not supported',
+            )
+        if tag != 'tspan':
+            return True, TextPropertyDiagnostic(
+                'error', label, source, name, raw,
+                f'{label} can use baseline-shift only on <tspan>',
+            )
+        try:
+            parse_project_baseline_shift(raw)
+        except ValueError as exc:
+            return True, TextPropertyDiagnostic(
+                'error', label, source, name, raw,
+                f'{label} attribute baseline-shift={raw!r}: {exc}',
             )
         return True, None
     if _is_unregistered_prefixed_text_property(name):

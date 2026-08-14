@@ -45,7 +45,7 @@ PowerPoint 意图
 | 对象位置与尺寸 | SVG 绝对坐标与元素边界 | `a:xfrm` 偏移和范围 | 经坐标换算后为 `Native-normalized` | 数值必须有限，并使用已登记坐标语法 |
 | Z 顺序 | SVG 源码顺序，由后到前 | PowerPoint shape tree 顺序 | 按 shape tree 顺序重建 | 不得依赖浏览器专属堆叠行为 |
 | 旋转、缩放、平移与镜像 | 受支持的 SVG transform 形式 | DrawingML transform 或归一化几何 | `Native-normalized`；matrix 可能被分解 | 已登记 transform 合同以外的倾斜与错切不可接受 |
-| 主题颜色与字体 | `spec_lock.md` 锁定的角色；规范 SVG 使用解析后的值 | 当精确匹配锁定角色时保留 theme token，否则写直接 DrawingML 值 | 已登记角色为 `Native-stable` | 新页面不得自行发明未锁定颜色、字体或字号 |
+| 主题颜色与字体 | Default 使用 `spec_lock.md` 锚定的稳定角色；Quick 在当前上下文维持临时设计锚点，但不持久化 lock | Default 派生包内 Theme，并在精确匹配锚点角色时保留 theme token，否则写直接 DrawingML 值；Quick 使用转换器默认 Theme 脚手架，并把 SVG 派生的页面颜色与字体写成直接值 | 已登记角色与直接值为 `Native-stable` | Default 校验 lock 对齐，Quick 跳过该比较；两者都拒绝非法值，字体可移植性与目标系统可用性仅作提示；情境色和 export-safe 一次性字体仍然允许 |
 | PowerPoint 包身份 | `spec_lock.md` 结构声明与打包器 | Presentation、Master、Layout、relationship 与 content type 注册 | 从包结构读回，不从页面外观推断 | 最终包读回必须与声明的 roster 一致 |
 
 受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards-core.md` §4.1](../../skills/ppt-master/references/shared-standards-core.md#41-semantic-svg-marker-contract)。
@@ -120,10 +120,12 @@ PowerPoint 意图
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
 | 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
+| 普通文本上标与下标 | `<tspan>` 上精确的直接属性 `baseline-shift="super|sub"`；显式 run `font-size` 与之独立 | 可编辑普通文本 `a:rPr@baseline`，取值为 `30000` / `-25000`；不会自动缩小字号 | 前向导出为原生能力。PPTX-to-SVG 不在可见 SVG 中重建 baseline shift；未修改的导入 `txBody` metadata 与源保留型原生工作流仍可保留来源 run | 拒绝 inline style、其他元素、数值偏移及与行内公式 marker 组合；结构化数学使用可编辑 OMML，Unicode 字形仍是字面文字 |
 | 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
 | 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
-| 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的垂直文本可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
+| 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的文本框垂直锚定可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
+| 东亚竖排文字 | 没有已登记的生成 SVG 控制；`writing-mode` 为非法属性 | 主生成路线不创作 `a:bodyPr@vert` | PPTX-to-SVG 回导把 `eaVert`、`vert`、`wordArtVert` 与 `wordArtVertRtl` 归一化为正立字形逐字堆叠的 SVG 文本；源保留型原生工作流在不改所属 OOXML 时为 `Direct preservation` | 手工堆叠字形可以近似单列外观，但不会产生原生标点朝向、自动续排或多栏行为；封闭文法见 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) |
 | 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 按 [`svg-effects.md` §6.7](../../skills/ppt-master/references/svg-effects.md#67-advanced-text-treatments) 拒绝不受支持的 CSS 排版、超出 DrawingML 范围的间距，以及导致生成 run advance 或文本框 extent 非正的负字距 |
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
@@ -203,16 +205,20 @@ PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fal
 
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 兼容性 | 校验边界 |
 |---|---|---|---|---|
-| 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m > m:oMathPara > m:oMath` 的 PowerPoint 文本 shape | PowerPoint 2010+ | 矩阵、多行推导等独立高结构公式使用块级合同；不支持的输入直接失败 |
-| 可编辑行内公式 | 普通文本 run 中的叶子 `<tspan data-pptx-inline-formula="无定界符 LaTeX">preview text</tspan>` | 同一 DrawingML `a:p` 保留前后 run，并插入 `a14:m > m:oMath` | PowerPoint 2010+ | 只允许非空直接预览文本；禁止子元素、`x/y/dx/dy`、结构化 placeholder / Master / Layout 归属、保留的导入 `txBody` 或原生替换祖先 |
+| LaTeX 输入档位 | 规范 marker 源不写外层定界符；也接受一对完整的 `$...$`、`$$...$$`、`\(...\)` 或 `\[...\]` | 锁定的 Microsoft 365 2606 / Mac 16.110 档位中所有明确点名的输入，以及 2605 / 16.109 mhchem 档位，均编译为可编辑 OMML | 档位锁定到这些 Microsoft 文档版本；产出的 OMML 仍保持 PowerPoint 2010+ 包目标。仓库验证覆盖编译器、OMML 与包结构，不等同于完整的 Microsoft 365 UI 认证 | 保留文档明确规定的原生归一化；未知或明确不支持的输入直接失败，不把 LaTeX 字面量漏进页面 |
+| 可编辑块级公式 | 一个带显式边界、在 `<metadata type="application/json">` 中保存源 LaTeX、并含可见 SVG 预览子元素的 `<g data-pptx-replace-with="formula">` | 含 `a14:m > m:oMathPara > m:oMath` 的 PowerPoint 文本 shape | 见输入档位行 | 矩阵、多行推导等独立高结构公式使用块级合同 |
+| 可编辑行内公式 | 普通文本 run 中的叶子 `<tspan data-pptx-inline-formula="规范 LaTeX body">preview text</tspan>` | 同一 DrawingML `a:p` 保留前后 run，并插入 `a14:m > m:oMath` | 见输入档位行 | 只允许非空直接预览文本；禁止子元素、`x/y/dx/dy`、结构化 placeholder / Master / Layout 归属、保留的导入 `txBody` 或原生替换祖先 |
 | 浏览器 / 实时预览 | 块级 marker 内的普通 SVG 子元素，或行内 marker 的直接文本 | 写入原生公式时只丢弃已登记预览 | 原始 LaTeX 不能直接在 SVG 中渲染 | 预览必须表达同一公式；它不是 PPTX 兜底 |
-| 公式字体 | 块级 payload 样式，或行内文本 run 的计算样式 | 行内公式继承字号与可见纯色填充，并使用项目文本语言和 Cambria Math | PowerPoint 2010+ | 高结构或多行数学内容仍使用块级形式 |
+| 公式字体 | 块级 payload 样式，或行内文本 run 的计算样式 | 公式继承字号与可见纯色填充，并使用项目文本语言和 Cambria Math；局部 `\color` / `\textcolor` 作用域会覆盖可选中文字 run 与结构控制符的继承填充，`\boldsymbol` / `\bm` 也会设置结构控制字形的样式 | PowerPoint 2010+ OMML | 高结构或多行数学内容仍使用块级形式 |
 | 非 PowerPoint 客户端播放 | 同一类原生 marker；没有图片分支 | 不附加兼容兜底 | Keynote、WPS、LibreOffice 等客户端不在公式合同内 | 不宣称跨客户端显示或编辑能力 |
 
 公式替换始终启用，不使用 `--native-charts-and-tables`。该路径不会创建
 `formula_manifest.json`、公式 PNG、media relationship 或作为图片的
 `mc:Fallback`。块级 JSON 和行内 `data-pptx-inline-formula` 的值是原生公式源；
 SVG 预览内容只负责让导出前的作者页面保持可见。
+编译仅支持前向生成；PPT Master 不把 OMML 反向 build-down 为 LaTeX。
+可执行闭合集与锁定的 Microsoft 来源修订记录在 `formula_profile.py`；Microsoft
+文档中开放式的 “etc.” 不会把未披露的 relation alias 自动纳入本合同。
 
 ## 10. PowerPoint 播放与打包功能
 

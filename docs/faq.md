@@ -157,9 +157,20 @@ remain blocks. Raw LaTeX does not render in SVG, so each marker carries an
 ordinary visible preview that native export replaces without adding an image
 fallback.
 
-The native target is PowerPoint 2010+. Formula display and editability in
-Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;
-PPT Master does not add an image fallback for them.
+Forward compilation covers every explicitly named input in Microsoft's
+documented Microsoft 365 2606 / Mac 16.110 LaTeX profile and 2605 / 16.109
+mhchem profile: symbols, structures, environments, macros, chemistry, local
+formula colors, and the documented native normalizations. Unknown and
+explicitly unsupported input fails closed instead of appearing as raw LaTeX.
+PPT Master does not implement reverse OMML-to-LaTeX build-down.
+
+The generated OMML retains the PowerPoint 2010+ package target, and the
+executable source profile is pinned to the Microsoft documentation versions
+above. Repository verification covers compiler behavior, OMML structure, and
+PPTX packaging rather than complete Microsoft 365 UI rendering/editability
+certification. Formula display and editability in Keynote, WPS, LibreOffice,
+and other non-PowerPoint clients are not supported; PPT Master does not add an
+image fallback for them.
 
 ## Q: Can generated slides contain clickable links?
 
@@ -277,10 +288,13 @@ generation.
 
 Because the whole planning phase no longer happens, token usage is materially
 lower than the default flow; per-page SVG authoring is the dominant cost of a
-run and it does not shrink. Quick keeps the same visual/resource authoring
-capabilities and final blocking standard. It does not promise the same design
-decisions or wall-clock time as Default because it has no confirmed design
-contract, first-page calibration, or resumable decision history.
+run and it does not shrink. Quick keeps the same page-level visual and
+resource-authoring capabilities and the shared SVG/resource blocking
+standards. It does not run Spec Lock alignment checks; its package keeps
+converter-default Theme scaffolding instead of deriving Theme colors, fonts,
+and Master title/body size defaults from a lock. It does not promise the same
+design decisions or wall-clock time as Default because it has no confirmed
+design contract, first-page calibration, or resumable decision history.
 
 ## Q: Will long decks blow out the context window in one shot?
 
@@ -326,6 +340,30 @@ There is also one orthogonal route: if you don't want to produce a deck right no
 Yes — this is the **template fill** route, separate from the SVG generation pipeline. Give the AI your existing `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" or "fill this back into the template". It treats your deck as a native slide library, lets you pick only the pages that fit the new story (reorder freely, and reuse one page for several output slides), and writes the new text — plus native table cells and chart data — straight into the original OOXML.
 
 The output stays 100% native-editable PowerPoint: the original design, layouts, images, and animations are preserved, and only the selected pages are exported. It deliberately does **not** change layouts, add pages, or swap images — a deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. For a fresh structure or a different page count, use create-template (next question) instead. Full steps: [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md).
+
+---
+
+## Q: Content landed in unexpected places — how do I see what PPT Master detected in my `.pptx`?
+
+Both PPTX-consuming routes write a read-only analysis report before anything is generated. Read that report to see exactly which shapes were recognized.
+
+For **Fill Native PPTX**:
+
+```bash
+python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+```
+
+`<stem>.slide_library.json` lists every fillable slot per slide with geometry, paragraph counts, and text metrics, plus separate `tables` and `charts` sections. A styled plain text box counts as a slot — a shape does not have to be a real placeholder to be filled.
+
+For **Create Template**:
+
+```bash
+python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest-only -o <workspace>
+```
+
+`manifest.json` reports, per slide, the layout and master paths, placeholders (`type`, `idx`, `semanticRole`, `shapeName`), image assets, text counts, and page type; `native_structure.json` adds the source structure assessment. `--manifest-only` skips SVG export, so it is cheap to run just to look.
+
+Note that Create Template produces a reusable template workspace, not a filled deck: the pages that follow are newly authored by Generate, so the source's body copy and speaker notes are deliberately not carried onto them. If a shape you expected to be usable is missing from these reports, that is the concrete thing to include in an issue.
 
 ---
 

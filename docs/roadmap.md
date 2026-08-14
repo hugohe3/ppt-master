@@ -24,7 +24,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 
 | Status | Meaning |
 |---|---|
-| **Systematized** | Has its own authoring contract and validation; actively refined |
+| **Systematized** | Has a dedicated authoring contract; applicable, objectively decidable parts receive validation; actively refined |
 | **Covered** | Works today without a dedicated specification system |
 | **Bounded by design** | Deliberately stops where it stops; the reason is recorded |
 | **Asymmetric by design** | Supported on one side only — typically reading or preserving a source deck, but not authoring |
@@ -42,9 +42,9 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Logo | Bounded by design | Brand workspaces describe how to install officially supplied artwork; no workspace bundles a logo |
 | Images | Systematized | Acquisition, generation, treatment, cropping, layout, composition, embedding, provenance |
 | Charts | Systematized | Dedicated authoring reference; SVG by default, native Chart replacement available as an explicit opt-in |
-| Tables | Systematized | Dedicated authoring reference; six cell-grid grammars, native Table replacement on the same opt-in |
+| Tables | Systematized | Dedicated authoring reference; six reusable cell-grid references, with custom grids still available; native Table replacement uses the same opt-in |
 | Diagrams | Systematized | Six relationship atoms — `order`, `link`, `parent`, `membership`, `contrast`, `overlap` |
-| Formulas | Systematized | Standalone block formulas and same-paragraph inline formulas compile from a strict LaTeX subset to editable PowerPoint OMML; SVG previews are authoring-only and no formula image fallback is emitted. PowerPoint 2010+ is supported; non-PowerPoint clients are outside the contract |
+| Formulas | Systematized | Standalone block and same-paragraph inline formulas compile every explicitly documented Microsoft 365 LaTeX / mhchem input to editable OMML, with documented native normalizations and fail-closed handling outside the profile. SVG previews are authoring-only and no image fallback is emitted. The package target remains PowerPoint 2010+; the executable profile is pinned to the stated Microsoft documentation versions, while repository verification is compiler/OMML/package-level rather than complete Microsoft 365 UI certification. Non-PowerPoint clients remain outside the contract |
 | Narration & animation audio | Systematized | Per-slide narration audio, plus native transition and object sounds drawn from the bundled CC0 catalog |
 | Arbitrary video & background music | Not planned | A one-off, content-specific insert that is faster to place by hand in PowerPoint, and the AI cannot pick the file for you. Background music additionally pulls in narration-mixing decisions that are out of scope. Media already present in a source deck is preserved unchanged through the Fill and Enhance routes |
 | SmartArt | Asymmetric by design | Source diagram parts are read for their content and structure; generated decks redraw that content through the ordinary shape pipeline. DiagramML is never edited and native SmartArt regeneration is not promised |
@@ -58,11 +58,11 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 |---|---|---|
 | Background | Systematized | Solid and gradient page backgrounds export as PowerPoint-native slide backgrounds; the picture case is signal-driven |
 | Layering & grouping | Systematized | Explicit z-order and group contracts, including registered base/subject layer pairs |
-| Grid, alignment, whitespace | Systematized | Composition-geometry vocabulary carried by every visual style |
-| Palette | Systematized | Declared HEX values are the truth source; anchors locked deck-wide |
-| Typography | Systematized | One size per structural role, locked across the deck |
+| Grid, alignment, whitespace | Systematized | Shared composition contract plus composition-geometry vocabulary carried by each visual style |
+| Palette | Systematized | Declared HEX values are the truth source for named semantic roles; reusable role anchors stay stable deck-wide, while contextual derivatives and sparse page-local accents remain available |
+| Typography | Systematized | One deck-wide size anchor per structural role, with bounded `±2px` per-occurrence adjustment and a sparse non-structural Hero/Display exception |
 | Visual effects | Systematized | Dedicated effects reference; native effects on authored preset shapes remain signal-driven |
-| Reading path | Systematized | Entry, progression, hierarchy, and endpoint are validated per page |
+| Reading path | Systematized | Entry, progression, hierarchy, and endpoint are planned and qualitatively reviewed per page |
 
 ### Layer 3 — Behavior
 
@@ -79,7 +79,8 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 
 | Concern | Status | Notes |
 |---|---|---|
-| Theme | Covered | Generated per deck from the locked palette and typography |
+| Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Lockless Quick keeps converter-default Theme scaffolding while writing SVG-derived page colors and fonts as direct values |
+| Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
 | Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
 | Placeholders | Systematized | Template workspace contracts, with strict/adaptive exporter behavior derived per deck |
 | Speaker notes | Systematized | Exported with a real notes master |
@@ -167,10 +168,13 @@ lockless final quality gate, and exports the final PPTX. Because the whole
 planning phase no longer happens — the Strategist reference load, the
 `design_spec.md` / `spec_lock.md` artifacts, and the staged confirmation round
 trip — its token cost disappears with it, while per-page SVG authoring is
-unchanged. It keeps the same visual/resource capabilities and final blocking
-standard, but without a confirmed design contract, first-page calibration, or
-resumable decision history it does not promise the same design decisions or
-wall-clock time as Default.
+unchanged. It keeps the same page-level visual and resource-authoring
+capabilities and the shared SVG/resource blocking standards. It does not run
+Spec Lock alignment checks; its package keeps converter-default Theme
+scaffolding instead of deriving Theme colors, fonts, and Master title/body size
+defaults from a lock. Without a confirmed design contract, first-page
+calibration, or resumable decision history it does not promise the same design
+decisions or wall-clock time as Default.
 
 The default Generate pipeline continues to prefer quality over speed.
 
