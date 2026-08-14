@@ -98,7 +98,7 @@ PowerPoint 意图
 | 已物化的合并形状结果 | `shape_boolean_svg.py` 输出的普通 `<path>`；“拆分”返回多个同级 path | 每个返回 path 对应一个带 `a:custGeom` 的 `p:sp` | `Native-normalized`；回导为最终自由形状几何，不保留可重放的操作历史 | 接受受支持的闭合几何，或字体 face 可精确解析的隐式从左到右水平直接文本；文本会转为字形几何，第一个 source 决定样式与顺序，且不输出 clip、mask 或显式 fill rule |
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
 | 折线 | `<polyline>` | 开放自定义几何 | `Native-normalized` | points 使用与其他生成几何相同的有限、已登记语法 |
-| PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，由该组承载 preset 意图与基础 paint，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 质检与导出动态重渲染 registry；规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
+| PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，承载 preset 意图与基础 paint，可选直接引用一个已登记的阴影/发光 filter，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp`，最多一个原生效果写入 `p:spPr/a:effectLst` | preset 身份与 adjustment 可以经导入/导出保留；效果遵循下方共享保真度行 | 质检与导出动态重渲染 registry；创作型 preset 的 filter 引用仅适用于 shape，规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
 | 导入的预设形状 | 含隐藏原生 carrier、可见 preview 证据与新鲜度 metadata 的 expanded 导入/往返组 | payload 合法且未改变时重新接入 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
 | 动作按钮形状 | compact authored `actionButton*` preset 组 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
 | 组 | `<g>` | `p:grpSp`，或对特殊 carrier 执行文档化的 flatten/collapse | 分组内容可重建为 `<g>` | 结构 atom 与 placeholder 合同优先于普通分组 |
