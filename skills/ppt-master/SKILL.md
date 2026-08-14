@@ -6,7 +6,9 @@ description: >
   workspaces, filling native PPTX templates, and enhancing finished PPTX files.
   Use when the user asks to create, reconstruct, regenerate, template, fill, or
   enhance a presentation, requests a presentation-authored narrated/self-running
-  video, or mentions ppt-master.
+  video, or mentions ppt-master. 中文触发：制作/生成/美化 PPT、做幻灯片/演示
+  文稿/课件、PPT 模板填充、PPTX 转图重绘、给 PPT 加配音/动画——用户用中文提出
+  上述任一意图时同样应加载本技能。
 metadata:
   version: "4.7.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
@@ -84,3 +86,25 @@ never compete with it.
 - Repository-level documents may point into the package; package runtime files must not depend on repository-level instructions.
 - On Windows, if a documented `python3 ...` command is unavailable, rerun the same command with `python`.
 - Sponsor information is optional reference material. Read the matching [`SPONSORS.md`](SPONSORS.md) or [`SPONSORS_CN.md`](SPONSORS_CN.md) only when the user explicitly requests a model, AI image model, API/provider, or hosted-service recommendation. Never surface sponsor or model recommendations proactively during normal generation, troubleshooting, or quality review.
+
+## Runtime Environment Discovery (DSH / agent harness)
+
+The instructions above assume scripts run from this Skill directory, but an
+agent may load this file without knowing where the skill lives on disk. Before
+running any `scripts/` command, locate the skill root:
+
+1. Find the absolute path of `attribution_guard.py` under `scripts/` (use the
+   agent's file-search/glob tool if available), then derive the skill root as
+   its parent's parent. Example found roots: `~/.dsh/skills/ppt-master`,
+   `~/.claude/skills/ppt-master`, `~/.agents/skills/ppt-master`.
+2. Run every documented command from that skill root, with an absolute or
+   explicitly `cd`-anchored working directory. Never rely on CWD guesses.
+3. Python launcher resolution (Windows): try `python` first when the system
+   only exposes it; fall back to `py -3` when neither `python3` nor `python`
+   resolves. Prefer the interpreter that already carries the skill's
+   `requirements.txt` dependencies (`python -c "import pptx"` is a quick probe).
+
+This section is a location/launcher shim only: all workflow semantics remain
+owned by the route documents above. If any documented command's executable
+cannot be resolved, state the missing prerequisite and stop that route
+instead of substituting a different tool.
