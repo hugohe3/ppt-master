@@ -80,7 +80,7 @@
 | 关注点 | 状态 | 说明 |
 |---|---|---|
 | Theme | 系统化 | 有锁的 Default 导出根据配色与字体合同逐 deck 派生 `clrScheme`、major/minor 字体与 Master 标题/正文默认字号；无锁的 Quick 保留转换器默认 Theme 脚手架，SVG 派生的页面颜色与字体仍按直接值写入 |
-| 幻灯片节 | 有意的不对称 | 源保留型原生路线把既有节元数据作为未改动的包结构保留；生成或重建页面列表的路线不创作 PowerPoint 原生节，因为页面角色与可选的 Design Spec Part 并不构成所有路线都具备的必需章节合同 |
+| 幻灯片节 | 有意的不对称 | 源保留型原生路线把既有节元数据作为未改动的包结构保留；生成或重建页面列表的路线不创作 PowerPoint 原生节，因为页面角色与可选的 Design Spec Part 并不构成所有路线都具备的必需章节合同。节只改变缩略图栏的组织方式，从不改变任何页面外观；长 deck 需要分组时，在 PowerPoint 里手动分节约一分钟，且只做一次 |
 | Master / Layout | 系统化 | 结构化路线输出真实的 `p:sldMaster` / `p:sldLayout` part |
 | Placeholder | 系统化 | 模板工作区契约，strict/adaptive 导出行为逐 deck 推导 |
 | 备注 | 系统化 | 导出时带真实的 notes master |

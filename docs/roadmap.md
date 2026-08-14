@@ -80,7 +80,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Concern | Status | Notes |
 |---|---|---|
 | Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Lockless Quick keeps converter-default Theme scaffolding while writing SVG-derived page colors and fonts as direct values |
-| Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract |
+| Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
 | Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
 | Placeholders | Systematized | Template workspace contracts, with strict/adaptive exporter behavior derived per deck |
 | Speaker notes | Systematized | Exported with a real notes master |
