@@ -36,6 +36,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Object | Status | Notes |
 |---|---|---|
 | Text | Systematized | Role anchors deck-wide, bounded per-occurrence adjustment, hierarchy and paragraph rules, natively editable runs |
+| WordArt & warped text | Bounded by design | Native WordArt, text warp, and text-on-path are not generated; the same emphasis is rebuilt with ordinary editable text, registered text treatments, and geometry, so every glyph stays a real text run |
 | Vector shapes | Systematized | primitive → Office preset → Boolean → freeform construction ladder, with native conversion rules |
 | Lines & connectors | Asymmetric by design | Native `p:cxnSp` export is implemented, and endpoint attachment is restored on the preserve/mirror round-trip from a source deck. Newly authored connectors stay unconnected. Binding them would first require deciding which lines are real edges and which are decoration — an intent judgment that no geometric threshold settles, and one that is made by the AI wherever it is placed, so moving it upstream to authoring buys no reliability. The result would be some arrows in a diagram following their node and others not |
 | Icons | Systematized | Bundled libraries with per-project sync; project icons are prepared material |
@@ -49,6 +50,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Arbitrary video & background music | Not planned | A one-off, content-specific insert that is faster to place by hand in PowerPoint, and the AI cannot pick the file for you. Background music additionally pulls in narration-mixing decisions that are out of scope. Media already present in a source deck is preserved unchanged through the Fill and Enhance routes |
 | SmartArt | Asymmetric by design | Source diagram parts are read for their content and structure; generated decks redraw that content through the ordinary shape pipeline. DiagramML is never edited and native SmartArt regeneration is not promised |
 | 3D models, OLE objects | Not planned | Both need the host application or a recent Office build on the opening machine and fall back to a still preview elsewhere — the cross-renderer problem this project avoids by design. Inserting one by hand takes seconds. Objects already present in a source deck are preserved unchanged |
+| Ink & camera feeds (Cameo) | Not planned | Hand-drawn annotation and live camera objects are presenter-session surfaces rather than generated design content, and both depend on recent Office builds. Such parts already present in a source deck pass through source-preserving routes as untouched package structure |
 
 *Illustration* is deliberately absent from this table. It is a composite result — an image, an SVG, or a group of shapes — not a seventh carrier, and listing it beside *Images* would reintroduce the category confusion this layering removes.
 
@@ -74,20 +76,25 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Media playback | Covered | Narration audio and animation sounds play natively; media already present in a source deck keeps its playback settings |
 | Hyperlinks | Systematized | Whole-object and inline-text links author through standard SVG `<a href>`, export as native external or same-deck click relationships, and reconstruct on supported PPTX import |
 | Actions & navigation | Systematized | Navigation is authored explicitly by wrapping the target in a hyperlink anchor, including same-deck slide jumps. An `actionButton*` preset contributes visual geometry only — appearance alone never implies an action. Mouse-over triggers, custom shows, macro or program execution, and raw `ppaction://` injection stay outside the contract |
+| Zoom (summary / section / slide) | Not planned | An Office-build-dependent navigation object that falls back to a static picture in other renderers — the cross-renderer degradation this project avoids by design. Same-deck jumps are covered by native hyperlink slide targets |
 
 ### Layer 4 — Document structure
 
 | Concern | Status | Notes |
 |---|---|---|
+| Slide size | Systematized | The canvas contract selects the presentation format; the SVG `viewBox` is the single geometry truth with fail-closed validation, and every page in a deck must agree on one format |
 | Theme | Systematized | Lock-backed Default export derives each deck's `clrScheme`, major/minor fonts, and Master title/body size defaults from its palette and typography contract. Lockless Quick keeps converter-default Theme scaffolding while writing SVG-derived page colors and fonts as direct values |
+| Font embedding | Bounded by design | Fonts are never embedded in the package; a brand or web face leads only after confirmed availability on the target system, otherwise export uses a safe family and keeps the intended face recorded in the Design Spec |
 | Slide sections | Asymmetric by design | Source-preserving native workflows retain existing section metadata as untouched package structure. Routes that generate or rebuild a slide roster do not author PowerPoint Sections because page roles and optional Design Spec Parts do not form one required, route-wide section contract. Sections change only how the thumbnail rail organizes a deck and never change page appearance; grouping a long deck by hand in PowerPoint takes about a minute and is done once |
 | Master / Layout | Systematized | Real `p:sldMaster` / `p:sldLayout` parts on structured routes |
 | Placeholders | Systematized | Template workspace contracts, with strict/adaptive exporter behavior derived per deck |
+| Date, footer & slide-number fields | Covered | Structured template routes author real date / footer / slide-number placeholders under the placeholder contract; free-design decks draw page numbers as ordinary text objects, not native fields |
 | Speaker notes | Systematized | Exported with a real notes master |
 | Narration | Systematized | Per-slide audio with provider provenance |
 | Subtitles | Systematized | Word-timed regrouping across supported providers into shared compact SRT |
 | Document metadata | Covered | Set at export rather than left to the packaging library |
 | Accessibility (alt text, reading order) | Not planned | Only AI-generated images carry an `alt_text` field today, so writing it to DrawingML `descr` would cover one source and leave web-sourced images, shapes, charts, and diagrams without a description to write — full coverage means authoring descriptions for every non-text object, not connecting existing data. Reading order is not a separate property in PowerPoint: it is the shape order, which carries the page's visual layering and is not set independently of it |
+| Macros & Office extension XML | Asymmetric by design | Never authored — the generated route does not synthesize VBA; existing macro or extension parts persist only where a macro-aware source-preserving workflow keeps the owning package parts unchanged |
 | Comments, revisions, collaboration state | Not planned | Office collaboration surface, outside the authoring product |
 
 ---
