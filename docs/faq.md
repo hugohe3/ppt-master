@@ -157,9 +157,20 @@ remain blocks. Raw LaTeX does not render in SVG, so each marker carries an
 ordinary visible preview that native export replaces without adding an image
 fallback.
 
-The native target is PowerPoint 2010+. Formula display and editability in
-Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;
-PPT Master does not add an image fallback for them.
+Forward compilation covers every explicitly named input in Microsoft's
+documented Microsoft 365 2606 / Mac 16.110 LaTeX profile and 2605 / 16.109
+mhchem profile: symbols, structures, environments, macros, chemistry, local
+formula colors, and the documented native normalizations. Unknown and
+explicitly unsupported input fails closed instead of appearing as raw LaTeX.
+PPT Master does not implement reverse OMML-to-LaTeX build-down.
+
+The generated OMML retains the PowerPoint 2010+ package target, and the
+executable source profile is pinned to the Microsoft documentation versions
+above. Repository verification covers compiler behavior, OMML structure, and
+PPTX packaging rather than complete Microsoft 365 UI rendering/editability
+certification. Formula display and editability in Keynote, WPS, LibreOffice,
+and other non-PowerPoint clients are not supported; PPT Master does not add an
+image fallback for them.
 
 ## Q: Can generated slides contain clickable links?
 
