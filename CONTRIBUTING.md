@@ -71,6 +71,7 @@ AI assistance is welcome — this project is itself AI-driven. But an AI-drafted
 - Fixed numeric quotas to constrain generation (`max_cards` / `max_bullets` / `max_table_rows` and similar) — density is governed by narrative rhythm and one primary focus per page, not hard caps
 - Post-processing that is quality smoothing rather than compatibility — we fix things that are broken/unusable if not done (e.g. AI-image size/format/alpha); "nicer if done" polish (loudness normalization, kerning) stays out. If a model or service falls short, the fix is to switch it, not to make the project adapt to it
 - A new backend, path, or option that duplicates a capability the repo already provides — check current behavior first (e.g. OpenAI-compatible providers already run under `IMAGE_BACKEND=openai`)
+- A dedicated backend file for an API gateway, router, or aggregator service — these are already reachable through two generic paths: `IMAGE_BACKEND=openai` with `OPENAI_BASE_URL`, and `IMAGE_BACKEND=openrouter` with `OPENROUTER_BASE_URL` / `OPENROUTER_MODEL`. A gateway-specific file adds a maintained code path without adding a capability, so new `image_backends/` entries are reserved for providers running their own image models
 
 If you're unsure, open an issue to ask — that's always welcome.
 
