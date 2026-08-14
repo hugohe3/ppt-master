@@ -4,6 +4,8 @@ PPT Master - Native Inline Formula Contract
 
 Validate SVG inline-formula markers and build editable PowerPoint math runs.
 
+See references/native-formula.md for the owning inline-formula contract.
+
 Usage:
     Imported by the SVG quality checker and SVG-to-PPTX text converter.
 
@@ -16,13 +18,17 @@ Dependencies:
 
 from __future__ import annotations
 
-from copy import deepcopy
 from xml.etree import ElementTree as ET
 
 from ..drawingml.utils import parse_inline_style, parse_svg_color
 from .formula_compiler import (
     FormulaCompileError,
     compile_latex_to_inline_omml,
+)
+from .formula_run_properties import (
+    merge_formula_control_properties,
+    merge_formula_run_properties,
+    serialize_styled_formula_omml,
 )
 
 
@@ -39,7 +45,6 @@ _SVG_TEXT = f"{{{SVG_NS}}}text"
 _SVG_TSPAN = f"{{{SVG_NS}}}tspan"
 _SVG_A = f"{{{SVG_NS}}}a"
 _MATH_RUN = f"{{{MATH_NS}}}r"
-_MATH_RUN_PROPERTIES = f"{{{MATH_NS}}}rPr"
 _DML_RUN_PROPERTIES = f"{{{DML_NS}}}rPr"
 _POSITION_ATTRIBUTES = ("x", "y", "dx", "dy")
 _PARAGRAPH_ATTRIBUTES = (
@@ -253,7 +258,7 @@ def inline_formula_marker_errors(root: ET.Element) -> list[str]:
 
 
 def _apply_run_properties(omml: str, run_properties_xml: str) -> str:
-    """Replace DrawingML properties on every Office Math leaf run."""
+    """Merge DrawingML defaults onto every Office Math leaf run."""
     try:
         root = ET.fromstring(omml)
         wrapper = ET.fromstring(
@@ -271,13 +276,10 @@ def _apply_run_properties(omml: str, run_properties_xml: str) -> str:
         raise RuntimeError("Inline formula styling must use one a:rPr root")
 
     for run in root.iter(_MATH_RUN):
-        for existing in list(run):
-            if existing.tag == _DML_RUN_PROPERTIES:
-                run.remove(existing)
-        insert_at = 1 if len(run) and run[0].tag == _MATH_RUN_PROPERTIES else 0
-        run.insert(insert_at, deepcopy(run_properties))
+        merge_formula_run_properties(run, run_properties)
+    merge_formula_control_properties(root, run_properties)
 
-    return ET.tostring(root, encoding="unicode", short_empty_elements=True)
+    return serialize_styled_formula_omml(root)
 
 
 def build_inline_formula_xml(latex: str, run_properties_xml: str) -> str:

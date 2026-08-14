@@ -4,6 +4,8 @@ PPT Master - Native Formula Shape Builder
 
 Build editable PowerPoint formula shapes from explicit LaTeX markers.
 
+See references/native-formula.md for the owning block-formula contract.
+
 Usage:
     Imported by the SVG-to-PPTX native-object converter.
 
@@ -25,6 +27,11 @@ from xml.etree import ElementTree as ET
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.utils import _xml_escape, font_px_to_hpt
 from .formula_compiler import FormulaCompileError, compile_latex_to_omml
+from .formula_run_properties import (
+    merge_formula_control_properties,
+    merge_formula_run_properties,
+    serialize_styled_formula_omml,
+)
 from .marker_common import _bounds, _hex_or_none
 
 
@@ -33,7 +40,6 @@ MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
 A14_NS = "http://schemas.microsoft.com/office/drawing/2010/main"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 _MATH_RUN = f"{{{MATH_NS}}}r"
-_MATH_RUN_PROPERTIES = f"{{{MATH_NS}}}rPr"
 _DML_RUN_PROPERTIES = f"{{{DML_NS}}}rPr"
 _LANGUAGE_RE = re.compile(r"^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$")
 _ALIGNMENTS = {
@@ -162,38 +168,32 @@ def _styled_omml(spec: FormulaSpec) -> str:
             )
         justification.set(f"{{{MATH_NS}}}val", spec.math_alignment)
 
-    for run in root.iter(_MATH_RUN):
-        for existing in list(run):
-            if existing.tag == _DML_RUN_PROPERTIES:
-                run.remove(existing)
-
-        run_properties = ET.Element(
-            _DML_RUN_PROPERTIES,
-            {
-                "lang": spec.language,
-                "sz": str(spec.font_size_hpt),
-                "dirty": "0",
-            },
-        )
-        solid_fill = ET.SubElement(run_properties, f"{{{DML_NS}}}solidFill")
+    run_properties = ET.Element(
+        _DML_RUN_PROPERTIES,
+        {
+            "lang": spec.language,
+            "sz": str(spec.font_size_hpt),
+            "dirty": "0",
+        },
+    )
+    solid_fill = ET.SubElement(run_properties, f"{{{DML_NS}}}solidFill")
+    ET.SubElement(
+        solid_fill,
+        f"{{{DML_NS}}}srgbClr",
+        {"val": spec.color},
+    )
+    for tag in ("latin", "ea", "cs"):
         ET.SubElement(
-            solid_fill,
-            f"{{{DML_NS}}}srgbClr",
-            {"val": spec.color},
+            run_properties,
+            f"{{{DML_NS}}}{tag}",
+            {"typeface": "Cambria Math"},
         )
-        for tag in ("latin", "ea", "cs"):
-            ET.SubElement(
-                run_properties,
-                f"{{{DML_NS}}}{tag}",
-                {"typeface": "Cambria Math"},
-            )
 
-        insert_at = 0
-        if len(run) and run[0].tag == _MATH_RUN_PROPERTIES:
-            insert_at = 1
-        run.insert(insert_at, run_properties)
+    for run in root.iter(_MATH_RUN):
+        merge_formula_run_properties(run, run_properties)
+    merge_formula_control_properties(root, run_properties)
 
-    return ET.tostring(root, encoding="unicode", short_empty_elements=True)
+    return serialize_styled_formula_omml(root)
 
 
 def build_native_formula(
