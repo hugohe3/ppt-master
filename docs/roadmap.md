@@ -61,7 +61,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Grid, alignment, whitespace | Systematized | Shared composition contract plus composition-geometry vocabulary carried by each visual style |
 | Palette | Systematized | Declared HEX values are the truth source for named semantic roles; reusable role anchors stay stable deck-wide, while contextual derivatives and sparse page-local accents remain available |
 | Typography | Systematized | One deck-wide size anchor per structural role, with bounded `±2px` per-occurrence adjustment and a sparse non-structural Hero/Display exception |
-| Visual effects | Systematized | Dedicated effects reference; native effects on authored preset shapes remain signal-driven |
+| Visual effects | Systematized | Dedicated effects reference; one registered outer shadow or glow compiles to one editable native effect on supported basic objects and compact authored preset shapes |
 | Reading path | Systematized | Entry, progression, hierarchy, and endpoint are planned and qualitatively reviewed per page |
 
 ### Layer 3 — Behavior
@@ -106,7 +106,6 @@ Actively underway or up next — no committed timeline.
 Candidates already evaluated as "worth doing when real demand shows", listed so the intent is public. None is a commitment.
 
 - **Keep closing the native-coverage gaps** recorded in the [mapping guide](./powerpoint-svg-mapping.md) — release after release, move more "SVG-only" cells toward native PowerPoint structure and behavior.
-- **Effects on authored preset shapes** (e.g. a native drop-shadow) — waits for a precise preset-effect contract plus checker coverage; until then, a stock shape that needs a shadow conservatively stays ordinary SVG.
 - **Picture slide backgrounds as native background fill** — solid/gradient page backgrounds already export as PowerPoint-native slide backgrounds; the picture case is demand-driven.
 
 ---
