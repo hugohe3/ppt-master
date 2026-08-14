@@ -308,7 +308,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 **套模板（Fill Native PPTX）**：
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+uvx ppt-master pptx-intake <deck.pptx> -o <analysis_dir>
 ```
 
 `<stem>.slide_library.json` 会逐页列出每个可填充槽位的几何、段落数与文字度量，并单独给出 `tables` 与 `charts`。带样式的普通文本框同样算槽位——图形不必是真正的占位符才能被填充。
@@ -316,7 +316,7 @@ python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
 **Create Template**：
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest-only -o <workspace>
+uvx ppt-master pptx-template-import <deck.pptx> --manifest-only -o <workspace>
 ```
 
 `manifest.json` 逐页报告 layout / master 路径、占位符（`type`、`idx`、`semanticRole`、`shapeName`）、图片资源、文字数量与页面类型；`native_structure.json` 另外给出源结构评估。`--manifest-only` 跳过 SVG 导出，只是查看时开销很小。

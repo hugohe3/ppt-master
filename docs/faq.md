@@ -350,7 +350,7 @@ Both PPTX-consuming routes write a read-only analysis report before anything is 
 For **Fill Native PPTX**:
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+uvx ppt-master pptx-intake <deck.pptx> -o <analysis_dir>
 ```
 
 `<stem>.slide_library.json` lists every fillable slot per slide with geometry, paragraph counts, and text metrics, plus separate `tables` and `charts` sections. A styled plain text box counts as a slot — a shape does not have to be a real placeholder to be filled.
@@ -358,7 +358,7 @@ python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
 For **Create Template**:
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest-only -o <workspace>
+uvx ppt-master pptx-template-import <deck.pptx> --manifest-only -o <workspace>
 ```
 
 `manifest.json` reports, per slide, the layout and master paths, placeholders (`type`, `idx`, `semanticRole`, `shapeName`), image assets, text counts, and page type; `native_structure.json` adds the source structure assessment. `--manifest-only` skips SVG export, so it is cheap to run just to look.
