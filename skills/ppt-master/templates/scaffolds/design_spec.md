@@ -17,7 +17,6 @@
 | Reading Mode | [fill] |
 | Content Strategy | [fill] |
 | Design Style | [fill] |
-| Formula Policy | [fill] |
 | AI Image Acquisition Path | [fill or not applicable] |
 | Generation Mode | [fill] |
 | Spec Refinement | [fill] |
@@ -115,6 +114,7 @@
 - **Title**: [fill]
 - **Core message**: [fill]
 - **Content**: [fill]
+- **Mathematical content**: [fill exact delimiter-free LaTeX expression body, or omit]
 
 ## X. Speaker Notes Requirements
 

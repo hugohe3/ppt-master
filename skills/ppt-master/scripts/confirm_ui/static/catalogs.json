@@ -1483,44 +1483,6 @@
       "desc_ja": "images/image_prompts.jsonにプロンプトを書き出し、ユーザーが外部で生成した画像をproject/images/に配置する方式。"
     }
   ],
-  "formula_policy": [
-    {
-      "id": "mixed",
-      "label": "mixed",
-      "label_zh": "混合",
-      "label_zh_tw": "混合",
-      "label_en": "mixed",
-      "label_ja": "混合",
-      "desc_zh": "复杂公式渲染为图片；简单行内公式保持为可编辑文本或字符。",
-      "desc_zh_tw": "複雜公式渲染為圖片；簡單行內公式保持為可編輯文字或字元。",
-      "desc_en": "Render complex formula-worthy expressions to PNG; keep simple inline math as editable text / Unicode.",
-      "desc_ja": "複雑な数式はPNG画像として描画し、簡単な行内数式は編集可能なテキスト／Unicode文字のまま残す。"
-    },
-    {
-      "id": "render-all",
-      "label": "render-all",
-      "label_zh": "全部渲染",
-      "label_zh_tw": "全部渲染",
-      "label_en": "render-all",
-      "label_ja": "すべて画像化",
-      "desc_zh": "所有需要按公式处理的表达式都渲染为图片。",
-      "desc_zh_tw": "所有需要按公式處理的運算式都渲染為圖片。",
-      "desc_en": "Render every formula-worthy expression to PNG.",
-      "desc_ja": "数式として扱うべき表現はすべてPNG画像として描画する。"
-    },
-    {
-      "id": "text-only",
-      "label": "text-only",
-      "label_zh": "仅文本",
-      "label_zh_tw": "僅文字",
-      "label_en": "text-only",
-      "label_ja": "テキストのみ",
-      "desc_zh": "不渲染公式；表达式保持为可编辑文本或字符。",
-      "desc_zh_tw": "不渲染公式；運算式保持為可編輯文字或字元。",
-      "desc_en": "Do not render formulas; keep expressions as editable text / Unicode.",
-      "desc_ja": "数式は画像化せず、編集可能なテキスト／Unicode文字のまま保持する。"
-    }
-  ],
   "generation_mode": [
     {
       "id": "continuous",

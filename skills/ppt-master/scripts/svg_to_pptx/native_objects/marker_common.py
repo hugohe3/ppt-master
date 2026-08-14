@@ -46,7 +46,7 @@ CHARTEX_CONTENT_TYPE = "application/vnd.ms-office.chartex+xml"
 CHART_COLOR_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartcolorstyle+xml"
 CHART_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartstyle+xml"
 
-_NATIVE_KINDS = {"table", "chart"}
+_NATIVE_KINDS = {"table", "chart", "formula"}
 _POWERPOINT_COORD_MIN = -(2**31)
 _POWERPOINT_COORD_MAX = 2**31 - 1
 _POWERPOINT_LINE_WIDTH_MAX = 20116800
@@ -268,11 +268,11 @@ def native_marker_transform(transform: str | None) -> tuple[float, float, float,
         operations = parse_transform_operations(raw)
     except ValueError as exc:
         raise RuntimeError(
-            "Native PPTX table/chart markers support translate/scale transforms only"
+            "Native PPTX replacement markers support translate/scale transforms only"
         ) from exc
     if any(name not in {"translate", "scale"} for name, _args in operations):
         raise RuntimeError(
-            "Native PPTX table/chart markers support translate/scale transforms only"
+            "Native PPTX replacement markers support translate/scale transforms only"
         )
 
     a, b, c, d, e, f = parse_transform_matrix(raw)
@@ -281,7 +281,7 @@ def native_marker_transform(transform: str | None) -> tuple[float, float, float,
         raise RuntimeError("Native PPTX marker transform exceeds finite coordinates")
     if b != 0.0 or c != 0.0:
         raise RuntimeError(
-            "Native PPTX table/chart markers support translate/scale transforms only"
+            "Native PPTX replacement markers support translate/scale transforms only"
         )
     return e, f, a, d
 
@@ -631,7 +631,7 @@ def _resolved_bounds(
 ) -> tuple[float, float, float, float, bool]:
     """Resolve object bounds in SVG px plus whether all bounds were explicit."""
     if ctx.use_transform_matrix:
-        raise RuntimeError("Native PPTX table/chart markers support translate/scale only")
+        raise RuntimeError("Native PPTX replacement markers support translate/scale only")
 
     raw_x = payload.get("x", elem.get("data-pptx-x"))
     raw_y = payload.get("y", elem.get("data-pptx-y"))

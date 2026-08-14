@@ -24,6 +24,7 @@ from pptx_shapes import (
     validate_ooxml_xfrm,
 )
 from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
+from hyperlink_contract import svg_hyperlink_href
 from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
 from resource_paths import (
     resolve_external_image_reference,
@@ -35,6 +36,12 @@ from .context import (
     TEXT_FLOW_SPLIT,
     ConvertContext,
     ShapeResult,
+)
+from .hyperlinks import (
+    HYPERLINK_ACTION_KEY,
+    HYPERLINK_RID_KEY,
+    hyperlink_click_xml,
+    hyperlink_run_metadata,
 )
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
@@ -1957,6 +1964,8 @@ _TEXT_BULLET_MARKERS = {
 _TEXT_BULLET_RE = re.compile(
     r'^(?P<prefix>\s*)(?P<marker>[·•●▪■◆◇◦‣])(?P<space>\s*)'
 )
+_INLINE_FORMULA_ATTR = 'data-pptx-inline-formula'
+_INLINE_FORMULA_KEY = '_inline_formula_latex'
 
 
 def _normalize_text_run_whitespace(
@@ -2172,6 +2181,12 @@ def _extract_text_bullet(
     runs: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     """Convert a leading text bullet marker into paragraph metadata."""
+    first_nonspace = _first_nonspace_run(runs)
+    if first_nonspace and (
+        first_nonspace.get(_INLINE_FORMULA_KEY) is not None
+        or first_nonspace.get(HYPERLINK_RID_KEY) is not None
+    ):
+        return runs, None
     full_text = ''.join(str(run.get('text', '')) for run in runs)
     match = _TEXT_BULLET_RE.match(full_text)
     if not match:
@@ -2385,33 +2400,68 @@ def _collect_tspan_runs(
     ctx: ConvertContext,
     inherited_xml_space: str = 'default',
 ) -> list[dict[str, Any]]:
-    """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
+    """Recursively turn one inline SVG subtree into DrawingML text runs."""
+    return _collect_inline_runs(
+        tspan,
+        inherited_attrs,
+        ctx,
+        inherited_xml_space,
+    )
 
-    Order: tspan.text → (each nested child tspan's runs → that child's tail under THIS tspan's attrs).
-    """
+
+def _collect_inline_runs(
+    container: ET.Element,
+    inherited_attrs: dict[str, Any],
+    ctx: ConvertContext,
+    inherited_xml_space: str = 'default',
+    inherited_hyperlink: dict[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """Collect nested ``tspan``/``a`` content with style and link inheritance."""
     runs: list[dict[str, Any]] = []
-    own_attrs = _override_run_attrs(inherited_attrs, tspan, ctx)
-    own_xml_space = resolve_project_xml_space(tspan, inherited_xml_space)
+    own_attrs = _override_run_attrs(inherited_attrs, container, ctx)
+    own_xml_space = resolve_project_xml_space(container, inherited_xml_space)
+    container_tag = container.tag.replace(f'{{{SVG_NS}}}', '')
+    own_hyperlink = inherited_hyperlink
+    if container_tag == 'a':
+        own_hyperlink = hyperlink_run_metadata(
+            ctx,
+            svg_hyperlink_href(container),
+        )
 
-    if tspan.text:
-        runs.append({
+    if container.text:
+        run = {
             **own_attrs,
-            'text': tspan.text,
+            'text': container.text,
             '_xml_space': own_xml_space,
-        })
+        }
+        if own_hyperlink is not None:
+            run.update(own_hyperlink)
+        inline_formula = container.get(_INLINE_FORMULA_ATTR)
+        if inline_formula is not None:
+            run[_INLINE_FORMULA_KEY] = inline_formula
+        runs.append(run)
 
-    for child in tspan:
+    for child in container:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if child_tag == 'tspan':
+        if child_tag in {'tspan', 'a'}:
             runs.extend(
-                _collect_tspan_runs(child, own_attrs, ctx, own_xml_space)
+                _collect_inline_runs(
+                    child,
+                    own_attrs,
+                    ctx,
+                    own_xml_space,
+                    own_hyperlink,
+                )
             )
             if child.tail:
-                runs.append({
+                tail_run = {
                     **own_attrs,
                     'text': child.tail,
                     '_xml_space': own_xml_space,
-                })
+                }
+                if own_hyperlink is not None:
+                    tail_run.update(own_hyperlink)
+                runs.append(tail_run)
 
     return runs
 
@@ -2439,10 +2489,13 @@ def _build_text_runs(
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if child_tag == 'tspan':
-            runs.extend(
-                _collect_tspan_runs(child, parent_attrs, ctx, xml_space)
-            )
+        if child_tag in {'tspan', 'a'}:
+            runs.extend(_collect_inline_runs(
+                child,
+                parent_attrs,
+                ctx,
+                xml_space,
+            ))
             if child.tail:
                 runs.append({
                     **parent_attrs,
@@ -2540,6 +2593,7 @@ def _build_run_properties_xml(
     default_fonts: dict[str, str],
     ctx: ConvertContext | None = None,
     effect_xml: str = '',
+    fixed_font_family: str | None = None,
 ) -> str:
     """Build the final ``a:rPr`` used to compare and emit one text run."""
     text = str(run['text'])
@@ -2569,14 +2623,22 @@ def _build_run_properties_xml(
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
 
     fonts = parse_font_family(ff) if ff else default_fonts
-    run_fonts = theme_font_tokens(
-        fonts,
-        ctx.theme_font_spec if ctx is not None else None,
-    ) or resolve_text_run_fonts(text, fonts)
-    lang = detect_text_lang(
+    run_fonts = (
+        {
+            'latin': fixed_font_family,
+            'ea': fixed_font_family,
+            'cs': fixed_font_family,
+        }
+        if fixed_font_family is not None
+        else theme_font_tokens(
+            fonts,
+            ctx.theme_font_spec if ctx is not None else None,
+        ) or resolve_text_run_fonts(text, fonts)
+    )
+    lang = str(run.get('_language_override') or detect_text_lang(
         text,
         ctx.primary_language if ctx is not None else None,
-    )
+    ))
     rtl_xml = (
         '\n<a:rtl val="1"/>'
         if text_has_rtl_characters(text)
@@ -2585,6 +2647,17 @@ def _build_run_properties_xml(
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
+    relationship_id = run.get(HYPERLINK_RID_KEY)
+    hyperlink_xml = (
+        hyperlink_click_xml(
+            str(relationship_id),
+            str(run.get(HYPERLINK_ACTION_KEY))
+            if run.get(HYPERLINK_ACTION_KEY) is not None
+            else None,
+        )
+        if relationship_id is not None
+        else ''
+    )
 
     return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
 {outline_xml}
@@ -2592,7 +2665,8 @@ def _build_run_properties_xml(
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>{rtl_xml}
+<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
+{hyperlink_xml}{rtl_xml}
 </a:rPr>'''
 
 
@@ -2612,8 +2686,18 @@ def _coalesce_text_runs(
         text = str(run.get('text', ''))
         if not text:
             continue
+        if run.get(_INLINE_FORMULA_KEY) is not None:
+            merged.append({**run, 'text': text})
+            previous_properties = None
+            continue
         properties = _build_run_properties_xml(run, default_fonts, ctx)
-        if merged and properties == previous_properties:
+        if (
+            merged
+            and merged[-1].get(_INLINE_FORMULA_KEY) is None
+            and merged[-1].get(HYPERLINK_RID_KEY) == run.get(HYPERLINK_RID_KEY)
+            and merged[-1].get(HYPERLINK_ACTION_KEY) == run.get(HYPERLINK_ACTION_KEY)
+            and properties == previous_properties
+        ):
             candidate = {
                 **merged[-1],
                 'text': str(merged[-1].get('text', '')) + text,
@@ -2652,6 +2736,37 @@ def _build_run_xml(
     if run.get('_line_break'):
         return '<a:br/>'
     text = str(run['text'])
+    inline_formula = run.get(_INLINE_FORMULA_KEY)
+    if inline_formula is not None:
+        fill_raw = str(run.get('fill_raw') or f"#{run.get('fill', '000000')}")
+        fill_color, fill_alpha = parse_svg_color(fill_raw)
+        if fill_color is None or fill_alpha <= 0:
+            raise ValueError(
+                'inline formula text requires one visible solid fill color'
+            )
+        math_run = {
+            **run,
+            'font_family': 'Cambria Math',
+            'font_weight': '400',
+            'font_style': 'normal',
+            'text_decoration': 'none',
+            'letter_spacing': 0.0,
+            'stroke_raw': '',
+            'stroke_opacity': None,
+            '_language_override': (
+                ctx.primary_language
+                if ctx is not None and ctx.primary_language is not None
+                else 'en-US'
+            ),
+        }
+        properties_xml = _build_run_properties_xml(
+            math_run,
+            default_fonts,
+            ctx,
+            fixed_font_family='Cambria Math',
+        )
+        from ..native_objects.inline_formula import build_inline_formula_xml
+        return build_inline_formula_xml(str(inline_formula), properties_xml)
     properties_xml = _build_run_properties_xml(
         run,
         default_fonts,
@@ -2802,11 +2917,15 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 if prev and not prev_text.endswith(' ') \
                         and not next_text.startswith(' ') \
                         and not boundary_is_cjk:
-                    prev.append({
+                    joining_space = {
                         **prev[-1],
                         'text': ' ',
                         'letter_spacing': 0.0,
-                    })
+                    }
+                    joining_space.pop(_INLINE_FORMULA_KEY, None)
+                    joining_space.pop(HYPERLINK_RID_KEY, None)
+                    joining_space.pop(HYPERLINK_ACTION_KEY, None)
+                    prev.append(joining_space)
                 prev.extend(line_runs)
             else:
                 paragraph_runs.append(line_runs)
@@ -3036,6 +3155,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 (run for run in line if not run.get('_line_break')),
                 None,
             )
+            effective_line_spacing = (
+                ''
+                if any(run.get(_INLINE_FORMULA_KEY) is not None for run in line)
+                else ln_spc_xml
+            )
             p_pr_xml = _paragraph_pr_xml(
                 algn=algn,
                 font_size=(
@@ -3043,7 +3167,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                     if first_text_run is not None
                     else font_size
                 ),
-                body_xml=f'{ln_spc_xml}{spc_bef_xml}',
+                body_xml=f'{effective_line_spacing}{spc_bef_xml}',
                 bullet=bullet,
                 ctx=ctx,
                 rtl=text_uses_rtl(
@@ -3128,7 +3252,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             'anchor="t" anchorCtr="0">\n<a:spAutoFit/>\n</a:bodyPr>'
         )
 
-    return ShapeResult(xml=f'''<p:sp>
+    shape_xml = f'''<p:sp>
 <p:nvSpPr>
 <p:cNvPr id="{shape_id}" name="TextBox {shape_id}"/>
 <p:cNvSpPr txBox="1"/><p:nvPr/>
@@ -3146,7 +3270,14 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <a:lstStyle/>
 {paragraphs_xml}
 </p:txBody>
-</p:sp>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+</p:sp>'''
+    if any(run.get(_INLINE_FORMULA_KEY) is not None for run in runs):
+        from ..native_objects.inline_formula import wrap_inline_formula_shape
+        shape_xml = wrap_inline_formula_shape(shape_xml)
+    return ShapeResult(
+        xml=shape_xml,
+        bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
+    )
 
 
 # ---------------------------------------------------------------------------

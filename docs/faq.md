@@ -57,7 +57,7 @@ If the folder is not a Git clone, the script will tell you how to migrate a ZIP 
 Yes. The full repository is large (Git history plus bundled example decks and their assets), and that size is baked into the history — it can't be trimmed without breaking the many existing forks. If you only want the skill and not the full repo, use a lightweight path instead:
 
 - **Marketplace CLI**: `npx skills add hugohe3/ppt-master` or Claude Code's `/plugin install` fetch the skill files only (see the Set Up section of the README).
-- **Manual download**: grab `ppt-master-skill-*.zip` from the [Releases](https://github.com/hugohe3/ppt-master/releases) page — the skill files only (~50 MB), no full-repo clone.
+- **Manual download**: grab `ppt-master-skill-*.zip` from the [Releases](https://github.com/hugohe3/ppt-master/releases) page — the skill files only (~56 MB), no full-repo clone.
 
 Either way, run `pip install -r requirements.txt` from the installed location so the post-processing scripts work.
 
@@ -146,6 +146,35 @@ By default, charts are rendered as **custom-designed SVG graphics** converted to
 
 If your workflow specifically requires Excel-driven data editing or PowerPoint's chart/table-specific controls, export with `--native-charts-and-tables`: supported data charts and pure text-grid tables then ship as **PowerPoint-native Chart / Table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts_tables.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The default SVG fallback also becomes editable DrawingML shapes, but it has no chart data workbook or table/chart object model. Native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, so the shape-based route remains the visual-stability default.
 
+## Q: Are formulas editable?
+
+Yes, in PowerPoint. PPT Master exports both standalone block equations and
+same-paragraph inline formulas as editable OMML, not screenshots or picture
+assets. A block uses a formula group; inline math uses a leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` among ordinary text
+runs. Matrices, multiline derivations, and other high-structure expressions
+remain blocks. Raw LaTeX does not render in SVG, so each marker carries an
+ordinary visible preview that native export replaces without adding an image
+fallback.
+
+The native target is PowerPoint 2010+. Formula display and editability in
+Keynote, WPS, LibreOffice, and other non-PowerPoint clients are not supported;
+PPT Master does not add an image fallback for them.
+
+## Q: Can generated slides contain clickable links?
+
+Yes. PPT Master supports PowerPoint-native links on a whole object or an inline
+text run. External targets use an absolute URI such as `https:` or `mailto:`;
+same-deck jumps use the exact 1-based `#slide-N` form. Both compile from
+standard SVG `<a href>` anchors to native click relationships, and supported
+PPTX import reconstructs the same SVG form.
+
+This is a hyperlink contract, not a general PowerPoint action API. Mouse-over,
+custom-show, navigation-command, program/macro/OLE/file, and arbitrary action
+settings are not authored. See the [PowerPoint ↔ SVG Mapping
+Guide](./powerpoint-svg-mapping.md#10-powerpoint-playback-and-package-features)
+for the carrier and preservation boundaries.
+
 ## Q: Can I change page transitions and element animations?
 
 Yes. Page transitions are on by default (`fade` 0.4s); per-element object
@@ -228,10 +257,11 @@ Quick creates no `svg_final/` preview.
 It does not skip preparation or design capability. Source conversion, research
 on identified factual gaps, shared aesthetic references, and every resource the
 deck needs still run when required: supplied or extracted images,
-AI/web/sliced images, project icons, native shapes, charts/tables, rendered
-formulas, and the required operational manifests or provenance records. If a
-required asset is not ready, it still stops and asks you for it instead of
-substituting unrelated material. After preparation, the current agent
+AI/web/sliced images, project icons, native shapes, charts/tables, and the
+required operational manifests or provenance records. Formulas are authored
+directly as PowerPoint-native markers in the affected SVG, not prepared as
+image assets. If a required asset is not ready, it still stops and asks you for
+it instead of substituting unrelated material. After preparation, the current agent
 hand-authors `svg_output/` to the shared standards, runs the lockless Quick
 final quality checker, fixes every blocking error, and only then exports the
 final PPTX.

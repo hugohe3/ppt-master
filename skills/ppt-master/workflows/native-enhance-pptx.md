@@ -16,6 +16,7 @@ This route treats a `.pptx` as the artifact to preserve. It archives the source 
 |---|---|
 | Source file | If already under `projects/`, move it into the enhancement project; otherwise copy it |
 | Visible slides | Do not rewrite existing text, shapes, images, charts, tables, masters, or layouts |
+| Existing hyperlinks | Preserve hyperlink XML and relationships unchanged |
 | Route | Direct PPTX package patching; no SVG conversion |
 | Output | A new `.pptx` under `<project>/exports/` |
 | Project kind | `native_pptx_enhancement` |
@@ -53,7 +54,7 @@ source.pptx
 | `narration.timings` | Enabled | Set narrated slides to auto-advance from page-start lead-in, audio duration, and page-tail padding |
 | `narration.transitions` | Enabled | Add page-level transitions for narrated/selected slides |
 | `delivery.check` | Enabled | Read-only package/font/media/hidden-slide/file-size and existing-motion audit |
-| `media` | Planned | Background music, video, media compression |
+| `delivery.compress` | Planned | Reduce embedded media size for oversized packages; the audit above already reports them |
 | `presenter` | Planned | Q&A notes, speaker cues, rehearsal artifacts |
 | `animation` | Planned | Explicit object-level animation only |
 | `visible-stamp` | Planned | Watermark/footer/logo; requires explicit confirmation |
@@ -360,7 +361,9 @@ Patch scope:
 | `ppt/presProps.xml` | `showPr useTimings=1` only when this run writes automatic slide advance |
 | `[Content_Types].xml` | Required content types |
 
-**Hard rule**: Do not modify existing slide shapes, text bodies, images, chart data, master/layout parts, or existing non-target relationships.
+**Hard rule**: Do not modify existing slide shapes, text bodies, images, chart
+data, master/layout parts, hyperlink XML/relationships, or existing non-target
+relationships.
 
 Before publishing the candidate, apply validates transitions, timing/object
 animation structure, ZIP integrity, unique parts, internal relationships,

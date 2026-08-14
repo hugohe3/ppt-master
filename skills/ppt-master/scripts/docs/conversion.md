@@ -200,6 +200,7 @@ Behavior:
 - preserves every readable chart dimension or series and emits `[Chart data warning: <reason>]` for missing caches/count mismatches; `[Chart data unavailable: <reason>]` is reserved for charts with no readable points (and unsupported ChartEx), so XY data is never flattened into a misleading category table
 - transcribes SmartArt semantic nodes as hierarchical Markdown; unreadable diagram data emits an explicit placeholder and conversion warning
 - exports embedded pictures to a sibling `_files/` directory
+- preserves supported run, table-cell, picture, and text-shape links as Markdown links, including `#slide-N` jumps
 - appends speaker notes when present
 - writes `<input>.conversion_profile.json` after successful conversion
 
@@ -257,6 +258,12 @@ relationship or media part cannot be read. The template manifest uses the same
 relationship preference for asset identity; its existing missing-media gate
 remains strict rather than silently treating the raster preview as the
 template's canonical asset.
+
+Supported `a:hlinkClick` on shape/picture `p:cNvPr` and text `a:rPr` becomes
+the shared SVG `<a href>` form for absolute external URIs and final-roster
+`#slide-N` jumps. A source shape that also has linked inner runs uses the
+importer-only `data-pptx-shape-hyperlink` transport to avoid nested SVG anchors.
+Unsupported click actions produce a diagnostic; strict import stops.
 
 ### Import compatibility and recovery boundary
 

@@ -472,7 +472,8 @@ as a grouped editable text box. Authoring v1 creates only unconnected
 `p:cxnSp`; it does not accept hand-written endpoint/site metadata. An
 `actionButton*` preset maps visual geometry only. Preset appearance never
 invents connector attachment, action behavior, navigation targets, or
-hyperlinks.
+hyperlinks. Link and navigation behavior is authored explicitly instead — see
+[`native-hyperlinks.md`](./native-hyperlinks.md).
 
 ---
 

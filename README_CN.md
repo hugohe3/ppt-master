@@ -57,6 +57,10 @@
   <a href="./docs/zh/roadmap.md"><strong>路线图</strong></a>
 </p>
 
+<p align="center">
+  <sub>下方的旁白 deck 与画廊示例均生成于 <strong>2026 年 5 月</strong>，模型为 Claude Opus 4.7 + <code>gpt-image-2</code>，每份都是一次性生成、未经精修。</sub>
+</p>
+
 <h3 align="center">下载这份<a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">带音频旁白的 <em>Attention Is All You Need</em> 论文精读 deck</a>，在 PowerPoint 里直接放映，每一页都会自己"读"给你听 —— 这只是 PPT Master 能力的冰山一角。</h3>
 
 <table>
@@ -97,7 +101,7 @@
 </table>
 
 <p align="center">
-  <sub>以上示例均为一次性生成、未经精修（生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>）。下载任意一份 .pptx 在 PowerPoint 里打开，是感受真实产出水平最快的方式。<br/><a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
+  <sub>下载任意一份 .pptx 在 PowerPoint 里打开，是感受真实产出水平最快的方式。<br/><a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
 </p>
 
 <p align="center">
@@ -266,7 +270,7 @@ pip install -r requirements.txt
 **方式 B — 下载 ZIP**（无需安装 Git，适合快速体验）：
 [GitHub](https://github.com/hugohe3/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（中国大陆地区访问 GitHub 下载不便时用这个，网速更快）；解压后同样用 `pip install -r requirements.txt` 装依赖。ZIP 没有 Git 历史，不能自动 `git pull`（更新见下）。
 
-如果完整仓库下载失败、或嫌体积太大，可以改到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载纯技能包 `ppt-master-skill-*.zip`（约 50 MB，功能完整，但不含内置示例 deck）。
+如果完整仓库下载失败、或嫌体积太大，可以改到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载纯技能包 `ppt-master-skill-*.zip`（约 56 MB，功能完整，但不含内置示例 deck）。
 
 #### 日常更新
 
@@ -333,9 +337,9 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 你：用 projects/q3-report/sources/report.pdf 快速生成一份 5 页 PPT，不用跟我确认
 ```
 
-你明确提的照做，你没提的由 AI 直接定，不再回来问你。它仍会转换来源、补齐事实、应用共享视觉基线，并按需使用图片 / 图标 / 原生形状 / 图表 / 表格 / 公式——省掉的是交互与持久规划，不是 PPT 能力。它是不可续接的一次性生成，也不会产生 `svg_final/` 预览。完整说明 → [快速模式](./docs/zh/getting-started.md#快速模式)。
+你明确提的照做，你没提的由 AI 直接定，不再回来问你。它仍会转换来源、补齐事实、应用共享视觉基线，并按需使用图片 / 图标 / 原生形状 / 图表 / 表格 / PowerPoint 原生行内或块级公式——省掉的是交互与持久规划，不是 PPT 能力。它是不可续接的一次性生成，也不会产生 `svg_final/` 预览。完整说明 → [快速模式](./docs/zh/getting-started.md#快速模式)。
 
-> **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。默认 Generate 流程会运行 `finalize_svg.py` 并生成自包含预览 `svg_final/`；PowerPoint 手工“转换为形状”不在支持范围。用户可显式启用[快速生成](./skills/ppt-master/workflows/profiles/quick-generate.md)：它跳过 Strategist、确认、`design_spec.md`、`spec_lock.md` 与 `finalize_svg.py`——你明确提出的要求照做，你没提的由 Agent 在一次有效上下文中直接决定；仍按需转换来源、研究事实缺口、应用共享 mode / visual style / 美学规范、准备图片 / 图标 / 公式，并考虑原生形状与数据可视化，随后按规范手写 SVG，通过无锁的 Quick 最终质量检查，再导出最终 PPTX。它不写替代计划，上下文丢失后不能续接。原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时启用。Quick 使用默认输出路径时仍会生成普通 postflight 报告，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；显式指定输出路径时沿用普通流程不创建备份的行为。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；可加 `--native-charts-and-tables`，把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。这两种图表/表格导出变体都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
+> **输出说明：** SVG 管线统一由项目转换器读取 `svg_output/`，生成可直接编辑的原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`。默认 Generate 流程会运行 `finalize_svg.py` 并生成自包含预览 `svg_final/`；PowerPoint 手工“转换为形状”不在支持范围。用户可显式启用[快速生成](./skills/ppt-master/workflows/profiles/quick-generate.md)：它跳过 Strategist、确认、`design_spec.md`、`spec_lock.md` 与 `finalize_svg.py`——你明确提出的要求照做，你没提的由 Agent 在一次有效上下文中直接决定；仍按需转换来源、研究事实缺口、应用共享 mode / visual style / 美学规范、准备图片 / 图标，并把公式直接创作为原生行内或块级 marker，同时考虑原生形状与数据可视化，随后按规范手写 SVG，通过无锁的 Quick 最终质量检查，再导出最终 PPTX。它不写替代计划，上下文丢失后不能续接。公式 marker 会把 LaTeX payload 编译为 PowerPoint 2010+ 可编辑 OMML；块级 group 与行内 `<tspan>` run 都保留普通 SVG 预览，导出时将其替换。Keynote、WPS、LibreOffice 等非 PowerPoint 客户端的公式显示与编辑能力不在支持合同内。原生图表 / 表格替换、讲稿、动效、旁白和诊断等普通导出能力仍可按需使用；讲稿、自定义对象动画和旁白默认关闭，Agent 可在用户要求或 deck 确有需要时启用。Quick 使用默认输出路径时仍会生成普通 postflight 报告，并把 `svg_output/` 镜像到 `backup/<timestamp>/svg_output/`；显式指定输出路径时沿用普通流程不创建备份的行为。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；可加 `--native-charts-and-tables`，把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。这两种图表/表格导出变体都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
 
 > **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
 

@@ -104,7 +104,6 @@
             placeholder_audience: "Who is this deck for?",
             placeholder_pages: "e.g. 12-15",
             hex_override: "Custom HEX override:",
-            formula_policy: "Formula rendering policy",
             image_ai_path: "AI image source",
             image_strategy: "Generated image style",
             image_strategy_empty: "No preset style references are available. You can still use a custom style.",
@@ -287,7 +286,6 @@
             placeholder_audience: "この資料は誰に向けたもの？",
             placeholder_pages: "例：12-15",
             hex_override: "カスタムHEXで上書き：",
-            formula_policy: "数式レンダリング方針",
             image_ai_path: "AI画像の生成元",
             image_strategy: "生成画像のスタイル",
             image_strategy_empty: "プリセットのスタイル見本を利用できません。カスタムスタイルは引き続き使用できます。",
@@ -470,7 +468,6 @@
             placeholder_audience: "这份演示文稿面向谁？",
             placeholder_pages: "如：12-15",
             hex_override: "自定义色值覆盖：",
-            formula_policy: "公式渲染策略",
             image_ai_path: "生成配图来源",
             image_strategy: "生成图风格",
             image_strategy_empty: "当前没有可用的预设风格参考，仍可使用自定义风格。",
@@ -653,7 +650,6 @@
             placeholder_audience: "這份簡報面向誰？",
             placeholder_pages: "如：12-15",
             hex_override: "自訂色值覆蓋：",
-            formula_policy: "公式渲染策略",
             image_ai_path: "生成配圖來源",
             image_strategy: "生成圖風格",
             image_strategy_empty: "目前沒有可用的預設風格參考，仍可使用自訂風格。",
@@ -1350,7 +1346,6 @@
         if (field === "icons") return REC.icons && REC.icons.value;
         if (field === "image_usage") return REC.images && REC.images.value;
         if (field === "image_ai_path") return REC.image_ai_path || (REC.images && REC.images.ai_path);
-        if (field === "formula_policy") return REC.typography && REC.typography.formula_policy && REC.typography.formula_policy.value;
         if (field === "generation_mode") return REC.generation_mode && REC.generation_mode.value;
         return REC[field] && REC[field].value;
     }
@@ -3344,13 +3339,6 @@
         }
     }
 
-    function renderFormulaPolicy(host) {
-        var sec = section("F", "formula_policy");
-        enumField(sec, CAT.formula_policy, recOrFirst("formula_policy", CAT.formula_policy),
-            function () { return STATE.formula_policy; }, function (v) { STATE.formula_policy = v; });
-        host.appendChild(sec);
-    }
-
     // Combined color + typography + icon preview — not a separate confirmation, just a
     // live "overall impression" of the style choices made above. Kept
     // deliberately abstract (a style chip, not a slide layout); page layout
@@ -3922,7 +3910,6 @@
             host.appendChild(styleGroup);
             renderImageDirection(host);
             renderImageProduction(host);
-            renderFormulaPolicy(host);
             renderProactiveExecution(host);
             renderMode(host);
             renderRefine(host);
@@ -4079,7 +4066,6 @@
     }
 
     function initProductionState() {
-        STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
         STATE.proactive_speaker_notes = booleanRecommendation("proactive_speaker_notes", true);
         STATE.proactive_custom_animations = booleanRecommendation("proactive_custom_animations", false);
