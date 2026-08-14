@@ -277,10 +277,13 @@ generation.
 
 Because the whole planning phase no longer happens, token usage is materially
 lower than the default flow; per-page SVG authoring is the dominant cost of a
-run and it does not shrink. Quick keeps the same visual/resource authoring
-capabilities and final blocking standard. It does not promise the same design
-decisions or wall-clock time as Default because it has no confirmed design
-contract, first-page calibration, or resumable decision history.
+run and it does not shrink. Quick keeps the same page-level visual and
+resource-authoring capabilities and the shared SVG/resource blocking
+standards. It does not run Spec Lock alignment checks; its package keeps
+converter-default Theme scaffolding instead of deriving Theme colors, fonts,
+and Master title/body size defaults from a lock. It does not promise the same
+design decisions or wall-clock time as Default because it has no confirmed
+design contract, first-page calibration, or resumable decision history.
 
 ## Q: Will long decks blow out the context window in one shot?
 
