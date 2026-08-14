@@ -2749,13 +2749,14 @@ def project_filter_errors(root: ET.Element) -> list[str]:
             continue
         if (
             tag not in PROJECT_FILTER_PUBLIC_TARGETS
+            and not _is_compact_authored_preset_filter_target(elem)
             and not _is_imported_preset_preview_filter_target(elem, parents)
             and not is_picture_effect_carrier(elem)
         ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
-                'rect, circle, image, path, text, and an exact single clipped-'
-                'image carrier group'
+                'rect, circle, image, path, text, a validated compact authored-'
+                'preset shape, and an exact registered carrier group'
             )
         if tag == 'image' and elem.get('clip-path') is not None:
             errors.add(
@@ -2905,6 +2906,26 @@ def project_filter_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def _is_compact_authored_preset_filter_target(elem: ET.Element) -> bool:
+    """Recognize one validated project-authored preset shape filter target."""
+    if (
+        _svg_element_tag(elem) != 'g'
+        or elem.get('data-pptx-authoring') != 'preset'
+        or elem.get('data-pptx-object') != 'shape'
+        or elem.get('data-pptx-part') is not None
+    ):
+        return False
+    from pptx_to_svg.preset_authoring import (  # Local to avoid layer coupling.
+        authored_preset_encoding,
+        validate_authored_preset_group,
+    )
+
+    return (
+        authored_preset_encoding(elem) == 'compact'
+        and not validate_authored_preset_group(elem)
+    )
+
+
 def _is_imported_preset_preview_filter_target(
     elem: ET.Element,
     parents: dict[ET.Element, ET.Element],
@@ -2915,8 +2936,8 @@ def _is_imported_preset_preview_filter_target(
     shape-level effect.  The lossless importer therefore keeps the native
     filter on the hidden geometry carrier and mirrors the same reference onto
     its hash-locked preview group.  The preview group is never exported as a
-    separate PowerPoint object; ordinary authored ``<g filter>`` remains
-    outside the project contract.
+    separate PowerPoint object; other ordinary or authored ``<g filter>``
+    forms remain outside the project contract.
     """
     if (
         _svg_element_tag(elem) != 'g'

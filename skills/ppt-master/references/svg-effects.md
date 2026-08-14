@@ -257,7 +257,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Concern | Contract |
 |---|---|
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
-| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>`; an exact outer `<g filter>` is also registered when its sole visual child is one clipped `<image>` |
+| Public targets | `<rect>`, `<circle>`, `<image>`, `<path>`, `<text>`; one validated compact authored shape-preset `<g>` from [`native-shape-authoring.md`](./native-shape-authoring.md) §4; an exact outer `<g filter>` whose sole visual child is one clipped `<image>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
 | Generated glow form | Zero-offset `feDropShadow` with flood paint, or the complete blur + flood + composite + merge graph below; never bare blur |
 | Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx`, `dy`, and `flood-opacity` on `feDropShadow`; explicit `flood-opacity` on `feFlood`; explicit `slope` on linear `feFuncA` |
@@ -276,13 +276,14 @@ Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
 `<tspan>` / ordinary `<g>` / unsupported targets are forbidden; apply the
 effect to supported objects or use explicit layers.
-Special `<g filter>` carriers are limited to the exact single clipped-image
-form in §6.5, the hash-locked
+Special `<g filter>` targets are limited to the helper-authored compact shape
+preset above, the exact single clipped-image form in §6.5, the hash-locked
 `data-pptx-part="geometry-preview"` transport in §1.4—a direct child of an
 imported preset object referencing the hidden geometry carrier's filter—and the
 exact imported picture-crop carrier in §6.5, which keeps the effect outside its
-viewport. Neither authorizes ordinary group filters or creates a second
-PowerPoint object.
+viewport. The compact preset applies its filter once to the logical shape; its
+direct registry paths remain unfiltered. None of these cases authorizes ordinary
+group filters or creates a second PowerPoint object.
 PPTX import maps one classifiable shape/connector/picture outer shadow or glow
 to this contract. Unsupported effects and outer-shadow variants whose scale,
 skew, alignment, or rotation semantics cannot be retained become import

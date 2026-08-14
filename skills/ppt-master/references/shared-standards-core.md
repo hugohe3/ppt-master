@@ -392,8 +392,9 @@ complete geometric object into a native DrawingML preset through the
 deterministic fragment helper. Selection behavior lives in
 [`native-shape-authoring.md`](./native-shape-authoring.md); this section owns
 the machine contract. This compact canonical form describes the intended
-preset, frame, adjustments, and paint once, keeps only registry-generated
-visible SVG paths, and embeds no source OOXML or serialized preview fingerprint.
+preset, frame, adjustments, paint, and an optional shape effect once, keeps only
+registry-generated visible SVG paths, and embeds no source OOXML or serialized
+preview fingerprint.
 
 | Metadata / structure | Required behavior |
 |---|---|
@@ -401,6 +402,7 @@ visible SVG paths, and embeds no source OOXML or serialized preview fingerprint.
 | `data-pptx-object` | `shape` or `connector`; connector-family presets must use `connector`, and `connector` must use a connector-family preset. Authored connectors require `fill="none"` plus a visible stroke and export as unconnected `p:cxnSp`. |
 | `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*` | Generated together from the locked registry and written once on the logical group. The frame is the helper's exact four-part, space-separated ordinary-decimal spelling and remains authoritative even when visible path bounds differ; commas, scientific notation, leading `+`, and redundant decimal spellings are rejected. |
 | Local `fill` / `stroke` plus supported paint attributes | Base paint is written once on the group; a visible stroke also carries an explicit width. Canonical page/template authoring keeps channel paint local. Compatible ancestor paint/opacity may compose under the general SVG rules and receives a recommendation warning. |
+| Optional direct `filter="url(#id)"` | Shape presets only: the helper writes one exact local reference to a direct [`svg-effects.md`](./svg-effects.md) §6.4 filter definition. It compiles once on the complete native shape; connector presets, inline style, ordinary group filters, and child-path filters remain unsupported. |
 | Ordered direct `<path>` children | Browser-visible registry layers only. Each child writes just its required path-level fill/stroke override; labels and decorations stay outside the atomic group. |
 | No carrier / wrapper / fingerprint | `data-pptx-part`, hidden geometry carriers, preview wrappers, and `data-pptx-preview-sha256` belong to expanded import/compatibility transport, not canonical project authoring. |
 
@@ -415,26 +417,31 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
   --adjust "adj1=val 50000"
 ```
 
+When one native effect is justified, append `--filter-id softShadow`; that id
+must already name one direct page-level §6.4 filter definition.
+
 **Hard rule — helper-only metadata**: never add or edit authored preset
 metadata or registry paths by hand. The compact helper output is atomic.
-Regenerate it when preset, frame, adjustment, fill, stroke, or stroke width
-changes. Replace the whole fragment with ordinary SVG when free contour editing
-is required.
+Regenerate it when preset, frame, adjustment, fill, stroke, stroke width, or the
+filter reference changes. Replace the whole fragment with ordinary SVG when
+free contour editing is required.
 
 Template ownership metadata is orthogonal to preset geometry. After inserting
 the complete helper output, `create-template` may add only the registered
 `data-pptx-layer`, `data-pptx-editable`, `data-pptx-carrier`, or
 `data-pptx-role` attribute needed by the surrounding structured contract. It
-must not change preset/frame/adjustment/paint metadata or any direct path.
+must not change preset/frame/adjustment/paint metadata, the filter reference, or
+any direct path.
 
 **Reusable-template boundary**: a project-owned canonical template may retain
 one complete helper-generated atomic fragment when the stock preset is an exact
-semantic match and its paint stays inside the authoring boundary below. The
-fragment is an executable exemplar and one semantic atom, not a freely editable
+semantic match and both its paint and optional effect stay inside the authoring
+boundary below. The fragment is an executable exemplar and one semantic atom,
+not a freely editable
 template primitive. It may be Slide-local, the one carrier of an `object` slot,
 or a direct Master/Layout fixed atom. An adaptation may reuse it unchanged only
-when preset, frame, adjustments, and paint are unchanged; otherwise regenerate
-the whole fragment with the helper.
+when preset, frame, adjustments, paint, and the optional filter reference are
+unchanged; otherwise regenerate the whole fragment with the helper.
 Imported, mirror, and third-party templates are never upgraded by contour
 inference.
 
@@ -443,23 +450,27 @@ fragment to stdout; export never invents its preview. The main Agent inserts
 that output into the hand-authored page or canonical reusable template. The
 helper cannot write a project, select layout, or generate a page.
 
-**Authoring paint boundary**: v1 accepts `none` or six-digit solid HEX fill and
-stroke, optional fill/stroke opacity, stroke width, line cap, and line join.
+**Authoring paint/effect boundary**: v1 accepts `none` or six-digit solid HEX
+fill and stroke, optional fill/stroke opacity, stroke width, line cap, line join,
+and one shape-only local filter id under [`svg-effects.md`](./svg-effects.md)
+§6.4.
 Normal generated pages use `spec_lock.md` for stable semantic color anchors and
 choose page-local paint from the retained Design Spec, style, and composition context.
 The lockless [`quick-generate`](../workflows/profiles/quick-generate.md) profile
 keeps every chosen paint value explicit in the SVG.
 `create-template` authored templates take their values from the confirmed brief
 and template `design_spec.md`.
-Use ordinary SVG for gradients, patterns, filters, or other treatments outside
-this narrow contract. Registry-derived multi-path darken/lighten colors and
+Use ordinary SVG for gradients, patterns, or other treatments outside this
+narrow contract. Registry-derived multi-path darken/lighten colors and
 other contextual derivatives need no separate lock row unless they become a
 recurring named role. Mirror preserves source paint under §1.4 instead.
 
 **Validation**: quality check and export both rerender authored fragments from
 `preset + frame + adjustments + group paint` and compare every visible path and
-path-level paint override directly. Registry-path edits, geometry metadata that
-leaves those paths stale, unknown adjustments, out-of-range frames/transforms,
+path-level paint override directly. They separately validate the optional effect
+reference through §6.4. Registry-path edits, geometry metadata that leaves those
+paths stale, unknown adjustments, invalid or unresolved filter references,
+out-of-range frames/transforms,
 zero-scale transforms, and shear/skew fail closed. Export expands the validated
 compact group only in memory and reuses the lossless native-shape conversion
 path. Older authored carrier/preview fragments remain compatible as ordinary

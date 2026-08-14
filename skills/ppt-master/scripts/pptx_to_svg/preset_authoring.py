@@ -64,6 +64,8 @@ _STYLE_ATTRS = (
     "stroke-opacity",
     "stroke-width",
 )
+_EFFECT_ATTRS = ("filter",)
+_PRESENTATION_ATTRS = (*_STYLE_ATTRS, *_EFFECT_ATTRS)
 _SEMANTIC_ATTRS = (
     AUTHORING_ATTR,
     "data-pptx-object",
@@ -87,6 +89,7 @@ def render_preset_shape_fragment(
     element_id: str,
     name: str | None = None,
     style: Mapping[str, str] | None = None,
+    filter_id: str | None = None,
 ) -> str:
     """Render one compact authored preset fragment for SVG insertion."""
     registry = get_preset_registry()
@@ -103,6 +106,15 @@ def render_preset_shape_fragment(
     if object_kind == "connector" and preset not in CONNECTOR_PRESET_TYPES:
         raise ValueError(
             f"Authored connector requires a connector preset, got {preset!r}"
+        )
+    filter_ref: str | None = None
+    if filter_id is not None:
+        normalized_filter_id = str(filter_id).strip()
+        if _ID_RE.fullmatch(normalized_filter_id) is None:
+            raise ValueError(f"Invalid SVG filter id: {filter_id!r}")
+        filter_ref = _validate_filter_reference(
+            f"url(#{normalized_filter_id})",
+            object_kind,
         )
 
     x, y, width, height = _validate_frame(frame, object_kind)
@@ -157,6 +169,8 @@ def render_preset_shape_fragment(
         **semantic_attrs,
         **style_attrs,
     }
+    if filter_ref is not None:
+        group_attrs["filter"] = filter_ref
     return (
         f'<g{attrs_to_xml(group_attrs)}>\n'
         f"{serialize_compact_preset_layers(rendered.paths, style_attrs)}\n"
@@ -290,6 +304,7 @@ def _validate_compact_authored_preset_group(group: ET.Element) -> list[str]:
                 "Compact authored preset requires explicit local fill and stroke"
             )
         style_attrs = _validate_style(raw_style)
+        _validate_filter_reference(group.get("filter"), object_kind)
         noncanonical_style = sorted(
             name for name, value in style_attrs.items()
             if raw_style.get(name) != value
@@ -467,6 +482,12 @@ def _validate_expanded_authored_preset_group(group: ET.Element) -> list[str]:
             for name in _STYLE_ATTRS
             if name in carrier.attrib
         })
+        filter_ref = _validate_filter_reference(
+            carrier.get("filter"),
+            object_kind,
+        )
+        if filter_ref is not None:
+            style_attrs["filter"] = filter_ref
         if object_kind == "connector":
             if style_attrs.get("fill", "none") != "none":
                 raise ValueError("Authored connector fill must be none")
@@ -592,6 +613,12 @@ def materialize_compact_authored_preset_tree(root: ET.Element) -> int:
             for name in _STYLE_ATTRS
             if name in group.attrib
         })
+        filter_ref = _validate_filter_reference(
+            group.get("filter"),
+            object_kind,
+        )
+        if filter_ref is not None:
+            style_attrs["filter"] = filter_ref
         semantic_attrs = {
             name: value
             for name, value in group.attrib.items()
@@ -605,7 +632,7 @@ def materialize_compact_authored_preset_tree(root: ET.Element) -> int:
             style_attrs,
         )
 
-        for name in _STYLE_ATTRS:
+        for name in _PRESENTATION_ATTRS:
             group.attrib.pop(name, None)
         group.set("data-pptx-preview-sha256", markup.preview_hash)
         for child in list(group):
@@ -712,6 +739,22 @@ def _validate_style(style: Mapping[str, str]) -> dict[str, str]:
     return normalized
 
 
+def _validate_filter_reference(
+    raw_filter: str | None,
+    object_kind: str,
+) -> str | None:
+    """Validate one canonical authored-preset effect reference."""
+    if raw_filter is None:
+        return None
+    if object_kind != "shape":
+        raise ValueError("Authored preset filters are supported only for shapes")
+    if re.fullmatch(r"url\(#[A-Za-z_][A-Za-z0-9_.:-]*\)", raw_filter) is None:
+        raise ValueError(
+            'Authored preset filter must use exact local filter="url(#id)" syntax'
+        )
+    return raw_filter
+
+
 def _normalize_adjustments(
     adjustments: Mapping[str, str | int | float],
 ) -> dict[str, str]:
@@ -802,7 +845,7 @@ def _is_unexpected_carrier_attr(name: str) -> bool:
         "visibility",
         "pointer-events",
         *_SEMANTIC_ATTRS,
-        *_STYLE_ATTRS,
+        *_PRESENTATION_ATTRS,
     }:
         return False
     return not name.startswith(_ADJUSTMENT_PREFIX)
@@ -817,7 +860,7 @@ def _is_unexpected_group_attr(name: str, *, compact: bool) -> bool:
         *_SEMANTIC_ATTRS,
     }
     if compact:
-        allowed.update(_STYLE_ATTRS)
+        allowed.update(_PRESENTATION_ATTRS)
         allowed.update(_TEMPLATE_ATOM_ATTRS)
     if name in allowed:
         return False

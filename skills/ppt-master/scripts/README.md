@@ -205,8 +205,12 @@ python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame
 The helper never writes a page or project file. Select one exact semantic
 stock-shape match, inspect the emitted fragment, and insert it into the
 hand-authored SVG with the normal patch workflow. Its project-authored output
-is one compact atomic `<g>` with direct registry-generated visible paths;
-quality check and export rerender the registry instead of relying on a hidden
+is one compact atomic `<g>` with direct registry-generated visible paths. When
+one effect is justified, optional `--filter-id softShadow` references one
+existing direct page-level filter under the shared shadow/glow contract and
+applies it once to a shape preset. Connector presets do not accept that option.
+The helper does not create the filter definition.
+Quality check and export rerender the registry instead of relying on a hidden
 carrier, preview wrapper, or stored preview fingerprint. PPTX import and
 round-trip SVGs deliberately keep their expanded carrier/preview evidence and
 are not rewritten into this authored form. Keep ordinary rectangles, ellipses,
