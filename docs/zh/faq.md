@@ -301,6 +301,30 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 ---
 
+## Q: 内容填到了意料之外的位置——怎么查看 PPT Master 到底识别到了什么？
+
+两条消费 PPTX 的路径都会在生成之前先写出一份只读分析报告，读它就能确认哪些图形被识别到了。
+
+**套模板（Fill Native PPTX）**：
+
+```bash
+python3 skills/ppt-master/scripts/pptx_intake.py <deck.pptx> -o <analysis_dir>
+```
+
+`<stem>.slide_library.json` 会逐页列出每个可填充槽位的几何、段落数与文字度量，并单独给出 `tables` 与 `charts`。带样式的普通文本框同样算槽位——图形不必是真正的占位符才能被填充。
+
+**Create Template**：
+
+```bash
+python3 skills/ppt-master/scripts/pptx_template_import.py <deck.pptx> --manifest-only -o <workspace>
+```
+
+`manifest.json` 逐页报告 layout / master 路径、占位符（`type`、`idx`、`semanticRole`、`shapeName`）、图片资源、文字数量与页面类型；`native_structure.json` 另外给出源结构评估。`--manifest-only` 跳过 SVG 导出，只是查看时开销很小。
+
+注意 Create Template 产出的是可复用的模板工作区，而不是填好内容的 deck：后续页面由 Generate 重新创作，因此源文件的正文与备注不会被搬运过去。如果你预期可用的某个图形没有出现在上述报告里，这才是值得写进 issue 的具体事实。
+
+---
+
 ## Q: 如何制作自定义模板？
 
 想把自己喜欢的 PPT 模板制作成 PPT Master 可调用的模板？按以下步骤操作：
