@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Web image search CLI.
 
-Sister tool to ``image_gen.py``: instead of generating an image from a
-prompt, this searches openly-licensed image providers and downloads a
-single best match.
+Sister tool to ``image_gen.py``: search openly-licensed providers, either
+download one metadata-ranked original or prepare a thumbnail-only visual
+shortlist and defer the original until ``--promote``.
 
 Workflow:
     1. Build an :class:`ImageSearchRequest` from CLI args.
@@ -15,9 +15,10 @@ Workflow:
        - Strict mode: when ``--strict-no-attribution`` is set, ask only
          for ``no-attribution-only`` matches and fail if none can be
          downloaded.
-    3. Download the chosen image into ``--output``.
-    4. Append a record to ``image_sources.json`` (the single source of
-       truth for downstream credit rendering).
+    3. Best-only mode downloads the chosen original into ``--output``.
+       Thumbnail mode saves provider previews and stops for visual selection.
+    4. Best-only / ``--promote`` appends a record to ``image_sources.json``
+       (the single source of truth for downstream credit rendering).
 
 Examples:
     # Default: zero-config, quality-first across allowed licenses
@@ -43,10 +44,11 @@ import concurrent.futures
 import importlib
 import json
 import os
+import shutil
 import sys
 import tempfile
 import threading
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
@@ -60,14 +62,16 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from config import load_prefixed_env_file  # noqa: E402
-from image_backends.backend_common import download_image  # noqa: E402
+from image_backends.backend_common import download_image, save_image_bytes  # noqa: E402
 from image_sources.provider_common import (  # noqa: E402
     AssetCandidate,
     ImageSearchRequest,
     USER_AGENT,
     build_attribution_text,
     ensure_json_parent,
+    missing_required_terms,
     score_candidate,
+    score_review_candidate,
 )
 
 configure_utf8_stdio()
@@ -99,23 +103,33 @@ ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 # rows in flight without hammering any single free provider. Set to 1 to
 # restore strict one-at-a-time pacing.
 DEFAULT_SEARCH_CONCURRENCY = 3
+DEFAULT_CANDIDATE_PAGE_SIZE = 8
 
 SEARCH_STATUS_PENDING = "Pending"
 SEARCH_STATUS_SOURCED = "Sourced"
 SEARCH_STATUS_FAILED = "Failed"
+SEARCH_STATUS_NEEDS_SELECTION = "Needs-Selection"
 SEARCH_STATUS_NEEDS_MANUAL = "Needs-Manual"
 SEARCH_VALID_STATUSES = {
     SEARCH_STATUS_PENDING,
     SEARCH_STATUS_SOURCED,
     SEARCH_STATUS_FAILED,
+    SEARCH_STATUS_NEEDS_SELECTION,
     SEARCH_STATUS_NEEDS_MANUAL,
 }
-# A row reaching `Needs-Manual` after the full provider/stage chain is terminal
-# (see image-searcher.md §8); only Pending/Failed rows are retried on re-run.
+# Selection and manual rows are terminal until the agent promotes a candidate
+# or materially changes the query; only Pending/Failed rows auto-retry.
 SEARCH_RETRYABLE_STATUSES = {SEARCH_STATUS_PENDING, SEARCH_STATUS_FAILED}
 SEARCH_REQUIRED_ITEM_FIELDS = ("filename", "query", "status")
 SEARCH_FAILURE_NO_MATCH = "no-match"
 SEARCH_FAILURE_RETRYABLE = "retryable"
+_CANDIDATE_SELECTION_OUTPUT_FIELDS = (
+    "review_sheet",
+    "candidate_count",
+    "candidate_total",
+    "has_more_candidates",
+    "next_candidate_page",
+)
 
 _WEAK_REQUIRED_TERM_PARTS = frozenset({
     "ancient town",
@@ -186,6 +200,41 @@ def _parse_required_terms(raw: object) -> tuple[str, ...]:
     return tuple(terms)
 
 
+def _parse_query_variants(raw: object) -> tuple[str, ...]:
+    """Parse optional material query variants while preserving order."""
+    if raw is None:
+        return ()
+    if isinstance(raw, str):
+        values = [raw]
+    elif isinstance(raw, (list, tuple)):
+        values = list(raw)
+    else:
+        raise ValueError("query_variants must be a string or list of strings")
+
+    variants: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("query_variants items must be non-empty strings")
+        normalized = value.strip()
+        key = normalized.casefold()
+        if key not in seen:
+            seen.add(key)
+            variants.append(normalized)
+    return tuple(variants)
+
+
+def _search_request_variants(
+    request: ImageSearchRequest,
+) -> list[ImageSearchRequest]:
+    """Expand one intent into explicit provider queries without duplicates."""
+    queries = _parse_query_variants((request.query, *request.query_variants))
+    return [
+        replace(request, query=query, query_variants=())
+        for query in queries
+    ]
+
+
 def _warn_weak_required_terms(required_terms: tuple[str, ...]) -> None:
     """Warn when required_terms contain generic category words.
 
@@ -245,12 +294,24 @@ class SearchDownloadResult:
     actual_dimensions: Optional[tuple[int, int]] = None
     staged_path: Optional[Path] = None
     output_path: Optional[Path] = None
+    selection_required: bool = False
+    candidate_count: int = 0
+    candidate_total: int = 0
+    candidate_page: int = 1
+    has_more_candidates: bool = False
+    review_sheet: Optional[Path] = None
     failure_kind: Optional[str] = None
     error: Optional[str] = None
 
 
 class DownloadQualityError(ValueError):
     """Signal a readable candidate that fails the requested image contract."""
+
+
+def _clear_candidate_selection_outputs(item: dict) -> None:
+    """Remove stale shortlist results while preserving query inputs."""
+    for field_name in _CANDIDATE_SELECTION_OUTPUT_FIELDS:
+        item.pop(field_name, None)
 
 
 def _is_pillow_decompression_error(exc: BaseException) -> bool:
@@ -316,7 +377,7 @@ def _try_provider(
 # Post-download quality validation
 # ---------------------------------------------------------------------------
 
-_MIN_DOWNLOAD_PIXELS = 800 * 600  # preserve the existing absolute thumbnail floor
+_MIN_DOWNLOAD_PIXELS = 800 * 600  # absolute floor for automated originals
 
 
 def _validate_downloaded_quality(
@@ -373,15 +434,15 @@ def _validate_downloaded_quality(
         return False
 
 
-def _stage_validated_image(
-    url: str,
+def _stage_and_validate_image(
     output_path: Path,
+    materialize: Callable[[Path], object],
     *,
     min_width: int,
     min_height: int,
     enforce_thumbnail_floor: bool = True,
 ) -> tuple[Path, tuple[int, int]]:
-    """Download and validate beside the target without changing the canonical."""
+    """Materialize and validate beside the target without changing the canonical."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fd, temp_name = tempfile.mkstemp(
         prefix=f".{output_path.stem}.",
@@ -392,11 +453,7 @@ def _stage_validated_image(
     temp_path = Path(temp_name)
     keep_temp = False
     try:
-        download_image(
-            url,
-            str(temp_path),
-            headers={"User-Agent": USER_AGENT},
-        )
+        materialize(temp_path)
         if not _validate_downloaded_quality(
             temp_path,
             min_width=min_width,
@@ -419,6 +476,49 @@ def _stage_validated_image(
                 temp_path.unlink(missing_ok=True)
             except OSError:
                 pass
+
+
+def _stage_validated_image(
+    url: str,
+    output_path: Path,
+    *,
+    min_width: int,
+    min_height: int,
+    enforce_thumbnail_floor: bool = True,
+) -> tuple[Path, tuple[int, int]]:
+    """Download and validate beside the target without changing the canonical."""
+    return _stage_and_validate_image(
+        output_path,
+        lambda temp_path: download_image(
+            url,
+            str(temp_path),
+            headers={"User-Agent": USER_AGENT},
+        ),
+        min_width=min_width,
+        min_height=min_height,
+        enforce_thumbnail_floor=enforce_thumbnail_floor,
+    )
+
+
+def _stage_validated_candidate_copy(
+    source_path: Path,
+    output_path: Path,
+    *,
+    min_width: int,
+    min_height: int,
+    enforce_thumbnail_floor: bool = True,
+) -> tuple[Path, tuple[int, int]]:
+    """Stage a saved pool candidate, preserving target-extension correctness."""
+    return _stage_and_validate_image(
+        output_path,
+        lambda temp_path: save_image_bytes(
+            source_path.read_bytes(),
+            str(temp_path),
+        ),
+        min_width=min_width,
+        min_height=min_height,
+        enforce_thumbnail_floor=enforce_thumbnail_floor,
+    )
 
 
 def _commit_staged_image(
@@ -523,58 +623,160 @@ def _write_review_copy(
         return None
 
 
-def _save_candidates_pool(
+def _write_candidate_review_sheet(
+    cand_dir: Path,
+    pool: list[dict],
+) -> Optional[Path]:
+    """Build a contact sheet from only the current candidate pool reviews."""
+    review_paths: list[Path] = []
+    for entry in pool:
+        review = entry.get("review")
+        if not isinstance(review, str):
+            continue
+        review_path = cand_dir / review
+        if review_path.is_file():
+            review_paths.append(review_path)
+    if not review_paths:
+        return None
+
+    try:
+        from rotate_images import ImageRotator
+    except ImportError:
+        return None
+
+    output_path = cand_dir / "review_sheet.jpg"
+    with tempfile.TemporaryDirectory(
+        prefix=".candidate-review-",
+        dir=str(cand_dir),
+    ) as temporary_dir:
+        staging_dir = Path(temporary_dir)
+        for review_path in review_paths:
+            shutil.copy2(review_path, staging_dir / review_path.name)
+        staged_sheet = staging_dir / output_path.name
+        ImageRotator().generate_contact_sheet(staging_dir, staged_sheet)
+        os.replace(staged_sheet, output_path)
+    return output_path
+
+
+def _candidate_dedupe_key(
+    provider_name: str,
+    candidate: AssetCandidate,
+) -> str:
+    """Return a stable-enough key for one search window's cross-provider pool."""
+    original_url = candidate.download_url.split("?", 1)[0].rstrip("/").casefold()
+    if original_url:
+        return original_url
+    return f"{provider_name}:{candidate.asset_id or candidate.source_page_url}"
+
+
+def _dedupe_ranked_candidates(
+    ranked: list[tuple[float, str, AssetCandidate]],
+) -> list[tuple[float, str, AssetCandidate]]:
+    """Keep the highest-scoring occurrence of each cross-query asset."""
+    deduped: list[tuple[float, str, AssetCandidate]] = []
+    seen: set[str] = set()
+    for item in sorted(ranked, key=lambda entry: entry[0], reverse=True):
+        _score, provider_name, candidate = item
+        key = _candidate_dedupe_key(provider_name, candidate)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
+def _save_candidate_thumbnails(
     ranked: list[tuple[float, str, AssetCandidate]],
     output_dir: Path,
     stem: str,
-    selected_filename: str,
-    min_width: int,
-    min_height: int,
-    max_candidates: int = 4,
-) -> None:
-    """Download top-N candidates into ``candidates/<stem>/`` and write
-    a ``candidates.json`` manifest for manual review."""
+    request: ImageSearchRequest,
+    license_stage: str,
+    max_candidates: int = DEFAULT_CANDIDATE_PAGE_SIZE,
+    candidate_page: int = 1,
+) -> tuple[list[dict], Optional[Path], list[str], int, bool]:
+    """Save one ranked page of previews without downloading originals."""
     cand_dir = output_dir / "candidates" / stem
     cand_dir.mkdir(parents=True, exist_ok=True)
+    review_dir = cand_dir / "review"
+    review_dir.mkdir(parents=True, exist_ok=True)
+
+    eligible: list[tuple[float, str, AssetCandidate]] = []
+    seen_candidates: set[str] = set()
+    for ranked_item in ranked:
+        _score, provider_name, candidate = ranked_item
+        dedupe_key = _candidate_dedupe_key(provider_name, candidate)
+        if dedupe_key in seen_candidates:
+            continue
+        if (
+            request.min_width
+            and candidate.width
+            and candidate.width < request.min_width
+        ):
+            continue
+        if (
+            request.min_height
+            and candidate.height
+            and candidate.height < request.min_height
+        ):
+            continue
+        if not candidate.preview_url.strip():
+            continue
+        seen_candidates.add(dedupe_key)
+        eligible.append(ranked_item)
+
+    candidate_total = len(eligible)
+    if max_candidates == 0:
+        page_start = 0
+        page_items = eligible
+        has_more_candidates = False
+    else:
+        page_start = (candidate_page - 1) * max_candidates
+        page_end = page_start + max_candidates
+        page_items = eligible[page_start:page_end]
+        has_more_candidates = page_end < candidate_total
 
     pool: list[dict] = []
-    idx = 0
-    for score, provider_name, candidate in ranked:
-        if idx >= max_candidates:
-            break
-        suffix = Path(candidate.download_url.split("?")[0]).suffix or ".jpg"
-        cand_filename = f"candidate_{idx + 1:02d}{suffix}"
-        cand_path = cand_dir / cand_filename
-        keep_candidate = False
+    preview_errors: list[str] = []
+    for global_rank, (score, provider_name, candidate) in enumerate(
+        page_items,
+        start=page_start + 1,
+    ):
+        preview_url = candidate.preview_url.strip()
+        cand_filename = f"candidate_{global_rank:02d}.jpg"
+        review_path = review_dir / cand_filename
+        staged_path: Optional[Path] = None
         try:
-            download_image(
-                candidate.download_url,
-                str(cand_path),
-                headers={"User-Agent": USER_AGENT},
+            staged_path, preview_dimensions = _stage_validated_image(
+                preview_url,
+                review_path,
+                min_width=1,
+                min_height=1,
+                enforce_thumbnail_floor=False,
             )
-            if not _validate_downloaded_quality(
-                cand_path,
-                min_width=min_width,
-                min_height=min_height,
-            ):
-                continue
-            actual_dim = _measure_actual_image(cand_path)
-            review_path = _write_review_copy(
-                cand_path,
-                cand_dir / "review",
-                cand_filename,
+            os.replace(staged_path, review_path)
+            staged_path = None
+            missing_terms = missing_required_terms(
+                candidate,
+                request.required_terms,
             )
-            idx += 1
             pool.append({
-                "rank": idx,
+                "rank": global_rank,
                 "score": round(score, 2),
                 "filename": cand_filename,
-                "review": f"review/{review_path.name}" if review_path else None,
+                "review": f"review/{review_path.name}",
                 "provider": provider_name,
                 "title": candidate.title,
                 "author": candidate.author,
                 "source_page_url": candidate.source_page_url,
                 "download_url": candidate.download_url,
+                "preview_url": preview_url,
+                "matched_query": candidate.discovery_query or request.query,
+                "identity_evidence": (
+                    "metadata-verified"
+                    if not missing_terms
+                    else "visual-verification-required"
+                ),
+                "missing_required_terms": missing_terms,
                 "license_name": candidate.license_name,
                 "license_url": candidate.license_url,
                 "license_tier": candidate.license_tier,
@@ -582,34 +784,81 @@ def _save_candidates_pool(
                     candidate.license_tier == "attribution-required"
                 ),
                 "attribution_text": build_attribution_text(
-                    selected_filename,
+                    request.filename,
                     candidate,
                 ),
-                "width": actual_dim[0] if actual_dim else candidate.width,
-                "height": actual_dim[1] if actual_dim else candidate.height,
+                "width": candidate.width,
+                "height": candidate.height,
+                "preview_width": preview_dimensions[0],
+                "preview_height": preview_dimensions[1],
             })
-            keep_candidate = True
         except Exception as exc:
             if not _is_recoverable_image_error(exc):
                 raise
-            continue
+            preview_errors.append(
+                f"{provider_name}/{candidate.title}: preview failed: {exc}"
+            )
         finally:
-            if not keep_candidate:
+            if staged_path is not None:
                 try:
-                    cand_path.unlink(missing_ok=True)
+                    staged_path.unlink(missing_ok=True)
                 except OSError:
                     pass
 
+    meta = {
+        "schema_version": 3,
+        "candidate_storage": "thumbnail-only",
+        "target_filename": request.filename,
+        "selected": None,
+        "searched_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "license_stage": license_stage,
+        "candidate_page": candidate_page,
+        "page_size": max_candidates,
+        "candidate_total": candidate_total,
+        "has_more_candidates": has_more_candidates,
+        "request": {
+            "query": request.query,
+            "query_variants": list(request.query_variants),
+            "purpose": request.purpose,
+            "slide": request.slide,
+            "orientation": request.orientation or "any",
+            "required_terms": list(request.required_terms),
+            "min_width": request.min_width,
+            "min_height": request.min_height,
+        },
+        "candidates": pool,
+    }
+    meta_path = cand_dir / "candidates.json"
+    _write_json_atomic(meta_path, meta)
+
+    review_sheet: Optional[Path] = None
     if pool:
-        meta = {
-            "target_filename": selected_filename,
-            "selected": pool[0]["filename"],
-            "searched_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-            "candidates": pool,
-        }
-        meta_path = cand_dir / "candidates.json"
-        _write_json_atomic(meta_path, meta)
-        print(f"  candidates: {cand_dir}/ ({len(pool)} saved)", file=sys.stderr)
+        print(
+            f"  candidate thumbnails: {cand_dir}/ ({len(pool)} saved)",
+            file=sys.stderr,
+        )
+        try:
+            review_sheet = _write_candidate_review_sheet(cand_dir, pool)
+        except Exception as exc:
+            if not _is_recoverable_image_error(exc):
+                raise
+            print(
+                f"  warning: candidate review sheet could not be generated: {exc}",
+                file=sys.stderr,
+            )
+        else:
+            if review_sheet is not None:
+                print(
+                    f"[REPORT] Web image candidate review sheet: {review_sheet}",
+                    file=sys.stderr,
+                )
+    return (
+        pool,
+        review_sheet,
+        preview_errors,
+        candidate_total,
+        has_more_candidates,
+    )
 
 
 def search_and_download(
@@ -619,21 +868,28 @@ def search_and_download(
     output_path: Path,
     strict_no_attribution: bool,
     save_candidates: bool = False,
-    max_candidates: int = 4,
+    max_candidates: int = DEFAULT_CANDIDATE_PAGE_SIZE,
+    candidate_page: int = 1,
     provider_is_explicit: bool = False,
 ) -> SearchDownloadResult:
-    """Find a candidate AND successfully download it.
+    """Search candidates, then either shortlist previews or download one image.
 
-    By default only the best match is downloaded. When ``save_candidates``
-    is True (opt-in), the top-N candidates are also saved to
-    ``candidates/<stem>/`` so the agent can review and ``--promote`` a
-    better fit when the best match does not pass visual confirmation.
+    By default the best metadata match is downloaded. When ``save_candidates``
+    is true, only metadata-qualified preview thumbnails are saved; the original
+    is deferred until the reviewer selects it with ``--promote``.
 
     Returns a structured result so batch mode can keep transient/provider
     failures retryable while treating a complete no-match as terminal.
     ``provider_is_explicit`` distinguishes a required provider from an optional
     member of the default fallback chain.
     """
+    if max_candidates < 0:
+        raise ValueError("max_candidates must be zero or a positive integer")
+    if candidate_page < 1:
+        raise ValueError("candidate_page must be a positive integer")
+    if max_candidates == 0 and candidate_page != 1:
+        raise ValueError("candidate_page must be 1 when max_candidates is 0")
+
     license_filters: list[str] = (
         ["no-attribution-only"] if strict_no_attribution else ["all"]
     )
@@ -641,28 +897,37 @@ def search_and_download(
     provider_errors: list[str] = []
     download_errors: list[str] = []
     quality_rejections = 0
+    request_variants = _search_request_variants(request)
+    scorer = score_review_candidate if save_candidates else score_candidate
 
     for stage in license_filters:
         ranked: list[tuple[float, str, AssetCandidate]] = []
         for provider_name in providers:
-            print(f"  -> trying {provider_name} ({stage}) ...", file=sys.stderr)
-            candidates, provider_error = _try_provider(
-                provider_name,
-                request,
-                stage,
-                provider_is_explicit=provider_is_explicit,
-            )
-            if provider_error:
-                provider_errors.append(provider_error)
-            if not candidates:
-                continue
-
-            provider_ranked = [
-                (score_candidate(c, request), provider_name, c) for c in candidates
-            ]
-            provider_ranked = [
-                item for item in provider_ranked if item[0] != float("-inf")
-            ]
+            provider_ranked: list[tuple[float, str, AssetCandidate]] = []
+            for query_request in request_variants:
+                print(
+                    f"  -> trying {provider_name} ({stage}): "
+                    f"{query_request.query!r}",
+                    file=sys.stderr,
+                )
+                candidates, provider_error = _try_provider(
+                    provider_name,
+                    query_request,
+                    stage,
+                    provider_is_explicit=provider_is_explicit,
+                )
+                if provider_error:
+                    provider_errors.append(provider_error)
+                    break
+                if candidates is None:
+                    break
+                for candidate in candidates:
+                    candidate.discovery_query = query_request.query
+                    score = scorer(candidate, query_request)
+                    if score != float("-inf"):
+                        provider_ranked.append(
+                            (score, provider_name, candidate)
+                        )
             if not provider_ranked:
                 reason = "query"
                 if request.required_terms:
@@ -674,20 +939,26 @@ def search_and_download(
                 continue
             ranked.extend(provider_ranked)
 
-        sorted_ranked = sorted(ranked, key=lambda item: item[0], reverse=True)
+        sorted_ranked = _dedupe_ranked_candidates(ranked)
 
-        # --- Save candidate pool (before picking the winner) ---
+        # --- Thumbnail-only visual selection (no original download) ---
         if save_candidates and sorted_ranked:
             stem = Path(output_path).stem
             try:
-                _save_candidates_pool(
+                (
+                    pool,
+                    review_sheet,
+                    preview_errors,
+                    candidate_total,
+                    has_more_candidates,
+                ) = _save_candidate_thumbnails(
                     sorted_ranked,
                     output_path.parent,
                     stem,
-                    output_path.name,
-                    request.min_width,
-                    request.min_height,
+                    request,
+                    stage,
                     max_candidates=max_candidates,
+                    candidate_page=candidate_page,
                 )
             except Exception as exc:
                 if not _is_recoverable_image_error(exc):
@@ -696,12 +967,35 @@ def search_and_download(
                     f"  warning: candidate pool could not be saved: {exc}",
                     file=sys.stderr,
                 )
+            else:
+                download_errors.extend(preview_errors)
+                if pool:
+                    return SearchDownloadResult(
+                        stage=stage,
+                        output_path=output_path,
+                        selection_required=True,
+                        candidate_count=len(pool),
+                        candidate_total=candidate_total,
+                        candidate_page=candidate_page,
+                        has_more_candidates=has_more_candidates,
+                        review_sheet=review_sheet,
+                    )
+                if candidate_total and not preview_errors:
+                    return SearchDownloadResult(
+                        stage=stage,
+                        output_path=output_path,
+                        candidate_total=candidate_total,
+                        candidate_page=candidate_page,
+                        failure_kind=SEARCH_FAILURE_NO_MATCH,
+                        error=(
+                            f"candidate page {candidate_page} is past the "
+                            f"{candidate_total} available candidate(s)"
+                        ),
+                    )
+            continue
 
         # --- Pick the best downloadable candidate ---
         for _score, provider_name, candidate in sorted_ranked:
-            # If candidates were already saved, the file may already
-            # exist in the candidates dir — but we still need the
-            # primary copy at output_path.
             try:
                 staged_path, actual_dimensions = _stage_validated_image(
                     candidate.download_url,
@@ -808,6 +1102,7 @@ def _candidate_to_manifest_item(
     provider_name: str,
     stage: str,
     actual_dimensions: Optional[tuple[int, int]] = None,
+    selection_method: str = "metadata-ranked",
 ) -> dict:
     """Build the manifest entry.
 
@@ -826,6 +1121,7 @@ def _candidate_to_manifest_item(
         "slide": args.slide,
         "purpose": args.purpose,
         "search_query": args.query,
+        "matched_query": candidate.discovery_query or args.query,
         "orientation": args.orientation,
         "provider": provider_name,
         "stage": stage,
@@ -840,6 +1136,7 @@ def _candidate_to_manifest_item(
         "width": width,
         "height": height,
         "attribution_text": build_attribution_text(args.filename, candidate),
+        "selection_method": selection_method,
         "status": "sourced",
     }
     required_terms = _parse_required_terms(
@@ -847,6 +1144,12 @@ def _candidate_to_manifest_item(
     )
     if required_terms:
         item["required_terms"] = list(required_terms)
+    query_variants = _parse_query_variants(
+        getattr(args, "query_variants", None)
+        or getattr(args, "query_variant", None)
+    )
+    if query_variants:
+        item["query_variants"] = list(query_variants)
 
     # Only carry upstream-claimed dimensions when they differ — this flags
     # cases where the provider returned a preview rather than the original.
@@ -991,16 +1294,16 @@ def promote_candidate(
     target_filename: str,
     candidate_filename: str,
     manifest_path: Optional[Path] = None,
+    queries_manifest_path: Optional[Path] = None,
 ) -> int:
-    """Replace the primary image with a candidate from the pool.
+    """Download one selected candidate original and commit its provenance.
 
     Steps:
-        1. Stage and validate ``candidates/<stem>/<candidate_filename>``
-        2. Replace the canonical image and its provenance as one rollback unit
-        3. Advance ``candidates.json`` only after provenance succeeds
+        1. Resolve the selected thumbnail's original URL from candidates.json
+        2. Download and validate exactly that one original
+        3. Replace the canonical image and its provenance as one rollback unit
+        4. Advance ``candidates.json`` only after provenance succeeds
     """
-    import shutil
-
     target_filename = _validate_bare_filename(
         target_filename, field_name="target filename"
     )
@@ -1008,12 +1311,6 @@ def promote_candidate(
         candidate_filename, field_name="candidate filename"
     )
     mpath = manifest_path or default_manifest_path(str(output_dir))
-    try:
-        manifest = _read_existing_manifest(mpath)
-    except RuntimeError as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        return 1
-
     stem = Path(target_filename).stem
     cand_dir = output_dir / "candidates" / stem
     cand_meta_path = cand_dir / "candidates.json"
@@ -1056,107 +1353,90 @@ def promote_candidate(
         )
         return 1
 
-    src_path = cand_dir / candidate_filename
     dst_path = output_dir / target_filename
-    if not src_path.is_file():
-        print(f"Error: {src_path} does not exist on disk.", file=sys.stderr)
-        return 1
-
-    items: list[dict] = list(manifest.get("items") or [])
-    target_item: Optional[dict] = None
-    for item in items:
-        filename = item.get("filename")
-        if (
-            isinstance(filename, str)
-            and filename.casefold() == target_filename.casefold()
-        ):
-            target_item = item
-            break
-    if target_item is None:
+    declared_target = meta.get("target_filename")
+    if declared_target != target_filename:
         print(
-            f"Error: {mpath} has no provenance entry for {target_filename!r}.",
-            file=sys.stderr,
-        )
-        return 1
-    if target_item["filename"] != target_filename:
-        print(
-            f"Error: target filename casing {target_filename!r} conflicts with "
-            f"provenance filename {target_item['filename']!r}.",
+            f"Error: candidate pool targets {declared_target!r}, not "
+            f"{target_filename!r}.",
             file=sys.stderr,
         )
         return 1
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    fd, staged_name = tempfile.mkstemp(
-        prefix=f".{dst_path.stem}.promote.",
-        suffix=dst_path.suffix,
-        dir=str(dst_path.parent),
+    request_meta = meta.get("request")
+    if not isinstance(request_meta, dict):
+        request_meta = {}
+    min_width = int(request_meta.get("min_width") or 0)
+    min_height = int(request_meta.get("min_height") or 0)
+    selected_candidate = AssetCandidate(
+        provider=str(entry.get("provider") or ""),
+        title=str(entry.get("title") or ""),
+        source_page_url=str(entry.get("source_page_url") or ""),
+        license_name=str(entry.get("license_name") or ""),
+        license_url=str(entry.get("license_url") or ""),
+        license_tier=str(entry.get("license_tier") or ""),
+        width=int(entry.get("width") or 0),
+        height=int(entry.get("height") or 0),
+        download_url=str(entry.get("download_url") or ""),
+        preview_url=str(entry.get("preview_url") or ""),
+        discovery_query=str(entry.get("matched_query") or ""),
+        author=str(entry.get("author") or ""),
     )
-    os.close(fd)
-    staged_path = Path(staged_name)
+    if not selected_candidate.download_url:
+        print(
+            f"Error: {candidate_filename} has no original download URL.",
+            file=sys.stderr,
+        )
+        return 1
+
+    staged_path: Optional[Path] = None
     try:
-        shutil.copy2(src_path, staged_path)
-        if not _validate_downloaded_quality(
-            staged_path,
-            enforce_thumbnail_floor=False,
+        legacy_src_path = cand_dir / candidate_filename
+        if (
+            meta.get("candidate_storage") != "thumbnail-only"
+            and legacy_src_path.is_file()
         ):
-            raise DownloadQualityError(
-                "candidate image did not satisfy the readability/size gate"
+            staged_path, actual_dimensions = _stage_validated_candidate_copy(
+                legacy_src_path,
+                dst_path,
+                min_width=min_width,
+                min_height=min_height,
             )
-        actual_dim = _measure_actual_image(staged_path)
-        if actual_dim is None:
-            raise DownloadQualityError("candidate dimensions could not be measured")
-        w, h = actual_dim
-        if w < 1 or h < 1:
-            raise DownloadQualityError("candidate dimensions must be positive")
-        if w * h < _MIN_DOWNLOAD_PIXELS:
-            print(
-                f"  warning: explicitly promoted image is low resolution ({w}x{h})",
-                file=sys.stderr,
+        else:
+            staged_path, actual_dimensions = _stage_validated_image(
+                selected_candidate.download_url,
+                dst_path,
+                min_width=min_width,
+                min_height=min_height,
             )
 
-        target_item["provider"] = entry.get("provider", "")
-        target_item["title"] = entry.get("title", "")
-        target_item["author"] = entry.get("author", "")
-        target_item["source_page_url"] = entry.get("source_page_url", "")
-        target_item["download_url"] = entry.get("download_url", "")
-        target_item["license_name"] = entry.get("license_name", "")
-        target_item["license_url"] = entry.get("license_url", "")
-        target_item["license_tier"] = entry.get("license_tier", "")
-        target_item["attribution_required"] = entry.get(
-            "attribution_required",
-            False,
-        )
-        # Recompute the credit from the promoted candidate — never carry the
-        # replaced image's attribution_text (wrong author/title/source).
-        target_item["attribution_text"] = build_attribution_text(
-            target_filename,
-            AssetCandidate(
-                provider=entry.get("provider", ""),
-                title=entry.get("title", ""),
-                source_page_url=entry.get("source_page_url", ""),
-                license_name=entry.get("license_name", ""),
-                license_url=entry.get("license_url", ""),
-                license_tier=entry.get("license_tier", ""),
-                width=w,
-                height=h,
-                download_url=entry.get("download_url", ""),
-                author=entry.get("author", ""),
+        item_args = argparse.Namespace(
+            filename=target_filename,
+            slide=str(request_meta.get("slide") or ""),
+            purpose=str(request_meta.get("purpose") or ""),
+            query=str(request_meta.get("query") or ""),
+            orientation=str(request_meta.get("orientation") or "any"),
+            required_terms=_parse_required_terms(
+                request_meta.get("required_terms")
+            ),
+            query_variants=_parse_query_variants(
+                request_meta.get("query_variants")
             ),
         )
-        target_item["width"] = w
-        target_item["height"] = h
-        target_item.pop("metadata_dimensions", None)
-        target_item["status"] = "promoted"
-        manifest["items"] = items
-        manifest["generated_at"] = (
-            datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        source_item = _candidate_to_manifest_item(
+            selected_candidate,
+            item_args,
+            provider_name=selected_candidate.provider,
+            stage=str(meta.get("license_stage") or "all"),
+            actual_dimensions=actual_dimensions,
+            selection_method="visual-thumbnail",
         )
+        source_item["status"] = "promoted"
 
         _commit_staged_image(
             staged_path,
             dst_path,
-            lambda: _write_json_atomic(mpath, manifest),
+            lambda: write_sources_manifest(mpath, source_item),
         )
     except Exception as exc:
         if not _is_recoverable_image_error(exc):
@@ -1164,10 +1444,11 @@ def promote_candidate(
         print(f"Error: candidate promotion failed: {exc}", file=sys.stderr)
         return 1
     finally:
-        try:
-            staged_path.unlink(missing_ok=True)
-        except OSError:
-            pass
+        if staged_path is not None:
+            try:
+                staged_path.unlink(missing_ok=True)
+            except OSError:
+                pass
 
     print(f"  promoted: {candidate_filename} → {target_filename}", file=sys.stderr)
     print(f"  manifest updated: {mpath}", file=sys.stderr)
@@ -1183,6 +1464,39 @@ def promote_candidate(
             file=sys.stderr,
         )
         return 1
+
+    if queries_manifest_path is not None:
+        try:
+            queries_manifest = load_search_manifest(str(queries_manifest_path))
+            query_row = next(
+                (
+                    row
+                    for row in queries_manifest["items"]
+                    if row["filename"].casefold() == target_filename.casefold()
+                ),
+                None,
+            )
+            if query_row is None or query_row["filename"] != target_filename:
+                raise RuntimeError(
+                    f"no exact query row for {target_filename!r}"
+                )
+            query_row["status"] = SEARCH_STATUS_SOURCED
+            query_row["provider"] = selected_candidate.provider
+            query_row["license_tier"] = selected_candidate.license_tier
+            query_row.pop("last_error", None)
+            _clear_candidate_selection_outputs(query_row)
+            save_search_manifest(str(queries_manifest_path), queries_manifest)
+        except (OSError, RuntimeError, ValueError) as exc:
+            print(
+                f"Error: image was promoted, but query status could not be "
+                f"updated: {exc}",
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            f"  query status updated: {queries_manifest_path}",
+            file=sys.stderr,
+        )
 
     review = _write_review_copy(dst_path, output_dir / ".review", target_filename)
     if review is not None:
@@ -1344,8 +1658,9 @@ def load_search_manifest(path: str) -> dict:
 
     Schema (top level): ``{"items": [ ... ]}``. Each item requires
     ``filename``, ``query``, ``status``. Optional per-item overrides:
-    ``slide``, ``purpose``, ``orientation``, ``provider``,
-    ``strict_no_attribution``, ``min_width``, ``min_height``, ``last_error``.
+    ``query_variants``, ``candidate_page``, ``slide``, ``purpose``,
+    ``orientation``, ``provider``, ``strict_no_attribution``, ``min_width``,
+    ``min_height``, ``last_error``.
     """
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -1388,6 +1703,21 @@ def load_search_manifest(path: str) -> dict:
                 _parse_required_terms(item["required_terms"])
             except ValueError as exc:
                 raise ValueError(f"{prefix} {exc}") from exc
+        if "query_variants" in item:
+            try:
+                _parse_query_variants(item["query_variants"])
+            except ValueError as exc:
+                raise ValueError(f"{prefix} {exc}") from exc
+        if "candidate_page" in item:
+            candidate_page = item["candidate_page"]
+            if (
+                not isinstance(candidate_page, int)
+                or isinstance(candidate_page, bool)
+                or candidate_page < 1
+            ):
+                raise ValueError(
+                    f"{prefix} field 'candidate_page' must be a positive integer"
+                )
         for dimension_field in ("min_width", "min_height"):
             if dimension_field not in item:
                 continue
@@ -1442,6 +1772,7 @@ def _search_one_item(
     output_dir: Path,
     save_candidates: bool,
     max_candidates: int,
+    default_candidate_page: int,
     default_provider: Optional[str],
     default_strict: bool,
     default_min_width: int,
@@ -1450,12 +1781,14 @@ def _search_one_item(
     Optional[dict],
     Optional[str],
     bool,
+    bool,
     Optional[Path],
     Optional[Path],
 ]:
-    """Run the full search + download for one batch item (thread worker).
+    """Run one batch item's search or thumbnail-shortlist stage.
 
-    Returns ``(manifest_item, error, retryable, staged_path, output_path)``.
+    Returns ``(manifest_item, message, retryable, selection_required,
+    staged_path, output_path)``.
     Only network and staged-file work happens here; canonical replacement and
     all manifest writes are serialized by the caller.
     """
@@ -1463,6 +1796,11 @@ def _search_one_item(
     orientation = item.get("orientation", "any") or "any"
     strict = bool(item.get("strict_no_attribution", default_strict))
     required_terms = _parse_required_terms(item.get("required_terms"))
+    candidate_page = int(item.get("candidate_page", default_candidate_page))
+    if max_candidates == 0 and candidate_page != 1:
+        raise ValueError(
+            "candidate_page must be 1 when max_candidates is 0"
+        )
     _warn_weak_required_terms(required_terms)
     request = ImageSearchRequest(
         query=item["query"],
@@ -1473,6 +1811,7 @@ def _search_one_item(
         min_width=int(item.get("min_width", default_min_width)),
         min_height=int(item.get("min_height", default_min_height)),
         required_terms=required_terms,
+        query_variants=_parse_query_variants(item.get("query_variants")),
     )
 
     pinned = item.get("provider") or default_provider
@@ -1486,13 +1825,48 @@ def _search_one_item(
         strict_no_attribution=strict,
         save_candidates=save_candidates,
         max_candidates=max_candidates,
+        candidate_page=candidate_page,
         provider_is_explicit=bool(pinned),
     )
+    if result.selection_required:
+        sheet = result.review_sheet or (
+            output_dir / "candidates" / Path(filename).stem / "review_sheet.jpg"
+        )
+        return (
+            {
+                "candidate_page": result.candidate_page,
+                "candidate_count": result.candidate_count,
+                "candidate_total": result.candidate_total,
+                "has_more_candidates": result.has_more_candidates,
+                "next_candidate_page": (
+                    result.candidate_page + 1
+                    if result.has_more_candidates
+                    else None
+                ),
+                "review_sheet": (
+                    f"candidates/{Path(filename).stem}/{sheet.name}"
+                ),
+            },
+            (
+                f"{result.candidate_count}/{result.candidate_total} thumbnail "
+                f"candidate(s), page {result.candidate_page}: {sheet}"
+                + (
+                    f"; next page: {result.candidate_page + 1}"
+                    if result.has_more_candidates
+                    else "; pool exhausted"
+                )
+            ),
+            False,
+            True,
+            None,
+            None,
+        )
     if result.candidate is None:
         return (
             None,
             result.error or "search failed",
             result.failure_kind == SEARCH_FAILURE_RETRYABLE,
+            False,
             None,
             None,
         )
@@ -1501,6 +1875,7 @@ def _search_one_item(
             None,
             "search succeeded without a staged output",
             True,
+            False,
             None,
             None,
         )
@@ -1513,6 +1888,7 @@ def _search_one_item(
             query=item["query"],
             orientation=orientation,
             required_terms=request.required_terms,
+            query_variants=request.query_variants,
         )
         manifest_item = _candidate_to_manifest_item(
             result.candidate,
@@ -1524,6 +1900,7 @@ def _search_one_item(
         return (
             manifest_item,
             None,
+            False,
             False,
             result.staged_path,
             result.output_path,
@@ -1546,18 +1923,21 @@ def run_search_manifest(
     concurrency: int,
     save_candidates: bool,
     max_candidates: int,
+    candidate_page: int,
     default_provider: Optional[str],
     default_strict: bool,
     default_min_width: int,
     default_min_height: int,
-) -> tuple[int, int, int, int]:
+) -> tuple[int, int, int, int, int]:
     """Process all Pending/Failed rows concurrently with a bounded pool.
 
     On success the rich provenance entry is appended to ``image_sources.json``
     (the credit source of truth) and the row's status flips to ``Sourced``.
-    A row that exhausts the provider/stage chain becomes ``Needs-Manual``
-    (terminal). Status is written back after each completion, so an interrupt
-    preserves finished rows. Returns ``(sourced, needs_manual, failed, skipped)``.
+    Thumbnail-only rows become ``Needs-Selection`` until promoted or re-queried.
+    A row that exhausts the provider/stage chain becomes ``Needs-Manual``.
+    Status is written back after each completion, so an interrupt preserves
+    finished rows. Returns
+    ``(sourced, needs_selection, needs_manual, failed, skipped)``.
     """
     sources_manifest = _read_existing_manifest(sources_manifest_path)
     items = manifest["items"]
@@ -1620,9 +2000,9 @@ def run_search_manifest(
     if total == 0:
         print(
             f"[Batch] Nothing to do — all {len(items)} row(s) already in a "
-            "terminal state (Sourced / Needs-Manual)."
+            "terminal state (Sourced / Needs-Selection / Needs-Manual)."
         )
-        return 0, 0, 0, skipped
+        return 0, 0, 0, 0, skipped
 
     print(
         f"\n[Batch] {total} row(s) to search, {skipped} already done. "
@@ -1630,18 +2010,20 @@ def run_search_manifest(
     )
 
     sourced_count = 0
+    needs_selection_count = 0
     needs_manual_count = 0
     failed_count = 0
     write_lock = threading.Lock()
 
     def _one(idx: int):
         try:
-            manifest_item, error, retryable, staged_path, target_path = (
+            manifest_item, error, retryable, selection_required, staged_path, target_path = (
                 _search_one_item(
                     items[idx],
                     output_dir=output_dir,
                     save_candidates=save_candidates,
                     max_candidates=max_candidates,
+                    default_candidate_page=candidate_page,
                     default_provider=default_provider,
                     default_strict=default_strict,
                     default_min_width=default_min_width,
@@ -1653,11 +2035,12 @@ def run_search_manifest(
                 manifest_item,
                 error,
                 retryable,
+                selection_required,
                 staged_path,
                 target_path,
             )
         except Exception as exc:  # noqa: BLE001 — provider code raises freely
-            return idx, None, str(exc)[:500], True, None, None
+            return idx, None, str(exc)[:500], True, False, None, None
 
     futures: list[concurrent.futures.Future] = []
     try:
@@ -1669,6 +2052,7 @@ def run_search_manifest(
                     manifest_item,
                     error,
                     retryable,
+                    selection_required,
                     staged_path,
                     target_path,
                 ) = fut.result()
@@ -1695,6 +2079,7 @@ def run_search_manifest(
                             item["last_error"] = (
                                 f"canonical/provenance commit failed: {exc}"
                             )[:500]
+                            _clear_candidate_selection_outputs(item)
                             failed_count += 1
                             print(
                                 f"  [FAIL] {item['filename']} — "
@@ -1708,6 +2093,7 @@ def run_search_manifest(
                                 "",
                             )
                             item.pop("last_error", None)
+                            _clear_candidate_selection_outputs(item)
                             sourced_count += 1
                             review = _write_review_copy(
                                 target_path,
@@ -1723,9 +2109,20 @@ def run_search_manifest(
                                 f"  [OK]   {item['filename']} "
                                 f"({item['provider']})"
                             )
+                    elif selection_required:
+                        item["status"] = SEARCH_STATUS_NEEDS_SELECTION
+                        _clear_candidate_selection_outputs(item)
+                        if manifest_item is not None:
+                            item.update(manifest_item)
+                        item.pop("last_error", None)
+                        item.pop("provider", None)
+                        item.pop("license_tier", None)
+                        needs_selection_count += 1
+                        print(f"  [REVIEW] {item['filename']} — {error}")
                     elif retryable:
                         item["status"] = SEARCH_STATUS_FAILED
                         item["last_error"] = error or "provider/download failure"
+                        _clear_candidate_selection_outputs(item)
                         failed_count += 1
                         print(
                             f"  [FAIL] {item['filename']} — {item['last_error']}"
@@ -1733,6 +2130,7 @@ def run_search_manifest(
                     else:
                         item["status"] = SEARCH_STATUS_NEEDS_MANUAL
                         item["last_error"] = error or "search failed"
+                        _clear_candidate_selection_outputs(item)
                         needs_manual_count += 1
                         print(
                             f"  [MANUAL] {item['filename']} — "
@@ -1749,7 +2147,7 @@ def run_search_manifest(
                 outcome = future.result()
             except BaseException:
                 continue
-            staged_path = outcome[4]
+            staged_path = outcome[5]
             if staged_path is not None:
                 try:
                     staged_path.unlink(missing_ok=True)
@@ -1757,11 +2155,18 @@ def run_search_manifest(
                     pass
 
     print(
-        f"\n[Batch] Done: {sourced_count} sourced / {failed_count} failed / "
+        f"\n[Batch] Done: {sourced_count} sourced / "
+        f"{needs_selection_count} needs-selection / {failed_count} failed / "
         f"{needs_manual_count} needs-manual ({skipped} pre-skipped). "
         f"Manifest: {manifest_path}"
     )
-    return sourced_count, needs_manual_count, failed_count, skipped
+    return (
+        sourced_count,
+        needs_selection_count,
+        needs_manual_count,
+        failed_count,
+        skipped,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1772,8 +2177,8 @@ def run_search_manifest(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Search openly-licensed web images and download a single best match. "
-            "Sister to image_gen.py."
+            "Search openly-licensed web images, shortlist thumbnails, or "
+            "download one selected original. Sister to image_gen.py."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -1784,12 +2189,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Search query (1-4 concrete keywords work best). Omit in --batch mode.",
     )
     parser.add_argument(
+        "--query-variant",
+        action="append",
+        default=None,
+        metavar="QUERY",
+        help=(
+            "Add a materially different spelling, translation, or entity "
+            "query. Repeatable; results are aggregated and deduplicated."
+        ),
+    )
+    parser.add_argument(
         "--filename",
         default=None,
         help=(
             "Local filename for the chosen image (e.g. cover_bg.jpg). "
             "Required for single-query, --promote, and --from-url modes; "
-            "ignored in --batch."
+            "ignored only during batch search."
         ),
     )
     parser.add_argument(
@@ -1867,7 +2282,8 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Process a batch of search requests from an image_queries.json "
             "manifest concurrently, writing provenance into image_sources.json "
-            "and status back into the queries manifest."
+            "and status back into the queries manifest. In --promote mode, "
+            "reconcile the selected row to Sourced."
         ),
     )
     parser.add_argument(
@@ -1885,24 +2301,36 @@ def build_parser() -> argparse.ArgumentParser:
         "--save-candidates",
         action="store_true",
         help=(
-            "Opt-in: also save a small candidate pool to candidates/<stem>/ "
-            "(with downscaled review copies) so a better fit can be promoted "
-            "when the best match fails visual confirmation. Default: only the "
-            "best match is downloaded."
+            "Thumbnail-selection mode: save one ranked page of review-eligible "
+            "previews and a labeled contact sheet, but download no original. "
+            "Use --promote after visual selection."
         ),
     )
     parser.add_argument(
         "--max-candidates",
         type=int,
-        default=4,
-        help="Max candidates to save when --save-candidates is set (default: 4).",
+        default=DEFAULT_CANDIDATE_PAGE_SIZE,
+        help=(
+            "Thumbnail page size with --save-candidates (default: "
+            f"{DEFAULT_CANDIDATE_PAGE_SIZE}); 0 explicitly keeps every "
+            "qualified candidate."
+        ),
+    )
+    parser.add_argument(
+        "--candidate-page",
+        type=int,
+        default=1,
+        help=(
+            "Ranked thumbnail page to fetch with --save-candidates "
+            "(default: 1). Batch items may override this with candidate_page."
+        ),
     )
     parser.add_argument(
         "--promote",
         default=None,
         metavar="CANDIDATE_FILE",
         help=(
-            "Promote a candidate to replace the primary image. "
+            "Download one selected candidate original and make it primary. "
             "Example: --promote candidate_03.jpg --filename 05_wulong.jpg -o images/"
         ),
     )
@@ -1948,6 +2376,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         parser.error(str(exc))
     if args.min_width < 1 or args.min_height < 1:
         parser.error("--min-width and --min-height must both be positive integers")
+    if args.max_candidates < 0:
+        parser.error("--max-candidates must be zero or a positive integer")
+    if args.candidate_page < 1:
+        parser.error("--candidate-page must be a positive integer")
+    if args.max_candidates == 0 and args.candidate_page != 1:
+        parser.error("--candidate-page must be 1 when --max-candidates is 0")
 
     output_dir = Path(args.output)
 
@@ -1960,6 +2394,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             args.filename,
             args.promote,
             manifest_path=Path(args.manifest) if args.manifest else None,
+            queries_manifest_path=Path(args.batch) if args.batch else None,
         )
 
     # --- Manual URL replacement ---
@@ -1999,7 +2434,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             else default_manifest_path(str(batch_output_dir))
         )
         try:
-            _, needs_manual, failed, _ = run_search_manifest(
+            _, needs_selection, needs_manual, failed, _ = run_search_manifest(
                 manifest,
                 args.batch,
                 output_dir=batch_output_dir,
@@ -2007,6 +2442,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 concurrency=_resolve_search_concurrency(args.concurrency),
                 save_candidates=args.save_candidates,
                 max_candidates=args.max_candidates,
+                candidate_page=args.candidate_page,
                 default_provider=args.provider,
                 default_strict=args.strict_no_attribution,
                 default_min_width=args.min_width,
@@ -2018,8 +2454,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         except RuntimeError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
-        # Mirror image_gen.py: any unresolved retryable or manual row keeps the
-        # command non-zero. It is a gate signal, not a request to hide progress.
+        if needs_selection:
+            print(
+                f"[Batch] {needs_selection} row(s) await thumbnail selection."
+            )
+        # A successfully prepared shortlist is an intermediate success. Only
+        # provider failures or exhausted/manual rows make acquisition fail.
         return 1 if needs_manual or failed else 0
 
     # --- Single-query search mode ---
@@ -2037,6 +2477,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         min_width=args.min_width,
         min_height=args.min_height,
         required_terms=_parse_required_terms(args.require_terms),
+        query_variants=_parse_query_variants(args.query_variant),
     )
     _warn_weak_required_terms(request.required_terms)
 
@@ -2062,8 +2503,28 @@ def main(argv: Optional[list[str]] = None) -> int:
         strict_no_attribution=args.strict_no_attribution,
         save_candidates=args.save_candidates,
         max_candidates=args.max_candidates,
+        candidate_page=args.candidate_page,
         provider_is_explicit=bool(args.provider),
     )
+
+    if result.selection_required:
+        continuation = (
+            f" Next page: --candidate-page {result.candidate_page + 1}."
+            if result.has_more_candidates
+            else " Candidate pool exhausted."
+        )
+        print(
+            f"  [REVIEW] {result.candidate_count}/{result.candidate_total} "
+            f"thumbnail candidate(s), page {result.candidate_page}: "
+            f"{result.review_sheet}.{continuation}",
+            file=sys.stderr,
+        )
+        print(
+            "  No original image or provenance record was written. "
+            "Select one with --promote, or change the query and shortlist again.",
+            file=sys.stderr,
+        )
+        return 0
 
     if result.candidate is None:
         print(
