@@ -392,11 +392,16 @@ Operational manifests and provenance are resource truth, not a hidden design
 strategy.
 
 Every required file-backed resource must reach a usable terminal state before
-its page. `Needs-Manual` blocks Quick even when an unverified file exists. After
-manual supply/replacement, validate evidence and reconcile to `Existing`,
-`Generated`, or `Sourced`; never bypass status by file presence or substitute
-unrelated material. Native formula markers are authored page content, not
-file-backed resources or terminal-status rows.
+its page. Web `Needs-Selection` blocks until one thumbnail is promoted or the
+bounded ranked pages and materially different query variants are exhausted;
+`Needs-Manual` blocks even when an unverified file exists. With no visual
+capability, only the strict metadata-ranked web path may reach `Sourced`, and
+its provenance must say `selection_method: metadata-ranked` rather than imply
+visual confirmation. After selection or manual supply/replacement, validate
+evidence and reconcile to `Existing`, `Generated`, or `Sourced`; never bypass
+status by preview/file presence or substitute unrelated material. Native
+formula markers are authored page content, not file-backed resources or
+terminal-status rows.
 
 ---
 

@@ -793,13 +793,13 @@
       "max_tokens": 26000
     },
     "stage.generate.image.web": {
-      "description": "Incremental web-image acquisition role.",
+      "description": "Incremental web-image acquisition role. Ceiling raised after BUDGET_LOAD_SET reported 9341 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/image-base.md",
         "skills/ppt-master/references/image-searcher.md"
       ],
-      "max_tokens": 8000
+      "max_tokens": 11000
     },
     "stage.generate.resume-execute": {
       "description": "Fresh-session resume plus the flat Executor core and post-SVG notes rules.",

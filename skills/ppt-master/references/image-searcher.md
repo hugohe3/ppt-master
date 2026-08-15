@@ -34,10 +34,13 @@ Every **provider-sourced** image is classified into one of two tiers; anything e
 Default: quality-first across all allowed license tiers. Do not prefer CC0 / Public Domain over a better CC BY / CC BY-SA image; rely on the manifest's `license_tier` so Executor can add attribution only when needed.
 
 ```
-Default: provider chain, license filter = cc0,pdm,pexels,pixabay,cc by,cc by-sa
-         → rank candidates across providers; first downloadable ranked hit wins.
+Multimodal Generate: explicit query variants × provider chain + allowed licenses
+         → aggregate/deduplicate/rank → first 8 thumbnails → visually select
+         → download one original; if none passes, inspect the next 8 first.
+Non-visual / standalone best-only: explicit query variants × provider chain
+         → strict metadata gate → first downloadable ranked original wins.
 Strict:  provider chain, license filter = cc0,pdm,pexels,pixabay
-         → fail if no no-attribution image can be downloaded.
+         → apply the same selected execution mode without CC BY / CC BY-SA.
 ```
 
 `--strict-no-attribution` is opt-in. Use it only when the deck cannot tolerate any on-slide credit (corporate template, full-bleed hero).
@@ -73,11 +76,11 @@ Keep two layers distinct:
 | Quick Generate active `Reference` | Current main agent's active-context intent after honoring explicit user assets, URLs, subjects, and constraints; unspecified choices are resolved automatically without confirmation. |
 | `image_queries.json.items[].query` / positional query | Image_Searcher's concrete entity/identity keyword string. Start with the shortest phrase that preserves identity; keep exact multi-word names and necessary disambiguators even when they exceed four words. Omit mood, quality, composition, HEX, and negative wording. |
 
-Web APIs match metadata, not semantic intent. Providers try the original query first, then progressively simplified four/three/two/one-word variants. A pipeline manifest should therefore use a concise query without pre-truncating exact names. For Chinese landmarks, use the precise Chinese name with Wikimedia; for stock providers, use compact English identity terms when they retain the subject.
+Web APIs match metadata, not semantic intent. Providers try each explicit query first, then progressively simplified four/three/two/one-word variants. A pipeline manifest should therefore use a concise primary `query` without pre-truncating exact names, plus `query_variants` for materially different official translations, spellings, aliases, or Chinese names. The tool aggregates and deduplicates their results; do not use variants for cosmetic word-order changes. For Chinese landmarks, pair the precise Chinese name used by Wikimedia with compact English identity terms used by stock providers.
 
 Image_Searcher consumes the active Reference and never rewrites its owner. In Default Generate, that means no rewrite of `design_spec.md` or `spec_lock.md`; in Quick Generate, the active-context Reference remains fixed for the run. A candidate either satisfies that existing subject/focal/crop intent, or the role tries materially different query/provider/permitted-license strategies until no untried strategy remains, then marks `Needs-Manual`. Never loosen `required_terms`, the license policy, or the active intent to manufacture a match.
 
-When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
+When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query` and `query_variants`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps provider queries short while preventing metadata-ranked wrong entities from being accepted automatically.
 
 Do **not** loosen `required_terms` to generic category words just to improve coverage. Terms like `canyon`, `grand canyon`, `stone pillar`, `ground fissure`, `ancient town`, `bridge`, `temple`, or `village` belong in the search query, not as the only identity gate. For small / Chinese-local attractions, the correct failure mode is `Needs-Manual` or a user-provided `--from-url`, not a visually plausible image of the wrong place.
 
@@ -107,6 +110,7 @@ python3 scripts/image_search.py "<query>" \
 | Parameter | Required | Default | Description |
 |---|---|---|---|
 | `query` | yes | — | Positional. Pre-simplification not necessary; CLI runs `simplify_query` internally. |
+| `--query-variant` | no | — | Repeatable official translation, spelling, alias, or materially different entity phrase; results are aggregated and deduplicated. Batch rows use `query_variants`. |
 | `--filename` | yes | — | Output filename matching the resource list |
 | `-o / --output` | no | `.` | Output directory; manifest defaults to `<output>/image_sources.json` |
 | `--slide` | no | `""` | Slide ID from resource list (recorded in manifest) |
@@ -117,9 +121,10 @@ python3 scripts/image_search.py "<query>" \
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
 | `--require-terms` | no | — | Entity-safety gate for exact subjects. Repeatable; comma separates required groups; `A|B` means aliases within one group. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"` |
 | `--manifest` | no | (default) | Override manifest path |
-| `--save-candidates` | no | off | Escalation only: also keep a review pool in `candidates/<stem>/`. Default downloads just the best match (+ a review copy) |
-| `--max-candidates` | no | `4` | Pool size when `--save-candidates` is set |
-| `--promote` | no | — | Human-selected candidate override; low resolution warns but does not block promotion |
+| `--save-candidates` | no | off | Thumbnail-selection mode: save one ranked page of review-eligible previews and `review_sheet.jpg`, but no original or provenance record. Multimodal Generate enables this; standalone CLI remains best-only by default |
+| `--max-candidates` | no | `8` | Thumbnail page size. `0` explicitly requests the complete pool and is reserved for debugging / exceptional review, not normal Generate |
+| `--candidate-page` | no | `1` | Ranked thumbnail page to fetch. Page 2 starts at rank 9 with the default page size. Batch rows may override with `candidate_page` |
+| `--promote` | no | — | Download exactly one selected candidate original, enforce the request's size/readability gates, and write provenance |
 | `--from-url` | no | — | Manual replace: download a user-supplied image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
 
 ### Batch mode (≥ 2 web rows) — preferred
@@ -128,8 +133,17 @@ When more than one row is `Acquire Via: web`, do **not** call the CLI once per r
 
 ```bash
 python3 scripts/image_search.py --batch <project_path>/images/image_queries.json \
-  -o <project_path>/images
+  -o <project_path>/images \
+  --save-candidates
 ```
+
+The candidate flag above is the normal Generate invocation when the current
+agent can inspect images. It downloads previews only and moves each successful
+row to `Needs-Selection`; no target image or `image_sources.json` entry exists
+yet. A non-multimodal agent omits it and follows the handoff rules under
+Suitability review below: only strict metadata-verified candidates may download
+automatically. Standalone CLI use remains best-only unless the caller explicitly
+requests thumbnail selection.
 
 `image_queries.json` schema (one item per web row):
 
@@ -139,6 +153,7 @@ python3 scripts/image_search.py --batch <project_path>/images/image_queries.json
     {
       "filename": "jiefangbei.jpg",
       "query": "Jiefangbei Chongqing downtown monument",
+      "query_variants": ["Chongqing Liberation Monument", "重庆 解放碑"],
       "slide": "03_landmark",
       "purpose": "exact landmark photo",
       "orientation": "landscape",
@@ -149,13 +164,13 @@ python3 scripts/image_search.py --batch <project_path>/images/image_queries.json
 }
 ```
 
-Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`.
+Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `query_variants`, `candidate_page`, `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`.
 
-Use `required_terms` for **exact-entity images**: landmarks, people, companies, products, venues, named artworks, and named institutions. Each list item is required; alternatives inside one item use `|`. Example for a Chongqing landmark: `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This is a metadata gate: candidates whose title / author / source URL do not satisfy every group are rejected before ranking, so a visually polished but wrong Rome / Hoi An image cannot win a Chongqing landmark row. Do **not** use `required_terms` for generic mood / background rows such as "modern city skyline" or "team collaboration".
+Use `required_terms` for **exact-entity images**: landmarks, people, companies, products, venues, named artworks, and named institutions. Each list item is required; alternatives inside one item use `|`. Example for a Chongqing landmark: `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. In best-only mode, candidates whose title / author / source URL do not satisfy every group are rejected before ranking, so a visually polished but wrong Rome / Hoi An image cannot win. Thumbnail mode may show a separately labeled near match only for visual identity verification; it never promotes automatically. Do **not** use `required_terms` for generic mood / background rows such as "modern city skyline" or "team collaboration".
 
 For less-covered local attractions, keep the strict identity gate rather than progressively deleting location anchors or replacing proper names with category words. If strict metadata cannot prove the entity, mark the row `Needs-Manual` and use the manual URL path when the user supplies a confirmed source.
 
-The runner first revalidates every `Sourced` row against its readable file, requested dimensions, and `image_sources.json` entry; drift returns that row to `Failed`. It then searches all `Pending` / `Failed` rows concurrently, appends each success to the provenance manifest, and writes status back into `image_queries.json`: `Sourced` on success, retryable `Failed` on provider/download errors, and terminal `Needs-Manual` only after a clean provider/stage exhaustion. Status is saved after each completion. A single `web` row may still use single-query mode above.
+The runner first revalidates every `Sourced` row against its readable file, requested dimensions, and `image_sources.json` entry; drift returns that row to `Failed`. It then searches all `Pending` / `Failed` rows concurrently. Thumbnail mode writes `Needs-Selection`, `candidate_page`, `candidate_count`, `candidate_total`, `has_more_candidates`, `next_candidate_page`, and the relative `review_sheet` path without creating a target image or provenance. To inspect the next page for one row, set its `candidate_page` to `next_candidate_page`, reset only that row to `Pending`, and rerun the batch. Promoting one candidate with the same `--batch` manifest changes that row to `Sourced`. Provider failures remain retryable `Failed`, while clean provider/stage exhaustion becomes terminal `Needs-Manual`. Status is saved after each completion. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
 
@@ -163,29 +178,48 @@ The runner first revalidates every `Sourced` row against its readable file, requ
 
 `image_search.py` ranks provider metadata, not pixels. The order is deliberately conservative:
 
-1. hard reject: invalid license, zero query relevance, or any missing `required_terms`;
-2. identity priority: every required term group must match; candidates whose title also contains the required entity terms get an additional boost over candidates that only match via URL;
-3. query relevance: concrete query tokens dominate generic visual words like "photo", "high quality", "background";
-4. layout fit: requested orientation helps; mismatched orientation is a small penalty, not a hard reject;
-5. license / size tie-breakers: no-attribution is a small bonus; pixel count is capped so a huge but weakly relevant image cannot outrank a smaller accurate image.
+1. common hard reject: invalid license or zero query relevance;
+2. strict automatic gate: best-only mode rejects every candidate missing any `required_terms`; this is the only pool available without visual review;
+3. visual-review widening: thumbnail mode keeps strict matches first, then may admit a near match only when exactly one required group is absent and the explicit query that found it still has strong metadata relevance. The sidecar marks it `identity_evidence: visual-verification-required`; visual inspection must establish the missing identity before promotion;
+4. identity priority: metadata-verified candidates whose title contains the required entity terms outrank candidates that match only via URL;
+5. query relevance: concrete query tokens match whole ASCII metadata tokens and dominate generic visual words like "photo", "high quality", "background"; substrings such as `office` inside `officer` do not count;
+6. layout fit: requested orientation helps; mismatched orientation is a small penalty, not a hard reject;
+7. license / size tie-breakers: no-attribution is a small bonus; pixel count is capped so a huge but weakly relevant image cannot outrank a smaller accurate image.
 
-Do not tune this into a visual taste engine. The scorer prevents obvious metadata failures and produces a reviewable best match; the `.review` copy still decides whether the image is visually fit for the slide.
+Do not tune this into a visual taste engine. The scorer removes obvious metadata failures and orders the thumbnail sheet; visual review still decides whether any candidate fits the slide.
 
 ### Suitability review — with or without a multimodal model
 
 A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. Review it against the active Reference and Crop Policy before it is trusted:
 
-- **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution). Judge subject identity, intended mood/view, focal or quiet region, and whether the active crop policy remains safe.
-- **Non-multimodal model (no vision)**: do **not** pretend to confirm. Default Generate hands off via each `source_page_url`. Quick Generate does not open an interaction; mark a required image `Needs-Manual` when visual suitability cannot be established, preserve provenance, and let the quick export gate block.
+- **Multimodal model**: run `--save-candidates`. The tool aggregates explicit query variants, deduplicates them, and saves at most the first **8** ranked previews under `candidates/<stem>/review/`; `review_sheet.jpg` contains only that page and no original is downloaded. Use the sheet for triage, then open an individual `review/candidate_NN.jpg` when exact identity or fine detail is uncertain. Only after one candidate passes should `--promote` download that original. If `has_more_candidates` is true and none passes, fetch `--candidate-page 2` before changing the query.
+- **Non-multimodal model (no vision)**: omit `--save-candidates`; the tool excludes every `visual-verification-required` near match, downloads only the first candidate that passes all strict metadata / license / dimension gates, and records `selection_method: metadata-ranked`. Do **not** describe this as visual confirmation. If no strict candidate exists, or the active Reference requires a viewpoint, crop, expression, or fine identity detail that metadata cannot establish, mark the row `Needs-Manual`; Quick does not open an acquisition-time interaction.
+
+Apply this order during multimodal selection:
+
+1. pre-selection hard gates — allowed license, exact subject/identity, readable preview, and upstream dimensions when known;
+2. page fit — requested orientation, focal placement, crop safety, and usable quiet region;
+3. expression fit — the Reference's requested view, action, and mood;
+4. tie-breakers — higher expected usable resolution / lower crop loss, then no-attribution;
+5. post-selection hard gate — download only the winner and verify its actual readable dimensions before provenance is committed.
+
+If no thumbnail on the current page passes, download no original. When
+`has_more_candidates` is true, advance to `next_candidate_page` first. Only
+after the ranked pool is exhausted should you change the query materially —
+identity wording, translation, alias, viewpoint, or necessary disambiguator —
+reset that row to `Pending`, and generate a fresh pool. Do not promote the
+least-bad candidate.
 
 For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject and satisfy the active focal/crop intent. Passing metadata never authorizes changing that intent downstream.
 
 Never treat a generic `required_terms` pass as acceptance. For example, matching `Ground Fissure` can return an unrelated transit station named Yunlong, and matching `stone pillar` can return a different scenic area. If the proper name / geography cannot be retained, stop at `Needs-Manual`.
 
-**Replacement ladder when a best match is not right** (any reviewer):
+**Replacement ladder when the first round is not right**:
 
-1. refine the query and re-run that row while each revision tests a materially different identity phrase or disambiguator; do not repeat a semantically exhausted query;
-2. **manual URL replace (universal, model-agnostic)** — use a user-supplied URL and swap it in:
+1. With vision, promote one passing thumbnail from the current page; this is the first original-image request.
+2. If none passes and `has_more_candidates` is true, fetch the next ranked page (8 by default). Candidate numbers continue globally, so page 2 starts at `candidate_09`; do not repeat page 1 or download an original.
+3. After the current pool is exhausted, add materially different query variants for identity wording, official translation, alias, viewpoint, or disambiguation and generate a fresh pool; do not repeat a semantically exhausted query.
+4. **manual URL replace (universal, model-agnostic)** — use a user-supplied URL and swap it in:
    ```bash
    python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
@@ -197,27 +231,51 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
    that query row and the active roster to `Sourced` before export; a stale
    `Needs-Manual` status remains blocking
    ([`executor-web-image.md`](./executor-web-image.md) §1);
-3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
-4. when the query variants, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
+5. When the query variants, ranked pages, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
 
 Web search is far cheaper than AI generation, so this review pass is well worth it.
 
 **This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §6). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
 
-### Manual review candidates (escalation, opt-in)
+### Visual selection candidates (multimodal Generate; standalone opt-in)
 
-Candidate-pool saving is **off by default** — reach for it only when a best match fails confirmation, on a subjective topic, or for a prominent image (cover / chapter divider / `hero_page` / photo-led page).
+Candidate-thumbnail saving stays **off by default for standalone CLI use**.
+Generate enables it for every web row when the current agent can inspect images,
+so the first pass sees a bounded ranked page rather than trusting metadata rank
+1 or flooding the reviewer with the complete pool.
 
 ```bash
 python3 scripts/image_search.py "<query>" --filename <name>.jpg -o <project_path>/images \
-  --save-candidates --max-candidates 4
+  --save-candidates
 ```
 
-Saves the top candidates to `images/candidates/<stem>/` with a `candidates.json` manifest and one downscaled review copy per candidate under `candidates/<stem>/review/`. **Read the candidate review copies**, pick the best fit, then promote it — the full-resolution original is copied to the target filename:
+Saves provider previews to `images/candidates/<stem>/review/` with a
+thumbnail-only `candidates.json` manifest and an automatically generated
+`candidates/<stem>/review_sheet.jpg` containing only the current round. The
+default first round is ranks 1–8. The sidecar records `candidate_page`,
+`page_size`, `candidate_total`, `has_more_candidates`, each candidate's matched
+query, and whether identity is metadata-verified or requires visual
+verification. The target filename and `image_sources.json` remain untouched.
+Inspect the sheet first, open only plausible individual previews when needed,
+then promote the best fit — only that full-resolution original is downloaded
+to the target:
 
 ```bash
 python3 scripts/image_search.py --promote candidate_03.jpg --filename <name>.jpg -o <project_path>/images
+
+# No pass on page 1, but candidates.json says has_more_candidates: true
+python3 scripts/image_search.py "<same query>" --filename <name>.jpg \
+  -o <project_path>/images --save-candidates --candidate-page 2
+
+# Batch flow: also reconcile image_queries.json from Needs-Selection to Sourced
+python3 scripts/image_search.py --promote candidate_03.jpg --filename <name>.jpg \
+  --batch <project_path>/images/image_queries.json -o <project_path>/images
 ```
+
+For batch continuation, set only the no-pass row's `candidate_page` to its
+`next_candidate_page`, reset that row to `Pending`, and rerun. Use
+`--max-candidates 0` only when a complete-pool dump is explicitly useful for
+debugging; it is not the Generate default.
 
 ---
 
@@ -235,6 +293,8 @@ Every successful download appends or replaces one entry keyed on `filename`:
       "slide": "03_team",
       "purpose": "Leadership photo",
       "search_query": "executive boardroom meeting",
+      "matched_query": "leadership team boardroom",
+      "selection_method": "metadata-ranked",
       "orientation": "landscape",
       "provider": "openverse",
       "stage": "all",
@@ -262,6 +322,8 @@ Every successful download appends or replaces one entry keyed on `filename`:
 
 | Field | Notes |
 |---|---|
+| `matched_query` | Explicit primary query or query variant that discovered the selected asset. |
+| `selection_method` | `visual-thumbnail` after promotion from a reviewed preview, or `metadata-ranked` for the strict no-vision / best-only path. It never claims a visual check that did not occur. |
 | `width` / `height` | Measured from the file actually saved to disk. Use these for layout. |
 | `metadata_dimensions` | Present only when upstream-claimed size differs from the saved file (preview vs original). Informational only. |
 | `license_tier` | Drives Executor's attribution decision: `no-attribution` / `attribution-required` for provider-sourced images, or `manual` for a user-supplied `--from-url` replacement (embed only; rights/credit are the user's responsibility). |
@@ -305,12 +367,17 @@ Extends [`image-base.md`](./image-base.md) §6.
 | Situation | Behavior |
 |---|---|
 | No candidates from any provider in either stage | Mark row `Needs-Manual`. Suggest a more precise query or another configured provider; rerun without `--strict-no-attribution` only when the confirmed page may carry visible credit. |
-| Single candidate fails to download (HTTP 403/404) | Dispatcher auto-falls through to the next ranked candidate. No user action. |
-| All candidates from one provider fail | Dispatcher moves to the next provider in the chain. |
+| Current thumbnail page has no acceptable image and `has_more_candidates` is true | Fetch `next_candidate_page`; do not change the query or download an original yet. |
+| Requested thumbnail page is past `candidate_total` | Treat the current pool as exhausted; add a materially different query variant or move to the manual boundary. |
+| One or more previews fail while another qualified preview succeeds | Keep the successful thumbnail set; no original has been requested. |
+| Every qualified preview fails | Mark row `Failed`; a later batch run retries it. |
+| Selected original fails its download/readability/dimension gate | Leave `Needs-Selection`; select another passing thumbnail or materially change the query. Do not commit provenance. |
+| Best-only candidate fails to download (HTTP 403/404) | Dispatcher auto-falls through to the next ranked candidate. |
 | Provider/network failure remains after dispatch | Mark row `Failed`; a later batch run retries it. |
 | Keyed provider has no API key | Silently skipped. Not an error. |
 
-CLI exit: `0` when all attempted rows resolve; `1` while any row remains `Failed` or `Needs-Manual`.
+CLI exit: a successfully prepared `Needs-Selection` thumbnail set returns `0`
+as an intermediate success; `Failed` or `Needs-Manual` returns `1`.
 
 ---
 
@@ -342,8 +409,8 @@ Executor does not interpret raw license strings — `license_tier` is sufficient
 
 In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
 
-- [ ] Every web row has a downloaded file at `project/images/<filename>` OR is marked `Needs-Manual`
-- [ ] Each `Sourced` web image was reviewed against the active Reference/Crop Policy — a multimodal model via `images/.review/<stem>.jpg`; without vision, Default Generate hands off via `source_page_url` while Quick Generate records `Needs-Manual` without interaction. A mismatch was re-queried, replaced, escalated, or marked `Needs-Manual`, never repaired by rewriting the active intent
+- [ ] Every required web row is `Sourced` with a downloaded original at `project/images/<filename>` OR is marked `Needs-Manual`; `Needs-Selection` remains incomplete
+- [ ] Each multimodal `Sourced` web image was selected from a bounded ranked thumbnail page and only its winner original was downloaded; a no-pass page advanced through remaining pages before query replacement. Without vision, only strict metadata candidates may become `Sourced`, with `selection_method: metadata-ranked`; unresolved or visually unprovable intent becomes `Needs-Manual` without pretending a visual check occurred
 - [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text` (except `manual` `--from-url` rows, which carry no `attribution_text`)
 - [ ] Any `attribution-required` image has visible author + license credit in every SVG that references it
 - [ ] `metadata_dimensions` warnings surfaced when downloaded preview is much smaller than upstream-claimed size

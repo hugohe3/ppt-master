@@ -30,6 +30,7 @@ and filter/clip contracts.
 |--------|---------|-------------------|
 | **Pending** | Acquisition or declared derivation is needed; not yet attempted | Step 5 consumes this; must not remain afterward |
 | **Failed** | The latest automatic acquisition attempt failed; this is retryable and non-terminal | Step 5 reruns the owning manifest or explicitly resolves the row to `Needs-Manual`; Executor must never treat `Failed` as usable content |
+| **Needs-Selection** | Web search produced one bounded thumbnail-only candidate page; no original or provenance exists yet | Step 5 reviews/promotes one candidate, advances to `next_candidate_page`, or after pool exhaustion materially changes the query and returns the row to `Pending`; Executor must never consume this intermediate state |
 | **Generated** | AI/slice output exists | Reference from `../images/`; manifest records govern attribution. An `Illustration Sheet` stays in §VIII only as an unplaced slice source |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [`executor-web-image.md`](./executor-web-image.md) §1 and [`image-searcher.md`](./image-searcher.md) §7 for the attribution contract) |
 | **Needs-Manual** | Automatic acquisition is unavailable/exhausted or the selected path requires manual fulfillment; for `slice`, the parent sheet is unavailable | Default Generate may use a dashed placeholder until its readiness gate. Quick Generate blocks every required row still in this status, even if an unverified candidate file exists; validate a supplied replacement and reconcile it to `Existing`, `Generated`, or `Sourced` first. For `slice`, supply the parent sheet and rerun `slice_images.py`; do not hand-place individual element files. |
@@ -48,7 +49,8 @@ and filter/clip contracts.
    - user → materialize the explicit source under project/images/ → Existing
    - Pending prepared derivative → follow [`image-base.md`](./image-base.md) §3 before ordinary `Acquire Via` dispatch
    - Pending / Failed + ai  → Image_Generator runs image_gen.py     → Generated
-   - Pending / Failed + web → Image_Searcher runs image_search.py   → Sourced
+   - Pending / Failed + web + vision → Image_Searcher saves at most 8 ranked previews → Needs-Selection → promote one original or fetch the next page → Sourced / Needs-Manual
+   - Pending / Failed + web without vision → Image_Searcher accepts only a strict metadata-ranked best-only candidate and records that method → Sourced or Needs-Manual
    - Pending + slice → after parent AI sheet is Generated, slice_images.py cuts element files → Generated
 3. SVG authoring consumes only prepared resources (Executor in Default Generate; current main agent in Quick Generate)
    ├── Existing / Generated → <image href="../images/xxx.png" .../>
