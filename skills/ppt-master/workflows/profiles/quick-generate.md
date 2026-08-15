@@ -92,7 +92,7 @@ Prepare source facts before initialization:
 
 | Input | Action |
 |---|---|
-| Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement plus fact-provenance JSON for import |
+| Topic or requirements without supporting facts | Run [`topic-research`](../stages/topic-research.md) immediately and retain its Markdown supplement, fact-provenance JSON, and adopted webpage inputs for import |
 | One or more PNG / JPEG / WebP files representing page frames under Image to PPTX | Do not call `source_to_md.py`; normalize single-page files and multi-frame contact sheets into the canonical ordered frame roster through that profile, then import the originals below |
 | PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | Run `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as a plain-text table source |
@@ -120,8 +120,10 @@ After reading every direct and converted source, assess factual sufficiency:
 
 **Sufficiency test**: research only when the requested outcome would otherwise
 require inventing, omitting, or leaving unsupported an externally verifiable
-claim. File presence or length does not establish sufficiency. Research gathers
-facts only; image acquisition remains part of the resource preparation below.
+claim. File presence or length does not establish sufficiency. Research records
+the needed facts and adopted webpages. Their embedded images enter the imported
+source inventory; independent AI / web / slice acquisition remains part of the
+resource preparation below.
 
 **Conditional video-delivery context**: when the intended use is recorded,
 self-running, or video-directed—or an explicit final/literal narration script
@@ -179,8 +181,15 @@ research pair together:
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
   <project_path> <source_files_or_dirs...> [<converted_outputs...>] \
+  [<retained_URLs_or_converted_webpage_paths...>] \
   [projects/<research_slug>.md projects/<research_slug>.facts.json]
 ```
+
+For each retained webpage, pass either its exact URL or an existing converted
+Markdown package, never both. `project_manager.py` archives the page Markdown
+and companion files, merges its `image_manifest.json`, and synchronizes
+embedded images into `<project>/images/`. Treat them as source-extracted
+inventory rather than `Acquire Via: web` acquisitions.
 
 Only inputs already under the repository's `projects/` tree move into the
 target project; every external path is copied and remains untouched. Use
@@ -325,13 +334,21 @@ because Quick is expected to be faster is not.
 callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
 Path A and a host-native image-generation tool is Path B; Offline Manual, web
 search, or vision-only access does not qualify. When Path A/B is callable and
-the user has not forbidden AI, scan the frozen roster's cover/divider wording
-for stable display strings. Length and line count are not selection criteria: a
+the user has not forbidden AI, scan the frozen roster for display strings
+anywhere in the deck. Exactly two questions decide eligibility: is that wording
+stable, and would an artistic treatment communicate better than native type?
+Page role, string length, line count, and kind of noun never filter candidates —
+a cover hook, chapter word, place or product name, dish or exhibit name, year,
+hero number, pull quote, or recurring motif word all qualify when both answers
+are yes. Read any such list as examples, never as the set of allowed cases; a
 two-character mark, an eight-character phrase, and a two-line lockup are equally
-valid candidates. Select a string by whether that exact wording is stable and
-whether an artistic treatment beats native type — never by how short it is, and
-never trim a phrase down to one or two characters to make it feel more
-"wordmark-like". If a suitable set exists, prepare it without
+valid, and a phrase is never trimmed toward one or two characters to feel more
+"wordmark-like". Set over photography or a busy field is often exactly where
+native type reads pasted-on. Eligibility is wide but use stays selective: build
+one small coherent set for the deck rather than lettering every heading, and
+keep a native title wherever the page needs a searchable, selectable, or
+outline-visible heading, with the lettering as its display layer.
+If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
 item for a single mark or batch several compatible marks through one
 Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
@@ -352,7 +369,7 @@ still follows the normal resource contract.
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
 | Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native inline or block math |
-| A small set of stable cover/divider keywords needs a material, dimensional, hand-rendered, or otherwise illustrative treatment beyond ordinary text | Apply the proactive rule above; place prepared lettering assets as images and keep ordinary editable title/chrome in separate text frames |
+| Any stable display string in the deck — cover hook, chapter word, place or product name, dish or exhibit name, year, hero number, pull quote, motif word — reads better with a material, dimensional, hand-rendered, or otherwise illustrative treatment than as ordinary text | Apply the proactive rule above; place prepared lettering assets as images and keep ordinary editable title/chrome in separate text frames |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
