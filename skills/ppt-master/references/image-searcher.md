@@ -192,16 +192,10 @@ Do not tune this into a visual taste engine. The scorer removes obvious metadata
 
 A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. Review it against the active Reference and Crop Policy before it is trusted:
 
-- **Multimodal model**: run `--save-candidates`. The tool aggregates explicit query variants, deduplicates them, and saves at most the first **8** ranked previews under `candidates/<stem>/review/`; `review_sheet.jpg` contains only that page and no original is downloaded. Use the sheet for triage, then open an individual `review/candidate_NN.jpg` when exact identity or fine detail is uncertain. Only after one candidate passes should `--promote` download that original. If `has_more_candidates` is true and none passes, fetch `--candidate-page 2` before changing the query.
+- **Multimodal review available**: run `--save-candidates`. The tool aggregates explicit query variants, deduplicates them, and saves at most the first **8** ranked previews under `candidates/<stem>/review/`; `review_sheet.jpg` contains only that page and no original is downloaded. Run [`web-image-review.md`](../workflows/stages/web-image-review.md): use one isolated vision reviewer for the current batch when available, otherwise review locally. Only the active image owner may use the returned candidate filename with `--promote`. If `has_more_candidates` is true and none passes, fetch `--candidate-page 2` before changing the query.
 - **Non-multimodal model (no vision)**: omit `--save-candidates`; the tool excludes every `visual-verification-required` near match, downloads only the first candidate that passes all strict metadata / license / dimension gates, and records `selection_method: metadata-ranked`. Do **not** describe this as visual confirmation. If no strict candidate exists, or the active Reference requires a viewpoint, crop, expression, or fine identity detail that metadata cannot establish, mark the row `Needs-Manual`; Quick does not open an acquisition-time interaction.
 
-Apply this order during multimodal selection:
-
-1. pre-selection hard gates — allowed license, exact subject/identity, readable preview, and upstream dimensions when known;
-2. page fit — requested orientation, focal placement, crop safety, and usable quiet region;
-3. expression fit — the Reference's requested view, action, and mood;
-4. tie-breakers — higher expected usable resolution / lower crop loss, then no-attribution;
-5. post-selection hard gate — download only the winner and verify its actual readable dimensions before provenance is committed.
+The review stage owns pixel-inspection gates, bounded detail reads, and the compact decision receipt. It receives only the locked row intent plus candidate sidecars/sheets; it never receives the full planning or acquisition context.
 
 If no thumbnail on the current page passes, download no original. When
 `has_more_candidates` is true, advance to `next_candidate_page` first. Only
@@ -216,7 +210,7 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
 
 **Replacement ladder when the first round is not right**:
 
-1. With vision, promote one passing thumbnail from the current page; this is the first original-image request.
+1. With vision, promote the one passing thumbnail selected under the review-stage contract; this is the first original-image request.
 2. If none passes and `has_more_candidates` is true, fetch the next ranked page (8 by default). Candidate numbers continue globally, so page 2 starts at `candidate_09`; do not repeat page 1 or download an original.
 3. After the current pool is exhausted, add materially different query variants for identity wording, official translation, alias, viewpoint, or disambiguation and generate a fresh pool; do not repeat a semantically exhausted query.
 4. **manual URL replace (universal, model-agnostic)** — use a user-supplied URL and swap it in:
@@ -232,8 +226,6 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
    `Needs-Manual` status remains blocking
    ([`executor-web-image.md`](./executor-web-image.md) §1);
 5. When the query variants, ranked pages, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
-
-Web search is far cheaper than AI generation, so this review pass is well worth it.
 
 **This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §6). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
 

@@ -279,13 +279,15 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 |---|---|---|
 | `none` | No images | Data reports or process documentation whose visual burden is fully served by charts / native SVG |
 | `provided` | User-provided assets | Existing images carry factual, brand, product, or narrative authority |
-| `ai` | AI-generated | Custom illustrations, backgrounds, metaphors, or a coherent spot family are needed |
-| `web` | Web-sourced | Real-world editorial or stock-style reference imagery is needed |
+| `ai` | AI-generated | Invented or deliberately stylized illustrations, backgrounds, metaphors, or a coherent spot family are needed |
+| `web` | Web-sourced | A named or evidence-bearing real-world subject must appear as itself |
 | `placeholder` | Deferred | The image is required but will be supplied later |
 
 **Current inventory**: If `images/` is non-empty, run `python3 scripts/analyze_images.py <project_path>/images` and read `analysis/image_analysis.csv` before recommending a source. Re-run after that folder changes.
 
-**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
+**Default — evidence before synthesis (may override when explicit source constraints or the communication intent require another permitted source)**: Prefer `provided` when supplied assets already carry authority. Propose `web` when the actual appearance of an externally verifiable subject is material; propose `ai` when custom expression matters more than documentary identity. Mixed sources may serve different page roles. This is a source-fit decision, not an image quota.
+
+**Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
 
