@@ -51,8 +51,8 @@ request does not explicitly select Quick.
 🚧 **GATE**: The user has provided a topic / desired outcome and any available initial material.
 
 > **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately,
-> then use its factual supplement as source content and retain its adopted
-> webpage inputs for Step 2 source-package import.
+> then use its factual supplement as source content; Step 2 reads retained
+> webpage URLs from the facts JSON and imports them as text evidence.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -88,7 +88,7 @@ After reading direct and converted content, assess factual sufficiency:
 **Sufficiency test**: research only to avoid inventing, omitting, or leaving
 unsupported a factual claim the requested outcome requires; file presence or
 length is irrelevant. It records the needed facts and adopted webpages. Step 2
-imports those webpages and their embedded images as source packages; Step 5
+imports those webpages as text-only evidence; Step 5
 acquires only Strategist-selected independent AI / web / slice assets after
 final confirmation.
 
@@ -157,12 +157,10 @@ Import source content (choose based on the situation):
 | Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
-When Topic Research ran, include its research pair plus each exact retained URL
-or already-converted webpage Markdown package in the same import. Pass only one
-form per webpage. `project_manager.py` archives the page Markdown and companion
-files, merges its `image_manifest.json`, and synchronizes embedded images into
-`<project>/images/`; this is source intake, not `Acquire Via: web` image
-acquisition.
+When Topic Research ran, include only its research pair. `project_manager.py`
+reads the facts JSON's unique `source_url` values, archives each page in
+text-only mode, and fails incomplete source reconciliation. It does not add page
+images to `<project>/images/`.
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
@@ -533,6 +531,8 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](../references/image-searcher.md) §5.
 
 > **Default — bounded multimodal web thumbnail selection**: when either the current agent or an available isolated reviewer can inspect images, add `--save-candidates` to the single or batch web command. Author explicit `query_variants` for materially different official translations, spellings, aliases, or Chinese names; the tool aggregates and deduplicates them, then saves only the first ranked page (8 previews by default), writes `candidates/<stem>/review_sheet.jpg`, marks the batch row `Needs-Selection`, and downloads no original. Run [`web-image-review`](stages/web-image-review.md): dispatch exactly one isolated reviewer for all current sheets when supported, passing only each row's locked Reference/Crop Policy plus candidate sidecar/sheet paths; otherwise the active image owner reads that stage and reviews locally. Only a stage-selected passing candidate may be used with `--promote` to download one original and write provenance (pass the same `--batch images/image_queries.json` to reconcile its row to `Sourced`). If none passes and `has_more_candidates` is true, advance that row to `next_candidate_page` before changing the query. Only after the pool is exhausted may the row receive materially different query variants and return to `Pending`. When no available context has vision, omit `--save-candidates`: best-only mode may download only a strict metadata-verified candidate, records `selection_method: metadata-ranked`, and otherwise stops at `Needs-Manual` without claiming visual confirmation.
+
+> **Retained-page fallback**: only after that normal search is exhausted, a vision-capable image owner may open one relevant research page and test one inline-image URL at a time with `--from-url`. Never use retained pages as the initial pool or bulk-download them; without vision, skip this fallback.
 
 > **Default — short provider query (may override for a complete entity name or necessary disambiguation)**: keep §VIII `Reference` as the locked subject/focal/crop intent and author a separate concrete `image_queries.json.query`. Search/review never rewrites the Design Spec or lock to fit a candidate.
 

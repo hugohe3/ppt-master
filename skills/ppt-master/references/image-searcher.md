@@ -10,7 +10,7 @@ Role definition for the **web image acquisition path**: translate the active res
 
 ## 1. License Tier Discipline
 
-Every **provider-sourced** image is classified into one of two tiers; anything else is rejected outright. A third tier, `manual`, exists **only** for a user-supplied [`--from-url`](#5-running-image_searchpy) replacement — it is never the result of a provider search accepting an unknown license.
+Every **provider-sourced** image is classified into one of two tiers; anything else is rejected outright. A third tier, `manual`, exists **only** for a directly selected [`--from-url`](#5-running-image_searchpy) replacement — it is never the result of a provider search accepting an unknown license.
 
 | Tier | Licenses | On-slide attribution |
 |---|---|---|
@@ -125,7 +125,7 @@ python3 scripts/image_search.py "<query>" \
 | `--max-candidates` | no | `8` | Thumbnail page size. `0` explicitly requests the complete pool and is reserved for debugging / exceptional review, not normal Generate |
 | `--candidate-page` | no | `1` | Ranked thumbnail page to fetch. Page 2 starts at rank 9 with the default page size. Batch rows may override with `candidate_page` |
 | `--promote` | no | — | Download exactly one selected candidate original, enforce the request's size/readability gates, and write provenance |
-| `--from-url` | no | — | Manual replace: download a user-supplied image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
+| `--from-url` | no | — | Manual replace: download a directly selected image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
 
 ### Batch mode (≥ 2 web rows) — preferred
 
@@ -213,7 +213,8 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
 1. With vision, promote the one passing thumbnail selected under the review-stage contract; this is the first original-image request.
 2. If none passes and `has_more_candidates` is true, fetch the next ranked page (8 by default). Candidate numbers continue globally, so page 2 starts at `candidate_09`; do not repeat page 1 or download an original.
 3. After the current pool is exhausted, add materially different query variants for identity wording, official translation, alias, viewpoint, or disambiguation and generate a fresh pool; do not repeat a semantically exhausted query.
-4. **manual URL replace (universal, model-agnostic)** — use a user-supplied URL and swap it in:
+4. With vision only, if normal search is exhausted, open one relevant retained research page and test one plausible inline-image URL with the same `--from-url` command below. Inspect that single download before trying another; never bulk-download the page or use it as the initial pool.
+5. **manual URL replace (universal, model-agnostic)** — use a directly selected URL and swap it in:
    ```bash
    python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
@@ -225,7 +226,7 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
    that query row and the active roster to `Sourced` before export; a stale
    `Needs-Manual` status remains blocking
    ([`executor-web-image.md`](./executor-web-image.md) §1);
-5. When the query variants, ranked pages, configured provider chain, and permitted license stages are exhausted and no user-confirmed manual URL is available, mark the row `Needs-Manual`.
+6. When the query variants, ranked pages, configured provider chain, permitted license stages, and eligible retained-page fallback are exhausted, mark the row `Needs-Manual`.
 
 **This review never opens an acquisition-time interaction** ([`image-base.md`](./image-base.md) §6). Default Generate may build a placeholder and continue to Step 6. Quick Generate finishes all permitted automated strategies, records `Needs-Manual`, and blocks direct export when the unresolved image is required.
 
@@ -318,7 +319,7 @@ Every successful download appends or replaces one entry keyed on `filename`:
 | `selection_method` | `visual-thumbnail` after promotion from a reviewed preview, or `metadata-ranked` for the strict no-vision / best-only path. It never claims a visual check that did not occur. |
 | `width` / `height` | Measured from the file actually saved to disk. Use these for layout. |
 | `metadata_dimensions` | Present only when upstream-claimed size differs from the saved file (preview vs original). Informational only. |
-| `license_tier` | Drives Executor's attribution decision: `no-attribution` / `attribution-required` for provider-sourced images, or `manual` for a user-supplied `--from-url` replacement (embed only; rights/credit are the user's responsibility). |
+| `license_tier` | Drives Executor's attribution decision: `no-attribution` / `attribution-required` for provider-sourced images, or `manual` for a directly selected `--from-url` replacement (embed only; rights/credit are the user's responsibility). |
 | `attribution_required` | Boolean alias of `license_tier == "attribution-required"`. |
 | `attribution_text` | Canonical credit source. Preserve its author/provider/license facts; compress only through §7's visual grammar rather than inventing or dropping identity. |
 | `stage` | `all` by default, or `no-attribution-only` when strict mode is used. |
@@ -389,7 +390,7 @@ Executor reads `image_sources.json` per slide that uses a Sourced image. For eac
 |---|---|
 | `no-attribution` | Embed `<image>` only |
 | `attribution-required` | Embed `<image>` **and** an inline credit element per §7 |
-| `manual` | Embed `<image>` only — user-supplied URL (`--from-url`); verifying usage rights / any required credit is the user's responsibility |
+| `manual` | Embed `<image>` only — directly selected URL (`--from-url`); verifying usage rights / any required credit is the user's responsibility |
 
 Executor does not interpret raw license strings — `license_tier` is sufficient.
 
