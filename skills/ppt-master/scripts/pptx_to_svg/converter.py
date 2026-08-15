@@ -325,6 +325,11 @@ def convert_pptx_to_svg(
         # rendered alongside when needed.
         primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
+            _diagnose_unreconstructed_slide_features(
+                slide,
+                result.diagnostics,
+                strict=options.strict,
+            )
             slide_theme = pkg.resolve_theme(slide.master) or default_theme
             slide_palette = _make_palette(
                 slide.master,
@@ -376,6 +381,40 @@ def convert_pptx_to_svg(
         _write_artifacts(output_dir, result, options)
 
     return result
+
+
+def _diagnose_unreconstructed_slide_features(
+    slide: SlideRef,
+    diagnostics: list[ImportDiagnostic],
+    *,
+    strict: bool,
+) -> None:
+    """Report source-owned motion that the SVG workspace cannot yet express."""
+    for tag, code, label in (
+        ("p:transition", "transition-not-reconstructed", "slide transition"),
+        ("p:timing", "animation-not-reconstructed", "object animation timing"),
+    ):
+        if slide.part.xml.find(tag, NS) is None:
+            continue
+        message = (
+            f"Source slide contains {label} that was not reconstructed "
+            "in the SVG workspace"
+        )
+        if strict:
+            raise ValueError(message)
+        append_diagnostic(
+            diagnostics,
+            ImportDiagnostic(
+                code=code,
+                message=message,
+                fallback=(
+                    "keep the source PPTX for direct native preservation or "
+                    "author the corresponding animations.json sidecar"
+                ),
+                part_path=slide.part.path,
+                slide_index=slide.index,
+            ),
+        )
 
 
 def _convert_slide(

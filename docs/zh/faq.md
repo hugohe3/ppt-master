@@ -160,8 +160,11 @@ marker 都携带普通可见预览；原生导出会替换该预览，不增加�
 前向编译覆盖 Microsoft 文档中 Microsoft 365 2606 / Mac 16.110 LaTeX
 档位与 2605 / 16.109 mhchem 档位明确点名的全部输入，包括符号、结构、环境、
 宏、化学式、公式局部颜色及文档规定的原生归一化。未知或明确不支持的输入直接
-失败，不会以原始 LaTeX 混进页面。PPT Master 不实现 OMML 到 LaTeX 的反向
-build-down。
+失败，不会以原始 LaTeX 混进页面。PPTX 导入则复用同一封闭 OMML 校验器提供
+窄反向路径：PPT Master 自有的块级与行内数学内容会恢复为带可见 SVG 预览的
+规范公式 marker。这里恢复的是归一化语义，不是作者原始 LaTeX 写法，也不是任意
+第三方 OMML 转换；未知 OMML 在 tolerant 模式下会被报告，并以可读 / 不透明
+fallback 保留。
 
 生成的 OMML 仍以 PowerPoint 2010+ 包为目标，可执行输入档位锁定到上述
 Microsoft 文档版本。仓库验证覆盖编译器行为、OMML 结构与 PPTX 打包，不等同于

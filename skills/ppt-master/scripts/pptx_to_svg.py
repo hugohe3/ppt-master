@@ -18,8 +18,9 @@ Output structure (default --inheritance-mode both):
 
 If -o is omitted, writes alongside the source file as <pptx_stem>_pptx_to_svg/.
 
-This is the reverse of svg_to_pptx.py: it reads OOXML directly and emits
-shape-level SVG without going through PowerPoint or PDF rendering.
+This is the semantic import counterpart to svg_to_pptx.py: it reads OOXML
+directly and emits declared SVG/native-marker subsets without claiming an
+arbitrary lossless PPTX round trip.
 """
 
 from __future__ import annotations

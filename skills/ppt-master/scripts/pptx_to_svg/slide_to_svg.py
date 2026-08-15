@@ -54,6 +54,13 @@ from .effect_to_svg import (
 )
 from .emu_units import NS, Xfrm, fmt_num, format_canvas_px_from_emu
 from .fill_to_svg import FillResult, resolve_fill
+from .formula_import import (
+    A14_NS,
+    FormulaImport,
+    FormulaImportError,
+    import_formula,
+    opaque_formula_preview,
+)
 from .import_diagnostics import (
     ImportDiagnostic,
     append_diagnostic,
@@ -524,6 +531,33 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         node.inherited_body_properties,
     )
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
+    block_formula = _block_formula_zone(tx_body)
+    block_formula_failed = False
+    if block_formula is not None and not is_vertical:
+        try:
+            carrier_error = _block_formula_carrier_error(
+                node,
+                top_level=top_level,
+            )
+            if carrier_error is not None:
+                raise FormulaImportError(carrier_error)
+            imported_formula = import_formula(block_formula, display=True)
+        except FormulaImportError as exc:
+            _diagnose_formula_fallback(ctx, exc)
+            block_formula_failed = True
+        else:
+            return _render_block_formula(
+                node,
+                ctx,
+                imported_formula,
+                top_level=top_level,
+            )
+    inline_formula_resolver = _prepare_inline_formula_resolver(
+        tx_body,
+        ctx,
+        allow_native=not is_vertical,
+        force_opaque=block_formula_failed,
+    )
     local_has_run_effects = txbody_has_run_effects(source_tx_body)
     inherited_has_run_effects = txbody_has_run_effects(
         *node.inherited_lst_styles
@@ -563,6 +597,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                     rid,
                     action,
                 ),
+                inline_formula_resolver=inline_formula_resolver,
             )
         else:
             text_result = convert_txbody(
@@ -579,6 +614,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
                     rid,
                     action,
                 ),
+                inline_formula_resolver=inline_formula_resolver,
             ) if tx_body is not None else TextResult()
     except ValueError as exc:
         if ctx.strict:
@@ -617,7 +653,11 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         inner_parts.append(blip_image)
     if geom_xml:
         inner_parts.append(geom_xml)
-    if source_tx_body is not None and geom is not None:
+    if (
+        source_tx_body is not None
+        and geom is not None
+        and not text_result.contains_inline_formula
+    ):
         inner_parts.append(
             _txbody_metadata(
                 source_tx_body,
@@ -679,6 +719,214 @@ def _effective_placeholder_tx_body(
                 body_pr.append(copy.deepcopy(inherited_child))
                 local_names.add(inherited_child.tag.rsplit("}", 1)[-1])
     return effective
+
+
+def _block_formula_zone(tx_body: ET.Element | None) -> ET.Element | None:
+    """Return the sole block-math zone from a canonical formula text body."""
+    if tx_body is None:
+        return None
+    paragraphs = tx_body.findall("a:p", NS)
+    if len(paragraphs) != 1:
+        return None
+    paragraph = paragraphs[0]
+    formula_zones = [
+        child
+        for child in paragraph
+        if child.tag == f"{{{A14_NS}}}m"
+    ]
+    allowed = {
+        f"{{{NS['a']}}}pPr",
+        f"{{{NS['a']}}}endParaRPr",
+        f"{{{A14_NS}}}m",
+    }
+    if len(formula_zones) != 1 or any(
+        child.tag not in allowed
+        for child in paragraph
+        if isinstance(child.tag, str)
+    ):
+        return None
+    root_children = [
+        child for child in formula_zones[0] if isinstance(child.tag, str)
+    ]
+    if (
+        len(root_children) != 1
+        or root_children[0].tag
+        != "{http://schemas.openxmlformats.org/officeDocument/2006/math}oMathPara"
+    ):
+        return None
+    return formula_zones[0]
+
+
+def _block_formula_carrier_error(
+    node: ShapeNode,
+    *,
+    top_level: bool,
+) -> str | None:
+    """Reject block carriers whose non-formula state would be discarded."""
+    if not top_level:
+        return "grouped block formula carrier is not reversible"
+    if (
+        node.xfrm.rot
+        or node.xfrm.flip_h
+        or node.xfrm.flip_v
+        or node.effective_rotation
+    ):
+        return "block formula carrier rotation or flip is not reversible"
+    if node.placeholder is not None:
+        return "block formula carrier cannot retain placeholder ownership"
+    if node.hyperlink_rid or node.hyperlink_action:
+        return "block formula carrier hyperlink is not reversible"
+    if node.xml.find("p:style", NS) is not None:
+        return "block formula carrier style reference is not reversible"
+
+    sp_pr = node.xml.find("p:spPr", NS)
+    if sp_pr is None:
+        return "block formula carrier is missing p:spPr"
+    preset = sp_pr.find("a:prstGeom", NS)
+    if preset is None or preset.get("prst") != "rect":
+        return "block formula carrier must use rectangular geometry"
+    if any(
+        sp_pr.find(path, NS) is not None
+        for path in (
+            "a:solidFill",
+            "a:gradFill",
+            "a:pattFill",
+            "a:blipFill",
+            "a:grpFill",
+            "a:effectLst",
+            "a:effectDag",
+            "a:scene3d",
+            "a:sp3d",
+        )
+    ):
+        return "block formula carrier paint or effect is not reversible"
+    line = sp_pr.find("a:ln", NS)
+    if line is not None and line.find("a:noFill", NS) is None:
+        return "block formula carrier line is not reversible"
+    return None
+
+
+def _prepare_inline_formula_resolver(
+    tx_body: ET.Element | None,
+    ctx: AssemblyContext,
+    *,
+    allow_native: bool,
+    force_opaque: bool = False,
+):
+    """Build one all-or-opaque resolver for formula runs in a text body."""
+    if tx_body is None:
+        return None
+    zones = [
+        child
+        for paragraph in tx_body.findall("a:p", NS)
+        for child in paragraph
+        if child.tag == f"{{{A14_NS}}}m"
+    ]
+    if not zones:
+        return None
+
+    imported: dict[int, FormulaImport] = {}
+    failed = force_opaque
+    if not allow_native:
+        failed = True
+        _diagnose_formula_fallback(
+            ctx,
+            FormulaImportError(
+                "formula reconstruction is not supported inside vertical text"
+            ),
+        )
+    elif not force_opaque:
+        for zone in zones:
+            try:
+                imported[id(zone)] = import_formula(zone, display=False)
+            except FormulaImportError as exc:
+                failed = True
+                _diagnose_formula_fallback(ctx, exc)
+
+    def _resolve(zone: ET.Element) -> tuple[str | None, str]:
+        if failed:
+            return None, opaque_formula_preview(zone)
+        item = imported.get(id(zone))
+        if item is None:
+            return None, opaque_formula_preview(zone)
+        return item.latex, item.preview
+
+    return _resolve
+
+
+def _diagnose_formula_fallback(
+    ctx: AssemblyContext,
+    error: FormulaImportError,
+) -> None:
+    message = f"Office Math was not reconstructed: {error}"
+    if ctx.strict:
+        raise ValueError(message) from error
+    ctx.diagnose(
+        "formula-not-reconstructed",
+        message,
+        "render a linear text preview and preserve the relationship-free source txBody",
+    )
+
+
+def _render_block_formula(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    formula: FormulaImport,
+    *,
+    top_level: bool,
+) -> str:
+    """Emit one canonical block marker and a dependency-free SVG preview."""
+    x = fmt_num(node.xfrm.x)
+    y = fmt_num(node.xfrm.y)
+    width = fmt_num(node.xfrm.w)
+    height = fmt_num(node.xfrm.h)
+    align = formula.align
+    if align == "right":
+        preview_x = node.xfrm.x + node.xfrm.w
+        anchor = "end"
+    elif align == "left":
+        preview_x = node.xfrm.x
+        anchor = "start"
+    else:
+        preview_x = node.xfrm.x + node.xfrm.w / 2.0
+        anchor = "middle"
+    preview_y = node.xfrm.y + node.xfrm.h / 2.0 + formula.font_size_px * 0.35
+    payload = {
+        "latex": formula.latex,
+        "display": "block",
+        "font_size": formula.font_size_px,
+        "color": formula.color,
+        "align": align,
+        "language": formula.language,
+        "name": node.name or f"Formula {node.spid}",
+    }
+    metadata = (
+        '<metadata type="application/json">'
+        + _xml_escape(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+        + "</metadata>"
+    )
+    preview = (
+        f'<text x="{fmt_num(preview_x)}" y="{fmt_num(preview_y)}" '
+        f'text-anchor="{anchor}" font-family="Cambria Math" '
+        f'font-size="{fmt_num(formula.font_size_px)}" '
+        f'fill="{_xml_escape(formula.color)}">'
+        f'{_xml_escape(formula.preview)}</text>'
+    )
+    return _wrap_shape_group(
+        metadata + "\n" + preview,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=[
+            'data-pptx-replace-with="formula"',
+            'data-pptx-import-source="pptx"',
+            f'data-pptx-x="{x}"',
+            f'data-pptx-y="{y}"',
+            f'data-pptx-width="{width}"',
+            f'data-pptx-height="{height}"',
+            f'data-pptx-bounds="{x} {y} {width} {height}"',
+        ],
+    )
 
 
 def _txbody_metadata(
