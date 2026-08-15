@@ -11,6 +11,7 @@ Output structure (default --inheritance-mode both):
     <output_dir>/
         svg/                    layered machine input: masters/layouts/slides
         svg-flat/               self-contained visual preview slides
+        animations.json         normalized transition/object-motion sidecar
         <media_subdir>/         (default: assets/)
             image1.png
             image2.png
@@ -189,6 +190,7 @@ def main() -> int:
                 file=sys.stderr,
             )
     print(f"Output: {output_dir}")
+    print(f"Animation config: {output_dir / 'animations.json'}")
     print(f"Conversion report: {output_dir / 'conversion-report.json'}")
     return 0
 

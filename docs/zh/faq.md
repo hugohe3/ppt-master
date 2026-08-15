@@ -189,6 +189,8 @@ carrier 与保留边界见 [PowerPoint ↔ SVG 映射指南](./powerpoint-svg-ma
 一页时整页一次性呈现，不会自动逐个级联。两者都通过 `svg_to_pptx.py` 的
 参数控制：`-t/--transition` 控制页级，`-a/--animation` 控制元素级。对象
 注册表已经包含进入、强调、动作路径和退出效果。
+`pptx_to_svg.py` 也会把当前注册表内可精确读回的页面切换重建到
+`animations.json`；不支持的来源 carrier 会保留明确诊断。
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # 换转场效果

@@ -595,6 +595,14 @@ object-animation timing before and after their allowed edits, then run
 structural package validation; they do not author or normalize animation
 effects.
 
+`pptx_to_svg.py` uses the same generated-transition read-back validator to
+project supported source `p:transition` into canonical `animations.json` rows.
+It retains the registry effect, effective options, exact duration, automatic
+advance, and supported WAV sound; the sidecar defaults to `none` so absent
+source transitions remain absent on re-export. Unknown or inexact native
+carriers stay diagnosed/direct-preserve. This is a closed PPT Master-owned
+contract, not an arbitrary OOXML transition normalizer.
+
 **Validation boundary**: these checks prove PPTX timing, relationships, and
 embedded sound parts. They are not final-video audio acceptance. The
 native-export branch requires a triggered `video_sound_mix.py` receipt; the

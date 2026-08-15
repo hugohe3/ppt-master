@@ -240,7 +240,7 @@ owner.
 | PowerPoint feature | Owning project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Speaker notes | `notes/<slide>.md` sidecar | Notes Slide part and relationship | `Sidecar/package` | Notes are not SVG text and do not affect page geometry |
-| Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package` | Unknown effects or invalid durations fail; no silent `fade` fallback |
+| Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package`; PPTX import reconstructs exact current-registry transitions into `animations.json` | Unknown effects or inexact carriers fail or remain diagnosed; no silent `fade` fallback |
 | Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the shape-target anchor | Static structural layers and placeholders cannot be animated |
 | Narration audio | `audio/` asset plus recorded-narration export option | Media relationship, audio carrier, and timing | `Sidecar/package` | Asset, slide association, and timing must validate |
 | Automatic slide advance | Explicit transition timing or narration-derived duration | `advTm`/advance behavior | `Sidecar/package` | Click-driven animation is incompatible with recorded narration |
@@ -292,6 +292,7 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Connector | Expanded line/path preview plus connector/frame/topology evidence |
 | Group | `<g>` |
 | Supported native table/chart | Visible fallback plus native-object metadata |
+| Supported current-registry page transition | Canonical `animations.json` row with effective options, exact duration, optional auto-advance, and supported WAV sound |
 | Unsupported graphic frame or SmartArt | Explicit preview, placeholder, or unsupported status |
 
 This is semantic projection, not a syntax round trip. Preserving validated source-package Master/Layout facts is confined to Create Template mirror and always produces a new workspace; an ordinary visual import does not infer reusable topology from slide appearance.
@@ -308,7 +309,14 @@ This is semantic projection, not a syntax round trip. Preserving validated sourc
 | Unsupported slide or part background | Omit that background and continue the page/part | Stop at the first violation | Warning identifies the owning part |
 | Corrupt package/XML or missing required package structure | Stop; no safe page-level recovery exists | Stop | Clean command error; no raw Python traceback |
 
-Every successful run writes `<output>/conversion-report.json`. The report records the mode, slide and warning counts, stable reason code, source message, chosen fallback, package part, and—when available—slide index plus shape id/name/kind. Tolerant import is therefore not silent: it maximizes usable output while making every contract recovery reviewable.
+Every successful run writes `<output>/conversion-report.json` and a canonical
+`<output>/animations.json` whose baseline transition is `none`. The report
+records the mode, slide and warning counts, owned artifacts, stable reason code,
+source message, chosen fallback, package part, and—when available—slide index
+plus shape id/name/kind. Unknown or inexact transition carriers remain explicit
+`transition-not-reconstructed` diagnostics. Tolerant import is therefore not
+silent: it maximizes usable output while making every contract recovery
+reviewable.
 
 ## 13. Validation ownership
 
