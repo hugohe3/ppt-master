@@ -36,7 +36,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Object | Status | Notes |
 |---|---|---|
 | Text | Systematized | Role anchors deck-wide, bounded per-occurrence adjustment, hierarchy and paragraph rules, natively editable runs |
-| WordArt & warped text | Bounded by design | Native WordArt, text warp, and text-on-path are not generated; the same emphasis is rebuilt with ordinary editable text, registered text treatments, and geometry, so every glyph stays a real text run |
+| Native WordArt & warped text | Not planned | AI-generated decorative lettering is the preferred visual carrier, with ordinary editable text as the fallback. Native WordArt, text warp, and text-on-path would add a separate authoring and compatibility surface without improving that path, so they are not generated |
 | Vector shapes | Systematized | primitive → Office preset → Boolean → freeform construction ladder, with native conversion rules |
 | Lines & connectors | Asymmetric by design | Native `p:cxnSp` export is implemented, and endpoint attachment is restored on the preserve/mirror round-trip from a source deck. Newly authored connectors stay unconnected. Binding them would first require deciding which lines are real edges and which are decoration — an intent judgment that no geometric threshold settles, and one that is made by the AI wherever it is placed, so moving it upstream to authoring buys no reliability. The result would be some arrows in a diagram following their node and others not |
 | Icons | Systematized | Bundled libraries with per-project sync; project icons are prepared material |
