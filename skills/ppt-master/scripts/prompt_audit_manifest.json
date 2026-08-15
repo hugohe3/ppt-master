@@ -362,6 +362,7 @@
       "include": [
         "route.generate.quick-generate",
         "stage.generate.image.web",
+        "stage.generate.image.web-review",
         "stage.generate.executor.web-image"
       ],
       "files": [],
@@ -602,7 +603,8 @@
         "stage.generate.executor.flat",
         "stage.generate.executor.web-image",
         "stage.generate.executor.notes",
-        "stage.generate.image.web"
+        "stage.generate.image.web",
+        "stage.generate.image.web-review"
       ],
       "files": [],
       "max_tokens": 190000
@@ -800,6 +802,14 @@
         "skills/ppt-master/references/image-searcher.md"
       ],
       "max_tokens": 11000
+    },
+    "stage.generate.image.web-review": {
+      "description": "Compact isolated-or-local multimodal review contract for bounded web-image thumbnail pages.",
+      "scope": "incremental",
+      "files": [
+        "skills/ppt-master/workflows/stages/web-image-review.md"
+      ],
+      "max_tokens": 1000
     },
     "stage.generate.resume-execute": {
       "description": "Fresh-session resume plus the flat Executor core and post-SVG notes rules.",
