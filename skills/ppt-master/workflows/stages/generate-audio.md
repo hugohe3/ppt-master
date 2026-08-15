@@ -102,13 +102,13 @@ The output is a flat list of all available voices for the selected provider. Fro
 - **For MiniMax / Qwen / CosyVoice**: if the user provides a cloned `voice_id`, use it directly. Do not attempt voice cloning inside this narration stage.
 - **For CosyVoice subtitles**: use a cloned voice from a supported v3.5/v3/v2 model or a system voice marked timestamp-supported. Model and voice families must match. Use `--cosyvoice-audio-only` only when the user accepts no page-local SRT.
 - **Match the deck's tone** — pick the strongest recommendation based on style:
-  - Consultant / data-driven / 财报 → 稳重男声（如 `zh-CN-YunjianNeural`）or 清晰女声（如 `zh-CN-XiaoxiaoNeural`）
-  - General / 教学 / 产品介绍 → 明亮女声 / 年轻男声（如 `zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`）
-  - 发布会 / 播报 → 播报感男声（如 `zh-CN-YunyangNeural`）
+  - Chinese consultant / data-driven / financial-report deck → a steady male voice (e.g. `zh-CN-YunjianNeural`) or a clear female voice (e.g. `zh-CN-XiaoxiaoNeural`)
+  - Chinese general / teaching / product-introduction deck → a bright female or young male voice (e.g. `zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`)
+  - Chinese launch event / broadcast deck → a broadcast-toned male voice (e.g. `zh-CN-YunyangNeural`)
   - English consultant deck → `en-US-GuyNeural` (steady) or `en-US-JennyNeural` (clear)
   - Japanese / Korean → pick from `ja-JP-*` / `ko-KR-*` neural voices, mark gender + tone
 
-For each candidate, write a **one-line Chinese description** covering: 性别 · 调性 · 适用场景。For cloud providers, include the voice name/ID exactly as it must be passed to `--voice-id`.
+For each candidate, write a **one-line description in the user's chat language** covering: gender · tone · best-fit scenario. For cloud providers, include the voice name/ID exactly as it must be passed to `--voice-id`.
 
 ---
 
@@ -158,11 +158,11 @@ uses the manual Windows playback handoff below.
 > 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"或"用 MiniMax 的 voice_id xxx"）。
 
 **Recommended-value rules**:
-- 生成模式：默认 `edge`；用户指定 cloud provider / voice ID 时按其选择。需要逐页 SRT、字幕动画或视频字幕时不推荐 Qwen；用户坚持时，说明仅交付音频并跳过 SRT 步骤。
-- 音色：从 Step 2 候选里挑最贴合 deck 调性的那一个。
-- 语速：edge 默认 `+0%`；notes 字数密集（页均 >4 句长句）建议 `-5%`；notes 简短紧凑建议 `+5%`；超出此范围需说明理由。Cloud providers 默认用 provider defaults，除非用户明确要调速或改风格。
-- 嵌入：默认推荐"是"；除非用户已有定制 PPTX 不希望覆盖。
-- 视频：`powerpoint_video.py --check` 成功时默认推荐"原生编码"；只有用户明确选择时才使用"实时放映录制"。自动化不可用时交付带音频 PPTX；不得静默改用录屏或第三方渲染器。
+- **Generation mode**: default `edge`; follow the user's choice when they name a cloud provider / voice ID. Do not recommend Qwen when page-local SRT, subtitle animation, or video subtitles are needed; if the user insists, state that only audio is delivered and skip the SRT step.
+- **Voice**: pick the Step 2 candidate that fits the deck's tone best.
+- **Rate**: edge defaults to `+0%`; recommend `-5%` for dense notes (>4 long sentences per page) and `+5%` for short, tight notes; going outside this range needs a stated reason. Cloud providers keep provider defaults unless the user explicitly asks to change speed or style.
+- **Embed**: recommend yes by default, unless the user already has a customized PPTX they do not want overwritten.
+- **Video**: recommend native encoding when `powerpoint_video.py --check` succeeds; use slideshow capture only on an explicit user choice. When automation is unavailable, deliver the narrated PPTX; never silently switch to screen recording or a third-party renderer.
 
 ---
 

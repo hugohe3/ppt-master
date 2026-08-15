@@ -67,7 +67,7 @@ The aggregated brand review is the responsibility of the orchestrator at the end
 
 ## §2 Soft rules (act only when clearly bad)
 
-Subagents must apply the **明显** ("clearly bad") threshold — when in doubt, leave it. Better to under-fix than to oscillate.
+Subagents must apply the **clearly bad** threshold — when in doubt, leave it. Better to under-fix than to oscillate.
 
 | # | Category | Trigger | Fix direction |
 |---|----------|---------|---------------|
