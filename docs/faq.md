@@ -197,8 +197,9 @@ animation is **off by default**—a page appears as a whole instead of having
 elements auto-cascade in one by one. Both are controlled by `svg_to_pptx.py`
 flags: `-t/--transition` for page-level and `-a/--animation` for element-level.
 The object registry includes entrance, emphasis, motion-path, and exit effects.
-`pptx_to_svg.py` also reconstructs exact current-registry page transitions into
-`animations.json`; unsupported source carriers remain explicit diagnostics.
+`pptx_to_svg.py` also reconstructs exact current-registry page transitions and
+finite exact-duration object-animation rows into `animations.json`;
+unsupported source timing remains an explicit diagnostic.
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition

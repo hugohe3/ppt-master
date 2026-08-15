@@ -42,6 +42,14 @@ from pptx_to_svg.converter import ConvertOptions
 configure_utf8_stdio()
 
 
+def _diagnostic_preview(message: str, limit: int = 240) -> str:
+    """Return one compact CLI preview while the report retains full detail."""
+    compact = " ".join(message.split())
+    if len(compact) <= limit:
+        return compact
+    return compact[: limit - 3].rstrip() + "..."
+
+
 def _reconstruction_only_graphics(result: object) -> list[tuple[int, str]]:
     """Return slide/object labels for generated placeholders."""
     artifacts = getattr(result, "flat_slides", None) or getattr(result, "slides", [])
@@ -165,7 +173,8 @@ def main() -> int:
             if shape:
                 location = f"{location}, {shape}" if location else shape
             print(
-                f"  {location or 'package'}: {item.code}: {item.message}",
+                f"  {location or 'package'}: {item.code}: "
+                f"{_diagnostic_preview(item.message)}",
                 file=sys.stderr,
             )
         if len(result.diagnostics) > 20:
