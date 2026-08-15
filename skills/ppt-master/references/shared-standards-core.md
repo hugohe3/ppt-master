@@ -596,9 +596,13 @@ Semantic markers are minimal compiler hints. Flat pages declare one root `data-p
   `width`/`height` do not override `viewBox`.
   Root `<svg>` transform is forbidden; nested crop and `<symbol viewBox>` keep
   their own contracts.
-- **Font portability**: font families used by the deck must resolve to installed
-  export faces. `@font-face` remains forbidden; the typography contract lives in
-  [`strategist.md §g`](strategist.md).
+- **Font portability**: resolve an explicit user/template delivery target first;
+  otherwise default to Windows Microsoft PowerPoint with locale following the
+  deck's primary language. Exported Latin/EA faces must be installed or approved
+  on that target. The authoring host's fonts affect SVG preview and measurement
+  only and MUST NOT select PPTX faces; a local counterpart may appear only as a
+  preview tail that preserves the same export resolution. `@font-face` remains
+  forbidden; the typography contract lives in [`strategist.md §g`](strategist.md).
 - **Icon placeholders**: `<use data-icon="library/name">` is a pipeline-specific
   form, distinct from local SVG reuse. Follow the contract in
   [`../templates/icons/README.md`](../templates/icons/README.md).

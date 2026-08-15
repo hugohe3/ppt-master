@@ -57,7 +57,7 @@ EA_FONTS = {
     'Hiragino Kaku Gothic ProN', 'Hiragino Kaku Gothic Pro',
     'Hiragino Mincho Pro',
     'Noto Sans SC', 'Noto Sans TC', 'Noto Serif SC', 'Noto Serif TC',
-    'Noto Sans CJK SC',
+    'Noto Sans CJK SC', 'Noto Serif CJK SC',
     'Noto Sans JP', 'Noto Serif JP', 'Noto Sans CJK JP',
     'Source Han Sans SC', 'Source Han Sans TC',
     'Source Han Serif SC', 'Source Han Serif TC',
@@ -106,6 +106,7 @@ FONT_FALLBACK_WIN = {
     'Noto Sans CJK SC': 'Microsoft YaHei',
     'Noto Sans TC': 'Microsoft JhengHei',
     'Noto Serif SC': 'SimSun',
+    'Noto Serif CJK SC': 'SimSun',
     'Noto Serif TC': 'PMingLiU',
     # Japanese: keep as-is if user specified (PowerPoint will fallback if uninstalled)
     # 'Noto Sans JP': → keep as 'Noto Sans JP' (do not map)
