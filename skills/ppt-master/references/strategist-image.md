@@ -20,14 +20,20 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Mandatory — materialize proactive lettering**: When confirmed image usage
 retains `ai`, the effective acquisition path has a callable Path A/B, and the
-complete page roster contains a suitable stable cover/divider display string,
-collect the compatible set once before writing §VIII. Use one ordinary `ai` row
+complete page roster contains a suitable display string anywhere in the deck,
+collect the compatible set once before writing §VIII. Eligibility turns on two
+questions only — is the wording stable, and would an artistic treatment
+communicate better than native type. Page role, length, line count, and kind of
+noun never filter candidates; treat cover hooks, chapter words, place or product
+names, dish or exhibit names, years, hero numbers, pull quotes, and motif words
+as examples rather than the allowed set. Use one ordinary `ai` row
 for a single mark, or the sheet/element rows under §4.3 for several compatible
 marks, and record every exact character sequence; do not leave the choice as an
-`image_notes` or §IX suggestion only. Length and line count never filter the
-candidates: a two-character mark, a multi-word phrase, and a two-line lockup are
-equally eligible, and a phrase is never trimmed toward one or two characters to
-look more like a wordmark. A planned wordmark and an editable page
+`image_notes` or §IX suggestion only. A two-character mark, a multi-word phrase,
+and a two-line lockup are equally eligible; never trim a phrase toward one or two
+characters to look more like a wordmark. Eligibility is wide but use stays
+selective: build one small coherent set rather than lettering every heading. A
+planned wordmark and an editable page
 title coexist: the asset carries the display layer while subtitle, chrome, and
 body remain native text. A confirmed `none`, explicit no-AI
 instruction, editable-only hook, or Offline Manual path does not activate this
