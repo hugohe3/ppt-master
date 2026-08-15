@@ -18,6 +18,17 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Default — one coherent sheet for compatible same-family spots or lettering elements (may override when aspect, detail, quality, or semantic needs differ)**: prefer one Illustration Sheet when several AI-generated spots or stable decorative-lettering elements can share a useful cell shape and production treatment; generate them independently when forcing one sheet would weaken a planned element. When a sheet is chosen, plan one unplaced `ai` Illustration Sheet row plus one placed `slice` row per used element; only slice rows enter `spec_lock.md images`. State the intended placement shape family in the sheet reference. For lettering, also record every exact string, set the sheet to `text_policy: embedded`, and keep authoritative title/chrome wording outside the sheet. Use separate sheets for incompatible shapes or treatments. [`image-generator.md`](./image-generator.md) §4.3 owns grid, ratio, slicing, and execution details. Final Stage 2 chooses the AI execution path under `image-generator.md` §7; do not pre-empt or re-pick it here.
 
+**Mandatory — materialize proactive lettering**: When confirmed image usage
+retains `ai`, the effective acquisition path has a callable Path A/B, and the
+complete page roster contains a suitable stable cover/divider hook, collect the
+small compatible set once before writing §VIII. Use one ordinary `ai` row for a
+single hook, or the sheet/element rows under §4.3 for several compatible hooks,
+and record every exact character sequence; do not leave the choice as an
+`image_notes` or §IX suggestion only. A confirmed `none`, explicit no-AI
+instruction, editable-only hook, or Offline Manual path does not activate this
+proactive rule; an explicit user-required lettering asset still follows the
+ordinary resource contract.
+
 **Mandatory — image-treatment path scan, not a quota**: Per selected image choose `none` (unchanged), `native` (SVG crop/clip, transform, opacity, frame/depth, overlap), or `prepared derivative` (separate pixel blur/tone or cutout/registered layers); `none` is valid.
 
 When a subject crosses a native title, panel, frame, or shape, the prepared path is mandatory: plan a clean full-canvas base plus minimum registered RGBA layers; set full-canvas members `no-crop`; name their shared source/registration in `Reference`; suggest `#A2-03`. A shared plate requires padded-bbox-disjoint objects and independent final crops. Use `user` only when every final asset is supplied, otherwise `ai`; [`image-generator.md`](./image-generator.md) §4.4 owns preparation. An independent floating cutout may use `#A2-01`.

@@ -595,6 +595,13 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
+**Callable-generator test for proactive planning**: Path A counts when
+`IMAGE_BACKEND` is configured; Path B counts when the current host exposes a
+native image-generation tool. Offline Manual alone, web search, and a
+vision-only tool do not count. This predicate allows Strategist/Quick to add
+decorative-lettering resources proactively; it never overrides an explicit or
+confirmed image-source/path choice.
+
 **Quick Generate selection**: an explicit user instruction for `api`, `host-native`, or `manual` retained in active context wins. When the user did not specify a path, select `auto` and run the A → B → C chain without asking or creating a planning artifact.
 
 **Default Generate selection — declared-procedure fallback when no path is confirmed**: the confirmed user choice wins. When neither channel confirmed a specific path, Generate Step 4 records the effective choice as `auto`; that explicit durable value uses the automatic A → B → C chain. A missing/blank/unknown project value is not an implicit API authorization:
