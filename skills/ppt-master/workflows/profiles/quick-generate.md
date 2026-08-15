@@ -354,9 +354,10 @@ item for a single mark or batch several compatible marks through one
 Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
 native. A prepared wordmark and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
-and body stay native text. Skip a scanned hook only when that exact wording must
-stay editable, the user forbade AI, or no generator is callable; do not add
-another disqualifier. Offline Manual
+and body stay native text, so a wish to keep that wording editable is answered
+by the native layer rather than by dropping the lettering. Skip a scanned hook
+only when the user forbade AI or no generator is callable; do not add another
+disqualifier. Offline Manual
 alone does not trigger this proactive path; explicit user-required lettering
 still follows the normal resource contract.
 
