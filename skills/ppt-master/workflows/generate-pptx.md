@@ -8,8 +8,6 @@ description: Default Generate PPTX authority for source intake, planning, SVG au
 > Beautify profile. This file owns that runtime's Step 1–7 sequence, gates, role
 > switching, and mandatory commands. Explicit Quick loads its own profile instead.
 
-**执行环境**：本路由所有脚本命令须经 `uvx ppt-master <command>` 执行（uvx 环境自带依赖）。直接 `python` 调用脚本需先安装 `skills/ppt-master/requirements.txt`。
-
 **Default Core Pipeline**: `Initial Materials → [Fact Research] → Create Project → Template Candidate Preparation → Stage-1 Communication + Template Confirmation → [Template Installation] → Stage-2 Solution → [Image Acquisition] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 **Generate-specific execution discipline**:
@@ -52,7 +50,9 @@ request does not explicitly select Quick.
 
 🚧 **GATE**: The user has provided a topic / desired outcome and any available initial material.
 
-> **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately, then use its factual supplement as source content.
+> **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately,
+> then use its factual supplement as source content; Step 2 reads retained
+> webpage URLs from the facts JSON and imports them as text evidence.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -85,7 +85,12 @@ After reading direct and converted content, assess factual sufficiency:
 | Required externally verifiable claims remain unsupported | Run [`topic-research`](stages/topic-research.md) for those gaps only |
 | Closed corpus / source-only / no external enrichment | Stay within supplied material |
 
-**Sufficiency test**: research only to avoid inventing, omitting, or leaving unsupported a factual claim the requested outcome requires; file presence or length is irrelevant. It gathers facts only. Step 5 acquires Strategist-selected images after final confirmation.
+**Sufficiency test**: research only to avoid inventing, omitting, or leaving
+unsupported a factual claim the requested outcome requires; file presence or
+length is irrelevant. It records the needed facts and adopted webpages. Step 2
+imports those webpages as text-only evidence; Step 5
+acquires only Strategist-selected independent AI / web / slice assets after
+final confirmation.
 
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
 > Source conversion extracts embedded Office vector images (.emf/.wmf)
@@ -101,7 +106,7 @@ After reading direct and converted content, assess factual sufficiency:
 > Browser-based live preview cannot render EMF (will show blank) — this is expected;
 > the PPTX output is the source of truth.
 
-**✅ Checkpoint — Confirm source content and any factual supplement are ready, proceed to Step 2.**
+**✅ Checkpoint — Confirm source content, retained webpage inputs, and any factual supplement are ready, proceed to Step 2.**
 
 ---
 
@@ -151,6 +156,11 @@ Import source content (choose based on the situation):
 |-----------|--------|
 | Has source files (PDF/MD/etc.) | `uvx ppt-master project import-sources <project_path> <source_files_or_dirs...>` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
+
+When Topic Research ran, include only its research pair. `project_manager.py`
+reads the facts JSON's unique `source_url` values, archives each page in
+text-only mode, and fails incomplete source reconciliation. It does not add page
+images to `<project>/images/`.
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
@@ -346,7 +356,9 @@ or `templates` with at least one server-resolved root.
    `templates/design_spec.<kind>.<id>.md` plus any real `images/` and `icons/`.
    For `free_design`, skip installation. Then bind the completed state:
 
+   ```bash
    uvx ppt-master confirm-ui <project_path> --complete-template-selection
+   ```
 
    This agent-only command writes `template_handoff.json`; do not hand-author
    it. The server requires this handoff before Stage 2.
@@ -510,7 +522,7 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 | `ai` | `references/image-generator.md` | write `<project_path>/images/image_prompts.json`, then follow `image-generator.md §7 Path Selection` (`image_gen.py --manifest` is **Path A only**) |
 | `web` | `references/image-searcher.md` | `uvx ppt-master image-search ...` (≥2 web rows → `--batch images/image_queries.json`) |
 | `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
-| `user` / `formula` / `placeholder` | (skip) | (skip) |
+| `user` / `placeholder` | (skip) | (skip) |
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
 
@@ -518,9 +530,13 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](../references/image-searcher.md) §5.
 
+> **Default — bounded multimodal web thumbnail selection**: when either the current agent or an available isolated reviewer can inspect images, add `--save-candidates` to the single or batch web command. Author explicit `query_variants` for materially different official translations, spellings, aliases, or Chinese names; the tool aggregates and deduplicates them, then saves only the first ranked page (8 previews by default), writes `candidates/<stem>/review_sheet.jpg`, marks the batch row `Needs-Selection`, and downloads no original. Run [`web-image-review`](stages/web-image-review.md): dispatch exactly one isolated reviewer for all current sheets when supported, passing only each row's locked Reference/Crop Policy plus candidate sidecar/sheet paths; otherwise the active image owner reads that stage and reviews locally. Only a stage-selected passing candidate may be used with `--promote` to download one original and write provenance (pass the same `--batch images/image_queries.json` to reconcile its row to `Sourced`). If none passes and `has_more_candidates` is true, advance that row to `next_candidate_page` before changing the query. Only after the pool is exhausted may the row receive materially different query variants and return to `Pending`. When no available context has vision, omit `--save-candidates`: best-only mode may download only a strict metadata-verified candidate, records `selection_method: metadata-ranked`, and otherwise stops at `Needs-Manual` without claiming visual confirmation.
+
+> **Retained-page fallback**: only after that normal search is exhausted, a vision-capable image owner may open one relevant research page and test one inline-image URL at a time with `--from-url`. Never use retained pages as the initial pool or bulk-download them; without vision, skip this fallback.
+
 > **Default — short provider query (may override for a complete entity name or necessary disambiguation)**: keep §VIII `Reference` as the locked subject/focal/crop intent and author a separate concrete `image_queries.json.query`. Search/review never rewrites the Design Spec or lock to fit a candidate.
 
-> **Default — one sheet for compatible AI spots (may override for different cell shape, detail, quality, or semantics)**: prefer one grid sheet for a same-family set; independent `ai` rows remain valid. When selected, choose a grid matching the planned cells, keep the sheet unplaced, and place/project each `slice` row. Contract: [image-generator.md](../references/image-generator.md) §4.3.
+> **Default — one sheet for compatible AI spots or decorative lettering elements (may override for different cell shape, detail, quality, or semantics)**: prefer one grid sheet for a same-family set; independent `ai` rows remain valid. A lettering sheet records every exact stable string and contains no scene or page chrome. When selected, choose a grid matching the planned cells, keep the sheet unplaced, and place/project each transparent `slice` row. Contract: [image-generator.md](../references/image-generator.md) §4.3.
 
 > ⚠️ **Honor the Design Spec's confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — the production value recorded in `design_spec.md §I` wins. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never reopen `result.json` here, and never run `image_gen.py --manifest` when the recorded value is `host-native` or `manual`. Full selection rule: [image-generator.md](../references/image-generator.md) §7 Path Selection.
 
@@ -528,9 +544,9 @@ Workflow:
 
 1. Extract all resource rows from the design spec. First separate rows whose `Reference` starts `Derived from <canonical bare filename>; treatment=` so they cannot re-enter ordinary ai/web/slice acquisition; reject source/output equality, a derivative parent, chains, cycles, or self-reference; then group canonical rows by `Acquire Via`. Every Pending/Failed canonical acquisition row and Pending derivative must reach a terminal state before Executor starts.
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](../references/image-base.md) §3 dispatch table
-2.5. **Slice any spot-illustration sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](../references/image-generator.md) §4.3.
+2.5. **Slice any illustration or lettering sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every transparent element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](../references/image-generator.md) §4.3.
 2.6. **Materialize planned prepared derivatives.** After each named canonical source reaches a usable terminal state, preserve it and write the separately named derivative only from its declared treatment. Use `image_treat.py` for per-pixel blur, desaturation/grayscale, duotone, brightness, or contrast; that row inherits the canonical `Acquire Via` and terminal class. Use `image-generator.md` §4.4 only for registered clean-base/layer work; a supplied final asset is `user / Existing`, while generated/reconstructed output remains `ai / Generated`. A standalone cutout must be prepared RGBA, a flat-key slice, or supplied by the active host; otherwise mark it `Needs-Manual`. Do not present `image_treat.py` as photo background removal. Do not bake crop/clip, rotation/mirror, opacity, frame, shadow, scrim/wash, vignette, or overlap into a bitmap. Any derivative of a web source copies that source's license/attribution record to the new filename. A parent without a usable status leaves the child `Needs-Manual`.
-3. Verify every processed acquisition/derivative row reaches its source-class terminal status under [`svg-image-embedding.md`](../references/svg-image-embedding.md); no `Pending`/`Failed` remains. On `auto`, follow the owning fallback chain. For confirmed `api` or `host-native`, retry only that path, then mark unresolved rows `Needs-Manual` without switching provider.
+3. Verify every processed acquisition/derivative row reaches its source-class terminal status under [`svg-image-embedding.md`](../references/svg-image-embedding.md); no `Pending`, `Failed`, or web `Needs-Selection` remains. On `auto`, follow the owning fallback chain. For confirmed `api` or `host-native`, retry only that path, then mark unresolved rows `Needs-Manual` without switching provider.
 4. Re-derive image facts after canonical acquisition, slicing, and prepared derivatives are final — `uvx ppt-master analyze-images <project_path>/images` — so `analysis/image_analysis.csv` reflects every image the Executor may place. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
 **✅ Internal checkpoint — acquisition complete**: verify conditional AI/web sidecars, all required slice outputs, terminal status for every resource row, and a refreshed `image_analysis.csv`. Do not print this checklist. On success, auto-proceed under the compact status rule above.

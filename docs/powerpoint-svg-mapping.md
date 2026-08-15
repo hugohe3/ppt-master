@@ -98,7 +98,7 @@ Internal identifiers and PowerPoint display names are separate concerns: Master 
 | Materialized Merge Shapes result | Ordinary `<path>` output from `shape_boolean_svg.py`; Fragment returns sibling paths | One `p:sp` with `a:custGeom` per returned path | `Native-normalized`; imports as final freeform geometry, not replayable operation history | Supported closed geometry or horizontal implicit-LTR direct text with an exact resolvable font face; text becomes glyph geometry, the first source owns style/order, and no clip, mask, or explicit fill rule is emitted |
 | Polygon | `<polygon>` | Closed custom geometry | `Native-normalized` | Points must be finite and valid |
 | Polyline | `<polyline>` | Open custom geometry | `Native-normalized` | Points use the same finite, registered grammar as other generated geometry |
-| PowerPoint preset shape | Registry-generated compact `<g>` with preset intent/base paint and direct visible `<path>` children | One editable preset `p:sp` | Preset identity and adjustments can survive import/export | Quality check and export rerender the registry dynamically; canonical authoring has no hidden carrier, preview wrapper, or stored preview hash |
+| PowerPoint preset shape | Registry-generated compact `<g>` with preset intent/base paint, an optional direct reference to one registered shadow/glow filter, and direct visible `<path>` children | One editable preset `p:sp`, with at most one native effect in `p:spPr/a:effectLst` | Preset identity and adjustments can survive import/export; the effect follows the shared fidelity row below | Quality check and export rerender the registry dynamically; authored-preset filter references are shape-only, and canonical authoring has no hidden carrier, preview wrapper, or stored preview hash |
 | Imported preset shape | Expanded import/round-trip group with a hidden native carrier, visible preview evidence, and freshness metadata | Restored preset when the payload is valid and unchanged | `Native-stable` within the import contract | Unsupported presets remain explicit diagnostic fallbacks, not guessed geometry |
 | Action button shape | Compact authored `actionButton*` preset group | Visual preset geometry only | Shape geometry can round-trip | No click action, navigation target, or hyperlink is created |
 | Group | `<g>` | `p:grpSp`, or a documented flatten/collapse for a special carrier | Grouped content can reconstruct as `<g>` | Structural atoms and placeholder contracts override ordinary grouping |
@@ -136,7 +136,7 @@ preset selection and authoring behavior are documented in
 | Bulleted paragraph | Recognized leading bullet form | Native DrawingML bullet | `Native-normalized` | Only the registered bullet grammar is promoted |
 | Rotated text | Supported transform on the text object | Rotated text shape | `Native-normalized` | Skewed text and browser-only transforms are unsupported |
 | Text shadow or glow | Supported filter/effect contract | One native outer shadow or glow | `Approximate` | One supported effect graph only; review material effects |
-| WordArt, text warp, or text-on-path | No registered main-route mapping | Not generated as native WordArt | `Bake-required` or rebuild with ordinary text/geometry | Browser rendering does not imply PowerPoint support |
+| WordArt, text warp, or text-on-path | Prepared image asset for decorative lettering, or ordinary `<text>` as the editable fallback | Picture or ordinary text; never newly authored native WordArt | `Direct preservation` in source-preserving native routes; otherwise `Bake-required` or rebuild with supported carriers | No generated-SVG WordArt/warp/path attribute is registered; browser rendering does not imply PowerPoint support |
 
 ## 5. PowerPoint picture features
 
@@ -214,6 +214,7 @@ The exhaustive chart/table schemas and supported family list intentionally remai
 | LaTeX input profile | Canonical marker sources omit outer delimiters; one complete `$...$`, `$$...$$`, `\(...\)`, or `\[...\]` pair is also accepted | Every explicitly named input in the pinned Microsoft 365 2606 / Mac 16.110 profile, plus the 2605 / 16.109 mhchem profile, compiles to editable OMML | The profile is pinned to those Microsoft documentation versions; emitted OMML retains the PowerPoint 2010+ package target. Repository verification is compiler/OMML/package-level, not complete Microsoft 365 UI certification | Explicit native normalizations are preserved; unknown or explicitly unsupported input fails closed rather than leaking as literal LaTeX |
 | Editable block equation | One `<g data-pptx-replace-with="formula">` with explicit bounds, source LaTeX in `<metadata type="application/json">`, and visible SVG preview children | PowerPoint text shape containing `a14:m > m:oMathPara > m:oMath` | See the input-profile row | Matrices, multiline derivations, and other standalone high-structure formulas use the registered block contract |
 | Editable inline formula | A leaf `<tspan data-pptx-inline-formula="canonical LaTeX body">preview text</tspan>` among ordinary text runs | The same DrawingML `a:p` retains surrounding runs and inserts `a14:m > m:oMath` | See the input-profile row | Direct non-empty preview text only; no child element, positional `x/y/dx/dy`, structured placeholder/Master/Layout ownership, preserved imported `txBody`, or native-replacement ancestor |
+| PPTX formula reverse import | Validator-clean `m:oMathPara` becomes a block marker; validator-clean `m:oMath` remains an inline marker with surrounding runs | Re-export recompiles the canonicalized LaTeX to editable OMML | `Native-normalized` for PPT Master-owned closed OMML vocabulary | The original LaTeX spelling is not recoverable; unknown third-party OMML gets `formula-not-reconstructed`, readable text, and relationship-free opaque `txBody` retention in tolerant mode |
 | Browser / live preview | Ordinary SVG children inside a block marker, or the inline marker's direct text | Only the registered preview is discarded when native math is written | Raw LaTeX does not render in SVG | Preview content must express the same formula; it is not a PPTX fallback |
 | Formula typography | Block payload style, or computed inline text-run style | Math inherits size and visible solid fill, then uses the project text language and Cambria Math; local `\color` / `\textcolor` scopes override the inherited fill on selectable runs and structural controls, while `\boldsymbol` / `\bm` also styles structural control glyphs | PowerPoint 2010+ OMML | High-structure or multiline math remains block-level |
 | Non-PowerPoint formula playback | The same native markers; no picture branch | No compatibility fallback is added | Keynote, WPS, LibreOffice, and other clients are outside the formula contract | Do not claim cross-client rendering or editability |
@@ -223,7 +224,9 @@ Formula replacement is always active and does not use
 PNG, media relationship, or `mc:Fallback` picture. Block JSON and inline
 `data-pptx-inline-formula` values are the native formula sources; SVG preview
 content exists only so the authored page remains visible before export.
-Compilation is forward-only: PPT Master does not build OMML back down to LaTeX.
+`pptx_to_svg.py` performs the narrow inverse only for OMML accepted by the same
+closed validator, and its output is canonical LaTeX rather than the author's
+original spelling. It does not claim arbitrary Office Math conversion.
 The executable closed vocabulary and pinned Microsoft source revisions live in
 `formula_profile.py`; Microsoft's open-ended “etc.” does not make undisclosed
 relation aliases part of this contract.
@@ -237,8 +240,8 @@ owner.
 | PowerPoint feature | Owning project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Speaker notes | `notes/<slide>.md` sidecar | Notes Slide part and relationship | `Sidecar/package` | Notes are not SVG text and do not affect page geometry |
-| Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package` | Unknown effects or invalid durations fail; no silent `fade` fallback |
-| Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the shape-target anchor | Static structural layers and placeholders cannot be animated |
+| Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package`; PPTX import reconstructs exact current-registry transitions into `animations.json` | Unknown effects or inexact carriers fail or remain diagnosed; no silent `fade` fallback |
+| Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; PPTX import reconstructs exact-duration current-registry rows into the sidecar | Target and optional trigger shape must map uniquely; advanced/build/media timing remains diagnosed/direct-preserve |
 | Narration audio | `audio/` asset plus recorded-narration export option | Media relationship, audio carrier, and timing | `Sidecar/package` | Asset, slide association, and timing must validate |
 | Automatic slide advance | Explicit transition timing or narration-derived duration | `advTm`/advance behavior | `Sidecar/package` | Click-driven animation is incompatible with recorded narration |
 | Whole-object hyperlink | Standard SVG `<a href="...">` around one visual element or group | `p:cNvPr/a:hlinkClick` on each clickable leaf plus one shared relationship | `Native-stable` for supported external and same-deck targets; PPTX import reconstructs the anchor | Add an explicit background shape when gaps inside a multi-object card/button must be clickable |
@@ -289,6 +292,8 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Connector | Expanded line/path preview plus connector/frame/topology evidence |
 | Group | `<g>` |
 | Supported native table/chart | Visible fallback plus native-object metadata |
+| Supported current-registry page transition | Canonical `animations.json` row with effective options, exact duration, optional auto-advance, and supported WAV sound |
+| Supported exact-duration object-animation sequence | Canonical `animations.json` group rows with effect/options, order, trigger, duration, relative delay, and optional `trigger_shape` |
 | Unsupported graphic frame or SmartArt | Explicit preview, placeholder, or unsupported status |
 
 This is semantic projection, not a syntax round trip. Preserving validated source-package Master/Layout facts is confined to Create Template mirror and always produces a new workspace; an ordinary visual import does not infer reusable topology from slide appearance.
@@ -305,7 +310,14 @@ This is semantic projection, not a syntax round trip. Preserving validated sourc
 | Unsupported slide or part background | Omit that background and continue the page/part | Stop at the first violation | Warning identifies the owning part |
 | Corrupt package/XML or missing required package structure | Stop; no safe page-level recovery exists | Stop | Clean command error; no raw Python traceback |
 
-Every successful run writes `<output>/conversion-report.json`. The report records the mode, slide and warning counts, stable reason code, source message, chosen fallback, package part, and—when available—slide index plus shape id/name/kind. Tolerant import is therefore not silent: it maximizes usable output while making every contract recovery reviewable.
+Every successful run writes `<output>/conversion-report.json` and a canonical
+`<output>/animations.json` whose baseline transition is `none`. The report
+records the mode, slide and warning counts, owned artifacts, stable reason code,
+source message, chosen fallback, package part, and—when available—slide index
+plus shape id/name/kind. Unknown or inexact transition carriers remain explicit
+`transition-not-reconstructed` diagnostics. Tolerant import is therefore not
+silent: it maximizes usable output while making every contract recovery
+reviewable.
 
 ## 13. Validation ownership
 

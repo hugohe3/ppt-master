@@ -342,12 +342,17 @@ def _read_response_format() -> str | None:
     return _read_env_choice("OPENAI_RESPONSE_FORMAT", OPENAI_RESPONSE_FORMATS)
 
 
-def _read_quality(image_size: str) -> str | None:
+def _read_quality(image_size: str, model: str) -> str | None:
     """Resolve the quality field for OpenAI-compatible requests."""
     quality = _read_env_choice("OPENAI_QUALITY", OPENAI_QUALITY_VALUES)
     if quality == "omit":
         return None
     if quality and quality != "auto":
+        if _is_gpt_image_model(model) and quality in {"standard", "hd"}:
+            raise ValueError(
+                f"{model} does not support OPENAI_QUALITY={quality}. "
+                "Use auto, omit, low, medium, or high."
+            )
         return quality
     return IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
 
@@ -357,11 +362,34 @@ def _apply_response_format(request: dict, model: str) -> None:
     response_format = _read_response_format()
     if response_format == "omit":
         return
+    if not _supports_response_format(model):
+        if response_format in {"b64_json", "url"}:
+            raise ValueError(
+                f"{model} does not support OPENAI_RESPONSE_FORMAT. "
+                "Use auto or omit."
+            )
+        return
     if response_format in {"b64_json", "url"}:
         request["response_format"] = response_format
         return
-    if _supports_response_format(model):
-        request["response_format"] = "b64_json"
+    request["response_format"] = "b64_json"
+
+
+def _validate_request_options(
+    model: str,
+    aspect_ratio: str,
+    image_size: str,
+    *,
+    editing: bool,
+) -> None:
+    """Validate local model options before entering the retry loop."""
+    size_preset = _read_size_preset()
+    _select_size(model, aspect_ratio, image_size, size_preset)
+    if not (editing and _is_dall_e_2(model)):
+        _read_quality(image_size, model)
+    if _is_gpt_image_model(model):
+        _gpt_image_options(model)
+    _apply_response_format({}, model)
 
 
 def _post_image_generation(api_key: str, base_url: str | None, request: dict) -> dict:
@@ -431,7 +459,7 @@ def _generate_image(api_key: str, prompt: str,
     # Map parameters
     size_preset = _read_size_preset()
     size = _select_size(model, aspect_ratio, image_size, size_preset)
-    quality = _read_quality(image_size)
+    quality = _read_quality(image_size, model)
     output_ext = ".png"
     request = {
         "prompt": prompt,
@@ -527,7 +555,7 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     """
     size_preset = _read_size_preset()
     size = _select_size(model, aspect_ratio, image_size, size_preset)
-    quality = None if _is_dall_e_2(model) else _read_quality(image_size)
+    quality = None if _is_dall_e_2(model) else _read_quality(image_size, model)
     output_ext = ".png"
     request = {
         "prompt": prompt,
@@ -640,14 +668,6 @@ def generate(prompt: str,
     Returns:
         Path of the saved image file
     """
-    api_key = os.environ.get("OPENAI_API_KEY")
-    base_url = os.environ.get("OPENAI_BASE_URL")
-
-    if not api_key:
-        raise ValueError(
-            "No API key found. Set OPENAI_API_KEY in the current environment or a .env file."
-        )
-
     if model is None:
         model = os.environ.get("OPENAI_MODEL") or DEFAULT_MODEL
 
@@ -658,6 +678,20 @@ def generate(prompt: str,
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for OpenAI backend. "
             f"Supported: {supported}"
+        )
+
+    _validate_request_options(
+        model,
+        aspect_ratio,
+        image_size,
+        editing=reference_image is not None,
+    )
+
+    api_key = os.environ.get("OPENAI_API_KEY")
+    base_url = os.environ.get("OPENAI_BASE_URL")
+    if not api_key:
+        raise ValueError(
+            "No API key found. Set OPENAI_API_KEY in the current environment or a .env file."
         )
 
     last_error = None

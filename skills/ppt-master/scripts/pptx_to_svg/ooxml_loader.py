@@ -264,12 +264,16 @@ class OoxmlPackage:
         """Load an arbitrary XML part by package path."""
         return self._load_part(part_path)
 
-    def read_media(self, part_path: str) -> bytes | None:
-        """Return raw bytes of an embedded media part (e.g. ppt/media/image1.png)."""
+    def read_part_bytes(self, part_path: str) -> bytes | None:
+        """Return the unchanged bytes of one internal package part."""
         assert self.zip is not None
         if part_path not in self.zip.namelist():
             return None
         return self.zip.read(part_path)
+
+    def read_media(self, part_path: str) -> bytes | None:
+        """Return raw bytes of an embedded media part (e.g. ppt/media/image1.png)."""
+        return self.read_part_bytes(part_path)
 
     def media_filename(self, part_path: str) -> str:
         """Last segment of the media path, e.g. 'image1.png'."""

@@ -5,7 +5,7 @@ Zhipu GLM-Image generation backend.
 Configuration keys:
   ZHIPU_API_KEY / BIGMODEL_API_KEY   (required)
   ZHIPU_BASE_URL                     (optional)
-  ZHIPU_MODEL                        (optional)
+  ZHIPU_MODEL                        (optional; glm-image only)
 """
 
 import sys
@@ -43,57 +43,44 @@ from image_backends.backend_common import (
 
 DEFAULT_ENDPOINT = "https://open.bigmodel.cn/api/paas/v4/images/generations"
 DEFAULT_MODEL = "glm-image"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 ASPECT_RATIO_SIZE_MAP = {
-    "512px": {
-        "1:1": "1024x1024",
-        "2:3": "768x1152",
-        "3:2": "1152x768",
-        "3:4": "864x1152",
-        "4:3": "1152x864",
-        "4:5": "1024x1280",
-        "5:4": "1280x1024",
-        "9:16": "720x1440",
-        "16:9": "1440x720",
-        "21:9": "1536x640",
-    },
     "1K": {
         "1:1": "1280x1280",
-        "2:3": "960x1440",
-        "3:2": "1440x960",
-        "3:4": "1024x1365",
-        "4:3": "1365x1024",
+        "2:3": "1056x1568",
+        "3:2": "1568x1056",
+        "3:4": "1088x1472",
+        "4:3": "1472x1088",
         "4:5": "1024x1280",
         "5:4": "1280x1024",
-        "9:16": "768x1344",
-        "16:9": "1344x768",
-        "21:9": "1536x640",
+        "9:16": "960x1728",
+        "16:9": "1728x960",
+        "21:9": "1568x672",
     },
     "2K": {
-        "1:1": "1440x1440",
-        "2:3": "1152x1728",
-        "3:2": "1728x1152",
-        "3:4": "1152x1536",
-        "4:3": "1536x1152",
-        "4:5": "1280x1600",
-        "5:4": "1600x1280",
-        "9:16": "720x1440",
-        "16:9": "1440x720",
-        "21:9": "1792x768",
-    },
-    "4K": {
-        "1:1": "1440x1440",
-        "2:3": "1152x1728",
-        "3:2": "1728x1152",
-        "3:4": "1152x1536",
-        "4:3": "1536x1152",
-        "4:5": "1280x1600",
-        "5:4": "1600x1280",
-        "9:16": "720x1440",
-        "16:9": "1440x720",
-        "21:9": "1792x768",
+        "1:1": "2048x2048",
+        "2:3": "1344x2016",
+        "3:2": "2016x1344",
+        "3:4": "1536x2048",
+        "4:3": "2048x1536",
+        "4:5": "1536x1920",
+        "5:4": "1920x1536",
+        "9:16": "1152x2048",
+        "16:9": "2048x1152",
+        "21:9": "2016x864",
     },
 }
+
+
+def _validate_model(model: str) -> str:
+    """Limit the backend to the GLM-Image contract implemented below."""
+    resolved = model.strip()
+    if resolved not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported Zhipu model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    return resolved
 
 
 def _resolve_url(base_url: str) -> str:
@@ -107,9 +94,16 @@ def _resolve_url(base_url: str) -> str:
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
-    size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
+    sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
+    if sizes is None:
+        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for Zhipu backend. "
+            f"GLM-Image supports these logical sizes: {supported_sizes}."
+        )
+    size = sizes.get(aspect_ratio)
     if not size:
-        supported = sorted(ASPECT_RATIO_SIZE_MAP["1K"])
+        supported = sorted(sizes)
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for Zhipu backend. "
             f"Supported: {supported}"
@@ -122,6 +116,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the Zhipu backend."""
+    model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size)
     url = _resolve_url(base_url)
     headers = {
@@ -165,13 +160,16 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Zhipu backend."""
+    resolved_model = model or os.environ.get("ZHIPU_MODEL") or DEFAULT_MODEL
+    _validate_model(resolved_model)
+    normalized_size = normalize_image_size(image_size)
+    _resolve_size(aspect_ratio, normalized_size)
     api_key = require_api_key(
         "ZHIPU_API_KEY",
         "BIGMODEL_API_KEY",
         message="No API key found. Set ZHIPU_API_KEY or BIGMODEL_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("ZHIPU_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("ZHIPU_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
@@ -180,7 +178,7 @@ def generate(prompt: str,
                 api_key=api_key,
                 prompt=prompt,
                 aspect_ratio=aspect_ratio,
-                image_size=image_size,
+                image_size=normalized_size,
                 output_dir=output_dir,
                 filename=filename,
                 model=resolved_model,

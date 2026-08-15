@@ -24,6 +24,15 @@ from html import unescape
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 
+from svg_to_pptx.animation_config import (
+    validate_animation_config_errors,
+    validate_transition_config,
+)
+
+from .animation_import import (
+    AnimationImportError,
+    import_slide_animation,
+)
 from .color_resolver import ColorPalette
 from .emu_units import NS
 from .import_diagnostics import ImportDiagnostic, append_diagnostic
@@ -34,6 +43,10 @@ from .ooxml_loader import (
     part_show_master_sp,
 )
 from .slide_to_svg import assemble_part_solo, assemble_slide
+from .transition_import import (
+    TransitionImportError,
+    import_slide_transition,
+)
 
 
 _CJK_THEME_SCRIPTS = frozenset({"Hans", "Hant", "Jpan", "Hang"})
@@ -41,6 +54,9 @@ _MANAGED_PRIMARY_SVG_RE = re.compile(
     r"(?:slide_\d+|master_\d+_[A-Za-z0-9_-]+|layout_\d+_[A-Za-z0-9_-]+)\.svg"
 )
 _MANAGED_FLAT_SVG_RE = re.compile(r"slide_\d+\.svg")
+_MANAGED_TRANSITION_SOUND_RE = re.compile(
+    r"transition_sound_[0-9a-f]{16}\.wav"
+)
 _SVG_HREF_RE = re.compile(
     r"\b(?:href|xlink:href)\s*=\s*[\"']([^\"']+)[\"']"
 )
@@ -203,6 +219,19 @@ class ConvertResult:
     flat_slides: list[SlideArtifact] = field(default_factory=list)
     master_themes: dict[str, dict[str, object]] = field(default_factory=dict)
     diagnostics: list[ImportDiagnostic] = field(default_factory=list)
+    animation_config: dict[str, object] = field(
+        default_factory=lambda: {
+            "version": 1,
+            "defaults": {
+                "transition": {
+                    "effect": "none",
+                    "duration": 0.0,
+                },
+            },
+            "slides": {},
+        }
+    )
+    animation_media_files: dict[str, bytes] = field(default_factory=dict)
     source_file: str = ""
     strict: bool = False
 
@@ -325,6 +354,12 @@ def convert_pptx_to_svg(
         # rendered alongside when needed.
         primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
+            _read_back_slide_transition(
+                pkg,
+                slide,
+                result,
+                options,
+            )
             slide_theme = pkg.resolve_theme(slide.master) or default_theme
             slide_palette = _make_palette(
                 slide.master,
@@ -345,6 +380,13 @@ def convert_pptx_to_svg(
                 inheritance_mode=primary_mode,
             )
             result.slides.append(artifact)
+            _read_back_slide_animation(
+                pkg,
+                slide,
+                artifact,
+                result,
+                options,
+            )
         if emit_layered and emit_flat:
             for slide in pkg.iter_slides():
                 slide_theme = pkg.resolve_theme(slide.master) or default_theme
@@ -376,6 +418,99 @@ def convert_pptx_to_svg(
         _write_artifacts(output_dir, result, options)
 
     return result
+
+
+def _read_back_slide_transition(
+    pkg: OoxmlPackage,
+    slide: SlideRef,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Recover one supported slide transition into the sidecar."""
+    try:
+        transition = import_slide_transition(
+            pkg,
+            slide,
+            media_subdir=options.media_subdir,
+        )
+    except TransitionImportError as exc:
+        message = f"Slide transition was not reconstructed: {exc}"
+        if options.strict:
+            raise ValueError(message) from exc
+        append_diagnostic(
+            result.diagnostics,
+            ImportDiagnostic(
+                code="transition-not-reconstructed",
+                message=message,
+                fallback=(
+                    "keep this transition in the source PPTX through direct "
+                    "native preservation"
+                ),
+                part_path=slide.part.path,
+                slide_index=slide.index,
+            ),
+        )
+    else:
+        if transition is not None:
+            slides = result.animation_config["slides"]
+            if not isinstance(slides, dict):
+                raise RuntimeError("internal animations.json slides must be an object")
+            slides[f"slide_{slide.index:02d}"] = {
+                "transition": transition.config,
+            }
+            for filename, payload in transition.media_files.items():
+                existing = result.animation_media_files.get(filename)
+                if existing is not None and existing != payload:
+                    raise RuntimeError(
+                        "Transition sound filename collision with different bytes: "
+                        f"{filename}"
+                    )
+                result.animation_media_files[filename] = payload
+
+
+
+def _read_back_slide_animation(
+    pkg: OoxmlPackage,
+    slide: SlideRef,
+    artifact: SlideArtifact,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Recover one finite object-animation sequence into the sidecar."""
+    try:
+        animation = import_slide_animation(
+            pkg,
+            slide,
+            slide_svg=artifact.svg,
+        )
+    except AnimationImportError as exc:
+        message = f"Object animation timing was not reconstructed: {exc}"
+        if options.strict:
+            raise ValueError(message) from exc
+        append_diagnostic(
+            result.diagnostics,
+            ImportDiagnostic(
+                code="animation-not-reconstructed",
+                message=message,
+                fallback=(
+                    "keep this timing in the source PPTX through direct "
+                    "native preservation"
+                ),
+                part_path=slide.part.path,
+                slide_index=slide.index,
+            ),
+        )
+        return
+    if animation is None:
+        return
+
+    slides = result.animation_config["slides"]
+    if not isinstance(slides, dict):
+        raise RuntimeError("internal animations.json slides must be an object")
+    slide_config = slides.setdefault(f"slide_{slide.index:02d}", {})
+    if not isinstance(slide_config, dict):
+        raise RuntimeError("internal animations.json slide row must be an object")
+    slide_config["groups"] = animation.groups
 
 
 def _convert_slide(
@@ -550,6 +685,42 @@ def _managed_svg_paths(output_dir: Path) -> list[Path]:
         inheritance = svg_dir / "inheritance.json"
         if dirname == "svg" and _path_lexists(inheritance):
             managed.append(inheritance)
+    return managed
+
+
+def _managed_report_artifact_paths(output_dir: Path) -> set[Path]:
+    """Return optional artifacts owned by the previous conversion report."""
+    report_path = output_dir / "conversion-report.json"
+    if report_path.is_symlink() or not report_path.is_file():
+        return set()
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return set()
+    artifacts = report.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return set()
+    if artifacts.get("animationConfig") != "animations.json":
+        return set()
+
+    managed = {Path("animations.json")}
+    animation_media = artifacts.get("animationMedia")
+    if not isinstance(animation_media, list):
+        return managed
+    for value in animation_media:
+        if not isinstance(value, str):
+            continue
+        path = Path(value)
+        if (
+            path.drive
+            or path.anchor
+            or path.is_absolute()
+            or not path.parts
+            or ".." in path.parts
+            or not _MANAGED_TRANSITION_SOUND_RE.fullmatch(path.name)
+        ):
+            continue
+        managed.add(path)
     return managed
 
 
@@ -744,6 +915,7 @@ def publish_staged_workspace(
         }
         relative_paths.update(_referenced_local_paths(output_dir, managed_svg))
         relative_paths.add(Path("conversion-report.json"))
+        relative_paths.update(_managed_report_artifact_paths(output_dir))
         relative_paths.update(_validated_relative_paths(managed_root_files or set()))
         relative_paths.update(_validated_relative_paths(managed_relative_paths or set()))
         _remove_managed_paths(candidate_dir, relative_paths)
@@ -822,6 +994,7 @@ def _write_artifact_tree(
         target = svg_dir / f"slide_{art.index:02d}.svg"
         target.write_text(art.svg, encoding="utf-8")
         _collect_media(art.media_files)
+    _collect_media(result.animation_media_files)
 
     # Inheritance graph alongside the layered SVGs (only meaningful when we
     # actually emitted a layered view).
@@ -837,7 +1010,8 @@ def _write_artifact_tree(
             target.write_text(art.svg, encoding="utf-8")
             _collect_media(art.media_files)
 
-    _write_conversion_report(output_dir, result)
+    _write_animation_config(output_dir, result)
+    _write_conversion_report(output_dir, result, options)
     if media_written:
         media_dir.mkdir(parents=True, exist_ok=True)
     for filename, blob in media_written.items():
@@ -875,8 +1049,16 @@ def _write_artifacts(
         shutil.rmtree(staging_root, ignore_errors=True)
 
 
-def _write_conversion_report(output_dir: Path, result: ConvertResult) -> None:
+def _write_conversion_report(
+    output_dir: Path,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
     """Write the user-visible tolerant-import report."""
+    animation_media = [
+        (PurePosixPath(options.media_subdir) / filename).as_posix()
+        for filename in sorted(result.animation_media_files)
+    ]
     report = {
         "schemaVersion": 1,
         "source": result.source_file,
@@ -885,10 +1067,36 @@ def _write_conversion_report(output_dir: Path, result: ConvertResult) -> None:
             "slides": len(result.slides),
             "warnings": len(result.diagnostics),
         },
+        "artifacts": {
+            "animationConfig": "animations.json",
+            "animationMedia": animation_media,
+        },
         "diagnostics": [item.to_dict() for item in result.diagnostics],
     }
     (output_dir / "conversion-report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_animation_config(output_dir: Path, result: ConvertResult) -> None:
+    """Write the canonical transition/object-motion sidecar."""
+    errors = list(
+        dict.fromkeys(
+            validate_transition_config(result.animation_config)
+            + validate_animation_config_errors(result.animation_config)
+        )
+    )
+    if errors:
+        raise RuntimeError(
+            "Generated animations.json is invalid: " + "; ".join(errors)
+        )
+    (output_dir / "animations.json").write_text(
+        json.dumps(
+            result.animation_config,
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
 

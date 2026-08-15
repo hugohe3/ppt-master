@@ -5,7 +5,7 @@ Alibaba Cloud Qwen image generation backend.
 Configuration keys:
   QWEN_API_KEY / DASHSCOPE_API_KEY   (required)
   QWEN_BASE_URL                      (optional)
-  QWEN_MODEL                         (optional)
+  QWEN_MODEL                         (optional; qwen-image-2.0-pro only)
 """
 
 import sys
@@ -43,6 +43,7 @@ from image_backends.backend_common import (
 
 DEFAULT_ENDPOINT = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
 DEFAULT_MODEL = "qwen-image-2.0-pro"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 ASPECT_RATIO_SIZE_MAP = {
     "512px": {
@@ -81,19 +82,17 @@ ASPECT_RATIO_SIZE_MAP = {
         "16:9": "2688*1536",
         "21:9": "2688*1152",
     },
-    "4K": {
-        "1:1": "2048*2048",
-        "2:3": "1536*2048",
-        "3:2": "2048*1536",
-        "3:4": "1728*2368",
-        "4:3": "2368*1728",
-        "4:5": "1792*2240",
-        "5:4": "2240*1792",
-        "9:16": "1536*2688",
-        "16:9": "2688*1536",
-        "21:9": "2688*1152",
-    },
 }
+
+
+def _validate_model(model: str) -> str:
+    """Limit the backend to the model contract implemented below."""
+    resolved = model.strip()
+    if resolved not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported Qwen model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    return resolved
 
 
 def _resolve_url(base_url: str) -> str:
@@ -101,15 +100,24 @@ def _resolve_url(base_url: str) -> str:
     base = base_url.rstrip("/")
     if base.endswith("/generation"):
         return base
+    if base.endswith("/api/v1"):
+        return base + "/services/aigc/multimodal-generation/generation"
     return base + "/api/v1/services/aigc/multimodal-generation/generation"
 
 
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
-    size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
+    sizes = ASPECT_RATIO_SIZE_MAP.get(normalized)
+    if sizes is None:
+        supported_sizes = ", ".join(ASPECT_RATIO_SIZE_MAP)
+        raise ValueError(
+            f"Unsupported image size '{image_size}' for Qwen backend. "
+            f"qwen-image-2.0-pro supports these logical sizes: {supported_sizes}."
+        )
+    size = sizes.get(aspect_ratio)
     if not size:
-        supported = sorted(ASPECT_RATIO_SIZE_MAP["1K"])
+        supported = sorted(sizes)
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for Qwen backend. "
             f"Supported: {supported}"
@@ -122,6 +130,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the Qwen backend."""
+    model = _validate_model(model)
     size = _resolve_size(aspect_ratio, image_size)
     url = _resolve_url(base_url)
     headers = {
@@ -176,13 +185,16 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Qwen backend."""
+    resolved_model = model or os.environ.get("QWEN_MODEL") or DEFAULT_MODEL
+    _validate_model(resolved_model)
+    normalized_size = normalize_image_size(image_size)
+    _resolve_size(aspect_ratio, normalized_size)
     api_key = require_api_key(
         "QWEN_API_KEY",
         "DASHSCOPE_API_KEY",
         message="No API key found. Set QWEN_API_KEY or DASHSCOPE_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("QWEN_BASE_URL") or DEFAULT_ENDPOINT
-    resolved_model = model or os.environ.get("QWEN_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
@@ -191,7 +203,7 @@ def generate(prompt: str,
                 api_key=api_key,
                 prompt=prompt,
                 aspect_ratio=aspect_ratio,
-                image_size=image_size,
+                image_size=normalized_size,
                 output_dir=output_dir,
                 filename=filename,
                 model=resolved_model,

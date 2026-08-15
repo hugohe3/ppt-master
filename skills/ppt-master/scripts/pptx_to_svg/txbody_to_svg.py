@@ -66,9 +66,11 @@ class TextRun:
     letter_spacing_px: float = 0.0
     is_break: bool = False  # marks an a:br within a paragraph
     hyperlink_href: str | None = None
+    formula_latex: str | None = None
 
 
 HyperlinkResolver = Callable[[str, str], str | None]
+InlineFormulaResolver = Callable[[ET.Element], tuple[str | None, str]]
 
 
 @dataclass
@@ -97,6 +99,7 @@ class TextResult:
 
     svg: str = ""
     defs: list[str] = field(default_factory=list)
+    contains_inline_formula: bool = False
 
 
 VERTICAL_TEXT_MODES = {"eaVert", "vert", "wordArtVert", "wordArtVertRtl"}
@@ -120,6 +123,7 @@ def convert_txbody(
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
+    inline_formula_resolver: InlineFormulaResolver | None = None,
 ) -> TextResult:
     """Convert <p:txBody> under the given shape geometry to SVG <text>(s)."""
     if tx_body is None:
@@ -133,6 +137,7 @@ def convert_txbody(
         fallback_run_props=fallback_run_props,
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
         hyperlink_resolver=hyperlink_resolver,
+        inline_formula_resolver=inline_formula_resolver,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
         return TextResult()
@@ -204,7 +209,12 @@ def convert_txbody(
         if cursor_y >= bottom_y:
             break
 
-    return TextResult(svg="\n".join(text_blocks), defs=_collect_text_defs(paragraphs))
+    svg = "\n".join(text_blocks)
+    return TextResult(
+        svg=svg,
+        defs=_collect_text_defs(paragraphs),
+        contains_inline_formula="data-pptx-inline-formula=" in svg,
+    )
 
 
 def is_vertical_txbody(tx_body: ET.Element | None, xfrm: Xfrm | None = None) -> bool:
@@ -232,6 +242,7 @@ def convert_vertical_txbody(
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
+    inline_formula_resolver: InlineFormulaResolver | None = None,
 ) -> TextResult:
     """Render East Asian vertical text as upright stacked glyphs.
 
@@ -250,6 +261,7 @@ def convert_vertical_txbody(
         fallback_run_props=fallback_run_props,
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
         hyperlink_resolver=hyperlink_resolver,
+        inline_formula_resolver=inline_formula_resolver,
     )
     runs = [
         run
@@ -309,6 +321,7 @@ def convert_vertical_txbody(
     return TextResult(
         svg=f"<text{attrs}>{''.join(spans)}</text>",
         defs=_collect_text_defs(paragraphs),
+        contains_inline_formula=False,
     )
 
 
@@ -387,6 +400,7 @@ def _parse_paragraphs(
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
+    inline_formula_resolver: InlineFormulaResolver | None = None,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
@@ -407,6 +421,7 @@ def _parse_paragraphs(
             slide_number=slide_number,
             id_prefix=id_prefix, id_seq=id_seq,
             hyperlink_resolver=hyperlink_resolver,
+            inline_formula_resolver=inline_formula_resolver,
         )
         paragraphs.append(para)
 
@@ -427,6 +442,7 @@ def _parse_paragraph(
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
     hyperlink_resolver: HyperlinkResolver | None = None,
+    inline_formula_resolver: InlineFormulaResolver | None = None,
 ) -> TextParagraph:
     para = TextParagraph()
 
@@ -504,6 +520,20 @@ def _parse_paragraph(
                 text = str(slide_number)
             if text:
                 para.runs.append(resolved_run(text, rpr))
+        elif (
+            child.tag
+            == "{http://schemas.microsoft.com/office/drawing/2010/main}m"
+            and inline_formula_resolver is not None
+        ):
+            latex, preview = inline_formula_resolver(child)
+            if preview:
+                formula_rpr = next(
+                    child.iter(f"{{{NS['a']}}}rPr"),
+                    None,
+                )
+                run = resolved_run(preview, formula_rpr)
+                run.formula_latex = latex
+                para.runs.append(run)
 
     return para
 
@@ -1082,6 +1112,14 @@ def _wrap_paragraph_into_lines(
             continue
         if not run.text:
             continue
+        if run.formula_latex is not None:
+            width = _estimate_run_width(run.text, run)
+            if lines[-1] and cur_w + width > max_width:
+                lines.append([])
+                cur_w = 0.0
+            lines[-1].append(_copy_run(run, text=run.text))
+            cur_w += width
+            continue
         text = run.text
         i = 0
         while i < len(text):
@@ -1152,6 +1190,7 @@ def _copy_run(run: TextRun, *, text: str) -> TextRun:
         strikethrough=run.strikethrough,
         letter_spacing_px=run.letter_spacing_px,
         hyperlink_href=run.hyperlink_href,
+        formula_latex=run.formula_latex,
     )
 
 
@@ -1269,8 +1308,7 @@ def _emit_paragraph(
         if line_has_hyperlink:
             run_spans = ''.join(
                 _wrap_run_hyperlink(
-                    f'<tspan{_run_tspan_attrs(run)}>'
-                    f'{_xml_escape(run.text)}</tspan>',
+                    _run_tspan_markup(run),
                     run,
                 )
                 for run in line
@@ -1285,15 +1323,20 @@ def _emit_paragraph(
         for run_idx, run in enumerate(line):
             attrs = _run_tspan_attrs(run)
             if run_idx == 0 and line_advance is not None:
-                spans.append(
-                    f'<tspan x="{fmt_num(anchor_x)}" '
-                    f'dy="{fmt_num(line_advance)}"'
-                    f'{attrs}>{_xml_escape(run.text)}</tspan>'
-                )
+                if run.formula_latex is not None:
+                    spans.append(
+                        f'<tspan x="{fmt_num(anchor_x)}" '
+                        f'dy="{fmt_num(line_advance)}">'
+                        f'{_run_tspan_markup(run)}</tspan>'
+                    )
+                else:
+                    spans.append(
+                        f'<tspan x="{fmt_num(anchor_x)}" '
+                        f'dy="{fmt_num(line_advance)}"'
+                        f'{attrs}>{_xml_escape(run.text)}</tspan>'
+                    )
             else:
-                spans.append(
-                    f"<tspan{attrs}>{_xml_escape(run.text)}</tspan>"
-                )
+                spans.append(_run_tspan_markup(run))
 
     base_attrs = _text_base_attrs(first_run, anchor_x, first_baseline, text_anchor)
     return f"<text{base_attrs}>{''.join(spans)}</text>"
@@ -1360,6 +1403,20 @@ def _run_tspan_attrs(run: TextRun) -> str:
     if run.letter_spacing_px:
         parts.append(f'letter-spacing="{fmt_num(run.letter_spacing_px)}"')
     return " " + " ".join(parts)
+
+
+def _run_tspan_markup(run: TextRun) -> str:
+    formula_attr = ""
+    if run.formula_latex is not None:
+        formula_attr = (
+            ' data-pptx-inline-formula="'
+            + _xml_escape(run.formula_latex)
+            + '"'
+        )
+    return (
+        f"<tspan{_run_tspan_attrs(run)}{formula_attr}>"
+        f"{_xml_escape(run.text)}</tspan>"
+    )
 
 
 def _wrap_run_hyperlink(markup: str, run: TextRun) -> str:

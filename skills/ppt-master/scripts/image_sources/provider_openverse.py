@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from urllib.parse import quote, unquote, urlparse
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -51,6 +52,20 @@ _LICENSE_PARAM = {
 }
 
 
+def _preview_url(item: dict, download_url: str) -> str:
+    """Prefer Wikimedia's bounded preview over Openverse's fragile proxy."""
+    source = str(item.get("source") or item.get("provider") or "").lower()
+    parsed = urlparse(download_url)
+    if source == "wikimedia" and parsed.netloc == "upload.wikimedia.org":
+        filename = unquote(parsed.path.rsplit("/", 1)[-1])
+        if filename:
+            return (
+                "https://commons.wikimedia.org/wiki/Special:Redirect/file/"
+                f"{quote(filename, safe='')}?width=1024"
+            )
+    return (item.get("thumbnail") or "").strip()
+
+
 def parse_results(payload: dict) -> list[AssetCandidate]:
     """Translate an Openverse search payload into a list of candidates."""
     candidates: list[AssetCandidate] = []
@@ -79,6 +94,7 @@ def parse_results(payload: dict) -> list[AssetCandidate]:
                 width=int(item.get("width") or 0),
                 height=int(item.get("height") or 0),
                 download_url=download_url,
+                preview_url=_preview_url(item, download_url),
                 author=(item.get("creator") or "").strip(),
                 raw=item,
             )

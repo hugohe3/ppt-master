@@ -5,7 +5,7 @@ Replicate image generation backend.
 Configuration keys:
   REPLICATE_API_KEY / REPLICATE_API_TOKEN   (required)
   REPLICATE_BASE_URL                        (optional)
-  REPLICATE_MODEL                           (optional)
+  REPLICATE_MODEL                           (optional; FLUX 1.1 Pro only)
 """
 
 import sys
@@ -34,6 +34,7 @@ from image_backends.backend_common import (
     download_image,
     http_error,
     is_rate_limit_error,
+    normalize_image_size,
     poll_json,
     require_api_key,
     resolve_output_path,
@@ -44,6 +45,7 @@ from image_backends.backend_common import (
 VALID_ASPECT_RATIOS = ["1:1", "16:9", "9:16", "3:4", "4:3", "3:2", "2:3", "4:5", "5:4", "21:9"]
 DEFAULT_BASE_URL = "https://api.replicate.com/v1"
 DEFAULT_MODEL = "black-forest-labs/flux-1.1-pro"
+SUPPORTED_MODELS = {DEFAULT_MODEL}
 
 
 def _split_model(model: str) -> tuple[str, str]:
@@ -54,6 +56,31 @@ def _split_model(model: str) -> tuple[str, str]:
             f"Replicate model must be in 'owner/name' format, got '{model}'."
         )
     return parts[0], parts[1]
+
+
+def _resolve_request_options(
+    aspect_ratio: str,
+    image_size: str,
+    model: str,
+) -> tuple[str, str]:
+    """Validate request options and return the Replicate model path."""
+    resolved_model = model.strip()
+    if resolved_model not in SUPPORTED_MODELS:
+        raise ValueError(
+            f"Unsupported Replicate model '{model}'. Supported: {sorted(SUPPORTED_MODELS)}"
+        )
+    if aspect_ratio not in VALID_ASPECT_RATIOS:
+        raise ValueError(
+            f"Unsupported aspect ratio '{aspect_ratio}' for Replicate backend. "
+            f"Supported: {VALID_ASPECT_RATIOS}"
+        )
+    normalized_size = normalize_image_size(image_size)
+    if normalized_size != "1K":
+        raise ValueError(
+            "Replicate FLUX 1.1 Pro does not expose the unified image_size preset; "
+            f"only the default '1K' is supported, got '{image_size}'."
+        )
+    return _split_model(resolved_model)
 
 
 def _extract_output_url(payload: dict) -> str | None:
@@ -77,15 +104,7 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
     """Generate one image with the Replicate backend."""
-    del image_size
-
-    if aspect_ratio not in VALID_ASPECT_RATIOS:
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for Replicate backend. "
-            f"Supported: {VALID_ASPECT_RATIOS}"
-        )
-
-    owner, name = _split_model(model)
+    owner, name = _resolve_request_options(aspect_ratio, image_size, model)
     url = f"{base_url.rstrip('/')}/models/{owner}/{name}/predictions"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -148,13 +167,14 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Replicate backend."""
+    resolved_model = model or os.environ.get("REPLICATE_MODEL") or DEFAULT_MODEL
+    _resolve_request_options(aspect_ratio, image_size, resolved_model)
     api_key = require_api_key(
         "REPLICATE_API_KEY",
         "REPLICATE_API_TOKEN",
         message="No API key found. Set REPLICATE_API_KEY or REPLICATE_API_TOKEN in the current environment or a .env file.",
     )
     base_url = os.environ.get("REPLICATE_BASE_URL") or DEFAULT_BASE_URL
-    resolved_model = model or os.environ.get("REPLICATE_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):

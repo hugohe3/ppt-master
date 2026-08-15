@@ -34,6 +34,7 @@ from image_backends.backend_common import (
     download_image,
     http_error,
     is_rate_limit_error,
+    normalize_image_size,
     require_api_key,
     resolve_output_path,
     retry_delay,
@@ -42,29 +43,53 @@ from image_backends.backend_common import (
 
 ASPECT_RATIO_MAP = {
     "1:1": "1x1",
-    "1:4": "1x4",
+    "1:2": "1x2",
+    "1:3": "1x3",
+    "2:1": "2x1",
     "2:3": "2x3",
+    "3:1": "3x1",
     "3:2": "3x2",
     "3:4": "3x4",
-    "4:1": "4x1",
     "4:3": "4x3",
     "4:5": "4x5",
     "5:4": "5x4",
     "9:16": "9x16",
+    "10:16": "10x16",
     "16:9": "16x9",
-    "21:9": "21x9",
+    "16:10": "16x10",
 }
 
 DEFAULT_BASE_URL = "https://api.ideogram.ai"
 DEFAULT_MODEL = "ideogram-v3"
 MODEL_ALIASES = {"ideogram-v3", "v3"}
 
-IMAGE_SIZE_TO_SPEED = {
-    "512px": "TURBO",
-    "1K": "DEFAULT",
-    "2K": "QUALITY",
-    "4K": "QUALITY",
-}
+DEFAULT_RENDERING_SPEED = "DEFAULT"
+
+
+def _resolve_request_options(
+    aspect_ratio: str,
+    image_size: str,
+    model: str,
+) -> tuple[str, str]:
+    """Validate request options and return normalized model and ratio values."""
+    normalized_model = model.strip().lower()
+    if normalized_model not in MODEL_ALIASES:
+        raise ValueError(
+            f"Unsupported Ideogram model '{model}'. Supported: {sorted(MODEL_ALIASES)}"
+        )
+    mapped_ratio = ASPECT_RATIO_MAP.get(aspect_ratio)
+    if not mapped_ratio:
+        raise ValueError(
+            f"Unsupported aspect ratio '{aspect_ratio}' for Ideogram backend. "
+            f"Supported: {sorted(ASPECT_RATIO_MAP)}"
+        )
+    normalized_size = normalize_image_size(image_size)
+    if normalized_size != "1K":
+        raise ValueError(
+            "Ideogram V3 aspect-ratio generation only supports the default '1K' preset; "
+            f"got '{image_size}'."
+        )
+    return normalized_model, mapped_ratio
 
 
 def _resolve_url(base_url: str) -> str:
@@ -80,33 +105,25 @@ def _generate_image(api_key: str, prompt: str,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
     """Generate one image with the Ideogram backend."""
-    normalized_model = model.strip().lower()
-    if normalized_model not in MODEL_ALIASES:
-        raise ValueError(
-            f"Unsupported Ideogram model '{model}'. Supported: {sorted(MODEL_ALIASES)}"
-        )
+    normalized_model, mapped_ratio = _resolve_request_options(
+        aspect_ratio,
+        image_size,
+        model,
+    )
 
-    mapped_ratio = ASPECT_RATIO_MAP.get(aspect_ratio)
-    if not mapped_ratio:
-        raise ValueError(
-            f"Unsupported aspect ratio '{aspect_ratio}' for Ideogram backend. "
-            f"Supported: {sorted(ASPECT_RATIO_MAP)}"
-        )
-
-    rendering_speed = IMAGE_SIZE_TO_SPEED.get(image_size, "DEFAULT")
     url = _resolve_url(base_url)
     headers = {"Api-Key": api_key}
     files = {
         "prompt": (None, prompt),
         "aspect_ratio": (None, mapped_ratio),
-        "rendering_speed": (None, rendering_speed),
+        "rendering_speed": (None, DEFAULT_RENDERING_SPEED),
     }
 
     print("[Ideogram]")
     print(f"  Model:        {normalized_model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio} -> {mapped_ratio}")
-    print(f"  Render Speed: {rendering_speed}")
+    print(f"  Render Speed: {DEFAULT_RENDERING_SPEED}")
     print()
     print("  [..] Generating...", end="", flush=True)
     start = time.time()
@@ -132,12 +149,13 @@ def generate(prompt: str,
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
     """Generate an image with retries using the Ideogram backend."""
+    resolved_model = model or os.environ.get("IDEOGRAM_MODEL") or DEFAULT_MODEL
+    _resolve_request_options(aspect_ratio, image_size, resolved_model)
     api_key = require_api_key(
         "IDEOGRAM_API_KEY",
         message="No API key found. Set IDEOGRAM_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("IDEOGRAM_BASE_URL") or DEFAULT_BASE_URL
-    resolved_model = model or os.environ.get("IDEOGRAM_MODEL") or DEFAULT_MODEL
 
     last_error = None
     for attempt in range(max_retries + 1):
