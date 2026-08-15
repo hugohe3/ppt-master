@@ -320,6 +320,20 @@ the complete carrier menu once and choose only the forms that communicate its
 content best. A decision to use none of a carrier is valid; skipping the scan
 because Quick is expected to be faster is not.
 
+**Mandatory — proactive AI decorative lettering**: Apply
+[`image-generator.md`](../../references/image-generator.md) §7's
+callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
+Path A and a host-native image-generation tool is Path B; Offline Manual, web
+search, or vision-only access does not qualify. When Path A/B is callable and
+the user has not forbidden AI, scan the frozen roster's cover/divider wording
+for stable keywords or short hooks. If a suitable set exists, prepare it without
+a separate request: preserve the exact approved strings, use one ordinary AI
+item for a single hook or batch several compatible marks through one
+Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
+native. A hook that must remain editable uses ordinary text. Offline Manual
+alone does not trigger this proactive path; explicit user-required lettering
+still follows the normal resource contract.
+
 | Communication job | Available carrier |
 |---|---|
 | Real subject, place, product, evidence, atmosphere, or scene benefits from visual grounding | Supplied/extracted, web, AI, or sliced image |
@@ -329,7 +343,7 @@ because Quick is expected to be faster is not.
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
 | Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native inline or block math |
-| A small set of stable cover/divider keywords needs a material, dimensional, hand-rendered, or otherwise illustrative treatment beyond ordinary text | Prepare one AI Illustration Sheet plus transparent slices when the elements are compatible; place the slices as images and keep ordinary editable title/chrome in separate text frames. Choose ordinary text before acquisition when editability or available tooling makes it the better carrier |
+| A small set of stable cover/divider keywords needs a material, dimensional, hand-rendered, or otherwise illustrative treatment beyond ordinary text | Apply the proactive rule above; place prepared lettering assets as images and keep ordinary editable title/chrome in separate text frames |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.

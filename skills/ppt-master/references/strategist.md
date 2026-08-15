@@ -287,6 +287,15 @@ owns SVG authoring under [`native-hyperlinks.md`](./native-hyperlinks.md).
 
 **Default — evidence before synthesis (may override when explicit source constraints or the communication intent require another permitted source)**: Prefer `provided` when supplied assets already carry authority. Propose `web` when the actual appearance of an externally verifiable subject is material; propose `ai` when custom expression matters more than documentary identity. Mixed sources may serve different page roles. This is a source-fit decision, not an image quota.
 
+**Mandatory — proactive decorative-lettering scan**: Before each Stage-2
+`recommend.image_usage`, treat a configured `IMAGE_BACKEND` or host-native image
+generator as callable; Offline Manual, web, and vision-only access do not
+qualify. If callable and planned cover/divider wording contains an exact stable
+hook suited to illustrative lettering, include `ai` plus its role in
+`image_notes.value` without waiting for a request. Never invent or rewrite copy
+to trigger it. Explicit no-AI or editable-only requirements win. Execution
+follows [`image-generator.md`](./image-generator.md) §7.
+
 **Recommendation output**: Write `recommend.image_usage` as one source id or an array for mixed sources. Put page roles, authoritative assets, preferred/avoided imagery, and placeholder tolerance in `image_notes.value`. `none` is exclusive. Generic human-scale topics such as family life, education, wellness, or children lean `ai` when no supplied asset carries the story; regulated investor decks, B2B finance reports, and data-only dashboards remain eligible for `none` by judgment.
 
 **Confirmed value wins**: Accept the confirmed legacy string or multi-select array. Map `ai→ai`, `web→web`, `provided→user`, and `placeholder→placeholder` into §VIII `Acquire Via`. Every direction already carries a rendering candidate whether or not AI is proposed; generated images inherit the deck colors and never introduce a second image-palette choice.
