@@ -295,12 +295,12 @@ retains the usable fallback/object and records the degradation; it does not
 discard unrelated shapes, pages, or the entire deck.
 
 Source `p:transition` and `p:timing` nodes are never silently implied by the
-static SVG view. Supported page transitions are reconstructed in
-`animations.json`; source object timing still emits
+static SVG view. Supported page transitions and finite object-animation
+sequences are reconstructed in `animations.json`; source timing outside either
+closed contract emits `transition-not-reconstructed` or
 `animation-not-reconstructed` with the exact source slide. Direct PPTX
-Fill/Enhance workflows remain the source-preserving route for timing outside
-the closed read-back contracts; `--strict` stops on the first unreconstructed
-node.
+Fill/Enhance workflows remain the source-preserving route for all other timing;
+`--strict` stops on the first unreconstructed node.
 
 ### Page-transition reverse import
 
@@ -316,6 +316,26 @@ Unknown effects, legacy `p:transition@spd`, visual effects without exact
 `p14:dur`, `advClick="0"`, malformed carriers, and unsupported or broken sound
 relationships produce `transition-not-reconstructed` in tolerant mode;
 `--strict` stops. The converter never substitutes `fade` for those cases.
+
+### Finite object-animation reverse import
+
+The importer accepts only rows that pass the current generated-animation
+behavior-tree validator and map both their target and optional click trigger to
+one unique top-level slide SVG group. It reconstructs the canonical registry
+effect, non-default effective options, Animation Pane order, Start trigger,
+exact native duration, and relative delay. Repeated targets use `effects[]`;
+shape-triggered rows restore `trigger_shape`.
+
+This exact-duration subset covers 199 of the 203 registered effects. The four
+native rows without a readable behavior duration—`emphasis_change_font`,
+`emphasis_change_font_style`, `emphasis_transparency`, and
+`emphasis_bold_reveal`—remain diagnosed because their authored scheduling span
+cannot be separated honestly from the following delay. Repeat/reverse/rewind,
+acceleration/bounce/restart, after-effects, animation sounds, paragraph or
+Chart/SmartArt builds, media commands, unknown behavior trees, and targets that
+do not map to a top-level SVG group likewise produce
+`animation-not-reconstructed`; `--strict` stops. The importer never invents a
+replacement timing tree.
 
 ### Native formula reverse import
 

@@ -71,7 +71,7 @@ A presentation is four layers: what is on the slide, how it is arranged, how it 
 | Concern | Status | Notes |
 |---|---|---|
 | Page transitions | Systematized | Includes on-demand transition sounds from a bundled CC0 catalog; PPTX import reconstructs exact current-registry transitions into the canonical sidecar |
-| Object animation | Systematized | Off by default and opt-in; per-object configuration is explicit |
+| Object animation | Systematized | Off by default and opt-in; per-object configuration is explicit, and PPTX import reconstructs the finite exact-duration current-registry subset into the canonical sidecar |
 | Auto-advance | Covered | Derived from narration lead-in, audio duration, and page-tail padding |
 | Media playback | Covered | Narration audio and animation sounds play natively; media already present in a source deck keeps its playback settings |
 | Hyperlinks | Systematized | Whole-object and inline-text links author through standard SVG `<a href>`, export as native external or same-deck click relationships, and reconstruct on supported PPTX import |

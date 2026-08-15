@@ -3857,6 +3857,39 @@ def describe_animation_effect(effect: object) -> dict[str, Any]:
     }
 
 
+def effective_animation_effect_options(
+    effect: object,
+    effect_options: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    """Return the effective option values encoded by one registry request."""
+    canonical, normalized_options = normalize_animation_effect_request(
+        effect,
+        effect_options,
+        allow_none=False,
+        allow_modes=False,
+    )
+    assert canonical is not None
+    row = _animation_row_for_options(canonical, normalized_options)
+    errors: list[str] = []
+    filter_name = _row_filter(
+        row,
+        str(NATIVE_ANIMATIONS[canonical]['presetClass']),
+        errors,
+    )
+    effective = _read_effect_options(
+        row,
+        canonical,
+        filter_name,
+        errors,
+    )
+    if errors:
+        raise RuntimeError(
+            f'animation effect {canonical!r} option model failed: '
+            + '; '.join(errors)
+        )
+    return effective
+
+
 def main() -> None:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(

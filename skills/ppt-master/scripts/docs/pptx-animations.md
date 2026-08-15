@@ -236,6 +236,15 @@ duplicate or malformed `p:cTn` ids, missing `p:spTgt` shapes, invalid build
 targets, and unsupported generated effect tuples. A mismatch fails export
 before the requested output file replaces an existing deck.
 
+`pptx_to_svg.py` reuses that semantic reader and behavior-tree validator for a
+finite reverse projection. A row enters `animations.json` only when its current
+registry effect/options, pane order, Start trigger, exact behavior duration,
+relative delay, and target/optional trigger shape can be represented by unique
+top-level slide SVG groups. Repeated targets become `effects[]`. Duration-less
+native rows, advanced timing modifiers, sounds, build/media commands, unknown
+trees, and unmapped targets remain explicit import diagnostics. This is not a
+general PowerPoint timing-tree normalizer.
+
 Narration injection parses and merges the slide DOM. It adds audio timing under
 the existing `tmRoot`, allocates fresh ids, and preserves object animation.
 For bounce timing it updates both p14 Choice and Fallback; unsupported nested

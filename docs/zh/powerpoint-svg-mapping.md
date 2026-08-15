@@ -231,7 +231,7 @@ SVG 预览内容只负责让导出前的作者页面保持可见。
 |---|---|---|---|---|
 | 演讲者备注 | `notes/<slide>.md` sidecar | Notes Slide part 与 relationship | `Sidecar/package` | 备注不是 SVG 文本，不影响页面几何 |
 | 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package`；PPTX 回导把当前注册表内的精确切换重建到 `animations.json` | 未知效果或不精确 carrier 会失败或保留诊断；不默默 fallback 到 `fade` |
-| 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为 shape target 锚点 | 静态结构层与占位符不可动画 |
+| 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；PPTX 回导把当前注册表内具有精确时长的记录重建到 sidecar | target 与可选 trigger shape 必须唯一映射；高级/build/media timing 保留诊断或直接保留 |
 | 旁白音频 | `audio/` 资产加 recorded-narration 导出选项 | media relationship、audio carrier 与 timing | `Sidecar/package` | 必须校验资产、Slide 关联与时序 |
 | 幻灯片自动换页 | 显式 transition timing 或旁白派生时长 | `advTm`/换页行为 | `Sidecar/package` | 单击驱动动画与录制旁白不兼容 |
 | 整体对象超链接 | 标准 SVG `<a href="...">` 包裹一个可见元素或组 | 每个可点击叶子上的 `p:cNvPr/a:hlinkClick`，共用一个 relationship | 受支持外链与 deck 内目标为 `Native-stable`；PPTX 回导重建 anchor | 多对象卡片 / 按钮的间隙也要可点时，需显式加入背景形状 |
@@ -280,6 +280,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
 | 当前注册表内受支持的页面切换 | 规范 `animations.json` 记录，包含有效选项、精确时长、可选自动换页与受支持 WAV 声音 |
+| 受支持的精确时长对象动画序列 | 规范 `animations.json` group 记录，包含效果/选项、顺序、触发、时长、相对延迟与可选 `trigger_shape` |
 | 不支持的 graphic frame 或 SmartArt | 显式 preview、placeholder 或 unsupported 状态 |
 
 这是语义投影，不是语法往返。只有 Create Template mirror 可把来源包中已验证的 Master/Layout 事实保留到新工作区；普通视觉导入不会从 Slide 外观推断可复用拓扑。

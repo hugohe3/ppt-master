@@ -29,6 +29,10 @@ from svg_to_pptx.animation_config import (
     validate_transition_config,
 )
 
+from .animation_import import (
+    AnimationImportError,
+    import_slide_animation,
+)
 from .color_resolver import ColorPalette
 from .emu_units import NS
 from .import_diagnostics import ImportDiagnostic, append_diagnostic
@@ -350,7 +354,7 @@ def convert_pptx_to_svg(
         # rendered alongside when needed.
         primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
-            _read_back_slide_motion(
+            _read_back_slide_transition(
                 pkg,
                 slide,
                 result,
@@ -376,6 +380,13 @@ def convert_pptx_to_svg(
                 inheritance_mode=primary_mode,
             )
             result.slides.append(artifact)
+            _read_back_slide_animation(
+                pkg,
+                slide,
+                artifact,
+                result,
+                options,
+            )
         if emit_layered and emit_flat:
             for slide in pkg.iter_slides():
                 slide_theme = pkg.resolve_theme(slide.master) or default_theme
@@ -409,13 +420,13 @@ def convert_pptx_to_svg(
     return result
 
 
-def _read_back_slide_motion(
+def _read_back_slide_transition(
     pkg: OoxmlPackage,
     slide: SlideRef,
     result: ConvertResult,
     options: ConvertOptions,
 ) -> None:
-    """Recover supported transitions and diagnose remaining motion."""
+    """Recover one supported slide transition into the sidecar."""
     try:
         transition = import_slide_transition(
             pkg,
@@ -456,27 +467,50 @@ def _read_back_slide_motion(
                     )
                 result.animation_media_files[filename] = payload
 
-    if slide.part.xml.find("p:timing", NS) is None:
-        return
-    message = (
-        "Source slide contains object animation timing that was not "
-        "reconstructed in the SVG workspace"
-    )
-    if options.strict:
-        raise ValueError(message)
-    append_diagnostic(
-        result.diagnostics,
-        ImportDiagnostic(
-            code="animation-not-reconstructed",
-            message=message,
-            fallback=(
-                "keep the source PPTX for direct native preservation or "
-                "author the corresponding animations.json sidecar"
+
+
+def _read_back_slide_animation(
+    pkg: OoxmlPackage,
+    slide: SlideRef,
+    artifact: SlideArtifact,
+    result: ConvertResult,
+    options: ConvertOptions,
+) -> None:
+    """Recover one finite object-animation sequence into the sidecar."""
+    try:
+        animation = import_slide_animation(
+            pkg,
+            slide,
+            slide_svg=artifact.svg,
+        )
+    except AnimationImportError as exc:
+        message = f"Object animation timing was not reconstructed: {exc}"
+        if options.strict:
+            raise ValueError(message) from exc
+        append_diagnostic(
+            result.diagnostics,
+            ImportDiagnostic(
+                code="animation-not-reconstructed",
+                message=message,
+                fallback=(
+                    "keep this timing in the source PPTX through direct "
+                    "native preservation"
+                ),
+                part_path=slide.part.path,
+                slide_index=slide.index,
             ),
-            part_path=slide.part.path,
-            slide_index=slide.index,
-        ),
-    )
+        )
+        return
+    if animation is None:
+        return
+
+    slides = result.animation_config["slides"]
+    if not isinstance(slides, dict):
+        raise RuntimeError("internal animations.json slides must be an object")
+    slide_config = slides.setdefault(f"slide_{slide.index:02d}", {})
+    if not isinstance(slide_config, dict):
+        raise RuntimeError("internal animations.json slide row must be an object")
+    slide_config["groups"] = animation.groups
 
 
 def _convert_slide(

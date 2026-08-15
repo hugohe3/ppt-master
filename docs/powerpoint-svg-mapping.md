@@ -241,7 +241,7 @@ owner.
 |---|---|---|---|---|
 | Speaker notes | `notes/<slide>.md` sidecar | Notes Slide part and relationship | `Sidecar/package` | Notes are not SVG text and do not affect page geometry |
 | Slide transition | CLI options or `animations.json` | `p:transition` | `Sidecar/package`; PPTX import reconstructs exact current-registry transitions into `animations.json` | Unknown effects or inexact carriers fail or remain diagnosed; no silent `fade` fallback |
-| Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; the group ID is only the shape-target anchor | Static structural layers and placeholders cannot be animated |
+| Object animation (entrance / emphasis / motion path / exit) | `animations.json` targeting stable top-level SVG group IDs; `effects[]` may assign several rows to one anchor | Root `p:timing` animation tree | `Sidecar/package`; PPTX import reconstructs exact-duration current-registry rows into the sidecar | Target and optional trigger shape must map uniquely; advanced/build/media timing remains diagnosed/direct-preserve |
 | Narration audio | `audio/` asset plus recorded-narration export option | Media relationship, audio carrier, and timing | `Sidecar/package` | Asset, slide association, and timing must validate |
 | Automatic slide advance | Explicit transition timing or narration-derived duration | `advTm`/advance behavior | `Sidecar/package` | Click-driven animation is incompatible with recorded narration |
 | Whole-object hyperlink | Standard SVG `<a href="...">` around one visual element or group | `p:cNvPr/a:hlinkClick` on each clickable leaf plus one shared relationship | `Native-stable` for supported external and same-deck targets; PPTX import reconstructs the anchor | Add an explicit background shape when gaps inside a multi-object card/button must be clickable |
@@ -293,6 +293,7 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 | Group | `<g>` |
 | Supported native table/chart | Visible fallback plus native-object metadata |
 | Supported current-registry page transition | Canonical `animations.json` row with effective options, exact duration, optional auto-advance, and supported WAV sound |
+| Supported exact-duration object-animation sequence | Canonical `animations.json` group rows with effect/options, order, trigger, duration, relative delay, and optional `trigger_shape` |
 | Unsupported graphic frame or SmartArt | Explicit preview, placeholder, or unsupported status |
 
 This is semantic projection, not a syntax round trip. Preserving validated source-package Master/Layout facts is confined to Create Template mirror and always produces a new workspace; an ordinary visual import does not infer reusable topology from slide appearance.
