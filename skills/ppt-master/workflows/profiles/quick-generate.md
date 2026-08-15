@@ -330,7 +330,11 @@ for stable keywords or short hooks. If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
 item for a single hook or batch several compatible marks through one
 Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
-native. A hook that must remain editable uses ordinary text. Offline Manual
+native. A prepared wordmark and an editable title are not mutually exclusive:
+one page may carry the wordmark as its display layer while its subtitle, chrome,
+and body stay native text. Skip a scanned hook only when that exact wording must
+stay editable, the user forbade AI, or no generator is callable; do not add
+another disqualifier. Offline Manual
 alone does not trigger this proactive path; explicit user-required lettering
 still follows the normal resource contract.
 
@@ -347,6 +351,8 @@ still follows the normal resource contract.
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
+
+**Default — source fit decided per page, not inherited from the visual style (may override when an explicit user constraint requires another source)**: Outside Image to PPTX, whose closed page surface owns its reconstruction assets, choose each page image's source separately from the resolved style. Prefer a supplied/extracted asset that already carries authority; use web when an externally verifiable subject must appear as itself; use AI when invented or deliberately stylized expression matters more than documentary identity. Mixed sources across one deck are normal. A visual style and its `Illus.` propensity govern how imagery looks, never whether the deck needs documentary imagery.
 
 **Visualization recall — optional Chart/Table reference**: When a reusable
 Chart/Table reference would help, run recall with 3–8 English semantic tags.
@@ -657,5 +663,5 @@ or lock.
 - [x] Enabled notes were validated/generated and split; enabled custom motion ran through its owning stage
 - [x] One native PPTX exists under `exports/` or the explicit output path
 - [x] No Strategist, confirmation, root project Design Spec, or lock artifact was created
-- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff
+- [ ] **Next**: Report the base PPTX and any enabled narrated PPTX, raw/mixed/captured MP4, or capture-ready PPTX handoff, plus the resolved mode, visual style, and the image sources actually used
 ```
