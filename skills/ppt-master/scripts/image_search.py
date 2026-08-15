@@ -1523,7 +1523,7 @@ def fetch_url_replace(
     min_width: int = 1200,
     min_height: int = 800,
 ) -> int:
-    """Download a user-supplied image URL into the target and record it.
+    """Download a directly selected image URL into the target and record it.
 
     The model-agnostic manual path: when an automated best match is not
     suitable (or the running model cannot see images at all), a human finds a
@@ -1602,7 +1602,7 @@ def fetch_url_replace(
         "author": "",
         "source_page_url": url,
         "download_url": url,
-        "license_name": "unverified — user-supplied URL",
+        "license_name": "unverified — direct URL",
         "license_url": "",
         "license_tier": "manual",
         "attribution_required": False,
@@ -1611,7 +1611,7 @@ def fetch_url_replace(
         "attribution_text": "",
         "status": "manual",
         "note": (
-            "Manually supplied image URL; verifying usage rights is the user's "
+            "Direct image URL; verifying usage rights is the user's "
             "responsibility."
         ),
     }
@@ -2339,7 +2339,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         metavar="URL",
         help=(
-            "Manual replacement: download a user-supplied image URL into "
+            "Manual replacement: download a directly selected image URL into "
             "--filename and record it (license marked 'manual'). Works without "
             "a multimodal model. Example: --from-url https://… --filename team.jpg -o images/"
         ),
