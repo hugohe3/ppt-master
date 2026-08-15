@@ -130,7 +130,7 @@ PowerPoint 意图
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
 | 文本阴影或发光 | 受支持 filter/effect 合同 | 一个原生外阴影或发光 | `Approximate` | 仅支持一个已登记效果图；实质效果需复核 |
-| WordArt、文本变形或沿路径文本 | 无已登记主路线映射 | 不生成原生 WordArt | `Bake-required` 或使用普通文本/几何重建 | 浏览器可渲染不代表 PowerPoint 受支持 |
+| WordArt、文本变形或沿路径文本 | 装饰文字使用已准备的图片资产，或用普通 `<text>` 作为可编辑兜底 | 图片或普通文字；不新建原生 WordArt | 源保留型原生路线为 `Direct preservation`；其他路线需要 `Bake-required` 或使用受支持载体重建 | 不登记任何生成 SVG 的 WordArt / 变形 / 路径文字属性；浏览器可渲染不代表 PowerPoint 受支持 |
 
 ## 5. PowerPoint 图片功能
 

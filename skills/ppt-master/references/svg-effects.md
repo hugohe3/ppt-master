@@ -584,6 +584,12 @@ respective sections; they do not weaken those contracts.
 | Shadow/glow | §6.4 filter on `<text>` only | Shape shadow / run glow; `Approximate` |
 | Native bullet | Leading `· • ● ▪ ■ ◆ ◇ ◦ ‣` + non-empty content | `·`/`•` → `•`; others unchanged; color/alpha from marker run; font/size follow text |
 
+**Hard rule — generated decorative lettering ownership**: Approved AI
+decorative lettering is a prepared `<image>` asset under the image contracts,
+not an advanced native-text treatment. Keep ordinary editable titles and
+subtitles as normal `<text>`; this contract does not add WordArt, text warp, or
+text-on-path authoring.
+
 ```xml
 <text x="100" y="200" font-size="20" xml:space="preserve">Current <tspan
   fill="#999999" text-decoration="line-through">old</tspan> value</text>
@@ -875,7 +881,7 @@ back-to-front and omit every layer without a distinct job.
 
 | Page / deck job | Back-to-front stack | Stop |
 |---|---|---|
-| Cover | Hero field → optional scrim/wash → purposeful opening/contour → native title | Stop when copy is safe and title/field read together |
+| Cover | Hero field → optional scrim/wash → purposeful opening/contour → native title, optionally paired with a prepared decorative-lettering image | Stop when copy is safe and title/field read together |
 | Divider | Image band or quiet field → restrained wash → recurring geometry → number/title | Reuse deck language; add no effect family |
 | Text-led explanation | Quiet field → recurring material/contour → native hierarchy → optional local emphasis | Emphasis clarifies the argument, never decorates body copy |
 | Process / system | Context field → native relation lines → nodes/labels → optional state/direction focus | Every connector stays semantic; atmosphere must not obscure flow |

@@ -329,6 +329,7 @@ because Quick is expected to be faster is not.
 | Sequence, hierarchy, role, region, or relationship determines page-local topology | Qualitative structure |
 | Rows, columns, cells, headers, merges, and alignment form the information model | Cell-grid table |
 | Mathematical notation is clearer as typeset math than ordinary text | PowerPoint-native inline or block math |
+| A small set of stable cover/divider keywords needs a material, dimensional, hand-rendered, or otherwise illustrative treatment beyond ordinary text | Prepare one AI Illustration Sheet plus transparent slices when the elements are compatible; place the slices as images and keep ordinary editable title/chrome in separate text frames. Choose ordinary text before acquisition when editability or available tooling makes it the better carrier |
 | Typography, spacing, and simple geometry already carry the message | Use no additional visual carrier |
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
@@ -372,7 +373,7 @@ Prepare only the resource paths needed by the decided pages:
 | Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
-| Illustration slice | Generate or obtain the parent sheet, run `slice_images.py`, and place only the resulting element files |
+| Illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha`, and place only the resulting transparent element files; a lettering sheet names every exact stable string and contains no scene or page chrome |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 
@@ -523,8 +524,9 @@ and omit Master/Layout/layer/placeholder metadata. A request that specifically
 requires reusable native Master/Layout/placeholder output is incompatible with
 the lockless Quick exporter and must use the default lock-backed profile.
 
-**Typography**: name an installed concrete font family in the SVG; do not depend
-on a lock or generated font asset.
+**Typography**: name a concrete target-installed/approved PowerPoint family
+under [`shared-standards-core.md`](../../references/shared-standards-core.md)
+§4.1; do not depend on a lock or generated font asset.
 
 **Generation pacing**: the current main agent hand-writes the SVG roster in
 order. Use P01 as the visual-system calibration baseline and continue

@@ -136,7 +136,7 @@ preset selection and authoring behavior are documented in
 | Bulleted paragraph | Recognized leading bullet form | Native DrawingML bullet | `Native-normalized` | Only the registered bullet grammar is promoted |
 | Rotated text | Supported transform on the text object | Rotated text shape | `Native-normalized` | Skewed text and browser-only transforms are unsupported |
 | Text shadow or glow | Supported filter/effect contract | One native outer shadow or glow | `Approximate` | One supported effect graph only; review material effects |
-| WordArt, text warp, or text-on-path | No registered main-route mapping | Not generated as native WordArt | `Bake-required` or rebuild with ordinary text/geometry | Browser rendering does not imply PowerPoint support |
+| WordArt, text warp, or text-on-path | Prepared image asset for decorative lettering, or ordinary `<text>` as the editable fallback | Picture or ordinary text; never newly authored native WordArt | `Direct preservation` in source-preserving native routes; otherwise `Bake-required` or rebuild with supported carriers | No generated-SVG WordArt/warp/path attribute is registered; browser rendering does not imply PowerPoint support |
 
 ## 5. PowerPoint picture features
 
