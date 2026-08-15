@@ -233,6 +233,11 @@ Query guidance:
 
 Keep the Design Spec §VIII `Reference` as the full visual/crop intent; write a separate concise provider query for this CLI. Start with the shortest phrase that preserves identity, but retain exact multi-word names and necessary disambiguators beyond four words.
 
+For exact entities with multiple common names, add repeatable `--query-variant`
+values (batch: `query_variants`) for materially different official
+translations, spellings, aliases, or Chinese names. Results are aggregated and
+deduplicated before ranking.
+
 | Case | Pattern |
 |---|---|
 | Generic stock concept | `boardroom meeting` |
@@ -262,15 +267,19 @@ Suitability & manual replacement (a web top hit is metadata-relevant, not guaran
 
 - By default only the best match is downloaded, plus a downscaled review copy at `images/.review/<stem>.jpg` (the placed asset stays full-resolution).
 - For exact subjects (landmarks, people, companies, products), use `--require-terms` or batch `required_terms` so visually plausible but wrong metadata is rejected before ranking. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"`. Keep proper-name / geography anchors; do not broaden to generic terms like `canyon`, `stone pillar`, or `ancient town` just to improve coverage.
-- `--save-candidates` (with `--max-candidates`, default 4) keeps an opt-in escalation pool under `candidates/<stem>/`; review it, then `--promote candidate_03.jpg --filename <name>.jpg`.
+- When the current Generate agent can inspect images, use `--save-candidates`. The tool saves only the first ranked page of review-eligible provider previews (**8 by default**), writes `candidates/<stem>/review_sheet.jpg`, and leaves the target image and `image_sources.json` untouched. Standalone CLI use remains best-only unless this flag is explicit.
+- Compare the thumbnail set against the active Reference/Crop Policy. Only after one passes, run `--promote candidate_03.jpg --filename <name>.jpg`; this downloads and validates exactly that original. In batch mode, pass the same `--batch images/image_queries.json` so `Needs-Selection` becomes `Sourced`.
+- If no thumbnail passes and `has_more_candidates` is true, fetch `--candidate-page 2` (or set the batch row's `candidate_page` to `next_candidate_page` and reset it to `Pending`). Candidate numbering continues at 9; no original is downloaded. Only after the pool is exhausted should you materially change the identity wording, viewpoint, translation, alias, or disambiguator and generate a fresh pool.
+- Without multimodal inspection, omit `--save-candidates`. Best-only mode rejects visual-verification-required near matches, accepts only a strict metadata candidate, downloads one original, and records `selection_method: metadata-ranked`; if metadata cannot prove the entity or the active visual requirement, use `Needs-Manual` rather than claiming visual confirmation.
 - `--from-url <url> --filename <name>.jpg` downloads a user-chosen image URL and replaces the target (recorded `license_tier: manual`) — the model-agnostic manual path; works even without a multimodal model.
 
 Full review / escalation flow: [`image-searcher.md`](../../references/image-searcher.md) §5.
 
 Output:
 
-- Image saved to the specified output directory (auto-converts webp → jpg via Pillow when the filename extension demands)
-- `image_sources.json` manifest with full provenance (provider, license, license_tier, author, source URL, dimensions, attribution_text)
+- `--save-candidates`: thumbnail-only `candidates/<stem>/candidates.json`, at most 8 provider previews by default, and `review_sheet.jpg`; no target image or provenance entry. `--candidate-page N` advances through the ranked pool; `--max-candidates 0` explicitly dumps all candidates for exceptional debugging
+- Best-only / `--promote`: one original saved to the specified output directory (auto-converts webp → jpg via Pillow when the filename extension demands)
+- Best-only / `--promote`: `image_sources.json` manifest with full provenance (provider, license, license_tier, author, source URL, dimensions, attribution_text)
 - Manifest is idempotent on `filename` and written atomically; damaged existing provenance blocks replacement
 
 Allowed licenses (default): CC0, Public Domain, Pexels License, Pixabay Content License, CC BY, CC BY-SA. Auto-rejected: CC BY-NC, CC BY-ND, CC BY-NC-SA, CC BY-NC-ND, all rights reserved, unknown.
