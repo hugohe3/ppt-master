@@ -326,9 +326,14 @@ callable-generator test before SVG authoring: a configured `IMAGE_BACKEND` is
 Path A and a host-native image-generation tool is Path B; Offline Manual, web
 search, or vision-only access does not qualify. When Path A/B is callable and
 the user has not forbidden AI, scan the frozen roster's cover/divider wording
-for stable keywords or short hooks. If a suitable set exists, prepare it without
+for stable display strings. Length and line count are not selection criteria: a
+two-character mark, an eight-character phrase, and a two-line lockup are equally
+valid candidates. Select a string by whether that exact wording is stable and
+whether an artistic treatment beats native type — never by how short it is, and
+never trim a phrase down to one or two characters to make it feel more
+"wordmark-like". If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
-item for a single hook or batch several compatible marks through one
+item for a single mark or batch several compatible marks through one
 Illustration Sheet and transparent slices, and keep ordinary title/chrome copy
 native. A prepared wordmark and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
@@ -352,7 +357,9 @@ still follows the normal resource contract.
 
 This carrier menu does not satisfy or replace the per-page Structure decision in §3.
 
-**Default — source fit decided per page, not inherited from the visual style (may override when an explicit user constraint requires another source)**: Outside Image to PPTX, whose closed page surface owns its reconstruction assets, choose each page image's source separately from the resolved style. Prefer a supplied/extracted asset that already carries authority; use web when an externally verifiable subject must appear as itself; use AI when invented or deliberately stylized expression matters more than documentary identity. Mixed sources across one deck are normal. A visual style and its `Illus.` propensity govern how imagery looks, never whether the deck needs documentary imagery.
+**Mandatory — per-image source decision, never inherited from the resolved style**: Outside Image to PPTX, whose closed page surface owns its reconstruction assets, decide each page image's source separately — supplied/extracted, web, AI, or slice. Prefer a supplied/extracted asset that already carries authority; use web when an externally verifiable subject must appear as itself; use AI when invented or deliberately stylized expression matters more than documentary identity. Mixed sources across one deck are normal.
+
+Resolving one visual style, `Illus.` propensity, or generated-image rendering resolves how imagery **looks**; it resolves the source for no page. A named place, building, product, artwork, person, or other externally verifiable subject stays a web/supplied candidate no matter how illustrative the deck looks. When such a subject is deliberately not shown as itself, state that choice and its reason in the final report rather than leaving it implicit.
 
 **Visualization recall — optional Chart/Table reference**: When a reusable
 Chart/Table reference would help, run recall with 3–8 English semantic tags.
@@ -654,6 +661,7 @@ or lock.
 - [x] One mode and visual style were resolved, and every catalog source actually used was read
 - [x] Every page considered the complete visual-carrier menu without a coverage quota
 - [x] Every image-bearing page made its one pre-geometry composition decision
+- [x] Every image decided its own source from that page's subject and job — not inherited from the resolved visual style — and every externally verifiable subject deliberately not shown as itself was stated with its reason
 - [x] Every selected formula uses the checker-valid ordinary/inline/block form with a matching visible SVG preview and no formula image resource
 - [x] Every selected hyperlink uses a checker-valid inline/whole-object anchor and an exact external or same-deck target
 - [x] Resolved SVG pages and their project-local references exist

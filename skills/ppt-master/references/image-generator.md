@@ -24,7 +24,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 | `text_policy` | Use |
 |---|---|
 | `none` | No text inside the image |
-| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered keywords, or figure-internal labels |
+| `embedded` | Image contains stable text as part of the artwork — decorative lettering, artistic wordmarks, hand-lettered words or phrases, or figure-internal labels |
 
 **Hard rule — only what's actually hard**:
 
@@ -185,7 +185,7 @@ Use for: founder profile, speaker bio, testimonial page, or executive intro, inc
 
 **Primitive C — typographic hero (the text *is* the image)**
 
-> The image's central content is one large text element — a short headline, big number, or single word — rendered as art and carrying dominant visual weight. Keep any supporting visual (small icon, geometric anchor, accent line) clearly subordinate. Give the letterforms enough breathing room for readability, adjusting scale and spacing to the actual text and container.
+> The image's central content is one large text element — a single word, a phrase, a headline, a big number, or a short multi-line lockup — rendered as art and carrying dominant visual weight. Keep any supporting visual (small icon, geometric anchor, accent line) clearly subordinate. Give the letterforms enough breathing room for readability, adjusting scale and spacing to the actual text and container.
 
 Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D).
 
@@ -285,7 +285,7 @@ Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` mak
 | Compact objects / badges | `1:1` sheet | `2x2`, `2x3`, or `3x3` |
 | Tall side accents / upright objects | wide or square sheet | `1xN`, or any `MxN` whose cells are portrait |
 | Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
-| Decorative words / short lettering marks | wide sheet | `Nx1`, or any `MxN` whose cells fit the planned word shapes |
+| Decorative words, phrases, or multi-line lettering lockups | wide sheet | `Nx1`, or any `MxN` whose cells fit the planned string shapes |
 
 If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room. Keep the visual family consistent through the same `deck_rendering` and `color_scheme`, not by forcing all cells into one square sheet.
 
@@ -492,12 +492,12 @@ Layer 1 text is rasterized into the artwork — once generated it cannot be edit
 
 | Text | Layer |
 |---|---|
-| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Part of the artwork and stable — decorative lettering, artistic wordmark, hand-lettered word or phrase, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
 | Authoritative titles, page chrome, body copy, captions, data values — anything that must stay exact, searchable, editable, or may be reworded | Layer 2 (SVG) |
 
 Generation is non-deterministic on every backend, but **do not pre-judge by script or length** — never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a particular script or a long string "won't render". Decide where text lives by the editability rule above, not by guessed rendering ability. Name the exact characters to bake literally in the prompt; do not re-read the generated image to verify them.
 
-**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word, a stat lettering, a figure-internal label.
+**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word or phrase, a stat lettering, a figure-internal label. String length never decides this; a multi-word phrase or two-line lockup qualifies exactly as a single word does.
 
 **Push to SVG overlay instead**: page chrome, captions, data values, or any copy that must stay exact or editable. When the headline must remain editable, switch to **Primitive D (atmospheric backdrop)** and overlay it as SVG text.
 

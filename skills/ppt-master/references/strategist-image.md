@@ -20,11 +20,14 @@ For illustration, apply this precedence: confirmed `none` → explicit user inte
 
 **Mandatory — materialize proactive lettering**: When confirmed image usage
 retains `ai`, the effective acquisition path has a callable Path A/B, and the
-complete page roster contains a suitable stable cover/divider hook, collect the
-small compatible set once before writing §VIII. Use one ordinary `ai` row for a
-single hook, or the sheet/element rows under §4.3 for several compatible hooks,
-and record every exact character sequence; do not leave the choice as an
-`image_notes` or §IX suggestion only. A planned wordmark and an editable page
+complete page roster contains a suitable stable cover/divider display string,
+collect the compatible set once before writing §VIII. Use one ordinary `ai` row
+for a single mark, or the sheet/element rows under §4.3 for several compatible
+marks, and record every exact character sequence; do not leave the choice as an
+`image_notes` or §IX suggestion only. Length and line count never filter the
+candidates: a two-character mark, a multi-word phrase, and a two-line lockup are
+equally eligible, and a phrase is never trimmed toward one or two characters to
+look more like a wordmark. A planned wordmark and an editable page
 title coexist: the asset carries the display layer while subtitle, chrome, and
 body remain native text. A confirmed `none`, explicit no-AI
 instruction, editable-only hook, or Offline Manual path does not activate this
