@@ -86,6 +86,11 @@ def parse_results(payload: dict) -> list[AssetCandidate]:
                 width=int(item.get("imageWidth") or 0),
                 height=int(item.get("imageHeight") or 0),
                 download_url=download_url,
+                preview_url=(
+                    item.get("webformatURL")
+                    or item.get("previewURL")
+                    or ""
+                ).strip(),
                 author=(item.get("user") or "").strip(),
                 raw=item,
             )
