@@ -303,6 +303,39 @@ def build_image_filename(abs_url: str, seq: int, content_type: str | None = None
     return f"{stem}{ext}"
 
 
+def resolve_content_image_url(img: Tag, page_url: str) -> str | None:
+    """Resolve one content image, preferring real lazy-load URLs."""
+    candidates = [
+        img.get("data-src"),
+        img.get("data-original"),
+        img.get("data-lazy-src"),
+        img.get("data-actualsrc"),
+        img.get("src"),
+    ]
+    for value in candidates:
+        if not isinstance(value, str):
+            continue
+        src = value.strip()
+        if not src or src.startswith(("data:", "javascript:", "blob:", "#")):
+            continue
+        resolved = urljoin(page_url, src)
+        parsed = urlparse(resolved)
+        if parsed.scheme in {"http", "https"} and parsed.netloc:
+            img["src"] = resolved
+            return resolved
+    return None
+
+
+def rewrite_images_to_remote_urls(content_element: Tag | None, page_url: str) -> int:
+    """Retain remote image links without downloading image bytes."""
+    if content_element is None:
+        return 0
+    return sum(
+        resolve_content_image_url(img, page_url) is not None
+        for img in content_element.find_all("img")
+    )
+
+
 def download_and_rewrite_images(
     content_element: Tag | None,
     page_url: str,
@@ -322,27 +355,9 @@ def download_and_rewrite_images(
     saved = 0
 
     for idx, img in enumerate(images):
-        # Prefer lazy-load attributes — WeChat, Zhihu, and many CMSes keep the
-        # real image URL in data-src / data-original / data-lazy-src, with
-        # `src` pointing at a 1x1 placeholder or a template literal.
-        candidates = [
-            img.get("data-src"),
-            img.get("data-original"),
-            img.get("data-lazy-src"),
-            img.get("data-actualsrc"),
-            img.get("src"),
-        ]
-        src = next((s for s in candidates
-                    if s and not s.startswith("data:")
-                    and s.startswith(("http://", "https://", "//", "/"))), None)
-        if not src:
+        abs_url = resolve_content_image_url(img, page_url)
+        if abs_url is None:
             continue
-
-        # Promote the chosen URL into the element's src so downstream rewrite
-        # (which matches on src) can retarget it to the local file.
-        img["src"] = src
-
-        abs_url = urljoin(page_url, src)
         content_type = ""
         converted_from = ""
         if abs_url in downloaded:
@@ -808,7 +823,12 @@ def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
     return md or ""
 
 
-def process_url(url: str, output_file: str | None = None) -> tuple[bool, str, str | None, str | None]:
+def process_url(
+    url: str,
+    output_file: str | None = None,
+    *,
+    download_images: bool = True,
+) -> tuple[bool, str, str | None, str | None]:
     """Fetch, convert, and save one web page as Markdown.
 
     Returns (success, url, error, output_path). output_path is the actual saved
@@ -844,8 +864,12 @@ def process_url(url: str, output_file: str | None = None) -> tuple[bool, str, st
         content_div = find_main_content(soup)
 
         # Download images and rewrite src before markdown conversion
-        image_count = download_and_rewrite_images(
-            content_div, url, image_dir, rel_image_prefix)
+        image_count = 0
+        if download_images:
+            image_count = download_and_rewrite_images(
+                content_div, url, image_dir, rel_image_prefix)
+        else:
+            rewrite_images_to_remote_urls(content_div, url)
         if image_count:
             print(f"   [OK] Images: {image_count} saved to {image_dir}")
 
@@ -883,7 +907,7 @@ def process_url(url: str, output_file: str | None = None) -> tuple[bool, str, st
             markdown_path=output_path,
             converter="web_to_md.py",
             conversion_type="web",
-            asset_dir=image_dir,
+            asset_dir=image_dir if image_count else None,
         )
 
         print(f"   [OK] Saved: {output_path}")
@@ -925,6 +949,11 @@ def main(argv: list[str] | None = None) -> int:
         "--emit-result",
         help="On success, write the saved output path as JSON to this file "
              "(single-URL dispatcher use, so a title-named file can be located)")
+    parser.add_argument(
+        "--no-images",
+        action="store_true",
+        help="Keep remote image links without downloading image files",
+    )
 
     args = parser.parse_args(argv)
 
@@ -957,7 +986,11 @@ def main(argv: list[str] | None = None) -> int:
     for i, url in enumerate(targets):
         # Allow specific output file only if 1 URL
         out = args.output if (len(targets) == 1 and args.output) else None
-        success, url, err, out_path = process_url(url, out)
+        success, url, err, out_path = process_url(
+            url,
+            out,
+            download_images=not args.no_images,
+        )
         results.append((success, url, err))
         if args.emit_result and success and out_path:
             _write_emit_result(args.emit_result, url, out_path)
