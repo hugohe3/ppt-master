@@ -15,7 +15,10 @@ Two optional cleanups address the realities of cropping a raster sheet:
   --alpha  knock the (flat) sheet background out to transparency, so an element
            can sit on a differently-colored slide without a visible box.
 Both need a background color; it is auto-sampled from each cell's border unless
-you pass --bg.
+you pass --bg. Keying only works on a genuinely flat ground, so each element is
+checked afterwards and a warning is printed when the background clearly did not
+key out. See references/image-generator.md section 4.3 for the sheet contract
+that keeps the ground flat.
 
 Usage:
     python3 scripts/slice_images.py <sheet_image> --grid RxC [options]
@@ -47,6 +50,7 @@ from PIL import Image, ImageChops, ImageFilter
 _GRID_RE = re.compile(r"^\s*(\d+)\s*[xX×]\s*(\d+)\s*$")
 _BG_SAMPLE_BORDER = 2
 _DEFAULT_FEATHER = 4
+_CORNER_OPAQUE_ALPHA = 32
 
 
 def _log(msg: str) -> None:
@@ -148,6 +152,51 @@ def _content_masks(
     return trim_mask, alpha_mask
 
 
+def _keying_findings(
+    label: str,
+    cell_size: tuple[int, int],
+    bbox: tuple[int, int, int, int],
+    alpha_mask: Optional[Image.Image],
+    cell_bg: tuple[int, int, int],
+    *,
+    trim: bool,
+    alpha: bool,
+) -> list[str]:
+    """Report objective signs that the flat-background key did not take.
+
+    Two deterministic symptoms: a cut element whose corners are still opaque,
+    and a ``--trim`` that removed nothing because the mask found content along
+    every edge. Both mean the sampled background did not match the real ground
+    (a textured or multi-color ground is the usual cause).
+    """
+    findings: list[str] = []
+    hex_bg = "#{:02X}{:02X}{:02X}".format(*cell_bg)
+
+    if alpha and alpha_mask is not None:
+        px = alpha_mask.load()
+        width, height = alpha_mask.size
+        corners = (
+            px[0, 0], px[width - 1, 0],
+            px[0, height - 1], px[width - 1, height - 1],
+        )
+        opaque = sum(1 for value in corners if value > _CORNER_OPAQUE_ALPHA)
+        if opaque:
+            findings.append(
+                f"{label}: {opaque}/4 corners stayed opaque after --alpha "
+                f"(sampled background {hex_bg})"
+            )
+
+    if trim:
+        cell_width, cell_height = cell_size
+        if bbox[2] - bbox[0] >= cell_width and bbox[3] - bbox[1] >= cell_height:
+            findings.append(
+                f"{label}: --trim removed nothing, so content reaches every cell edge "
+                f"(sampled background {hex_bg})"
+            )
+
+    return findings
+
+
 def slice_sheet(
     sheet_path: Path,
     rows: int,
@@ -199,6 +248,7 @@ def slice_sheet(
     stem = sheet_path.stem
     name_prefix = _safe_basename(prefix) if prefix else f"{stem}_"
     written: list[Path] = []
+    findings: list[str] = []
 
     idx = 0
     for r in range(rows):
@@ -221,6 +271,10 @@ def slice_sheet(
                 bbox = trim_mask.getbbox()
                 if bbox is None:
                     raise ValueError(f"cell ({r},{c}) is all background; no element was sliced")
+                findings.extend(_keying_findings(
+                    f"cell ({r},{c})", cell.size, bbox, alpha_mask, cell_bg,
+                    trim=trim, alpha=alpha,
+                ))
 
             if trim and trim_mask is not None and alpha_mask is not None and bbox is not None:
                 cell = cell.crop(bbox)
@@ -243,6 +297,18 @@ def slice_sheet(
 
     if len(written) != total_cells:
         raise ValueError(f"sliced {len(written)} elements but expected {total_cells}")
+
+    if findings:
+        _log("\n[WARN] Background keying looks incomplete — the cut element(s) may")
+        _log("       still carry a visible box on a differently-colored slide:")
+        for finding in findings:
+            _log(f"       - {finding}")
+        _log("       Fix: regenerate the sheet with one genuinely flat ground "
+             "(no grain, halftone, or")
+        _log("       vignette over the background, gutters included), or rerun with "
+             "an explicit")
+        _log("       --bg <hex> and a larger --tolerance.")
+
     return written
 
 

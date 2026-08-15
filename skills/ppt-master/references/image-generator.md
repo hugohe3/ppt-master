@@ -267,7 +267,7 @@ into an image.
 - Choose the sheet `aspect_ratio` and `--grid` from the target element shape. Do not default every sheet to `1:1` + a symmetric grid.
 - Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
 - State the intended cell shape in the prompt: compact square object, tall portrait element, wide landscape vignette, or wide lettering mark. Do not let the model shrink every subject into a centered square sticker.
-- One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box.
+- One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box. Gutters are part of that same flat ground; keep paper grain, halftone, vignette, and every other texture inside the elements, never over the background.
 - Shared `deck_rendering` + `color_scheme` as always.
 - **Spot sheet**: apply the §5.3 `none` cue; include no text, labels, or numbers.
 - **Lettering sheet**: put exactly one named stable string in each cell as the only text, quote every complete character sequence literally in the prompt, and describe one shared artistic treatment. Keep each mark isolated on the flat key background with no scene, title copy, labels, watermark, mockup surface, or unrequested symbols.
@@ -305,7 +305,7 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 
 **Three constraints that decide whether it looks good**:
 
-1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend.
+1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend. Texture over the ground defeats the key, so request grain or halftone only inside the elements. `slice_images.py` warns when an element keeps opaque corners after `--alpha` or when `--trim` removed nothing; both mean the key did not take. Regenerate the sheet with a clean ground, or rerun with an explicit `--bg` and a larger `--tolerance`, before placing the element on a non-background surface.
 2. **Clean grid, or it cuts ugly.** State the exact row/column structure and cell shape so the model does not invent a square matrix; `--trim` absorbs smaller placement variance. For lettering, a wrong/missing character, extra copy, fused cells, or scene background makes the parent sheet unusable. Do not generate several sheets or read them back merely to choose a favorite; re-roll only when user/live-preview feedback exposes an unusable slice, then slice the replacement sheet again.
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
