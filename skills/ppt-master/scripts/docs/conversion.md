@@ -251,6 +251,10 @@ python3 scripts/pptx_to_svg.py deck.pptx --strict
 | `layered` | Only the layered `svg/` view and inheritance metadata |
 | `flat` | One self-contained slide SVG per page under `svg/` |
 
+Every mode also writes a canonical `animations.json`. Its default transition
+is `none`, so slides without a source transition stay transition-free when the
+workspace is exported again.
+
 For Office pictures that carry both a raster compatibility preview on
 `a:blip` and an editable SVG relationship in `asvg:svgBlip`, import resolves
 the SVG relationship first. The raster relationship is used only when the SVG
@@ -277,8 +281,10 @@ exists. Pass `--strict` for parser development or contract verification when
 the first unsupported/malformed source construct should stop conversion.
 
 Every successful run writes `<output>/conversion-report.json`. Its stable
-top-level fields are `schemaVersion`, `source`, `mode`, `summary`, and
-`diagnostics`. Each diagnostic records a reason `code`, source `message`, chosen
+top-level fields are `schemaVersion`, `source`, `mode`, `summary`, `artifacts`,
+and `diagnostics`; `artifacts.animationConfig` and
+`artifacts.animationMedia` identify the converter-owned sidecar and transition
+sounds. Each diagnostic records a reason `code`, source `message`, chosen
 `fallback`, package `part_path`, and—when available—`slide_index`, `shape_id`,
 `shape_name`, and `shape_kind`. The command also prints a bounded warning
 summary instead of a raw Python traceback.
@@ -289,11 +295,27 @@ retains the usable fallback/object and records the degradation; it does not
 discard unrelated shapes, pages, or the entire deck.
 
 Source `p:transition` and `p:timing` nodes are never silently implied by the
-static SVG view. Until their corresponding sidecar read-back stages are
-enabled, the importer emits `transition-not-reconstructed` and
-`animation-not-reconstructed` diagnostics with the exact source slide. Direct
-PPTX Fill/Enhance workflows remain the source-preserving route; `--strict`
-stops on the first such unreconstructed node.
+static SVG view. Supported page transitions are reconstructed in
+`animations.json`; source object timing still emits
+`animation-not-reconstructed` with the exact source slide. Direct PPTX
+Fill/Enhance workflows remain the source-preserving route for timing outside
+the closed read-back contracts; `--strict` stops on the first unreconstructed
+node.
+
+### Page-transition reverse import
+
+The importer accepts exactly the current generated-transition registry and
+validates the source carrier with the same read-back contract used after
+SVG-to-PPTX export. It reconstructs the canonical effect and all effective
+options, exact `p14:dur`, optional `advTm`, and an internal WAV transition
+sound. Sound bytes are extracted under the selected media directory with a
+content-addressed filename and referenced from the sidecar.
+
+This is a PPT Master-owned semantic loop, not a general transition normalizer.
+Unknown effects, legacy `p:transition@spd`, visual effects without exact
+`p14:dur`, `advClick="0"`, malformed carriers, and unsupported or broken sound
+relationships produce `transition-not-reconstructed` in tolerant mode;
+`--strict` stops. The converter never substitutes `fade` for those cases.
 
 ### Native formula reverse import
 

@@ -230,7 +230,7 @@ SVG 预览内容只负责让导出前的作者页面保持可见。
 | PowerPoint 功能 | 项目中的所有者 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 演讲者备注 | `notes/<slide>.md` sidecar | Notes Slide part 与 relationship | `Sidecar/package` | 备注不是 SVG 文本，不影响页面几何 |
-| 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package` | 未知效果或非法时长失败；不默默 fallback 到 `fade` |
+| 幻灯片切换 | CLI 选项或 `animations.json` | `p:transition` | `Sidecar/package`；PPTX 回导把当前注册表内的精确切换重建到 `animations.json` | 未知效果或不精确 carrier 会失败或保留诊断；不默默 fallback 到 `fade` |
 | 对象动画（进入 / 强调 / 动作路径 / 退出） | `animations.json`，目标为稳定的顶层 SVG group ID；`effects[]` 可让一个锚点拥有多条记录 | 根 `p:timing` 动画树 | `Sidecar/package`；group ID 仅为 shape target 锚点 | 静态结构层与占位符不可动画 |
 | 旁白音频 | `audio/` 资产加 recorded-narration 导出选项 | media relationship、audio carrier 与 timing | `Sidecar/package` | 必须校验资产、Slide 关联与时序 |
 | 幻灯片自动换页 | 显式 transition timing 或旁白派生时长 | `advTm`/换页行为 | `Sidecar/package` | 单击驱动动画与录制旁白不兼容 |
@@ -279,6 +279,7 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
+| 当前注册表内受支持的页面切换 | 规范 `animations.json` 记录，包含有效选项、精确时长、可选自动换页与受支持 WAV 声音 |
 | 不支持的 graphic frame 或 SmartArt | 显式 preview、placeholder 或 unsupported 状态 |
 
 这是语义投影，不是语法往返。只有 Create Template mirror 可把来源包中已验证的 Master/Layout 事实保留到新工作区；普通视觉导入不会从 Slide 外观推断可复用拓扑。
@@ -295,7 +296,12 @@ sidecar 工作流见[转场与动画](./animations.md)（技术规范源为 [`re
 | 不支持的 Slide 或 part 背景 | 省略该背景，继续当前页面/part | 在第一个违规点停止 | warning 标识所属 part |
 | 损坏的包/XML 或缺失必需包结构 | 停止；不存在安全的页面级容错 | 停止 | 整洁的命令错误，不输出裸 Python traceback |
 
-每次成功转换都会写入 `<output>/conversion-report.json`。报告记录运行模式、Slide 与 warning 数量、稳定原因码、源错误消息、采用的 fallback、包 part，以及可用时的 Slide 序号和 shape id/name/kind。因此，容错导入不是静默吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
+每次成功转换都会写入 `<output>/conversion-report.json` 和以 `none` 为
+基线切换的规范 `<output>/animations.json`。报告记录运行模式、Slide 与
+warning 数量、归属产物、稳定原因码、源错误消息、采用的 fallback、包 part，
+以及可用时的 Slide 序号和 shape id/name/kind。未知或不精确的切换 carrier
+会保留明确的 `transition-not-reconstructed` 诊断。因此，容错导入不是静默
+吞错：它尽可能保留可用输出，同时让每一次合同降级都可复核。
 
 ## 13. 校验职责
 
