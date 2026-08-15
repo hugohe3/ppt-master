@@ -230,7 +230,7 @@ TIER_ORDER = {"core": 0, "extended": 1, "experimental": 2}
 SUPPORTED_BACKENDS = tuple(sorted(BACKEND_REGISTRY))
 
 
-def _load_image_env_file() -> None:
+def _load_image_env_file() -> Path | None:
     """
     Load image generation config from the resolved `.env` as a fallback layer.
 
@@ -248,7 +248,10 @@ def _load_image_env_file() -> None:
         )
         for key, replacement in replacements.items()
     }
-    load_prefixed_env_file(IMAGE_ENV_PREFIXES, deprecated_keys=deprecated_messages)
+    return load_prefixed_env_file(
+        IMAGE_ENV_PREFIXES,
+        deprecated_keys=deprecated_messages,
+    )
 
 
 def _validate_runtime_config() -> None:
@@ -304,6 +307,44 @@ def _load_backend(canonical_name: str) -> tuple[object, str]:
     return module, canonical_name
 
 
+def _print_backend_resolution() -> None:
+    """Print the effective Path A backend without exposing credentials."""
+    backend_from_process = "IMAGE_BACKEND" in os.environ
+    try:
+        env_path = _load_image_env_file()
+    except ValueError as exc:
+        print("Resolved backend: invalid configuration")
+        print(f"Configuration source: {ENV_PATH}")
+        print(f"Configuration error: {exc}")
+        return
+
+    try:
+        _validate_runtime_config()
+    except ValueError as exc:
+        print("Resolved backend: invalid configuration")
+        print("Configuration source: process environment")
+        print(f"Configuration error: {exc}")
+        return
+
+    backend_name = os.environ.get("IMAGE_BACKEND", "").strip().lower()
+    if not backend_name:
+        if backend_from_process:
+            source = "process environment (empty)"
+        elif env_path is not None:
+            source = f"none (checked {env_path})"
+        else:
+            source = "none (no .env found)"
+        print("Resolved backend: not configured (Path A unavailable)")
+        print(f"Configuration source: {source}")
+        return
+
+    canonical = BACKEND_ALIASES.get(backend_name)
+    resolved = canonical or f"invalid ({backend_name})"
+    source = "process environment" if backend_from_process else str(env_path or ENV_PATH)
+    print(f"Resolved backend: {resolved}")
+    print(f"Configuration source: {source}")
+
+
 def _print_backend_list() -> None:
     """Print supported backends grouped by support tier."""
     print("Supported image backends:\n")
@@ -327,7 +368,7 @@ def _print_backend_list() -> None:
             )
         print()
     print("Recommendation: prefer CORE backends for everyday PPT generation.")
-    print(f"Config fallback file: {ENV_PATH}")
+    _print_backend_resolution()
 
 
 def _resolve_backend() -> tuple[object, str]:
