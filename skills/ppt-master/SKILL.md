@@ -1,12 +1,13 @@
 ---
 name: ppt-master
 description: >
-  AI-driven presentation workflow for generating editable PPTX decks,
+  AI-driven presentation workflow for generating editable PPTX decks and slides,
   reconstructing page visuals, creating reusable Brand/Style/Layout/Deck
   workspaces, filling native PPTX templates, and enhancing finished PPTX files.
-  Use when the user asks to create, reconstruct, regenerate, template, fill, or
-  enhance a presentation, requests a presentation-authored narrated/self-running
-  video, or mentions ppt-master.
+  Use when the user asks to create, generate, reconstruct, regenerate, beautify,
+  redesign, template, fill, or enhance a presentation, PPT, PPTX, slide deck, or
+  courseware — including adding narration or animation to one — requests a
+  presentation-authored narrated/self-running video, or mentions ppt-master.
 metadata:
   version: "4.7.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
@@ -60,7 +61,7 @@ never compete with it.
 5. **No speculative execution** — Do not prepare later-phase artifacts before their owning step.
 6. **Deterministic routing** — Do not add a route-choice question when [`routing.md`](workflows/routing.md) resolves the request. If a route prerequisite is missing, state it and stop that route.
 7. **Owning-source recovery** — On failure, repair or regenerate the owning source artifact and resume from the route's declared pointer. Do not silently downgrade a required artifact.
-8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD.
+8. **Stable paths** — Use absolute skill/project paths; never derive them from CWD. The Skill root is the directory that contains `SKILL.md`, and the host provides its path when loading the Skill; if that path cannot be determined, ask the user — never guess it via file search.
 
 ## Global Communication Rules
 
