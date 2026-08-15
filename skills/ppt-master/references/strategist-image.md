@@ -24,7 +24,9 @@ complete page roster contains a suitable stable cover/divider hook, collect the
 small compatible set once before writing §VIII. Use one ordinary `ai` row for a
 single hook, or the sheet/element rows under §4.3 for several compatible hooks,
 and record every exact character sequence; do not leave the choice as an
-`image_notes` or §IX suggestion only. A confirmed `none`, explicit no-AI
+`image_notes` or §IX suggestion only. A planned wordmark and an editable page
+title coexist: the asset carries the display layer while subtitle, chrome, and
+body remain native text. A confirmed `none`, explicit no-AI
 instruction, editable-only hook, or Offline Manual path does not activate this
 proactive rule; an explicit user-required lettering asset still follows the
 ordinary resource contract.
