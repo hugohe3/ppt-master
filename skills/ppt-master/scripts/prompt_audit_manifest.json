@@ -951,7 +951,7 @@
       "files": [
         "skills/ppt-master/scripts/docs/conversion.md"
       ],
-      "max_tokens": 6750
+      "max_tokens": 7500
     },
     "stage.shared.troubleshooting": {
       "description": "Conditional troubleshooting reference for generation failures.",
@@ -1052,7 +1052,7 @@
       "files": [
         "skills/ppt-master/references/native-formula.md"
       ],
-      "max_tokens": 2000
+      "max_tokens": 2250
     },
     "stage.generate.executor.hyperlink": {
       "description": "Conditional direct authoring contract for PowerPoint-native external and same-deck click hyperlinks.",

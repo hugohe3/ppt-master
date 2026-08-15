@@ -115,7 +115,22 @@ explicit big-delimiter grades become auto-sizing delimiters; `\mathscr`
 normalizes to `\mathcal`; `smallmatrix` normalizes to `matrix`; PowerPoint array
 columns become centered; style/size commands and equation tags are accepted but
 not stored. Color is stored in generated formula runs and structural control
-properties. No reverse OMML-to-LaTeX build-down is implemented by PPT Master.
+properties.
+
+**Narrow reverse import**: `pptx_to_svg.py` rebuilds a block formula marker or
+same-paragraph inline marker only when one `a14:m` root passes this compiler's
+closed OMML validator and its normalized structure can be serialized back to
+LaTeX accepted by the same compiler. The reconstructed LaTeX is canonicalized;
+it is not the original spelling. A formula-only `m:oMathPara` text shape becomes
+one bounded block marker when its carrier also fits the unstyled rectangular
+native-formula contract; carrier grouping, paint, effects, rotation, hyperlink,
+or placeholder ownership force fallback instead of being silently discarded.
+Supported `m:oMath` zones remain inline among their surrounding text runs. Both
+forms receive a dependency-free linear SVG preview. This contract covers PPT
+Master-emitted vocabulary, not arbitrary third-party OMML. Tolerant import
+reports `formula-not-reconstructed`, renders readable formula text, and retains
+a relationship-free unchanged source `txBody` as opaque metadata; strict import
+stops instead.
 
 **Fail-closed boundary**: Input containing unknown commands or environments,
 Microsoft's explicitly unsupported commands, unsupported mhchem arrows,

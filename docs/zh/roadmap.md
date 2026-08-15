@@ -45,7 +45,7 @@
 | 图表 | 系统化 | 有专属创作 reference；默认 SVG，原生 Chart 替换为显式 opt-in |
 | 表格 | 系统化 | 有专属创作 reference；六种可复用的单元格网格参考，仍可自定义网格；原生 Table 替换走同一 opt-in |
 | 关系图 | 系统化 | 六个关系原子——`order`、`link`、`parent`、`membership`、`contrast`、`overlap` |
-| 公式 | 系统化 | 独立块级公式与同段行内公式可把 Microsoft 365 LaTeX / mhchem 文档中所有明确点名的输入编译为可编辑 OMML，并遵循文档规定的原生归一化，档位外输入直接失败。SVG 预览仅供创作阶段使用，不生成图片兜底。包目标仍为 PowerPoint 2010+；可执行档位锁定到所述 Microsoft 文档版本，仓库验证覆盖编译器、OMML 与包结构，不等同于完整的 Microsoft 365 UI 认证。非 PowerPoint 客户端仍不在合同内 |
+| 公式 | 系统化 | 独立块级公式与同段行内公式可把 Microsoft 365 LaTeX / mhchem 文档中所有明确点名的输入编译为可编辑 OMML，并遵循文档规定的原生归一化，档位外输入直接失败。PPTX 导入可把通过校验的 PPT Master 自有 OMML 恢复为带可见 SVG 预览的规范公式 marker；任意第三方 OMML 与原始 LaTeX 写法恢复仍不在合同内。不生成图片兜底。包目标仍为 PowerPoint 2010+；可执行档位锁定到所述 Microsoft 文档版本，仓库验证覆盖编译器、OMML 与包结构，不等同于完整的 Microsoft 365 UI 认证。非 PowerPoint 客户端仍不在合同内 |
 | 旁白与动画音效 | 系统化 | 逐页旁白音频，以及取自内置 CC0 音效库的原生转场与对象音效 |
 | 任意视频与背景音乐 | 暂不考虑 | 属于一次性、内容特定的插入动作，在 PowerPoint 里手动放进去更快，AI 也无法替你挑文件。背景音乐还会牵出旁白混音决策，那在范围之外。来源 deck 中已有的媒体在 Fill 与 Enhance 路线中原样保留 |
 | SmartArt | 有意的不对称 | 读取来源 diagram part 的内容与结构；生成 deck 用普通形状管线把这些内容重画出来。从不编辑 DiagramML，也不承诺原生 SmartArt 再生 |

@@ -435,8 +435,10 @@ Cambria Math；编译器自己的局部颜色以及 `\boldsymbol` / `\bm` 的控
 结构控制符，而普通文字粗斜体或数学字母样式只覆盖对应的继承 run 属性。封闭的 Microsoft 365 档位表进入同一个 parser 与共享 AST，再由同一个 emitter
 生成并按结构校验块级和行内路径共同使用的窄 OMML 词汇。前向编译器覆盖锁定版本的
 Microsoft 365 LaTeX 与 mhchem 文档中所有明确点名的输入及原生归一化；未知、明确不支持、
-非法或超出资源上限的输入都会直接失败，PPT Master 不把 OMML 反向 build-down 为
-LaTeX。矩阵、多行推导等高结构表达仍使用块级形式。两种形式都保留普通 SVG 预览，
+非法或超出资源上限的输入都会直接失败。PPTX 导入器只对通过同一校验器的项目自有
+OMML 词汇执行更窄的反向过程，生成带可见 SVG 预览的规范块级 / 行内公式 marker，
+而不恢复作者原始 LaTeX 写法。未知第三方 OMML 保持有诊断的可读 / 不透明 fallback，
+不冒充原生重建。矩阵、多行推导等高结构表达仍使用块级形式。两种形式都保留普通 SVG 预览，
 因为原始 LaTeX 本身不能在 SVG 中显示。生成包仍以 PowerPoint 2010+ 为目标，可执行
 档位锁定到所述 Microsoft 365 文档版本；仓库验证覆盖编译器、OMML 与包结构，不等同于
 完整的 Microsoft 365 UI 显示 / 编辑认证。不生成公式 PNG、media relationship，也不为

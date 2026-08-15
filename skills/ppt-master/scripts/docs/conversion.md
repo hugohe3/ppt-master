@@ -288,6 +288,37 @@ the native replacement claim or strict mode. Default tolerant deck import
 retains the usable fallback/object and records the degradation; it does not
 discard unrelated shapes, pages, or the entire deck.
 
+Source `p:transition` and `p:timing` nodes are never silently implied by the
+static SVG view. Until their corresponding sidecar read-back stages are
+enabled, the importer emits `transition-not-reconstructed` and
+`animation-not-reconstructed` diagnostics with the exact source slide. Direct
+PPTX Fill/Enhance workflows remain the source-preserving route; `--strict`
+stops on the first such unreconstructed node.
+
+### Native formula reverse import
+
+The importer reconstructs formulas only from the closed OMML vocabulary owned
+by the native formula compiler. One formula-only `a14:m > m:oMathPara` text
+shape becomes a bounded `<g data-pptx-replace-with="formula">` with canonical
+LaTeX JSON and a visible linear SVG preview when its carrier is an ungrouped,
+unstyled, unrotated rectangular formula shape. Carrier styling, effects,
+hyperlinks, or placeholder ownership force diagnosed fallback rather than
+silent loss.
+Supported `a14:m > m:oMath` zones inside an ordinary paragraph become leaf
+`<tspan data-pptx-inline-formula="...">preview</tspan>` markers while retaining
+their surrounding text runs. The generated markers pass the same native-object
+and inline-formula validators used by SVG-to-PPTX export.
+
+This is normalized semantic read-back, not recovery of the author's original
+LaTeX spelling and not a general Office Math converter. Every OMML root must
+pass the compiler's namespace, element, attribute, structure, size, and depth
+gates, and the reconstructed LaTeX must compile again under the same profile.
+If any formula in one text body falls outside that boundary, tolerant import
+keeps all formulas in that body as readable linear text and retains the
+relationship-free source `txBody` as opaque metadata instead of partially
+claiming native reconstruction. It records `formula-not-reconstructed`;
+`--strict` stops on the same condition.
+
 ### Native table and chart import claims
 
 Supported text-grid tables and conservative classic-chart caches carry a

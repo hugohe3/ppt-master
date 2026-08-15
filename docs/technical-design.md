@@ -517,8 +517,12 @@ property. A closed Microsoft
 structurally validates the narrow OMML vocabulary used by both block and inline
 paths. The forward compiler covers every explicitly documented input and native
 normalization in the pinned Microsoft 365 LaTeX and mhchem profiles; unknown,
-explicitly unsupported, invalid, or resource-overflow input fails closed, and
-PPT Master does not build OMML back down to LaTeX. Matrices, multiline
+explicitly unsupported, invalid, or resource-overflow input fails closed.
+The PPTX importer applies a narrower inverse to that same validator-clean,
+project-owned OMML vocabulary: it emits canonical block/inline formula markers
+with visible SVG previews, not the author's original LaTeX spelling. Unknown
+third-party OMML remains a diagnosed readable/opaque fallback rather than a
+native reconstruction claim. Matrices, multiline
 derivations, and other high-structure expressions remain blocks. Both forms
 keep ordinary SVG preview content because raw LaTeX does not render in SVG.
 PowerPoint 2010+ is the package target, with no formula PNG, media relationship,

@@ -162,7 +162,11 @@ documented Microsoft 365 2606 / Mac 16.110 LaTeX profile and 2605 / 16.109
 mhchem profile: symbols, structures, environments, macros, chemistry, local
 formula colors, and the documented native normalizations. Unknown and
 explicitly unsupported input fails closed instead of appearing as raw LaTeX.
-PPT Master does not implement reverse OMML-to-LaTeX build-down.
+For PPTX import, the same closed OMML validator supports a narrow reverse path:
+PPT Master-owned block and inline math becomes canonical formula markers with
+visible SVG previews. This recovers normalized semantics, not the author's
+original LaTeX spelling and not arbitrary third-party OMML. Unknown OMML is
+reported and retained as readable/opaque fallback in tolerant mode.
 
 The generated OMML retains the PowerPoint 2010+ package target, and the
 executable source profile is pinned to the Microsoft documentation versions
