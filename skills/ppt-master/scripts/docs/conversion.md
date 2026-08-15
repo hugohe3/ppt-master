@@ -55,9 +55,9 @@ Useful options:
 - `--json` prints a compact machine-readable result after success when the
   output path is known. With multiple inputs, each successful conversion prints
   its own JSON line after that source finishes.
-- `--images all|filtered|none`, `--no-images`, and `--filter-images` map to the
-  existing PDF image mode. They are intentionally PDF-only until other backends
-  expose the same behavior natively.
+- At the unified `source_to_md.py` entry, `--images all|filtered|none`,
+  `--no-images`, and `--filter-images` map to the PDF image mode. The web
+  backend exposes its own direct `--no-images` option described below.
 - Unknown backend-specific flags are passed through to each selected converter.
 - `-o/--output` selects one Markdown file for one input, or an output directory
   for multiple inputs / directory inputs.
@@ -608,7 +608,8 @@ Error: PPTX-to-SVG conversion failed: Invalid DrawingML sRGB color structure
 
 ## `source_to_md/web_to_md.py`
 
-Convert web pages to Markdown and download images locally.
+Convert web pages to Markdown and download images locally by default. Use
+`--no-images` to retain remote image links without downloading their files.
 
 ```bash
 python3 scripts/source_to_md/web_to_md.py https://example.com/article
@@ -616,6 +617,7 @@ python3 scripts/source_to_md/web_to_md.py https://url1.com https://url2.com
 python3 scripts/source_to_md/web_to_md.py -f urls.txt
 python3 scripts/source_to_md/web_to_md.py https://example.com -o output.md
 python3 scripts/source_to_md/web_to_md.py https://example.com --emit-result /tmp/result.json
+python3 scripts/source_to_md/web_to_md.py https://example.com -o evidence.md --no-images
 ```
 
 When `curl_cffi` is installed (included in `requirements.txt`), this script

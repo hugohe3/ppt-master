@@ -1,5 +1,5 @@
 ---
-description: Generate source-intake stage that fills factual gaps and retains adopted webpage source packages before planning or direct SVG authoring.
+description: Generate source-intake stage that fills factual gaps and retains adopted webpage text evidence before planning or direct SVG authoring.
 ---
 
 # Topic Research Stage
@@ -9,17 +9,15 @@ description: Generate source-intake stage that fills factual gaps and retains ad
 > consumes the same output. Run immediately for topic-only input, or after
 > supplied material is converted and read when it leaves planning-critical
 > factual gaps. Output is a research supplement plus stable fact provenance for
-> project import; its retained webpage URLs are imported as source packages in
+> project import; its retained webpage URLs are imported as text evidence in
 > the active Generate profile's project-initialization handoff.
 
 This stage supplies facts needed to build the requested deck and preserves the
 webpages actually adopted during that research. It makes no deck image
 selection and performs no independent image search or generation. During the
 handoff, `project_manager.py import-sources` converts each retained URL, archives
-its Markdown and companion files, and synchronizes embedded main-content images
-into the project resource pool. Those files are source-extracted assets, not
-`Acquire Via: web` acquisitions. Default Generate still resolves their use in
-the final Strategist plan; Quick Generate resolves their use in active context.
+its Markdown as text evidence, and retains remote inline-image links without
+downloading them. Those links are not an initial image pool.
 
 ## When to Run
 
@@ -75,7 +73,7 @@ confirmation stage.
 
 **Hard rule — isolate retrieval, not research**: Raw page content and fetch transcripts stay in the worker context. The 250-word limit applies only to its chat receipt: return `status`, exact artifact paths, covered/unresolved gap counts, external-fact count, and material conflicts. It does not cap or replace the two artifacts. After validation and import, the active content owner reads the complete imported research supplement and fact-provenance JSON into the main context before planning or direct SVG authoring; never use the receipt or validation summary as content.
 
-**Validation**: Before import, the main agent verifies both exact files exist, the Markdown contains `## Research Brief` and `## Sources`, the JSON parses with schema `ppt-master.fact-provenance.v1` and unique sequential IDs, and the two files agree. Return an invalid pair to the research worker for owning-artifact repair; use main-context web research only when isolated execution is unavailable.
+**Validation**: Before import, the main agent verifies both exact files exist, the Markdown contains `## Research Brief` and no source list or URL, the JSON parses with schema `ppt-master.fact-provenance.v1` and unique sequential IDs, and the two files agree. Return an invalid pair to the research worker for owning-artifact repair; use main-context web research only when isolated execution is unavailable.
 
 ---
 
@@ -85,11 +83,11 @@ Use the web search and fetch tools available in the active research context. An 
 
 ```bash
 python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL> \
-  -o projects/<research_slug>_web_sources/<source_slug>.md
+  -o projects/<research_slug>_web_sources/<source_slug>.md --no-images
 ```
 
-Preserve the resulting Markdown, conversion profile, and companion `_files/`
-directory for the handoff instead of fetching the same URL again.
+Preserve the resulting Markdown and conversion profile for research. Remote
+inline-image links remain in the Markdown; no image files are downloaded.
 
 | Phase | Action |
 |---|---|
@@ -104,12 +102,10 @@ directory for the handoff instead of fetching the same URL again.
 | 3 | Reputable reporting or analysis when primary evidence is unavailable |
 | Avoid | Unsourced reposts, unverifiable summaries, and stock-aggregator pages |
 
-**Retained webpage boundary**: End `## Sources` with every exact webpage URL
-that materially supports a retained fact or whose embedded main-content visual
-was encountered while researching the declared gaps and may serve the requested
-outcome. Do not add unopened search results, orientation-only hits, or new pages
-found through a separate image-search pass. A retained page is a pending source
-package, not a deck-image selection.
+**Retained webpage boundary**: Record a page URL only in the matching fact's
+`source_url`, and only when it materially supports that retained fact. Do not
+retain a page merely because its images may be useful, and do not add unopened
+search results or pages found through a separate image-search pass.
 
 **Stop condition**: stop when every declared gap has enough sourced evidence for
 the active content owner to decide whether and how to include it. Do not expand
@@ -127,9 +123,9 @@ Write two artifacts under `projects/`:
 | Research supplement | `projects/<research_slug>.md` |
 | Fact provenance | `projects/<research_slug>.facts.json` |
 
-**Hard rule — location and preservation**: write both files under `projects/`, never the repository root. Do not overwrite an existing user file; choose a new research stem instead. Do not create a parallel research-image manifest or copy embedded images into an ad hoc folder; the source-package import owns that materialization. Preserve any webpage package already produced by the no-web-tools fallback at its declared output path.
+**Hard rule — location and preservation**: write both files under `projects/`, never the repository root. Do not overwrite an existing user file; choose a new research stem instead. Do not create a research-image manifest or download embedded images.
 
-Begin the research Markdown with a compact `## Research Brief` containing the supplied-material baseline, declared gaps, audience / intent already known, and requested outcome. Organize the body by gap, include concrete facts only, flag material conflicts, and end with `## Sources` listing each retained page title and exact URL once.
+Begin the research Markdown with a compact `## Research Brief` containing the supplied-material baseline, declared gaps, audience / intent already known, and requested outcome. Organize the body by gap, include concrete facts only, flag material conflicts, and cite claims by `fact_id`. Do not add `## Sources` or URLs; the facts JSON is the only URL authority.
 
 Write every externally sourced claim that may enter the deck to `<research_slug>.facts.json` with a stable sequential ID, especially quantitative, date, ranking, attribution, and named-entity claims. Do not include user-supplied claims or invented scenario values. When no external claim is retained, write the schema with an empty `facts` array.
 
@@ -156,27 +152,27 @@ IDs are immutable within the file. Correct a claim under the same ID; never reus
 
 ## Hand-off
 
-After project initialization, import the research pair, user-supplied sources,
-and one copy of every retained webpage source through the active profile's
-source intake. Pass an exact URL when the page has not yet been converted; pass
-its existing converted Markdown path when the no-web-tools fallback already
-created the webpage package. Never pass both forms for the same page.
+After project initialization, import the research pair and user-supplied
+sources. `project_manager.py` reads unique `source_url` values from the v1 facts
+JSON automatically; do not repeat those URLs in the command or Markdown.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
   projects/<project_name> [<source_paths...>] \
-  [<retained_URLs_or_converted_webpage_paths...>] \
   projects/<research_slug>.md projects/<research_slug>.facts.json
 ```
 
-For retained URLs, `project_manager.py` invokes the existing webpage converter,
-archives the webpage Markdown plus conversion profile, preserves its companion
-`_files/` package and `image_manifest.json`, and synchronizes embedded images
-into `<project>/images/`. These imported files are source-extracted inventory;
-they do not create `image_sources.json`, run `web-image-review`, or consume an
-`Acquire Via: web` choice. The active image owner may later select or ignore
-them like other document-extracted images. Independent AI / web / slice
-acquisition remains in the owning profile's later resource-preparation phase.
+For retained URLs, `project_manager.py` invokes the webpage converter in
+text-only mode and fails the import when any registered URL cannot be archived.
+It never copies page images into `<project>/images/`. A URL explicitly supplied
+as initial material keeps normal source-import behavior even when a later fact
+cites it; text-only mode applies only to URLs auto-expanded from the facts JSON.
+
+Only after normal web-image providers, ranked thumbnail pages, and materially
+different queries fail may an image owner with visual capability open one
+relevant retained page, choose one inline-image URL, download it with the
+existing `image_search.py --from-url`, and inspect it. Try another only after
+rejection; never bulk-download a page. Without vision, skip this fallback.
 
 The imported research pair remains the compact evidence-facing content
 authority, not a locked presentation contract. Default Generate has Strategist
@@ -184,15 +180,14 @@ read both files completely before confirmation and use them with the imported
 source inventory to select the content, page roster, and image resource plan.
 Quick Generate has the current agent do the same before its active-context
 content, design, and resource decisions. Reopen an imported webpage Markdown
-only when its raw detail is needed; do not bulk-read it merely because the
-source package was retained.
+only for missing factual detail or the post-exhaustion single-image fallback.
 
 ```markdown
 ## ✅ Topic Research Complete
 - [x] Research execution: <isolated worker | main-context fallback>
 - [x] Research supplement: `projects/<research_slug>.md` (N declared gaps covered)
 - [x] Fact provenance: `projects/<research_slug>.facts.json` (N external facts)
-- [x] Artifact contract validated: `## Research Brief`, `## Sources`, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
-- [x] Retained webpage inputs: N exact URL(s) or already-converted source package(s); no independent image search/generation or deck-image selection
-- [ ] **Next**: Default returns to [`generate-pptx`](../generate-pptx.md) Step 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2. Import all source artifacts and retained webpage packages, then fully read the imported research pair before planning or direct SVG authoring
+- [x] Artifact contract validated: `## Research Brief`, no Markdown source list, `ppt-master.fact-provenance.v1`, unique sequential IDs, and Markdown/JSON agreement
+- [x] Retained webpage URLs: N unique `source_url` values in the facts JSON; no page images downloaded
+- [ ] **Next**: Default returns to [`generate-pptx`](../generate-pptx.md) Step 2; Quick returns to [`quick-generate`](../profiles/quick-generate.md) §2. Import the source artifacts plus research pair, then fully read the imported pair before planning or direct SVG authoring
 ```

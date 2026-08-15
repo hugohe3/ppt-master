@@ -121,8 +121,8 @@ After reading every direct and converted source, assess factual sufficiency:
 **Sufficiency test**: research only when the requested outcome would otherwise
 require inventing, omitting, or leaving unsupported an externally verifiable
 claim. File presence or length does not establish sufficiency. Research records
-the needed facts and adopted webpages. Their embedded images enter the imported
-source inventory; independent AI / web / slice acquisition remains part of the
+the needed facts and adopted webpages. Those pages import as text-only evidence;
+independent AI / web / slice acquisition remains part of the
 resource preparation below.
 
 **Conditional video-delivery context**: when the intended use is recorded,
@@ -181,15 +181,12 @@ research pair together:
 ```bash
 python3 ${SKILL_DIR}/scripts/project_manager.py import-sources \
   <project_path> <source_files_or_dirs...> [<converted_outputs...>] \
-  [<retained_URLs_or_converted_webpage_paths...>] \
   [projects/<research_slug>.md projects/<research_slug>.facts.json]
 ```
 
-For each retained webpage, pass either its exact URL or an existing converted
-Markdown package, never both. `project_manager.py` archives the page Markdown
-and companion files, merges its `image_manifest.json`, and synchronizes
-embedded images into `<project>/images/`. Treat them as source-extracted
-inventory rather than `Acquire Via: web` acquisitions.
+The facts JSON owns retained URLs. `project_manager.py` imports them
+automatically in text-only mode and fails incomplete reconciliation; do not
+repeat URLs or add page images to `<project>/images/`.
 
 Only inputs already under the repository's `projects/` tree move into the
 target project; every external path is copied and remains untouched. Use
@@ -440,6 +437,8 @@ strategy.
 Every required file-backed resource must reach a usable terminal state before
 its page. Web `Needs-Selection` blocks until one thumbnail is promoted or the
 bounded ranked pages and materially different query variants are exhausted;
+only then may a vision-capable owner test one retained-page image URL at a time
+with `--from-url`; never bulk-download or use those pages as the initial pool.
 `Needs-Manual` blocks even when an unverified file exists. With no visual
 capability, only the strict metadata-ranked web path may reach `Sourced`, and
 its provenance must say `selection_method: metadata-ranked` rather than imply
