@@ -50,7 +50,9 @@ request does not explicitly select Quick.
 
 🚧 **GATE**: The user has provided a topic / desired outcome and any available initial material.
 
-> **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately, then use its factual supplement as source content.
+> **Topic-only**: run [`topic-research`](stages/topic-research.md) immediately,
+> then use its factual supplement as source content and retain its adopted
+> webpage inputs for Step 2 source-package import.
 
 When the user provides non-Markdown content, convert immediately through the
 unified dispatcher. It preserves the backend converters' existing behavior,
@@ -83,7 +85,12 @@ After reading direct and converted content, assess factual sufficiency:
 | Required externally verifiable claims remain unsupported | Run [`topic-research`](stages/topic-research.md) for those gaps only |
 | Closed corpus / source-only / no external enrichment | Stay within supplied material |
 
-**Sufficiency test**: research only to avoid inventing, omitting, or leaving unsupported a factual claim the requested outcome requires; file presence or length is irrelevant. It gathers facts only. Step 5 acquires Strategist-selected images after final confirmation.
+**Sufficiency test**: research only to avoid inventing, omitting, or leaving
+unsupported a factual claim the requested outcome requires; file presence or
+length is irrelevant. It records the needed facts and adopted webpages. Step 2
+imports those webpages and their embedded images as source packages; Step 5
+acquires only Strategist-selected independent AI / web / slice assets after
+final confirmation.
 
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
 > Source conversion extracts embedded Office vector images (.emf/.wmf)
@@ -99,7 +106,7 @@ After reading direct and converted content, assess factual sufficiency:
 > Browser-based live preview cannot render EMF (will show blank) — this is expected;
 > the PPTX output is the source of truth.
 
-**✅ Checkpoint — Confirm source content and any factual supplement are ready, proceed to Step 2.**
+**✅ Checkpoint — Confirm source content, retained webpage inputs, and any factual supplement are ready, proceed to Step 2.**
 
 ---
 
@@ -149,6 +156,13 @@ Import source content (choose based on the situation):
 |-----------|--------|
 | Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...>` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
+
+When Topic Research ran, include its research pair plus each exact retained URL
+or already-converted webpage Markdown package in the same import. Pass only one
+form per webpage. `project_manager.py` archives the page Markdown and companion
+files, merges its `image_manifest.json`, and synchronizes embedded images into
+`<project>/images/`; this is source intake, not `Acquire Via: web` image
+acquisition.
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 

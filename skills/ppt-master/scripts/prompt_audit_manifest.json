@@ -32,7 +32,7 @@
     "skills/ppt-master/references/svg-effects.md": 15000,
     "skills/ppt-master/references/native-data-interface.md": 6750,
     "skills/ppt-master/references/pptx-structure-interface.md": 4750,
-    "skills/ppt-master/references/strategist.md": 16000,
+    "skills/ppt-master/references/strategist.md": 18000,
     "skills/ppt-master/references/strategist-image.md": 2750,
     "skills/ppt-master/references/strategist-template.md": 3000,
     "skills/ppt-master/templates/design_spec_reference.md": 3750,
@@ -151,7 +151,7 @@
       "files": [
         "skills/ppt-master/workflows/template-fill-pptx.md"
       ],
-      "max_tokens": 13000
+      "max_tokens": 14000
     },
     "route.generate.planning": {
       "description": "Generate-PPTX planning through Strategist, including reference-first whole-document authoring, the three compact decision indexes, and a conservative audit envelope for only the exact custom bases selected after those indexes; schemas and optional scaffolds are tool-consumed.",
@@ -842,7 +842,7 @@
       "files": [
         "skills/ppt-master/workflows/stages/topic-research.md"
       ],
-      "max_tokens": 2000
+      "max_tokens": 2750
     },
     "profile.generate.beautify-pptx": {
       "description": "Strict 1:1 wording, order, and page-count profile with Default and explicit Quick branches.",
