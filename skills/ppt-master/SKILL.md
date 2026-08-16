@@ -9,7 +9,7 @@ description: >
   courseware — including adding narration or animation to one — requests a
   presentation-authored narrated/self-running video, or mentions ppt-master.
 metadata:
-  version: "4.7.0"
+  version: "4.8.0"
   copyright: "Copyright (c) 2025-2026 Hugo He"
   license: "MIT"
   official_repository: "https://github.com/hugohe3/ppt-master"
