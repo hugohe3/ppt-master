@@ -353,10 +353,13 @@ keep a native title wherever the page needs a searchable, selectable, or
 outline-visible heading, with the lettering as its display layer.
 If a suitable set exists, prepare it without
 a separate request: preserve the exact approved strings, use one ordinary AI
-item for a single mark or partition several marks by artistic treatment and
-batch each compatible treatment set through its own Illustration Sheet and
-transparent slices. Split one treatment only when its cell geometry or quality
-needs conflict, and keep ordinary title/chrome copy native. A prepared wordmark
+item for a single mark or group several marks by compatible visual family and
+batch each family through its own Illustration Sheet and transparent slices.
+Give the model the marks' role, placement/background relationship, relative
+visual weight, and energy; apply `image-generator.md` §5.3's
+controlled-default/high-expression boundary. Split a family
+only when its cell geometry or quality needs conflict, and keep ordinary
+title/chrome copy native. A prepared wordmark
 and an editable title are not mutually exclusive:
 one page may carry the wordmark as its display layer while its subtitle, chrome,
 and body stay native text, so a wish to keep that wording editable is answered
@@ -423,7 +426,7 @@ Prepare only the resource paths needed by the decided pages:
 | Formula | Create no resource file. Retain the exact source LaTeX, then choose ordinary text, an inline native marker, or a block native marker under §3; the registered SVG preview is discarded by native export |
 | AI image | Follow `image-base.md` + `image-generator.md`; apply only the chosen rendering preset or exact custom bases, never blend unselected catalog identities, and keep `image_prompts.json` plus its human-readable sidecar |
 | Web image | Follow `image-base.md` + `image-searcher.md`; keep query/status data and `image_sources.json`, including any required on-slide attribution |
-| Illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --strict-alpha`, and place only outputs from a successful strict cut; a lettering sheet names every exact stable string and contains no scene or page chrome |
+| Illustration / lettering slice | Generate or obtain the parent sheet, run `slice_images.py --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha`, and place only outputs from a successful strict cut; a lettering sheet names every exact stable string and contains no scene or page chrome |
 | Registered reconstruction group | Follow `image-generator.md` §4.4; keep full-canvas members registered with `crop=no-crop`, and materialize every required shared-plate member as an independent picture object |
 | Visualization | Keep Chart values, Table cell topology, and chosen treatment in active context; load the applicable Chart/Table authority in §3 and write native replacement metadata only for an independently selected native-ready object |
 

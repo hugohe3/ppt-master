@@ -537,7 +537,7 @@ Generate 路由会在加载流程前选定一份运行时权威：[`workflows/ge
 
 **图片执行路径以 Design Spec 为权威。** UI 或聊天中的最终确认都先固化为 `design_spec.md §I` 的 `AI Image Acquisition Path`；Image_Generator 根据该值选择 API、host-native 或 manual，不能在执行阶段重新决定。`image_gen.py --manifest` 只属于 API Path A。当前 CLI 仍保留一个读取 UI `result.json` 的防误调用 guard，用于在该文件明确记录 `host-native` / `manual` 时阻止误跑 Path A；它不是权威来源，不覆盖 chat-only，也不能替代 Design Spec 的路线判断。这是当前代码与上游权威链尚未闭合的实现差异，不能当作正常消费路径。
 
-**每个兼容处理风格尽量共用一张 sheet。** 相关小插画在 cell 形状、细节、质量和语义需求兼容时可以共用 AI illustration sheet。艺术字先按艺术处理风格分组：同风格的兼容字标共用一张，不同风格分开生成；同一风格只在元素几何或质量需求冲突时再拆。`slice_images.py --strict-alpha` 会在写入派生文件前拒绝不完整的背景透明化；成功切出的透明元素进入 `images/`，随后重跑 `analyze_images.py` 刷新尺寸。
+**每个兼容视觉家族尽量共用一张 sheet。** 相关小插画在 cell 形状、细节、质量和语义需求兼容时可以共用 AI illustration sheet。艺术字按视觉身份而不是固定效果配方分组：兼容字标共用一张，真正不同的视觉身份分开生成；同一视觉家族只在元素几何或质量需求冲突时再拆。提示词提供表达角色、放置语境、相对视觉重量和能量感；模型在已确认的整套视觉身份内决定具体效果组合，默认采用克制的字形内生表达，只有用户明确要求或确认了强表现 / 艺术字加插画组合方向才提高强度或加入外部元素。每张 sheet 使用一个有效通道不主导元素色彩的显式纯红、纯绿或纯蓝键，并把同一 HEX 传给 `slice_images.py --bg`；chroma 路径会去除键色污染并恢复效果的半透明度，随后 `--strict-alpha` 在写入派生文件前拒绝任何未透明的 cell 边界或越界效果。成功切出的透明元素进入 `images/`，随后重跑 `analyze_images.py` 刷新尺寸。
 
 **Executor 前必须进入终态。** 需要获取的资源行必须落到 `Generated`、`Sourced` 或 `Needs-Manual`；`Pending` 和 `Failed` 不能漏进 Executor。`Needs-Manual` 可以作为已知占位 / 依赖继续进入 SVG 生成，但 Step 7 会在最终导出前重新检查必需文件是否已经存在。
 

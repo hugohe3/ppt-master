@@ -761,7 +761,7 @@
       "max_tokens": 74000
     },
     "stage.generate.image.ai-two-types": {
-      "description": "Incremental AI-image role with the selected preset or exact custom rendering bases and two selected local types.",
+      "description": "Incremental AI-image role with the selected preset or exact custom rendering bases and two selected local types. Ceiling raised after BUDGET_LOAD_SET reported 26216 tokens.",
       "scope": "incremental",
       "files": [
         "skills/ppt-master/references/image-base.md",
@@ -792,7 +792,7 @@
           "registry": "image-type-templates"
         }
       ],
-      "max_tokens": 26000
+      "max_tokens": 29000
     },
     "stage.generate.image.web": {
       "description": "Incremental web-image acquisition role. Ceiling raised after BUDGET_LOAD_SET reported 9341 tokens.",
