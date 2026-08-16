@@ -49,6 +49,7 @@ Choosing `none` is valid. Never bake a native treatment into a derivative.
 | `A1-01` / `A1-04` | Existing prepared composite or host/AI path; `image_treat.py` does not blend |
 | `A2-01` | Existing/host-prepared RGBA or flat-key AI/slice asset; when source-scene registration is required, use `A2-02` / `A2-03` + [`image-generator.md`](./image-generator.md) §4.4 |
 | `A2-02` / `A2-03` | [`image-generator.md`](./image-generator.md) §4.4 registered layers |
+| `A2-04` | Existing/host-prepared transparent frame or device asset via the `A2-01` paths, plus an existing content picture registered beneath it; no automatic derivative |
 | `A3-01` | Original/subject plus registered `image_treat.py` blur/tone/desaturate derivative |
 | `A3-02` | Registered full-canvas `image_treat.py` blur derivative; crop panels natively |
 | `A3-03` | `image_treat.py` desaturated base plus existing/§4.4 color subject layer |
