@@ -73,7 +73,7 @@ python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
 python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 # Spot illustrations — slice one AI grid sheet into individual elements (see image-generator.md §4.3):
-python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha --strict-alpha
+python3 skills/ppt-master/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha --bg KEY_HEX_FROM_PROMPT --strict-alpha
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 # Shared create-template coordinate compaction before template validation
