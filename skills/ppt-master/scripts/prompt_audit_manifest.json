@@ -617,7 +617,7 @@
         "stage.shared.generate-audio"
       ],
       "files": [],
-      "max_tokens": 19000
+      "max_tokens": 21000
     },
     "route.generate.beautify-flat-no-image": {
       "description": "Generate-PPTX 1:1 beautify profile on the flat no-image path.",
